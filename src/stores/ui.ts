@@ -7,11 +7,9 @@
  * Mark: Coding with Love
  */
 
-import { ref } from '@vue/reactivity'
+import { reactive, ref } from '@vue/reactivity'
+import { MenuModel } from '../utils/build-menus'
 
 export function UIStore() {
-  const theme = ref('white')
-  return {
-    theme,
-  }
+  return {}
 }

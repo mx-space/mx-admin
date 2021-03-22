@@ -1,3 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,300;1,300&display=swap');
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+  background-color: #fafafa;
+  font-family: -apple-system, 'Segoe UI', 'Helvetica Neue', sans-serif;
+}
+
+body {
+  min-height: 100vh;
+}
+
+a {
+  color: #1890ff;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #5eaad6;
+}
+::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-thumb:hover {
+  background-color: #1188e8;
+  background-clip: padding-box;
+  border: 3px solid transparent;
+  border-radius: 5px;
+}

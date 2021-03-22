@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent, onMounted } from '@vue/runtime-core'
 import sidebarVue from './layouts/sidebar/sidebar.vue'
 import { UIStore } from './stores/ui'
 import { useProviders } from './utils/deps-injection'

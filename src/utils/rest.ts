@@ -19,12 +19,12 @@ import { __DEV__ } from '.'
 const Message = useToast()
 
 class RESTManagerStatic {
-  #instance: RequestMethod = null!
+  _$$instance: RequestMethod = null!
   get instance() {
-    return this.#instance
+    return this._$$instance
   }
   constructor() {
-    this.#instance = extend({
+    this._$$instance = extend({
       // @ts-ignore
       prefix: import.meta.env.VITE_APP_BASE_API,
       timeout: 10000,
@@ -51,7 +51,7 @@ class RESTManagerStatic {
     })
   }
   request(method: Method, route: string, options: RequestOptionsWithResponse) {
-    return this.#instance[method](route, options)
+    return this._$$instance[method](route, options)
   }
 
   get api() {
