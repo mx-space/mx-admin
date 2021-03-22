@@ -1,0 +1,107 @@
+import { defineComponent, onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { buildMenus, MenuModel } from '../../utils/build-menus'
+import Hamburger from '@iconify-icons/radix-icons/hamburger-menu'
+import { Icon } from '@iconify/vue'
+import { configs } from '../../configs'
+import styles from './index.module.css'
+export const Sidebar = defineComponent({
+  setup() {
+    const router = useRouter()
+
+    const menu = ref<MenuModel[]>([])
+    onMounted(() => {
+      const routers = router.getRoutes()
+
+      menu.value = buildMenus(routers)
+    })
+
+    const _index = ref(0)
+
+    function updateIndex(index: number) {
+      if (index === _index.value) {
+        _index.value = -1
+        return
+      }
+      _index.value = index
+    }
+
+    function handleRoute(item: MenuModel, index?: number) {
+      if (item.subItems?.length) {
+      } else {
+        router.push({
+          path: item.fullPath,
+          query: item.query,
+        })
+
+        updateIndex(index!)
+      }
+    }
+
+    const title = configs.title
+
+    return () => (
+      <div class={styles['wrapper']}>
+        <div
+          class={
+            'fixed left-0 top-0 bottom-0 bg-gray-300 overflow-auto ' +
+            styles['sidebar']
+          }
+        >
+          <div class="title relative font-medium text-center text-2xl">
+            <h1 class="py-4">{title}</h1>
+            <button class="absolute right-0 mr-4 top-0 bottom-0 text-lg">
+              <Icon icon={Hamburger} />
+            </button>
+          </div>
+
+          <div class={styles['items']}>
+            {menu.value.map((item, index) => {
+              return (
+                <>
+                  <button
+                    class="py-2 px-4"
+                    key={item.title}
+                    onClick={
+                      item.subItems?.length
+                        ? () => updateIndex(index)
+                        : () => handleRoute(item, index)
+                    }
+                  >
+                    <span>{item.title}</span>
+
+                    {item.subItems && (
+                      <ul
+                        class={
+                          'overflow-hidden pl-6 ' + !!item.subItems.length
+                            ? styles['has-child']
+                            : ''
+                        }
+                        style={{
+                          maxHeight:
+                            _index.value === index
+                              ? item.subItems.length * 2.5 + 'rem'
+                              : '',
+                        }}
+                      >
+                        {item.subItems.map((child) => {
+                          return (
+                            <li key={child.path} class="py-2">
+                              <button onClick={() => handleRoute(child)}>
+                                {child.title}
+                              </button>
+                            </li>
+                          )
+                        })}
+                      </ul>
+                    )}
+                  </button>
+                </>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+    )
+  },
+})

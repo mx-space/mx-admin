@@ -4,7 +4,7 @@ import { RouteRecordNormalized } from 'vue-router'
 export interface MenuModel {
   title: string
   path: string
-  icon: string | string[]
+  icon: any
   subItems?: Array<MenuModel>
   hasParent: boolean
   fullPath: string
@@ -21,7 +21,7 @@ const model = (
     // @ts-ignore
     title: item.meta?.title || item.name || item.path,
     path: item.path && /^\//.test(item.path) ? item.path : '/' + item.path,
-    // icon:
+    icon: item.meta?.icon as any,
     subItems: buildSubMenus(item, fullPath),
     hasParent,
     fullPath,

@@ -11,6 +11,7 @@ import { defineAsyncComponent } from '@vue/runtime-core'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import RootView from './App.vue'
 import { DashBoardView } from './views/dashboard'
+
 export const router = createRouter({
   history: createWebHashHistory(),
   routes: [

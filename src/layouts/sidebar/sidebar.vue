@@ -17,6 +17,8 @@ export default defineComponent({
 
       menu.value = buildMenus(routers)
     })
+
+
     const _index = ref(0)
 
 
@@ -79,7 +81,9 @@ export default defineComponent({
       <div class='items'>
         <div class='parent' v-for='(item, index) in menu' :key='item.title'>
           <button class='py-2 px-4' @click='item.subItems?.length ? updateIndex(index): handleRoute(item, index)'>
-            {{ item.title }}
+
+            <span>{{ item.title }}</span>
+
           </button>
 
           <ul
