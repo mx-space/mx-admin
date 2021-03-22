@@ -6,6 +6,7 @@
  * @FilePath: /admin-next/src/App.vue
  * Mark: Coding with Love
 -->
+
 <template>
   <SidebarLayout>
     <router-view></router-view>
@@ -14,14 +15,15 @@
 
 <script lang="ts">
 import { defineComponent, onMounted } from '@vue/runtime-core'
-import sidebarVue from './layouts/sidebar/sidebar.vue'
+import sidebarVue from './layouts/sidebar/index.vue'
 import { UIStore } from './stores/ui'
 import { useProviders } from './utils/deps-injection'
-
+// import { Sidebar } from './components/sidebar'
 export default defineComponent({
   name: 'home',
   components: {
     SidebarLayout: sidebarVue,
+    // Sidebar,
   },
   setup() {
     useProviders(UIStore)

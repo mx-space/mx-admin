@@ -1,11 +1,12 @@
-import { defineComponent, onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { buildMenus, MenuModel } from '../../utils/build-menus'
 import Hamburger from '@iconify-icons/radix-icons/hamburger-menu'
 import { Icon } from '@iconify/vue'
+import { defineComponent, onMounted, ref, PropType } from 'vue'
+import { useRouter } from 'vue-router'
 import { configs } from '../../configs'
+import { buildMenus, MenuModel } from '../../utils/build-menus'
 import styles from './index.module.css'
 export const Sidebar = defineComponent({
+  name: 'sidebar-comp',
   setup() {
     const router = useRouter()
 
@@ -29,12 +30,15 @@ export const Sidebar = defineComponent({
     function handleRoute(item: MenuModel, index?: number) {
       if (item.subItems?.length) {
       } else {
+        console.log(item.fullPath)
+
         router.push({
           path: item.fullPath,
           query: item.query,
         })
-
-        updateIndex(index!)
+        if (index) {
+          updateIndex(index)
+        }
       }
     }
 
@@ -58,45 +62,44 @@ export const Sidebar = defineComponent({
           <div class={styles['items']}>
             {menu.value.map((item, index) => {
               return (
-                <>
+                <div class="py-2 px-4">
                   <button
-                    class="py-2 px-4"
                     key={item.title}
+                    class="py-2 flex items-center justify-center"
                     onClick={
                       item.subItems?.length
                         ? () => updateIndex(index)
                         : () => handleRoute(item, index)
                     }
                   >
+                    {item.icon && <span class="mr-4"> {item.icon}</span>}
                     <span>{item.title}</span>
-
-                    {item.subItems && (
-                      <ul
-                        class={
-                          'overflow-hidden pl-6 ' + !!item.subItems.length
-                            ? styles['has-child']
-                            : ''
-                        }
-                        style={{
-                          maxHeight:
-                            _index.value === index
-                              ? item.subItems.length * 2.5 + 'rem'
-                              : '',
-                        }}
-                      >
-                        {item.subItems.map((child) => {
-                          return (
-                            <li key={child.path} class="py-2">
-                              <button onClick={() => handleRoute(child)}>
-                                {child.title}
-                              </button>
-                            </li>
-                          )
-                        })}
-                      </ul>
-                    )}
                   </button>
-                </>
+                  {item.subItems && (
+                    <ul
+                      class={
+                        'overflow-hidden pl-6 ' +
+                        (!!item.subItems.length ? styles['has-child'] : '')
+                      }
+                      style={{
+                        maxHeight:
+                          _index.value === index
+                            ? item.subItems.length * 2.5 + 'rem'
+                            : '0',
+                      }}
+                    >
+                      {item.subItems.map((child) => {
+                        return (
+                          <li key={child.path} class="py-2">
+                            <button onClick={() => handleRoute(child)}>
+                              {child.title}
+                            </button>
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  )}
+                </div>
               )
             })}
           </div>
