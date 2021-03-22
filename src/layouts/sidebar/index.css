@@ -1,0 +1,11 @@
+.wrapper {
+  --w: 300px;
+}
+.sidebar {
+  width: var(--w);
+
+  @apply bg-gray-100;
+}
+.content {
+  margin-left: var(--w);
+}
