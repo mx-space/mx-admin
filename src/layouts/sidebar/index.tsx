@@ -1,5 +1,9 @@
-import { defineComponent, PropType, ref } from 'vue'
+import clsx from 'clsx'
+import { defineComponent, PropType, ref, watch, watchEffect } from 'vue'
+import styles from './index.module.css'
 import { Sidebar } from '../../components/sidebar'
+import { useInjector } from '../../utils/deps-injection'
+import { UIStore } from '../../stores/ui'
 export const SidebarLayout = defineComponent({
   props: {
     children: {
@@ -10,8 +14,15 @@ export const SidebarLayout = defineComponent({
   name: 'sidebar-layout',
   components: { Sidebar },
   setup(props) {
-    const collapse = ref(false)
-    const sidebarWidth = ref(300)
+    const ui = useInjector(UIStore)
+
+    const collapse = ref(ui.viewport.value.mobile ? true : false)
+    watchEffect(() => {
+      // console.log(ui.viewport)
+      collapse.value = ui.viewport.value.mobile ? true : false
+    })
+
+    const sidebarWidth = ref(250)
     return () => (
       <div class="wrapper">
         <Sidebar
@@ -23,9 +34,9 @@ export const SidebarLayout = defineComponent({
         />
 
         <div
-          class="relative content"
+          class={clsx('relative', styles['content'])}
           style={{
-            marginLeft: !collapse.value ? sidebarWidth.value + 'px' : '50px',
+            marginLeft: !collapse.value ? sidebarWidth.value + 'px' : '100px',
           }}
         >
           {props.children}

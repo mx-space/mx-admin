@@ -1,18 +1,36 @@
 .wrapper {
-  --w: 300px;
+  --w: 250px;
 }
 
 .wrapper.collapse {
-  --w: 50px;
+  --w: 100px;
 
   & .item-title {
     @apply absolute opacity-0;
   }
+
+  & .has-child {
+    @apply pl-0;
+  }
+}
+
+@screen phone {
+  .wrapper.collapse {
+    --w: 50px;
+  }
+}
+
+.collapse-button {
+  @apply absolute right-0 mr-4 top-0 bottom-0 text-lg;
+}
+
+.wrapper.collapse .collapse-button {
+  @apply relative py-6 w-full flex items-center justify-center;
 }
 
 .sidebar {
   width: var(--w);
-  transtion: width 0.5s;
+  transition: width 0.5s;
 
   @apply bg-gray-100;
 }
@@ -20,9 +38,44 @@
 .items {
   font-family: 'Josefin Sans';
 
-  @apply px-4;
+  @apply pl-4;
+
+  @screen phone {
+    & {
+      @apply px-0;
+    }
+  }
+}
+
+.active,
+.expand {
+  background: rgba(16, 133, 211, 0.5);
+  border-radius: 24px 0 0 24px;
+}
+
+.item {
+  /* @apply transition-all duration-1000; */
+
+  transition: all 0.5s;
+
+  @apply pl-4;
+
+  @screen phone {
+    & {
+      @apply pl-0;
+    }
+  }
+}
+
+.item:hover {
+  background: #1a9cf3;
+  border-radius: 24px 0 0 24px;
 }
 
 .has-child {
   transition: max-height 0.5s;
+}
+
+.sidebar {
+  background: linear-gradient(to bottom, #1188e8, #16aae7);
 }

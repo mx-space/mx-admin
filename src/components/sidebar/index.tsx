@@ -1,11 +1,12 @@
 import Hamburger from '@iconify-icons/radix-icons/hamburger-menu'
 import { Icon } from '@iconify/vue'
 import clsx from 'clsx'
-import { defineComponent, onMounted, ref, PropType } from 'vue'
+import { computed, defineComponent, PropType, ref, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
 import { configs } from '../../configs'
-import { buildMenus, MenuModel } from '../../utils/build-menus'
+import { MenuModel, menus } from '../../utils/build-menus'
 import styles from './index.module.css'
+
 export const Sidebar = defineComponent({
   name: 'sidebar-comp',
   props: {
@@ -25,12 +26,7 @@ export const Sidebar = defineComponent({
   setup(props) {
     const router = useRouter()
 
-    const menu = ref<MenuModel[]>([])
-    onMounted(() => {
-      const routers = router.getRoutes()
-
-      menu.value = buildMenus(routers)
-    })
+    const route = computed(() => router.currentRoute.value)
 
     const _index = ref(0)
 
@@ -72,14 +68,16 @@ export const Sidebar = defineComponent({
       >
         <div
           class={
-            'fixed left-0 top-0 bottom-0 bg-gray-300 overflow-auto ' +
+            'fixed left-0 top-0 bottom-0 overflow-auto z-10 text-white ' +
             styles['sidebar']
           }
         >
-          <div class="title relative font-medium text-center text-2xl">
-            <h1 class="py-4">{title}</h1>
+          <div class={'title relative font-medium text-center text-2xl'}>
+            <h1 class="py-6" style={{ display: props.collapse ? 'none' : '' }}>
+              {title}
+            </h1>
             <button
-              class="absolute right-0 mr-4 top-0 bottom-0 text-lg"
+              class={styles['collapse-button']}
               onClick={() => {
                 props.onCollapseChange(!props.collapse)
               }}
@@ -89,9 +87,20 @@ export const Sidebar = defineComponent({
           </div>
 
           <div class={styles['items']}>
-            {menu.value.map((item, index) => {
+            {menus.map((item, index) => {
               return (
-                <div class="py-2 px-4">
+                <div
+                  class={clsx(
+                    'py-2',
+                    route.value.fullPath === item.fullPath ||
+                      route.value.fullPath.startsWith(item.fullPath)
+                      ? styles['active']
+                      : '',
+
+                    styles['item'],
+                  )}
+                  data-path={item.fullPath}
+                >
                   <button
                     key={item.title}
                     class={'py-2 flex w-full items-center'}
@@ -111,10 +120,11 @@ export const Sidebar = defineComponent({
                   </button>
                   {item.subItems && (
                     <ul
-                      class={
-                        'overflow-hidden pl-6 ' +
-                        (!!item.subItems.length ? styles['has-child'] : '')
-                      }
+                      class={clsx(
+                        'overflow-hidden  ' +
+                          (!!item.subItems.length ? styles['has-child'] : ''),
+                        _index.value === index ? styles['expand'] : '',
+                      )}
                       style={{
                         maxHeight:
                           _index.value === index
@@ -124,13 +134,23 @@ export const Sidebar = defineComponent({
                     >
                       {item.subItems.map((child) => {
                         return (
-                          <li key={child.path} class="py-3">
+                          <li
+                            key={child.path}
+                            class={clsx(
+                              'py-4 ',
+                              route.value.fullPath === child.fullPath ||
+                                route.value.fullPath.startsWith(child.fullPath)
+                                ? styles['active']
+                                : '',
+                              styles['item'],
+                            )}
+                          >
                             <button
                               onClick={() => handleRoute(child)}
-                              class={'flex w-full'}
+                              class={'flex w-full items-center'}
                             >
                               <span
-                                class="flex justify-center"
+                                class="flex justify-center items-center"
                                 style={{ flexBasis: '3rem' }}
                               >
                                 {child.icon}

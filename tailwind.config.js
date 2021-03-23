@@ -27,6 +27,11 @@ module.exports = {
         100: 100,
         auto: 'auto',
       },
+      colors: {
+        primary: '#1a9cf3',
+        deep: '#1681e1',
+        shallow: '#13afea',
+      },
     },
   },
   variants: {

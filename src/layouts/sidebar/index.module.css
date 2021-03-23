@@ -6,6 +6,6 @@
 
 @screen phone {
   .content {
-    margin-left: 0;
+    margin-left: 60px !important;
   }
 }
