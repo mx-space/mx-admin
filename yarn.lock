@@ -349,7 +349,7 @@
     "@vue/compiler-core" "3.0.7"
     "@vue/shared" "3.0.7"
 
-"@vue/compiler-sfc@^3.0.4":
+"@vue/compiler-sfc@3.0.7":
   version "3.0.7"
   resolved "https://registry.yarnpkg.com/@vue/compiler-sfc/-/compiler-sfc-3.0.7.tgz#900414750cc726553b870490f48073451fd14f07"
   integrity sha512-37/QILpGE+J3V+bP9Slg9e6xGqfk+MmS2Yj8ChR4fS0/qWUU/YoYHE0GPIzjmBdH0JVOOmJqunxowIXmqNiHng==
@@ -472,7 +472,7 @@
   dependencies:
     "@vue/compiler-core" "^3.0.0"
 
-"@vuedx/typescript-plugin-vue@^0.6.3":
+"@vuedx/typescript-plugin-vue@0.6.3":
   version "0.6.3"
   resolved "https://registry.yarnpkg.com/@vuedx/typescript-plugin-vue/-/typescript-plugin-vue-0.6.3.tgz#cc2d99bdc0abbde9bb5909341c47715af00539a3"
   integrity sha512-zAhXM9LDVYvjAMnTiqf6yZcJXXh1rQrH3JhcmQNmlxk26sRysfa/VWNC8qkfq9vcOKRf1eQusH4g+Vov6qPGig==
@@ -1489,7 +1489,7 @@ primeicons@4.1.0:
   resolved "https://registry.yarnpkg.com/primeicons/-/primeicons-4.1.0.tgz#19eaef8ef5594b0006358ae64e738d03e167c9bb"
   integrity sha512-uEv2pSPk1zQCfaB2VgnUfnUxxlGryYi+5rbdxmZBBt5v9S/pscIQYS5YDLxsQZ7D9jn5c76+Tx5wX/2J1nK6sA==
 
-primevue@^3.3.5:
+primevue@3.3.5:
   version "3.3.5"
   resolved "https://registry.yarnpkg.com/primevue/-/primevue-3.3.5.tgz#3bf9e4e90632604acc7568848af2b1386938128e"
   integrity sha512-RWR3vYfy64gLvm3DdhFsevI/TPEU6vCvBui19N3//VN3xyYusQe5ikSE7uJaXD4DMfwMkx50MpL1oXXiIE6+Zg==
@@ -1746,7 +1746,7 @@ tslib@^1.9.3:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
-typescript@^4.1.2:
+typescript@4.2.3:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.2.3.tgz#39062d8019912d43726298f09493d598048c1ce3"
   integrity sha512-qOcYwxaByStAWrBf4x0fibwZvMRG+r4cQoTjbPtUlrWjBHbmCAww1i448U0GJ+3cNNEtebDteo/cHOR3xJ4wEw==
@@ -1827,7 +1827,7 @@ vscode-web-custom-data@^0.3.2:
   resolved "https://registry.yarnpkg.com/vscode-web-custom-data/-/vscode-web-custom-data-0.3.3.tgz#9e1f2388c718d6f190038a19d144834a436b876f"
   integrity sha512-orMjjj1r4efP5ocODYZm3orpANakRBsxPZPDoD5UIrFOPKDFtMJQLp6PIH1rb3AYVRD1iYXMhDQoC6tZ+DrigA==
 
-vue-router@4:
+vue-router@4.0.5:
   version "4.0.5"
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-4.0.5.tgz#dd0a4134bc950c37aef64b973e9ee1008428d8fa"
   integrity sha512-AQq+pllb6FCc7rS6vh4PPcce3XA1jgK3hKNkQ4hXHwoVN7jOeAOMKCnX7XAX3etV9rmN7iNW8iIwgPk95ckBjw==
@@ -1844,7 +1844,7 @@ vue-tsc@0.0.14:
   dependencies:
     unzipper "0.10.11"
 
-vue@^3.0.4:
+vue@3.0.7:
   version "3.0.7"
   resolved "https://registry.yarnpkg.com/vue/-/vue-3.0.7.tgz#8bcff51f8be570f9e4ce8cc5f52e2ab0fe3c74a1"
   integrity sha512-8h4TikD+JabbMK9aRlBO4laG0AtNHRPHynxYgWZ9sq1YUPfzynd9Jeeb27XNyZytC7aCQRX9xe1+TQJuc181Tw==
