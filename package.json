@@ -42,6 +42,6 @@
     "vue-tsc": "0.0.14"
   },
   "resolutions": {
-    "umi-request/qs": "6.9.6"
+    "umi-request/qs": "6.10.1"
   }
 }
