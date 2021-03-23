@@ -1,10 +1,17 @@
 import Hamburger from '@iconify-icons/radix-icons/hamburger-menu'
 import { Icon } from '@iconify/vue'
 import clsx from 'clsx'
-import { computed, defineComponent, PropType, ref, watchEffect } from 'vue'
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  PropType,
+  ref,
+  watchEffect,
+} from 'vue'
 import { useRouter } from 'vue-router'
 import { configs } from '../../configs'
-import { MenuModel, menus } from '../../utils/build-menus'
+import { MenuModel, buildMenus } from '../../utils/build-menus'
 import styles from './index.module.css'
 
 export const Sidebar = defineComponent({
@@ -27,6 +34,10 @@ export const Sidebar = defineComponent({
     const router = useRouter()
 
     const route = computed(() => router.currentRoute.value)
+    const menus = ref<MenuModel[]>([])
+    onMounted(() => {
+      menus.value = buildMenus(router.getRoutes())
+    })
 
     const _index = ref(0)
 
@@ -44,7 +55,7 @@ export const Sidebar = defineComponent({
         // console.log(item.fullPath)
 
         router.push({
-          path: item.fullPath,
+          path: item.fullPath.slice(1),
           query: item.query,
         })
         if (index) {
@@ -68,7 +79,7 @@ export const Sidebar = defineComponent({
       >
         <div
           class={
-            'fixed left-0 top-0 bottom-0 overflow-auto z-10 text-white ' +
+            'fixed left-0 top-0 h-screen overflow-hidden z-10 text-white ' +
             styles['sidebar']
           }
         >
@@ -87,7 +98,7 @@ export const Sidebar = defineComponent({
           </div>
           <div class={styles['menu']}>
             <div class={styles['items']}>
-              {menus.map((item, index) => {
+              {menus.value.map((item, index) => {
                 return (
                   <div
                     class={clsx(

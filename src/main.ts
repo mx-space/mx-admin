@@ -11,6 +11,7 @@ import { createApp } from 'vue'
 import App from './App'
 import './index.css'
 import { router } from './router'
+
 // @ts-ignore
 import PrimeVue from 'primevue/config'
 

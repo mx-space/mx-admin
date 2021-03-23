@@ -1482,6 +1482,11 @@ purgecss@^3.1.3:
     postcss "^8.2.1"
     postcss-selector-parser "^6.0.2"
 
+qier-progress@1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/qier-progress/-/qier-progress-1.0.4.tgz#ff32504d9409bcce20898014b0fdb423874fbc10"
+  integrity sha512-gCxgoM2wxW7GCo/iEpOlaunVo2cf+/AJfG6wtYIbYz18GXtUhFjgZjX2s+otWh/P8ppVgGULASkWtXfZQEd2FQ==
+
 qs@6.9.6, qs@^6.9.1:
   version "6.9.6"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.9.6.tgz#26ed3c8243a431b2924aca84cc90471f35d5a0ee"

@@ -4,13 +4,8 @@ import styles from './index.module.css'
 import { Sidebar } from '../../components/sidebar'
 import { useInjector } from '../../utils/deps-injection'
 import { UIStore } from '../../stores/ui'
+import { RouterView } from 'vue-router'
 export const SidebarLayout = defineComponent({
-  props: {
-    children: {
-      type: Object as PropType<JSX.Element>,
-      required: true,
-    },
-  },
   name: 'sidebar-layout',
   components: { Sidebar },
   setup(props) {
@@ -39,7 +34,7 @@ export const SidebarLayout = defineComponent({
             marginLeft: !collapse.value ? sidebarWidth.value + 'px' : '100px',
           }}
         >
-          {props.children}
+          <RouterView />
         </div>
       </div>
     )

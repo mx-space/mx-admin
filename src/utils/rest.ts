@@ -12,7 +12,7 @@ import type { RequestMethod, RequestOptionsWithResponse } from 'umi-request'
 import { getToken } from './auth'
 
 import { useToast } from 'vue-toastification'
-import { router } from '../router'
+import { router } from '../router/router'
 
 import { __DEV__ } from '.'
 
