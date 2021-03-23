@@ -1,17 +1,34 @@
-import { computed, defineComponent, ref, watchEffect } from '@vue/runtime-core'
-import { RouterView, useRouter } from 'vue-router'
-import { SidebarLayout } from './layouts/sidebar'
+import { defineComponent, onMounted } from '@vue/runtime-core'
+import { RouterView } from 'vue-router'
 import { UIStore } from './stores/ui'
-import { useProviders } from './utils/deps-injection'
+import { UserStore } from './stores/user'
+import { useInjector, useProviders } from './utils/deps-injection'
 // import { Sidebar } from './components/sidebar'
-export default defineComponent({
+const Root = defineComponent({
   name: 'home',
 
   setup() {
-    useProviders(UIStore)
-
+    const { fetchUser } = useInjector(UserStore)
+    onMounted(() => {
+      fetchUser()
+    })
     return () => {
       return <RouterView />
     }
   },
 })
+
+const App = defineComponent({
+  // props: {
+  //   children: {
+  //     type: Object as PropType<JSX.Element>,
+  //     required: true,
+  //   },
+  // },
+  setup({}) {
+    useProviders(UIStore, UserStore)
+    return () => <Root />
+  },
+})
+
+export default App

@@ -28,7 +28,7 @@ app.use(PrimeVue)
 app.use(router)
 
 app.use(Toast, {})
-RESTManager.api
+
 // app.provide(Symbol('rest'), RESTManager)
 app.mount('#app')
 

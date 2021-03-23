@@ -28,7 +28,7 @@ class RESTManagerStatic {
       // @ts-ignore
       prefix: import.meta.env.VITE_APP_BASE_API,
       timeout: 10000,
-      errorHandler: (error) => {
+      errorHandler: async (error) => {
         if (error.request && !error.response) {
         }
 
@@ -37,9 +37,11 @@ class RESTManagerStatic {
             console.log(error.response)
           }
           try {
-            Message.error('')
-          } catch {
+            const json = await error.response.json()
+            Message.error(json.message || json.msg)
+          } catch (e) {
             Message.error('出错了, 请查看控制台')
+            console.log(e)
           }
 
           if (error?.response?.status === 401) {

@@ -7,18 +7,7 @@
  * Mark: Coding with Love
  */
 // @ts-nocheck
-import dashboardFilled from '@iconify-icons/ant-design/dashboard-filled'
-
-import { defineAsyncComponent, DefineComponent } from '@vue/runtime-core'
-import {
-  createRouter,
-  createWebHashHistory,
-  RouteRecordNormalized,
-} from 'vue-router'
-import RootView from '../App'
-import { DashBoardView } from '../views/dashboard'
-import { InlineIcon as Icon } from '@iconify/vue'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { faMarkdown } from '@fortawesome/free-brands-svg-icons'
 import {
   faBook,
   faChartLine,
@@ -40,9 +29,18 @@ import {
   faUserFriends,
   faWrench,
 } from '@fortawesome/free-solid-svg-icons'
-import { faMarkdown } from '@fortawesome/free-brands-svg-icons'
-import { LoginView } from '../views/login'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import dashboardFilled from '@iconify-icons/ant-design/dashboard-filled'
+import { InlineIcon as Icon } from '@iconify/vue'
+import { defineAsyncComponent } from '@vue/runtime-core'
+import {
+  createRouter,
+  createWebHashHistory,
+  RouteRecordNormalized,
+} from 'vue-router'
 import { SidebarLayout } from '../layouts/sidebar'
+import { DashBoardView } from '../views/dashboard'
+import LoginView from '../views/login/index.vue'
 
 export const routeForMenu: Array<RouteRecordNormalized> = [
   {
