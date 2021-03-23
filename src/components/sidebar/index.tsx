@@ -85,88 +85,91 @@ export const Sidebar = defineComponent({
               <Icon icon={Hamburger} />
             </button>
           </div>
+          <div class={styles['menu']}>
+            <div class={styles['items']}>
+              {menus.map((item, index) => {
+                return (
+                  <div
+                    class={clsx(
+                      'py-2',
+                      route.value.fullPath === item.fullPath ||
+                        route.value.fullPath.startsWith(item.fullPath)
+                        ? styles['active']
+                        : '',
 
-          <div class={styles['items']}>
-            {menus.map((item, index) => {
-              return (
-                <div
-                  class={clsx(
-                    'py-2',
-                    route.value.fullPath === item.fullPath ||
-                      route.value.fullPath.startsWith(item.fullPath)
-                      ? styles['active']
-                      : '',
-
-                    styles['item'],
-                  )}
-                  data-path={item.fullPath}
-                >
-                  <button
-                    key={item.title}
-                    class={'py-2 flex w-full items-center'}
-                    onClick={
-                      item.subItems?.length
-                        ? () => updateIndex(index)
-                        : () => handleRoute(item, index)
-                    }
+                      styles['item'],
+                    )}
+                    data-path={item.fullPath}
                   >
-                    <span
-                      style={{ flexBasis: '3rem' }}
-                      class="flex justify-center"
+                    <button
+                      key={item.title}
+                      class={'py-2 flex w-full items-center'}
+                      onClick={
+                        item.subItems?.length
+                          ? () => updateIndex(index)
+                          : () => handleRoute(item, index)
+                      }
                     >
-                      {item.icon}
-                    </span>
-                    <span class={styles['item-title']}>{item.title}</span>
-                  </button>
-                  {item.subItems && (
-                    <ul
-                      class={clsx(
-                        'overflow-hidden  ' +
-                          (!!item.subItems.length ? styles['has-child'] : ''),
-                        _index.value === index ? styles['expand'] : '',
-                      )}
-                      style={{
-                        maxHeight:
-                          _index.value === index
-                            ? item.subItems.length * 3.5 + 'rem'
-                            : '0',
-                      }}
-                    >
-                      {item.subItems.map((child) => {
-                        return (
-                          <li
-                            key={child.path}
-                            class={clsx(
-                              'py-4 ',
-                              route.value.fullPath === child.fullPath ||
-                                route.value.fullPath.startsWith(child.fullPath)
-                                ? styles['active']
-                                : '',
-                              styles['item'],
-                            )}
-                          >
-                            <button
-                              onClick={() => handleRoute(child)}
-                              class={'flex w-full items-center'}
+                      <span
+                        style={{ flexBasis: '3rem' }}
+                        class="flex justify-center"
+                      >
+                        {item.icon}
+                      </span>
+                      <span class={styles['item-title']}>{item.title}</span>
+                    </button>
+                    {item.subItems && (
+                      <ul
+                        class={clsx(
+                          'overflow-hidden  ' +
+                            (!!item.subItems.length ? styles['has-child'] : ''),
+                          _index.value === index ? styles['expand'] : '',
+                        )}
+                        style={{
+                          maxHeight:
+                            _index.value === index
+                              ? item.subItems.length * 3.5 + 'rem'
+                              : '0',
+                        }}
+                      >
+                        {item.subItems.map((child) => {
+                          return (
+                            <li
+                              key={child.path}
+                              class={clsx(
+                                'py-4 ',
+                                route.value.fullPath === child.fullPath ||
+                                  route.value.fullPath.startsWith(
+                                    child.fullPath,
+                                  )
+                                  ? styles['active']
+                                  : '',
+                                styles['item'],
+                              )}
                             >
-                              <span
-                                class="flex justify-center items-center"
-                                style={{ flexBasis: '3rem' }}
+                              <button
+                                onClick={() => handleRoute(child)}
+                                class={'flex w-full items-center'}
                               >
-                                {child.icon}
-                              </span>
-                              <span class={styles['item-title']}>
-                                {child.title}
-                              </span>
-                            </button>
-                          </li>
-                        )
-                      })}
-                    </ul>
-                  )}
-                </div>
-              )
-            })}
+                                <span
+                                  class="flex justify-center items-center"
+                                  style={{ flexBasis: '3rem' }}
+                                >
+                                  {child.icon}
+                                </span>
+                                <span class={styles['item-title']}>
+                                  {child.title}
+                                </span>
+                              </button>
+                            </li>
+                          )
+                        })}
+                      </ul>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
           </div>
         </div>
       </div>

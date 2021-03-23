@@ -79,3 +79,8 @@
 .sidebar {
   background: linear-gradient(to bottom, #1188e8, #16aae7);
 }
+
+.menu {
+  height: 80vh;
+  overflow: overlay;
+}
