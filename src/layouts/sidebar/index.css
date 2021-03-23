@@ -1,23 +1,11 @@
-.wrapper {
-    --w: 300px;
-}
-
-.sidebar {
-    width: var(--w);
-
-    @apply bg-gray-100;
-}
-
 .content {
-    margin-left: var(--w);
+  margin-left: var(--w);
+}
+@screen desktop {
 }
 
-.items {
-    font-family: 'Josefin Sans';
-
-    @apply px-4
-}
-
-.has-child {
-    transition: max-height .5s;
+@screen phone {
+  .content {
+    margin-left: 0;
+  }
 }

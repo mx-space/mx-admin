@@ -1,5 +1,6 @@
 import Hamburger from '@iconify-icons/radix-icons/hamburger-menu'
 import { Icon } from '@iconify/vue'
+import clsx from 'clsx'
 import { defineComponent, onMounted, ref, PropType } from 'vue'
 import { useRouter } from 'vue-router'
 import { configs } from '../../configs'
@@ -7,7 +8,21 @@ import { buildMenus, MenuModel } from '../../utils/build-menus'
 import styles from './index.module.css'
 export const Sidebar = defineComponent({
   name: 'sidebar-comp',
-  setup() {
+  props: {
+    collapse: {
+      type: Boolean,
+      required: true,
+    },
+    width: {
+      type: Number,
+      required: true,
+    },
+    onCollapseChange: {
+      type: Function as PropType<{ (status: boolean): void }>,
+      required: true,
+    },
+  },
+  setup(props) {
     const router = useRouter()
 
     const menu = ref<MenuModel[]>([])
@@ -30,7 +45,7 @@ export const Sidebar = defineComponent({
     function handleRoute(item: MenuModel, index?: number) {
       if (item.subItems?.length) {
       } else {
-        console.log(item.fullPath)
+        // console.log(item.fullPath)
 
         router.push({
           path: item.fullPath,
@@ -45,7 +60,16 @@ export const Sidebar = defineComponent({
     const title = configs.title
 
     return () => (
-      <div class={styles['wrapper']}>
+      <div
+        class={clsx(
+          styles['wrapper'],
+          props.collapse ? styles['collapse'] : null,
+        )}
+        style={{
+          width:
+            !props.collapse && props.width ? props.width + 'px' : undefined,
+        }}
+      >
         <div
           class={
             'fixed left-0 top-0 bottom-0 bg-gray-300 overflow-auto ' +
@@ -54,7 +78,12 @@ export const Sidebar = defineComponent({
         >
           <div class="title relative font-medium text-center text-2xl">
             <h1 class="py-4">{title}</h1>
-            <button class="absolute right-0 mr-4 top-0 bottom-0 text-lg">
+            <button
+              class="absolute right-0 mr-4 top-0 bottom-0 text-lg"
+              onClick={() => {
+                props.onCollapseChange(!props.collapse)
+              }}
+            >
               <Icon icon={Hamburger} />
             </button>
           </div>
@@ -65,15 +94,20 @@ export const Sidebar = defineComponent({
                 <div class="py-2 px-4">
                   <button
                     key={item.title}
-                    class="py-2 flex items-center justify-center"
+                    class={'py-2 flex w-full items-center'}
                     onClick={
                       item.subItems?.length
                         ? () => updateIndex(index)
                         : () => handleRoute(item, index)
                     }
                   >
-                    {item.icon && <span class="mr-4"> {item.icon}</span>}
-                    <span>{item.title}</span>
+                    <span
+                      style={{ flexBasis: '3rem' }}
+                      class="flex justify-center"
+                    >
+                      {item.icon}
+                    </span>
+                    <span class={styles['item-title']}>{item.title}</span>
                   </button>
                   {item.subItems && (
                     <ul
@@ -84,15 +118,26 @@ export const Sidebar = defineComponent({
                       style={{
                         maxHeight:
                           _index.value === index
-                            ? item.subItems.length * 2.5 + 'rem'
+                            ? item.subItems.length * 3.5 + 'rem'
                             : '0',
                       }}
                     >
                       {item.subItems.map((child) => {
                         return (
-                          <li key={child.path} class="py-2">
-                            <button onClick={() => handleRoute(child)}>
-                              {child.title}
+                          <li key={child.path} class="py-3">
+                            <button
+                              onClick={() => handleRoute(child)}
+                              class={'flex w-full'}
+                            >
+                              <span
+                                class="flex justify-center"
+                                style={{ flexBasis: '3rem' }}
+                              >
+                                {child.icon}
+                              </span>
+                              <span class={styles['item-title']}>
+                                {child.title}
+                              </span>
                             </button>
                           </li>
                         )

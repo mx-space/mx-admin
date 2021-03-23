@@ -2,14 +2,19 @@
   --w: 300px;
 }
 
-.sidebar {
-  width: var(--w);
+.wrapper.collapse {
+  --w: 50px;
 
-  @apply bg-gray-100;
+  & .item-title {
+    @apply absolute opacity-0;
+  }
 }
 
-.content {
-  margin-left: var(--w);
+.sidebar {
+  width: var(--w);
+  transtion: width 0.5s;
+
+  @apply bg-gray-100;
 }
 
 .items {

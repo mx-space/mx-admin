@@ -6,8 +6,9 @@
  * @FilePath: /admin-next/src/main.ts
  * Mark: Coding with Love
  */
+
 import { createApp } from 'vue'
-import App from './App.vue'
+import App from './App'
 import './index.css'
 import { router } from './router'
 // @ts-ignore

@@ -23,8 +23,14 @@ a {
 a:hover {
   color: #5eaad6;
 }
-::-webkit-scrollbar-thumb,
-::-webkit-scrollbar-thumb:hover {
+
+button:focus,
+button {
+  outline: unset;
+}
+
+*::-webkit-scrollbar-thumb,
+*::-webkit-scrollbar-thumb:hover {
   background-color: #1188e8;
   background-clip: padding-box;
   border: 3px solid transparent;

@@ -8,9 +8,9 @@
  */
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import visualizer from 'rollup-plugin-visualizer'
+import analyze from 'rollup-plugin-analyzer'
 export default defineConfig({
-  plugins: [vue(), visualizer()],
+  plugins: [vue(), analyze()],
   server: {
     port: 9528,
   },
