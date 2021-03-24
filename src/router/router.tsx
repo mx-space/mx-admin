@@ -38,9 +38,11 @@ import {
   createWebHashHistory,
   RouteRecordNormalized,
 } from 'vue-router'
+import $RouterView from '../layouts/router-view'
 import { SidebarLayout } from '../layouts/sidebar'
 import { DashBoardView } from '../views/dashboard'
 import LoginView from '../views/login/index.vue'
+import { ManagePostListView } from '../views/manage-posts/list'
 
 export const routeForMenu: Array<RouteRecordNormalized> = [
   {
@@ -54,7 +56,7 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
     name: 'post',
     meta: { title: '博文', icon: <FontAwesomeIcon icon={faCode} /> },
     redirect: '/posts/view',
-    component: defineAsyncComponent(() => import('../views/emptyview')),
+    component: $RouterView,
     children: [
       {
         path: 'view',
@@ -64,7 +66,10 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
           icon: <FontAwesomeIcon icon={faEye} />,
           query: { page: 1 },
         },
-        component: defineAsyncComponent(() => import('../views/emptyview')),
+        component: () =>
+          import('../views/manage-posts/list').then(
+            (m) => m.ManagePostListView,
+          ),
       },
       {
         path: 'edit',
@@ -95,7 +100,7 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
       icon: <FontAwesomeIcon icon={faBook} />,
     },
     redirect: '/notes/view',
-    component: defineAsyncComponent(() => import('../views/emptyview')),
+    component: $RouterView,
     children: [
       {
         path: 'view',
@@ -131,7 +136,7 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
       title: '页面',
       icon: <FontAwesomeIcon icon={faFile} />,
     },
-    component: defineAsyncComponent(() => import('../views/emptyview')),
+    component: $RouterView,
     children: [
       {
         path: 'list',
@@ -158,7 +163,7 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
     path: '/say',
     name: 'say',
     meta: { title: '说说', icon: <FontAwesomeIcon icon={faComments} /> },
-    component: defineAsyncComponent(() => import('../views/emptyview')),
+    component: $RouterView,
     children: [
       {
         path: 'list',
@@ -184,7 +189,7 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
     path: '/project',
     name: 'project',
     meta: { title: '项目', icon: <FontAwesomeIcon icon={faFlask} /> },
-    component: defineAsyncComponent(() => import('../views/emptyview')),
+    component: $RouterView,
     children: [
       {
         path: 'list',
@@ -236,7 +241,7 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
     name: 'setting',
     meta: { title: '设定', icon: <FontAwesomeIcon icon={faCogs} /> },
     redirect: '/setting/profile',
-    component: defineAsyncComponent(() => import('../views/emptyview')),
+    component: $RouterView,
     children: [
       {
         path: 'profile',
@@ -280,7 +285,7 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
     path: '/other',
     name: 'other',
     meta: { title: '其他', icon: <FontAwesomeIcon icon={faEllipsisH} /> },
-    component: defineAsyncComponent(() => import('../views/emptyview')),
+    component: $RouterView,
     children: [
       {
         path: 'backup',

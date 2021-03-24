@@ -1,7 +1,11 @@
 import { defineAsyncComponent, defineComponent } from '@vue/runtime-core'
+import { useRouter } from 'vue-router'
 
 export const PlaceHolderView = defineComponent({
   setup() {
-    return () => <span></span>
+    const router = useRouter()
+    return () => <span>{router.currentRoute.value.fullPath}</span>
   },
 })
+
+export default PlaceHolderView

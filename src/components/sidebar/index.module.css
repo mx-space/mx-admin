@@ -83,4 +83,10 @@
 .menu {
   height: 80vh;
   overflow: overlay;
+
+  @screen phone {
+    & {
+      @apply overflow-auto;
+    }
+  }
 }

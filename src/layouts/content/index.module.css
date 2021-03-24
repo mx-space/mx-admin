@@ -1,0 +1,30 @@
+.header {
+  @apply sticky left-0 right-0 z-10 p-8;
+
+  @screen phone {
+    & {
+      @apply p-4;
+    }
+  }
+
+  backdrop-filter: blur(5px);
+  border-radius: 0 0 12px 12px;
+  top: -1rem;
+  display: flex;
+  justify-content: space-between;
+
+  & .title {
+    font-size: 1.5rem;
+    user-select: none;
+    align-items: center;
+    display: flex;
+  }
+}
+
+.main {
+  @apply p-8;
+
+  @screen phone {
+    @apply p-4;
+  }
+}

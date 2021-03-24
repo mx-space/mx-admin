@@ -9,15 +9,9 @@
 
 import { defineComponent } from '@vue/runtime-core'
 
-
-const el = <span>11111</span>
 export const DashBoardView = defineComponent({
   name: 'dashboard',
   setup() {
-    return () => <p class="">Hello
-      {el}
-    </p>
+    return () => <p class="">Hello</p>
   },
 })
-
-

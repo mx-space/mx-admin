@@ -43,6 +43,7 @@ export const LoginView = defineComponent({
         updateToken(res.token)
 
         router.push('/dashboard')
+        toast.success('欢迎回来')
       } catch (e) {
         toast.error('登陆失败')
       }
@@ -65,8 +66,8 @@ export default LoginView
 <template>
   <div>
     <div
-      class="bg"
-      :style="{ backgroundImage: loaded ? `url(${bgUrl})` : '' }"
+      class="bg transition-opacity duration-700"
+      :style="{ backgroundImage: `url(${bgUrl})`, opacity: loaded ? 1 : 0 }"
     ></div>
 
     <div class="wrapper">

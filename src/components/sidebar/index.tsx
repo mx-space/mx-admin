@@ -13,7 +13,9 @@ import { useRouter } from 'vue-router'
 import { configs } from '../../configs'
 import { MenuModel, buildMenus } from '../../utils/build-menus'
 import styles from './index.module.css'
-
+import Avatar from '../../components/avatar/index.vue'
+import { useInjector } from '../../utils/deps-injection'
+import { UserStore } from '../../stores/user'
 export const Sidebar = defineComponent({
   name: 'sidebar-comp',
   props: {
@@ -32,7 +34,7 @@ export const Sidebar = defineComponent({
   },
   setup(props) {
     const router = useRouter()
-
+    const { user } = useInjector(UserStore)
     const route = computed(() => router.currentRoute.value)
     const menus = ref<MenuModel[]>([])
     onMounted(() => {
@@ -103,8 +105,8 @@ export const Sidebar = defineComponent({
                   <div
                     class={clsx(
                       'py-2',
-                      route.value.fullPath === item.fullPath ||
-                        route.value.fullPath.startsWith(item.fullPath)
+                      route.value.fullPath === item.fullPath.slice(1) ||
+                        route.value.fullPath.startsWith(item.fullPath.slice(1))
                         ? styles['active']
                         : '',
 
@@ -147,11 +149,12 @@ export const Sidebar = defineComponent({
                           return (
                             <li
                               key={child.path}
+                              // data-fullPath={child.fullPath}
                               class={clsx(
                                 'py-4 ',
                                 route.value.fullPath === child.fullPath ||
                                   route.value.fullPath.startsWith(
-                                    child.fullPath,
+                                    child.fullPath.slice(1),
                                   )
                                   ? styles['active']
                                   : '',
@@ -181,6 +184,10 @@ export const Sidebar = defineComponent({
                 )
               })}
             </div>
+          </div>
+          <div class="bottom-bar flex space-x-2 items-center px-6 transform translate-y-1/3">
+            <Avatar src={user.value?.avatar!} size={40} />
+            <span class="pl-12">{user.value?.name}</span>
           </div>
         </div>
       </div>

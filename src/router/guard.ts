@@ -2,7 +2,7 @@ import { configs } from '../configs'
 import { router } from './router'
 import QProgress from 'qier-progress'
 import { RESTManager } from '../utils/rest'
-export const progress = new QProgress()
+export const progress = new QProgress({ colorful: false, color: '#1a9cf3' })
 const title = configs.title
 
 router.beforeEach(async (to, _, next) => {

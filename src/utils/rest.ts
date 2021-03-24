@@ -7,7 +7,7 @@
  * @Coding with Love
  */
 
-import { extend } from 'umi-request'
+import { extend, RequestOptionsInit } from 'umi-request'
 import type { RequestMethod, RequestOptionsWithResponse } from 'umi-request'
 import { getToken } from './auth'
 
@@ -133,7 +133,7 @@ RESTManager.instance.interceptors.request.use((url, options) => {
   }
 }, {})
 
-interface IRequestHandler<T = RequestOptionsWithResponse> {
+interface IRequestHandler<T = RequestOptionsInit> {
   (id?: string): IRequestHandler
   // @ts-ignore
   get<P = unknown>(options?: T): Promise<P>
