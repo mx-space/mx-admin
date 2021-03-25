@@ -12,19 +12,21 @@ import App from './App'
 import './index.css'
 import { router } from './router'
 
-import ElementPlus from 'element-plus'
-import 'element-plus/lib/theme-chalk/index.css'
 import Toast from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
 import { __DEV__ } from './utils'
+import PrimeVue from 'primevue/config/config.esm'
+// start
+
+import 'primevue/resources/primevue.min.css'
+import 'primevue/resources/themes/saga-blue/theme.css'
+// end
 
 const app = createApp(App)
 
 app.use(router)
-app.use(ElementPlus)
 app.use(Toast, {})
-
-// app.provide(Symbol('rest'), RESTManager)
+app.use(PrimeVue, { ripple: true })
 app.mount('#app')
 
 if (__DEV__) {

@@ -1,5 +1,5 @@
 .header {
-  @apply sticky left-0 right-0 z-10 p-8;
+  @apply sticky left-0 right-0 z-10 p-12;
 
   @screen phone {
     & {
@@ -14,17 +14,45 @@
   justify-content: space-between;
 
   & .title {
-    font-size: 1.5rem;
-    user-select: none;
-    align-items: center;
-    display: flex;
+    @apply flex items-center select-none;
+
+    font-size: 1.73rem;
   }
 }
 
 .main {
-  @apply p-8;
+  @apply p-12;
+
+  padding-top: 0;
 
   @screen phone {
     @apply p-4;
+  }
+}
+
+.buttons {
+  @apply fixed right-0 bottom-0;
+
+  margin-bottom: 2rem;
+  margin-right: 2rem;
+
+  & > button {
+    @apply h-12 w-12 flex items-center justify-center shadow-2xl;
+  }
+
+  & > button:first-child {
+    @apply mb-2;
+  }
+}
+
+.header-actions {
+  @apply absolute right-0 mr-12 phone:pr-4 top-0 bottom-0 flex items-center;
+
+  & > button {
+    @apply h-12 w-12 flex items-center justify-center shadow-2xl;
+  }
+
+  & > button:first-child {
+    @apply mr-2;
   }
 }

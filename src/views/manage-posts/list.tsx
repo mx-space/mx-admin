@@ -1,11 +1,13 @@
 import { defineComponent, onMounted, ref } from '@vue/runtime-core'
 import { ContentLayout } from '../../layouts/content'
 import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
 import { RESTManager } from '../../utils/rest'
 import { Pager, PostModel, PostResponse } from '../../models/post'
-import Column from 'primevue/column'
-import { ElTable, ElTableColumn } from 'element-plus'
-// import ElTableColumn from 'element-plus/lib/el-table/src/tableColumn'
+import Button from 'primevue/button'
+import { RoundedButton } from '../../components/button'
+import PostTable from '../../components/for-views/posts/list-table.vue'
+
 export const ManagePostListView = defineComponent({
   name: 'post-list',
   setup({}, ctx) {
@@ -29,18 +31,12 @@ export const ManagePostListView = defineComponent({
 
     return () => {
       return (
-        <ContentLayout>
-          <ElTable data={data.value}>
-            <ElTableColumn prop="title" label="标题"></ElTableColumn>
-          </ElTable>
-          {/* <DataTable
-            responsiveLayout="scroll"
-            value={data.value}
-            v-slots={{ footer: () => <span>aaaaaaaaa</span> }}
-          >
-            <Column field="title" header="标题" sortable={true} />
-            {/* <Column field="created" header="创建于" sortable={true} /
-          </DataTable> */}
+        <ContentLayout
+          actionsElement={
+            <RoundedButton variant="danger">aaaaaaaaaaa</RoundedButton>
+          }
+        >
+          <PostTable data={data.value} />
         </ContentLayout>
       )
     }

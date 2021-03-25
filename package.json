@@ -17,6 +17,7 @@
     "@iconify-icons/radix-icons": "1.1.2",
     "@iconify/vue": "2.0.0-rc.3",
     "clsx": "1.1.1",
+    "dayjs": "1.10.4",
     "element-plus": "1.0.2-beta.35",
     "js-cookie": "2.2.1",
     "lodash-es": "4.17.21",

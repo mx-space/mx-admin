@@ -185,9 +185,19 @@ export const Sidebar = defineComponent({
               })}
             </div>
           </div>
-          <div class="bottom-bar flex space-x-2 items-center px-6 transform translate-y-1/3">
+          <div
+            class={clsx(
+              'bottom-bar flex space-x-2 items-center  transform translate-y-1/3 phone:hidden ',
+              props.collapse ? 'px-8' : 'px-12',
+            )}
+          >
             <Avatar src={user.value?.avatar!} size={40} />
-            <span class="pl-12">{user.value?.name}</span>
+            {!props.collapse ? (
+              <span class="pl-12">{user.value?.name}</span>
+            ) : null}
+          </div>
+          <div class="hidden phone:flex w-full items-center justify-center absolute bottom-0 pb-4">
+            <Avatar src={user.value?.avatar!} size={40} />
           </div>
         </div>
       </div>
