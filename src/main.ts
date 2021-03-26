@@ -20,6 +20,10 @@ import PrimeVue from 'primevue/config/config.esm'
 
 import 'primevue/resources/primevue.min.css'
 import 'primevue/resources/themes/saga-blue/theme.css'
+import { ElMessage } from 'element-plus'
+import 'element-plus/lib/theme-chalk/el-message.css'
+import 'element-plus/lib/theme-chalk/base.css'
+import 'primeicons/primeicons.css'
 // end
 
 const app = createApp(App)
@@ -27,6 +31,7 @@ const app = createApp(App)
 app.use(router)
 app.use(Toast, {})
 app.use(PrimeVue, { ripple: true })
+app.use(ElMessage)
 app.mount('#app')
 
 if (__DEV__) {

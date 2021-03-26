@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, onMounted, ref } from '@vue/runtime-core'
+import { defineComponent, onMounted, onUnmounted, ref } from '@vue/runtime-core'
 import Avatar from '../../components/avatar/index.vue'
 import { UserStore } from '../../stores/user'
 import { useInjector } from '../../utils/deps-injection'
@@ -7,7 +7,7 @@ import Button from 'primevue/button'
 import { RESTManager } from '../../utils/rest'
 import { useToast } from 'vue-toastification'
 import { UserModel } from '../../models/user'
-import { router } from '../../router'
+import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
 
 const bgUrl =
@@ -18,20 +18,34 @@ export const LoginView = defineComponent({
     const loaded = ref(false)
     const { user, updateToken } = useInjector(UserStore)
     const router = useRouter()
+    const input = ref<HTMLInputElement>(null!)
     onMounted(() => {
       const $$ = new Image()
       $$.src = bgUrl
       $$.onload = (e) => {
         loaded.value = true
       }
+      input.value.focus()
+
+      document.onkeydown = (e) => {
+        input.value.focus()
+      }
     })
 
-    const toast = useToast()
+    onUnmounted(() => {
+      document.onkeydown = null
+    })
+
+    const toast = ElMessage
 
     const password = ref('')
 
     const handleLogin = async (e) => {
       try {
+        if (!user.value || !user.value.username) {
+          toast.error('主人信息无法获取')
+          return
+        }
         const res = await RESTManager.api.master.login.post<{
           token: string & UserModel
         }>({
@@ -39,7 +53,8 @@ export const LoginView = defineComponent({
             username: user.value?.username,
             password: password.value,
           },
-        } as any)
+          errorHandler() {},
+        })
         updateToken(res.token)
 
         router.push('/dashboard')
@@ -56,6 +71,7 @@ export const LoginView = defineComponent({
       user,
       password,
       handleLogin,
+      input,
     }
   },
 })
@@ -74,10 +90,14 @@ export default LoginView
       <Avatar :src="user?.avatar" :size="80" />
       <form action="#" @submit.prevent="handleLogin">
         <div class="input-wrap">
-          <input v-model="password" type="password" autofocus />
+          <input v-model="password" type="password" autofocus ref="input" />
           <div class="blur"></div>
         </div>
-        <Button label="登陆" @click="handleLogin" />
+        <Button
+          label="登陆"
+          @click="handleLogin"
+          class="p-button-raised p-button-rounded"
+        />
       </form>
 
       <!-- <Avatar :size="80" src="https://resume.innei.ren/avatar.ec3d4d8d.png" /> -->

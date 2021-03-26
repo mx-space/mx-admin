@@ -11,12 +11,12 @@ import { extend, RequestOptionsInit } from 'umi-request'
 import type { RequestMethod, RequestOptionsWithResponse } from 'umi-request'
 import { getToken } from './auth'
 
-import { useToast } from 'vue-toastification'
+import { ElMessage } from 'element-plus'
 import { router } from '../router/router'
 
 import { __DEV__ } from '.'
 
-const Message = useToast()
+const Message = ElMessage
 
 class RESTManagerStatic {
   _$$instance: RequestMethod = null!

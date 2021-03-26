@@ -7,6 +7,10 @@ import { Pager, PostModel, PostResponse } from '../../models/post'
 import Button from 'primevue/button'
 import { RoundedButton } from '../../components/button'
 import PostTable from '../../components/for-views/posts/list-table.vue'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import Paginator from 'primevue/paginator'
+import { RouterLink } from 'vue-router'
 
 export const ManagePostListView = defineComponent({
   name: 'post-list',
@@ -33,10 +37,22 @@ export const ManagePostListView = defineComponent({
       return (
         <ContentLayout
           actionsElement={
-            <RoundedButton variant="danger">aaaaaaaaaaa</RoundedButton>
+            <RouterLink to={'/posts/edit'}>
+              <RoundedButton variant="primary">
+                <FontAwesomeIcon icon={faPlus} />
+              </RoundedButton>
+            </RouterLink>
           }
         >
-          <PostTable data={data.value} />
+          <PostTable
+            data={data.value}
+            pager={pager.value}
+            onChange={(page) => {
+              console.log(page)
+
+              fetchData(page)
+            }}
+          />
         </ContentLayout>
       )
     }

@@ -36,23 +36,35 @@
   margin-bottom: 2rem;
   margin-right: 2rem;
 
-  & > button {
-    @apply h-12 w-12 flex items-center justify-center shadow-2xl;
+  & > button,
+  & > a {
+    @apply h-12 w-12 flex items-center justify-center shadow-2xl relative;
   }
 
-  & > button:first-child {
+  & > button:first-child,
+  & > a:first-child {
     @apply mb-2;
+  }
+
+  a > button {
+    @apply h-full w-full;
   }
 }
 
 .header-actions {
-  @apply absolute right-0 mr-12 phone:pr-4 top-0 bottom-0 flex items-center;
+  @apply absolute right-0 mr-12 phone:pr-4 top-0 bottom-0 flex items-center relative;
 
-  & > button {
+  & > button,
+  & > a {
     @apply h-12 w-12 flex items-center justify-center shadow-2xl;
   }
 
-  & > button:first-child {
+  & > button:first-child,
+  & > a:first-child {
     @apply mr-2;
+  }
+
+  a > button {
+    @apply h-full w-full;
   }
 }
