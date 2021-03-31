@@ -1880,10 +1880,10 @@ vue-toastification@2.0.0-rc.1:
   resolved "https://registry.yarnpkg.com/vue-toastification/-/vue-toastification-2.0.0-rc.1.tgz#6a994c19635a493eec0ee290e84a966e07c709d2"
   integrity sha512-hjauv/FyesNZdwcr5m1SCyvu1JmlB+Ts5bTptDLDmsYYlj6Oqv8NYakiElpCF+Abwkn9J/AChh6FwkTL1HOb7Q==
 
-vue-tsc@0.0.14:
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/vue-tsc/-/vue-tsc-0.0.14.tgz#d79f53d534287f5716cd341346747207fbf4611c"
-  integrity sha512-SBypcm6WC0cycZxvgzLmW5KiFZzyhGBQ+N2amTai/y86yaPeVqf/N3P3Qafz0JTuMdKKtV/zu7Het6cwgTE4+Q==
+vue-tsc@0.0.18:
+  version "0.0.18"
+  resolved "https://registry.yarnpkg.com/vue-tsc/-/vue-tsc-0.0.18.tgz#8844ae115ce9889812601e3d6c3aa8d2add17729"
+  integrity sha512-l612nrg+K53c9FA+/tlY2SHbzX87aMYIQHaXpmKy1AexoSOIkVxHenwbf63h0yplLPkObHwPGNFQPkdhzCiltQ==
   dependencies:
     unzipper "0.10.11"
 
