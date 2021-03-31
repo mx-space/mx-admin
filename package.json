@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@types/lodash-es": "4.17.4",
-    "@vitejs/plugin-vue": "1.1.5",
+    "@vitejs/plugin-vue": "1.2.1",
     "@vue/compiler-sfc": "3.0.7",
     "@vuedx/typescript-plugin-vue": "0.6.3",
     "autoprefixer": "10.2.5",
