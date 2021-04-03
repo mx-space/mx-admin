@@ -2,9 +2,9 @@
   <DataTable
     responsiveLayout="scroll"
     :value="data"
-    filterDisplay="rows"
-    :filters="null"
-    :globalFilterFields="['category.name', 'title']"
+    filterDisplay="menu"
+    v-model:filters="filters1"
+    :globalFilterFields="['category']"
   >
     <Column
       field="title"
@@ -21,31 +21,18 @@
     <Column
       field="category.name"
       header="分类"
-      filterField="representative"
-      :showFilterMenu="false"
       style="min-width: 4rem"
+      filterField="category"
     >
-      <template #filter="{ filterModel }">
+      <template #filter="{ filterModel, filterCallback }">
         <div class="p-mb-3 p-text-bold">Agent Picker</div>
-        <MultiSelect
-          v-model="filterModel.value"
-          :options="representatives"
-          optionLabel="name"
-          placeholder="Any"
-          class="p-column-filter"
-        >
+        <!-- <MultiSelect v-model="filterModel.value" @change="filterCallback">
           <template #option="slotProps">
             <div class="p-multiselect-representative-option">
-              <img
-                :alt="slotProps.option.name"
-                :src="'demo/images/avatar/' + slotProps.option.image"
-                width="32"
-                style="vertical-align: middle"
-              />
               <span class="image-text">{{ slotProps.option.name }}</span>
             </div>
           </template>
-        </MultiSelect>
+        </MultiSelect> -->
       </template>
     </Column>
     <Column
@@ -72,9 +59,9 @@
         </span>
       </template>
     </Column>
-    <Column header="操作" style="min-width: 4rem">
+    <Column header="操作" style="min-width: 8rem">
       <template #body="slot">
-        <Button class="p-button-text"> 移除 </Button>
+        <Button class="p-button-text p-button-danger">移除</Button>
       </template>
     </Column>
   </DataTable>
@@ -86,8 +73,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from '@vue/runtime-core'
-import { Pager, PostModel } from '../../../models/post'
+import { defineComponent, onMounted, PropType, ref } from '@vue/runtime-core'
+import { Category, Pager, PostModel } from '../../../models/post'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import { parseDate, relativeTimeFromNow } from '../../../utils/time'
@@ -96,6 +83,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import Paginator from 'primevue/paginator'
 import MultiSelect from 'primevue/multiselect'
+import { RESTManager } from '../../../utils/rest'
 export default defineComponent({
   components: {
     DataTable,
@@ -120,19 +108,15 @@ export default defineComponent({
     },
   },
   setup() {
+    const categories = ref<Category[]>([])
+    onMounted(async () => {
+      const { data } = await RESTManager.api.categories.get<any>()
+      categories.value = data
+    })
+    const categoryFilter = ref()
     return {
-      representatives: [
-        { name: 'Amy Elsner', image: 'amyelsner.png' },
-        { name: 'Anna Fali', image: 'annafali.png' },
-        { name: 'Asiya Javayant', image: 'asiyajavayant.png' },
-        { name: 'Bernardo Dominic', image: 'bernardodominic.png' },
-        { name: 'Elwin Sharvill', image: 'elwinsharvill.png' },
-        { name: 'Ioni Bowcher', image: 'ionibowcher.png' },
-        { name: 'Ivan Magalhaes', image: 'ivanmagalhaes.png' },
-        { name: 'Onyama Limba', image: 'onyamalimba.png' },
-        { name: 'Stephen Shaw', image: 'stephenshaw.png' },
-        { name: 'XuXue Feng', image: 'xuxuefeng.png' },
-      ],
+      categoryFilter,
+      categories,
     }
   },
   computed: {

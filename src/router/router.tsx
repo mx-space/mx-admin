@@ -32,7 +32,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import dashboardFilled from '@iconify-icons/ant-design/dashboard-filled'
 import { InlineIcon as Icon } from '@iconify/vue'
-import { defineAsyncComponent } from '@vue/runtime-core'
+import {} from '@vue/runtime-core'
 import {
   createRouter,
   createWebHashHistory,
@@ -79,7 +79,7 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
           icon: <FontAwesomeIcon icon={faPencilAlt} />,
         },
         props: true,
-        component: defineAsyncComponent(() => import('../views/emptyview')),
+        component: () => import('../views/emptyview'),
       },
       {
         path: 'category',
@@ -88,7 +88,7 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
           title: '分类/标签',
           icon: <FontAwesomeIcon icon={faPuzzlePiece} />,
         },
-        component: defineAsyncComponent(() => import('../views/emptyview')),
+        component: () => import('../views/emptyview'),
       },
     ],
   },
@@ -110,7 +110,7 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
           query: { page: 1 },
           icon: <FontAwesomeIcon icon={faEye} />,
         },
-        component: defineAsyncComponent(() => import('../views/emptyview')),
+        component: () => import('../views/emptyview'),
       },
       {
         path: 'edit',
@@ -119,7 +119,7 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
           title: '树洞',
           icon: <FontAwesomeIcon icon={faPencilAlt} />,
         },
-        component: defineAsyncComponent(() => import('../views/emptyview')),
+        component: () => import('../views/emptyview'),
       },
     ],
   },
@@ -127,7 +127,7 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
     path: '/comments',
     name: 'comment',
     meta: { title: '评论', icon: <FontAwesomeIcon icon={faComment} /> },
-    component: defineAsyncComponent(() => import('../views/emptyview')),
+    component: () => import('../views/emptyview'),
   },
   {
     path: '/page',
@@ -146,7 +146,7 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
           icon: <FontAwesomeIcon icon={faEye} />,
           query: { page: 1 },
         },
-        component: defineAsyncComponent(() => import('../views/emptyview')),
+        component: () => import('../views/emptyview'),
       },
       {
         path: 'edit',
@@ -155,7 +155,7 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
           title: '创建页面',
           icon: <FontAwesomeIcon icon={faPencilAlt} />,
         },
-        component: defineAsyncComponent(() => import('../views/emptyview')),
+        component: () => import('../views/emptyview'),
       },
     ],
   },
@@ -172,7 +172,7 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
           title: '说什么了',
           icon: <FontAwesomeIcon icon={faEye} />,
         },
-        component: defineAsyncComponent(() => import('../views/emptyview')),
+        component: () => import('../views/emptyview'),
       },
       {
         path: 'edit',
@@ -181,7 +181,7 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
           title: '说点什么呢',
           icon: <FontAwesomeIcon icon={faPencilAlt} />,
         },
-        component: defineAsyncComponent(() => import('../views/emptyview')),
+        component: () => import('../views/emptyview'),
       },
     ],
   },
@@ -198,7 +198,7 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
           title: '项目列表',
           icon: <FontAwesomeIcon icon={faEye} />,
         },
-        component: defineAsyncComponent(() => import('../views/emptyview')),
+        component: () => import('../views/emptyview'),
       },
       {
         path: 'edit',
@@ -207,7 +207,7 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
           title: '创建项目',
           icon: <FontAwesomeIcon icon={faPencilAlt} />,
         },
-        component: defineAsyncComponent(() => import('../views/emptyview')),
+        component: () => import('../views/emptyview'),
       },
     ],
   },
@@ -218,7 +218,7 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
       title: '朋友们',
       icon: <FontAwesomeIcon icon={faUserFriends} />,
     },
-    component: defineAsyncComponent(() => import('../views/emptyview')),
+    component: () => import('../views/emptyview'),
   },
   {
     path: '/files',
@@ -227,12 +227,12 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
       title: '管理文件',
       icon: <FontAwesomeIcon icon={faFileAlt} />,
     },
-    component: defineAsyncComponent(() => import('../views/emptyview')),
+    component: () => import('../views/emptyview'),
   },
 
   {
     path: '/analyze',
-    component: defineAsyncComponent(() => import('../views/emptyview')),
+    component: () => import('../views/emptyview'),
     meta: { title: '数据', icon: <FontAwesomeIcon icon={faChartLine} /> },
     name: 'analyze',
   },
@@ -250,7 +250,7 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
           title: '主人设定',
           icon: <FontAwesomeIcon icon={faUserAlt} />,
         },
-        component: defineAsyncComponent(() => import('../views/emptyview')),
+        component: () => import('../views/emptyview'),
       },
       {
         path: 'system',
@@ -259,7 +259,7 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
           title: '系统设定',
           icon: <FontAwesomeIcon icon={faCogs} />,
         },
-        component: defineAsyncComponent(() => import('../views/emptyview')),
+        component: () => import('../views/emptyview'),
       },
       {
         path: 'security',
@@ -268,7 +268,7 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
           title: '安全',
           icon: <FontAwesomeIcon icon={faLockOpen} />,
         },
-        component: defineAsyncComponent(() => import('../views/emptyview')),
+        component: () => import('../views/emptyview'),
       },
       {
         path: 'reset',
@@ -277,7 +277,7 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
           title: '重置',
           icon: <FontAwesomeIcon icon={faRedoAlt} />,
         },
-        component: defineAsyncComponent(() => import('../views/emptyview')),
+        component: () => import('../views/emptyview'),
       },
     ],
   },
@@ -294,7 +294,7 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
           title: '备份',
           icon: <FontAwesomeIcon icon={faUndoAlt} />,
         },
-        component: defineAsyncComponent(() => import('../views/emptyview')),
+        component: () => import('../views/emptyview'),
       },
       {
         path: 'markdown',
@@ -304,7 +304,7 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
 
           icon: <FontAwesomeIcon icon={faMarkdown} />,
         },
-        component: defineAsyncComponent(() => import('../views/emptyview')),
+        component: () => import('../views/emptyview'),
       },
       {
         path: 'optimize',
@@ -313,7 +313,7 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
           title: '优化',
           icon: <FontAwesomeIcon icon={faWrench} />,
         },
-        component: defineAsyncComponent(() => import('../views/emptyview')),
+        component: () => import('../views/emptyview'),
       },
     ],
   },

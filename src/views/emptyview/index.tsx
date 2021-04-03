@@ -1,10 +1,53 @@
-import { defineAsyncComponent, defineComponent } from '@vue/runtime-core'
+import {
+  defineAsyncComponent,
+  defineComponent,
+  onMounted,
+  ref,
+} from '@vue/runtime-core'
+import Button from 'primevue/button'
 import { useRouter } from 'vue-router'
+import T from './test.vue'
 
-export const PlaceHolderView = defineComponent({
+const Children = defineComponent({
   setup() {
+    return () => <p>Children</p>
+  },
+})
+
+const Parent = defineComponent({
+  setup({}, { slots, emit }) {
+    console.log(slots)
+    onMounted(() => {
+      emit('mount', 1)
+    })
+    return () => (
+      <div class="">
+        <p>Parent</p>
+        <p>{slots.header?.()}</p>
+        {slots.default?.()}
+      </div>
+    )
+  },
+})
+export const PlaceHolderView = defineComponent({
+  setup({}, ctx) {
     const router = useRouter()
-    return () => <span>{router.currentRoute.value.fullPath}</span>
+    console.log(ctx)
+
+    const $$a = ref(0)
+    return () => (
+      <span>
+        {router.currentRoute.value.fullPath}
+
+        <Parent
+          onMount={(val) => {
+            console.log('mount', val)
+          }}
+        >
+          <Children></Children>
+        </Parent>
+      </span>
+    )
   },
 })
 
