@@ -1,19 +1,19 @@
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted, ref } from '@vue/runtime-core'
+import { NButton, useMessage } from 'naive-ui'
+
+import { useRouter } from 'vue-router'
 import Avatar from '../../components/avatar/index.vue'
+import ParallaxButtonVue from '../../components/button/parallax-button.vue'
+import { UserModel } from '../../models/user'
 import { UserStore } from '../../stores/user'
 import { useInjector } from '../../utils/deps-injection'
-import Button from 'primevue/button'
 import { RESTManager } from '../../utils/rest'
-import { useToast } from 'vue-toastification'
-import { UserModel } from '../../models/user'
-import { ElMessage } from 'element-plus'
-import { useRouter } from 'vue-router'
 
 const bgUrl =
   'https://gitee.com/xun7788/my-imagination/raw/master/uPic/1615516941397.jpg'
 export const LoginView = defineComponent({
-  components: { Avatar, Button },
+  components: { Avatar, Button: NButton, ParallaxButtonVue },
   setup() {
     const loaded = ref(false)
     const { user, updateToken } = useInjector(UserStore)
@@ -22,12 +22,12 @@ export const LoginView = defineComponent({
     onMounted(() => {
       const $$ = new Image()
       $$.src = bgUrl
-      $$.onload = (e) => {
+      $$.onload = e => {
         loaded.value = true
       }
       input.value.focus()
 
-      document.onkeydown = (e) => {
+      document.onkeydown = e => {
         input.value.focus()
       }
     })
@@ -36,11 +36,11 @@ export const LoginView = defineComponent({
       document.onkeydown = null
     })
 
-    const toast = ElMessage
+    const toast = useMessage()
 
     const password = ref('')
 
-    const handleLogin = async (e) => {
+    const handleLogin = async e => {
       try {
         if (!user.value || !user.value.username) {
           toast.error('主人信息无法获取')
@@ -93,8 +93,8 @@ export default LoginView
           <input v-model="password" type="password" autofocus ref="input" />
           <div class="blur"></div>
         </div>
-        <Button
-          label="登陆"
+        <ParallaxButtonVue
+          title="登陆"
           @click="handleLogin"
           class="p-button-raised p-button-rounded"
         />

@@ -31,40 +31,26 @@ const model = (
 }
 function buildSubMenus(route: RouteRecordNormalized, prevPath = '') {
   if (Array.isArray(route.children)) {
-    return route.children.map((item) => {
-      return model(item as RouteRecordNormalized, true, prevPath)
-    })
+    return route.children
+      .filter(item => {
+        if (!item.meta) {
+          return true
+        }
+        return item.meta.hide !== true
+      })
+      .map(item => {
+        return model(item as RouteRecordNormalized, true, prevPath)
+      })
+  } else {
+    return []
   }
 }
 
 export const buildMenus = (routes: Array<RouteRecordNormalized>): MenuModel[] =>
   (routes.find(
-    (item) => item.name === 'home' && item.path === '/',
+    item => item.name === 'home' && item.path === '/',
   ) as any).children
     .filter((item: RouteRecordNormalized) => item.path !== '*')
     .map((item: RouteRecordNormalized) => {
       return model(item, false, '')
     })
-
-// export const menus: MenuModel[] = routeForMenu.map((route) => {
-//   const subItems: Array<MenuModel> = []
-//   if (route.children && Array.isArray(route.children)) {
-//     route.children.forEach((child) => {
-//       subItems.push({
-//         fullPath: route.path + '/' + child.path,
-//         hasParent: true,
-//         icon: child.meta!.icon as any,
-//         path: '/' + child.path,
-//         title: child.meta!.title as string,
-//       })
-//     })
-//   }
-//   return {
-//     fullPath: route.path,
-//     subItems,
-//     hasParent: false,
-//     icon: route.meta!.icon as any,
-//     path: route.path,
-//     title: route.meta!.title as string,
-//   }
-// })

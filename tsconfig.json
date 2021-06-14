@@ -10,6 +10,7 @@
       "esnext",
       "dom"
     ],
+    "baseUrl": "./src",
     "noImplicitAny": false,
     "plugins": [
       {

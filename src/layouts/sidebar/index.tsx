@@ -1,10 +1,10 @@
 import clsx from 'clsx'
-import { defineComponent, PropType, ref, watch, watchEffect } from 'vue'
-import styles from './index.module.css'
-import { Sidebar } from '../../components/sidebar'
-import { useInjector } from '../../utils/deps-injection'
-import { UIStore } from '../../stores/ui'
+import { defineComponent, ref, watchEffect } from 'vue'
 import { RouterView } from 'vue-router'
+import { Sidebar } from '../../components/sidebar'
+import { UIStore } from '../../stores/ui'
+import { useInjector } from '../../utils/deps-injection'
+import styles from './index.module.css'
 export const SidebarLayout = defineComponent({
   name: 'sidebar-layout',
   components: { Sidebar },

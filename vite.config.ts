@@ -8,9 +8,24 @@
  */
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import vueJsx from '@vitejs/plugin-vue-jsx'
 import analyze from 'rollup-plugin-analyzer'
+import { writeFileSync } from 'fs'
+import tsconfigPaths from 'vite-tsconfig-paths'
+import { resolve } from 'path'
 export default defineConfig({
-  plugins: [vue(), analyze()],
+  plugins: [
+    vue(),
+    tsconfigPaths(),
+    analyze({
+      writeTo: res => {
+        writeFileSync(resolve(__dirname, 'bundle-analyze'), res, {
+          encoding: 'utf-8',
+        })
+      },
+    }),
+    vueJsx(),
+  ],
   server: {
     port: 9528,
   },

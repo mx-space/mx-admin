@@ -1,15 +1,24 @@
-import { defineComponent, onMounted } from '@vue/runtime-core'
+import { defineComponent, onMounted, provide } from '@vue/runtime-core'
+import {
+  GlobalThemeOverrides,
+  NConfigProvider,
+  NGlobalStyle,
+  NMessageProvider,
+  useMessage,
+} from 'naive-ui'
+import { CategoryStore } from 'stores/category'
 import { RouterView } from 'vue-router'
 import { UIStore } from './stores/ui'
 import { UserStore } from './stores/user'
 import { useInjector, useProviders } from './utils/deps-injection'
-// import { Sidebar } from './components/sidebar'
+
 const Root = defineComponent({
   name: 'home',
 
   setup() {
     const { fetchUser } = useInjector(UserStore)
     onMounted(() => {
+      window.message = useMessage()
       fetchUser()
     })
     return () => {
@@ -18,16 +27,26 @@ const Root = defineComponent({
   },
 })
 
+const themeOverrides: GlobalThemeOverrides = {
+  common: {
+    primaryColor: '#1a9cf3',
+    primaryColorHover: '#16aae7',
+    primaryColorPressed: '#1188e8',
+    primaryColorSuppl: 'rgba(16, 133, 211, 0.5)',
+  },
+}
+
 const App = defineComponent({
-  // props: {
-  //   children: {
-  //     type: Object as PropType<JSX.Element>,
-  //     required: true,
-  //   },
-  // },
   setup({}) {
-    useProviders(UIStore, UserStore)
-    return () => <Root />
+    useProviders(UIStore, UserStore, CategoryStore)
+
+    return () => (
+      <NMessageProvider>
+        <NConfigProvider themeOverrides={themeOverrides}>
+          <Root />
+        </NConfigProvider>
+      </NMessageProvider>
+    )
   },
 })
 

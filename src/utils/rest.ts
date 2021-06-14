@@ -7,16 +7,19 @@
  * @Coding with Love
  */
 
-import { extend, RequestOptionsInit } from 'umi-request'
-import type { RequestMethod, RequestOptionsWithResponse } from 'umi-request'
+import * as camelcaseKeys from 'camelcase-keys'
+import { useMessage } from 'naive-ui'
+import {
+  extend,
+  RequestMethod,
+  RequestOptionsInit,
+  RequestOptionsWithResponse,
+} from 'umi-request'
+import { __DEV__ } from '.'
+import { router } from '../router/router'
 import { getToken } from './auth'
 
-import { ElMessage } from 'element-plus'
-import { router } from '../router/router'
-
-import { __DEV__ } from '.'
-
-const Message = ElMessage
+const Message = window.message
 
 class RESTManagerStatic {
   _$$instance: RequestMethod = null!
@@ -28,7 +31,7 @@ class RESTManagerStatic {
       // @ts-ignore
       prefix: import.meta.env.VITE_APP_BASE_API,
       timeout: 10000,
-      errorHandler: async (error) => {
+      errorHandler: async error => {
         if (error.request && !error.response) {
         }
 
@@ -98,7 +101,8 @@ function buildRoute(manager: RESTManagerStatic): IRequestHandler {
 
 export const RESTManager = new RESTManagerStatic()
 
-if (__DEV__) {
+// @ts-ignore
+if (__DEV__ && !window.api) {
   Object.defineProperty(window, 'api', {
     get() {
       return RESTManager.api
@@ -132,6 +136,12 @@ RESTManager.instance.interceptors.request.use((url, options) => {
     },
   }
 }, {})
+
+RESTManager.instance.interceptors.response.use(async (response, option) => {
+  const newRes = await response.clone().json()
+
+  return camelcaseKeys(newRes, { deep: true })
+})
 
 interface IRequestHandler<T = RequestOptionsInit> {
   (id?: string): IRequestHandler

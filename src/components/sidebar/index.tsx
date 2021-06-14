@@ -1,21 +1,15 @@
 import Hamburger from '@iconify-icons/radix-icons/hamburger-menu'
 import { Icon } from '@iconify/vue'
 import clsx from 'clsx'
-import {
-  computed,
-  defineComponent,
-  onMounted,
-  PropType,
-  ref,
-  watchEffect,
-} from 'vue'
+import { computed, defineComponent, onMounted, PropType, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { configs } from '../../configs'
-import { MenuModel, buildMenus } from '../../utils/build-menus'
-import styles from './index.module.css'
-import Avatar from '../../components/avatar/index.vue'
-import { useInjector } from '../../utils/deps-injection'
 import { UserStore } from '../../stores/user'
+import { buildMenus, MenuModel } from '../../utils/build-menus'
+import { useInjector } from '../../utils/deps-injection'
+import { Avatar } from '../avatar'
+import styles from './index.module.css'
+
 export const Sidebar = defineComponent({
   name: 'sidebar-comp',
   props: {
@@ -75,8 +69,7 @@ export const Sidebar = defineComponent({
           props.collapse ? styles['collapse'] : null,
         )}
         style={{
-          width:
-            !props.collapse && props.width ? props.width + 'px' : undefined,
+          width: !props.collapse && props.width ? props.width + 'px' : '',
         }}
       >
         <div
@@ -145,7 +138,7 @@ export const Sidebar = defineComponent({
                               : '0',
                         }}
                       >
-                        {item.subItems.map((child) => {
+                        {item.subItems.map(child => {
                           return (
                             <li
                               key={child.path}
@@ -187,7 +180,7 @@ export const Sidebar = defineComponent({
           </div>
           <div
             class={clsx(
-              'bottom-bar flex space-x-2 items-center  transform translate-y-1/3 phone:hidden ',
+              'bottom-bar flex space-x-2 items-center  transform translate-y-1/3 phone:hidden',
               props.collapse ? 'px-8' : 'px-12',
             )}
           >

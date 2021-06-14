@@ -1,12 +1,5 @@
-import {
-  defineAsyncComponent,
-  defineComponent,
-  onMounted,
-  ref,
-} from '@vue/runtime-core'
-import Button from 'primevue/button'
+import { defineComponent, onMounted, ref } from '@vue/runtime-core'
 import { useRouter } from 'vue-router'
-import T from './test.vue'
 
 const Children = defineComponent({
   setup() {
@@ -35,19 +28,7 @@ export const PlaceHolderView = defineComponent({
     console.log(ctx)
 
     const $$a = ref(0)
-    return () => (
-      <span>
-        {router.currentRoute.value.fullPath}
-
-        <Parent
-          onMount={(val) => {
-            console.log('mount', val)
-          }}
-        >
-          <Children></Children>
-        </Parent>
-      </span>
-    )
+    return () => <span>{router.currentRoute.value.fullPath}</span>
   },
 })
 

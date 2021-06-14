@@ -52,16 +52,11 @@
 }
 
 .header-actions {
-  @apply absolute right-0 mr-12 phone:pr-4 top-0 bottom-0 flex items-center relative;
+  @apply right-0 mr-12 phone:pr-4 top-0 bottom-0 flex items-center relative;
 
   & > button,
   & > a {
     @apply h-12 w-12 flex items-center justify-center shadow-2xl;
-  }
-
-  & > button:first-child,
-  & > a:first-child {
-    @apply mr-2;
   }
 
   a > button {

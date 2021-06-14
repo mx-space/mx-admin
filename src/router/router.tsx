@@ -6,37 +6,37 @@
  * @FilePath: /admin-next/src/router.ts
  * Mark: Coding with Love
  */
-// @ts-nocheck
-import { faMarkdown } from '@fortawesome/free-brands-svg-icons'
-import {
-  faBook,
-  faChartLine,
-  faCode,
-  faCogs,
-  faComment,
-  faComments,
-  faEllipsisH,
-  faEye,
-  faFile,
-  faFileAlt,
-  faFlask,
-  faLockOpen,
-  faPencilAlt,
-  faPuzzlePiece,
-  faRedoAlt,
-  faUndoAlt,
-  faUserAlt,
-  faUserFriends,
-  faWrench,
-} from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
 import dashboardFilled from '@iconify-icons/ant-design/dashboard-filled'
 import { InlineIcon as Icon } from '@iconify/vue'
-import {} from '@vue/runtime-core'
+import { Icon as VIcon } from '@vicons/utils'
+import {
+  Book,
+  ChartLine,
+  Code,
+  Cogs,
+  Comment,
+  Comments,
+  EllipsisH,
+  Eye,
+  File,
+  FileAlt,
+  Flask,
+  LockOpen,
+  PencilAlt,
+  PuzzlePiece,
+  RedoAlt,
+  UndoAlt,
+  UserAlt,
+  UserFriends,
+  Wrench,
+  Markdown,
+} from '@vicons/fa'
 import {
   createRouter,
   createWebHashHistory,
   RouteRecordNormalized,
+  RouteRecordRaw,
 } from 'vue-router'
 import $RouterView from '../layouts/router-view'
 import { SidebarLayout } from '../layouts/sidebar'
@@ -44,7 +44,7 @@ import { DashBoardView } from '../views/dashboard'
 import LoginView from '../views/login/index.vue'
 import { ManagePostListView } from '../views/manage-posts/list'
 
-export const routeForMenu: Array<RouteRecordNormalized> = [
+export const routeForMenu: Array<RouteRecordRaw> = [
   {
     path: '/dashboard',
     component: DashBoardView,
@@ -54,7 +54,14 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
   {
     path: '/posts',
     name: 'post',
-    meta: { title: '博文', icon: <FontAwesomeIcon icon={faCode} /> },
+    meta: {
+      title: '博文',
+      icon: (
+        <VIcon>
+          <Code />
+        </VIcon>
+      ),
+    },
     redirect: '/posts/view',
     component: $RouterView,
     children: [
@@ -63,30 +70,50 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
         name: 'view-posts',
         meta: {
           title: '管理文章',
-          icon: <FontAwesomeIcon icon={faEye} />,
+          icon: (
+            <VIcon>
+              <Eye />
+            </VIcon>
+          ),
           query: { page: 1 },
         },
         component: () =>
-          import('../views/manage-posts/list').then(
-            (m) => m.ManagePostListView,
-          ),
+          import('../views/manage-posts/list').then(m => m.ManagePostListView),
       },
       {
-        path: 'edit',
+        path: 'edit/:id',
         name: 'edit-posts',
         meta: {
-          title: '撰写文章',
-          icon: <FontAwesomeIcon icon={faPencilAlt} />,
+          hide: true,
         },
         props: true,
         component: () => import('../views/emptyview'),
       },
       {
+        path: 'edit',
+        name: 'new-posts',
+        meta: {
+          title: '撰写文章',
+          icon: (
+            <VIcon>
+              <PencilAlt />
+            </VIcon>
+          ),
+        },
+        props: true,
+        component: () => import('../views/emptyview'),
+      },
+
+      {
         path: 'category',
         name: 'edit-category',
         meta: {
           title: '分类/标签',
-          icon: <FontAwesomeIcon icon={faPuzzlePiece} />,
+          icon: (
+            <VIcon>
+              <PuzzlePiece />
+            </VIcon>
+          ),
         },
         component: () => import('../views/emptyview'),
       },
@@ -97,7 +124,11 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
     name: 'note',
     meta: {
       title: '记录',
-      icon: <FontAwesomeIcon icon={faBook} />,
+      icon: (
+        <VIcon>
+          <Book />
+        </VIcon>
+      ),
     },
     redirect: '/notes/view',
     component: $RouterView,
@@ -108,7 +139,11 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
         meta: {
           title: '管理',
           query: { page: 1 },
-          icon: <FontAwesomeIcon icon={faEye} />,
+          icon: (
+            <VIcon>
+              <Eye />
+            </VIcon>
+          ),
         },
         component: () => import('../views/emptyview'),
       },
@@ -117,7 +152,11 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
         name: 'edit-notes',
         meta: {
           title: '树洞',
-          icon: <FontAwesomeIcon icon={faPencilAlt} />,
+          icon: (
+            <VIcon>
+              <PencilAlt />
+            </VIcon>
+          ),
         },
         component: () => import('../views/emptyview'),
       },
@@ -126,7 +165,14 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
   {
     path: '/comments',
     name: 'comment',
-    meta: { title: '评论', icon: <FontAwesomeIcon icon={faComment} /> },
+    meta: {
+      title: '评论',
+      icon: (
+        <VIcon>
+          <Comment />
+        </VIcon>
+      ),
+    },
     component: () => import('../views/emptyview'),
   },
   {
@@ -134,7 +180,11 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
     name: 'page',
     meta: {
       title: '页面',
-      icon: <FontAwesomeIcon icon={faFile} />,
+      icon: (
+        <VIcon>
+          <File />
+        </VIcon>
+      ),
     },
     component: $RouterView,
     children: [
@@ -143,7 +193,11 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
         name: 'page-list',
         meta: {
           title: '独立页面',
-          icon: <FontAwesomeIcon icon={faEye} />,
+          icon: (
+            <VIcon>
+              <Eye />
+            </VIcon>
+          ),
           query: { page: 1 },
         },
         component: () => import('../views/emptyview'),
@@ -153,7 +207,11 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
         name: 'page-edit',
         meta: {
           title: '创建页面',
-          icon: <FontAwesomeIcon icon={faPencilAlt} />,
+          icon: (
+            <VIcon>
+              <PencilAlt />
+            </VIcon>
+          ),
         },
         component: () => import('../views/emptyview'),
       },
@@ -162,7 +220,14 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
   {
     path: '/say',
     name: 'say',
-    meta: { title: '说说', icon: <FontAwesomeIcon icon={faComments} /> },
+    meta: {
+      title: '说说',
+      icon: (
+        <VIcon>
+          <Comments />
+        </VIcon>
+      ),
+    },
     component: $RouterView,
     children: [
       {
@@ -170,7 +235,11 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
         name: 'say-list',
         meta: {
           title: '说什么了',
-          icon: <FontAwesomeIcon icon={faEye} />,
+          icon: (
+            <VIcon>
+              <Eye />
+            </VIcon>
+          ),
         },
         component: () => import('../views/emptyview'),
       },
@@ -179,7 +248,11 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
         name: 'say-edit',
         meta: {
           title: '说点什么呢',
-          icon: <FontAwesomeIcon icon={faPencilAlt} />,
+          icon: (
+            <VIcon>
+              <PencilAlt />
+            </VIcon>
+          ),
         },
         component: () => import('../views/emptyview'),
       },
@@ -188,7 +261,14 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
   {
     path: '/project',
     name: 'project',
-    meta: { title: '项目', icon: <FontAwesomeIcon icon={faFlask} /> },
+    meta: {
+      title: '项目',
+      icon: (
+        <VIcon>
+          <Flask />
+        </VIcon>
+      ),
+    },
     component: $RouterView,
     children: [
       {
@@ -196,7 +276,11 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
         name: 'project-list',
         meta: {
           title: '项目列表',
-          icon: <FontAwesomeIcon icon={faEye} />,
+          icon: (
+            <VIcon>
+              <Eye />
+            </VIcon>
+          ),
         },
         component: () => import('../views/emptyview'),
       },
@@ -205,7 +289,11 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
         name: 'project-edit',
         meta: {
           title: '创建项目',
-          icon: <FontAwesomeIcon icon={faPencilAlt} />,
+          icon: (
+            <VIcon>
+              <PencilAlt />
+            </VIcon>
+          ),
         },
         component: () => import('../views/emptyview'),
       },
@@ -216,7 +304,11 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
     name: 'friends',
     meta: {
       title: '朋友们',
-      icon: <FontAwesomeIcon icon={faUserFriends} />,
+      icon: (
+        <VIcon>
+          <UserFriends />
+        </VIcon>
+      ),
     },
     component: () => import('../views/emptyview'),
   },
@@ -225,7 +317,11 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
     name: 'files',
     meta: {
       title: '管理文件',
-      icon: <FontAwesomeIcon icon={faFileAlt} />,
+      icon: (
+        <VIcon>
+          <FileAlt />
+        </VIcon>
+      ),
     },
     component: () => import('../views/emptyview'),
   },
@@ -233,13 +329,27 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
   {
     path: '/analyze',
     component: () => import('../views/emptyview'),
-    meta: { title: '数据', icon: <FontAwesomeIcon icon={faChartLine} /> },
+    meta: {
+      title: '数据',
+      icon: (
+        <VIcon>
+          <ChartLine />
+        </VIcon>
+      ),
+    },
     name: 'analyze',
   },
   {
     path: '/setting',
     name: 'setting',
-    meta: { title: '设定', icon: <FontAwesomeIcon icon={faCogs} /> },
+    meta: {
+      title: '设定',
+      icon: (
+        <VIcon>
+          <Cogs />
+        </VIcon>
+      ),
+    },
     redirect: '/setting/profile',
     component: $RouterView,
     children: [
@@ -248,7 +358,11 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
         name: 'setting-profile',
         meta: {
           title: '主人设定',
-          icon: <FontAwesomeIcon icon={faUserAlt} />,
+          icon: (
+            <VIcon>
+              <UserAlt />
+            </VIcon>
+          ),
         },
         component: () => import('../views/emptyview'),
       },
@@ -257,7 +371,11 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
         name: 'setting-system',
         meta: {
           title: '系统设定',
-          icon: <FontAwesomeIcon icon={faCogs} />,
+          icon: (
+            <VIcon>
+              <Cogs />
+            </VIcon>
+          ),
         },
         component: () => import('../views/emptyview'),
       },
@@ -266,7 +384,11 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
         name: 'setting-security',
         meta: {
           title: '安全',
-          icon: <FontAwesomeIcon icon={faLockOpen} />,
+          icon: (
+            <VIcon>
+              <LockOpen />
+            </VIcon>
+          ),
         },
         component: () => import('../views/emptyview'),
       },
@@ -275,7 +397,11 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
         name: 'reset',
         meta: {
           title: '重置',
-          icon: <FontAwesomeIcon icon={faRedoAlt} />,
+          icon: (
+            <VIcon>
+              <RedoAlt />
+            </VIcon>
+          ),
         },
         component: () => import('../views/emptyview'),
       },
@@ -284,7 +410,14 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
   {
     path: '/other',
     name: 'other',
-    meta: { title: '其他', icon: <FontAwesomeIcon icon={faEllipsisH} /> },
+    meta: {
+      title: '其他',
+      icon: (
+        <VIcon>
+          <EllipsisH />
+        </VIcon>
+      ),
+    },
     component: $RouterView,
     children: [
       {
@@ -292,7 +425,11 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
         name: 'backup',
         meta: {
           title: '备份',
-          icon: <FontAwesomeIcon icon={faUndoAlt} />,
+          icon: (
+            <VIcon>
+              <UndoAlt />
+            </VIcon>
+          ),
         },
         component: () => import('../views/emptyview'),
       },
@@ -302,7 +439,11 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
         meta: {
           title: 'Markdown 导入导出',
 
-          icon: <FontAwesomeIcon icon={faMarkdown} />,
+          icon: (
+            <VIcon>
+              <Markdown />
+            </VIcon>
+          ),
         },
         component: () => import('../views/emptyview'),
       },
@@ -311,7 +452,11 @@ export const routeForMenu: Array<RouteRecordNormalized> = [
         name: 'optimize',
         meta: {
           title: '优化',
-          icon: <FontAwesomeIcon icon={faWrench} />,
+          icon: (
+            <VIcon>
+              <Wrench />
+            </VIcon>
+          ),
         },
         component: () => import('../views/emptyview'),
       },
@@ -333,6 +478,7 @@ export const router = createRouter({
       path: '/login',
       name: 'login',
       meta: { isPublic: true, title: '登陆' },
+      // @ts-expect-error fuck vue
       component: LoginView,
     },
   ],
