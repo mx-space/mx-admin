@@ -853,10 +853,10 @@
   resolved "https://registry.yarnpkg.com/@vicons/antd/-/antd-0.9.0.tgz#f91ee9d044ab4e9131333e2c01b43acef243e9cc"
   integrity sha512-dgnJrcIthn9dda7c1G7DhgTOjIkpkbMbHkKdt7NADto5DB6leGSs3u/3RUJKLGRsA+kdYr4wCjREcO3NPXX9ng==
 
-"@vicons/fa@0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@vicons/fa/-/fa-0.9.0.tgz#fe7a42dfed6f3890b56b4f2a94bdfcd2feded773"
-  integrity sha512-Rsbm4miDOKGGDvPlmsOyz8FEmyCCyUeGdjZmuGmeuYyx/3/TSYPbA2Ptbk1IRgP294e9FDC23lNQ4jsoFbdtRA==
+"@vicons/fa@0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@vicons/fa/-/fa-0.10.0.tgz#d91d5ca7cecbc7ca25e22f38c6b8340063826e32"
+  integrity sha512-Hcer9JeSsjFoglTG6DDDGljbHR7qkhHd0dYr1jasVVsOlGzdwLn2oi9Zke8RUD7d2WNcwUZx8FFmdUUWwV+9qw==
 
 "@vicons/fluent@0.9.0":
   version "0.9.0"
