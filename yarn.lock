@@ -873,10 +873,10 @@
   resolved "https://registry.yarnpkg.com/@vicons/ionicons5/-/ionicons5-0.9.0.tgz#2e1709c5b092bfb21200af7c76b637c35d6dea06"
   integrity sha512-qHZ6lvt5Ed9kTigJ2HbD35BvAXewFJLHo5OS6yS4P3z5pvCZcbHDFnpW6FkSzWauryKhHVR14GGdRycYk9P0bg==
 
-"@vicons/material@0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@vicons/material/-/material-0.9.0.tgz#74f3a647822b2f465c7e9180d8a53454ab5174ff"
-  integrity sha512-OIAMweoSstoKunrEO+Flc3Ncu751MkpFMtHvuMUipzHiqK8W/BiVIDgYqwfX+Rwd7VNMM0z7NOS0hz8vglrGYQ==
+"@vicons/material@0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@vicons/material/-/material-0.10.0.tgz#1213a111f729476ac053f883155b69c2d5262f48"
+  integrity sha512-3r5ft90RcEMGAHNCRVuZBOV6CFpA8vzBNwaCbFZzCRhcdQqn/48t+Eywvu/o2BQl52eSRYhIUCW9PDh+j6rLbQ==
 
 "@vicons/tabler@0.9.0":
   version "0.9.0"
