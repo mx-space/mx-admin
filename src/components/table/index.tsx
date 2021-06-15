@@ -16,6 +16,7 @@ const TableProps = [
   'onUpdateSorter',
   'columns',
   'onFetchData',
+  'nTableProps',
 ] as const
 export const Table = defineComponent<{
   data: Ref<any[]>
@@ -30,12 +31,14 @@ export const Table = defineComponent<{
     size?: number,
   ) => any
   columns: TableColumns<any>
+  nTableProps: Partial<typeof NDataTable>
 }>((props, ctx) => {
   const {
     data,
     pager,
     onUpdateCheckedRowKeys,
     onUpdateSorter,
+    nTableProps,
     columns,
     onFetchData: fetchData,
   } = props
@@ -47,7 +50,9 @@ export const Table = defineComponent<{
     sortOrder: 0,
   })
   return () => (
+    // @ts-expect-error
     <NDataTable
+      {...nTableProps}
       remote
       pagination={{
         page: pager.value.currentPage,

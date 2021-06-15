@@ -2,12 +2,18 @@ import { Add12Filled, Delete16Regular } from '@vicons/fluent'
 import { defineComponent, onMounted } from '@vue/runtime-core'
 import { Table } from 'components/table'
 import { useTable } from 'hooks/use-table'
+import { omit } from 'lodash-es'
 import { NButton, NPopconfirm, NSpace, useDialog, useMessage } from 'naive-ui'
-import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
+import {
+  FilterOption,
+  FilterState,
+  TableBaseColumn,
+  TableColumns,
+} from 'naive-ui/lib/data-table/src/interface'
 import { CategoryStore } from 'stores/category'
 import { useInjector } from 'utils/deps-injection'
 import { parseDate, relativeTimeFromNow } from 'utils/time'
-import { reactive, watch } from 'vue'
+import { computed, ComputedRef, reactive, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
@@ -55,6 +61,14 @@ export const ManagePostListView = defineComponent({
 
     const DataTable = defineComponent({
       setup() {
+        const categoryFilterOptions: ComputedRef<FilterOption[]> = computed(
+          () =>
+            categoryStore.data.value?.map(i => ({
+              label: i.name,
+              value: i.id,
+            })) || [],
+        )
+
         const columns = reactive<TableColumns<any>>([
           {
             type: 'selection',
@@ -79,7 +93,8 @@ export const ManagePostListView = defineComponent({
             sortOrder: false,
             sorter: 'default',
             key: 'category',
-            filterOptions: [],
+            // @ts-expect-error cao
+            filterOptions: categoryFilterOptions,
             filter: true,
             render(row) {
               const map = categoryStore.map.value
@@ -150,6 +165,56 @@ export const ManagePostListView = defineComponent({
           <Table
             columns={columns}
             data={data}
+            nTableProps={{
+              onUpdateFilters: async (
+                filterState: FilterState,
+                sourceColumn?: TableBaseColumn,
+              ) => {
+                if (!filterState) {
+                  return
+                }
+
+                if (
+                  filterState.category &&
+                  Array.isArray(filterState.category)
+                ) {
+                  const len = filterState.category.length
+                  if (!len) {
+                    await fetchData()
+                    return
+                  }
+                  const ids = filterState.category.join(',')
+                  console.log(ids)
+                  let { data: _data } = (await RESTManager.api.categories.get({
+                    params: {
+                      ids,
+                    },
+                  })) as any
+                  _data = _data
+                    .map(c => {
+                      return c.category.children.map(ch => ({
+                        ...omit(c.category, ['children', 'id', 'id']),
+                        ...ch,
+                        categoryId: c.category.id,
+                      }))
+                    })
+                    .sort(
+                      (a, b) => new Date(a).getTime() - new Date(b).getTime(),
+                    )
+                    .flat()
+
+                  data.value = _data
+                  pager.value = {
+                    currentPage: 1,
+                    total: 1,
+                    size: 0,
+                    hasNextPage: false,
+                    hasPrevPage: false,
+                    totalPage: 1,
+                  }
+                }
+              },
+            }}
             onFetchData={fetchData}
             pager={pager}
             onUpdateCheckedRowKeys={keys => {
