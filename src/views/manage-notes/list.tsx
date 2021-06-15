@@ -2,13 +2,8 @@ import { Add12Filled, Delete16Regular } from '@vicons/fluent'
 import { defineComponent, onMounted } from '@vue/runtime-core'
 import { Table } from 'components/table'
 import { useTable } from 'hooks/use-table'
-import { omit } from 'lodash-es'
 import { NButton, NPopconfirm, NSpace, useDialog, useMessage } from 'naive-ui'
-import {
-  FilterState,
-  TableBaseColumn,
-  TableColumns,
-} from 'naive-ui/lib/data-table/src/interface'
+import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { parseDate, relativeTimeFromNow } from 'utils/time'
 import { reactive, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
