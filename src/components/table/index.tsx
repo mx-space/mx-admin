@@ -17,6 +17,7 @@ const TableProps = [
   'columns',
   'onFetchData',
   'nTableProps',
+  'noPagination',
 ] as const
 export const Table = defineComponent<{
   data: Ref<any[]>
@@ -32,9 +33,11 @@ export const Table = defineComponent<{
   ) => any
   columns: TableColumns<any>
   nTableProps: Partial<typeof NDataTable>
+  noPagination?: boolean
 }>((props, ctx) => {
   const {
     data,
+    noPagination = false,
     pager,
     onUpdateCheckedRowKeys,
     onUpdateSorter,
@@ -50,19 +53,23 @@ export const Table = defineComponent<{
     sortOrder: 0,
   })
   return () => (
-    // @ts-expect-error
     <NDataTable
       {...nTableProps}
       remote
-      pagination={{
-        page: pager.value.currentPage,
-        pageSize: pager.value.size,
-        pageCount: pager.value.totalPage,
+      // @ts-expect-error
+      pagination={
+        noPagination
+          ? undefined
+          : {
+              page: pager.value.currentPage,
+              pageSize: pager.value.size,
+              pageCount: pager.value.totalPage,
 
-        onChange: async page => {
-          router.push({ query: { page }, path: route.path })
-        },
-      }}
+              onChange: async page => {
+                router.push({ query: { page }, path: route.path })
+              },
+            }
+      }
       bordered={false}
       data={data.value}
       checkedRowKeys={checkedRowKeys.value}

@@ -170,7 +170,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     component: () => import('../views/emptyview'),
   },
   {
-    path: '/page',
+    path: '/pages',
     name: RouteName.Page,
     meta: {
       title: '页面',
@@ -194,7 +194,8 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           ),
           query: { page: 1 },
         },
-        component: () => import('../views/emptyview'),
+        component: () =>
+          import('../views/manage-pages/list').then(m => m.ManagePageListView),
       },
       {
         path: 'edit',
