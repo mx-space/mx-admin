@@ -24,7 +24,7 @@
     "dayjs": "1.10.5",
     "js-cookie": "2.2.1",
     "lodash-es": "4.17.21",
-    "naive-ui": "2.11.10",
+    "naive-ui": "2.11.11",
     "qier-progress": "1.0.4",
     "umi-request": "1.3.9",
     "vue": "3.1.1",

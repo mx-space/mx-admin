@@ -2909,10 +2909,10 @@ mz@^2.4.0:
     object-assign "^4.0.1"
     thenify-all "^1.0.0"
 
-naive-ui@2.11.10:
-  version "2.11.10"
-  resolved "https://registry.yarnpkg.com/naive-ui/-/naive-ui-2.11.10.tgz#4d8d32a907008add045267e2a082feddc8d65b9c"
-  integrity sha512-J/cSBH3j6m0LPZDF0oHSLTaNmEZYxpREUBI0yU0W4v0CrYaRlPWdsFfmTV/dWP3ZCTENUz5RSk0+/NeT9FZMeA==
+naive-ui@2.11.11:
+  version "2.11.11"
+  resolved "https://registry.yarnpkg.com/naive-ui/-/naive-ui-2.11.11.tgz#191ffc123b2e7e663342b5a5e14211ed72b92023"
+  integrity sha512-rXepBKkdsdM6UkEuNbTPkmup+EbWY5i3kZOb54PSkc97o+DmeCTXY9UOTZYXDHks2522sA6T5bgLA/RWmJSGpA==
   dependencies:
     "@css-render/plugin-bem" "^0.15.4"
     "@css-render/vue3-ssr" "^0.15.4"
@@ -2930,8 +2930,6 @@ naive-ui@2.11.10:
     vdirs "^0.1.4"
     vfonts "^0.1.0"
     vooks "^0.2.6"
-    vue "^3.0.10"
-    vue-router "^4.0.5"
     vueuc "^0.4.7"
 
 nanoid@^3.1.20:
@@ -4538,7 +4536,7 @@ vscode-web-custom-data@^0.3.2:
   resolved "https://registry.yarnpkg.com/vscode-web-custom-data/-/vscode-web-custom-data-0.3.3.tgz#9e1f2388c718d6f190038a19d144834a436b876f"
   integrity sha512-orMjjj1r4efP5ocODYZm3orpANakRBsxPZPDoD5UIrFOPKDFtMJQLp6PIH1rb3AYVRD1iYXMhDQoC6tZ+DrigA==
 
-vue-router@4.0.8, vue-router@^4.0.5:
+vue-router@4.0.8:
   version "4.0.8"
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-4.0.8.tgz#55d4290a3122444edbc91a3cd2492bb1d0cef494"
   integrity sha512-42mWSQaH7CCBQDspQTHv63f34VEnZC20g9QNK4WJ/zW8SdIUeT6TQ2i/78fjF/pVBUPLBWrGhvB7uDnaz7O/pA==
@@ -4552,7 +4550,7 @@ vue-tsc@0.1.7:
   dependencies:
     vscode-vue-languageservice "^0.25.17"
 
-vue@3.1.1, vue@^3.0.10:
+vue@3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/vue/-/vue-3.1.1.tgz#9ad655758a0fa6c0dee5b3d2431d3912a9b381aa"
   integrity sha512-j9fj3PNPMxo2eqOKYjMuss9XBS8ZtmczLY3kPvjcp9d3DbhyNqLYbaMQH18+1pDIzzVvQCQBvIf774LsjjqSKA==

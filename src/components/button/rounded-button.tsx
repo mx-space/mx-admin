@@ -13,11 +13,25 @@ export const RoundedButton = defineComponent({
       type: String as ButtonType,
       default: 'primary',
     },
+    onClick: {
+      type: (Function as any) as PropType<
+        JSX.IntrinsicElements['button']['onClick'] | undefined
+      >,
+    },
+    disabled: {
+      type: Boolean,
+    },
   },
-  setup({ variant = 'primary' }, { slots }) {
+  setup(props, { slots }) {
+    const { variant = 'primary', onClick } = props
     return () => {
       return (
-        <NButton type={variant} circle>
+        <NButton
+          type={variant}
+          circle
+          onClick={onClick}
+          disabled={props.disabled}
+        >
           {slots}
         </NButton>
       )
@@ -29,7 +43,6 @@ export const HeaderActionButton = defineComponent({
   props: {
     to: {
       type: [Object, String] as PropType<RouteLocationRaw>,
-      required: true,
     },
     variant: {
       type: String as ButtonType,
@@ -38,16 +51,34 @@ export const HeaderActionButton = defineComponent({
       type: Object as PropType<JSX.Element>,
       required: true,
     },
+    onClick: {
+      type: (Function as any) as PropType<
+        JSX.IntrinsicElements['button']['onClick']
+      >,
+    },
+    disabled: {
+      type: Boolean,
+    },
   },
   setup(props) {
-    const { icon, to, variant = 'primary' } = props
-
-    return () => (
-      <RouterLink to={to}>
-        <RoundedButton variant={variant} class="shadow">
-          <Icon size="20">{icon}</Icon>
-        </RoundedButton>
-      </RouterLink>
+    const { icon, to, variant = 'primary', onClick } = props
+    const Inner = () => (
+      <RoundedButton
+        variant={variant}
+        class="shadow"
+        onClick={onClick}
+        disabled={props.disabled}
+      >
+        <Icon size="20">{icon}</Icon>
+      </RoundedButton>
     )
+    return () =>
+      to ? (
+        <RouterLink to={to}>
+          <Inner />
+        </RouterLink>
+      ) : (
+        <Inner />
+      )
   },
 })

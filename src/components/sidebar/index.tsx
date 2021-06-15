@@ -144,7 +144,6 @@ export const Sidebar = defineComponent({
                               key={child.path}
                               // data-fullPath={child.fullPath}
                               class={clsx(
-                                'py-4 ',
                                 route.value.fullPath === child.fullPath ||
                                   route.value.fullPath.startsWith(
                                     child.fullPath.slice(1),
@@ -156,7 +155,7 @@ export const Sidebar = defineComponent({
                             >
                               <button
                                 onClick={() => handleRoute(child)}
-                                class={'flex w-full items-center'}
+                                class={'flex w-full items-center py-4'}
                               >
                                 <span
                                   class="flex justify-center items-center"

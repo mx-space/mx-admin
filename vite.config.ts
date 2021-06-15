@@ -12,7 +12,13 @@ import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 export default defineConfig({
-  plugins: [vue(), tsconfigPaths(), visualizer({ open: false }), vueJsx()],
+  plugins: [
+    vue(),
+    tsconfigPaths(),
+    visualizer({ open: false }),
+
+    // vueJsx({})
+  ],
   server: {
     port: 9528,
   },

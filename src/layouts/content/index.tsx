@@ -25,12 +25,12 @@ export const ContentLayout = defineComponent({
           <h1 class={styles['title']}>{route.value.value.meta.title}</h1>
 
           <div class={clsx(styles['header-actions'], 'space-x-4')}>
-            {actionsElement ?? slots.actions?.()}
+            {actionsElement ? () => actionsElement : slots.actions?.()}
           </div>
         </header>
         <main class={styles['main']}>{slots.default?.()}</main>
         <footer class={styles['buttons']}>
-          {footerButtonElement ?? slots.buttons?.()}
+          {footerButtonElement ? () => footerButtonElement : slots.buttons?.()}
         </footer>
       </>
     )

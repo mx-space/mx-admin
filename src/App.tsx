@@ -1,8 +1,8 @@
-import { defineComponent, onMounted, provide } from '@vue/runtime-core'
+import { defineComponent, onMounted } from '@vue/runtime-core'
 import {
   GlobalThemeOverrides,
   NConfigProvider,
-  NGlobalStyle,
+  NDialogProvider,
   NMessageProvider,
   useMessage,
 } from 'naive-ui'
@@ -41,11 +41,13 @@ const App = defineComponent({
     useProviders(UIStore, UserStore, CategoryStore)
 
     return () => (
-      <NMessageProvider>
-        <NConfigProvider themeOverrides={themeOverrides}>
-          <Root />
-        </NConfigProvider>
-      </NMessageProvider>
+      <NConfigProvider themeOverrides={themeOverrides}>
+        <NMessageProvider>
+          <NDialogProvider>
+            <Root />
+          </NDialogProvider>
+        </NMessageProvider>
+      </NConfigProvider>
     )
   },
 })

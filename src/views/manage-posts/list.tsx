@@ -1,11 +1,18 @@
-import { Add12Filled } from '@vicons/fluent'
+import { Add12Filled, Delete16Regular } from '@vicons/fluent'
 import { defineComponent, onMounted, ref } from '@vue/runtime-core'
-import { NButton, NDataTable, NPopconfirm, NSpace } from 'naive-ui'
+import {
+  NButton,
+  NDataTable,
+  NPopconfirm,
+  NSpace,
+  useDialog,
+  useMessage,
+} from 'naive-ui'
 import { RowKey, TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { CategoryStore } from 'stores/category'
 import { useInjector } from 'utils/deps-injection'
 import { parseDate, relativeTimeFromNow } from 'utils/time'
-import { reactive } from 'vue'
+import { computed, reactive, watch, watchEffect } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
@@ -22,8 +29,13 @@ export const ManagePostListView = defineComponent({
       sortOrder: 0,
     })
     const checkedRowKeys = ref<RowKey[]>([])
+
+    const message = useMessage()
+    const dialog = useDialog()
+
     const route = useRoute()
     const router = useRouter()
+
     const fetchData = async (page = route.query.page || 1, size = 20) => {
       const response = await RESTManager.api.posts.get<PostResponse>({
         params: {
@@ -38,6 +50,14 @@ export const ManagePostListView = defineComponent({
       data.value = response.data
       pager.value = response.page
     }
+
+    watch(
+      () => route.query.page,
+      async n => {
+        // @ts-expect-error
+        await fetchData(n)
+      },
+    )
 
     const categoryStore = useInjector(CategoryStore)
 
@@ -76,13 +96,13 @@ export const ManagePostListView = defineComponent({
             filter: true,
             render(row) {
               const map = categoryStore.map.value
+
               if (!map) {
                 return ''
               }
+
               return (
-                <span>
-                  {categoryStore.map.value.get(row.category_id)?.name}
-                </span>
+                <span>{categoryStore.map.value.get(row.categoryId)?.name}</span>
               )
             },
           },
@@ -115,6 +135,7 @@ export const ManagePostListView = defineComponent({
                     negativeText="删除"
                     onNegativeClick={async () => {
                       await RESTManager.api.posts(row.id).delete()
+                      message.success('删除成功')
                       await fetchData(pager.value.currentPage)
                     }}
                   >
@@ -146,7 +167,6 @@ export const ManagePostListView = defineComponent({
               pageCount: pager.value.totalPage,
 
               onChange: async page => {
-                await fetchData(page)
                 router.push({ query: { page }, path: route.path })
               },
             }}
@@ -199,12 +219,37 @@ export const ManagePostListView = defineComponent({
 
     return () => {
       return (
-        <ContentLayout
-          actionsElement={
-            <HeaderActionButton to={'/posts/edit'} icon={<Add12Filled />} />
-          }
-        >
-          <DataTable />
+        <ContentLayout>
+          {{
+            actions: () => (
+              <>
+                <HeaderActionButton
+                  variant="error"
+                  disabled={checkedRowKeys.value.length == 0}
+                  onClick={() => {
+                    dialog.warning({
+                      title: '警告',
+                      content: '你确定要删除？',
+                      positiveText: '确定',
+                      negativeText: '不确定',
+                      onPositiveClick: async () => {
+                        for (const id of checkedRowKeys.value) {
+                          await RESTManager.api.posts(id as string).delete()
+                        }
+                        checkedRowKeys.value.length = 0
+                        message.success('删除成功')
+
+                        await fetchData()
+                      },
+                    })
+                  }}
+                  icon={<Delete16Regular />}
+                />
+                <HeaderActionButton to={'/posts/edit'} icon={<Add12Filled />} />
+              </>
+            ),
+            default: () => <DataTable />,
+          }}
         </ContentLayout>
       )
     }
