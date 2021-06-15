@@ -1,56 +1,43 @@
 import { Add12Filled, Delete16Regular } from '@vicons/fluent'
-import { defineComponent, onMounted, ref } from '@vue/runtime-core'
-import {
-  NButton,
-  NDataTable,
-  NPopconfirm,
-  NSpace,
-  useDialog,
-  useMessage,
-} from 'naive-ui'
-import { RowKey, TableColumns } from 'naive-ui/lib/data-table/src/interface'
+import { defineComponent, onMounted } from '@vue/runtime-core'
+import { Table } from 'components/table'
+import { useTable } from 'hooks/use-table'
+import { NButton, NPopconfirm, NSpace, useDialog, useMessage } from 'naive-ui'
+import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { CategoryStore } from 'stores/category'
 import { useInjector } from 'utils/deps-injection'
 import { parseDate, relativeTimeFromNow } from 'utils/time'
-import { computed, reactive, watch, watchEffect } from 'vue'
+import { reactive, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
-import { Pager, PostModel, PostResponse } from '../../models/post'
+import { PostResponse } from '../../models/post'
 import { RESTManager } from '../../utils/rest'
-import styles from './index.module.css'
 export const ManagePostListView = defineComponent({
   name: 'post-list',
   setup({}, ctx) {
-    const data = ref<PostModel[]>([])
-    const pager = ref<Pager>({} as any)
-    const sortProps = reactive({
-      sortBy: '',
-      sortOrder: 0,
-    })
-    const checkedRowKeys = ref<RowKey[]>([])
+    const { checkedRowKeys, data, pager, sortProps, fetchDataFn } = useTable(
+      (data, pager) => async (page = route.query.page || 1, size = 20) => {
+        const response = await RESTManager.api.posts.get<PostResponse>({
+          params: {
+            page,
+            size,
+            select: 'title _id id created modified categoryId copyright tags',
+            ...(sortProps.sortBy
+              ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
+              : {}),
+          },
+        })
+        data.value = response.data
+        pager.value = response.page
+      },
+    )
 
     const message = useMessage()
     const dialog = useDialog()
 
     const route = useRoute()
-    const router = useRouter()
-
-    const fetchData = async (page = route.query.page || 1, size = 20) => {
-      const response = await RESTManager.api.posts.get<PostResponse>({
-        params: {
-          page,
-          size,
-          select: 'title _id id created modified categoryId copyright tags',
-          ...(sortProps.sortBy
-            ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
-            : {}),
-        },
-      })
-      data.value = response.data
-      pager.value = response.page
-    }
-
+    const fetchData = fetchDataFn
     watch(
       () => route.query.page,
       async n => {
@@ -158,61 +145,21 @@ export const ManagePostListView = defineComponent({
             },
           },
         ])
-        return () => (
-          <NDataTable
-            remote
-            pagination={{
-              page: pager.value.currentPage,
-              pageSize: pager.value.size,
-              pageCount: pager.value.totalPage,
 
-              onChange: async page => {
-                router.push({ query: { page }, path: route.path })
-              },
-            }}
-            bordered={false}
-            data={data.value}
-            checkedRowKeys={checkedRowKeys.value}
-            rowKey={r => r.id}
+        return () => (
+          <Table
+            columns={columns}
+            data={data}
+            onFetchData={fetchData}
+            pager={pager}
             onUpdateCheckedRowKeys={keys => {
               checkedRowKeys.value = keys
             }}
-            rowClassName={() => styles['table-row']}
-            // onUpdate:sorter={async status => {
-            onUpdateSorter={async status => {
-              if (!status) {
-                return
-              }
-
-              columns.forEach(column => {
-                /** column.sortOrder !== undefined means it is uncontrolled */
-                if (!('sortOrder' in column)) {
-                  return
-                }
-                if (column.sortOrder === undefined) return
-                if (!status) {
-                  column.sortOrder = false
-                  return
-                }
-                if (column.key === status.columnKey)
-                  column.sortOrder = status.order
-                else column.sortOrder = false
-              })
-
-              const { columnKey, order } = status
-
-              sortProps.sortBy =
-                sortProps.sortBy && sortProps.sortBy == columnKey
-                  ? ''
-                  : (columnKey as string)
-              sortProps.sortOrder = order
-                ? { descend: -1, ascend: 1 }[order]
-                : 1
-
-              await fetchData()
+            onUpdateSorter={async props => {
+              sortProps.sortBy = props.sortBy
+              sortProps.sortOrder = props.sortOrder
             }}
-            columns={columns}
-          ></NDataTable>
+          ></Table>
         )
       },
     })
