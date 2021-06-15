@@ -848,10 +848,10 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@vicons/antd@0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@vicons/antd/-/antd-0.9.0.tgz#f91ee9d044ab4e9131333e2c01b43acef243e9cc"
-  integrity sha512-dgnJrcIthn9dda7c1G7DhgTOjIkpkbMbHkKdt7NADto5DB6leGSs3u/3RUJKLGRsA+kdYr4wCjREcO3NPXX9ng==
+"@vicons/antd@0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@vicons/antd/-/antd-0.10.0.tgz#17661ed654122a6450926f40ceba9fd67ae2e036"
+  integrity sha512-F+pVt2cYJDoJw5Wvu5YzvqnpCoUPeYh272R/ZVK+2H6U/G0LCDvEWNQHXkbLBpCtu9FAq/yac0NNfg1i0a1DGg==
 
 "@vicons/fa@0.9.0":
   version "0.9.0"
