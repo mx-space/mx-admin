@@ -1,11 +1,5 @@
 import { defineComponent, onMounted } from '@vue/runtime-core'
-import {
-  GlobalThemeOverrides,
-  NConfigProvider,
-  NDialogProvider,
-  NMessageProvider,
-  useMessage,
-} from 'naive-ui'
+import { NDialogProvider, NMessageProvider, useMessage } from 'naive-ui'
 import { CategoryStore } from 'stores/category'
 import { RouterView } from 'vue-router'
 import { UIStore } from './stores/ui'
@@ -29,27 +23,27 @@ const Root = defineComponent({
   },
 })
 
-const themeOverrides: GlobalThemeOverrides = {
-  common: {
-    primaryColor: '#1a9cf3',
-    primaryColorHover: '#16aae7',
-    primaryColorPressed: '#1188e8',
-    primaryColorSuppl: 'rgba(16, 133, 211, 0.5)',
-  },
-}
+// const themeOverrides: GlobalThemeOverrides = {
+//   common: {
+//     primaryColor: '#1a9cf3',
+//     primaryColorHover: '#16aae7',
+//     primaryColorPressed: '#1188e8',
+//     primaryColorSuppl: 'rgba(16, 133, 211, 0.5)',
+//   },
+// }
 
 const App = defineComponent({
   setup({}) {
     useProviders(UIStore, UserStore, CategoryStore)
 
     return () => (
-      <NConfigProvider themeOverrides={themeOverrides}>
-        <NMessageProvider>
-          <NDialogProvider>
-            <Root />
-          </NDialogProvider>
-        </NMessageProvider>
-      </NConfigProvider>
+      // <NConfigProvider themeOverrides={themeOverrides}>
+      <NMessageProvider>
+        <NDialogProvider>
+          <Root />
+        </NDialogProvider>
+      </NMessageProvider>
+      // </NConfigProvider>
     )
   },
 })

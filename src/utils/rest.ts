@@ -1,12 +1,3 @@
-/*
- * @Author: Innei
- * @Date: 2020-08-16 19:50:57
- * @LastEditTime: 2021-03-22 11:33:40
- * @LastEditors: Innei
- * @FilePath: /admin-next/src/utils/rest.ts
- * @Coding with Love
- */
-
 import camelcaseKeys from 'camelcase-keys'
 import {
   extend,
@@ -18,10 +9,8 @@ import { __DEV__ } from '.'
 import { router } from '../router/router'
 import { getToken } from './auth'
 
-const Message = window.message
-
 class RESTManagerStatic {
-  _$$instance: RequestMethod = null!
+  private _$$instance: RequestMethod = null!
   get instance() {
     return this._$$instance
   }
@@ -31,12 +20,14 @@ class RESTManagerStatic {
       prefix: import.meta.env.VITE_APP_BASE_API,
       timeout: 10000,
       errorHandler: async error => {
+        const Message = window.message
         if (error.request && !error.response) {
         }
 
         if (error.response) {
           if (process.env.NODE_ENV === 'development') {
             console.log(error.response)
+            console.dir(error.response)
           }
           try {
             const json = await error.response.json()
@@ -81,9 +72,12 @@ function buildRoute(manager: RESTManagerStatic): IRequestHandler {
       if (reflectors.includes(name)) return () => route.join('/')
       if (methods.includes(name)) {
         return async (options: RequestOptionsWithResponse) =>
-          await manager.request(name, route.join('/'), {
-            ...options,
-          })
+          camelcaseKeys(
+            await manager.request(name, route.join('/'), {
+              ...options,
+            }),
+            { deep: true },
+          )
       }
       route.push(name)
       return new Proxy(noop, handler)
@@ -130,11 +124,25 @@ RESTManager.instance.interceptors.request.use((url, options) => {
   }
 }, {})
 
-RESTManager.instance.interceptors.response.use(async (response, option) => {
-  const newRes = await response.clone().json()
+// RESTManager.instance.interceptors.response.use(
+//   async (response, option) => {
+//     const json = await response.clone().json()
+//     const message = window.message
+//     if (!response.ok) {
+//       if (json.message) {
+//         if (Array.isArray(json.message)) {
+//           message.error(json.message[0])
+//         } else {
+//           message.error(json.message)
+//         }
+//       }
 
-  return camelcaseKeys(newRes)
-})
+//       throw response
+//     }
+//     return camelcaseKeys(json)
+//   },
+//   { global: true, core: true },
+// )
 
 interface IRequestHandler<T = RequestOptionsInit> {
   (id?: string): IRequestHandler

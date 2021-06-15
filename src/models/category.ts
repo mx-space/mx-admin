@@ -16,3 +16,8 @@ export interface CategoryModel {
 export interface CategoryResponse {
   data: CategoryModel[]
 }
+
+export interface TagModel {
+  count: number
+  name: string
+}

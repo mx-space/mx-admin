@@ -7,10 +7,10 @@ export type fetchDataFn = (
   page?: string | number | LocationQueryValue[],
   size?: number,
 ) => Promise<void>
-export const useTable = (
-  fetchDataFn: (data: Ref<PostModel[]>, pager: Ref<Pager>) => fetchDataFn,
+export const useTable = <T = any>(
+  fetchDataFn: (data: Ref<T[]>, pager: Ref<Pager>) => fetchDataFn,
 ) => {
-  const data = ref<PostModel[]>([])
+  const data: Ref<T[]> = ref<T[]>([]) as any
   const pager = ref<Pager>({} as any)
   const sortProps = reactive({
     sortBy: '',

@@ -18,19 +18,20 @@ export const ContentLayout = defineComponent({
     const { slots } = ctx
     const router = useRouter()
     const route = computed(() => router.currentRoute)
-
+    const A$ael = () => actionsElement ?? null
+    const A$fel = () => footerButtonElement ?? null
     return () => (
       <>
         <header class={styles['header']}>
           <h1 class={styles['title']}>{route.value.value.meta.title}</h1>
 
           <div class={clsx(styles['header-actions'], 'space-x-4')}>
-            {actionsElement ? () => actionsElement : slots.actions?.()}
+            {actionsElement ? <A$ael /> : slots.actions?.()}
           </div>
         </header>
         <main class={styles['main']}>{slots.default?.()}</main>
         <footer class={styles['buttons']}>
-          {footerButtonElement ? () => footerButtonElement : slots.buttons?.()}
+          {footerButtonElement ? <A$fel /> : slots.buttons?.()}
         </footer>
       </>
     )

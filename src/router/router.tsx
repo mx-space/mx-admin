@@ -103,7 +103,8 @@ export const routeForMenu: Array<RouteRecordRaw> = [
             </VIcon>
           ),
         },
-        component: () => import('../views/emptyview'),
+        component: () =>
+          import('../views/manage-posts/category').then(m => m.CategoryView),
       },
     ],
   },
