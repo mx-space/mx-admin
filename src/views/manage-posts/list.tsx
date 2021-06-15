@@ -1,11 +1,7 @@
 import { Add12Filled } from '@vicons/fluent'
 import { defineComponent, onMounted, ref } from '@vue/runtime-core'
 import { NButton, NDataTable, NPopconfirm, NSpace } from 'naive-ui'
-import {
-  ColumnKey,
-  RowKey,
-  TableColumns,
-} from 'naive-ui/lib/data-table/src/interface'
+import { RowKey, TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { CategoryStore } from 'stores/category'
 import { useInjector } from 'utils/deps-injection'
 import { parseDate, relativeTimeFromNow } from 'utils/time'
@@ -158,12 +154,12 @@ export const ManagePostListView = defineComponent({
             data={data.value}
             checkedRowKeys={checkedRowKeys.value}
             rowKey={r => r.id}
-            onCheckedRowKeysChange={keys => {
+            onUpdateCheckedRowKeys={keys => {
               checkedRowKeys.value = keys
             }}
             rowClassName={() => styles['table-row']}
             // onUpdate:sorter={async status => {
-            onSorterChange={async status => {
+            onUpdateSorter={async status => {
               if (!status) {
                 return
               }

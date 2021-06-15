@@ -24,11 +24,11 @@
     "dayjs": "1.10.5",
     "js-cookie": "2.2.1",
     "lodash-es": "4.17.21",
-    "naive-ui": "2.11.8",
+    "naive-ui": "2.11.10",
     "qier-progress": "1.0.4",
     "umi-request": "1.3.9",
-    "vue": "3.0.7",
-    "vue-router": "4.0.5"
+    "vue": "3.1.1",
+    "vue-router": "4.0.8"
   },
   "devDependencies": {
     "@types/lodash-es": "4.17.4",
@@ -37,7 +37,7 @@
     "@vue/compiler-sfc": "3.1.1",
     "@vuedx/typescript-plugin-vue": "0.7.4",
     "autoprefixer": "10.2.6",
-    "postcss": "8.3.3",
+    "postcss": "8.3.4",
     "postcss-nested": "5.0.5",
     "rollup-plugin-visualizer": "5.5.0",
     "tailwindcss": "2.1.4",
