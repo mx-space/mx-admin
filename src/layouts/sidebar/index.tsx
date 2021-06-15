@@ -7,7 +7,7 @@ import { useInjector } from '../../utils/deps-injection'
 import styles from './index.module.css'
 export const SidebarLayout = defineComponent({
   name: 'sidebar-layout',
-  components: { Sidebar },
+
   setup(props) {
     const ui = useInjector(UIStore)
 
@@ -23,7 +23,7 @@ export const SidebarLayout = defineComponent({
         <Sidebar
           collapse={collapse.value}
           width={sidebarWidth.value}
-          onCollapseChange={(s) => {
+          onCollapseChange={s => {
             collapse.value = s
           }}
         />
