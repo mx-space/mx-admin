@@ -21,7 +21,6 @@
     "@vicons/utils": "0.1.4",
     "camelcase-keys": "6.2.2",
     "clsx": "1.1.1",
-    "dayjs": "1.10.5",
     "js-cookie": "2.2.1",
     "lodash-es": "4.17.21",
     "naive-ui": "2.11.11",
@@ -31,6 +30,7 @@
     "vue-router": "4.0.8"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "19.0.0",
     "@types/lodash-es": "4.17.4",
     "@vitejs/plugin-vue": "1.2.3",
     "@vitejs/plugin-vue-jsx": "1.1.5",

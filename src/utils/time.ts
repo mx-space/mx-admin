@@ -1,16 +1,8 @@
-import * as dayjs from 'dayjs'
-import 'dayjs/locale/zh-cn'
-import * as customParseFormat from 'dayjs/plugin/customParseFormat'
-import * as LocalizedFormat from 'dayjs/plugin/localizedFormat'
-import * as relativeTime from 'dayjs/plugin/relativeTime'
-dayjs.extend(customParseFormat)
-dayjs.extend(relativeTime)
-dayjs.extend(LocalizedFormat)
-dayjs.locale('zh-cn')
+import { parse, format as f } from 'date-fns'
 
 export enum DateFormat {
-  'YYYY年M月D日',
-  'YYYY年M月D日 HH:mm:ss',
+  'yyyy年M月d日',
+  'yyyy年M月d日 HH:mm:ss',
   'HH:mm',
   'LLLL',
   'H:mm:ss A',
@@ -18,11 +10,37 @@ export enum DateFormat {
 
 export const parseDate = (
   time: string | Date,
-  format: keyof typeof DateFormat = 'YYYY年M月D日',
-) => dayjs(time).format(format)
+  format: keyof typeof DateFormat = 'yyyy年M月d日',
+) => f(new Date(time), format)
 
-export const relativeTimeFromNow = (time: Date | string) =>
-  dayjs(new Date(time)).fromNow()
+export const relativeTimeFromNow = (
+  time: Date | string,
+  current = new Date(),
+) => {
+  time = new Date(time)
+  const msPerMinute = 60 * 1000
+  const msPerHour = msPerMinute * 60
+  const msPerDay = msPerHour * 24
+  const msPerMonth = msPerDay * 30
+  const msPerYear = msPerDay * 365
+
+  const elapsed = +current - +time
+
+  if (elapsed < msPerMinute) {
+    const gap = Math.ceil(elapsed / 1000)
+    return gap <= 0 ? '刚刚' : gap + ' 秒前'
+  } else if (elapsed < msPerHour) {
+    return Math.round(elapsed / msPerMinute) + ' 分钟前'
+  } else if (elapsed < msPerDay) {
+    return Math.round(elapsed / msPerHour) + ' 小时前'
+  } else if (elapsed < msPerMonth) {
+    return Math.round(elapsed / msPerDay) + ' 天前'
+  } else if (elapsed < msPerYear) {
+    return Math.round(elapsed / msPerMonth) + ' 个月前'
+  } else {
+    return Math.round(elapsed / msPerYear) + ' 年前'
+  }
+}
 
 export const getDayOfYear = (date = new Date()) => {
   const now = date

@@ -5,18 +5,16 @@ import { RESTManager } from '../utils/rest'
 export const progress = new QProgress({ colorful: false, color: '#1a9cf3' })
 const title = configs.title
 
-router.beforeEach(async (to, _, next) => {
+router.beforeEach(async to => {
   progress.start()
   if (to.meta.isPublic) {
-    next()
+    return
   } else {
     const { ok } = await RESTManager.api('master')('check_logged').get<{
       ok: number
     }>()
-    if (ok) {
-      next()
-    } else {
-      next('/login')
+    if (!ok) {
+      return '/login'
     }
   }
 })

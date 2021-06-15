@@ -7,8 +7,8 @@
  * @Coding with Love
  */
 
-import * as camelcaseKeys from 'camelcase-keys'
-import { useMessage } from 'naive-ui'
+// import * as camelcaseKeys from 'camelcase-keys'
+// const camelcaseKeys = require('camelcase-keys')
 import {
   extend,
   RequestMethod,
@@ -18,6 +18,7 @@ import {
 import { __DEV__ } from '.'
 import { router } from '../router/router'
 import { getToken } from './auth'
+import { camelcaseKeys } from './case'
 
 const Message = window.message
 
@@ -125,13 +126,7 @@ RESTManager.instance.interceptors.request.use((url, options) => {
     url: url + '?timestamp=' + new Date().getTime(),
     options: {
       ...options,
-      // ...(token
-      //   ? {
-      //       headers: {
-      //         Authorization: token,
-      //       },
-      //     }
-      //   : {}),
+
       interceptors: true,
     },
   }
@@ -140,7 +135,7 @@ RESTManager.instance.interceptors.request.use((url, options) => {
 RESTManager.instance.interceptors.response.use(async (response, option) => {
   const newRes = await response.clone().json()
 
-  return camelcaseKeys(newRes, { deep: true })
+  return camelcaseKeys(newRes)
 })
 
 interface IRequestHandler<T = RequestOptionsInit> {

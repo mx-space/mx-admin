@@ -9,7 +9,6 @@
 
 import dashboardFilled from '@iconify-icons/ant-design/dashboard-filled'
 import { InlineIcon as Icon } from '@iconify/vue'
-import { Icon as VIcon } from '@vicons/utils'
 import {
   Book,
   ChartLine,
@@ -23,6 +22,7 @@ import {
   FileAlt,
   Flask,
   LockOpen,
+  Markdown,
   PencilAlt,
   PuzzlePiece,
   RedoAlt,
@@ -30,19 +30,15 @@ import {
   UserAlt,
   UserFriends,
   Wrench,
-  Markdown,
 } from '@vicons/fa'
-import {
-  createRouter,
-  createWebHashHistory,
-  RouteRecordNormalized,
-  RouteRecordRaw,
-} from 'vue-router'
+import { Icon as VIcon } from '@vicons/utils'
+import { ManagePostListView } from 'views/manage-posts/list'
+import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 import $RouterView from '../layouts/router-view'
 import { SidebarLayout } from '../layouts/sidebar'
 import { DashBoardView } from '../views/dashboard'
+import PlaceHolderView from '../views/emptyview'
 import LoginView from '../views/login/index.vue'
-import { ManagePostListView } from '../views/manage-posts/list'
 import { RouteName } from './constants'
 
 export const routeForMenu: Array<RouteRecordRaw> = [
@@ -78,8 +74,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           ),
           query: { page: 1 },
         },
-        component: () =>
-          import('../views/manage-posts/list').then(m => m.ManagePostListView),
+        component: ManagePostListView,
       },
 
       {
@@ -473,7 +468,6 @@ export const router = createRouter({
       path: '/login',
       name: RouteName.Login,
       meta: { isPublic: true, title: '登陆' },
-      // @ts-expect-error fuck vue
       component: LoginView,
     },
   ],

@@ -90,7 +90,7 @@ export const ManageNoteListView = defineComponent({
             sorter: 'default',
             sortOrder: false,
             render(row) {
-              return parseDate(row.modified, 'YYYY年M月D日')
+              return parseDate(row.modified, 'yyyy年M月d日')
             },
           },
           {

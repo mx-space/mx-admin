@@ -14,7 +14,7 @@ import { CategoryStore } from 'stores/category'
 import { useInjector } from 'utils/deps-injection'
 import { parseDate, relativeTimeFromNow } from 'utils/time'
 import { computed, ComputedRef, reactive, watch } from 'vue'
-import { RouterLink, useRoute, useRouter } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
 import { PostResponse } from '../../models/post'
@@ -34,6 +34,7 @@ export const ManagePostListView = defineComponent({
               : {}),
           },
         })
+
         data.value = response.data
         pager.value = response.page
       },
@@ -123,7 +124,7 @@ export const ManagePostListView = defineComponent({
             sorter: 'default',
             sortOrder: false,
             render(row) {
-              return parseDate(row.modified, 'YYYY年M月D日')
+              return parseDate(row.modified, 'yyyy年M月d日')
             },
           },
           {

@@ -7,7 +7,8 @@ import {
   useMessage,
 } from 'naive-ui'
 import { CategoryStore } from 'stores/category'
-import { RouterView } from 'vue-router'
+import { ref } from 'vue'
+import { RouterView, useRoute, useRouter } from 'vue-router'
 import { UIStore } from './stores/ui'
 import { UserStore } from './stores/user'
 import { useInjector, useProviders } from './utils/deps-injection'
@@ -17,10 +18,12 @@ const Root = defineComponent({
 
   setup() {
     const { fetchUser } = useInjector(UserStore)
+
     onMounted(() => {
       window.message = useMessage()
       fetchUser()
     })
+
     return () => {
       return <RouterView />
     }
