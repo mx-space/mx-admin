@@ -65,7 +65,7 @@ export const ManagePostListView = defineComponent({
             width: 300,
             render(row) {
               return (
-                <RouterLink to={'/posts/edit/' + row.id}>
+                <RouterLink to={'/posts/edit?id=' + row.id}>
                   {row.title}
                 </RouterLink>
               )

@@ -43,17 +43,18 @@ import { SidebarLayout } from '../layouts/sidebar'
 import { DashBoardView } from '../views/dashboard'
 import LoginView from '../views/login/index.vue'
 import { ManagePostListView } from '../views/manage-posts/list'
+import { RouteName } from './constants'
 
 export const routeForMenu: Array<RouteRecordRaw> = [
   {
     path: '/dashboard',
     component: DashBoardView,
-    name: 'dashboard',
+    name: RouteName.Dashboard,
     meta: { title: '仪表盘', icon: <Icon icon={dashboardFilled} /> },
   },
   {
     path: '/posts',
-    name: 'post',
+    name: RouteName.Post,
     meta: {
       title: '博文',
       icon: (
@@ -67,7 +68,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     children: [
       {
         path: 'view',
-        name: 'view-posts',
+        name: RouteName.ViewPost,
         meta: {
           title: '管理文章',
           icon: (
@@ -80,18 +81,10 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         component: () =>
           import('../views/manage-posts/list').then(m => m.ManagePostListView),
       },
-      {
-        path: 'edit/:id',
-        name: 'edit-posts',
-        meta: {
-          hide: true,
-        },
-        props: true,
-        component: () => import('../views/emptyview'),
-      },
+
       {
         path: 'edit',
-        name: 'new-posts',
+        name: RouteName.EditPost,
         meta: {
           title: '撰写文章',
           icon: (
@@ -106,7 +99,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
 
       {
         path: 'category',
-        name: 'edit-category',
+        name: RouteName.EditCategory,
         meta: {
           title: '分类/标签',
           icon: (
@@ -121,7 +114,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
   },
   {
     path: '/notes',
-    name: 'note',
+    name: RouteName.Note,
     meta: {
       title: '记录',
       icon: (
@@ -149,7 +142,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
       },
       {
         path: 'edit',
-        name: 'edit-notes',
+        name: RouteName.EditNote,
         meta: {
           title: '树洞',
           icon: (
@@ -164,7 +157,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
   },
   {
     path: '/comments',
-    name: 'comment',
+    name: RouteName.Comment,
     meta: {
       title: '评论',
       icon: (
@@ -177,7 +170,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
   },
   {
     path: '/page',
-    name: 'page',
+    name: RouteName.Page,
     meta: {
       title: '页面',
       icon: (
@@ -190,7 +183,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     children: [
       {
         path: 'list',
-        name: 'page-list',
+        name: RouteName.ListPage,
         meta: {
           title: '独立页面',
           icon: (
@@ -204,7 +197,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
       },
       {
         path: 'edit',
-        name: 'page-edit',
+        name: RouteName.EditPage,
         meta: {
           title: '创建页面',
           icon: (
@@ -219,7 +212,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
   },
   {
     path: '/say',
-    name: 'say',
+    name: RouteName.Say,
     meta: {
       title: '说说',
       icon: (
@@ -232,7 +225,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     children: [
       {
         path: 'list',
-        name: 'say-list',
+        name: RouteName.ListSay,
         meta: {
           title: '说什么了',
           icon: (
@@ -245,7 +238,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
       },
       {
         path: 'edit',
-        name: 'say-edit',
+        name: RouteName.EditSay,
         meta: {
           title: '说点什么呢',
           icon: (
@@ -260,7 +253,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
   },
   {
     path: '/project',
-    name: 'project',
+    name: RouteName.Project,
     meta: {
       title: '项目',
       icon: (
@@ -273,7 +266,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     children: [
       {
         path: 'list',
-        name: 'project-list',
+        name: RouteName.ListProject,
         meta: {
           title: '项目列表',
           icon: (
@@ -286,7 +279,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
       },
       {
         path: 'edit',
-        name: 'project-edit',
+        name: RouteName.EditProject,
         meta: {
           title: '创建项目',
           icon: (
@@ -301,7 +294,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
   },
   {
     path: '/friends',
-    name: 'friends',
+    name: RouteName.Friend,
     meta: {
       title: '朋友们',
       icon: (
@@ -314,7 +307,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
   },
   {
     path: '/files',
-    name: 'files',
+    name: RouteName.File,
     meta: {
       title: '管理文件',
       icon: (
@@ -328,6 +321,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
 
   {
     path: '/analyze',
+    name: RouteName.Analyze,
     component: () => import('../views/emptyview'),
     meta: {
       title: '数据',
@@ -337,11 +331,10 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         </VIcon>
       ),
     },
-    name: 'analyze',
   },
   {
     path: '/setting',
-    name: 'setting',
+    name: RouteName.Setting,
     meta: {
       title: '设定',
       icon: (
@@ -355,7 +348,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     children: [
       {
         path: 'profile',
-        name: 'setting-profile',
+        name: RouteName.Profile,
         meta: {
           title: '主人设定',
           icon: (
@@ -368,7 +361,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
       },
       {
         path: 'system',
-        name: 'setting-system',
+        name: RouteName.System,
         meta: {
           title: '系统设定',
           icon: (
@@ -381,7 +374,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
       },
       {
         path: 'security',
-        name: 'setting-security',
+        name: RouteName.Security,
         meta: {
           title: '安全',
           icon: (
@@ -394,7 +387,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
       },
       {
         path: 'reset',
-        name: 'reset',
+        name: RouteName.Reset,
         meta: {
           title: '重置',
           icon: (
@@ -409,7 +402,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
   },
   {
     path: '/other',
-    name: 'other',
+    name: RouteName.Other,
     meta: {
       title: '其他',
       icon: (
@@ -422,7 +415,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     children: [
       {
         path: 'backup',
-        name: 'backup',
+        name: RouteName.Backup,
         meta: {
           title: '备份',
           icon: (
@@ -435,7 +428,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
       },
       {
         path: 'markdown',
-        name: 'markdown',
+        name: RouteName.Markdown,
         meta: {
           title: 'Markdown 导入导出',
 
@@ -449,7 +442,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
       },
       {
         path: 'optimize',
-        name: 'optimize',
+        name: RouteName.Optimize,
         meta: {
           title: '优化',
           icon: (
@@ -469,14 +462,14 @@ export const router = createRouter({
     {
       path: '/',
       component: SidebarLayout,
-      name: 'home',
+      name: RouteName.Home,
       redirect: '/dashboard',
       children: [...routeForMenu],
     },
 
     {
       path: '/login',
-      name: 'login',
+      name: RouteName.Login,
       meta: { isPublic: true, title: '登陆' },
       // @ts-expect-error fuck vue
       component: LoginView,
