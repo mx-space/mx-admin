@@ -878,10 +878,10 @@
   resolved "https://registry.yarnpkg.com/@vicons/material/-/material-0.9.0.tgz#74f3a647822b2f465c7e9180d8a53454ab5174ff"
   integrity sha512-OIAMweoSstoKunrEO+Flc3Ncu751MkpFMtHvuMUipzHiqK8W/BiVIDgYqwfX+Rwd7VNMM0z7NOS0hz8vglrGYQ==
 
-"@vicons/tabler@0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@vicons/tabler/-/tabler-0.9.0.tgz#8c953dd282a3be8a72e7f3bb9e75f30441c8f68b"
-  integrity sha512-VWScYJbMShx1hBWlYdkmFRiLjA6Jb+GRJpshD2EENk6hJYo8PT4F89RAXd9M0AHRuLRRpQUHqBIg3O7o1ADZRQ==
+"@vicons/tabler@0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@vicons/tabler/-/tabler-0.10.0.tgz#2df708cb009e9d2f3668d1709718b54703a9181e"
+  integrity sha512-CjFcGP/T2GmoU3dJQDXiImsoo+kZTnO6S2VpMVpYHHlaFvpRiDShD/iiaLf+0U3zvmGyg8wyi49fjGN0Cn6NRw==
 
 "@vicons/utils@0.1.4":
   version "0.1.4"
