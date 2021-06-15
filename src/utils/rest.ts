@@ -7,8 +7,7 @@
  * @Coding with Love
  */
 
-// import * as camelcaseKeys from 'camelcase-keys'
-// const camelcaseKeys = require('camelcase-keys')
+import camelcaseKeys from 'camelcase-keys'
 import {
   extend,
   RequestMethod,
@@ -18,7 +17,6 @@ import {
 import { __DEV__ } from '.'
 import { router } from '../router/router'
 import { getToken } from './auth'
-import { camelcaseKeys } from './case'
 
 const Message = window.message
 

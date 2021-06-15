@@ -7,8 +7,7 @@ import {
   useMessage,
 } from 'naive-ui'
 import { CategoryStore } from 'stores/category'
-import { ref } from 'vue'
-import { RouterView, useRoute, useRouter } from 'vue-router'
+import { RouterView } from 'vue-router'
 import { UIStore } from './stores/ui'
 import { UserStore } from './stores/user'
 import { useInjector, useProviders } from './utils/deps-injection'

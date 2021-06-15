@@ -15,8 +15,8 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 export default defineConfig({
   plugins: [vue(), tsconfigPaths(), visualizer({ open: false })],
   build: {
-    minify: false,
-    sourcemap: true,
+    // minify: false,
+    // sourcemap: true,
   },
   base: '',
   server: {

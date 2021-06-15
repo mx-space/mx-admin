@@ -453,6 +453,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     ],
   },
 ]
+
 export const router = createRouter({
   history: createWebHashHistory(),
   routes: [
