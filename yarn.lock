@@ -868,10 +868,10 @@
   resolved "https://registry.yarnpkg.com/@vicons/ionicons4/-/ionicons4-0.9.0.tgz#0de815b57192d55a1eec19b394717048ac0b0166"
   integrity sha512-JhojvK7xINgCcGN7UDLwkQPfZ0LEo4e6+EFkYWnYoKtzaFM+ugRVfO0P2k1Ux77xTkqa9kEotH5MgYGhSUgV/A==
 
-"@vicons/ionicons5@0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@vicons/ionicons5/-/ionicons5-0.9.0.tgz#2e1709c5b092bfb21200af7c76b637c35d6dea06"
-  integrity sha512-qHZ6lvt5Ed9kTigJ2HbD35BvAXewFJLHo5OS6yS4P3z5pvCZcbHDFnpW6FkSzWauryKhHVR14GGdRycYk9P0bg==
+"@vicons/ionicons5@0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@vicons/ionicons5/-/ionicons5-0.10.0.tgz#94641a71850d9e251f1059b67da4c19326bce962"
+  integrity sha512-AgOAI15sXiasLKozj9Nkrxdda8BoaFN4TaprFCcHbBMLFOUwk6QLLHRngC+X5YhYXVjLqMbQ6FtEbrPSPYIZEA==
 
 "@vicons/material@0.9.0":
   version "0.9.0"
