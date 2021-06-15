@@ -858,10 +858,10 @@
   resolved "https://registry.yarnpkg.com/@vicons/fa/-/fa-0.9.0.tgz#fe7a42dfed6f3890b56b4f2a94bdfcd2feded773"
   integrity sha512-Rsbm4miDOKGGDvPlmsOyz8FEmyCCyUeGdjZmuGmeuYyx/3/TSYPbA2Ptbk1IRgP294e9FDC23lNQ4jsoFbdtRA==
 
-"@vicons/fluent@0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@vicons/fluent/-/fluent-0.9.0.tgz#c31ac60a335c6e92acfa3e155b58e3682795cb11"
-  integrity sha512-urJ+nT1KLRGnEDoJSd8OxNlRvjnD4U5pEP/KkgKSpHYWaqK60OT4QzRwXgvhhjw3OsIAuVaSQsvl5QHLNZ20CQ==
+"@vicons/fluent@0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@vicons/fluent/-/fluent-0.10.0.tgz#b9967841bd8727e9297b17d9e414cd3e2454ae25"
+  integrity sha512-ZAIU3GzOQDJttzxpABiluYtIwFfWq/mLnSknNAZHBv4d1f18u61sfZohckz42Ax7m7JWmDZhXwmDJOjo/zb+Vw==
 
 "@vicons/ionicons4@0.9.0":
   version "0.9.0"
