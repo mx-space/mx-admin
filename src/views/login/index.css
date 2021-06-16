@@ -1,6 +1,6 @@
 .bg {
   @apply fixed top-0 left-0 right-0 bottom-0;
-  @apply bg-cover bg-center bg-no-repeat -m-4 bg-primary;
+  @apply bg-cover bg-center bg-no-repeat -m-4 bg-primary-default;
 
   filter: blur(20px);
 }

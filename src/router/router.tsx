@@ -89,7 +89,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           ),
         },
         props: true,
-        component: () => import('../views/emptyview'),
+        component: () => import('../views/manage-posts/write'),
       },
 
       {

@@ -28,9 +28,11 @@ module.exports = {
         auto: 'auto',
       },
       colors: {
-        primary: '#1a9cf3',
-        deep: '#1681e1',
-        shallow: '#13afea',
+        primary: {
+          default: '#18A058FF',
+          deep: '#0C7A43FF',
+          shallow: '#36AD6AFF',
+        },
       },
     },
   },

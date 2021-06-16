@@ -17,12 +17,12 @@ body {
 }
 
 a {
-  color: #1890ff;
+  @apply text-primary-default;
   text-decoration: none;
 }
 
 a:hover {
-  color: #5eaad6;
+  @apply text-primary-shallow;
 }
 
 button:focus,
