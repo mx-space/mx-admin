@@ -148,7 +148,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
             </VIcon>
           ),
         },
-        component: () => import('../views/emptyview'),
+        component: () => import('../views/manage-notes/write'),
       },
     ],
   },

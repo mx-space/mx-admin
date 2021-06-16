@@ -1,10 +1,16 @@
 import { defineComponent, onMounted } from '@vue/runtime-core'
-import { NDialogProvider, NMessageProvider, useMessage } from 'naive-ui'
+import {
+  NConfigProvider,
+  NDialogProvider,
+  NMessageProvider,
+  useMessage,
+} from 'naive-ui'
 import { CategoryStore } from 'stores/category'
 import { RouterView } from 'vue-router'
 import { UIStore } from './stores/ui'
 import { UserStore } from './stores/user'
 import { useInjector, useProviders } from './utils/deps-injection'
+import { zhCN, dateZhCN } from 'naive-ui'
 
 const Root = defineComponent({
   name: 'home',
@@ -38,12 +44,13 @@ const App = defineComponent({
 
     return () => (
       // <NConfigProvider themeOverrides={themeOverrides}>
-      <NMessageProvider>
-        <NDialogProvider>
-          <Root />
-        </NDialogProvider>
-      </NMessageProvider>
-      // </NConfigProvider>
+      <NConfigProvider locale={zhCN} dateLocale={dateZhCN}>
+        <NMessageProvider>
+          <NDialogProvider>
+            <Root />
+          </NDialogProvider>
+        </NMessageProvider>
+      </NConfigProvider>
     )
   },
 })

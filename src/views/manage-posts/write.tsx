@@ -28,6 +28,7 @@ import {
 } from 'naive-ui'
 import { isString } from 'lodash-es'
 import { RouteName } from 'router/constants'
+import { ParseContentButton } from 'components/logic/parse-button'
 type PostReactiveType = {
   title: string
   text: string
@@ -128,6 +129,7 @@ const PostWriteView = defineComponent(() => {
       title={id.value ? '修改文章' : '撰写新文章'}
       actionsElement={
         <>
+          <ParseContentButton data={data} />
           <HeaderActionButton
             icon={<Send16Filled />}
             onClick={handleSubmit}
@@ -157,7 +159,7 @@ const PostWriteView = defineComponent(() => {
         }}
       ></MaterialInput>
 
-      <div class={'text-gray-500 '}>
+      <div class={'text-gray-500 py-3'}>
         <label class="prefix">{`${baseUrl}/${category.value.slug}/`}</label>
 
         <UnderlineInput

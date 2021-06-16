@@ -1,5 +1,5 @@
 .root {
-  @apply relative inline-flex py-3 items-center;
+  @apply relative inline-flex  items-center;
 
   line-height: 1.4;
   transition: border 0.5s;
