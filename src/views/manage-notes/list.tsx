@@ -1,6 +1,7 @@
 import { Add12Filled, Delete16Regular } from '@vicons/fluent'
 import { defineComponent, onMounted } from '@vue/runtime-core'
 import { Table } from 'components/table'
+import { RelativeTime } from 'components/time/relative-time'
 import { useTable } from 'hooks/use-table'
 import {
   NButton,
@@ -131,7 +132,7 @@ export const ManageNoteListView = defineComponent({
             sortOrder: 'descend',
             sorter: 'default',
             render(row) {
-              return relativeTimeFromNow(row.created)
+              return <RelativeTime time={row.created} />
             },
           },
           {

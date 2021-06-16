@@ -16,7 +16,7 @@ export const UnderlineInput = defineComponent({
             props.onChange((e.target as any).value)
           }}
         />
-        <span class="text-transparent">{props.value}</span>
+        <span class="text-transparent">{props.value}&nbsp;</span>
       </div>
     )
   },
