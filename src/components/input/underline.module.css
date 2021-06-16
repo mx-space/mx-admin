@@ -1,0 +1,25 @@
+.root {
+  @apply relative inline-flex py-3 items-center;
+
+  line-height: 1.4;
+  transition: border 0.5s;
+  box-sizing: border-box;
+  min-width: 200px;
+
+  > span {
+    @apply whitespace-nowrap;
+  }
+
+  > input {
+    box-sizing: border-box;
+
+    @apply bg-transparent w-full;
+    outline: 0;
+    display: inline-block;
+    border-bottom: 1px solid currentColor;
+    &:hover,
+    &:focus {
+      border-bottom: 1px solid theme(colors.primary.default);
+    }
+  }
+}

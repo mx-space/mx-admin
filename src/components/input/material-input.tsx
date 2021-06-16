@@ -1,23 +1,10 @@
 import clsx from 'clsx'
 import { defineComponent, onMounted, PropType, ref } from 'vue'
+import { inputBaseProps } from './base'
 import styles from './material.module.css'
 export const MaterialInput = defineComponent({
   props: {
-    type: {
-      type: String,
-    },
-    value: {
-      type: String,
-      required: true,
-    },
-    placeholder: {
-      type: String,
-    },
-    onChange: {
-      type: Function as PropType<(value: string) => void>,
-      required: true,
-    },
-
+    ...inputBaseProps,
     label: {
       type: String,
       required: true,

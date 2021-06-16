@@ -13,8 +13,11 @@ export const ContentLayout = defineComponent({
       type: Object as PropType<JSX.Element>,
       required: false,
     },
+    title: {
+      type: String,
+    },
   },
-  setup({ actionsElement, footerButtonElement }, ctx) {
+  setup({ actionsElement, footerButtonElement, title }, ctx) {
     const { slots } = ctx
     const router = useRouter()
     const route = computed(() => router.currentRoute)
@@ -23,7 +26,9 @@ export const ContentLayout = defineComponent({
     return () => (
       <>
         <header class={styles['header']}>
-          <h1 class={styles['title']}>{route.value.value.meta.title}</h1>
+          <h1 class={styles['title']}>
+            {title ?? route.value.value.meta.title}
+          </h1>
 
           <div class={clsx(styles['header-actions'], 'space-x-4')}>
             {actionsElement ? <A$ael /> : slots.actions?.()}
