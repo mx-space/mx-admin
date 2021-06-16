@@ -16,7 +16,7 @@ export const useTable = <T = any>(
     sortBy: '',
     sortOrder: 0,
   })
-  const checkedRowKeys = ref<RowKey[]>([])
+  const checkedRowKeys = ref<string[]>([])
 
   return {
     data,

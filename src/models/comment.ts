@@ -23,3 +23,9 @@ export interface CommentsResponse {
   data: CommentModel[]
   page: Pager
 }
+
+export enum CommentState {
+  Unread,
+  Read,
+  Junk,
+}

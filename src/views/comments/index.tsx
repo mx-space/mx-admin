@@ -4,7 +4,7 @@ import { Table } from 'components/table'
 import { baseUrl } from 'constants/env'
 import { useTable } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
-import { CommentModel, CommentsResponse } from 'models/comment'
+import { CommentModel, CommentsResponse, CommentState } from 'models/comment'
 import {
   NAvatar,
   NButton,
@@ -17,6 +17,7 @@ import {
   NSpace,
   NTabPane,
   NTabs,
+  useDialog,
   useMessage,
 } from 'naive-ui'
 import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
@@ -92,7 +93,7 @@ const ManageComment = defineComponent(() => {
     { immediate: true },
   )
 
-  async function changeState(id: string | string[], state: CommentType) {
+  async function changeState(id: string | string[], state: CommentState) {
     if (Array.isArray(id)) {
       id.map(async i => {
         await RESTManager.api.comments(i).patch({ data: { state } })
@@ -244,6 +245,8 @@ const ManageComment = defineComponent(() => {
     },
   ])
 
+  const dialog = useDialog()
+
   return () => (
     <ContentLayout
       actionsElement={
@@ -252,18 +255,39 @@ const ManageComment = defineComponent(() => {
             name="已读"
             icon={<CheckCircleRegular />}
             variant="success"
+            onClick={() => {
+              changeState(checkedRowKeys.value, CommentState.Read)
+              checkedRowKeys.value.length = 0
+            }}
           ></HeaderActionButton>
 
           <HeaderActionButton
             name="标记为垃圾"
             icon={<TrashAlt />}
             variant="warning"
+            onClick={() => {
+              changeState(checkedRowKeys.value, CommentState.Junk)
+              checkedRowKeys.value.length = 0
+            }}
           ></HeaderActionButton>
 
           <HeaderActionButton
             name="删除"
             icon={<Times />}
             variant="error"
+            onClick={() => {
+              dialog.warning({
+                title: '警告',
+                content: '你确定要删除多条评论？',
+                positiveText: '确定',
+                negativeText: '不确定',
+                onPositiveClick: async () => {
+                  await handleDelete(checkedRowKeys.value)
+                  checkedRowKeys.value.length = 0
+                },
+                onNegativeClick: () => {},
+              })
+            }}
           ></HeaderActionButton>
         </Fragment>
       }
