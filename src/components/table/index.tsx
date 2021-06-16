@@ -6,7 +6,12 @@ import {
   TableColumns,
 } from 'naive-ui/lib/data-table/src/interface'
 import { defineComponent, reactive, ref, Ref } from 'vue'
-import { LocationQueryValue, useRoute, useRouter } from 'vue-router'
+import {
+  LocationQueryValue,
+  onBeforeRouteUpdate,
+  useRoute,
+  useRouter,
+} from 'vue-router'
 import styles from './index.module.css'
 
 const TableProps = [
@@ -53,11 +58,10 @@ export const Table = defineComponent<{
     sortOrder: 0,
   })
   const loading = ref(false)
-  router.beforeEach(() => {
-    loading.value = true
-  })
 
-  router.afterEach(() => {
+  onBeforeRouteUpdate((to, from, next) => {
+    loading.value = true
+    next()
     loading.value = false
   })
 

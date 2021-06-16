@@ -24,6 +24,10 @@ router.afterEach((to, _) => {
   progress.finish()
 })
 
+router.onError(() => {
+  progress.finish()
+})
+
 function getPageTitle(pageTitle?: string | null) {
   if (pageTitle) {
     return `${pageTitle} - ${title}`

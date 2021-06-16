@@ -14,8 +14,6 @@ export const ParseContentButton = defineComponent({
     const parseContentDialogShow = ref(false)
     const unparsedValue = ref('')
     const handleParseContent = (value: string) => {
-      console.log(value)
-
       const str = value.trim()
       const lines = str.split('\n')
       const title = lines.slice(0, 1)[0]

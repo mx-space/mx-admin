@@ -2,12 +2,36 @@ import {
   defineAsyncComponent,
   defineComponent,
   onMounted,
+  onUnmounted,
   PropType,
   Ref,
   ref,
+  toRaw,
   watch,
 } from 'vue'
 import { editor as Editor, KeyMod, KeyCode, Selection } from 'monaco-editor'
+import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
+
+const popStateHandler = e => {
+  const res = confirm('文章未保存是否后退')
+  if (!res) {
+    pushState()
+  } else {
+    history.back()
+    window.removeEventListener('popstate', popStateHandler)
+  }
+}
+
+function pushState() {
+  history.pushState(null, window.location.href)
+}
+
+const beforeUnloadHandler = event => {
+  event.preventDefault()
+  // Chrome requires returnValue to be set.
+  event.returnValue = '文章未保存是否后退'
+  return false
+}
 
 const _MonacoEditor = defineComponent({
   props: {
@@ -43,15 +67,37 @@ const _MonacoEditor = defineComponent({
         props.innerRef.value = editor
       }
     })
+    // HACK
+    let memoInitialValue: string = toRaw(props.text)
 
     watch(
       () => props.text,
       n => {
+        if (!memoInitialValue && n) {
+          memoInitialValue = n
+        }
         if (editor && n != editor.getValue()) {
           editor.setValue(n)
         }
       },
     )
+
+    onMounted(() => {
+      window.addEventListener('beforeunload', beforeUnloadHandler)
+    })
+    onUnmounted(() => {
+      window.removeEventListener('beforeunload', beforeUnloadHandler)
+    })
+
+    onBeforeRouteLeave(() => {
+      if (editor.getValue() == memoInitialValue) {
+        return
+      }
+      const res = confirm('文章未保存是否继续')
+      if (!res) {
+        return false
+      }
+    })
     return () => (
       <div
         class="editor relative overflow-hidden"
@@ -60,6 +106,7 @@ const _MonacoEditor = defineComponent({
       ></div>
     )
   },
+  beforeRouteLeave() {},
 })
 
 export const MonacoEditor = defineAsyncComponent(() =>

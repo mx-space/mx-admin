@@ -1,4 +1,6 @@
-import { Add12Filled, Delete16Regular } from '@vicons/fluent'
+import { Bookmark } from '@vicons/fa'
+import { Add12Filled, Delete16Regular, EyeHide20Filled } from '@vicons/fluent'
+import { Icon } from '@vicons/utils'
 import { defineComponent, onMounted } from '@vue/runtime-core'
 import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
@@ -12,7 +14,7 @@ import {
   useMessage,
 } from 'naive-ui'
 import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
-import { parseDate, relativeTimeFromNow } from 'utils/time'
+import { parseDate } from 'utils/time'
 import { PropType, reactive, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { HeaderActionButton } from '../../components/button/rounded-button'
@@ -28,7 +30,8 @@ export const ManageNoteListView = defineComponent({
           params: {
             page,
             size,
-            select: 'title _id id created modified mood weather',
+            select:
+              'title _id id created modified mood weather hide secret hasMemory',
             ...(sortProps.sortBy
               ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
               : {}),
@@ -71,8 +74,22 @@ export const ManageNoteListView = defineComponent({
             width: 300,
             render(row) {
               return (
-                <RouterLink to={'/notes/edit?id=' + row.id}>
-                  {row.title}
+                <RouterLink
+                  to={'/notes/edit?id=' + row.id}
+                  class="flex items-center space-x-2"
+                >
+                  <span>{row.title}</span>
+                  {row.hide ||
+                  (row.secret && +new Date(row.secret) - +new Date() > 0) ? (
+                    <Icon color="#34495e">
+                      <EyeHide20Filled />
+                    </Icon>
+                  ) : null}
+                  {row.hasMemory ? (
+                    <Icon color="#e74c3c">
+                      <Bookmark />
+                    </Icon>
+                  ) : null}
                 </RouterLink>
               )
             },
@@ -86,8 +103,6 @@ export const ManageNoteListView = defineComponent({
                 <EditColumn
                   initialValue={data.value[index].mood}
                   onSubmit={async v => {
-                    console.log(v)
-
                     await RESTManager.api.notes(row.id).put({
                       data: {
                         mood: v,
@@ -118,7 +133,6 @@ export const ManageNoteListView = defineComponent({
                     })
                     message.success('修改成功')
                     data.value[index].weather = v
-                    console.log(data.value[index].weather)
                   }}
                   placeholder="天气"
                 />

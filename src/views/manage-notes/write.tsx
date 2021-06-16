@@ -104,6 +104,8 @@ const NoteWriteView = defineComponent(() => {
     const parseDataToPayload = (): { [key in keyof NoteModel]?: any } => {
       return {
         ...toRaw(data),
+        title:
+          data.title && data.title.trim() ? data.title.trim() : defaultTitle,
         password:
           data.password && data.password.length > 0 ? data.password : null,
         secret: data.secret
@@ -139,13 +141,7 @@ const NoteWriteView = defineComponent(() => {
 
     router.push({ name: RouteName.ViewNote })
   }
-  const parseContentDialogShow = ref(false)
 
-  const handleParseContent = (value: string) => {
-    console.log(value)
-
-    parseContentDialogShow.value = false
-  }
   return () => (
     <ContentLayout
       title={'树洞'}
@@ -337,51 +333,6 @@ const NoteWriteView = defineComponent(() => {
         </NDrawerContent>
       </NDrawer>
       {/* Drawer END */}
-
-      {/* Dialog  */}
-      <NModal
-        show={parseContentDialogShow.value}
-        onUpdateShow={s => (parseContentDialogShow.value = s)}
-      >
-        <NCard title="解析 Markdown" style="max-width: 90vw;width: 60rem">
-          {{
-            default() {
-              const value = ref('')
-
-              return (
-                <NSpace vertical size={'large'}>
-                  <NInput
-                    value={value.value}
-                    onInput={e => (value.value = e)}
-                    type="textarea"
-                    placeholder="再此输入 Markdown 文本"
-                    rows={16}
-                  />
-                  <NSpace justify="end">
-                    <NButton
-                      round
-                      type="primary"
-                      onClick={() => handleParseContent(value.value)}
-                    >
-                      确定
-                    </NButton>
-                    <NButton
-                      onClick={_ => {
-                        parseContentDialogShow.value = false
-                      }}
-                      round
-                    >
-                      取消
-                    </NButton>
-                  </NSpace>
-                </NSpace>
-              )
-            },
-          }}
-        </NCard>
-      </NModal>
-
-      {/* Dialog End  */}
     </ContentLayout>
   )
 })
