@@ -26,7 +26,9 @@
   padding-top: 0;
 
   @screen phone {
-    @apply p-4;
+    & {
+      @apply p-4;
+    }
   }
 }
 

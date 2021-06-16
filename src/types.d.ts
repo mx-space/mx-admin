@@ -1,11 +1,19 @@
-interface MessageApiInjection {
-  info: (content: string, options?: any) => any
-  success: (content: string, options?: any) => any
-  warning: (content: string, options?: any) => any
-  error: (content: string, options?: any) => any
-  loading: (content: string, options?: any) => any
+import { MessageApi } from 'naive-ui'
+import { VNodeProps } from 'vue'
+
+declare global {
+  export interface Window {
+    message: MessageApi
+  }
+
+  export const message: MessageApi
+
+  export const Fragment: {
+    new (): {
+      $props: VNodeProps
+    }
+    __isFragment: true
+  }
 }
 
-declare interface Window {
-  message: MessageApiInjection
-}
+export {}

@@ -53,7 +53,7 @@ export const ManagePageListView = defineComponent({
         const columns = reactive<TableColumns<any>>([
           {
             type: 'selection',
-            options: ['all', 'none'],
+            options: ['none', 'all'],
           },
           {
             title: '标题',
@@ -72,6 +72,13 @@ export const ManagePageListView = defineComponent({
           {
             title: '副标题',
             key: 'subtitle',
+          },
+          {
+            title: '路径',
+            key: 'slug',
+            render(row) {
+              return '/' + row.slug
+            },
           },
           {
             title: '创建时间',

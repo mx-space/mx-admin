@@ -5,7 +5,7 @@ import {
   SortState,
   TableColumns,
 } from 'naive-ui/lib/data-table/src/interface'
-import { defineComponent, reactive, ref, Ref } from 'vue'
+import { defineComponent, reactive, ref, Ref, watch } from 'vue'
 import {
   LocationQueryValue,
   onBeforeRouteUpdate,
@@ -57,7 +57,19 @@ export const Table = defineComponent<{
     sortBy: '',
     sortOrder: 0,
   })
-  const loading = ref(false)
+  const loading = ref(true)
+
+  // HACK
+  const clean = watch(
+    () => data.value,
+    n => {
+      // if (n.length) {
+
+      // }
+      loading.value = false
+      clean()
+    },
+  )
 
   onBeforeRouteUpdate((to, from, next) => {
     loading.value = true
@@ -68,7 +80,7 @@ export const Table = defineComponent<{
   return () => (
     <NDataTable
       {...nTableProps}
-      loading={data.value.length == 0 || loading.value}
+      loading={loading.value}
       remote
       // @ts-expect-error
       pagination={
@@ -80,7 +92,10 @@ export const Table = defineComponent<{
               pageCount: pager.value.totalPage,
 
               onChange: async page => {
-                router.push({ query: { page }, path: route.path })
+                router.push({
+                  query: { ...route.query, page },
+                  path: route.path,
+                })
               },
             }
       }

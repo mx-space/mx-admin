@@ -74,7 +74,7 @@ export const ManagePostListView = defineComponent({
         const columns = reactive<TableColumns<any>>([
           {
             type: 'selection',
-            options: ['all', 'none'],
+            options: ['none', 'all'],
           },
           {
             title: '标题',
