@@ -2,10 +2,17 @@ import { Add12Filled, Delete16Regular } from '@vicons/fluent'
 import { defineComponent, onMounted } from '@vue/runtime-core'
 import { Table } from 'components/table'
 import { useTable } from 'hooks/use-table'
-import { NButton, NPopconfirm, NSpace, useDialog, useMessage } from 'naive-ui'
+import {
+  NButton,
+  NInput,
+  NPopconfirm,
+  NSpace,
+  useDialog,
+  useMessage,
+} from 'naive-ui'
 import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { parseDate, relativeTimeFromNow } from 'utils/time'
-import { reactive, watch } from 'vue'
+import { PropType, reactive, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
@@ -72,8 +79,51 @@ export const ManageNoteListView = defineComponent({
           {
             title: '心情',
             key: 'mood',
+            width: 200,
+            render(row, index) {
+              return (
+                <EditColumn
+                  initialValue={data.value[index].mood}
+                  onSubmit={async v => {
+                    console.log(v)
+
+                    await RESTManager.api.notes(row.id).put({
+                      data: {
+                        mood: v,
+                      },
+                    })
+
+                    message.success('修改成功')
+                    data.value[index].mood = v
+                  }}
+                  placeholder="心情"
+                />
+              )
+            },
           },
-          { title: '天气', key: 'weather' },
+          {
+            title: '天气',
+            key: 'weather',
+            width: 200,
+            render(row, index) {
+              return (
+                <EditColumn
+                  initialValue={data.value[index].weather}
+                  onSubmit={async v => {
+                    await RESTManager.api.notes(row.id).put({
+                      data: {
+                        weather: v,
+                      },
+                    })
+                    message.success('修改成功')
+                    data.value[index].weather = v
+                    console.log(data.value[index].weather)
+                  }}
+                  placeholder="天气"
+                />
+              )
+            },
+          },
 
           {
             title: '创建时间',
@@ -182,5 +232,85 @@ export const ManageNoteListView = defineComponent({
         </ContentLayout>
       )
     }
+  },
+})
+
+const EditColumn = defineComponent({
+  props: {
+    initialValue: {
+      type: String,
+      required: true,
+    },
+    onSubmit: {
+      type: Function as PropType<(value: string) => void>,
+      required: true,
+    },
+    placeholder: {
+      type: String,
+    },
+  },
+  setup(props) {
+    const { onSubmit, placeholder } = props
+    const value = ref(props.initialValue)
+    watch(
+      () => props.initialValue,
+      n => {
+        value.value = n
+      },
+    )
+
+    const isEdit = ref(false)
+    const inputRef = ref<HTMLInputElement>()
+
+    watch(
+      () => isEdit.value,
+      n => {
+        if (n) {
+          requestAnimationFrame(() => {
+            inputRef.value?.focus()
+          })
+        }
+      },
+    )
+    const handleSubmit = () => {
+      onSubmit(value.value)
+      isEdit.value = false
+    }
+    return () => (
+      <>
+        {isEdit.value ? (
+          <NSpace align="center" wrap={false}>
+            <NInput
+              onKeydown={e => {
+                if (e.key == 'Enter') {
+                  handleSubmit()
+                }
+              }}
+              class="w-3/4"
+              value={value.value}
+              placeholder={placeholder ?? props.initialValue}
+              size="small"
+              autofocus
+              ref={inputRef}
+              onBlur={() => {
+                isEdit.value = false
+              }}
+              onInput={e => {
+                value.value = e
+              }}
+            ></NInput>
+          </NSpace>
+        ) : (
+          <button
+            class="w-full text-left"
+            onClick={() => {
+              isEdit.value = true
+            }}
+          >
+            {props.initialValue}&nbsp;
+          </button>
+        )}
+      </>
+    )
   },
 })

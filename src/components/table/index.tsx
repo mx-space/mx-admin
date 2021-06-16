@@ -52,9 +52,19 @@ export const Table = defineComponent<{
     sortBy: '',
     sortOrder: 0,
   })
+  const loading = ref(false)
+  router.beforeEach(() => {
+    loading.value = true
+  })
+
+  router.afterEach(() => {
+    loading.value = false
+  })
+
   return () => (
     <NDataTable
       {...nTableProps}
+      loading={data.value.length == 0 || loading.value}
       remote
       // @ts-expect-error
       pagination={

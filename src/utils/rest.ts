@@ -1,4 +1,5 @@
 import camelcaseKeys from 'camelcase-keys'
+import { isPlainObject } from 'lodash-es'
 import {
   extend,
   RequestMethod,
@@ -71,13 +72,15 @@ function buildRoute(manager: RESTManagerStatic): IRequestHandler {
     get(target: any, name: Method) {
       if (reflectors.includes(name)) return () => route.join('/')
       if (methods.includes(name)) {
-        return async (options: RequestOptionsWithResponse) =>
-          camelcaseKeys(
-            await manager.request(name, route.join('/'), {
-              ...options,
-            }),
-            { deep: true },
-          )
+        return async (options: RequestOptionsWithResponse) => {
+          const res = await manager.request(name, route.join('/'), {
+            ...options,
+          })
+
+          return Array.isArray(res) || isPlainObject(res)
+            ? camelcaseKeys(res, { deep: true })
+            : res
+        }
       }
       route.push(name)
       return new Proxy(noop, handler)

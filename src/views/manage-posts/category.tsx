@@ -1,22 +1,19 @@
 import { React } from '@vicons/fa'
 import { Add12Filled } from '@vicons/fluent'
-import {
-  HeaderActionButton,
-  RoundedButton,
-} from 'components/button/rounded-button'
+import { HeaderActionButton } from 'components/button/rounded-button'
 import { Table } from 'components/table'
 import { useTable } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
 import { TagModel } from 'models/category'
+import { PostModel } from 'models/post'
 import {
   NBadge,
   NButton,
-  NButtonGroup,
   NCard,
+  NDataTable,
   NForm,
   NFormItemRow,
   NH3,
-  NH4,
   NInput,
   NModal,
   NPopconfirm,
@@ -28,6 +25,7 @@ import { CategoryStore } from 'stores/category'
 import { useInjector } from 'utils/deps-injection'
 import { RESTManager } from 'utils/rest'
 import { defineComponent, onMounted, reactive, Ref, ref, watch } from 'vue'
+import { RouterLink } from 'vue-router'
 
 export const CategoryView = defineComponent(props => {
   const categoryStore = useInjector(CategoryStore)
@@ -48,6 +46,19 @@ export const CategoryView = defineComponent(props => {
   })
 
   const checkedTag = ref('')
+  const checkedTagPosts = reactive<PostModel[]>([])
+
+  watch(
+    () => checkedTag.value,
+    async name => {
+      const res = (await RESTManager.api
+        .categories(name)
+        .get({ params: { tag: 'true' } })) as any
+      checkedTagPosts.length = 0
+      checkedTagPosts.push(...res.data)
+    },
+  )
+
   const showDialog = ref<boolean | string>(false)
   const resetState = () => ({ name: '', slug: '' })
   const editCategoryState = ref<CategoryState>(resetState())
@@ -195,6 +206,36 @@ export const CategoryView = defineComponent(props => {
           )
         })}
       </NSpace>
+
+      {checkedTagPosts.length != 0 && (
+        <NDataTable
+          remote
+          class="mt-4"
+          data={checkedTagPosts}
+          columns={[
+            {
+              title: '标题',
+              key: 'title',
+              render(row) {
+                return (
+                  <RouterLink to={'/posts/edit?id=' + row.id}>
+                    <NButton type="primary" text>
+                      {row.title}
+                    </NButton>
+                  </RouterLink>
+                )
+              },
+            },
+            {
+              title: '分类',
+              key: 'category',
+              render(row) {
+                return row.category.name
+              },
+            },
+          ]}
+        />
+      )}
     </ContentLayout>
   )
 })
