@@ -848,40 +848,40 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@vicons/antd@0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@vicons/antd/-/antd-0.9.0.tgz#f91ee9d044ab4e9131333e2c01b43acef243e9cc"
-  integrity sha512-dgnJrcIthn9dda7c1G7DhgTOjIkpkbMbHkKdt7NADto5DB6leGSs3u/3RUJKLGRsA+kdYr4wCjREcO3NPXX9ng==
+"@vicons/antd@0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@vicons/antd/-/antd-0.10.0.tgz#17661ed654122a6450926f40ceba9fd67ae2e036"
+  integrity sha512-F+pVt2cYJDoJw5Wvu5YzvqnpCoUPeYh272R/ZVK+2H6U/G0LCDvEWNQHXkbLBpCtu9FAq/yac0NNfg1i0a1DGg==
 
-"@vicons/fa@0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@vicons/fa/-/fa-0.9.0.tgz#fe7a42dfed6f3890b56b4f2a94bdfcd2feded773"
-  integrity sha512-Rsbm4miDOKGGDvPlmsOyz8FEmyCCyUeGdjZmuGmeuYyx/3/TSYPbA2Ptbk1IRgP294e9FDC23lNQ4jsoFbdtRA==
+"@vicons/fa@0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@vicons/fa/-/fa-0.10.0.tgz#d91d5ca7cecbc7ca25e22f38c6b8340063826e32"
+  integrity sha512-Hcer9JeSsjFoglTG6DDDGljbHR7qkhHd0dYr1jasVVsOlGzdwLn2oi9Zke8RUD7d2WNcwUZx8FFmdUUWwV+9qw==
 
-"@vicons/fluent@0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@vicons/fluent/-/fluent-0.9.0.tgz#c31ac60a335c6e92acfa3e155b58e3682795cb11"
-  integrity sha512-urJ+nT1KLRGnEDoJSd8OxNlRvjnD4U5pEP/KkgKSpHYWaqK60OT4QzRwXgvhhjw3OsIAuVaSQsvl5QHLNZ20CQ==
+"@vicons/fluent@0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@vicons/fluent/-/fluent-0.10.0.tgz#b9967841bd8727e9297b17d9e414cd3e2454ae25"
+  integrity sha512-ZAIU3GzOQDJttzxpABiluYtIwFfWq/mLnSknNAZHBv4d1f18u61sfZohckz42Ax7m7JWmDZhXwmDJOjo/zb+Vw==
 
-"@vicons/ionicons4@0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@vicons/ionicons4/-/ionicons4-0.9.0.tgz#0de815b57192d55a1eec19b394717048ac0b0166"
-  integrity sha512-JhojvK7xINgCcGN7UDLwkQPfZ0LEo4e6+EFkYWnYoKtzaFM+ugRVfO0P2k1Ux77xTkqa9kEotH5MgYGhSUgV/A==
+"@vicons/ionicons4@0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@vicons/ionicons4/-/ionicons4-0.10.0.tgz#73c0059b9765a22ad14306fefc8f2aa2728e4659"
+  integrity sha512-ES4PkHqojTWeQtXkZ+FunPx3E4GZgM7gVRO00/h0kQvR5BPjMum15Kh2cvvnUNb9i6JfUr+WXV44N3qwlfMN9g==
 
-"@vicons/ionicons5@0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@vicons/ionicons5/-/ionicons5-0.9.0.tgz#2e1709c5b092bfb21200af7c76b637c35d6dea06"
-  integrity sha512-qHZ6lvt5Ed9kTigJ2HbD35BvAXewFJLHo5OS6yS4P3z5pvCZcbHDFnpW6FkSzWauryKhHVR14GGdRycYk9P0bg==
+"@vicons/ionicons5@0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@vicons/ionicons5/-/ionicons5-0.10.0.tgz#94641a71850d9e251f1059b67da4c19326bce962"
+  integrity sha512-AgOAI15sXiasLKozj9Nkrxdda8BoaFN4TaprFCcHbBMLFOUwk6QLLHRngC+X5YhYXVjLqMbQ6FtEbrPSPYIZEA==
 
-"@vicons/material@0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@vicons/material/-/material-0.9.0.tgz#74f3a647822b2f465c7e9180d8a53454ab5174ff"
-  integrity sha512-OIAMweoSstoKunrEO+Flc3Ncu751MkpFMtHvuMUipzHiqK8W/BiVIDgYqwfX+Rwd7VNMM0z7NOS0hz8vglrGYQ==
+"@vicons/material@0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@vicons/material/-/material-0.10.0.tgz#1213a111f729476ac053f883155b69c2d5262f48"
+  integrity sha512-3r5ft90RcEMGAHNCRVuZBOV6CFpA8vzBNwaCbFZzCRhcdQqn/48t+Eywvu/o2BQl52eSRYhIUCW9PDh+j6rLbQ==
 
-"@vicons/tabler@0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@vicons/tabler/-/tabler-0.9.0.tgz#8c953dd282a3be8a72e7f3bb9e75f30441c8f68b"
-  integrity sha512-VWScYJbMShx1hBWlYdkmFRiLjA6Jb+GRJpshD2EENk6hJYo8PT4F89RAXd9M0AHRuLRRpQUHqBIg3O7o1ADZRQ==
+"@vicons/tabler@0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@vicons/tabler/-/tabler-0.10.0.tgz#2df708cb009e9d2f3668d1709718b54703a9181e"
+  integrity sha512-CjFcGP/T2GmoU3dJQDXiImsoo+kZTnO6S2VpMVpYHHlaFvpRiDShD/iiaLf+0U3zvmGyg8wyi49fjGN0Cn6NRw==
 
 "@vicons/utils@0.1.4":
   version "0.1.4"
@@ -2958,10 +2958,10 @@ mz@^2.4.0:
     object-assign "^4.0.1"
     thenify-all "^1.0.0"
 
-naive-ui@2.11.11:
-  version "2.11.11"
-  resolved "https://registry.yarnpkg.com/naive-ui/-/naive-ui-2.11.11.tgz#191ffc123b2e7e663342b5a5e14211ed72b92023"
-  integrity sha512-rXepBKkdsdM6UkEuNbTPkmup+EbWY5i3kZOb54PSkc97o+DmeCTXY9UOTZYXDHks2522sA6T5bgLA/RWmJSGpA==
+naive-ui@2.11.12:
+  version "2.11.12"
+  resolved "https://registry.yarnpkg.com/naive-ui/-/naive-ui-2.11.12.tgz#40a0425603a6f1ffc54522a981b17264fad3f582"
+  integrity sha512-VqmEsJP2a2zwuEAhSPWGPiOkhfP/Ak4qrUEhJu5HOZO1iNloM3kg444vt7cHN+KYdGQOKynR51/pT6YYv7a78Q==
   dependencies:
     "@css-render/plugin-bem" "^0.15.4"
     "@css-render/vue3-ssr" "^0.15.4"
