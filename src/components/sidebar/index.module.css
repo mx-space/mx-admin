@@ -82,7 +82,8 @@
 
 .menu {
   height: 80vh;
-  overflow: overlay;
+
+  @apply bg-transparent text-white;
 
   @screen phone {
     & {

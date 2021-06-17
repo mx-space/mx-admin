@@ -9,7 +9,7 @@ import { buildMenus, MenuModel } from '../../utils/build-menus'
 import { useInjector } from '../../utils/deps-injection'
 import { Avatar } from '../avatar'
 import styles from './index.module.css'
-
+import { NLayoutContent } from 'naive-ui'
 export const Sidebar = defineComponent({
   name: 'sidebar-comp',
   props: {
@@ -91,7 +91,8 @@ export const Sidebar = defineComponent({
               <Icon icon={Hamburger} />
             </button>
           </div>
-          <div class={styles['menu']}>
+
+          <NLayoutContent class={styles['menu']} nativeScrollbar={false}>
             <div class={styles['items']}>
               {menus.value.map((item, index) => {
                 return (
@@ -176,7 +177,8 @@ export const Sidebar = defineComponent({
                 )
               })}
             </div>
-          </div>
+          </NLayoutContent>
+
           <div
             class={clsx(
               'bottom-bar flex space-x-2 items-center  transform translate-y-1/3 phone:hidden',
