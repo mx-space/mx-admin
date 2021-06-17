@@ -24,6 +24,13 @@ router.afterEach((to, _) => {
   progress.finish()
 })
 
+// HACK monaco save
+router.afterEach(to => {
+  if (to.hash == '|publish') {
+    router.replace({ ...to, hash: '' })
+  }
+})
+
 router.onError(() => {
   progress.finish()
 })

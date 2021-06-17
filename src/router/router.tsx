@@ -37,7 +37,6 @@ import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 import $RouterView from '../layouts/router-view'
 import { SidebarLayout } from '../layouts/sidebar'
 import { DashBoardView } from '../views/dashboard'
-import PlaceHolderView from '../views/emptyview'
 import LoginView from '../views/login/index.vue'
 import { RouteName } from './constants'
 
@@ -74,7 +73,8 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           ),
           query: { page: 1 },
         },
-        component: ManagePostListView,
+        component: () =>
+          import('../views/manage-posts/list').then(m => m.ManagePostListView),
       },
 
       {
@@ -157,6 +157,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     name: RouteName.Comment,
     meta: {
       title: '评论',
+      query: { page: 1, state: 0 },
       icon: (
         <VIcon>
           <Comment />
@@ -204,7 +205,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
             </VIcon>
           ),
         },
-        component: () => import('../views/emptyview'),
+        component: () => import('../views/manage-pages/write'),
       },
     ],
   },

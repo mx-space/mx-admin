@@ -1,4 +1,4 @@
-import { SlackHash, SlidersH } from '@vicons/fa'
+import { SlidersH } from '@vicons/fa'
 import { Send16Filled } from '@vicons/fluent'
 import { Icon } from '@vicons/utils'
 import { HeaderActionButton } from 'components/button/rounded-button'
@@ -15,7 +15,6 @@ import { NoteModel, NoteMusicRecord } from 'models/note'
 import { editor as Editor } from 'monaco-editor'
 import {
   NButton,
-  NCard,
   NDatePicker,
   NDrawer,
   NDrawerContent,
@@ -23,7 +22,6 @@ import {
   NForm,
   NFormItem,
   NInput,
-  NModal,
   NSelect,
   NSpace,
   NSwitch,
@@ -35,8 +33,8 @@ import { getDayOfYear } from 'utils/time'
 import {
   computed,
   defineComponent,
+  onBeforeMount,
   onMounted,
-  PropType,
   reactive,
   ref,
   toRaw,
@@ -56,10 +54,16 @@ type NoteReactiveType = {
 
 const NoteWriteView = defineComponent(() => {
   const route = useRoute()
-  const currentTime = new Date()
-  const defaultTitle = `记录 ${currentTime.getFullYear()} 年第 ${getDayOfYear(
-    currentTime,
-  )} 天`
+
+  let defaultTitle: string
+
+  onBeforeMount(() => {
+    const currentTime = new Date()
+    defaultTitle = `记录 ${currentTime.getFullYear()} 年第 ${getDayOfYear(
+      currentTime,
+    )} 天`
+  })
+
   const resetReactive: () => NoteReactiveType = () => ({
     text: '',
     title: '',
@@ -139,7 +143,7 @@ const NoteWriteView = defineComponent(() => {
       message.success('发布成功')
     }
 
-    router.push({ name: RouteName.ViewNote })
+    router.push({ name: RouteName.ViewNote, hash: '|publish' })
   }
 
   return () => (

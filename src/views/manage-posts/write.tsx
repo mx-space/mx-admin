@@ -122,7 +122,7 @@ const PostWriteView = defineComponent(() => {
       message.success('发布成功')
     }
 
-    router.push({ name: RouteName.ViewPost })
+    router.push({ name: RouteName.ViewPost, hash: '|publish' })
   }
   return () => (
     <ContentLayout

@@ -89,8 +89,13 @@ const _MonacoEditor = defineComponent({
       window.removeEventListener('beforeunload', beforeUnloadHandler)
     })
 
-    onBeforeRouteLeave(() => {
+    onBeforeRouteLeave(to => {
       if (editor.getValue() == memoInitialValue) {
+        return
+      }
+      console.log(to)
+      // HACK
+      if (to.hash == '|publish') {
         return
       }
       const res = confirm('文章未保存是否继续')
