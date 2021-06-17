@@ -22,7 +22,7 @@ import {
   NSwitch,
   useMessage,
 } from 'naive-ui'
-import { RouteName } from 'router/constants'
+import { RouteName } from 'router/name'
 import { CategoryStore } from 'stores/category'
 import { useInjector } from 'utils/deps-injection'
 import { RESTManager } from 'utils/rest'

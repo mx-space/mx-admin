@@ -13,7 +13,7 @@ import {
   useMessage,
 } from 'naive-ui'
 import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
-import { RouteName } from 'router/constants'
+import { RouteName } from 'router/name'
 import { reactive, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { HeaderActionButton } from '../../components/button/rounded-button'

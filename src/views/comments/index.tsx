@@ -17,11 +17,12 @@ import {
   NSpace,
   NTabPane,
   NTabs,
+  NText,
   useDialog,
   useMessage,
 } from 'naive-ui'
 import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
-import { RouteName } from 'router/constants'
+import { RouteName } from 'router/name'
 import { RESTManager } from 'utils/rest'
 import { relativeTimeFromNow } from 'utils/time'
 import { defineComponent, reactive, ref, watch } from 'vue'
@@ -59,6 +60,8 @@ const ManageComment = defineComponent(() => {
   const replyDialogShow = ref<boolean>(false)
   const replyComment = ref<CommentModel | null>(null)
   const replyText = ref('')
+  const replyInputRef = ref<HTMLInputElement>()
+  console.log(replyInputRef)
 
   const onReplySubmit = async () => {
     if (!replyComment.value) {
@@ -142,7 +145,7 @@ const ManageComment = defineComponent(() => {
             </a>
 
             <div>
-              <span class="text-gray-400">{row.ip}</span>
+              <NText depth="3">{row.ip}</NText>
             </div>
           </NSpace>
         )
@@ -178,11 +181,12 @@ const ManageComment = defineComponent(() => {
 
             {row.parent && (
               <blockquote class="border-l-[3px] border-solid border-primary-default pl-[12px] my-2 ml-4">
-                <NSpace size={2} align="center" class="text-gray-600">
-                  <span>{row.parent.author}</span>
-                  <span>在</span>
-                  <span>{relativeTimeFromNow(row.parent.created)}说: </span>
-                  <span>{row.parent.text}</span>
+                <NSpace size={2} align="center">
+                  <NText depth="2">
+                    {row.parent.author}&nbsp;在&nbsp;
+                    {relativeTimeFromNow(row.parent.created)}&nbsp;说:&nbsp;
+                    {row.parent.text}
+                  </NText>
                 </NSpace>
               </blockquote>
             )}
@@ -357,6 +361,7 @@ const ManageComment = defineComponent(() => {
               <NFormItemRow label={'回复内容'}>
                 <NInput
                   value={replyText.value}
+                  ref={replyInputRef}
                   type="textarea"
                   onInput={e => (replyText.value = e)}
                   autosize={{ minRows: 4, maxRows: 10 }}

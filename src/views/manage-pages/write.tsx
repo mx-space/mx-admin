@@ -19,7 +19,7 @@ import {
   NInputNumber,
   useMessage,
 } from 'naive-ui'
-import { RouteName } from 'router/constants'
+import { RouteName } from 'router/name'
 import { RESTManager } from 'utils/rest'
 import { computed, defineComponent, onMounted, reactive, ref, toRaw } from 'vue'
 import { useRoute, useRouter } from 'vue-router'

@@ -6,7 +6,7 @@ import { ContentLayout } from 'layouts/content'
 import { isString, transform } from 'lodash-es'
 import { SayModel } from 'models/say'
 import { NForm, NFormItem, NInput, useDialog } from 'naive-ui'
-import { RouteName } from 'router/constants'
+import { RouteName } from 'router/name'
 import { RESTManager } from 'utils'
 import {
   computed,

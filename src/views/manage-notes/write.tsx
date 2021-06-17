@@ -26,7 +26,7 @@ import {
   NSwitch,
   useMessage,
 } from 'naive-ui'
-import { RouteName } from 'router/constants'
+import { RouteName } from 'router/name'
 import { RESTManager } from 'utils/rest'
 import { getDayOfYear } from 'utils/time'
 import {

@@ -43,7 +43,7 @@ import $RouterView from '../layouts/router-view'
 import { SidebarLayout } from '../layouts/sidebar'
 import { DashBoardView } from '../views/dashboard'
 import LoginView from '../views/login/index.vue'
-import { RouteName } from './constants'
+import { RouteName } from './name'
 
 export const routeForMenu: Array<RouteRecordRaw> = [
   {
@@ -323,7 +323,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         </VIcon>
       ),
     },
-    component: () => import('../views/emptyview'),
+    component: () => import('../views/manage-files'),
   },
 
   {

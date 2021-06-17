@@ -22,7 +22,7 @@ import {
   useMessage,
 } from 'naive-ui'
 import { omit } from 'naive-ui/lib/_utils'
-import { RouteName } from 'router/constants'
+import { RouteName } from 'router/name'
 import { RESTManager } from 'utils'
 import { defineComponent, onBeforeMount, ref, toRaw, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
