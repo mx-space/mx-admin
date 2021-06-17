@@ -14,14 +14,19 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
   plugins: [vue(), tsconfigPaths(), visualizer({ open: false })],
-  build: {
-    // minify: false,
-    // sourcemap: true,
-  },
+  // build: {
+  // minify: false,
+  // sourcemap: true,
+  // },
   define: {
     __DEV__: process.env.NODE_ENV !== 'production',
   },
-  base: '',
+  base:
+    process.env.NODE_ENV === 'production'
+      ? !process.env.VITE_APP_PUBLIC_URL
+        ? 'https://cdn.jsdelivr.net/gh/mx-space/admin-vue3@gh-pages'
+        : ''
+      : '/',
   server: {
     port: 9528,
   },
