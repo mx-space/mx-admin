@@ -1,5 +1,7 @@
 .content {
   left: var(--w);
+
+  @apply transition-all duration-500;
 }
 
 @screen phone {

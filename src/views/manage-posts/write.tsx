@@ -1,20 +1,16 @@
-import { Send16Filled, Send16Regular } from '@vicons/fluent'
+import { SlidersH, TelegramPlane } from '@vicons/fa'
+import { Icon } from '@vicons/utils'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { MonacoEditor } from 'components/editor/monaco'
 import { MaterialInput } from 'components/input/material-input'
 import { UnderlineInput } from 'components/input/underline-input'
-import { baseUrl } from 'constants/env'
+import { ParseContentButton } from 'components/logic/parse-button'
+import { BASE_URL } from 'constants/env'
 import { ContentLayout } from 'layouts/content'
+import { isString } from 'lodash-es'
 import { CategoryModel } from 'models/category'
 import { PostModel } from 'models/post'
-import { CategoryStore } from 'stores/category'
-import { useInjector } from 'utils/deps-injection'
-import { RESTManager } from 'utils/rest'
-import { computed, defineComponent, onMounted, reactive, ref, toRaw } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
 import { editor as Editor } from 'monaco-editor'
-import { Icon } from '@vicons/utils'
-import { SlidersH } from '@vicons/fa'
 import {
   NDrawer,
   NDrawerContent,
@@ -26,9 +22,12 @@ import {
   NSwitch,
   useMessage,
 } from 'naive-ui'
-import { isString } from 'lodash-es'
 import { RouteName } from 'router/constants'
-import { ParseContentButton } from 'components/logic/parse-button'
+import { CategoryStore } from 'stores/category'
+import { useInjector } from 'utils/deps-injection'
+import { RESTManager } from 'utils/rest'
+import { computed, defineComponent, onMounted, reactive, ref, toRaw } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 type PostReactiveType = {
   title: string
   text: string
@@ -131,7 +130,7 @@ const PostWriteView = defineComponent(() => {
         <>
           <ParseContentButton data={data} />
           <HeaderActionButton
-            icon={<Send16Filled />}
+            icon={<TelegramPlane />}
             onClick={handleSubmit}
           ></HeaderActionButton>
         </>
@@ -160,7 +159,7 @@ const PostWriteView = defineComponent(() => {
       ></MaterialInput>
 
       <div class={'text-gray-500 py-3'}>
-        <label class="prefix">{`${baseUrl}/${category.value.slug}/`}</label>
+        <label class="prefix">{`${BASE_URL}/${category.value.slug}/`}</label>
 
         <UnderlineInput
           class="ml-2"

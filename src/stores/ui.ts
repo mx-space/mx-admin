@@ -10,6 +10,7 @@
 import { reactive, ref } from '@vue/reactivity'
 import { onMounted } from '@vue/runtime-core'
 import { throttle } from 'lodash-es'
+import { computed } from 'vue'
 
 export interface ViewportRecord {
   w: number
@@ -22,8 +23,9 @@ export interface ViewportRecord {
 }
 
 export function UIStore() {
-  const viewport = ref<Partial<ViewportRecord>>({})
-
+  const viewport = ref<ViewportRecord>({} as any)
+  const sidebarWidth = ref(250)
+  const sidebarCollapse = ref(viewport.value.mobile ? true : false)
   onMounted(() => {
     const resizeHandler = throttle(() => {
       updateViewport()
@@ -57,7 +59,23 @@ export function UIStore() {
     }
   }
 
+  const contentWidth = computed(
+    () =>
+      viewport.value.w -
+      sidebarWidth.value +
+      (sidebarCollapse.value ? (viewport.value.mobile ? 50 : 100) : 0),
+  )
+
+  const contentInsetWidth = computed(
+    () =>
+      contentWidth.value -
+      parseInt(getComputedStyle(document.documentElement).fontSize) * 6,
+  )
   return {
     viewport,
+    contentWidth,
+    sidebarWidth,
+    contentInsetWidth,
+    sidebarCollapse,
   }
 }

@@ -1,11 +1,10 @@
-import { SlidersH } from '@vicons/fa'
-import { Send16Filled } from '@vicons/fluent'
+import { SlidersH, TelegramPlane } from '@vicons/fa'
 import { Icon } from '@vicons/utils'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { MonacoEditor } from 'components/editor/monaco'
 import { MaterialInput } from 'components/input/material-input'
 import { ParseContentButton } from 'components/logic/parse-button'
-import { baseUrl } from 'constants/env'
+import { BASE_URL } from 'constants/env'
 import { MOOD_SET, WEATHER_SET } from 'constants/note'
 import { add } from 'date-fns/esm'
 import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
@@ -154,7 +153,7 @@ const NoteWriteView = defineComponent(() => {
           <ParseContentButton data={data} />
 
           <HeaderActionButton
-            icon={<Send16Filled />}
+            icon={<TelegramPlane />}
             onClick={handleSubmit}
           ></HeaderActionButton>
         </>
@@ -183,7 +182,7 @@ const NoteWriteView = defineComponent(() => {
       ></MaterialInput>
 
       <div class={'text-gray-500 py-3'}>
-        <label>{`${baseUrl}/notes/${nid.value ?? ''}`}</label>
+        <label>{`${BASE_URL}/notes/${nid.value ?? ''}`}</label>
       </div>
 
       <MonacoEditor

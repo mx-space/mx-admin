@@ -12,8 +12,6 @@ import App from './App'
 import './index.css'
 import { router } from './router'
 
-import { __DEV__ } from './utils'
-
 const app = createApp(App)
 
 app.use(router)

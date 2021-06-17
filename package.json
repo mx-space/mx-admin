@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "NODE_ENV=development vite --mode development",
     "typecheck": "vue-tsc --noEmit ",
-    "build": "vite build --mode production",
+    "build": "NODE_ENV=production vite build --mode production",
     "preview": "vite preview --port 2323"
   },
   "dependencies": {

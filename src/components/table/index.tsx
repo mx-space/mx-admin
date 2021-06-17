@@ -5,6 +5,8 @@ import {
   SortState,
   TableColumns,
 } from 'naive-ui/lib/data-table/src/interface'
+import { UIStore } from 'stores/ui'
+import { useInjector } from 'utils'
 import { defineComponent, reactive, ref, Ref, watch } from 'vue'
 import {
   LocationQueryValue,
@@ -77,12 +79,15 @@ export const Table = defineComponent<{
     loading.value = false
   })
 
+  const ui = useInjector(UIStore)
+
   return () => (
+    // @ts-expect-error
     <NDataTable
       {...nTableProps}
       loading={loading.value}
       remote
-      // @ts-expect-error
+      scrollX={Math.max(ui.contentInsetWidth.value, 1200)}
       pagination={
         noPagination
           ? undefined

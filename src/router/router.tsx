@@ -33,7 +33,7 @@ import {
 } from '@vicons/fa'
 import { Icon as VIcon } from '@vicons/utils'
 import { ManagePostListView } from 'views/manage-posts/list'
-import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHashHistory, createWebHistory, RouteRecordRaw } from 'vue-router'
 import $RouterView from '../layouts/router-view'
 import { SidebarLayout } from '../layouts/sidebar'
 import { DashBoardView } from '../views/dashboard'
@@ -247,7 +247,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
             </VIcon>
           ),
         },
-        component: () => import('../views/emptyview'),
+        component: () => import('../views/manage-says/edit'),
       },
     ],
   },
@@ -458,7 +458,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
 ]
 
 export const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes: [
     {
       path: '/',

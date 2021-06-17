@@ -68,16 +68,18 @@ const ManagePageListView = defineComponent({
             title: '内容',
             key: 'text',
           },
-          { title: '作者', key: 'author' },
-          { title: '来源', key: 'source' },
-
           {
             title: '操作',
             key: 'id',
-            width: 100,
+            width: 130,
             render(row) {
               return (
-                <NSpace>
+                <NSpace wrap={false}>
+                  <RouterLink to={'/says/edit?id=' + row.id}>
+                    <NButton text type="primary" size="tiny">
+                      编辑
+                    </NButton>
+                  </RouterLink>
                   <NPopconfirm
                     positiveText={'取消'}
                     negativeText="删除"
@@ -89,7 +91,7 @@ const ManagePageListView = defineComponent({
                   >
                     {{
                       trigger: () => (
-                        <NButton text type="error">
+                        <NButton text type="error" size="tiny">
                           移除
                         </NButton>
                       ),
@@ -105,6 +107,8 @@ const ManagePageListView = defineComponent({
               )
             },
           },
+          { title: '作者', key: 'author' },
+          { title: '来源', key: 'source' },
         ])
 
         return () => (

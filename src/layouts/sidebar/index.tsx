@@ -12,13 +12,13 @@ export const SidebarLayout = defineComponent({
   setup(props) {
     const ui = useInjector(UIStore)
 
-    const collapse = ref(ui.viewport.value.mobile ? true : false)
+    const collapse = ui.sidebarCollapse
     watchEffect(() => {
       // console.log(ui.viewport)
       collapse.value = ui.viewport.value.mobile ? true : false
     })
 
-    const sidebarWidth = ref(250)
+    const sidebarWidth = ui.sidebarWidth
     return () => (
       <div class="wrapper">
         <Sidebar

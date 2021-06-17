@@ -1,12 +1,11 @@
-import { SlidersH } from '@vicons/fa'
-import { Send16Filled } from '@vicons/fluent'
+import { SlidersH, TelegramPlane } from '@vicons/fa'
 import { Icon } from '@vicons/utils'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { MonacoEditor } from 'components/editor/monaco'
 import { MaterialInput } from 'components/input/material-input'
 import { UnderlineInput } from 'components/input/underline-input'
 import { ParseContentButton } from 'components/logic/parse-button'
-import { baseUrl } from 'constants/env'
+import { BASE_URL } from 'constants/env'
 import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
 import { ContentLayout } from 'layouts/content'
 import { isString } from 'lodash-es'
@@ -113,7 +112,7 @@ const PageWriteView = defineComponent(() => {
           <ParseContentButton data={data} />
 
           <HeaderActionButton
-            icon={<Send16Filled />}
+            icon={<TelegramPlane />}
             onClick={handleSubmit}
           ></HeaderActionButton>
         </>
@@ -142,7 +141,7 @@ const PageWriteView = defineComponent(() => {
       ></MaterialInput>
 
       <div class={'text-gray-500 py-3'}>
-        <label>{`${baseUrl}/`}</label>
+        <label>{`${BASE_URL}/`}</label>
         <UnderlineInput
           value={data.slug}
           onChange={e => (data.slug = e)}

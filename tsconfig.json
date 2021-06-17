@@ -10,6 +10,9 @@
     "esModuleInterop": true,
     "noImplicitAny": false,
     "baseUrl": "./src",
+    "skipLibCheck": true,
+    "noEmit": true,
+    "skipDefaultLibCheck": true,
     "plugins": [
       {
         "name": "@vuedx/typescript-plugin-vue"
@@ -25,5 +28,9 @@
     "src/**/*.d.ts",
     "src/**/*.tsx",
     "src/**/*.vue"
+  ],
+  "exclude": [
+    "node_modules",
+    "assets"
   ]
 }

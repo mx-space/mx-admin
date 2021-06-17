@@ -14,6 +14,8 @@ declare global {
     }
     __isFragment: true
   }
+
+  export const __DEV__: boolean
 }
 
 export {}

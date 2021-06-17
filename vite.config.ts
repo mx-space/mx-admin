@@ -18,6 +18,9 @@ export default defineConfig({
     // minify: false,
     // sourcemap: true,
   },
+  define: {
+    __DEV__: process.env.NODE_ENV !== 'production',
+  },
   base: '',
   server: {
     port: 9528,

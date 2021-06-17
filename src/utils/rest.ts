@@ -6,7 +6,6 @@ import {
   RequestOptionsInit,
   RequestOptionsWithResponse,
 } from 'umi-request'
-import { __DEV__ } from '.'
 import { router } from '../router/router'
 import { getToken } from './auth'
 

@@ -1,7 +1,7 @@
 import { CheckCircleRegular, Times, TrashAlt } from '@vicons/fa'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { Table } from 'components/table'
-import { baseUrl } from 'constants/env'
+import { BASE_URL } from 'constants/env'
 import { useTable } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
 import { CommentModel, CommentsResponse, CommentState } from 'models/comment'
@@ -156,13 +156,13 @@ const ManageComment = defineComponent(() => {
         const link = (() => {
           switch (row.refType) {
             case 'Post': {
-              return baseUrl + '/posts/' + row.ref.slug
+              return BASE_URL + '/posts/' + row.ref.slug
             }
             case 'Note': {
-              return baseUrl + '/notes/' + row.ref.nid
+              return BASE_URL + '/notes/' + row.ref.nid
             }
             case 'Page': {
-              return baseUrl + '/' + row.ref.slug
+              return BASE_URL + '/' + row.ref.slug
             }
           }
         })() as string
