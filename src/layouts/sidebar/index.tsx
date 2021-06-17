@@ -20,7 +20,7 @@ export const SidebarLayout = defineComponent({
 
     const sidebarWidth = ui.sidebarWidth
     return () => (
-      <div class="wrapper">
+      <div class={styles['root']}>
         <Sidebar
           collapse={collapse.value}
           width={sidebarWidth.value}
@@ -31,7 +31,7 @@ export const SidebarLayout = defineComponent({
 
         <NLayoutContent
           nativeScrollbar={false}
-          class={clsx('fixed inset-0 overflow-hidden', styles['content'])}
+          class={styles['content']}
           style={{
             left: !collapse.value ? sidebarWidth.value + 'px' : '100px',
           }}

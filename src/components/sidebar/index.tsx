@@ -64,10 +64,7 @@ export const Sidebar = defineComponent({
 
     return () => (
       <div
-        class={clsx(
-          styles['wrapper'],
-          props.collapse ? styles['collapse'] : null,
-        )}
+        class={clsx(styles['root'], props.collapse ? styles['collapse'] : null)}
         style={{
           width: !props.collapse && props.width ? props.width + 'px' : '',
         }}
