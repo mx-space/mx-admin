@@ -46,6 +46,10 @@ const _MonacoEditor = defineComponent({
     innerRef: {
       type: Object as PropType<Ref<Editor.IStandaloneCodeEditor> | undefined>,
     },
+    unSaveConfirm: {
+      type: Boolean,
+      default: true,
+    },
   },
   setup(props) {
     const editorRef = ref<HTMLDivElement>()
@@ -83,17 +87,24 @@ const _MonacoEditor = defineComponent({
     )
 
     onMounted(() => {
-      window.addEventListener('beforeunload', beforeUnloadHandler)
+      if (props.unSaveConfirm) {
+        window.addEventListener('beforeunload', beforeUnloadHandler)
+      }
     })
     onUnmounted(() => {
-      window.removeEventListener('beforeunload', beforeUnloadHandler)
+      if (props.unSaveConfirm) {
+        window.removeEventListener('beforeunload', beforeUnloadHandler)
+      }
     })
 
     onBeforeRouteLeave(to => {
+      if (!props.unSaveConfirm) {
+        return
+      }
       if (editor.getValue() == memoInitialValue) {
         return
       }
-      console.log(to)
+
       // HACK
       if (to.hash == '|publish') {
         return
@@ -111,7 +122,6 @@ const _MonacoEditor = defineComponent({
       ></div>
     )
   },
-  beforeRouteLeave() {},
 })
 
 export const MonacoEditor = defineAsyncComponent(() =>

@@ -4,7 +4,6 @@
   line-height: 1.4;
   transition: border 0.5s;
   box-sizing: border-box;
-  min-width: 200px;
 
   > span {
     @apply whitespace-nowrap;

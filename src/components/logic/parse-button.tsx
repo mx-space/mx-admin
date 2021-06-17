@@ -1,6 +1,7 @@
 import { SlackHash } from '@vicons/fa'
 import { HeaderActionButton } from 'components/button/rounded-button'
-import { NButton, NCard, NInput, NModal, NSpace } from 'naive-ui'
+import { MonacoEditor } from 'components/editor/monaco'
+import { NButton, NCard, NModal, NSpace } from 'naive-ui'
 import { defineComponent, PropType, ref } from 'vue'
 
 export const ParseContentButton = defineComponent({
@@ -42,12 +43,9 @@ export const ParseContentButton = defineComponent({
         >
           <NCard title="解析 Markdown" style="max-width: 90vw;width: 60rem">
             <NSpace vertical size={'large'}>
-              <NInput
-                value={unparsedValue.value}
-                onInput={e => (unparsedValue.value = e)}
-                type="textarea"
-                placeholder="再此输入 Markdown 文本"
-                rows={16}
+              <MonacoEditor
+                onChange={e => (unparsedValue.value = e)}
+                text={unparsedValue.value}
               />
               <NSpace justify="end">
                 <NButton

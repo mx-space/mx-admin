@@ -17,7 +17,6 @@ import {
   NDrawerContent,
   NForm,
   NFormItem,
-  NInput,
   NInputNumber,
   useMessage,
 } from 'naive-ui'
@@ -109,7 +108,6 @@ const PageWriteView = defineComponent(() => {
 
   return () => (
     <ContentLayout
-      title={'树洞'}
       actionsElement={
         <>
           <ParseContentButton data={data} />
