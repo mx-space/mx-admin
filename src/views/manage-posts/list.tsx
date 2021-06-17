@@ -130,6 +130,7 @@ export const ManagePostListView = defineComponent({
           },
           {
             title: '操作',
+            fixed: 'right',
             key: 'id',
             render(row) {
               return (
@@ -145,7 +146,7 @@ export const ManagePostListView = defineComponent({
                   >
                     {{
                       trigger: () => (
-                        <NButton text type="error">
+                        <NButton text type="error" size="tiny">
                           移除
                         </NButton>
                       ),

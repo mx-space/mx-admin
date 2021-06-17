@@ -155,6 +155,7 @@ export const ManageNoteListView = defineComponent({
           {
             title: '操作',
             key: 'id',
+            fixed: 'right',
             render(row) {
               return (
                 <NSpace>
@@ -169,7 +170,7 @@ export const ManageNoteListView = defineComponent({
                   >
                     {{
                       trigger: () => (
-                        <NButton text type="error">
+                        <NButton text type="error" size="tiny">
                           移除
                         </NButton>
                       ),

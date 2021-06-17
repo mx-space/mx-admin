@@ -199,6 +199,7 @@ const NoteWriteView = defineComponent(() => {
       <NDrawer
         show={drawerShow.value}
         width={450}
+        style={{ maxWidth: '90vw' }}
         placement="right"
         onUpdateShow={s => {
           drawerShow.value = s

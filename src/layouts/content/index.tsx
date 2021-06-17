@@ -26,6 +26,7 @@ export const ContentLayout = defineComponent({
     return () => (
       <>
         <header class={styles['header']}>
+          <div class={styles['header-blur']}></div>
           <h1 class={styles['title']}>
             {title ?? route.value.value.meta.title}
           </h1>

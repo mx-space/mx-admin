@@ -90,7 +90,6 @@ const ManageComment = defineComponent(() => {
     async _ => {
       await fetchData()
     },
-    { immediate: true },
   )
 
   async function changeState(id: string | string[], state: CommentState) {
@@ -134,7 +133,7 @@ const ManageComment = defineComponent(() => {
       render(row, index) {
         return (
           <NSpace vertical size={2}>
-            <a href={(row.url as any) || '#'} target="_blank">
+            <a href={(row.url as any) || '#'} target="_blank" rel="noreferrer">
               {row.author}
             </a>
 
@@ -297,7 +296,7 @@ const ManageComment = defineComponent(() => {
         value={tabValue.value}
         onUpdateValue={e => {
           tabValue.value = e
-          router.push({ name: RouteName.Comment, query: { state: e } })
+          router.replace({ name: RouteName.Comment, query: { state: e } })
         }}
       >
         <NTabPane name={CommentType.Pending} tab="未读">
@@ -341,7 +340,7 @@ const ManageComment = defineComponent(() => {
       >
         {replyComment.value && (
           <NCard
-            style="width: 400px;"
+            style="width: 500px;max-width: 90vw"
             headerStyle={{ textAlign: 'center' }}
             title={'回复: ' + replyComment.value.author}
           >

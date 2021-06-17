@@ -70,6 +70,7 @@ const ManagePageListView = defineComponent({
           },
           {
             title: '操作',
+            fixed: 'right',
             key: 'id',
             width: 130,
             render(row) {

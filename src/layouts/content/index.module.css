@@ -1,20 +1,21 @@
 .header {
-  @apply sticky left-0 right-0 z-10 p-12;
+  @apply sticky left-0 right-0 z-10 p-12 top-[-2.5rem];
 
   @screen phone {
     & {
       @apply p-4;
     }
   }
+  & .header-blur {
+    @apply absolute inset-0 left-0 bottom-[2.5rem];
+    backdrop-filter: blur(5px);
+  }
 
-  backdrop-filter: blur(5px);
-  border-radius: 0 0 12px 12px;
-  top: -1rem;
   display: flex;
   justify-content: space-between;
 
   & .title {
-    @apply flex items-center select-none;
+    @apply flex items-center select-none relative z-10;
 
     font-size: 1.73rem;
   }
@@ -60,7 +61,7 @@
 }
 
 .header-actions {
-  @apply right-0 mr-12 phone:pr-4 top-0 bottom-0 flex items-center relative;
+  @apply right-0 mr-12 phone:mr-0 top-0 bottom-0 flex items-center relative;
 
   & > button,
   & > a {

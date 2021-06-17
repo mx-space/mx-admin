@@ -131,6 +131,7 @@ export const CategoryView = defineComponent(props => {
           {
             width: 300,
             title: '操作',
+            fixed: 'right',
             key: 'id',
             render(row) {
               return (
@@ -282,7 +283,7 @@ const EditCategoryDialog = defineComponent<{
       {{
         default: () => (
           <NCard
-            style="width: 400px;"
+            style="width: 500px;max-width: 90vw"
             headerStyle={{ textAlign: 'center' }}
             title={props.initialState ? '编辑' : '新建'}
           >

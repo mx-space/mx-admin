@@ -33,7 +33,12 @@ import {
 } from '@vicons/fa'
 import { Icon as VIcon } from '@vicons/utils'
 import { ManagePostListView } from 'views/manage-posts/list'
-import { createRouter, createWebHashHistory, createWebHistory, RouteRecordRaw } from 'vue-router'
+import {
+  createRouter,
+  createWebHashHistory,
+  createWebHistory,
+  RouteRecordRaw,
+} from 'vue-router'
 import $RouterView from '../layouts/router-view'
 import { SidebarLayout } from '../layouts/sidebar'
 import { DashBoardView } from '../views/dashboard'
@@ -302,8 +307,9 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           <UserFriends />
         </VIcon>
       ),
+      query: { state: 'all' },
     },
-    component: () => import('../views/emptyview'),
+    component: () => import('../views/manage-friends'),
   },
   {
     path: '/files',
