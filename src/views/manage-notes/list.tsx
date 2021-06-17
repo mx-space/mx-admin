@@ -3,19 +3,13 @@ import { Add12Filled, Delete16Regular, EyeHide20Filled } from '@vicons/fluent'
 import { Icon } from '@vicons/utils'
 import { defineComponent, onMounted } from '@vue/runtime-core'
 import { Table } from 'components/table'
+import { EditColumn } from 'components/table/edit-column'
 import { RelativeTime } from 'components/time/relative-time'
 import { useTable } from 'hooks/use-table'
-import {
-  NButton,
-  NInput,
-  NPopconfirm,
-  NSpace,
-  useDialog,
-  useMessage,
-} from 'naive-ui'
+import { NButton, NPopconfirm, NSpace, useDialog, useMessage } from 'naive-ui'
 import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { parseDate } from 'utils/time'
-import { PropType, reactive, ref, watch } from 'vue'
+import { reactive, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
@@ -247,85 +241,5 @@ export const ManageNoteListView = defineComponent({
         </ContentLayout>
       )
     }
-  },
-})
-
-const EditColumn = defineComponent({
-  props: {
-    initialValue: {
-      type: String,
-      required: true,
-    },
-    onSubmit: {
-      type: Function as PropType<(value: string) => void>,
-      required: true,
-    },
-    placeholder: {
-      type: String,
-    },
-  },
-  setup(props) {
-    const { onSubmit, placeholder } = props
-    const value = ref(props.initialValue)
-    watch(
-      () => props.initialValue,
-      n => {
-        value.value = n
-      },
-    )
-
-    const isEdit = ref(false)
-    const inputRef = ref<HTMLInputElement>()
-
-    watch(
-      () => isEdit.value,
-      n => {
-        if (n) {
-          requestAnimationFrame(() => {
-            inputRef.value?.focus()
-          })
-        }
-      },
-    )
-    const handleSubmit = () => {
-      onSubmit(value.value)
-      isEdit.value = false
-    }
-    return () => (
-      <>
-        {isEdit.value ? (
-          <NSpace align="center" wrap={false}>
-            <NInput
-              onKeydown={e => {
-                if (e.key == 'Enter') {
-                  handleSubmit()
-                }
-              }}
-              class="w-3/4"
-              value={value.value}
-              placeholder={placeholder ?? props.initialValue}
-              size="small"
-              autofocus
-              ref={inputRef}
-              onBlur={() => {
-                isEdit.value = false
-              }}
-              onInput={e => {
-                value.value = e
-              }}
-            ></NInput>
-          </NSpace>
-        ) : (
-          <button
-            class="w-full text-left"
-            onClick={() => {
-              isEdit.value = true
-            }}
-          >
-            {props.initialValue}&nbsp;
-          </button>
-        )}
-      </>
-    )
   },
 })
