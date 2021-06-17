@@ -4,16 +4,8 @@ import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
 import { useTable } from 'hooks/use-table'
 import { SayResponse } from 'models/say'
-import {
-  NButton,
-  NPopconfirm,
-  NPopover,
-  NSpace,
-  useDialog,
-  useMessage,
-} from 'naive-ui'
+import { NButton, NPopconfirm, NSpace, useDialog, useMessage } from 'naive-ui'
 import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
-import { parseDate } from 'utils/time'
 import { reactive, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { HeaderActionButton } from '../../components/button/rounded-button'
@@ -67,16 +59,7 @@ const ManagePageListView = defineComponent({
             render(row) {
               return (
                 <RouterLink to={'/says/edit?id=' + row.id}>
-                  <NPopover trigger="hover">
-                    {{
-                      trigger() {
-                        return <RelativeTime time={row.created} />
-                      },
-                      default() {
-                        return parseDate(row.created, 'yyyy年M月d日 HH:mm:ss')
-                      },
-                    }}
-                  </NPopover>
+                  <RelativeTime time={row.created} />
                 </RouterLink>
               )
             },
@@ -85,10 +68,13 @@ const ManagePageListView = defineComponent({
             title: '内容',
             key: 'text',
           },
+          { title: '作者', key: 'author' },
+          { title: '来源', key: 'source' },
 
           {
             title: '操作',
             key: 'id',
+            width: 100,
             render(row) {
               return (
                 <NSpace>
@@ -110,7 +96,7 @@ const ManagePageListView = defineComponent({
 
                       default: () => (
                         <span style={{ maxWidth: '12rem' }}>
-                          确定要删除 {row.text} ?
+                          确定要删除“{row.text}” ?
                         </span>
                       ),
                     }}
