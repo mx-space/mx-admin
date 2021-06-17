@@ -9,30 +9,33 @@
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import { visualizer } from 'rollup-plugin-visualizer'
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
-export default defineConfig({
-  plugins: [vue(), tsconfigPaths(), visualizer({ open: false })],
-  // build: {
-  // minify: false,
-  // sourcemap: true,
-  // },
-  define: {
-    __DEV__: process.env.NODE_ENV !== 'production',
-  },
-  base:
-    process.env.NODE_ENV === 'production'
-      ? !process.env.VITE_APP_PUBLIC_URL
-        ? 'https://cdn.jsdelivr.net/gh/mx-space/admin-vue3@gh-pages'
-        : ''
-      : '/',
-  server: {
-    port: 9528,
-  },
-  esbuild: {
-    jsxFactory: 'h',
-    jsxInject: 'import {h,Fragment} from "vue"',
-    jsxFragment: 'Fragment',
-  },
-})
+export default ({ mode }) => {
+  process.env = { ...process.env, ...loadEnv(mode, process.cwd()) }
+
+  return defineConfig({
+    plugins: [vue(), tsconfigPaths(), visualizer({ open: false })],
+    // build: {
+    // minify: false,
+    // sourcemap: true,
+    // },
+    define: {
+      __DEV__: process.env.NODE_ENV !== 'production',
+    },
+    base:
+      process.env.NODE_ENV === 'production'
+        ? process.env.VITE_APP_PUBLIC_URL || ''
+        : '',
+
+    server: {
+      port: 9528,
+    },
+    esbuild: {
+      jsxFactory: 'h',
+      jsxInject: 'import {h,Fragment} from "vue"',
+      jsxFragment: 'Fragment',
+    },
+  })
+}
