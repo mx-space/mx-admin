@@ -14,7 +14,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
       - uses: actions/setup-node@v2
+      - uses: c-hive/gha-yarn-cache@v1
         with:
           node-version: 12.x
       - name: Build project # This would actually build your project, using zip for an example artifact
