@@ -3,7 +3,7 @@ import { HeaderActionButton } from 'components/button/rounded-button'
 import { Table } from 'components/table'
 import { useTable } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
-import { LinkModel, LinkResponse, LinkType } from 'models/link'
+import { LinkModel, LinkResponse, LinkState, LinkType } from 'models/link'
 import {
   NAvatar,
   NBadge,
@@ -27,22 +27,20 @@ import { RESTManager } from 'utils'
 import { defineComponent, onBeforeMount, ref, toRaw, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-enum FriendState {
-  Pass,
-  Audit,
-}
 export default defineComponent({
   setup() {
-    const tabValue = ref<FriendState>(FriendState.Pass)
-
     const route = useRoute()
     const router = useRouter()
+
+    const tabValue = ref<LinkState>(
+      (route.query.state as any) ?? LinkState.Pass,
+    )
 
     const { data, checkedRowKeys, fetchDataFn, pager } = useTable<LinkModel>(
       (data, pager) => async (
         page = route.query.page || 1,
         size = 50,
-        state: FriendState = (route.query.state as any | 0) ?? FriendState.Pass,
+        state: LinkState = (route.query.state as any | 0) ?? LinkState.Pass,
       ) => {
         const response = await RESTManager.api.links.get<LinkResponse>({
           params: {
@@ -56,7 +54,7 @@ export default defineComponent({
       },
     )
     const message = useMessage()
-    const resetEditData: () => Omit<LinkModel, 'id'> & {
+    const resetEditData: () => Omit<LinkModel, 'id' | 'state'> & {
       id: null | string
     } = () => ({
       avatar: '',
@@ -137,12 +135,12 @@ export default defineComponent({
             router.replace({ name: RouteName.Friend, query: { state: e } })
           }}
         >
-          <NTabPane name={FriendState.Pass} tab="朋友们">
+          <NTabPane name={LinkState.Pass} tab="朋友们">
             <div class=""></div>
           </NTabPane>
           <NTabPane
-            name={FriendState.Audit}
-            label={() => (
+            name={LinkState.Audit}
+            tab={() => (
               <NBadge value={auditCount.value} processing>
                 <NText>待审核</NText>
               </NBadge>
@@ -197,10 +195,28 @@ export default defineComponent({
               render(row) {
                 return (
                   <NSpace wrap={false}>
+                    {row.state == LinkState.Audit && (
+                      <NButton
+                        text
+                        size="tiny"
+                        type="success"
+                        onClick={async () => {
+                          await RESTManager.api.links.audit(row.id).patch()
+                          message.success(
+                            '通过了来自' + row.name + '的友链邀请',
+                          )
+                          const idx = data.value.findIndex(i => i.id == row.id)
+                          data.value.splice(idx, 1)
+                          auditCount.value--
+                        }}
+                      >
+                        通过
+                      </NButton>
+                    )}
                     <NButton
                       text
                       size="tiny"
-                      type="primary"
+                      type="info"
                       onClick={_ => {
                         editDialogShow.value = true
                         editDialogData.value = { ...row }

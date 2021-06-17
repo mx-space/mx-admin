@@ -4,6 +4,11 @@ export enum LinkType {
   Friend,
   Collection,
 }
+
+export enum LinkState {
+  Pass,
+  Audit,
+}
 export interface LinkModel {
   id: string
   name: string
@@ -11,6 +16,7 @@ export interface LinkModel {
   avatar: string
   description?: string
   type: LinkType
+  state: LinkState
 }
 
 export interface LinkResponse {
