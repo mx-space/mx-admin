@@ -2958,10 +2958,10 @@ mz@^2.4.0:
     object-assign "^4.0.1"
     thenify-all "^1.0.0"
 
-naive-ui@2.11.12:
-  version "2.11.12"
-  resolved "https://registry.yarnpkg.com/naive-ui/-/naive-ui-2.11.12.tgz#40a0425603a6f1ffc54522a981b17264fad3f582"
-  integrity sha512-VqmEsJP2a2zwuEAhSPWGPiOkhfP/Ak4qrUEhJu5HOZO1iNloM3kg444vt7cHN+KYdGQOKynR51/pT6YYv7a78Q==
+naive-ui@2.12.0:
+  version "2.12.0"
+  resolved "https://registry.yarnpkg.com/naive-ui/-/naive-ui-2.12.0.tgz#7d9f563ce17382ed5f065e3dfabada99905d08e9"
+  integrity sha512-wcSp4hEzW2yRsuH4CVd27pcCkvCk+WshubJBPwAqyBRflnrjIwpa7fA8pUDdzFdBtLiXQecUx0MHSl4658eLAg==
   dependencies:
     "@css-render/plugin-bem" "^0.15.4"
     "@css-render/vue3-ssr" "^0.15.4"
@@ -2975,7 +2975,7 @@ naive-ui@2.11.12:
     lodash "^4.17.21"
     lodash-es "^4.17.21"
     seemly "^0.3.1"
-    treemate "^0.2.10"
+    treemate "^0.2.11"
     vdirs "^0.1.4"
     vfonts "^0.1.0"
     vooks "^0.2.6"
@@ -4070,10 +4070,10 @@ token-stream@1.0.0:
   resolved "https://registry.yarnpkg.com/token-stream/-/token-stream-1.0.0.tgz#cc200eab2613f4166d27ff9afc7ca56d49df6eb4"
   integrity sha1-zCAOqyYT9BZtJ/+a/HylbUnfbrQ=
 
-treemate@^0.2.10:
-  version "0.2.10"
-  resolved "https://registry.yarnpkg.com/treemate/-/treemate-0.2.10.tgz#632618e854fa2e946233b5b87f116b86a5d0085f"
-  integrity sha512-LKaK1Mes7VS2gqdUndFBszMnkUlwBpWjDeCg0YguQyZS39VlAv4IuKo3vE5iGv2DjIi0tyWuLzRxuwqtjTUyEg==
+treemate@^0.2.11:
+  version "0.2.11"
+  resolved "https://registry.yarnpkg.com/treemate/-/treemate-0.2.11.tgz#cffa37051e613beaa82fd3fce56300e8e4d8328f"
+  integrity sha512-3/wjLLBbLYKZUI311pERMnM/yLHCInD3lfETWTeoHDNwnZI2ApVqgVCJnjEWC10Ugd02ASKlBHJeKSDUmLYWng==
 
 trim-newlines@^2.0.0:
   version "2.0.0"
