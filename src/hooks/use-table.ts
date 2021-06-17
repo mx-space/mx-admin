@@ -1,4 +1,5 @@
-import { PostModel, Pager } from 'models/post'
+import { PostModel } from 'models/post'
+import { Pager } from 'models/base'
 import { RowKey } from 'naive-ui/lib/data-table/src/interface'
 import { ref, reactive, Ref } from 'vue'
 import { LocationQueryValue } from 'vue-router'

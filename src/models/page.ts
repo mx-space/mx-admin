@@ -1,3 +1,5 @@
+import { Pager } from './base'
+
 export enum EnumPageType {
   'md' = 'md',
   'html' = 'html',
@@ -24,4 +26,9 @@ export interface PageModel {
 
   /** Other Options */
   options?: object
+}
+
+export interface PageResponse {
+  data: PageModel[]
+  page: Pager
 }

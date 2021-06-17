@@ -1,4 +1,4 @@
-import { Pager } from 'models/post'
+import { Pager } from 'models/base'
 import { NDataTable } from 'naive-ui'
 import {
   RowKey,

@@ -1,3 +1,5 @@
+import { Pager, Count, Image } from './base'
+
 export interface PostResponse {
   data: PostModel[]
   page: Pager
@@ -30,26 +32,4 @@ export interface Category {
   slug: string
   created: Date
   categoryID: string
-}
-
-export interface Count {
-  read: number
-  like: number
-}
-
-export interface Image {
-  height: number
-  width: number
-  type: string
-  accent?: string
-  src: string
-}
-
-export interface Pager {
-  total: number
-  size: number
-  currentPage: number
-  totalPage: number
-  hasPrevPage: boolean
-  hasNextPage: boolean
 }

@@ -1,4 +1,4 @@
-import { Pager } from './post'
+import { Pager } from './base'
 
 export interface CommentModel {
   refType: string

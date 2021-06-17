@@ -3,8 +3,15 @@ import { defineComponent, onMounted } from '@vue/runtime-core'
 import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
 import { useTable } from 'hooks/use-table'
-import { PageResponse } from 'models/page'
-import { NButton, NPopconfirm, NSpace, useDialog, useMessage } from 'naive-ui'
+import { SayResponse } from 'models/say'
+import {
+  NButton,
+  NPopconfirm,
+  NPopover,
+  NSpace,
+  useDialog,
+  useMessage,
+} from 'naive-ui'
 import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { parseDate } from 'utils/time'
 import { reactive, watch } from 'vue'
@@ -12,22 +19,20 @@ import { RouterLink, useRoute } from 'vue-router'
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
-export const ManagePageListView = defineComponent({
-  name: 'page-list',
+const ManagePageListView = defineComponent({
+  name: 'say-list',
   setup({}, ctx) {
     const { checkedRowKeys, data, pager, sortProps, fetchDataFn } = useTable(
-      (data, pager) => async (page = route.query.page || 1, size = 20) => {
-        const response = await RESTManager.api.pages.get<PageResponse>({
+      (data, pager) => async (page = route.query.page || 1, size = 30) => {
+        const response = await RESTManager.api.says.get<SayResponse>({
           params: {
             page,
             size,
-            select: 'title subtitle _id id created modified slug',
-            ...(sortProps.sortBy
-              ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
-              : {}),
+            select: 'title text _id id created modified author source',
           },
         })
         data.value = response.data
+        pager.value = response.page
       },
     )
 
@@ -56,48 +61,31 @@ export const ManagePageListView = defineComponent({
             options: ['none', 'all'],
           },
           {
-            title: '标题',
-            sortOrder: false,
-            sorter: 'default',
-            key: 'title',
-            width: 300,
+            title: '创建于',
+            key: 'created',
+            width: 100,
             render(row) {
               return (
-                <RouterLink to={'/pages/edit?id=' + row.id}>
-                  {row.title}
+                <RouterLink to={'/says/edit?id=' + row.id}>
+                  <NPopover trigger="hover">
+                    {{
+                      trigger() {
+                        return <RelativeTime time={row.created} />
+                      },
+                      default() {
+                        return parseDate(row.created, 'yyyy年M月d日 HH:mm:ss')
+                      },
+                    }}
+                  </NPopover>
                 </RouterLink>
               )
             },
           },
           {
-            title: '副标题',
-            key: 'subtitle',
+            title: '内容',
+            key: 'text',
           },
-          {
-            title: '路径',
-            key: 'slug',
-            render(row) {
-              return '/' + row.slug
-            },
-          },
-          {
-            title: '创建时间',
-            key: 'created',
-            sortOrder: 'descend',
-            sorter: 'default',
-            render(row) {
-              return <RelativeTime time={row.created} />
-            },
-          },
-          {
-            title: '修改于',
-            key: 'modified',
-            sorter: 'default',
-            sortOrder: false,
-            render(row) {
-              return parseDate(row.modified, 'yyyy年M月d日')
-            },
-          },
+
           {
             title: '操作',
             key: 'id',
@@ -108,7 +96,7 @@ export const ManagePageListView = defineComponent({
                     positiveText={'取消'}
                     negativeText="删除"
                     onNegativeClick={async () => {
-                      await RESTManager.api.pages(row.id).delete()
+                      await RESTManager.api.says(row.id).delete()
                       message.success('删除成功')
                       await fetchData(pager.value.currentPage)
                     }}
@@ -122,7 +110,7 @@ export const ManagePageListView = defineComponent({
 
                       default: () => (
                         <span style={{ maxWidth: '12rem' }}>
-                          确定要删除 {row.title} ?
+                          确定要删除 {row.text} ?
                         </span>
                       ),
                     }}
@@ -142,10 +130,6 @@ export const ManagePageListView = defineComponent({
             pager={pager}
             onUpdateCheckedRowKeys={keys => {
               checkedRowKeys.value = keys
-            }}
-            onUpdateSorter={async props => {
-              sortProps.sortBy = props.sortBy
-              sortProps.sortOrder = props.sortOrder
             }}
           ></Table>
         )
@@ -169,7 +153,7 @@ export const ManagePageListView = defineComponent({
                       negativeText: '不确定',
                       onPositiveClick: async () => {
                         for (const id of checkedRowKeys.value) {
-                          await RESTManager.api.pages(id as string).delete()
+                          await RESTManager.api.says(id as string).delete()
                         }
                         checkedRowKeys.value.length = 0
                         message.success('删除成功')
@@ -180,7 +164,7 @@ export const ManagePageListView = defineComponent({
                   }}
                   icon={<Delete16Regular />}
                 />
-                <HeaderActionButton to={'/pages/edit'} icon={<Add12Filled />} />
+                <HeaderActionButton to={'/says/edit'} icon={<Add12Filled />} />
               </>
             ),
             default: () => <DataTable />,
@@ -190,3 +174,5 @@ export const ManagePageListView = defineComponent({
     }
   },
 })
+
+export default ManagePageListView

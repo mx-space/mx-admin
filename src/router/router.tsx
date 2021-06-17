@@ -210,7 +210,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     ],
   },
   {
-    path: '/say',
+    path: '/says',
     name: RouteName.Say,
     meta: {
       title: '说说',
@@ -227,13 +227,14 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         name: RouteName.ListSay,
         meta: {
           title: '说什么了',
+          query: { page: 1 },
           icon: (
             <VIcon>
               <Eye />
             </VIcon>
           ),
         },
-        component: () => import('../views/emptyview'),
+        component: () => import('../views/manage-says/list'),
       },
       {
         path: 'edit',
