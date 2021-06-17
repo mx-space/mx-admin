@@ -257,7 +257,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     ],
   },
   {
-    path: '/project',
+    path: '/projects',
     name: RouteName.Project,
     meta: {
       title: '项目',
@@ -274,13 +274,14 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         name: RouteName.ListProject,
         meta: {
           title: '项目列表',
+          query: { page: 1 },
           icon: (
             <VIcon>
               <Eye />
             </VIcon>
           ),
         },
-        component: () => import('../views/emptyview'),
+        component: () => import('../views/manage-project/list'),
       },
       {
         path: 'edit',
@@ -479,6 +480,12 @@ export const router = createRouter({
       name: RouteName.Login,
       meta: { isPublic: true, title: '登陆' },
       component: LoginView,
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: '404',
+      meta: { isPublic: true },
+      redirect: '/',
     },
   ],
 })

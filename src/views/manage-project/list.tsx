@@ -3,24 +3,32 @@ import { defineComponent, onMounted } from '@vue/runtime-core'
 import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
 import { useTable } from 'hooks/use-table'
-import { SayResponse } from 'models/say'
-import { NButton, NPopconfirm, NSpace, useDialog, useMessage } from 'naive-ui'
+import { ProjectResponse } from 'models/project'
+import {
+  NButton,
+  NPopconfirm,
+  NSpace,
+  NText,
+  useDialog,
+  useMessage,
+} from 'naive-ui'
 import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
+import { RouteName } from 'router/constants'
 import { reactive, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
-const ManagePageListView = defineComponent({
-  name: 'say-list',
+import isURL from 'validator/es/lib/isURL'
+import { parseDate } from 'utils'
+const ManageProjectView = defineComponent({
   setup({}, ctx) {
     const { checkedRowKeys, data, pager, sortProps, fetchDataFn } = useTable(
       (data, pager) => async (page = route.query.page || 1, size = 30) => {
-        const response = await RESTManager.api.says.get<SayResponse>({
+        const response = await RESTManager.api.projects.get<ProjectResponse>({
           params: {
             page,
             size,
-            select: 'title text _id id created modified author source',
           },
         })
         data.value = response.data
@@ -53,23 +61,42 @@ const ManagePageListView = defineComponent({
             options: ['none', 'all'],
           },
           {
-            title: '创建于',
-            key: 'created',
+            title: '项目名称',
+            key: 'name',
             width: 100,
             render(row) {
-              return (
-                <RouterLink to={'/says/edit?id=' + row.id}>
-                  <RelativeTime time={row.created} />
-                </RouterLink>
+              const hasLink = [row.previewUrl, row.projectUrl, row.docUrl]
+                .filter(Boolean)
+                .find(i => isURL(i, { require_protocol: true }))
+              return hasLink ? (
+                <a href={hasLink} target={'_blank'} rel="noreferrer">
+                  {row.name}
+                </a>
+              ) : (
+                <NText>{row.name}</NText>
               )
             },
           },
           {
-            title: '内容',
-            key: 'text',
+            title: '项目描述',
+            key: 'description',
           },
-          { title: '作者', key: 'author' },
-          { title: '来源', key: 'source' },
+          {
+            title: '创建时间',
+            key: 'created',
+
+            render(row) {
+              return parseDate(row.created)
+            },
+          },
+          {
+            title: '修改于',
+            key: 'created',
+
+            render(row) {
+              return <RelativeTime time={row.created} />
+            },
+          },
           {
             title: '操作',
             fixed: 'right',
@@ -78,7 +105,9 @@ const ManagePageListView = defineComponent({
             render(row) {
               return (
                 <NSpace wrap={false}>
-                  <RouterLink to={'/says/edit?id=' + row.id}>
+                  <RouterLink
+                    to={{ name: RouteName.EditProject, query: { id: row.id } }}
+                  >
                     <NButton text type="primary" size="tiny">
                       编辑
                     </NButton>
@@ -87,7 +116,7 @@ const ManagePageListView = defineComponent({
                     positiveText={'取消'}
                     negativeText="删除"
                     onNegativeClick={async () => {
-                      await RESTManager.api.says(row.id).delete()
+                      await RESTManager.api.projects(row.id).delete()
                       message.success('删除成功')
                       await fetchData(pager.value.currentPage)
                     }}
@@ -101,7 +130,7 @@ const ManagePageListView = defineComponent({
 
                       default: () => (
                         <span style={{ maxWidth: '12rem' }}>
-                          确定要删除“{row.text}” ?
+                          确定要删除项目 [{row.name}] ?
                         </span>
                       ),
                     }}
@@ -143,7 +172,7 @@ const ManagePageListView = defineComponent({
                       negativeText: '不确定',
                       onPositiveClick: async () => {
                         for (const id of checkedRowKeys.value) {
-                          await RESTManager.api.says(id as string).delete()
+                          await RESTManager.api.projects(id as string).delete()
                         }
                         checkedRowKeys.value.length = 0
                         message.success('删除成功')
@@ -154,7 +183,10 @@ const ManagePageListView = defineComponent({
                   }}
                   icon={<Delete16Regular />}
                 />
-                <HeaderActionButton to={'/says/edit'} icon={<Add12Filled />} />
+                <HeaderActionButton
+                  to={'/projects/edit'}
+                  icon={<Add12Filled />}
+                />
               </>
             ),
             default: () => <DataTable />,
@@ -165,4 +197,4 @@ const ManagePageListView = defineComponent({
   },
 })
 
-export default ManagePageListView
+export default ManageProjectView

@@ -27,12 +27,14 @@
     "naive-ui": "2.12.0",
     "qier-progress": "1.0.4",
     "umi-request": "1.3.9",
+    "validator": "13.6.0",
     "vue": "3.1.1",
     "vue-router": "4.0.9"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "19.0.0",
     "@types/lodash-es": "4.17.4",
+    "@types/validator": "13.1.4",
     "@vitejs/plugin-vue": "1.2.3",
     "@vitejs/plugin-vue-jsx": "1.1.5",
     "@vue/compiler-sfc": "3.1.1",
