@@ -10,6 +10,7 @@ import { useInjector } from '../../utils/deps-injection'
 import { Avatar } from '../avatar'
 import styles from './index.module.css'
 import { NLayoutContent } from 'naive-ui'
+import { BASE_URL } from 'constants/env'
 export const Sidebar = defineComponent({
   name: 'sidebar-comp',
   props: {
@@ -176,20 +177,28 @@ export const Sidebar = defineComponent({
             </div>
           </NLayoutContent>
 
-          <div
+          <button
             class={clsx(
               'bottom-bar flex space-x-2 items-center  transform translate-y-1/3 phone:hidden',
               props.collapse ? 'px-8' : 'px-12',
             )}
+            onClick={() => {
+              window.open(BASE_URL)
+            }}
           >
             <Avatar src={user.value?.avatar!} size={40} />
             {!props.collapse ? (
               <span class="pl-12">{user.value?.name}</span>
             ) : null}
-          </div>
-          <div class="hidden phone:flex w-full items-center justify-center absolute bottom-0 pb-4">
+          </button>
+          <button
+            class="hidden phone:flex w-full items-center justify-center absolute bottom-0 pb-4"
+            onClick={() => {
+              window.open(BASE_URL)
+            }}
+          >
             <Avatar src={user.value?.avatar!} size={40} />
-          </div>
+          </button>
         </div>
       </div>
     )
