@@ -3,7 +3,7 @@ import { Comment12Filled } from '@vicons/fluent'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
 import { ContentLayout } from 'layouts/content'
-import { isString } from 'lodash-es'
+import { isString, omitBy } from 'lodash-es'
 import { SayModel } from 'models/say'
 import { NForm, NFormItem, NInput, useDialog } from 'naive-ui'
 import { RouteName } from 'router/constants'
@@ -75,6 +75,10 @@ const EditSay = defineComponent({
         dialog.create({
           title: '警告',
           content: '发布一言会覆盖现有的内容, 要继续吗',
+          type: 'warning',
+          negativeText: '取消',
+          positiveText: '确定',
+
           onPositiveClick() {
             send()
           },
@@ -107,7 +111,10 @@ const EditSay = defineComponent({
           }
 
           return {
-            ...toRaw(data),
+            ...omitBy(
+              toRaw(data),
+              i => typeof i == 'undefined' || i.length == 0,
+            ),
             text: data.text.trim(),
           }
         } catch (e) {
@@ -128,7 +135,7 @@ const EditSay = defineComponent({
         message.success('修改成功')
       } else {
         // create
-        await RESTManager.api.pages.post({
+        await RESTManager.api.says.post({
           data: parseDataToPayload(),
         })
         message.success('发布成功')
