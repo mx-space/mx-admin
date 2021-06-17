@@ -1,11 +1,9 @@
 .content {
-  margin-left: var(--w);
-}
-@screen desktop {
+  left: var(--w);
 }
 
 @screen phone {
   .content {
-    margin-left: 60px !important;
+    left: 60px !important;
   }
 }

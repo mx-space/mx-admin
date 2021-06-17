@@ -1,4 +1,5 @@
 import clsx from 'clsx'
+import { NLayoutContent } from 'naive-ui'
 import { defineComponent, ref, watchEffect } from 'vue'
 import { RouterView } from 'vue-router'
 import { Sidebar } from '../../components/sidebar'
@@ -28,14 +29,15 @@ export const SidebarLayout = defineComponent({
           }}
         />
 
-        <div
-          class={clsx('relative', styles['content'])}
+        <NLayoutContent
+          nativeScrollbar={false}
+          class={clsx('fixed inset-0 overflow-hidden', styles['content'])}
           style={{
-            marginLeft: !collapse.value ? sidebarWidth.value + 'px' : '100px',
+            left: !collapse.value ? sidebarWidth.value + 'px' : '100px',
           }}
         >
           <RouterView />
-        </div>
+        </NLayoutContent>
       </div>
     )
   },
