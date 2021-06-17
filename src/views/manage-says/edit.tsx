@@ -3,7 +3,7 @@ import { Comment12Filled } from '@vicons/fluent'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
 import { ContentLayout } from 'layouts/content'
-import { isString, omitBy } from 'lodash-es'
+import { isString, transform } from 'lodash-es'
 import { SayModel } from 'models/say'
 import { NForm, NFormItem, NInput, useDialog } from 'naive-ui'
 import { RouteName } from 'router/constants'
@@ -111,9 +111,17 @@ const EditSay = defineComponent({
           }
 
           return {
-            ...omitBy(
+            ...transform(
               toRaw(data),
-              i => typeof i == 'undefined' || i.length == 0,
+              (res, v, k) => (
+                (res[k] =
+                  typeof v == 'undefined'
+                    ? null
+                    : typeof v == 'string' && v.length == 0
+                    ? ''
+                    : v),
+                res
+              ),
             ),
             text: data.text.trim(),
           }
@@ -129,7 +137,7 @@ const EditSay = defineComponent({
           return
         }
         const $id = id.value as string
-        await RESTManager.api.pages($id).put({
+        await RESTManager.api.says($id).put({
           data: parseDataToPayload(),
         })
         message.success('修改成功')
