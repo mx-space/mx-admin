@@ -307,7 +307,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           <UserFriends />
         </VIcon>
       ),
-      query: { state: 'all' },
+      query: { state: '0' },
     },
     component: () => import('../views/manage-friends'),
   },
@@ -464,7 +464,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
 ]
 
 export const router = createRouter({
-  history: createWebHistory(),
+  history: __DEV__ ? createWebHistory() : createWebHashHistory(),
   routes: [
     {
       path: '/',
