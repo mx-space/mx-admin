@@ -18,7 +18,7 @@ import { computed, ComputedRef, reactive, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
-import { PostResponse } from '../../models/post'
+import { PostModel, PostResponse } from '../../models/post'
 import { RESTManager } from '../../utils/rest'
 export const ManagePostListView = defineComponent({
   name: 'post-list',
@@ -71,7 +71,7 @@ export const ManagePostListView = defineComponent({
             })) || [],
         )
 
-        const columns = reactive<TableColumns<any>>([
+        const columns = reactive<TableColumns<PostModel>>([
           {
             type: 'selection',
             options: ['none', 'all'],

@@ -16,10 +16,10 @@ export interface PostModel {
   text: string
   title: string
   slug: string
-  categoryID: string
+  categoryId: string
   images: Image[]
-  modified: Date
-  created: Date
+  modified: string
+  created: string
   category: Category
   datumID: string
 }

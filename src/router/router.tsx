@@ -329,7 +329,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
   {
     path: '/analyze',
     name: RouteName.Analyze,
-    component: () => import('../views/emptyview'),
+    component: () => import('../views/analzye'),
     meta: {
       title: '数据',
       icon: (
@@ -337,6 +337,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           <ChartLine />
         </VIcon>
       ),
+      query: { page: 1 },
     },
   },
   {

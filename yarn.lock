@@ -2070,6 +2070,11 @@ function-bind@^1.1.1:
   resolved "https://registry.yarnpkg.com/function-bind/-/function-bind-1.1.1.tgz#a56899d3ea3c9bab874bb9773b7c5ede92f4895d"
   integrity sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==
 
+g2@2.3.13:
+  version "2.3.13"
+  resolved "https://registry.yarnpkg.com/g2/-/g2-2.3.13.tgz#ca4478230f3292bd3b9a972da63616980b8f6ce9"
+  integrity sha512-N4LzRWoheJ7IORe8+GedzecyYG/OAl+avRoBorxtkXaQEvsPgPyEUW3GZSj1lchVTM8KzH19JLaUN3klsoaLZQ==
+
 generic-names@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/generic-names/-/generic-names-2.0.1.tgz#f8a378ead2ccaa7a34f0317b05554832ae41b872"

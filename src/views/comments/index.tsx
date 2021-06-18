@@ -1,5 +1,5 @@
-import { CheckCircleRegular, Times, TrashAlt } from '@vicons/fa'
 import { EmojiAdd24Regular } from '@vicons/fluent'
+import { CheckmarkSharp, CloseSharp, Trash } from '@vicons/ionicons5'
 import { Icon } from '@vicons/utils'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { Table } from 'components/table'
@@ -31,7 +31,7 @@ import { RESTManager } from 'utils/rest'
 import { relativeTimeFromNow } from 'utils/time'
 import { defineComponent, nextTick, reactive, ref, unref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import styles from './index.module.css'
+
 enum CommentType {
   Pending,
   Marked,
@@ -123,7 +123,7 @@ const ManageComment = defineComponent(() => {
     await fetchData()
     message.success('删除成功')
   }
-  const columns: TableColumns = reactive([
+  const columns: TableColumns<CommentModel> = reactive([
     {
       title: '',
       key: 'avatar',
@@ -259,7 +259,7 @@ const ManageComment = defineComponent(() => {
         <Fragment>
           <HeaderActionButton
             name="已读"
-            icon={<CheckCircleRegular />}
+            icon={<CheckmarkSharp />}
             variant="success"
             onClick={() => {
               changeState(checkedRowKeys.value, CommentState.Read)
@@ -269,7 +269,7 @@ const ManageComment = defineComponent(() => {
 
           <HeaderActionButton
             name="标记为垃圾"
-            icon={<TrashAlt />}
+            icon={<Trash />}
             variant="warning"
             onClick={() => {
               changeState(checkedRowKeys.value, CommentState.Junk)
@@ -279,7 +279,7 @@ const ManageComment = defineComponent(() => {
 
           <HeaderActionButton
             name="删除"
-            icon={<Times />}
+            icon={<CloseSharp />}
             variant="error"
             onClick={() => {
               dialog.warning({
@@ -386,7 +386,7 @@ const ManageComment = defineComponent(() => {
                     default() {
                       return (
                         <NCard style="max-width: 300px" bordered={false}>
-                          <NSpace align="center" class={styles['n-space']}>
+                          <NSpace align="center" class={'!justify-between'}>
                             {KAOMOJI_LIST.map(kaomoji => (
                               <NButton
                                 text

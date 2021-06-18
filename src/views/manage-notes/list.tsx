@@ -6,6 +6,8 @@ import { Table } from 'components/table'
 import { EditColumn } from 'components/table/edit-column'
 import { RelativeTime } from 'components/time/relative-time'
 import { useTable } from 'hooks/use-table'
+import { Pager } from 'models/base'
+import { NoteModel } from 'models/note'
 import { NButton, NPopconfirm, NSpace, useDialog, useMessage } from 'naive-ui'
 import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { parseDate } from 'utils/time'
@@ -13,28 +15,30 @@ import { reactive, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
-import { PostResponse } from '../../models/post'
 import { RESTManager } from '../../utils/rest'
 export const ManageNoteListView = defineComponent({
   name: 'note-list',
   setup({}, ctx) {
-    const { checkedRowKeys, data, pager, sortProps, fetchDataFn } = useTable(
-      (data, pager) => async (page = route.query.page || 1, size = 20) => {
-        const response = await RESTManager.api.notes.get<PostResponse>({
-          params: {
-            page,
-            size,
-            select:
-              'title _id id created modified mood weather hide secret hasMemory',
-            ...(sortProps.sortBy
-              ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
-              : {}),
-          },
-        })
-        data.value = response.data
-        pager.value = response.page
-      },
-    )
+    const { checkedRowKeys, data, pager, sortProps, fetchDataFn } = useTable<
+      NoteModel
+    >((data, pager) => async (page = route.query.page || 1, size = 20) => {
+      const response = await RESTManager.api.notes.get<{
+        data: NoteModel[]
+        page: Pager
+      }>({
+        params: {
+          page,
+          size,
+          select:
+            'title _id id created modified mood weather hide secret hasMemory',
+          ...(sortProps.sortBy
+            ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
+            : {}),
+        },
+      })
+      data.value = response.data
+      pager.value = response.page
+    })
 
     const message = useMessage()
     const dialog = useDialog()
@@ -55,7 +59,7 @@ export const ManageNoteListView = defineComponent({
 
     const DataTable = defineComponent({
       setup() {
-        const columns = reactive<TableColumns<any>>([
+        const columns = reactive<TableColumns<NoteModel>>([
           {
             type: 'selection',
             options: ['none', 'all'],
@@ -95,7 +99,7 @@ export const ManageNoteListView = defineComponent({
             render(row, index) {
               return (
                 <EditColumn
-                  initialValue={data.value[index].mood}
+                  initialValue={data.value[index].mood ?? ''}
                   onSubmit={async v => {
                     await RESTManager.api.notes(row.id).put({
                       data: {
@@ -118,7 +122,7 @@ export const ManageNoteListView = defineComponent({
             render(row, index) {
               return (
                 <EditColumn
-                  initialValue={data.value[index].weather}
+                  initialValue={data.value[index].weather ?? ''}
                   onSubmit={async v => {
                     await RESTManager.api.notes(row.id).put({
                       data: {

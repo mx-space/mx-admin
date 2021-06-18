@@ -6,6 +6,7 @@ export enum DateFormat {
   'HH:mm',
   'LLLL',
   'H:mm:ss A',
+  'M-d HH:mm:ss',
 }
 
 export const parseDate = (

@@ -2,7 +2,7 @@
   "name": "admin-next",
   "version": "0.1.0",
   "scripts": {
-    "dev": "NODE_ENV=development vite --mode development",
+    "dev": "TAILWIND_MODE=watch NODE_ENV=development vite --mode development",
     "typecheck": "vue-tsc --noEmit ",
     "build": "NODE_ENV=production vite build --mode production",
     "preview": "vite preview --port 2323"
@@ -21,6 +21,7 @@
     "@vicons/utils": "0.1.4",
     "camelcase-keys": "6.2.2",
     "clsx": "1.1.1",
+    "g2": "2.3.13",
     "js-cookie": "2.2.1",
     "lodash-es": "4.17.21",
     "monaco-editor": "0.25.1",

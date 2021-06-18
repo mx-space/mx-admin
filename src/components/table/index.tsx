@@ -1,5 +1,6 @@
 import { Pager } from 'models/base'
 import { NDataTable } from 'naive-ui'
+import { dataTableProps } from 'naive-ui/lib/data-table/src/DataTable'
 import {
   RowKey,
   SortState,
@@ -26,8 +27,9 @@ const TableProps = [
   'nTableProps',
   'noPagination',
 ] as const
-export const Table = defineComponent<{
-  data: Ref<any[]>
+
+interface ITable<T = any> {
+  data: Ref<T[]>
   pager: Ref<Pager>
   onUpdateCheckedRowKeys?: (keys: string[]) => void
   onUpdateSorter?: (
@@ -38,10 +40,12 @@ export const Table = defineComponent<{
     page?: string | number | LocationQueryValue[],
     size?: number,
   ) => any
-  columns: TableColumns<any>
-  nTableProps: Partial<typeof NDataTable>
+  columns: TableColumns<T>
+  nTableProps: Partial<Record<keyof typeof dataTableProps, any>>
   noPagination?: boolean
-}>((props, ctx) => {
+}
+
+export const Table = defineComponent<ITable>((props, ctx) => {
   const {
     data,
     noPagination = false,
@@ -82,7 +86,6 @@ export const Table = defineComponent<{
   const ui = useInjector(UIStore)
 
   return () => (
-    // @ts-expect-error
     <NDataTable
       {...nTableProps}
       loading={loading.value}
