@@ -10,7 +10,8 @@ export interface UserModel {
   created: Date
   modified: Date
   v: number
-  lastLoginTime: Date
+  lastLoginTime: string
+  lastLoginIp?: string
   avatar: string
   postID: string
 }

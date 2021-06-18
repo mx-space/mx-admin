@@ -1,23 +1,14 @@
 import { Chart } from '@antv/g2'
 import { RefreshOutline, Trash } from '@vicons/ionicons5'
-import camelcaseKeys from 'camelcase-keys'
 import { HeaderActionButton } from 'components/button/rounded-button'
+import { IpInfoPopover } from 'components/ip-info'
 import { Table } from 'components/table'
 import { useTable } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
 import { isEmpty } from 'lodash-es'
 import { UA } from 'models/analyze'
 import { Pager } from 'models/base'
-import {
-  NButton,
-  NEllipsis,
-  NP,
-  NPopover,
-  NSpace,
-  NTag,
-  useDialog,
-  useMessage,
-} from 'naive-ui'
+import { NButton, NEllipsis, NP, NSpace, useDialog, useMessage } from 'naive-ui'
 import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { UIStore } from 'stores/ui'
 import { parseDate, RESTManager, useInjector } from 'utils'
@@ -25,7 +16,6 @@ import {
   defineComponent,
   onBeforeMount,
   onMounted,
-  reactive,
   ref,
   toRaw,
   watch,
@@ -74,58 +64,6 @@ export default defineComponent({
       fetchData()
     })
 
-    const ipLocationCacheMap = reactive(new Map<string, IP>())
-    const ipInfoText = ref('获取中..')
-    const setIpInfoText = (info: IP) => {
-      ipInfoText.value = `IP: ${info.ip}<br />
-      城市: ${
-        [info.countryName, info.regionName, info.cityName]
-          .filter(Boolean)
-          .join(' - ') || 'N/A'
-      }<br />
-      ISP: ${info.ispDomain || 'N/A'}<br />
-      组织: ${info.ownerDomain || 'N/A'}<br />
-      范围: ${info.range ? Object.values(info.range).join(' - ') : 'N/A'}
-      `
-    }
-    const resetIpInfoText = () => (ipInfoText.value = '获取中..')
-
-    const onIpInfoShow = async (show: boolean, ip: string) => {
-      if (!ip) {
-        return
-      }
-      if (show) {
-        if (ipLocationCacheMap.has(ip)) {
-          const ipInfo = ipLocationCacheMap.get(ip)!
-          setIpInfoText(ipInfo)
-          return
-        }
-        const isIPv6 = ip.split(':').length == 8
-        const apiUrl = isIPv6
-          ? 'http://ip-api.com/json/'
-          : 'https://api.i-meto.com/ip/v1/qqwry/'
-
-        const response = await fetch(apiUrl + ip)
-        const data = await response.json()
-        let camelData = camelcaseKeys(data, { deep: true }) as IP
-        if (isIPv6) {
-          const _data = camelData as any as IPv6
-          camelData = {
-            cityName: _data.city,
-            countryName: _data.country,
-            ip: _data.query,
-            ispDomain: _data.as,
-            ownerDomain: _data.org,
-            regionName: _data.regionName,
-          }
-        }
-        setIpInfoText(camelData)
-        ipLocationCacheMap.set(ip, data)
-      } else {
-        resetIpInfoText()
-      }
-    }
-
     const DataTable = () => {
       return (
         <Table
@@ -147,30 +85,18 @@ export default defineComponent({
                 key: 'ip',
                 width: 100,
                 render({ ip }) {
+                  if (!ip) {
+                    return null
+                  }
                   return (
-                    <NPopover
-                      trigger="click"
-                      placement="top"
-                      onUpdateShow={async (show) => {
-                        if (!ip) {
-                          return
-                        }
-                        await onIpInfoShow(show, ip)
-                      }}
-                    >
-                      {{
-                        trigger() {
-                          return (
-                            <NButton text size="tiny" type="primary">
-                              {ip}
-                            </NButton>
-                          )
-                        },
-                        default() {
-                          return <div innerHTML={ipInfoText.value}></div>
-                        },
-                      }}
-                    </NPopover>
+                    <IpInfoPopover
+                      ip={ip}
+                      triggerEl={
+                        <NButton text size="tiny" type="primary">
+                          {ip}
+                        </NButton>
+                      }
+                    ></IpInfoPopover>
                   )
                 },
               },
@@ -485,33 +411,21 @@ export default defineComponent({
 
           <NSpace>
             {todayIp.value.map((ip) => (
-              <NPopover
+              <IpInfoPopover
+                ip={ip}
                 key={ip}
-                trigger="click"
-                placement="top"
-                onUpdateShow={async (show) => {
-                  await onIpInfoShow(show, ip)
-                }}
-              >
-                {{
-                  trigger() {
-                    return (
-                      <NButton
-                        size="tiny"
-                        class="!flex !py-[15px]"
-                        round
-                        type="primary"
-                        ghost
-                      >
-                        {ip}
-                      </NButton>
-                    )
-                  },
-                  default() {
-                    return <div innerHTML={ipInfoText.value}></div>
-                  },
-                }}
-              </NPopover>
+                triggerEl={
+                  <NButton
+                    size="tiny"
+                    class="!flex !py-[15px]"
+                    round
+                    type="primary"
+                    ghost
+                  >
+                    {ip}
+                  </NButton>
+                }
+              ></IpInfoPopover>
             ))}
           </NSpace>
         </NP>
@@ -561,34 +475,4 @@ interface Week {
   day: string
   key: Key
   value: number
-}
-
-interface IP {
-  ip: string
-  countryName: string
-  regionName: string
-  cityName: string
-  ownerDomain: string
-  ispDomain: string
-  range?: {
-    from: string
-    to: string
-  }
-}
-
-interface IPv6 {
-  status: string
-  country: string
-  countryCode: string
-  region: string
-  regionName: string
-  city: string
-  zip: string
-  lat: number
-  lon: number
-  timezone: string
-  isp: string
-  org: string
-  as: string
-  query: string
 }

@@ -2,7 +2,6 @@
 import { RouteRecordNormalized } from 'vue-router'
 import { routeForMenu } from '../router/router'
 
-type KV = Record<string, any>
 type TRouteRecordNormalized = Omit<RouteRecordNormalized, 'meta'> & {
   meta?: {
     query?: KV

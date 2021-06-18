@@ -35,7 +35,6 @@ export const Sidebar = defineComponent({
     onMounted(() => {
       // @ts-expect-error
       menus.value = buildMenus(router.getRoutes())
-      console.log(menus.value)
     })
 
     const _index = ref(0)
@@ -139,7 +138,7 @@ export const Sidebar = defineComponent({
                               : '0',
                         }}
                       >
-                        {item.subItems.map(child => {
+                        {item.subItems.map((child) => {
                           return (
                             <li
                               key={child.path}

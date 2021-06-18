@@ -2,7 +2,7 @@ module.exports = {
   purge: ['./src/**/*.html', './src/**/*.vue', './src/**/*.tsx'],
   darkMode: false, // or 'media' or 'class'
   mode: 'jit',
-  important: true,
+
   theme: {
     extend: {
       screens: {
@@ -34,6 +34,9 @@ module.exports = {
           default: '#18A058FF',
           deep: '#0C7A43FF',
           shallow: '#36AD6AFF',
+        },
+        gray$: {
+          default: '#ddd',
         },
       },
     },

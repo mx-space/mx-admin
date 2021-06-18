@@ -1,18 +1,12 @@
 <template>
-  <div
-    class="avatar"
-    :style="{ height: `${size}px`, width: `${size}px` }"
-  >
-    <img
-      :src="src"
-      alt="####avatar"
-      :style="{ display: loaded ? '' : 'none' }"
-    >
+  <div class="avatar" :style="{ height: `${size}px`, width: `${size}px` }">
+    <img :src="src" alt="" :style="{ display: loaded ? '' : 'none' }" />
+    <div class="sr-only">一个头像</div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from '@vue/runtime-core'
+import { defineComponent, onMounted, ref, watch } from '@vue/runtime-core'
 
 export default defineComponent({
   props: {
@@ -28,14 +22,24 @@ export default defineComponent({
   setup(props) {
     const loaded = ref(false)
 
-    onMounted(() => {
+    const preloadImage = () => {
       const $$ = new Image()
       $$.src = props.src
 
       $$.onload = (e) => {
         loaded.value = true
       }
+    }
+    onMounted(() => {
+      preloadImage()
     })
+
+    watch(
+      () => props.src,
+      () => {
+        preloadImage()
+      },
+    )
 
     return {
       loaded,
@@ -44,19 +48,13 @@ export default defineComponent({
 })
 </script>
 
-<style>
+<style lang="postcss">
 .avatar {
-  display: inline-block;
-  background-color: #dddddd;
-  border-radius: 50%;
-  position: relative;
-  overflow: hidden;
-  user-select: none;
+  @apply bg-gray$-default inline-block rounded-full relative overflow-hidden select-none;
 }
 .avatar img {
-  border-radius: 50%;
-  height: 100%;
-  max-width: 100%;
+  @apply rounded-full h-full max-w-full;
+
   animation: scale 0.5s ease-out;
 }
 @keyframes scale {
