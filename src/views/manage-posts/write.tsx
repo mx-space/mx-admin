@@ -153,7 +153,7 @@ const PostWriteView = defineComponent(() => {
         class="mt-3 relative z-10"
         label="想想取个什么标题好呢~"
         value={data.title}
-        onChange={e => {
+        onChange={(e) => {
           data.title = e
         }}
       ></MaterialInput>
@@ -164,14 +164,14 @@ const PostWriteView = defineComponent(() => {
         <UnderlineInput
           class="ml-2"
           value={data.slug}
-          onChange={e => {
+          onChange={(e) => {
             data.slug = e
           }}
         />
       </div>
 
       <MonacoEditor
-        onChange={v => {
+        onChange={(v) => {
           data.text = v
         }}
         text={data.text}
@@ -186,7 +186,7 @@ const PostWriteView = defineComponent(() => {
         width={450}
         style={{ maxWidth: '90vw' }}
         placement="right"
-        onUpdateShow={s => {
+        onUpdateShow={(s) => {
           drawerShow.value = s
         }}
       >
@@ -196,11 +196,11 @@ const PostWriteView = defineComponent(() => {
               <NSelect
                 placeholder="请选择"
                 value={data.categoryId}
-                onUpdateValue={e => {
+                onUpdateValue={(e) => {
                   data.categoryId = e
                 }}
                 options={
-                  categoryStore.data.value?.map(i => ({
+                  categoryStore.data.value?.map((i) => ({
                     label: i.name,
                     value: i.id,
                     key: i.id,
@@ -213,7 +213,7 @@ const PostWriteView = defineComponent(() => {
               {/* TODO 自动补全标签 */}
               <NDynamicTags
                 value={data.tags}
-                onUpdateValue={e => {
+                onUpdateValue={(e) => {
                   data.tags.length = 0
                   data.tags.push(...e)
                 }}
@@ -224,7 +224,7 @@ const PostWriteView = defineComponent(() => {
               <NInput
                 placeholder="文章概要"
                 value={data.summary}
-                onInput={e => (data.summary = e)}
+                onInput={(e) => (data.summary = e)}
               />
             </NFormItem>
 
@@ -236,7 +236,7 @@ const PostWriteView = defineComponent(() => {
             >
               <NSwitch
                 value={data.hide}
-                onUpdateValue={e => (data.hide = e)}
+                onUpdateValue={(e) => (data.hide = e)}
               ></NSwitch>
             </NFormItem>
 
@@ -248,7 +248,7 @@ const PostWriteView = defineComponent(() => {
             >
               <NSwitch
                 value={data.copyright}
-                onUpdateValue={e => (data.copyright = e)}
+                onUpdateValue={(e) => (data.copyright = e)}
               ></NSwitch>
             </NFormItem>
           </NForm>

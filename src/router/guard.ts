@@ -5,7 +5,7 @@ import { RESTManager } from '../utils/rest'
 export const progress = new QProgress({ colorful: false, color: '#1a9cf3' })
 const title = configs.title
 
-router.beforeEach(async to => {
+router.beforeEach(async (to) => {
   progress.start()
   if (to.meta.isPublic) {
     return
@@ -25,7 +25,7 @@ router.afterEach((to, _) => {
 })
 
 // HACK monaco save
-router.afterEach(to => {
+router.afterEach((to) => {
   if (to.hash == '|publish') {
     router.replace({ ...to, hash: '' })
   }

@@ -39,12 +39,12 @@ export const ParseContentButton = defineComponent({
 
         <NModal
           show={parseContentDialogShow.value}
-          onUpdateShow={s => (parseContentDialogShow.value = s)}
+          onUpdateShow={(s) => (parseContentDialogShow.value = s)}
         >
           <NCard title="解析 Markdown" style="max-width: 90vw;width: 60rem">
             <NSpace vertical size={'large'}>
               <MonacoEditor
-                onChange={e => (unparsedValue.value = e)}
+                onChange={(e) => (unparsedValue.value = e)}
                 text={unparsedValue.value}
               />
               <NSpace justify="end">
@@ -56,7 +56,7 @@ export const ParseContentButton = defineComponent({
                   确定
                 </NButton>
                 <NButton
-                  onClick={_ => {
+                  onClick={(_) => {
                     unparsedValue.value = ''
                   }}
                   round

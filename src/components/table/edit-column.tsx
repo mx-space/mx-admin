@@ -17,7 +17,6 @@ export const EditColumn = defineComponent({
     },
   },
   setup(props) {
-    const { onSubmit, placeholder } = props
     const value = ref(props.initialValue)
     watch(
       () => props.initialValue,
@@ -40,7 +39,7 @@ export const EditColumn = defineComponent({
       },
     )
     const handleSubmit = () => {
-      onSubmit(value.value)
+      props.onSubmit(value.value)
       isEdit.value = false
     }
     return () => (
@@ -55,7 +54,7 @@ export const EditColumn = defineComponent({
               }}
               class="w-3/4"
               value={value.value}
-              placeholder={placeholder ?? props.initialValue}
+              placeholder={props.placeholder ?? props.initialValue}
               size="tiny"
               autofocus
               ref={inputRef}

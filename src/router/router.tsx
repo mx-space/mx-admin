@@ -79,7 +79,9 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           query: { page: 1 },
         },
         component: () =>
-          import('../views/manage-posts/list').then(m => m.ManagePostListView),
+          import('../views/manage-posts/list').then(
+            (m) => m.ManagePostListView,
+          ),
       },
 
       {
@@ -109,7 +111,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           ),
         },
         component: () =>
-          import('../views/manage-posts/category').then(m => m.CategoryView),
+          import('../views/manage-posts/category').then((m) => m.CategoryView),
       },
     ],
   },
@@ -140,7 +142,9 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           ),
         },
         component: () =>
-          import('../views/manage-notes/list').then(m => m.ManageNoteListView),
+          import('../views/manage-notes/list').then(
+            (m) => m.ManageNoteListView,
+          ),
       },
       {
         path: 'edit',
@@ -197,7 +201,9 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           query: { page: 1 },
         },
         component: () =>
-          import('../views/manage-pages/list').then(m => m.ManagePageListView),
+          import('../views/manage-pages/list').then(
+            (m) => m.ManagePageListView,
+          ),
       },
       {
         path: 'edit',

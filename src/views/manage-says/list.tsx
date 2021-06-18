@@ -12,8 +12,8 @@ import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
 const ManagePageListView = defineComponent({
-  name: 'say-list',
-  setup({}, ctx) {
+  name: 'SayList',
+  setup(props, ctx) {
     const { checkedRowKeys, data, pager, sortProps, fetchDataFn } = useTable(
       (data, pager) => async (page = route.query.page || 1, size = 30) => {
         const response = await RESTManager.api.says.get<SayResponse>({

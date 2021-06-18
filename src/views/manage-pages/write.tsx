@@ -135,7 +135,7 @@ const PageWriteView = defineComponent(() => {
         class="mt-3 relative z-10"
         label={'与你有个好心情~'}
         value={data.title}
-        onChange={e => {
+        onChange={(e) => {
           data.title = e
         }}
       ></MaterialInput>
@@ -144,12 +144,12 @@ const PageWriteView = defineComponent(() => {
         <label>{`${BASE_URL}/`}</label>
         <UnderlineInput
           value={data.slug}
-          onChange={e => (data.slug = e)}
+          onChange={(e) => (data.slug = e)}
         ></UnderlineInput>
       </div>
 
       <MonacoEditor
-        onChange={v => {
+        onChange={(v) => {
           data.text = v
         }}
         text={data.text}
@@ -164,7 +164,7 @@ const PageWriteView = defineComponent(() => {
         width={450}
         style={{ maxWidth: '90vw' }}
         placement="right"
-        onUpdateShow={s => {
+        onUpdateShow={(s) => {
           drawerShow.value = s
         }}
       >
@@ -174,7 +174,7 @@ const PageWriteView = defineComponent(() => {
               <NInputNumber
                 placeholder=""
                 value={data.order}
-                onChange={e => (data.order = e)}
+                onChange={(e) => (data.order = e)}
               ></NInputNumber>
             </NFormItem>
           </NForm>

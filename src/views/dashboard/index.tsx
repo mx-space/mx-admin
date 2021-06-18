@@ -10,7 +10,7 @@
 import { defineComponent } from '@vue/runtime-core'
 
 export const DashBoardView = defineComponent({
-  name: 'dashboard',
+  name: 'Dashboard',
   setup() {
     return () => <p class="">Hello</p>
   },

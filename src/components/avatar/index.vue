@@ -1,10 +1,13 @@
 <template>
-  <div class="avatar" :style="{ height: `${size}px`, width: `${size}px` }">
+  <div
+    class="avatar"
+    :style="{ height: `${size}px`, width: `${size}px` }"
+  >
     <img
       :src="src"
       alt="####avatar"
       :style="{ display: loaded ? '' : 'none' }"
-    />
+    >
   </div>
 </template>
 

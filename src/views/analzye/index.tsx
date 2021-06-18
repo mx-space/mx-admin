@@ -38,21 +38,22 @@ const SectionTitle = defineComponent((_, { slots }) => () => (
 export default defineComponent({
   setup() {
     const { data, pager, sortProps, fetchDataFn } = useTable(
-      (data, pager) => async (page = route.query.page || 1, size = 30) => {
-        const response = (await RESTManager.api.analyze.get({
-          params: {
-            page,
-            size,
-            select: 'title text _id id created modified author source',
-          },
-        })) as {
-          data: UA.Root[]
-          page: Pager
-        }
+      (data, pager) =>
+        async (page = route.query.page || 1, size = 30) => {
+          const response = (await RESTManager.api.analyze.get({
+            params: {
+              page,
+              size,
+              select: 'title text _id id created modified author source',
+            },
+          })) as {
+            data: UA.Root[]
+            page: Pager
+          }
 
-        data.value = response.data
-        pager.value = response.page
-      },
+          data.value = response.data
+          pager.value = response.page
+        },
     )
 
     const message = useMessage()
@@ -63,7 +64,7 @@ export default defineComponent({
     const fetchData = fetchDataFn
     watch(
       () => route.query.page,
-      async n => {
+      async (n) => {
         // @ts-expect-error
         await fetchData(n)
       },
@@ -77,9 +78,11 @@ export default defineComponent({
     const ipInfoText = ref('获取中..')
     const setIpInfoText = (info: IP) => {
       ipInfoText.value = `IP: ${info.ip}<br />
-      城市: ${[info.countryName, info.regionName, info.cityName]
-        .filter(Boolean)
-        .join(' - ') || 'N/A'}<br />
+      城市: ${
+        [info.countryName, info.regionName, info.cityName]
+          .filter(Boolean)
+          .join(' - ') || 'N/A'
+      }<br />
       ISP: ${info.ispDomain || 'N/A'}<br />
       组织: ${info.ownerDomain || 'N/A'}<br />
       范围: ${info.range ? Object.values(info.range).join(' - ') : 'N/A'}
@@ -106,7 +109,7 @@ export default defineComponent({
         const data = await response.json()
         let camelData = camelcaseKeys(data, { deep: true }) as IP
         if (isIPv6) {
-          const _data = (camelData as any) as IPv6
+          const _data = camelData as any as IPv6
           camelData = {
             cityName: _data.city,
             countryName: _data.country,
@@ -148,7 +151,7 @@ export default defineComponent({
                     <NPopover
                       trigger="click"
                       placement="top"
-                      onUpdateShow={async show => {
+                      onUpdateShow={async (show) => {
                         if (!ip) {
                           return
                         }
@@ -191,9 +194,7 @@ export default defineComponent({
                   return (
                     <NEllipsis class="truncate max-w-[200px]">
                       {ua.browser
-                        ? Object.values(ua.browser)
-                            .filter(Boolean)
-                            .join(' ')
+                        ? Object.values(ua.browser).filter(Boolean).join(' ')
                         : 'N/A'}
                     </NEllipsis>
                   )
@@ -207,9 +208,7 @@ export default defineComponent({
                   return (
                     <NEllipsis class="truncate max-w-[150px]">
                       {ua.os
-                        ? Object.values(ua.os)
-                            .filter(Boolean)
-                            .join(' ')
+                        ? Object.values(ua.os).filter(Boolean).join(' ')
                         : 'N/A'}
                     </NEllipsis>
                   )
@@ -252,7 +251,8 @@ export default defineComponent({
     )
     const topPaths = ref([] as Path[])
     onBeforeMount(async () => {
-      const data = (await RESTManager.api.analyze.aggregate.get()) as IPAggregate
+      const data =
+        (await RESTManager.api.analyze.aggregate.get()) as IPAggregate
       count.value = data.total
       todayIp.value = data.todayIps
       graphData.value = {
@@ -364,7 +364,7 @@ export default defineComponent({
         const pieData = topPaths.value.slice(0, 10)
         const total = pieData.reduce((prev, { count }) => count + prev, 0)
 
-        const data = pieData.map(paths => {
+        const data = pieData.map((paths) => {
           return {
             item: decodeURI(paths.path),
             count: paths.count,
@@ -394,7 +394,7 @@ export default defineComponent({
           .position('count')
           .color('item')
           .label('percent', {
-            content: data => {
+            content: (data) => {
               return `${data.item}: ${(data.percent * 100).toFixed(2)}%`
             },
           })
@@ -484,12 +484,12 @@ export default defineComponent({
           </SectionTitle>
 
           <NSpace>
-            {todayIp.value.map(ip => (
+            {todayIp.value.map((ip) => (
               <NPopover
                 key={ip}
                 trigger="click"
                 placement="top"
-                onUpdateShow={async show => {
+                onUpdateShow={async (show) => {
                   await onIpInfoShow(show, ip)
                 }}
               >

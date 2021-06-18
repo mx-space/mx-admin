@@ -291,7 +291,6 @@ const ManageComment = defineComponent(() => {
                   await handleDelete(checkedRowKeys.value)
                   checkedRowKeys.value.length = 0
                 },
-                onNegativeClick: () => {},
               })
             }}
           ></HeaderActionButton>

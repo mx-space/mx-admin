@@ -12,7 +12,7 @@ import {
 import { editor as Editor, KeyMod, KeyCode, Selection } from 'monaco-editor'
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
 
-const popStateHandler = e => {
+const popStateHandler = (e) => {
   const res = confirm('文章未保存是否后退')
   if (!res) {
     pushState()
@@ -26,7 +26,7 @@ function pushState() {
   history.pushState(null, window.location.href)
 }
 
-const beforeUnloadHandler = event => {
+const beforeUnloadHandler = (event) => {
   event.preventDefault()
   // Chrome requires returnValue to be set.
   event.returnValue = '文章未保存是否后退'
@@ -59,13 +59,15 @@ const _MonacoEditor = defineComponent({
         return
       }
       editor = initEditor(editorRef.value, props.text)
-      ;['onKeyDown', 'onDidPaste', 'onDidBlurEditorText'].forEach(eventName => {
-        // @ts-ignore
-        editor[eventName](() => {
-          const value = editor.getValue()
-          props.onChange(value)
-        })
-      })
+      ;['onKeyDown', 'onDidPaste', 'onDidBlurEditorText'].forEach(
+        (eventName) => {
+          // @ts-ignore
+          editor[eventName](() => {
+            const value = editor.getValue()
+            props.onChange(value)
+          })
+        },
+      )
 
       if (props.innerRef) {
         props.innerRef.value = editor
@@ -76,7 +78,7 @@ const _MonacoEditor = defineComponent({
 
     watch(
       () => props.text,
-      n => {
+      (n) => {
         if (!memoInitialValue && n) {
           memoInitialValue = n
         }
@@ -97,7 +99,7 @@ const _MonacoEditor = defineComponent({
       }
     })
 
-    onBeforeRouteLeave(to => {
+    onBeforeRouteLeave((to) => {
       if (!props.unSaveConfirm) {
         return
       }
@@ -153,7 +155,7 @@ const initEditor = ($el: HTMLElement, initialValue: string) => {
     label: 'bold',
     keybindings: [KeyMod.CtrlCmd | KeyCode.KEY_B],
     // @ts-ignore
-    run: e => {
+    run: (e) => {
       registerRule(editor, '**')
 
       return null
@@ -165,7 +167,7 @@ const initEditor = ($el: HTMLElement, initialValue: string) => {
     label: 'em',
     keybindings: [KeyMod.CtrlCmd | KeyCode.KEY_I],
     // @ts-ignore
-    run: e => {
+    run: (e) => {
       registerRule(editor, '*')
 
       return null
@@ -180,7 +182,7 @@ const initEditor = ($el: HTMLElement, initialValue: string) => {
       KeyMod.Shift | KeyMod.Alt | KeyCode.KEY_F,
     ],
     // @ts-ignore
-    run: e => {
+    run: (e) => {
       return null
     },
   })
@@ -190,7 +192,7 @@ const initEditor = ($el: HTMLElement, initialValue: string) => {
     label: 'del',
     keybindings: [KeyMod.Alt | KeyCode.KEY_D],
     // @ts-ignore
-    run: e => {
+    run: (e) => {
       registerRule(editor, '~~')
 
       return null
@@ -215,7 +217,7 @@ const initEditor = ($el: HTMLElement, initialValue: string) => {
         label: 'heading',
         keybindings: [KeyMod.CtrlCmd | keycodeMap[i]],
         // @ts-ignore
-        run: e => {
+        run: (e) => {
           const selection = e.getSelection()
           if (!selection) {
             return null

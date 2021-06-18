@@ -10,7 +10,7 @@
     @mousedown="down"
     @mouseleave="leave"
     @click="$emit('click')"
-  ></a>
+  />
 </template>
 
 <style lang="postcss">

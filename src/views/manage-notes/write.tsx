@@ -176,7 +176,7 @@ const NoteWriteView = defineComponent(() => {
         class="mt-3 relative z-10"
         label={defaultTitle}
         value={data.title}
-        onChange={e => {
+        onChange={(e) => {
           data.title = e
         }}
       ></MaterialInput>
@@ -186,7 +186,7 @@ const NoteWriteView = defineComponent(() => {
       </div>
 
       <MonacoEditor
-        onChange={v => {
+        onChange={(v) => {
           data.text = v
         }}
         text={data.text}
@@ -201,7 +201,7 @@ const NoteWriteView = defineComponent(() => {
         width={450}
         style={{ maxWidth: '90vw' }}
         placement="right"
-        onUpdateShow={s => {
+        onUpdateShow={(s) => {
           drawerShow.value = s
         }}
       >
@@ -212,8 +212,8 @@ const NoteWriteView = defineComponent(() => {
                 value={data.mood}
                 filterable
                 tag
-                options={MOOD_SET.map(i => ({ label: i, value: i }))}
-                onUpdateValue={e => (data.mood = e)}
+                options={MOOD_SET.map((i) => ({ label: i, value: i }))}
+                onUpdateValue={(e) => (data.mood = e)}
               ></NSelect>
             </NFormItem>
             <NFormItem label="天气" required>
@@ -221,8 +221,8 @@ const NoteWriteView = defineComponent(() => {
                 value={data.weather}
                 filterable
                 tag
-                options={WEATHER_SET.map(i => ({ label: i, value: i }))}
-                onUpdateValue={e => (data.weather = e)}
+                options={WEATHER_SET.map((i) => ({ label: i, value: i }))}
+                onUpdateValue={(e) => (data.weather = e)}
               ></NSelect>
             </NFormItem>
             <NFormItem label="设定密码?">
@@ -230,7 +230,7 @@ const NoteWriteView = defineComponent(() => {
                 placeholder=""
                 type="password"
                 value={data.password}
-                onInput={e => (data.password = e)}
+                onInput={(e) => (data.password = e)}
               ></NInput>
             </NFormItem>
             <NFormItem
@@ -245,7 +245,7 @@ const NoteWriteView = defineComponent(() => {
                 placeholder="选择时间"
                 // @ts-expect-error
                 value={data.secret}
-                onUpdateValue={e => {
+                onUpdateValue={(e) => {
                   data.secret = e ? new Date(e) : null
                 }}
               >
@@ -309,7 +309,7 @@ const NoteWriteView = defineComponent(() => {
             >
               <NSwitch
                 value={data.hide}
-                onUpdateValue={e => (data.hide = e)}
+                onUpdateValue={(e) => (data.hide = e)}
               ></NSwitch>
             </NFormItem>
 
@@ -321,15 +321,15 @@ const NoteWriteView = defineComponent(() => {
             >
               <NSwitch
                 value={data.hasMemory}
-                onUpdateValue={e => (data.hasMemory = e)}
+                onUpdateValue={(e) => (data.hasMemory = e)}
               ></NSwitch>
             </NFormItem>
 
             <NFormItem label="音乐 (网易云 ID)">
               <NDynamicTags
-                value={data.music.map(i => i.id)}
-                onUpdateValue={e => {
-                  data.music = e.map(id => ({ type: 'netease', id }))
+                value={data.music.map((i) => i.id)}
+                onUpdateValue={(e) => {
+                  data.music = e.map((id) => ({ type: 'netease', id }))
                 }}
               ></NDynamicTags>
             </NFormItem>

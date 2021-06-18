@@ -17,7 +17,9 @@ export const ContentLayout = defineComponent({
       type: String,
     },
   },
-  setup({ actionsElement, footerButtonElement, title }, ctx) {
+  setup(props, ctx) {
+    // eslint-disable-next-line vue/no-setup-props-destructure
+    const { actionsElement, footerButtonElement, title } = props
     const { slots } = ctx
     const router = useRouter()
     const route = computed(() => router.currentRoute)
@@ -28,7 +30,7 @@ export const ContentLayout = defineComponent({
         <header class={styles['header']}>
           <div class={styles['header-blur']}></div>
           <h1 class={styles['title']}>
-            {title ?? route.value.value.meta.title}
+            {props.title ?? route.value.value.meta.title}
           </h1>
 
           <div class={clsx(styles['header-actions'], 'space-x-4')}>

@@ -25,7 +25,7 @@ export const useEffect = (
   onMounted(() => {
     callFn()
   })
-  let depsWatcher = [] as WatchStopHandle[]
+  const depsWatcher = [] as WatchStopHandle[]
 
   onUnmounted(() => {
     if (unmountedFn.value && typeof unmountedFn.value == 'function') {

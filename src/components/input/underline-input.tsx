@@ -18,7 +18,7 @@ export const UnderlineInput = defineComponent({
           type={props.type ?? 'text'}
           value={props.value}
           placeholder={props.placeholder ?? ''}
-          onInput={e => {
+          onInput={(e) => {
             props.onChange((e.target as any).value)
           }}
         />

@@ -1,5 +1,4 @@
 import { Icon } from '@vicons/utils'
-import { Add12Filled } from '@vicons/fluent'
 import { defineComponent, PropType } from '@vue/runtime-core'
 import { NButton, NPopover } from 'naive-ui'
 import { RouteLocationRaw, RouterLink } from 'vue-router'
@@ -23,13 +22,12 @@ export const RoundedButton = defineComponent({
     },
   },
   setup(props, { slots }) {
-    const { variant = 'primary', onClick } = props
     return () => {
       return (
         <NButton
-          type={variant}
+          type={props.variant}
           circle
-          onClick={onClick}
+          onClick={props.onClick}
           disabled={props.disabled}
         >
           {slots}
@@ -64,15 +62,14 @@ export const HeaderActionButton = defineComponent({
     },
   },
   setup(props) {
-    const { icon, to, variant = 'primary', onClick } = props
     const Inner = () => (
       <RoundedButton
-        variant={variant}
+        variant={props.variant}
         class="shadow"
-        onClick={onClick}
+        onClick={props.onClick}
         disabled={props.disabled}
       >
-        <Icon size="16">{icon}</Icon>
+        <Icon size="16">{props.icon}</Icon>
       </RoundedButton>
     )
     const WrapInfo = () =>
@@ -91,8 +88,8 @@ export const HeaderActionButton = defineComponent({
         <Inner />
       )
     return () =>
-      to ? (
-        <RouterLink to={to}>
+      props.to ? (
+        <RouterLink to={props.to}>
           <WrapInfo />
         </RouterLink>
       ) : (

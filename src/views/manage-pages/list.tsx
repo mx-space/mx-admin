@@ -13,8 +13,8 @@ import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
 export const ManagePageListView = defineComponent({
-  name: 'page-list',
-  setup({}, ctx) {
+  name: 'PageList',
+  setup(props, ctx) {
     const { checkedRowKeys, data, pager, sortProps, fetchDataFn } = useTable(
       (data, pager) => async (page = route.query.page || 1, size = 20) => {
         const response = await RESTManager.api.pages.get<PageResponse>({

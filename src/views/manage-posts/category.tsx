@@ -26,7 +26,7 @@ import { RESTManager } from 'utils/rest'
 import { defineComponent, onMounted, reactive, Ref, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 
-export const CategoryView = defineComponent(props => {
+export const CategoryView = defineComponent((props) => {
   const categoryStore = useInjector(CategoryStore)
 
   const tags = reactive<TagModel[]>([])
@@ -50,7 +50,7 @@ export const CategoryView = defineComponent(props => {
 
   watch(
     () => checkedTag.value,
-    async name => {
+    async (name) => {
       const res = (await RESTManager.api
         .categories(name)
         .get({ params: { tag: 'true' } })) as any
@@ -82,7 +82,7 @@ export const CategoryView = defineComponent(props => {
       {/* Action */}
       <EditCategoryDialog
         show={showDialog}
-        onSubmit={async state => {
+        onSubmit={async (state) => {
           const { name, slug } = state
           const id =
             typeof showDialog.value == 'string' ? showDialog.value : null
@@ -106,7 +106,7 @@ export const CategoryView = defineComponent(props => {
 
             message.success('修改成功')
 
-            const index = categoryStore.data.value!.findIndex(i => i.id == id)
+            const index = categoryStore.data.value!.findIndex((i) => i.id == id)
             categoryStore.data.value![index] = {
               ...categoryStore.data.value![index],
               ...state,
@@ -139,7 +139,7 @@ export const CategoryView = defineComponent(props => {
                     size="tiny"
                     text
                     type="primary"
-                    onClick={e => {
+                    onClick={(e) => {
                       editCategoryState.value = {
                         name: row.name,
                         slug: row.slug,
@@ -183,7 +183,7 @@ export const CategoryView = defineComponent(props => {
 
       <NH3 prefix="bar">标签</NH3>
       <NSpace size={12}>
-        {tags.map(tag => {
+        {tags.map((tag) => {
           return (
             <NBadge value={tag.count} key={tag.name}>
               <NTag
@@ -193,7 +193,7 @@ export const CategoryView = defineComponent(props => {
                 checkable
                 bordered
                 checked={checkedTag.value == tag.name}
-                onCheckedChange={check => {
+                onCheckedChange={(check) => {
                   if (check) {
                     checkedTag.value = tag.name
                   } else {
@@ -249,14 +249,14 @@ const EditCategoryDialog = defineComponent<{
   initialState?: CategoryState
   onSubmit: (state: CategoryState) => void
   show: Ref<boolean | string>
-}>(props => {
+}>((props) => {
   const state = reactive<CategoryState>(
     props.initialState ?? { name: '', slug: '' },
   )
 
   watch(
     () => props.initialState,
-    n => {
+    (n) => {
       if (n) {
         state.name = n.name
         state.slug = n.slug
@@ -276,7 +276,7 @@ const EditCategoryDialog = defineComponent<{
   return () => (
     <NModal
       show={!!props.show.value}
-      onUpdateShow={s => {
+      onUpdateShow={(s) => {
         props.show.value = s
       }}
     >
@@ -303,7 +303,7 @@ const EditCategoryDialog = defineComponent<{
               <NFormItemRow path="name" label="名字">
                 <NInput
                   placeholder=""
-                  onInput={e => {
+                  onInput={(e) => {
                     state.name = e
                   }}
                   value={state.name}
@@ -313,7 +313,7 @@ const EditCategoryDialog = defineComponent<{
               <NFormItemRow path="slug" label="路径">
                 <NInput
                   placeholder=""
-                  onInput={e => {
+                  onInput={(e) => {
                     state.slug = e
                   }}
                   value={state.slug}

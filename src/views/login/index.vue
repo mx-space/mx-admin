@@ -13,7 +13,7 @@ import { RESTManager } from '../../utils/rest'
 const bgUrl =
   'https://gitee.com/xun7788/my-imagination/raw/master/uPic/1615516941397.jpg'
 export const LoginView = defineComponent({
-  components: { Avatar, Button: NButton, ParallaxButtonVue },
+  components: { Avatar, ParallaxButtonVue },
   setup() {
     const loaded = ref(false)
     const { user, updateToken } = useInjector(UserStore)
@@ -53,7 +53,6 @@ export const LoginView = defineComponent({
             username: user.value?.username,
             password: password.value,
           },
-          errorHandler() {},
         })
         updateToken(res.token)
 
@@ -84,19 +83,30 @@ export default LoginView
     <div
       class="bg transition-opacity duration-700"
       :style="{ backgroundImage: `url(${bgUrl})`, opacity: loaded ? 1 : 0 }"
-    ></div>
+    />
 
     <div class="wrapper">
-      <Avatar :src="user?.avatar" :size="80" />
-      <form action="#" @submit.prevent="handleLogin">
+      <Avatar
+        :src="user?.avatar"
+        :size="80"
+      />
+      <form
+        action="#"
+        @submit.prevent="handleLogin"
+      >
         <div class="input-wrap">
-          <input v-model="password" type="password" autofocus ref="input" />
-          <div class="blur"></div>
+          <input
+            ref="input"
+            v-model="password"
+            type="password"
+            autofocus
+          >
+          <div class="blur" />
         </div>
         <ParallaxButtonVue
           title="登陆"
-          @click="handleLogin"
           class="p-button-raised p-button-rounded"
+          @click="handleLogin"
         />
       </form>
 

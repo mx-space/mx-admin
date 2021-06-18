@@ -69,7 +69,7 @@ export const Table = defineComponent<ITable>((props, ctx) => {
   // HACK
   const clean = watch(
     () => data.value,
-    n => {
+    (n) => {
       // if (n.length) {
 
       // }
@@ -100,7 +100,7 @@ export const Table = defineComponent<ITable>((props, ctx) => {
               pageSize: pager.value.size,
               pageCount: pager.value.totalPage,
 
-              onChange: async page => {
+              onChange: async (page) => {
                 router.push({
                   query: { ...route.query, page },
                   path: route.path,
@@ -111,18 +111,18 @@ export const Table = defineComponent<ITable>((props, ctx) => {
       bordered={false}
       data={data.value}
       checkedRowKeys={checkedRowKeys.value}
-      rowKey={r => r.id}
-      onUpdateCheckedRowKeys={keys => {
+      rowKey={(r) => r.id}
+      onUpdateCheckedRowKeys={(keys) => {
         checkedRowKeys.value = keys
         onUpdateCheckedRowKeys?.(keys as any)
       }}
       rowClassName={() => styles['table-row']}
-      onUpdateSorter={async status => {
+      onUpdateSorter={async (status) => {
         if (!status) {
           return
         }
 
-        columns.forEach(column => {
+        columns.forEach((column) => {
           /** column.sortOrder !== undefined means it is uncontrolled */
           if (!('sortOrder' in column)) {
             return

@@ -62,13 +62,13 @@ const buildModel = (
 function buildSubMenus(route: TRouteRecordNormalized, prevPath = '') {
   if (Array.isArray(route.children)) {
     return route.children
-      .filter(item => {
+      .filter((item) => {
         if (!item.meta) {
           return true
         }
         return item.meta.hide !== true
       })
-      .map(item => {
+      .map((item) => {
         return buildModel(item as TRouteRecordNormalized, true, prevPath)
       })
   } else {
@@ -79,9 +79,9 @@ function buildSubMenus(route: TRouteRecordNormalized, prevPath = '') {
 export const buildMenus = (
   routes: Array<TRouteRecordNormalized>,
 ): MenuModel[] =>
-  (routes.find(
-    item => item.name === 'home' && item.path === '/',
-  ) as any).children
+  (
+    routes.find((item) => item.name === 'home' && item.path === '/') as any
+  ).children
     .filter((item: TRouteRecordNormalized) => item.path !== '*')
     .map((item: TRouteRecordNormalized) => {
       return buildModel(item, false, '')

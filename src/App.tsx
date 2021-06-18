@@ -13,7 +13,7 @@ import { useInjector, useProviders } from './utils/deps-injection'
 import { zhCN, dateZhCN } from 'naive-ui'
 
 const Root = defineComponent({
-  name: 'home',
+  name: 'Home',
 
   setup() {
     const { fetchUser } = useInjector(UserStore)
@@ -39,7 +39,7 @@ const Root = defineComponent({
 // }
 
 const App = defineComponent({
-  setup({}) {
+  setup() {
     useProviders(UIStore, UserStore, CategoryStore)
 
     return () => (

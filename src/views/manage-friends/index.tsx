@@ -37,21 +37,22 @@ export default defineComponent({
     )
 
     const { data, checkedRowKeys, fetchDataFn, pager } = useTable<LinkModel>(
-      (data, pager) => async (
-        page = route.query.page || 1,
-        size = 50,
-        state: LinkState = (route.query.state as any | 0) ?? LinkState.Pass,
-      ) => {
-        const response = await RESTManager.api.links.get<LinkResponse>({
-          params: {
-            page,
-            size,
-            state: state | 0,
-          },
-        })
-        data.value = response.data
-        pager.value = response.page
-      },
+      (data, pager) =>
+        async (
+          page = route.query.page || 1,
+          size = 50,
+          state: LinkState = (route.query.state as any | 0) ?? LinkState.Pass,
+        ) => {
+          const response = await RESTManager.api.links.get<LinkResponse>({
+            params: {
+              page,
+              size,
+              state: state | 0,
+            },
+          })
+          data.value = response.data
+          pager.value = response.page
+        },
     )
     const message = useMessage()
     const resetEditData: () => Omit<LinkModel, 'id' | 'state'> & {
@@ -69,14 +70,14 @@ export default defineComponent({
 
     watch(
       () => route.query.state,
-      async _ => {
+      async (_) => {
         await fetchDataFn()
       },
     )
 
     watch(
       () => route.query.page,
-      async _ => {
+      async (_) => {
         await fetchDataFn()
       },
       { immediate: true },
@@ -98,7 +99,7 @@ export default defineComponent({
           .links(id)
           .put({ data: omit(editDialogData.value, ['id']) })
 
-        const idx = data.value.findIndex(i => i.id == id)
+        const idx = data.value.findIndex((i) => i.id == id)
         // @ts-expect-error
         data.value[idx] = { ...data.value[idx], ...toRaw(editDialogData.value) }
       } else {
@@ -130,7 +131,7 @@ export default defineComponent({
         <NTabs
           size="medium"
           value={tabValue.value}
-          onUpdateValue={e => {
+          onUpdateValue={(e) => {
             tabValue.value = e
             router.replace({ name: RouteName.Friend, query: { state: e } })
           }}
@@ -205,7 +206,9 @@ export default defineComponent({
                           message.success(
                             '通过了来自' + row.name + '的友链邀请',
                           )
-                          const idx = data.value.findIndex(i => i.id == row.id)
+                          const idx = data.value.findIndex(
+                            (i) => i.id == row.id,
+                          )
                           data.value.splice(idx, 1)
                           auditCount.value--
                         }}
@@ -217,7 +220,7 @@ export default defineComponent({
                       text
                       size="tiny"
                       type="info"
-                      onClick={_ => {
+                      onClick={(_) => {
                         editDialogShow.value = true
                         editDialogData.value = { ...row }
                       }}
@@ -260,7 +263,7 @@ export default defineComponent({
 
         <NModal
           show={editDialogShow.value}
-          onUpdateShow={e => (editDialogShow.value = e)}
+          onUpdateShow={(e) => (editDialogShow.value = e)}
         >
           <NCard
             style="width: 500px;max-width: 90vw"
@@ -276,7 +279,7 @@ export default defineComponent({
                 <NInput
                   autofocus
                   value={editDialogData.value.name}
-                  onInput={e => (editDialogData.value.name = e)}
+                  onInput={(e) => (editDialogData.value.name = e)}
                 ></NInput>
               </NFormItem>
 
@@ -284,7 +287,7 @@ export default defineComponent({
                 <NInput
                   autofocus
                   value={editDialogData.value.avatar}
-                  onInput={e => (editDialogData.value.avatar = e)}
+                  onInput={(e) => (editDialogData.value.avatar = e)}
                 ></NInput>
               </NFormItem>
 
@@ -292,7 +295,7 @@ export default defineComponent({
                 <NInput
                   autofocus
                   value={editDialogData.value.url}
-                  onInput={e => (editDialogData.value.url = e)}
+                  onInput={(e) => (editDialogData.value.url = e)}
                 ></NInput>
               </NFormItem>
 
@@ -300,7 +303,7 @@ export default defineComponent({
                 <NInput
                   autofocus
                   value={editDialogData.value.description}
-                  onInput={e => (editDialogData.value.description = e)}
+                  onInput={(e) => (editDialogData.value.description = e)}
                 ></NInput>
               </NFormItem>
 
@@ -312,7 +315,7 @@ export default defineComponent({
                     { label: '收藏', value: LinkType.Collection },
                   ]}
                   value={editDialogData.value.type}
-                  onUpdateValue={e => (editDialogData.value.type = e | 0)}
+                  onUpdateValue={(e) => (editDialogData.value.type = e | 0)}
                 ></NSelect>
               </NFormItem>
             </NForm>

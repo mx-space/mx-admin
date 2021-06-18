@@ -22,7 +22,7 @@ import { RESTManager } from '../../utils/rest'
 import isURL from 'validator/es/lib/isURL'
 import { parseDate } from 'utils'
 const ManageProjectView = defineComponent({
-  setup({}, ctx) {
+  setup(props, ctx) {
     const { checkedRowKeys, data, pager, sortProps, fetchDataFn } = useTable(
       (data, pager) => async (page = route.query.page || 1, size = 30) => {
         const response = await RESTManager.api.projects.get<ProjectResponse>({

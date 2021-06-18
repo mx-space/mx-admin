@@ -54,6 +54,7 @@ class RESTManagerStatic {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 const noop = () => {}
 const methods = ['get', 'post', 'delete', 'patch', 'put']
 const reflectors = [

@@ -12,7 +12,7 @@ import styles from './index.module.css'
 import { NLayoutContent } from 'naive-ui'
 import { BASE_URL } from 'constants/env'
 export const Sidebar = defineComponent({
-  name: 'sidebar-comp',
+  name: 'SidebarComp',
   props: {
     collapse: {
       type: Boolean,
@@ -33,6 +33,7 @@ export const Sidebar = defineComponent({
     const route = computed(() => router.currentRoute.value)
     const menus = ref<MenuModel[]>([])
     onMounted(() => {
+      // @ts-expect-error
       menus.value = buildMenus(router.getRoutes())
       console.log(menus.value)
     })
@@ -187,7 +188,7 @@ export const Sidebar = defineComponent({
               window.open(BASE_URL)
             }}
           >
-            <Avatar src={user.value?.avatar!} size={40} />
+            <Avatar src={user.value?.avatar} size={40} />
             {!props.collapse ? (
               <span class="pl-12">{user.value?.name}</span>
             ) : null}
@@ -198,7 +199,7 @@ export const Sidebar = defineComponent({
               window.open(BASE_URL)
             }}
           >
-            <Avatar src={user.value?.avatar!} size={40} />
+            <Avatar src={user.value?.avatar} size={40} />
           </button>
         </div>
       </div>

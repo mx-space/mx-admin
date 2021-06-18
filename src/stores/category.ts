@@ -6,7 +6,7 @@ export function CategoryStore() {
   const data = ref<CategoryModel[]>()
 
   const map = computed(
-    () => new Map(data.value?.map(i => [i.id, i])) || new Map(),
+    () => new Map(data.value?.map((i) => [i.id, i])) || new Map(),
   )
 
   return {

@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "TAILWIND_MODE=watch NODE_ENV=development vite --mode development",
-    "typecheck": "vue-tsc --noEmit ",
     "build": "NODE_ENV=production vite build --mode production",
-    "preview": "vite preview --port 2323"
+    "preview": "vite preview --port 2323",
+    "lint": "eslint \"src/**/*.{ts,tsx,js,json,vue}\" --fix",
+    "format": "prettier --write --loglevel warn \"src/**/*.{js,json,tsx,ts,css,scss,vue,html,md}\""
   },
   "dependencies": {
     "@antv/g2": "4.1.18",
@@ -36,18 +37,23 @@
     "@rollup/plugin-commonjs": "19.0.0",
     "@types/lodash-es": "4.17.4",
     "@types/validator": "13.1.4",
+    "@typescript-eslint/eslint-plugin": "4.27.0",
+    "@typescript-eslint/parser": "4.27.0",
     "@vitejs/plugin-vue": "1.2.3",
     "@vitejs/plugin-vue-jsx": "1.1.5",
     "@vue/compiler-sfc": "3.1.1",
     "@vuedx/typescript-plugin-vue": "0.7.4",
     "autoprefixer": "10.2.6",
+    "eslint": "7.28.0",
+    "eslint-plugin-vue": "7.11.1",
     "postcss": "8.3.4",
     "postcss-nested": "5.0.5",
+    "prettier": "2.3.1",
     "rollup-plugin-visualizer": "5.5.0",
     "tailwindcss": "2.1.4",
     "typescript": "4.3.3",
     "vite": "2.3.7",
     "vite-tsconfig-paths": "3.3.13",
-    "vue-tsc": "0.1.7"
+    "vue-eslint-parser": "7.6.0"
   }
 }
