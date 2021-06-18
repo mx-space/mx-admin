@@ -1,7 +1,10 @@
 import { CheckCircleRegular, Times, TrashAlt } from '@vicons/fa'
+import { EmojiAdd24Regular } from '@vicons/fluent'
+import { Icon } from '@vicons/utils'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { Table } from 'components/table'
 import { BASE_URL } from 'constants/env'
+import { KAOMOJI_LIST } from 'constants/kaomoji'
 import { useTable } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
 import { CommentModel, CommentsResponse, CommentState } from 'models/comment'
@@ -14,6 +17,7 @@ import {
   NInput,
   NModal,
   NPopconfirm,
+  NPopover,
   NSpace,
   NTabPane,
   NTabs,
@@ -25,9 +29,9 @@ import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { RouteName } from 'router/name'
 import { RESTManager } from 'utils/rest'
 import { relativeTimeFromNow } from 'utils/time'
-import { defineComponent, reactive, ref, watch } from 'vue'
+import { defineComponent, nextTick, reactive, ref, unref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-
+import styles from './index.module.css'
 enum CommentType {
   Pending,
   Marked,
@@ -60,8 +64,7 @@ const ManageComment = defineComponent(() => {
   const replyDialogShow = ref<boolean>(false)
   const replyComment = ref<CommentModel | null>(null)
   const replyText = ref('')
-  const replyInputRef = ref<HTMLInputElement>()
-  console.log(replyInputRef)
+  const replyInputRef = ref<typeof NInput>()
 
   const onReplySubmit = async () => {
     if (!replyComment.value) {
@@ -360,15 +363,72 @@ const ManageComment = defineComponent(() => {
 
               <NFormItemRow label={'回复内容'}>
                 <NInput
-                  value={replyText.value}
                   ref={replyInputRef}
+                  value={replyText.value}
                   type="textarea"
                   onInput={e => (replyText.value = e)}
                   autosize={{ minRows: 4, maxRows: 10 }}
                 ></NInput>
               </NFormItemRow>
 
-              <div class="text-right">
+              <div class="flex justify-between">
+                <NPopover trigger={'click'} placement="left">
+                  {{
+                    trigger() {
+                      return (
+                        <NButton text class="text-[20px]">
+                          <Icon>
+                            <EmojiAdd24Regular />
+                          </Icon>
+                        </NButton>
+                      )
+                    },
+                    default() {
+                      return (
+                        <NCard style="max-width: 300px" bordered={false}>
+                          <NSpace align="center" class={styles['n-space']}>
+                            {KAOMOJI_LIST.map(kaomoji => (
+                              <NButton
+                                text
+                                key={kaomoji}
+                                type="primary"
+                                onClick={() => {
+                                  if (!replyInputRef.value) {
+                                    return
+                                  }
+                                  const $ta = unref(replyInputRef.value)
+                                    .textareaElRef as HTMLTextAreaElement
+                                  $ta.focus()
+
+                                  nextTick(() => {
+                                    const start = $ta.selectionStart as number
+                                    const end = $ta.selectionEnd as number
+
+                                    $ta.value =
+                                      $ta.value.substring(0, start) +
+                                      ` ${kaomoji} ` +
+                                      $ta.value.substring(end, $ta.value.length)
+                                    replyText.value = $ta.value
+                                    nextTick(() => {
+                                      const shouldMoveToPos =
+                                        start + kaomoji.length + 2
+                                      $ta.selectionStart = shouldMoveToPos
+                                      $ta.selectionEnd = shouldMoveToPos
+
+                                      $ta.focus()
+                                    })
+                                  })
+                                }}
+                              >
+                                {kaomoji}
+                              </NButton>
+                            ))}
+                          </NSpace>
+                        </NCard>
+                      )
+                    },
+                  }}
+                </NPopover>
                 <NSpace size={12} align="center" inline>
                   <NButton type="success" onClick={onReplySubmit} round>
                     确定
