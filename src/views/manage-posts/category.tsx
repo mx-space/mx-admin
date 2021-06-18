@@ -1,8 +1,7 @@
 import { React } from '@vicons/fa'
 import { Add12Filled } from '@vicons/fluent'
 import { HeaderActionButton } from 'components/button/rounded-button'
-import { Table } from 'components/table'
-import { useTable } from 'hooks/use-table'
+import { tableRowStyle } from 'components/table'
 import { ContentLayout } from 'layouts/content'
 import { TagModel } from 'models/category'
 import { PostModel } from 'models/post'
@@ -31,13 +30,14 @@ export const CategoryView = defineComponent(props => {
   const categoryStore = useInjector(CategoryStore)
 
   const tags = reactive<TagModel[]>([])
-
+  const loading = ref(true)
   const fetchCategory = categoryStore.fetch
-  // @ts-expect-error
-  const { checkedRowKeys, pager } = useTable(() => fetchCategory)
+
   const message = useMessage()
   onMounted(async () => {
+    loading.value = true
     await fetchCategory()
+    loading.value = false
     const { data: $tags } = (await RESTManager.api.categories.get({
       params: { type: 'tag' },
     })) as any
@@ -116,14 +116,13 @@ export const CategoryView = defineComponent(props => {
         initialState={editCategoryState.value}
       />
 
-      <Table
-        data={categoryStore.data as any}
-        onFetchData={fetchCategory}
-        noPagination
-        onUpdateCheckedRowKeys={keys => {
-          checkedRowKeys.value = keys
-        }}
-        pager={pager}
+      <NDataTable
+        rowClassName={() => tableRowStyle}
+        size="small"
+        bordered={false}
+        data={categoryStore.data.value || []}
+        remote
+        loading={loading.value}
         columns={[
           { title: '名称', key: 'name' },
           { title: '数', key: 'count' },
@@ -137,6 +136,7 @@ export const CategoryView = defineComponent(props => {
               return (
                 <NSpace size={12}>
                   <NButton
+                    size="tiny"
                     text
                     type="primary"
                     onClick={e => {
@@ -162,7 +162,7 @@ export const CategoryView = defineComponent(props => {
                   >
                     {{
                       trigger: () => (
-                        <NButton text type="error">
+                        <NButton text type="error" size="tiny">
                           移除
                         </NButton>
                       ),
@@ -179,7 +179,7 @@ export const CategoryView = defineComponent(props => {
             },
           },
         ]}
-      ></Table>
+      />
 
       <NH3 prefix="bar">标签</NH3>
       <NSpace size={12}>

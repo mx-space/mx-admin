@@ -2,6 +2,16 @@
 import { RouteRecordNormalized } from 'vue-router'
 import { routeForMenu } from '../router/router'
 
+type KV = Record<string, any>
+type TRouteRecordNormalized = Omit<RouteRecordNormalized, 'meta'> & {
+  meta?: {
+    query?: KV
+    params?: KV
+    icon: JSX.Element
+    title?: string
+    [key: string]: any
+  }
+}
 export interface MenuModel {
   title: string
   path: string
@@ -12,24 +22,44 @@ export interface MenuModel {
   query?: any
 }
 
-const model = (
-  item: RouteRecordNormalized,
+const parsePath = (path: string, params?: KV) => {
+  // 1. add slash
+  let n = /^\//.test(path) ? path : '/' + path
+
+  // 2. replace default params into path
+  const hasParams = n.match(/(\/?:)/)
+  if (!hasParams) {
+    return n
+  }
+  if (!params || Object.prototype.toString.call(params) !== '[object Object]') {
+    throw new TypeError('params must be object')
+  }
+  for (const paramKey in params) {
+    n = n.replaceAll(':' + paramKey, params[paramKey])
+  }
+  return n
+}
+
+const buildModel = (
+  item: TRouteRecordNormalized,
   hasParent: boolean,
   prevPath: string,
 ): MenuModel => {
-  const fullPath = prevPath + '/' + item.path
+  const path = parsePath(item.path, item.meta?.params)
+
+  const fullPath = prevPath + '/' + path
+
   return {
-    // @ts-ignore
-    title: item.meta?.title || item.name || item.path,
-    path: item.path && /^\//.test(item.path) ? item.path : '/' + item.path,
+    title: (item.meta?.title as string) || item.name?.toString() || path,
+    path: path,
     icon: item.meta?.icon as any,
     subItems: buildSubMenus(item, fullPath),
     hasParent,
-    fullPath,
+    fullPath: fullPath.replaceAll('//', '/'),
     query: item.meta?.query,
   }
 }
-function buildSubMenus(route: RouteRecordNormalized, prevPath = '') {
+function buildSubMenus(route: TRouteRecordNormalized, prevPath = '') {
   if (Array.isArray(route.children)) {
     return route.children
       .filter(item => {
@@ -39,18 +69,20 @@ function buildSubMenus(route: RouteRecordNormalized, prevPath = '') {
         return item.meta.hide !== true
       })
       .map(item => {
-        return model(item as RouteRecordNormalized, true, prevPath)
+        return buildModel(item as TRouteRecordNormalized, true, prevPath)
       })
   } else {
     return []
   }
 }
 
-export const buildMenus = (routes: Array<RouteRecordNormalized>): MenuModel[] =>
+export const buildMenus = (
+  routes: Array<TRouteRecordNormalized>,
+): MenuModel[] =>
   (routes.find(
     item => item.name === 'home' && item.path === '/',
   ) as any).children
-    .filter((item: RouteRecordNormalized) => item.path !== '*')
-    .map((item: RouteRecordNormalized) => {
-      return model(item, false, '')
+    .filter((item: TRouteRecordNormalized) => item.path !== '*')
+    .map((item: TRouteRecordNormalized) => {
+      return buildModel(item, false, '')
     })

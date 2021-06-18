@@ -341,7 +341,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     },
   },
   {
-    path: '/setting',
+    path: '/setting/:type',
     name: RouteName.Setting,
     meta: {
       title: '设定',
@@ -350,63 +350,9 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           <Cogs />
         </VIcon>
       ),
+      params: { type: 'user' },
     },
-    redirect: '/setting/profile',
-    component: $RouterView,
-    children: [
-      {
-        path: 'profile',
-        name: RouteName.Profile,
-        meta: {
-          title: '主人设定',
-          icon: (
-            <VIcon>
-              <UserAlt />
-            </VIcon>
-          ),
-        },
-        component: () => import('../views/emptyview'),
-      },
-      {
-        path: 'system',
-        name: RouteName.System,
-        meta: {
-          title: '系统设定',
-          icon: (
-            <VIcon>
-              <Cogs />
-            </VIcon>
-          ),
-        },
-        component: () => import('../views/emptyview'),
-      },
-      {
-        path: 'security',
-        name: RouteName.Security,
-        meta: {
-          title: '安全',
-          icon: (
-            <VIcon>
-              <LockOpen />
-            </VIcon>
-          ),
-        },
-        component: () => import('../views/emptyview'),
-      },
-      {
-        path: 'reset',
-        name: RouteName.Reset,
-        meta: {
-          title: '重置',
-          icon: (
-            <VIcon>
-              <RedoAlt />
-            </VIcon>
-          ),
-        },
-        component: () => import('../views/emptyview'),
-      },
-    ],
+    component: () => import('../views/setting'),
   },
   {
     path: '/other',

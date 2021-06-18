@@ -34,6 +34,7 @@ export const Sidebar = defineComponent({
     const menus = ref<MenuModel[]>([])
     onMounted(() => {
       menus.value = buildMenus(router.getRoutes())
+      console.log(menus.value)
     })
 
     const _index = ref(0)
@@ -52,7 +53,7 @@ export const Sidebar = defineComponent({
         // console.log(item.fullPath)
 
         router.push({
-          path: item.fullPath.slice(1),
+          path: item.fullPath,
           query: item.query,
         })
         if (index) {

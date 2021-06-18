@@ -16,6 +16,7 @@ import {
   useRouter,
 } from 'vue-router'
 import styles from './index.module.css'
+export const tableRowStyle = styles['table-row']
 
 const TableProps = [
   'data',
