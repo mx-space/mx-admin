@@ -1,9 +1,11 @@
+import { Chart } from '@antv/g2'
 import { RefreshOutline, Trash } from '@vicons/ionicons5'
 import camelcaseKeys from 'camelcase-keys'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { Table } from 'components/table'
 import { useTable } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
+import { isEmpty } from 'lodash-es'
 import { UA } from 'models/analyze'
 import { Pager } from 'models/base'
 import {
@@ -17,10 +19,22 @@ import {
   useMessage,
 } from 'naive-ui'
 import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
-import { parseDate, RESTManager } from 'utils'
-import { defineComponent, onBeforeMount, reactive, ref, watch } from 'vue'
+import { UIStore } from 'stores/ui'
+import { parseDate, RESTManager, useInjector } from 'utils'
+import {
+  defineComponent,
+  onBeforeMount,
+  onMounted,
+  reactive,
+  ref,
+  toRaw,
+  watch,
+} from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
+const SectionTitle = defineComponent((_, { slots }) => () => (
+  <div class="font-semibold text-gray-400 my-[12px] ">{slots}</div>
+))
 export default defineComponent({
   setup() {
     const { data, pager, sortProps, fetchDataFn } = useTable(
@@ -229,15 +243,188 @@ export default defineComponent({
     // graph
     const count = ref({} as Total)
     const todayIp = ref([] as string[])
-    const graphData = reactive({})
+    const graphData = ref(
+      {} as {
+        day: any[]
+        week: any[]
+        month: any[]
+      },
+    )
+    const topPaths = ref([] as Path[])
     onBeforeMount(async () => {
       const data = (await RESTManager.api.analyze.aggregate.get()) as IPAggregate
       count.value = data.total
       todayIp.value = data.todayIps
+      graphData.value = {
+        day: data.today,
+        week: data.weeks,
+        month: data.months,
+      }
+      topPaths.value = [...data.paths]
     })
 
     const Graph = defineComponent(() => {
-      return <Fragment></Fragment>
+      const dayChart = ref<HTMLDivElement>()
+      const weekChart = ref<HTMLDivElement>()
+      const monthChart = ref<HTMLDivElement>()
+      const pieChart = ref<HTMLDivElement>()
+      const charts: Record<string, Chart | null> = {
+        day: null,
+        week: null,
+        month: null,
+      }
+      function renderChart(
+        element: HTMLElement | undefined,
+        field: 'day' | 'week' | 'month',
+        data: any,
+        label: [string, string, string],
+      ) {
+        if (!element) {
+          return
+        }
+        const chart = new Chart({
+          container: element,
+          autoFit: true,
+          height: 250,
+          padding: [30, 20, 70, 30],
+        })
+        charts[field] = chart
+
+        chart.data(data)
+        chart.tooltip({
+          showCrosshairs: true,
+          shared: true,
+        })
+        chart.scale({
+          [label[0]]: {
+            range: [0, 1],
+          },
+          [label[2]]: {
+            min: 0,
+            nice: true,
+          },
+        })
+        chart
+          .line()
+          .position(label[0] + '*' + label[2])
+          .label(label[2])
+          .color(label[1])
+          .shape('smooth')
+        chart
+          .point()
+          .position(label[0] + '*' + label[2])
+          .label(label[2])
+          .color(label[1])
+          .shape('circle')
+
+        chart.render()
+      }
+
+      const renderAllChart = () => {
+        renderChart(dayChart.value, 'day', graphData.value.day, [
+          'hour',
+          'key',
+          'value',
+        ])
+
+        renderChart(weekChart.value, 'week', graphData.value.week, [
+          'day',
+          'key',
+          'value',
+        ])
+
+        renderChart(monthChart.value, 'month', graphData.value.month, [
+          'date',
+          'key',
+          'value',
+        ])
+        if (pieChart.value) {
+          renderPie(pieChart.value)
+        }
+      }
+      onMounted(() => {
+        if (!isEmpty(toRaw(graphData.value))) {
+          renderAllChart()
+        }
+      })
+
+      const watcher = watch(
+        () => graphData,
+        (n, old) => {
+          if (!isEmpty(toRaw(graphData.value))) {
+            renderAllChart()
+
+            watcher()
+          }
+        },
+        { deep: true },
+      )
+
+      function renderPie(el: HTMLElement) {
+        const pieData = topPaths.value.slice(0, 10)
+        const total = pieData.reduce((prev, { count }) => count + prev, 0)
+
+        const data = pieData.map(paths => {
+          return {
+            item: decodeURI(paths.path),
+            count: paths.count,
+            percent: paths.count / total,
+          }
+        })
+
+        const chart = new Chart({
+          container: el,
+          autoFit: true,
+          height: 250,
+        })
+
+        chart.coordinate('theta', {
+          radius: 0.75,
+        })
+
+        chart.data(data)
+
+        chart.tooltip({
+          showTitle: false,
+          showMarkers: false,
+        })
+        chart.legend(false)
+        chart
+          .interval()
+          .position('count')
+          .color('item')
+          .label('percent', {
+            content: data => {
+              return `${data.item}: ${(data.percent * 100).toFixed(2)}%`
+            },
+          })
+          .adjust('stack')
+
+        chart.render()
+      }
+
+      const uiStore = useInjector(UIStore)
+
+      return () => (
+        <div style={{ columns: uiStore.viewport.value.mobile ? 1 : 2 }}>
+          <div>
+            <SectionTitle>今日请求走势</SectionTitle>
+            <div ref={dayChart}></div>
+          </div>
+          <div>
+            <SectionTitle>本周请求走势</SectionTitle>
+            <div ref={weekChart}></div>
+          </div>
+          <div>
+            <SectionTitle>本月请求走势</SectionTitle>
+            <div ref={monthChart}></div>
+          </div>
+          <div>
+            <SectionTitle>最近 7 天请求路径 Top 10</SectionTitle>
+            <div ref={pieChart}></div>
+          </div>
+        </div>
+      )
     })
     // end
 
@@ -284,17 +471,17 @@ export default defineComponent({
       >
         <Graph />
         <NP>
-          <div class="font-semibold text-gray-400 my-[12px] ">
+          <SectionTitle>
             <span>
               总请求量中: PV {count.value.callTime} UV {count.value.uv}
             </span>
-          </div>
+          </SectionTitle>
         </NP>
 
         <NP>
-          <div class="font-semibold text-gray-400 my-[12px] ">
+          <SectionTitle>
             <span>今天 - 所有请求的 IP {todayIp.value.length} 个</span>
-          </div>
+          </SectionTitle>
 
           <NSpace>
             {todayIp.value.map(ip => (
