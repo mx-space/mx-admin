@@ -41,7 +41,7 @@ const NFormBaseProps = {
 
 // FIXME : input autocomplation
 
-const autosizeableProps = {
+export const autosizeableProps = {
   autosize: true,
   clearable: true,
   style: 'min-width: 300px; max-width: 100%',
@@ -53,6 +53,7 @@ export const TabSystem = defineComponent(() => {
     headerRef.value = (
       <HeaderActionButton
         disabled={true}
+        onClick={save}
         icon={<CheckCircleOutlined />}
       ></HeaderActionButton>
     )
@@ -87,10 +88,37 @@ export const TabSystem = defineComponent(() => {
         <HeaderActionButton
           disabled={!canSave}
           icon={<CheckCircleOutlined />}
+          onClick={save}
         ></HeaderActionButton>
       )
     },
   )
+
+  async function save() {
+    if (isEmpty(diff.value)) {
+      return
+    }
+
+    const entries = Object.entries(diff.value)
+
+    for await (const [key, value] of entries) {
+      if (key === 'seo') {
+        await RESTManager.api.options(key).patch({
+          data: {
+            ...(value as any),
+            keywords: configs.value.seo.keywords,
+          },
+        })
+      } else {
+        await RESTManager.api.options(key).patch({
+          data: value,
+        })
+      }
+    }
+
+    await fetchConfig()
+    message.success('修改成功')
+  }
 
   const fetchConfig = async () => {
     let response = (await RESTManager.api.options.get()) as any

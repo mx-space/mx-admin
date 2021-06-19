@@ -22,12 +22,12 @@ export const LoginView = defineComponent({
     onMounted(() => {
       const $$ = new Image()
       $$.src = bgUrl
-      $$.onload = e => {
+      $$.onload = (e) => {
         loaded.value = true
       }
       input.value.focus()
 
-      document.onkeydown = e => {
+      document.onkeydown = (e) => {
         input.value.focus()
       }
     })
@@ -40,7 +40,8 @@ export const LoginView = defineComponent({
 
     const password = ref('')
 
-    const handleLogin = async e => {
+    const handleLogin = async (e: Event) => {
+      e.stopPropagation()
       try {
         if (!user.value || !user.value.username) {
           toast.error('主人信息无法获取')
@@ -86,21 +87,10 @@ export default LoginView
     />
 
     <div class="wrapper">
-      <Avatar
-        :src="user?.avatar"
-        :size="80"
-      />
-      <form
-        action="#"
-        @submit.prevent="handleLogin"
-      >
+      <Avatar :src="user?.avatar" :size="80" />
+      <form action="#" @submit.prevent="handleLogin">
         <div class="input-wrap">
-          <input
-            ref="input"
-            v-model="password"
-            type="password"
-            autofocus
-          >
+          <input ref="input" v-model="password" type="password" autofocus />
           <div class="blur" />
         </div>
         <ParallaxButtonVue

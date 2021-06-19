@@ -2,6 +2,7 @@ import { ContentLayout } from 'layouts/content'
 import { NTabPane, NTabs } from 'naive-ui'
 import { defineComponent, inject, provide, Ref, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { TabSecurity } from './tabs/security'
 import { TabSystem } from './tabs/system'
 import { TabUser } from './tabs/user'
 
@@ -11,6 +12,7 @@ export const useSystemHeaderAction = (): Ref<JSX.Element | null> =>
 enum SettingTab {
   User = 'user',
   System = 'system',
+  Security = 'security',
 }
 export default defineComponent({
   setup() {
@@ -43,6 +45,10 @@ export default defineComponent({
 
           <NTabPane tab="系统" name={SettingTab.System}>
             <TabSystem />
+          </NTabPane>
+
+          <NTabPane tab="安全" name={SettingTab.Security}>
+            <TabSecurity />
           </NTabPane>
         </NTabs>
       </ContentLayout>
