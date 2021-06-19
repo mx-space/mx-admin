@@ -8,6 +8,7 @@ type TRouteRecordNormalized = Omit<RouteRecordNormalized, 'meta'> & {
     params?: KV
     icon: JSX.Element
     title?: string
+    hide?: boolean
     [key: string]: any
   }
 }
@@ -81,7 +82,10 @@ export const buildMenus = (
   (
     routes.find((item) => item.name === 'home' && item.path === '/') as any
   ).children
-    .filter((item: TRouteRecordNormalized) => item.path !== '*')
+    .filter(
+      (item: TRouteRecordNormalized) =>
+        item.path !== '*' && item.meta?.hide !== true,
+    )
     .map((item: TRouteRecordNormalized) => {
       return buildModel(item, false, '')
     })

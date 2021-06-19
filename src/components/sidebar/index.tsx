@@ -98,8 +98,8 @@ export const Sidebar = defineComponent({
                   <div
                     class={clsx(
                       'py-2',
-                      route.value.fullPath === item.fullPath.slice(1) ||
-                        route.value.fullPath.startsWith(item.fullPath.slice(1))
+                      route.value.fullPath === item.fullPath ||
+                        route.value.fullPath.startsWith(item.fullPath)
                         ? styles['active']
                         : '',
 
@@ -146,7 +146,7 @@ export const Sidebar = defineComponent({
                               class={clsx(
                                 route.value.fullPath === child.fullPath ||
                                   route.value.fullPath.startsWith(
-                                    child.fullPath.slice(1),
+                                    child.fullPath,
                                   )
                                   ? styles['active']
                                   : '',

@@ -29,13 +29,15 @@ export declare class MailOptionsDto {
   enable: boolean
   user: string
   pass: string
-  options?: {
+  options: {
     port: number
     host: string
   }
 }
 export declare class CommentOptions {
   antiSpam: boolean
+  spamKeywords?: string[]
+  blockIps?: string[]
 }
 
 export interface Dimensions {
@@ -66,10 +68,10 @@ export declare class File {
 }
 export declare class BackupOptions {
   enable: boolean
-  SecretId?: string
-  SecretKey?: string
-  Bucket?: string
-  Region: string
+  secretId?: string
+  secretKey?: string
+  bucket?: string
+  region: string
 }
 
 export interface TokenModel {

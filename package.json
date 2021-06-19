@@ -26,7 +26,7 @@
     "js-cookie": "2.2.1",
     "lodash-es": "4.17.21",
     "monaco-editor": "0.25.2",
-    "naive-ui": "2.12.1",
+    "naive-ui": "2.12.2",
     "qier-progress": "1.0.4",
     "umi-request": "1.3.9",
     "validator": "13.6.0",

@@ -343,8 +343,8 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     },
   },
   {
-    path: '/setting/:type',
-    name: RouteName.Setting,
+    path: '/setting',
+    redirect: '/setting/user',
     meta: {
       title: '设定',
       icon: (
@@ -353,6 +353,16 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         </VIcon>
       ),
       params: { type: 'user' },
+    },
+    component: () => null,
+  },
+  {
+    path: '/setting/:type',
+    name: RouteName.Setting,
+    meta: {
+      title: '设定',
+      params: { type: 'user' },
+      hide: true,
     },
     component: () => import('../views/setting'),
   },
