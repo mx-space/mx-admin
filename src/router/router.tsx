@@ -21,24 +21,15 @@ import {
   File,
   FileAlt,
   Flask,
-  LockOpen,
   Markdown,
   PencilAlt,
   PuzzlePiece,
-  RedoAlt,
   UndoAlt,
-  UserAlt,
   UserFriends,
   Wrench,
 } from '@vicons/fa'
 import { Icon as VIcon } from '@vicons/utils'
-import { ManagePostListView } from 'views/manage-posts/list'
-import {
-  createRouter,
-  createWebHashHistory,
-  createWebHistory,
-  RouteRecordRaw,
-} from 'vue-router'
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import $RouterView from '../layouts/router-view'
 import { SidebarLayout } from '../layouts/sidebar'
 import { DashBoardView } from '../views/dashboard'
@@ -418,7 +409,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
 ]
 
 export const router = createRouter({
-  history: __DEV__ ? createWebHistory() : createWebHashHistory(),
+  history: createWebHistory(),
   routes: [
     {
       path: '/',
