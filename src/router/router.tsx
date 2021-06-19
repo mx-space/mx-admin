@@ -29,7 +29,12 @@ import {
   Wrench,
 } from '@vicons/fa'
 import { Icon as VIcon } from '@vicons/utils'
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import {
+  createRouter,
+  createWebHashHistory,
+  createWebHistory,
+  RouteRecordRaw,
+} from 'vue-router'
 import $RouterView from '../layouts/router-view'
 import { SidebarLayout } from '../layouts/sidebar'
 import { DashBoardView } from '../views/dashboard'
@@ -409,7 +414,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
 ]
 
 export const router = createRouter({
-  history: createWebHistory(),
+  history: __DEV__ ? createWebHistory() : createWebHashHistory(),
   routes: [
     {
       path: '/',
