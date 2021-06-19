@@ -1,7 +1,6 @@
-import clsx from 'clsx'
+import $RouterView from 'layouts/router-view'
 import { NLayoutContent } from 'naive-ui'
-import { defineComponent, ref, watchEffect } from 'vue'
-import { RouterView } from 'vue-router'
+import { defineComponent, watchEffect } from 'vue'
 import { Sidebar } from '../../components/sidebar'
 import { UIStore } from '../../stores/ui'
 import { useInjector } from '../../utils/deps-injection'
@@ -36,7 +35,7 @@ export const SidebarLayout = defineComponent({
             left: !collapse.value ? sidebarWidth.value + 'px' : '100px',
           }}
         >
-          <RouterView />
+          <$RouterView />
         </NLayoutContent>
       </div>
     )
