@@ -124,7 +124,7 @@ const EditProjectView = defineComponent({
               autofocus
               placeholder=""
               value={data.name}
-              onInput={(e) => (data.name = e)}
+              onInput={(e) => void (data.name = e)}
             ></NInput>
           </NFormItem>
 
@@ -136,7 +136,7 @@ const EditProjectView = defineComponent({
             <NInput
               placeholder=""
               value={data.docUrl}
-              onInput={(e) => (data.docUrl = e)}
+              onInput={(e) => void (data.docUrl = e)}
             ></NInput>
           </NFormItem>
 
@@ -148,7 +148,7 @@ const EditProjectView = defineComponent({
             <NInput
               placeholder=""
               value={data.previewUrl}
-              onInput={(e) => (data.previewUrl = e)}
+              onInput={(e) => void (data.previewUrl = e)}
             ></NInput>
           </NFormItem>
 
@@ -160,7 +160,7 @@ const EditProjectView = defineComponent({
             <NInput
               placeholder=""
               value={data.projectUrl}
-              onInput={(e) => (data.projectUrl = e)}
+              onInput={(e) => void (data.projectUrl = e)}
             ></NInput>
           </NFormItem>
 
@@ -173,7 +173,7 @@ const EditProjectView = defineComponent({
             <NInput
               placeholder=""
               value={data.description}
-              onInput={(e) => (data.description = e)}
+              onInput={(e) => void (data.description = e)}
             ></NInput>
           </NFormItem>
 
@@ -185,7 +185,7 @@ const EditProjectView = defineComponent({
             <NInput
               placeholder=""
               value={data.avatar}
-              onInput={(e) => (data.avatar = e)}
+              onInput={(e) => void (data.avatar = e)}
             ></NInput>
           </NFormItem>
 
@@ -196,13 +196,13 @@ const EditProjectView = defineComponent({
           >
             <NDynamicTags
               value={data.images}
-              onUpdateValue={(e) => (data.images = e)}
+              onUpdateValue={(e) => void (data.images = e)}
             ></NDynamicTags>
           </NFormItem>
 
           <NFormItem label="正文" required>
             <MonacoEditor
-              onChange={(e) => (data.text = e)}
+              onChange={(e) => void (data.text = e)}
               text={data.text}
               class="h-40 w-full"
               unSaveConfirm={false}

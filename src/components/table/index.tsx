@@ -99,7 +99,7 @@ export const Table = defineComponent<ITable>((props, ctx) => {
               page: pager.value.currentPage,
               pageSize: pager.value.size,
               pageCount: pager.value.totalPage,
-
+              showQuickJumper: true,
               onChange: async (page) => {
                 router.push({
                   query: { ...route.query, page },

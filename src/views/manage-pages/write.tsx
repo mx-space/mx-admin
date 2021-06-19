@@ -144,7 +144,7 @@ const PageWriteView = defineComponent(() => {
         <label>{`${BASE_URL}/`}</label>
         <UnderlineInput
           value={data.slug}
-          onChange={(e) => (data.slug = e)}
+          onChange={(e) => void (data.slug = e)}
         ></UnderlineInput>
       </div>
 
@@ -174,7 +174,7 @@ const PageWriteView = defineComponent(() => {
               <NInputNumber
                 placeholder=""
                 value={data.order}
-                onChange={(e) => (data.order = e)}
+                onChange={(e) => void (data.order = e)}
               ></NInputNumber>
             </NFormItem>
           </NForm>

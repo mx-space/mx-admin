@@ -195,7 +195,7 @@ const EditSay = defineComponent({
               autosize={{ minRows: 6, maxRows: 8 }}
               placeholder={placeholder.value.text}
               value={data.text}
-              onInput={(e) => (data.text = e)}
+              onInput={(e) => void (data.text = e)}
             ></NInput>
           </NFormItem>
           <NFormItem
@@ -206,7 +206,7 @@ const EditSay = defineComponent({
             <NInput
               placeholder={placeholder.value.author}
               value={data.author}
-              onInput={(e) => (data.author = e)}
+              onInput={(e) => void (data.author = e)}
             ></NInput>
           </NFormItem>
           <NFormItem
@@ -217,7 +217,7 @@ const EditSay = defineComponent({
             <NInput
               placeholder={placeholder.value.source}
               value={data.source}
-              onInput={(e) => (data.source = e)}
+              onInput={(e) => void (data.source = e)}
             ></NInput>
           </NFormItem>
         </NForm>

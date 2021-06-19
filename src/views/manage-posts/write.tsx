@@ -224,7 +224,7 @@ const PostWriteView = defineComponent(() => {
               <NInput
                 placeholder="文章概要"
                 value={data.summary}
-                onInput={(e) => (data.summary = e)}
+                onInput={(e) => void (data.summary = e)}
               />
             </NFormItem>
 
@@ -236,7 +236,7 @@ const PostWriteView = defineComponent(() => {
             >
               <NSwitch
                 value={data.hide}
-                onUpdateValue={(e) => (data.hide = e)}
+                onUpdateValue={(e) => void (data.hide = e)}
               ></NSwitch>
             </NFormItem>
 
@@ -248,7 +248,7 @@ const PostWriteView = defineComponent(() => {
             >
               <NSwitch
                 value={data.copyright}
-                onUpdateValue={(e) => (data.copyright = e)}
+                onUpdateValue={(e) => void (data.copyright = e)}
               ></NSwitch>
             </NFormItem>
           </NForm>

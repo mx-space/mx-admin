@@ -6,11 +6,11 @@ import styles from './index.module.css'
 export const ContentLayout = defineComponent({
   props: {
     actionsElement: {
-      type: Object as PropType<JSX.Element>,
+      type: Object as PropType<JSX.Element | null>,
       required: false,
     },
     footerButtonElement: {
-      type: Object as PropType<JSX.Element>,
+      type: Object as PropType<JSX.Element | null>,
       required: false,
     },
     title: {
@@ -18,13 +18,11 @@ export const ContentLayout = defineComponent({
     },
   },
   setup(props, ctx) {
-    // eslint-disable-next-line vue/no-setup-props-destructure
-    const { actionsElement, footerButtonElement, title } = props
     const { slots } = ctx
     const router = useRouter()
     const route = computed(() => router.currentRoute)
-    const A$ael = () => actionsElement ?? null
-    const A$fel = () => footerButtonElement ?? null
+    const A$ael = () => props.actionsElement ?? null
+    const A$fel = () => props.footerButtonElement ?? null
     return () => (
       <>
         <header class={styles['header']}>
@@ -34,12 +32,12 @@ export const ContentLayout = defineComponent({
           </h1>
 
           <div class={clsx(styles['header-actions'], 'space-x-4')}>
-            {actionsElement ? <A$ael /> : slots.actions?.()}
+            {props.actionsElement ? <A$ael /> : slots.actions?.()}
           </div>
         </header>
         <main class={styles['main']}>{slots.default?.()}</main>
         <footer class={styles['buttons']}>
-          {footerButtonElement ? <A$fel /> : slots.buttons?.()}
+          {props.footerButtonElement ? <A$fel /> : slots.buttons?.()}
         </footer>
       </>
     )

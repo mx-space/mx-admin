@@ -213,7 +213,7 @@ const NoteWriteView = defineComponent(() => {
                 filterable
                 tag
                 options={MOOD_SET.map((i) => ({ label: i, value: i }))}
-                onUpdateValue={(e) => (data.mood = e)}
+                onUpdateValue={(e) => void (data.mood = e)}
               ></NSelect>
             </NFormItem>
             <NFormItem label="天气" required>
@@ -222,7 +222,7 @@ const NoteWriteView = defineComponent(() => {
                 filterable
                 tag
                 options={WEATHER_SET.map((i) => ({ label: i, value: i }))}
-                onUpdateValue={(e) => (data.weather = e)}
+                onUpdateValue={(e) => void (data.weather = e)}
               ></NSelect>
             </NFormItem>
             <NFormItem label="设定密码?">
@@ -230,7 +230,7 @@ const NoteWriteView = defineComponent(() => {
                 placeholder=""
                 type="password"
                 value={data.password}
-                onInput={(e) => (data.password = e)}
+                onInput={(e) => void (data.password = e)}
               ></NInput>
             </NFormItem>
             <NFormItem
@@ -309,7 +309,7 @@ const NoteWriteView = defineComponent(() => {
             >
               <NSwitch
                 value={data.hide}
-                onUpdateValue={(e) => (data.hide = e)}
+                onUpdateValue={(e) => void (data.hide = e)}
               ></NSwitch>
             </NFormItem>
 
@@ -321,7 +321,7 @@ const NoteWriteView = defineComponent(() => {
             >
               <NSwitch
                 value={data.hasMemory}
-                onUpdateValue={(e) => (data.hasMemory = e)}
+                onUpdateValue={(e) => void (data.hasMemory = e)}
               ></NSwitch>
             </NFormItem>
 

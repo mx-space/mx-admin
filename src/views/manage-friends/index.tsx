@@ -263,7 +263,7 @@ export default defineComponent({
 
         <NModal
           show={editDialogShow.value}
-          onUpdateShow={(e) => (editDialogShow.value = e)}
+          onUpdateShow={(e) => void (editDialogShow.value = e)}
         >
           <NCard
             style="width: 500px;max-width: 90vw"
@@ -279,7 +279,7 @@ export default defineComponent({
                 <NInput
                   autofocus
                   value={editDialogData.value.name}
-                  onInput={(e) => (editDialogData.value.name = e)}
+                  onInput={(e) => void (editDialogData.value.name = e)}
                 ></NInput>
               </NFormItem>
 
@@ -287,7 +287,7 @@ export default defineComponent({
                 <NInput
                   autofocus
                   value={editDialogData.value.avatar}
-                  onInput={(e) => (editDialogData.value.avatar = e)}
+                  onInput={(e) => void (editDialogData.value.avatar = e)}
                 ></NInput>
               </NFormItem>
 
@@ -295,7 +295,7 @@ export default defineComponent({
                 <NInput
                   autofocus
                   value={editDialogData.value.url}
-                  onInput={(e) => (editDialogData.value.url = e)}
+                  onInput={(e) => void (editDialogData.value.url = e)}
                 ></NInput>
               </NFormItem>
 
@@ -303,7 +303,7 @@ export default defineComponent({
                 <NInput
                   autofocus
                   value={editDialogData.value.description}
-                  onInput={(e) => (editDialogData.value.description = e)}
+                  onInput={(e) => void (editDialogData.value.description = e)}
                 ></NInput>
               </NFormItem>
 
@@ -315,7 +315,9 @@ export default defineComponent({
                     { label: '收藏', value: LinkType.Collection },
                   ]}
                   value={editDialogData.value.type}
-                  onUpdateValue={(e) => (editDialogData.value.type = e | 0)}
+                  onUpdateValue={(e) =>
+                    void (editDialogData.value.type = e | 0)
+                  }
                 ></NSelect>
               </NFormItem>
             </NForm>

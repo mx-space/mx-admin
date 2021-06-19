@@ -44,7 +44,7 @@ export const ParseContentButton = defineComponent({
           <NCard title="解析 Markdown" style="max-width: 90vw;width: 60rem">
             <NSpace vertical size={'large'}>
               <MonacoEditor
-                onChange={(e) => (unparsedValue.value = e)}
+                onChange={(e) => void (unparsedValue.value = e)}
                 text={unparsedValue.value}
               />
               <NSpace justify="end">
