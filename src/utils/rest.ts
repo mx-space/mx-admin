@@ -19,7 +19,7 @@ class RESTManagerStatic {
       // @ts-ignore
       prefix: import.meta.env.VITE_APP_BASE_API,
       timeout: 10000,
-      errorHandler: async error => {
+      errorHandler: async (error) => {
         const Message = window.message
         if (error.request && !error.response) {
         }

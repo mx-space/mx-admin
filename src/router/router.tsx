@@ -390,7 +390,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
             </VIcon>
           ),
         },
-        component: () => import('../views/emptyview'),
+        component: () => import('../views/other/backup'),
       },
       {
         path: 'markdown',

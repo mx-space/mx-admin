@@ -27,12 +27,14 @@ const TableProps = [
   'onFetchData',
   'nTableProps',
   'noPagination',
+  'checkedRowKey',
 ] as const
 
 interface ITable<T = any> {
   data: Ref<T[]>
   pager: Ref<Pager>
   onUpdateCheckedRowKeys?: (keys: string[]) => void
+  checkedRowKey?: string
   onUpdateSorter?: (
     sortProps: { sortBy: string; sortOrder: number },
     status: SortState,
@@ -56,6 +58,7 @@ export const Table = defineComponent<ITable>((props, ctx) => {
     nTableProps,
     columns,
     onFetchData: fetchData,
+    checkedRowKey = 'id',
   } = props
   const router = useRouter()
   const route = useRoute()
@@ -111,7 +114,7 @@ export const Table = defineComponent<ITable>((props, ctx) => {
       bordered={false}
       data={data.value}
       checkedRowKeys={checkedRowKeys.value}
-      rowKey={(r) => r.id}
+      rowKey={(r) => r[checkedRowKey]}
       onUpdateCheckedRowKeys={(keys) => {
         checkedRowKeys.value = keys
         onUpdateCheckedRowKeys?.(keys as any)

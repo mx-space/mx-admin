@@ -379,9 +379,9 @@ export default defineComponent({
                 dialog.warning({
                   title: '警告',
                   content: '你确定要清空数据表？',
-                  positiveText: '确定',
-                  negativeText: '达咩',
-                  onPositiveClick: async () => {
+                  positiveText: '达咩',
+                  negativeText: '确定',
+                  onNegativeClick: async () => {
                     await RESTManager.api.analyze.delete()
                     message.success('已清空')
 

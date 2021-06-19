@@ -53,3 +53,7 @@ button {
 .n-scrollbar-rail {
   @apply z-100;
 }
+
+.n-message {
+  @apply !rounded-full;
+}
