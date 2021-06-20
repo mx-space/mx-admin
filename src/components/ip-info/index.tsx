@@ -66,7 +66,7 @@ export const IpInfoPopover = defineComponent({
           }
         }
         setIpInfoText(camelData)
-        ipLocationCacheMap.set(ip, data)
+        ipLocationCacheMap.set(ip, camelData)
       } else {
         resetIpInfoText()
       }

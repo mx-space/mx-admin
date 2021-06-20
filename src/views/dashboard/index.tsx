@@ -16,6 +16,7 @@ import { Activity, Copy, File, Refresh } from '@vicons/tabler'
 import { Icon } from '@vicons/utils'
 import { defineComponent } from '@vue/runtime-core'
 import { HeaderActionButton } from 'components/button/rounded-button'
+import { IpInfoPopover } from 'components/ip-info'
 import { ContentLayout } from 'layouts/content'
 import { pick } from 'lodash-es'
 import { Stat } from 'models/stat'
@@ -36,7 +37,8 @@ import {
   useMessage,
 } from 'naive-ui'
 import { RouteName } from 'router/name'
-import { parseDate, RESTManager } from 'utils'
+import { UserStore } from 'stores/user'
+import { parseDate, RESTManager, useInjector } from 'utils'
 import { onBeforeMount, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -80,8 +82,43 @@ export const DashBoardView = defineComponent({
     const hitokoto = ref('')
     const message = useMessage()
     // const uiStore = useInjector(UIStore)
+    const userStore = useInjector(UserStore)
     const router = useRouter()
+    const UserLoginStat = defineComponent(() => () => (
+      <>
+        <NH3 class="text-opacity-80 font-light">登陆记录</NH3>
+        <p class="-mt-2 mb-3 relative text-gray-500">
+          <span>
+            上次登陆 IP:{' '}
+            {userStore.user.value?.lastLoginIp ? (
+              <IpInfoPopover
+                trigger="hover"
+                triggerEl={<span>{userStore.user.value?.lastLoginIp}</span>}
+                ip={userStore.user.value?.lastLoginIp}
+              ></IpInfoPopover>
+            ) : (
+              'N/A'
+            )}
+          </span>
+          <div class="pt-[.5rem]"></div>
+          <span>
+            上次登陆时间:{' '}
+            {userStore.user.value?.lastLoginTime ? (
+              <time>
+                {parseDate(
+                  userStore.user.value?.lastLoginTime,
+                  'yyyy年M月d日 HH:mm:ss',
+                )}
+              </time>
+            ) : (
+              'N/A'
+            )}
+          </span>
+        </p>
 
+        <div class="pb-4"></div>
+      </>
+    ))
     const DataStat = defineComponent(() => () => (
       <>
         <div class="flex justify-between">
@@ -660,7 +697,7 @@ export const DashBoardView = defineComponent({
             )}
           </NSpace>
         </NP>
-
+        <UserLoginStat />
         <DataStat />
       </ContentLayout>
     )
