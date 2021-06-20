@@ -1,0 +1,176 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { getToken } from 'utils/auth'
+
+import io, { Socket } from 'socket.io-client'
+import { router } from 'router'
+import { configs } from '../configs'
+import { EventTypes, NotificationTypes } from './types'
+import { BrowserNotification } from 'utils/notification'
+import { bus } from 'utils/event-bus'
+import { NButton, NSpace } from 'naive-ui'
+
+const Notification = {
+  get warning() {
+    return window.notification.warning
+  },
+  get warn() {
+    return window.notification.warning
+  },
+  get success() {
+    return window.notification.success
+  },
+  get error() {
+    return window.notification.error
+  },
+  get info() {
+    return window.notification.info
+  },
+}
+export class SocketClient {
+  public socket!: ReturnType<typeof io>
+
+  #title = configs.title
+  #notice = new BrowserNotification()
+  constructor() {
+    const token = getToken()
+    if (!token) {
+      return
+    }
+    this.socket = io(
+      (import.meta.env.VITE_APP_GATEWAY || 'http://localhost:2333') + '/admin',
+      {
+        timeout: 10000,
+        reconnectionDelay: 3000,
+        autoConnect: false,
+        reconnectionAttempts: 3,
+        transports: ['websocket'],
+        query: {
+          token,
+        },
+      },
+    )
+    this.initIO()
+  }
+  initIO() {
+    if (!this.socket) {
+      return
+    }
+    this.socket.open()
+    this.socket.on(
+      'message',
+      (payload: string | Record<'type' | 'data', any>) => {
+        if (typeof payload !== 'string') {
+          return this.handleEvent(payload.type, payload.data)
+        }
+        const { data, type } = JSON.parse(payload) as {
+          data: any
+          type: EventTypes
+        }
+        this.handleEvent(type, data)
+      },
+    )
+  }
+  reconnect() {
+    const token = getToken()
+    if (!token) {
+      return
+    }
+    this.socket.io.opts.query = {
+      token,
+    }
+    this.socket.open()
+  }
+  handleEvent(type: EventTypes, payload: any) {
+    switch (type) {
+      case EventTypes.GATEWAY_CONNECT: {
+        break
+      }
+      case EventTypes.GATEWAY_DISCONNECT: {
+        Notification.warning(payload)
+        break
+      }
+      case EventTypes.AUTH_FAILED: {
+        console.log('等待登陆中...')
+        this.socket.close()
+        break
+      }
+      case EventTypes.COMMENT_CREATE: {
+        const body = payload.author + ': ' + payload.text
+        const handler = () => {
+          router.push({ name: 'comment' })
+          notice.destroy()
+        }
+        const notice = Notification.success({
+          title: '新的评论',
+          content: body,
+          action() {
+            return (
+              <NSpace justify="end">
+                <NButton onClick={handler} type="primary" round ghost>
+                  查看
+                </NButton>
+              </NSpace>
+            )
+          },
+        })
+        // TODO
+        this.#notice.notice(this.#title + ' 收到新的评论', body).then((no) => {
+          if (!no) {
+            return
+          }
+          no.onclick = handler
+        })
+        break
+      }
+      case EventTypes.ADMIN_NOTIFICATION: {
+        const { type, message } = payload as {
+          type: NotificationTypes
+          message: string
+        }
+
+        Notification[type]({ content: message })
+        break
+      }
+      case EventTypes.CONTENT_REFRESH: {
+        Notification.warning({ content: '将在 1 秒后重载页面' })
+        setTimeout(() => {
+          location.reload()
+        }, 1000)
+        break
+      }
+      case EventTypes.LINK_APPLY: {
+        const sitename = payload.name
+
+        const handler = () => {
+          router.push({ name: 'friends' })
+          notice.destroy()
+        }
+        const notice = Notification.success({
+          title: '新的友链申请',
+          content: sitename,
+          action() {
+            return (
+              <NSpace justify="end">
+                <NButton onClick={handler} type="primary" round ghost>
+                  查看
+                </NButton>
+              </NSpace>
+            )
+          },
+        })
+        this.#notice
+          .notice(this.#title + ' 收到新的友链申请', sitename)
+          .then((n) => {
+            if (!n) {
+              return
+            }
+
+            n.onclick = handler
+          })
+        break
+      }
+    }
+
+    bus.emit(type, payload)
+  }
+}

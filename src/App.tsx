@@ -3,7 +3,9 @@ import {
   NConfigProvider,
   NDialogProvider,
   NMessageProvider,
+  NNotificationProvider,
   useMessage,
+  useNotification,
 } from 'naive-ui'
 import { CategoryStore } from 'stores/category'
 import { RouterView } from 'vue-router'
@@ -20,6 +22,11 @@ const Root = defineComponent({
 
     onMounted(() => {
       window.message = useMessage()
+      window.notification = useNotification()
+      import('socket').then((mo) => {
+        mo.socket.initIO()
+      })
+
       fetchUser()
     })
 
@@ -45,11 +52,13 @@ const App = defineComponent({
     return () => (
       // <NConfigProvider themeOverrides={themeOverrides}>
       <NConfigProvider locale={zhCN} dateLocale={dateZhCN}>
-        <NMessageProvider>
-          <NDialogProvider>
-            <Root />
-          </NDialogProvider>
-        </NMessageProvider>
+        <NNotificationProvider>
+          <NMessageProvider>
+            <NDialogProvider>
+              <Root />
+            </NDialogProvider>
+          </NMessageProvider>
+        </NNotificationProvider>
       </NConfigProvider>
     )
   },

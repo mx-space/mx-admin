@@ -7,6 +7,7 @@ import { Table } from 'components/table'
 import { useTable } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
 import { NButton, NPopconfirm, NSpace, useDialog } from 'naive-ui'
+import { socket } from 'socket'
 import { RESTManager } from 'utils'
 import { defineComponent, onBeforeMount } from 'vue'
 
@@ -92,7 +93,7 @@ export default defineComponent(() => {
   const handleRollback = async (filename: string) => {
     await RESTManager.api.backups(filename).patch({
       // TODO socket id
-      params: { sid: '' },
+      params: { sid: socket.socket.id },
     })
   }
   const handleDownload = async (filename: string) => {

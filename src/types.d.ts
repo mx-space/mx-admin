@@ -1,9 +1,12 @@
-import { MessageApi } from 'naive-ui'
+import { MessageApi, useNotification } from 'naive-ui'
 import { VNodeProps } from 'vue'
 
 declare global {
   export interface Window {
     message: MessageApi
+    notification: ReturnType<typeof useNotification>
+
+    [K: string]: any
   }
 
   export const message: MessageApi

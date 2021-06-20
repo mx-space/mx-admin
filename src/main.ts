@@ -7,6 +7,7 @@
  * Mark: Coding with Love
  */
 
+import { bus } from 'utils/event-bus'
 import { createApp } from 'vue'
 import App from './App'
 import './index.css'
@@ -20,4 +21,6 @@ app.mount('#app')
 if (__DEV__) {
   // @ts-ignore
   window.app = app
+  // @ts-ignore
+  window.bus = bus
 }
