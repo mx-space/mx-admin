@@ -63,7 +63,7 @@ const EditSay = defineComponent({
       getHitokoto()
     })
     const dialog = useDialog()
-    const handlePostHikotoko = async () => {
+    const handlePostHitokoto = async () => {
       const send = async () => {
         await RESTManager.api.says.post({
           data: placeholder.value,
@@ -168,7 +168,7 @@ const EditSay = defineComponent({
                 <HeaderActionButton
                   name="发布一言"
                   variant={'info'}
-                  onClick={handlePostHikotoko}
+                  onClick={handlePostHitokoto}
                   icon={<Comment12Filled></Comment12Filled>}
                 ></HeaderActionButton>
                 <HeaderActionButton

@@ -406,19 +406,6 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         },
         component: () => import('../views/other/markdown-helper'),
       },
-      {
-        path: 'optimize',
-        name: RouteName.Optimize,
-        meta: {
-          title: '优化',
-          icon: (
-            <VIcon>
-              <Wrench />
-            </VIcon>
-          ),
-        },
-        component: () => import('../views/emptyview'),
-      },
     ],
   },
 ]

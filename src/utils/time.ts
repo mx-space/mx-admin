@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { parse, format as f } from 'date-fns'
 
 export enum DateFormat {
   'yyyy年M月d日',
   'yyyy年M月d日 HH:mm:ss',
   'HH:mm',
-  'LLLL',
+
   'H:mm:ss A',
   'M-d HH:mm:ss',
 }

@@ -29,6 +29,7 @@ export const SidebarLayout = defineComponent({
         />
 
         <NLayoutContent
+          embedded
           nativeScrollbar={false}
           class={styles['content']}
           style={{
