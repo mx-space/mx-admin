@@ -8,7 +8,7 @@ import { useTable } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
 import { NButton, NPopconfirm, NSpace, useDialog } from 'naive-ui'
 import { socket } from 'socket'
-import { RESTManager } from 'utils'
+import { responseBlobToFile, RESTManager } from 'utils'
 import { defineComponent, onBeforeMount } from 'vue'
 
 export default defineComponent(() => {
@@ -109,14 +109,6 @@ export default defineComponent(() => {
     responseBlobToFile(blob, filename + '.zip')
   }
 
-  function responseBlobToFile(response: any, filename: string) {
-    const url = window.URL.createObjectURL(new Blob([response as any]))
-    const link = document.createElement('a')
-    link.href = url
-    link.setAttribute('download', filename)
-    document.body.appendChild(link)
-    link.click()
-  }
   return () => (
     <ContentLayout
       actionsElement={

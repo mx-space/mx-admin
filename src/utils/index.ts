@@ -68,3 +68,12 @@ export function deepDiff<T extends KV>(base: T, object: T): Partial<T> {
   }
   return changes(object, base)
 }
+
+export function responseBlobToFile(response: any, filename: string): void {
+  const url = window.URL.createObjectURL(new Blob([response as any]))
+  const link = document.createElement('a')
+  link.href = url
+  link.setAttribute('download', filename)
+  document.body.appendChild(link)
+  link.click()
+}
