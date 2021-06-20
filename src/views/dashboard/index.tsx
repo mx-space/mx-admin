@@ -1,18 +1,20 @@
-import { React } from '@vicons/fa'
-import {
-  Code24Filled,
-  Comment24Filled,
-  Extension24Filled,
-  Link24Filled,
-  Note24Filled,
-} from '@vicons/fluent'
-import { ChatbubblesSharp } from '@vicons/ionicons5'
-import {
-  AddLinkFilled,
-  BubbleChartFilled,
-  OnlinePredictionFilled,
-} from '@vicons/material'
-import { Activity, Copy, File, Refresh } from '@vicons/tabler'
+import Code24Filled from '@vicons/fluent/es/Code24Filled'
+import Comment24Filled from '@vicons/fluent/es/Comment24Filled'
+import Extension24Filled from '@vicons/fluent/es/Extension24Filled'
+import Link24Filled from '@vicons/fluent/es/Link24Filled'
+import Note24Filled from '@vicons/fluent/es/Note24Filled'
+
+import ChatbubblesSharp from '@vicons/ionicons5/es/ChatbubblesSharp'
+
+import AddLinkFilled from '@vicons/material/es/AddLinkFilled'
+import BubbleChartFilled from '@vicons/material/es/BubbleChartFilled'
+import OnlinePredictionFilled from '@vicons/material/es/OnlinePredictionFilled'
+
+import Activity from '@vicons/tabler/es/Activity'
+import Copy from '@vicons/tabler/es/Copy'
+import File from '@vicons/tabler/es/File'
+import Refresh from '@vicons/tabler/es/Refresh'
+
 import { Icon } from '@vicons/utils'
 import { defineComponent } from '@vue/runtime-core'
 import { IpInfoPopover } from 'components/ip-info'
