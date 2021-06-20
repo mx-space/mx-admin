@@ -272,8 +272,7 @@ export const DashBoardView = defineComponent({
 
           {
             primary: false,
-
-            name: '说一句',
+            name: '管理',
             onClick() {
               router.push({
                 name: RouteName.ListSay,
