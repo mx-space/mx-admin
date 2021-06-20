@@ -1,4 +1,4 @@
-import { Add12Filled, Delete16Regular } from '@vicons/fluent'
+import { Add12Filled, Delete16Regular } from '@vicons/fluent/es'
 import { defineComponent, onMounted } from '@vue/runtime-core'
 import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
@@ -16,19 +16,20 @@ export const ManagePageListView = defineComponent({
   name: 'PageList',
   setup(props, ctx) {
     const { checkedRowKeys, data, pager, sortProps, fetchDataFn } = useTable(
-      (data, pager) => async (page = route.query.page || 1, size = 20) => {
-        const response = await RESTManager.api.pages.get<PageResponse>({
-          params: {
-            page,
-            size,
-            select: 'title subtitle _id id created modified slug',
-            ...(sortProps.sortBy
-              ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
-              : {}),
-          },
-        })
-        data.value = response.data
-      },
+      (data, pager) =>
+        async (page = route.query.page || 1, size = 20) => {
+          const response = await RESTManager.api.pages.get<PageResponse>({
+            params: {
+              page,
+              size,
+              select: 'title subtitle _id id created modified slug',
+              ...(sortProps.sortBy
+                ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
+                : {}),
+            },
+          })
+          data.value = response.data
+        },
     )
 
     const message = useMessage()
@@ -38,7 +39,7 @@ export const ManagePageListView = defineComponent({
     const fetchData = fetchDataFn
     watch(
       () => route.query.page,
-      async n => {
+      async (n) => {
         // @ts-expect-error
         await fetchData(n)
       },
@@ -141,10 +142,10 @@ export const ManagePageListView = defineComponent({
             data={data}
             onFetchData={fetchData}
             pager={pager}
-            onUpdateCheckedRowKeys={keys => {
+            onUpdateCheckedRowKeys={(keys) => {
               checkedRowKeys.value = keys
             }}
-            onUpdateSorter={async props => {
+            onUpdateSorter={async (props) => {
               sortProps.sortBy = props.sortBy
               sortProps.sortOrder = props.sortOrder
             }}

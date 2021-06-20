@@ -25,6 +25,9 @@ export default ({ mode }) => {
     // minify: false,
     // sourcemap: true,
     // },
+    optimizeDeps: {
+      exclude: [],
+    },
     define: {
       __DEV__: process.env.NODE_ENV !== 'production',
     },

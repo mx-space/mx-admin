@@ -1,4 +1,3 @@
-import { React } from '@vicons/fa'
 import camelcaseKeys from 'camelcase-keys'
 import { NPopover, PopoverTrigger } from 'naive-ui'
 import { defineComponent, PropType, ref } from 'vue'

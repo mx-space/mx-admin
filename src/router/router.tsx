@@ -27,7 +27,7 @@ import {
   UndoAlt,
   UserFriends,
   Wrench,
-} from '@vicons/fa'
+} from '@vicons/fa/es'
 import { Icon as VIcon } from '@vicons/utils'
 import {
   createRouter,
