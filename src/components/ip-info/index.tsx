@@ -1,4 +1,5 @@
 import camelcaseKeys from 'camelcase-keys'
+import { configs } from 'configs'
 import { NPopover, PopoverTrigger } from 'naive-ui'
 import { defineComponent, PropType, ref } from 'vue'
 
@@ -47,7 +48,7 @@ export const IpInfoPopover = defineComponent({
         }
         const isIPv6 = ip.split(':').length == 8
         const apiUrl = isIPv6
-          ? 'http://ip-api.com/json/'
+          ? configs.ipv6LoopupApiUrl
           : 'https://api.i-meto.com/ip/v1/qqwry/'
 
         const response = await fetch(apiUrl + ip)
