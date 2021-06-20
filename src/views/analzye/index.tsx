@@ -75,7 +75,7 @@ export default defineComponent({
               {
                 title: '时间',
                 key: 'timestamp',
-                width: 100,
+                width: 150,
                 render({ timestamp }) {
                   return parseDate(timestamp, 'M-d HH:mm:ss')
                 },
