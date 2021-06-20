@@ -1,4 +1,4 @@
-import { Add12Filled, Delete16Regular } from '@vicons/fluent'
+import { Add12Filled, Delete16Regular } from '@vicons/fluent/es'
 import { defineComponent, onMounted } from '@vue/runtime-core'
 import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
@@ -24,16 +24,17 @@ import { parseDate } from 'utils'
 const ManageProjectView = defineComponent({
   setup(props, ctx) {
     const { checkedRowKeys, data, pager, sortProps, fetchDataFn } = useTable(
-      (data, pager) => async (page = route.query.page || 1, size = 30) => {
-        const response = await RESTManager.api.projects.get<ProjectResponse>({
-          params: {
-            page,
-            size,
-          },
-        })
-        data.value = response.data
-        pager.value = response.page
-      },
+      (data, pager) =>
+        async (page = route.query.page || 1, size = 30) => {
+          const response = await RESTManager.api.projects.get<ProjectResponse>({
+            params: {
+              page,
+              size,
+            },
+          })
+          data.value = response.data
+          pager.value = response.page
+        },
     )
 
     const message = useMessage()
@@ -43,7 +44,7 @@ const ManageProjectView = defineComponent({
     const fetchData = fetchDataFn
     watch(
       () => route.query.page,
-      async n => {
+      async (n) => {
         // @ts-expect-error
         await fetchData(n)
       },
@@ -67,7 +68,7 @@ const ManageProjectView = defineComponent({
             render(row) {
               const hasLink = [row.previewUrl, row.projectUrl, row.docUrl]
                 .filter(Boolean)
-                .find(i => isURL(i, { require_protocol: true }))
+                .find((i) => isURL(i, { require_protocol: true }))
               return hasLink ? (
                 <a href={hasLink} target={'_blank'} rel="noreferrer">
                   {row.name}
@@ -147,7 +148,7 @@ const ManageProjectView = defineComponent({
             data={data}
             onFetchData={fetchData}
             pager={pager}
-            onUpdateCheckedRowKeys={keys => {
+            onUpdateCheckedRowKeys={(keys) => {
               checkedRowKeys.value = keys
             }}
           ></Table>

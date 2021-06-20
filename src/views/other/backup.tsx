@@ -1,6 +1,5 @@
-import { React } from '@vicons/fa'
-import { TrashSharp } from '@vicons/ionicons5'
-import { UndoRound, RedoRound } from '@vicons/material'
+import TrashSharp from '@vicons/ionicons5/es/TrashSharp'
+import { UndoRound, RedoRound } from '@vicons/material/es'
 
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { Table } from 'components/table'

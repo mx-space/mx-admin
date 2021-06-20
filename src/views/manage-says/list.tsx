@@ -1,4 +1,4 @@
-import { Add12Filled, Delete16Regular } from '@vicons/fluent'
+import { Add12Filled, Delete16Regular } from '@vicons/fluent/es'
 import { defineComponent, onMounted } from '@vue/runtime-core'
 import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
@@ -15,17 +15,18 @@ const ManagePageListView = defineComponent({
   name: 'SayList',
   setup(props, ctx) {
     const { checkedRowKeys, data, pager, sortProps, fetchDataFn } = useTable(
-      (data, pager) => async (page = route.query.page || 1, size = 30) => {
-        const response = await RESTManager.api.says.get<SayResponse>({
-          params: {
-            page,
-            size,
-            select: 'title text _id id created modified author source',
-          },
-        })
-        data.value = response.data
-        pager.value = response.page
-      },
+      (data, pager) =>
+        async (page = route.query.page || 1, size = 30) => {
+          const response = await RESTManager.api.says.get<SayResponse>({
+            params: {
+              page,
+              size,
+              select: 'title text _id id created modified author source',
+            },
+          })
+          data.value = response.data
+          pager.value = response.page
+        },
     )
 
     const message = useMessage()
@@ -35,7 +36,7 @@ const ManagePageListView = defineComponent({
     const fetchData = fetchDataFn
     watch(
       () => route.query.page,
-      async n => {
+      async (n) => {
         // @ts-expect-error
         await fetchData(n)
       },
@@ -118,7 +119,7 @@ const ManagePageListView = defineComponent({
             data={data}
             onFetchData={fetchData}
             pager={pager}
-            onUpdateCheckedRowKeys={keys => {
+            onUpdateCheckedRowKeys={(keys) => {
               checkedRowKeys.value = keys
             }}
           ></Table>

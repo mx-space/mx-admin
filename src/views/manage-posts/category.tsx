@@ -1,5 +1,4 @@
-import { React } from '@vicons/fa'
-import { Add12Filled } from '@vicons/fluent'
+import { Add12Filled } from '@vicons/fluent/es'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { tableRowStyle } from 'components/table'
 import { ContentLayout } from 'layouts/content'

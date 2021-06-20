@@ -1,4 +1,4 @@
-import { Plus } from '@vicons/fa'
+import { Plus } from '@vicons/fa/es'
 import { Icon } from '@vicons/utils'
 import { RelativeTime } from 'components/time/relative-time'
 import { TokenModel } from 'models/token'

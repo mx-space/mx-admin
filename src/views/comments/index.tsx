@@ -1,4 +1,4 @@
-import { EmojiAdd24Regular } from '@vicons/fluent'
+import EmojiAdd24Regular from '@vicons/fluent/es/EmojiAdd24Regular'
 import { CheckmarkSharp, CloseSharp, Trash } from '@vicons/ionicons5'
 import { Icon } from '@vicons/utils'
 import { HeaderActionButton } from 'components/button/rounded-button'
@@ -44,21 +44,22 @@ const ManageComment = defineComponent(() => {
   const tabValue = ref((route.query.state as any | 0) ?? CommentType.Pending)
 
   const { data, checkedRowKeys, fetchDataFn, pager } = useTable<CommentModel>(
-    (data, pager) => async (
-      page = route.query.page || 1,
-      size = 10,
-      state: CommentType = route.query.state as any,
-    ) => {
-      const response = await RESTManager.api.comments.get<CommentsResponse>({
-        params: {
-          page,
-          size,
-          state: state | 0,
-        },
-      })
-      data.value = response.data
-      pager.value = response.page
-    },
+    (data, pager) =>
+      async (
+        page = route.query.page || 1,
+        size = 10,
+        state: CommentType = route.query.state as any,
+      ) => {
+        const response = await RESTManager.api.comments.get<CommentsResponse>({
+          params: {
+            page,
+            size,
+            state: state | 0,
+          },
+        })
+        data.value = response.data
+        pager.value = response.page
+      },
   )
   const message = useMessage()
   const replyDialogShow = ref<boolean>(false)
@@ -84,7 +85,7 @@ const ManageComment = defineComponent(() => {
   const fetchData = fetchDataFn
   watch(
     () => route.query.page,
-    async n => {
+    async (n) => {
       // @ts-expect-error
       await fetchData(n)
     },
@@ -93,14 +94,14 @@ const ManageComment = defineComponent(() => {
 
   watch(
     () => route.query.state,
-    async _ => {
+    async (_) => {
       await fetchData()
     },
   )
 
   async function changeState(id: string | string[], state: CommentState) {
     if (Array.isArray(id)) {
-      id.map(async i => {
+      id.map(async (i) => {
         await RESTManager.api.comments(i).patch({ data: { state } })
       })
     } else {
@@ -112,7 +113,7 @@ const ManageComment = defineComponent(() => {
 
   async function handleDelete(id: string | string[]) {
     if (Array.isArray(id)) {
-      id.map(async i => {
+      id.map(async (i) => {
         try {
           await RESTManager.api.comments(i).delete()
         } catch {}
@@ -216,7 +217,7 @@ const ManageComment = defineComponent(() => {
                 text
                 size="tiny"
                 type="info"
-                onClick={e => {
+                onClick={(e) => {
                   replyComment.value = row
                   replyDialogShow.value = true
                 }}
@@ -300,7 +301,7 @@ const ManageComment = defineComponent(() => {
       <NTabs
         size="medium"
         value={tabValue.value}
-        onUpdateValue={e => {
+        onUpdateValue={(e) => {
           tabValue.value = e
           router.replace({ name: RouteName.Comment, query: { state: e } })
         }}
@@ -322,7 +323,7 @@ const ManageComment = defineComponent(() => {
         data={data}
         onFetchData={fetchData}
         pager={pager}
-        onUpdateCheckedRowKeys={keys => {
+        onUpdateCheckedRowKeys={(keys) => {
           checkedRowKeys.value = keys
         }}
         columns={[
@@ -338,7 +339,7 @@ const ManageComment = defineComponent(() => {
       {/* reply dialog */}
       <NModal
         show={!!replyDialogShow.value}
-        onUpdateShow={s => {
+        onUpdateShow={(s) => {
           if (!s) {
             replyDialogShow.value = s
           }
@@ -365,7 +366,7 @@ const ManageComment = defineComponent(() => {
                   ref={replyInputRef}
                   value={replyText.value}
                   type="textarea"
-                  onInput={e => (replyText.value = e)}
+                  onInput={(e) => (replyText.value = e)}
                   autosize={{ minRows: 4, maxRows: 10 }}
                 ></NInput>
               </NFormItemRow>
@@ -386,7 +387,7 @@ const ManageComment = defineComponent(() => {
                       return (
                         <NCard style="max-width: 300px" bordered={false}>
                           <NSpace align="center" class={'!justify-between'}>
-                            {KAOMOJI_LIST.map(kaomoji => (
+                            {KAOMOJI_LIST.map((kaomoji) => (
                               <NButton
                                 text
                                 key={kaomoji}

@@ -1,4 +1,3 @@
-import { React } from '@vicons/fa'
 import Avatar from 'components/avatar'
 import { IpInfoPopover } from 'components/ip-info'
 import { RelativeTime } from 'components/time/relative-time'

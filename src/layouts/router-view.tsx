@@ -1,4 +1,3 @@
-import { React } from '@vicons/fa'
 import { defineComponent } from '@vue/runtime-core'
 import { NSpin } from 'naive-ui'
 

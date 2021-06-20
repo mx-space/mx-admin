@@ -1,5 +1,9 @@
 import { Bookmark } from '@vicons/fa'
-import { Add12Filled, Delete16Regular, EyeHide20Filled } from '@vicons/fluent'
+import {
+  Add12Filled,
+  Delete16Regular,
+  EyeHide20Filled,
+} from '@vicons/fluent/es'
 import { Icon } from '@vicons/utils'
 import { defineComponent, onMounted } from '@vue/runtime-core'
 import { Table } from 'components/table'
@@ -19,26 +23,28 @@ import { RESTManager } from '../../utils/rest'
 export const ManageNoteListView = defineComponent({
   name: 'NoteList',
   setup(props, ctx) {
-    const { checkedRowKeys, data, pager, sortProps, fetchDataFn } = useTable<
-      NoteModel
-    >((data, pager) => async (page = route.query.page || 1, size = 20) => {
-      const response = await RESTManager.api.notes.get<{
-        data: NoteModel[]
-        page: Pager
-      }>({
-        params: {
-          page,
-          size,
-          select:
-            'title _id id created modified mood weather hide secret hasMemory',
-          ...(sortProps.sortBy
-            ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
-            : {}),
-        },
-      })
-      data.value = response.data
-      pager.value = response.page
-    })
+    const { checkedRowKeys, data, pager, sortProps, fetchDataFn } =
+      useTable<NoteModel>(
+        (data, pager) =>
+          async (page = route.query.page || 1, size = 20) => {
+            const response = await RESTManager.api.notes.get<{
+              data: NoteModel[]
+              page: Pager
+            }>({
+              params: {
+                page,
+                size,
+                select:
+                  'title _id id created modified mood weather hide secret hasMemory',
+                ...(sortProps.sortBy
+                  ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
+                  : {}),
+              },
+            })
+            data.value = response.data
+            pager.value = response.page
+          },
+      )
 
     const message = useMessage()
     const dialog = useDialog()
@@ -47,7 +53,7 @@ export const ManageNoteListView = defineComponent({
     const fetchData = fetchDataFn
     watch(
       () => route.query.page,
-      async n => {
+      async (n) => {
         // @ts-expect-error
         await fetchData(n)
       },
@@ -100,7 +106,7 @@ export const ManageNoteListView = defineComponent({
               return (
                 <EditColumn
                   initialValue={data.value[index].mood ?? ''}
-                  onSubmit={async v => {
+                  onSubmit={async (v) => {
                     await RESTManager.api.notes(row.id).put({
                       data: {
                         mood: v,
@@ -123,7 +129,7 @@ export const ManageNoteListView = defineComponent({
               return (
                 <EditColumn
                   initialValue={data.value[index].weather ?? ''}
-                  onSubmit={async v => {
+                  onSubmit={async (v) => {
                     await RESTManager.api.notes(row.id).put({
                       data: {
                         weather: v,
@@ -198,10 +204,10 @@ export const ManageNoteListView = defineComponent({
             data={data}
             onFetchData={fetchData}
             pager={pager}
-            onUpdateCheckedRowKeys={keys => {
+            onUpdateCheckedRowKeys={(keys) => {
               checkedRowKeys.value = keys
             }}
-            onUpdateSorter={async props => {
+            onUpdateSorter={async (props) => {
               sortProps.sortBy = props.sortBy
               sortProps.sortOrder = props.sortOrder
             }}

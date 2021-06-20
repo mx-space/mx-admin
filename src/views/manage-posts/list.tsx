@@ -1,4 +1,4 @@
-import { Add12Filled, Delete16Regular } from '@vicons/fluent'
+import { Add12Filled, Delete16Regular } from '@vicons/fluent/es'
 import { defineComponent, onMounted } from '@vue/runtime-core'
 import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
@@ -24,21 +24,22 @@ export const ManagePostListView = defineComponent({
   name: 'PostList',
   setup(props, ctx) {
     const { checkedRowKeys, data, pager, sortProps, fetchDataFn } = useTable(
-      (data, pager) => async (page = route.query.page || 1, size = 20) => {
-        const response = await RESTManager.api.posts.get<PostResponse>({
-          params: {
-            page,
-            size,
-            select: 'title _id id created modified categoryId copyright tags',
-            ...(sortProps.sortBy
-              ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
-              : {}),
-          },
-        })
+      (data, pager) =>
+        async (page = route.query.page || 1, size = 20) => {
+          const response = await RESTManager.api.posts.get<PostResponse>({
+            params: {
+              page,
+              size,
+              select: 'title _id id created modified categoryId copyright tags',
+              ...(sortProps.sortBy
+                ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
+                : {}),
+            },
+          })
 
-        data.value = response.data
-        pager.value = response.page
-      },
+          data.value = response.data
+          pager.value = response.page
+        },
     )
 
     const message = useMessage()
@@ -48,7 +49,7 @@ export const ManagePostListView = defineComponent({
     const fetchData = fetchDataFn
     watch(
       () => route.query.page,
-      async n => {
+      async (n) => {
         // @ts-expect-error
         await fetchData(n)
       },
@@ -65,7 +66,7 @@ export const ManagePostListView = defineComponent({
       setup() {
         const categoryFilterOptions: ComputedRef<FilterOption[]> = computed(
           () =>
-            categoryStore.data.value?.map(i => ({
+            categoryStore.data.value?.map((i) => ({
               label: i.name,
               value: i.id,
             })) || [],
@@ -194,8 +195,8 @@ export const ManagePostListView = defineComponent({
                     },
                   })) as any
                   _data = _data
-                    .map(c => {
-                      return c.category.children.map(ch => ({
+                    .map((c) => {
+                      return c.category.children.map((ch) => ({
                         ...omit(c.category, ['children', 'id', 'id']),
                         ...ch,
                         categoryId: c.category.id,
@@ -220,10 +221,10 @@ export const ManagePostListView = defineComponent({
             }}
             onFetchData={fetchData}
             pager={pager}
-            onUpdateCheckedRowKeys={keys => {
+            onUpdateCheckedRowKeys={(keys) => {
               checkedRowKeys.value = keys
             }}
-            onUpdateSorter={async props => {
+            onUpdateSorter={async (props) => {
               sortProps.sortBy = props.sortBy
               sortProps.sortOrder = props.sortOrder
             }}
