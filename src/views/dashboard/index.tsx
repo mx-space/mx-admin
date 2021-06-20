@@ -350,7 +350,11 @@ export const DashBoardView = defineComponent({
               </time>
             </p>
           </NSpace>
-          <NGrid xGap={20} yGap={20} cols={'4 400:2 600:3 900:4 1200:5 1600:6'}>
+          <NGrid
+            xGap={20}
+            yGap={20}
+            cols={'2 100:1 400:2 600:3 900:4 1200:5 1600:6'}
+          >
             {dataStat.value.map((props) => (
               <NGi key={props.label}>
                 <Card {...props} />
