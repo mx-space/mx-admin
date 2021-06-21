@@ -1,7 +1,7 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Node.js CI
+name: Deploy
 
 on:
   push:
@@ -30,3 +30,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
+    env:
+      CI: true
+      VITE_APP_GAODEMAP_KEY: ${{ secrets.VITE_APP_GAODEMAP_KEY }}
+      VITE_APP_PUBLIC_URL: ${{ secrets.VITE_APP_PUBLIC_URL }}
