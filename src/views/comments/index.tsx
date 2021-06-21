@@ -1,5 +1,8 @@
 import EmojiAdd24Regular from '@vicons/fluent/es/EmojiAdd24Regular'
-import { CheckmarkSharp, CloseSharp, Trash } from '@vicons/ionicons5'
+import CheckmarkSharp from '@vicons/ionicons5/es/CheckmarkSharp'
+import CloseSharp from '@vicons/ionicons5/es/CloseSharp'
+import Trash from '@vicons/ionicons5/es/Trash'
+
 import { Icon } from '@vicons/utils'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { Table } from 'components/table'

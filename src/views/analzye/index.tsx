@@ -1,5 +1,6 @@
 import { Chart } from '@antv/g2'
-import { RefreshOutline, Trash } from '@vicons/ionicons5'
+import RefreshOutline from '@vicons/ionicons5/es/RefreshOutline'
+import Trash from '@vicons/ionicons5/es/Trash'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { IpInfoPopover } from 'components/ip-info'
 import { Table } from 'components/table'

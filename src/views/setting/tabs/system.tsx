@@ -1,4 +1,4 @@
-import { CheckCircleOutlined } from '@vicons/antd'
+import CheckCircleOutlined from '@vicons/antd/CheckCircleOutlined'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { cloneDeep, isEmpty, merge, omit } from 'lodash-es'
 import { IConfig } from 'models/setting'

@@ -1,4 +1,5 @@
-import { Add12Filled, Delete16Regular } from '@vicons/fluent/es'
+import Add12Filled from '@vicons/fluent/es/Add12Filled'
+import Delete16Regular from '@vicons/fluent/es/Delete16Regular'
 import { defineComponent, onMounted } from 'vue'
 import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'

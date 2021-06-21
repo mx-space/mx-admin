@@ -1,9 +1,8 @@
 import { Bookmark } from '@vicons/fa'
-import {
-  Add12Filled,
-  Delete16Regular,
-  EyeHide20Filled,
-} from '@vicons/fluent/es'
+import Add12Filled from '@vicons/fluent/es/Add12Filled'
+import Delete16Regular from '@vicons/fluent/es/Delete16Regular'
+import EyeHide20Filled from '@vicons/fluent/es/EyeHide20Filled'
+
 import { Icon } from '@vicons/utils'
 import { defineComponent, onMounted } from 'vue'
 import { Table } from 'components/table'

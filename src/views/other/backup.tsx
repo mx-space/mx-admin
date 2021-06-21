@@ -1,5 +1,6 @@
 import TrashSharp from '@vicons/ionicons5/es/TrashSharp'
-import { UndoRound, RedoRound } from '@vicons/material/es'
+import UndoRound from '@vicons/material/es/UndoRound'
+import RedoRound from '@vicons/material/es/RedoRound'
 
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { Table } from 'components/table'

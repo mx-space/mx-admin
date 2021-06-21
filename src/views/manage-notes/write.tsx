@@ -1,4 +1,5 @@
 import { SlidersH, TelegramPlane } from '@vicons/fa'
+import GpsFixedSharp from '@vicons/material/es/GpsFixedSharp'
 import { Icon } from '@vicons/utils'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { MonacoEditor } from 'components/editor/monaco'
@@ -29,6 +30,7 @@ import {
 import { RouteName } from 'router/name'
 import { RESTManager } from 'utils/rest'
 import { getDayOfYear } from 'utils/time'
+import { PropType } from 'vue'
 import {
   computed,
   defineComponent,
@@ -225,6 +227,11 @@ const NoteWriteView = defineComponent(() => {
                 onUpdateValue={(e) => void (data.weather = e)}
               ></NSelect>
             </NFormItem>
+
+            <NFormItem label="获取当前地址" labelPlacement="left">
+              <GetLocationButton onChange={() => void 0} />
+            </NFormItem>
+
             <NFormItem label="设定密码?">
               <NInput
                 placeholder=""
@@ -342,3 +349,25 @@ const NoteWriteView = defineComponent(() => {
 })
 
 export default NoteWriteView
+
+const GetLocationButton = defineComponent({
+  props: {
+    onChange: {
+      type: Function as PropType<() => any>,
+      required: true,
+    },
+  },
+  setup() {
+    const handleGetLocation = () => {}
+    return () => (
+      <Fragment>
+        <NButton ghost type="primary" onClick={handleGetLocation}>
+          <Icon>
+            <GpsFixedSharp />
+          </Icon>
+          定位
+        </NButton>
+      </Fragment>
+    )
+  },
+})

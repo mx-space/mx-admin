@@ -1,5 +1,5 @@
 import { TelegramPlane } from '@vicons/fa'
-import { Comment12Filled } from '@vicons/fluent/es'
+import Comment12Filled from '@vicons/fluent/es/Comment12Filled'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
 import { ContentLayout } from 'layouts/content'
