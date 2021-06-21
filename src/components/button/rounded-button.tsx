@@ -1,5 +1,5 @@
 import { Icon } from '@vicons/utils'
-import { defineComponent, PropType } from '@vue/runtime-core'
+import { defineComponent, PropType } from 'vue'
 import { NButton, NPopover } from 'naive-ui'
 import { RouteLocationRaw, RouterLink } from 'vue-router'
 
@@ -13,7 +13,7 @@ export const RoundedButton = defineComponent({
       default: 'primary',
     },
     onClick: {
-      type: (Function as any) as PropType<
+      type: Function as any as PropType<
         JSX.IntrinsicElements['button']['onClick'] | undefined
       >,
     },
@@ -50,7 +50,7 @@ export const HeaderActionButton = defineComponent({
       required: true,
     },
     onClick: {
-      type: (Function as any) as PropType<
+      type: Function as any as PropType<
         JSX.IntrinsicElements['button']['onClick']
       >,
     },

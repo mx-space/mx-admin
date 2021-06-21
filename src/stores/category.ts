@@ -1,4 +1,4 @@
-import { ref } from '@vue/reactivity'
+import { ref } from 'vue'
 import { CategoryModel, CategoryResponse } from 'models/category'
 import { RESTManager } from 'utils/rest'
 import { computed } from 'vue'

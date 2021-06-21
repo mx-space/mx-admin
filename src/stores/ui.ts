@@ -7,8 +7,8 @@
  * Mark: Coding with Love
  */
 
-import { reactive, ref } from '@vue/reactivity'
-import { onMounted } from '@vue/runtime-core'
+import { reactive, ref } from 'vue'
+import { onMounted } from 'vue'
 import { throttle } from 'lodash-es'
 import { computed } from 'vue'
 

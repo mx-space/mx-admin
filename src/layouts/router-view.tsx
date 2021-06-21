@@ -1,4 +1,4 @@
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent } from 'vue'
 import { NSpin } from 'naive-ui'
 
 import { Suspense, VNode } from 'vue'

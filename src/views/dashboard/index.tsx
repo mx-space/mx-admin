@@ -16,7 +16,7 @@ import File from '@vicons/tabler/es/File'
 import Refresh from '@vicons/tabler/es/Refresh'
 
 import { Icon } from '@vicons/utils'
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent } from 'vue'
 import { IpInfoPopover } from 'components/ip-info'
 import { ContentLayout } from 'layouts/content'
 import { pick } from 'lodash-es'

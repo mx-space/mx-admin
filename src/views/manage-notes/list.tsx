@@ -5,7 +5,7 @@ import {
   EyeHide20Filled,
 } from '@vicons/fluent/es'
 import { Icon } from '@vicons/utils'
-import { defineComponent, onMounted } from '@vue/runtime-core'
+import { defineComponent, onMounted } from 'vue'
 import { Table } from 'components/table'
 import { EditColumn } from 'components/table/edit-column'
 import { RelativeTime } from 'components/time/relative-time'

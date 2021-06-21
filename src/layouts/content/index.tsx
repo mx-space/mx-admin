@@ -1,4 +1,4 @@
-import { computed, defineComponent, PropType } from '@vue/runtime-core'
+import { computed, defineComponent, PropType } from 'vue'
 import clsx from 'clsx'
 import { useRouter } from 'vue-router'
 import styles from './index.module.css'

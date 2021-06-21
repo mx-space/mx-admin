@@ -1,4 +1,4 @@
-import { defineComponent } from '@vue/runtime-core'
+import { defineComponent } from 'vue'
 import { NInput, NSpace } from 'naive-ui'
 import { PropType, ref, watch } from 'vue'
 
@@ -20,7 +20,7 @@ export const EditColumn = defineComponent({
     const value = ref(props.initialValue)
     watch(
       () => props.initialValue,
-      n => {
+      (n) => {
         value.value = n
       },
     )
@@ -30,7 +30,7 @@ export const EditColumn = defineComponent({
 
     watch(
       () => isEdit.value,
-      n => {
+      (n) => {
         if (n) {
           requestAnimationFrame(() => {
             inputRef.value?.focus()
@@ -47,7 +47,7 @@ export const EditColumn = defineComponent({
         {isEdit.value ? (
           <NSpace align="center" wrap={false}>
             <NInput
-              onKeydown={e => {
+              onKeydown={(e) => {
                 if (e.key == 'Enter') {
                   handleSubmit()
                 }
@@ -61,7 +61,7 @@ export const EditColumn = defineComponent({
               onBlur={() => {
                 isEdit.value = false
               }}
-              onInput={e => {
+              onInput={(e) => {
                 value.value = e
               }}
             ></NInput>

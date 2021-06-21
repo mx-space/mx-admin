@@ -1,4 +1,4 @@
-import { defineComponent, onMounted } from '@vue/runtime-core'
+import { defineComponent, onMounted } from 'vue'
 import {
   NConfigProvider,
   NDialogProvider,

@@ -70,7 +70,7 @@
 </style>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from '@vue/runtime-core'
+import { computed, defineComponent, onMounted, ref } from 'vue'
 
 export default defineComponent({
   props: {

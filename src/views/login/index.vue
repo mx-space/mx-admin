@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted, ref } from '@vue/runtime-core'
+import { defineComponent, onMounted, onUnmounted, ref } from 'vue'
 import { NButton, useMessage } from 'naive-ui'
 
 import { useRouter } from 'vue-router'
