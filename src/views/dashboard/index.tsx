@@ -234,7 +234,7 @@ export const DashBoardView = defineComponent({
             primary: true,
             name: '管理',
             onClick() {
-              router.push({ name: RouteName.Comment, query: { state: 0 } })
+              router.push({ name: RouteName.Friend, query: { state: 0 } })
             },
           },
         ],
@@ -249,7 +249,7 @@ export const DashBoardView = defineComponent({
             showBadage: true,
             name: '查看',
             onClick() {
-              router.push({ name: RouteName.Comment, query: { state: 1 } })
+              router.push({ name: RouteName.Friend, query: { state: 1 } })
             },
           },
         ],
