@@ -11,7 +11,15 @@ import { RelativeTime } from 'components/time/relative-time'
 import { useTable } from 'hooks/use-table'
 import { Pager } from 'models/base'
 import { NoteModel } from 'models/note'
-import { NButton, NPopconfirm, NSpace, useDialog, useMessage } from 'naive-ui'
+import {
+  NButton,
+  NEllipsis,
+  NPopconfirm,
+  NPopover,
+  NSpace,
+  useDialog,
+  useMessage,
+} from 'naive-ui'
 import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { parseDate } from 'utils/time'
 import { reactive, watch } from 'vue'
@@ -34,7 +42,7 @@ export const ManageNoteListView = defineComponent({
                 page,
                 size,
                 select:
-                  'title _id id created modified mood weather hide secret hasMemory',
+                  'title _id id created modified mood weather hide secret hasMemory coordinates location',
                 ...(sortProps.sortBy
                   ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
                   : {}),
@@ -100,7 +108,7 @@ export const ManageNoteListView = defineComponent({
           {
             title: '心情',
             key: 'mood',
-            width: 200,
+            width: 100,
             render(row, index) {
               return (
                 <EditColumn
@@ -123,7 +131,7 @@ export const ManageNoteListView = defineComponent({
           {
             title: '天气',
             key: 'weather',
-            width: 200,
+            width: 100,
             render(row, index) {
               return (
                 <EditColumn
@@ -140,6 +148,37 @@ export const ManageNoteListView = defineComponent({
                   placeholder="天气"
                 />
               )
+            },
+          },
+          {
+            title: '地点',
+            key: 'location',
+            width: 200,
+            render(row) {
+              const { coordinates, location } = row
+              if (!location) {
+                return null
+              } else {
+                return (
+                  <NEllipsis class="truncate max-w-[200px]">
+                    {{
+                      tooltip() {
+                        return (
+                          <div class="">
+                            <p>{location}</p>
+                            <p>
+                              {coordinates?.longitude}, {coordinates?.latitude}
+                            </p>
+                          </div>
+                        )
+                      },
+                      default() {
+                        return location
+                      },
+                    }}
+                  </NEllipsis>
+                )
+              }
             },
           },
 
