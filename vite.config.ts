@@ -28,6 +28,7 @@ export default ({ mode }) => {
     optimizeDeps: {
       exclude: [],
     },
+
     define: {
       __DEV__: process.env.NODE_ENV !== 'production',
     },
@@ -37,6 +38,7 @@ export default ({ mode }) => {
         : '',
 
     server: {
+      https: true,
       port: 9528,
     },
     esbuild: {

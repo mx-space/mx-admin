@@ -1,3 +1,4 @@
+import { editor as Editor, KeyCode, KeyMod, Selection } from 'monaco-editor'
 import {
   defineAsyncComponent,
   defineComponent,
@@ -9,29 +10,7 @@ import {
   toRaw,
   watch,
 } from 'vue'
-import { editor as Editor, KeyMod, KeyCode, Selection } from 'monaco-editor'
-import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
-
-const popStateHandler = (e) => {
-  const res = confirm('文章未保存是否后退')
-  if (!res) {
-    pushState()
-  } else {
-    history.back()
-    window.removeEventListener('popstate', popStateHandler)
-  }
-}
-
-function pushState() {
-  history.pushState(null, window.location.href)
-}
-
-const beforeUnloadHandler = (event) => {
-  event.preventDefault()
-  // Chrome requires returnValue to be set.
-  event.returnValue = '文章未保存是否后退'
-  return false
-}
+import { onBeforeRouteLeave } from 'vue-router'
 
 const _MonacoEditor = defineComponent({
   props: {
@@ -87,6 +66,17 @@ const _MonacoEditor = defineComponent({
         }
       },
     )
+
+    const beforeUnloadHandler = (event) => {
+      if (editor.getValue() == memoInitialValue) {
+        return
+      }
+      event.preventDefault()
+
+      // Chrome requires returnValue to be set.
+      event.returnValue = '文章未保存是否后退'
+      return false
+    }
 
     onMounted(() => {
       if (props.unSaveConfirm) {

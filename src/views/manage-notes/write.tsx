@@ -1,20 +1,24 @@
 import { SlidersH, TelegramPlane } from '@vicons/fa'
-import GpsFixedSharp from '@vicons/material/es/GpsFixedSharp'
+import Location24Regular from '@vicons/fluent/es/Location24Regular'
 import { Icon } from '@vicons/utils'
+import camelcaseKeys from 'camelcase-keys'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { MonacoEditor } from 'components/editor/monaco'
 import { MaterialInput } from 'components/input/material-input'
 import { ParseContentButton } from 'components/logic/parse-button'
+import { configs } from 'configs'
 import { BASE_URL } from 'constants/env'
 import { MOOD_SET, WEATHER_SET } from 'constants/note'
 import { add } from 'date-fns/esm'
 import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
 import { ContentLayout } from 'layouts/content'
 import { isString } from 'lodash-es'
-import { NoteModel, NoteMusicRecord } from 'models/note'
+import { Amap, Regeocode } from 'models/amap'
+import { Coordinate, NoteModel, NoteMusicRecord } from 'models/note'
 import { editor as Editor } from 'monaco-editor'
 import {
   NButton,
+  NButtonGroup,
   NDatePicker,
   NDrawer,
   NDrawerContent,
@@ -51,6 +55,8 @@ type NoteReactiveType = {
   secret: Date | null
   hasMemory: boolean
   music: NoteMusicRecord[]
+  location: null | string
+  coordinates: null | Coordinate
 }
 
 const NoteWriteView = defineComponent(() => {
@@ -75,6 +81,8 @@ const NoteWriteView = defineComponent(() => {
     password: null,
     secret: null,
     weather: '',
+    location: '',
+    coordinates: null,
   })
 
   const parsePayloadIntoReactiveData = (payload: NoteModel) =>
@@ -229,7 +237,38 @@ const NoteWriteView = defineComponent(() => {
             </NFormItem>
 
             <NFormItem label="获取当前地址" labelPlacement="left">
-              <GetLocationButton onChange={() => void 0} />
+              <NSpace vertical>
+                <NButtonGroup>
+                  <GetLocationButton
+                    onChange={(amap, coordinates) => {
+                      data.location = amap.formattedAddress
+                      data.coordinates = {
+                        longitude: coordinates[0],
+                        latitude: coordinates[1],
+                      }
+                    }}
+                  />
+                  <NButton
+                    round
+                    disabled={!data.location}
+                    onClick={() => {
+                      data.location = ''
+                      data.coordinates = null
+                    }}
+                  >
+                    清楚
+                  </NButton>
+                </NButtonGroup>
+
+                <NSpace vertical>
+                  <span>{data.location}</span>
+                  {data.coordinates && (
+                    <span>
+                      {data.coordinates.longitude}, {data.coordinates.latitude}
+                    </span>
+                  )}
+                </NSpace>
+              </NSpace>
             </NFormItem>
 
             <NFormItem label="设定密码?">
@@ -353,21 +392,83 @@ export default NoteWriteView
 const GetLocationButton = defineComponent({
   props: {
     onChange: {
-      type: Function as PropType<() => any>,
+      type: Function as PropType<
+        (amap: Regeocode, coordinates: readonly [number, number]) => any
+      >,
       required: true,
     },
   },
-  setup() {
-    const handleGetLocation = () => {}
+  setup(props) {
+    const message = useMessage()
+    const loading = ref(false)
+    const handleGetLocation = async () => {
+      if (!configs.amapKey) {
+        message.error('高德地图 Key 未配置.')
+      }
+      const promisify = () =>
+        new Promise<GeolocationPosition>((r, j) => {
+          navigator.geolocation.getCurrentPosition(
+            (pos) => {
+              loading.value = true
+              r(pos)
+              loading.value = false
+            },
+            (err) => {
+              loading.value = false
+              j(err)
+            },
+          )
+        })
+      if (navigator.geolocation) {
+        try {
+          const coordinates = await promisify()
+          // console.log(coordinates)
+
+          const {
+            coords: { latitude, longitude },
+          } = coordinates
+
+          const coo = [longitude, latitude] as const
+          const res = await fetch(
+            'https://restapi.amap.com/v3/geocode/regeo?key=' +
+              configs.amapKey +
+              '&location=' +
+              coo.join(','),
+          )
+          const json = camelcaseKeys(await res.json(), { deep: true }) as Amap
+          // const location = json.regeocode.formattedAddress
+
+          props.onChange(json.regeocode, coo)
+        } catch (e) {
+          console.log(e)
+
+          message.error('定位权限未打开')
+        }
+      } else {
+        message.error('浏览器不支持定位')
+      }
+    }
     return () => (
-      <Fragment>
-        <NButton ghost type="primary" onClick={handleGetLocation}>
-          <Icon>
-            <GpsFixedSharp />
-          </Icon>
-          定位
-        </NButton>
-      </Fragment>
+      <NButton
+        ghost
+        round
+        type="primary"
+        onClick={handleGetLocation}
+        loading={loading.value}
+      >
+        {{
+          icon() {
+            return (
+              <Icon>
+                <Location24Regular />
+              </Icon>
+            )
+          },
+          default() {
+            return '定位'
+          },
+        }}
+      </NButton>
     )
   },
 })
