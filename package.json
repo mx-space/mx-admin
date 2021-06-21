@@ -1,6 +1,6 @@
 {
   "name": "admin-next",
-  "version": "2.0.0-beta.2",
+  "version": "2.0.0-beta.3",
   "scripts": {
     "dev": "TAILWIND_MODE=watch NODE_ENV=development vite --mode development",
     "build": "NODE_ENV=production vite build --mode production",
