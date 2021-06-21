@@ -38,7 +38,7 @@ export default ({ mode }) => {
         : '',
 
     server: {
-      https: true,
+      // https: true,
       port: 9528,
     },
     esbuild: {
