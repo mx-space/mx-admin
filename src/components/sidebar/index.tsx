@@ -1,5 +1,5 @@
-import Hamburger from '@iconify-icons/radix-icons/hamburger-menu'
-import { Icon } from '@iconify/vue'
+import Hamburger from '@vicons/ionicons5/es/Menu'
+import { Icon } from '@vicons/utils'
 import clsx from 'clsx'
 import { computed, defineComponent, onMounted, PropType, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -87,7 +87,9 @@ export const Sidebar = defineComponent({
                 props.onCollapseChange(!props.collapse)
               }}
             >
-              <Icon icon={Hamburger} />
+              <Icon>
+                <Hamburger />
+              </Icon>
             </button>
           </div>
 

@@ -10,9 +10,6 @@
   },
   "dependencies": {
     "@antv/g2": "4.1.18",
-    "@iconify-icons/ant-design": "1.1.0",
-    "@iconify-icons/radix-icons": "1.1.2",
-    "@iconify/vue": "2.0.0-rc.3",
     "@vicons/antd": "0.10.0",
     "@vicons/fa": "0.10.0",
     "@vicons/fluent": "0.10.0",

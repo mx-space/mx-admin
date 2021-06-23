@@ -591,21 +591,6 @@
   dependencies:
     purgecss "^4.0.3"
 
-"@iconify-icons/ant-design@1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@iconify-icons/ant-design/-/ant-design-1.1.0.tgz#7fbaa994dcac24195512164595118819e5749bca"
-  integrity sha512-RU3MljXpV3Y777woJb8t1ymJ+4k7QqGDOYsSJxkDHNRkJruPl0CtC/QpXgPYA+beAmhTTfz2HPZSJXYnZUlAmg==
-
-"@iconify-icons/radix-icons@1.1.2":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@iconify-icons/radix-icons/-/radix-icons-1.1.2.tgz#44ec671741917bced3a6abc01231f58868fbc0a8"
-  integrity sha512-ekEStKPEUNSNf/As5YwQhnT26o5oXhLoDZfV/Udn3Eq+Ksn9vStmbChy7TpHKN+/lS29ujW3h+V0tpJfIC3nYg==
-
-"@iconify/vue@2.0.0-rc.3":
-  version "2.0.0-rc.3"
-  resolved "https://registry.yarnpkg.com/@iconify/vue/-/vue-2.0.0-rc.3.tgz#50bb3ce68bd5038bcd23fc61df31c95c623e7f94"
-  integrity sha512-McYHQZBKZx+knO7DNODOhspIYCHYf0ogzk9YbzZsPdSAhTt7M42aXcczGK/Y8O2txvAwejtscwLX77jVbknHbw==
-
 "@intlify/core-base@9.0.0":
   version "9.0.0"
   resolved "https://registry.yarnpkg.com/@intlify/core-base/-/core-base-9.0.0.tgz#3de223b8532c535d022e5be58f7d56a26d2fb12f"

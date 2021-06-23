@@ -388,7 +388,8 @@ export const DashBoardView = defineComponent({
                     text
                     onClick={() => {
                       navigator.clipboard.writeText(hitokoto.value)
-                      message.success('已复制, ' + hitokoto.value)
+                      message.success('已复制')
+                      message.info(hitokoto.value)
                     }}
                   >
                     <Icon>

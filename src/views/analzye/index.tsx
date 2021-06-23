@@ -9,10 +9,17 @@ import { ContentLayout } from 'layouts/content'
 import { isEmpty } from 'lodash-es'
 import { UA } from 'models/analyze'
 import { Pager } from 'models/base'
-import { NButton, NEllipsis, NP, NSpace, useDialog, useMessage } from 'naive-ui'
+import {
+  NButton,
+  NEllipsis,
+  NP,
+  NSkeleton,
+  NSpace,
+  useDialog,
+  useMessage,
+} from 'naive-ui'
 import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
-import { UIStore } from 'stores/ui'
-import { parseDate, RESTManager, useInjector } from 'utils'
+import { parseDate, RESTManager } from 'utils'
 import {
   defineComponent,
   onBeforeMount,
@@ -330,25 +337,35 @@ export default defineComponent({
         chart.render()
       }
 
-      const uiStore = useInjector(UIStore)
-
       return () => (
-        <div style={{ columns: uiStore.viewport.value.mobile ? 1 : 2 }}>
+        <div class="grid grid-cols-2 phone:grid-cols-1 gap-4">
           <div>
             <SectionTitle>今日请求走势</SectionTitle>
             <div ref={dayChart}></div>
+            {isEmpty(graphData.value) && (
+              <NSkeleton animated height={250}></NSkeleton>
+            )}
           </div>
           <div>
             <SectionTitle>本周请求走势</SectionTitle>
             <div ref={weekChart}></div>
+            {isEmpty(graphData.value) && (
+              <NSkeleton animated height={250}></NSkeleton>
+            )}
           </div>
           <div>
             <SectionTitle>本月请求走势</SectionTitle>
             <div ref={monthChart}></div>
+            {isEmpty(graphData.value) && (
+              <NSkeleton animated height={250}></NSkeleton>
+            )}
           </div>
           <div>
             <SectionTitle>最近 7 天请求路径 Top 10</SectionTitle>
             <div ref={pieChart}></div>
+            {isEmpty(graphData.value) && (
+              <NSkeleton animated height={250}></NSkeleton>
+            )}
           </div>
         </div>
       )
