@@ -12,7 +12,7 @@ import { RouterLink, useRoute } from 'vue-router'
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
-const ManagePageListView = defineComponent({
+const ManageSayListView = defineComponent({
   name: 'SayList',
   setup(props, ctx) {
     const { checkedRowKeys, data, pager, sortProps, fetchDataFn } = useTable(
@@ -167,4 +167,4 @@ const ManagePageListView = defineComponent({
   },
 })
 
-export default ManagePageListView
+export default ManageSayListView

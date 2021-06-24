@@ -32,7 +32,6 @@
     "vue-router": "4.0.10"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "19.0.0",
     "@types/lodash-es": "4.17.4",
     "@types/socket.io-client": "3.0.0",
     "@types/validator": "13.1.4",
