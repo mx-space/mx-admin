@@ -1,4 +1,5 @@
-import { Chart } from '@antv/g2'
+import { Chart } from '@antv/g2/esm'
+
 import RefreshOutline from '@vicons/ionicons5/es/RefreshOutline'
 import Trash from '@vicons/ionicons5/es/Trash'
 import { HeaderActionButton } from 'components/button/rounded-button'

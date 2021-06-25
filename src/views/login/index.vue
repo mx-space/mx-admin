@@ -41,7 +41,7 @@ export const LoginView = defineComponent({
     const password = ref('')
 
     const handleLogin = async (e: Event) => {
-      e.stopPropagation()
+      e?.stopPropagation()
       try {
         if (!user.value || !user.value.username) {
           toast.error('主人信息无法获取')

@@ -127,26 +127,6 @@ RESTManager.instance.interceptors.request.use((url, options) => {
   }
 }, {})
 
-// RESTManager.instance.interceptors.response.use(
-//   async (response, option) => {
-//     const json = await response.clone().json()
-//     const message = window.message
-//     if (!response.ok) {
-//       if (json.message) {
-//         if (Array.isArray(json.message)) {
-//           message.error(json.message[0])
-//         } else {
-//           message.error(json.message)
-//         }
-//       }
-
-//       throw response
-//     }
-//     return camelcaseKeys(json)
-//   },
-//   { global: true, core: true },
-// )
-
 interface IRequestHandler<T = RequestOptionsInit> {
   (id?: string): IRequestHandler
   // @ts-ignore
