@@ -7,6 +7,7 @@ const title = configs.title
 
 router.beforeEach(async (to) => {
   progress.start()
+
   if (to.meta.isPublic) {
     return
   } else {
@@ -14,7 +15,7 @@ router.beforeEach(async (to) => {
       ok: number
     }>()
     if (!ok) {
-      return '/login'
+      return '/login?from=' + encodeURI(to.fullPath)
     }
   }
 })
@@ -24,7 +25,7 @@ router.afterEach((to, _) => {
   progress.finish()
 })
 
-// HACK monaco save
+// HACK editor save
 router.afterEach((to) => {
   if (to.hash == '|publish') {
     router.replace({ ...to, hash: '' })

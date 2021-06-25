@@ -1,8 +1,7 @@
 <script lang="ts">
+import { useMessage } from 'naive-ui'
 import { defineComponent, onMounted, onUnmounted, ref } from 'vue'
-import { NButton, useMessage } from 'naive-ui'
-
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import Avatar from '../../components/avatar/index.vue'
 import ParallaxButtonVue from '../../components/button/parallax-button.vue'
 import { UserModel } from '../../models/user'
@@ -39,7 +38,7 @@ export const LoginView = defineComponent({
     const toast = useMessage()
 
     const password = ref('')
-
+    const route = useRoute()
     const handleLogin = async (e: Event) => {
       e?.stopPropagation()
       try {
@@ -57,7 +56,11 @@ export const LoginView = defineComponent({
         })
         updateToken(res.token)
 
-        router.push('/dashboard')
+        router.push(
+          route.query.from
+            ? decodeURI(route.query.from as string)
+            : '/dashboard',
+        )
         toast.success('欢迎回来')
       } catch (e) {
         toast.error('登陆失败')

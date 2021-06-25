@@ -179,6 +179,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
   {
     path: '/pages',
     name: RouteName.Page,
+    redirect: '/pages/list',
     meta: {
       title: '页面',
       icon: (
@@ -431,6 +432,21 @@ export const router = createRouter({
       name: RouteName.Login,
       meta: { isPublic: true, title: '登陆' },
       component: LoginView,
+    },
+    // v1 compatibility
+    {
+      path: '/page/:path(.*)*',
+      name: 'page$',
+      redirect: (to) => {
+        return to.fullPath.replace(/^\/page\//, '/pages/')
+      },
+    },
+    {
+      path: '/extra/:path(.*)*',
+      name: 'extra',
+      redirect: (to) => {
+        return to.fullPath.replace(/^\/extra/, '')
+      },
     },
     {
       path: '/:pathMatch(.*)*',
