@@ -1,16 +1,15 @@
+import { useSaveConfirm } from 'hooks/use-save-confirm'
 import { editor as Editor, KeyCode, KeyMod, Selection } from 'monaco-editor'
 import {
   defineAsyncComponent,
   defineComponent,
   onMounted,
-  onUnmounted,
   PropType,
   Ref,
   ref,
   toRaw,
   watch,
 } from 'vue'
-import { onBeforeRouteLeave } from 'vue-router'
 
 const _MonacoEditor = defineComponent({
   props: {
@@ -66,46 +65,11 @@ const _MonacoEditor = defineComponent({
         }
       },
     )
+    useSaveConfirm(
+      props.unSaveConfirm,
+      () => memoInitialValue === editor.getValue(),
+    )
 
-    const beforeUnloadHandler = (event) => {
-      if (editor.getValue() == memoInitialValue) {
-        return
-      }
-      event.preventDefault()
-
-      // Chrome requires returnValue to be set.
-      event.returnValue = '文章未保存是否后退'
-      return false
-    }
-
-    onMounted(() => {
-      if (props.unSaveConfirm) {
-        window.addEventListener('beforeunload', beforeUnloadHandler)
-      }
-    })
-    onUnmounted(() => {
-      if (props.unSaveConfirm) {
-        window.removeEventListener('beforeunload', beforeUnloadHandler)
-      }
-    })
-
-    onBeforeRouteLeave((to) => {
-      if (!props.unSaveConfirm) {
-        return
-      }
-      if (editor.getValue() == memoInitialValue) {
-        return
-      }
-
-      // HACK
-      if (to.hash == '|publish') {
-        return
-      }
-      const res = confirm('文章未保存是否继续')
-      if (!res) {
-        return false
-      }
-    })
     return () => (
       <div
         class="editor relative overflow-hidden"
