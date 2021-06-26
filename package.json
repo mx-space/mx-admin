@@ -9,7 +9,7 @@
     "format": "prettier --write --loglevel warn \"src/**/*.{js,json,tsx,ts,css,scss,vue,html,md}\""
   },
   "dependencies": {
-    "@antv/g2": "4.1.18",
+    "@antv/g2": "4.1.19",
     "@vicons/antd": "0.10.0",
     "@vicons/fa": "0.10.0",
     "@vicons/fluent": "0.10.0",
