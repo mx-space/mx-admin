@@ -29,8 +29,8 @@ import { ContentLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
 export const ManageNoteListView = defineComponent({
   name: 'NoteList',
-  setup(props, ctx) {
-    const { checkedRowKeys, data, pager, sortProps, fetchDataFn } =
+  setup() {
+    const { loading, checkedRowKeys, data, pager, sortProps, fetchDataFn } =
       useTable<NoteModel>(
         (data, pager) =>
           async (page = route.query.page || 1, size = 20) => {
@@ -238,6 +238,7 @@ export const ManageNoteListView = defineComponent({
 
         return () => (
           <Table
+            loading={loading.value}
             columns={columns}
             data={data}
             onFetchData={fetchData}

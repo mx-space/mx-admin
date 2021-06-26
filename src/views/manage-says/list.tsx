@@ -15,7 +15,7 @@ import { RESTManager } from '../../utils/rest'
 const ManageSayListView = defineComponent({
   name: 'SayList',
   setup(props, ctx) {
-    const { checkedRowKeys, data, pager, sortProps, fetchDataFn } = useTable(
+    const { checkedRowKeys, data, pager, loading, fetchDataFn } = useTable(
       (data, pager) =>
         async (page = route.query.page || 1, size = 30) => {
           const response = await RESTManager.api.says.get<SayResponse>({
@@ -116,6 +116,7 @@ const ManageSayListView = defineComponent({
 
         return () => (
           <Table
+            loading={loading.value}
             columns={columns}
             data={data}
             onFetchData={fetchData}

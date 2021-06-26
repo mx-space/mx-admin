@@ -23,25 +23,27 @@ import { PostModel, PostResponse } from '../../models/post'
 import { RESTManager } from '../../utils/rest'
 export const ManagePostListView = defineComponent({
   name: 'PostList',
-  setup(props, ctx) {
-    const { checkedRowKeys, data, pager, sortProps, fetchDataFn } = useTable(
-      (data, pager) =>
-        async (page = route.query.page || 1, size = 20) => {
-          const response = await RESTManager.api.posts.get<PostResponse>({
-            params: {
-              page,
-              size,
-              select: 'title _id id created modified categoryId copyright tags',
-              ...(sortProps.sortBy
-                ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
-                : {}),
-            },
-          })
+  setup() {
+    const { loading, checkedRowKeys, data, pager, sortProps, fetchDataFn } =
+      useTable(
+        (data, pager) =>
+          async (page = route.query.page || 1, size = 20) => {
+            const response = await RESTManager.api.posts.get<PostResponse>({
+              params: {
+                page,
+                size,
+                select:
+                  'title _id id created modified categoryId copyright tags',
+                ...(sortProps.sortBy
+                  ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
+                  : {}),
+              },
+            })
 
-          data.value = response.data
-          pager.value = response.page
-        },
-    )
+            data.value = response.data
+            pager.value = response.page
+          },
+      )
 
     const message = useMessage()
     const dialog = useDialog()
@@ -168,6 +170,7 @@ export const ManagePostListView = defineComponent({
 
         return () => (
           <Table
+            loading={loading.value}
             columns={columns}
             data={data}
             nTableProps={{

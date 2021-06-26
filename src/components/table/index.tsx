@@ -28,6 +28,8 @@ const TableProps = [
   'nTableProps',
   'noPagination',
   'checkedRowKey',
+  'maxWidth',
+  'loading',
 ] as const
 
 interface ITable<T = any> {
@@ -46,6 +48,10 @@ interface ITable<T = any> {
   columns: TableColumns<T>
   nTableProps: Partial<Record<keyof typeof dataTableProps, any>>
   noPagination?: boolean
+
+  maxWidth?: number
+
+  loading?: boolean
 }
 
 export const Table = defineComponent<ITable>((props, ctx) => {
@@ -59,7 +65,9 @@ export const Table = defineComponent<ITable>((props, ctx) => {
     columns,
     onFetchData: fetchData,
     checkedRowKey = 'id',
+    maxWidth = 900,
   } = props
+
   const router = useRouter()
   const route = useRoute()
   const checkedRowKeys = ref<RowKey[]>([])
@@ -92,9 +100,9 @@ export const Table = defineComponent<ITable>((props, ctx) => {
   return () => (
     <NDataTable
       {...nTableProps}
-      loading={loading.value}
+      loading={props.loading ?? loading.value}
       remote
-      scrollX={Math.max(ui.contentInsetWidth.value, 1200)}
+      scrollX={Math.max(ui.contentInsetWidth.value, maxWidth)}
       pagination={
         noPagination
           ? undefined
@@ -102,7 +110,13 @@ export const Table = defineComponent<ITable>((props, ctx) => {
               page: pager.value.currentPage,
               pageSize: pager.value.size,
               pageCount: pager.value.totalPage,
+              // showQuickJumper: ui.viewport.value.mobile ? false : true,
               showQuickJumper: true,
+              pageSlot: ui.viewport.value.mobile
+                ? ui.contentInsetWidth.value < 400
+                  ? 2
+                  : 3
+                : undefined,
               onChange: async (page) => {
                 router.push({
                   query: { ...route.query, page },

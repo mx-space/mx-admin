@@ -36,24 +36,25 @@ export default defineComponent({
       (route.query.state as any) ?? LinkState.Pass,
     )
 
-    const { data, checkedRowKeys, fetchDataFn, pager } = useTable<LinkModel>(
-      (data, pager) =>
-        async (
-          page = route.query.page || 1,
-          size = 50,
-          state: LinkState = (route.query.state as any | 0) ?? LinkState.Pass,
-        ) => {
-          const response = await RESTManager.api.links.get<LinkResponse>({
-            params: {
-              page,
-              size,
-              state: state | 0,
-            },
-          })
-          data.value = response.data
-          pager.value = response.page
-        },
-    )
+    const { data, checkedRowKeys, fetchDataFn, pager, loading } =
+      useTable<LinkModel>(
+        (data, pager) =>
+          async (
+            page = route.query.page || 1,
+            size = 50,
+            state: LinkState = (route.query.state as any | 0) ?? LinkState.Pass,
+          ) => {
+            const response = await RESTManager.api.links.get<LinkResponse>({
+              params: {
+                page,
+                size,
+                state: state | 0,
+              },
+            })
+            data.value = response.data
+            pager.value = response.page
+          },
+      )
     const message = useMessage()
     const resetEditData: () => Omit<LinkModel, 'id' | 'state'> & {
       id: null | string
@@ -152,6 +153,7 @@ export default defineComponent({
         </NTabs>
 
         <Table
+          loading={loading.value}
           data={data}
           nTableProps={{
             virtualScroll: true,

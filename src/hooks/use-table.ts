@@ -18,12 +18,17 @@ export const useTable = <T = any>(
     sortOrder: 0,
   })
   const checkedRowKeys = ref<string[]>([])
-
+  const loading = ref(false)
   return {
     data,
     pager,
     sortProps,
     checkedRowKeys,
-    fetchDataFn: fetchDataFn(data, pager),
+    loading,
+    fetchDataFn: async (page?: number, size?: number) => {
+      loading.value = true
+      await fetchDataFn(data, pager)(page, size)
+      loading.value = false
+    },
   }
 }

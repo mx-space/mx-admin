@@ -17,7 +17,11 @@ export default defineComponent(() => {
     size: string
   }>((data) => async () => {
     const response = (await RESTManager.api.backups.get()) as any
-    data.value = response.data as any
+    // sort by filename
+    const data$ = response.data as { filename: string; size: string }[]
+    data$.sort((b, a) => a.filename.localeCompare(b.filename))
+
+    data.value = data$ as any
   })
   onBeforeMount(() => {
     fetchDataFn()
@@ -153,26 +157,25 @@ export default defineComponent(() => {
           virtualScroll: true,
         }}
         onUpdateCheckedRowKeys={(keys) => {
-          console.log(keys)
-
           checkedRowKeys.value = keys
         }}
+        maxWidth={500}
         columns={[
           {
             type: 'selection',
             options: ['none', 'all'],
           },
 
-          { title: '日期', key: 'filename', width: 200 },
-          { title: '大小', key: 'size' },
+          { title: '日期', key: 'filename' },
+          { title: '大小', key: 'size', width: 200 },
           {
             title: '操作',
-            key: 'filename',
             fixed: 'right',
+            key: 'filename',
             render(row) {
               const filename = row.filename
               return (
-                <NSpace>
+                <NSpace inline>
                   <NButton
                     text
                     size="tiny"

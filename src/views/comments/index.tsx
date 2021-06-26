@@ -46,24 +46,27 @@ const ManageComment = defineComponent(() => {
   const router = useRouter()
   const tabValue = ref((route.query.state as any | 0) ?? CommentType.Pending)
 
-  const { data, checkedRowKeys, fetchDataFn, pager } = useTable<CommentModel>(
-    (data, pager) =>
-      async (
-        page = route.query.page || 1,
-        size = 10,
-        state: CommentType = route.query.state as any,
-      ) => {
-        const response = await RESTManager.api.comments.get<CommentsResponse>({
-          params: {
-            page,
-            size,
-            state: state | 0,
-          },
-        })
-        data.value = response.data
-        pager.value = response.page
-      },
-  )
+  const { data, checkedRowKeys, fetchDataFn, pager, loading } =
+    useTable<CommentModel>(
+      (data, pager) =>
+        async (
+          page = route.query.page || 1,
+          size = 10,
+          state: CommentType = route.query.state as any,
+        ) => {
+          const response = await RESTManager.api.comments.get<CommentsResponse>(
+            {
+              params: {
+                page,
+                size,
+                state: state | 0,
+              },
+            },
+          )
+          data.value = response.data
+          pager.value = response.page
+        },
+    )
   const message = useMessage()
   const replyDialogShow = ref<boolean>(false)
   const replyComment = ref<CommentModel | null>(null)
@@ -324,6 +327,7 @@ const ManageComment = defineComponent(() => {
 
       <Table
         data={data}
+        loading={loading.value}
         onFetchData={fetchData}
         pager={pager}
         onUpdateCheckedRowKeys={(keys) => {
