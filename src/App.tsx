@@ -36,21 +36,11 @@ const Root = defineComponent({
   },
 })
 
-// const themeOverrides: GlobalThemeOverrides = {
-//   common: {
-//     primaryColor: '#1a9cf3',
-//     primaryColorHover: '#16aae7',
-//     primaryColorPressed: '#1188e8',
-//     primaryColorSuppl: 'rgba(16, 133, 211, 0.5)',
-//   },
-// }
-
 const App = defineComponent({
   setup() {
     useProviders(UIStore, UserStore, CategoryStore)
 
     return () => (
-      // <NConfigProvider themeOverrides={themeOverrides}>
       <NConfigProvider locale={zhCN} dateLocale={dateZhCN}>
         <NNotificationProvider>
           <NMessageProvider>

@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { getToken } from 'utils/auth'
-
-import io, { Socket } from 'socket.io-client'
+import { NButton, NSpace } from 'naive-ui'
 import { router } from 'router'
+import io from 'socket.io-client'
+import { getToken } from 'utils/auth'
+import { bus } from 'utils/event-bus'
+import { BrowserNotification } from 'utils/notification'
 import { configs } from '../configs'
 import { EventTypes, NotificationTypes } from './types'
-import { BrowserNotification } from 'utils/notification'
-import { bus } from 'utils/event-bus'
-import { NButton, NSpace } from 'naive-ui'
 
 const Notification = {
   get warning() {

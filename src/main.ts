@@ -1,12 +1,3 @@
-/*
- * @Author: Innei
- * @Date: 2021-03-21 21:23:31
- * @LastEditTime: 2021-03-22 11:23:50
- * @LastEditors: Innei
- * @FilePath: /admin-next/src/main.ts
- * Mark: Coding with Love
- */
-
 import { bus } from 'utils/event-bus'
 import { createApp } from 'vue'
 import App from './App'
@@ -19,8 +10,6 @@ app.use(router)
 app.mount('#app')
 
 if (__DEV__) {
-  // @ts-ignore
   window.app = app
-  // @ts-ignore
   window.bus = bus
 }
