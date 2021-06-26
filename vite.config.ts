@@ -2,7 +2,6 @@ import vue from '@vitejs/plugin-vue'
 import { omitBy } from 'lodash'
 import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig, loadEnv } from 'vite'
-import compress from 'vite-plugin-compress'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default ({ mode }) => {
@@ -12,12 +11,7 @@ export default ({ mode }) => {
   }
 
   return defineConfig({
-    plugins: [
-      vue(),
-      tsconfigPaths(),
-      visualizer({ open: false }),
-      compress({ verbose: true }),
-    ],
+    plugins: [vue(), tsconfigPaths(), visualizer({ open: false })],
 
     build: {
       chunkSizeWarningLimit: 2500, //monaco is so big
