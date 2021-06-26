@@ -7,10 +7,8 @@
  * Mark: Coding with Love
  */
 
-import { reactive, ref } from 'vue'
-import { onMounted } from 'vue'
-import { throttle } from 'lodash-es'
-import { computed } from 'vue'
+import { debounce } from 'lodash-es'
+import { computed, onMounted, ref } from 'vue'
 
 export interface ViewportRecord {
   w: number
@@ -27,9 +25,7 @@ export function UIStore() {
   const sidebarWidth = ref(250)
   const sidebarCollapse = ref(viewport.value.mobile ? true : false)
   onMounted(() => {
-    const resizeHandler = throttle(() => {
-      updateViewport()
-    }, 300)
+    const resizeHandler = debounce(updateViewport, 500, { trailing: true })
     window.onresize = resizeHandler
     updateViewport()
   })

@@ -14,7 +14,8 @@ export const SidebarLayout = defineComponent({
     const collapse = ui.sidebarCollapse
     watchEffect(() => {
       // console.log(ui.viewport)
-      collapse.value = ui.viewport.value.mobile ? true : false
+      collapse.value =
+        ui.viewport.value.mobile || ui.viewport.value.pad ? true : false
     })
 
     const sidebarWidth = ui.sidebarWidth
