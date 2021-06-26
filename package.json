@@ -18,7 +18,7 @@
     "@vicons/material": "0.10.0",
     "@vicons/tabler": "0.10.0",
     "@vicons/utils": "0.1.4",
-    "camelcase-keys": "6.2.2",
+    "camelcase-keys": "7.0.0",
     "clsx": "1.1.1",
     "js-cookie": "2.2.1",
     "lodash-es": "4.17.21",
