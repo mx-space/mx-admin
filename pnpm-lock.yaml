@@ -32,7 +32,7 @@ specifiers:
   naive-ui: 2.14.0
   postcss: 8.3.5
   postcss-nested: 5.0.5
-  prettier: 2.3.1
+  prettier: 2.3.2
   qier-progress: 1.0.4
   rollup-plugin-visualizer: 5.5.0
   socket.io-client: 4.1.2
@@ -86,7 +86,7 @@ devDependencies:
   express: 4.17.1
   postcss: 8.3.5
   postcss-nested: 5.0.5_postcss@8.3.5
-  prettier: 2.3.1
+  prettier: 2.3.2
   rollup-plugin-visualizer: 5.5.0
   tailwindcss: 2.2.4_72be89de93206f86f2d67dd5290ec14d
   typescript: 4.3.4
@@ -3098,8 +3098,8 @@ packages:
     engines: {node: '>= 0.8.0'}
     dev: true
 
-  /prettier/2.3.1:
-    resolution: {integrity: sha512-p+vNbgpLjif/+D+DwAZAbndtRrR0md0MwfmOVN9N+2RgyACMT+7tfaRnT+WDPkqnuVwleyuBIG2XBxKDme3hPA==}
+  /prettier/2.3.2:
+    resolution: {integrity: sha512-lnJzDfJ66zkMy58OL5/NY5zp70S7Nz6KqcKkXYzn2tMVrNxvbqaBpg7H3qHaLxCJ5lNMsGuM8+ohS7cZrthdLQ==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true
