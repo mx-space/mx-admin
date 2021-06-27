@@ -1,6 +1,7 @@
 import { TelegramPlane } from '@vicons/fa'
 import Comment12Filled from '@vicons/fluent/es/Comment12Filled'
 import { HeaderActionButton } from 'components/button/rounded-button'
+import { fetchHitokoto, SentenceType } from 'external-api/hitokoto'
 import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
 import { ContentLayout } from 'layouts/content'
 import { isString, transform } from 'lodash-es'
@@ -37,30 +38,19 @@ const EditSay = defineComponent({
 
     const placeholder = ref({} as SayModel)
 
-    async function getHitokoto() {
-      const json = await fetch('https://v1.hitokoto.cn/')
-      const data = (await (json.json() as unknown)) as {
-        id: number
-        hitokoto: string
-        type: string
-        from: string
-        from_who: string
-        creator: string
-        creator_uid: number
-        reviewer: number
-        uuid: string
-        created_at: string
-      }
-
-      placeholder.value = {
-        source: data.from,
-        text: data.hitokoto,
-        author: data.from_who || data.creator,
-      }
-    }
-
     onBeforeMount(() => {
-      getHitokoto()
+      fetchHitokoto([
+        SentenceType.原创,
+        SentenceType.哲学,
+        SentenceType.文学,
+        SentenceType.诗词,
+      ]).then((data) => {
+        placeholder.value = {
+          source: data.from,
+          text: data.hitokoto,
+          author: data.from_who || data.creator,
+        }
+      })
     })
     const dialog = useDialog()
     const handlePostHitokoto = async () => {

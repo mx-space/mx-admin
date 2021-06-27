@@ -3,35 +3,33 @@ import Comment24Filled from '@vicons/fluent/es/Comment24Filled'
 import Extension24Filled from '@vicons/fluent/es/Extension24Filled'
 import Link24Filled from '@vicons/fluent/es/Link24Filled'
 import Note24Filled from '@vicons/fluent/es/Note24Filled'
-
 import ChatbubblesSharp from '@vicons/ionicons5/es/ChatbubblesSharp'
-
 import AddLinkFilled from '@vicons/material/es/AddLinkFilled'
 import BubbleChartFilled from '@vicons/material/es/BubbleChartFilled'
 import OnlinePredictionFilled from '@vicons/material/es/OnlinePredictionFilled'
-
 import Activity from '@vicons/tabler/es/Activity'
 import Copy from '@vicons/tabler/es/Copy'
 import File from '@vicons/tabler/es/File'
 import Refresh from '@vicons/tabler/es/Refresh'
-
 import { Icon } from '@vicons/utils'
-import { defineComponent } from 'vue'
 import { IpInfoPopover } from 'components/ip-info'
+import { fetchHitokoto, SentenceType } from 'external-api/hitokoto'
+import { getJinRiShiCiOne, ShiJuData } from 'external-api/jinrishici'
 import { ContentLayout } from 'layouts/content'
 import { pick } from 'lodash-es'
 import { Stat } from 'models/stat'
 import {
   NBadge,
   NButton,
-  NButtonGroup,
   NCard,
   NGi,
   NGrid,
   NH1,
   NH3,
+  NPopover,
   NP,
   NSkeleton,
+  NLayoutContent,
   NSpace,
   NStatistic,
   NText,
@@ -41,26 +39,19 @@ import {
 import { RouteName } from 'router/name'
 import { UserStore } from 'stores/user'
 import { parseDate, RESTManager, useInjector } from 'utils'
-import { computed, onBeforeMount, PropType, ref, VNode } from 'vue'
+import {
+  computed,
+  defineComponent,
+  onBeforeMount,
+  PropType,
+  ref,
+  VNode,
+} from 'vue'
 import { useRouter } from 'vue-router'
 
 export const DashBoardView = defineComponent({
   name: 'Dashboard',
   setup() {
-    const fetchHitokoto = async () => {
-      const json = await fetch('https://v1.hitokoto.cn/?c=d')
-      const data = (await (json.json() as unknown)) as {
-        hitokoto: string
-        from: string
-        from_who: string
-        creator: string
-      }
-      const postfix = Object.values(
-        pick(data, ['from', 'from_who', 'creator']),
-      ).filter(Boolean)[0]
-      hitokoto.value = data.hitokoto + (postfix ? ' —— ' + postfix : '')
-    }
-
     const stat = ref(
       new Proxy(
         {},
@@ -77,9 +68,36 @@ export const DashBoardView = defineComponent({
       stat.value = counts
       statTime.value = new Date()
     }
+
+    const refreshHitokoto = () => {
+      fetchHitokoto([
+        SentenceType.动画,
+        SentenceType.原创,
+        SentenceType.哲学,
+        SentenceType.文学,
+      ]).then((data) => {
+        const postfix = Object.values(
+          pick(data, ['from', 'from_who', 'creator']),
+        ).filter(Boolean)[0]
+        if (!data.hitokoto) {
+          hitokoto.value = '没有获取到句子信息'
+        } else {
+          hitokoto.value = data.hitokoto + (postfix ? ' —— ' + postfix : '')
+        }
+      })
+    }
+
+    const shiju = ref('')
+    const shijuData = ref<ShiJuData | null>(null)
+
     onBeforeMount(() => {
-      fetchHitokoto()
+      refreshHitokoto()
       fetchStat()
+
+      getJinRiShiCiOne().then((data) => {
+        shiju.value = data.content
+        shijuData.value = data
+      })
     })
     const hitokoto = ref('')
     const message = useMessage()
@@ -368,41 +386,79 @@ export const DashBoardView = defineComponent({
     return () => (
       <ContentLayout>
         <NH1 class="font-light">欢迎回来</NH1>
-        <NP>
-          <NSpace align="center" class="min-h-[3rem]">
-            {hitokoto.value ? (
-              <>
-                <NText class="leading-normal">{hitokoto.value}</NText>
-                <div class="space-x-2 flex items-center">
-                  <NButton
-                    text
-                    onClick={fetchHitokoto}
-                    class="ml-4 phone:ml-0 phone:float-right"
-                  >
-                    <Icon>
-                      <Refresh />
-                    </Icon>
-                  </NButton>
+        <NGrid xGap={12} cols={'1 900:2'}>
+          <NGi>
+            <NH3 class="text-opacity-80 font-light !mt-[10px] !mb-[10px]">
+              一言
+            </NH3>
+            <NP>
+              <NSpace align="center" class="min-h-[3rem]">
+                {hitokoto.value ? (
+                  <>
+                    <NText class="leading-normal">{hitokoto.value}</NText>
+                    <div class="space-x-2 flex items-center">
+                      <NButton
+                        text
+                        onClick={refreshHitokoto}
+                        class="ml-0 phone:float-right"
+                      >
+                        <Icon>
+                          <Refresh />
+                        </Icon>
+                      </NButton>
 
-                  <NButton
-                    text
-                    onClick={() => {
-                      navigator.clipboard.writeText(hitokoto.value)
-                      message.success('已复制')
-                      message.info(hitokoto.value)
-                    }}
-                  >
-                    <Icon>
-                      <Copy />
-                    </Icon>
-                  </NButton>
-                </div>
-              </>
-            ) : (
-              <NText>加载中...</NText>
-            )}
-          </NSpace>
-        </NP>
+                      <NButton
+                        text
+                        onClick={() => {
+                          navigator.clipboard.writeText(hitokoto.value)
+                          message.success('已复制')
+                          message.info(hitokoto.value)
+                        }}
+                      >
+                        <Icon>
+                          <Copy />
+                        </Icon>
+                      </NButton>
+                    </div>
+                  </>
+                ) : (
+                  <NText>加载中...</NText>
+                )}
+              </NSpace>
+            </NP>
+          </NGi>
+          <NGi>
+            <NH3 class="text-opacity-80 font-light !mt-[10px] !mb-[10px]">
+              今日诗句
+            </NH3>
+            <NP>
+              <NPopover trigger={'hover'} placement="bottom">
+                {{
+                  trigger() {
+                    return <NText>{shiju.value || '获取中'}</NText>
+                  },
+                  default() {
+                    const origin = shijuData.value?.origin
+                    if (!origin) {
+                      return null
+                    }
+                    return (
+                      <NCard
+                        class="text-center min-w-[350px] max-w-[65vw] max-h-[60vh] overflow-auto"
+                        bordered={false}
+                      >
+                        <NH3>{origin.title}</NH3>
+                        {origin.content.map((c) => (
+                          <NP key={c}>{c}</NP>
+                        ))}
+                      </NCard>
+                    )
+                  },
+                }}
+              </NPopover>
+            </NP>
+          </NGi>
+        </NGrid>
         <UserLoginStat />
         <DataStat />
       </ContentLayout>
