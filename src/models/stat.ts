@@ -13,4 +13,7 @@ export interface Stat {
   uv: number
   todayIpAccessCount: number
   online: number
+
+  todayMaxOnline: number
+  todayOnlineTotal: number
 }

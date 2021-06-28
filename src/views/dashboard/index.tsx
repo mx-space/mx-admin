@@ -1,6 +1,9 @@
 import Code24Filled from '@vicons/fluent/es/Code24Filled'
+
 import Comment24Filled from '@vicons/fluent/es/Comment24Filled'
 import Extension24Filled from '@vicons/fluent/es/Extension24Filled'
+import Games24Regular from '@vicons/fluent/es/Games24Regular'
+import Guest16Filled from '@vicons/fluent/es/Guest16Filled'
 import Link24Filled from '@vicons/fluent/es/Link24Filled'
 import Note24Filled from '@vicons/fluent/es/Note24Filled'
 import ChatbubblesSharp from '@vicons/ionicons5/es/ChatbubblesSharp'
@@ -352,6 +355,16 @@ export const DashBoardView = defineComponent({
         value: stat.value.online,
         icon: <OnlinePredictionFilled />,
       },
+      {
+        label: '今日访客',
+        value: stat.value.todayOnlineTotal,
+        icon: <Guest16Filled />,
+      },
+      {
+        value: stat.value.todayMaxOnline,
+        label: '今日最多同时在线人数',
+        icon: <Games24Regular />,
+      },
     ])
 
     const DataStat = defineComponent(() => {
@@ -359,7 +372,8 @@ export const DashBoardView = defineComponent({
         <>
           <NSpace vertical>
             <NH3 class="text-opacity-80 font-light">数据统计</NH3>
-            <p class="-mt-4 mb-3 relative text-gray-500">
+
+            <p class="-mt-4 mb-3 relative text-gray-500 flex items-center">
               <span>数据更新于: </span>
               <time>
                 {' '}
@@ -367,6 +381,12 @@ export const DashBoardView = defineComponent({
                   ? parseDate(statTime.value, 'yyyy年M月d日 HH:mm:ss')
                   : 'N/A'}
               </time>
+
+              <NButton text onClick={fetchStat} class="ml-4 text-black">
+                <Icon>
+                  <Refresh />
+                </Icon>
+              </NButton>
             </p>
           </NSpace>
           <NGrid
