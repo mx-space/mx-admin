@@ -99,7 +99,7 @@ export default LoginView
         <ParallaxButtonVue
           title="登陆"
           class="p-button-raised p-button-rounded"
-          @click="handleLogin"
+          @click.prevent.stop="handleLogin"
         />
       </form>
 
