@@ -1,8 +1,26 @@
-import { computed, defineComponent, PropType } from 'vue'
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/no-empty-function */
+import {
+  computed,
+  defineComponent,
+  inject,
+  onUnmounted,
+  PropType,
+  provide,
+  ref,
+  VNode,
+} from 'vue'
 import clsx from 'clsx'
 import { useRouter } from 'vue-router'
 import styles from './index.module.css'
 
+const ProvideKey = Symbol('inject')
+
+export const useLayout = () =>
+  inject(ProvideKey, {
+    addFloatButton(el: VNode) {},
+    removeFloatButton(name: symbol) {},
+  })
 export const ContentLayout = defineComponent({
   props: {
     actionsElement: {
@@ -23,6 +41,34 @@ export const ContentLayout = defineComponent({
     const route = computed(() => router.currentRoute)
     const A$ael = () => props.actionsElement ?? null
     const A$fel = () => props.footerButtonElement ?? null
+    const footerExtraButtonEl = ref<
+      null | ((() => VNode) & { displayName$: symbol })[]
+    >(null)
+    provide(ProvideKey, {
+      addFloatButton(el: VNode | (() => VNode)) {
+        footerExtraButtonEl.value ??= []
+        const E: any = typeof el === 'function' ? el : () => el
+        E.displayName$ = E.name ? Symbol(E.name) : Symbol('fab')
+        footerExtraButtonEl.value.push(E)
+
+        return E.displayName$
+      },
+      removeFloatButton(name: symbol) {
+        if (!footerExtraButtonEl.value) {
+          return
+        }
+        const index = footerExtraButtonEl.value.findIndex(
+          (E) => E.displayName$ === name,
+        )
+        if (index && index !== -1) {
+          footerExtraButtonEl.value.splice(index, 1)
+        }
+      },
+    })
+
+    onUnmounted(() => {
+      footerExtraButtonEl.value = null
+    })
     return () => (
       <>
         <header class={styles['header']}>
@@ -37,6 +83,11 @@ export const ContentLayout = defineComponent({
         </header>
         <main class={styles['main']}>{slots.default?.()}</main>
         <footer class={styles['buttons']}>
+          {footerExtraButtonEl.value
+            ? footerExtraButtonEl.value.map((E: any) => (
+                <E key={E.displayName} />
+              ))
+            : null}
           {props.footerButtonElement ? <A$fel /> : slots.buttons?.()}
         </footer>
       </>

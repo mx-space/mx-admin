@@ -10,24 +10,14 @@ import {
   toRaw,
   watch,
 } from 'vue'
+import { editorBaseProps } from './universal/base'
 
 const _MonacoEditor = defineComponent({
   props: {
-    text: {
-      type: String,
-      required: true,
-    },
-    onChange: {
-      type: Function as PropType<(value: string) => void>,
-      required: true,
-    },
     innerRef: {
       type: Object as PropType<Ref<Editor.IStandaloneCodeEditor> | undefined>,
     },
-    unSaveConfirm: {
-      type: Boolean,
-      default: true,
-    },
+    ...editorBaseProps,
   },
   setup(props) {
     const editorRef = ref<HTMLDivElement>()
@@ -73,7 +63,7 @@ const _MonacoEditor = defineComponent({
     return () => (
       <div
         class="editor relative overflow-hidden"
-        style={{ height: 'calc(100vh - 15rem)' }}
+        style={{ height: 'calc(100vh - 18rem)' }}
         ref={editorRef}
       ></div>
     )

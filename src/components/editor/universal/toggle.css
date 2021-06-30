@@ -1,0 +1,6 @@
+.editor-wrapper {
+  .vditor-reset {
+    font-size: var(--editor-font-size) !important;
+    font-family: var(--editor-font-family) !important;
+  }
+}

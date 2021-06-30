@@ -1,7 +1,7 @@
 import { SlidersH, TelegramPlane } from '@vicons/fa'
 import { Icon } from '@vicons/utils'
 import { HeaderActionButton } from 'components/button/rounded-button'
-import { MonacoEditor } from 'components/editor/monaco'
+import { EditorToggleWrapper } from 'components/editor'
 import { MaterialInput } from 'components/input/material-input'
 import { UnderlineInput } from 'components/input/underline-input'
 import { ParseContentButton } from 'components/logic/parse-button'
@@ -10,7 +10,6 @@ import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
 import { ContentLayout } from 'layouts/content'
 import { isString } from 'lodash-es'
 import { PageModel } from 'models/page'
-import { editor as Editor } from 'monaco-editor'
 import {
   NDrawer,
   NDrawerContent,
@@ -56,8 +55,6 @@ const PageWriteView = defineComponent(() => {
       parsePayloadIntoReactiveData(data as PageModel)
     }
   })
-
-  const monacoRef = ref<Editor.IStandaloneCodeEditor>()
 
   const drawerShow = ref(false)
 
@@ -148,13 +145,11 @@ const PageWriteView = defineComponent(() => {
         ></UnderlineInput>
       </div>
 
-      <MonacoEditor
+      <EditorToggleWrapper
         onChange={(v) => {
           data.text = v
         }}
         text={data.text}
-        // @ts-expect-error
-        innerRef={monacoRef}
       />
 
       {/* Drawer  */}
@@ -174,7 +169,7 @@ const PageWriteView = defineComponent(() => {
               <NInputNumber
                 placeholder=""
                 value={data.order}
-                onChange={(e) => void (data.order = e)}
+                onChange={(e) => void (data.order = e ?? 0)}
               ></NInputNumber>
             </NFormItem>
           </NForm>

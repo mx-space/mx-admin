@@ -1,7 +1,7 @@
 import { SlidersH, TelegramPlane } from '@vicons/fa'
 import { Icon } from '@vicons/utils'
 import { HeaderActionButton } from 'components/button/rounded-button'
-import { MonacoEditor } from 'components/editor/monaco'
+import { EditorToggleWrapper } from 'components/editor'
 import { MaterialInput } from 'components/input/material-input'
 import { UnderlineInput } from 'components/input/underline-input'
 import { ParseContentButton } from 'components/logic/parse-button'
@@ -10,7 +10,6 @@ import { ContentLayout } from 'layouts/content'
 import { isString } from 'lodash-es'
 import { CategoryModel } from 'models/category'
 import { PostModel } from 'models/post'
-import { editor as Editor } from 'monaco-editor'
 import {
   NDrawer,
   NDrawerContent,
@@ -86,8 +85,6 @@ const PostWriteView = defineComponent(() => {
       parsePayloadIntoReactiveData(payload.data as PostModel)
     }
   })
-
-  const monacoRef = ref<Editor.IStandaloneCodeEditor>()
 
   const drawerShow = ref(false)
 
@@ -170,13 +167,11 @@ const PostWriteView = defineComponent(() => {
         />
       </div>
 
-      <MonacoEditor
+      <EditorToggleWrapper
         onChange={(v) => {
           data.text = v
         }}
         text={data.text}
-        // @ts-expect-error
-        innerRef={monacoRef}
       />
 
       {/* Drawer  */}

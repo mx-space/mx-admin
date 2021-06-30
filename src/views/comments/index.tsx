@@ -30,6 +30,8 @@ import {
 } from 'naive-ui'
 import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { RouteName } from 'router/name'
+import { UIStore } from 'stores/ui'
+import { useInjector } from 'utils'
 import { RESTManager } from 'utils/rest'
 import { relativeTimeFromNow } from 'utils/time'
 import { defineComponent, nextTick, reactive, ref, unref, watch } from 'vue'
@@ -260,6 +262,8 @@ const ManageComment = defineComponent(() => {
 
   const dialog = useDialog()
 
+  const { viewport } = useInjector(UIStore)
+
   return () => (
     <ContentLayout
       actionsElement={
@@ -379,7 +383,10 @@ const ManageComment = defineComponent(() => {
               </NFormItemRow>
 
               <div class="flex justify-between">
-                <NPopover trigger={'click'} placement="left">
+                <NPopover
+                  trigger={'click'}
+                  placement={viewport.value.mobile ? 'top-end' : 'left'}
+                >
                   {{
                     trigger() {
                       return (

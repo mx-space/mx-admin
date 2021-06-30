@@ -3,7 +3,7 @@ import Location24Regular from '@vicons/fluent/es/Location24Regular'
 import { Icon } from '@vicons/utils'
 import camelcaseKeys from 'camelcase-keys'
 import { HeaderActionButton } from 'components/button/rounded-button'
-import { MonacoEditor } from 'components/editor/monaco'
+import { EditorToggleWrapper } from 'components/editor'
 import { MaterialInput } from 'components/input/material-input'
 import { ParseContentButton } from 'components/logic/parse-button'
 import { configs } from 'configs'
@@ -15,7 +15,6 @@ import { ContentLayout } from 'layouts/content'
 import { isString } from 'lodash-es'
 import { Amap, Regeocode } from 'models/amap'
 import { Coordinate, NoteModel, NoteMusicRecord } from 'models/note'
-import { editor as Editor } from 'monaco-editor'
 import {
   NButton,
   NButtonGroup,
@@ -34,12 +33,12 @@ import {
 import { RouteName } from 'router/name'
 import { RESTManager } from 'utils/rest'
 import { getDayOfYear } from 'utils/time'
-import { PropType } from 'vue'
 import {
   computed,
   defineComponent,
   onBeforeMount,
   onMounted,
+  PropType,
   reactive,
   ref,
   toRaw,
@@ -105,8 +104,6 @@ const NoteWriteView = defineComponent(() => {
       parsePayloadIntoReactiveData(data as NoteModel)
     }
   })
-
-  const monacoRef = ref<Editor.IStandaloneCodeEditor>()
 
   const drawerShow = ref(false)
 
@@ -195,13 +192,11 @@ const NoteWriteView = defineComponent(() => {
         <label>{`${BASE_URL}/notes/${nid.value ?? ''}`}</label>
       </div>
 
-      <MonacoEditor
+      <EditorToggleWrapper
         onChange={(v) => {
           data.text = v
         }}
         text={data.text}
-        // @ts-expect-error
-        innerRef={monacoRef}
       />
 
       {/* Drawer  */}
