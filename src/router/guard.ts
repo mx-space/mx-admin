@@ -8,7 +8,7 @@ const title = configs.title
 router.beforeEach(async (to) => {
   progress.start()
 
-  if (to.meta.isPublic) {
+  if (to.meta.isPublic || to.fullPath.startsWith('/dev')) {
     return
   } else {
     const { ok } = await RESTManager.api('master')('check_logged').get<{

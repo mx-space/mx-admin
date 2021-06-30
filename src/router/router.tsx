@@ -433,6 +433,23 @@ export const router = createRouter({
       meta: { isPublic: true, title: '登陆' },
       component: LoginView,
     },
+    // for dev
+    {
+      path: '/dev',
+      redirect: __DEV__ ? undefined : '/',
+      component: $RouterView,
+      children: __DEV__
+        ? Object.entries(import.meta.glob('../views/dev/**/*.tsx')).map(
+            ([path, comp]) => ({
+              path: path
+                .split('/')
+                .slice(-1)[0]
+                .replace(/\.[jt]sx$/, ''),
+              component: comp,
+            }),
+          )
+        : [],
+    },
     // v1 compatibility
     {
       path: '/page/:path(.*)*',

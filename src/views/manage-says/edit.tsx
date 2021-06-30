@@ -1,7 +1,7 @@
 import { TelegramPlane } from '@vicons/fa'
 import Comment12Filled from '@vicons/fluent/es/Comment12Filled'
 import { HeaderActionButton } from 'components/button/rounded-button'
-import { fetchHitokoto, SentenceType } from 'external-api/hitokoto'
+import { fetchHitokoto, SentenceType } from 'external/api/hitokoto'
 import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
 import { ContentLayout } from 'layouts/content'
 import { isString, transform } from 'lodash-es'
