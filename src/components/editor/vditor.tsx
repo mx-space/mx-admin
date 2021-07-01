@@ -28,13 +28,13 @@ export const VditorEditor = defineAsyncComponent(() =>
               enable: false,
             },
             input(val: string) {
-              props.onChange(val)
+              props.onChange(val.trim())
             },
             blur(val: string) {
-              props.onChange(val)
+              props.onChange(val.trim())
             },
             focus(val: string) {
-              props.onChange(val)
+              props.onChange(val.trim())
             },
           })
           instance = i
@@ -57,16 +57,15 @@ export const VditorEditor = defineAsyncComponent(() =>
             if (!memoInitialValue && n) {
               memoInitialValue = n
             }
-            if (instance && n != instance.getValue()) {
+            if (instance && n !== instance.getValue()) {
               instance.setValue(n)
             }
           },
         )
 
-        useSaveConfirm(
-          props.unSaveConfirm,
-          () => memoInitialValue === instance.getValue(),
-        )
+        useSaveConfirm(props.unSaveConfirm, () => {
+          return instance.getValue().trim() === memoInitialValue.trim()
+        })
         return () => (
           <div ref={vRef} style={{ height: 'calc(100vh - 18.8rem)' }}></div>
         )

@@ -1,5 +1,6 @@
 import { useSaveConfirm } from 'hooks/use-save-confirm'
 import { editor as Editor, KeyCode, KeyMod, Selection } from 'monaco-editor'
+import { NSpin } from 'naive-ui'
 import {
   defineAsyncComponent,
   defineComponent,
@@ -55,6 +56,7 @@ const _MonacoEditor = defineComponent({
         }
       },
     )
+
     useSaveConfirm(
       props.unSaveConfirm,
       () => memoInitialValue === editor.getValue(),
@@ -70,9 +72,10 @@ const _MonacoEditor = defineComponent({
   },
 })
 
-export const MonacoEditor = defineAsyncComponent(() =>
-  Promise.resolve(_MonacoEditor),
-)
+export const MonacoEditor = defineAsyncComponent({
+  loader: () => Promise.resolve(_MonacoEditor),
+  loadingComponent: <NSpin strokeWidth={14} />,
+})
 
 const initEditor = ($el: HTMLElement, initialValue: string) => {
   const editor = Editor.create($el, {

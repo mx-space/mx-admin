@@ -1,24 +1,31 @@
+import RefreshCircle from '@vicons/ionicons5/es/RefreshCircle'
 import Settings from '@vicons/tabler/es/Settings'
 import { Icon } from '@vicons/utils'
+import { useStorageObject } from 'hooks/use-storage'
 import { useLayout } from 'layouts/content'
 import { throttle } from 'lodash-es'
+import { editor } from 'monaco-editor'
 import {
+  NButton,
   NCard,
   NForm,
   NFormItem,
+  NH5,
   NInput,
   NInputNumber,
   NModal,
+  NP,
+  NPopover,
   NSelect,
+  NText,
 } from 'naive-ui'
-import { defineComponent, onMounted, reactive, ref, watch } from 'vue'
-import { editorBaseProps } from './base'
+import { defineComponent, onMounted, ref, watch } from 'vue'
 import { MonacoEditor } from '../monaco'
+import { PlainEditor } from '../plain'
 import { VditorEditor } from '../vditor'
-import { useStorageObject } from 'hooks/use-storage'
+import { editorBaseProps } from './base'
 import { GeneralSettingDto } from './config'
 import './toggle.css'
-import { editor } from 'monaco-editor'
 const StorageKeys = {
   editor: 'editor-pref',
   general: 'editor-general',
@@ -26,6 +33,7 @@ const StorageKeys = {
 enum Editor {
   monaco = 'monaco',
   vditor = 'vditor',
+  plain = 'plain',
 }
 
 export const EditorToggleWrapper = defineComponent({
@@ -84,10 +92,11 @@ export const EditorToggleWrapper = defineComponent({
 
     const monacoRef = ref<editor.IStandaloneCodeEditor>()
 
-    const generalSetting = useStorageObject<GeneralSettingDto>(
-      GeneralSettingDto,
-      StorageKeys.general,
-    )
+    const { storage: generalSetting, reset: resetGeneralSetting } =
+      useStorageObject<GeneralSettingDto>(
+        GeneralSettingDto,
+        StorageKeys.general,
+      )
 
     watch(
       () => generalSetting,
@@ -103,6 +112,11 @@ export const EditorToggleWrapper = defineComponent({
     const GeneralSetting = defineComponent(() => {
       return () => (
         <Fragment>
+          {/* <NFormItemRow label="通用设置"></NFormItemRow> */}
+          <NH5 class="!flex items-center">
+            通用设置
+            <ResetIconButton resetFn={resetGeneralSetting} />
+          </NH5>
           <NFormItem label="字体设定">
             <NInput
               onInput={(e) => void (generalSetting.fontFamily = e)}
@@ -114,6 +128,9 @@ export const EditorToggleWrapper = defineComponent({
               onUpdateValue={(e) => void (generalSetting.fontSize = e ?? 14)}
               value={generalSetting.fontSize}
             />
+          </NFormItem>
+          <NFormItem label="注意: " labelAlign="right">
+            <NP>以上设定暂时不适于用 Monaco Editor</NP>
           </NFormItem>
         </Fragment>
       )
@@ -139,6 +156,9 @@ export const EditorToggleWrapper = defineComponent({
 
             case 'vditor':
               return <VditorEditor {...props} />
+
+            case 'plain':
+              return <PlainEditor {...props} />
             default:
               break
           }
@@ -154,9 +174,12 @@ export const EditorToggleWrapper = defineComponent({
               modalOpen.value = false
             }}
             title="编辑器设定"
-            style="max-width: 90vw;width: 500px"
+            style="max-width: 90vw;width: 500px; max-height: 65vh; overflow: auto"
             bordered={false}
           >
+            <NP class="text-center">
+              <NText depth="3">此设定仅存储在本地!</NText>
+            </NP>
             <NForm labelPlacement="left" labelWidth="8rem" labelAlign="right">
               <NFormItem label="编辑器选择">
                 <NSelect
@@ -175,6 +198,35 @@ export const EditorToggleWrapper = defineComponent({
           </NCard>
         </NModal>
       </div>
+    )
+  },
+})
+
+const ResetIconButton = defineComponent({
+  props: {
+    resetFn: {
+      type: Function,
+      required: true,
+    },
+  },
+  setup(props) {
+    return () => (
+      <NPopover trigger="hover">
+        {{
+          trigger() {
+            return (
+              <NButton text class="ml-2" onClick={() => props.resetFn()}>
+                <Icon size="20">
+                  <RefreshCircle />
+                </Icon>
+              </NButton>
+            )
+          },
+          default() {
+            return '将会重置这些设定'
+          },
+        }}
+      </NPopover>
     )
   },
 })

@@ -5,7 +5,7 @@ import { throttle } from 'lodash-es'
 
 // @ts-expect-error
 export const useStorageObject = <U, T extends { new () } = unknown>(
-  dto: T,
+  DTO: T,
   storageKey: string,
 ) => {
   const getObjectStorage = () => {
@@ -15,7 +15,7 @@ export const useStorageObject = <U, T extends { new () } = unknown>(
     }
     try {
       const parsed = JSON.parse(saved)
-      const classify = plainToClass(dto as any as ClassConstructor<T>, parsed)
+      const classify = plainToClass(DTO as any as ClassConstructor<T>, parsed)
       const err = validateSync(classify)
       if (err.length > 0) {
         if (__DEV__) {
@@ -30,7 +30,7 @@ export const useStorageObject = <U, T extends { new () } = unknown>(
   }
 
   const objectStorage = reactive<T>(
-    getObjectStorage() ?? classToPlain(new dto()),
+    getObjectStorage() ?? classToPlain(new DTO()),
   )
   watch(
     () => objectStorage,
@@ -44,5 +44,10 @@ export const useStorageObject = <U, T extends { new () } = unknown>(
     { deep: true },
   )
 
-  return objectStorage as U
+  return {
+    storage: objectStorage as U,
+    reset: () => {
+      Object.assign(objectStorage, classToPlain(new DTO()))
+    },
+  }
 }

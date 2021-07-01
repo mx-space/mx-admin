@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, Ref, ref, toRaw, watch } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
 /**
  *
@@ -49,3 +49,25 @@ export const useSaveConfirm = (
     }
   })
 }
+
+// export const useMemoTextValue = (
+//   initialValue: Ref<string>,
+//   getValueFn: () => string,
+//   setValueFn: (v: string) => any,
+// ): Ref<string> => {
+//   const memoInitialValue = initialValue
+
+//   watch(
+//     () => initialValue.value,
+//     (n) => {
+//       if (!memoInitialValue.value && n) {
+//         memoInitialValue.value = n
+//       }
+//       if (n !== getValueFn()) {
+//         setValueFn(n)
+//       }
+//     },
+//   )
+
+//   return memoInitialValue
+// }
