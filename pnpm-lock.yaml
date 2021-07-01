@@ -19,11 +19,11 @@ specifiers:
   '@vitejs/plugin-vue-jsx': 1.1.6
   '@vue/compiler-sfc': 3.1.2
   '@vuedx/typescript-plugin-vue': 0.7.4
-  '@vueuse/core': ^5.0.3
+  '@vueuse/core': 5.0.3
   autoprefixer: 10.2.6
   camelcase-keys: 7.0.0
-  class-transformer: ^0.4.0
-  class-validator: ^0.13.1
+  class-transformer: 0.4.0
+  class-validator: 0.13.1
   clsx: 1.1.1
   cors: 2.8.5
   date-fns: 2.22.1
@@ -38,14 +38,14 @@ specifiers:
   postcss-nested: 5.0.5
   prettier: 2.3.2
   qier-progress: 1.0.4
-  reflect-metadata: ^0.1.13
+  reflect-metadata: 0.1.13
   rollup-plugin-visualizer: 5.5.0
   socket.io-client: 2.4.0
   tailwindcss: 2.2.4
   typescript: 4.3.4
   umi-request: 1.3.9
   validator: 13.6.0
-  vditor: ^3.8.5
+  vditor: 3.8.5
   vite: 2.3.8
   vite-tsconfig-paths: 3.3.13
   vue: 3.1.2
