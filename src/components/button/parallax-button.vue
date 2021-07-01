@@ -1,5 +1,5 @@
 <template>
-  <a
+  <button
     ref="parallaxBtn"
     class="parallax-btn pr"
     :data-title="title"
@@ -13,7 +13,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from 'vue'
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { computed, defineComponent, onMounted, PropType, ref } from 'vue'
 
 export default defineComponent({
   props: {
@@ -22,7 +23,7 @@ export default defineComponent({
       default: 'Button',
     },
     type: {
-      type: String,
+      type: String as PropType<'normal' | 'warning' | 'danger'>,
       default: 'normal',
       validator(val: string) {
         return ['normal', 'warning', 'danger'].includes(val)
@@ -33,7 +34,7 @@ export default defineComponent({
       default: '#fff',
     },
   },
-  setup(ctx, { slots }) {
+  setup() {
     const btnStyle = ref<CSSStyleDeclaration>()
     const parallaxBtn = ref<HTMLAnchorElement>()
     onMounted(() => {

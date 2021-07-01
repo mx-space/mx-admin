@@ -10,6 +10,7 @@ import { useInjector } from '../../utils/deps-injection'
 import { RESTManager } from '../../utils/rest'
 
 const bgUrl =
+  (import.meta.env.VITE_APP_LOGIN_BG as string) ||
   'https://gitee.com/xun7788/my-imagination/raw/master/uPic/1615516941397.jpg'
 export const LoginView = defineComponent({
   components: { Avatar, ParallaxButtonVue },
@@ -94,7 +95,6 @@ export default LoginView
       <form action="#" @submit.prevent="handleLogin">
         <div class="input-wrap">
           <input ref="input" v-model="password" type="password" autofocus />
-          <div class="blur" />
         </div>
         <ParallaxButtonVue
           title="登陆"
