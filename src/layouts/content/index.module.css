@@ -46,6 +46,7 @@
   display: flex;
   flex-direction: column;
   z-index: 30;
+
   button {
     @apply flex items-center justify-center;
 
@@ -62,6 +63,16 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1), 0 5px 20px rgba(0, 0, 0, 0.2);
     &:not(:first-child) {
       margin-top: 0.8rem;
+    }
+  }
+
+  @screen phone {
+    & {
+      @apply flex-row items-center justify-center right-[1.5rem] bottom-[1.5rem];
+    }
+
+    & button {
+      @apply !mt-0 ml-3;
     }
   }
 }

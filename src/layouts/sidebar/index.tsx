@@ -1,6 +1,6 @@
 import $RouterView from 'layouts/router-view'
 import { NLayoutContent } from 'naive-ui'
-import { defineComponent, watchEffect } from 'vue'
+import { computed, CSSProperties, defineComponent, watchEffect } from 'vue'
 import { Sidebar } from '../../components/sidebar'
 import { UIStore } from '../../stores/ui'
 import { useInjector } from '../../utils/deps-injection'
@@ -12,10 +12,11 @@ export const SidebarLayout = defineComponent({
     const ui = useInjector(UIStore)
 
     const collapse = ui.sidebarCollapse
+    const isLaptop = computed(
+      () => ui.viewport.value.mobile || ui.viewport.value.pad,
+    )
     watchEffect(() => {
-      // console.log(ui.viewport)
-      collapse.value =
-        ui.viewport.value.mobile || ui.viewport.value.pad ? true : false
+      collapse.value = isLaptop.value ? true : false
     })
 
     const sidebarWidth = ui.sidebarWidth
@@ -33,9 +34,13 @@ export const SidebarLayout = defineComponent({
           embedded
           nativeScrollbar={false}
           class={styles['content']}
-          style={{
-            left: !collapse.value ? sidebarWidth.value + 'px' : '100px',
-          }}
+          style={
+            {
+              left: !collapse.value ? sidebarWidth.value + 'px' : '100px',
+              pointerEvents:
+                isLaptop.value && !collapse.value ? 'none' : 'auto',
+            } as CSSProperties
+          }
         >
           <$RouterView />
         </NLayoutContent>

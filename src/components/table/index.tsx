@@ -65,7 +65,7 @@ export const Table = defineComponent<ITable>((props, ctx) => {
     columns,
     onFetchData: fetchData,
     checkedRowKey = 'id',
-    maxWidth = 900,
+    maxWidth = 1200,
   } = props
 
   const router = useRouter()

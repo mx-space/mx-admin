@@ -18,6 +18,7 @@ export interface ViewportRecord {
   hpad: boolean
   wider: boolean
   widest: boolean
+  phone: boolean
 }
 
 export function UIStore() {
@@ -52,6 +53,8 @@ export function UIStore() {
       hpad: window.innerWidth <= 1024 && window.innerWidth > 768,
       wider: window.innerWidth > 1024 && window.innerWidth < 1920,
       widest: window.innerWidth >= 1920,
+
+      phone: window.innerWidth <= 768,
     }
   }
 

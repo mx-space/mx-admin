@@ -1,3 +1,4 @@
+import { onClickOutside } from '@vueuse/core'
 import Hamburger from '@vicons/ionicons5/es/Menu'
 import { Icon } from '@vicons/utils'
 import clsx from 'clsx'
@@ -11,6 +12,7 @@ import { Avatar } from '../avatar'
 import styles from './index.module.css'
 import { NLayoutContent } from 'naive-ui'
 import { BASE_URL } from 'constants/env'
+import { UIStore } from 'stores/ui'
 export const Sidebar = defineComponent({
   name: 'SidebarComp',
   props: {
@@ -63,13 +65,22 @@ export const Sidebar = defineComponent({
     }
 
     const title = configs.title
-
+    const sidebarRef = ref<HTMLDivElement>()
+    const uiStore = useInjector(UIStore)
+    onClickOutside(sidebarRef, (event) => {
+      const v = uiStore.viewport
+      const isM = v.value.pad || v.value.mobile
+      if (isM) {
+        props.onCollapseChange(true)
+      }
+    })
     return () => (
       <div
         class={clsx(styles['root'], props.collapse ? styles['collapse'] : null)}
         style={{
           width: !props.collapse && props.width ? props.width + 'px' : '',
         }}
+        ref={sidebarRef}
       >
         <div
           class={

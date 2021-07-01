@@ -113,7 +113,7 @@ export const EditorToggleWrapper = defineComponent({
       return () => (
         <Fragment>
           {/* <NFormItemRow label="通用设置"></NFormItemRow> */}
-          <NH5 class="!flex items-center">
+          <NH5 class="!flex items-center !mt-0">
             通用设置
             <ResetIconButton resetFn={resetGeneralSetting} />
           </NH5>
@@ -130,7 +130,7 @@ export const EditorToggleWrapper = defineComponent({
             />
           </NFormItem>
           <NFormItem label="注意: " labelAlign="right">
-            <NP>以上设定暂时不适于用 Monaco Editor</NP>
+            <NP>以上设定暂时不适于 Monaco Editor</NP>
           </NFormItem>
         </Fragment>
       )
