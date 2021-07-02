@@ -280,7 +280,7 @@ export const TabSystem = defineComponent(() => {
                 <NInputNumber
                   value={configs.value.mailOptions.options.port}
                   onChange={(e) =>
-                    void (configs.value.mailOptions.options.port = e)
+                    void (configs.value.mailOptions.options.port = e ?? 465)
                   }
                 />
               </NFormItemGi>
@@ -293,6 +293,13 @@ export const TabSystem = defineComponent(() => {
               <NFormItemGi span={1} label="发件邮箱密码">
                 <NInput
                   type="password"
+                  showPasswordToggle
+                  inputProps={{
+                    name: 'email-password',
+                    autocomplete: 'off',
+                    autocapitalize: 'off',
+                    autocorrect: 'off',
+                  }}
                   value={configs.value.mailOptions.pass}
                   onInput={(e) => void (configs.value.mailOptions.pass = e)}
                 />
@@ -344,6 +351,12 @@ export const TabSystem = defineComponent(() => {
               <NInput
                 {...autosizeableProps}
                 type="password"
+                inputProps={{
+                  name: 'secret-key-password',
+                  autocomplete: 'off',
+                  autocapitalize: 'off',
+                  autocorrect: 'off',
+                }}
                 showPasswordToggle
                 value={configs.value.backupOptions.secretKey}
                 onInput={(e) =>
@@ -369,6 +382,12 @@ export const TabSystem = defineComponent(() => {
                 {...autosizeableProps}
                 showPasswordToggle
                 type="password"
+                inputProps={{
+                  name: 'baidu-push-password',
+                  autocomplete: 'off',
+                  autocapitalize: 'off',
+                  autocorrect: 'off',
+                }}
                 disabled={!configs.value.baiduSearchOptions.enable}
                 value={configs.value.baiduSearchOptions.token}
                 onUpdateValue={(e) =>

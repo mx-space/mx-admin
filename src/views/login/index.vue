@@ -91,10 +91,21 @@ export default LoginView
     />
 
     <div class="wrapper">
-      <Avatar :src="user?.avatar" :size="80" />
-      <form action="#" @submit.prevent="handleLogin">
+      <Avatar
+        :src="user?.avatar"
+        :size="80"
+      />
+      <form
+        action="#"
+        @submit.prevent="handleLogin"
+      >
         <div class="input-wrap">
-          <input ref="input" v-model="password" type="password" autofocus />
+          <input
+            ref="input"
+            v-model="password"
+            type="password"
+            autofocus
+          >
         </div>
         <ParallaxButtonVue
           title="登陆"

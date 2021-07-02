@@ -211,7 +211,8 @@ const NoteWriteView = defineComponent(() => {
         }}
       >
         <NDrawerContent title="文章设定">
-          <NForm>
+          {/* @ts-ignore */}
+          <NForm name="note-options">
             <NFormItem label="心情" required>
               <NSelect
                 value={data.mood}
@@ -271,6 +272,11 @@ const NoteWriteView = defineComponent(() => {
                 placeholder=""
                 type="password"
                 value={data.password}
+                inputProps={{
+                  name: 'note-password',
+                  autocapitalize: 'off',
+                  autocomplete: 'new-password',
+                }}
                 onInput={(e) => void (data.password = e)}
               ></NInput>
             </NFormItem>

@@ -3,6 +3,7 @@ import { omitBy } from 'lodash'
 import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig, loadEnv } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
+import Checker from 'vite-plugin-checker'
 
 export default ({ mode }) => {
   process.env = {
@@ -11,7 +12,12 @@ export default ({ mode }) => {
   }
 
   return defineConfig({
-    plugins: [vue(), tsconfigPaths(), visualizer({ open: false })],
+    plugins: [
+      vue(),
+      tsconfigPaths(),
+      visualizer({ open: false }),
+      Checker({ typescript: true }),
+    ],
 
     build: {
       chunkSizeWarningLimit: 2500, //monaco is so big

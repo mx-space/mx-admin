@@ -27,7 +27,7 @@
     "js-cookie": "2.2.1",
     "lodash-es": "4.17.21",
     "monaco-editor": "0.25.2",
-    "naive-ui": "2.15.1",
+    "naive-ui": "2.15.2",
     "qier-progress": "1.0.4",
     "reflect-metadata": "0.1.13",
     "socket.io-client": "2.4.0",
@@ -59,6 +59,7 @@
     "tailwindcss": "2.2.4",
     "typescript": "4.3.5",
     "vite": "2.3.8",
+    "vite-plugin-checker": "^0.2.0-beta.0",
     "vite-tsconfig-paths": "3.3.13",
     "vue-eslint-parser": "7.6.0"
   }
