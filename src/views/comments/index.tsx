@@ -87,6 +87,7 @@ const ManageComment = defineComponent(() => {
     replyDialogShow.value = false
     replyComment.value = null
     message.success('回复成功啦~')
+    replyText.value = ''
     await fetchData()
   }
 
@@ -448,7 +449,10 @@ const ManageComment = defineComponent(() => {
                     确定
                   </NButton>
                   <NButton
-                    onClick={() => (replyDialogShow.value = false)}
+                    onClick={() => {
+                      replyText.value = ''
+                      replyDialogShow.value = false
+                    }}
                     round
                   >
                     取消
