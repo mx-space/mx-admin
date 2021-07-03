@@ -23,7 +23,7 @@ import {
 } from 'naive-ui'
 import { RouteName } from 'router/name'
 import { CategoryStore } from 'stores/category'
-import { useInjector } from 'utils/deps-injection'
+import { useInjector } from 'hooks/use-deps-injection'
 import { RESTManager } from 'utils/rest'
 import { computed, defineComponent, onMounted, reactive, ref, toRaw } from 'vue'
 import { useRoute, useRouter } from 'vue-router'

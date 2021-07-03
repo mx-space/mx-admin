@@ -7,7 +7,7 @@ import {
   TableColumns,
 } from 'naive-ui/lib/data-table/src/interface'
 import { UIStore } from 'stores/ui'
-import { useInjector } from 'utils'
+import { useInjector } from 'hooks/use-deps-injection'
 import { defineComponent, reactive, ref, Ref, watch } from 'vue'
 import {
   LocationQueryValue,

@@ -3,7 +3,7 @@ import { NLayoutContent } from 'naive-ui'
 import { computed, CSSProperties, defineComponent, watchEffect } from 'vue'
 import { Sidebar } from '../../components/sidebar'
 import { UIStore } from '../../stores/ui'
-import { useInjector } from '../../utils/deps-injection'
+import { useInjector } from '../../hooks/use-deps-injection'
 import styles from './index.module.css'
 export const SidebarLayout = defineComponent({
   name: 'SidebarLayout',

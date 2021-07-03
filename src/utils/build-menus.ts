@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import { RouteRecordNormalized } from 'vue-router'
-import { routeForMenu } from '../router/router'
 
 type TRouteRecordNormalized = Omit<RouteRecordNormalized, 'meta'> & {
   meta?: {

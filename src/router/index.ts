@@ -1,4 +1,7 @@
 import './router'
 import './guard'
+import { routeForMenu } from './route'
 
-export { router, routeForMenu } from './router'
+export { router } from './router'
+
+export { routeForMenu }

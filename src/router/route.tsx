@@ -1,41 +1,30 @@
-/*
- * @Author: Innei
- * @Date: 2021-03-21 22:21:31
- * @LastEditTime: 2021-03-22 11:50:11
- * @LastEditors: Innei
- * @FilePath: /admin-next/src/router.ts
- * Mark: Coding with Love
+/**
+ * 路由在此定义
+ * @author Innei <https://innei.ren>
  */
-import { Icon } from '@vicons/utils'
+import Book from '@vicons/fa/es/Book'
+import ChartLine from '@vicons/fa/es/ChartLine'
+import Code from '@vicons/fa/es/Code'
+import Cogs from '@vicons/fa/es/Cogs'
+import Comment from '@vicons/fa/es/Comment'
+import Comments from '@vicons/fa/es/Comments'
+import EllipsisH from '@vicons/fa/es/EllipsisH'
+import Eye from '@vicons/fa/es/Eye'
+import File from '@vicons/fa/es/File'
+import FileAlt from '@vicons/fa/es/FileAlt'
+import Flask from '@vicons/fa/es/Flask'
+import Markdown from '@vicons/fa/es/Markdown'
+import PencilAlt from '@vicons/fa/es/PencilAlt'
+import PuzzlePiece from '@vicons/fa/es/PuzzlePiece'
+import UndoAlt from '@vicons/fa/es/UndoAlt'
+import UserFriends from '@vicons/fa/es/UserFriends'
+
 import TachometerAlt from '@vicons/fa/es/TachometerAlt'
-import {
-  Book,
-  ChartLine,
-  Code,
-  Cogs,
-  Comment,
-  Comments,
-  EllipsisH,
-  Eye,
-  File,
-  FileAlt,
-  Flask,
-  Markdown,
-  PencilAlt,
-  PuzzlePiece,
-  UndoAlt,
-  UserFriends,
-  Wrench,
-} from '@vicons/fa/es'
-import {
-  createRouter,
-  createWebHashHistory,
-  createWebHistory,
-  RouteRecordRaw,
-} from 'vue-router'
-import $RouterView from '../layouts/router-view'
-import { SidebarLayout } from '../layouts/sidebar'
-import { DashBoardView } from '../views/dashboard'
+import { Icon } from '@vicons/utils'
+import $RouterView from 'layouts/router-view'
+import { SidebarLayout } from 'layouts/sidebar'
+import { DashBoardView } from 'views/dashboard'
+import { RouteRecordRaw } from 'vue-router'
 import LoginView from '../views/login/index.vue'
 import { RouteName } from './name'
 
@@ -416,60 +405,57 @@ export const routeForMenu: Array<RouteRecordRaw> = [
   },
 ]
 
-export const router = createRouter({
-  history: __DEV__ ? createWebHistory() : createWebHashHistory(),
-  routes: [
-    {
-      path: '/',
-      component: SidebarLayout,
-      name: RouteName.Home,
-      redirect: '/dashboard',
-      children: [...routeForMenu],
-    },
+export const routes: RouteRecordRaw[] = [
+  {
+    path: '/',
+    component: SidebarLayout,
+    name: RouteName.Home,
+    redirect: '/dashboard',
+    children: [...routeForMenu],
+  },
 
-    {
-      path: '/login',
-      name: RouteName.Login,
-      meta: { isPublic: true, title: '登陆' },
-      component: LoginView,
+  {
+    path: '/login',
+    name: RouteName.Login,
+    meta: { isPublic: true, title: '登陆' },
+    component: LoginView,
+  },
+  // for dev
+  {
+    path: '/dev',
+    redirect: __DEV__ ? undefined : '/',
+    component: $RouterView,
+    children: __DEV__
+      ? Object.entries(import.meta.glob('../views/dev/**/*.tsx')).map(
+          ([path, comp]) => ({
+            path: path
+              .split('/')
+              .slice(-1)[0]
+              .replace(/\.[jt]sx$/, ''),
+            component: comp,
+          }),
+        )
+      : [],
+  },
+  // v1 compatibility
+  {
+    path: '/page/:path(.*)*',
+    name: 'page$',
+    redirect: (to) => {
+      return to.fullPath.replace(/^\/page\//, '/pages/')
     },
-    // for dev
-    {
-      path: '/dev',
-      redirect: __DEV__ ? undefined : '/',
-      component: $RouterView,
-      children: __DEV__
-        ? Object.entries(import.meta.glob('../views/dev/**/*.tsx')).map(
-            ([path, comp]) => ({
-              path: path
-                .split('/')
-                .slice(-1)[0]
-                .replace(/\.[jt]sx$/, ''),
-              component: comp,
-            }),
-          )
-        : [],
+  },
+  {
+    path: '/extra/:path(.*)*',
+    name: 'extra',
+    redirect: (to) => {
+      return to.fullPath.replace(/^\/extra/, '')
     },
-    // v1 compatibility
-    {
-      path: '/page/:path(.*)*',
-      name: 'page$',
-      redirect: (to) => {
-        return to.fullPath.replace(/^\/page\//, '/pages/')
-      },
-    },
-    {
-      path: '/extra/:path(.*)*',
-      name: 'extra',
-      redirect: (to) => {
-        return to.fullPath.replace(/^\/extra/, '')
-      },
-    },
-    {
-      path: '/:pathMatch(.*)*',
-      name: '404',
-      meta: { isPublic: true },
-      redirect: '/',
-    },
-  ],
-})
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: '404',
+    meta: { isPublic: true },
+    redirect: '/',
+  },
+]

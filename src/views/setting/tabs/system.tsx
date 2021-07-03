@@ -1,5 +1,6 @@
 import CheckCircleOutlined from '@vicons/antd/CheckCircleOutlined'
 import { HeaderActionButton } from 'components/button/rounded-button'
+import { useInjector } from 'hooks/use-deps-injection'
 import { cloneDeep, isEmpty, merge, omit } from 'lodash-es'
 import { IConfig } from 'models/setting'
 import {
@@ -17,7 +18,8 @@ import {
   NText,
 } from 'naive-ui'
 import { UIStore } from 'stores/ui'
-import { deepDiff, RESTManager, useInjector } from 'utils'
+import { deepDiff, RESTManager } from 'utils'
+
 import {
   computed,
   defineComponent,

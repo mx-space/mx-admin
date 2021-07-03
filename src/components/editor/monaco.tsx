@@ -74,7 +74,7 @@ const _MonacoEditor = defineComponent({
 
 export const MonacoEditor = defineAsyncComponent({
   loader: () => Promise.resolve(_MonacoEditor),
-  loadingComponent: <NSpin strokeWidth={14} />,
+  loadingComponent: <NSpin strokeWidth={14} show rotate />,
 })
 
 const initEditor = ($el: HTMLElement, initialValue: string) => {

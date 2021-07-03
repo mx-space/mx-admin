@@ -20,7 +20,7 @@ import {
   useMessage,
 } from 'naive-ui'
 import { CategoryStore } from 'stores/category'
-import { useInjector } from 'utils/deps-injection'
+import { useInjector } from 'hooks/use-deps-injection'
 import { RESTManager } from 'utils/rest'
 import { defineComponent, onMounted, reactive, Ref, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'

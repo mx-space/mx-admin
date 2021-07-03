@@ -1,13 +1,3 @@
-// @ts-nocheck
-/*
- * @Author: Innei
- * @Date: 2021-03-22 11:36:59
- * @LastEditTime: 2021-03-22 11:52:35
- * @LastEditors: Innei
- * @FilePath: /admin-next/src/utils/deps-injection.ts
- * Mark: Coding with Love
- */
-
 import { provide, inject } from 'vue'
 //定义一个用于状态共享的hook函数的标准接口
 export interface FunctionalStore<T extends object> {
@@ -41,9 +31,18 @@ type InjectType = 'root' | 'optional'
 //接收第二个参数，'root'表示直接全局使用；optional表示可选注入，防止父组件的provide并未传入相关hook
 export function useInjector<T extends object>(
   func: FunctionalStore<T>,
+  type: 'optional',
+): T | null
+export function useInjector<T extends object>(
+  func: FunctionalStore<T>,
+  type: 'root',
+): T
+export function useInjector<T extends object>(func: FunctionalStore<T>): T
+export function useInjector<T extends object>(
+  func: FunctionalStore<T>,
   type?: InjectType,
-): T {
-  const token = func.token
+) {
+  const token = func.token as any
   const root = func.root
 
   switch (type) {

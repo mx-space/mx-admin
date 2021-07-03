@@ -13,7 +13,7 @@ import {
   TableColumns,
 } from 'naive-ui/lib/data-table/src/interface'
 import { CategoryStore } from 'stores/category'
-import { useInjector } from 'utils/deps-injection'
+import { useInjector } from 'hooks/use-deps-injection'
 import { parseDate, relativeTimeFromNow } from 'utils/time'
 import { computed, ComputedRef, reactive, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'

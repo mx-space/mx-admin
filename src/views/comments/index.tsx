@@ -5,6 +5,7 @@ import Trash from '@vicons/ionicons5/es/Trash'
 
 import { Icon } from '@vicons/utils'
 import { HeaderActionButton } from 'components/button/rounded-button'
+import { IpInfoPopover } from 'components/ip-info'
 import { Table } from 'components/table'
 import { BASE_URL } from 'constants/env'
 import { KAOMOJI_LIST } from 'constants/kaomoji'
@@ -31,7 +32,7 @@ import {
 import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { RouteName } from 'router/name'
 import { UIStore } from 'stores/ui'
-import { useInjector } from 'utils'
+import { useInjector } from 'hooks/use-deps-injection'
 import { RESTManager } from 'utils/rest'
 import { relativeTimeFromNow } from 'utils/time'
 import { defineComponent, nextTick, reactive, ref, unref, watch } from 'vue'
@@ -158,7 +159,15 @@ const ManageComment = defineComponent(() => {
             </a>
 
             <div>
-              <NText depth="3">{row.ip}</NText>
+              <IpInfoPopover
+                ip={row.ip}
+                trigger={'hover'}
+                triggerEl={
+                  <NText depth="3" class="select-all">
+                    {row.ip}
+                  </NText>
+                }
+              />
             </div>
           </NSpace>
         )

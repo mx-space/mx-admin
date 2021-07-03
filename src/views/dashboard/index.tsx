@@ -1,5 +1,4 @@
 import Code24Filled from '@vicons/fluent/es/Code24Filled'
-
 import Comment24Filled from '@vicons/fluent/es/Comment24Filled'
 import Extension24Filled from '@vicons/fluent/es/Extension24Filled'
 import Games24Regular from '@vicons/fluent/es/Games24Regular'
@@ -18,6 +17,7 @@ import { Icon } from '@vicons/utils'
 import { IpInfoPopover } from 'components/ip-info'
 import { fetchHitokoto, SentenceType } from 'external/api/hitokoto'
 import { getJinRiShiCiOne, ShiJuData } from 'external/api/jinrishici'
+import { useInjector } from 'hooks/use-deps-injection'
 import { ContentLayout } from 'layouts/content'
 import { pick } from 'lodash-es'
 import { Stat } from 'models/stat'
@@ -29,10 +29,9 @@ import {
   NGrid,
   NH1,
   NH3,
-  NPopover,
   NP,
+  NPopover,
   NSkeleton,
-  NLayoutContent,
   NSpace,
   NStatistic,
   NText,
@@ -41,7 +40,7 @@ import {
 } from 'naive-ui'
 import { RouteName } from 'router/name'
 import { UserStore } from 'stores/user'
-import { parseDate, RESTManager, useInjector } from 'utils'
+import { parseDate, RESTManager } from 'utils'
 import {
   computed,
   defineComponent,
