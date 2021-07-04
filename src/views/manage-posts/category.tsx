@@ -192,7 +192,7 @@ export const CategoryView = defineComponent((props) => {
                 checkable
                 bordered
                 checked={checkedTag.value == tag.name}
-                onCheckedChange={(check) => {
+                onUpdateChecked={(check) => {
                   if (check) {
                     checkedTag.value = tag.name
                   } else {

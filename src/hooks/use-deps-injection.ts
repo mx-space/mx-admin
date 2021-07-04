@@ -56,8 +56,18 @@ export function useInjector<T extends object>(
         return inject<T>(token)
       }
       if (root) return func.root
-      throw new Error(
-        `状态钩子函数${func.name}未在上层组件通过调用useProvider提供`,
-      )
+      if (__DEV__) {
+        // vite reload bug
+        console.debug(
+          `状态钩子函数${func.name}未在上层组件通过调用useProvider提供`,
+        )
+        setTimeout(() => {
+          location.reload()
+        }, 50)
+      } else {
+        throw new Error(
+          `状态钩子函数${func.name}未在上层组件通过调用useProvider提供`,
+        )
+      }
   }
 }

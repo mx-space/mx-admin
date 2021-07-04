@@ -172,7 +172,7 @@ export const EditorToggleWrapper = defineAsyncComponent({
                   case 'plain':
                     return <PlainEditor {...props} />
                   default:
-                    break
+                    return null
                 }
               })()}
 

@@ -118,7 +118,7 @@ RESTManager.instance.interceptors.request.use((url, options) => {
     options.headers.Authorization = 'bearer ' + token
   }
   return {
-    url: url + '?timestamp=' + new Date().getTime(),
+    url: url + '?t=' + +new Date(),
     options: {
       ...options,
 
