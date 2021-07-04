@@ -1,8 +1,9 @@
 import Add12Filled from '@vicons/fluent/es/Add12Filled'
 import Delete16Regular from '@vicons/fluent/es/Delete16Regular'
-import { defineComponent, onMounted } from 'vue'
 import { Table } from 'components/table'
+import { EditColumn } from 'components/table/edit-column'
 import { RelativeTime } from 'components/time/relative-time'
+import { useInjector } from 'hooks/use-deps-injection'
 import { useTable } from 'hooks/use-table'
 import { omit } from 'lodash-es'
 import { NButton, NPopconfirm, NSpace, useDialog, useMessage } from 'naive-ui'
@@ -13,9 +14,15 @@ import {
   TableColumns,
 } from 'naive-ui/lib/data-table/src/interface'
 import { CategoryStore } from 'stores/category'
-import { useInjector } from 'hooks/use-deps-injection'
-import { parseDate, relativeTimeFromNow } from 'utils/time'
-import { computed, ComputedRef, reactive, watch } from 'vue'
+import { parseDate } from 'utils/time'
+import {
+  computed,
+  ComputedRef,
+  defineComponent,
+  onMounted,
+  reactive,
+  watch,
+} from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
@@ -110,7 +117,30 @@ export const ManagePostListView = defineComponent({
               }
 
               return (
-                <span>{categoryStore.map.value.get(row.categoryId)?.name}</span>
+                <EditColumn
+                  initialValue={
+                    categoryStore.map.value.get(row.categoryId)?.name ?? ''
+                  }
+                  onSubmit={async (v) => {
+                    message.info('TODO')
+                    // TODO
+                    // await RESTManager.api.posts(row.id).put({
+                    //   data: {
+                    //     categoryId: v,
+                    //   },
+                    // })
+
+                    // message.success('修改成功~!')
+                  }}
+                  type="select"
+                  options={
+                    categoryStore.data.value?.map((i) => ({
+                      label: i.name,
+                      value: i.id,
+                      key: i.id,
+                    })) || []
+                  }
+                ></EditColumn>
               )
             },
           },

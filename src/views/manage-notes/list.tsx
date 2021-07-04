@@ -187,6 +187,7 @@ export const ManageNoteListView = defineComponent({
             key: 'created',
             sortOrder: 'descend',
             sorter: 'default',
+            width: 200,
             render(row) {
               return <RelativeTime time={row.created} />
             },
@@ -196,6 +197,7 @@ export const ManageNoteListView = defineComponent({
             key: 'modified',
             sorter: 'default',
             sortOrder: false,
+            width: 200,
             render(row) {
               return parseDate(row.modified, 'yyyy年M月d日')
             },
@@ -203,6 +205,7 @@ export const ManageNoteListView = defineComponent({
           {
             title: '操作',
             key: 'id',
+            width: 100,
             fixed: 'right',
             render(row) {
               return (

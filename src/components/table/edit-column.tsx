@@ -1,6 +1,9 @@
 import { defineComponent } from 'vue'
-import { NInput, NSpace } from 'naive-ui'
+import { NInput, NSelect, NSpace, useMessage } from 'naive-ui'
 import { PropType, ref, watch } from 'vue'
+import { useInjector } from 'hooks/use-deps-injection'
+import { CategoryStore } from 'stores/category'
+import { SelectMixedOption } from 'naive-ui/lib/select/src/interface'
 
 export const EditColumn = defineComponent({
   props: {
@@ -15,9 +18,19 @@ export const EditColumn = defineComponent({
     placeholder: {
       type: String,
     },
+
+    type: {
+      type: String as PropType<'input' | 'select'>,
+      default: 'input',
+    },
+    options: {
+      type: Array as PropType<SelectMixedOption[]>,
+      default: () => [],
+    },
   },
   setup(props) {
     const value = ref(props.initialValue)
+
     watch(
       () => props.initialValue,
       (n) => {
@@ -27,11 +40,12 @@ export const EditColumn = defineComponent({
 
     const isEdit = ref(false)
     const inputRef = ref<HTMLInputElement>()
-
+    const message = useMessage()
     watch(
       () => isEdit.value,
       (n) => {
         if (n) {
+          message.info('回车以完成修改', { duration: 1500 })
           requestAnimationFrame(() => {
             inputRef.value?.focus()
           })
@@ -42,30 +56,56 @@ export const EditColumn = defineComponent({
       props.onSubmit(value.value)
       isEdit.value = false
     }
+    const categoryStore = useInjector(CategoryStore)
     return () => (
       <>
         {isEdit.value ? (
-          <NSpace align="center" wrap={false}>
-            <NInput
-              onKeydown={(e) => {
-                if (e.key == 'Enter') {
-                  handleSubmit()
+          <div class="flex items-center w-full relative flex-nowrap">
+            {(() => {
+              switch (props.type) {
+                case 'input': {
+                  return (
+                    <NInput
+                      onKeydown={(e) => {
+                        if (e.key == 'Enter') {
+                          handleSubmit()
+                        }
+                      }}
+                      class="w-3/4"
+                      value={value.value}
+                      placeholder={props.placeholder ?? props.initialValue}
+                      size="tiny"
+                      autofocus
+                      ref={inputRef}
+                      onBlur={() => {
+                        isEdit.value = false
+                      }}
+                      onInput={(e) => {
+                        value.value = e
+                      }}
+                    ></NInput>
+                  )
                 }
-              }}
-              class="w-3/4"
-              value={value.value}
-              placeholder={props.placeholder ?? props.initialValue}
-              size="tiny"
-              autofocus
-              ref={inputRef}
-              onBlur={() => {
-                isEdit.value = false
-              }}
-              onInput={(e) => {
-                value.value = e
-              }}
-            ></NInput>
-          </NSpace>
+                case 'select': {
+                  return (
+                    <NSelect
+                      class="w-full"
+                      placeholder={props.placeholder ?? props.initialValue}
+                      value={value.value}
+                      onUpdateValue={(e) => {
+                        value.value = e
+                        handleSubmit()
+                      }}
+                      onBlur={() => {
+                        isEdit.value = false
+                      }}
+                      options={props.options}
+                    ></NSelect>
+                  )
+                }
+              }
+            })()}
+          </div>
         ) : (
           <button
             class="w-full text-left"

@@ -22,6 +22,8 @@ class RESTManagerStatic {
       errorHandler: async (error) => {
         const Message = window.message
         if (error.request && !error.response) {
+          Message.error('网络错误')
+          return
         }
 
         if (error.response) {
@@ -31,7 +33,14 @@ class RESTManagerStatic {
           }
           try {
             const json = await error.response.json()
-            Message.error(json.message || json.msg)
+            const message = json.message
+            if (Array.isArray(message)) {
+              message.forEach((m) => {
+                Message.error(m)
+              })
+            } else {
+              Message.error(message)
+            }
           } catch (e) {
             Message.error('出错了, 请查看控制台')
             console.log(e)
