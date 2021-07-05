@@ -18,7 +18,7 @@
     "@vicons/material": "0.10.0",
     "@vicons/tabler": "0.10.0",
     "@vicons/utils": "0.1.4",
-    "@vueuse/core": "5.0.3",
+    "@vueuse/core": "5.1.0",
     "camelcase-keys": "7.0.0",
     "class-transformer": "0.4.0",
     "class-validator": "0.13.1",
