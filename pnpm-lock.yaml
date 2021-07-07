@@ -46,7 +46,7 @@ specifiers:
   umi-request: 1.3.9
   validator: 13.6.0
   vditor: 3.8.5
-  vite: 2.3.8
+  vite: 2.4.1
   vite-plugin-checker: ^0.2.0-beta.0
   vite-tsconfig-paths: 3.3.13
   vue: 3.1.4
@@ -103,9 +103,9 @@ devDependencies:
   rollup-plugin-visualizer: 5.5.0
   tailwindcss: 2.2.4_72be89de93206f86f2d67dd5290ec14d
   typescript: 4.3.5
-  vite: 2.3.8
-  vite-plugin-checker: 0.2.0-beta.0_vite@2.3.8
-  vite-tsconfig-paths: 3.3.13_vite@2.3.8
+  vite: 2.4.1
+  vite-plugin-checker: 0.2.0-beta.0_vite@2.4.1
+  vite-tsconfig-paths: 3.3.13_vite@2.4.1
   vue-eslint-parser: 7.8.0_eslint@7.29.0
 
 packages:
@@ -3927,7 +3927,7 @@ packages:
     resolution: {integrity: sha512-vQBcvntBlnAPonAkGNM8iJ9NxE3PucA+V2W95xiN75YJKxirLJvOws2kEyOEO45T4N+YTbQOCR2m77Y05pfVhQ==}
     dev: false
 
-  /vite-plugin-checker/0.2.0-beta.0_vite@2.3.8:
+  /vite-plugin-checker/0.2.0-beta.0_vite@2.4.1:
     resolution: {integrity: sha512-Fm0ELn5/1/XcivI9XADl1fAe6Db6DRQPtn7k4zc8NP+s6ghS9TcqRBJkqzJXmEyM5nYjrCIzO/OmE0bs1iGhxw==}
     peerDependencies:
       vite: ^2.0.0
@@ -3941,11 +3941,11 @@ packages:
       npm-run-path: 4.0.1
       strip-ansi: 6.0.0
       tiny-invariant: 1.1.0
-      vite: 2.3.8
+      vite: 2.4.1
       vscode-languageclient: 7.0.0
     dev: true
 
-  /vite-tsconfig-paths/3.3.13_vite@2.3.8:
+  /vite-tsconfig-paths/3.3.13_vite@2.4.1:
     resolution: {integrity: sha512-G7OO+1g2H6xVN61RIp1xFjvciqJoF5cGKcWfP6ZOZFeA8QRy2X7yaGUZLhXtKxNLEsR2MthDm7KwSNTKQHzwvA==}
     peerDependencies:
       vite: '>2.0.0-0'
@@ -3954,13 +3954,13 @@ packages:
       globrex: 0.1.2
       recrawl-sync: 2.2.1
       tsconfig-paths: 3.9.0
-      vite: 2.3.8
+      vite: 2.4.1
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /vite/2.3.8:
-    resolution: {integrity: sha512-QiEx+iqNnJntSgSF2fWRQvRey9pORIrtNJzNyBJXwc+BdzWs83FQolX84cTBo393cfhObrtWa6180dAa4NLDiQ==}
+  /vite/2.4.1:
+    resolution: {integrity: sha512-4BpKRis9uxIqPfIEcJ18LTBsamqnDFxTx45CXwagHjNltHa6PFEvf8Pe6OpgIHb0OyWT30OXOSSQvdOaX4OBiQ==}
     engines: {node: '>=12.0.0'}
     hasBin: true
     dependencies:
