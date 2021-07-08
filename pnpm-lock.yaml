@@ -33,7 +33,7 @@ specifiers:
   js-cookie: 2.2.1
   lodash-es: 4.17.21
   monaco-editor: 0.25.2
-  naive-ui: 2.15.3
+  naive-ui: 2.15.4
   postcss: 8.3.5
   postcss-nested: 5.0.5
   prettier: 2.3.2
@@ -72,7 +72,7 @@ dependencies:
   js-cookie: 2.2.1
   lodash-es: 4.17.21
   monaco-editor: 0.25.2
-  naive-ui: 2.15.3_vue@3.1.4
+  naive-ui: 2.15.4_vue@3.1.4
   qier-progress: 1.0.4
   reflect-metadata: 0.1.13
   socket.io-client: 2.4.0
@@ -2947,8 +2947,8 @@ packages:
       thenify-all: 1.6.0
     dev: true
 
-  /naive-ui/2.15.3_vue@3.1.4:
-    resolution: {integrity: sha512-+LmJHbnaYuKUY9O0YzkyjOWTyN5SRIJ3evnwd3non7mqCT5Yb1vzaUi2lxiixPu+hdVe/r+bsXnElTeNYPPbhg==}
+  /naive-ui/2.15.4_vue@3.1.4:
+    resolution: {integrity: sha512-YcGT3bJA4HHYunw01ksKoiHJcCR4/aEHv155BT1JoN+wctVgoAkYBJtbldQbPvjKWuRJYbKPwXEI45XD/WZjqQ==}
     peerDependencies:
       vue: ^3.0.0
     dependencies:
