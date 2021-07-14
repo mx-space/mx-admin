@@ -40,15 +40,6 @@ export const VditorEditor = defineAsyncComponent(() =>
           instance = i
         })
 
-        watch(
-          () => props.text,
-          (n) => {
-            if (n !== instance.getValue()) {
-              instance.setValue(n)
-            }
-          },
-        )
-
         let memoInitialValue: string = toRaw(props.text)
 
         watch(
@@ -57,7 +48,12 @@ export const VditorEditor = defineAsyncComponent(() =>
             if (!memoInitialValue && n) {
               memoInitialValue = n
             }
-            if (instance && n !== instance.getValue()) {
+            // FIXME:
+            if (
+              instance &&
+              !instance.getValue().trim().length &&
+              n !== instance.getValue()
+            ) {
               instance.setValue(n)
             }
           },
