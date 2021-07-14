@@ -40,7 +40,7 @@
   "devDependencies": {
     "@types/lodash-es": "4.17.4",
     "@types/socket.io-client": "1.4.36",
-    "@types/validator": "13.1.4",
+    "@types/validator": "13.6.3",
     "@typescript-eslint/eslint-plugin": "4.28.3",
     "@typescript-eslint/parser": "4.28.3",
     "@vitejs/plugin-vue": "1.2.3",

@@ -4,7 +4,7 @@ specifiers:
   '@antv/g2': 4.1.19
   '@types/lodash-es': 4.17.4
   '@types/socket.io-client': 1.4.36
-  '@types/validator': 13.1.4
+  '@types/validator': 13.6.3
   '@typescript-eslint/eslint-plugin': 4.28.3
   '@typescript-eslint/parser': 4.28.3
   '@vicons/antd': 0.10.0
@@ -85,7 +85,7 @@ dependencies:
 devDependencies:
   '@types/lodash-es': 4.17.4
   '@types/socket.io-client': 1.4.36
-  '@types/validator': 13.1.4
+  '@types/validator': 13.6.3
   '@typescript-eslint/eslint-plugin': 4.28.3_faa9fed4d9aacb8686bcaec8c46240cf
   '@typescript-eslint/parser': 4.28.3_eslint@7.29.0+typescript@4.3.5
   '@vitejs/plugin-vue': 1.2.3_@vue+compiler-sfc@3.1.4
@@ -905,6 +905,11 @@ packages:
 
   /@types/validator/13.1.4:
     resolution: {integrity: sha512-19C02B8mr53HufY7S+HO/EHBD7a/R22IwEwyqiHaR19iwL37dN3o0M8RianVInfSSqP7InVSg/o0mUATM4JWsQ==}
+    dev: false
+
+  /@types/validator/13.6.3:
+    resolution: {integrity: sha512-fWG42pMJOL4jKsDDZZREnXLjc3UE0R8LOJfARWYg6U966rxDT7TYejYzLnUF5cvSObGg34nd0+H2wHHU5Omdfw==}
+    dev: true
 
   /@types/yargs-parser/20.2.0:
     resolution: {integrity: sha512-37RSHht+gzzgYeobbG+KWryeAW8J33Nhr69cjTqSYymXVZEN9NbRYWoYlRtDhHKPVT1FyNKwaTPC1NynKZpzRA==}
