@@ -5,6 +5,7 @@ import { useStorageObject } from 'hooks/use-storage'
 import { useLayout } from 'layouts/content'
 import { throttle } from 'lodash-es'
 import { editor } from 'monaco-editor'
+
 import {
   NButton,
   NCard,
@@ -49,6 +50,10 @@ export const EditorToggleWrapper = defineAsyncComponent({
       defineComponent({
         props: {
           ...editorBaseProps,
+          loading: {
+            type: Boolean,
+            required: true,
+          },
         },
         setup(props) {
           const getPrefEditor = () => {
@@ -161,6 +166,16 @@ export const EditorToggleWrapper = defineAsyncComponent({
               class={'editor-wrapper'}
             >
               {(() => {
+                if (props.loading) {
+                  return (
+                    <div
+                      class="w-full text-center"
+                      style={{ height: 'calc(100vh - 18rem)' }}
+                    >
+                      <NSpin strokeWidth={14} show rotate />
+                    </div>
+                  )
+                }
                 switch (currentEditor.value) {
                   case 'monaco':
                     // @ts-expect-error

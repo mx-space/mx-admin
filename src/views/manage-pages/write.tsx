@@ -146,6 +146,7 @@ const PageWriteView = defineComponent(() => {
       </div>
 
       <EditorToggleWrapper
+        loading={!!(id.value && !data.title)}
         onChange={(v) => {
           data.text = v
         }}
