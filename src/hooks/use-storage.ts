@@ -18,13 +18,27 @@ export const useStorageObject = <U, T extends { new () } = unknown>(
       const classify = plainToClass(DTO as any as ClassConstructor<T>, parsed)
       const err = validateSync(classify)
       if (err.length > 0) {
+        const instanceDto = new DTO()
+        err.forEach((e) => {
+          const propertyName = e.property
+          parsed[propertyName] = instanceDto[propertyName]
+
+          localStorage.setItem(storageKey, JSON.stringify(parsed))
+        })
         if (__DEV__) {
           console.log(err)
+          console.log(
+            'wrong property key: ',
+            err.map((e) => e.property).toString(),
+          )
+          console.log('after fix wrong property: ', parsed)
         }
-        return null
+        return parsed
       }
       return parsed
-    } catch {
+    } catch (e) {
+      console.log(e)
+
       return null
     }
   }

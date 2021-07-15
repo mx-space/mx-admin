@@ -5,6 +5,8 @@ import {
   defineAsyncComponent,
   defineComponent,
   onMounted,
+  PropType,
+  Ref,
   ref,
   toRaw,
   watch,
@@ -14,7 +16,10 @@ import { editorBaseProps } from './universal/base'
 export const VditorEditor = defineAsyncComponent(() =>
   Promise.resolve(
     defineComponent({
-      props: { ...editorBaseProps },
+      props: {
+        ...editorBaseProps,
+        innerRef: { type: Object as PropType<Ref<Vditor>> },
+      },
       setup(props) {
         const vRef = ref()
 
@@ -38,6 +43,10 @@ export const VditorEditor = defineAsyncComponent(() =>
             },
           })
           instance = i
+
+          if (props.innerRef) {
+            props.innerRef.value = instance
+          }
         })
 
         let memoInitialValue: string = toRaw(props.text)

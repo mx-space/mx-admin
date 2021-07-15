@@ -1,3 +1,9 @@
+/**
+ * 编辑器切换
+ *
+ */
+
+// TODO: auto save & temp cache
 import RefreshCircle from '@vicons/ionicons5/es/RefreshCircle'
 import Settings from '@vicons/tabler/es/Settings'
 import { Icon } from '@vicons/utils'
@@ -19,8 +25,11 @@ import {
   NPopover,
   NSelect,
   NSpin,
+  NSwitch,
   NText,
 } from 'naive-ui'
+import Vditor from 'vditor'
+
 import {
   defineAsyncComponent,
   defineComponent,
@@ -32,11 +41,13 @@ import { MonacoEditor } from '../monaco'
 import { PlainEditor } from '../plain'
 import { VditorEditor } from '../vditor'
 import { editorBaseProps } from './base'
-import { GeneralSettingDto } from './config'
+import { GeneralSettingDto, VditorSettingDto } from './config'
 import './toggle.css'
 const StorageKeys = {
   editor: 'editor-pref',
   general: 'editor-general',
+
+  vditor: 'editor-vditor-pref',
 } as const
 enum Editor {
   monaco = 'monaco',
@@ -106,6 +117,17 @@ export const EditorToggleWrapper = defineAsyncComponent({
           )
 
           const monacoRef = ref<editor.IStandaloneCodeEditor>()
+          const vditorRef = ref<Vditor>()
+          // watch(
+          //   () => generalSetting,
+          //   (n) => {
+          //     if (!monacoRef.value) {
+          //       return
+          //     }
+          //     // TODO
+          //   },
+          //   { deep: true, immediate: true },
+          // )
 
           const { storage: generalSetting, reset: resetGeneralSetting } =
             useStorageObject<GeneralSettingDto>(
@@ -113,21 +135,9 @@ export const EditorToggleWrapper = defineAsyncComponent({
               StorageKeys.general,
             )
 
-          watch(
-            () => generalSetting,
-            (n) => {
-              if (!monacoRef.value) {
-                return
-              }
-              // TODO
-            },
-            { deep: true, immediate: true },
-          )
-
           const GeneralSetting = defineComponent(() => {
             return () => (
               <Fragment>
-                {/* <NFormItemRow label="通用设置"></NFormItemRow> */}
                 <NH5 class="!flex items-center !mt-0">
                   通用设置
                   <ResetIconButton resetFn={resetGeneralSetting} />
@@ -153,6 +163,50 @@ export const EditorToggleWrapper = defineAsyncComponent({
             )
           })
 
+          const { storage: vditorSetting, reset: resetVditorSetting } =
+            useStorageObject<VditorSettingDto>(
+              VditorSettingDto,
+              StorageKeys.vditor,
+            )
+
+          // vditor 监听
+          // FIXME: vditor bug, can't re-set option on instance
+          {
+            watch(
+              () => vditorSetting.typewriterMode,
+              (n) => {
+                const vRef = vditorRef.value
+                if (!vRef) {
+                  return
+                }
+                const options = vRef.vditor.options
+
+                options.typewriterMode = n
+              },
+            )
+          }
+
+          const VditorSetting = defineComponent(() => {
+            return () => (
+              <>
+                <NH5 class="!flex items-center !mt-0">
+                  Vditor 设定
+                  <ResetIconButton resetFn={resetVditorSetting} />
+                </NH5>
+                <NForm labelWidth="8rem" labelAlign="right">
+                  <NFormItem label="打字机模式" labelPlacement="left">
+                    <NSwitch
+                      value={vditorSetting.typewriterMode}
+                      onUpdateValue={(e) =>
+                        void (vditorSetting.typewriterMode = e)
+                      }
+                    ></NSwitch>
+                  </NFormItem>
+                </NForm>
+              </>
+            )
+          })
+
           return () => (
             <div
               style={
@@ -169,7 +223,7 @@ export const EditorToggleWrapper = defineAsyncComponent({
                 if (props.loading) {
                   return (
                     <div
-                      class="w-full text-center"
+                      class="w-full flex items-center justify-center"
                       style={{ height: 'calc(100vh - 18rem)' }}
                     >
                       <NSpin strokeWidth={14} show rotate />
@@ -182,7 +236,8 @@ export const EditorToggleWrapper = defineAsyncComponent({
                     return <MonacoEditor {...props} innerRef={monacoRef} />
 
                   case 'vditor':
-                    return <VditorEditor {...props} />
+                    // @ts-expect-error
+                    return <VditorEditor {...props} innerRef={vditorRef} />
 
                   case 'plain':
                     return <PlainEditor {...props} />
@@ -225,6 +280,8 @@ export const EditorToggleWrapper = defineAsyncComponent({
                     </NFormItem>
 
                     <GeneralSetting />
+
+                    {currentEditor.value == Editor.vditor && <VditorSetting />}
                   </NForm>
                 </NCard>
               </NModal>
@@ -251,7 +308,10 @@ const ResetIconButton = defineComponent({
           trigger() {
             return (
               <NButton text class="ml-2" onClick={() => props.resetFn()}>
-                <Icon size="20">
+                <Icon
+                  size="20"
+                  class="opacity-40 hover:opacity-100 transition-opacity duration-500"
+                >
                   <RefreshCircle />
                 </Icon>
               </NButton>
