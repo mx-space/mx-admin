@@ -26,7 +26,7 @@
     "date-fns": "2.22.1",
     "js-cookie": "2.2.1",
     "lodash-es": "4.17.21",
-    "monaco-editor": "0.25.2",
+    "monaco-editor": "0.26.1",
     "naive-ui": "2.15.4",
     "qier-progress": "1.0.4",
     "reflect-metadata": "0.1.13",

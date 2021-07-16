@@ -32,7 +32,7 @@ specifiers:
   express: 4.17.1
   js-cookie: 2.2.1
   lodash-es: 4.17.21
-  monaco-editor: 0.25.2
+  monaco-editor: 0.26.1
   naive-ui: 2.15.4
   postcss: 8.3.5
   postcss-nested: 5.0.5
@@ -71,7 +71,7 @@ dependencies:
   date-fns: 2.22.1
   js-cookie: 2.2.1
   lodash-es: 4.17.21
-  monaco-editor: 0.25.2
+  monaco-editor: 0.26.1
   naive-ui: 2.15.4_vue@3.1.4
   qier-progress: 1.0.4
   reflect-metadata: 0.1.13
@@ -2904,8 +2904,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /monaco-editor/0.25.2:
-    resolution: {integrity: sha512-5iylzSJevCnzJn9UVsW8yOZ3yHjmAs4TfvH3zsbftKiFKmHG0xirGN6DK9Kk04VSWxYCZZAIafYJoNJJMAU1KA==}
+  /monaco-editor/0.26.1:
+    resolution: {integrity: sha512-mm45nUrBDk0DgZKgbD7+bhDOtcAFNGPJJRAdS6Su1kTGl6XEgC7U3xOmDUW/0RrLf+jlvCGaqLvD4p2VjwuwwQ==}
     dev: false
 
   /ms/2.0.0:
