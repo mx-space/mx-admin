@@ -4,7 +4,7 @@ import { defineComponent, onMounted } from 'vue'
 import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
 import { useTable } from 'hooks/use-table'
-import { PageResponse } from 'models/page'
+import { PageModel, PageResponse } from 'models/page'
 import { NButton, NPopconfirm, NSpace, useDialog, useMessage } from 'naive-ui'
 import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { parseDate } from 'utils/time'
@@ -15,7 +15,7 @@ import { ContentLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
 export const ManagePageListView = defineComponent({
   name: 'PageList',
-  setup(props, ctx) {
+  setup() {
     const { checkedRowKeys, data, pager, sortProps, fetchDataFn } = useTable(
       (data, pager) =>
         async (page = route.query.page || 1, size = 20) => {
@@ -52,7 +52,7 @@ export const ManagePageListView = defineComponent({
 
     const DataTable = defineComponent({
       setup() {
-        const columns = reactive<TableColumns<any>>([
+        const columns = reactive<TableColumns<PageModel>>([
           {
             type: 'selection',
             options: ['none', 'all'],
@@ -83,7 +83,7 @@ export const ManagePageListView = defineComponent({
             },
           },
           {
-            title: '创建时间',
+            title: '创建于',
             key: 'created',
             sortOrder: 'descend',
             sorter: 'default',
@@ -97,7 +97,7 @@ export const ManagePageListView = defineComponent({
             sorter: 'default',
             sortOrder: false,
             render(row) {
-              return parseDate(row.modified, 'yyyy年M月d日')
+              return <RelativeTime time={row.modified} />
             },
           },
           {

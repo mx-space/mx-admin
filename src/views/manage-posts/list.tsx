@@ -92,7 +92,8 @@ export const ManagePostListView = defineComponent({
             sortOrder: false,
             sorter: 'default',
             key: 'title',
-            width: 300,
+            width: 200,
+            ellipsis: true,
             render(row) {
               return (
                 <RouterLink to={'/posts/edit?id=' + row.id}>
@@ -106,7 +107,9 @@ export const ManagePostListView = defineComponent({
             sortOrder: false,
             sorter: 'default',
             key: 'category',
-            // @ts-expect-error cao
+            width: 80,
+            ellipsis: true,
+            // @ts-expect-error
             filterOptions: categoryFilterOptions,
             filter: true,
             render(row) {
@@ -145,7 +148,8 @@ export const ManagePostListView = defineComponent({
             },
           },
           {
-            title: '创建时间',
+            title: '创建于',
+            width: 100,
             key: 'created',
             sortOrder: 'descend',
             sorter: 'default',
@@ -158,13 +162,15 @@ export const ManagePostListView = defineComponent({
             key: 'modified',
             sorter: 'default',
             sortOrder: false,
+            width: 100,
             render(row) {
-              return parseDate(row.modified, 'yyyy年M月d日')
+              return <RelativeTime time={row.modified} />
             },
           },
           {
             title: '操作',
             fixed: 'right',
+            width: 60,
             key: 'id',
             render(row) {
               return (

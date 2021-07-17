@@ -183,7 +183,7 @@ export const ManageNoteListView = defineComponent({
           },
 
           {
-            title: '创建时间',
+            title: '创建于',
             key: 'created',
             sortOrder: 'descend',
             sorter: 'default',
@@ -199,7 +199,7 @@ export const ManageNoteListView = defineComponent({
             sortOrder: false,
             width: 200,
             render(row) {
-              return parseDate(row.modified, 'yyyy年M月d日')
+              return <RelativeTime time={row.modified} />
             },
           },
           {
