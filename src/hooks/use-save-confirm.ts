@@ -36,9 +36,11 @@ export const useSaveConfirm = (
 
   onBeforeRouteLeave(async (to, _, next) => {
     if (!enable) {
+      next()
       return
     }
     if (comparedFn()) {
+      next()
       return
     }
 

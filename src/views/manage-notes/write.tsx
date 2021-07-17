@@ -10,6 +10,7 @@ import { configs } from 'configs'
 import { BASE_URL } from 'constants/env'
 import { MOOD_SET, WEATHER_SET } from 'constants/note'
 import { add } from 'date-fns/esm'
+import { useAutoSave, useAutoSaveInEditor } from 'hooks/use-auto-save'
 import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
 import { ContentLayout } from 'layouts/content'
 import { isString } from 'lodash-es'
@@ -89,6 +90,14 @@ const NoteWriteView = defineComponent(() => {
   const data = reactive<NoteReactiveType>(resetReactive())
   const id = computed(() => route.query.id)
   const nid = ref<number>()
+
+  // const autoSaveHook = useAutoSave('note-' + (id.value || 'new'), 3000, () => ({
+  //   text: data.text,
+  //   title: data.title,
+  // }))
+
+  // useAutoSaveInEditor(data, autoSaveHook)
+
   onMounted(async () => {
     const $id = id.value
     if ($id && typeof $id == 'string') {

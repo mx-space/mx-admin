@@ -7,6 +7,7 @@ import { throttle } from 'lodash-es'
 export const useStorageObject = <U, T extends { new () } = unknown>(
   DTO: T,
   storageKey: string,
+  fixWrongPropertyData = true,
 ) => {
   const getObjectStorage = () => {
     const saved = localStorage.getItem(storageKey)
@@ -18,22 +19,25 @@ export const useStorageObject = <U, T extends { new () } = unknown>(
       const classify = plainToClass(DTO as any as ClassConstructor<T>, parsed)
       const err = validateSync(classify)
       if (err.length > 0) {
-        const instanceDto = new DTO()
-        err.forEach((e) => {
-          const propertyName = e.property
-          parsed[propertyName] = instanceDto[propertyName]
+        if (fixWrongPropertyData) {
+          const instanceDto = new DTO()
+          err.forEach((e) => {
+            const propertyName = e.property
+            parsed[propertyName] = instanceDto[propertyName]
 
-          localStorage.setItem(storageKey, JSON.stringify(parsed))
-        })
+            localStorage.setItem(storageKey, JSON.stringify(parsed))
+          })
+        }
         if (__DEV__) {
           console.log(err)
           console.log(
             'wrong property key: ',
             err.map((e) => e.property).toString(),
           )
-          console.log('after fix wrong property: ', parsed)
+          fixWrongPropertyData &&
+            console.log('after fix wrong property: ', parsed)
         }
-        return parsed
+        return fixWrongPropertyData ? parsed : null
       }
       return parsed
     } catch (e) {
@@ -62,6 +66,9 @@ export const useStorageObject = <U, T extends { new () } = unknown>(
     storage: objectStorage as U,
     reset: () => {
       Object.assign(objectStorage, classToPlain(new DTO()))
+    },
+    clear() {
+      localStorage.removeItem(storageKey)
     },
   }
 }
