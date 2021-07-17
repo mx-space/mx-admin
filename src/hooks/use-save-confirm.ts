@@ -44,6 +44,12 @@ export const useSaveConfirm = (
       return
     }
 
+    // HACK
+    if (to.hash == '|publish') {
+      next()
+      return
+    }
+
     const confirm = new Promise<boolean>((r, j) => {
       dialog.warning({
         title: '文章未保存是否继续',
@@ -60,35 +66,8 @@ export const useSaveConfirm = (
 
     const res = await Promise.resolve(confirm)
 
-    // HACK
-    if (to.hash == '|publish') {
-      return
-    }
-    // const res = confirm('文章未保存是否继续')
     if (res) {
       next()
     }
   })
 }
-
-// export const useMemoTextValue = (
-//   initialValue: Ref<string>,
-//   getValueFn: () => string,
-//   setValueFn: (v: string) => any,
-// ): Ref<string> => {
-//   const memoInitialValue = initialValue
-
-//   watch(
-//     () => initialValue.value,
-//     (n) => {
-//       if (!memoInitialValue.value && n) {
-//         memoInitialValue.value = n
-//       }
-//       if (n !== getValueFn()) {
-//         setValueFn(n)
-//       }
-//     },
-//   )
-
-//   return memoInitialValue
-// }
