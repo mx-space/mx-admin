@@ -1,4 +1,5 @@
-import { onMounted, onUnmounted, Ref, ref, toRaw, watch } from 'vue'
+import { useDialog } from 'naive-ui'
+import { onMounted, onUnmounted } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
 /**
  *
@@ -31,7 +32,9 @@ export const useSaveConfirm = (
     }
   })
 
-  onBeforeRouteLeave((to) => {
+  const dialog = useDialog()
+
+  onBeforeRouteLeave(async (to, _, next) => {
     if (!enable) {
       return
     }
@@ -39,13 +42,29 @@ export const useSaveConfirm = (
       return
     }
 
+    const confirm = new Promise<boolean>((r, j) => {
+      dialog.warning({
+        title: '文章未保存是否继续',
+        negativeText: '嗯',
+        positiveText: '手抖了啦',
+        onNegativeClick() {
+          r(true)
+        },
+        onPositiveClick() {
+          r(false)
+        },
+      })
+    })
+
+    const res = await Promise.resolve(confirm)
+
     // HACK
     if (to.hash == '|publish') {
       return
     }
-    const res = confirm('文章未保存是否继续')
-    if (!res) {
-      return false
+    // const res = confirm('文章未保存是否继续')
+    if (res) {
+      next()
     }
   })
 }

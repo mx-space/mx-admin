@@ -50,8 +50,10 @@ export class SocketClient {
     )
     this.initIO()
   }
+
+  private isInit = false
   initIO() {
-    if (!this.socket) {
+    if (!this.socket || this.isInit) {
       return
     }
     this.socket.open()
@@ -68,6 +70,8 @@ export class SocketClient {
         this.handleEvent(type, data)
       },
     )
+
+    this.isInit = true
   }
   reconnect() {
     const token = getToken()
@@ -171,5 +175,11 @@ export class SocketClient {
     }
 
     bus.emit(type, payload)
+  }
+
+  destory() {
+    this.socket.disconnect()
+    this.socket.off('message')
+    this.isInit = false
   }
 }
