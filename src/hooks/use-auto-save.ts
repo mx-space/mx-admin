@@ -1,6 +1,6 @@
 import { IsISO8601, IsString } from 'class-validator'
 import { useDialog } from 'naive-ui'
-import { toRaw, onMounted, Ref, reactive } from 'vue'
+import { onMounted, toRaw } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
 import { useStorageObject } from './use-storage'
 
@@ -68,41 +68,38 @@ export const useAutoSave = (
 export const useAutoSaveInEditor = <T extends { text: string; title: string }>(
   data: T,
   hook: ReturnType<typeof useAutoSave>,
-) => {
+): ReturnType<typeof useAutoSave> => {
   const { disposer, clearSaved, getPrevSaved, reset, save, track } = hook
-  const dialog = useDialog()
+  // FIXME: maybe this is a bug
+  // const dialog = useDialog()
+  const dialog = window.dialog
 
-  const ref = { timer: null as any, raf: null as any }
-  onMounted(async () => {
+  const check = async () => {
     const prevSaved = getPrevSaved()
 
     console.log('prev saved: ', prevSaved)
 
-    ref.timer = setTimeout(() => {
-      ref.raf = requestAnimationFrame(() => {
-        console.log(data.text, prevSaved.text)
-
-        if (
-          (prevSaved.text || prevSaved.title) &&
-          (prevSaved.text !== data.text || prevSaved.title !== data.title)
-        ) {
-          dialog.info({
-            title: '发现有未保存的内容, 是否还原?',
-            negativeText: '不用啦',
-            positiveText: '嗯',
-            onPositiveClick() {
-              Object.assign(data, {
-                text: prevSaved.text,
-                title: prevSaved.title,
-              })
-            },
-          })
-        }
+    if (
+      (prevSaved.text || prevSaved.title) &&
+      (prevSaved.text !== data.text || prevSaved.title !== data.title)
+    ) {
+      requestAnimationFrame(() => {
+        dialog.info({
+          title: '发现有未保存的内容, 是否还原?',
+          negativeText: '不用啦',
+          positiveText: '嗯',
+          onPositiveClick() {
+            Object.assign(data, {
+              text: prevSaved.text,
+              title: prevSaved.title,
+            })
+          },
+        })
       })
-
-      track()
-    }, 1200)
-  })
+    }
+  }
+  check()
+  track()
 
   // const initialSaved = getPrevSaved()
   onBeforeRouteLeave(() => {
@@ -111,8 +108,6 @@ export const useAutoSaveInEditor = <T extends { text: string; title: string }>(
     //   clearSaved()
     // }
     disposer()
-    clearTimeout(ref.timer)
-    cancelAnimationFrame(ref.raf)
   })
 
   return hook

@@ -10,6 +10,7 @@ import { configs } from 'configs'
 import { BASE_URL } from 'constants/env'
 import { MOOD_SET, WEATHER_SET } from 'constants/note'
 import { add } from 'date-fns/esm'
+import { watch } from 'vue'
 import { useAutoSave, useAutoSaveInEditor } from 'hooks/use-auto-save'
 import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
 import { ContentLayout } from 'layouts/content'
@@ -91,12 +92,31 @@ const NoteWriteView = defineComponent(() => {
   const id = computed(() => route.query.id)
   const nid = ref<number>()
 
-  // const autoSaveHook = useAutoSave('note-' + (id.value || 'new'), 3000, () => ({
-  //   text: data.text,
-  //   title: data.title,
-  // }))
+  const loading = computed(() => !!(id.value && !data.title))
 
-  // useAutoSaveInEditor(data, autoSaveHook)
+  const disposer = watch(
+    () => loading.value,
+    (loading) => {
+      if (loading) {
+        return
+      }
+
+      const autoSaveHook = useAutoSave(
+        'note-' + (id.value || 'new'),
+        3000,
+        () => ({
+          text: data.text,
+          title: data.title,
+        }),
+      )
+
+      useAutoSaveInEditor(data, autoSaveHook)
+      requestAnimationFrame(() => {
+        disposer()
+      })
+    },
+    { immediate: true },
+  )
 
   onMounted(async () => {
     const $id = id.value
@@ -202,7 +222,7 @@ const NoteWriteView = defineComponent(() => {
       </div>
 
       <EditorToggleWrapper
-        loading={!!(id.value && !data.title)}
+        loading={loading.value}
         onChange={(v) => {
           data.text = v
         }}

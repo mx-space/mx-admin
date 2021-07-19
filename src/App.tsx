@@ -12,7 +12,7 @@ import { RouterView } from 'vue-router'
 import { UIStore } from './stores/ui'
 import { UserStore } from './stores/user'
 import { useInjector, useProviders } from './hooks/use-deps-injection'
-import { zhCN, dateZhCN } from 'naive-ui'
+import { zhCN, dateZhCN, useDialog } from 'naive-ui'
 
 const Root = defineComponent({
   name: 'Home',
@@ -23,6 +23,7 @@ const Root = defineComponent({
     onMounted(() => {
       window.message = useMessage()
       window.notification = useNotification()
+      window.dialog = useDialog()
       import('socket').then((mo) => {
         mo.socket.initIO()
       })
