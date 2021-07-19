@@ -47,7 +47,7 @@ specifiers:
   validator: 13.6.0
   vditor: 3.8.5
   vite: 2.4.2
-  vite-plugin-checker: 0.2.0
+  vite-plugin-checker: 0.3.1
   vite-tsconfig-paths: 3.3.13
   vue: 3.1.5
   vue-eslint-parser: 7.9.0
@@ -104,7 +104,7 @@ devDependencies:
   tailwindcss: 2.2.4_d0cbdb03a6e75c60c9760f17c403e6d9
   typescript: 4.3.5
   vite: 2.4.2
-  vite-plugin-checker: 0.2.0_vite@2.4.2
+  vite-plugin-checker: 0.3.1_vite@2.4.2
   vite-tsconfig-paths: 3.3.13_vite@2.4.2
   vue-eslint-parser: 7.9.0_eslint@7.31.0
 
@@ -872,18 +872,6 @@ packages:
     resolution: {integrity: sha512-BBz79DCJbD2CVYZH67MBeHZRX++HF+5p8Mo5MzjZi64Wac39S3diedJYHZtScbRVf4DjZyN6LzA0SB0zy+HSSQ==}
     dependencies:
       '@types/lodash': 4.14.171
-
-  /@types/lodash.omit/4.5.6:
-    resolution: {integrity: sha512-KXPpOSNX2h0DAG2w7ajpk7TXvWF28ZHs5nJhOJyP0BQHkehgr948RVsToItMme6oi0XJkp19CbuNXkIX8FiBlQ==}
-    dependencies:
-      '@types/lodash': 4.14.171
-    dev: true
-
-  /@types/lodash.pick/4.4.6:
-    resolution: {integrity: sha512-u8bzA16qQ+8dY280z3aK7PoWb3fzX5ATJ0rJB6F+uqchOX2VYF02Aqa+8aYiHiHgPzQiITqCgeimlyKFy4OA6g==}
-    dependencies:
-      '@types/lodash': 4.14.171
-    dev: true
 
   /@types/lodash/4.14.171:
     resolution: {integrity: sha512-7eQ2xYLLI/LsicL2nejW9Wyko3lcpN6O/z0ZLHrEQsg280zIdCv1t/0m6UtBjUHokCGBQ3gYTbHzDkZ1xOBwwg==}
@@ -1706,6 +1694,11 @@ packages:
   /commander/6.2.1:
     resolution: {integrity: sha512-U7VdrJFnJgo4xjrHpTzu0yrHPGImdsmD95ZlgYSEajAn2JKzDhDTPG9kBTefmObL2w/ngeZnilk+OV9CG3d7UA==}
     engines: {node: '>= 6'}
+    dev: true
+
+  /commander/8.0.0:
+    resolution: {integrity: sha512-Xvf85aAtu6v22+E5hfVoLHqyul/jyxh91zvqk/ioJTQuJR7Z78n7H558vMPKanPSRgIEeZemT92I2g9Y8LPbSQ==}
+    engines: {node: '>= 12'}
     dev: true
 
   /component-bind/1.0.0:
@@ -2797,12 +2790,12 @@ packages:
     resolution: {integrity: sha1-4j8/nE+Pvd6HJSnBBxhXoIblzO8=}
     dev: true
 
-  /lodash.merge/4.6.2:
-    resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
+  /lodash.debounce/4.0.8:
+    resolution: {integrity: sha1-gteb/zCmfEAF/9XiUVMArZyk168=}
     dev: true
 
-  /lodash.omit/4.5.0:
-    resolution: {integrity: sha1-brGa5aHuHdnfC5aeZs4Lf6MLXmA=}
+  /lodash.merge/4.6.2:
+    resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
     dev: true
 
   /lodash.pick/4.4.0:
@@ -3901,22 +3894,28 @@ packages:
     resolution: {integrity: sha512-vQBcvntBlnAPonAkGNM8iJ9NxE3PucA+V2W95xiN75YJKxirLJvOws2kEyOEO45T4N+YTbQOCR2m77Y05pfVhQ==}
     dev: false
 
-  /vite-plugin-checker/0.2.0_vite@2.4.2:
-    resolution: {integrity: sha512-p5BpTnP5N25gDPInTDw4lM4AzZokPE3RvnULzHmgRXIlzHNOmY3ZTzbxKLJ5UfB74Feb51RFQlFKtd2dWMeOjg==}
+  /vite-plugin-checker/0.3.1_vite@2.4.2:
+    resolution: {integrity: sha512-ObRYDfk4b760h5nPWgsRySKtWfZ/S1xC4gxpIPdaRZDjwLCUczUyKJh9bIsqhLHxjOudkY37bMnw0LDnq0YW6Q==}
+    hasBin: true
     peerDependencies:
       vite: ^2.0.0
     dependencies:
       '@babel/code-frame': 7.14.5
-      '@types/lodash.omit': 4.5.6
-      '@types/lodash.pick': 4.4.6
       ansi-escapes: 4.3.2
-      lodash.omit: 4.5.0
+      chalk: 4.1.1
+      chokidar: 3.5.2
+      commander: 8.0.0
+      fast-glob: 3.2.7
+      lodash.debounce: 4.0.8
       lodash.pick: 4.4.0
       npm-run-path: 4.0.1
       strip-ansi: 6.0.0
       tiny-invariant: 1.1.0
       vite: 2.4.2
       vscode-languageclient: 7.0.0
+      vscode-languageserver: 7.0.0
+      vscode-languageserver-textdocument: 1.0.1
+      vscode-uri: 3.0.2
     dev: true
 
   /vite-tsconfig-paths/3.3.13_vite@2.4.2:
@@ -3984,8 +3983,19 @@ packages:
     resolution: {integrity: sha512-k8luDIWJWyenLc5ToFQQMaSrqCHiLwyKPHKPQZ5zz21vM+vIVUSvsRpcbiECH4WR88K2XZqc4ScRcZ7nk/jbeA==}
     dev: true
 
+  /vscode-languageserver/7.0.0:
+    resolution: {integrity: sha512-60HTx5ID+fLRcgdHfmz0LDZAXYEV68fzwG0JWwEPBode9NuMYTIxuYXPg4ngO8i8+Ou0lM7y6GzaYWbiDL0drw==}
+    hasBin: true
+    dependencies:
+      vscode-languageserver-protocol: 3.16.0
+    dev: true
+
   /vscode-uri/2.1.2:
     resolution: {integrity: sha512-8TEXQxlldWAuIODdukIb+TR5s+9Ds40eSJrw+1iDDA9IFORPjMELarNQE3myz5XIkWWpdprmJjm1/SxMlWOC8A==}
+    dev: true
+
+  /vscode-uri/3.0.2:
+    resolution: {integrity: sha512-jkjy6pjU1fxUvI51P+gCsxg1u2n8LSt0W6KrCNQceaziKzff74GoWmjVG46KieVzybO1sttPQmYfrwSHey7GUA==}
     dev: true
 
   /vscode-web-custom-data/0.3.4:
