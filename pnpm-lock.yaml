@@ -1,7 +1,7 @@
 lockfileVersion: 5.3
 
 specifiers:
-  '@antv/g2': 4.1.20
+  '@antv/g2': 4.1.21
   '@types/lodash-es': 4.17.4
   '@types/socket.io-client': 1.4.36
   '@types/validator': 13.6.3
@@ -54,7 +54,7 @@ specifiers:
   vue-router: 4.0.10
 
 dependencies:
-  '@antv/g2': 4.1.20
+  '@antv/g2': 4.1.21
   '@vicons/antd': 0.10.0
   '@vicons/fa': 0.10.0
   '@vicons/fluent': 0.10.0
@@ -224,8 +224,8 @@ packages:
       tslib: 2.3.0
     dev: false
 
-  /@antv/g2/4.1.20:
-    resolution: {integrity: sha512-Gs+Mlm/tiAIuRN7dQeQ51Vuou424ntds+sPGz+9k0SrHjPm5Q9+FnbUdmkDHqixrawupT6RNY6Cbmtt7s4BT0A==}
+  /@antv/g2/4.1.21:
+    resolution: {integrity: sha512-wFCN6HRe9KIcy73gYs3KViAyblzTd7WWbI5r33aMwiHvqCexbRlqgKCKJvMIo9hn+vK+CRuVu2Nv+e+hblgf4g==}
     dependencies:
       '@antv/adjust': 0.2.3
       '@antv/attr': 0.3.2
