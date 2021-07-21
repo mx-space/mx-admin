@@ -27,7 +27,7 @@ export const VditorEditor = defineAsyncComponent(() =>
         onMounted(() => {
           const i = new Vditor(vRef.value, {
             value: props.text,
-            toolbarConfig: false,
+            toolbarConfig: { hide: true },
             toolbar: [],
             cache: {
               enable: false,

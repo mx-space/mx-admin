@@ -215,7 +215,6 @@ export const TabSystem = defineComponent(() => {
             <NFormItem label="关键字">
               <NDynamicTags
                 round
-                // @ts-expect-error
                 type="primary"
                 value={configs.value.seo.keywords}
                 onChange={(e) => void (configs.value.seo.keywords = e)}
@@ -242,7 +241,6 @@ export const TabSystem = defineComponent(() => {
                 onUpdateValue={(e) =>
                   void (configs.value.commentOptions.spamKeywords = e)
                 }
-                // @ts-expect-error
                 type="primary"
               ></NDynamicTags>
             </NFormItem>

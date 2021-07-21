@@ -33,7 +33,7 @@ specifiers:
   js-cookie: 2.2.1
   lodash-es: 4.17.21
   monaco-editor: 0.26.1
-  naive-ui: 2.15.4
+  naive-ui: 2.15.5
   postcss: 8.3.5
   postcss-nested: 5.0.5
   prettier: 2.3.2
@@ -45,7 +45,7 @@ specifiers:
   typescript: 4.3.5
   umi-request: 1.3.9
   validator: 13.6.0
-  vditor: 3.8.5
+  vditor: 3.8.6
   vite: 2.4.3
   vite-plugin-checker: 0.3.1
   vite-tsconfig-paths: 3.3.13
@@ -72,13 +72,13 @@ dependencies:
   js-cookie: 2.2.1
   lodash-es: 4.17.21
   monaco-editor: 0.26.1
-  naive-ui: 2.15.4_vue@3.1.5
+  naive-ui: 2.15.5_vue@3.1.5
   qier-progress: 1.0.4
   reflect-metadata: 0.1.13
   socket.io-client: 2.4.0
   umi-request: 1.3.9
   validator: 13.6.0
-  vditor: 3.8.5
+  vditor: 3.8.6
   vue: 3.1.5
   vue-router: 4.0.10_vue@3.1.5
 
@@ -723,7 +723,7 @@ packages:
     dependencies:
       '@types/istanbul-lib-coverage': 2.0.3
       '@types/istanbul-reports': 3.0.1
-      '@types/node': 16.3.2
+      '@types/node': 16.4.0
       '@types/yargs': 15.0.14
       chalk: 4.1.1
     dev: false
@@ -890,8 +890,8 @@ packages:
     resolution: {integrity: sha512-bjqH2cX/O33jXT/UmReo2pM7DIJREPMnarixbQ57DOOzzFaI6D2+IcwaJQaJpv0M1E9TIhPCYVxrkcityLjlqA==}
     dev: false
 
-  /@types/node/16.3.2:
-    resolution: {integrity: sha512-jJs9ErFLP403I+hMLGnqDRWT0RYKSvArxuBVh2veudHV7ifEC1WAmjJADacZ7mRbA2nWgHtn8xyECMAot0SkAw==}
+  /@types/node/16.4.0:
+    resolution: {integrity: sha512-HrJuE7Mlqcjj+00JqMWpZ3tY8w7EUd+S0U3L1+PQSWiXZbOgyQDvi+ogoUxaHApPJq5diKxYBQwA3iIlNcPqOg==}
     dev: false
 
   /@types/parse-json/4.0.0:
@@ -2934,8 +2934,8 @@ packages:
       thenify-all: 1.6.0
     dev: true
 
-  /naive-ui/2.15.4_vue@3.1.5:
-    resolution: {integrity: sha512-YcGT3bJA4HHYunw01ksKoiHJcCR4/aEHv155BT1JoN+wctVgoAkYBJtbldQbPvjKWuRJYbKPwXEI45XD/WZjqQ==}
+  /naive-ui/2.15.5_vue@3.1.5:
+    resolution: {integrity: sha512-ncNlvaVFaqdZrVFe8IAxqyFpP32k+l8bGfxW4PKCDP1huWG1AgXI2EKfO18Tu7Er6A/ENi68CStYA3ZnxEWFpw==}
     peerDependencies:
       vue: ^3.0.0
     dependencies:
@@ -2951,7 +2951,7 @@ packages:
       lodash: 4.17.21
       lodash-es: 4.17.21
       seemly: 0.3.1
-      treemate: 0.2.11
+      treemate: 0.2.12
       vdirs: 0.1.4_vue@3.1.5
       vfonts: 0.1.0
       vooks: 0.2.8_vue@3.1.5
@@ -3757,8 +3757,8 @@ packages:
     engines: {node: '>=0.6'}
     dev: true
 
-  /treemate/0.2.11:
-    resolution: {integrity: sha512-3/wjLLBbLYKZUI311pERMnM/yLHCInD3lfETWTeoHDNwnZI2ApVqgVCJnjEWC10Ugd02ASKlBHJeKSDUmLYWng==}
+  /treemate/0.2.12:
+    resolution: {integrity: sha512-li5ZxaT7BtBIEnT7eUO3mk4BdefANPUKjCGnTciFp5e5UDy3+07HLvWelKxuIz1jCz+6r5IPoP8P/5+8Xz9Z7w==}
     dev: false
 
   /tsconfig-paths/3.10.1:
@@ -3884,8 +3884,8 @@ packages:
       vue: 3.1.5
     dev: false
 
-  /vditor/3.8.5:
-    resolution: {integrity: sha512-crBWF6IcEy6rnu1owtHAshIcVddsZ6dn4FCWtwrAIQTChnWSPcDXoLIMX0eu5YFQW16VOEg1aXY3sqcK30ftLA==}
+  /vditor/3.8.6:
+    resolution: {integrity: sha512-KZSmg593dTx/BmX9HdXcZCLi5stkJvW3AHVq4gOVvA00JnZngT7sjlX8WlfWbLe0A80UzelNSVXff3yoyljRAA==}
     dependencies:
       diff-match-patch: 1.0.5
     dev: false
