@@ -10,7 +10,7 @@ import { configs } from 'configs'
 import { BASE_URL } from 'constants/env'
 import { MOOD_SET, WEATHER_SET } from 'constants/note'
 import { add } from 'date-fns/esm'
-import { watch } from 'vue'
+import { watch, watchEffect } from 'vue'
 import { useAutoSave, useAutoSaveInEditor } from 'hooks/use-auto-save'
 import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
 import { ContentLayout } from 'layouts/content'
@@ -63,11 +63,15 @@ type NoteReactiveType = {
 const NoteWriteView = defineComponent(() => {
   const route = useRoute()
 
-  let defaultTitle: string
+  const defaultTitle = ref('写点什么呢')
+  const id = computed(() => route.query.id)
 
   onBeforeMount(() => {
+    if (id.value) {
+      return
+    }
     const currentTime = new Date()
-    defaultTitle = `记录 ${currentTime.getFullYear()} 年第 ${getDayOfYear(
+    defaultTitle.value = `记录 ${currentTime.getFullYear()} 年第 ${getDayOfYear(
       currentTime,
     )} 天`
   })
@@ -89,7 +93,6 @@ const NoteWriteView = defineComponent(() => {
   const parsePayloadIntoReactiveData = (payload: NoteModel) =>
     useParsePayloadIntoData(data)(payload)
   const data = reactive<NoteReactiveType>(resetReactive())
-  const id = computed(() => route.query.id)
   const nid = ref<number>()
 
   const loading = computed(() => !!(id.value && !data.title))
@@ -130,6 +133,12 @@ const NoteWriteView = defineComponent(() => {
       const data = payload.data
       nid.value = data.nid
       data.secret = data.secret ? new Date(data.secret) : null
+
+      const created = new Date((data as any).created)
+      defaultTitle.value = `记录 ${created.getFullYear()} 年第 ${getDayOfYear(
+        created,
+      )} 天`
+
       parsePayloadIntoReactiveData(data as NoteModel)
     }
   })
@@ -210,7 +219,7 @@ const NoteWriteView = defineComponent(() => {
     >
       <MaterialInput
         class="mt-3 relative z-10"
-        label={defaultTitle}
+        label={defaultTitle.value}
         value={data.title}
         onChange={(e) => {
           data.title = e

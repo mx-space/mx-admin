@@ -23,25 +23,13 @@
     -webkit-text-fill-color: #eee;
     color: #eee;
 
-    @apply bg-white bg-opacity-20 backdrop-filter backdrop-blur-xl rounded-3xl tracking-wider;
+    @apply bg-white bg-opacity-20 rounded-3xl tracking-wider;
 
     padding: 3px 14px;
     line-height: 1.8;
+    backdrop-filter: blur(24px);
   }
-  /* & .blur {
-    mix-blend-mode: difference;
-    position: absolute;
-    top: -10px;
-    bottom: -10px;
-    right: -10px;
-    left: -10px;
-    background: #e6e6e686;
-    filter: blur(10px);
-    backdrop-filter: blur(10px) brightness(0.8);
-    z-index: -1;
-    transform: scale(1.5);
-    border-radius: 6px;
-  } */
+
   & * {
     outline: none;
   }
