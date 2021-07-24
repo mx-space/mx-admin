@@ -10,6 +10,7 @@ export const MaterialInput = defineComponent({
       required: true,
     },
   },
+  emits: ['compositionend', 'compositionstart'],
   setup(props, { emit }) {
     const inputRef = ref<HTMLInputElement>()
 

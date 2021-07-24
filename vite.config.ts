@@ -18,10 +18,6 @@ export default ({ mode }) => {
       visualizer({ open: false }),
       Checker({
         typescript: true,
-        eslint: {
-          files: ['./src'],
-          extensions: ['.ts', '.tsx'],
-        },
         // FIXME this is bug
         enableBuild: false,
       }),

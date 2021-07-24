@@ -43,3 +43,45 @@ export interface StreetNumber {
   distance: string
   street: string
 }
+
+export interface AMapSearch {
+  suggestion: Suggestion
+  count: string
+  infocode: string
+  pois: Pois[]
+  status: string
+  info: string
+}
+
+export interface Pois {
+  parent: any[] | string
+  address: string
+  distance: any[]
+  pname: string
+  importance: any[]
+  bizEXT: BizEXT
+  bizType: any[]
+  cityname: string
+  type: string
+  photos: any[]
+  typecode: string
+  shopinfo: string
+  poiweight: any[]
+  childtype: any[] | string
+  adname: string
+  name: string
+  location: string
+  tel: any[]
+  shopid: any[]
+  id: string
+}
+
+export interface BizEXT {
+  cost: any[]
+  rating: any[]
+}
+
+export interface Suggestion {
+  keywords: any[]
+  cities: any[]
+}

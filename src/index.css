@@ -61,3 +61,15 @@ button {
 .n-notification-main-footer {
   @apply !block;
 }
+
+.modal-card {
+  @apply max-w-[90vw] w-[60rem];
+
+  &.sm {
+    @apply w-[40rem];
+  }
+
+  &.xs {
+    @apply w-[30rem];
+  }
+}

@@ -1,4 +1,5 @@
 import { SlidersH, TelegramPlane } from '@vicons/fa'
+import Search24Regular from '@vicons/fluent/es/Search24Regular'
 import Location24Regular from '@vicons/fluent/es/Location24Regular'
 import { Icon } from '@vicons/utils'
 import camelcaseKeys from 'camelcase-keys'
@@ -10,16 +11,17 @@ import { configs } from 'configs'
 import { BASE_URL } from 'constants/env'
 import { MOOD_SET, WEATHER_SET } from 'constants/note'
 import { add } from 'date-fns/esm'
-import { watch, watchEffect } from 'vue'
 import { useAutoSave, useAutoSaveInEditor } from 'hooks/use-auto-save'
 import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
 import { ContentLayout } from 'layouts/content'
-import { isString } from 'lodash-es'
-import { Amap, Regeocode } from 'models/amap'
+import { debounce, isString, throttle } from 'lodash-es'
+import { Amap, AMapSearch, Regeocode } from 'models/amap'
 import { Coordinate, NoteModel, NoteMusicRecord } from 'models/note'
 import {
+  NAutoComplete,
   NButton,
   NButtonGroup,
+  NCard,
   NDatePicker,
   NDrawer,
   NDrawerContent,
@@ -27,6 +29,7 @@ import {
   NForm,
   NFormItem,
   NInput,
+  NModal,
   NSelect,
   NSpace,
   NSwitch,
@@ -44,8 +47,10 @@ import {
   reactive,
   ref,
   toRaw,
+  watch,
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { AutoCompleteOption } from 'naive-ui/lib/auto-complete/src/interface'
 type NoteReactiveType = {
   title: string
   text: string
@@ -283,6 +288,13 @@ const NoteWriteView = defineComponent(() => {
                       }
                     }}
                   />
+                  <SearchLocationButton
+                    onChange={(locationName, coo) => {
+                      data.location = locationName
+                      data.coordinates = coo
+                    }}
+                  />
+
                   <NButton
                     round
                     disabled={!data.location}
@@ -444,6 +456,7 @@ const GetLocationButton = defineComponent({
     const handleGetLocation = async () => {
       if (!configs.amapKey) {
         message.error('高德地图 Key 未配置.')
+        return
       }
       const promisify = () =>
         new Promise<GeolocationPosition>((r, j) => {
@@ -509,6 +522,124 @@ const GetLocationButton = defineComponent({
           },
         }}
       </NButton>
+    )
+  },
+})
+
+const SearchLocationButton = defineComponent({
+  props: {
+    onChange: {
+      type: Function as PropType<
+        (
+          location: string,
+          coordinates: {
+            latitude: number
+            longitude: number
+          },
+        ) => any
+      >,
+      required: true,
+    },
+  },
+  setup(props) {
+    const message = useMessage()
+    const loading = ref(false)
+    const modalOpen = ref(false)
+    const keyword = ref('')
+    const searchLocation = async (keyword: string) => {
+      if (!configs.amapKey) {
+        const msg = '高德地图 Key 未配置.'
+        message.error(msg)
+        throw new Error(msg)
+      }
+      const params = new URLSearchParams([
+        ['key', configs.amapKey as string],
+        ['keywords', keyword.replace(/\s/g, '|')],
+      ])
+
+      const res = await fetch(
+        'https://restapi.amap.com/v3/place/text?' + params.toString(),
+      )
+      return (await res.json()) as AMapSearch
+    }
+
+    const autocompleteOption = ref([] as AutoCompleteOption[])
+
+    watch(
+      () => keyword.value,
+      debounce(
+        async (keyword) => {
+          loading.value = true
+          const res = await searchLocation(keyword)
+          autocompleteOption.value = []
+          res.pois.forEach((p) => {
+            const label = p.cityname + p.adname + p.address + p.name
+            const [longitude, latitude] = p.location.split(',').map(Number)
+            autocompleteOption.value.push({
+              label,
+              value: JSON.stringify([label, { latitude, longitude }]),
+            })
+          })
+          loading.value = false
+        },
+        400,
+        { trailing: true, leading: true },
+      ),
+    )
+
+    return () => (
+      <>
+        <NButton
+          ghost
+          round
+          onClick={() => {
+            modalOpen.value = true
+          }}
+          loading={loading.value}
+        >
+          {{
+            icon() {
+              return (
+                <Icon>
+                  <Search24Regular />
+                </Icon>
+              )
+            },
+            default() {
+              return '自定义'
+            },
+          }}
+        </NButton>
+        <NModal
+          show={modalOpen.value}
+          onUpdateShow={(e) => void (modalOpen.value = e)}
+        >
+          <NCard
+            class="modal-card sm"
+            bordered={false}
+            closable
+            title="搜索关键字查找地点"
+          >
+            <NForm labelPlacement="top">
+              <NFormItem label="搜索地点">
+                <NAutoComplete
+                  onSelect={(e) => {
+                    const parsed = JSON.parse(e as string)
+                    props.onChange.apply(this, parsed)
+                  }}
+                  options={autocompleteOption.value}
+                  clearable
+                  loading={loading.value}
+                  onUpdate:value={(e) => {
+                    keyword.value = e
+                  }}
+                  value={keyword.value}
+                />
+              </NFormItem>
+            </NForm>
+          </NCard>
+        </NModal>
+      </>
     )
   },
 })

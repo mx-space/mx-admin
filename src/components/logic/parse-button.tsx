@@ -41,7 +41,7 @@ export const ParseContentButton = defineComponent({
           show={parseContentDialogShow.value}
           onUpdateShow={(s) => (parseContentDialogShow.value = s)}
         >
-          <NCard title="解析 Markdown" style="max-width: 90vw;width: 60rem">
+          <NCard title="解析 Markdown" class="modal-card">
             <NSpace vertical size={'large'}>
               <MonacoEditor
                 onChange={(e) => void (unparsedValue.value = e)}
