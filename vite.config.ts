@@ -16,14 +16,21 @@ export default ({ mode }) => {
       vue(),
       tsconfigPaths(),
       visualizer({ open: false }),
-      Checker({ typescript: true }),
+      Checker({
+        typescript: true,
+        eslint: {
+          files: ['./src'],
+          extensions: ['.ts', '.tsx'],
+        },
+        // FIXME this is bug
+        enableBuild: false,
+      }),
     ],
 
     build: {
       chunkSizeWarningLimit: 2500, //monaco is so big
       target: 'esnext',
       brotliSize: false,
-      // rollupOptions: { output: { minifyInternalExports: true } },
     },
     optimizeDeps: {
       exclude: [],
