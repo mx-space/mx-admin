@@ -13,7 +13,11 @@ import {
 import { CategoryStore } from 'stores/category'
 import { defineComponent, onMounted } from 'vue'
 import { RouterView } from 'vue-router'
-import { useInjector, useProviders } from './hooks/use-deps-injection'
+import {
+  useInjector,
+  useProvider,
+  useProviders,
+} from './hooks/use-deps-injection'
 import { UIStore } from './stores/ui'
 import { UserStore } from './stores/user'
 
@@ -54,8 +58,8 @@ const Root = defineComponent({
 
 const App = defineComponent({
   setup() {
-    const { uiStore } = useProviders(UIStore, UserStore, CategoryStore)
-    const { isDark } = uiStore as ReturnType<typeof UIStore>
+    useProviders(UIStore, UserStore, CategoryStore)
+    const { isDark } = useProvider(UIStore)
     return () => (
       <NConfigProvider
         locale={zhCN}
