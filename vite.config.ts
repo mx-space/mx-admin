@@ -4,7 +4,9 @@ import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig, loadEnv } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import Checker from 'vite-plugin-checker'
-
+import format from 'date-fns/format'
+const now = new Date()
+const formatDate = format(now, 'h_mm_ss')
 export default ({ mode }) => {
   process.env = {
     ...process.env,
@@ -29,6 +31,12 @@ export default ({ mode }) => {
       brotliSize: false,
 
       sourcemap: true,
+      rollupOptions: {
+        output: {
+          chunkFileNames: `[name]-[hash]-${formatDate}.js`,
+          entryFileNames: `[name]-${formatDate}.js`,
+        },
+      },
     },
     optimizeDeps: {
       exclude: [],
