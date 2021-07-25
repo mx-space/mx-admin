@@ -33,7 +33,7 @@ specifiers:
   js-cookie: 2.2.1
   lodash-es: 4.17.21
   monaco-editor: 0.26.1
-  naive-ui: 2.15.6
+  naive-ui: 2.15.7
   postcss: 8.3.5
   postcss-nested: 5.0.5
   prettier: 2.3.2
@@ -72,7 +72,7 @@ dependencies:
   js-cookie: 2.2.1
   lodash-es: 4.17.21
   monaco-editor: 0.26.1
-  naive-ui: 2.15.6_vue@3.1.5
+  naive-ui: 2.15.7_vue@3.1.5
   qier-progress: 1.0.4
   reflect-metadata: 0.1.13
   socket.io-client: 2.4.0
@@ -1827,11 +1827,6 @@ packages:
     resolution: {integrity: sha512-B1JDm0XDaQC+uvo4DT79H0XmBskgS3l6Ve+1SBCfxgmtIb1AVrPIoqd+nPSv+loMX8szQ0sVUhGngL7D5QPiXw==}
     dev: false
 
-  /date-fns/2.22.1:
-    resolution: {integrity: sha512-yUFPQjrxEmIsMqlHhAhmxkuH769baF21Kk+nZwZGyrMoyLA+LugaQtC0+Tqf9CBUUULWwUJt6Q5ySI3LJDDCGg==}
-    engines: {node: '>=0.11'}
-    dev: false
-
   /date-fns/2.23.0:
     resolution: {integrity: sha512-5ycpauovVyAk0kXNZz6ZoB9AYMZB4DObse7P3BPWmyEjXNORTI8EJ6X0uaSAq4sCHzM1uajzrkr6HnsLQpxGXA==}
     engines: {node: '>=0.11'}
@@ -2930,8 +2925,8 @@ packages:
       thenify-all: 1.6.0
     dev: true
 
-  /naive-ui/2.15.6_vue@3.1.5:
-    resolution: {integrity: sha512-/IN3cmz2G13D5nWALzMzY+3C82AJbxQtqeaKLrUGoNQF9ROpXoQmX6Vlwhnhs6YdxMstJVFh6rV9JxEAs8M+YQ==}
+  /naive-ui/2.15.7_vue@3.1.5:
+    resolution: {integrity: sha512-N8pMibHjzYA313P8lP0zP4ocbg60lXb1UdQYBjXVb/uYBSnCkdswEzLTtWWl9qSAKZOW54ZyGJlFgHfEYuMWtg==}
     peerDependencies:
       vue: ^3.0.0
     dependencies:
@@ -2941,7 +2936,7 @@ packages:
       '@types/lodash-es': 4.17.4
       async-validator: 3.5.2
       css-render: 0.15.4
-      date-fns: 2.22.1
+      date-fns: 2.23.0
       evtd: 0.2.2
       highlight.js: 11.1.0
       lodash: 4.17.21
