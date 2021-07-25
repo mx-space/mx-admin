@@ -1,7 +1,8 @@
 {
   "name": "admin-next",
-  "version": "2.3.1-alpha",
+  "version": "2.3.2",
   "scripts": {
+    "prebuild": "rm -rf dist",
     "dev": "TAILWIND_MODE=watch NODE_ENV=development vite --mode development",
     "build": "NODE_ENV=production vite build --mode production",
     "preview": "vite preview --port 2323",
