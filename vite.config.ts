@@ -27,6 +27,9 @@ export default ({ mode }) => {
       chunkSizeWarningLimit: 2500, //monaco is so big
       target: 'esnext',
       brotliSize: false,
+
+      sourcemap: true,
+      minify: false,
     },
     optimizeDeps: {
       exclude: [],
