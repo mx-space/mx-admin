@@ -7,8 +7,9 @@
  * Mark: Coding with Love
  */
 
+import { useDark, useToggle } from '@vueuse/core'
 import { debounce } from 'lodash-es'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 
 export interface ViewportRecord {
   w: number
@@ -25,6 +26,10 @@ export function UIStore() {
   const viewport = ref<ViewportRecord>({} as any)
   const sidebarWidth = ref(250)
   const sidebarCollapse = ref(viewport.value.mobile ? true : false)
+
+  const isDark = useDark()
+  const toggleDark = useToggle(isDark)
+
   onMounted(() => {
     const resizeHandler = debounce(updateViewport, 500, { trailing: true })
     window.onresize = resizeHandler
@@ -70,11 +75,25 @@ export function UIStore() {
       contentWidth.value -
       parseInt(getComputedStyle(document.documentElement).fontSize) * 6,
   )
+
+  watch(
+    () => isDark.value,
+    (isDark) => {
+      if (isDark) {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
+    },
+  )
   return {
     viewport,
     contentWidth,
     sidebarWidth,
     contentInsetWidth,
     sidebarCollapse,
+
+    isDark,
+    toggleDark,
   }
 }

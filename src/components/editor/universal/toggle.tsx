@@ -118,22 +118,26 @@ export const EditorToggleWrapper = defineAsyncComponent({
 
           const monacoRef = ref<editor.IStandaloneCodeEditor>()
           const vditorRef = ref<Vditor>()
-          // watch(
-          //   () => generalSetting,
-          //   (n) => {
-          //     if (!monacoRef.value) {
-          //       return
-          //     }
-          //     // TODO
-          //   },
-          //   { deep: true, immediate: true },
-          // )
 
           const { storage: generalSetting, reset: resetGeneralSetting } =
             useStorageObject<GeneralSettingDto>(
               GeneralSettingDto,
               StorageKeys.general,
             )
+
+          // watch(
+          //   () => generalSetting,
+          //   (n) => {
+          //     if (!monacoRef.value) {
+          //       return
+          //     }
+          //     monacoRef.value.updateOptions({
+          //       fontFamily: n.fontFamily,
+          //       fontSize: n.fontSize,
+          //     })
+          //   },
+          //   { deep: true, immediate: true },
+          // )
 
           const GeneralSetting = defineComponent(() => {
             return () => (

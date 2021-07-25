@@ -1,4 +1,6 @@
+import { useInjector } from 'hooks/use-deps-injection'
 import { useSaveConfirm } from 'hooks/use-save-confirm'
+import { UIStore } from 'stores/ui'
 import Vditor from 'vditor'
 import 'vditor/dist/index.css'
 import {
@@ -12,7 +14,7 @@ import {
   watch,
 } from 'vue'
 import { editorBaseProps } from './universal/base'
-
+import './vditor.css'
 export const VditorEditor = defineAsyncComponent(() =>
   Promise.resolve(
     defineComponent({
@@ -28,6 +30,7 @@ export const VditorEditor = defineAsyncComponent(() =>
           const i = new Vditor(vRef.value, {
             value: props.text,
             toolbarConfig: { hide: true },
+            theme: isDark.value ? 'dark' : 'classic',
             toolbar: [],
             cache: {
               enable: false,
@@ -71,6 +74,18 @@ export const VditorEditor = defineAsyncComponent(() =>
         useSaveConfirm(props.unSaveConfirm, () => {
           return instance.getValue().trim() === memoInitialValue.trim()
         })
+
+        const { isDark } = useInjector(UIStore)
+        watch(
+          () => isDark.value,
+          (isDark) => {
+            if (isDark) {
+              instance.setTheme('dark')
+            } else {
+              instance.setTheme('classic')
+            }
+          },
+        )
         return () => (
           <div ref={vRef} style={{ height: 'calc(100vh - 18.8rem)' }}></div>
         )

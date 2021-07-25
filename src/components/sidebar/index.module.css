@@ -92,3 +92,13 @@
     }
   }
 }
+
+:global(html.dark) {
+  .root {
+    .sidebar {
+      @apply bg-gray-700;
+
+      filter: brightness(0.8);
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import { TelegramPlane } from '@vicons/fa'
+import TelegramPlane from '@vicons/fa/es/TelegramPlane'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { MonacoEditor } from 'components/editor/monaco'
 import { useParsePayloadIntoData } from 'hooks/use-parse-payload'

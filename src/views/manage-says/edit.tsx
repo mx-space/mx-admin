@@ -1,4 +1,4 @@
-import { TelegramPlane } from '@vicons/fa'
+import TelegramPlane from '@vicons/fa/es/TelegramPlane'
 import Comment12Filled from '@vicons/fluent/es/Comment12Filled'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { fetchHitokoto, SentenceType } from 'external/api/hitokoto'

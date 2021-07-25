@@ -1,6 +1,8 @@
+import { useInjector } from 'hooks/use-deps-injection'
 import { useSaveConfirm } from 'hooks/use-save-confirm'
 import { editor as Editor, KeyCode, KeyMod, Selection } from 'monaco-editor'
 import { NSpin } from 'naive-ui'
+import { UIStore } from 'stores/ui'
 import {
   defineAsyncComponent,
   defineComponent,
@@ -78,12 +80,14 @@ export const MonacoEditor = defineAsyncComponent({
 })
 
 const initEditor = ($el: HTMLElement, initialValue: string) => {
+  const { isDark } = useInjector(UIStore)
   const editor = Editor.create($el, {
     value: initialValue,
     language: 'markdown',
     automaticLayout: true,
     wrappingStrategy: 'advanced',
     minimap: { enabled: false },
+    theme: isDark.value ? 'vs-dark' : 'vs',
     wordWrap: 'on',
     cursorStyle: 'line-thin',
     formatOnType: true,
@@ -96,6 +100,15 @@ const initEditor = ($el: HTMLElement, initialValue: string) => {
     acceptSuggestionOnEnter: 'off',
     wordBasedSuggestions: false,
   })
+
+  watch(
+    () => isDark.value,
+    (isDark) => {
+      editor.updateOptions({
+        theme: isDark ? 'vs-dark' : 'vs',
+      })
+    },
+  )
 
   editor.addAction({
     id: 'bold',

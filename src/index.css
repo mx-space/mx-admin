@@ -10,6 +10,8 @@ html {
   padding: 0;
   background-color: #fafafa;
   font-family: -apple-system, 'Segoe UI', 'Helvetica Neue', sans-serif;
+
+  @apply dark:bg-gray-900;
 }
 
 body {
@@ -62,14 +64,16 @@ button {
   @apply !block;
 }
 
-.modal-card {
-  @apply max-w-[90vw] w-[60rem];
+@layer components {
+  .modal-card {
+    @apply max-w-[90vw] w-[60rem];
 
-  &.sm {
-    @apply w-[40rem];
-  }
+    &.sm {
+      @apply w-[40rem];
+    }
 
-  &.xs {
-    @apply w-[30rem];
+    &.xs {
+      @apply w-[30rem];
+    }
   }
 }

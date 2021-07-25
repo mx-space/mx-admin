@@ -1,4 +1,4 @@
-import { SlackHash } from '@vicons/fa'
+import SlackHash from '@vicons/fa/SlackHash'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { MonacoEditor } from 'components/editor/monaco'
 import { NButton, NCard, NModal, NSpace } from 'naive-ui'

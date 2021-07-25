@@ -58,7 +58,7 @@
     margin-top: 0.5em;
     background: #fff;
     border-radius: 66%;
-    transition: transform 0.3s;
+    transition: transform 0.3s, background 0.3s, color 0.3s;
     animation: show 0.5s both;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1), 0 5px 20px rgba(0, 0, 0, 0.2);
     &:not(:first-child) {
@@ -87,5 +87,11 @@
 
   a > button {
     @apply h-full w-full;
+  }
+}
+
+:global(html.dark) {
+  .buttons button {
+    @apply bg-gray-600 text-blue-300;
   }
 }

@@ -1,29 +1,44 @@
-import { defineComponent, onMounted } from 'vue'
 import {
+  darkTheme,
+  dateZhCN,
   NConfigProvider,
   NDialogProvider,
   NMessageProvider,
   NNotificationProvider,
+  useDialog,
   useMessage,
   useNotification,
+  zhCN,
 } from 'naive-ui'
 import { CategoryStore } from 'stores/category'
+import { defineComponent, onMounted } from 'vue'
 import { RouterView } from 'vue-router'
+import { useInjector, useProviders } from './hooks/use-deps-injection'
 import { UIStore } from './stores/ui'
 import { UserStore } from './stores/user'
-import { useInjector, useProviders } from './hooks/use-deps-injection'
-import { zhCN, dateZhCN, useDialog } from 'naive-ui'
 
 const Root = defineComponent({
   name: 'Home',
 
   setup() {
     const { fetchUser } = useInjector(UserStore)
+    const { isDark } = useInjector(UIStore)
 
     onMounted(() => {
-      window.message = useMessage()
+      const message = useMessage()
+      const _error = message.error
+      Object.assign(message, {
+        error: (...rest: any[]) => {
+          // @ts-ignore
+          _error.apply(this, rest)
+          throw rest[0]
+        },
+      })
+
+      window.message = message
       window.notification = useNotification()
       window.dialog = useDialog()
+
       import('socket').then((mo) => {
         mo.socket.initIO()
       })
@@ -39,10 +54,14 @@ const Root = defineComponent({
 
 const App = defineComponent({
   setup() {
-    useProviders(UIStore, UserStore, CategoryStore)
-
+    const { uiStore } = useProviders(UIStore, UserStore, CategoryStore)
+    const { isDark } = uiStore as ReturnType<typeof UIStore>
     return () => (
-      <NConfigProvider locale={zhCN} dateLocale={dateZhCN}>
+      <NConfigProvider
+        locale={zhCN}
+        dateLocale={dateZhCN}
+        theme={isDark.value ? darkTheme : null}
+      >
         <NNotificationProvider>
           <NMessageProvider>
             <NDialogProvider>

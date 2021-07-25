@@ -1,4 +1,5 @@
-import { SlidersH, TelegramPlane } from '@vicons/fa'
+import SlidersH from '@vicons/fa/es/SlidersH'
+import TelegramPlane from '@vicons/fa/es/TelegramPlane'
 import Search24Regular from '@vicons/fluent/es/Search24Regular'
 import Location24Regular from '@vicons/fluent/es/Location24Regular'
 import { Icon } from '@vicons/utils'
@@ -28,6 +29,7 @@ import {
   NDynamicTags,
   NForm,
   NFormItem,
+  NFormItemRow,
   NInput,
   NModal,
   NSelect,
@@ -152,6 +154,8 @@ const NoteWriteView = defineComponent(() => {
 
   const message = useMessage()
   const router = useRouter()
+
+  const enablePassword = computed(() => typeof data.password === 'string')
 
   const handleSubmit = async () => {
     const parseDataToPayload = (): { [key in keyof NoteModel]?: any } => {
@@ -318,19 +322,38 @@ const NoteWriteView = defineComponent(() => {
               </NSpace>
             </NFormItem>
 
-            <NFormItem label="设定密码?">
-              <NInput
-                placeholder=""
-                type="password"
-                value={data.password}
-                inputProps={{
-                  name: 'note-password',
-                  autocapitalize: 'off',
-                  autocomplete: 'new-password',
+            <NFormItem
+              label="设定密码?"
+              labelAlign="right"
+              labelPlacement="left"
+            >
+              <NSwitch
+                value={enablePassword.value}
+                onUpdateValue={(e) => {
+                  if (e) {
+                    data.password = ''
+                  } else {
+                    data.password = null
+                  }
                 }}
-                onInput={(e) => void (data.password = e)}
-              ></NInput>
+              />
             </NFormItem>
+            {enablePassword.value && (
+              <NFormItem label="输入密码">
+                <NInput
+                  disabled={!enablePassword.value}
+                  placeholder=""
+                  type="password"
+                  value={data.password}
+                  inputProps={{
+                    name: 'note-password',
+                    autocapitalize: 'off',
+                    autocomplete: 'new-password',
+                  }}
+                  onInput={(e) => void (data.password = e)}
+                ></NInput>
+              </NFormItem>
+            )}
             <NFormItem
               label="多久之后公开"
               labelWidth={'50%'}
@@ -493,8 +516,6 @@ const GetLocationButton = defineComponent({
 
           props.onChange(json.regeocode, coo)
         } catch (e) {
-          console.log(e)
-
           message.error('定位权限未打开')
         }
       } else {
@@ -618,6 +639,9 @@ const SearchLocationButton = defineComponent({
             class="modal-card sm"
             bordered={false}
             closable
+            onClose={() => {
+              modalOpen.value = false
+            }}
             title="搜索关键字查找地点"
           >
             <NForm labelPlacement="top">

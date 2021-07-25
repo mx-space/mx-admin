@@ -1,3 +1,4 @@
+import { camelCase } from 'lodash-es'
 import { provide, inject } from 'vue'
 //定义一个用于状态共享的hook函数的标准接口
 export interface FunctionalStore<T extends object> {
@@ -18,10 +19,12 @@ export function useProvider<T extends object>(func: FunctionalStore<T>): T {
 
 // 可以一次传入多个hook函数， 统一管理
 export function useProviders(...funcs: FunctionalStore<any>[]) {
+  const stores = {} as any
   funcs.forEach((func) => {
-    !func.token && (func.token = Symbol('functional store'))
-    provide(func.token, func())
+    const deps = useProvider(func)
+    stores[camelCase(func.name)] = deps
   })
+  return stores
 }
 
 //对原生inject进行封装

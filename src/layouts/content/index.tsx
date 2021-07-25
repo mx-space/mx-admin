@@ -13,6 +13,11 @@ import {
 import clsx from 'clsx'
 import { useRouter } from 'vue-router'
 import styles from './index.module.css'
+import { Icon } from '@vicons/utils'
+import Sun from '@vicons/fa/es/Sun'
+import Moon from '@vicons/fa/es/Moon'
+import { useInjector } from 'hooks/use-deps-injection'
+import { UIStore } from 'stores/ui'
 
 const ProvideKey = Symbol('inject')
 
@@ -69,6 +74,8 @@ export const ContentLayout = defineComponent({
     onUnmounted(() => {
       footerExtraButtonEl.value = null
     })
+
+    const { isDark, toggleDark } = useInjector(UIStore)
     return () => (
       <>
         <header class={styles['header']}>
@@ -89,6 +96,9 @@ export const ContentLayout = defineComponent({
               ))
             : null}
           {props.footerButtonElement ? <A$fel /> : slots.buttons?.()}
+          <button onClick={() => void toggleDark()}>
+            <Icon>{isDark.value ? <Sun /> : <Moon />}</Icon>
+          </button>
         </footer>
       </>
     )

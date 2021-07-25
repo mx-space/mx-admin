@@ -1,4 +1,5 @@
-import { SlidersH, TelegramPlane } from '@vicons/fa'
+import SlidersH from '@vicons/fa/es/SlidersH'
+import TelegramPlane from '@vicons/fa/es/TelegramPlane'
 import { Icon } from '@vicons/utils'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { EditorToggleWrapper } from 'components/editor'

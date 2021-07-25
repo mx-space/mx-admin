@@ -1,10 +1,8 @@
-import { Bookmark } from '@vicons/fa'
+import Bookmark from '@vicons/fa/es/Bookmark'
 import Add12Filled from '@vicons/fluent/es/Add12Filled'
 import Delete16Regular from '@vicons/fluent/es/Delete16Regular'
 import EyeHide20Filled from '@vicons/fluent/es/EyeHide20Filled'
-
 import { Icon } from '@vicons/utils'
-import { defineComponent, onMounted } from 'vue'
 import { Table } from 'components/table'
 import { EditColumn } from 'components/table/edit-column'
 import { RelativeTime } from 'components/time/relative-time'
@@ -15,18 +13,17 @@ import {
   NButton,
   NEllipsis,
   NPopconfirm,
-  NPopover,
   NSpace,
   useDialog,
   useMessage,
 } from 'naive-ui'
 import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
-import { parseDate } from 'utils/time'
-import { reactive, watch } from 'vue'
+import { defineComponent, onMounted, reactive, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
+
 export const ManageNoteListView = defineComponent({
   name: 'NoteList',
   setup() {

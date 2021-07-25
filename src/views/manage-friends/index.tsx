@@ -1,4 +1,4 @@
-import { Plus } from '@vicons/fa'
+import Plus from '@vicons/fa/es/Plus'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { Table } from 'components/table'
 import { useTable } from 'hooks/use-table'
