@@ -293,6 +293,7 @@ const NoteWriteView = defineComponent(() => {
                     }}
                   />
                   <SearchLocationButton
+                    placeholder={data.location}
                     onChange={(locationName, coo) => {
                       data.location = locationName
                       data.coordinates = coo
@@ -549,6 +550,10 @@ const GetLocationButton = defineComponent({
 
 const SearchLocationButton = defineComponent({
   props: {
+    placeholder: {
+      type: String as PropType<string | undefined | null>,
+      default: '',
+    },
     onChange: {
       type: Function as PropType<
         (
@@ -591,12 +596,14 @@ const SearchLocationButton = defineComponent({
       debounce(
         async (keyword) => {
           loading.value = true
+
           const res = await searchLocation(keyword)
           autocompleteOption.value = []
           res.pois.forEach((p) => {
             const label = p.cityname + p.adname + p.address + p.name
             const [longitude, latitude] = p.location.split(',').map(Number)
             autocompleteOption.value.push({
+              key: p.cityname,
               label,
               value: JSON.stringify([label, { latitude, longitude }]),
             })
@@ -608,6 +615,8 @@ const SearchLocationButton = defineComponent({
       ),
     )
 
+    let json: any
+
     return () => (
       <>
         <NButton
@@ -616,7 +625,6 @@ const SearchLocationButton = defineComponent({
           onClick={() => {
             modalOpen.value = true
           }}
-          loading={loading.value}
         >
           {{
             icon() {
@@ -644,23 +652,48 @@ const SearchLocationButton = defineComponent({
             }}
             title="搜索关键字查找地点"
           >
-            <NForm labelPlacement="top">
-              <NFormItem label="搜索地点">
-                <NAutoComplete
-                  onSelect={(e) => {
-                    const parsed = JSON.parse(e as string)
-                    props.onChange.apply(this, parsed)
-                  }}
-                  options={autocompleteOption.value}
-                  clearable
-                  loading={loading.value}
-                  onUpdate:value={(e) => {
-                    keyword.value = e
-                  }}
-                  value={keyword.value}
-                />
-              </NFormItem>
-            </NForm>
+            {{
+              default: () => (
+                <>
+                  <NForm labelPlacement="top">
+                    <NFormItem label="搜索地点">
+                      <NAutoComplete
+                        // onSelect={(e) => {
+                        //   const parsed = JSON.parse(e as string)
+                        //   props.onChange.apply(this, parsed)
+                        // }}
+                        placeholder={props.placeholder || ''}
+                        onSelect={(j) => {
+                          json = j
+                        }}
+                        options={autocompleteOption.value}
+                        // clearable
+                        loading={loading.value}
+                        onUpdate:value={(e) => {
+                          keyword.value = e
+                        }}
+                        value={keyword.value}
+                      />
+                    </NFormItem>
+                  </NForm>
+                  <NSpace justify="end">
+                    <NButton
+                      round
+                      type="primary"
+                      onClick={() => {
+                        const parsed = JSON.parse(json as string)
+                        props.onChange.apply(this, parsed)
+
+                        modalOpen.value = false
+                      }}
+                      disabled={loading.value}
+                    >
+                      确定
+                    </NButton>
+                  </NSpace>
+                </>
+              ),
+            }}
           </NCard>
         </NModal>
       </>
