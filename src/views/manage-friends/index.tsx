@@ -24,7 +24,14 @@ import {
 import { omit } from 'naive-ui/lib/_utils'
 import { RouteName } from 'router/name'
 import { RESTManager } from 'utils'
-import { defineComponent, onBeforeMount, ref, toRaw, watch } from 'vue'
+import {
+  defineComponent,
+  onBeforeMount,
+  onMounted,
+  ref,
+  toRaw,
+  watch,
+} from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 export default defineComponent({
@@ -164,11 +171,30 @@ export default defineComponent({
               title: '头像',
               key: 'avatar',
               render(row) {
-                return row.avatar ? (
-                  <NAvatar src={row.avatar as string} round></NAvatar>
-                ) : (
-                  <NAvatar round>{row.name.charAt(0)}</NAvatar>
-                )
+                const Avatar = defineComponent(() => {
+                  const loaded = ref(row.avatar ? false : true)
+                  onMounted(() => {
+                    if (row.avatar) {
+                      const image = new Image()
+                      image.src = row.avatar
+                      image.onload = (e) => {
+                        loaded.value = true
+                      }
+                    }
+                  })
+
+                  return () =>
+                    row.avatar ? (
+                      loaded.value ? (
+                        <NAvatar src={row.avatar as string} round></NAvatar>
+                      ) : (
+                        <NAvatar round>{row.name.charAt(0)}</NAvatar>
+                      )
+                    ) : (
+                      <NAvatar round>{row.name.charAt(0)}</NAvatar>
+                    )
+                })
+                return <Avatar />
               },
             },
             { title: '名称', key: 'name' },
