@@ -29,7 +29,6 @@ export default ({ mode }) => {
       brotliSize: false,
 
       sourcemap: true,
-      minify: false,
     },
     optimizeDeps: {
       exclude: [],
