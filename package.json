@@ -28,7 +28,7 @@
     "js-cookie": "3.0.0",
     "lodash-es": "4.17.21",
     "monaco-editor": "0.26.1",
-    "naive-ui": "2.15.7",
+    "naive-ui": "2.15.8",
     "qier-progress": "1.0.4",
     "reflect-metadata": "0.1.13",
     "socket.io-client": "2.4.0",
