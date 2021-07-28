@@ -62,6 +62,6 @@
     "vite": "2.4.4",
     "vite-plugin-checker": "0.3.3",
     "vite-tsconfig-paths": "3.3.13",
-    "vue-eslint-parser": "7.9.0"
+    "vue-eslint-parser": "7.10.0"
   }
 }
