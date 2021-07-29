@@ -54,7 +54,7 @@
     "eslint-plugin-vue": "7.14.0",
     "express": "4.17.1",
     "postcss": "8.3.5",
-    "postcss-nested": "5.0.5",
+    "postcss-nested": "5.0.6",
     "prettier": "2.3.2",
     "rollup-plugin-visualizer": "5.5.2",
     "tailwindcss": "2.2.7",
