@@ -50,7 +50,7 @@ specifiers:
   vite-plugin-checker: 0.3.3
   vite-tsconfig-paths: 3.3.13
   vue: 3.1.5
-  vue-eslint-parser: 7.9.0
+  vue-eslint-parser: 7.10.0
   vue-router: 4.0.10
 
 dependencies:
@@ -106,7 +106,7 @@ devDependencies:
   vite: 2.4.4
   vite-plugin-checker: 0.3.3_vite@2.4.4
   vite-tsconfig-paths: 3.3.13_vite@2.4.4
-  vue-eslint-parser: 7.9.0_eslint@7.31.0
+  vue-eslint-parser: 7.10.0_eslint@7.31.0
 
 packages:
 
@@ -4068,6 +4068,24 @@ packages:
     dependencies:
       vue: 3.1.5
     dev: false
+
+  /vue-eslint-parser/7.10.0_eslint@7.31.0:
+    resolution: {integrity: sha512-7tc/ewS9Vq9Bn741pvpg8op2fWJPH3k32aL+jcIcWGCTzh/zXSdh7pZ5FV3W2aJancP9+ftPAv292zY5T5IPCg==}
+    engines: {node: '>=8.10'}
+    peerDependencies:
+      eslint: '>=5.0.0'
+    dependencies:
+      debug: 4.3.2
+      eslint: 7.31.0
+      eslint-scope: 5.1.1
+      eslint-visitor-keys: 1.3.0
+      espree: 6.2.1
+      esquery: 1.4.0
+      lodash: 4.17.21
+      semver: 6.3.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
 
   /vue-eslint-parser/7.9.0_eslint@7.31.0:
     resolution: {integrity: sha512-QBlhZ5LteDRVy2dISfQhNEmmcqph+GTaD4SH41bYzXcVHFPJ9p34zCG6QAqOZVa8PKaVgbomFnoZpGJRZi14vg==}
