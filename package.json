@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@antv/g2": "4.1.21",
-    "@vicons/antd": "0.10.0",
+    "@vicons/antd": "0.11.0",
     "@vicons/fa": "0.10.0",
     "@vicons/fluent": "0.10.0",
     "@vicons/ionicons4": "0.10.0",
