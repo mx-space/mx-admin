@@ -8,7 +8,7 @@ specifiers:
   '@typescript-eslint/eslint-plugin': 4.28.5
   '@typescript-eslint/parser': 4.28.5
   '@vicons/antd': 0.10.0
-  '@vicons/fa': 0.10.0
+  '@vicons/fa': 0.11.0
   '@vicons/fluent': 0.10.0
   '@vicons/ionicons4': 0.10.0
   '@vicons/ionicons5': 0.10.0
@@ -56,7 +56,7 @@ specifiers:
 dependencies:
   '@antv/g2': 4.1.21
   '@vicons/antd': 0.10.0
-  '@vicons/fa': 0.10.0
+  '@vicons/fa': 0.11.0
   '@vicons/fluent': 0.10.0
   '@vicons/ionicons4': 0.10.0
   '@vicons/ionicons5': 0.10.0
@@ -1063,8 +1063,8 @@ packages:
     resolution: {integrity: sha512-F+pVt2cYJDoJw5Wvu5YzvqnpCoUPeYh272R/ZVK+2H6U/G0LCDvEWNQHXkbLBpCtu9FAq/yac0NNfg1i0a1DGg==}
     dev: false
 
-  /@vicons/fa/0.10.0:
-    resolution: {integrity: sha512-Hcer9JeSsjFoglTG6DDDGljbHR7qkhHd0dYr1jasVVsOlGzdwLn2oi9Zke8RUD7d2WNcwUZx8FFmdUUWwV+9qw==}
+  /@vicons/fa/0.11.0:
+    resolution: {integrity: sha512-Mlv4sxlghqAPu+RM+6w0/GIcsQFK/fx1syw1HkABS6MJRLwHOqbmImCYZQam7OMAYhZBs82YpY5cp2NFSgwkOA==}
     dev: false
 
   /@vicons/fluent/0.10.0:
