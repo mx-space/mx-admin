@@ -11,7 +11,7 @@ specifiers:
   '@vicons/fa': 0.10.0
   '@vicons/fluent': 0.10.0
   '@vicons/ionicons4': 0.10.0
-  '@vicons/ionicons5': 0.10.0
+  '@vicons/ionicons5': 0.11.0
   '@vicons/material': 0.10.0
   '@vicons/tabler': 0.10.0
   '@vicons/utils': 0.1.4
@@ -59,7 +59,7 @@ dependencies:
   '@vicons/fa': 0.10.0
   '@vicons/fluent': 0.10.0
   '@vicons/ionicons4': 0.10.0
-  '@vicons/ionicons5': 0.10.0
+  '@vicons/ionicons5': 0.11.0
   '@vicons/material': 0.10.0
   '@vicons/tabler': 0.10.0
   '@vicons/utils': 0.1.4_vue@3.1.5
@@ -1075,8 +1075,8 @@ packages:
     resolution: {integrity: sha512-ES4PkHqojTWeQtXkZ+FunPx3E4GZgM7gVRO00/h0kQvR5BPjMum15Kh2cvvnUNb9i6JfUr+WXV44N3qwlfMN9g==}
     dev: false
 
-  /@vicons/ionicons5/0.10.0:
-    resolution: {integrity: sha512-AgOAI15sXiasLKozj9Nkrxdda8BoaFN4TaprFCcHbBMLFOUwk6QLLHRngC+X5YhYXVjLqMbQ6FtEbrPSPYIZEA==}
+  /@vicons/ionicons5/0.11.0:
+    resolution: {integrity: sha512-4IWamqtXUsuCdlW6NQc2xyoJ+PUXGMwzSrppQbdVCYg0pjYld89jOfLOIkuTWq8o2XUa+Q1/78jzWBtXMTojNg==}
     dev: false
 
   /@vicons/material/0.10.0:
