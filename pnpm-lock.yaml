@@ -13,7 +13,7 @@ specifiers:
   '@vicons/ionicons4': 0.10.0
   '@vicons/ionicons5': 0.10.0
   '@vicons/material': 0.10.0
-  '@vicons/tabler': 0.10.0
+  '@vicons/tabler': 0.11.0
   '@vicons/utils': 0.1.4
   '@vitejs/plugin-vue': 1.3.0
   '@vitejs/plugin-vue-jsx': 1.1.7
@@ -61,7 +61,7 @@ dependencies:
   '@vicons/ionicons4': 0.10.0
   '@vicons/ionicons5': 0.10.0
   '@vicons/material': 0.10.0
-  '@vicons/tabler': 0.10.0
+  '@vicons/tabler': 0.11.0
   '@vicons/utils': 0.1.4_vue@3.1.5
   '@vueuse/core': 5.2.0_vue@3.1.5
   camelcase-keys: 7.0.0
@@ -1083,8 +1083,8 @@ packages:
     resolution: {integrity: sha512-3r5ft90RcEMGAHNCRVuZBOV6CFpA8vzBNwaCbFZzCRhcdQqn/48t+Eywvu/o2BQl52eSRYhIUCW9PDh+j6rLbQ==}
     dev: false
 
-  /@vicons/tabler/0.10.0:
-    resolution: {integrity: sha512-CjFcGP/T2GmoU3dJQDXiImsoo+kZTnO6S2VpMVpYHHlaFvpRiDShD/iiaLf+0U3zvmGyg8wyi49fjGN0Cn6NRw==}
+  /@vicons/tabler/0.11.0:
+    resolution: {integrity: sha512-ijVUphdgqTde22/4+hlZ9j2AQutpxd3piOW4cWovcnS/ELlMc/4di2/0SDxsJ6282VdZoE9Xv0dI1iSr0XKPEg==}
     dev: false
 
   /@vicons/utils/0.1.4_vue@3.1.5:
