@@ -340,6 +340,7 @@ const ManageComment = defineComponent(() => {
       </NTabs>
 
       <Table
+        maxWidth={600}
         data={data}
         loading={loading.value}
         onFetchData={fetchData}
