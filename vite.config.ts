@@ -4,9 +4,10 @@ import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig, loadEnv } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import Checker from 'vite-plugin-checker'
-import format from 'date-fns/format'
-const now = new Date()
-const formatDate = format(now, 'h_mm_ss')
+import { execSync } from 'child_process'
+const gitHash = execSync('git rev-parse --short HEAD', {
+  encoding: 'utf-8',
+}).split('\n')[0]
 export default ({ mode }) => {
   process.env = {
     ...process.env,
@@ -21,7 +22,7 @@ export default ({ mode }) => {
       Checker({
         typescript: true,
         // FIXME this is bug
-        enableBuild: false,
+        enableBuild: true,
       }),
     ],
 
@@ -33,8 +34,8 @@ export default ({ mode }) => {
       sourcemap: true,
       rollupOptions: {
         output: {
-          chunkFileNames: `[name]-[hash]-${formatDate}.js`,
-          entryFileNames: `[name]-${formatDate}.js`,
+          chunkFileNames: `[name]-[hash]-${gitHash}.js`,
+          entryFileNames: `[name]-${gitHash}.js`,
         },
       },
     },
