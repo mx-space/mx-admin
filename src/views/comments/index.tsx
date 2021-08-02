@@ -47,7 +47,10 @@ enum CommentType {
 const ManageComment = defineComponent(() => {
   const route = useRoute()
   const router = useRouter()
-  const tabValue = ref((route.query.state as any | 0) ?? CommentType.Pending)
+
+  const tabValue = ref(
+    (+(route.query.state as any) as CommentType) ?? CommentType.Pending,
+  )
 
   const { data, checkedRowKeys, fetchDataFn, pager, loading } =
     useTable<CommentModel>(
@@ -200,7 +203,6 @@ const ManageComment = defineComponent(() => {
               </a>
             </NSpace>
             <p>{row.text}</p>
-
             {row.parent && (
               <blockquote class="border-l-[3px] border-solid border-primary-default pl-[12px] my-2 ml-4">
                 <NSpace size={2} align="center">
@@ -212,58 +214,64 @@ const ManageComment = defineComponent(() => {
                 </NSpace>
               </blockquote>
             )}
+            {!loading.value && (
+              <div class="space-x-3">
+                {tabValue.value !== CommentType.Marked && (
+                  <NButton
+                    text
+                    size="tiny"
+                    type="success"
+                    onClick={() => changeState(row.id, 1)}
+                  >
+                    已读
+                  </NButton>
+                )}
+                {tabValue.value !== CommentType.Trash && (
+                  <NButton
+                    text
+                    size="tiny"
+                    type="warning"
+                    onClick={() => changeState(row.id, 2)}
+                  >
+                    垃圾
+                  </NButton>
+                )}
+                {tabValue.value !== CommentType.Trash && (
+                  <NButton
+                    text
+                    size="tiny"
+                    type="info"
+                    onClick={(e) => {
+                      replyComment.value = row
+                      replyDialogShow.value = true
+                    }}
+                  >
+                    回复
+                  </NButton>
+                )}
+                <NPopconfirm
+                  positiveText={'取消'}
+                  negativeText="删除"
+                  onNegativeClick={() => {
+                    handleDelete(row.id)
+                  }}
+                >
+                  {{
+                    trigger: () => (
+                      <NButton text size="tiny" type="error">
+                        删除
+                      </NButton>
+                    ),
 
-            <NSpace size="medium">
-              {/* // TODO */}
-              <NButton
-                text
-                size="tiny"
-                type="success"
-                onClick={() => changeState(row.id, 1)}
-              >
-                已读
-              </NButton>
-              <NButton
-                text
-                size="tiny"
-                type="warning"
-                onClick={() => changeState(row.id, 2)}
-              >
-                垃圾
-              </NButton>
-              <NButton
-                text
-                size="tiny"
-                type="info"
-                onClick={(e) => {
-                  replyComment.value = row
-                  replyDialogShow.value = true
-                }}
-              >
-                回复
-              </NButton>
-              <NPopconfirm
-                positiveText={'取消'}
-                negativeText="删除"
-                onNegativeClick={() => {
-                  handleDelete(row.id)
-                }}
-              >
-                {{
-                  trigger: () => (
-                    <NButton text size="tiny" type="error">
-                      删除
-                    </NButton>
-                  ),
-
-                  default: () => (
-                    <span style={{ maxWidth: '12rem' }}>
-                      确定要删除 {row.title} ?
-                    </span>
-                  ),
-                }}
-              </NPopconfirm>
-            </NSpace>
+                    default: () => (
+                      <span style={{ maxWidth: '12rem' }}>
+                        确定要删除 {row.title} ?
+                      </span>
+                    ),
+                  }}
+                </NPopconfirm>
+              </div>
+            )}{' '}
           </NSpace>
         )
       },
@@ -278,26 +286,29 @@ const ManageComment = defineComponent(() => {
     <ContentLayout
       actionsElement={
         <Fragment>
-          <HeaderActionButton
-            name="已读"
-            icon={<CheckmarkSharp />}
-            variant="success"
-            onClick={() => {
-              changeState(checkedRowKeys.value, CommentState.Read)
-              checkedRowKeys.value.length = 0
-            }}
-          ></HeaderActionButton>
+          {tabValue.value !== CommentType.Marked && (
+            <HeaderActionButton
+              name="已读"
+              icon={<CheckmarkSharp />}
+              variant="success"
+              onClick={() => {
+                changeState(checkedRowKeys.value, CommentState.Read)
+                checkedRowKeys.value.length = 0
+              }}
+            ></HeaderActionButton>
+          )}
 
-          <HeaderActionButton
-            name="标记为垃圾"
-            icon={<Trash />}
-            variant="warning"
-            onClick={() => {
-              changeState(checkedRowKeys.value, CommentState.Junk)
-              checkedRowKeys.value.length = 0
-            }}
-          ></HeaderActionButton>
-
+          {tabValue.value !== CommentType.Trash && (
+            <HeaderActionButton
+              name="标记为垃圾"
+              icon={<Trash />}
+              variant="warning"
+              onClick={() => {
+                changeState(checkedRowKeys.value, CommentState.Junk)
+                checkedRowKeys.value.length = 0
+              }}
+            ></HeaderActionButton>
+          )}
           <HeaderActionButton
             name="删除"
             icon={<CloseSharp />}
@@ -322,8 +333,11 @@ const ManageComment = defineComponent(() => {
         size="medium"
         value={tabValue.value}
         onUpdateValue={(e) => {
-          tabValue.value = e
-          router.replace({ name: RouteName.Comment, query: { state: e } })
+          router
+            .replace({ name: RouteName.Comment, query: { state: e } })
+            .then(() => {
+              tabValue.value = e
+            })
         }}
       >
         <NTabPane name={CommentType.Pending} tab="未读">

@@ -1,4 +1,7 @@
 import Bookmark from '@vicons/fa/es/Bookmark'
+import Book from '@vicons/fa/es/Book'
+import Heart from '@vicons/fa/es/Heart'
+
 import Add12Filled from '@vicons/fluent/es/Add12Filled'
 import Delete16Regular from '@vicons/fluent/es/Delete16Regular'
 import EyeHide20Filled from '@vicons/fluent/es/EyeHide20Filled'
@@ -39,7 +42,7 @@ export const ManageNoteListView = defineComponent({
                 page,
                 size,
                 select:
-                  'title _id id created modified mood weather hide secret hasMemory coordinates location',
+                  'title _id id created modified mood weather hide secret hasMemory coordinates location count',
                 ...(sortProps.sortBy
                   ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
                   : {}),
@@ -176,6 +179,31 @@ export const ManageNoteListView = defineComponent({
                   </NEllipsis>
                 )
               }
+            },
+          },
+
+          {
+            title: () => (
+              <Icon>
+                <Book />
+              </Icon>
+            ),
+            key: 'count.read',
+            ellipsis: true,
+            render(row) {
+              return row.count?.read || 0
+            },
+          },
+          {
+            title: () => (
+              <Icon>
+                <Heart />
+              </Icon>
+            ),
+            ellipsis: true,
+            key: 'count.like',
+            render(row) {
+              return row.count?.like || 0
             },
           },
 

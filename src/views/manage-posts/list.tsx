@@ -1,5 +1,8 @@
 import Add12Filled from '@vicons/fluent/es/Add12Filled'
 import Delete16Regular from '@vicons/fluent/es/Delete16Regular'
+import { Icon } from '@vicons/utils'
+import Book from '@vicons/fa/es/Book'
+import ThumbsUp from '@vicons/fa/es/ThumbsUp'
 import { Table } from 'components/table'
 import { EditColumn } from 'components/table/edit-column'
 import { RelativeTime } from 'components/time/relative-time'
@@ -40,7 +43,7 @@ export const ManagePostListView = defineComponent({
                 page,
                 size,
                 select:
-                  'title _id id created modified categoryId copyright tags',
+                  'title _id id created modified categoryId copyright tags count',
                 ...(sortProps.sortBy
                   ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
                   : {}),
@@ -145,6 +148,39 @@ export const ManagePostListView = defineComponent({
                   }
                 ></EditColumn>
               )
+            },
+          },
+          {
+            title: '标签',
+            key: 'tags',
+            width: 100,
+            ellipsis: true,
+            render(row) {
+              return row.tags?.join('，')
+            },
+          },
+          {
+            title: () => (
+              <Icon>
+                <Book />
+              </Icon>
+            ),
+            key: 'count.read',
+            width: 50,
+            render(row) {
+              return row.count?.read || 0
+            },
+          },
+          {
+            title: () => (
+              <Icon>
+                <ThumbsUp />
+              </Icon>
+            ),
+            width: 50,
+            key: 'count.like',
+            render(row) {
+              return row.count?.like || 0
             },
           },
           {
