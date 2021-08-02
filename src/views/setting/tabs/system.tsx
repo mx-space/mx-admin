@@ -254,6 +254,15 @@ export const TabSystem = defineComponent(() => {
                 }
               ></NDynamicTags>
             </NFormItem>
+
+            <NFormItem label="禁止非中文评论">
+              <NSwitch
+                value={configs.value.commentOptions.disableNoChinese}
+                onUpdateValue={(e) =>
+                  void (configs.value.commentOptions.disableNoChinese = e)
+                }
+              />
+            </NFormItem>
           </NForm>
         </NCollapseItem>
 
@@ -428,6 +437,7 @@ function mergeFullConfigs(configs: any): IConfig {
         antiSpam: false,
         spamKeywords: [],
         blockIps: [],
+        disableNoChinese: false,
       },
       backupOptions: {
         enable: false,

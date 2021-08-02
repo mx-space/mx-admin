@@ -38,6 +38,7 @@ export declare class CommentOptions {
   antiSpam: boolean
   spamKeywords?: string[]
   blockIps?: string[]
+  disableNoChinese?: boolean
 }
 
 export interface Dimensions {
