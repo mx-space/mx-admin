@@ -19,7 +19,7 @@ specifiers:
   '@vitejs/plugin-vue-jsx': 1.1.7
   '@vue/compiler-sfc': 3.1.5
   '@vuedx/typescript-plugin-vue': 0.7.4
-  '@vueuse/core': 5.2.0
+  '@vueuse/core': 5.3.0
   autoprefixer: 10.3.1
   camelcase-keys: 7.0.0
   class-transformer: 0.4.0
@@ -63,7 +63,7 @@ dependencies:
   '@vicons/material': 0.11.0
   '@vicons/tabler': 0.11.0
   '@vicons/utils': 0.1.4_vue@3.1.5
-  '@vueuse/core': 5.2.0_vue@3.1.5
+  '@vueuse/core': 5.3.0_vue@3.1.5
   camelcase-keys: 7.0.0
   class-transformer: 0.4.0
   class-validator: 0.13.1
@@ -1322,18 +1322,18 @@ packages:
       - supports-color
     dev: true
 
-  /@vueuse/core/5.2.0_vue@3.1.5:
-    resolution: {integrity: sha512-IS2QnVZ4lTlRUtgPHJ4ttTatXGWRZuvj/GJDVp8FRlUjzKXD0YjZtx0280FCg7y3YejXV2QGhY+/YrXybMjpPw==}
+  /@vueuse/core/5.3.0_vue@3.1.5:
+    resolution: {integrity: sha512-bBL1/JMRHFWmbgQzUZHF4WOwlqfenR1B8+elriXsbnHlogQM5foSz9++WyDBR0YPIVgCJq7fvNLqd4T7+cjc5w==}
     dependencies:
-      '@vueuse/shared': 5.2.0_vue@3.1.5
+      '@vueuse/shared': 5.3.0_vue@3.1.5
       vue-demi: 0.10.1_vue@3.1.5
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
     dev: false
 
-  /@vueuse/shared/5.2.0_vue@3.1.5:
-    resolution: {integrity: sha512-PD2PBaEcdl+pXXeKjhU+LZqQuA9xX/6mtVGIYG29xsjH7W3IjU164nwCAfDe2Lsy8rMaYmVqVSB6PHtiZZyDSg==}
+  /@vueuse/shared/5.3.0_vue@3.1.5:
+    resolution: {integrity: sha512-qZfkPFH0qTScFpYiPOFpTcxWriRhlM3bgSzl3DFTgr/U0eZg3w2EFWaRZHdWeSvAUdNQyjOC4Toa8S0zJyEjHw==}
     dependencies:
       vue-demi: 0.10.1_vue@3.1.5
     transitivePeerDependencies:
