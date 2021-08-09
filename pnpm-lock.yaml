@@ -51,7 +51,7 @@ specifiers:
   vite-tsconfig-paths: 3.3.13
   vue: 3.1.5
   vue-eslint-parser: 7.10.0
-  vue-router: 4.0.10
+  vue-router: 4.0.11
 
 dependencies:
   '@antv/g2': 4.1.22
@@ -80,7 +80,7 @@ dependencies:
   validator: 13.6.0
   vditor: 3.8.6
   vue: 3.1.5
-  vue-router: 4.0.10_vue@3.1.5
+  vue-router: 4.0.11_vue@3.1.5
 
 devDependencies:
   '@types/lodash-es': 4.17.4
@@ -4091,8 +4091,8 @@ packages:
       - supports-color
     dev: true
 
-  /vue-router/4.0.10_vue@3.1.5:
-    resolution: {integrity: sha512-YbPf6QnZpyyWfnk7CUt2Bme+vo7TLfg1nGZNkvYqKYh4vLaFw6Gn8bPGdmt5m4qrGnKoXLqc4htAsd3dIukICA==}
+  /vue-router/4.0.11_vue@3.1.5:
+    resolution: {integrity: sha512-sha6I8fx9HWtvTrFZfxZkiQQBpqSeT+UCwauYjkdOQYRvwsGwimlQQE2ayqUwuuXGzquFpCPoXzYKWlzL4OuXg==}
     peerDependencies:
       vue: ^3.0.0
     dependencies:
