@@ -1,6 +1,6 @@
 {
   "name": "admin-next",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "scripts": {
     "prebuild": "rm -rf dist",
     "dev": "TAILWIND_MODE=watch NODE_ENV=development vite --mode development",
@@ -10,7 +10,7 @@
     "format": "prettier --write --loglevel warn \"src/**/*.{js,json,tsx,ts,css,scss,vue,html,md}\""
   },
   "dependencies": {
-    "@antv/g2": "4.1.22",
+    "@antv/g2": "4.1.23",
     "@vicons/antd": "0.11.0",
     "@vicons/fa": "0.11.0",
     "@vicons/fluent": "0.11.0",
