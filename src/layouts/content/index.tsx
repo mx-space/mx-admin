@@ -25,6 +25,7 @@ export const useLayout = () =>
   inject(ProvideKey, {
     addFloatButton(el: VNode) {},
     removeFloatButton(name: symbol) {},
+    setHeaderButton(el: VNode | null) {},
   })
 export const ContentLayout = defineComponent({
   props: {
@@ -69,6 +70,14 @@ export const ContentLayout = defineComponent({
           footerExtraButtonEl.value.splice(index, 1)
         }
       },
+
+      setHeaderButton(el: VNode | null) {
+        if (!el) {
+          SettingHeaderEl.value = null
+          return
+        }
+        SettingHeaderEl.value = () => el
+      },
     })
 
     onUnmounted(() => {
@@ -76,6 +85,7 @@ export const ContentLayout = defineComponent({
     })
 
     const { isDark, toggleDark } = useInjector(UIStore)
+    const SettingHeaderEl = ref<(() => VNode) | null>()
     return () => (
       <>
         <header class={styles['header']}>
@@ -85,7 +95,13 @@ export const ContentLayout = defineComponent({
           </h1>
 
           <div class={clsx(styles['header-actions'], 'space-x-4')}>
-            {props.actionsElement ? <A$ael /> : slots.actions?.()}
+            {SettingHeaderEl.value ? (
+              <SettingHeaderEl.value />
+            ) : props.actionsElement ? (
+              <A$ael />
+            ) : (
+              slots.actions?.()
+            )}
           </div>
         </header>
         <main class={styles['main']}>{slots.default?.()}</main>

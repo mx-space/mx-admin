@@ -6,9 +6,6 @@ import { TabSecurity } from './tabs/security'
 import { TabSystem } from './tabs/system'
 import { TabUser } from './tabs/user'
 
-const HeaderActionInjectKey = Symbol('tab')
-export const useSystemHeaderAction = (): Ref<JSX.Element | null> =>
-  inject(HeaderActionInjectKey) as any
 enum SettingTab {
   User = 'user',
   System = 'system',
@@ -30,7 +27,6 @@ export default defineComponent({
       },
     )
     const headerActionsEl = ref<null | JSX.Element>(null)
-    provide(HeaderActionInjectKey, headerActionsEl)
     return () => (
       <ContentLayout actionsElement={headerActionsEl.value}>
         <NTabs

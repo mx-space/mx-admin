@@ -17,18 +17,14 @@ import {
   NPopconfirm,
   NSpace,
   NSwitch,
-  NText,
 } from 'naive-ui'
 import { RouteName } from 'router/name'
 import { parseDate, removeToken, RESTManager } from 'utils'
 import { defineComponent, onBeforeMount, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useSystemHeaderAction } from '..'
 import { autosizeableProps } from './system'
 
 export const TabSecurity = defineComponent(() => {
-  const headerRef = useSystemHeaderAction()
-
   return () => (
     <Fragment>
       <div class="pt-4"></div>

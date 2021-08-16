@@ -1,6 +1,8 @@
 import CheckCircleOutlined from '@vicons/antd/CheckCircleOutlined'
 import { HeaderActionButton } from 'components/button/rounded-button'
+
 import { useInjector } from 'hooks/use-deps-injection'
+import { useLayout } from 'layouts/content'
 import { cloneDeep, isEmpty, merge, omit } from 'lodash-es'
 import { IConfig } from 'models/setting'
 import {
@@ -19,19 +21,17 @@ import {
 } from 'naive-ui'
 import { UIStore } from 'stores/ui'
 import { deepDiff, RESTManager } from 'utils'
-
 import {
   computed,
   defineComponent,
   onBeforeMount,
-  onMounted,
-  onUnmounted,
   reactive,
   ref,
+  onMounted,
+  onUnmounted,
   toRaw,
   watch,
 } from 'vue'
-import { useSystemHeaderAction } from '..'
 
 const NFormPrefixCls = 'mt-6'
 const NFormBaseProps = {
@@ -49,20 +49,20 @@ export const autosizeableProps = {
   style: 'min-width: 300px; max-width: 100%',
 } as const
 export const TabSystem = defineComponent(() => {
-  const headerRef = useSystemHeaderAction()
+  const { setHeaderButton } = useLayout()
 
   onMounted(() => {
-    headerRef.value = (
+    setHeaderButton(
       <HeaderActionButton
         disabled={true}
         onClick={save}
         icon={<CheckCircleOutlined />}
-      ></HeaderActionButton>
+      ></HeaderActionButton>,
     )
   })
 
   onUnmounted(() => {
-    headerRef.value = null
+    setHeaderButton(null)
   })
 
   let originConfigs: IConfig = {} as IConfig
@@ -85,13 +85,12 @@ export const TabSystem = defineComponent(() => {
       } else {
         canSave = true
       }
-
-      headerRef.value = (
+      setHeaderButton(
         <HeaderActionButton
           disabled={!canSave}
           icon={<CheckCircleOutlined />}
           onClick={save}
-        ></HeaderActionButton>
+        ></HeaderActionButton>,
       )
     },
   )
