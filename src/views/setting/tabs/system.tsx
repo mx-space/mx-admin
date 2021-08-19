@@ -41,8 +41,6 @@ const NFormBaseProps = {
   labelWidth: 150,
 }
 
-// FIXME : input autocomplation
-
 export const autosizeableProps = {
   autosize: true,
   clearable: true,
@@ -144,10 +142,13 @@ export const TabSystem = defineComponent(() => {
     (n) => {
       if (n) {
         formProps.labelPlacement = 'top'
+        formProps.labelAlign = 'left'
       } else {
         formProps.labelPlacement = 'left'
+        formProps.labelAlign = 'right'
       }
     },
+    { immediate: true },
   )
   return () => (
     <Fragment>

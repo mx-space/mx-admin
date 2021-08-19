@@ -1,6 +1,7 @@
 import Plus from '@vicons/fa/es/Plus'
 import { Icon } from '@vicons/utils'
 import { RelativeTime } from 'components/time/relative-time'
+import { useInjector } from 'hooks/use-deps-injection'
 import { TokenModel } from 'models/token'
 import {
   NButton,
@@ -19,6 +20,7 @@ import {
   NSwitch,
 } from 'naive-ui'
 import { RouteName } from 'router/name'
+import { UIStore } from 'stores/ui'
 import { parseDate, removeToken, RESTManager } from 'utils'
 import { defineComponent, onBeforeMount, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -95,6 +97,7 @@ const ApiToken = defineComponent(() => {
       tokens.value.splice(index, 1)
     }
   }
+  const uiStore = useInjector(UIStore)
   return () => (
     <NLayoutContent class="!overflow-visible">
       <NModal
@@ -157,6 +160,10 @@ const ApiToken = defineComponent(() => {
         <span class="ml-2">新增</span>
       </NButton>
       <NDataTable
+        scrollX={Math.max(
+          800,
+          uiStore.contentWidth.value - uiStore.contentInsetWidth.value,
+        )}
         remote
         bordered={false}
         data={tokens.value}

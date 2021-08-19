@@ -42,7 +42,12 @@ export const TabUser = defineComponent(() => {
 
   return () => (
     <Fragment>
-      <NGrid cols={2} class={styles['tab-user']} xGap={20} yGap={20}>
+      <NGrid
+        cols={'1 400:1 600:2'}
+        class={styles['tab-user']}
+        xGap={20}
+        yGap={20}
+      >
         <NGi>
           <NForm class="flex flex-col justify-center items-center ">
             <NFormItem>
