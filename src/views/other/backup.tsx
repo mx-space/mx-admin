@@ -105,7 +105,6 @@ export default defineComponent(() => {
     const blob = await RESTManager.api.backups(filename).get({
       responseType: 'blob',
       timeout: 10e8,
-      getResponse: true,
     })
     info.destroy()
     message.success('下载完成')
