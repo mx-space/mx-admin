@@ -1,7 +1,6 @@
 import TrashSharp from '@vicons/ionicons5/es/TrashSharp'
-import UndoRound from '@vicons/material/es/UndoRound'
 import RedoRound from '@vicons/material/es/RedoRound'
-
+import UndoRound from '@vicons/material/es/UndoRound'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { Table } from 'components/table'
 import { useTable } from 'hooks/use-table'
@@ -153,7 +152,6 @@ export default defineComponent(() => {
         checkedRowKey="filename"
         nTableProps={{
           maxHeight: 'calc(100vh - 17rem)',
-          virtualScroll: true,
         }}
         onUpdateCheckedRowKeys={(keys) => {
           checkedRowKeys.value = keys

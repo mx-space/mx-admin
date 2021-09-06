@@ -163,7 +163,6 @@ export default defineComponent({
           loading={loading.value}
           data={data}
           nTableProps={{
-            virtualScroll: true,
             maxHeight: 'calc(100vh - 22rem)',
           }}
           columns={[

@@ -1,5 +1,4 @@
 import { Chart } from '@antv/g2/esm'
-
 import RefreshOutline from '@vicons/ionicons5/es/RefreshOutline'
 import Trash from '@vicons/ionicons5/es/Trash'
 import { HeaderActionButton } from 'components/button/rounded-button'
@@ -404,7 +403,12 @@ export default defineComponent({
                     await RESTManager.api.analyze.delete()
                     message.success('已清空')
 
-                    await fetchData()
+                    router.replace({
+                      path: route.path,
+                      query: {
+                        page: 1,
+                      },
+                    })
                   },
                 })
               }}
