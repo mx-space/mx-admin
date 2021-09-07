@@ -1,7 +1,7 @@
 import SlidersH from '@vicons/fa/es/SlidersH'
 import TelegramPlane from '@vicons/fa/es/TelegramPlane'
-import Search24Regular from '@vicons/fluent/es/Search24Regular'
 import Location24Regular from '@vicons/fluent/es/Location24Regular'
+import Search24Regular from '@vicons/fluent/es/Search24Regular'
 import { Icon } from '@vicons/utils'
 import camelcaseKeys from 'camelcase-keys'
 import { HeaderActionButton } from 'components/button/rounded-button'
@@ -15,7 +15,7 @@ import { add } from 'date-fns/esm'
 import { useAutoSave, useAutoSaveInEditor } from 'hooks/use-auto-save'
 import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
 import { ContentLayout } from 'layouts/content'
-import { debounce, isString, throttle } from 'lodash-es'
+import { debounce, isString } from 'lodash-es'
 import { Amap, AMapSearch, Regeocode } from 'models/amap'
 import { Coordinate, NoteModel, NoteMusicRecord } from 'models/note'
 import {
@@ -29,7 +29,6 @@ import {
   NDynamicTags,
   NForm,
   NFormItem,
-  NFormItemRow,
   NInput,
   NModal,
   NSelect,
@@ -37,6 +36,7 @@ import {
   NSwitch,
   useMessage,
 } from 'naive-ui'
+import { AutoCompleteOption } from 'naive-ui/lib/auto-complete/src/interface'
 import { RouteName } from 'router/name'
 import { RESTManager } from 'utils/rest'
 import { getDayOfYear } from 'utils/time'
@@ -52,7 +52,6 @@ import {
   watch,
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { AutoCompleteOption } from 'naive-ui/lib/auto-complete/src/interface'
 type NoteReactiveType = {
   title: string
   text: string
@@ -658,18 +657,13 @@ const SearchLocationButton = defineComponent({
                   <NForm labelPlacement="top">
                     <NFormItem label="搜索地点">
                       <NAutoComplete
-                        // onSelect={(e) => {
-                        //   const parsed = JSON.parse(e as string)
-                        //   props.onChange.apply(this, parsed)
-                        // }}
                         placeholder={props.placeholder || ''}
                         onSelect={(j) => {
                           json = j
                         }}
                         options={autocompleteOption.value}
-                        // clearable
                         loading={loading.value}
-                        onUpdate:value={(e) => {
+                        onUpdateValue={(e) => {
                           keyword.value = e
                         }}
                         value={keyword.value}
