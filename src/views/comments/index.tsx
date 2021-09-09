@@ -125,11 +125,15 @@ const ManageComment = defineComponent(() => {
 
   async function handleDelete(id: string | string[]) {
     if (Array.isArray(id)) {
-      id.map(async (i) => {
-        try {
-          await RESTManager.api.comments(i).delete()
-        } catch {}
-      })
+      try {
+        await Promise.all(
+          id.map((i) => {
+            return RESTManager.api
+              .comments(i)
+              .delete({ errorHandler: (err) => void 0 })
+          }),
+        )
+      } catch {}
     } else {
       await RESTManager.api.comments(id).delete()
     }
@@ -316,9 +320,9 @@ const ManageComment = defineComponent(() => {
               dialog.warning({
                 title: '警告',
                 content: '你确定要删除多条评论？',
-                positiveText: '确定',
-                negativeText: '不确定',
-                onPositiveClick: async () => {
+                negativeText: '确定',
+                positiveText: '不确定',
+                onNegativeClick: async () => {
                   await handleDelete(checkedRowKeys.value)
                   checkedRowKeys.value.length = 0
                 },
