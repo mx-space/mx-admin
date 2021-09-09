@@ -47,7 +47,7 @@ specifiers:
   vditor: 3.8.6
   vite: 2.5.3
   vite-plugin-checker: 0.3.4
-  vite-tsconfig-paths: 3.3.13
+  vite-tsconfig-paths: 3.3.14
   vue: 3.2.11
   vue-eslint-parser: 7.11.0
   vue-router: 4.0.11
@@ -103,7 +103,7 @@ devDependencies:
   typescript: 4.3.5
   vite: 2.5.3
   vite-plugin-checker: 0.3.4_vite@2.5.3
-  vite-tsconfig-paths: 3.3.13_vite@2.5.3
+  vite-tsconfig-paths: 3.3.14_vite@2.5.3
   vue-eslint-parser: 7.11.0_eslint@7.32.0
 
 packages:
@@ -4022,8 +4022,8 @@ packages:
       vscode-uri: 3.0.2
     dev: true
 
-  /vite-tsconfig-paths/3.3.13_vite@2.5.3:
-    resolution: {integrity: sha512-G7OO+1g2H6xVN61RIp1xFjvciqJoF5cGKcWfP6ZOZFeA8QRy2X7yaGUZLhXtKxNLEsR2MthDm7KwSNTKQHzwvA==}
+  /vite-tsconfig-paths/3.3.14_vite@2.5.3:
+    resolution: {integrity: sha512-Z501YCOTTwBk+zDq0furrD+O+X/zawKIo8L3eE0GVSr700AvWAArnlUHOzoRJQw0fJLfd+61rD7jkT20Jh8gtA==}
     peerDependencies:
       vite: '>2.0.0-0'
     dependencies:
