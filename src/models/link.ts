@@ -20,6 +20,6 @@ export interface LinkModel {
 }
 
 export interface LinkResponse {
-  page: Pager
+  pagination: Pager
   data: LinkModel[]
 }

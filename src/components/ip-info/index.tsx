@@ -1,8 +1,6 @@
-import camelcaseKeys from 'camelcase-keys'
-import { configs } from 'configs'
 import { NPopover, PopoverTrigger } from 'naive-ui'
+import { RESTManager } from 'utils'
 import { defineComponent, PropType, ref } from 'vue'
-
 const ipLocationCacheMap = new Map<string, IP>()
 
 export const IpInfoPopover = defineComponent({
@@ -46,27 +44,11 @@ export const IpInfoPopover = defineComponent({
           setIpInfoText(ipInfo)
           return
         }
-        const isIPv6 = ip.split(':').length == 8
-        const apiUrl = isIPv6
-          ? configs.ipv6LoopupApiUrl
-          : 'https://api.i-meto.com/ip/v1/qqwry/'
 
-        const response = await fetch(apiUrl + ip)
-        const data = await response.json()
-        let camelData = camelcaseKeys(data, { deep: true }) as IP
-        if (isIPv6) {
-          const _data = camelData as any as IPv6
-          camelData = {
-            cityName: _data.city,
-            countryName: _data.country,
-            ip: _data.query,
-            ispDomain: _data.as,
-            ownerDomain: _data.org,
-            regionName: _data.regionName,
-          }
-        }
-        setIpInfoText(camelData)
-        ipLocationCacheMap.set(ip, camelData)
+        const data: any = await RESTManager.api.tools.ip(ip).get()
+
+        setIpInfoText(data)
+        ipLocationCacheMap.set(ip, data)
       } else {
         resetIpInfoText()
       }

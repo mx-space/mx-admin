@@ -2,13 +2,13 @@ import EmojiAdd24Regular from '@vicons/fluent/es/EmojiAdd24Regular'
 import CheckmarkSharp from '@vicons/ionicons5/es/CheckmarkSharp'
 import CloseSharp from '@vicons/ionicons5/es/CloseSharp'
 import Trash from '@vicons/ionicons5/es/Trash'
-
 import { Icon } from '@vicons/utils'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { IpInfoPopover } from 'components/ip-info'
 import { Table } from 'components/table'
 import { BASE_URL } from 'constants/env'
 import { KAOMOJI_LIST } from 'constants/kaomoji'
+import { useInjector } from 'hooks/use-deps-injection'
 import { useTable } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
 import { CommentModel, CommentsResponse, CommentState } from 'models/comment'
@@ -32,7 +32,6 @@ import {
 import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { RouteName } from 'router/name'
 import { UIStore } from 'stores/ui'
-import { useInjector } from 'hooks/use-deps-injection'
 import { RESTManager } from 'utils/rest'
 import { relativeTimeFromNow } from 'utils/time'
 import { defineComponent, nextTick, reactive, ref, unref, watch } from 'vue'
@@ -70,7 +69,7 @@ const ManageComment = defineComponent(() => {
             },
           )
           data.value = response.data
-          pager.value = response.page
+          pager.value = response.pagination
         },
     )
   const message = useMessage()

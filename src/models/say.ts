@@ -8,5 +8,5 @@ export interface SayModel {
 
 export interface SayResponse {
   data: SayModel[]
-  page: Pager
+  pagination: Pager
 }

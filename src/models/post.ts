@@ -1,8 +1,8 @@
-import { Pager, Count, Image } from './base'
+import { Count, Image, Pager } from './base'
 
 export interface PostResponse {
   data: PostModel[]
-  page: Pager
+  pagination: Pager
 }
 
 export interface PostModel {
