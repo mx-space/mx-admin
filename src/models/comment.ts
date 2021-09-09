@@ -21,7 +21,7 @@ export interface CommentModel {
 
 export interface CommentsResponse {
   data: CommentModel[]
-  page: Pager
+  pagination: Pager
 }
 
 export enum CommentState {

@@ -1,8 +1,8 @@
+import Book from '@vicons/fa/es/Book'
+import ThumbsUp from '@vicons/fa/es/ThumbsUp'
 import Add12Filled from '@vicons/fluent/es/Add12Filled'
 import Delete16Regular from '@vicons/fluent/es/Delete16Regular'
 import { Icon } from '@vicons/utils'
-import Book from '@vicons/fa/es/Book'
-import ThumbsUp from '@vicons/fa/es/ThumbsUp'
 import { Table } from 'components/table'
 import { EditColumn } from 'components/table/edit-column'
 import { RelativeTime } from 'components/time/relative-time'
@@ -17,7 +17,6 @@ import {
   TableColumns,
 } from 'naive-ui/lib/data-table/src/interface'
 import { CategoryStore } from 'stores/category'
-import { parseDate } from 'utils/time'
 import {
   computed,
   ComputedRef,
@@ -51,7 +50,7 @@ export const ManagePostListView = defineComponent({
             })
 
             data.value = response.data
-            pager.value = response.page
+            pager.value = response.pagination
           },
       )
 

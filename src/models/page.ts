@@ -33,5 +33,5 @@ export interface PageModel {
 
 export interface PageResponse {
   data: PageModel[]
-  page: Pager
+  pagination: Pager
 }

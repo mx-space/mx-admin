@@ -59,7 +59,7 @@ export default defineComponent({
               },
             })
             data.value = response.data
-            pager.value = response.page
+            pager.value = response.pagination
           },
       )
     const message = useMessage()

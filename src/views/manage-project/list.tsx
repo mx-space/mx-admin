@@ -1,6 +1,5 @@
 import Add12Filled from '@vicons/fluent/es/Add12Filled'
 import Delete16Regular from '@vicons/fluent/es/Delete16Regular'
-import { defineComponent, onMounted } from 'vue'
 import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
 import { useTable } from 'hooks/use-table'
@@ -15,13 +14,13 @@ import {
 } from 'naive-ui'
 import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { RouteName } from 'router/name'
-import { reactive, watch } from 'vue'
+import { parseDate } from 'utils'
+import isURL from 'validator/es/lib/isURL'
+import { defineComponent, onMounted, reactive, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
-import isURL from 'validator/es/lib/isURL'
-import { parseDate } from 'utils'
 const ManageProjectView = defineComponent({
   setup(props, ctx) {
     const { checkedRowKeys, data, pager, sortProps, fetchDataFn } = useTable(
@@ -34,7 +33,7 @@ const ManageProjectView = defineComponent({
             },
           })
           data.value = response.data
-          pager.value = response.page
+          pager.value = response.pagination
         },
     )
 

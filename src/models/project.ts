@@ -14,5 +14,5 @@ export interface ProjectModel {
 
 export type ProjectResponse = {
   data: ProjectModel[]
-  page: Pager
+  pagination: Pager
 }

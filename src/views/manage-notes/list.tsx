@@ -1,7 +1,6 @@
-import Bookmark from '@vicons/fa/es/Bookmark'
 import Book from '@vicons/fa/es/Book'
+import Bookmark from '@vicons/fa/es/Bookmark'
 import Heart from '@vicons/fa/es/Heart'
-
 import Add12Filled from '@vicons/fluent/es/Add12Filled'
 import Delete16Regular from '@vicons/fluent/es/Delete16Regular'
 import EyeHide20Filled from '@vicons/fluent/es/EyeHide20Filled'
@@ -36,7 +35,7 @@ export const ManageNoteListView = defineComponent({
           async (page = route.query.page || 1, size = 20) => {
             const response = await RESTManager.api.notes.get<{
               data: NoteModel[]
-              page: Pager
+              pagination: Pager
             }>({
               params: {
                 page,
@@ -49,7 +48,7 @@ export const ManageNoteListView = defineComponent({
               },
             })
             data.value = response.data
-            pager.value = response.page
+            pager.value = response.pagination
           },
       )
 

@@ -42,15 +42,14 @@ export default defineComponent({
             params: {
               page,
               size,
-              select: 'title text _id id created modified author source',
             },
           })) as {
             data: UA.Root[]
-            page: Pager
+            pagination: Pager
           }
 
           data.value = response.data
-          pager.value = response.page
+          pager.value = response.pagination
         },
     )
 
