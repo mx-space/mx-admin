@@ -45,7 +45,7 @@
     "@typescript-eslint/eslint-plugin": "4.31.0",
     "@typescript-eslint/parser": "4.31.0",
     "@vitejs/plugin-vue": "1.6.1",
-    "@vitejs/plugin-vue-jsx": "1.1.7",
+    "@vitejs/plugin-vue-jsx": "1.1.8",
     "@vue/compiler-sfc": "3.2.11",
     "@vuedx/typescript-plugin-vue": "0.7.4",
     "autoprefixer": "10.3.4",
