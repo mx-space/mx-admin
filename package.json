@@ -31,7 +31,7 @@
     "naive-ui": "2.18.0",
     "qier-progress": "1.0.4",
     "reflect-metadata": "0.1.13",
-    "socket.io-client": "2.4.0",
+    "socket.io-client": "^4",
     "umi-request": "1.3.9",
     "validator": "13.6.0",
     "vditor": "3.8.6",
@@ -40,7 +40,6 @@
   },
   "devDependencies": {
     "@types/lodash-es": "4.17.4",
-    "@types/socket.io-client": "1.4.36",
     "@types/validator": "13.6.3",
     "@typescript-eslint/eslint-plugin": "4.31.0",
     "@typescript-eslint/parser": "4.31.0",
