@@ -1,5 +1,7 @@
 # MX Space Admin Vue 3 v2
 
+**NOTE: 此版本专为 [v3.0 版的 Server](https://github.com/mx-space/server-next) 打造, [旧版 Server](https://github.com/mx-space/server) 请使用 admin [v2.5](https://github.com/mx-space/admin-next/tree/v2.5.0)**
+
 终于在第一次重构失败后的三个月后, 也就是现在 2021.6, 花了 5 天时间重构了对原有 Admin Vue 2 v1 全部代码.
 
 代码量: 10k
