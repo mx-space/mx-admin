@@ -11,15 +11,13 @@ import Comments from '@vicons/fa/es/Comments'
 import EllipsisH from '@vicons/fa/es/EllipsisH'
 import Eye from '@vicons/fa/es/Eye'
 import File from '@vicons/fa/es/File'
-import FileAlt from '@vicons/fa/es/FileAlt'
 import Flask from '@vicons/fa/es/Flask'
 import Markdown from '@vicons/fa/es/Markdown'
 import PencilAlt from '@vicons/fa/es/PencilAlt'
 import PuzzlePiece from '@vicons/fa/es/PuzzlePiece'
+import TachometerAlt from '@vicons/fa/es/TachometerAlt'
 import UndoAlt from '@vicons/fa/es/UndoAlt'
 import UserFriends from '@vicons/fa/es/UserFriends'
-
-import TachometerAlt from '@vicons/fa/es/TachometerAlt'
 import { Icon } from '@vicons/utils'
 import $RouterView from 'layouts/router-view'
 import { SidebarLayout } from 'layouts/sidebar'
@@ -309,19 +307,19 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     },
     component: () => import('../views/manage-friends'),
   },
-  {
-    path: '/files',
-    name: RouteName.File,
-    meta: {
-      title: '管理文件',
-      icon: (
-        <Icon>
-          <FileAlt />
-        </Icon>
-      ),
-    },
-    component: () => import('../views/manage-files'),
-  },
+  // {
+  //   path: '/files',
+  //   name: RouteName.File,
+  //   meta: {
+  //     title: '管理文件',
+  //     icon: (
+  //       <Icon>
+  //         <FileAlt />
+  //       </Icon>
+  //     ),
+  //   },
+  //   component: () => import('../views/manage-files'),
+  // },
 
   {
     path: '/analyze',

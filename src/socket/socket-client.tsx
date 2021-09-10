@@ -135,7 +135,7 @@ export class SocketClient {
         break
       }
       case EventTypes.CONTENT_REFRESH: {
-        Notification.warning({ content: '将在 1 秒后重载页面' })
+        Notification.warning({ content: '数据库有变动, 将在 1 秒后重载页面' })
         setTimeout(() => {
           location.reload()
         }, 1000)

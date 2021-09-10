@@ -6,7 +6,6 @@ import { Table } from 'components/table'
 import { useTable } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
 import { NButton, NPopconfirm, NSpace, useDialog } from 'naive-ui'
-import { socket } from 'socket'
 import { responseBlobToFile, RESTManager } from 'utils'
 import { defineComponent, onBeforeMount } from 'vue'
 
@@ -49,7 +48,7 @@ export default defineComponent(() => {
       const file = $file.files![0]
       const formData = new FormData()
       formData.append('file', file)
-      RESTManager.api.backups
+      RESTManager.api.backups.rollback
         .post({
           data: formData,
           timeout: Infinity,
@@ -94,11 +93,10 @@ export default defineComponent(() => {
     }
   }
   const handleRollback = async (filename: string) => {
-    await RESTManager.api.backups(filename).patch({
-      // TODO socket id
-      params: { sid: socket.socket.id },
-    })
+    await RESTManager.api.backups.rollback(filename).patch({})
+    message.info('回滚中', { closable: true, duration: 10e8 })
   }
+
   const handleDownload = async (filename: string) => {
     const info = message.info('下载中', { duration: 10e8, closable: true })
     const blob = await RESTManager.api.backups(filename).get({
@@ -182,14 +180,25 @@ export default defineComponent(() => {
                     下载
                   </NButton>
 
-                  <NButton
-                    text
-                    size="tiny"
-                    type="warning"
-                    onClick={() => void handleRollback(filename)}
+                  <NPopconfirm
+                    positiveText={'取消'}
+                    negativeText="回退"
+                    onNegativeClick={() => {
+                      handleRollback(filename)
+                    }}
                   >
-                    回退
-                  </NButton>
+                    {{
+                      trigger: () => (
+                        <NButton text size="tiny" type="warning">
+                          回退
+                        </NButton>
+                      ),
+
+                      default: () => (
+                        <span style={{ maxWidth: '12rem' }}>确定要回退?</span>
+                      ),
+                    }}
+                  </NPopconfirm>
 
                   <NPopconfirm
                     positiveText={'取消'}
