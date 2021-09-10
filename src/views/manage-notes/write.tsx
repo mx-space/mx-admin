@@ -34,7 +34,7 @@ import {
   NSelect,
   NSpace,
   NSwitch,
-  useMessage,
+  useMessage
 } from 'naive-ui'
 import { AutoCompleteOption } from 'naive-ui/lib/auto-complete/src/interface'
 import { RouteName } from 'router/name'
@@ -49,7 +49,7 @@ import {
   reactive,
   ref,
   toRaw,
-  watch,
+  watch
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 type NoteReactiveType = {
@@ -161,7 +161,7 @@ const NoteWriteView = defineComponent(() => {
       return {
         ...toRaw(data),
         title:
-          data.title && data.title.trim() ? data.title.trim() : defaultTitle,
+          data.title && data.title.trim() ? data.title.trim() : defaultTitle.value,
         password:
           data.password && data.password.length > 0 ? data.password : null,
         secret: data.secret

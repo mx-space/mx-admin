@@ -6,6 +6,7 @@ export interface IConfig {
   commentOptions: CommentOptions
   backupOptions: BackupOptions
   baiduSearchOptions: BaiduSearchOptions
+  algoliaSearchOptions: AlgoliaSearchOptions
 }
 export declare class SEODto {
   title: string
@@ -87,8 +88,18 @@ export interface TokenModel {
   id: string
 }
 
-export class BaiduSearchOptions {
+export interface BaiduSearchOptions {
   enable?: boolean
 
   token?: string
+}
+
+export interface AlgoliaSearchOptions {
+  enable: boolean
+
+  apiKey?: string
+
+  appId?: string
+
+  indexName?: string
 }

@@ -15,7 +15,7 @@ import {
 import { FileInfo } from 'naive-ui/lib/upload/src/interface'
 import { responseBlobToFile, RESTManager } from 'utils'
 import { ParsedModel, ParseMarkdownYAML } from 'utils/markdown-parser'
-import { defineComponent, ref, toRaw, unref, watch } from 'vue'
+import { defineComponent, ref, unref, watch } from 'vue'
 
 enum ImportType {
   Post,
@@ -101,7 +101,7 @@ export default defineComponent(() => {
     if (!parsedList.value.length) {
       return message.error('请先解析!!')
     }
-    await RESTManager.api.helper.markdown.import.post({
+    await RESTManager.api.markdown.import.post({
       data: {
         type: importType.value,
         data: parsedList.value,
@@ -115,7 +115,7 @@ export default defineComponent(() => {
   const includeYAMLHeader = ref(true)
   const titleBigTitle = ref(false)
   async function handleExportMarkdown() {
-    const data = await RESTManager.api.helper.markdown.export.get({
+    const data = await RESTManager.api.markdown.export.get({
       params: {
         slug: 1,
         yaml: includeYAMLHeader.value,

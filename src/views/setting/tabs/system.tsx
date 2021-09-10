@@ -1,6 +1,5 @@
 import CheckCircleOutlined from '@vicons/antd/CheckCircleOutlined'
 import { HeaderActionButton } from 'components/button/rounded-button'
-
 import { useInjector } from 'hooks/use-deps-injection'
 import { useLayout } from 'layouts/content'
 import { cloneDeep, isEmpty, merge, omit } from 'lodash-es'
@@ -25,10 +24,10 @@ import {
   computed,
   defineComponent,
   onBeforeMount,
-  reactive,
-  ref,
   onMounted,
   onUnmounted,
+  reactive,
+  ref,
   toRaw,
   watch,
 } from 'vue'
@@ -317,14 +316,13 @@ export const TabSystem = defineComponent(() => {
           </NForm>
         </NCollapseItem>
 
-        <NCollapseItem name="img_bed" title="图床设定">
+        {/* <NCollapseItem name="img_bed" title="图床设定">
           <NForm {...formProps}>
             <NText>
-              {/* TODO */}
               TODO
             </NText>
           </NForm>
-        </NCollapseItem>
+        </NCollapseItem> */}
 
         <NCollapseItem name="backup" title="备份">
           <NForm {...formProps}>
@@ -406,6 +404,50 @@ export const TabSystem = defineComponent(() => {
             </NFormItem>
           </NForm>
         </NCollapseItem>
+
+        <NCollapseItem name="algolia" title="Algolia Search">
+          <NForm {...formProps}>
+            <NFormItem label="开启 Algolia Search">
+              <NSwitch
+                value={configs.value.algoliaSearchOptions.enable}
+                onUpdateValue={(e) =>
+                  void (configs.value.algoliaSearchOptions.enable = e)
+                }
+              />
+            </NFormItem>
+            <NFormItem label="AppId">
+              <NInput
+                {...autosizeableProps}
+                disabled={!configs.value.algoliaSearchOptions.enable}
+                value={configs.value.algoliaSearchOptions.appId}
+                onInput={(e) =>
+                  void (configs.value.algoliaSearchOptions.appId = e)
+                }
+              />
+            </NFormItem>
+            <NFormItem label="apiKey">
+              <NInput
+                {...autosizeableProps}
+                type="password"
+                disabled={!configs.value.algoliaSearchOptions.enable}
+                value={configs.value.algoliaSearchOptions.apiKey}
+                onInput={(e) =>
+                  void (configs.value.algoliaSearchOptions.apiKey = e)
+                }
+              />
+            </NFormItem>
+            <NFormItem label="indexName">
+              <NInput
+                {...autosizeableProps}
+                disabled={!configs.value.algoliaSearchOptions.enable}
+                value={configs.value.algoliaSearchOptions.indexName}
+                onInput={(e) =>
+                  void (configs.value.algoliaSearchOptions.indexName = e)
+                }
+              />
+            </NFormItem>
+          </NForm>
+        </NCollapseItem>
       </NCollapse>
     </Fragment>
   )
@@ -449,6 +491,9 @@ function mergeFullConfigs(configs: any): IConfig {
       baiduSearchOptions: {
         enable: false,
         token: '',
+      },
+      algoliaSearchOptions: {
+        enable: false,
       },
     },
     configs,

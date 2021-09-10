@@ -87,7 +87,16 @@ function buildRoute(manager: RESTManagerStatic): IRequestHandler {
           })
 
           return Array.isArray(res) || isPlainObject(res)
-            ? camelcaseKeys(res, { deep: true })
+            ? (() => {
+                const transform = camelcaseKeys(res, { deep: true })
+
+                return {
+                  ...transform,
+                  get data() {
+                    return transform.data ?? transform
+                  },
+                }
+              })()
             : res
         }
       }
