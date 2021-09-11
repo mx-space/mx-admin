@@ -123,19 +123,19 @@ export const ManagePostListView = defineComponent({
 
               return (
                 <EditColumn
+                  returnToConfrim={false}
                   initialValue={
                     categoryStore.map.value.get(row.categoryId)?.name ?? ''
                   }
                   onSubmit={async (v) => {
-                    message.info('TODO')
-                    // TODO
-                    // await RESTManager.api.posts(row.id).put({
-                    //   data: {
-                    //     categoryId: v,
-                    //   },
-                    // })
+                    await RESTManager.api.posts(row.id).patch({
+                      data: {
+                        categoryId: v,
+                      },
+                    })
 
-                    // message.success('修改成功~!')
+                    message.success('修改成功~!')
+                    data.value.find((i) => i.id === row.id).categoryId = v
                   }}
                   type="select"
                   options={

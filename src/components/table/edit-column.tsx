@@ -1,9 +1,8 @@
-import { defineComponent } from 'vue'
-import { NInput, NSelect, NSpace, useMessage } from 'naive-ui'
-import { PropType, ref, watch } from 'vue'
 import { useInjector } from 'hooks/use-deps-injection'
-import { CategoryStore } from 'stores/category'
+import { NInput, NSelect, useMessage } from 'naive-ui'
 import { SelectMixedOption } from 'naive-ui/lib/select/src/interface'
+import { CategoryStore } from 'stores/category'
+import { defineComponent, PropType, ref, watch } from 'vue'
 
 export const EditColumn = defineComponent({
   props: {
@@ -27,6 +26,10 @@ export const EditColumn = defineComponent({
       type: Array as PropType<SelectMixedOption[]>,
       default: () => [],
     },
+    returnToConfrim: {
+      type: Boolean,
+      default: true,
+    },
   },
   setup(props) {
     const value = ref(props.initialValue)
@@ -44,6 +47,9 @@ export const EditColumn = defineComponent({
     watch(
       () => isEdit.value,
       (n) => {
+        if (!props.returnToConfrim) {
+          return
+        }
         if (n) {
           message.info('回车以完成修改', { duration: 1500 })
           requestAnimationFrame(() => {
