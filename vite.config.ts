@@ -1,10 +1,10 @@
 import vue from '@vitejs/plugin-vue'
+import { execSync } from 'child_process'
 import { omitBy } from 'lodash'
 import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig, loadEnv } from 'vite'
-import tsconfigPaths from 'vite-tsconfig-paths'
 import Checker from 'vite-plugin-checker'
-import { execSync } from 'child_process'
+import tsconfigPaths from 'vite-tsconfig-paths'
 const gitHash = execSync('git rev-parse --short HEAD', {
   encoding: 'utf-8',
 }).split('\n')[0]
@@ -21,7 +21,6 @@ export default ({ mode }) => {
       visualizer({ open: false }),
       Checker({
         typescript: true,
-        // FIXME this is bug
         enableBuild: true,
       }),
     ],
