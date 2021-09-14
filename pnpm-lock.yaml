@@ -42,7 +42,7 @@ specifiers:
   socket.io-client: ^4
   tailwindcss: 2.2.15
   typescript: 4.3.5
-  umi-request: 1.3.9
+  umi-request: 1.4.0
   validator: 13.6.0
   vditor: 3.8.6
   vite: 2.5.3
@@ -75,7 +75,7 @@ dependencies:
   qier-progress: 1.0.4
   reflect-metadata: 0.1.13
   socket.io-client: 4.2.0
-  umi-request: 1.3.9
+  umi-request: 1.4.0
   validator: 13.6.0
   vditor: 3.8.6
   vue: 3.2.11
@@ -3875,8 +3875,8 @@ packages:
     hasBin: true
     dev: true
 
-  /umi-request/1.3.9:
-    resolution: {integrity: sha512-vjm8N1PDP8r3oG2MqUw69luRP4X8ucwIGeEpzbBGpjLy6s/WH9LOgcTxw7ferwn3u4IXqOVawSaGHUrI17blVA==}
+  /umi-request/1.4.0:
+    resolution: {integrity: sha512-OknwtQZddZHi0Ggi+Vr/olJ7HNMx4AzlywyK0W3NZBT7B0stjeZ9lcztA85dBgdAj3KVk8uPJPZSnGaDjELhrA==}
     dependencies:
       isomorphic-fetch: 2.2.1
       qs: 6.10.1

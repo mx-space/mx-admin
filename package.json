@@ -32,7 +32,7 @@
     "qier-progress": "1.0.4",
     "reflect-metadata": "0.1.13",
     "socket.io-client": "^4",
-    "umi-request": "1.3.9",
+    "umi-request": "1.4.0",
     "validator": "13.6.0",
     "vditor": "3.8.6",
     "vue": "3.2.11",
