@@ -38,6 +38,7 @@ const NFormBaseProps = {
   labelPlacement: 'left',
   labelAlign: 'right',
   labelWidth: 150,
+  autocomplete: 'chrome-off',
 }
 
 export const autosizeableProps = {
@@ -152,6 +153,7 @@ export const TabSystem = defineComponent(() => {
   return () => (
     <Fragment>
       <div class="pt-4"></div>
+
       <NCollapse
         accordion
         displayDirective="if"
@@ -304,7 +306,7 @@ export const TabSystem = defineComponent(() => {
                   showPasswordToggle
                   inputProps={{
                     name: 'email-password',
-                    autocomplete: 'off',
+                    autocomplete: 'new-password',
                     autocapitalize: 'off',
                     autocorrect: 'off',
                   }}
@@ -360,7 +362,7 @@ export const TabSystem = defineComponent(() => {
                 type="password"
                 inputProps={{
                   name: 'secret-key-password',
-                  autocomplete: 'off',
+                  autocomplete: 'new-password',
                   autocapitalize: 'off',
                   autocorrect: 'off',
                 }}
@@ -391,7 +393,7 @@ export const TabSystem = defineComponent(() => {
                 type="password"
                 inputProps={{
                   name: 'baidu-push-password',
-                  autocomplete: 'off',
+                  autocomplete: 'new-password',
                   autocapitalize: 'off',
                   autocorrect: 'off',
                 }}
