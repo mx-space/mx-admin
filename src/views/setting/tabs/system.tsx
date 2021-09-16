@@ -343,15 +343,15 @@ export const TabSystem = defineComponent(() => {
             <NFormItem label="地域 Region">
               <NInput
                 {...autosizeableProps}
-                value={configs.value.backupOptions.region}
-                onInput={(e) => void (configs.value.backupOptions.region = e)}
+                value={configs.value.backupOptions.Region}
+                onInput={(e) => void (configs.value.backupOptions.Region = e)}
               />
             </NFormItem>
             <NFormItem label="SecretId">
               <NInput
                 {...autosizeableProps}
-                value={configs.value.backupOptions.secretId}
-                onInput={(e) => void (configs.value.backupOptions.secretId = e)}
+                value={configs.value.backupOptions.SecretId}
+                onInput={(e) => void (configs.value.backupOptions.SecretId = e)}
               />
             </NFormItem>
             <NFormItem label="SecretKey">
@@ -365,9 +365,9 @@ export const TabSystem = defineComponent(() => {
                   autocorrect: 'off',
                 }}
                 showPasswordToggle
-                value={configs.value.backupOptions.secretKey}
+                value={configs.value.backupOptions.SecretKey}
                 onInput={(e) =>
-                  void (configs.value.backupOptions.secretKey = e)
+                  void (configs.value.backupOptions.SecretKey = e)
                 }
               />
             </NFormItem>
@@ -483,10 +483,10 @@ function mergeFullConfigs(configs: any): IConfig {
       },
       backupOptions: {
         enable: false,
-        secretId: '',
-        secretKey: '',
-        bucket: '',
-        region: '',
+        SecretId: '',
+        SecretKey: '',
+        Bucket: '',
+        Region: '',
       },
       baiduSearchOptions: {
         enable: false,

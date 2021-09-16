@@ -70,10 +70,10 @@ export declare class File {
 }
 export declare class BackupOptions {
   enable: boolean
-  secretId?: string
-  secretKey?: string
-  bucket?: string
-  region: string
+  SecretId?: string
+  SecretKey?: string
+  Bucket?: string
+  Region: string
 }
 
 export interface TokenModel {
