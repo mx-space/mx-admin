@@ -18,6 +18,8 @@ import PuzzlePiece from '@vicons/fa/es/PuzzlePiece'
 import TachometerAlt from '@vicons/fa/es/TachometerAlt'
 import UndoAlt from '@vicons/fa/es/UndoAlt'
 import UserFriends from '@vicons/fa/es/UserFriends'
+import Clock from '@vicons/tabler/es/Clock'
+import Log from '@vicons/tabler/es/News'
 import { Icon } from '@vicons/utils'
 import $RouterView from 'layouts/router-view'
 import { SidebarLayout } from 'layouts/sidebar'
@@ -398,6 +400,32 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           ),
         },
         component: () => import('../views/other/markdown-helper'),
+      },
+      {
+        path: 'cron',
+        name: RouteName.Cron,
+        meta: {
+          title: '任务',
+          icon: (
+            <Icon>
+              <Clock />
+            </Icon>
+          ),
+        },
+        component: () => import('../views/other/cron'),
+      },
+      {
+        path: 'log',
+        name: RouteName.Log,
+        meta: {
+          title: '日志',
+          icon: (
+            <Icon>
+              <Log />
+            </Icon>
+          ),
+        },
+        component: () => import('../views/other/log'),
       },
     ],
   },

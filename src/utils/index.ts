@@ -3,9 +3,9 @@ import { toRaw } from 'vue'
 
 export * from './auth'
 export * from './build-menus'
+export * from './case'
 export * from './rest'
 export * from './time'
-export * from './case'
 
 /**
  * diff 两层, Object 浅层比较, 引用不一致返回整个不一样的 Object
@@ -75,4 +75,15 @@ export function responseBlobToFile(response: any, filename: string): void {
   link.setAttribute('download', filename)
   document.body.appendChild(link)
   link.click()
+}
+
+export function toPascalCase(string: string) {
+  return `${string}`
+    .replace(new RegExp(/[-_]+/, 'g'), ' ')
+    .replace(new RegExp(/[^\w\s]/, 'g'), '')
+    .replace(
+      new RegExp(/\s+(.)(\w*)/, 'g'),
+      ($1, $2, $3) => `${$2.toUpperCase() + $3.toLowerCase()}`,
+    )
+    .replace(new RegExp(/\w/), (s) => s.toUpperCase())
 }

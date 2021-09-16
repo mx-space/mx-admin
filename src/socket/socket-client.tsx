@@ -31,6 +31,15 @@ export class SocketClient {
   #title = configs.title
   #notice = new BrowserNotification()
   constructor() {
+    this.initIO()
+  }
+
+  private isInit = false
+  initIO() {
+    if (this.isInit) {
+      return
+    }
+    this.destory()
     const token = getToken()
     if (!token) {
       return
@@ -48,14 +57,7 @@ export class SocketClient {
         },
       },
     )
-    this.initIO()
-  }
 
-  private isInit = false
-  initIO() {
-    if (!this.socket || this.isInit) {
-      return
-    }
     this.socket.open()
     this.socket.on(
       'message',
@@ -73,16 +75,7 @@ export class SocketClient {
 
     this.isInit = true
   }
-  reconnect() {
-    const token = getToken()
-    if (!token) {
-      return
-    }
-    this.socket.io.opts.query = {
-      token,
-    }
-    this.socket.open()
-  }
+
   handleEvent(type: EventTypes, payload: any) {
     switch (type) {
       case EventTypes.GATEWAY_CONNECT: {
@@ -116,7 +109,7 @@ export class SocketClient {
             )
           },
         })
-        // TODO
+
         this.#notice.notice(this.#title + ' 收到新的评论', body).then((no) => {
           if (!no) {
             return
@@ -172,14 +165,21 @@ export class SocketClient {
           })
         break
       }
+      default: {
+        console.log(type, payload)
+      }
     }
 
     bus.emit(type, payload)
   }
 
   destory() {
+    if (!this.socket) {
+      return
+    }
     this.socket.disconnect()
     this.socket.off('message')
+
     this.isInit = false
   }
 }

@@ -124,10 +124,6 @@ if (__DEV__ && !window.api) {
   })
 }
 
-export const useRest = () => {
-  return RESTManager.api
-}
-
 RESTManager.instance.interceptors.request.use((url, options) => {
   const token = getToken()
 

@@ -29,6 +29,8 @@ export enum RouteName {
   Other = 'other',
   Backup = 'backup',
   Markdown = 'markdown',
+  Cron = 'cron',
+  Log = 'log',
   Optimize = 'optimize',
   Login = 'login',
   Home = 'home',
