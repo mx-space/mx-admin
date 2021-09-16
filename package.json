@@ -51,7 +51,6 @@
     "cors": "2.8.5",
     "eslint": "7.32.0",
     "eslint-plugin-vue": "7.17.0",
-    "express": "4.17.1",
     "postcss": "8.3.6",
     "postcss-nested": "5.0.6",
     "prettier": "2.3.2",
