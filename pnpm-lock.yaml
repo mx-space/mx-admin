@@ -27,7 +27,7 @@ specifiers:
   cors: 2.8.5
   date-fns: 2.23.0
   eslint: 7.32.0
-  eslint-plugin-vue: 7.17.0
+  eslint-plugin-vue: 7.18.0
   express: 4.17.1
   js-cookie: 3.0.1
   lodash-es: 4.17.21
@@ -93,7 +93,7 @@ devDependencies:
   autoprefixer: 10.3.4_postcss@8.3.6
   cors: 2.8.5
   eslint: 7.32.0
-  eslint-plugin-vue: 7.17.0_eslint@7.32.0
+  eslint-plugin-vue: 7.18.0_eslint@7.32.0
   express: 4.17.1
   postcss: 8.3.6
   postcss-nested: 5.0.6_postcss@8.3.6
@@ -2065,8 +2065,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /eslint-plugin-vue/7.17.0_eslint@7.32.0:
-    resolution: {integrity: sha512-Rq5R2QetDCgC+kBFQw1+aJ5B93tQ4xqZvoCUxuIzwTonngNArsdP8ChM8PowIzsJvRtWl4ltGh/bZcN3xhFWSw==}
+  /eslint-plugin-vue/7.18.0_eslint@7.32.0:
+    resolution: {integrity: sha512-ceDXlXYMMPMSXw7tdKUR42w9jlzthJGJ3Kvm3YrZ0zuQfvAySNxe8sm6VHuksBW0+060GzYXhHJG6IHVOfF83Q==}
     engines: {node: '>=8.10'}
     peerDependencies:
       eslint: ^6.2.0 || ^7.0.0 || ^8.0.0-0
