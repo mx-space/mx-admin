@@ -38,7 +38,7 @@ specifiers:
   qier-progress: 1.0.4
   reflect-metadata: 0.1.13
   rollup-plugin-visualizer: 5.5.2
-  socket.io-client: ^4
+  socket.io-client: 4.2.0
   tailwindcss: 2.2.15
   typescript: 4.3.5
   umi-request: 1.4.0
@@ -2304,6 +2304,7 @@ packages:
     resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
+    requiresBuild: true
     dev: true
     optional: true
 
