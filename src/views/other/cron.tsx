@@ -56,7 +56,7 @@ export default defineComponent({
                 if (!nextDate) {
                   return 'N/A'
                 }
-                return format(new Date(nextDate), 'yyyy-mm-dd hh:mm:ss')
+                return format(new Date(nextDate), 'MM/dd/yyyy hh:mm:ss')
               },
             },
             {
