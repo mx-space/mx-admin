@@ -45,7 +45,7 @@ specifiers:
   unplugin-auto-import: ^0.4.6
   validator: 13.6.0
   vditor: 3.8.6
-  vite: 2.5.8
+  vite: 2.5.10
   vite-plugin-checker: 0.3.4
   vite-tsconfig-paths: 3.3.14
   vue: 3.2.11
@@ -104,10 +104,10 @@ devDependencies:
   rollup-plugin-visualizer: 5.5.2
   tailwindcss: 2.2.15_4dc2d3db2b138fb8fa7d5c7b0c803aba
   typescript: 4.3.5
-  unplugin-auto-import: 0.4.6_@vueuse+core@6.4.0+vite@2.5.8
-  vite: 2.5.8
-  vite-plugin-checker: 0.3.4_vite@2.5.8
-  vite-tsconfig-paths: 3.3.14_vite@2.5.8
+  unplugin-auto-import: 0.4.6_@vueuse+core@6.4.0+vite@2.5.10
+  vite: 2.5.10
+  vite-plugin-checker: 0.3.4_vite@2.5.10
+  vite-tsconfig-paths: 3.3.14_vite@2.5.10
   vue-eslint-parser: 7.11.0_eslint@7.32.0
 
 packages:
@@ -3651,7 +3651,7 @@ packages:
     engines: {node: '>= 10.0.0'}
     dev: true
 
-  /unplugin-auto-import/0.4.6_@vueuse+core@6.4.0+vite@2.5.8:
+  /unplugin-auto-import/0.4.6_@vueuse+core@6.4.0+vite@2.5.10:
     resolution: {integrity: sha512-QCfCLsPUXPm8Xu81QKRLNCxb+6CwAUnQdH4x0Y+wD2xTZZmt7WHJoueQO5Y+tCtYAZ9QPg+b6wv+5FtBfIPkVw==}
     engines: {node: '>=14'}
     peerDependencies:
@@ -3666,14 +3666,14 @@ packages:
       has-pkg: 0.0.1
       magic-string: 0.25.7
       resolve: 1.20.0
-      unplugin: 0.2.11_vite@2.5.8
+      unplugin: 0.2.11_vite@2.5.10
     transitivePeerDependencies:
       - rollup
       - vite
       - webpack
     dev: true
 
-  /unplugin/0.2.11_vite@2.5.8:
+  /unplugin/0.2.11_vite@2.5.10:
     resolution: {integrity: sha512-PY8x+hG1smsF06chESP5BurwZN+tZK1tNjKsCXe4XFOfRCIOcrIPCrwBKwLSfeAdojVCtMjSpJ2e/l5QXNw16A==}
     peerDependencies:
       rollup: ^2.50.0
@@ -3688,7 +3688,7 @@ packages:
         optional: true
     dependencies:
       upath: 2.0.1
-      vite: 2.5.8
+      vite: 2.5.10
       webpack-virtual-modules: 0.4.3
     dev: true
 
@@ -3747,7 +3747,7 @@ packages:
     resolution: {integrity: sha512-vQBcvntBlnAPonAkGNM8iJ9NxE3PucA+V2W95xiN75YJKxirLJvOws2kEyOEO45T4N+YTbQOCR2m77Y05pfVhQ==}
     dev: false
 
-  /vite-plugin-checker/0.3.4_vite@2.5.8:
+  /vite-plugin-checker/0.3.4_vite@2.5.10:
     resolution: {integrity: sha512-IhZtrfsPOi1Apynm+AYN1GqlOnAygIaMUFS+sSXACn0E/776fFZ7UE2wSuvAt7/sMW1DJESQV+4JJbB7HZPQEA==}
     hasBin: true
     peerDependencies:
@@ -3764,14 +3764,14 @@ packages:
       npm-run-path: 4.0.1
       strip-ansi: 6.0.0
       tiny-invariant: 1.1.0
-      vite: 2.5.8
+      vite: 2.5.10
       vscode-languageclient: 7.0.0
       vscode-languageserver: 7.0.0
       vscode-languageserver-textdocument: 1.0.1
       vscode-uri: 3.0.2
     dev: true
 
-  /vite-tsconfig-paths/3.3.14_vite@2.5.8:
+  /vite-tsconfig-paths/3.3.14_vite@2.5.10:
     resolution: {integrity: sha512-Z501YCOTTwBk+zDq0furrD+O+X/zawKIo8L3eE0GVSr700AvWAArnlUHOzoRJQw0fJLfd+61rD7jkT20Jh8gtA==}
     peerDependencies:
       vite: '>2.0.0-0'
@@ -3780,13 +3780,13 @@ packages:
       globrex: 0.1.2
       recrawl-sync: 2.2.1
       tsconfig-paths: 3.11.0
-      vite: 2.5.8
+      vite: 2.5.10
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /vite/2.5.8:
-    resolution: {integrity: sha512-2GRsLrmMsFI0u31WTtkGbKvEIJO4I9qDltma3QiyDJEk14IzjM35OCElAFHFs2VlL7h2qX5AdHbwfEhnmwhQgw==}
+  /vite/2.5.10:
+    resolution: {integrity: sha512-0ObiHTi5AHyXdJcvZ67HMsDgVpjT5RehvVKv6+Q0jFZ7zDI28PF5zK9mYz2avxdA+4iJMdwCz6wnGNnn4WX5Gg==}
     engines: {node: '>=12.2.0'}
     hasBin: true
     dependencies:
