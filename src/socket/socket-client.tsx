@@ -45,7 +45,9 @@ export class SocketClient {
       return
     }
     this.socket = io(
-      (import.meta.env.VITE_APP_GATEWAY || 'http://localhost:2333') + '/admin',
+      window.injectData.GATEWAY ||
+        (import.meta.env.VITE_APP_GATEWAY || 'http://localhost:2333') +
+          '/admin',
       {
         timeout: 10000,
         reconnectionDelay: 3000,

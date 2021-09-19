@@ -11,6 +11,7 @@ import { UserStore } from '../../stores/user'
 import { RESTManager } from '../../utils/rest'
 
 const bgUrl =
+  window.injectData.LOGIN_BG ||
   (import.meta.env.VITE_APP_LOGIN_BG as string) ||
   'https://gitee.com/xun7788/my-imagination/raw/master/uPic/1615516941397.jpg'
 export const LoginView = defineComponent({

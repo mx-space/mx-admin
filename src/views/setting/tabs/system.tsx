@@ -23,7 +23,6 @@ import { deepDiff, RESTManager } from 'utils'
 import {
   computed,
   defineComponent,
-  onBeforeMount,
   onMounted,
   onUnmounted,
   reactive,
@@ -128,7 +127,7 @@ export const TabSystem = defineComponent(() => {
     configs.value = response
   }
 
-  onBeforeMount(() => {
+  onMounted(() => {
     fetchConfig()
   })
 
@@ -224,6 +223,35 @@ export const TabSystem = defineComponent(() => {
           </NForm>
         </NCollapseItem>
 
+        <NCollapseItem title="后台附加设置" name="adminExtra">
+          <NForm {...formProps}>
+            <NFormItem label="登录页面背景">
+              <NInput
+                {...autosizeableProps}
+                value={configs.value.adminExtra.background}
+                inputProps={{ autocomplete: 'off' }}
+                onUpdateValue={(e) =>
+                  void (configs.value.adminExtra.background = e)
+                }
+              ></NInput>
+            </NFormItem>
+
+            <NFormItem label="高德查询 API Key">
+              <NInput
+                {...autosizeableProps}
+                value={configs.value.adminExtra.gaodemapKey}
+                type={'password'}
+                showPasswordToggle
+                clearable
+                inputProps={{ autocomplete: 'off' }}
+                onUpdateValue={(e) => {
+                  configs.value.adminExtra.gaodemapKey = e
+                }}
+              />
+            </NFormItem>
+          </NForm>
+        </NCollapseItem>
+
         <NCollapseItem title="评论设置" name="comment">
           <NForm {...formProps}>
             <NFormItem label="反垃圾评论">
@@ -280,18 +308,26 @@ export const TabSystem = defineComponent(() => {
             <NGrid cols={gridCols.value} xGap={12}>
               <NFormItemGi span={1} label="发件邮箱 host">
                 <NInput
-                  value={configs.value.mailOptions.options.host}
-                  onInput={(e) =>
-                    void (configs.value.mailOptions.options.host = e)
-                  }
+                  value={configs.value.mailOptions.options?.host || ''}
+                  onInput={(e) => {
+                    if (!configs.value.mailOptions.options) {
+                      // @ts-ignore
+                      configs.value.mailOptions.options = {}
+                    }
+                    configs.value.mailOptions.options!.host = e
+                  }}
                 />
               </NFormItemGi>
               <NFormItemGi span={1} label="发件邮箱端口">
                 <NInputNumber
-                  value={configs.value.mailOptions.options.port}
-                  onChange={(e) =>
-                    void (configs.value.mailOptions.options.port = e ?? 465)
-                  }
+                  value={configs.value.mailOptions.options?.port || 465}
+                  onChange={(e) => {
+                    if (!configs.value.mailOptions.options) {
+                      // @ts-ignore
+                      configs.value.mailOptions.options = {}
+                    }
+                    configs.value.mailOptions.options!.port = e ?? 465
+                  }}
                 />
               </NFormItemGi>
               <NFormItemGi span={1} label="发件邮箱地址">
@@ -317,14 +353,6 @@ export const TabSystem = defineComponent(() => {
             </NGrid>
           </NForm>
         </NCollapseItem>
-
-        {/* <NCollapseItem name="img_bed" title="图床设定">
-          <NForm {...formProps}>
-            <NText>
-              TODO
-            </NText>
-          </NForm>
-        </NCollapseItem> */}
 
         <NCollapseItem name="backup" title="备份">
           <NForm {...formProps}>
@@ -465,12 +493,7 @@ function mergeFullConfigs(configs: any): IConfig {
         serverUrl: '',
         webUrl: '',
       },
-      imageBed: {
-        customUrl: '',
-        repo: '',
-        token: '',
-        type: 'github',
-      },
+
       mailOptions: {
         user: '',
         pass: '',
@@ -496,6 +519,10 @@ function mergeFullConfigs(configs: any): IConfig {
       },
       algoliaSearchOptions: {
         enable: false,
+      },
+      adminExtra: {
+        background: '',
+        gaodemapKey: '',
       },
     },
     configs,

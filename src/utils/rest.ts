@@ -17,7 +17,7 @@ class RESTManagerStatic {
   constructor() {
     this._$$instance = extend({
       // @ts-ignore
-      prefix: import.meta.env.VITE_APP_BASE_API,
+      prefix: window.injectData.BASE_API || import.meta.env.VITE_APP_BASE_API,
       timeout: 10000,
       errorHandler: async (error) => {
         const Message = window.message
@@ -42,7 +42,7 @@ class RESTManagerStatic {
               Message.error(message)
             }
           } catch (e) {
-            Message.error('出错了, 请查看控制台')
+            // Message.error('出错了, 请查看控制台')
             console.log(e)
           }
 

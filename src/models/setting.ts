@@ -1,14 +1,4 @@
-export interface IConfig {
-  seo: SEODto
-  url: UrlDto
-  imageBed: ImageBedDto
-  mailOptions: MailOptionsDto
-  commentOptions: CommentOptions
-  backupOptions: BackupOptions
-  baiduSearchOptions: BaiduSearchOptions
-  algoliaSearchOptions: AlgoliaSearchOptions
-}
-export declare class SEODto {
+export declare class SeoDto {
   title: string
   description: string
   icon?: string
@@ -20,86 +10,54 @@ export declare class UrlDto {
   serverUrl: string
   wsUrl: string
 }
-export declare class ImageBedDto {
-  type: 'github'
-  token?: string
-  repo?: string
-  customUrl?: string
+declare class MailOption {
+  port: number
+  host: string
 }
 export declare class MailOptionsDto {
   enable: boolean
   user: string
   pass: string
-  options: {
-    port: number
-    host: string
-  }
+  options?: MailOption
 }
-export declare class CommentOptions {
+export declare class CommentOptionsDto {
   antiSpam: boolean
   spamKeywords?: string[]
   blockIps?: string[]
   disableNoChinese?: boolean
 }
-
-export interface Dimensions {
-  height: number
-  width: number
-  type: string
-}
-export enum FileType {
-  IMAGE = 0,
-  AVATAR = 1,
-  BACKGROUND = 2,
-  PHOTO = 3,
-}
-export enum FileLocate {
-  Local = 0,
-  Online = 1,
-}
-
-export declare class File {
-  filename: string
-  name: string
-  mime: string
-  info?: Record<string, any>
-  dimensions?: Dimensions
-  type: number
-  locate: 0 | 1
-  url?: string
-}
-export declare class BackupOptions {
+export declare class BackupOptionsDto {
   enable: boolean
   secretId?: string
   secretKey?: string
   bucket?: string
   region: string
 }
-
-export interface TokenModel {
-  created: string
-
-  token: string
-
-  expired?: Date
-
-  name: string
-
-  id: string
-}
-
-export interface BaiduSearchOptions {
-  enable?: boolean
-
+export declare class BaiduSearchOptionsDto {
+  enable: boolean
   token?: string
 }
-
-export interface AlgoliaSearchOptions {
+export declare class AlgoliaSearchOptionsDto {
   enable: boolean
-
   apiKey?: string
-
   appId?: string
-
   indexName?: string
 }
+
+export declare class AdminExtraDto {
+  background?: string
+
+  gaodemapKey?: string
+}
+
+export interface IConfig {
+  seo: SeoDto
+  url: UrlDto
+  mailOptions: MailOptionsDto
+  commentOptions: CommentOptionsDto
+  backupOptions: BackupOptionsDto
+  baiduSearchOptions: BaiduSearchOptionsDto
+  algoliaSearchOptions: AlgoliaSearchOptionsDto
+  adminExtra: AdminExtraDto
+}
+export declare type IConfigKeys = keyof IConfig

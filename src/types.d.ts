@@ -1,4 +1,4 @@
-import { MessageApi, useNotification, useDialog } from 'naive-ui'
+import { MessageApi, useDialog, useNotification } from 'naive-ui'
 import { VNodeProps } from 'vue'
 
 declare global {
@@ -6,6 +6,15 @@ declare global {
     message: MessageApi
     notification: ReturnType<typeof useNotification>
     dialog: ReturnType<typeof useDialog>
+    injectData: {
+      BASE_API: null | string
+      WEB_URL: null | string
+      GATEWAY: null | string
+      GAODEMAP_KEY: null | string
+      LOGIN_BG: null | string
+      TITLE: null | string
+    }
+
     [K: string]: any
   }
 
