@@ -1,16 +1,7 @@
 <template>
-  <div
-    class="avatar"
-    :style="{ height: `${size}px`, width: `${size}px` }"
-  >
-    <img
-      :src="src"
-      alt=""
-      :style="{ display: loaded ? '' : 'none' }"
-    >
-    <div class="sr-only">
-      一个头像
-    </div>
+  <div class="avatar" :style="{ height: `${size}px`, width: `${size}px` }">
+    <img :src="src" alt="" :style="{ display: loaded ? '' : 'none' }" />
+    <div class="sr-only">一个头像</div>
   </div>
 </template>
 
@@ -32,6 +23,9 @@ export default defineComponent({
     const loaded = ref(false)
 
     const preloadImage = () => {
+      if (!props.src) {
+        return
+      }
       const $$ = new Image()
       $$.src = props.src
 
