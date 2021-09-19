@@ -10,7 +10,6 @@ declare global {
       BASE_API: null | string
       WEB_URL: null | string
       GATEWAY: null | string
-      GAODEMAP_KEY: null | string
       LOGIN_BG: null | string
       TITLE: null | string
     }

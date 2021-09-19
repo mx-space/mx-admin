@@ -225,6 +225,22 @@ export const TabSystem = defineComponent(() => {
 
         <NCollapseItem title="后台附加设置" name="adminExtra">
           <NForm {...formProps}>
+            <NFormItem label="开启后台管理反代">
+              <NSwitch
+                value={configs.value.adminExtra.enableAdminProxy}
+                onUpdateValue={(e) =>
+                  void (configs.value.adminExtra.enableAdminProxy = e)
+                }
+              />
+            </NFormItem>
+            <NFormItem label="中后台标题">
+              <NInput
+                {...autosizeableProps}
+                value={configs.value.adminExtra.title}
+                onUpdateValue={(e) => void (configs.value.adminExtra.title = e)}
+              ></NInput>
+            </NFormItem>
+
             <NFormItem label="登录页面背景">
               <NInput
                 {...autosizeableProps}
@@ -521,8 +537,10 @@ function mergeFullConfigs(configs: any): IConfig {
         enable: false,
       },
       adminExtra: {
+        enableAdminProxy: false,
         background: '',
         gaodemapKey: '',
+        title: '静かな森',
       },
     },
     configs,

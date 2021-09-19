@@ -45,5 +45,5 @@ jobs:
           publish_dir: ./dist
     env:
       CI: true
-      VITE_APP_GAODEMAP_KEY: ${{ secrets.VITE_APP_GAODEMAP_KEY }}
+      # VITE_APP_GAODEMAP_KEY: ${{ secrets.VITE_APP_GAODEMAP_KEY }}
       VITE_APP_PUBLIC_URL: ${{ secrets.VITE_APP_PUBLIC_URL }}

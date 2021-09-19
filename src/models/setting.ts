@@ -48,6 +48,11 @@ export declare class AdminExtraDto {
   background?: string
 
   gaodemapKey?: string
+  title?: string
+  /**
+   * 是否开启后台反代访问
+   */
+  enableAdminProxy?: boolean
 }
 
 export interface IConfig {
