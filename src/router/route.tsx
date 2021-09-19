@@ -309,19 +309,6 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     },
     component: () => import('../views/manage-friends'),
   },
-  // {
-  //   path: '/files',
-  //   name: RouteName.File,
-  //   meta: {
-  //     title: '管理文件',
-  //     icon: (
-  //       <Icon>
-  //         <FileAlt />
-  //       </Icon>
-  //     ),
-  //   },
-  //   component: () => import('../views/manage-files'),
-  // },
 
   {
     path: '/analyze',
@@ -445,6 +432,13 @@ export const routes: RouteRecordRaw[] = [
     name: RouteName.Login,
     meta: { isPublic: true, title: '登陆' },
     component: LoginView,
+  },
+
+  {
+    path: '/setup',
+    name: RouteName.Setup,
+    meta: { isPublic: true, title: '初始化' },
+    component: import('../views/setup/index.vue'),
   },
   // for dev
   {

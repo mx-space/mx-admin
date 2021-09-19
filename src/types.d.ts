@@ -12,6 +12,8 @@ declare global {
       GATEWAY: null | string
       LOGIN_BG: null | string
       TITLE: null | string
+
+      INIT: null | boolean
     }
 
     [K: string]: any

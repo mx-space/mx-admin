@@ -34,4 +34,5 @@ export enum RouteName {
   Optimize = 'optimize',
   Login = 'login',
   Home = 'home',
+  Setup = 'setup',
 }

@@ -1,12 +1,22 @@
-import { configs } from '../configs'
-import { router } from './router'
 import QProgress from 'qier-progress'
+import { configs } from '../configs'
 import { RESTManager } from '../utils/rest'
+import { router } from './router'
 export const progress = new QProgress({ colorful: false, color: '#1a9cf3' })
 const title = configs.title
 
 router.beforeEach(async (to) => {
   progress.start()
+  // guard for setup route
+
+  if (to.path === '/setup') {
+    const isInit =
+      window.injectData.INIT ??
+      (await RESTManager.api.init.get<{ isInit: boolean }>()).isInit
+    if (isInit) {
+      return '/'
+    }
+  }
 
   if (to.meta.isPublic || to.fullPath.startsWith('/dev')) {
     return
