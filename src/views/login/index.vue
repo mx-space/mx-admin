@@ -21,6 +21,15 @@ export const LoginView = defineComponent({
     const { user, updateToken } = useInjector(UserStore)
     const router = useRouter()
     const input = ref<HTMLInputElement>(null!)
+
+    onBeforeMount(async () => {
+      const isInit =
+        window.injectData.INIT ??
+        (await RESTManager.api.init.get<{ isInit: boolean }>()).isInit
+      if (!isInit) {
+        return router.replace('/setup')
+      }
+    })
     onMounted(() => {
       const $$ = new Image()
       $$.src = bgUrl
@@ -104,8 +113,6 @@ export default LoginView
           @click.prevent.stop="handleLogin"
         />
       </form>
-
-      <!-- <Avatar :size="80" src="https://resume.innei.ren/avatar.ec3d4d8d.png" /> -->
     </div>
   </div>
 </template>

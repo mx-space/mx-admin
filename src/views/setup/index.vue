@@ -18,7 +18,13 @@ export const InitView = defineComponent({
   setup() {
     const loaded = ref(false)
     const { updateToken } = useInjector(UserStore)
-
+    onMounted(() => {
+      const $$ = new Image()
+      $$.src = bgUrl
+      $$.onload = (e) => {
+        loaded.value = true
+      }
+    })
     const toast = useMessage()
 
     const password = ref('')
@@ -73,10 +79,18 @@ export default InitView
     <div class="wrapper">
       <form action="#" @submit.prevent="handleRegister">
         <div class="input-wrap">
-          <input v-model="username" autofocus />
+          <input
+            v-model="username"
+            autofocus
+            placeholder="这里填上你的用户名"
+          />
         </div>
         <div class="input-wrap">
-          <input v-model="password" type="password" class="password" />
+          <input
+            v-model="password"
+            type="password"
+            placeholder="这里填上密码哦"
+          />
         </div>
         <ParallaxButtonVue
           title="注册"
@@ -84,8 +98,6 @@ export default InitView
           @click.prevent.stop="handleRegister"
         />
       </form>
-
-      <!-- <Avatar :size="80" src="https://resume.innei.ren/avatar.ec3d4d8d.png" /> -->
     </div>
   </div>
 </template>
