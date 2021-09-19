@@ -7,23 +7,41 @@ import { RESTManager, toPascalCase } from 'utils'
 
 export default defineComponent({
   setup() {
-    const { data, checkedRowKeys, fetchDataFn, loading } = useTable(
-      (dataRef) => {
-        return async () => {
-          const data = (await RESTManager.api.health.cron.get()) as any
-          dataRef.value = Array.from(
-            Object.values(data.data).map((item: any) => ({
-              ...item,
-              _name: item.name,
-              name: toPascalCase(item.name),
-            })),
-          )
-        }
-      },
-    )
+    const { data, fetchDataFn, loading } = useTable((dataRef) => {
+      return async () => {
+        const data = (await RESTManager.api.health.cron.get()) as any
+        dataRef.value = Array.from(
+          Object.values(data.data).map((item: any) => ({
+            ...item,
+            _name: item.name,
+            name: toPascalCase(item.name),
+          })),
+        )
+      }
+    })
     onMounted(async () => {
       await fetchDataFn()
     })
+    const executeCron = async (name: string, niceName: string) => {
+      await RESTManager.api.health.cron.run(name).post()
+      // 开始轮询状态
+      let timer: any = setTimeout(function polling() {
+        RESTManager.api.health.cron
+          .task(name)
+          .get()
+          .then((data: any) => {
+            if (data.status === 'fulfill') {
+              message.success(`${niceName} 执行完成`)
+              timer = clearTimeout(timer)
+            } else if (data.status === 'reject') {
+              message.error(`${niceName} 执行失败, ` + data.message)
+              timer = clearTimeout(timer)
+            } else {
+              polling()
+            }
+          })
+      }, 1000)
+    }
     return () => (
       <ContentLayout>
         <Table
@@ -66,9 +84,9 @@ export default defineComponent({
                 return (
                   <NSpace>
                     <NPopconfirm
-                      onPositiveClick={() => {
-                        RESTManager.api.health.cron.run(row._name).post()
-                      }}
+                      onPositiveClick={() =>
+                        void executeCron(row._name, row.name)
+                      }
                     >
                       {{
                         trigger() {
