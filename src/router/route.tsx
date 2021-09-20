@@ -438,7 +438,7 @@ export const routes: RouteRecordRaw[] = [
     path: '/setup',
     name: RouteName.Setup,
     meta: { isPublic: true, title: '初始化' },
-    component: import('../views/setup/index.vue'),
+    component: () => import('../views/setup/index.vue'),
   },
   // for dev
   {

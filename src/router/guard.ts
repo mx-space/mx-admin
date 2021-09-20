@@ -13,6 +13,8 @@ router.beforeEach(async (to) => {
     const isInit =
       window.injectData.INIT ??
       (await RESTManager.api.init.get<{ isInit: boolean }>()).isInit
+
+    console.log('[isInit]', isInit)
     if (isInit) {
       return '/'
     }
