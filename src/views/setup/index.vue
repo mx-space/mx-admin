@@ -48,6 +48,8 @@ export const InitView = defineComponent({
 
         setTimeout(() => {
           fetchUser().then(() => {
+            window.injectData.INIT = true
+
             router.push({
               name: RouteName.System,
             })
