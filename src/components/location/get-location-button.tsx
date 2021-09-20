@@ -43,8 +43,10 @@ export const GetLocationButton = defineComponent({
 
           const coo = [longitude, latitude] as const
           const res = await RESTManager.api.tools.geocode.location.get<Amap>({
-            longitude,
-            latitude,
+            params: {
+              longitude,
+              latitude,
+            },
           })
 
           props.onChange(res.regeocode, coo)
