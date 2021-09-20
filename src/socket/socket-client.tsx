@@ -116,7 +116,14 @@ export class SocketClient {
           if (!no) {
             return
           }
-          no.onclick = handler
+          no.onclick = () => {
+            if (document.hasFocus()) {
+              handler()
+            } else {
+              // TODO
+              window.open('/')
+            }
+          }
         })
         break
       }
@@ -163,7 +170,14 @@ export class SocketClient {
               return
             }
 
-            n.onclick = handler
+            n.onclick = () => {
+              if (document.hasFocus()) {
+                handler()
+              } else {
+                // TODO
+                window.open('/')
+              }
+            }
           })
         break
       }
