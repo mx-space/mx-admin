@@ -29,6 +29,7 @@ export const InitView = defineComponent({
 
     const password = ref('')
     const username = ref('')
+    const router = useRouter()
 
     const handleRegister = async (e: Event) => {
       e?.stopPropagation()
@@ -44,7 +45,7 @@ export const InitView = defineComponent({
         updateToken(res.token)
 
         toast.success('欧尼酱!')
-        const router = useRouter()
+
         setTimeout(() => {
           fetchUser().then(() => {
             router.push({
