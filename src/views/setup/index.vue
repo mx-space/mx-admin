@@ -2,11 +2,11 @@
 import { useInjector } from 'hooks/use-deps-injection'
 import { useMessage } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
-
+import { useRouter } from 'vue-router'
 import ParallaxButtonVue from '../../components/button/parallax-button.vue'
 import { UserModel } from '../../models/user'
 import { UserStore } from '../../stores/user'
-
+import { RouteName } from '../../router/name'
 import { RESTManager } from '../../utils/rest'
 
 const bgUrl =
@@ -17,7 +17,7 @@ export const InitView = defineComponent({
   components: { ParallaxButtonVue },
   setup() {
     const loaded = ref(false)
-    const { updateToken } = useInjector(UserStore)
+    const { updateToken, fetchUser } = useInjector(UserStore)
     onMounted(() => {
       const $$ = new Image()
       $$.src = bgUrl
@@ -44,10 +44,14 @@ export const InitView = defineComponent({
         updateToken(res.token)
 
         toast.success('欧尼酱!')
-
+        const router = useRouter()
         setTimeout(() => {
-          location.href = '#/setting/user'
-        }, 500)
+          fetchUser().then(() => {
+            router.push({
+              name: RouteName.System,
+            })
+          })
+        }, 300)
       } catch (e: any) {
         toast.error('出了点小问题, 不要慌')
         toast.error(e.message)

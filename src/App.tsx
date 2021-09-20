@@ -26,7 +26,6 @@ const Root = defineComponent({
 
   setup() {
     const { fetchUser } = useInjector(UserStore)
-    const { isDark } = useInjector(UIStore)
 
     onMounted(() => {
       const message = useMessage()
