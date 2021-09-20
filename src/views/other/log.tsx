@@ -15,12 +15,11 @@ export default defineComponent({
     return () => (
       <ContentLayout>
         <NTabs size="medium">
-          <NTabPane name={'实时'}>
-            <RealtimePipeline />
-          </NTabPane>
-
           <NTabPane name={'PM2 日志'}>
             <PM2Log />
+          </NTabPane>
+          <NTabPane name={'实时'}>
+            <RealtimePipeline />
           </NTabPane>
         </NTabs>
       </ContentLayout>
@@ -62,7 +61,15 @@ const RealtimePipeline = defineComponent({
       bus.off(EventTypes.STDOUT, xtermHandler)
     })
 
-    return () => <div id="xterm" class="max-h-[70vh]" ref={termRef}></div>
+    return () => (
+      <div>
+        <p>
+          使用 PM2 托管的应用不受支持, 可以使用 PM2 命令行工具或 PM2 Plus
+          查看日志.
+        </p>
+        <div id="xterm" class="max-h-[70vh]" ref={termRef}></div>
+      </div>
+    )
   },
 })
 
@@ -104,7 +111,7 @@ const PM2Log = defineComponent({
           data={data}
           loading={loading.value}
           columns={[
-            { title: '文件', key: 'filename', width: 300 },
+            { title: '文件', key: 'filename' },
             { title: '大小', key: 'size', width: 200 },
             { title: '类型', key: 'type', width: 200 },
             {

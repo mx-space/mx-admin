@@ -7,9 +7,10 @@ import { MaterialInput } from 'components/input/material-input'
 import { UnderlineInput } from 'components/input/underline-input'
 import { ParseContentButton } from 'components/logic/parse-button'
 import { BASE_URL } from 'constants/env'
+import { useInjector } from 'hooks/use-deps-injection'
 import { ContentLayout } from 'layouts/content'
 import { isString } from 'lodash-es'
-import { CategoryModel } from 'models/category'
+import { CategoryModel, TagModel } from 'models/category'
 import { PostModel } from 'models/post'
 import {
   NDrawer,
@@ -22,9 +23,9 @@ import {
   NSwitch,
   useMessage,
 } from 'naive-ui'
+import type { SelectMixedOption } from 'naive-ui/lib/select/src/interface'
 import { RouteName } from 'router/name'
 import { CategoryStore } from 'stores/category'
-import { useInjector } from 'hooks/use-deps-injection'
 import { RESTManager } from 'utils/rest'
 import { computed, defineComponent, onMounted, reactive, ref, toRaw } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -214,7 +215,52 @@ const PostWriteView = defineComponent(() => {
                   data.tags.length = 0
                   data.tags.push(...e)
                 }}
-              ></NDynamicTags>
+              >
+                {{
+                  input({ submit }) {
+                    const Component = defineComponent({
+                      setup() {
+                        const tags = ref([] as SelectMixedOption[])
+                        const loading = ref(false)
+                        const value = ref('')
+                        onMounted(async () => {
+                          loading.value = true
+                          const { data } =
+                            await RESTManager.api.categories.get<{
+                              data: TagModel[]
+                            }>({
+                              params: { type: 'Tag' },
+                            })
+                          tags.value = data.map((i) => ({
+                            label: i.name + ' (' + i.count + ')',
+                            value: i.name,
+                            key: i.name,
+                          }))
+                          loading.value = false
+                        })
+                        return () => (
+                          <NSelect
+                            size={'small'}
+                            value={value.value}
+                            clearable
+                            loading={loading.value}
+                            filterable
+                            tag
+                            options={tags.value}
+                            remote
+                            onUpdateValue={(e) => {
+                              void (value.value = e)
+                              submit(e)
+                            }}
+                          ></NSelect>
+                        )
+                      },
+                    })
+
+                    return <Component />
+                  },
+                }}
+              </NDynamicTags>
             </NFormItem>
 
             <NFormItem label="概要">
