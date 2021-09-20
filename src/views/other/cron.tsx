@@ -37,7 +37,7 @@ export default defineComponent({
               message.error(`${niceName} 执行失败, ` + data.message)
               timer = clearTimeout(timer)
             } else {
-              polling()
+              timer = setTimeout(polling, 1000)
             }
           })
       }, 1000)

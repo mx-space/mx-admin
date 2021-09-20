@@ -45,6 +45,7 @@ import {
   computed,
   defineComponent,
   onBeforeMount,
+  onUnmounted,
   PropType,
   ref,
   VNode,
@@ -89,9 +90,21 @@ export const DashBoardView = defineComponent({
       })
     }
 
+    // 轮询状态计时器
+    let timer: any
+    onMounted(() => {
+      timer = setTimeout(function polling() {
+        fetchStat().then(() => {
+          timer = setTimeout(polling, 3000)
+        })
+      }, 3000)
+    })
+    onUnmounted(() => {
+      timer = clearTimeout(timer)
+    })
+
     const shiju = ref('')
     const shijuData = ref<ShiJuData | null>(null)
-
     onBeforeMount(() => {
       refreshHitokoto()
       fetchStat()
@@ -101,6 +114,7 @@ export const DashBoardView = defineComponent({
         shijuData.value = data
       })
     })
+
     const hitokoto = ref('')
     const message = useMessage()
     // const uiStore = useInjector(UIStore)
