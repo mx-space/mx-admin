@@ -45,16 +45,7 @@ export const InitView = defineComponent({
         updateToken(res.token)
 
         toast.success('欧尼酱!')
-
-        setTimeout(() => {
-          fetchUser().then(() => {
-            window.injectData.INIT = true
-
-            router.push({
-              name: RouteName.System,
-            })
-          })
-        }, 300)
+        localStorage.setItem('to-setting', 'true')
       } catch (e: any) {
         toast.error('出了点小问题, 不要慌')
         toast.error(e.message)

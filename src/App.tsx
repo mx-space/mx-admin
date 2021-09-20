@@ -10,9 +10,10 @@ import {
   useNotification,
   zhCN,
 } from 'naive-ui'
+import { RouteName } from 'router/name'
 import { CategoryStore } from 'stores/category'
 import { defineComponent, onMounted } from 'vue'
-import { RouterView } from 'vue-router'
+import { RouterView, useRouter } from 'vue-router'
 import {
   useInjector,
   useProvider,
@@ -20,13 +21,12 @@ import {
 } from './hooks/use-deps-injection'
 import { UIStore } from './stores/ui'
 import { UserStore } from './stores/user'
-
 const Root = defineComponent({
   name: 'Home',
 
   setup() {
     const { fetchUser } = useInjector(UserStore)
-
+    const router = useRouter()
     onMounted(() => {
       const message = useMessage()
       const _error = message.error
@@ -46,7 +46,18 @@ const Root = defineComponent({
         mo.socket.initIO()
       })
 
-      fetchUser()
+      fetchUser().then(() => {
+        const toSetting = localStorage.getItem('to-setting')
+        if (toSetting === 'true') {
+          router.push({
+            name: RouteName.Setting,
+            params: {
+              type: 'user',
+            },
+          })
+          localStorage.removeItem('to-setting')
+        }
+      })
     })
 
     return () => {
