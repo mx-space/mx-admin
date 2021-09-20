@@ -91,13 +91,18 @@ export default defineComponent({
       { immediate: true },
     )
     const auditCount = ref(0)
-    onBeforeMount(async () => {
+
+    const fetchStat = async () => {
       const state = (await RESTManager.api.links.state.get()) as {
         audit: number
         collection: number
         friends: number
       }
       auditCount.value = state.audit
+    }
+
+    onBeforeMount(() => {
+      fetchStat()
     })
     const onSubmit = async () => {
       const id = editDialogData.value.id
@@ -261,6 +266,7 @@ export default defineComponent({
                         await RESTManager.api.links(row.id).delete()
                         message.success('删除成功')
                         await fetchDataFn(pager.value.currentPage)
+                        row.state == LinkState.Audit && auditCount.value--
                       }}
                     >
                       {{
