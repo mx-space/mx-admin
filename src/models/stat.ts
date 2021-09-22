@@ -8,6 +8,7 @@ export interface Stat {
   pages: number
   posts: number
   says: number
+  recently: number
   unreadComments: number
   callTime: number
   uv: number

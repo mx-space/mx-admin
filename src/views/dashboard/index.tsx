@@ -12,9 +12,11 @@ import OnlinePredictionFilled from '@vicons/material/es/OnlinePredictionFilled'
 import Activity from '@vicons/tabler/es/Activity'
 import Copy from '@vicons/tabler/es/Copy'
 import File from '@vicons/tabler/es/File'
+import Pencil from '@vicons/tabler/es/Pencil'
 import Refresh from '@vicons/tabler/es/Refresh'
 import { Icon } from '@vicons/utils'
 import { IpInfoPopover } from 'components/ip-info'
+import { useShorthand } from 'components/shorthand'
 import { fetchHitokoto, SentenceType } from 'external/api/hitokoto'
 import { getJinRiShiCiOne, ShiJuData } from 'external/api/jinrishici'
 import { useInjector } from 'hooks/use-deps-injection'
@@ -156,6 +158,8 @@ export const DashBoardView = defineComponent({
       </>
     ))
 
+    const { create: createShortHand } = useShorthand()
+
     const dataStat = computed<CardProps[]>(() => [
       {
         label: '博文',
@@ -209,6 +213,27 @@ export const DashBoardView = defineComponent({
             name: '管理',
             onClick() {
               router.push({ name: RouteName.ListPage, query: { page: 1 } })
+            },
+          },
+        ],
+      },
+      {
+        label: '速记',
+        value: stat.value.recently,
+        icon: <Pencil />,
+        actions: [
+          {
+            primary: true,
+            name: '记点啥',
+
+            onClick() {
+              createShortHand()
+            },
+          },
+          {
+            name: '管理',
+            onClick() {
+              router.push({ name: RouteName.ListShortHand, query: { page: 1 } })
             },
           },
         ],

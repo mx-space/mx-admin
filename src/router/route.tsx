@@ -20,6 +20,7 @@ import UndoAlt from '@vicons/fa/es/UndoAlt'
 import UserFriends from '@vicons/fa/es/UserFriends'
 import Clock from '@vicons/tabler/es/Clock'
 import Log from '@vicons/tabler/es/News'
+import Pencil from '@vicons/tabler/es/Pencil'
 import { Icon } from '@vicons/utils'
 import $RouterView from 'layouts/router-view'
 import { SidebarLayout } from 'layouts/sidebar'
@@ -252,6 +253,19 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         component: () => import('../views/manage-says/edit'),
       },
     ],
+  },
+  {
+    path: '/recently',
+    name: RouteName.ListShortHand,
+    meta: {
+      title: '速记',
+      icon: (
+        <Icon>
+          <Pencil />
+        </Icon>
+      ),
+    },
+    component: () => import('../views/shorthand'),
   },
   {
     path: '/projects',
