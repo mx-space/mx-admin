@@ -46,6 +46,7 @@ export const InitView = defineComponent({
 
         toast.success('欧尼酱!')
         localStorage.setItem('to-setting', 'true')
+        location.reload()
       } catch (e: any) {
         toast.error('出了点小问题, 不要慌')
         toast.error(e.message)
