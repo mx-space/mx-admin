@@ -114,10 +114,11 @@ export default defineComponent(() => {
 
   const includeYAMLHeader = ref(true)
   const titleBigTitle = ref(false)
+  const filenameSlug = ref(false)
   async function handleExportMarkdown() {
     const data = await RESTManager.api.markdown.export.get({
       params: {
-        slug: 1,
+        slug: filenameSlug.value,
         yaml: includeYAMLHeader.value,
         show_title: titleBigTitle.value,
       },
@@ -216,6 +217,12 @@ export default defineComponent(() => {
           <NSwitch
             value={titleBigTitle.value}
             onUpdateValue={(e) => void (titleBigTitle.value = e)}
+          ></NSwitch>
+        </NFormItem>
+        <NFormItem label="根据 slug 生成文件名">
+          <NSwitch
+            value={filenameSlug.value}
+            onUpdateValue={(e) => void (filenameSlug.value = e)}
           ></NSwitch>
         </NFormItem>
         <div class="text-right w-full">
