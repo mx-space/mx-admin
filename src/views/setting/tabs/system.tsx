@@ -97,21 +97,21 @@ export const TabSystem = defineComponent(() => {
       return
     }
 
-    const entries = Object.entries(diff.value)
+    const entries = Object.entries(diff.value) as [keyof IConfig, any][]
 
     for await (const [key, value] of entries) {
-      if (key === 'seo') {
-        await RESTManager.api.options(key).patch({
-          data: {
-            ...(value as any),
-            keywords: configs.value.seo.keywords,
-          },
-        })
-      } else {
-        await RESTManager.api.options(key).patch({
-          data: value,
-        })
-      }
+      const val = Object.fromEntries(
+        Object.entries(value).map(([k, v]) => {
+          if (Array.isArray(v)) {
+            return [k, configs.value[key][k]]
+          }
+          return [k, v]
+        }),
+      )
+
+      await RESTManager.api.options(key).patch({
+        data: val,
+      })
     }
 
     await fetchConfig()
@@ -297,6 +297,7 @@ export const TabSystem = defineComponent(() => {
                 onUpdateValue={(e) =>
                   void (configs.value.commentOptions.blockIps = e)
                 }
+                type="primary"
               ></NDynamicTags>
             </NFormItem>
 
@@ -311,7 +312,7 @@ export const TabSystem = defineComponent(() => {
           </NForm>
         </NCollapseItem>
 
-        <NCollapseItem title="评论回复设置" name="reply">
+        <NCollapseItem title="邮件通知设置" name="mail">
           <NForm {...formProps}>
             <NFormItem label="开启评论邮箱提醒">
               <NSwitch
