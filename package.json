@@ -48,7 +48,6 @@
     "@vitejs/plugin-vue": "1.8.1",
     "@vitejs/plugin-vue-jsx": "1.1.8",
     "@vue/compiler-sfc": "3.2.12",
-    "@vuedx/typescript-plugin-vue": "0.7.4",
     "autoprefixer": "10.3.4",
     "cors": "2.8.5",
     "eslint": "7.32.0",
