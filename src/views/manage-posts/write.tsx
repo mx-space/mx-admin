@@ -208,7 +208,6 @@ const PostWriteView = defineComponent(() => {
             </NFormItem>
 
             <NFormItem label="标签">
-              {/* TODO 自动补全标签 */}
               <NDynamicTags
                 value={data.tags}
                 onUpdateValue={(e) => {
@@ -223,8 +222,13 @@ const PostWriteView = defineComponent(() => {
                         const tags = ref([] as SelectMixedOption[])
                         const loading = ref(false)
                         const value = ref('')
+                        const selectRef = ref()
                         onMounted(async () => {
                           loading.value = true
+                          // HACK auto focus
+                          if (selectRef.value) {
+                            selectRef.value.$el.querySelector('input').focus()
+                          }
                           const { data } =
                             await RESTManager.api.categories.get<{
                               data: TagModel[]
@@ -240,6 +244,7 @@ const PostWriteView = defineComponent(() => {
                         })
                         return () => (
                           <NSelect
+                            ref={selectRef}
                             size={'small'}
                             value={value.value}
                             clearable
@@ -247,7 +252,6 @@ const PostWriteView = defineComponent(() => {
                             filterable
                             tag
                             options={tags.value}
-                            remote
                             onUpdateValue={(e) => {
                               void (value.value = e)
                               submit(e)
