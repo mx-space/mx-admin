@@ -49,7 +49,7 @@ specifiers:
   reflect-metadata: 0.1.13
   rollup-plugin-visualizer: 5.5.2
   socket.io-client: 4.2.0
-  tailwindcss: 2.2.15
+  tailwindcss: 2.2.16
   typescript: 4.3.5
   umi-request: 1.4.0
   unplugin-auto-import: 0.4.8
@@ -122,7 +122,7 @@ devDependencies:
   postcss-nested: 5.0.6_postcss@8.3.6
   prettier: 2.4.1
   rollup-plugin-visualizer: 5.5.2
-  tailwindcss: 2.2.15_4dc2d3db2b138fb8fa7d5c7b0c803aba
+  tailwindcss: 2.2.16_4dc2d3db2b138fb8fa7d5c7b0c803aba
   typescript: 4.3.5
   unplugin-auto-import: 0.4.8_@vueuse+core@6.4.1+vite@2.5.10
   vite: 2.5.10
@@ -3452,8 +3452,8 @@ packages:
       strip-ansi: 6.0.0
     dev: true
 
-  /tailwindcss/2.2.15_4dc2d3db2b138fb8fa7d5c7b0c803aba:
-    resolution: {integrity: sha512-WgV41xTMbnSoTNMNnJvShQZ+8GmY86DmXTrCgnsveNZJdlybfwCItV8kAqjYmU49YiFr+ofzmT1JlAKajBZboQ==}
+  /tailwindcss/2.2.16_4dc2d3db2b138fb8fa7d5c7b0c803aba:
+    resolution: {integrity: sha512-EireCtpQyyJ4Xz8NYzHafBoy4baCOO96flM0+HgtsFcIQ9KFy/YBK3GEtlnD+rXen0e4xm8t3WiUcKBJmN6yjg==}
     engines: {node: '>=12.13.0'}
     hasBin: true
     peerDependencies:
