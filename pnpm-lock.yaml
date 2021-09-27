@@ -41,7 +41,7 @@ specifiers:
   js-cookie: 3.0.1
   lodash-es: 4.17.21
   monaco-editor: 0.27.0
-  naive-ui: 2.19.0
+  naive-ui: 2.19.3
   postcss: 8.3.6
   postcss-nested: 5.0.6
   prettier: 2.4.1
@@ -94,7 +94,7 @@ dependencies:
   js-cookie: 3.0.1
   lodash-es: 4.17.21
   monaco-editor: 0.27.0
-  naive-ui: 2.19.0_vue@3.2.11
+  naive-ui: 2.19.3_vue@3.2.11
   qier-progress: 1.0.4
   reflect-metadata: 0.1.13
   socket.io-client: 4.2.0
@@ -2814,8 +2814,8 @@ packages:
   /ms/2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
 
-  /naive-ui/2.19.0_vue@3.2.11:
-    resolution: {integrity: sha512-YHZ+vwekmt/PVTv7e93aKE43RPfN7UHvdmSzNWU6tEfKxJ0rEfHAtn58wmqkQv5Btfx/8+1Gpu3MOPEC1ci6tA==}
+  /naive-ui/2.19.3_vue@3.2.11:
+    resolution: {integrity: sha512-+AFAooKZloHweUUnYogi+jhcvxYc7VbmNQsZTasQmTCQwtNGt5y4ADtja4VGbI70BR3jH/NDhKaHRxh/k3pnRA==}
     peerDependencies:
       vue: ^3.0.0
     dependencies:
@@ -2831,13 +2831,13 @@ packages:
       highlight.js: 11.2.0
       lodash: 4.17.21
       lodash-es: 4.17.21
-      seemly: 0.3.1
+      seemly: 0.3.2
       treemate: 0.3.8
       vdirs: 0.1.4_vue@3.2.11
       vfonts: 0.1.0
       vooks: 0.2.8_vue@3.2.11
       vue: 3.2.11
-      vueuc: 0.4.10_d7440e2eebcd5c19b395bded5c446e47
+      vueuc: 0.4.12_d7440e2eebcd5c19b395bded5c446e47
     dev: false
 
   /nanoid/3.1.23:
@@ -3275,8 +3275,8 @@ packages:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
     dev: false
 
-  /seemly/0.3.1:
-    resolution: {integrity: sha512-7P4+IJU9SIP6EBl2jjVitbgrHPb0MqWRy4j2iXGOUiDrHpdG3tH/3j5Xpyv1qWAY3IBrCKOkmVXEfwTsT4UzDg==}
+  /seemly/0.3.2:
+    resolution: {integrity: sha512-xEDcywG5NmDhvHqt1bZlxCnoagfWOLwM5AObg8TiNcZPnTJwusa7eVm+/iRU9LhxLBDS14/yJFSMhhd3+RWUFQ==}
     dependencies:
       '@types/jest': 26.0.24
     dev: false
@@ -3828,8 +3828,8 @@ packages:
       '@vue/shared': 3.2.11
     dev: false
 
-  /vueuc/0.4.10_d7440e2eebcd5c19b395bded5c446e47:
-    resolution: {integrity: sha512-d/GITEBOtrkMyhJPB72SNYeO7rYrsTYMlJ+uT7bwuTT1ag15O63vwUesqhY7Vf65FybJRcQwUtGAYShDOqRiJQ==}
+  /vueuc/0.4.12_d7440e2eebcd5c19b395bded5c446e47:
+    resolution: {integrity: sha512-9jvgiYWisxGswD79mfcbTEQwCV/ylAAvNMkSxFl2e7IcuSNPGEL7zCT6bQ9xGGBJBcZSgmZjvQlgwjzXS81QRg==}
     peerDependencies:
       '@css-render/vue3-ssr': ^0.15.3
       vue: ^3.0.11
@@ -3838,7 +3838,7 @@ packages:
       css-render: 0.15.6
       evtd: 0.2.2
       resize-observer-polyfill: 1.5.1
-      seemly: 0.3.1
+      seemly: 0.3.2
       vdirs: 0.1.4_vue@3.2.11
       vooks: 0.2.8_vue@3.2.11
       vue: 3.2.11
