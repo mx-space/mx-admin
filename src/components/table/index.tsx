@@ -175,10 +175,9 @@ export const Table = defineComponent({
 
           const { columnKey, order } = status
 
-          sortProps.sortBy =
-            sortProps.sortBy && sortProps.sortBy == columnKey
-              ? ''
-              : (columnKey as string)
+          // 如果改列状态变为未排序状态了,  order 变成了 false
+          sortProps.sortBy = order === false ? '' : columnKey.toString() || ''
+
           sortProps.sortOrder = order ? { descend: -1, ascend: 1 }[order] : 1
           onUpdateSorter?.(sortProps, status)
           if (fetchData) {
