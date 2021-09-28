@@ -4,8 +4,10 @@
  */
 
 // TODO: auto save & temp cache
+import { React } from '@vicons/fa'
 import Settings from '@vicons/tabler/es/Settings'
 import { Icon } from '@vicons/utils'
+import clsx from 'clsx'
 import { useMountAndUnmount } from 'hooks/use-react'
 import { useLayout } from 'layouts/content'
 import { throttle } from 'lodash-es'
@@ -21,8 +23,9 @@ import {
   NText,
 } from 'naive-ui'
 import type Vditor from 'vditor'
-import { defineComponent, ref, watch } from 'vue'
+import { defineComponent, ref, Suspense, watch } from 'vue'
 import { Editor, EditorStorageKeys } from './constants'
+import styles from './editor.module.css'
 import { getDynamicEditor } from './get-editor'
 import { editorBaseProps } from './props'
 import './toggle.css'
@@ -30,7 +33,7 @@ import { useEditorConfig } from './use-editor-setting'
 import { useGetPrefEditor } from './use-get-pref-editor'
 
 let hasFloatButton = false
-export const EditorToggleWrapper = defineComponent({
+export const _EditorToggleWrapper = defineComponent({
   props: {
     ...editorBaseProps,
     loading: {
@@ -116,10 +119,7 @@ export const EditorToggleWrapper = defineComponent({
         {(() => {
           if (props.loading) {
             return (
-              <div
-                class="w-full flex items-center justify-center"
-                style={{ height: 'calc(100vh - 18rem)' }}
-              >
+              <div class={clsx(styles['editor'], styles['loading'])}>
                 <NSpin strokeWidth={14} show rotate />
               </div>
             )
@@ -183,6 +183,39 @@ export const EditorToggleWrapper = defineComponent({
           </NCard>
         </NModal>
       </div>
+    )
+  },
+})
+
+export const __EditorToggleWrapper = defineAsyncComponent({
+  loader: () => Promise.resolve(_EditorToggleWrapper),
+  loadingComponent: () => <NSpin strokeWidth={14} show rotate />,
+})
+
+export const EditorToggleWrapper = defineComponent({
+  props: {
+    ...editorBaseProps,
+    loading: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  setup(props) {
+    return () => (
+      <Suspense>
+        {{
+          default() {
+            return <__EditorToggleWrapper {...props} />
+          },
+          fallback() {
+            return (
+              <div class={clsx(styles['editor'], styles['loading'])}>
+                <NSpin strokeWidth={14} show rotate />
+              </div>
+            )
+          },
+        }}
+      </Suspense>
     )
   },
 })
