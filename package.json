@@ -1,6 +1,6 @@
 {
   "name": "admin-next",
-  "version": "3.5.6",
+  "version": "3.6.0",
   "scripts": {
     "prebuild": "rm -rf dist",
     "dev": "TAILWIND_MODE=watch NODE_ENV=development vite --mode development",
@@ -10,6 +10,7 @@
     "format": "prettier --write --loglevel warn \"src/**/*.{js,json,tsx,ts,css,scss,vue,html,md}\""
   },
   "dependencies": {
+    "@antv/g2": "4.1.27",
     "@codemirror/commands": "^0.19.1",
     "@codemirror/gutter": "^0.19.0",
     "@codemirror/highlight": "^0.19.1",
@@ -21,7 +22,6 @@
     "@codemirror/state": "^0.19.0",
     "@codemirror/view": "^0.19.8",
     "@ddietr/codemirror-themes": "^1.0.8",
-    "@antv/g2": "4.1.27",
     "@vicons/antd": "0.11.0",
     "@vicons/fa": "0.11.0",
     "@vicons/fluent": "0.11.0",
