@@ -1,6 +1,5 @@
 import { IsISO8601, IsString } from 'class-validator'
-import { useDialog } from 'naive-ui'
-import { onMounted, toRaw } from 'vue'
+import { toRaw } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
 import { useStorageObject } from './use-storage'
 
@@ -70,8 +69,7 @@ export const useAutoSaveInEditor = <T extends { text: string; title: string }>(
   hook: ReturnType<typeof useAutoSave>,
 ): ReturnType<typeof useAutoSave> => {
   const { disposer, clearSaved, getPrevSaved, reset, save, track } = hook
-  // FIXME: maybe this is a bug
-  // const dialog = useDialog()
+
   const dialog = window.dialog
 
   const check = async () => {
@@ -86,8 +84,11 @@ export const useAutoSaveInEditor = <T extends { text: string; title: string }>(
       requestAnimationFrame(() => {
         dialog.info({
           title: '发现有未保存的内容, 是否还原?',
-          negativeText: '不用啦',
+          negativeText: '清楚',
           positiveText: '嗯',
+          onNegativeClick() {
+            clearSaved()
+          },
           onPositiveClick() {
             Object.assign(data, {
               text: prevSaved.text,

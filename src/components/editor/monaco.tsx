@@ -1,10 +1,8 @@
 import { useInjector } from 'hooks/use-deps-injection'
 import { useSaveConfirm } from 'hooks/use-save-confirm'
 import { editor as Editor, KeyCode, KeyMod, Selection } from 'monaco-editor'
-import { NSpin } from 'naive-ui'
 import { UIStore } from 'stores/ui'
 import {
-  defineAsyncComponent,
   defineComponent,
   onMounted,
   PropType,
@@ -74,10 +72,7 @@ const _MonacoEditor = defineComponent({
   },
 })
 
-export const MonacoEditor = defineAsyncComponent({
-  loader: () => Promise.resolve(_MonacoEditor),
-  loadingComponent: <NSpin strokeWidth={14} show rotate />,
-})
+export const MonacoEditor = _MonacoEditor
 
 const initEditor = ($el: HTMLElement, initialValue: string) => {
   const { isDark } = useInjector(UIStore)

@@ -11,7 +11,6 @@ import { useStorageObject } from 'hooks/use-storage'
 import { useLayout } from 'layouts/content'
 import { throttle } from 'lodash-es'
 import { editor } from 'monaco-editor'
-
 import {
   NButton,
   NCard,
@@ -29,7 +28,6 @@ import {
   NText,
 } from 'naive-ui'
 import Vditor from 'vditor'
-
 import {
   defineAsyncComponent,
   defineComponent,
@@ -37,23 +35,17 @@ import {
   ref,
   watch,
 } from 'vue'
-import { MonacoEditor } from '../monaco'
-import { PlainEditor } from '../plain'
-import { VditorEditor } from '../vditor'
 import { editorBaseProps } from './base'
 import { GeneralSettingDto, VditorSettingDto } from './config'
+import { Editor, getDynamicEditor } from './gett-editor'
 import './toggle.css'
+
 const StorageKeys = {
   editor: 'editor-pref',
   general: 'editor-general',
 
   vditor: 'editor-vditor-pref',
 } as const
-enum Editor {
-  monaco = 'monaco',
-  vditor = 'vditor',
-  plain = 'plain',
-}
 
 export const EditorToggleWrapper = defineAsyncComponent({
   loader: () =>
@@ -124,20 +116,6 @@ export const EditorToggleWrapper = defineAsyncComponent({
               GeneralSettingDto,
               StorageKeys.general,
             )
-
-          // watch(
-          //   () => generalSetting,
-          //   (n) => {
-          //     if (!monacoRef.value) {
-          //       return
-          //     }
-          //     monacoRef.value.updateOptions({
-          //       fontFamily: n.fontFamily,
-          //       fontSize: n.fontSize,
-          //     })
-          //   },
-          //   { deep: true, immediate: true },
-          // )
 
           const GeneralSetting = defineComponent(() => {
             return () => (
@@ -235,15 +213,17 @@ export const EditorToggleWrapper = defineAsyncComponent({
                   )
                 }
                 switch (currentEditor.value) {
-                  case 'monaco':
-                    // @ts-expect-error
-                    return <MonacoEditor {...props} innerRef={monacoRef} />
+                  case 'monaco': {
+                    const MonacoEditor = getDynamicEditor(currentEditor.value)
 
-                  case 'vditor':
-                    // @ts-expect-error
+                    return <MonacoEditor ref={monacoRef} {...props} />
+                  }
+                  case 'vditor': {
+                    const VditorEditor = getDynamicEditor(currentEditor.value)
                     return <VditorEditor {...props} innerRef={vditorRef} />
-
+                  }
                   case 'plain':
+                    const PlainEditor = getDynamicEditor(currentEditor.value)
                     return <PlainEditor {...props} />
                   default:
                     return null

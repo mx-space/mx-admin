@@ -1,6 +1,6 @@
 import SlackHash from '@vicons/fa/SlackHash'
 import { HeaderActionButton } from 'components/button/rounded-button'
-import { MonacoEditor } from 'components/editor/monaco'
+import { PlainEditor } from 'components/editor/plain'
 import { NButton, NCard, NModal, NSpace } from 'naive-ui'
 import { defineComponent, PropType, ref } from 'vue'
 
@@ -43,7 +43,7 @@ export const ParseContentButton = defineComponent({
         >
           <NCard title="解析 Markdown" class="modal-card">
             <NSpace vertical size={'large'}>
-              <MonacoEditor
+              <PlainEditor
                 onChange={(e) => void (unparsedValue.value = e)}
                 text={unparsedValue.value}
               />

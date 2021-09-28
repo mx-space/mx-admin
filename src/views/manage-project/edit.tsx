@@ -200,7 +200,7 @@ const EditProjectView = defineComponent({
             ></NDynamicTags>
           </NFormItem>
 
-          <NFormItem label="正文" required>
+          <NFormItem label="正文" required labelPlacement="left">
             <MonacoEditor
               onChange={(e) => void (data.text = e)}
               text={data.text}

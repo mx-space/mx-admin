@@ -1,8 +1,7 @@
-import { defineComponent } from 'vue'
 import { NSpin } from 'naive-ui'
-
-import { Suspense, VNode } from 'vue'
+import { defineComponent, Suspense, VNode } from 'vue'
 import { RouteLocation, RouterView } from 'vue-router'
+
 const $RouterView = defineComponent({
   setup() {
     return () => (
@@ -15,7 +14,7 @@ const $RouterView = defineComponent({
                   default: () => Component,
 
                   fallback() {
-                    return () => (
+                    return (
                       <div class="fixed left-1/2 top-1/2 transform text-primary-default -translate-y-1/2 -translate-x-1/2">
                         <NSpin strokeWidth={14} show rotate />
                       </div>
