@@ -7,7 +7,6 @@
 import RefreshCircle from '@vicons/ionicons5/es/RefreshCircle'
 import Settings from '@vicons/tabler/es/Settings'
 import { Icon } from '@vicons/utils'
-import { useStorageObject } from 'hooks/use-storage'
 import { useLayout } from 'layouts/content'
 import { throttle } from 'lodash-es'
 import { editor } from 'monaco-editor'
@@ -16,15 +15,11 @@ import {
   NCard,
   NForm,
   NFormItem,
-  NH5,
-  NInput,
-  NInputNumber,
   NModal,
   NP,
   NPopover,
   NSelect,
   NSpin,
-  NSwitch,
   NText,
 } from 'naive-ui'
 import Vditor from 'vditor'
@@ -35,17 +30,12 @@ import {
   ref,
   watch,
 } from 'vue'
-import { editorBaseProps } from './base'
-import { GeneralSettingDto, VditorSettingDto } from './config'
-import { Editor, getDynamicEditor } from './gett-editor'
+import { Editor, EditorStorageKeys } from './constants'
+import { getDynamicEditor } from './get-editor'
+import { editorBaseProps } from './props'
 import './toggle.css'
-
-const StorageKeys = {
-  editor: 'editor-pref',
-  general: 'editor-general',
-
-  vditor: 'editor-vditor-pref',
-} as const
+import { useEditorConfig } from './use-editor-setting'
+import { useGetPrefEditor } from './use-get-pref-editor'
 
 export const EditorToggleWrapper = defineAsyncComponent({
   loader: () =>
@@ -59,28 +49,8 @@ export const EditorToggleWrapper = defineAsyncComponent({
           },
         },
         setup(props) {
-          const getPrefEditor = () => {
-            const prefValue = localStorage.getItem(StorageKeys.editor)
-            if (!prefValue) {
-              return null
-            }
-            try {
-              const pref = JSON.parse(prefValue)
-
-              // valid
-
-              const valid = Object.keys(Editor).includes(pref)
-              if (valid) {
-                return pref
-              } else {
-                return null
-              }
-            } catch {
-              return null
-            }
-          }
-
-          const currentEditor = ref<Editor>(getPrefEditor() ?? Editor.monaco)
+          const prefEditor = useGetPrefEditor()
+          const currentEditor = ref<Editor>(prefEditor ?? Editor.monaco)
           const modalOpen = ref(false)
           const layout = useLayout()
           onMounted(() => {
@@ -101,7 +71,10 @@ export const EditorToggleWrapper = defineAsyncComponent({
             () => currentEditor.value,
             throttle(
               (n) => {
-                localStorage.setItem(StorageKeys.editor, JSON.stringify(n))
+                localStorage.setItem(
+                  EditorStorageKeys.editor,
+                  JSON.stringify(n),
+                )
               },
               300,
               { trailing: true },
@@ -111,46 +84,10 @@ export const EditorToggleWrapper = defineAsyncComponent({
           const monacoRef = ref<editor.IStandaloneCodeEditor>()
           const vditorRef = ref<Vditor>()
 
-          const { storage: generalSetting, reset: resetGeneralSetting } =
-            useStorageObject<GeneralSettingDto>(
-              GeneralSettingDto,
-              StorageKeys.general,
-            )
-
-          const GeneralSetting = defineComponent(() => {
-            return () => (
-              <Fragment>
-                <NH5 class="!flex items-center !mt-0">
-                  通用设置
-                  <ResetIconButton resetFn={resetGeneralSetting} />
-                </NH5>
-                <NFormItem label="字体设定">
-                  <NInput
-                    onInput={(e) => void (generalSetting.fontFamily = e)}
-                    value={generalSetting.fontFamily}
-                  />
-                </NFormItem>
-                <NFormItem label="字号设定">
-                  <NInputNumber
-                    onUpdateValue={(e) =>
-                      void (generalSetting.fontSize = e ?? 14)
-                    }
-                    value={generalSetting.fontSize}
-                  />
-                </NFormItem>
-                <NFormItem label="注意: " labelAlign="right">
-                  <NP>以上设定暂时不适于 Monaco Editor</NP>
-                </NFormItem>
-              </Fragment>
-            )
-          })
-
-          const { storage: vditorSetting, reset: resetVditorSetting } =
-            useStorageObject<VditorSettingDto>(
-              VditorSettingDto,
-              StorageKeys.vditor,
-            )
-
+          const [
+            { GeneralSetting, generalSetting, resetGeneralSetting },
+            { VditorSetting, resetVditorSetting, vditorSetting },
+          ] = useEditorConfig()
           // vditor 监听
           // FIXME: vditor bug, can't re-set option on instance
           {
@@ -167,27 +104,6 @@ export const EditorToggleWrapper = defineAsyncComponent({
               },
             )
           }
-
-          const VditorSetting = defineComponent(() => {
-            return () => (
-              <>
-                <NH5 class="!flex items-center !mt-0">
-                  Vditor 设定
-                  <ResetIconButton resetFn={resetVditorSetting} />
-                </NH5>
-                <NForm labelWidth="8rem" labelAlign="right">
-                  <NFormItem label="打字机模式" labelPlacement="left">
-                    <NSwitch
-                      value={vditorSetting.typewriterMode}
-                      onUpdateValue={(e) =>
-                        void (vditorSetting.typewriterMode = e)
-                      }
-                    ></NSwitch>
-                  </NFormItem>
-                </NForm>
-              </>
-            )
-          })
 
           return () => (
             <div

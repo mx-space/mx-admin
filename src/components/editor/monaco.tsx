@@ -11,7 +11,7 @@ import {
   toRaw,
   watch,
 } from 'vue'
-import { editorBaseProps } from './universal/base'
+import { editorBaseProps } from './universal/props'
 
 const _MonacoEditor = defineComponent({
   props: {

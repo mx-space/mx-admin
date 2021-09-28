@@ -1,12 +1,7 @@
 import { React } from '@vicons/fa'
 import { NSpin } from 'naive-ui'
 import { PlainEditor } from '../plain'
-
-export enum Editor {
-  monaco = 'monaco',
-  vditor = 'vditor',
-  plain = 'plain',
-}
+import { Editor } from './constants'
 
 const cache: Record<Editor, any> = {
   [Editor.monaco]: null,

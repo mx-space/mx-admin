@@ -13,7 +13,7 @@ import {
   toRaw,
   watch,
 } from 'vue'
-import { editorBaseProps } from './universal/base'
+import { editorBaseProps } from './universal/props'
 import './vditor.css'
 export const VditorEditor = defineAsyncComponent(() =>
   Promise.resolve(
