@@ -1,6 +1,6 @@
 import { React } from '@vicons/fa'
 import { NSpin } from 'naive-ui'
-import { PlainEditor } from '../plain'
+import { PlainEditor } from '../plain/plain'
 import { Editor } from './constants'
 
 const cache: Record<Editor, any> = {
@@ -16,7 +16,7 @@ export const getDynamicEditor = (editor: Editor) => {
   switch (editor) {
     case 'monaco': {
       const MonacoEditor = defineAsyncComponent({
-        loader: () => import('../monaco').then((m) => m.MonacoEditor),
+        loader: () => import('../monaco/monaco').then((m) => m.MonacoEditor),
         loadingComponent: <NSpin strokeWidth={14} show rotate />,
         suspensible: true,
       })
@@ -25,7 +25,7 @@ export const getDynamicEditor = (editor: Editor) => {
     }
     case 'vditor': {
       const VditorEditor = defineAsyncComponent({
-        loader: () => import('../vditor').then((m) => m.VditorEditor),
+        loader: () => import('../vditor/vditor').then((m) => m.VditorEditor),
         loadingComponent: <NSpin strokeWidth={14} show rotate />,
         suspensible: true,
       })

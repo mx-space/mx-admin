@@ -1,4 +1,4 @@
-import { VditorEditor } from 'components/editor/vditor'
+import { VditorEditor } from 'components/editor/vditor/vditor'
 import { defineComponent } from 'vue'
 
 export default defineComponent(() => {

@@ -1,6 +1,6 @@
 import TelegramPlane from '@vicons/fa/es/TelegramPlane'
 import { HeaderActionButton } from 'components/button/rounded-button'
-import { MonacoEditor } from 'components/editor/monaco'
+import { MonacoEditor } from 'components/editor/monaco/monaco'
 import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
 import { ContentLayout } from 'layouts/content'
 import { isString, transform } from 'lodash-es'

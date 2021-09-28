@@ -1,6 +1,6 @@
 import SlackHash from '@vicons/fa/SlackHash'
 import { HeaderActionButton } from 'components/button/rounded-button'
-import { PlainEditor } from 'components/editor/plain'
+import { PlainEditor } from 'components/editor/plain/plain'
 import { NButton, NCard, NModal, NSpace } from 'naive-ui'
 import { defineComponent, PropType, ref } from 'vue'
 
