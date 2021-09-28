@@ -13,6 +13,7 @@ import {
   toRaw,
   watch,
 } from 'vue'
+import styles from '../universal/editor.module.css'
 import { editorBaseProps } from '../universal/props'
 import './vditor.css'
 export const VditorEditor = defineAsyncComponent(() =>
@@ -86,9 +87,7 @@ export const VditorEditor = defineAsyncComponent(() =>
             }
           },
         )
-        return () => (
-          <div ref={vRef} style={{ height: 'calc(100vh - 18.8rem)' }}></div>
-        )
+        return () => <div ref={vRef} class={styles['editor']}></div>
       },
     }),
   ),

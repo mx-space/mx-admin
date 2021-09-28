@@ -1,0 +1,14 @@
+.cm-editor {
+  & {
+    @apply h-full;
+  }
+
+  &.cm-focused {
+    @apply !outline-none;
+  }
+
+  & .cm-gutters,
+  & .cm-gutter {
+    @apply !min-w-[3rem];
+  }
+}

@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import { useInjector } from 'hooks/use-deps-injection'
 import { useSaveConfirm } from 'hooks/use-save-confirm'
 import { editor as Editor, KeyCode, KeyMod, Selection } from 'monaco-editor'
@@ -11,8 +12,8 @@ import {
   toRaw,
   watch,
 } from 'vue'
+import styles from '../universal/editor.module.css'
 import { editorBaseProps } from '../universal/props'
-
 const _MonacoEditor = defineComponent({
   props: {
     innerRef: {
@@ -64,8 +65,7 @@ const _MonacoEditor = defineComponent({
 
     return () => (
       <div
-        class="editor relative overflow-hidden"
-        style={{ height: 'calc(100vh - 18rem)' }}
+        class={clsx('editor relative overflow-hidden', styles.editor)}
         ref={editorRef}
       ></div>
     )

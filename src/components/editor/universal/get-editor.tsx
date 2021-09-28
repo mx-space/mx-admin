@@ -7,6 +7,7 @@ const cache: Record<Editor, any> = {
   [Editor.monaco]: null,
   [Editor.vditor]: null,
   [Editor.plain]: null,
+  [Editor.codemirror]: null,
 }
 
 export const getDynamicEditor = (editor: Editor) => {
@@ -33,9 +34,21 @@ export const getDynamicEditor = (editor: Editor) => {
       cache[editor] = VditorEditor
       return VditorEditor
     }
-    case 'plain':
+    case 'plain': {
       cache[editor] = PlainEditor
       return PlainEditor
+    }
+    case 'codemirror': {
+      const CodemirrorEditor = defineAsyncComponent({
+        loader: () =>
+          import('../codemirror/codemirror').then((m) => m.CodemirrorEditor),
+        loadingComponent: <NSpin strokeWidth={14} show rotate />,
+        suspensible: true,
+      })
+      cache[editor] = CodemirrorEditor
+      return CodemirrorEditor
+    }
+
     default:
       return null
   }

@@ -1,5 +1,11 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-empty-function */
+import Moon from '@vicons/fa/es/Moon'
+import Sun from '@vicons/fa/es/Sun'
+import { Icon } from '@vicons/utils'
+import clsx from 'clsx'
+import { useInjector } from 'hooks/use-deps-injection'
+import { UIStore } from 'stores/ui'
 import {
   computed,
   defineComponent,
@@ -10,20 +16,16 @@ import {
   ref,
   VNode,
 } from 'vue'
-import clsx from 'clsx'
 import { useRouter } from 'vue-router'
 import styles from './index.module.css'
-import { Icon } from '@vicons/utils'
-import Sun from '@vicons/fa/es/Sun'
-import Moon from '@vicons/fa/es/Moon'
-import { useInjector } from 'hooks/use-deps-injection'
-import { UIStore } from 'stores/ui'
 
 const ProvideKey = Symbol('inject')
 
 export const useLayout = () =>
   inject(ProvideKey, {
-    addFloatButton(el: VNode) {},
+    addFloatButton(el: VNode) {
+      return Symbol()
+    },
     removeFloatButton(name: symbol) {},
     setHeaderButton(el: VNode | null) {},
   })

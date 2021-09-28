@@ -40,7 +40,7 @@ export default ({ mode }) => {
       target: 'esnext',
       brotliSize: false,
 
-      sourcemap: true,
+      // sourcemap: true,
       rollupOptions: {
         output: {
           chunkFileNames: `[name]-[hash]-${gitHash}.js`,
