@@ -1,3 +1,4 @@
+import Comments from '@vicons/fa/es/Comments'
 import Code24Filled from '@vicons/fluent/es/Code24Filled'
 import Comment24Filled from '@vicons/fluent/es/Comment24Filled'
 import Extension24Filled from '@vicons/fluent/es/Extension24Filled'
@@ -317,7 +318,7 @@ export const DashBoardView = defineComponent({
       {
         label: '说说',
         value: stat.value.says,
-        icon: <AddLinkFilled />,
+        icon: <Comments />,
         actions: [
           {
             primary: true,
