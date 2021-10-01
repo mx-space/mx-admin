@@ -1,6 +1,6 @@
 {
   "name": "admin-next",
-  "version": "3.6.2",
+  "version": "3.6.3",
   "scripts": {
     "prebuild": "rm -rf dist",
     "dev": "TAILWIND_MODE=watch NODE_ENV=development vite --mode development",
