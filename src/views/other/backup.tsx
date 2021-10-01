@@ -51,10 +51,7 @@ export default defineComponent(() => {
       RESTManager.api.backups.rollback
         .post({
           data: formData,
-          timeout: Infinity,
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+          timeout: 1 << 30,
         })
         .then(() => {
           message.success('恢复成功, 页面将会重载')
