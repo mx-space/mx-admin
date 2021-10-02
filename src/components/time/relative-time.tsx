@@ -13,6 +13,9 @@ const _RelativeTime = defineComponent({
     const time = ref(relativeTimeFromNow(props.time))
     let timer: ReturnType<typeof setInterval> | undefined | void
     onMounted(() => {
+      if (!props.time) {
+        return
+      }
       timer = setInterval(() => {
         time.value = relativeTimeFromNow(props.time)
       }, 1000)
@@ -50,7 +53,9 @@ export const RelativeTime = defineComponent({
               )
             },
             default() {
-              return parseDate(props.time, 'yyyy年M月d日 HH:mm:ss')
+              return props.time
+                ? parseDate(props.time, 'yyyy年M月d日 HH:mm:ss')
+                : '此内容自发布以来没有被修改过'
             },
           }}
         </NPopover>

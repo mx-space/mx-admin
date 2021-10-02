@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { parse, format as f } from 'date-fns'
+import { format as f } from 'date-fns'
 
 export enum DateFormat {
   'yyyy年M月d日',
@@ -19,6 +19,9 @@ export const relativeTimeFromNow = (
   time: Date | string,
   current = new Date(),
 ) => {
+  if (!time) {
+    return '-'
+  }
   time = new Date(time)
   const msPerMinute = 60 * 1000
   const msPerHour = msPerMinute * 60
