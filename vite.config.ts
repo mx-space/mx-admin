@@ -1,5 +1,4 @@
 import vue from '@vitejs/plugin-vue'
-import { execSync } from 'child_process'
 import { omitBy } from 'lodash'
 import { visualizer } from 'rollup-plugin-visualizer'
 import AutoImport from 'unplugin-auto-import/vite'
@@ -8,9 +7,9 @@ import Checker from 'vite-plugin-checker'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import PKG from './package.json'
 
-const gitHash = execSync('git rev-parse --short HEAD', {
-  encoding: 'utf-8',
-}).split('\n')[0]
+// const gitHash = execSync('git rev-parse --short HEAD', {
+//   encoding: 'utf-8',
+// }).split('\n')[0]
 export default ({ mode }) => {
   process.env = {
     ...process.env,
