@@ -28,6 +28,7 @@ import {
   NBadge,
   NButton,
   NCard,
+  NElement,
   NGi,
   NGrid,
   NH1,
@@ -108,6 +109,7 @@ export const DashBoardView = defineComponent({
 
     const shiju = ref('')
     const shijuData = ref<ShiJuData | null>(null)
+
     onBeforeMount(() => {
       refreshHitokoto()
       fetchStat()
@@ -118,9 +120,16 @@ export const DashBoardView = defineComponent({
       })
     })
 
+    const app = ref<AppInfo>()
+    onMounted(() => {
+      RESTManager.api.get<AppInfo>().then((res) => {
+        app.value = res
+      })
+    })
+
     const hitokoto = ref('')
     const message = useMessage()
-    // const uiStore = useInjector(UIStore)
+
     const userStore = useInjector(UserStore)
     const router = useRouter()
     const UserLoginStat = defineComponent(() => () => (
@@ -520,6 +529,20 @@ export const DashBoardView = defineComponent({
         </NGrid>
         <UserLoginStat />
         <DataStat />
+
+        <NElement tag="footer" class="mt-12">
+          <NP
+            class="text-center"
+            style={{ color: 'var(--text-color-3)' }}
+            depth="1"
+          >
+            面板版本: {__DEV__ ? 'dev mode' : window.version || 'N/A'}
+            <br />
+            系统版本: {app.value?.version || 'N/A'}
+            <br />
+            页面来源: {window.pageSource || ''}
+          </NP>
+        </NElement>
       </ContentLayout>
     )
   },

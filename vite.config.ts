@@ -81,7 +81,7 @@ const htmlPlugin: () => PluginOption = () => {
       return html
         .replace(
           '<!-- MX SPACE ADMIN DASHBOARD VERSION INJECT -->',
-          `<!-- v${PKG.version} -->`,
+          `<script>window.version = '${PKG.version}';</script>`,
         )
         .replace(/\@gh\-pages/g, '@page_v' + PKG.version)
     },
