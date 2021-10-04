@@ -1,4 +1,5 @@
 import { ContentLayout } from 'layouts/content'
+import { debounce } from 'lodash-es'
 import {
   NButton,
   NButtonGroup,
@@ -15,11 +16,11 @@ import {
 import { FileInfo } from 'naive-ui/lib/upload/src/interface'
 import { responseBlobToFile, RESTManager } from 'utils'
 import { ParsedModel, ParseMarkdownYAML } from 'utils/markdown-parser'
-import { defineComponent, ref, unref, watch } from 'vue'
+import { defineComponent, ref, watch } from 'vue'
 
 enum ImportType {
-  Post,
-  Note,
+  Post = 'post',
+  Note = 'note',
 }
 const types = [
   {
@@ -92,7 +93,7 @@ export default defineComponent(() => {
       ...v,
       filename: fileList.value[index].file?.name ?? '',
     }))
-    console.log(unref(parsedList))
+    console.log(toRaw(parsedList))
   }
 
   async function handleUpload(e: MouseEvent) {
@@ -162,9 +163,9 @@ export default defineComponent(() => {
             <NUpload
               multiple
               accept=".md,.markdown"
-              onChange={(e) => {
+              onChange={debounce((e) => {
                 fileList.value = e.fileList
-              }}
+              }, 250)}
               onRemove={(e) => {
                 const removedFile = e.file
                 const name = removedFile.name
