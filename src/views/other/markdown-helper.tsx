@@ -132,7 +132,7 @@ export default defineComponent(() => {
   watch(
     () => fileList.value,
     (n) => {
-      console.log(n)
+      // console.log(n)
 
       if (n.length == 0) {
         parsedList.value = []
