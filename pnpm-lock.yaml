@@ -30,7 +30,7 @@ specifiers:
   '@vue/compiler-sfc': 3.2.19
   '@vueuse/core': 6.4.1
   autoprefixer: 10.3.6
-  camelcase-keys: 7.0.0
+  camelcase-keys: 7.0.1
   class-transformer: 0.4.0
   class-validator: 0.13.1
   clsx: 1.1.1
@@ -86,7 +86,7 @@ dependencies:
   '@vicons/tabler': 0.11.0
   '@vicons/utils': 0.1.4_vue@3.2.19
   '@vueuse/core': 6.4.1_vue@3.2.19
-  camelcase-keys: 7.0.0
+  camelcase-keys: 7.0.1
   class-transformer: 0.4.0
   class-validator: 0.13.1
   clsx: 1.1.1
@@ -1629,8 +1629,8 @@ packages:
     engines: {node: '>= 6'}
     dev: true
 
-  /camelcase-keys/7.0.0:
-    resolution: {integrity: sha512-qlQlECgDl5Ev+gkvONaiD4X4TF2gyZKuLBvzx0zLo2UwAxmz3hJP/841aaMHTeH1T7v5HRwoRq91daulXoYWvg==}
+  /camelcase-keys/7.0.1:
+    resolution: {integrity: sha512-P331lEls98pW8JLyodNWfzuz91BEDVA4VpW2/SwXnyv2K495tq1N777xzDbFgnEigfA7UIY0xa6PwR/H9jijjA==}
     engines: {node: '>=12'}
     dependencies:
       camelcase: 6.2.0
