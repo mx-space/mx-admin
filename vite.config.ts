@@ -3,9 +3,10 @@ import { execSync } from 'child_process'
 import { omitBy } from 'lodash'
 import { visualizer } from 'rollup-plugin-visualizer'
 import AutoImport from 'unplugin-auto-import/vite'
-import { defineConfig, loadEnv } from 'vite'
+import { defineConfig, loadEnv, PluginOption } from 'vite'
 import Checker from 'vite-plugin-checker'
 import tsconfigPaths from 'vite-tsconfig-paths'
+import PKG from './package.json'
 
 const gitHash = execSync('git rev-parse --short HEAD', {
   encoding: 'utf-8',
@@ -33,6 +34,7 @@ export default ({ mode }) => {
         dts: true,
         imports: ['vue'],
       }),
+      htmlPlugin(),
     ],
 
     build: {
@@ -43,8 +45,8 @@ export default ({ mode }) => {
       // sourcemap: true,
       rollupOptions: {
         output: {
-          chunkFileNames: `[name]-[hash]-${gitHash}.js`,
-          entryFileNames: `[name]-${gitHash}.js`,
+          chunkFileNames: `[name].js`,
+          entryFileNames: `[name].js`,
         },
       },
     },
@@ -70,4 +72,19 @@ export default ({ mode }) => {
       jsxFragment: 'Fragment',
     },
   })
+}
+
+const htmlPlugin: () => PluginOption = () => {
+  return {
+    name: 'html-transform',
+    enforce: 'post',
+    transformIndexHtml(html) {
+      return html
+        .replace(
+          '<!-- MX SPACE ADMIN DASHBOARD VERSION INJECT -->',
+          `<!-- v${PKG.version} -->`,
+        )
+        .replace(/\@gh\-pages/g, '@page_v' + PKG.version)
+    },
+  }
 }

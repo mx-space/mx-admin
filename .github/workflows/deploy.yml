@@ -38,12 +38,25 @@ jobs:
           run_install: true
       - run: pnpm run build
       - run: echo '22333322.xyz' > dist/CNAME
-      - name: Deploy
+      - name: Deploy GitHub Page
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
+      - name: Prepare tag
+        id: prepare_tag
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          TAG_NAME="${GITHUB_REF##refs/tags/}"
+          echo "::set-output name=tag_name::${TAG_NAME}"
+          echo "::set-output name=deploy_tag_name::page_${TAG_NAME}"
+      - name: Archive Version Tag
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          tag_name: ${{ steps.prepare_tag.outputs.deploy_tag_name }}
+          tag_message: 'Store ${{ steps.prepare_tag.outputs.tag_name }}'
     env:
       CI: true
-      # VITE_APP_GAODEMAP_KEY: ${{ secrets.VITE_APP_GAODEMAP_KEY }}
       VITE_APP_PUBLIC_URL: ${{ secrets.VITE_APP_PUBLIC_URL }}
