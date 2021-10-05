@@ -60,7 +60,7 @@
     "@vitejs/plugin-vue": "1.9.2",
     "@vitejs/plugin-vue-jsx": "1.2.0",
     "@vue/compiler-sfc": "3.2.19",
-    "autoprefixer": "10.3.6",
+    "autoprefixer": "10.3.7",
     "cors": "2.8.5",
     "eslint": "7.32.0",
     "eslint-plugin-vue": "7.19.0",
