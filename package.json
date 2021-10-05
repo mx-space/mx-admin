@@ -71,7 +71,7 @@
     "tailwindcss": "2.2.16",
     "typescript": "4.3.5",
     "unplugin-auto-import": "0.4.10",
-    "vite": "2.6.2",
+    "vite": "2.6.3",
     "vite-plugin-checker": "0.3.4",
     "vite-tsconfig-paths": "3.3.14",
     "vue-eslint-parser": "7.11.0"
