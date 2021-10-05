@@ -36,7 +36,7 @@ specifiers:
   class-validator: 0.13.1
   clsx: 1.1.1
   cors: 2.8.5
-  date-fns: 2.24.0
+  date-fns: 2.25.0
   eslint: 7.32.0
   eslint-plugin-vue: 7.19.0
   js-cookie: 3.0.1
@@ -92,7 +92,7 @@ dependencies:
   class-transformer: 0.4.0
   class-validator: 0.13.1
   clsx: 1.1.1
-  date-fns: 2.24.0
+  date-fns: 2.25.0
   js-cookie: 3.0.1
   lodash-es: 4.17.21
   monaco-editor: 0.28.1
@@ -1881,6 +1881,11 @@ packages:
 
   /date-fns/2.24.0:
     resolution: {integrity: sha512-6ujwvwgPID6zbI0o7UbURi2vlLDR9uP26+tW6Lg+Ji3w7dd0i3DOcjcClLjLPranT60SSEFBwdSyYwn/ZkPIuw==}
+    engines: {node: '>=0.11'}
+    dev: false
+
+  /date-fns/2.25.0:
+    resolution: {integrity: sha512-ovYRFnTrbGPD4nqaEqescPEv1mNwvt+UTqI3Ay9SzNtey9NZnYu6E2qCcBBgJ6/2VF1zGGygpyTDITqpQQ5e+w==}
     engines: {node: '>=0.11'}
     dev: false
 
