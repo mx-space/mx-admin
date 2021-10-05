@@ -1,7 +1,6 @@
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown'
 import { languages } from '@codemirror/language-data'
 import { Compartment, Extension } from '@codemirror/state'
-import { githubLightTheme } from '@ddietr/codemirror-themes/theme/github-light'
 
 const extensionMap = {
   theme: new Compartment(),
@@ -9,7 +8,7 @@ const extensionMap = {
 }
 
 export const codemirrorReconfigureExtension: Extension[] = [
-  extensionMap.theme.of(githubLightTheme),
+  extensionMap.theme.of([]),
   extensionMap.language.of(
     markdown({
       base: markdownLanguage,

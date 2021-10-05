@@ -1,4 +1,41 @@
+html.editor-fullscreen {
+  &,
+  body {
+    font-size: 16px;
+  }
+}
+
+html.dark {
+  .editor-wrapper {
+    &:fullscreen {
+      background-image: linear-gradient(
+        135deg,
+        hsl(145, 69%, 59%) 10%,
+        #002661 100%
+      );
+    }
+  }
+}
+
 .editor-wrapper {
+  height: calc(100vh - 18.8rem);
+  @apply relative;
+
+  > div {
+    @apply h-full;
+  }
+
+  &:fullscreen {
+    background-image: linear-gradient(135deg, #abdcff 10%, #0396ff 100%);
+    @apply py-[10vh];
+
+    > div {
+      @apply !max-w-[1200px] !m-auto rounded-2xl shadow-lg overflow-hidden;
+
+      background-color: var(--body-color);
+    }
+  }
+
   .vditor-reset,
   textarea,
   .n-input__placeholder {

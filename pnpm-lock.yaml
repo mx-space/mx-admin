@@ -11,6 +11,7 @@ specifiers:
   '@codemirror/language-data': 0.19.0
   '@codemirror/matchbrackets': 0.19.3
   '@codemirror/state': 0.19.2
+  '@codemirror/theme-one-dark': 0.19.0
   '@codemirror/view': 0.19.9
   '@ddietr/codemirror-themes': 1.0.8
   '@types/lodash-es': 4.17.5
@@ -75,6 +76,7 @@ dependencies:
   '@codemirror/language-data': 0.19.0
   '@codemirror/matchbrackets': 0.19.3
   '@codemirror/state': 0.19.2
+  '@codemirror/theme-one-dark': 0.19.0
   '@codemirror/view': 0.19.9
   '@ddietr/codemirror-themes': 1.0.8
   '@vicons/antd': 0.11.0
@@ -839,6 +841,14 @@ packages:
 
   /@codemirror/text/0.19.4:
     resolution: {integrity: sha512-Msd1ImS+Mmref28+oyoOrBwqjH4lbCVO/5ol2jRaCEYH7+KaMocxFADZomPLnMPgDW6Gc4mu/K2lj8IjAOFdTA==}
+    dev: false
+
+  /@codemirror/theme-one-dark/0.19.0:
+    resolution: {integrity: sha512-Xlk68ARreanFveE+KvZJY4HxecNr+VKDOR61O8l3kzlQ0qvxNXA0KAp1xu4p32pA9jzJqJi5haIgdfWSZogXZg==}
+    dependencies:
+      '@codemirror/highlight': 0.19.6
+      '@codemirror/state': 0.19.2
+      '@codemirror/view': 0.19.9
     dev: false
 
   /@codemirror/tooltip/0.19.2:

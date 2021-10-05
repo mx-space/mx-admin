@@ -3,8 +3,9 @@
  *
  */
 
-// TODO: auto save & temp cache
+// TODO: 全屏预览
 import { React } from '@vicons/fa'
+import FullscreenExitOutlined from '@vicons/material/es/FullscreenExitOutlined'
 import Settings from '@vicons/tabler/es/Settings'
 import { Icon } from '@vicons/utils'
 import clsx from 'clsx'
@@ -14,6 +15,7 @@ import { throttle } from 'lodash-es'
 import type { editor } from 'monaco-editor'
 import {
   NCard,
+  NElement,
   NForm,
   NFormItem,
   NModal,
@@ -46,12 +48,13 @@ export const _EditorToggleWrapper = defineComponent({
     const currentEditor = ref<Editor>(prefEditor ?? Editor.monaco)
     const modalOpen = ref(false)
     const layout = useLayout()
-
+    // FIXME vue 3 cannot ref type as custom component
+    const wrapperRef = ref<any>()
     useMountAndUnmount(() => {
       if (hasFloatButton) {
         return
       }
-      const btn = layout.addFloatButton(
+      const settingButton = layout.addFloatButton(
         <button
           onClick={() => {
             modalOpen.value = true
@@ -62,11 +65,34 @@ export const _EditorToggleWrapper = defineComponent({
           </Icon>
         </button>,
       )
+
+      const fullScreenButton = layout.addFloatButton(
+        <button
+          onClick={() => {
+            wrapperRef.value?.$el.requestFullscreen()
+          }}
+        >
+          <Icon size={18}>
+            <FullscreenExitOutlined />
+          </Icon>
+        </button>,
+      )
       hasFloatButton = true
       return () => {
-        layout.removeFloatButton(btn)
+        layout.removeFloatButton(settingButton)
+        layout.removeFloatButton(fullScreenButton)
         hasFloatButton = false
       }
+    })
+
+    useMountAndUnmount(() => {
+      document.addEventListener('fullscreenchange', (e) => {
+        if (document.fullscreenElement === wrapperRef.value) {
+          document.documentElement.classList.add('editor-fullscreen')
+        } else {
+          document.documentElement.classList.remove('editor-fullscreen')
+        }
+      })
     })
 
     watch(
@@ -105,16 +131,18 @@ export const _EditorToggleWrapper = defineComponent({
     }
 
     return () => (
-      <div
+      <NElement
+        tag="div"
         style={
           {
             '--editor-font-size': generalSetting.fontSize
-              ? generalSetting.fontSize + 'px'
+              ? generalSetting.fontSize / 14 + 'rem'
               : '',
             '--editor-font-family': generalSetting.fontFamily,
           } as any
         }
         class={'editor-wrapper'}
+        ref={wrapperRef}
       >
         {(() => {
           if (props.loading) {
@@ -182,7 +210,7 @@ export const _EditorToggleWrapper = defineComponent({
             </NForm>
           </NCard>
         </NModal>
-      </div>
+      </NElement>
     )
   },
 })

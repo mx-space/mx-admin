@@ -1,7 +1,6 @@
 import { useSaveConfirm } from 'hooks/use-save-confirm'
 import { NInput } from 'naive-ui'
 import { defineComponent, ref, toRaw, watch } from 'vue'
-import styles from '../universal/editor.module.css'
 import { editorBaseProps } from '../universal/props'
 
 export const PlainEditor = defineComponent({
@@ -29,7 +28,7 @@ export const PlainEditor = defineComponent({
           type="textarea"
           onInput={(e) => void props.onChange(e)}
           value={props.text}
-          class={styles.editor}
+          class="h-full"
         ></NInput>
       </div>
     )

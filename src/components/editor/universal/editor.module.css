@@ -1,7 +1,3 @@
-.editor {
-  height: calc(100vh - 18.8rem);
-}
-
 .editor.loading {
   @apply w-full flex items-center justify-center;
 }

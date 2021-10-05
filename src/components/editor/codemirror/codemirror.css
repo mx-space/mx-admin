@@ -3,6 +3,14 @@
     @apply h-full;
   }
 
+  .cm-editor {
+    .cm-gutters,
+    .cm-activeLineGutter,
+    .cm-activeLine {
+      @apply transition-colors duration-500;
+    }
+  }
+
   &.cm-focused {
     @apply !outline-none;
   }

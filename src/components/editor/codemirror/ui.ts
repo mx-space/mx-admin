@@ -1,6 +1,6 @@
+import { oneDark } from '@codemirror/theme-one-dark'
 import { EditorView } from '@codemirror/view/dist'
-import { githubDarkTheme } from '@ddietr/codemirror-themes/theme/github-dark'
-import { githubLightTheme } from '@ddietr/codemirror-themes/theme/github-light'
+import { githubLight } from '@ddietr/codemirror-themes/theme/github-light'
 import { useInjector } from 'hooks/use-deps-injection'
 import { UIStore } from 'stores/ui'
 import { Ref } from 'vue'
@@ -11,8 +11,8 @@ export const useCodeMirrorAutoToggleTheme = (
 ) => {
   const { isDark } = useInjector(UIStore)
   watch(
-    () => isDark.value,
-    (isDark) => {
+    [isDark, view],
+    ([isDark]) => {
       if (!view.value) {
         return
       }
@@ -20,20 +20,18 @@ export const useCodeMirrorAutoToggleTheme = (
       if (isDark) {
         view.value.dispatch({
           effects: [
-            codemirrorReconfigureExtensionMap.theme.reconfigure(
-              githubDarkTheme,
-            ),
+            codemirrorReconfigureExtensionMap.theme.reconfigure(oneDark),
           ],
         })
       } else {
         view.value.dispatch({
           effects: [
-            codemirrorReconfigureExtensionMap.theme.reconfigure(
-              githubLightTheme,
-            ),
+            codemirrorReconfigureExtensionMap.theme.reconfigure(githubLight),
           ],
         })
       }
     },
+
+    { immediate: true, flush: 'post' },
   )
 }
