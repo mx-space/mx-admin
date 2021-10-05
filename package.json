@@ -64,7 +64,7 @@
     "cors": "2.8.5",
     "eslint": "7.32.0",
     "eslint-plugin-vue": "7.19.0",
-    "postcss": "8.3.8",
+    "postcss": "8.3.9",
     "postcss-nested": "5.0.6",
     "prettier": "2.4.1",
     "rollup-plugin-visualizer": "5.5.2",
