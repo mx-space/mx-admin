@@ -69,7 +69,7 @@
     "prettier": "2.4.1",
     "rollup-plugin-visualizer": "5.5.2",
     "tailwindcss": "2.2.16",
-    "typescript": "4.3.5",
+    "typescript": "4.4.3",
     "unplugin-auto-import": "0.4.10",
     "vite": "2.6.3",
     "vite-plugin-checker": "0.3.4",
