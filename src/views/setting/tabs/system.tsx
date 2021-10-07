@@ -373,7 +373,7 @@ export const TabSystem = defineComponent(() => {
 
         <NCollapseItem name="backup" title="备份">
           <NForm {...formProps}>
-            <NFormItem label="开启备份">
+            <NFormItem label="开启自动备份">
               <NSpace vertical>
                 <NSwitch
                   value={configs.value.backupOptions.enable}
@@ -382,7 +382,7 @@ export const TabSystem = defineComponent(() => {
                   }
                 />
                 <NText class="text-xs" depth={3}>
-                  仅支持备份到 COS
+                  填写以下 COS 信息, 将同时上传备份到 COS
                 </NText>
               </NSpace>
             </NFormItem>
