@@ -1,6 +1,16 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### Features
+
+- New setup view
+
+### Miscellaneous Tasks
+
+- Add changelog
+
 ## [3.7.1] - 2021-10-07
 
 ### Bug Fixes
