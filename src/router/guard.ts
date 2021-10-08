@@ -6,6 +6,9 @@ export const progress = new QProgress({ colorful: false, color: '#1a9cf3' })
 const title = configs.title
 
 router.beforeEach(async (to) => {
+  if (__DEV__) {
+    return
+  }
   progress.start()
   // guard for setup route
 

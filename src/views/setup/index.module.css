@@ -1,0 +1,24 @@
+.full {
+  @apply overflow-auto w-full relative h-[100vh];
+  @apply flex items-center justify-center;
+
+  :global {
+    .form-card {
+      /* @apply !mt-8; */
+    }
+    .bg-image {
+      @apply fixed left-0 right-0 bottom-0 top-0 overflow-hidden;
+
+      &::before {
+        background-image: var(--bg);
+        content: '';
+
+        @apply left-0 right-0 bottom-0 top-0;
+        @apply bg-center bg-cover;
+        @apply blur-md;
+        @apply m-[-10px];
+        @apply absolute left-0 top-0 right-0 bottom-0;
+      }
+    }
+  }
+}

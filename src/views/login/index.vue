@@ -7,13 +7,9 @@ import Avatar from '../../components/avatar/index.vue'
 import ParallaxButtonVue from '../../components/button/parallax-button.vue'
 import { UserModel } from '../../models/user'
 import { UserStore } from '../../stores/user'
-
+import { bgUrl } from 'constants/env'
 import { RESTManager } from '../../utils/rest'
 
-const bgUrl =
-  window.injectData.LOGIN_BG ||
-  (import.meta.env.VITE_APP_LOGIN_BG as string) ||
-  'https://gitee.com/xun7788/my-imagination/raw/master/uPic/1615516941397.jpg'
 export const LoginView = defineComponent({
   components: { Avatar, ParallaxButtonVue },
   setup() {

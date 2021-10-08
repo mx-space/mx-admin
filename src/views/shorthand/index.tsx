@@ -1,3 +1,6 @@
+/**
+ * 最近 & 速记
+ */
 import Add12Filled from '@vicons/fluent/es/Add12Filled'
 import { useShorthand } from 'components/shorthand'
 import { RecentlyModel } from 'models/recently'
