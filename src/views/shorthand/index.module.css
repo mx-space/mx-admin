@@ -1,0 +1,20 @@
+.timeline-grid {
+  @apply grid;
+
+  grid-template-columns: auto 50px;
+  grid-gap: 0.5rem;
+
+  &:hover {
+    :global {
+      .action {
+        @apply opacity-100;
+      }
+    }
+  }
+
+  :global {
+    .action {
+      @apply relative flex opacity-0 transition-opacity;
+    }
+  }
+}

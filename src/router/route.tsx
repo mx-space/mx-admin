@@ -61,7 +61,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         path: 'view',
         name: RouteName.ViewPost,
         meta: {
-          title: '管理文章',
+          title: '管理',
           icon: (
             <Icon>
               <Eye />
@@ -79,7 +79,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         path: 'edit',
         name: RouteName.EditPost,
         meta: {
-          title: '撰写文章',
+          title: '撰写 - 博文',
           icon: (
             <Icon>
               <PencilAlt />
@@ -110,7 +110,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     path: '/notes',
     name: RouteName.Note,
     meta: {
-      title: '记录',
+      title: '随想',
       icon: (
         <Icon>
           <Book />
@@ -141,7 +141,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         path: 'edit',
         name: RouteName.EditNote,
         meta: {
-          title: '树洞',
+          title: '撰写 - 树洞',
           icon: (
             <Icon>
               <PencilAlt />

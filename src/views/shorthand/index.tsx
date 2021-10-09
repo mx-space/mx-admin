@@ -1,16 +1,18 @@
 /**
  * 最近 & 速记
  */
+import Pen from '@vicons/fa/Pen'
 import Add12Filled from '@vicons/fluent/es/Add12Filled'
+import { Icon } from '@vicons/utils'
 import { useShorthand } from 'components/shorthand'
+import { RelativeTime } from 'components/time/relative-time'
 import { RecentlyModel } from 'models/recently'
-import { NButton, NDataTable, NPopconfirm, NSpace } from 'naive-ui'
-import { parseDate } from 'utils'
+import { NButton, NPopconfirm, NTimeline, NTimelineItem } from 'naive-ui'
 import { defineComponent, onMounted } from 'vue'
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
-
+import styles from './index.module.css'
 export default defineComponent({
   setup() {
     const data = ref([] as RecentlyModel[])
@@ -41,65 +43,63 @@ export default defineComponent({
           </>
         }
       >
-        <NDataTable
-          remote
-          loading={loading.value}
-          bordered={false}
-          data={data.value}
-          columns={[
-            {
-              title: '内容',
-              key: 'content',
-              width: 500,
-              // ellipsis: {
-              //   tooltip: true,
-              // },
-            },
-            {
-              title: '记录时间',
-              key: 'created',
-              width: 100,
-              render(row) {
-                return parseDate(row.created, 'M-d HH:mm:ss')
-              },
-            },
-            {
-              title: '操作',
-              fixed: 'right',
-              width: 60,
-              key: 'id',
-              render(row) {
-                return (
-                  <NSpace>
-                    <NPopconfirm
-                      positiveText={'取消'}
-                      negativeText="删除"
-                      onNegativeClick={async () => {
-                        await RESTManager.api.recently(row.id).delete()
-                        message.success('删除成功')
-                        data.value.splice(data.value.indexOf(row), 1)
-                      }}
-                    >
-                      {{
-                        trigger: () => (
-                          <NButton text type="error" size="tiny">
-                            移除
-                          </NButton>
-                        ),
+        <NTimeline>
+          {data.value.map((item) => {
+            return (
+              <NTimelineItem type="success" key={item.id}>
+                {{
+                  icon() {
+                    return (
+                      <Icon>
+                        <Pen />
+                      </Icon>
+                    )
+                  },
+                  default() {
+                    return (
+                      <div class={styles['timeline-grid']}>
+                        <span>{item.content}</span>
 
-                        default: () => (
-                          <span style={{ maxWidth: '12rem' }}>
-                            确定要删除 {row.title} ?
-                          </span>
-                        ),
-                      }}
-                    </NPopconfirm>
-                  </NSpace>
-                )
-              },
-            },
-          ]}
-        ></NDataTable>
+                        <div class="action">
+                          <NPopconfirm
+                            placement="left"
+                            positiveText={'取消'}
+                            negativeText="删除"
+                            onNegativeClick={async () => {
+                              await RESTManager.api.recently(item.id).delete()
+                              message.success('删除成功')
+                              data.value.splice(data.value.indexOf(item), 1)
+                            }}
+                          >
+                            {{
+                              trigger: () => (
+                                <NButton text type="error" size="tiny">
+                                  移除
+                                </NButton>
+                              ),
+
+                              default: () => (
+                                <span
+                                  style={{ maxWidth: '12rem' }}
+                                  class={'break-all'}
+                                >
+                                  确定要删除 {item.content} ?
+                                </span>
+                              ),
+                            }}
+                          </NPopconfirm>
+                        </div>
+                      </div>
+                    )
+                  },
+                  footer() {
+                    return <RelativeTime time={item.created} />
+                  },
+                }}
+              </NTimelineItem>
+            )
+          })}
+        </NTimeline>
       </ContentLayout>
     )
   },
