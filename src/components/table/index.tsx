@@ -153,8 +153,7 @@ export const Table = defineComponent({
           checkedRowKeys.value = keys
           onUpdateCheckedRowKeys?.(keys as any)
         }}
-        rowClassName={() => styles['table-row']}
-        onUpdateSorter={async (status) => {
+        onUpdateSorter={async (status: SortState) => {
           if (!status) {
             return
           }
