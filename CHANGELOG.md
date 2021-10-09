@@ -5,11 +5,25 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 
+- Update timeline
+
+### Miscellaneous Tasks
+
+- Update deps
+
+## [3.8.0] - 2021-10-08
+
+### Features
+
 - New setup view
 
 ### Miscellaneous Tasks
 
 - Add changelog
+
+### Release
+
+- V3.8.0
 
 ## [3.7.1] - 2021-10-07
 
