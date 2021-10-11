@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Bug Fixes
+
+- Table row style
+
+## [3.8.1] - 2021-10-09
+
 ### Features
 
 - Update timeline
@@ -10,6 +16,10 @@ All notable changes to this project will be documented in this file.
 ### Miscellaneous Tasks
 
 - Update deps
+
+### Release
+
+- V3.8.1
 
 ## [3.8.0] - 2021-10-08
 
