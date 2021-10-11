@@ -147,6 +147,7 @@ export const Table = defineComponent({
         }
         bordered={false}
         data={data.value}
+        rowClassName={() => tableRowStyle}
         checkedRowKeys={checkedRowKeys.value}
         rowKey={(r) => r[checkedRowKey]}
         onUpdateCheckedRowKeys={(keys) => {

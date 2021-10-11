@@ -6,7 +6,7 @@
 body,
 html {
   margin: 0;
-  font-size: 14px;
+  font-size: 14px !important;
   padding: 0;
   background-color: #fafafa;
   font-family: -apple-system, 'Segoe UI', 'Helvetica Neue', sans-serif;

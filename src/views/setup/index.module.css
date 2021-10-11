@@ -3,6 +3,9 @@
   @apply flex items-center justify-center;
 
   :global {
+    .n-step-content__description {
+      font-size: 10px;
+    }
     .form-card {
       /* @apply !mt-8; */
     }

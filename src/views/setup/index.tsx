@@ -46,17 +46,7 @@ export default defineComponent({
         {loaded.value && (
           <div class="bg-image" style={`--bg: url(${bgUrl})`}></div>
         )}
-        <NCard
-          title="初始化"
-          themeOverrides={{
-            fontSizeSmall: '12px',
-            // @ts-ignore
-            common: {
-              fontSize: '11px',
-            },
-          }}
-          class="modal-card sm m-auto form-card"
-        >
+        <NCard title="初始化" class="modal-card sm m-auto form-card">
           <NSteps size="small" current={step.value}>
             <NStep
               status={step.value > 0 ? 'finish' : 'process'}
