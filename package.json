@@ -81,7 +81,7 @@
     "unplugin-auto-import": "0.4.11",
     "vite": "2.6.5",
     "vite-plugin-checker": "0.3.4",
-    "vite-tsconfig-paths": "3.3.14",
+    "vite-tsconfig-paths": "3.3.17",
     "vue-eslint-parser": "7.11.0"
   }
 }
