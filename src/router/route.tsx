@@ -79,7 +79,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         path: 'edit',
         name: RouteName.EditPost,
         meta: {
-          title: '撰写 — 博文',
+          title: '撰写 · 博文',
           icon: (
             <Icon>
               <PencilAlt />
@@ -94,7 +94,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         path: 'category',
         name: RouteName.EditCategory,
         meta: {
-          title: '分类/标签',
+          title: '分类 / 标签',
           icon: (
             <Icon>
               <PuzzlePiece />
@@ -141,7 +141,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         path: 'edit',
         name: RouteName.EditNote,
         meta: {
-          title: '撰写 — 树洞',
+          title: '撰写 · 树洞',
           icon: (
             <Icon>
               <PencilAlt />

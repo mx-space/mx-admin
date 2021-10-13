@@ -20,12 +20,12 @@ body {
   @apply overflow-hidden;
 }
 
-a {
-  @apply text-primary-default;
+body a {
+  @apply text-primary-default transition-colors;
   text-decoration: none;
 }
 
-a:hover {
+body a:hover {
   @apply text-primary-shallow;
 }
 
