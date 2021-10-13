@@ -5,7 +5,21 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Link style
+
+### Miscellaneous Tasks
+
+- Update deps
+
+## [3.8.2] - 2021-10-11
+
+### Bug Fixes
+
 - Table row style
+
+### Release
+
+- V3.8.2
 
 ## [3.8.1] - 2021-10-09
 
