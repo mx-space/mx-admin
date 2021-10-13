@@ -34,7 +34,7 @@ export const Table = defineComponent({
     },
     onUpdateCheckedRowKeys: {
       type: Function as PropType<(keys: string[]) => void>,
-      default: () => {},
+      default: new Function(),
     },
     onUpdateSorter: {
       type: Function as PropType<
@@ -43,7 +43,7 @@ export const Table = defineComponent({
           status: SortState,
         ) => void
       >,
-      default: () => {},
+      default: new Function(),
     },
     onFetchData: {
       type: Function as PropType<
@@ -60,7 +60,7 @@ export const Table = defineComponent({
       type: Object as PropType<
         Partial<Record<keyof typeof dataTableProps, any>>
       >,
-      default: {},
+      default: new Object(),
     },
     maxWidth: {
       type: Number,
@@ -74,7 +74,7 @@ export const Table = defineComponent({
       default: 'id',
     },
   },
-  setup(props, ctx) {
+  setup(props) {
     const {
       data,
       noPagination = false,
