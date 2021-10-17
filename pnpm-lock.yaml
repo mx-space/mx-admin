@@ -49,7 +49,7 @@ specifiers:
   qier-progress: 1.0.4
   reflect-metadata: 0.1.13
   rollup-plugin-visualizer: 5.5.2
-  socket.io-client: 4.2.0
+  socket.io-client: 4.3.2
   tailwindcss: 2.2.16
   typescript: 4.4.4
   umi-request: 1.4.0
@@ -99,7 +99,7 @@ dependencies:
   naive-ui: 2.19.9_vue@3.2.20
   qier-progress: 1.0.4
   reflect-metadata: 0.1.13
-  socket.io-client: 4.2.0
+  socket.io-client: 4.3.2
   umi-request: 1.4.0
   validator: 13.6.0
   vditor: 3.8.7
@@ -1077,8 +1077,8 @@ packages:
       picomatch: 2.3.0
     dev: true
 
-  /@types/component-emitter/1.2.10:
-    resolution: {integrity: sha512-bsjleuRKWmGqajMerkzox19aGbscQX5rmmvvXl3wlIp5gMG1HgkiwPxsN5p070fBDKTNSPgojVbuY1+HWMbFhg==}
+  /@socket.io/component-emitter/3.0.0:
+    resolution: {integrity: sha512-2pTGuibAXJswAPJjaKisthqS/NOK5ypG4LYT6tEAV0S/mxW0zOIvYvGK0V8w8+SHxAm6vRMSjqSalFXeBAqs+Q==}
     dev: false
 
   /@types/d3-timer/2.0.1:
@@ -1605,8 +1605,8 @@ packages:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
     dev: true
 
-  /base64-arraybuffer/0.1.4:
-    resolution: {integrity: sha1-mBjHngWbE1X5fgQooBfIOOkLqBI=}
+  /base64-arraybuffer/1.0.1:
+    resolution: {integrity: sha512-vFIUq7FdLtjZMhATwDul5RZWv2jpXQ09Pd6jcVEOvIsqCWTRFD/ONHNfyOS8dA/Ippi5dsIgpyKWKZaAKZltbA==}
     engines: {node: '>= 0.6.0'}
     dev: false
 
@@ -1806,10 +1806,6 @@ packages:
     engines: {node: '>= 12'}
     dev: true
 
-  /component-emitter/1.3.0:
-    resolution: {integrity: sha512-Rd3se6QB+sO1TwqZjscQrurpEPIfO0/yYnSin6Q/rD3mOutHvUrCAhJub3r90uNb+SESBuE0QYoB90YdfatsRg==}
-    dev: false
-
   /concat-map/0.0.1:
     resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
     dev: true
@@ -2003,17 +1999,16 @@ packages:
       iconv-lite: 0.6.3
     dev: false
 
-  /engine.io-client/5.2.0:
-    resolution: {integrity: sha512-BcIBXGBkT7wKecwnfrSV79G2X5lSUSgeAGgoo60plXf8UsQEvCQww/KMwXSMhVjb98fFYNq20CC5eo8IOAPqsg==}
+  /engine.io-client/6.0.2:
+    resolution: {integrity: sha512-cAep9lhZV6Q8jMXx3TNSU5cydMzMed8/O7Tz5uzyqZvpNPtQ3WQXrLYGADxlsuaFmOLN7wZLmT7ImiFhUOku8g==}
     dependencies:
-      base64-arraybuffer: 0.1.4
-      component-emitter: 1.3.0
+      '@socket.io/component-emitter': 3.0.0
       debug: 4.3.2
-      engine.io-parser: 4.0.3
+      engine.io-parser: 5.0.1
       has-cors: 1.1.0
       parseqs: 0.0.6
       parseuri: 0.0.6
-      ws: 7.4.6
+      ws: 8.2.3
       xmlhttprequest-ssl: 2.0.0
       yeast: 0.1.2
     transitivePeerDependencies:
@@ -2022,11 +2017,11 @@ packages:
       - utf-8-validate
     dev: false
 
-  /engine.io-parser/4.0.3:
-    resolution: {integrity: sha512-xEAAY0msNnESNPc00e19y5heTPX4y/TJ36gr8t1voOaNmTojP9b3oK3BbJLFufW2XFPQaaijpFewm2g2Um3uqA==}
-    engines: {node: '>=8.0.0'}
+  /engine.io-parser/5.0.1:
+    resolution: {integrity: sha512-j4p3WwJrG2k92VISM0op7wiq60vO92MlF3CRGxhKHy9ywG1/Dkc72g0dXeDQ+//hrcDn8gqQzoEkdO9FN0d9AA==}
+    engines: {node: '>=10.0.0'}
     dependencies:
-      base64-arraybuffer: 0.1.4
+      base64-arraybuffer: 1.0.1
     dev: false
 
   /enquirer/2.3.6:
@@ -3428,29 +3423,27 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /socket.io-client/4.2.0:
-    resolution: {integrity: sha512-3GJ2KMh7inJUNAOjgf8NaKJZJa9uRyfryh2LrVJyKyxmzoXlfW9DeDNqylJn0ovOFt4e/kRLNWzMt/YqqEWYSA==}
+  /socket.io-client/4.3.2:
+    resolution: {integrity: sha512-2B9LqSunN60yV8F7S84CCEEcgbYNfrn7ejIInZtLZ7ppWtiX8rGZAjvdCvbnC8bqo/9RlCNOUsORLyskxSFP1g==}
     engines: {node: '>=10.0.0'}
     dependencies:
-      '@types/component-emitter': 1.2.10
+      '@socket.io/component-emitter': 3.0.0
       backo2: 1.0.2
-      component-emitter: 1.3.0
       debug: 4.3.2
-      engine.io-client: 5.2.0
+      engine.io-client: 6.0.2
       parseuri: 0.0.6
-      socket.io-parser: 4.0.4
+      socket.io-parser: 4.1.1
     transitivePeerDependencies:
       - bufferutil
       - supports-color
       - utf-8-validate
     dev: false
 
-  /socket.io-parser/4.0.4:
-    resolution: {integrity: sha512-t+b0SS+IxG7Rxzda2EVvyBZbvFPBCjJoyHuE0P//7OAsN23GItzDRdWa6ALxZI/8R5ygK7jAR6t028/z+7295g==}
+  /socket.io-parser/4.1.1:
+    resolution: {integrity: sha512-USQVLSkDWE5nbcY760ExdKaJxCE65kcsG/8k5FDGZVVxpD1pA7hABYXYkCUvxUuYYh/+uQw0N/fvBzfT8o07KA==}
     engines: {node: '>=10.0.0'}
     dependencies:
-      '@types/component-emitter': 1.2.10
-      component-emitter: 1.3.0
+      '@socket.io/component-emitter': 3.0.0
       debug: 4.3.2
     transitivePeerDependencies:
       - supports-color
@@ -3979,9 +3972,9 @@ packages:
     resolution: {integrity: sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8=}
     dev: true
 
-  /ws/7.4.6:
-    resolution: {integrity: sha512-YmhHDO4MzaDLB+M9ym/mDA5z0naX8j7SIlT8f8z+I0VtzsRbekxEutHSme7NPS2qE8StCYQNUnfWdXta/Yu85A==}
-    engines: {node: '>=8.3.0'}
+  /ws/8.2.3:
+    resolution: {integrity: sha512-wBuoj1BDpC6ZQ1B7DWQBYVLphPWkm8i9Y0/3YdHjHKHiohOJ1ws+3OccDWtH+PoC9DZD5WOTrJvNbWvjS6JWaA==}
+    engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
       utf-8-validate: ^5.0.2

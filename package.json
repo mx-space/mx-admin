@@ -51,7 +51,7 @@
     "naive-ui": "2.19.9",
     "qier-progress": "1.0.4",
     "reflect-metadata": "0.1.13",
-    "socket.io-client": "4.2.0",
+    "socket.io-client": "4.3.2",
     "umi-request": "1.4.0",
     "validator": "13.6.0",
     "vditor": "3.8.7",
