@@ -120,8 +120,7 @@ export class SocketClient {
             if (document.hasFocus()) {
               handler()
             } else {
-              // TODO
-              window.open('/')
+              window.open(router.resolve({ name: 'comment' }).href)
             }
           }
         })
