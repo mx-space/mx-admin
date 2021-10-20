@@ -19,3 +19,13 @@ export interface Pager {
   hasPrevPage: boolean
   hasNextPage: boolean
 }
+
+export interface PaginateResult<T> {
+  data: T
+  pagination: Pager
+}
+
+export class BaseModel {
+  created?: Date
+  id?: string
+}

@@ -2,6 +2,7 @@
  * 路由在此定义
  * @author Innei <https://innei.ren>
  */
+import Snippet from '@vicons/antd/SnippetsFilled'
 import Book from '@vicons/fa/es/Book'
 import ChartLine from '@vicons/fa/es/ChartLine'
 import Code from '@vicons/fa/es/Code'
@@ -375,6 +376,20 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     },
     component: $RouterView,
     children: [
+      {
+        path: 'snippets',
+        name: RouteName.Snippet,
+        meta: {
+          title: '区块与片段',
+          icon: (
+            <Icon>
+              <Snippet />
+            </Icon>
+          ),
+        },
+        component: () => import('../views/snippets'),
+      },
+
       {
         path: 'backup',
         name: RouteName.Backup,
