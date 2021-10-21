@@ -42,7 +42,7 @@ specifiers:
   js-cookie: 3.0.1
   lodash-es: 4.17.21
   monaco-editor: 0.29.1
-  naive-ui: 2.19.9
+  naive-ui: 2.19.11
   postcss: 8.3.9
   postcss-nested: 5.0.6
   prettier: 2.4.1
@@ -96,7 +96,7 @@ dependencies:
   js-cookie: 3.0.1
   lodash-es: 4.17.21
   monaco-editor: 0.29.1
-  naive-ui: 2.19.9_vue@3.2.20
+  naive-ui: 2.19.11_vue@3.2.20
   qier-progress: 1.0.4
   reflect-metadata: 0.1.13
   socket.io-client: 4.3.2
@@ -2925,8 +2925,8 @@ packages:
   /ms/2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
 
-  /naive-ui/2.19.9_vue@3.2.20:
-    resolution: {integrity: sha512-BKD0z+8z75XAnSzr9wQ3CQKHL2/IgaFy7XZFYIA9deS7Iql1LkTGajDbAHmUcbfm//sCjbTa0vhvcVy/B7zpqw==}
+  /naive-ui/2.19.11_vue@3.2.20:
+    resolution: {integrity: sha512-cbrsaTfqevwvE/TxbFKhDAYIZZfGdGeLWKPvoRuxQyKqjnldtP5t6cXfMSLmRPExqs/lQcH+eilfrNPpVj4xpA==}
     peerDependencies:
       vue: ^3.0.0
     dependencies:
