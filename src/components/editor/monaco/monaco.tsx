@@ -1,7 +1,8 @@
 import clsx from 'clsx'
+import { CenterSpin } from 'components/spin'
 import { useInjector } from 'hooks/use-deps-injection'
 import { useSaveConfirm } from 'hooks/use-save-confirm'
-import { editor as Editor, KeyCode, KeyMod, Selection } from 'monaco-editor'
+import type { editor as Editor } from 'monaco-editor'
 import { UIStore } from 'stores/ui'
 import {
   defineComponent,
@@ -14,6 +15,7 @@ import {
 } from 'vue'
 import styles from '../universal/editor.module.css'
 import { editorBaseProps } from '../universal/props'
+
 const _MonacoEditor = defineComponent({
   props: {
     innerRef: {
@@ -24,11 +26,12 @@ const _MonacoEditor = defineComponent({
   setup(props) {
     const editorRef = ref<HTMLDivElement>()
     let editor: Editor.IStandaloneCodeEditor
-    onMounted(() => {
+    const { isDark } = useInjector(UIStore)
+    onMounted(async () => {
       if (!editorRef.value) {
         return
       }
-      editor = initEditor(editorRef.value, props.text)
+      editor = await initEditor(editorRef.value, props.text, isDark)
       ;['onKeyDown', 'onDidPaste', 'onDidBlurEditorText'].forEach(
         (eventName) => {
           // @ts-ignore
@@ -67,15 +70,22 @@ const _MonacoEditor = defineComponent({
       <div
         class={clsx('editor relative overflow-hidden', styles.editor)}
         ref={editorRef}
-      ></div>
+      >
+        <CenterSpin />
+      </div>
     )
   },
 })
 
 export const MonacoEditor = _MonacoEditor
 
-const initEditor = ($el: HTMLElement, initialValue: string) => {
-  const { isDark } = useInjector(UIStore)
+const initEditor = async (
+  $el: HTMLElement,
+  initialValue: string,
+  isDark: Ref<boolean>,
+) => {
+  const { editor: Editor, KeyCode, KeyMod } = await import('monaco-editor')
+
   const editor = Editor.create($el, {
     value: initialValue,
     language: 'markdown',
@@ -209,7 +219,11 @@ const initEditor = ($el: HTMLElement, initialValue: string) => {
   return editor
 }
 
-const registerRule = (editor: Editor.IStandaloneCodeEditor, symbol: string) => {
+const registerRule = async (
+  editor: Editor.IStandaloneCodeEditor,
+  symbol: string,
+) => {
+  const { Selection } = await import('monaco-editor')
   const e = editor
   if (!e) {
     return
