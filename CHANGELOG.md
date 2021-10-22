@@ -5,11 +5,37 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update vue monorepo
+- Try to fix  right route in new window
+- Update codemirror
+- Update dependency @antv/g2 to v4.1.31
+- Update dependency @vueuse/core to v6.6.2
+- Update dependency naive-ui to v2.19.9
+- Update dependency socket.io-client to v4.3.2
+
+### Features
+
+- Add snippet manager
+- Snippet support
+- Snippate link
+
+### Miscellaneous Tasks
+
+- Update typescript-eslint monorepo to v5.1.0
+
+## [3.8.3] - 2021-10-13
+
+### Bug Fixes
+
 - Link style
 
 ### Miscellaneous Tasks
 
 - Update deps
+
+### Release
+
+- V3.8.3
 
 ## [3.8.2] - 2021-10-11
 
