@@ -8,6 +8,7 @@ import { RelativeTime } from 'components/time/relative-time'
 import { useMountAndUnmount } from 'hooks/use-react'
 import { useTable } from 'hooks/use-table'
 import { ContentLayout, useLayout } from 'layouts/content'
+import { omit } from 'lodash-es'
 import { PaginateResult } from 'models/base'
 import {
   NButton,
@@ -22,12 +23,14 @@ import {
   NSwitch,
   NTabPane,
   NTabs,
+  useMessage,
 } from 'naive-ui'
 import { RESTManager } from 'utils'
 import { useRoute, useRouter } from 'vue-router'
 import { SnippetModel, SnippetType } from '../../models/snippet'
-const provideKey = Symbol('provideKey')
-const useTabContext = () => inject(provideKey)
+import { CodeEditorForSnippet } from './code-editor'
+// const provideKey = Symbol('provideKey')
+// const useTabContext = () => inject(provideKey)
 
 export default defineComponent({
   name: 'SnippetView',
@@ -36,9 +39,9 @@ export default defineComponent({
     const router = useRouter()
     const currentTab = computed(() => route.query.tab || '0')
 
-    provide(provideKey, {
-      currentTab,
-    })
+    // provide(provideKey, {
+    //   currentTab,
+    // })
     return () => (
       <ContentLayout>
         <NTabs
@@ -224,27 +227,67 @@ const Tab2ForEdit = defineComponent({
     const editId = computed(() => route.query.id as string)
 
     const data = ref<SnippetModel>(new SnippetModel())
-
-    onMounted(async () => {
-      if (editId.value) {
-        const _data = await RESTManager.api
-          .snippets(editId.value)
-          .get<SnippetModel>()
-
-        console.log(_data)
-        data.value = _data
-      }
-    })
+    watch(
+      () => editId,
+      async (editId) => {
+        if (editId.value) {
+          const _data = await RESTManager.api
+            .snippets(editId.value)
+            .get<SnippetModel>()
+          switch (_data.type) {
+            case SnippetType.JSON: {
+              _data.raw = JSON.stringify(JSON.parse(_data.raw), null, 2)
+              break
+            }
+          }
+          data.value = _data
+        }
+      },
+      {
+        immediate: true,
+      },
+    )
 
     const layout = useLayout()
+    const message = useMessage()
+    const handleUpdateOrCreate = async () => {
+      const tinyJson = (() => {
+        try {
+          return JSON.stringify(JSON.parse(data.value.raw), null, 0)
+        } catch {
+          message.error('JSON 格式错误')
+        }
+      })()
 
+      const omitData = omit(data.value, ['_id', 'id', 'created', 'updated'])
+      const finalData = { ...omitData, raw: tinyJson }
+      if (!finalData.metatype) {
+        delete finalData.metatype
+      }
+
+      if (editId.value) {
+        await RESTManager.api.snippets(editId.value).put({
+          data: finalData,
+        })
+      } else {
+        await RESTManager.api.snippets.post({
+          data: finalData,
+        })
+      }
+
+      message.success(`${editId.value ? '更新' : '创建'}成功`)
+      router.replace({
+        query: {
+          ...route.query,
+          tab: 0,
+        },
+      })
+    }
     useMountAndUnmount(() => {
       layout.setHeaderButton(
         <HeaderActionButton
           variant="success"
-          onClick={() => {
-            // TODO
-          }}
+          onClick={handleUpdateOrCreate}
           icon={<CheckCircleOutlined />}
         ></HeaderActionButton>,
       )
@@ -256,17 +299,28 @@ const Tab2ForEdit = defineComponent({
 
     return () => (
       <>
-        <NGrid xGap={40} yGap={16} cols={'36 1:12 1024:36 1600:36'}>
+        <NGrid cols={'36 1:12 1024:36 1600:36'}>
           <NGi span={12}>
             <NForm>
               <NFormItem label="名称" required>
-                <NInput value={data.value.name}></NInput>
+                <NInput
+                  onUpdateValue={(e) => void (data.value.name = e)}
+                  value={data.value.name}
+                ></NInput>
               </NFormItem>
 
-              <NFormItem label="引用">
+              <NFormItem label="引用" required>
                 <NInput
                   value={data.value.reference}
+                  onUpdateValue={(e) => void (data.value.reference = e)}
                   defaultValue={'root'}
+                ></NInput>
+              </NFormItem>
+
+              <NFormItem label="元类型">
+                <NInput
+                  value={data.value.metatype}
+                  onUpdateValue={(e) => void (data.value.metatype = e)}
                 ></NInput>
               </NFormItem>
 
@@ -274,6 +328,7 @@ const Tab2ForEdit = defineComponent({
                 <NSelect
                   value={data.value.type}
                   defaultValue={SnippetType.JSON}
+                  onUpdateValue={(val) => void (data.value.type = val)}
                   options={Object.entries(SnippetType).map(([k, v]) => {
                     return {
                       label: k,
@@ -285,12 +340,17 @@ const Tab2ForEdit = defineComponent({
 
               <NFormItem label="公开" labelPlacement="left">
                 <div class="w-full flex justify-end">
-                  <NSwitch value={data.value.private}></NSwitch>
+                  <NSwitch
+                    value={!data.value.private}
+                    onUpdateValue={(val) => void (data.value.private = !val)}
+                  ></NSwitch>
                 </div>
               </NFormItem>
               <NFormItem label="备注">
                 <NInput
-                  value={data.value.name}
+                  resizable={false}
+                  value={data.value.comment}
+                  onUpdateValue={(val) => void (data.value.comment = val)}
                   type="textarea"
                   rows={4}
                 ></NInput>
@@ -298,8 +358,13 @@ const Tab2ForEdit = defineComponent({
             </NForm>
           </NGi>
 
-          <NGi span={24}>
-            <span>editor placeholder</span>
+          <NGi span={24} class={'ml-[40px]'}>
+            <CodeEditorForSnippet
+              value={data.value.raw}
+              onChange={(value) => {
+                data.value.raw = value
+              }}
+            />
           </NGi>
         </NGrid>
       </>

@@ -7,7 +7,7 @@ export enum SnippetType {
 export class SnippetModel extends BaseModel {
   type = SnippetType.JSON
   private = true
-  raw = ''
+  raw = '{}'
   name = ''
   reference = 'root'
   comment?: string
