@@ -45,7 +45,7 @@ export const _EditorToggleWrapper = defineComponent({
   },
   setup(props) {
     const prefEditor = useGetPrefEditor()
-    const currentEditor = ref<Editor>(prefEditor ?? Editor.monaco)
+    const currentEditor = ref<Editor>(prefEditor ?? Editor.codemirror)
     const modalOpen = ref(false)
     const layout = useLayout()
     // FIXME vue 3 cannot ref type as custom component

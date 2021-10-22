@@ -26,6 +26,7 @@ import {
   useMessage,
 } from 'naive-ui'
 import { RESTManager } from 'utils'
+import { getToken } from 'utils/auth'
 import { useRoute, useRouter } from 'vue-router'
 import { SnippetModel, SnippetType } from '../../models/snippet'
 import { CodeEditorForSnippet } from './code-editor'
@@ -123,12 +124,28 @@ const Tab1ForList = defineComponent({
             {
               key: 'name',
               title: '名称',
-              render(row) {
+              render(row: SnippetModel) {
                 const name = row.name
                 const isPrivate = row.private
                 return (
                   <NSpace align="center">
-                    {name}
+                    <NButton
+                      tag="a"
+                      text
+                      // @ts-ignore
+                      href={
+                        RESTManager.endpoint +
+                        '/snippets/' +
+                        row.reference +
+                        '/' +
+                        row.name +
+                        (row.private ? `?token=bearer%20${getToken()}` : '')
+                      }
+                      target="_blank"
+                      size="tiny"
+                    >
+                      {name}
+                    </NButton>
                     {isPrivate && (
                       <Icon class={'items-center flex '}>
                         <Lock />

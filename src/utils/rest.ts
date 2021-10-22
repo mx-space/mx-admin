@@ -14,10 +14,17 @@ class RESTManagerStatic {
   get instance() {
     return this._$$instance
   }
+
+  get endpoint() {
+    const url =
+      window.injectData.BASE_API ||
+      (import.meta.env.VITE_APP_BASE_API as string)
+    return url.endsWith('/') ? url.slice(0, -1) : url
+  }
+
   constructor() {
     this._$$instance = extend({
-      // @ts-ignore
-      prefix: window.injectData.BASE_API || import.meta.env.VITE_APP_BASE_API,
+      prefix: this.endpoint,
       timeout: 10000,
       errorHandler: async (error) => {
         const Message = window.message
