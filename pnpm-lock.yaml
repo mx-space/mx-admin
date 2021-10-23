@@ -15,7 +15,7 @@ specifiers:
   '@codemirror/view': 0.19.9
   '@ddietr/codemirror-themes': 1.0.8
   '@types/lodash-es': 4.17.5
-  '@types/validator': 13.6.3
+  '@types/validator': 13.6.5
   '@typescript-eslint/eslint-plugin': 5.1.0
   '@typescript-eslint/parser': 5.1.0
   '@vicons/antd': 0.11.0
@@ -110,7 +110,7 @@ dependencies:
 
 devDependencies:
   '@types/lodash-es': 4.17.5
-  '@types/validator': 13.6.3
+  '@types/validator': 13.6.5
   '@typescript-eslint/eslint-plugin': 5.1.0_401053529f54291fcccd167b980c144f
   '@typescript-eslint/parser': 5.1.0_eslint@8.0.0+typescript@4.4.4
   '@vitejs/plugin-vue': 1.9.3_vite@2.6.7
@@ -1148,13 +1148,8 @@ packages:
     resolution: {integrity: sha512-5eQEtSCoESnh2FsiLTxE121IiE60hnMqcb435fShf4bpLRjEu1Eoekht23y6zXS9Ts3l+Szu3TARnTsA0GkOkQ==}
     dev: true
 
-  /@types/validator/13.1.4:
-    resolution: {integrity: sha512-19C02B8mr53HufY7S+HO/EHBD7a/R22IwEwyqiHaR19iwL37dN3o0M8RianVInfSSqP7InVSg/o0mUATM4JWsQ==}
-    dev: false
-
-  /@types/validator/13.6.3:
-    resolution: {integrity: sha512-fWG42pMJOL4jKsDDZZREnXLjc3UE0R8LOJfARWYg6U966rxDT7TYejYzLnUF5cvSObGg34nd0+H2wHHU5Omdfw==}
-    dev: true
+  /@types/validator/13.6.5:
+    resolution: {integrity: sha512-ilpDKpjjq/w/IyyTuQ38mABdaEzTzTugPyU7DlMCMKd8MMYngnPKhA2TgdO1MfEDED9KVV7uSOL1fDkgwJp/wg==}
 
   /@types/yargs-parser/20.2.1:
     resolution: {integrity: sha512-7tFImggNeNBVMsn0vLrpn1H1uPrUBdnARPTpZoitY37ZrdJREzf7I16tMrlK3hen349gr1NYh8CmZQa7CTG6Aw==}
@@ -1741,7 +1736,7 @@ packages:
   /class-validator/0.13.1:
     resolution: {integrity: sha512-zWIeYFhUitvAHBwNhDdCRK09hWx+P0HUwFE8US8/CxFpMVzkUK8RJl7yOIE+BVu2lxyPNgeOaFv78tLE47jBIg==}
     dependencies:
-      '@types/validator': 13.1.4
+      '@types/validator': 13.6.5
       libphonenumber-js: 1.9.22
       validator: 13.6.0
     dev: false
