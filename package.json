@@ -70,7 +70,7 @@
     "@vue/compiler-sfc": "3.2.20",
     "autoprefixer": "10.4.0",
     "cors": "2.8.5",
-    "eslint": "8.0.0",
+    "eslint": "8.1.0",
     "eslint-plugin-vue": "7.19.1",
     "postcss": "8.3.9",
     "postcss-nested": "5.0.6",
