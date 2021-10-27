@@ -42,7 +42,7 @@ specifiers:
   js-cookie: 3.0.1
   lodash-es: 4.17.21
   monaco-editor: 0.29.1
-  naive-ui: 2.19.11
+  naive-ui: 2.20.0
   postcss: 8.3.9
   postcss-nested: 5.0.6
   prettier: 2.4.1
@@ -96,7 +96,7 @@ dependencies:
   js-cookie: 3.0.1
   lodash-es: 4.17.21
   monaco-editor: 0.29.1
-  naive-ui: 2.19.11_vue@3.2.20
+  naive-ui: 2.20.0_eslint@8.0.0+vue@3.2.20
   qier-progress: 1.0.4
   reflect-metadata: 0.1.13
   socket.io-client: 4.3.2
@@ -338,6 +338,19 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /@babel/eslint-parser/7.15.8_eslint@8.0.0:
+    resolution: {integrity: sha512-fYP7QFngCvgxjUuw8O057SVH5jCXsbFFOoE77CFDcvzwBVgTOkMD/L4mIC5Ud1xf8chK/no2fRbSSn1wvNmKuQ==}
+    engines: {node: ^10.13.0 || ^12.13.0 || >=14.0.0}
+    peerDependencies:
+      '@babel/core': '>=7.11.0'
+      eslint: '>=7.5.0'
+    dependencies:
+      eslint: 8.0.0
+      eslint-scope: 5.1.1
+      eslint-visitor-keys: 2.1.0
+      semver: 6.3.0
+    dev: false
 
   /@babel/generator/7.15.4:
     resolution: {integrity: sha512-d3itta0tu+UayjEORPNz6e1T3FtvWlP5N4V5M+lhp/CxT4oAA7/NcScnpRyspUMLK6tu9MNHmQHxRykuN2R7hw==}
@@ -2195,7 +2208,6 @@ packages:
     dependencies:
       esrecurse: 4.3.0
       estraverse: 4.3.0
-    dev: true
 
   /eslint-scope/6.0.0:
     resolution: {integrity: sha512-uRDL9MWmQCkaFus8RF5K9/L/2fn+80yoW3jkD53l4shjCh26fCtvJGasxjUqP5OT87SYTxCVA3BwTUzuELx9kA==}
@@ -2230,7 +2242,6 @@ packages:
   /eslint-visitor-keys/2.1.0:
     resolution: {integrity: sha512-0rSmRBzXgDzIsD6mGdJgevzgezI534Cer5L/vyMX0kHzT/jiB43jRhd9YUlMGYLQy2zprNmoT8qasCGtY+QaKw==}
     engines: {node: '>=10'}
-    dev: true
 
   /eslint-visitor-keys/3.0.0:
     resolution: {integrity: sha512-mJOZa35trBTb3IyRmo8xmKBZlxf+N7OnUl4+ZhJHs/r+0770Wh/LEACE2pqMGMe27G/4y8P2bYGk4J70IC5k1Q==}
@@ -2320,17 +2331,14 @@ packages:
     engines: {node: '>=4.0'}
     dependencies:
       estraverse: 5.2.0
-    dev: true
 
   /estraverse/4.3.0:
     resolution: {integrity: sha512-39nnKffWz8xN1BU/2c79n9nB9HDzo0niYUqx6xyqUnyoAnQyyWpOTdZEeiCch8BBu515t4wp9ZmgVfVhn9EBpw==}
     engines: {node: '>=4.0'}
-    dev: true
 
   /estraverse/5.2.0:
     resolution: {integrity: sha512-BxbNGGNm0RyRYvUdHpIwv9IWzeM9XClbOxwoATuFdOE7ZE6wHL+HQ5T8hoPM+zHvmKzzsEqhgy0GrQ5X13afiQ==}
     engines: {node: '>=4.0'}
-    dev: true
 
   /estree-walker/2.0.2:
     resolution: {integrity: sha512-Rfkk/Mp/DL7JVje3u18FxFujQlTNR2q6QfMSMB7AvCBx91NGj/ba3kCfza0f6dVDbw7YlRf/nDrn7pQrCCyQ/w==}
@@ -2900,11 +2908,12 @@ packages:
   /ms/2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
 
-  /naive-ui/2.19.11_vue@3.2.20:
-    resolution: {integrity: sha512-cbrsaTfqevwvE/TxbFKhDAYIZZfGdGeLWKPvoRuxQyKqjnldtP5t6cXfMSLmRPExqs/lQcH+eilfrNPpVj4xpA==}
+  /naive-ui/2.20.0_eslint@8.0.0+vue@3.2.20:
+    resolution: {integrity: sha512-KvA1j/DgPtpRX9LfRNeC6wcGupOeVm/7ChXdYDlRKBV9USKvo3oD2mvzgo7f9w0a7e6PRJFjrGhTtVkxPX6xsQ==}
     peerDependencies:
       vue: ^3.0.0
     dependencies:
+      '@babel/eslint-parser': 7.15.8_eslint@8.0.0
       '@css-render/plugin-bem': 0.15.6
       '@css-render/vue3-ssr': 0.15.6_vue@3.2.20
       '@types/lodash': 4.14.175
@@ -2923,7 +2932,10 @@ packages:
       vfonts: 0.1.0
       vooks: 0.2.10_vue@3.2.20
       vue: 3.2.20
-      vueuc: 0.4.13_6fc825ea257a26467f64b236a3efe3b7
+      vueuc: 0.4.15_6fc825ea257a26467f64b236a3efe3b7
+    transitivePeerDependencies:
+      - '@babel/core'
+      - eslint
     dev: false
 
   /nanoid/3.1.23:
@@ -3319,7 +3331,6 @@ packages:
   /semver/6.3.0:
     resolution: {integrity: sha512-b39TBaTSfV6yBrapU89p5fKekE2m/NwnDocOVruQFS1/veMgdzuPcnOM34M6CwxW8jH/lxEa5rBoDeUwu5HHTw==}
     hasBin: true
-    dev: true
 
   /semver/7.3.5:
     resolution: {integrity: sha512-PoeGJYh8HK4BTO/a9Tf6ZG3veo/A7ZVsYrSA6J8ny9nb3B1VrpkuN+z9OE5wfE5p6H4LchYZsegiQgbJD94ZFQ==}
@@ -3855,8 +3866,8 @@ packages:
       '@vue/shared': 3.2.20
     dev: false
 
-  /vueuc/0.4.13_6fc825ea257a26467f64b236a3efe3b7:
-    resolution: {integrity: sha512-2QPhhczQH+flGLIYuwSOo6UbVyyS+hs6YcE2ODaWuSAffKSyysmFwaOuilq2dLNeTic1EmjpIGe7NvnWxbfumw==}
+  /vueuc/0.4.15_6fc825ea257a26467f64b236a3efe3b7:
+    resolution: {integrity: sha512-VTYDA2avdHRlkqJunsE4d9P3eBPgfW4tiA6sTt3iiVU69d+y25xMEbU8P+stQgptd34A9qMUwYSfvOXDbteW6w==}
     peerDependencies:
       '@css-render/vue3-ssr': ^0.15.3
       vue: ^3.0.11
