@@ -53,7 +53,7 @@
     "reflect-metadata": "0.1.13",
     "socket.io-client": "4.3.2",
     "umi-request": "1.4.0",
-    "validator": "13.6.0",
+    "validator": "13.7.0",
     "vditor": "3.8.7",
     "vue": "3.2.20",
     "vue-router": "4.0.12",
@@ -62,7 +62,7 @@
   },
   "devDependencies": {
     "@types/lodash-es": "4.17.5",
-    "@types/validator": "13.6.5",
+    "@types/validator": "13.6.6",
     "@typescript-eslint/eslint-plugin": "5.1.0",
     "@typescript-eslint/parser": "5.1.0",
     "@vitejs/plugin-vue": "1.9.3",
