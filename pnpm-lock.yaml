@@ -13,7 +13,7 @@ specifiers:
   '@codemirror/state': 0.19.2
   '@codemirror/theme-one-dark': 0.19.0
   '@codemirror/view': 0.19.9
-  '@ddietr/codemirror-themes': 1.0.8
+  '@ddietr/codemirror-themes': 1.0.9
   '@types/lodash-es': 4.17.5
   '@types/validator': 13.6.6
   '@typescript-eslint/eslint-plugin': 5.1.0
@@ -78,7 +78,7 @@ dependencies:
   '@codemirror/state': 0.19.2
   '@codemirror/theme-one-dark': 0.19.0
   '@codemirror/view': 0.19.9
-  '@ddietr/codemirror-themes': 1.0.8
+  '@ddietr/codemirror-themes': 1.0.9
   '@vicons/antd': 0.11.0
   '@vicons/fa': 0.11.0
   '@vicons/fluent': 0.11.0
@@ -886,16 +886,6 @@ packages:
       '@codemirror/view': 0.19.9
     dev: false
 
-  /@codemirror/view/0.19.8:
-    resolution: {integrity: sha512-bhjLn1fYYpd49sLDuZ+oqFBQQh04eyskHUZQJL/7ZBl+RZ5L973yX/cybZfRG/O38NQASTv2Uug5xlPjcFUJWQ==}
-    dependencies:
-      '@codemirror/rangeset': 0.19.1
-      '@codemirror/state': 0.19.2
-      '@codemirror/text': 0.19.4
-      style-mod: 4.0.0
-      w3c-keyname: 2.2.4
-    dev: false
-
   /@codemirror/view/0.19.9:
     resolution: {integrity: sha512-d2Z2rFl53yTwvhsRYtS97xT7ce1f/Q/NNE2uDg/Be1MVjP2v1OlwUTyTosBmxiCt4oUvMklfa+EdPGOATVJhtg==}
     dependencies:
@@ -924,12 +914,12 @@ packages:
     resolution: {integrity: sha512-RpfLEtTlyIxeNPGKcokS+p3BZII/Q3bYxryFRglh5H3A3T8q9fsLYm72VYAMEOOIBLEa8o93kFLiBDUWKrwXZA==}
     dev: true
 
-  /@ddietr/codemirror-themes/1.0.8:
-    resolution: {integrity: sha512-z8b7x0ZBMrncJf+KatM3/8TdqX/YgeXBPLabthPRPde/2QMXaIgg/RIFQ1hd3HVfBSEC01Ub/pcnBJgNMgbkBg==}
+  /@ddietr/codemirror-themes/1.0.9:
+    resolution: {integrity: sha512-a2cFMDsxs4OT5uN3VcVyjEcuI+pEQAM3YFiATkp/zp2VmZtMQqzSOaPI0j7fw/5tdM/z71tZPZXKlbJwatFoNQ==}
     dependencies:
       '@codemirror/highlight': 0.19.6
       '@codemirror/state': 0.19.2
-      '@codemirror/view': 0.19.8
+      '@codemirror/view': 0.19.9
     dev: false
 
   /@emotion/hash/0.8.0:
