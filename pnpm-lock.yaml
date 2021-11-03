@@ -1,7 +1,7 @@
 lockfileVersion: 5.3
 
 specifiers:
-  '@antv/g2': 4.1.32
+  '@antv/g2': 4.1.34
   '@codemirror/commands': 0.19.5
   '@codemirror/gutter': 0.19.2
   '@codemirror/highlight': 0.19.6
@@ -66,7 +66,7 @@ specifiers:
   xterm-addon-fit: 0.5.0
 
 dependencies:
-  '@antv/g2': 4.1.32
+  '@antv/g2': 4.1.34
   '@codemirror/commands': 0.19.5
   '@codemirror/gutter': 0.19.2
   '@codemirror/highlight': 0.19.6
@@ -162,14 +162,14 @@ packages:
       tslib: 2.3.1
     dev: false
 
-  /@antv/component/0.8.17:
-    resolution: {integrity: sha512-Dcz7u9TqamJzNRUDZclEjiXRxTLUY6DVGpyENKMvsp0dsu85W6R1t0O4rROj0hNspdFfDWUS7qqH39jVWWAu3Q==}
+  /@antv/component/0.8.19:
+    resolution: {integrity: sha512-H6BrnaqEreP9oWsQKpeaXV46IowQyKmDGitMWbK75jUbR+QxCObrN0v3klM4kjRWCVuIUeTChz/akaKsZhe6FQ==}
     dependencies:
       '@antv/dom-util': 2.0.3
       '@antv/g-base': 0.5.6
-      '@antv/matrix-util': 3.1.0-beta.2
-      '@antv/path-util': 2.0.14
-      '@antv/scale': 0.3.12
+      '@antv/matrix-util': 3.1.0-beta.3
+      '@antv/path-util': 2.0.15
+      '@antv/scale': 0.3.14
       '@antv/util': 2.0.17
       fecha: 4.2.1
       tslib: 2.3.1
@@ -178,7 +178,7 @@ packages:
   /@antv/coord/0.3.1:
     resolution: {integrity: sha512-rFE94C8Xzbx4xmZnHh2AnlB3Qm1n5x0VT3OROy257IH6Rm4cuzv1+tZaUBATviwZd99S+rOY9telw/+6C9GbRw==}
     dependencies:
-      '@antv/matrix-util': 3.1.0-beta.2
+      '@antv/matrix-util': 3.1.0-beta.3
       '@antv/util': 2.0.17
       tslib: 2.3.1
     dev: false
@@ -198,8 +198,8 @@ packages:
     dependencies:
       '@antv/event-emitter': 0.1.2
       '@antv/g-math': 0.1.7
-      '@antv/matrix-util': 3.1.0-beta.2
-      '@antv/path-util': 2.0.14
+      '@antv/matrix-util': 3.1.0-beta.3
+      '@antv/path-util': 2.0.15
       '@antv/util': 2.0.17
       '@types/d3-timer': 2.0.1
       d3-ease: 1.0.7
@@ -214,8 +214,8 @@ packages:
     dependencies:
       '@antv/event-emitter': 0.1.2
       '@antv/g-math': 0.1.7
-      '@antv/matrix-util': 3.1.0-beta.2
-      '@antv/path-util': 2.0.14
+      '@antv/matrix-util': 3.1.0-beta.3
+      '@antv/path-util': 2.0.15
       '@antv/util': 2.0.17
       '@types/d3-timer': 2.0.1
       d3-ease: 1.0.7
@@ -230,8 +230,8 @@ packages:
     dependencies:
       '@antv/g-base': 0.5.9
       '@antv/g-math': 0.1.7
-      '@antv/matrix-util': 3.1.0-beta.2
-      '@antv/path-util': 2.0.14
+      '@antv/matrix-util': 3.1.0-beta.3
+      '@antv/path-util': 2.0.15
       '@antv/util': 2.0.17
       gl-matrix: 3.3.0
       tslib: 2.3.1
@@ -241,7 +241,7 @@ packages:
     resolution: {integrity: sha512-xGyXaloD1ynfp7gS4VuV+MjSptZIwHvLHr8ekXJSFAeWPYLu84yOW2wOZHDdp1bzDAIuRv6xDBW58YGHrWsFcA==}
     dependencies:
       '@antv/util': 2.0.17
-      gl-matrix: 3.3.0
+      gl-matrix: 3.4.3
     dev: false
 
   /@antv/g-svg/0.5.6:
@@ -254,43 +254,52 @@ packages:
       tslib: 2.3.1
     dev: false
 
-  /@antv/g2/4.1.32:
-    resolution: {integrity: sha512-vJC0LgFyCjN3RdPA6JOi59qC8O4Z70TqFh/th+kzdWlt9KXDJc3MBBYcJI97m1IlrT9XqTGKqkZyGduZw4HCoA==}
+  /@antv/g2/4.1.34:
+    resolution: {integrity: sha512-/UzyW1ZnE8Bw9zekyu1ZDcSxoFMKMHbRdru/SfZpnIfqRauF28HE3OluEetZq/JE8P5trEwnmPSJkMOnUNkCOw==}
     dependencies:
       '@antv/adjust': 0.2.3
       '@antv/attr': 0.3.2
       '@antv/color-util': 2.0.6
-      '@antv/component': 0.8.17
+      '@antv/component': 0.8.19
       '@antv/coord': 0.3.1
       '@antv/dom-util': 2.0.3
       '@antv/event-emitter': 0.1.2
       '@antv/g-base': 0.5.9
       '@antv/g-canvas': 0.5.12
       '@antv/g-svg': 0.5.6
-      '@antv/matrix-util': 3.1.0-beta.2
-      '@antv/path-util': 2.0.14
-      '@antv/scale': 0.3.12
+      '@antv/matrix-util': 3.1.0-beta.3
+      '@antv/path-util': 2.0.15
+      '@antv/scale': 0.3.14
       '@antv/util': 2.0.17
       tslib: 2.3.1
     dev: false
 
-  /@antv/matrix-util/3.1.0-beta.2:
-    resolution: {integrity: sha512-Efwp0ZHxVDK/8RUa/RRWN7HKFHJmjn7Oq5HaNBbCmsxd7JTla3Zsoq1AZrjWMDlq0lplo77urclwI+XIW8NEHw==}
+  /@antv/matrix-util/3.0.4:
+    resolution: {integrity: sha512-BAPyu6dUliHcQ7fm9hZSGKqkwcjEDVLVAstlHULLvcMZvANHeLXgHEgV7JqcAV/GIhIz8aZChIlzM1ZboiXpYQ==}
     dependencies:
       '@antv/util': 2.0.17
-      gl-matrix: 3.3.0
-      tslib: 1.14.1
+      gl-matrix: 3.4.3
+      tslib: 2.3.1
     dev: false
 
-  /@antv/path-util/2.0.14:
-    resolution: {integrity: sha512-v88p0hxbGx2c5MoIlSxVOMOuHn6xbYKVDT7Mj6sND7nrqcVVIMJ52jTiqNLIcKMh0cikKhqJ2Wi2nISzBk3Nvw==}
+  /@antv/matrix-util/3.1.0-beta.3:
+    resolution: {integrity: sha512-W2R6Za3A6CmG51Y/4jZUM/tFgYSq7vTqJL1VD9dKrvwxS4sE0ZcXINtkp55CdyBwJ6Cwm8pfoRpnD4FnHahN0A==}
     dependencies:
+      '@antv/util': 2.0.17
+      gl-matrix: 3.4.3
+      tslib: 2.3.1
+    dev: false
+
+  /@antv/path-util/2.0.15:
+    resolution: {integrity: sha512-R2VLZ5C8PLPtr3VciNyxtjKqJ0XlANzpFb5sE9GE61UQqSRuSVSzIakMxjEPrpqbgc+s+y8i+fmc89Snu7qbNw==}
+    dependencies:
+      '@antv/matrix-util': 3.0.4
       '@antv/util': 2.0.17
       tslib: 2.3.1
     dev: false
 
-  /@antv/scale/0.3.12:
-    resolution: {integrity: sha512-ov0cQy5VsYUVFTwKZ3/sXcIKJK1msXye6xie6h+1McwvgmM+rZdKvGCbfGIXVmV9JBc9zksa2ke4E0sI0TawjQ==}
+  /@antv/scale/0.3.14:
+    resolution: {integrity: sha512-G19Mh9VYPX/Z5PXKJrORIYCjrA+Fmko6ZB4HN6Y8K0T9FeKaSJq+idIe7AUJhIIXDCrFk4LzW+t908NsORqxPg==}
     dependencies:
       '@antv/util': 2.0.17
       fecha: 4.2.1
@@ -2445,6 +2454,10 @@ packages:
 
   /gl-matrix/3.3.0:
     resolution: {integrity: sha512-COb7LDz+SXaHtl/h4LeaFcNdJdAQSDeVqjiIihSXNrkWObZLhDI4hIkZC11Aeqp7bcE72clzB0BnDXr2SmslRA==}
+    dev: false
+
+  /gl-matrix/3.4.3:
+    resolution: {integrity: sha512-wcCp8vu8FT22BnvKVPjXa/ICBWRq/zjFfdofZy1WSpQZpphblv12/bOQLBC1rMM7SGOFS9ltVmKOHil5+Ml7gA==}
     dev: false
 
   /glob-parent/5.1.2:
