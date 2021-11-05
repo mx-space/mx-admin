@@ -62,7 +62,7 @@ specifiers:
   vue: 3.2.21
   vue-eslint-parser: 7.11.0
   vue-router: 4.0.12
-  xterm: 4.14.1
+  xterm: 4.15.0
   xterm-addon-fit: 0.5.0
 
 dependencies:
@@ -105,8 +105,8 @@ dependencies:
   vditor: 3.8.7
   vue: 3.2.21
   vue-router: 4.0.12_vue@3.2.21
-  xterm: 4.14.1
-  xterm-addon-fit: 0.5.0_xterm@4.14.1
+  xterm: 4.15.0
+  xterm-addon-fit: 0.5.0_xterm@4.15.0
 
 devDependencies:
   '@types/lodash-es': 4.17.5
@@ -3913,16 +3913,16 @@ packages:
     engines: {node: '>=0.4'}
     dev: true
 
-  /xterm-addon-fit/0.5.0_xterm@4.14.1:
+  /xterm-addon-fit/0.5.0_xterm@4.15.0:
     resolution: {integrity: sha512-DsS9fqhXHacEmsPxBJZvfj2la30Iz9xk+UKjhQgnYNkrUIN5CYLbw7WEfz117c7+S86S/tpHPfvNxJsF5/G8wQ==}
     peerDependencies:
       xterm: ^4.0.0
     dependencies:
-      xterm: 4.14.1
+      xterm: 4.15.0
     dev: false
 
-  /xterm/4.14.1:
-    resolution: {integrity: sha512-jgzNg5BuGPwq5/M4dGnmbghZvHx2jaj+9crSEt15bV34Za49VziBmCu7zIy88zUKKiGTxeo7aVzirFSJArIMFw==}
+  /xterm/4.15.0:
+    resolution: {integrity: sha512-Ik1GoSq1yqKZQ2LF37RPS01kX9t4TP8gpamUYblD09yvWX5mEYuMK4CcqH6+plgiNEZduhTz/UrcaWs97gOlOw==}
     dev: false
 
   /y18n/5.0.8:
