@@ -74,6 +74,9 @@ export class SocketClient {
         this.handleEvent(type, data)
       },
     )
+    this.socket.on('error', () => {
+      window.message.error('Socket 连接异常')
+    })
 
     this.isInit = true
   }

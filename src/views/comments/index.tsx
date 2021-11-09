@@ -113,9 +113,11 @@ const ManageComment = defineComponent(() => {
 
   async function changeState(id: string | string[], state: CommentState) {
     if (Array.isArray(id)) {
-      id.map(async (i) => {
-        await RESTManager.api.comments(i).patch({ data: { state } })
-      })
+      await Promise.all(
+        id.map((i) => {
+          return RESTManager.api.comments(i).patch({ data: { state } })
+        }),
+      )
     } else {
       await RESTManager.api.comments(id).patch({ data: { state } })
     }
