@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update dependency naive-ui to v2.19.11
+- Update dependency @antv/g2 to v4.1.32
+- Update dependency naive-ui to v2.20.0
+- Update dependency validator to v13.7.0
+- Post model type error
+- Update dependency xterm to v4.15.0
+- Update dependency @vueuse/core to v6.8.0
+- Update dependency @antv/g2 to v4.1.34
+- Update dependency naive-ui to v2.20.2
+- Read multi-comment callback
+
+### Miscellaneous Tasks
+
+- Update dependency tailwindcss to v2.2.17
+- Update dependency unplugin-auto-import to v0.4.13
+- Update dependency @types/validator to v13.6.5
+- Update dependency autoprefixer to v10.4.0
+- Update dependency eslint to v8.1.0
+- Update dependency tailwindcss to v2.2.19
+- Update dependency vite to v2.6.13
+- Update vue monorepo to v3.2.21
+- Update dependency eslint to v8.2.0
+- Update dependency postcss to v8.3.11
+- Update typescript-eslint monorepo to v5.3.1
+
+## [3.9.0] - 2021-10-22
+
+### Bug Fixes
+
 - Update vue monorepo
 - Try to fix  right route in new window
 - Update codemirror
@@ -22,6 +51,10 @@ All notable changes to this project will be documented in this file.
 ### Miscellaneous Tasks
 
 - Update typescript-eslint monorepo to v5.1.0
+
+### Release
+
+- V3.9.0
 
 ## [3.8.3] - 2021-10-13
 
