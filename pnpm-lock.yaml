@@ -42,7 +42,7 @@ specifiers:
   js-cookie: 3.0.1
   lodash-es: 4.17.21
   monaco-editor: 0.29.1
-  naive-ui: 2.20.2
+  naive-ui: 2.20.3
   postcss: 8.3.11
   postcss-nested: 5.0.6
   prettier: 2.4.1
@@ -96,7 +96,7 @@ dependencies:
   js-cookie: 3.0.1
   lodash-es: 4.17.21
   monaco-editor: 0.29.1
-  naive-ui: 2.20.2_eslint@8.2.0+vue@3.2.21
+  naive-ui: 2.20.3_eslint@8.2.0+vue@3.2.21
   qier-progress: 1.0.4
   reflect-metadata: 0.1.13
   socket.io-client: 4.3.2
@@ -2339,8 +2339,8 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /evtd/0.2.2:
-    resolution: {integrity: sha512-YRUY9BHnnOmeeaOOLlIfUEp3itg4oFEd+uWPGMs0m4WUJaGcEgxFx8PLRRQaaDKvN2B+19lYzhATILGfXuprnA==}
+  /evtd/0.2.3:
+    resolution: {integrity: sha512-tmiT1YUVqFjTY+BSBOAskL83xNx41iUfpvKP6Gcd/xMHjg3mnER98jXGXJyKnxCG19uPc6EhZiUC+MUyvoqCtw==}
     dev: false
 
   /fast-deep-equal/3.1.3:
@@ -2895,8 +2895,8 @@ packages:
   /ms/2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
 
-  /naive-ui/2.20.2_eslint@8.2.0+vue@3.2.21:
-    resolution: {integrity: sha512-jfaYvziJY5/G0gdWoT9Fu8YeZrTZL2JnzZBi/Fq6BJM4jN1xPN4VSkEbVspHJYaBhAGtz0LCI/0ldCP9bjjxyA==}
+  /naive-ui/2.20.3_eslint@8.2.0+vue@3.2.21:
+    resolution: {integrity: sha512-I9JFNgRiF89YehcGC0h/xCK0xfMLB9qWob6W9aVt84HpqspyFhyMfIym+LDWHMRgwKYzhwd6cS+xv6riiau9RA==}
     peerDependencies:
       vue: ^3.0.0
     dependencies:
@@ -2909,7 +2909,7 @@ packages:
       css-render: 0.15.6
       date-fns: 2.25.0
       date-fns-tz: 1.1.6_date-fns@2.25.0
-      evtd: 0.2.2
+      evtd: 0.2.3
       highlight.js: 11.2.0
       lodash: 4.17.21
       lodash-es: 4.17.21
@@ -3668,7 +3668,7 @@ packages:
       vue: ^3.0.11
     dependencies:
       '@types/node': 14.17.22
-      evtd: 0.2.2
+      evtd: 0.2.3
       vue: 3.2.21
     dev: false
 
@@ -3749,7 +3749,7 @@ packages:
     peerDependencies:
       vue: ^3.0.0
     dependencies:
-      evtd: 0.2.2
+      evtd: 0.2.3
       vue: 3.2.21
     dev: false
 
@@ -3853,7 +3853,7 @@ packages:
     dependencies:
       '@css-render/vue3-ssr': 0.15.6_vue@3.2.21
       css-render: 0.15.6
-      evtd: 0.2.2
+      evtd: 0.2.3
       resize-observer-polyfill: 1.5.1
       seemly: 0.3.2
       vdirs: 0.1.4_vue@3.2.21
