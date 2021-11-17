@@ -8,7 +8,10 @@ import { EditColumn } from 'components/table/edit-column'
 import { RelativeTime } from 'components/time/relative-time'
 import { useInjector } from 'hooks/use-deps-injection'
 import { useTable } from 'hooks/use-table'
-import { omit } from 'lodash-es'
+import {
+  CategoryWithChildrenModel,
+  PickedPostModelInCategoryChildren,
+} from 'models/category'
 import { NButton, NPopconfirm, NSpace, useDialog, useMessage } from 'naive-ui'
 import {
   FilterOption,
@@ -264,25 +267,40 @@ export const ManagePostListView = defineComponent({
                   }
                   const ids = filterState.category.join(',')
 
-                  let { data: _data } = (await RESTManager.api.categories.get({
-                    params: {
-                      ids,
-                    },
-                  })) as any
-                  _data = _data
-                    .map((c) => {
-                      return c.category.children.map((ch) => ({
-                        ...omit(c.category, ['children', 'id', 'id']),
-                        ...ch,
-                        categoryId: c.category.id,
-                      }))
+                  let { entries: _data } =
+                    await RESTManager.api.categories.get<{
+                      entries: Record<string, CategoryWithChildrenModel>
+                    }>({
+                      params: {
+                        ids,
+                      },
                     })
-                    .sort(
-                      (a, b) => new Date(a).getTime() - new Date(b).getTime(),
-                    )
-                    .flat()
 
-                  data.value = _data
+                  const concatList: PickedPostModelInCategoryChildren[] =
+                    Object.values(_data)
+                      .reduce((list, cur) => {
+                        const children = cur.children?.map((i) => {
+                          Object.defineProperty(i, 'categoryId', {
+                            value: cur.id,
+                            enumerable: true,
+                          })
+                          Object.defineProperty(i, 'category', {
+                            get() {
+                              return i
+                            },
+
+                            enumerable: false,
+                          })
+
+                          return i
+                        })
+                        return [...list, ...children]
+                      }, [] as PickedPostModelInCategoryChildren[])
+                      .sort(
+                        (a, b) => +new Date(a.created) - +new Date(b.created),
+                      )
+
+                  data.value = concatList
                   pager.value = {
                     currentPage: 1,
                     total: 1,

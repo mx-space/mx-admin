@@ -1,3 +1,5 @@
+import { PostModel } from './post'
+
 export enum CategoryType {
   Category,
   Tag,
@@ -16,6 +18,15 @@ export interface CategoryModel {
 export interface CategoryResponse {
   data: CategoryModel[]
 }
+
+export type CategoryWithChildrenModel = CategoryModel & {
+  children: PickedPostModelInCategoryChildren[]
+}
+
+export type PickedPostModelInCategoryChildren = Pick<
+  PostModel,
+  'id' | 'title' | 'slug' | 'modified' | 'created'
+>
 
 export interface TagModel {
   count: number
