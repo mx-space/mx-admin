@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update to server
+
+## [3.9.2] - 2021-11-17
+
+### Bug Fixes
+
 - Update dependency @vueuse/core to v6.9.1
 - Update dependency naive-ui to v2.20.3
 
@@ -13,6 +19,10 @@ All notable changes to this project will be documented in this file.
 - Update dependency eslint-plugin-vue to v7.20.0
 - Update typescript-eslint monorepo to v5.4.0
 - Update deps
+
+### Release
+
+- V3.9.2
 
 ## [3.9.1] - 2021-11-09
 
