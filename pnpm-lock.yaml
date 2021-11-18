@@ -49,7 +49,7 @@ specifiers:
   qier-progress: 1.0.4
   reflect-metadata: 0.1.13
   rollup-plugin-visualizer: 5.5.2
-  socket.io-client: 4.3.2
+  socket.io-client: 4.4.0
   tailwindcss: 2.2.19
   typescript: 4.5.2
   umi-request: 1.4.0
@@ -99,7 +99,7 @@ dependencies:
   naive-ui: 2.20.3_eslint@8.2.0+vue@3.2.22
   qier-progress: 1.0.4
   reflect-metadata: 0.1.13
-  socket.io-client: 4.3.2
+  socket.io-client: 4.4.0
   umi-request: 1.4.0
   validator: 13.7.0
   vditor: 3.8.7
@@ -1980,8 +1980,8 @@ packages:
       iconv-lite: 0.6.3
     dev: false
 
-  /engine.io-client/6.0.2:
-    resolution: {integrity: sha512-cAep9lhZV6Q8jMXx3TNSU5cydMzMed8/O7Tz5uzyqZvpNPtQ3WQXrLYGADxlsuaFmOLN7wZLmT7ImiFhUOku8g==}
+  /engine.io-client/6.1.1:
+    resolution: {integrity: sha512-V05mmDo4gjimYW+FGujoGmmmxRaDsrVr7AXA3ZIfa04MWM1jOfZfUwou0oNqhNwy/votUDvGDt4JA4QF4e0b4g==}
     dependencies:
       '@socket.io/component-emitter': 3.0.0
       debug: 4.3.2
@@ -3361,14 +3361,14 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /socket.io-client/4.3.2:
-    resolution: {integrity: sha512-2B9LqSunN60yV8F7S84CCEEcgbYNfrn7ejIInZtLZ7ppWtiX8rGZAjvdCvbnC8bqo/9RlCNOUsORLyskxSFP1g==}
+  /socket.io-client/4.4.0:
+    resolution: {integrity: sha512-g7riSEJXi7qCFImPow98oT8X++MSsHz6MMFRXkWNJ6uEROSHOa3kxdrsYWMq85dO+09CFMkcqlpjvbVXQl4z6g==}
     engines: {node: '>=10.0.0'}
     dependencies:
       '@socket.io/component-emitter': 3.0.0
       backo2: 1.0.2
       debug: 4.3.2
-      engine.io-client: 6.0.2
+      engine.io-client: 6.1.1
       parseuri: 0.0.6
       socket.io-parser: 4.1.1
     transitivePeerDependencies:
