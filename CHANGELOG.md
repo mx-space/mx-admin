@@ -5,7 +5,17 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Ignore webkit tap highlight
+
+## [3.9.3] - 2021-11-17
+
+### Bug Fixes
+
 - Update to server
+
+### Release
+
+- V3.9.3
 
 ## [3.9.2] - 2021-11-17
 
