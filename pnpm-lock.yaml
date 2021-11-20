@@ -33,7 +33,7 @@ specifiers:
   autoprefixer: 10.4.0
   camelcase-keys: 7.0.1
   class-transformer: 0.4.0
-  class-validator: 0.13.1
+  class-validator: 0.13.2
   clsx: 1.1.1
   cors: 2.8.5
   date-fns: 2.26.0
@@ -90,7 +90,7 @@ dependencies:
   '@vueuse/core': 7.0.0_vue@3.2.22
   camelcase-keys: 7.0.1
   class-transformer: 0.4.0
-  class-validator: 0.13.1
+  class-validator: 0.13.2
   clsx: 1.1.1
   date-fns: 2.26.0
   js-cookie: 3.0.1
@@ -1166,6 +1166,7 @@ packages:
 
   /@types/validator/13.6.6:
     resolution: {integrity: sha512-+qogUELb4gMhrMjSh/seKmGVvN+uQLfyqJAqYRWqVHsvBsUO2xDBCL8CJ/ZSukbd8vXaoYbpIssAmfLEzzBHEw==}
+    dev: true
 
   /@types/yargs-parser/20.2.1:
     resolution: {integrity: sha512-7tFImggNeNBVMsn0vLrpn1H1uPrUBdnARPTpZoitY37ZrdJREzf7I16tMrlK3hen349gr1NYh8CmZQa7CTG6Aw==}
@@ -1727,11 +1728,10 @@ packages:
     resolution: {integrity: sha512-ETWD/H2TbWbKEi7m9N4Km5+cw1hNcqJSxlSYhsLsNjQzWWiZIYA1zafxpK9PwVfaZ6AqR5rrjPVUBGESm5tQUA==}
     dev: false
 
-  /class-validator/0.13.1:
-    resolution: {integrity: sha512-zWIeYFhUitvAHBwNhDdCRK09hWx+P0HUwFE8US8/CxFpMVzkUK8RJl7yOIE+BVu2lxyPNgeOaFv78tLE47jBIg==}
+  /class-validator/0.13.2:
+    resolution: {integrity: sha512-yBUcQy07FPlGzUjoLuUfIOXzgynnQPPruyK1Ge2B74k9ROwnle1E+NxLWnUv5OLU8hA/qL5leAE9XnXq3byaBw==}
     dependencies:
-      '@types/validator': 13.6.6
-      libphonenumber-js: 1.9.22
+      libphonenumber-js: 1.9.43
       validator: 13.7.0
     dev: false
 
@@ -2802,8 +2802,8 @@ packages:
       type-check: 0.4.0
     dev: true
 
-  /libphonenumber-js/1.9.22:
-    resolution: {integrity: sha512-nE0aF0wrNq09ewF36s9FVqRW73hmpw6cobVDlbexmsu1432LEfuN24BCudNuRx4t2rElSeK/N0JbedzRW/TC4A==}
+  /libphonenumber-js/1.9.43:
+    resolution: {integrity: sha512-tNB87ZutAiAkl3DE/Bo0Mxqn/XZbNxhPg4v9bYBwQQW4dlhBGqXl1vtmPxeDWbrijzwOA9vRjOOFm5V9SK/W3w==}
     dev: false
 
   /lilconfig/2.0.3:
