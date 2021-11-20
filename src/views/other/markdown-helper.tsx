@@ -74,7 +74,7 @@ export default defineComponent(() => {
             return reject('File is empty')
           }
           if (file.type !== 'text/markdown') {
-            message.error('只能转换 markdown 文件')
+            message.error('只能转换 markdown 文件, type: ' + file.type)
             return reject('File must be markdown.')
           }
           const reader = new FileReader()
