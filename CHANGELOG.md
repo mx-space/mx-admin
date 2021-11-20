@@ -5,7 +5,25 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update dependency date-fns to v2.26.0
+- Update dependency vue to v3.2.22
+- Update dependency socket.io-client to v4.4.0
+- Lost page subtitle
+
+### Miscellaneous Tasks
+
+- Update dependency typescript to v4.5.2
+- Update dependency eslint-plugin-vue to v8.1.1
+
+## [3.9.4] - 2021-11-19
+
+### Bug Fixes
+
 - Ignore webkit tap highlight
+
+### Release
+
+- V3.9.4
 
 ## [3.9.3] - 2021-11-17
 
