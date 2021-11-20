@@ -68,14 +68,29 @@ export default defineComponent(() => {
     const strList = [] as string[]
     for await (const _file of fileList.value) {
       const res = await Promise.resolve(
-        new Promise((resolve, reject) => {
+        new Promise<string>((resolve, reject) => {
           const file = _file.file as File | null
           if (!file) {
-            return reject('File is empty')
+            message.error('文件不存在')
+            reject('File is empty')
+            return
           }
-          if (file.type !== 'text/markdown') {
-            message.error('只能转换 markdown 文件, type: ' + file.type)
-            return reject('File must be markdown.')
+          // 垃圾 windows , 不识别 mine-type 的处理
+          const ext = file.name.split('.').pop()
+
+          if (
+            (file.type && file.type !== 'text/markdown') ||
+            !['md', 'markdown'].includes(ext!)
+          ) {
+            message.error('只能解析 markdown 文件, 但是得到了 ' + file.type)
+
+            reject(
+              'File must be markdown. got type: ' +
+                file.type +
+                ', got ext: ' +
+                ext,
+            )
+            return
           }
           const reader = new FileReader()
           reader.onload = (e) => {
@@ -85,6 +100,8 @@ export default defineComponent(() => {
           reader.readAsText(file)
         }),
       )
+      console.log(res)
+
       strList.push(res as string)
     }
     const parsedList_ = parseMarkdown(strList)
