@@ -138,6 +138,12 @@ const PageWriteView = defineComponent(() => {
         }}
       ></MaterialInput>
 
+      <div class={'text-gray-700 pt-3'}>
+        <UnderlineInput
+          value={data.subtitle}
+          onChange={(e) => void (data.subtitle = e)}
+        ></UnderlineInput>
+      </div>
       <div class={'text-gray-500 py-3'}>
         <label>{`${BASE_URL}/`}</label>
         <UnderlineInput
