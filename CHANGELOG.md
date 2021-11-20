@@ -6,6 +6,11 @@ All notable changes to this project will be documented in this file.
 ### Bug Fixes
 
 - Add debug type for markdown import
+- Mine type on windows, Why is windows so fucking
+
+### Release
+
+- V
 
 ## [3.9.5] - 2021-11-20
 
