@@ -5,12 +5,24 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update dependency @vueuse/core to v7
+- Update dependency class-validator to v0.13.2
+
+### Miscellaneous Tasks
+
+- Update deps
+
+## [3.9.7] - 2021-11-20
+
+### Bug Fixes
+
 - Add debug type for markdown import
 - Mine type on windows, Why is windows so fucking
 
 ### Release
 
 - V
+- V3.9.7
 
 ## [3.9.5] - 2021-11-20
 
