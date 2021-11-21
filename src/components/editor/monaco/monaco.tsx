@@ -118,7 +118,7 @@ const initEditor = async (
   editor.addAction({
     id: 'bold',
     label: 'bold',
-    keybindings: [KeyMod.CtrlCmd | KeyCode.KEY_B],
+    keybindings: [KeyMod.CtrlCmd | KeyCode.KeyB],
     // @ts-ignore
     run: (e) => {
       registerRule(editor, '**')
@@ -130,7 +130,7 @@ const initEditor = async (
   editor.addAction({
     id: 'em',
     label: 'em',
-    keybindings: [KeyMod.CtrlCmd | KeyCode.KEY_I],
+    keybindings: [KeyMod.CtrlCmd | KeyCode.KeyI],
     // @ts-ignore
     run: (e) => {
       registerRule(editor, '*')
@@ -143,8 +143,8 @@ const initEditor = async (
     id: 'null',
     label: 'null',
     keybindings: [
-      KeyMod.CtrlCmd | KeyCode.KEY_S,
-      KeyMod.Shift | KeyMod.Alt | KeyCode.KEY_F,
+      KeyMod.CtrlCmd | KeyCode.KeyS,
+      KeyMod.Shift | KeyMod.Alt | KeyCode.KeyF,
     ],
     // @ts-ignore
     run: (e) => {
@@ -155,7 +155,7 @@ const initEditor = async (
   editor.addAction({
     id: 'del',
     label: 'del',
-    keybindings: [KeyMod.Alt | KeyCode.KEY_D],
+    keybindings: [KeyMod.Alt | KeyCode.KeyD],
     // @ts-ignore
     run: (e) => {
       registerRule(editor, '~~')
@@ -167,11 +167,11 @@ const initEditor = async (
   // eslint-disable-next-line no-sparse-arrays
   const keycodeMap: number[] = [
     ,
-    KeyCode.KEY_1,
-    KeyCode.KEY_2,
-    KeyCode.KEY_3,
-    KeyCode.KEY_4,
-    KeyCode.KEY_5,
+    KeyCode.Digit1,
+    KeyCode.Digit2,
+    KeyCode.Digit3,
+    KeyCode.Digit4,
+    KeyCode.Digit5,
   ] as any
   Array.from({ length: 5 })
     .fill(null)
