@@ -62,7 +62,7 @@
   },
   "devDependencies": {
     "@types/lodash-es": "4.17.5",
-    "@types/validator": "13.6.6",
+    "@types/validator": "13.7.0",
     "@typescript-eslint/eslint-plugin": "5.4.0",
     "@typescript-eslint/parser": "5.4.0",
     "@vitejs/plugin-vue": "1.9.4",

@@ -15,7 +15,7 @@ specifiers:
   '@codemirror/view': 0.19.9
   '@ddietr/codemirror-themes': 1.0.8
   '@types/lodash-es': 4.17.5
-  '@types/validator': 13.6.6
+  '@types/validator': 13.7.0
   '@typescript-eslint/eslint-plugin': 5.4.0
   '@typescript-eslint/parser': 5.4.0
   '@vicons/antd': 0.11.0
@@ -110,7 +110,7 @@ dependencies:
 
 devDependencies:
   '@types/lodash-es': 4.17.5
-  '@types/validator': 13.6.6
+  '@types/validator': 13.7.0
   '@typescript-eslint/eslint-plugin': 5.4.0_d6f2571581882eb2d6c9d9867e002185
   '@typescript-eslint/parser': 5.4.0_eslint@8.2.0+typescript@4.5.2
   '@vitejs/plugin-vue': 1.9.4_vite@2.6.14
@@ -1164,8 +1164,8 @@ packages:
     resolution: {integrity: sha512-5eQEtSCoESnh2FsiLTxE121IiE60hnMqcb435fShf4bpLRjEu1Eoekht23y6zXS9Ts3l+Szu3TARnTsA0GkOkQ==}
     dev: true
 
-  /@types/validator/13.6.6:
-    resolution: {integrity: sha512-+qogUELb4gMhrMjSh/seKmGVvN+uQLfyqJAqYRWqVHsvBsUO2xDBCL8CJ/ZSukbd8vXaoYbpIssAmfLEzzBHEw==}
+  /@types/validator/13.7.0:
+    resolution: {integrity: sha512-+jBxVvXVuggZOrm04NR8z+5+bgoW4VZyLzUO+hmPPW1mVFL/HaitLAkizfv4yg9TbG8lkfHWVMQ11yDqrVVCzA==}
 
   /@types/yargs-parser/20.2.1:
     resolution: {integrity: sha512-7tFImggNeNBVMsn0vLrpn1H1uPrUBdnARPTpZoitY37ZrdJREzf7I16tMrlK3hen349gr1NYh8CmZQa7CTG6Aw==}
@@ -1730,7 +1730,7 @@ packages:
   /class-validator/0.13.1:
     resolution: {integrity: sha512-zWIeYFhUitvAHBwNhDdCRK09hWx+P0HUwFE8US8/CxFpMVzkUK8RJl7yOIE+BVu2lxyPNgeOaFv78tLE47jBIg==}
     dependencies:
-      '@types/validator': 13.6.6
+      '@types/validator': 13.7.0
       libphonenumber-js: 1.9.22
       validator: 13.7.0
     dev: false
