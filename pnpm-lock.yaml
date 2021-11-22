@@ -33,7 +33,7 @@ specifiers:
   '@vueuse/core': 7.1.1
   autoprefixer: 10.4.0
   camelcase-keys: 7.0.1
-  class-transformer: 0.5.0
+  class-transformer: 0.5.1
   class-validator: 0.13.2
   clsx: 1.1.1
   cors: 2.8.5
@@ -90,7 +90,7 @@ dependencies:
   '@vicons/utils': 0.1.4_vue@3.2.22
   '@vueuse/core': 7.1.1_vue@3.2.22
   camelcase-keys: 7.0.1
-  class-transformer: 0.5.0
+  class-transformer: 0.5.1
   class-validator: 0.13.2
   clsx: 1.1.1
   date-fns: 2.26.0
@@ -1742,8 +1742,8 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /class-transformer/0.5.0:
-    resolution: {integrity: sha512-ONKKYWNXc1IxBqmTeQZCArFryPG/w4ilHd5Mn4Y/NJlkAlAG4UWUcrnPbfSym0eZBr0pj3i0MdZqyxGHCGlCdQ==}
+  /class-transformer/0.5.1:
+    resolution: {integrity: sha512-SQa1Ws6hUbfC98vKGxZH3KFY0Y1lm5Zm0SY8XX9zbK7FJCyVEac3ATW0RIpwzW+oOfmHE5PMPufDG9hCfoEOMw==}
     dev: false
 
   /class-validator/0.13.2:
