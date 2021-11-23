@@ -3,6 +3,16 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Features
+
+- Add external link on title field
+
+### Miscellaneous Tasks
+
+- Re-format
+
+## [3.9.8] - 2021-11-21
+
 ### Bug Fixes
 
 - Update dependency @vueuse/core to v7
@@ -11,6 +21,10 @@ All notable changes to this project will be documented in this file.
 ### Miscellaneous Tasks
 
 - Update deps
+
+### Release
+
+- V3.9.8
 
 ## [3.9.7] - 2021-11-20
 
