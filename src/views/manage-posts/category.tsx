@@ -1,6 +1,7 @@
 import Add12Filled from '@vicons/fluent/es/Add12Filled'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { tableRowStyle } from 'components/table'
+import { useInjector } from 'hooks/use-deps-injection'
 import { ContentLayout } from 'layouts/content'
 import { TagModel } from 'models/category'
 import { PostModel } from 'models/post'
@@ -20,7 +21,6 @@ import {
   useMessage,
 } from 'naive-ui'
 import { CategoryStore } from 'stores/category'
-import { useInjector } from 'hooks/use-deps-injection'
 import { RESTManager } from 'utils/rest'
 import { defineComponent, onMounted, reactive, Ref, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'

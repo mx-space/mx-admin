@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { defineComponent, onMounted, PropType, ref } from 'vue'
+import { defineComponent, onMounted, ref } from 'vue'
 import { inputBaseProps } from './base'
 import styles from './material.module.css'
 export const MaterialInput = defineComponent({

@@ -1,7 +1,7 @@
 import Avatar from 'components/avatar'
 import { IpInfoPopover } from 'components/ip-info'
 import { RelativeTime } from 'components/time/relative-time'
-import { omit, isEmpty } from 'lodash-es'
+import { isEmpty, omit } from 'lodash-es'
 import { UserModel } from 'models/user'
 import {
   NButton,
@@ -14,7 +14,7 @@ import {
   useMessage,
 } from 'naive-ui'
 import { RESTManager, shallowDiff } from 'utils'
-import { defineComponent, ref, onMounted, computed } from 'vue'
+import { computed, defineComponent, onMounted, ref } from 'vue'
 import styles from './user.module.css'
 
 export const TabUser = defineComponent(() => {

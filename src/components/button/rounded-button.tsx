@@ -1,6 +1,6 @@
 import { Icon } from '@vicons/utils'
-import { defineComponent, PropType } from 'vue'
 import { NButton, NPopover } from 'naive-ui'
+import { defineComponent, PropType } from 'vue'
 import { RouteLocationRaw, RouterLink } from 'vue-router'
 
 export type ButtonType = PropType<

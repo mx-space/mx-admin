@@ -1,4 +1,5 @@
 <script lang="ts">
+import { bgUrl } from 'constants/env'
 import { useInjector } from 'hooks/use-deps-injection'
 import { useMessage } from 'naive-ui'
 import { defineComponent, onMounted, onUnmounted, ref } from 'vue'
@@ -7,7 +8,6 @@ import Avatar from '../../components/avatar/index.vue'
 import ParallaxButtonVue from '../../components/button/parallax-button.vue'
 import { UserModel } from '../../models/user'
 import { UserStore } from '../../stores/user'
-import { bgUrl } from 'constants/env'
 import { RESTManager } from '../../utils/rest'
 
 export const LoginView = defineComponent({
@@ -98,21 +98,10 @@ export default LoginView
     />
 
     <div class="wrapper">
-      <Avatar
-        :src="user?.avatar"
-        :size="80"
-      />
-      <form
-        action="#"
-        @submit.prevent="handleLogin"
-      >
+      <Avatar :src="user?.avatar" :size="80" />
+      <form action="#" @submit.prevent="handleLogin">
         <div class="input-wrap">
-          <input
-            ref="input"
-            v-model="password"
-            type="password"
-            autofocus
-          />
+          <input ref="input" v-model="password" type="password" autofocus />
         </div>
         <ParallaxButtonVue
           title="登陆"

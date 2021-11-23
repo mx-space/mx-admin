@@ -1,5 +1,5 @@
 import { ContentLayout } from 'layouts/content'
-import { NH2, NLayout, NLayoutContent, NText } from 'naive-ui'
+import { NH2, NText } from 'naive-ui'
 import { defineComponent } from 'vue'
 
 export default defineComponent({

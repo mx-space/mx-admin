@@ -1,7 +1,6 @@
-import { ref } from 'vue'
 import { CategoryModel, CategoryResponse } from 'models/category'
 import { RESTManager } from 'utils/rest'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 export function CategoryStore() {
   const data = ref<CategoryModel[]>()
 

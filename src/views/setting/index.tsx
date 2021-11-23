@@ -1,6 +1,6 @@
 import { ContentLayout } from 'layouts/content'
 import { NTabPane, NTabs } from 'naive-ui'
-import { defineComponent, inject, provide, Ref, ref, watch } from 'vue'
+import { defineComponent, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { TabSecurity } from './tabs/security'
 import { TabSystem } from './tabs/system'

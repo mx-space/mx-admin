@@ -2,8 +2,8 @@ import $RouterView from 'layouts/router-view'
 import { NLayoutContent } from 'naive-ui'
 import { computed, CSSProperties, defineComponent, watchEffect } from 'vue'
 import { Sidebar } from '../../components/sidebar'
-import { UIStore } from '../../stores/ui'
 import { useInjector } from '../../hooks/use-deps-injection'
+import { UIStore } from '../../stores/ui'
 import styles from './index.module.css'
 export const SidebarLayout = defineComponent({
   name: 'SidebarLayout',

@@ -1,4 +1,3 @@
-import { reactive, watch } from 'vue'
 import {
   ClassConstructor,
   instanceToPlain,
@@ -6,6 +5,7 @@ import {
 } from 'class-transformer'
 import { validateSync } from 'class-validator'
 import { throttle } from 'lodash-es'
+import { reactive, watch } from 'vue'
 
 // @ts-expect-error
 export const useStorageObject = <U, T extends { new () } = unknown>(
