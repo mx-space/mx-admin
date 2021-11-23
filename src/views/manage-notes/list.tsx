@@ -5,6 +5,7 @@ import Add12Filled from '@vicons/fluent/es/Add12Filled'
 import Delete16Regular from '@vicons/fluent/es/Delete16Regular'
 import EyeHide20Filled from '@vicons/fluent/es/EyeHide20Filled'
 import { Icon } from '@vicons/utils'
+import { TableTitleLink } from 'components/link/title-link'
 import { Table } from 'components/table'
 import { EditColumn } from 'components/table/edit-column'
 import { RelativeTime } from 'components/time/relative-time'
@@ -21,7 +22,7 @@ import {
 } from 'naive-ui'
 import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { defineComponent, onMounted, reactive, watch } from 'vue'
-import { RouterLink, useRoute } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
@@ -41,7 +42,7 @@ export const ManageNoteListView = defineComponent({
                 page,
                 size,
                 select:
-                  'title _id id created modified mood weather hide secret hasMemory coordinates location count',
+                  'title _id nid id created modified mood weather hide secret hasMemory coordinates location count',
                 ...(sortProps.sortBy
                   ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
                   : {}),
@@ -77,30 +78,44 @@ export const ManageNoteListView = defineComponent({
             options: ['none', 'all'],
           },
           {
+            title: '序号',
+            width: 16 * 4,
+            key: 'nid',
+          },
+          {
             title: '标题',
             sortOrder: false,
             sorter: 'default',
             key: 'title',
-            width: 300,
+            width: 280,
             render(row) {
               return (
-                <RouterLink
-                  to={'/notes/edit?id=' + row.id}
-                  class="flex items-center space-x-2"
+                <TableTitleLink
+                  inPageTo={'/notes/edit?id=' + row.id}
+                  title={row.title}
+                  externalLinkTo={'/notes/' + row.nid}
                 >
-                  <span>{row.title}</span>
-                  {row.hide ||
-                  (row.secret && +new Date(row.secret) - +new Date() > 0) ? (
-                    <Icon color="#34495e">
-                      <EyeHide20Filled />
-                    </Icon>
-                  ) : null}
-                  {row.hasMemory ? (
-                    <Icon color="#e74c3c">
-                      <Bookmark />
-                    </Icon>
-                  ) : null}
-                </RouterLink>
+                  {{
+                    default() {
+                      return (
+                        <>
+                          {row.hide ||
+                          (row.secret &&
+                            +new Date(row.secret) - +new Date() > 0) ? (
+                            <Icon color="#34495e">
+                              <EyeHide20Filled />
+                            </Icon>
+                          ) : null}
+                          {row.hasMemory ? (
+                            <Icon color="#e74c3c">
+                              <Bookmark />
+                            </Icon>
+                          ) : null}
+                        </>
+                      )
+                    },
+                  }}
+                </TableTitleLink>
               )
             },
           },

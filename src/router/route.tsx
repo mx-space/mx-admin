@@ -80,7 +80,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         path: 'edit',
         name: RouteName.EditPost,
         meta: {
-          title: '撰写 · 博文',
+          title: '撰写',
           icon: (
             <Icon>
               <PencilAlt />
@@ -111,7 +111,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     path: '/notes',
     name: RouteName.Note,
     meta: {
-      title: '随想',
+      title: '生活记录',
       icon: (
         <Icon>
           <Book />
@@ -142,7 +142,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         path: 'edit',
         name: RouteName.EditNote,
         meta: {
-          title: '撰写 · 树洞',
+          title: '撰写',
           icon: (
             <Icon>
               <PencilAlt />
@@ -185,7 +185,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         path: 'list',
         name: RouteName.ListPage,
         meta: {
-          title: '独立页面',
+          title: '管理',
           icon: (
             <Icon>
               <Eye />
@@ -202,7 +202,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         path: 'edit',
         name: RouteName.EditPage,
         meta: {
-          title: '创建页面',
+          title: '编辑',
           icon: (
             <Icon>
               <PencilAlt />

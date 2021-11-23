@@ -3,6 +3,7 @@ import ThumbsUp from '@vicons/fa/es/ThumbsUp'
 import Add12Filled from '@vicons/fluent/es/Add12Filled'
 import Delete16Regular from '@vicons/fluent/es/Delete16Regular'
 import { Icon } from '@vicons/utils'
+import { TableTitleLink } from 'components/link/title-link'
 import { Table } from 'components/table'
 import { EditColumn } from 'components/table/edit-column'
 import { RelativeTime } from 'components/time/relative-time'
@@ -28,7 +29,7 @@ import {
   reactive,
   watch,
 } from 'vue'
-import { RouterLink, useRoute } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
 import { PostModel, PostResponse } from '../../models/post'
@@ -45,7 +46,7 @@ export const ManagePostListView = defineComponent({
                 page,
                 size,
                 select:
-                  'title _id id created modified categoryId copyright tags count',
+                  'title _id id created modified slug categoryId copyright tags count',
                 ...(sortProps.sortBy
                   ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
                   : {}),
@@ -101,9 +102,13 @@ export const ManagePostListView = defineComponent({
             ellipsis: true,
             render(row) {
               return (
-                <RouterLink to={'/posts/edit?id=' + row.id}>
-                  {row.title}
-                </RouterLink>
+                <TableTitleLink
+                  title={row.title}
+                  inPageTo={'/posts/edit?id=' + row.id}
+                  externalLinkTo={
+                    '/posts/' + row.category.slug + '/' + row.slug
+                  }
+                ></TableTitleLink>
               )
             },
           },

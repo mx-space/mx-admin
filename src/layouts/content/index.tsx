@@ -86,15 +86,29 @@ export const ContentLayout = defineComponent({
       footerExtraButtonEl.value = null
     })
 
+    const pageTitle = computed(
+      () =>
+        props.title ??
+        route.value.value.matched.reduce(
+          (t, cur) =>
+            t +
+            (cur.meta.title
+              ? // t 不为空, 补一个 分隔符
+                t.length > 0
+                ? ' · ' + cur.meta.title
+                : cur.meta.title
+              : ''),
+          '',
+        ),
+    )
+
     const { isDark, toggleDark } = useInjector(UIStore)
     const SettingHeaderEl = ref<(() => VNode) | null>()
     return () => (
       <>
         <header class={styles['header']}>
           <div class={styles['header-blur']}></div>
-          <h1 class={styles['title']}>
-            {props.title ?? route.value.value.meta.title}
-          </h1>
+          <h1 class={styles['title']}>{pageTitle.value}</h1>
 
           <div class={clsx(styles['header-actions'], 'space-x-4')}>
             {SettingHeaderEl.value ? (

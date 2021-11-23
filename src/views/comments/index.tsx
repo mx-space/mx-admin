@@ -6,7 +6,7 @@ import { Icon } from '@vicons/utils'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { IpInfoPopover } from 'components/ip-info'
 import { Table } from 'components/table'
-import { BASE_URL } from 'constants/env'
+import { WEB_URL } from 'constants/env'
 import { KAOMOJI_LIST } from 'constants/kaomoji'
 import { useInjector } from 'hooks/use-deps-injection'
 import { useTable } from 'hooks/use-table'
@@ -188,13 +188,13 @@ const ManageComment = defineComponent(() => {
         const link = (() => {
           switch (row.refType) {
             case 'Post': {
-              return BASE_URL + '/posts/' + row.ref.slug
+              return WEB_URL + '/posts/' + row.ref.slug
             }
             case 'Note': {
-              return BASE_URL + '/notes/' + row.ref.nid
+              return WEB_URL + '/notes/' + row.ref.nid
             }
             case 'Page': {
-              return BASE_URL + '/' + row.ref.slug
+              return WEB_URL + '/' + row.ref.slug
             }
           }
         })() as string

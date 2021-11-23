@@ -1,5 +1,6 @@
 import Add12Filled from '@vicons/fluent/es/Add12Filled'
 import Delete16Regular from '@vicons/fluent/es/Delete16Regular'
+import { TableTitleLink } from 'components/link/title-link'
 import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
 import { useTable } from 'hooks/use-table'
@@ -7,7 +8,7 @@ import { PageModel, PageResponse } from 'models/page'
 import { NButton, NPopconfirm, NSpace, useDialog, useMessage } from 'naive-ui'
 import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { defineComponent, onMounted, reactive, watch } from 'vue'
-import { RouterLink, useRoute } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
@@ -64,9 +65,11 @@ export const ManagePageListView = defineComponent({
             width: 300,
             render(row) {
               return (
-                <RouterLink to={'/pages/edit?id=' + row.id}>
-                  {row.title}
-                </RouterLink>
+                <TableTitleLink
+                  inPageTo={'/pages/edit?id=' + row.id}
+                  title={row.title}
+                  externalLinkTo={'/' + row.slug}
+                ></TableTitleLink>
               )
             },
           },

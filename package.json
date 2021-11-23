@@ -61,6 +61,7 @@
     "xterm-addon-fit": "0.5.0"
   },
   "devDependencies": {
+    "@innei-util/prettier": "0.1.4",
     "@types/lodash-es": "4.17.5",
     "@types/validator": "13.7.0",
     "@typescript-eslint/eslint-plugin": "5.4.0",

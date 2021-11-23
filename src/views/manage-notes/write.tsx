@@ -7,7 +7,7 @@ import { MaterialInput } from 'components/input/material-input'
 import { GetLocationButton } from 'components/location/get-location-button'
 import { SearchLocationButton } from 'components/location/search-button'
 import { ParseContentButton } from 'components/logic/parse-button'
-import { BASE_URL } from 'constants/env'
+import { WEB_URL } from 'constants/env'
 import { MOOD_SET, WEATHER_SET } from 'constants/note'
 import { add } from 'date-fns/esm'
 import { useAutoSave, useAutoSaveInEditor } from 'hooks/use-auto-save'
@@ -229,7 +229,7 @@ const NoteWriteView = defineComponent(() => {
       ></MaterialInput>
 
       <div class={'text-gray-500 py-3'}>
-        <label>{`${BASE_URL}/notes/${nid.value ?? ''}`}</label>
+        <label>{`${WEB_URL}/notes/${nid.value ?? ''}`}</label>
       </div>
 
       <EditorToggleWrapper

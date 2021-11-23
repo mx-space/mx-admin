@@ -11,7 +11,7 @@ import { useInjector } from '../../hooks/use-deps-injection'
 import { Avatar } from '../avatar'
 import styles from './index.module.css'
 import { NLayoutContent } from 'naive-ui'
-import { BASE_URL } from 'constants/env'
+import { WEB_URL } from 'constants/env'
 import { UIStore } from 'stores/ui'
 export const Sidebar = defineComponent({
   name: 'SidebarComp',
@@ -197,7 +197,7 @@ export const Sidebar = defineComponent({
               props.collapse ? 'px-8' : 'px-12',
             )}
             onClick={() => {
-              window.open(BASE_URL)
+              window.open(WEB_URL)
             }}
           >
             <Avatar src={user.value?.avatar} size={40} />
@@ -208,7 +208,7 @@ export const Sidebar = defineComponent({
           <button
             class="hidden phone:flex w-full items-center justify-center absolute bottom-0 pb-4"
             onClick={() => {
-              window.open(BASE_URL)
+              window.open(WEB_URL)
             }}
           >
             <Avatar src={user.value?.avatar} size={40} />

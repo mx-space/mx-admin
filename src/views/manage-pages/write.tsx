@@ -6,7 +6,7 @@ import { EditorToggleWrapper } from 'components/editor/universal/toggle'
 import { MaterialInput } from 'components/input/material-input'
 import { UnderlineInput } from 'components/input/underline-input'
 import { ParseContentButton } from 'components/logic/parse-button'
-import { BASE_URL } from 'constants/env'
+import { WEB_URL } from 'constants/env'
 import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
 import { ContentLayout } from 'layouts/content'
 import { isString } from 'lodash-es'
@@ -145,7 +145,7 @@ const PageWriteView = defineComponent(() => {
         ></UnderlineInput>
       </div>
       <div class={'text-gray-500 py-3'}>
-        <label>{`${BASE_URL}/`}</label>
+        <label>{`${WEB_URL}/`}</label>
         <UnderlineInput
           value={data.slug}
           onChange={(e) => void (data.slug = e)}

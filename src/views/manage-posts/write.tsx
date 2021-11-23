@@ -6,7 +6,7 @@ import { EditorToggleWrapper } from 'components/editor/universal/toggle'
 import { MaterialInput } from 'components/input/material-input'
 import { UnderlineInput } from 'components/input/underline-input'
 import { ParseContentButton } from 'components/logic/parse-button'
-import { BASE_URL } from 'constants/env'
+import { WEB_URL } from 'constants/env'
 import { useInjector } from 'hooks/use-deps-injection'
 import { ContentLayout } from 'layouts/content'
 import { isString } from 'lodash-es'
@@ -158,7 +158,7 @@ const PostWriteView = defineComponent(() => {
       ></MaterialInput>
 
       <div class={'text-gray-500 py-3'}>
-        <label class="prefix">{`${BASE_URL}/${category.value.slug}/`}</label>
+        <label class="prefix">{`${WEB_URL}/${category.value.slug}/`}</label>
 
         <UnderlineInput
           class="ml-2"
