@@ -54,7 +54,7 @@ specifiers:
   tailwindcss: 2.2.19
   typescript: 4.5.2
   umi-request: 1.4.0
-  unplugin-auto-import: 0.4.14
+  unplugin-auto-import: 0.4.20
   validator: 13.7.0
   vditor: 3.8.7
   vite: 2.6.14
@@ -128,7 +128,7 @@ devDependencies:
   rollup-plugin-visualizer: 5.5.2
   tailwindcss: 2.2.19_343577c3dd31b4e787406ab8c6576ff6
   typescript: 4.5.2
-  unplugin-auto-import: 0.4.14_@vueuse+core@7.1.1+vite@2.6.14
+  unplugin-auto-import: 0.4.20_@vueuse+core@7.1.1+vite@2.6.14
   vite: 2.6.14
   vite-plugin-checker: 0.3.4_vite@2.6.14
   vite-tsconfig-paths: 3.3.17_vite@2.6.14
@@ -2837,8 +2837,9 @@ packages:
     resolution: {integrity: sha1-HADHQ7QzzQpOgHWPe2SldEDZ/wA=}
     dev: true
 
-  /local-pkg/0.1.0:
-    resolution: {integrity: sha512-WsR2tHvRGIxcC2clC30ECb5fjywzsjQagaHIy1+ykZaHz0ByoB0OL2riHqIYA5YYnensRXLszwbzHkhKzehZDg==}
+  /local-pkg/0.4.0:
+    resolution: {integrity: sha512-2XBWjO/v63JeR1HPzLJxdTVRQDB84Av2p2KtBA5ahvpyLUPubcAU6iXlAJrONcY7aSqgJhXxElAnKtnYsRolPQ==}
+    engines: {node: '>=14'}
     dependencies:
       mlly: 0.2.10
     dev: true
@@ -3666,11 +3667,11 @@ packages:
     engines: {node: '>= 10.0.0'}
     dev: true
 
-  /unplugin-auto-import/0.4.14_@vueuse+core@7.1.1+vite@2.6.14:
-    resolution: {integrity: sha512-ui+M+E30xrdbXGt0+MMEM4fKhDqoBlv+xVKiYllVqUplqg/sFuXe28DBxM2xi2zAbwd/Vw3KUcLdvSmjzpA7+A==}
+  /unplugin-auto-import/0.4.20_@vueuse+core@7.1.1+vite@2.6.14:
+    resolution: {integrity: sha512-8JdSJXn16cHnWEtEDCY6A5EkewDyUiZjEM07eE70BofEc+cVBmF6wFtxgoHIXEh4A327ZL5Shw6ajatYtDbynw==}
     engines: {node: '>=14'}
     peerDependencies:
-      '@vueuse/core': ^6.0.0
+      '@vueuse/core': '*'
     peerDependenciesMeta:
       '@vueuse/core':
         optional: true
@@ -3678,7 +3679,7 @@ packages:
       '@antfu/utils': 0.3.0
       '@rollup/pluginutils': 4.1.1
       '@vueuse/core': 7.1.1_vue@3.2.22
-      local-pkg: 0.1.0
+      local-pkg: 0.4.0
       magic-string: 0.25.7
       resolve: 1.20.0
       unplugin: 0.2.21_vite@2.6.14
