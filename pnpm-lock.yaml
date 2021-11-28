@@ -54,7 +54,7 @@ specifiers:
   tailwindcss: 2.2.19
   typescript: 4.5.2
   umi-request: 1.4.0
-  unplugin-auto-import: 0.4.20
+  unplugin-auto-import: 0.5.1
   validator: 13.7.0
   vditor: 3.8.7
   vite: 2.6.14
@@ -128,7 +128,7 @@ devDependencies:
   rollup-plugin-visualizer: 5.5.2
   tailwindcss: 2.2.19_6b4e3d148bdcb715d5f821ed0a9c268b
   typescript: 4.5.2
-  unplugin-auto-import: 0.4.20_@vueuse+core@7.1.1+vite@2.6.14
+  unplugin-auto-import: 0.5.1_@vueuse+core@7.1.1+vite@2.6.14
   vite: 2.6.14
   vite-plugin-checker: 0.3.4_vite@2.6.14
   vite-tsconfig-paths: 3.3.17_vite@2.6.14
@@ -3671,8 +3671,8 @@ packages:
     engines: {node: '>= 10.0.0'}
     dev: true
 
-  /unplugin-auto-import/0.4.20_@vueuse+core@7.1.1+vite@2.6.14:
-    resolution: {integrity: sha512-8JdSJXn16cHnWEtEDCY6A5EkewDyUiZjEM07eE70BofEc+cVBmF6wFtxgoHIXEh4A327ZL5Shw6ajatYtDbynw==}
+  /unplugin-auto-import/0.5.1_@vueuse+core@7.1.1+vite@2.6.14:
+    resolution: {integrity: sha512-Q3CvNbCB7nLbu+JdrF6jYs0Nx7kHmV2KzDcZHzTrdri3EhU1lUOgto+ce+Jw01Ds7RxBi9lwWwF3QoFwFPul1A==}
     engines: {node: '>=14'}
     peerDependencies:
       '@vueuse/core': '*'

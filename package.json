@@ -79,7 +79,7 @@
     "rollup-plugin-visualizer": "5.5.2",
     "tailwindcss": "2.2.19",
     "typescript": "4.5.2",
-    "unplugin-auto-import": "0.4.20",
+    "unplugin-auto-import": "0.5.1",
     "vite": "2.6.14",
     "vite-plugin-checker": "0.3.4",
     "vite-tsconfig-paths": "3.3.17",
