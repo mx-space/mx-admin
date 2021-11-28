@@ -1,15 +1,10 @@
-import {
-  ClassConstructor,
-  instanceToPlain,
-  plainToInstance,
-} from 'class-transformer'
+import { instanceToPlain, plainToInstance } from 'class-transformer'
 import { validateSync } from 'class-validator'
 import { throttle } from 'lodash-es'
 import { reactive, watch } from 'vue'
 
-// @ts-expect-error
-export const useStorageObject = <U, T extends { new () } = unknown>(
-  DTO: T,
+export const useStorageObject = <U extends object>(
+  DTO: Class<U>,
   storageKey: string,
   fixWrongPropertyData = true,
 ) => {
@@ -20,10 +15,7 @@ export const useStorageObject = <U, T extends { new () } = unknown>(
     }
     try {
       const parsed = JSON.parse(saved)
-      const classify = plainToInstance(
-        DTO as any as ClassConstructor<T>,
-        parsed,
-      )
+      const classify = plainToInstance(DTO, parsed)
       const err = validateSync(classify)
       if (err.length > 0) {
         if (fixWrongPropertyData) {
@@ -54,7 +46,7 @@ export const useStorageObject = <U, T extends { new () } = unknown>(
     }
   }
 
-  const objectStorage = reactive<T>(
+  const objectStorage = reactive<U>(
     getObjectStorage() ?? instanceToPlain(new DTO()),
   )
   watch(

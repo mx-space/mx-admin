@@ -30,6 +30,8 @@ declare global {
 
   export const __DEV__: boolean
   export type KV = Record<string, any>
+
+  export type Class<T> = new (...args: any[]) => T
 }
 
 export {}

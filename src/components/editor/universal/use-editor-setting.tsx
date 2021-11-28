@@ -20,7 +20,7 @@ const StorageKeys = {
 } as const
 export const useEditorConfig = () => {
   const { storage: generalSetting, reset: resetGeneralSetting } =
-    useStorageObject<GeneralSettingDto>(GeneralSettingDto, StorageKeys.general)
+    useStorageObject(GeneralSettingDto, StorageKeys.general)
 
   const GeneralSetting = defineComponent(() => {
     return () => (
@@ -49,7 +49,7 @@ export const useEditorConfig = () => {
   })
 
   const { storage: vditorSetting, reset: resetVditorSetting } =
-    useStorageObject<VditorSettingDto>(VditorSettingDto, StorageKeys.vditor)
+    useStorageObject(VditorSettingDto, StorageKeys.vditor)
 
   const VditorSetting = defineComponent(() => {
     return () => (

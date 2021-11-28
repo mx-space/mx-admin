@@ -20,7 +20,7 @@ export const useAutoSave = (
   getSaveData: () => Omit<SaveDto, 'savedTime'>,
 ) => {
   let timer: any
-  const { storage, reset, clear } = useStorageObject<SaveDto>(
+  const { storage, reset, clear } = useStorageObject(
     SaveDto,
     'auto-save-' + cacheKey,
     false,
