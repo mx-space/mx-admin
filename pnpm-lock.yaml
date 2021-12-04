@@ -37,7 +37,7 @@ specifiers:
   class-validator: 0.13.2
   clsx: 1.1.1
   cors: 2.8.5
-  date-fns: 2.26.0
+  date-fns: 2.27.0
   eslint: 8.4.0
   eslint-plugin-vue: 8.1.1
   js-cookie: 3.0.1
@@ -93,7 +93,7 @@ dependencies:
   class-transformer: 0.5.1
   class-validator: 0.13.2
   clsx: 1.1.1
-  date-fns: 2.26.0
+  date-fns: 2.27.0
   js-cookie: 3.0.1
   lodash-es: 4.17.21
   monaco-editor: 0.30.1
@@ -1912,16 +1912,16 @@ packages:
     resolution: {integrity: sha512-B1JDm0XDaQC+uvo4DT79H0XmBskgS3l6Ve+1SBCfxgmtIb1AVrPIoqd+nPSv+loMX8szQ0sVUhGngL7D5QPiXw==}
     dev: false
 
-  /date-fns-tz/1.1.6_date-fns@2.26.0:
+  /date-fns-tz/1.1.6_date-fns@2.27.0:
     resolution: {integrity: sha512-nyy+URfFI3KUY7udEJozcoftju+KduaqkVfwyTIE0traBiVye09QnyWKLZK7drRr5h9B7sPJITmQnS3U6YOdQg==}
     peerDependencies:
       date-fns: '>=2.0.0-alpha.13'
     dependencies:
-      date-fns: 2.26.0
+      date-fns: 2.27.0
     dev: false
 
-  /date-fns/2.26.0:
-    resolution: {integrity: sha512-VQI812dRi3cusdY/fhoBKvc6l2W8BPWU1FNVnFH9Nttjx4AFBRzfSVb/Eyc7jBT6e9sg1XtAGsYpBQ6c/jygbg==}
+  /date-fns/2.27.0:
+    resolution: {integrity: sha512-sj+J0Mo2p2X1e306MHq282WS4/A8Pz/95GIFcsPNMPMZVI3EUrAdSv90al1k+p74WGLCruMXk23bfEDZa71X9Q==}
     engines: {node: '>=0.11'}
     dev: false
 
@@ -2941,8 +2941,8 @@ packages:
       '@types/lodash-es': 4.17.5
       async-validator: 4.0.3
       css-render: 0.15.6
-      date-fns: 2.26.0
-      date-fns-tz: 1.1.6_date-fns@2.26.0
+      date-fns: 2.27.0
+      date-fns-tz: 1.1.6_date-fns@2.27.0
       evtd: 0.2.3
       highlight.js: 11.2.0
       lodash: 4.17.21
