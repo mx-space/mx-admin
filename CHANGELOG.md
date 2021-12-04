@@ -3,6 +3,26 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Bug Fixes
+
+- Update dependency @vueuse/core to v7.1.1
+- Update dependency naive-ui to v2.21.1
+- Update dependency class-transformer to v0.5.1
+- Class type define
+
+### Miscellaneous Tasks
+
+- Update dependency @vitejs/plugin-vue to v1.10.0
+- Update dependency prettier to v2.5.0
+- Update dependency postcss to v8.4.1
+- Update dependency unplugin-auto-import to v0.4.20
+- Update dependency postcss to v8.4.4
+- Update dependency eslint to v8.4.0
+- Update dependency unplugin-auto-import to v0.5.1
+- Update deps
+
+## [3.10.0] - 2021-11-23
+
 ### Features
 
 - Add external link on title field
@@ -10,6 +30,10 @@ All notable changes to this project will be documented in this file.
 ### Miscellaneous Tasks
 
 - Re-format
+
+### Release
+
+- V3.10.0
 
 ## [3.9.8] - 2021-11-21
 
