@@ -54,7 +54,7 @@
     "socket.io-client": "4.4.0",
     "umi-request": "1.4.0",
     "validator": "13.7.0",
-    "vditor": "3.8.7",
+    "vditor": "3.8.8",
     "vue": "3.2.22",
     "vue-router": "4.0.12",
     "xterm": "4.15.0",
