@@ -28,7 +28,7 @@ specifiers:
   '@vicons/tabler': 0.11.0
   '@vicons/utils': 0.1.4
   '@vitejs/plugin-vue': 1.10.1
-  '@vitejs/plugin-vue-jsx': 1.3.0
+  '@vitejs/plugin-vue-jsx': 1.3.1
   '@vue/compiler-sfc': 3.2.23
   '@vueuse/core': 7.1.2
   autoprefixer: 10.4.0
@@ -116,7 +116,7 @@ devDependencies:
   '@typescript-eslint/eslint-plugin': 5.5.0_b885794d89d00e0b80d68a1b7275fb2c
   '@typescript-eslint/parser': 5.5.0_eslint@8.4.0+typescript@4.5.2
   '@vitejs/plugin-vue': 1.10.1_vite@2.6.14
-  '@vitejs/plugin-vue-jsx': 1.3.0
+  '@vitejs/plugin-vue-jsx': 1.3.1
   '@vue/compiler-sfc': 3.2.23
   autoprefixer: 10.4.0_postcss@8.4.4
   cors: 2.8.5
@@ -319,7 +319,7 @@ packages:
     resolution: {integrity: sha512-9pzDqyc6OLDaqe+zbACgFkb6fKMNG6CObKpnYXChRsvYGyEdc7CA2BaqeOM+vOtCS5ndmJicPJhKAwYRI6UfFw==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/highlight': 7.14.5
+      '@babel/highlight': 7.16.0
     dev: true
 
   /@babel/code-frame/7.16.0:
@@ -494,11 +494,6 @@ packages:
       '@babel/types': 7.16.0
     dev: true
 
-  /@babel/helper-validator-identifier/7.14.9:
-    resolution: {integrity: sha512-pQYxPY0UP6IHISRitNe8bsijHex4TWZXi2HwKVsjPiltzlhse2znVcm9Ace510VT1kxIHjGJCZZQBX2gJDbo0g==}
-    engines: {node: '>=6.9.0'}
-    dev: true
-
   /@babel/helper-validator-identifier/7.15.7:
     resolution: {integrity: sha512-K4JvCtQqad9OY2+yTU8w+E82ywk/fe+ELNlt1G8z3bVGlZfn/hOcQQsUhGhW/N+tb3fxK800wLtKOE/aM0m72w==}
     engines: {node: '>=6.9.0'}
@@ -518,15 +513,6 @@ packages:
       '@babel/types': 7.16.0
     transitivePeerDependencies:
       - supports-color
-    dev: true
-
-  /@babel/highlight/7.14.5:
-    resolution: {integrity: sha512-qf9u2WFWVV0MppaL877j2dBtQIDgmidgjGk5VIMw3OadXvYaXn66U1BFlH2t4+t3i+8PhedppRv+i40ABzd+gg==}
-    engines: {node: '>=6.9.0'}
-    dependencies:
-      '@babel/helper-validator-identifier': 7.14.9
-      chalk: 2.4.2
-      js-tokens: 4.0.0
     dev: true
 
   /@babel/highlight/7.16.0:
@@ -1340,8 +1326,8 @@ packages:
       vue: 3.2.22
     dev: false
 
-  /@vitejs/plugin-vue-jsx/1.3.0:
-    resolution: {integrity: sha512-mm2jT63s/DWapVWT62t7xsMmwqsLNj5LUpokSXWnlUv9oxPfZsAymhHs6byWxvuvC5jo3zzFMO7rs8ax4PcyxA==}
+  /@vitejs/plugin-vue-jsx/1.3.1:
+    resolution: {integrity: sha512-Ku0pnlG0CuFfkvwOe3TEHS7noqBIBR61JbdvH6F6i3IqJv8+0+tcyusR+EoFwi7YrA2vdP26oorWyGv3wDt5kg==}
     engines: {node: '>=12.0.0'}
     dependencies:
       '@babel/core': 7.16.0
@@ -1719,8 +1705,8 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001272
-      electron-to-chromium: 1.3.883
+      caniuse-lite: 1.0.30001284
+      electron-to-chromium: 1.4.11
       escalade: 3.1.1
       node-releases: 2.0.1
       picocolors: 1.0.0
@@ -2033,7 +2019,6 @@ packages:
         optional: true
     dependencies:
       ms: 2.1.2
-    dev: true
 
   /deep-is/0.1.4:
     resolution: {integrity: sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==}
@@ -2088,10 +2073,6 @@ packages:
       esutils: 2.0.3
     dev: true
 
-  /electron-to-chromium/1.3.883:
-    resolution: {integrity: sha512-goyjNx4wB9j911PBteb+AXNbErug7rJVkmDXWdw5SCVn2JlARBwsqucPkvp1h5mXWxHUbBRK3bwXTrqSxSiAIQ==}
-    dev: true
-
   /electron-to-chromium/1.4.11:
     resolution: {integrity: sha512-2OhsaYgsWGhWjx2et8kaUcdktPbBGjKM2X0BReUCKcSCPttEY+hz2zie820JLbttU8jwL92+JJysWwkut3wZgA==}
     dev: true
@@ -2110,7 +2091,7 @@ packages:
     resolution: {integrity: sha512-V05mmDo4gjimYW+FGujoGmmmxRaDsrVr7AXA3ZIfa04MWM1jOfZfUwou0oNqhNwy/votUDvGDt4JA4QF4e0b4g==}
     dependencies:
       '@socket.io/component-emitter': 3.0.0
-      debug: 4.3.2
+      debug: 4.3.3
       engine.io-parser: 5.0.1
       has-cors: 1.1.0
       parseqs: 0.0.6
@@ -3170,7 +3151,7 @@ packages:
     resolution: {integrity: sha512-ayCKvm/phCGxOkYRSCM82iDwct8/EonSEgCSxWxD7ve6jHggsFl4fZVQBPRNgQoKiuV/odhFrGzQXZwbifC8Rg==}
     engines: {node: '>=8'}
     dependencies:
-      '@babel/code-frame': 7.14.5
+      '@babel/code-frame': 7.16.0
       error-ex: 1.3.2
       json-parse-even-better-errors: 2.3.1
       lines-and-columns: 1.1.6
@@ -3545,7 +3526,7 @@ packages:
     engines: {node: '>=10.0.0'}
     dependencies:
       '@socket.io/component-emitter': 3.0.0
-      debug: 4.3.2
+      debug: 4.3.3
     transitivePeerDependencies:
       - supports-color
     dev: false
