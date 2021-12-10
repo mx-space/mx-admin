@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update dependency naive-ui to v2.21.5
+- Update dependency vditor to v3.8.8
+- Post link nav error
+
+### Miscellaneous Tasks
+
+- Update dependency @vitejs/plugin-vue-jsx to v1.3.1
+- Update dependency eslint to v8.4.1
+- Update dependency prettier to v2.5.1
+
+## [3.10.1] - 2021-12-04
+
+### Bug Fixes
+
 - Update dependency @vueuse/core to v7.1.1
 - Update dependency naive-ui to v2.21.1
 - Update dependency class-transformer to v0.5.1
@@ -20,6 +34,10 @@ All notable changes to this project will be documented in this file.
 - Update dependency eslint to v8.4.0
 - Update dependency unplugin-auto-import to v0.5.1
 - Update deps
+
+### Release
+
+- V3.10.1
 
 ## [3.10.0] - 2021-11-23
 
