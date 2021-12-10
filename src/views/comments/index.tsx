@@ -188,7 +188,9 @@ const ManageComment = defineComponent(() => {
         const link = (() => {
           switch (row.refType) {
             case 'Post': {
-              return WEB_URL + '/posts/' + row.ref.slug
+              return (
+                WEB_URL + '/posts/' + row.ref.category.name + '/' + row.ref.slug
+              )
             }
             case 'Note': {
               return WEB_URL + '/notes/' + row.ref.nid
