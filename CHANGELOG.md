@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update tailwind to 3, codemirror highlight bug
+
+## [3.10.2] - 2021-12-10
+
+### Bug Fixes
+
 - Update dependency naive-ui to v2.21.5
 - Update dependency vditor to v3.8.8
 - Post link nav error
@@ -14,6 +20,10 @@ All notable changes to this project will be documented in this file.
 - Update dependency @vitejs/plugin-vue-jsx to v1.3.1
 - Update dependency eslint to v8.4.1
 - Update dependency prettier to v2.5.1
+
+### Release
+
+- V3.10.2
 
 ## [3.10.1] - 2021-12-04
 
