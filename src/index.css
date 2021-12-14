@@ -2,7 +2,7 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
-
+@import 'tailwindcss/variants';
 body,
 html {
   margin: 0;
@@ -81,4 +81,10 @@ button {
 * {
   -webkit-tap-highlight-color: transparent;
   -webkit-text-size-adjust: 100%;
+}
+/* HACK: naive-ui button style priority */
+/* https://github.com/TuSimple/naive-ui/issues/1808 */
+.n-button,
+.n-button [type='button'] {
+  background-color: var(--color);
 }

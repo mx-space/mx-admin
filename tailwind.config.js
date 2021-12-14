@@ -1,5 +1,5 @@
 module.exports = {
-  purge: ['./src/**/*.html', './src/**/*.vue', './src/**/*.tsx'],
+  content: ['./src/**/*.html', './src/**/*.vue', './src/**/*.tsx'],
   darkMode: 'class',
   mode: 'jit',
   important: true, // important in prod is must be
@@ -42,8 +42,6 @@ module.exports = {
       },
     },
   },
-  variants: {
-    extend: {},
-  },
+
   plugins: [],
 }
