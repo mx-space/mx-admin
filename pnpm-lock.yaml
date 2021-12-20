@@ -15,6 +15,7 @@ specifiers:
   '@codemirror/view': 0.19.31
   '@ddietr/codemirror-themes': 1.0.9
   '@innei-util/prettier': 0.1.4
+  '@types/js-yaml': 4.0.5
   '@types/lodash-es': 4.17.5
   '@types/validator': 13.7.0
   '@typescript-eslint/eslint-plugin': 5.7.0
@@ -41,6 +42,7 @@ specifiers:
   eslint: 8.4.1
   eslint-plugin-vue: 8.2.0
   js-cookie: 3.0.1
+  js-yaml: 4.1.0
   lodash-es: 4.17.21
   monaco-editor: 0.31.0
   naive-ui: 2.21.5
@@ -95,6 +97,7 @@ dependencies:
   clsx: 1.1.1
   date-fns: 2.27.0
   js-cookie: 3.0.1
+  js-yaml: 4.1.0
   lodash-es: 4.17.21
   monaco-editor: 0.31.0
   naive-ui: 2.21.5_vue@3.2.22
@@ -111,6 +114,7 @@ dependencies:
 
 devDependencies:
   '@innei-util/prettier': 0.1.4_prettier@2.5.1+typescript@4.5.4
+  '@types/js-yaml': 4.0.5
   '@types/lodash-es': 4.17.5
   '@types/validator': 13.7.0
   '@typescript-eslint/eslint-plugin': 5.7.0_915acdfead96f701b1277a1a723fc8d4
@@ -1135,6 +1139,10 @@ packages:
       pretty-format: 27.4.2
     dev: false
 
+  /@types/js-yaml/4.0.5:
+    resolution: {integrity: sha512-FhpRzf927MNQdRZP0J5DLIdTXhjLYzeUTmLAu69mnVksLH9CJY3IuSeEgbKUki7GQZm0WqDkGzyxju2EZGD2wA==}
+    dev: true
+
   /@types/json-schema/7.0.9:
     resolution: {integrity: sha512-qcUXuemtEu+E5wZSJHNxUXeCZhAfXKQ41D+duX+VYPde7xyEVZci+/oXKJL13tnRs9lR2pr4fod59GT6/X1/yQ==}
     dev: true
@@ -1644,7 +1652,6 @@ packages:
 
   /argparse/2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
-    dev: true
 
   /array-union/2.1.0:
     resolution: {integrity: sha512-HGyxoOTYUyCM6stUe6EJgnd4EoewAI7zMdfqO+kGjnlZmBDz/cR5pf8r/cR4Wq60sL/p0IkcjUEEPwS3GFrIyw==}
@@ -2811,7 +2818,6 @@ packages:
     hasBin: true
     dependencies:
       argparse: 2.0.1
-    dev: true
 
   /jsesc/2.5.2:
     resolution: {integrity: sha512-OYu7XEzjkCQ3C5Ps3QIZsQfNpqoJyZZA99wd9aWd05NCtC5pWOkShK2mkL6HXQR6/Cy2lbNdPlZBpuQHXE63gA==}

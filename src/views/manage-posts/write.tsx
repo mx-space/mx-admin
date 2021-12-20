@@ -127,7 +127,15 @@ const PostWriteView = defineComponent(() => {
       title={id.value ? '修改文章' : '撰写新文章'}
       actionsElement={
         <>
-          <ParseContentButton data={data} />
+          <ParseContentButton
+            data={data}
+            onHandleYamlParsedMeta={(meta) => {
+              // TODO: other meta field attach to data
+              // TODO: validate meta data type
+              data.title = meta.title ?? data.title
+              data.slug = meta.slug ?? data.slug
+            }}
+          />
           <HeaderActionButton
             icon={<TelegramPlane />}
             onClick={handleSubmit}

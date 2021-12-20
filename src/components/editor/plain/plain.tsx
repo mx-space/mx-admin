@@ -1,10 +1,20 @@
 import { useSaveConfirm } from 'hooks/use-save-confirm'
 import { NInput } from 'naive-ui'
-import { defineComponent, ref, toRaw, watch } from 'vue'
+import { defineComponent, PropType, ref, toRaw, watch } from 'vue'
 import { editorBaseProps } from '../universal/props'
 
 export const PlainEditor = defineComponent({
-  props: { ...editorBaseProps },
+  props: {
+    ...editorBaseProps,
+    wrapperProps: {
+      type: Object as PropType<JSX.IntrinsicElements['div']>,
+      required: false,
+    },
+    // inputProps: {
+    //   type: Object as PropType<ElementAttrs<HTMLAttributes>>,
+    //   required: false,
+    // },
+  },
   setup(props) {
     const textRef = ref<HTMLTextAreaElement>()
 
@@ -22,7 +32,7 @@ export const PlainEditor = defineComponent({
     useSaveConfirm(props.unSaveConfirm, () => memoInitialValue === props.text)
 
     return () => (
-      <div>
+      <div {...props.wrapperProps}>
         <NInput
           ref={textRef}
           type="textarea"

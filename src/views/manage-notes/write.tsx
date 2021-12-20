@@ -197,7 +197,14 @@ const NoteWriteView = defineComponent(() => {
       title={'树洞'}
       actionsElement={
         <>
-          <ParseContentButton data={data} />
+          <ParseContentButton
+            data={data}
+            onHandleYamlParsedMeta={(meta) => {
+              data.title = meta.title ?? data.title
+              data.mood = meta.mood ?? data.mood
+              data.weather = meta.weather ?? data.weather
+            }}
+          />
 
           <HeaderActionButton
             icon={<TelegramPlane />}
