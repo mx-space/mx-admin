@@ -3,9 +3,20 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Features
+
+- Parse markdown yaml
+- Add quick preview
+
+## [3.10.3] - 2021-12-14
+
 ### Bug Fixes
 
 - Update tailwind to 3, codemirror highlight bug
+
+### Release
+
+- V3.10.3
 
 ## [3.10.2] - 2021-12-10
 
