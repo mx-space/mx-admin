@@ -102,13 +102,16 @@ export const ManagePostListView = defineComponent({
             ellipsis: true,
             render(row) {
               return (
-                <TableTitleLink
-                  title={row.title}
-                  inPageTo={'/posts/edit?id=' + row.id}
-                  externalLinkTo={
-                    '/posts/' + row.category.slug + '/' + row.slug
-                  }
-                ></TableTitleLink>
+                <>
+                  <TableTitleLink
+                    id={row.id}
+                    title={row.title}
+                    inPageTo={'/posts/edit?id=' + row.id}
+                    externalLinkTo={
+                      '/posts/' + row.category.slug + '/' + row.slug
+                    }
+                  ></TableTitleLink>
+                </>
               )
             },
           },

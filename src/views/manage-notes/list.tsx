@@ -94,6 +94,7 @@ export const ManageNoteListView = defineComponent({
                   inPageTo={'/notes/edit?id=' + row.id}
                   title={row.title}
                   externalLinkTo={'/notes/' + row.nid}
+                  id={row.id}
                 >
                   {{
                     default() {

@@ -69,6 +69,7 @@ export const ManagePageListView = defineComponent({
                   inPageTo={'/pages/edit?id=' + row.id}
                   title={row.title}
                   externalLinkTo={'/' + row.slug}
+                  id={row.id}
                 ></TableTitleLink>
               )
             },
