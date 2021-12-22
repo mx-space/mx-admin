@@ -4,9 +4,9 @@ import { visualizer } from 'rollup-plugin-visualizer'
 import AutoImport from 'unplugin-auto-import/vite'
 import { defineConfig, loadEnv, PluginOption } from 'vite'
 import Checker from 'vite-plugin-checker'
+import WindiCSS from 'vite-plugin-windicss'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import PKG from './package.json'
-
 // const gitHash = execSync('git rev-parse --short HEAD', {
 //   encoding: 'utf-8',
 // }).split('\n')[0]
@@ -18,6 +18,7 @@ export default ({ mode }) => {
 
   return defineConfig({
     plugins: [
+      WindiCSS(),
       vue(),
       tsconfigPaths(),
       visualizer({ open: false }),

@@ -56,6 +56,7 @@
     "umi-request": "1.4.0",
     "validator": "13.7.0",
     "vditor": "3.8.8",
+    "vite-plugin-windicss": "1.6.1",
     "vue": "3.2.22",
     "vue-router": "4.0.12",
     "xterm": "4.15.0",
@@ -85,6 +86,7 @@
     "vite": "2.7.2",
     "vite-plugin-checker": "0.3.4",
     "vite-tsconfig-paths": "3.3.17",
-    "vue-eslint-parser": "8.0.1"
+    "vue-eslint-parser": "8.0.1",
+    "windicss": "3.4.0"
   }
 }

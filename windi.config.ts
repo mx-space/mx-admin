@@ -1,8 +1,8 @@
-module.exports = {
+import { defineConfig } from 'windicss/helpers'
+
+export default defineConfig({
   content: ['./src/**/*.html', './src/**/*.vue', './src/**/*.tsx'],
   darkMode: 'class',
-  mode: 'jit',
-  important: true, // important in prod is must be
 
   theme: {
     extend: {
@@ -44,4 +44,4 @@ module.exports = {
   },
 
   plugins: [],
-}
+})

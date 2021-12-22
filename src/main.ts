@@ -1,5 +1,6 @@
 import 'reflect-metadata'
 import { bus } from 'utils/event-bus'
+import 'virtual:windi.css'
 import { createApp } from 'vue'
 import App from './App'
 import './index.css'

@@ -1,12 +1,13 @@
 .tab-user {
   @apply !max-w-[800px] !m-auto;
   & .avatar {
-    @apply before:border-gray$-default before:content-[''] before:absolute;
-    @apply relative before:border-[108px] before:rounded-full before:left-1/2 before:top-1/2;
+    @apply relative;
     @apply flex items-center justify-center;
 
     &::before {
       @apply -translate-x-1/2 -translate-y-1/2;
+      @apply border-gray$-default content-[''] absolute;
+      @apply border-[108px] rounded-full;
     }
   }
 }

@@ -5,6 +5,7 @@ import { Sidebar } from '../../components/sidebar'
 import { useInjector } from '../../hooks/use-deps-injection'
 import { UIStore } from '../../stores/ui'
 import styles from './index.module.css'
+
 export const SidebarLayout = defineComponent({
   name: 'SidebarLayout',
 
