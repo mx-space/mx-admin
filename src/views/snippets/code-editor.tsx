@@ -13,6 +13,10 @@ export const CodeEditorForSnippet = defineComponent({
       type: Function as PropType<(str: string) => void>,
       required: true,
     },
+    language: {
+      type: String,
+      required: true,
+    },
   },
   setup(props) {
     const editorRef = ref()
@@ -45,7 +49,7 @@ export const CodeEditorForSnippet = defineComponent({
       import('monaco-editor').then((mo) => {
         editor = mo.editor.create(editorRef.value, {
           value: props.value,
-          language: 'json',
+          language: props.language,
           theme: isDark.value ? 'vs-dark' : 'vs',
           automaticLayout: true,
           minimap: { enabled: false },
@@ -61,6 +65,22 @@ export const CodeEditorForSnippet = defineComponent({
         )
       })
     })
+
+    watch(
+      () => props.language,
+      (lang) => {
+        if (!editor) {
+          return
+        }
+        const model = editor.getModel()
+        if (!model) {
+          return
+        }
+        import('monaco-editor').then((mo) => {
+          mo.editor.setModelLanguage(model, lang)
+        })
+      },
+    )
     return () => (
       <>
         <div ref={editorRef} class={'h-full w-full relative'}>
