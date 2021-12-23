@@ -3,10 +3,25 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Bug Fixes
+
+- Get current type text on post data raw
+
+### Features
+
+- Replace taildwind with windicss
+- Yaml support
+
+## [3.10.4] - 2021-12-21
+
 ### Features
 
 - Parse markdown yaml
 - Add quick preview
+
+### Release
+
+- V3.10.4
 
 ## [3.10.3] - 2021-12-14
 
