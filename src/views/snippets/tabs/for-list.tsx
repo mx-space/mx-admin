@@ -128,6 +128,7 @@ export const Tab1ForList = defineComponent({
             {
               title: '操作',
               key: 'id',
+              fixed: 'right',
               render(row) {
                 return (
                   <NSpace>

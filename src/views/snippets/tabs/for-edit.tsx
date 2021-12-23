@@ -27,13 +27,16 @@ export const Tab2ForEdit = defineComponent({
 
     const data = ref<SnippetModel>(new SnippetModel())
 
-    const typeToValueMap = reactive<
-      Record<Lowercase<keyof typeof SnippetType>, string>
-    >({
-      json: JSON.stringify({ name: 'hello world' }, null, 2),
-      text: '',
-      yaml: `name: hello world`,
-    })
+    const typeToValueMap = reactive<Record<SnippetType, string>>(
+      // 有 Id 的情况下，避免闪白, 留空数据
+      editId.value
+        ? { json: '', yaml: '', text: '' }
+        : {
+            json: JSON.stringify({ name: 'hello world' }, null, 2),
+            text: '',
+            yaml: `name: hello world`,
+          },
+    )
 
     // 监听 type 变化, 实时同时 typeToValueMap 中的值 到 data.raw
     watch(
@@ -99,20 +102,21 @@ export const Tab2ForEdit = defineComponent({
       }
 
       const handleRawText = () => {
+        const currentTypeText = typeToValueMap[data.value.type]
         switch (data.value.type) {
           case SnippetType.JSON: {
-            return tinyJson(data.value.raw)
+            return tinyJson(currentTypeText)
           }
           case SnippetType.YAML: {
             try {
-              load(data.value.raw)
+              load(currentTypeText)
             } catch {
               message.error('YAML 格式错误')
             }
-            return data.value.raw
+            return currentTypeText
           }
           default: {
-            return data.value.raw
+            return currentTypeText
           }
         }
       }
