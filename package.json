@@ -49,7 +49,7 @@
     "js-yaml": "4.1.0",
     "lodash-es": "4.17.21",
     "monaco-editor": "0.31.0",
-    "naive-ui": "2.21.5",
+    "naive-ui": "2.23.2",
     "qier-progress": "1.0.4",
     "reflect-metadata": "0.1.13",
     "socket.io-client": "4.4.0",
