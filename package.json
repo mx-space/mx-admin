@@ -57,7 +57,7 @@
     "validator": "13.7.0",
     "vditor": "3.8.8",
     "vite-plugin-windicss": "1.6.1",
-    "vue": "3.2.22",
+    "vue": "3.2.26",
     "vue-router": "4.0.12",
     "xterm": "4.15.0",
     "xterm-addon-fit": "0.5.0"
