@@ -17,7 +17,7 @@ specifiers:
   '@innei-util/prettier': 0.1.4
   '@types/js-yaml': 4.0.5
   '@types/lodash-es': 4.17.5
-  '@types/validator': 13.7.0
+  '@types/validator': 13.7.1
   '@typescript-eslint/eslint-plugin': 5.7.0
   '@typescript-eslint/parser': 5.7.0
   '@vicons/antd': 0.11.0
@@ -115,7 +115,7 @@ devDependencies:
   '@innei-util/prettier': 0.1.4_prettier@2.5.1+typescript@4.5.4
   '@types/js-yaml': 4.0.5
   '@types/lodash-es': 4.17.5
-  '@types/validator': 13.7.0
+  '@types/validator': 13.7.1
   '@typescript-eslint/eslint-plugin': 5.7.0_915acdfead96f701b1277a1a723fc8d4
   '@typescript-eslint/parser': 5.7.0_eslint@8.4.1+typescript@4.5.4
   '@vitejs/plugin-vue': 2.0.1_vite@2.7.10+vue@3.2.22
@@ -1172,8 +1172,8 @@ packages:
   /@types/throttle-debounce/2.1.0:
     resolution: {integrity: sha512-5eQEtSCoESnh2FsiLTxE121IiE60hnMqcb435fShf4bpLRjEu1Eoekht23y6zXS9Ts3l+Szu3TARnTsA0GkOkQ==}
 
-  /@types/validator/13.7.0:
-    resolution: {integrity: sha512-+jBxVvXVuggZOrm04NR8z+5+bgoW4VZyLzUO+hmPPW1mVFL/HaitLAkizfv4yg9TbG8lkfHWVMQ11yDqrVVCzA==}
+  /@types/validator/13.7.1:
+    resolution: {integrity: sha512-I6OUIZ5cYRk5lp14xSOAiXjWrfVoMZVjDuevBYgQDYzZIjsf2CAISpEcXOkFAtpAHbmWIDLcZObejqny/9xq5Q==}
     dev: true
 
   /@types/yargs-parser/20.2.1:
