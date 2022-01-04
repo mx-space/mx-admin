@@ -38,6 +38,8 @@ type PostReactiveType = {
   tags: string[]
   hide: boolean
   summary: string
+
+  id?: string
 }
 
 const PostWriteView = defineComponent(() => {
@@ -57,6 +59,8 @@ const PostWriteView = defineComponent(() => {
     tags: [],
     hide: false,
     summary: '',
+
+    id: undefined,
   })
 
   const parsePayloadIntoReactiveData = (payload: PostModel) => {
@@ -178,7 +182,7 @@ const PostWriteView = defineComponent(() => {
       </div>
 
       <EditorToggleWrapper
-        loading={!!(id.value && !data.title)}
+        loading={!!(id.value && typeof data.id == 'undefined')}
         onChange={(v) => {
           data.text = v
         }}

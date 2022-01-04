@@ -56,6 +56,8 @@ type NoteReactiveType = {
   music: NoteMusicRecord[]
   location: null | string
   coordinates: null | Coordinate
+
+  id?: string
 }
 
 const NoteWriteView = defineComponent(() => {
@@ -86,6 +88,8 @@ const NoteWriteView = defineComponent(() => {
     weather: '',
     location: '',
     coordinates: null,
+
+    id: undefined,
   })
 
   const parsePayloadIntoReactiveData = (payload: NoteModel) =>
@@ -93,7 +97,7 @@ const NoteWriteView = defineComponent(() => {
   const data = reactive<NoteReactiveType>(resetReactive())
   const nid = ref<number>()
 
-  const loading = computed(() => !!(id.value && !data.title))
+  const loading = computed(() => !!(id.value && typeof data.id === 'undefined'))
 
   const disposer = watch(
     () => loading.value,
@@ -129,6 +133,7 @@ const NoteWriteView = defineComponent(() => {
       })) as any
 
       const data = payload.data
+
       nid.value = data.nid
       data.secret = data.secret ? new Date(data.secret) : null
 

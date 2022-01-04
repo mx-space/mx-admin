@@ -29,6 +29,8 @@ type PageReactiveType = {
   subtitle: string
   slug: string
   order: number
+
+  id?: string
 }
 
 const PageWriteView = defineComponent(() => {
@@ -40,6 +42,8 @@ const PageWriteView = defineComponent(() => {
     order: 0,
     slug: '',
     subtitle: '',
+
+    id: undefined,
   })
 
   const parsePayloadIntoReactiveData = (payload: PageModel) =>
@@ -162,7 +166,7 @@ const PageWriteView = defineComponent(() => {
       </div>
 
       <EditorToggleWrapper
-        loading={!!(id.value && !data.title)}
+        loading={!!(id.value && typeof data.id == 'undefined')}
         onChange={(v) => {
           data.text = v
         }}

@@ -11,9 +11,6 @@ export default defineComponent({
     const router = useRouter()
     const currentTab = computed(() => route.query.tab || '0')
 
-    // provide(provideKey, {
-    //   currentTab,
-    // })
     return () => (
       <ContentLayout>
         <NTabs
