@@ -5,12 +5,28 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update dependency naive-ui to v2.23.2
+- If title is empty enter loading loop
+
+### Miscellaneous Tasks
+
+- Remove tailwind deps
+- Update dependency vite to v2.7.10
+
+## [3.11.0] - 2021-12-23
+
+### Bug Fixes
+
 - Get current type text on post data raw
 
 ### Features
 
 - Replace taildwind with windicss
 - Yaml support
+
+### Release
+
+- V3.11.0
 
 ## [3.10.4] - 2021-12-21
 
