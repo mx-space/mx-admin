@@ -39,7 +39,7 @@
     "@vicons/material": "0.11.0",
     "@vicons/tabler": "0.11.0",
     "@vicons/utils": "0.1.4",
-    "@vueuse/core": "7.3.0",
+    "@vueuse/core": "7.5.3",
     "camelcase-keys": "7.0.1",
     "class-transformer": "0.5.1",
     "class-validator": "0.13.2",
