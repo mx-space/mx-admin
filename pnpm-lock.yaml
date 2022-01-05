@@ -29,7 +29,7 @@ specifiers:
   '@vicons/tabler': 0.11.0
   '@vicons/utils': 0.1.4
   '@vitejs/plugin-vue': 2.0.1
-  '@vitejs/plugin-vue-jsx': 1.3.2
+  '@vitejs/plugin-vue-jsx': 1.3.3
   '@vue/compiler-sfc': 3.2.26
   '@vueuse/core': 7.3.0
   camelcase-keys: 7.0.1
@@ -119,7 +119,7 @@ devDependencies:
   '@typescript-eslint/eslint-plugin': 5.7.0_915acdfead96f701b1277a1a723fc8d4
   '@typescript-eslint/parser': 5.7.0_eslint@8.4.1+typescript@4.5.4
   '@vitejs/plugin-vue': 2.0.1_vite@2.7.10+vue@3.2.26
-  '@vitejs/plugin-vue-jsx': 1.3.2
+  '@vitejs/plugin-vue-jsx': 1.3.3
   '@vue/compiler-sfc': 3.2.26
   cors: 2.8.5
   eslint: 8.4.1
@@ -1322,8 +1322,8 @@ packages:
       vue: 3.2.26
     dev: false
 
-  /@vitejs/plugin-vue-jsx/1.3.2:
-    resolution: {integrity: sha512-PyYiMkd3xs5y1zpctjCOCz3coxTo8JqqCYNL3yoDN4kQkROKTnKpEDLPR0h0SnuhzMP/71yVg3g4DCI3FI9wWA==}
+  /@vitejs/plugin-vue-jsx/1.3.3:
+    resolution: {integrity: sha512-VSBXVqMcxbgX85rgJC1eMWuZ9hzOJhWPvGYlKxyymPokE/i3Gykh5ljkCoNdxnKgIyFqv4WutYoYY93fgjbTxA==}
     engines: {node: '>=12.0.0'}
     dependencies:
       '@babel/core': 7.16.5
