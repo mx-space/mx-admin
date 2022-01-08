@@ -1,19 +1,22 @@
 import Avatar from 'components/avatar'
 import { IpInfoPopover } from 'components/ip-info'
 import { RelativeTime } from 'components/time/relative-time'
-import { isEmpty, omit } from 'lodash-es'
+import { socialKeyMap } from 'constants/social'
+import { cloneDeep, isEmpty } from 'lodash-es'
 import { UserModel } from 'models/user'
 import {
   NButton,
+  NDynamicInput,
   NForm,
   NFormItem,
   NGi,
   NGrid,
   NInput,
+  NSelect,
   NText,
   useMessage,
 } from 'naive-ui'
-import { RESTManager, shallowDiff } from 'utils'
+import { deepDiff, RESTManager } from 'utils'
 import { computed, defineComponent, onMounted, ref } from 'vue'
 import styles from './user.module.css'
 
@@ -22,19 +25,45 @@ export const TabUser = defineComponent(() => {
   let origin: UserModel
 
   async function fetchMaster() {
-    const response = (await RESTManager.api.master.get()) as any
-    data.value = omit(response, ['ok']) as any
+    const response = (await RESTManager.api.master.get()) as UserModel
+    data.value = response
+
+    const social = Object.entries(response.socialIds).map(([key, value]) => {
+      return {
+        platform: key,
+        id: value,
+      }
+    })
+    socialRecord.value = social
+
     origin = { ...response }
   }
-
+  const socialRecord = ref<{ platform: string; id: string | number }[]>([])
+  watch(
+    () => socialRecord.value,
+    (newValue) => {
+      const socialIds = newValue.reduce((acc, cur) => {
+        acc[cur.platform] = cur.id
+        return acc
+      }, {} as { [key: string]: string | number })
+      data.value.socialIds = socialIds
+    },
+    { deep: true },
+  )
   onMounted(async () => {
     await fetchMaster()
   })
   const message = useMessage()
-  const diff = computed(() => shallowDiff(origin, data.value))
+  const diff = computed(() => deepDiff(origin, data.value))
   const handleSave = async () => {
+    const submitData = cloneDeep(unref(diff))
+    // 数组合并
+    if (submitData.socialIds) {
+      submitData.socialIds = data.value.socialIds
+    }
+
     await RESTManager.api.master.patch({
-      data: diff.value,
+      data: submitData,
     })
     message.success('保存成功~')
     await fetchMaster()
@@ -150,11 +179,66 @@ export const TabUser = defineComponent(() => {
 
             <NFormItem label="个人介绍">
               <NInput
+                type="textarea"
+                resizable={false}
                 value={data.value.introduce}
                 onInput={(e) => {
                   data.value.introduce = e
                 }}
               />
+            </NFormItem>
+
+            <NFormItem label="社交平台 ID 录入">
+              <NDynamicInput
+                value={socialRecord.value}
+                onUpdateValue={(e: any[]) => {
+                  // FIXME: naive ui will gave a  null value on insert pos
+                  socialRecord.value = (() => {
+                    const nullIdx = e.findIndex((i) => i === null)
+                    if (nullIdx !== -1) {
+                      e.splice(nullIdx, 1, { platform: '', id: '' })
+                    }
+
+                    return e
+                  })()
+                }}
+              >
+                {{
+                  default(props: {
+                    index: number
+                    value: typeof socialRecord.value[0]
+                  }) {
+                    return (
+                      <div class="flex items-center w-full">
+                        {/* <NInput placeholder={}></NInput> */}
+                        <NSelect
+                          filterable
+                          tag
+                          placeholder="请选择"
+                          value={props.value.platform}
+                          onUpdateValue={(platform) => {
+                            props.value.platform = platform
+                          }}
+                          options={Object.keys(socialKeyMap).map((key) => {
+                            return { label: key, value: socialKeyMap[key] }
+                          })}
+                        ></NSelect>
+                        <NInput
+                          value={props.value.id.toString()}
+                          onUpdateValue={(id) => {
+                            props.value.id = id
+                          }}
+                        ></NInput>
+                        {/* <n-input-number
+                          v-model:value="value.num"
+                          style="margin-right: 12px; width: 160px;"
+                        />
+                        <n-input v-model:value="value.string" type="text" /> */}
+                      </div>
+                    )
+                  },
+                }}
+              </NDynamicInput>
             </NFormItem>
           </NForm>
         </NGi>
