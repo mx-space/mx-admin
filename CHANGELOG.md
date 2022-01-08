@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Features
+
+- Add user social id
+
+## [3.11.2] - 2022-01-08
+
 ### Bug Fixes
 
 - Update dependency vue to v3.2.26
@@ -13,6 +19,10 @@ All notable changes to this project will be documented in this file.
 - Update dependency windicss to v3.4.2
 - Update dependency @types/validator to v13.7.1
 - Update dependency unplugin-auto-import to v0.5.5
+
+### Release
+
+- V3.11.2
 
 ## [3.11.1] - 2022-01-04
 
