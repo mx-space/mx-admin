@@ -53,6 +53,7 @@ export const CodeEditorForSnippet = defineComponent({
           theme: isDark.value ? 'vs-dark' : 'vs',
           automaticLayout: true,
           minimap: { enabled: false },
+          tabSize: 2,
         })
         ;['onKeyDown', 'onDidPaste', 'onDidBlurEditorText'].forEach(
           (eventName) => {
