@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update dependency vue to v3.2.26
+- Editor tabsize set to 2
+
+### Miscellaneous Tasks
+
+- Update dependency windicss to v3.4.2
+- Update dependency @types/validator to v13.7.1
+- Update dependency unplugin-auto-import to v0.5.5
+
+## [3.11.1] - 2022-01-04
+
+### Bug Fixes
+
 - Update dependency naive-ui to v2.23.2
 - If title is empty enter loading loop
 
@@ -12,6 +25,10 @@ All notable changes to this project will be documented in this file.
 
 - Remove tailwind deps
 - Update dependency vite to v2.7.10
+
+### Release
+
+- V3.11.1
 
 ## [3.11.0] - 2021-12-23
 
