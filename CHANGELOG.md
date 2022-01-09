@@ -5,7 +5,17 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 
+- Custom email reply template
+
+## [3.11.3] - 2022-01-08
+
+### Features
+
 - Add user social id
+
+### Release
+
+- V3.11.3
 
 ## [3.11.2] - 2022-01-08
 
