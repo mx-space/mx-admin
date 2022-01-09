@@ -37,4 +37,6 @@ export enum RouteName {
   Setup = 'setup',
   ListShortHand = 'shorthand',
   Snippet = 'snippet',
+
+  AssetTemplate = 'asset-template',
 }

@@ -20,6 +20,7 @@ import TachometerAlt from '@vicons/fa/es/TachometerAlt'
 import UndoAlt from '@vicons/fa/es/UndoAlt'
 import UserFriends from '@vicons/fa/es/UserFriends'
 import Clock from '@vicons/tabler/es/Clock'
+import Template from '@vicons/tabler/es/Layout2'
 import Log from '@vicons/tabler/es/News'
 import Pencil from '@vicons/tabler/es/Pencil'
 import { Icon } from '@vicons/utils'
@@ -389,7 +390,19 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         },
         component: () => import('../views/snippets'),
       },
-
+      {
+        path: 'assets/template',
+        name: RouteName.AssetTemplate,
+        meta: {
+          title: '模板编辑',
+          icon: (
+            <Icon>
+              <Template />
+            </Icon>
+          ),
+        },
+        component: () => import('../views/assets/template'),
+      },
       {
         path: 'backup',
         name: RouteName.Backup,

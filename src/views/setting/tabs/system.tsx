@@ -314,7 +314,7 @@ export const TabSystem = defineComponent(() => {
 
         <NCollapseItem title="邮件通知设置" name="mail">
           <NForm {...formProps}>
-            <NFormItem label="开启评论邮箱提醒">
+            <NFormItem label="开启邮箱提醒">
               <NSwitch
                 value={configs.value.mailOptions.enable}
                 onUpdateValue={(e) =>

@@ -7,9 +7,7 @@ import Checker from 'vite-plugin-checker'
 import WindiCSS from 'vite-plugin-windicss'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import PKG from './package.json'
-// const gitHash = execSync('git rev-parse --short HEAD', {
-//   encoding: 'utf-8',
-// }).split('\n')[0]
+
 export default ({ mode }) => {
   process.env = {
     ...process.env,
@@ -18,6 +16,7 @@ export default ({ mode }) => {
 
   return defineConfig({
     plugins: [
+      // vueJsx(),
       WindiCSS(),
       vue(),
       tsconfigPaths(),

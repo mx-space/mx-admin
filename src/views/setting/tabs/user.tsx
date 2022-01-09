@@ -212,6 +212,7 @@ export const TabUser = defineComponent(() => {
                       <div class="flex items-center w-full">
                         {/* <NInput placeholder={}></NInput> */}
                         <NSelect
+                          class="mr-4"
                           filterable
                           tag
                           placeholder="请选择"
@@ -229,11 +230,6 @@ export const TabUser = defineComponent(() => {
                             props.value.id = id
                           }}
                         ></NInput>
-                        {/* <n-input-number
-                          v-model:value="value.num"
-                          style="margin-right: 12px; width: 160px;"
-                        />
-                        <n-input v-model:value="value.string" type="text" /> */}
                       </div>
                     )
                   },

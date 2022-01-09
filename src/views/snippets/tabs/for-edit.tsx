@@ -3,12 +3,12 @@ import { HeaderActionButton } from 'components/button/rounded-button'
 import { useMountAndUnmount } from 'hooks/use-react'
 import { dump, load } from 'js-yaml'
 import { useLayout } from 'layouts/content'
+import { TwoColGridLayout } from 'layouts/two-col'
 import { debounce, omit } from 'lodash-es'
 import {
   NForm,
   NFormItem,
   NGi,
-  NGrid,
   NInput,
   NSelect,
   NSwitch,
@@ -160,77 +160,75 @@ export const Tab2ForEdit = defineComponent({
     })
 
     return () => (
-      <>
-        <NGrid cols={'36 1:12 1024:36 1600:36'}>
-          <NGi span={12}>
-            <NForm>
-              <NFormItem label="名称" required>
-                <NInput
-                  onUpdateValue={(e) => void (data.value.name = e)}
-                  value={data.value.name}
-                ></NInput>
-              </NFormItem>
+      <TwoColGridLayout>
+        <NGi span={12}>
+          <NForm>
+            <NFormItem label="名称" required>
+              <NInput
+                onUpdateValue={(e) => void (data.value.name = e)}
+                value={data.value.name}
+              ></NInput>
+            </NFormItem>
 
-              <NFormItem label="引用" required>
-                <NInput
-                  value={data.value.reference}
-                  onUpdateValue={(e) => void (data.value.reference = e)}
-                  defaultValue={'root'}
-                ></NInput>
-              </NFormItem>
+            <NFormItem label="引用" required>
+              <NInput
+                value={data.value.reference}
+                onUpdateValue={(e) => void (data.value.reference = e)}
+                defaultValue={'root'}
+              ></NInput>
+            </NFormItem>
 
-              <NFormItem label="元类型">
-                <NInput
-                  value={data.value.metatype}
-                  onUpdateValue={(e) => void (data.value.metatype = e)}
-                ></NInput>
-              </NFormItem>
+            <NFormItem label="元类型">
+              <NInput
+                value={data.value.metatype}
+                onUpdateValue={(e) => void (data.value.metatype = e)}
+              ></NInput>
+            </NFormItem>
 
-              <NFormItem label="数据类型">
-                <NSelect
-                  value={data.value.type}
-                  defaultValue={SnippetType.JSON}
-                  onUpdateValue={(val) => void (data.value.type = val)}
-                  options={Object.entries(SnippetType).map(([k, v]) => {
-                    return {
-                      label: k,
-                      value: v,
-                    }
-                  })}
-                ></NSelect>
-              </NFormItem>
+            <NFormItem label="数据类型">
+              <NSelect
+                value={data.value.type}
+                defaultValue={SnippetType.JSON}
+                onUpdateValue={(val) => void (data.value.type = val)}
+                options={Object.entries(SnippetType).map(([k, v]) => {
+                  return {
+                    label: k,
+                    value: v,
+                  }
+                })}
+              ></NSelect>
+            </NFormItem>
 
-              <NFormItem label="公开" labelPlacement="left">
-                <div class="w-full flex justify-end">
-                  <NSwitch
-                    value={!data.value.private}
-                    onUpdateValue={(val) => void (data.value.private = !val)}
-                  ></NSwitch>
-                </div>
-              </NFormItem>
-              <NFormItem label="备注">
-                <NInput
-                  resizable={false}
-                  value={data.value.comment}
-                  onUpdateValue={(val) => void (data.value.comment = val)}
-                  type="textarea"
-                  rows={4}
-                ></NInput>
-              </NFormItem>
-            </NForm>
-          </NGi>
+            <NFormItem label="公开" labelPlacement="left">
+              <div class="w-full flex justify-end">
+                <NSwitch
+                  value={!data.value.private}
+                  onUpdateValue={(val) => void (data.value.private = !val)}
+                ></NSwitch>
+              </div>
+            </NFormItem>
+            <NFormItem label="备注">
+              <NInput
+                resizable={false}
+                value={data.value.comment}
+                onUpdateValue={(val) => void (data.value.comment = val)}
+                type="textarea"
+                rows={4}
+              ></NInput>
+            </NFormItem>
+          </NForm>
+        </NGi>
 
-          <NGi span={24} class={'ml-[40px]'}>
-            <CodeEditorForSnippet
-              language={data.value.type.toLowerCase()}
-              value={typeToValueMap[data.value.type]}
-              onChange={(value) => {
-                typeToValueMap[data.value.type] = value
-              }}
-            />
-          </NGi>
-        </NGrid>
-      </>
+        <NGi span={24}>
+          <CodeEditorForSnippet
+            language={data.value.type.toLowerCase()}
+            value={typeToValueMap[data.value.type]}
+            onChange={(value) => {
+              typeToValueMap[data.value.type] = value
+            }}
+          />
+        </NGi>
+      </TwoColGridLayout>
     )
   },
 })
