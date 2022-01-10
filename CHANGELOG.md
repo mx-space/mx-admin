@@ -3,9 +3,24 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Bug Fixes
+
+- Snippet post data
+- Layout re-redener twice
+
+### Miscellaneous Tasks
+
+- Extract comp
+
+## [3.11.4] - 2022-01-09
+
 ### Features
 
 - Custom email reply template
+
+### Release
+
+- V3.11.4
 
 ## [3.11.3] - 2022-01-08
 
