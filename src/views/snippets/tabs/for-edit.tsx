@@ -121,7 +121,7 @@ export const Tab2ForEdit = defineComponent({
         }
       }
 
-      const omitData = omit(data.value, ['_id', 'id', 'created', 'updated'])
+      const omitData = omit(data.value, ['_id', 'id', 'created', 'data'])
       const finalData = { ...omitData, raw: handleRawText() }
       if (!finalData.metatype) {
         delete finalData.metatype
