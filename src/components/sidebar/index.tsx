@@ -4,13 +4,14 @@ import { onClickOutside } from '@vueuse/core'
 import clsx from 'clsx'
 import { WEB_URL } from 'constants/env'
 import { NLayoutContent } from 'naive-ui'
+import { AppStore } from 'stores/app'
 import { UIStore } from 'stores/ui'
 import { computed, defineComponent, onMounted, PropType, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { configs } from '../../configs'
 import { useInjector } from '../../hooks/use-deps-injection'
 import { UserStore } from '../../stores/user'
-import { buildMenus, MenuModel } from '../../utils/build-menus'
+import { buildMenuModel, buildMenus, MenuModel } from '../../utils/build-menus'
 import { Avatar } from '../avatar'
 import styles from './index.module.css'
 export const Sidebar = defineComponent({
@@ -34,9 +35,24 @@ export const Sidebar = defineComponent({
     const { user } = useInjector(UserStore)
     const route = computed(() => router.currentRoute.value)
     const menus = ref<MenuModel[]>([])
+    const app = useInjector(AppStore)
     onMounted(() => {
       // @ts-expect-error
       menus.value = buildMenus(router.getRoutes())
+    })
+
+    watchEffect(() => {
+      const version = app.app.value?.version
+      if (version === 'dev') {
+        // menus.value = menus.value.concat()
+        // buildMenuModel()
+        const route = router
+          .getRoutes()
+          .find((item) => item.path === '/debug') as any
+        console.log(buildMenuModel(route, false, ''))
+
+        menus.value.unshift(buildMenuModel(route, false, ''))
+      }
     })
 
     const _index = ref(0)

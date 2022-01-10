@@ -25,7 +25,6 @@ import { ContentLayout } from 'layouts/content'
 import { pick } from 'lodash-es'
 import { Stat } from 'models/stat'
 import {
-  NBadge,
   NButton,
   NCard,
   NElement,
@@ -35,26 +34,17 @@ import {
   NH3,
   NP,
   NPopover,
-  NSkeleton,
   NSpace,
-  NStatistic,
   NText,
-  NThing,
   useMessage,
 } from 'naive-ui'
 import { RouteName } from 'router/name'
+import { AppStore } from 'stores/app'
 import { UserStore } from 'stores/user'
 import { parseDate, RESTManager } from 'utils'
-import {
-  computed,
-  defineComponent,
-  onBeforeMount,
-  onUnmounted,
-  PropType,
-  ref,
-  VNode,
-} from 'vue'
+import { computed, defineComponent, onBeforeMount, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { Card, CardProps } from './card'
 
 export const DashBoardView = defineComponent({
   name: 'Dashboard',
@@ -117,13 +107,6 @@ export const DashBoardView = defineComponent({
       getJinRiShiCiOne().then((data) => {
         shiju.value = data.content
         shijuData.value = data
-      })
-    })
-
-    const app = ref<AppInfo>()
-    onMounted(() => {
-      RESTManager.api.get<AppInfo>().then((res) => {
-        app.value = res
       })
     })
 
@@ -529,144 +512,28 @@ export const DashBoardView = defineComponent({
         </NGrid>
         <UserLoginStat />
         <DataStat />
-
-        <NElement tag="footer" class="mt-12">
-          <NP
-            class="text-center"
-            style={{ color: 'var(--text-color-3)' }}
-            depth="1"
-          >
-            面板版本: {__DEV__ ? 'dev mode' : window.version || 'N/A'}
-            <br />
-            系统版本: {app.value?.version || 'N/A'}
-            <br />
-            页面来源: {window.pageSource || ''}
-          </NP>
-        </NElement>
+        <AppIF />
       </ContentLayout>
     )
   },
 })
-
-const Statistic = defineComponent({
-  props: { label: String, value: [String, Number] },
-  setup(props) {
+const AppIF = defineComponent({
+  setup() {
+    const { app } = useInjector(AppStore)
     return () => (
-      <Fragment>
-        {props.value === 'N/A' ? (
-          <NSpace vertical align="center" class="min-h-[4rem]">
-            <NSkeleton style={{ height: '.8rem', width: '5rem' }}></NSkeleton>
-            <NSkeleton style={{ height: '1.8rem', width: '3rem' }}></NSkeleton>
-          </NSpace>
-        ) : (
-          <NStatistic label={props.label} value={props.value}></NStatistic>
-        )}
-      </Fragment>
-    )
-  },
-})
-
-const Badge = defineComponent({
-  props: { processing: Boolean, value: [String, Number] },
-  setup(props, ctx) {
-    return () => (
-      <Fragment>
-        {props.value === 'N/A' ? (
-          ctx.slots
-        ) : (
-          <NBadge {...props}>{ctx.slots}</NBadge>
-        )}
-      </Fragment>
-    )
-  },
-})
-
-interface CardProps {
-  label: string
-  value: number | string
-  icon: VNode | (() => VNode)
-  actions?: {
-    name: string
-    onClick: () => void
-    primary?: boolean
-    showBadage?: boolean
-  }[]
-}
-// const cardProps = ['label', 'value', 'icon', 'actions']
-const Card = defineComponent({
-  props: {
-    label: String,
-    value: [Number, String],
-    icon: Function as PropType<() => JSX.Element>,
-    actions: {
-      type: Array as PropType<
-        {
-          name: string
-          onClick: () => void
-          primary?: boolean
-          showBadge?: { type: Boolean; default: false }
-        }[]
-      >,
-      default: () => [],
-    },
-  },
-  // @ts-expect-error
-  setup(props: CardProps) {
-    return () => (
-      <>
-        <NCard>
-          <NThing>
-            {{
-              header() {
-                return (
-                  <Statistic
-                    label={props.label}
-                    value={props.value}
-                  ></Statistic>
-                )
-              },
-              ['header-extra']() {
-                return (
-                  <Icon class="text-4xl opacity-70">
-                    {typeof props.icon == 'function'
-                      ? props.icon()
-                      : props.icon}
-                  </Icon>
-                )
-              },
-
-              action() {
-                if (!props.actions) {
-                  return null
-                }
-                return (
-                  <NSpace size="medium" align="center">
-                    {props.actions.map((i) => {
-                      const Inner = () =>
-                        i.primary ? (
-                          <NButton round type="primary" onClick={i.onClick}>
-                            {i.name}
-                          </NButton>
-                        ) : (
-                          <NButton text onClick={i.onClick}>
-                            {i.name}
-                          </NButton>
-                        )
-                      return i.showBadage ? (
-                        <Badge value={props.value} processing>
-                          <Inner />
-                        </Badge>
-                      ) : (
-                        <Inner />
-                      )
-                    })}
-                  </NSpace>
-                )
-              },
-            }}
-          </NThing>
-        </NCard>
-      </>
+      <NElement tag="footer" class="mt-12">
+        <NP
+          class="text-center"
+          style={{ color: 'var(--text-color-3)' }}
+          depth="1"
+        >
+          面板版本: {__DEV__ ? 'dev mode' : window.version || 'N/A'}
+          <br />
+          系统版本: {app.value?.version || 'N/A'}
+          <br />
+          页面来源: {window.pageSource || ''}
+        </NP>
+      </NElement>
     )
   },
 })

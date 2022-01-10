@@ -88,3 +88,5 @@ export const buildMenus = (
     .map((item: TRouteRecordNormalized) => {
       return buildModel(item, false, '')
     })
+
+export { buildModel as buildMenuModel }

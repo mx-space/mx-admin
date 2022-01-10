@@ -499,6 +499,23 @@ export const routes: RouteRecordRaw[] = [
         )
       : [],
   },
+  {
+    path: '/debug',
+    component: SidebarLayout,
+    meta: {
+      title: '调试',
+    },
+    children: [
+      {
+        path: 'events',
+        name: '$$events',
+        meta: {
+          title: 'Events',
+        },
+        component: () => import('../views/debug/events'),
+      },
+    ],
+  },
   // v1 compatibility
   {
     path: '/page/:path(.*)*',

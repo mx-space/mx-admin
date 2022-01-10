@@ -11,14 +11,10 @@ import {
   zhCN,
 } from 'naive-ui'
 import { RouteName } from 'router/name'
-import { CategoryStore } from 'stores/category'
+import { provideStore } from 'stores'
 import { defineComponent, onMounted } from 'vue'
 import { RouterView, useRouter } from 'vue-router'
-import {
-  useInjector,
-  useProvider,
-  useProviders,
-} from './hooks/use-deps-injection'
+import { useInjector, useProvider } from './hooks/use-deps-injection'
 import { UIStore } from './stores/ui'
 import { UserStore } from './stores/user'
 const Root = defineComponent({
@@ -68,7 +64,7 @@ const Root = defineComponent({
 
 const App = defineComponent({
   setup() {
-    useProviders(UIStore, UserStore, CategoryStore)
+    provideStore()
     const { isDark } = useProvider(UIStore)
     return () => (
       <NConfigProvider
