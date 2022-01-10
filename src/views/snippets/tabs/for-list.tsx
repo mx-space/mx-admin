@@ -16,8 +16,8 @@ import { SnippetModel } from '../../../models/snippet'
 
 export const Tab1ForList = defineComponent({
   setup() {
-    onMounted(async () => {
-      await fetchDataFn(1, 20)
+    onMounted(() => {
+      fetchDataFn(1, 20)
     })
 
     const layout = useLayout()

@@ -104,12 +104,10 @@ export const ContentLayout = defineComponent({
 
     const { isDark, toggleDark } = useInjector(UIStore)
     const SettingHeaderEl = ref<(() => VNode) | null>()
-    return () => (
-      <>
-        <header class={styles['header']}>
-          <div class={styles['header-blur']}></div>
-          <h1 class={styles['title']}>{pageTitle.value}</h1>
-
+    // 抽出动态组件, 防止整个子代组件全部重渲染
+    const Header = defineComponent({
+      setup() {
+        return () => (
           <div class={clsx(styles['header-actions'], 'space-x-4')}>
             {SettingHeaderEl.value ? (
               <SettingHeaderEl.value />
@@ -119,19 +117,36 @@ export const ContentLayout = defineComponent({
               slots.actions?.()
             )}
           </div>
+        )
+      },
+    })
+    const Footer = defineComponent({
+      setup() {
+        return () => (
+          <footer class={styles['buttons']}>
+            {footerExtraButtonEl.value
+              ? footerExtraButtonEl.value.map((E: any) => (
+                  <E key={E.displayName} />
+                ))
+              : null}
+            {props.footerButtonElement ? <A$fel /> : slots.buttons?.()}
+            <button onClick={() => void toggleDark()}>
+              <Icon>{isDark.value ? <Sun /> : <Moon />}</Icon>
+            </button>
+          </footer>
+        )
+      },
+    })
+    return () => (
+      <>
+        <header class={styles['header']}>
+          <div class={styles['header-blur']}></div>
+          <h1 class={styles['title']}>{pageTitle.value}</h1>
+
+          <Header />
         </header>
         <main class={styles['main']}>{slots.default?.()}</main>
-        <footer class={styles['buttons']}>
-          {footerExtraButtonEl.value
-            ? footerExtraButtonEl.value.map((E: any) => (
-                <E key={E.displayName} />
-              ))
-            : null}
-          {props.footerButtonElement ? <A$fel /> : slots.buttons?.()}
-          <button onClick={() => void toggleDark()}>
-            <Icon>{isDark.value ? <Sun /> : <Moon />}</Icon>
-          </button>
-        </footer>
+        <Footer />
       </>
     )
   },
