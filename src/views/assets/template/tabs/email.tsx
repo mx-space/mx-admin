@@ -1,13 +1,13 @@
 import CheckCircleOutlined from '@vicons/antd/CheckCircleOutlined'
 import TrashSharp from '@vicons/ionicons5/es/TrashSharp'
 import { HeaderActionButton } from 'components/button/rounded-button'
-import { render } from 'ejs'
 import { useMountAndUnmount } from 'hooks/use-react'
 import { useLayout } from 'layouts/content'
 import { TwoColGridLayout } from 'layouts/two-col'
 import { NGi, NSwitch, useDialog } from 'naive-ui'
 import { RESTManager } from 'utils'
 import { CodeEditorForTemplateEditing } from '../code-editor'
+import { EJSRender } from '../ejs-render'
 export const EmailTab = defineComponent({
   setup() {
     const templateString = ref('')
@@ -127,26 +127,6 @@ export const EmailTab = defineComponent({
             />
           </NGi>
         </TwoColGridLayout>
-      </div>
-    )
-  },
-})
-
-export const EJSRender = defineComponent({
-  props: {
-    template: {
-      type: String,
-      required: true,
-    },
-    data: {
-      type: Object,
-      required: true,
-    },
-  },
-  setup(props) {
-    return () => (
-      <div class="h-full overflow-auto  bg-white">
-        <div innerHTML={render(props.template, props.data)}></div>
       </div>
     )
   },
