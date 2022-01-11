@@ -2,6 +2,7 @@ import SlidersH from '@vicons/fa/es/SlidersH'
 import TelegramPlane from '@vicons/fa/es/TelegramPlane'
 import { Icon } from '@vicons/utils'
 import { HeaderActionButton } from 'components/button/rounded-button'
+import { TextBaseDrawer } from 'components/drawer/text-base-drawer'
 import { EditorToggleWrapper } from 'components/editor/universal/toggle'
 import { MaterialInput } from 'components/input/material-input'
 import { UnderlineInput } from 'components/input/underline-input'
@@ -11,14 +12,7 @@ import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
 import { ContentLayout } from 'layouts/content'
 import { isString } from 'lodash-es'
 import { PageModel } from 'models/page'
-import {
-  NDrawer,
-  NDrawerContent,
-  NForm,
-  NFormItem,
-  NInputNumber,
-  useMessage,
-} from 'naive-ui'
+import { NFormItem, NInputNumber, useMessage } from 'naive-ui'
 import { RouteName } from 'router/name'
 import { RESTManager } from 'utils/rest'
 import { computed, defineComponent, onMounted, reactive, ref, toRaw } from 'vue'
@@ -29,6 +23,7 @@ type PageReactiveType = {
   subtitle: string
   slug: string
   order: number
+  allowComment: boolean
 
   id?: string
 }
@@ -42,6 +37,7 @@ const PageWriteView = defineComponent(() => {
     order: 0,
     slug: '',
     subtitle: '',
+    allowComment: false,
 
     id: undefined,
   })
@@ -175,27 +171,21 @@ const PageWriteView = defineComponent(() => {
 
       {/* Drawer  */}
 
-      <NDrawer
-        show={drawerShow.value}
-        width={450}
-        style={{ maxWidth: '90vw' }}
-        placement="right"
+      <TextBaseDrawer
         onUpdateShow={(s) => {
           drawerShow.value = s
         }}
-      >
-        <NDrawerContent title="文章设定">
-          <NForm>
-            <NFormItem label="页面顺序">
-              <NInputNumber
-                placeholder=""
-                value={data.order}
-                onChange={(e) => void (data.order = e ?? 0)}
-              ></NInputNumber>
-            </NFormItem>
-          </NForm>
-        </NDrawerContent>
-      </NDrawer>
+        data={data}
+        show={drawerShow.value}
+      />
+      <NFormItem label="页面顺序">
+        <NInputNumber
+          placeholder=""
+          value={data.order}
+          onChange={(e) => void (data.order = e ?? 0)}
+        ></NInputNumber>
+      </NFormItem>
+
       {/* Drawer END */}
     </ContentLayout>
   )

@@ -2,6 +2,7 @@ import SlidersH from '@vicons/fa/es/SlidersH'
 import TelegramPlane from '@vicons/fa/es/TelegramPlane'
 import { Icon } from '@vicons/utils'
 import { HeaderActionButton } from 'components/button/rounded-button'
+import { TextBaseDrawer } from 'components/drawer/text-base-drawer'
 import { EditorToggleWrapper } from 'components/editor/universal/toggle'
 import { MaterialInput } from 'components/input/material-input'
 import { UnderlineInput } from 'components/input/underline-input'
@@ -13,10 +14,7 @@ import { isString } from 'lodash-es'
 import { CategoryModel, TagModel } from 'models/category'
 import { PostModel } from 'models/post'
 import {
-  NDrawer,
-  NDrawerContent,
   NDynamicTags,
-  NForm,
   NFormItem,
   NInput,
   NSelect,
@@ -38,6 +36,7 @@ type PostReactiveType = {
   tags: string[]
   hide: boolean
   summary: string
+  allowComment: boolean
 
   id?: string
 }
@@ -60,6 +59,7 @@ const PostWriteView = defineComponent(() => {
     hide: false,
     summary: '',
 
+    allowComment: false,
     id: undefined,
   })
 
@@ -190,129 +190,121 @@ const PostWriteView = defineComponent(() => {
       />
 
       {/* Drawer  */}
-
-      <NDrawer
+      <TextBaseDrawer
         show={drawerShow.value}
-        width={450}
-        style={{ maxWidth: '90vw' }}
-        placement="right"
         onUpdateShow={(s) => {
           drawerShow.value = s
         }}
+        data={data}
       >
-        <NDrawerContent title="文章设定">
-          <NForm>
-            <NFormItem label="分类" required path="category">
-              <NSelect
-                placeholder="请选择"
-                value={data.categoryId}
-                onUpdateValue={(e) => {
-                  data.categoryId = e
-                }}
-                options={
-                  categoryStore.data.value?.map((i) => ({
-                    label: i.name,
-                    value: i.id,
-                    key: i.id,
-                  })) || []
-                }
-              ></NSelect>
-            </NFormItem>
+        <NFormItem label="分类" required path="category">
+          <NSelect
+            placeholder="请选择"
+            value={data.categoryId}
+            onUpdateValue={(e) => {
+              data.categoryId = e
+            }}
+            options={
+              categoryStore.data.value?.map((i) => ({
+                label: i.name,
+                value: i.id,
+                key: i.id,
+              })) || []
+            }
+          ></NSelect>
+        </NFormItem>
 
-            <NFormItem label="标签">
-              <NDynamicTags
-                value={data.tags}
-                onUpdateValue={(e) => {
-                  data.tags.length = 0
-                  data.tags.push(...e)
-                }}
-              >
-                {{
-                  input({ submit }) {
-                    const Component = defineComponent({
-                      setup() {
-                        const tags = ref([] as SelectMixedOption[])
-                        const loading = ref(false)
-                        const value = ref('')
-                        const selectRef = ref()
-                        onMounted(async () => {
-                          loading.value = true
-                          // HACK auto focus
-                          if (selectRef.value) {
-                            selectRef.value.$el.querySelector('input').focus()
-                          }
-                          const { data } =
-                            await RESTManager.api.categories.get<{
-                              data: TagModel[]
-                            }>({
-                              params: { type: 'Tag' },
-                            })
-                          tags.value = data.map((i) => ({
-                            label: i.name + ' (' + i.count + ')',
-                            value: i.name,
-                            key: i.name,
-                          }))
-                          loading.value = false
-                        })
-                        return () => (
-                          <NSelect
-                            ref={selectRef}
-                            size={'small'}
-                            value={value.value}
-                            clearable
-                            loading={loading.value}
-                            filterable
-                            tag
-                            options={tags.value}
-                            onUpdateValue={(e) => {
-                              void (value.value = e)
-                              submit(e)
-                            }}
-                          ></NSelect>
-                        )
-                      },
+        <NFormItem label="标签">
+          <NDynamicTags
+            value={data.tags}
+            onUpdateValue={(e) => {
+              data.tags.length = 0
+              data.tags.push(...e)
+            }}
+          >
+            {{
+              input({ submit }) {
+                const Component = defineComponent({
+                  setup() {
+                    const tags = ref([] as SelectMixedOption[])
+                    const loading = ref(false)
+                    const value = ref('')
+                    const selectRef = ref()
+                    onMounted(async () => {
+                      loading.value = true
+                      // HACK auto focus
+                      if (selectRef.value) {
+                        selectRef.value.$el.querySelector('input').focus()
+                      }
+                      const { data } = await RESTManager.api.categories.get<{
+                        data: TagModel[]
+                      }>({
+                        params: { type: 'Tag' },
+                      })
+                      tags.value = data.map((i) => ({
+                        label: i.name + ' (' + i.count + ')',
+                        value: i.name,
+                        key: i.name,
+                      }))
+                      loading.value = false
                     })
-
-                    return <Component />
+                    return () => (
+                      <NSelect
+                        ref={selectRef}
+                        size={'small'}
+                        value={value.value}
+                        clearable
+                        loading={loading.value}
+                        filterable
+                        tag
+                        options={tags.value}
+                        onUpdateValue={(e) => {
+                          void (value.value = e)
+                          submit(e)
+                        }}
+                      ></NSelect>
+                    )
                   },
-                }}
-              </NDynamicTags>
-            </NFormItem>
+                })
 
-            <NFormItem label="概要">
-              <NInput
-                placeholder="文章概要"
-                value={data.summary}
-                onInput={(e) => void (data.summary = e)}
-              />
-            </NFormItem>
+                return <Component />
+              },
+            }}
+          </NDynamicTags>
+        </NFormItem>
 
-            <NFormItem
-              label="隐藏"
-              labelWidth={100}
-              labelAlign="right"
-              labelPlacement="left"
-            >
-              <NSwitch
-                value={data.hide}
-                onUpdateValue={(e) => void (data.hide = e)}
-              ></NSwitch>
-            </NFormItem>
+        <NFormItem label="概要">
+          <NInput
+            placeholder="文章概要"
+            value={data.summary}
+            onInput={(e) => void (data.summary = e)}
+          />
+        </NFormItem>
 
-            <NFormItem
-              label="版权注明"
-              labelWidth={100}
-              labelAlign="right"
-              labelPlacement="left"
-            >
-              <NSwitch
-                value={data.copyright}
-                onUpdateValue={(e) => void (data.copyright = e)}
-              ></NSwitch>
-            </NFormItem>
-          </NForm>
-        </NDrawerContent>
-      </NDrawer>
+        <NFormItem
+          label="隐藏"
+          labelWidth={100}
+          labelAlign="right"
+          labelPlacement="left"
+        >
+          <NSwitch
+            value={data.hide}
+            onUpdateValue={(e) => void (data.hide = e)}
+          ></NSwitch>
+        </NFormItem>
+
+        <NFormItem
+          label="版权注明"
+          labelWidth={100}
+          labelAlign="right"
+          labelPlacement="left"
+        >
+          <NSwitch
+            value={data.copyright}
+            onUpdateValue={(e) => void (data.copyright = e)}
+          ></NSwitch>
+        </NFormItem>
+      </TextBaseDrawer>
     </ContentLayout>
   )
 })

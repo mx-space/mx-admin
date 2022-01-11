@@ -2,6 +2,7 @@ import SlidersH from '@vicons/fa/es/SlidersH'
 import TelegramPlane from '@vicons/fa/es/TelegramPlane'
 import { Icon } from '@vicons/utils'
 import { HeaderActionButton } from 'components/button/rounded-button'
+import { TextBaseDrawer } from 'components/drawer/text-base-drawer'
 import { EditorToggleWrapper } from 'components/editor/universal/toggle'
 import { MaterialInput } from 'components/input/material-input'
 import { GetLocationButton } from 'components/location/get-location-button'
@@ -19,10 +20,7 @@ import {
   NButton,
   NButtonGroup,
   NDatePicker,
-  NDrawer,
-  NDrawerContent,
   NDynamicTags,
-  NForm,
   NFormItem,
   NInput,
   NSelect,
@@ -56,6 +54,7 @@ type NoteReactiveType = {
   music: NoteMusicRecord[]
   location: null | string
   coordinates: null | Coordinate
+  allowComment: boolean
 
   id?: string
 }
@@ -88,6 +87,7 @@ const NoteWriteView = defineComponent(() => {
     weather: '',
     location: '',
     coordinates: null,
+    allowComment: false,
 
     id: undefined,
   })
@@ -253,216 +253,205 @@ const NoteWriteView = defineComponent(() => {
       />
 
       {/* Drawer  */}
-
-      <NDrawer
+      <TextBaseDrawer
+        data={data}
         show={drawerShow.value}
-        width={450}
-        style={{ maxWidth: '90vw' }}
-        placement="right"
         onUpdateShow={(s) => {
           drawerShow.value = s
         }}
       >
-        <NDrawerContent title="文章设定">
-          {/* @ts-ignore */}
-          <NForm name="note-options">
-            <NFormItem label="心情" required>
-              <NSelect
-                value={data.mood}
-                filterable
-                tag
-                options={MOOD_SET.map((i) => ({ label: i, value: i }))}
-                onUpdateValue={(e) => void (data.mood = e)}
-              ></NSelect>
-            </NFormItem>
-            <NFormItem label="天气" required>
-              <NSelect
-                value={data.weather}
-                filterable
-                tag
-                options={WEATHER_SET.map((i) => ({ label: i, value: i }))}
-                onUpdateValue={(e) => void (data.weather = e)}
-              ></NSelect>
-            </NFormItem>
+        <NFormItem label="心情" required>
+          <NSelect
+            value={data.mood}
+            filterable
+            tag
+            options={MOOD_SET.map((i) => ({ label: i, value: i }))}
+            onUpdateValue={(e) => void (data.mood = e)}
+          ></NSelect>
+        </NFormItem>
+        <NFormItem label="天气" required>
+          <NSelect
+            value={data.weather}
+            filterable
+            tag
+            options={WEATHER_SET.map((i) => ({ label: i, value: i }))}
+            onUpdateValue={(e) => void (data.weather = e)}
+          ></NSelect>
+        </NFormItem>
 
-            <NFormItem label="获取当前地址" labelPlacement="left">
-              <NSpace vertical>
-                <NButtonGroup>
-                  <GetLocationButton
-                    onChange={(amap, coordinates) => {
-                      data.location = amap.formattedAddress
-                      data.coordinates = {
-                        longitude: coordinates[0],
-                        latitude: coordinates[1],
-                      }
-                    }}
-                  />
-                  <SearchLocationButton
-                    placeholder={data.location}
-                    onChange={(locationName, coo) => {
-                      data.location = locationName
-                      data.coordinates = coo
-                    }}
-                  />
-
-                  <NButton
-                    round
-                    disabled={!data.location}
-                    onClick={() => {
-                      data.location = ''
-                      data.coordinates = null
-                    }}
-                  >
-                    清楚
-                  </NButton>
-                </NButtonGroup>
-
-                <NSpace vertical>
-                  <span>{data.location}</span>
-                  {data.coordinates && (
-                    <span>
-                      {data.coordinates.longitude}, {data.coordinates.latitude}
-                    </span>
-                  )}
-                </NSpace>
-              </NSpace>
-            </NFormItem>
-
-            <NFormItem
-              label="设定密码?"
-              labelAlign="right"
-              labelPlacement="left"
-            >
-              <NSwitch
-                value={enablePassword.value}
-                onUpdateValue={(e) => {
-                  if (e) {
-                    data.password = ''
-                  } else {
-                    data.password = null
+        <NFormItem label="获取当前地址" labelPlacement="left">
+          <NSpace vertical>
+            <NButtonGroup>
+              <GetLocationButton
+                onChange={(amap, coordinates) => {
+                  data.location = amap.formattedAddress
+                  data.coordinates = {
+                    longitude: coordinates[0],
+                    latitude: coordinates[1],
                   }
                 }}
               />
-            </NFormItem>
-            {enablePassword.value && (
-              <NFormItem label="输入密码">
-                <NInput
-                  disabled={!enablePassword.value}
-                  placeholder=""
-                  type="password"
-                  value={data.password}
-                  inputProps={{
-                    name: 'note-password',
-                    autocapitalize: 'off',
-                    autocomplete: 'new-password',
-                  }}
-                  onInput={(e) => void (data.password = e)}
-                ></NInput>
-              </NFormItem>
-            )}
-            <NFormItem
-              label="多久之后公开"
-              labelWidth={'50%'}
-              labelAlign="right"
-              labelPlacement="left"
-            >
-              <NDatePicker
-                type="datetime"
-                isDateDisabled={(ts: number) => +new Date(ts) - +new Date() < 0}
-                placeholder="选择时间"
-                // @ts-expect-error
-                value={data.secret}
-                onUpdateValue={(e) => {
-                  data.secret = e ? new Date(e) : null
+              <SearchLocationButton
+                placeholder={data.location}
+                onChange={(locationName, coo) => {
+                  data.location = locationName
+                  data.coordinates = coo
+                }}
+              />
+
+              <NButton
+                round
+                disabled={!data.location}
+                onClick={() => {
+                  data.location = ''
+                  data.coordinates = null
                 }}
               >
-                {{
-                  footer: () => {
-                    const date = new Date()
-                    return (
-                      <NSpace>
-                        <NButton
-                          round
-                          type="default"
-                          size="small"
-                          onClick={() => {
-                            data.secret = add(date, { days: 1 })
-                          }}
-                        >
-                          一天后
-                        </NButton>
-                        <NButton
-                          round
-                          type="default"
-                          size="small"
-                          onClick={() => {
-                            data.secret = add(date, { weeks: 1 })
-                          }}
-                        >
-                          一周后
-                        </NButton>
-                        <NButton
-                          round
-                          type="default"
-                          size="small"
-                          onClick={() => {
-                            data.secret = add(date, { days: 14 })
-                          }}
-                        >
-                          半个月后
-                        </NButton>
-                        <NButton
-                          round
-                          type="default"
-                          size="small"
-                          onClick={() => {
-                            data.secret = add(date, { months: 1 })
-                          }}
-                        >
-                          一个月后
-                        </NButton>
-                      </NSpace>
-                    )
-                  },
-                }}
-              </NDatePicker>
-            </NFormItem>
+                清楚
+              </NButton>
+            </NButtonGroup>
 
-            <NFormItem
-              label="隐藏"
-              labelWidth={'50%'}
-              labelAlign="right"
-              labelPlacement="left"
-            >
-              <NSwitch
-                value={data.hide}
-                onUpdateValue={(e) => void (data.hide = e)}
-              ></NSwitch>
-            </NFormItem>
+            <NSpace vertical>
+              <span>{data.location}</span>
+              {data.coordinates && (
+                <span>
+                  {data.coordinates.longitude}, {data.coordinates.latitude}
+                </span>
+              )}
+            </NSpace>
+          </NSpace>
+        </NFormItem>
 
-            <NFormItem
-              label="是否存在回忆, 日后需要重温?"
-              labelAlign="right"
-              labelPlacement="left"
-              labelWidth={'50%'}
-            >
-              <NSwitch
-                value={data.hasMemory}
-                onUpdateValue={(e) => void (data.hasMemory = e)}
-              ></NSwitch>
-            </NFormItem>
+        <NFormItem label="设定密码?" labelAlign="right" labelPlacement="left">
+          <NSwitch
+            value={enablePassword.value}
+            onUpdateValue={(e) => {
+              if (e) {
+                data.password = ''
+              } else {
+                data.password = null
+              }
+            }}
+          />
+        </NFormItem>
+        {enablePassword.value && (
+          <NFormItem label="输入密码">
+            <NInput
+              disabled={!enablePassword.value}
+              placeholder=""
+              type="password"
+              value={data.password}
+              inputProps={{
+                name: 'note-password',
+                autocapitalize: 'off',
+                autocomplete: 'new-password',
+              }}
+              onInput={(e) => void (data.password = e)}
+            ></NInput>
+          </NFormItem>
+        )}
+        <NFormItem
+          label="多久之后公开"
+          labelWidth={'50%'}
+          labelAlign="right"
+          labelPlacement="left"
+        >
+          <NDatePicker
+            type="datetime"
+            isDateDisabled={(ts: number) => +new Date(ts) - +new Date() < 0}
+            placeholder="选择时间"
+            // @ts-expect-error
+            value={data.secret}
+            onUpdateValue={(e) => {
+              data.secret = e ? new Date(e) : null
+            }}
+          >
+            {{
+              footer: () => {
+                const date = new Date()
+                return (
+                  <NSpace>
+                    <NButton
+                      round
+                      type="default"
+                      size="small"
+                      onClick={() => {
+                        data.secret = add(date, { days: 1 })
+                      }}
+                    >
+                      一天后
+                    </NButton>
+                    <NButton
+                      round
+                      type="default"
+                      size="small"
+                      onClick={() => {
+                        data.secret = add(date, { weeks: 1 })
+                      }}
+                    >
+                      一周后
+                    </NButton>
+                    <NButton
+                      round
+                      type="default"
+                      size="small"
+                      onClick={() => {
+                        data.secret = add(date, { days: 14 })
+                      }}
+                    >
+                      半个月后
+                    </NButton>
+                    <NButton
+                      round
+                      type="default"
+                      size="small"
+                      onClick={() => {
+                        data.secret = add(date, { months: 1 })
+                      }}
+                    >
+                      一个月后
+                    </NButton>
+                  </NSpace>
+                )
+              },
+            }}
+          </NDatePicker>
+        </NFormItem>
 
-            <NFormItem label="音乐 (网易云 ID)">
-              <NDynamicTags
-                value={data.music.map((i) => i.id)}
-                onUpdateValue={(e) => {
-                  data.music = e.map((id) => ({ type: 'netease', id }))
-                }}
-              ></NDynamicTags>
-            </NFormItem>
-          </NForm>
-        </NDrawerContent>
-      </NDrawer>
+        <NFormItem
+          label="隐藏"
+          labelWidth={'50%'}
+          labelAlign="right"
+          labelPlacement="left"
+        >
+          <NSwitch
+            value={data.hide}
+            onUpdateValue={(e) => void (data.hide = e)}
+          ></NSwitch>
+        </NFormItem>
+
+        <NFormItem
+          label="是否存在回忆, 日后需要重温?"
+          labelAlign="right"
+          labelPlacement="left"
+          labelWidth={'50%'}
+        >
+          <NSwitch
+            value={data.hasMemory}
+            onUpdateValue={(e) => void (data.hasMemory = e)}
+          ></NSwitch>
+        </NFormItem>
+
+        <NFormItem label="音乐 (网易云 ID)">
+          <NDynamicTags
+            value={data.music.map((i) => i.id)}
+            onUpdateValue={(e) => {
+              data.music = e.map((id) => ({ type: 'netease', id }))
+            }}
+          ></NDynamicTags>
+        </NFormItem>
+      </TextBaseDrawer>
+
       {/* Drawer END */}
     </ContentLayout>
   )

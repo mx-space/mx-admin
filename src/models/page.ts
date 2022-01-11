@@ -8,6 +8,7 @@ export enum EnumPageType {
 export interface PageModel {
   created: string
   modified: string
+  allowComment: boolean
   id: string
   /** Slug */
   slug: string

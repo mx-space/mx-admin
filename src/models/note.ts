@@ -1,6 +1,7 @@
 export interface NoteModel {
   id: string
   hide: boolean
+  allowComment: boolean
   count: {
     read: number
     like: number
