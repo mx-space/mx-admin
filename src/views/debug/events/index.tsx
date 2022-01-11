@@ -1,31 +1,71 @@
-import { useAsyncLoadMonaco } from 'hooks/use-async-monaco'
+import { useLocalStorage } from '@vueuse/core'
+import { useAsyncLoadMonaco, usePropsValueToRef } from 'hooks/use-async-monaco'
 import { ContentLayout } from 'layouts/content'
 import { TwoColGridLayout } from 'layouts/two-col'
 import { NButton, NForm, NFormItem, NGi, NSelect } from 'naive-ui'
 import { EventTypes } from 'socket/types'
 import { RESTManager } from 'utils'
 
+const generateFakeData = (type: string) => {
+  switch (type) {
+    case 'objectId':
+      return ((m = Math, d = Date, h = 16, s = (s) => m.floor(s).toString(h)) =>
+        s(d.now() / 1000) +
+        ' '.repeat(h).replace(/./g, () => s(m.random() * h)))()
+    case 'now':
+      return new Date().toISOString()
+    case 'randomtext':
+      return btoa(Math.random().toString()).substring(10, 5)
+    case 'randomnumber':
+      return Math.floor(Math.random() * 10000)
+    default:
+      return '{{' + type + '}}'
+  }
+}
 export default defineComponent({
   setup() {
     const event = ref('')
-    const payload = ref('')
+    const payload = ref<Partial<Record<EventTypes, string>>>(
+      JSON.parse(localStorage.getItem('debug-event') || '{}'),
+    )
     const type = ref<'web' | 'admin' | 'all'>('web')
+
+    useLocalStorage('debug-event', payload)
+    const value = usePropsValueToRef({ value: payload[event.value] })
     const editorRef = ref()
-    useAsyncLoadMonaco(
+    watch(
+      () => event.value,
+      (eventName) => {
+        monaco.editor.setValue(payload.value[eventName] || '')
+      },
+    )
+    const monaco = useAsyncLoadMonaco(
       editorRef,
-      payload,
+      value,
       (str) => {
-        payload.value = str
+        payload.value = {
+          ...payload.value,
+          [event.value]: str,
+        }
       },
       { language: 'json' },
     )
     const handleSend = async () => {
+      const replaceText = payload.value[event.value].replace(
+        /(\{\{(.*?)\}\})/g,
+        // @ts-ignore
+        (match, p1, p2) => {
+          return generateFakeData(p2)
+        },
+      )
+      console.log(replaceText)
+
       RESTManager.api.debug.events.post({
         params: {
           type: type.value,
           event: event.value,
         },
-        data: JSON.parse(payload.value),
+        data: JSON.parse(replaceText),
       })
     }
     return () => (

@@ -44,12 +44,9 @@ export const Sidebar = defineComponent({
     watchEffect(() => {
       const version = app.app.value?.version
       if (version === 'dev') {
-        // menus.value = menus.value.concat()
-        // buildMenuModel()
         const route = router
           .getRoutes()
           .find((item) => item.path === '/debug') as any
-        console.log(buildMenuModel(route, false, ''))
 
         menus.value.unshift(buildMenuModel(route, false, ''))
       }
