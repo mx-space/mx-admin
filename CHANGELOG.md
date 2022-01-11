@@ -3,9 +3,27 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Bug Fixes
+
+- Add missing event type
+
+### Features
+
+- Add debug fake data
+
+### Refactor
+
+- Extract drawer to univerial comp
+
+## [3.11.6] - 2022-01-11
+
 ### Features
 
 - Debug console
+
+### Release
+
+- V3.11.6
 
 ## [3.11.5] - 2022-01-10
 
