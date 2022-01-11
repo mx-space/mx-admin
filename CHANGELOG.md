@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Features
+
+- Debug console
+
+## [3.11.5] - 2022-01-10
+
 ### Bug Fixes
 
 - Snippet post data
@@ -11,6 +17,10 @@ All notable changes to this project will be documented in this file.
 ### Miscellaneous Tasks
 
 - Extract comp
+
+### Release
+
+- V3.11.5
 
 ## [3.11.4] - 2022-01-09
 
