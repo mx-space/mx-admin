@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Comment nav to post path use category slug
+
+## [3.11.7] - 2022-01-11
+
+### Bug Fixes
+
 - Add missing event type
 
 ### Features
@@ -14,6 +20,10 @@ All notable changes to this project will be documented in this file.
 ### Refactor
 
 - Extract drawer to univerial comp
+
+### Release
+
+- V3.11.7
 
 ## [3.11.6] - 2022-01-11
 
