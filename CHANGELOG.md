@@ -5,7 +5,21 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Default allow comment switch
+
+### Miscellaneous Tasks
+
+- Remove field
+
+## [3.11.8] - 2022-01-13
+
+### Bug Fixes
+
 - Comment nav to post path use category slug
+
+### Release
+
+- V3.11.8
 
 ## [3.11.7] - 2022-01-11
 
