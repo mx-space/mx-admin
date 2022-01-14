@@ -4,9 +4,6 @@
   "bump": {
     "before": [
       "git-cliff > CHANGELOG.md"
-    ],
-    "after": [
-      "sh ./create-tags.sh"
     ]
   },
   "scripts": {
