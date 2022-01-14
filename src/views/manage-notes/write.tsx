@@ -87,7 +87,7 @@ const NoteWriteView = defineComponent(() => {
     weather: '',
     location: '',
     coordinates: null,
-    allowComment: false,
+    allowComment: true,
 
     id: undefined,
   })

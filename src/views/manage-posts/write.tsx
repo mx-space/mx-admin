@@ -59,7 +59,7 @@ const PostWriteView = defineComponent(() => {
     hide: false,
     summary: '',
 
-    allowComment: false,
+    allowComment: true,
     id: undefined,
   })
 
@@ -97,6 +97,12 @@ const PostWriteView = defineComponent(() => {
   const message = useMessage()
   const router = useRouter()
   const handleSubmit = async () => {
+    const payload = {
+      ...data,
+      categoryId: category.value.id,
+      summary:
+        data.summary && data.summary.trim() != '' ? data.summary.trim() : null,
+    }
     if (id.value) {
       // update
       if (!isString(id.value)) {
@@ -104,22 +110,13 @@ const PostWriteView = defineComponent(() => {
       }
       const $id = id.value as string
       await RESTManager.api.posts($id).put({
-        data: {
-          ...toRaw(data),
-          summary:
-            data.summary && data.summary.trim() != ''
-              ? data.summary.trim()
-              : null,
-        },
+        data: payload,
       })
       message.success('修改成功')
     } else {
       // create
       await RESTManager.api.posts.post({
-        data: {
-          ...toRaw(data),
-          summary: data.summary.trim() == '' ? null : data.summary.trim(),
-        },
+        data: payload,
       })
       message.success('发布成功')
     }
@@ -200,7 +197,7 @@ const PostWriteView = defineComponent(() => {
         <NFormItem label="分类" required path="category">
           <NSelect
             placeholder="请选择"
-            value={data.categoryId}
+            value={category.value.id}
             onUpdateValue={(e) => {
               data.categoryId = e
             }}
