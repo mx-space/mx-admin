@@ -1,18 +1,17 @@
 import Avatar from 'components/avatar'
 import { IpInfoPopover } from 'components/ip-info'
+import { KVEditor } from 'components/kv-editor'
 import { RelativeTime } from 'components/time/relative-time'
 import { socialKeyMap } from 'constants/social'
 import { cloneDeep, isEmpty } from 'lodash-es'
 import { UserModel } from 'models/user'
 import {
   NButton,
-  NDynamicInput,
   NForm,
   NFormItem,
   NGi,
   NGrid,
   NInput,
-  NSelect,
   NText,
   useMessage,
 } from 'naive-ui'
@@ -28,28 +27,9 @@ export const TabUser = defineComponent(() => {
     const response = (await RESTManager.api.master.get()) as UserModel
     data.value = response
 
-    const social = Object.entries(response.socialIds).map(([key, value]) => {
-      return {
-        platform: key,
-        id: value,
-      }
-    })
-    socialRecord.value = social
-
     origin = { ...response }
   }
-  const socialRecord = ref<{ platform: string; id: string | number }[]>([])
-  watch(
-    () => socialRecord.value,
-    (newValue) => {
-      const socialIds = newValue.reduce((acc, cur) => {
-        acc[cur.platform] = cur.id
-        return acc
-      }, {} as { [key: string]: string | number })
-      data.value.socialIds = socialIds
-    },
-    { deep: true },
-  )
+
   onMounted(async () => {
     await fetchMaster()
   })
@@ -189,52 +169,15 @@ export const TabUser = defineComponent(() => {
             </NFormItem>
 
             <NFormItem label="社交平台 ID 录入">
-              <NDynamicInput
-                value={socialRecord.value}
-                onUpdateValue={(e: any[]) => {
-                  // FIXME: naive ui will gave a  null value on insert pos
-                  socialRecord.value = (() => {
-                    const nullIdx = e.findIndex((i) => i === null)
-                    if (nullIdx !== -1) {
-                      e.splice(nullIdx, 1, { platform: '', id: '' })
-                    }
-
-                    return e
-                  })()
+              <KVEditor
+                options={Object.keys(socialKeyMap).map((key) => {
+                  return { label: key, value: socialKeyMap[key] }
+                })}
+                onChange={(newValue) => {
+                  data.value.socialIds = newValue
                 }}
-              >
-                {{
-                  default(props: {
-                    index: number
-                    value: typeof socialRecord.value[0]
-                  }) {
-                    return (
-                      <div class="flex items-center w-full">
-                        {/* <NInput placeholder={}></NInput> */}
-                        <NSelect
-                          class="mr-4"
-                          filterable
-                          tag
-                          placeholder="请选择"
-                          value={props.value.platform}
-                          onUpdateValue={(platform) => {
-                            props.value.platform = platform
-                          }}
-                          options={Object.keys(socialKeyMap).map((key) => {
-                            return { label: key, value: socialKeyMap[key] }
-                          })}
-                        ></NSelect>
-                        <NInput
-                          value={props.value.id.toString()}
-                          onUpdateValue={(id) => {
-                            props.value.id = id
-                          }}
-                        ></NInput>
-                      </div>
-                    )
-                  },
-                }}
-              </NDynamicInput>
+                value={data.value.socialIds || {}}
+              ></KVEditor>
             </NFormItem>
           </NForm>
         </NGi>

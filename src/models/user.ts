@@ -5,7 +5,7 @@ export interface UserModel {
   mail: string
   url: string
   name: string
-  socialIds: Record<string, string | number>
+  socialIds?: Record<string, string | number>
   username: string
   created: Date
   modified: Date
