@@ -8,7 +8,7 @@
   }
   & .header-blur {
     @apply absolute inset-0 left-0 bottom-[2.5rem];
-    backdrop-filter: blur(25px) saturate(150%) brightness(1.1);
+    background-color: var(--n-color);
 
     @screen phone {
       & {
