@@ -6,10 +6,19 @@ All notable changes to this project will be documented in this file.
 ### Bug Fixes
 
 - Default allow comment switch
+- Adjust header blur
 
 ### Miscellaneous Tasks
 
 - Remove field
+
+### Refactor
+
+- Extract kv-editor as component
+
+### Release
+
+- 3.11.9
 
 ## [3.11.8] - 2022-01-13
 
