@@ -64,7 +64,7 @@ specifiers:
   vue: 3.2.26
   vue-eslint-parser: 8.0.1
   vue-router: 4.0.12
-  windicss: 3.4.2
+  windicss: 3.4.3
   xterm: 4.16.0
   xterm-addon-fit: 0.5.0
 
@@ -136,7 +136,7 @@ devDependencies:
   vite-plugin-checker: 0.3.4_vite@2.7.10
   vite-tsconfig-paths: 3.3.17_vite@2.7.10
   vue-eslint-parser: 8.0.1_eslint@8.6.0
-  windicss: 3.4.2
+  windicss: 3.4.3
 
 packages:
 
@@ -3724,8 +3724,8 @@ packages:
       isexe: 2.0.0
     dev: true
 
-  /windicss/3.4.2:
-    resolution: {integrity: sha512-YieqWaXiwPu0JJoB7z03RXdjZjQQJtMZAeXUXu/j3JXSMhIgV/2rUXu4Q7QrworRlbaASZlFhxjnL/78aAty+Q==}
+  /windicss/3.4.3:
+    resolution: {integrity: sha512-UnugThsvEgy8RsPm4/B5DYMCAqvZzD6yWU7Anh+f07t5RSJ8zvmAylGLbXrHPJEmCKzo2Mf+fOUvISH7IJqM3A==}
     engines: {node: '>= 12'}
     hasBin: true
     dev: true
