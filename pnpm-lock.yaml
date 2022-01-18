@@ -1,7 +1,7 @@
 lockfileVersion: 5.3
 
 specifiers:
-  '@antv/g2': 4.1.37
+  '@antv/g2': 4.1.40
   '@codemirror/commands': 0.19.6
   '@codemirror/gutter': 0.19.9
   '@codemirror/highlight': 0.19.6
@@ -69,7 +69,7 @@ specifiers:
   xterm-addon-fit: 0.5.0
 
 dependencies:
-  '@antv/g2': 4.1.37
+  '@antv/g2': 4.1.40
   '@codemirror/commands': 0.19.6
   '@codemirror/gutter': 0.19.9
   '@codemirror/highlight': 0.19.6
@@ -267,8 +267,8 @@ packages:
       tslib: 2.3.1
     dev: false
 
-  /@antv/g2/4.1.37:
-    resolution: {integrity: sha512-0zXF6Z8MkRo9DukOq29KKIcWzhWZA42xUYC+okBBl8VWuVh46pJ2LCMGjUGQh6k0PLnCGVJOp/Db7fWtqWgWeA==}
+  /@antv/g2/4.1.40:
+    resolution: {integrity: sha512-4XRWbH2rLCsIherJgwVPU6Wm19QGAcrK6T6+MNoao35E0MSM0/o9wDlaK2XHFzyEJkk8vN3SRJX2/aL8iF7Ccw==}
     dependencies:
       '@antv/adjust': 0.2.3
       '@antv/attr': 0.3.2
