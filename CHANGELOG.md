@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Remove header bg
+- Update dependency @antv/g2 to v4.1.40
+- Update dependency vite-plugin-windicss to v1.6.3
+
+### Miscellaneous Tasks
+
+- Update typescript-eslint monorepo to v5.10.0
+- Update dependency windicss to v3.4.3
+- Update dependency rollup-plugin-visualizer to v5.5.4
+- Update dependency unplugin-auto-import to v0.5.11
+- Update deps
+
+## [3.11.10] - 2022-01-15
+
+### Bug Fixes
+
 - Default allow comment switch
 - Adjust header blur
 
@@ -19,6 +35,7 @@ All notable changes to this project will be documented in this file.
 ### Release
 
 - 3.11.9
+- V3.11.10
 
 ## [3.11.8] - 2022-01-13
 
