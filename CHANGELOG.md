@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Features
+
+- Fetch project from github
+
+## [3.11.11] - 2022-01-18
+
 ### Bug Fixes
 
 - Remove header bg
@@ -16,6 +22,10 @@ All notable changes to this project will be documented in this file.
 - Update dependency rollup-plugin-visualizer to v5.5.4
 - Update dependency unplugin-auto-import to v0.5.11
 - Update deps
+
+### Release
+
+- V3.11.11
 
 ## [3.11.10] - 2022-01-15
 
