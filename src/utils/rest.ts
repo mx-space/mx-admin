@@ -1,4 +1,5 @@
 import camelcaseKeys from 'camelcase-keys'
+import { API_URL } from 'constants/env'
 import { isPlainObject } from 'lodash-es'
 import {
   extend,
@@ -16,10 +17,7 @@ class RESTManagerStatic {
   }
 
   get endpoint() {
-    const url =
-      window.injectData.BASE_API ||
-      (import.meta.env.VITE_APP_BASE_API as string)
-    return url.endsWith('/') ? url.slice(0, -1) : url
+    return API_URL
   }
 
   constructor() {

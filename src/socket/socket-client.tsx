@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { GATEWAY_URL } from 'constants/env'
 import { NButton, NSpace } from 'naive-ui'
 import { router } from 'router'
 import io from 'socket.io-client'
@@ -44,21 +45,16 @@ export class SocketClient {
     if (!token) {
       return
     }
-    this.socket = io(
-      window.injectData.GATEWAY ||
-        (import.meta.env.VITE_APP_GATEWAY || 'http://localhost:2333') +
-          '/admin',
-      {
-        timeout: 10000,
-        reconnectionDelay: 3000,
-        autoConnect: false,
-        reconnectionAttempts: 3,
-        transports: ['websocket'],
-        query: {
-          token,
-        },
+    this.socket = io(GATEWAY_URL + '/admin', {
+      timeout: 10000,
+      reconnectionDelay: 3000,
+      autoConnect: false,
+      reconnectionAttempts: 3,
+      transports: ['websocket'],
+      query: {
+        token,
       },
-    )
+    })
 
     this.socket.open()
     this.socket.on(

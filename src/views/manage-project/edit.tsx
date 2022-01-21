@@ -112,11 +112,22 @@ const EditProjectView = defineComponent({
       readme?: string | null,
     ) => {
       const { html_url, homepage, description } = data
+
+      const pickImagesFromMarkdown = (text: string) => {
+        const reg = /(?<=!\[.*\]\()(.+)(?=\))/g
+        const images = [] as string[]
+        for (const r of text.matchAll(reg)) {
+          images.push(r[0])
+        }
+        return images
+      }
+
       Object.assign<ProjectModel, Partial<ProjectModel>>(project, {
         description,
 
         projectUrl: html_url,
         previewUrl: homepage,
+        images: pickImagesFromMarkdown(readme || ''),
 
         name: data.name,
         text: readme || '',
