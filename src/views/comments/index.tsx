@@ -78,20 +78,27 @@ const ManageComment = defineComponent(() => {
   const replyText = ref('')
   const replyInputRef = ref<typeof NInput>()
 
+  const requestLoading = ref(false)
+
   const onReplySubmit = async () => {
     if (!replyComment.value) {
       return
     }
-    await RESTManager.api.comments.master.reply(replyComment.value.id).post({
-      data: {
-        text: replyText.value,
-      },
-    })
-    replyDialogShow.value = false
-    replyComment.value = null
-    message.success('回复成功啦~')
-    replyText.value = ''
-    await fetchData()
+    try {
+      requestLoading.value = true
+      await RESTManager.api.comments.master.reply(replyComment.value.id).post({
+        data: {
+          text: replyText.value,
+        },
+      })
+      replyDialogShow.value = false
+      replyComment.value = null
+      message.success('回复成功啦~')
+      replyText.value = ''
+      await fetchData()
+    } finally {
+      requestLoading.value = false
+    }
   }
 
   const fetchData = fetchDataFn
@@ -278,7 +285,7 @@ const ManageComment = defineComponent(() => {
                   }}
                 </NPopconfirm>
               </div>
-            )}{' '}
+            )}
           </NSpace>
         )
       },
@@ -476,7 +483,12 @@ const ManageComment = defineComponent(() => {
                   }}
                 </NPopover>
                 <NSpace size={12} align="center" inline>
-                  <NButton type="success" onClick={onReplySubmit} round>
+                  <NButton
+                    type="success"
+                    onClick={onReplySubmit}
+                    round
+                    loading={requestLoading.value}
+                  >
                     确定
                   </NButton>
                   <NButton

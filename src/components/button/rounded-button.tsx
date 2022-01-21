@@ -6,26 +6,32 @@ import { RouteLocationRaw, RouterLink } from 'vue-router'
 export type ButtonType = PropType<
   'primary' | 'info' | 'success' | 'warning' | 'error'
 >
-export const RoundedButton = defineComponent({
-  props: {
-    variant: {
-      type: String as ButtonType,
-      default: 'primary',
-    },
-    onClick: {
-      type: Function as any as PropType<
-        JSX.IntrinsicElements['button']['onClick'] | undefined
-      >,
-    },
-    disabled: {
-      type: Boolean,
-    },
+
+export const baseButtonProps = {
+  variant: {
+    type: String as ButtonType,
+    default: 'primary',
   },
+  color: {
+    type: String,
+  },
+  onClick: {
+    type: Function as any as PropType<
+      JSX.IntrinsicElements['button']['onClick'] | undefined
+    >,
+  },
+  disabled: {
+    type: Boolean,
+  },
+}
+export const RoundedButton = defineComponent({
+  props: baseButtonProps,
   setup(props, { slots }) {
     return () => {
       return (
         <NButton
           type={props.variant}
+          color={props.color}
           circle
           onClick={props.onClick}
           disabled={props.disabled}
@@ -39,26 +45,16 @@ export const RoundedButton = defineComponent({
 
 export const HeaderActionButton = defineComponent({
   props: {
+    ...baseButtonProps,
     to: {
       type: [Object, String] as PropType<RouteLocationRaw>,
     },
-    variant: {
-      type: String as ButtonType,
+    name: {
+      type: String,
     },
     icon: {
       type: Object as PropType<JSX.Element>,
       required: true,
-    },
-    onClick: {
-      type: Function as any as PropType<
-        JSX.IntrinsicElements['button']['onClick']
-      >,
-    },
-    disabled: {
-      type: Boolean,
-    },
-    name: {
-      type: String,
     },
   },
   setup(props) {
@@ -68,6 +64,7 @@ export const HeaderActionButton = defineComponent({
         class="shadow"
         onClick={props.onClick}
         disabled={props.disabled}
+        color={props.color}
       >
         <Icon size="16">{props.icon}</Icon>
       </RoundedButton>

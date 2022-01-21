@@ -1,6 +1,6 @@
 import ExternalLink from '@vicons/tabler/es/ExternalLink'
 import { Icon } from '@vicons/utils'
-import { Magnify } from 'components/icons/magnify'
+import { MagnifyIcon } from 'components/icons'
 import { ArticlePreview } from 'components/preview'
 import { WEB_URL } from 'constants/env'
 import { useInjector } from 'hooks/use-deps-injection'
@@ -76,7 +76,7 @@ export const TableTitleLink = defineComponent({
               trigger() {
                 return (
                   <NButton text type="primary">
-                    <Magnify />
+                    <MagnifyIcon />
                   </NButton>
                 )
               },

@@ -7,7 +7,7 @@ import { EditorToggleWrapper } from 'components/editor/universal/toggle'
 import { MaterialInput } from 'components/input/material-input'
 import { GetLocationButton } from 'components/location/get-location-button'
 import { SearchLocationButton } from 'components/location/search-button'
-import { ParseContentButton } from 'components/logic/parse-button'
+import { ParseContentButton } from 'components/special-button/parse-content'
 import { WEB_URL } from 'constants/env'
 import { MOOD_SET, WEATHER_SET } from 'constants/note'
 import { add } from 'date-fns/esm'
@@ -431,7 +431,7 @@ const NoteWriteView = defineComponent(() => {
         </NFormItem>
 
         <NFormItem
-          label="是否存在回忆, 日后需要重温?"
+          label="标记为存在回忆项"
           labelAlign="right"
           labelPlacement="left"
           labelWidth={'50%'}

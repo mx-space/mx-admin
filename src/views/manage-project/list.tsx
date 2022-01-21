@@ -1,5 +1,4 @@
-import Add12Filled from '@vicons/fluent/es/Add12Filled'
-import Delete16Regular from '@vicons/fluent/es/Delete16Regular'
+import { AddIcon, DeleteIcon } from 'components/icons'
 import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
 import { useTable } from 'hooks/use-table'
@@ -182,12 +181,9 @@ const ManageProjectView = defineComponent({
                       },
                     })
                   }}
-                  icon={<Delete16Regular />}
+                  icon={<DeleteIcon />}
                 />
-                <HeaderActionButton
-                  to={'/projects/edit'}
-                  icon={<Add12Filled />}
-                />
+                <HeaderActionButton to={'/projects/edit'} icon={<AddIcon />} />
               </>
             ),
             default: () => <DataTable />,

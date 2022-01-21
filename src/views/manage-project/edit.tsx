@@ -1,6 +1,8 @@
-import TelegramPlane from '@vicons/fa/es/TelegramPlane'
 import { HeaderActionButton } from 'components/button/rounded-button'
-import { MonacoEditor } from 'components/editor/monaco/monaco'
+import { EditorToggleWrapper } from 'components/editor/universal/toggle'
+import { SendIcon } from 'components/icons'
+import { FetchGithubRepoButton } from 'components/special-button/fetch-github-repo'
+import { IGithubRepo } from 'external/api/github'
 import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
 import { ContentLayout } from 'layouts/content'
 import { isString, transform } from 'lodash-es'
@@ -19,6 +21,8 @@ type ProjectReactiveType = {
   description: string
   avatar: string
   text: string
+
+  id: undefined | string
 }
 
 const EditProjectView = defineComponent({
@@ -35,11 +39,13 @@ const EditProjectView = defineComponent({
       description: '',
       avatar: '',
       text: '',
+
+      id: undefined,
     })
 
     const parsePayloadIntoReactiveData = (payload: ProjectModel) =>
-      useParsePayloadIntoData(data)(payload)
-    const data = reactive<ProjectReactiveType>(resetReactive())
+      useParsePayloadIntoData(project)(payload)
+    const project = reactive<ProjectReactiveType>(resetReactive())
     const id = computed(() => route.query.id)
 
     onMounted(async () => {
@@ -55,13 +61,13 @@ const EditProjectView = defineComponent({
     const handleSubmit = async () => {
       const parseDataToPayload = (): { [key in keyof ProjectModel]?: any } => {
         try {
-          if (!data.text || data.text.trim().length == 0) {
+          if (!project.text || project.text.trim().length == 0) {
             throw '内容为空'
           }
 
           return {
             ...transform(
-              toRaw(data),
+              toRaw(project),
               (res, i, k) => (
                 (res[k] =
                   typeof i == 'undefined'
@@ -72,7 +78,7 @@ const EditProjectView = defineComponent({
                 res
               ),
             ),
-            text: data.text.trim(),
+            text: project.text.trim(),
           }
         } catch (e) {
           message.error(e as any)
@@ -101,112 +107,108 @@ const EditProjectView = defineComponent({
       router.push({ name: RouteName.ListProject })
     }
 
+    const handleParseFromGithub = (
+      data: IGithubRepo,
+      readme?: string | null,
+    ) => {
+      const { html_url, homepage, description } = data
+      Object.assign<ProjectModel, Partial<ProjectModel>>(project, {
+        description,
+
+        projectUrl: html_url,
+        previewUrl: homepage,
+
+        name: data.name,
+        text: readme || '',
+      })
+    }
+
     return () => (
       <ContentLayout
         actionsElement={
           <Fragment>
+            <FetchGithubRepoButton
+              onData={handleParseFromGithub}
+              defaultValue={project.projectUrl}
+            />
             <HeaderActionButton
               variant="primary"
               onClick={handleSubmit}
-              icon={<TelegramPlane></TelegramPlane>}
+              icon={<SendIcon />}
             ></HeaderActionButton>
           </Fragment>
         }
       >
-        <NForm>
-          <NFormItem
-            label="项目名称"
-            required
-            labelPlacement="left"
-            labelStyle={{ width: '6rem' }}
-          >
+        <NForm labelWidth="7rem" labelPlacement="left" labelAlign="left">
+          <NFormItem label="项目名称" required>
             <NInput
               autofocus
               placeholder=""
-              value={data.name}
-              onInput={(e) => void (data.name = e)}
+              value={project.name}
+              onInput={(e) => void (project.name = e)}
             ></NInput>
           </NFormItem>
 
-          <NFormItem
-            label="文档地址"
-            labelPlacement="left"
-            labelStyle={{ width: '6rem' }}
-          >
+          <NFormItem label="文档地址">
             <NInput
               placeholder=""
-              value={data.docUrl}
-              onInput={(e) => void (data.docUrl = e)}
+              value={project.docUrl}
+              onInput={(e) => void (project.docUrl = e)}
             ></NInput>
           </NFormItem>
 
-          <NFormItem
-            label="预览地址"
-            labelPlacement="left"
-            labelStyle={{ width: '6rem' }}
-          >
+          <NFormItem label="预览地址">
             <NInput
               placeholder=""
-              value={data.previewUrl}
-              onInput={(e) => void (data.previewUrl = e)}
+              value={project.previewUrl}
+              onInput={(e) => void (project.previewUrl = e)}
             ></NInput>
           </NFormItem>
 
-          <NFormItem
-            label="项目地址"
-            labelPlacement="left"
-            labelStyle={{ width: '6rem' }}
-          >
+          <NFormItem label="项目地址">
             <NInput
               placeholder=""
-              value={data.projectUrl}
-              onInput={(e) => void (data.projectUrl = e)}
+              value={project.projectUrl}
+              onInput={(e) => void (project.projectUrl = e)}
             ></NInput>
           </NFormItem>
 
-          <NFormItem
-            label="项目描述"
-            required
-            labelPlacement="left"
-            labelStyle={{ width: '6rem' }}
-          >
+          <NFormItem label="项目描述" required>
             <NInput
               placeholder=""
-              value={data.description}
-              onInput={(e) => void (data.description = e)}
+              value={project.description}
+              onInput={(e) => void (project.description = e)}
             ></NInput>
           </NFormItem>
 
-          <NFormItem
-            label="项目图标"
-            labelPlacement="left"
-            labelStyle={{ width: '6rem' }}
-          >
+          <NFormItem label="项目图标">
             <NInput
               placeholder=""
-              value={data.avatar}
-              onInput={(e) => void (data.avatar = e)}
+              value={project.avatar}
+              onInput={(e) => void (project.avatar = e)}
             ></NInput>
           </NFormItem>
 
-          <NFormItem
-            label="项目图标"
-            labelPlacement="left"
-            labelStyle={{ width: '6rem' }}
-          >
+          <NFormItem label="预览图片">
             <NDynamicTags
-              value={data.images}
-              onUpdateValue={(e) => void (data.images = e)}
+              round
+              value={project.images}
+              onUpdateValue={(e) => void (project.images = e)}
             ></NDynamicTags>
           </NFormItem>
 
-          <NFormItem label="正文" required labelPlacement="left">
-            <MonacoEditor
-              onChange={(e) => void (data.text = e)}
-              text={data.text}
-              class="h-40 w-full"
-              unSaveConfirm={false}
-            />
+          <NFormItem label="正文" required>
+            <div class="w-full">
+              <EditorToggleWrapper
+                unSaveConfirm={false}
+                class="h-80 w-full"
+                loading={!!(id.value && !project.id)}
+                onChange={(v) => {
+                  project.text = v
+                }}
+                text={project.text}
+              />
+            </div>
           </NFormItem>
         </NForm>
       </ContentLayout>

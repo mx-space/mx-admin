@@ -25,6 +25,7 @@ const _MonacoEditor = defineComponent({
   },
   setup(props) {
     const editorRef = ref<HTMLDivElement>()
+    const loaded = ref(false)
     let editor: Editor.IStandaloneCodeEditor
     const { isDark } = useInjector(UIStore)
     onMounted(async () => {
@@ -32,6 +33,7 @@ const _MonacoEditor = defineComponent({
         return
       }
       editor = await initEditor(editorRef.value, props.text, isDark)
+      loaded.value = true
       ;['onKeyDown', 'onDidPaste', 'onDidBlurEditorText'].forEach(
         (eventName) => {
           // @ts-ignore
@@ -71,7 +73,7 @@ const _MonacoEditor = defineComponent({
         class={clsx('editor relative overflow-hidden', styles.editor)}
         ref={editorRef}
       >
-        <CenterSpin />
+        {loaded.value ? null : <CenterSpin />}
       </div>
     )
   },
