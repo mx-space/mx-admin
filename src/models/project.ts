@@ -1,7 +1,7 @@
 import { Pager } from './base'
 
 export interface ProjectModel {
-  id?: string
+  id: string
   name: string
   previewUrl?: string
   docUrl?: string

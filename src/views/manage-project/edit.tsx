@@ -122,7 +122,7 @@ const EditProjectView = defineComponent({
         return images
       }
 
-      Object.assign<ProjectModel, Partial<ProjectModel>>(project, {
+      Object.assign<Partial<ProjectModel>, Partial<ProjectModel>>(project, {
         description,
 
         projectUrl: html_url,
