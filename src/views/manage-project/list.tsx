@@ -137,11 +137,27 @@ const ManageProjectView = defineComponent({
 
                             default() {
                               return (
-                                <NThing
-                                  title={item.name}
-                                  description={item.description}
-                                >
+                                <NThing description={item.description}>
                                   {{
+                                    header() {
+                                      return (
+                                        <div>
+                                          <NButton
+                                            text
+                                            class="!font-medium"
+                                            {...(item.projectUrl
+                                              ? {
+                                                  tag: 'a',
+                                                  href: item.projectUrl,
+                                                  target: '_blank',
+                                                }
+                                              : {})}
+                                          >
+                                            {item.name}
+                                          </NButton>
+                                        </div>
+                                      )
+                                    },
                                     footer() {
                                       return (
                                         <NElement>
