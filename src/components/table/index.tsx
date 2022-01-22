@@ -101,9 +101,6 @@ export const Table = defineComponent({
     const clean = watch(
       () => data.value,
       (n) => {
-        // if (n.length) {
-
-        // }
         loading.value = false
         clean()
       },

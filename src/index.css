@@ -79,3 +79,13 @@ button {
   -webkit-tap-highlight-color: transparent;
   -webkit-text-size-adjust: 100%;
 }
+
+.n-list-item {
+  .n-list-item__prefix {
+    align-self: flex-start;
+  }
+
+  .n-thing-avatar {
+    @apply self-center;
+  }
+}

@@ -122,6 +122,7 @@ const ManageProjectView = defineComponent({
                             prefix() {
                               return (
                                 <NCheckbox
+                                  class="mt-4"
                                   checked={checkedRowKeys.has(item.id)}
                                   onUpdateChecked={(checked) => {
                                     if (checked) {
@@ -217,12 +218,17 @@ const ManageProjectView = defineComponent({
                                     avatar() {
                                       return item.avatar ? (
                                         <NAvatar
+                                          class="align-center"
                                           circle
                                           src={item.avatar}
                                           size="large"
                                         ></NAvatar>
                                       ) : (
-                                        <NAvatar circle size="large">
+                                        <NAvatar
+                                          circle
+                                          size="large"
+                                          class="align-center"
+                                        >
                                           {item.name[0].toUpperCase()}
                                         </NAvatar>
                                       )
