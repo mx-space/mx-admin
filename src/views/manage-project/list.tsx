@@ -107,7 +107,9 @@ const ManageProjectView = defineComponent({
                           pageCount={pager.value.totalPage}
                           page={pager.value.currentPage}
                           pageSize={pager.value.size}
-                          onUpdatePage={(page) => {}}
+                          onUpdatePage={(page) => {
+                            fetchData(page)
+                          }}
                         ></NPagination>
                       </div>
                     )
@@ -221,7 +223,7 @@ const ManageProjectView = defineComponent({
                                         ></NAvatar>
                                       ) : (
                                         <NAvatar circle size="large">
-                                          {item.name}
+                                          {item.name[0].toUpperCase()}
                                         </NAvatar>
                                       )
                                     },
