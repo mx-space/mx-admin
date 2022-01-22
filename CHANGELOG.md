@@ -3,9 +3,32 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Bug Fixes
+
+- Project list display created
+- Fetch data when paginate
+- N-list style
+- Nav to project url
+
+### Features
+
+- Get images from markdown
+- Jump to simple render
+- Project list new design
+
+### Miscellaneous Tasks
+
+- Cleanup
+
+## [3.11.12] - 2022-01-21
+
 ### Features
 
 - Fetch project from github
+
+### Release
+
+- V3.11.12
 
 ## [3.11.11] - 2022-01-18
 
