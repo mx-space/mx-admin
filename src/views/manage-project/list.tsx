@@ -1,4 +1,5 @@
 import { AddIcon, DeleteIcon, MenuDownIcon } from 'components/icons'
+import { RelativeTime } from 'components/time/relative-time'
 import { useTable } from 'hooks/use-table'
 import { ProjectModel, ProjectResponse } from 'models/project'
 import {
@@ -6,17 +7,20 @@ import {
   NButton,
   NButtonGroup,
   NCheckbox,
+  NElement,
   NIcon,
   NList,
   NListItem,
   NPagination,
   NPopselect,
+  NSpace,
   NThing,
   useDialog,
   useMessage,
 } from 'naive-ui'
 import { router } from 'router'
 import { RouteName } from 'router/name'
+import { parseDate } from 'utils'
 import { defineComponent, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { HeaderActionButton } from '../../components/button/rounded-button'
@@ -135,6 +139,26 @@ const ManageProjectView = defineComponent({
                                   description={item.description}
                                 >
                                   {{
+                                    footer() {
+                                      return (
+                                        <NElement>
+                                          <NSpace class="pl-[3.6rem] text-[var(--clear-color-pressed)] text-sm">
+                                            <span>
+                                              创建于 {parseDate(item.created)}
+                                            </span>
+
+                                            {item.modified && (
+                                              <span>
+                                                更新于{' '}
+                                                <RelativeTime
+                                                  time={item.modified}
+                                                />
+                                              </span>
+                                            )}
+                                          </NSpace>
+                                        </NElement>
+                                      )
+                                    },
                                     'header-extra'() {
                                       return (
                                         <NButtonGroup>

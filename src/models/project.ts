@@ -10,6 +10,8 @@ export interface ProjectModel {
   description: string
   avatar?: string
   text: string
+  created: string
+  modified?: string
 }
 
 export type ProjectResponse = {
