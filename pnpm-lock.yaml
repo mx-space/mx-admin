@@ -46,7 +46,7 @@ specifiers:
   js-yaml: 4.1.0
   lodash-es: 4.17.21
   monaco-editor: 0.31.1
-  naive-ui: 2.24.1
+  naive-ui: 2.24.7
   prettier: 2.5.1
   qier-progress: 1.0.4
   reflect-metadata: 0.1.13
@@ -101,7 +101,7 @@ dependencies:
   js-yaml: 4.1.0
   lodash-es: 4.17.21
   monaco-editor: 0.31.1
-  naive-ui: 2.24.1_vue@3.2.28
+  naive-ui: 2.24.7_vue@3.2.28
   qier-progress: 1.0.4
   reflect-metadata: 0.1.13
   socket.io-client: 4.4.1
@@ -2790,8 +2790,8 @@ packages:
   /ms/2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
 
-  /naive-ui/2.24.1_vue@3.2.28:
-    resolution: {integrity: sha512-nwU4L7P5rIutkRjoBB3wvtn19GYBI/vbz+DeyhbkG9MB4VZe2xZLA5fgq0dD4MsY2KYYcffKz4wDcQOJBy5zGg==}
+  /naive-ui/2.24.7_vue@3.2.28:
+    resolution: {integrity: sha512-Kt3PxQ85c+5VO6SSaszSWfMwCzjs+pRo/GFK5fLMn5H9YRqnEXuxBSb2UI3Wt72OAisDAebCS4uAfFmyv7u5fQ==}
     peerDependencies:
       vue: ^3.0.0
     dependencies:
@@ -2813,7 +2813,7 @@ packages:
       vfonts: 0.0.3
       vooks: 0.2.12_vue@3.2.28
       vue: 3.2.28
-      vueuc: 0.4.22_e0c66d0fbc90d2345720927cf85768d6
+      vueuc: 0.4.24_e0c66d0fbc90d2345720927cf85768d6
     dev: false
 
   /nanoid/3.2.0:
@@ -3622,8 +3622,8 @@ packages:
       '@vue/shared': 3.2.28
     dev: false
 
-  /vueuc/0.4.22_e0c66d0fbc90d2345720927cf85768d6:
-    resolution: {integrity: sha512-NqyBnS46+Fiuk9nEVqNocchRZ4PjVIzREA7lFOn/RrzpAjaX/3Srlee8BmIkNGhVcvrd7oCOgOl/vv12ls1C+Q==}
+  /vueuc/0.4.24_e0c66d0fbc90d2345720927cf85768d6:
+    resolution: {integrity: sha512-AocMRepM9x78GOZi6m/1WLHfarwtNbMQeFl4N/XQoft5iewUq0x2Tw/F0CbxMSrCVSKgBas47tZFabp4kYADmQ==}
     peerDependencies:
       '@css-render/vue3-ssr': ^0.15.7
       vue: ^3.0.11
