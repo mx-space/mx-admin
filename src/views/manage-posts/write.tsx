@@ -11,6 +11,7 @@ import { WEB_URL } from 'constants/env'
 import { useInjector } from 'hooks/use-deps-injection'
 import { ContentLayout } from 'layouts/content'
 import { isString } from 'lodash-es'
+import { Image } from 'models/base'
 import { CategoryModel, TagModel } from 'models/category'
 import { PostModel } from 'models/post'
 import {
@@ -38,6 +39,7 @@ type PostReactiveType = {
   summary: string
   allowComment: boolean
 
+  images: Image[]
   id?: string
 }
 
@@ -61,6 +63,7 @@ const PostWriteView = defineComponent(() => {
 
     allowComment: true,
     id: undefined,
+    images: [],
   })
 
   const parsePayloadIntoReactiveData = (payload: PostModel) => {
@@ -96,6 +99,7 @@ const PostWriteView = defineComponent(() => {
 
   const message = useMessage()
   const router = useRouter()
+
   const handleSubmit = async () => {
     const payload = {
       ...data,
@@ -103,6 +107,7 @@ const PostWriteView = defineComponent(() => {
       summary:
         data.summary && data.summary.trim() != '' ? data.summary.trim() : null,
     }
+
     if (id.value) {
       // update
       if (!isString(id.value)) {

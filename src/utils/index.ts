@@ -3,7 +3,6 @@ import { toRaw } from 'vue'
 
 export * from './auth'
 export * from './build-menus'
-export * from './case'
 export * from './rest'
 export * from './time'
 

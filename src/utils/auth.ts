@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 
-const TokenKey = 'mx-admin-token'
+const TokenKey = 'mx-token'
 
 export function getToken(): string | null {
   return Cookies.get(TokenKey)

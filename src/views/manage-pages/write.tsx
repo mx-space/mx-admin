@@ -11,6 +11,7 @@ import { WEB_URL } from 'constants/env'
 import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
 import { ContentLayout } from 'layouts/content'
 import { isString } from 'lodash-es'
+import { Image } from 'models/base'
 import { PageModel } from 'models/page'
 import { NFormItem, NInputNumber, useMessage } from 'naive-ui'
 import { RouteName } from 'router/name'
@@ -26,6 +27,7 @@ type PageReactiveType = {
   allowComment: boolean
 
   id?: string
+  images: Image[]
 }
 
 const PageWriteView = defineComponent(() => {
@@ -40,6 +42,7 @@ const PageWriteView = defineComponent(() => {
     allowComment: true,
 
     id: undefined,
+    images: [],
   })
 
   const parsePayloadIntoReactiveData = (payload: PageModel) =>

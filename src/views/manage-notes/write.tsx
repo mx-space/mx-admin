@@ -57,6 +57,7 @@ type NoteReactiveType = {
   allowComment: boolean
 
   id?: string
+  images: []
 }
 
 const NoteWriteView = defineComponent(() => {
@@ -90,6 +91,7 @@ const NoteWriteView = defineComponent(() => {
     allowComment: true,
 
     id: undefined,
+    images: [],
   })
 
   const parsePayloadIntoReactiveData = (payload: NoteModel) =>
