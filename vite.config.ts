@@ -1,5 +1,4 @@
 import vue from '@vitejs/plugin-vue'
-import { omitBy } from 'lodash'
 import { visualizer } from 'rollup-plugin-visualizer'
 import AutoImport from 'unplugin-auto-import/vite'
 import { defineConfig, loadEnv, PluginOption } from 'vite'
@@ -9,10 +8,9 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 import PKG from './package.json'
 
 export default ({ mode }) => {
-  process.env = {
-    ...process.env,
-    ...omitBy(loadEnv(mode, process.cwd()), Boolean),
-  }
+  const env = loadEnv(mode, process.cwd())
+  const { VITE_APP_PUBLIC_URL } = env
+  const isDev = mode === 'development'
 
   return defineConfig({
     plugins: [
@@ -33,7 +31,7 @@ export default ({ mode }) => {
         dts: true,
         imports: ['vue'],
       }),
-      htmlPlugin(),
+      htmlPlugin(env),
     ],
 
     build: {
@@ -54,12 +52,9 @@ export default ({ mode }) => {
     },
 
     define: {
-      __DEV__: process.env.NODE_ENV !== 'production',
+      __DEV__: isDev,
     },
-    base:
-      process.env.NODE_ENV === 'production'
-        ? process.env.VITE_APP_PUBLIC_URL || ''
-        : '',
+    base: !isDev ? VITE_APP_PUBLIC_URL || '' : '',
 
     server: {
       // https: true,
@@ -73,7 +68,7 @@ export default ({ mode }) => {
   })
 }
 
-const htmlPlugin: () => PluginOption = () => {
+const htmlPlugin: (env: any) => PluginOption = (env) => {
   return {
     name: 'html-transform',
     enforce: 'post',
@@ -84,6 +79,10 @@ const htmlPlugin: () => PluginOption = () => {
           `<script>window.version = '${PKG.version}';</script>`,
         )
         .replace(/\@gh\-pages/g, '@page_v' + PKG.version)
+        .replace(
+          '<!-- ENV INJECT -->',
+          `<script>window.injectData = {WEB_URL:'${env.VITE_APP_WEB_URL}', GATEWAY: '${env.VITE_APP_GATEWAY}',BASE_API: '${env.VITE_APP_BASE_API}'}</script>`,
+        )
     },
   }
 }
