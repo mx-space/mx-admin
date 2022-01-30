@@ -82,6 +82,7 @@ const ImageDetailSection = defineComponent({
     },
   },
   setup(props) {
+    const loading = ref(false)
     const handleCorrectImage = async () => {
       const images: ImageModel[] = props.text
         ? pickImagesFromMarkdown(props.text).map((src) => ({
@@ -91,30 +92,39 @@ const ImageDetailSection = defineComponent({
             type: '',
           }))
         : props.images
+      loading.value = true
 
-      const imagesDetail = await Promise.all(
-        images.map((item, i) => {
-          return new Promise<ImageModel>((resolve, reject) => {
-            const $image = new Image()
-            $image.src = item.src
-            $image.crossOrigin = 'Anonymous'
-            $image.onload = () => {
-              resolve({
-                width: $image.naturalWidth,
-                height: $image.naturalHeight,
-                src: item.src,
-                type: $image.src.split('.').pop() || '',
-                accent: getDominantColor($image),
-              })
-            }
-            $image.onerror = (err) => {
-              reject(err)
-            }
-          })
-        }),
-      )
+      try {
+        const imagesDetail = await Promise.all(
+          images.map((item, i) => {
+            return new Promise<ImageModel>((resolve, reject) => {
+              const $image = new Image()
+              $image.src = item.src
+              $image.crossOrigin = 'Anonymous'
+              $image.onload = () => {
+                resolve({
+                  width: $image.naturalWidth,
+                  height: $image.naturalHeight,
+                  src: item.src,
+                  type: $image.src.split('.').pop() || '',
+                  accent: getDominantColor($image),
+                })
+              }
+              $image.onerror = (err) => {
+                reject(err)
+              }
+            })
+          }),
+        )
 
-      props.onChange(imagesDetail)
+        loading.value = false
+
+        props.onChange(imagesDetail)
+      } catch (err) {
+        console.error(err)
+      } finally {
+        loading.value = false
+      }
     }
 
     return () => (
@@ -123,7 +133,12 @@ const ImageDetailSection = defineComponent({
           <div class="flex-grow flex-shrink inline-block">
             调整 Markdown 中包含的图片信息
           </div>
-          <NButton class="self-end" round onClick={handleCorrectImage}>
+          <NButton
+            loading={loading.value}
+            class="self-end"
+            round
+            onClick={handleCorrectImage}
+          >
             自动修正
           </NButton>
         </div>
