@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Revert vue version
+
+### Documentation
+
+- Change readme
+
+### Features
+
+- Inject env into build
+- Add markdown image manage
+
+### Miscellaneous Tasks
+
+- Update vue monorepo
+- Update vue monorepo
+- Update deps
+
+## [3.12.0] - 2022-01-22
+
+### Bug Fixes
+
 - Project list display created
 - Fetch data when paginate
 - N-list style
@@ -19,6 +40,10 @@ All notable changes to this project will be documented in this file.
 ### Miscellaneous Tasks
 
 - Cleanup
+
+### Release
+
+- V3.12.0
 
 ## [3.11.12] - 2022-01-21
 
