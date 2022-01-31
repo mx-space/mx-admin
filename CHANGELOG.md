@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Add loading status on fetch image detail
+
+### Features
+
+- Link check
+
+## [3.13.0] - 2022-01-30
+
+### Bug Fixes
+
 - Revert vue version
 
 ### Documentation
@@ -21,6 +31,10 @@ All notable changes to this project will be documented in this file.
 - Update vue monorepo
 - Update vue monorepo
 - Update deps
+
+### Release
+
+- V3.13.0
 
 ## [3.12.0] - 2022-01-22
 
