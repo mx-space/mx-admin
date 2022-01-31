@@ -84,7 +84,7 @@ export const Tab1ForList = defineComponent({
                         row.reference +
                         '/' +
                         row.name +
-                        (row.private ? `?token=bearer%20${getToken()}` : '')
+                        (row.private ? `?token=${getToken()}` : '')
                       }
                       target="_blank"
                       size="tiny"

@@ -48,11 +48,7 @@ export const TableTitleLink = defineComponent({
 
     const endpoint = RESTManager.endpoint
     const path =
-      endpoint +
-      '/markdown/render/' +
-      props.id +
-      '?token=bearer%20' +
-      getToken()
+      endpoint + '/markdown/render/' + props.id + '?token=' + getToken()
     return () => (
       <RouterLink to={props.inPageTo} class="flex items-center space-x-2">
         <NEllipsis lineClamp={2} tooltip={{ width: 500 }}>

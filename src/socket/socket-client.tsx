@@ -52,7 +52,7 @@ export class SocketClient {
       reconnectionAttempts: 3,
       transports: ['websocket'],
       query: {
-        token,
+        token: token.replace(/^bearer\s/, ''),
       },
     })
 

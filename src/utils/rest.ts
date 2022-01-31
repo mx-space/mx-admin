@@ -134,7 +134,7 @@ RESTManager.instance.interceptors.request.use((url, options) => {
 
   if (token) {
     // @ts-ignore
-    options.headers.Authorization = 'bearer ' + token
+    options.headers.Authorization = token
   }
   return {
     url: url + '?t=' + +new Date(),
