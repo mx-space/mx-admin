@@ -157,20 +157,24 @@ export default defineComponent({
     const handleCheck = async () => {
       const l = message.loading('检查中', { duration: 20e4 })
 
-      const data = await RESTManager.api.links.health.get<any>({
-        timeout: 20e4,
-      })
+      try {
+        const data = await RESTManager.api.links.health.get<any>({
+          timeout: 20e4,
+        })
 
-      // HACK manual lowercase key
-      // @see: https://github.com/sindresorhus/camelcase-keys/issues/85
-      health.value = Object.entries(data).reduce((acc, [k, v]) => {
-        return { ...acc, [k.toLowerCase()]: v }
-      }, {})
-
-      requestAnimationFrame(() => {
-        l.destroy()
-      })
-      message.success('检查完成')
+        // HACK manual lowercase key
+        // @see: https://github.com/sindresorhus/camelcase-keys/issues/85
+        health.value = Object.entries(data).reduce((acc, [k, v]) => {
+          return { ...acc, [k.toLowerCase()]: v }
+        }, {})
+        message.success('检查完成')
+      } catch (err) {
+        console.error(err)
+      } finally {
+        requestAnimationFrame(() => {
+          l.destroy()
+        })
+      }
     }
 
     return () => (
