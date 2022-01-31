@@ -4,6 +4,11 @@
 
 为 MX Space Server 打造的后台管理。使用 Vue 3 + Naive UI 编写。
 
+
+```
+git clone --single-branch -b master https://github.com/mx-space/admin-next.git
+```
+
 ## Build
 
 ```
