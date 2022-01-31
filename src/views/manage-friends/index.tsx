@@ -1,9 +1,17 @@
-import Plus from '@vicons/fa/es/Plus'
 import { HeaderActionButton } from 'components/button/rounded-button'
+import { CheckIcon, PlusIcon as Plus } from 'components/icons'
 import { Table } from 'components/table'
+import { RelativeTime } from 'components/time/relative-time'
 import { useTable } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
-import { LinkModel, LinkResponse, LinkState, LinkType } from 'models/link'
+import {
+  LinkModel,
+  LinkResponse,
+  LinkState,
+  LinkStateCount,
+  LinkStateNameMap,
+  LinkType,
+} from 'models/link'
 import {
   NAvatar,
   NBadge,
@@ -14,6 +22,7 @@ import {
   NInput,
   NModal,
   NPopconfirm,
+  NPopover,
   NSelect,
   NSpace,
   NTabPane,
@@ -63,7 +72,7 @@ export default defineComponent({
           },
       )
     const message = useMessage()
-    const resetEditData: () => Omit<LinkModel, 'id' | 'state'> & {
+    const resetEditData: () => Omit<LinkModel, 'id' | 'created' | 'hide'> & {
       id: null | string
     } = () => ({
       avatar: '',
@@ -72,6 +81,7 @@ export default defineComponent({
       url: '',
       id: null,
       description: '',
+      state: LinkState.Pass,
     })
     const editDialogShow = ref(false)
     const editDialogData = ref(resetEditData())
@@ -90,15 +100,11 @@ export default defineComponent({
       },
       { immediate: true },
     )
-    const auditCount = ref(0)
+    const stateCount = ref<LinkStateCount>({} as any)
 
     const fetchStat = async () => {
-      const state = (await RESTManager.api.links.state.get()) as {
-        audit: number
-        collection: number
-        friends: number
-      }
-      auditCount.value = state.audit
+      const state = await RESTManager.api.links.state.get<LinkStateCount>()
+      stateCount.value = state
     }
 
     onBeforeMount(() => {
@@ -106,15 +112,27 @@ export default defineComponent({
     })
     const onSubmit = async () => {
       const id = editDialogData.value.id
-      editDialogData.value.id
-      if (id) {
-        await RESTManager.api
-          .links(id)
-          .put({ data: omit(editDialogData.value, ['id']) })
 
+      if (id) {
+        const newData = await RESTManager.api.links(id).put<LinkModel>({
+          data: omit<any, keyof LinkModel, LinkModel>(editDialogData.value, [
+            'id',
+            'created',
+            'hide',
+          ]),
+        })
         const idx = data.value.findIndex((i) => i.id == id)
-        // @ts-expect-error
-        data.value[idx] = { ...data.value[idx], ...toRaw(editDialogData.value) }
+
+        if (newData.state != tabValue.value) {
+          data.value.splice(idx, 1)
+          fetchStat()
+        } else {
+          // @ts-expect-error
+          data.value[idx] = {
+            ...data.value[idx],
+            ...toRaw(editDialogData.value),
+          }
+        }
       } else {
         const { data: item } = (await RESTManager.api.links.post({
           data: { ...editDialogData.value },
@@ -122,8 +140,37 @@ export default defineComponent({
         data.value.unshift(item)
       }
       message.success('操作成功')
-      editDialogData.value = resetEditData()
       editDialogShow.value = false
+      editDialogData.value = resetEditData()
+    }
+
+    const health = ref<
+      Record<
+        string,
+        {
+          id: string
+          status: number | string
+          message?: string
+        }
+      >
+    >()
+    const handleCheck = async () => {
+      const l = message.loading('检查中', { duration: 20e4 })
+
+      const data = await RESTManager.api.links.health.get<any>({
+        timeout: 20e4,
+      })
+
+      // HACK manual lowercase key
+      // @see: https://github.com/sindresorhus/camelcase-keys/issues/85
+      health.value = Object.entries(data).reduce((acc, [k, v]) => {
+        return { ...acc, [k.toLowerCase()]: v }
+      }, {})
+
+      requestAnimationFrame(() => {
+        l.destroy()
+      })
+      message.success('检查完成')
     }
 
     return () => (
@@ -138,10 +185,18 @@ export default defineComponent({
                 editDialogShow.value = true
               }}
             ></HeaderActionButton>
+
+            <HeaderActionButton
+              icon={<CheckIcon />}
+              variant="info"
+              onClick={handleCheck}
+              name="检查友链可用性"
+            ></HeaderActionButton>
           </Fragment>
         }
       >
         <NTabs
+          class="min-h-[30px]"
           size="medium"
           value={tabValue.value}
           onUpdateValue={(e) => {
@@ -149,19 +204,33 @@ export default defineComponent({
             router.replace({ name: RouteName.Friend, query: { state: e } })
           }}
         >
-          <NTabPane name={LinkState.Pass} tab="朋友们">
-            <div class=""></div>
-          </NTabPane>
+          <NTabPane name={LinkState.Pass} tab="朋友们"></NTabPane>
           <NTabPane
             name={LinkState.Audit}
             tab={() => (
-              <NBadge value={auditCount.value} processing>
+              <NBadge value={stateCount.value.audit} processing>
                 <NText>待审核</NText>
               </NBadge>
             )}
-          >
-            <div class=""></div>
-          </NTabPane>
+          ></NTabPane>
+
+          <NTabPane
+            name={LinkState.Outdate}
+            tab={() => (
+              <NBadge value={stateCount.value.outdate} type="info">
+                <NText>过时的</NText>
+              </NBadge>
+            )}
+          ></NTabPane>
+
+          <NTabPane
+            name={LinkState.Banned}
+            tab={() => (
+              <NBadge value={stateCount.value.banned} type="warning">
+                <NText>封禁的</NText>
+              </NBadge>
+            )}
+          ></NTabPane>
         </NTabs>
 
         <Table
@@ -174,6 +243,7 @@ export default defineComponent({
             {
               title: '头像',
               key: 'avatar',
+              width: 80,
               render(row) {
                 const Avatar = defineComponent(() => {
                   const loaded = ref(row.avatar ? false : true)
@@ -201,30 +271,53 @@ export default defineComponent({
                 return <Avatar />
               },
             },
-            { title: '名称', key: 'name' },
             {
-              title: '类型',
-              key: 'type',
-              render(row) {
-                return ['朋友', '收藏'][row.type | 0]
-              },
-            },
-            {
-              title: '网址',
-              key: 'url',
+              title: '名称',
+              key: 'name',
               render(row) {
                 return (
                   <a target="_blank" href={row.url} rel="noreferrer">
-                    {row.url}
+                    {row.name}
                   </a>
                 )
               },
             },
             { title: '描述', key: 'description' },
             {
+              title: '网址',
+              key: 'url',
+              render(row) {
+                const urlHealth = health.value?.[row.id]
+                return (
+                  <UrlComponent
+                    url={row.url}
+                    errorMessage={urlHealth?.message}
+                    status={urlHealth?.status}
+                  />
+                )
+              },
+            },
+            {
+              title: '类型',
+              key: 'type',
+              width: 80,
+              render(row) {
+                return ['朋友', '收藏'][row.type | 0]
+              },
+            },
+            {
+              title: '结识时间',
+              key: 'created',
+              width: 80,
+              render(row) {
+                return <RelativeTime time={row.created} />
+              },
+            },
+            {
+              width: 150,
               title: '操作',
               fixed: 'right',
-              key: 'id',
+              key: 'action',
               render(row) {
                 return (
                   <NSpace wrap={false}>
@@ -242,7 +335,7 @@ export default defineComponent({
                             (i) => i.id == row.id,
                           )
                           data.value.splice(idx, 1)
-                          auditCount.value--
+                          stateCount.value.audit--
                         }}
                       >
                         通过
@@ -266,7 +359,7 @@ export default defineComponent({
                         await RESTManager.api.links(row.id).delete()
                         message.success('删除成功')
                         await fetchDataFn(pager.value.currentPage)
-                        row.state == LinkState.Audit && auditCount.value--
+                        row.state == LinkState.Audit && stateCount.value.audit--
                       }}
                     >
                       {{
@@ -353,6 +446,21 @@ export default defineComponent({
                   }
                 ></NSelect>
               </NFormItem>
+              {editDialogData.value.id && (
+                <NFormItem label="状态">
+                  <NSelect
+                    placeholder="选择状态"
+                    options={Object.entries(LinkStateNameMap).map(([k, v]) => ({
+                      label: v,
+                      value: LinkState[k],
+                    }))}
+                    value={editDialogData.value.state}
+                    onUpdateValue={(e) =>
+                      void (editDialogData.value.state = e | 0)
+                    }
+                  ></NSelect>
+                </NFormItem>
+              )}
             </NForm>
 
             <div class="text-right">
@@ -374,6 +482,39 @@ export default defineComponent({
           </NCard>
         </NModal>
       </ContentLayout>
+    )
+  },
+})
+
+const UrlComponent = defineComponent({
+  props: {
+    url: String,
+    errorMessage: String,
+    status: [String, Number],
+  },
+  setup(props) {
+    return () => (
+      <div class="flex space-x-2 items-center">
+        <a target="_blank" href={props.url} rel="noreferrer">
+          {props.url}
+        </a>
+
+        {typeof props.status !== 'undefined' &&
+          (props.errorMessage ? (
+            <NPopover>
+              {{
+                trigger() {
+                  return <div class="h-2 w-2 bg-red-400 rounded-full"></div>
+                },
+                default() {
+                  return props.errorMessage
+                },
+              }}
+            </NPopover>
+          ) : (
+            <div class="h-2 w-2 bg-green-300 rounded-full"></div>
+          ))}
+      </div>
     )
   },
 })

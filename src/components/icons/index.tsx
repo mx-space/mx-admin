@@ -54,3 +54,18 @@ export const MenuDownIcon = defineComponent({
     )
   },
 })
+
+export const CheckIcon = defineComponent({
+  setup() {
+    return () => (
+      <svg width="1em" height="1em" viewBox="0 0 24 24">
+        <path
+          d="M21 5L9 17l-5.5-5.5l1.41-1.41L9 14.17L19.59 3.59L21 5M3 21v-2h18v2H3z"
+          fill="currentColor"
+        ></path>
+      </svg>
+    )
+  },
+})
+
+export const PlusIcon = AddIcon

@@ -89,3 +89,7 @@ button {
     @apply self-center;
   }
 }
+
+.n-tabs-tab {
+  padding-top: 10px !important;
+}

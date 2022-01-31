@@ -1,5 +1,5 @@
-import Plus from '@vicons/fa/es/Plus'
 import { Icon } from '@vicons/utils'
+import { PlusIcon as Plus } from 'components/icons'
 import { RelativeTime } from 'components/time/relative-time'
 import { useInjector } from 'hooks/use-deps-injection'
 import { TokenModel } from 'models/token'

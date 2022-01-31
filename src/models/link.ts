@@ -1,25 +1,20 @@
-import { Pager } from './base'
+import type { LinkModel, LinkState, PaginateResult } from '@mx-space/api-client'
+export { LinkState, LinkType } from '@mx-space/api-client'
+export { LinkModel }
 
-export enum LinkType {
-  Friend,
-  Collection,
+export type LinkResponse = PaginateResult<LinkModel>
+
+export type LinkStateCount = {
+  audit: number
+  collection: number
+  friends: number
+  outdate: number
+  banned: number
 }
 
-export enum LinkState {
-  Pass,
-  Audit,
-}
-export interface LinkModel {
-  id: string
-  name: string
-  url: string
-  avatar: string
-  description?: string
-  type: LinkType
-  state: LinkState
-}
-
-export interface LinkResponse {
-  pagination: Pager
-  data: LinkModel[]
+export const LinkStateNameMap: Record<keyof typeof LinkState, string> = {
+  Audit: '待审核',
+  Pass: '通过',
+  Outdate: '过时',
+  Banned: '屏蔽',
 }
