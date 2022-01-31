@@ -5,11 +5,27 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Move bundled js into single folder
+- Store token
+- Try error in check health
+
+### Documentation
+
+- Update readme
+
+## [3.13.1] - 2022-01-31
+
+### Bug Fixes
+
 - Add loading status on fetch image detail
 
 ### Features
 
 - Link check
+
+### Release
+
+- V3.13.1
 
 ## [3.13.0] - 2022-01-30
 
