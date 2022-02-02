@@ -14,14 +14,12 @@ import {
   useMessage,
 } from 'naive-ui'
 import { defineComponent, PropType, ref } from 'vue'
-import ParallaxButtonVue from '../../components/button/parallax-button.vue'
 import { UserModel } from '../../models/user'
 import { RESTManager } from '../../utils/rest'
 import styles from './index.module.css'
 
 const useDefaultConfigs = () => inject<IConfig>('configs')
 export default defineComponent({
-  components: { ParallaxButtonVue },
   setup() {
     const loaded = ref(false)
     onMounted(() => {
