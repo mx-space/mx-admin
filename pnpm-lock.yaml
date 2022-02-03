@@ -15,7 +15,7 @@ specifiers:
   '@codemirror/view': 0.19.31
   '@ddietr/codemirror-themes': 1.0.9
   '@innei-util/prettier': 0.2.0
-  '@mx-space/api-client': 0.6.1
+  '@mx-space/api-client': 0.6.2
   '@types/ejs': 3.1.0
   '@types/js-yaml': 4.0.5
   '@types/lodash-es': 4.17.5
@@ -85,7 +85,7 @@ dependencies:
   '@codemirror/theme-one-dark': 0.19.1
   '@codemirror/view': 0.19.31
   '@ddietr/codemirror-themes': 1.0.9
-  '@mx-space/api-client': 0.6.1
+  '@mx-space/api-client': 0.6.2
   '@vicons/antd': 0.11.0
   '@vicons/fa': 0.11.0
   '@vicons/fluent': 0.11.0
@@ -1149,11 +1149,11 @@ packages:
       '@lezer/lr': 0.15.5
     dev: false
 
-  /@mx-space/api-client/0.6.1:
-    resolution: {integrity: sha512-BQaj9o6wE4f7vq1zxUBdoXql710HUEVUrbiqMhi5VzIhZh1/eqii+sBBCC8z5HdYnv/8sHHC4uSGd0LteWY7rw==}
+  /@mx-space/api-client/0.6.2:
+    resolution: {integrity: sha512-KU/A+cdCfkMpK+E+HPLPCj3F3VxC8CuElXapmiBHg5oX+BZ6IiIATuTQImE/L1CpUmf+pkCdm8IOezqRZA+T4w==}
     engines: {pnpm: '>=6'}
     dependencies:
-      camelcase-keys: 7.0.1
+      camelcase-keys: 7.0.2
     dev: false
 
   /@nodelib/fs.scandir/2.1.5:
@@ -1755,6 +1755,16 @@ packages:
       type-fest: 1.4.0
     dev: false
 
+  /camelcase-keys/7.0.2:
+    resolution: {integrity: sha512-Rjs1H+A9R+Ig+4E/9oyB66UC5Mj9Xq3N//vcLf2WzgdTi/3gUu3Z9KoqmlrEG4VuuLK8wJHofxzdQXz/knhiYg==}
+    engines: {node: '>=12'}
+    dependencies:
+      camelcase: 6.3.0
+      map-obj: 4.3.0
+      quick-lru: 5.1.1
+      type-fest: 1.4.0
+    dev: false
+
   /camelcase/6.2.0:
     resolution: {integrity: sha512-c7wVvbw3f37nuobQNtgsgG9POC9qMbNuMQmTCqZv23b6MIz0fcYpBiOlv9gEN/hdLdnZTDQhg6e9Dq5M1vKvfg==}
     engines: {node: '>=10'}
@@ -1763,7 +1773,6 @@ packages:
   /camelcase/6.3.0:
     resolution: {integrity: sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==}
     engines: {node: '>=10'}
-    dev: true
 
   /caniuse-lite/1.0.30001299:
     resolution: {integrity: sha512-iujN4+x7QzqA2NCSrS5VUy+4gLmRd4xv6vbBBsmfVqTx8bLAD8097euLqQgKxSVLvxjSDcvF1T/i9ocgnUFexw==}
