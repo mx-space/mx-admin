@@ -24,14 +24,23 @@ const generateFakeData = (type: string) => {
 }
 export default defineComponent({
   setup() {
-    const event = ref('')
-    const payload = ref<Partial<Record<EventTypes, string>>>(
-      JSON.parse(localStorage.getItem('debug-event') || '{}'),
+    const event = useLocalStorage<EventTypes>(
+      'debug-event-name',
+      EventTypes.POST_CREATE,
     )
-    const type = ref<'web' | 'admin' | 'all'>('web')
 
-    useLocalStorage('debug-event', payload)
-    const value = usePropsValueToRef({ value: payload[event.value] })
+    const payload = useLocalStorage<Partial<Record<EventTypes, string>>>(
+      'debug-event',
+      {},
+    )
+    const type = useLocalStorage<'web' | 'admin' | 'all'>(
+      'debug-event-type',
+      'web',
+    )
+
+    const value = usePropsValueToRef({
+      value: payload.value[event.value] ?? '',
+    })
     const editorRef = ref()
     watch(
       () => event.value,
@@ -51,13 +60,14 @@ export default defineComponent({
       { language: 'json' },
     )
     const handleSend = async () => {
-      const replaceText = payload.value[event.value].replace(
-        /(\{\{(.*?)\}\})/g,
-        // @ts-ignore
-        (match, p1, p2) => {
-          return generateFakeData(p2)
-        },
-      )
+      const replaceText =
+        payload.value[event.value]?.replace(
+          /(\{\{(.*?)\}\})/g,
+          // @ts-ignore
+          (match, p1, p2) => {
+            return generateFakeData(p2)
+          },
+        ) ?? ''
       console.log(replaceText)
 
       RESTManager.api.debug.events.post({
