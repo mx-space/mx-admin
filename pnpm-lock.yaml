@@ -23,7 +23,7 @@ specifiers:
   '@types/validator': 13.7.1
   '@typescript-eslint/eslint-plugin': 5.10.2
   '@typescript-eslint/parser': 5.10.2
-  '@vicons/antd': 0.11.0
+  '@vicons/antd': 0.12.0
   '@vicons/fa': 0.11.0
   '@vicons/fluent': 0.11.0
   '@vicons/ionicons4': 0.11.0
@@ -86,7 +86,7 @@ dependencies:
   '@codemirror/view': 0.19.31
   '@ddietr/codemirror-themes': 1.0.9
   '@mx-space/api-client': 0.6.2
-  '@vicons/antd': 0.11.0
+  '@vicons/antd': 0.12.0
   '@vicons/fa': 0.11.0
   '@vicons/fluent': 0.11.0
   '@vicons/ionicons4': 0.11.0
@@ -1387,8 +1387,8 @@ packages:
       eslint-visitor-keys: 3.2.0
     dev: true
 
-  /@vicons/antd/0.11.0:
-    resolution: {integrity: sha512-XRkUMJzfjr3Q5S6xbAg4ALI90DIGNhZdbVW6SejFi6EgxB5bts3YMMcM4HbF77vdQX5bhxgju3Hd3uP97OgvAQ==}
+  /@vicons/antd/0.12.0:
+    resolution: {integrity: sha512-C0p6aO1EmGG1QHrqgUWQS1No20934OdWSRQshM5NIDK5H1On6tC26U0hT6Rmp40KfUsvhvX5YW8BoWJdNFifPg==}
     dev: false
 
   /@vicons/fa/0.11.0:
