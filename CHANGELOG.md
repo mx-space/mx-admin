@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Debug storage setting
+- Update dependency monaco-editor to v0.32.1
+- Update dependency @mx-space/api-client to v0.6.2
+
+### Miscellaneous Tasks
+
+- Clean useless compoent import
+- Update dependency eslint-plugin-vue to v8.4.1
+- Update typescript-eslint monorepo to v5.10.2
+
+## [3.13.2] - 2022-01-31
+
+### Bug Fixes
+
 - Move bundled js into single folder
 - Store token
 - Try error in check health
@@ -12,6 +26,10 @@ All notable changes to this project will be documented in this file.
 ### Documentation
 
 - Update readme
+
+### Release
+
+- V3.13.2
 
 ## [3.13.1] - 2022-01-31
 
