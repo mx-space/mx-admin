@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Features
+
+- Add kbar
+
+## [3.13.3] - 2022-02-06
+
 ### Bug Fixes
 
 - Debug storage setting
@@ -14,6 +20,10 @@ All notable changes to this project will be documented in this file.
 - Clean useless compoent import
 - Update dependency eslint-plugin-vue to v8.4.1
 - Update typescript-eslint monorepo to v5.10.2
+
+### Release
+
+- V3.13.3
 
 ## [3.13.2] - 2022-01-31
 
