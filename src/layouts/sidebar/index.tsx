@@ -1,3 +1,4 @@
+import { KBarWrapper } from 'components/k-bar'
 import $RouterView from 'layouts/router-view'
 import { NLayoutContent } from 'naive-ui'
 import { computed, CSSProperties, defineComponent, watchEffect } from 'vue'
@@ -21,31 +22,42 @@ export const SidebarLayout = defineComponent({
     })
 
     const sidebarWidth = ui.sidebarWidth
-    return () => (
-      <div class={styles['root']}>
-        <Sidebar
-          collapse={collapse.value}
-          width={sidebarWidth.value}
-          onCollapseChange={(s) => {
-            collapse.value = s
-          }}
-        />
 
-        <NLayoutContent
-          embedded
-          nativeScrollbar={false}
-          class={styles['content']}
-          style={
-            {
-              left: !collapse.value ? sidebarWidth.value + 'px' : '100px',
-              pointerEvents:
-                isLaptop.value && !collapse.value ? 'none' : 'auto',
-            } as CSSProperties
-          }
-        >
-          <$RouterView />
-        </NLayoutContent>
-      </div>
+    return () => (
+      <KBarWrapper>
+        {{
+          default() {
+            return (
+              <div class={styles['root']}>
+                <Sidebar
+                  collapse={collapse.value}
+                  width={sidebarWidth.value}
+                  onCollapseChange={(s) => {
+                    collapse.value = s
+                  }}
+                />
+
+                <NLayoutContent
+                  embedded
+                  nativeScrollbar={false}
+                  class={styles['content']}
+                  style={
+                    {
+                      left: !collapse.value
+                        ? sidebarWidth.value + 'px'
+                        : '100px',
+                      pointerEvents:
+                        isLaptop.value && !collapse.value ? 'none' : 'auto',
+                    } as CSSProperties
+                  }
+                >
+                  <$RouterView />
+                </NLayoutContent>
+              </div>
+            )
+          },
+        }}
+      </KBarWrapper>
     )
   },
 })
