@@ -6,7 +6,7 @@
 
 
 ```
-git clone --single-branch -b master https://github.com/mx-space/admin-next.git
+git clone --single-branch -b master https://github.com/mx-space/mx-admin.git
 ```
 
 ## Build
