@@ -96,6 +96,7 @@ export const SearchLocationButton = defineComponent({
           }}
         </NButton>
         <NModal
+          transformOrigin="center"
           show={modalOpen.value}
           onUpdateShow={(e) => void (modalOpen.value = e)}
         >

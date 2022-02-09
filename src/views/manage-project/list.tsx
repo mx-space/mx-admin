@@ -147,6 +147,8 @@ const ManageProjectView = defineComponent({
                                         return (
                                           <div>
                                             <NButton
+                                              ghost
+                                              type="primary"
                                               text
                                               class="!font-medium"
                                               {...(item.projectUrl

@@ -101,6 +101,7 @@ const ApiToken = defineComponent(() => {
   return () => (
     <NLayoutContent class="!overflow-visible">
       <NModal
+        transformOrigin="center"
         show={newTokenDialogShow.value}
         onUpdateShow={(e) => void (newTokenDialogShow.value = e)}
       >

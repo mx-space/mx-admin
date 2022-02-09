@@ -274,6 +274,7 @@ const EditCategoryDialog = defineComponent<{
 
   return () => (
     <NModal
+      transformOrigin="center"
       show={!!props.show.value}
       onUpdateShow={(s) => {
         props.show.value = s

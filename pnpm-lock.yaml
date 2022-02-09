@@ -71,6 +71,7 @@ specifiers:
   windicss: 3.4.3
   xterm: 4.16.0
   xterm-addon-fit: 0.5.0
+  xterm-theme: 1.1.0
 
 dependencies:
   '@antv/g2': 4.1.42
@@ -120,6 +121,7 @@ dependencies:
   vue-router: 4.0.12_vue@3.2.29
   xterm: 4.16.0
   xterm-addon-fit: 0.5.0_xterm@4.16.0
+  xterm-theme: 1.1.0
 
 devDependencies:
   '@innei-util/prettier': 0.2.0_prettier@2.5.1+typescript@4.5.5
@@ -3862,6 +3864,10 @@ packages:
       xterm: ^4.0.0
     dependencies:
       xterm: 4.16.0
+    dev: false
+
+  /xterm-theme/1.1.0:
+    resolution: {integrity: sha512-n2GocBEbqcz4vEl4OYkU93hEVia8GWdnqchiz/0nQ/olRUyhulGf4wfha23x/D2m0imWaIavRZtt8c6kWZXdsA==}
     dev: false
 
   /xterm/4.16.0:

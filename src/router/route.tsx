@@ -454,7 +454,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
             </Icon>
           ),
         },
-        component: () => import('../views/other/log'),
+        component: () => import('../views/other/log-view'),
       },
     ],
   },

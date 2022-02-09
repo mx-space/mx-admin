@@ -70,6 +70,7 @@ export const ParseContentButton = defineComponent({
         ></HeaderActionButton>
 
         <NModal
+          transformOrigin="center"
           show={parseContentDialogShow.value}
           onUpdateShow={(s) => (parseContentDialogShow.value = s)}
         >

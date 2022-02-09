@@ -176,6 +176,7 @@ export const _EditorToggleWrapper = defineComponent({
         })()}
 
         <NModal
+          transformOrigin="center"
           show={modalOpen.value}
           onUpdateShow={(s) => void (modalOpen.value = s)}
         >

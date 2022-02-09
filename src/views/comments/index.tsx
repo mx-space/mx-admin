@@ -388,6 +388,7 @@ const ManageComment = defineComponent(() => {
 
       {/* reply dialog */}
       <NModal
+        transformOrigin="center"
         show={!!replyDialogShow.value}
         onUpdateShow={(s) => {
           if (!s) {

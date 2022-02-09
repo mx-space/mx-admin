@@ -392,6 +392,7 @@ export default defineComponent({
         {/* Modal */}
 
         <NModal
+          transformOrigin="center"
           show={editDialogShow.value}
           onUpdateShow={(e) => void (editDialogShow.value = e)}
         >
