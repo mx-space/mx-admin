@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Pref
+
+- Async load xterm
+
+## [3.14.1] - 2022-02-09
+
 ### Features
 
 - Native log list & xterm support
@@ -14,6 +20,10 @@ All notable changes to this project will be documented in this file.
 ### Refactor
 
 - Extract xicons out
+
+### Release
+
+- V3.14.1
 
 ## [3.14.0] - 2022-02-08
 
