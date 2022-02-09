@@ -5,7 +5,25 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 
+- Native log list & xterm support
+
+### Miscellaneous Tasks
+
+- Clean up
+
+### Refactor
+
+- Extract xicons out
+
+## [3.14.0] - 2022-02-08
+
+### Features
+
 - Add kbar
+
+### Release
+
+- V3.14.0
 
 ## [3.13.3] - 2022-02-06
 
