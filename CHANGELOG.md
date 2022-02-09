@@ -3,9 +3,23 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Bug Fixes
+
+- Revert vite-check version
+
+### Ci
+
+- Page build ci
+
+## [3.14.2] - 2022-02-09
+
 ### Pref
 
 - Async load xterm
+
+### Release
+
+- V3.14.2
 
 ## [3.14.1] - 2022-02-09
 
