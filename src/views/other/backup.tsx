@@ -1,7 +1,5 @@
-import TrashSharp from '@vicons/ionicons5/es/TrashSharp'
-import RedoRound from '@vicons/material/es/RedoRound'
-import UndoRound from '@vicons/material/es/UndoRound'
 import { HeaderActionButton } from 'components/button/rounded-button'
+import { RedoRoundIcon, TrashSharpIcon, UndoRoundIcon } from 'components/icons'
 import { Table } from 'components/table'
 import { useTable } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
@@ -111,19 +109,19 @@ export default defineComponent(() => {
       actionsElement={
         <>
           <HeaderActionButton
-            icon={<UndoRound />}
+            icon={<UndoRoundIcon />}
             name="立即备份"
             variant="primary"
             onClick={handleBackup}
           ></HeaderActionButton>
           <HeaderActionButton
-            icon={<RedoRound />}
+            icon={<RedoRoundIcon />}
             onClick={handleUploadAndRestore}
             name="上传恢复"
             variant="info"
           ></HeaderActionButton>
           <HeaderActionButton
-            icon={<TrashSharp />}
+            icon={<TrashSharpIcon />}
             name="批量删除"
             variant="error"
             disabled={!checkedRowKeys.value.length}

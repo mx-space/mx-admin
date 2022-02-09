@@ -1,5 +1,5 @@
-import Add12Filled from '@vicons/fluent/es/Add12Filled'
 import { HeaderActionButton } from 'components/button/rounded-button'
+import { AddIcon } from 'components/icons'
 import { tableRowStyle } from 'components/table'
 import { useInjector } from 'hooks/use-deps-injection'
 import { ContentLayout } from 'layouts/content'
@@ -67,7 +67,7 @@ export const CategoryView = defineComponent((props) => {
         <>
           <HeaderActionButton
             variant="success"
-            icon={<Add12Filled />}
+            icon={<AddIcon />}
             onClick={() => {
               showDialog.value = true
               editCategoryState.value = resetState()

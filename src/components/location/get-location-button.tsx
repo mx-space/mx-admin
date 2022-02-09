@@ -1,5 +1,5 @@
-import Location24Regular from '@vicons/fluent/es/Location24Regular'
 import { Icon } from '@vicons/utils'
+import { LocationIcon } from 'components/icons'
 import { Amap, Regeocode } from 'models/amap'
 import { NButton, useMessage } from 'naive-ui'
 import { RESTManager } from 'utils/rest'
@@ -69,7 +69,7 @@ export const GetLocationButton = defineComponent({
           icon() {
             return (
               <Icon>
-                <Location24Regular />
+                <LocationIcon />
               </Icon>
             )
           },

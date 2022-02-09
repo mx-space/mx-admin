@@ -1,21 +1,23 @@
-import Comments from '@vicons/fa/es/Comments'
-import Code24Filled from '@vicons/fluent/es/Code24Filled'
-import Comment24Filled from '@vicons/fluent/es/Comment24Filled'
-import Extension24Filled from '@vicons/fluent/es/Extension24Filled'
-import Games24Regular from '@vicons/fluent/es/Games24Regular'
-import Guest16Filled from '@vicons/fluent/es/Guest16Filled'
-import Link24Filled from '@vicons/fluent/es/Link24Filled'
-import Note24Filled from '@vicons/fluent/es/Note24Filled'
-import ChatbubblesSharp from '@vicons/ionicons5/es/ChatbubblesSharp'
-import AddLinkFilled from '@vicons/material/es/AddLinkFilled'
-import BubbleChartFilled from '@vicons/material/es/BubbleChartFilled'
-import OnlinePredictionFilled from '@vicons/material/es/OnlinePredictionFilled'
-import Activity from '@vicons/tabler/es/Activity'
-import Copy from '@vicons/tabler/es/Copy'
-import File from '@vicons/tabler/es/File'
-import Pencil from '@vicons/tabler/es/Pencil'
-import Refresh from '@vicons/tabler/es/Refresh'
 import { Icon } from '@vicons/utils'
+import {
+  ActivityIcon,
+  AddLinkFilledIcon,
+  BubbleChartFilledIcon,
+  ChatbubblesSharpIcon,
+  CodeIcon,
+  CommentIcon,
+  CommentsIcon,
+  CopyIcon,
+  ExtensionIcon,
+  FileIcon,
+  GamesIcon,
+  GuestIcon,
+  LinkIcon,
+  NoteIcon,
+  OnlinePredictionFilledIcon,
+  PencilIcon,
+  RefreshIcon,
+} from 'components/icons'
 import { IpInfoPopover } from 'components/ip-info'
 import { useShorthand } from 'components/shorthand'
 import { fetchHitokoto, SentenceType } from 'external/api/hitokoto'
@@ -157,7 +159,7 @@ export const DashBoardView = defineComponent({
       {
         label: '博文',
         value: stat.value.posts,
-        icon: <Code24Filled />,
+        icon: <CodeIcon />,
         actions: [
           {
             name: '撰写',
@@ -178,7 +180,7 @@ export const DashBoardView = defineComponent({
       {
         label: '日记',
         value: stat.value.notes,
-        icon: <Note24Filled />,
+        icon: <NoteIcon />,
         actions: [
           {
             name: '撰写',
@@ -199,7 +201,7 @@ export const DashBoardView = defineComponent({
       {
         label: '页面',
         value: stat.value.pages,
-        icon: <File />,
+        icon: <FileIcon />,
         actions: [
           {
             primary: true,
@@ -213,7 +215,7 @@ export const DashBoardView = defineComponent({
       {
         label: '速记',
         value: stat.value.recently,
-        icon: <Pencil />,
+        icon: <PencilIcon />,
         actions: [
           {
             primary: true,
@@ -235,7 +237,7 @@ export const DashBoardView = defineComponent({
       {
         label: '分类',
         value: stat.value.categories,
-        icon: <Extension24Filled />,
+        icon: <ExtensionIcon />,
         actions: [
           {
             primary: true,
@@ -250,7 +252,7 @@ export const DashBoardView = defineComponent({
       {
         label: '全部评论',
         value: stat.value.allComments,
-        icon: <Comment24Filled />,
+        icon: <CommentIcon />,
         actions: [
           {
             primary: true,
@@ -264,7 +266,7 @@ export const DashBoardView = defineComponent({
       {
         label: '未读评论',
         value: stat.value.unreadComments,
-        icon: <ChatbubblesSharp />,
+        icon: <ChatbubblesSharpIcon />,
         actions: [
           {
             primary: true,
@@ -280,7 +282,7 @@ export const DashBoardView = defineComponent({
       {
         label: '友链',
         value: stat.value.links,
-        icon: <Link24Filled />,
+        icon: <LinkIcon />,
         actions: [
           {
             primary: true,
@@ -294,7 +296,7 @@ export const DashBoardView = defineComponent({
       {
         label: '新的友链申请',
         value: stat.value.linkApply,
-        icon: <AddLinkFilled />,
+        icon: <AddLinkFilledIcon />,
         actions: [
           {
             primary: true,
@@ -310,7 +312,7 @@ export const DashBoardView = defineComponent({
       {
         label: '说说',
         value: stat.value.says,
-        icon: <Comments />,
+        icon: <CommentsIcon />,
         actions: [
           {
             primary: true,
@@ -342,7 +344,7 @@ export const DashBoardView = defineComponent({
           stat.value.callTime !== 'N/A'
             ? Intl.NumberFormat('en-us').format(stat.value.callTime)
             : 'N/A',
-        icon: <Activity />,
+        icon: <ActivityIcon />,
         actions: [
           {
             primary: true,
@@ -367,7 +369,7 @@ export const DashBoardView = defineComponent({
       {
         label: '今日 IP 访问次数',
         value: stat.value.todayIpAccessCount,
-        icon: <BubbleChartFilled />,
+        icon: <BubbleChartFilledIcon />,
         actions: [
           {
             primary: true,
@@ -384,17 +386,17 @@ export const DashBoardView = defineComponent({
       {
         label: '当前在线访客',
         value: stat.value.online,
-        icon: <OnlinePredictionFilled />,
+        icon: <OnlinePredictionFilledIcon />,
       },
       {
         label: '今日访客',
         value: stat.value.todayOnlineTotal,
-        icon: <Guest16Filled />,
+        icon: <GuestIcon />,
       },
       {
         value: stat.value.todayMaxOnline,
         label: '今日最多同时在线人数',
-        icon: <Games24Regular />,
+        icon: <GamesIcon />,
       },
     ])
 
@@ -415,7 +417,7 @@ export const DashBoardView = defineComponent({
 
               <NButton text onClick={fetchStat} class="ml-4 text-black">
                 <Icon>
-                  <Refresh />
+                  <RefreshIcon />
                 </Icon>
               </NButton>
             </p>
@@ -454,7 +456,7 @@ export const DashBoardView = defineComponent({
                         class="ml-0 phone:float-right"
                       >
                         <Icon>
-                          <Refresh />
+                          <RefreshIcon />
                         </Icon>
                       </NButton>
 
@@ -467,7 +469,7 @@ export const DashBoardView = defineComponent({
                         }}
                       >
                         <Icon>
-                          <Copy />
+                          <CopyIcon />
                         </Icon>
                       </NButton>
                     </div>

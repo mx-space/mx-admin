@@ -1,9 +1,9 @@
 /**
  * 最近 & 速记
  */
-import Pen from '@vicons/fa/Pen'
-import Add12Filled from '@vicons/fluent/es/Add12Filled'
+
 import { Icon } from '@vicons/utils'
+import { AddIcon, PenIcon } from 'components/icons'
 import { useShorthand } from 'components/shorthand'
 import { RelativeTime } from 'components/time/relative-time'
 import { RecentlyModel } from 'models/recently'
@@ -38,7 +38,7 @@ export default defineComponent({
                   }
                 })
               }}
-              icon={<Add12Filled />}
+              icon={<AddIcon />}
             />
           </>
         }
@@ -51,7 +51,7 @@ export default defineComponent({
                   icon() {
                     return (
                       <Icon>
-                        <Pen />
+                        <PenIcon />
                       </Icon>
                     )
                   },

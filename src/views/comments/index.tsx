@@ -1,9 +1,11 @@
-import EmojiAdd24Regular from '@vicons/fluent/es/EmojiAdd24Regular'
-import CheckmarkSharp from '@vicons/ionicons5/es/CheckmarkSharp'
-import CloseSharp from '@vicons/ionicons5/es/CloseSharp'
-import Trash from '@vicons/ionicons5/es/Trash'
 import { Icon } from '@vicons/utils'
 import { HeaderActionButton } from 'components/button/rounded-button'
+import {
+  CheckmarkSharpIcon,
+  CloseSharpIcon,
+  EmojiAddIcon,
+  TrashIcon as Trash,
+} from 'components/icons'
 import { IpInfoPopover } from 'components/ip-info'
 import { Table } from 'components/table'
 import { WEB_URL } from 'constants/env'
@@ -303,7 +305,7 @@ const ManageComment = defineComponent(() => {
           {tabValue.value !== CommentType.Marked && (
             <HeaderActionButton
               name="已读"
-              icon={<CheckmarkSharp />}
+              icon={<CheckmarkSharpIcon />}
               variant="success"
               onClick={() => {
                 changeState(checkedRowKeys.value, CommentState.Read)
@@ -325,7 +327,7 @@ const ManageComment = defineComponent(() => {
           )}
           <HeaderActionButton
             name="删除"
-            icon={<CloseSharp />}
+            icon={<CloseSharpIcon />}
             variant="error"
             onClick={() => {
               dialog.warning({
@@ -432,7 +434,7 @@ const ManageComment = defineComponent(() => {
                       return (
                         <NButton text class="text-[20px]">
                           <Icon>
-                            <EmojiAdd24Regular />
+                            <EmojiAddIcon />
                           </Icon>
                         </NButton>
                       )

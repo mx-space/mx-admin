@@ -1,5 +1,5 @@
-import CheckCircleOutlined from '@vicons/antd/CheckCircleOutlined'
 import { HeaderActionButton } from 'components/button/rounded-button'
+import { CheckCircleOutlinedIcon } from 'components/icons'
 import { useMountAndUnmount } from 'hooks/use-react'
 import { dump, load } from 'js-yaml'
 import { useLayout } from 'layouts/content'
@@ -150,7 +150,7 @@ export const Tab2ForEdit = defineComponent({
         <HeaderActionButton
           variant="success"
           onClick={handleUpdateOrCreate}
-          icon={<CheckCircleOutlined />}
+          icon={<CheckCircleOutlinedIcon />}
         ></HeaderActionButton>,
       )
 

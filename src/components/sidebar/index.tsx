@@ -1,7 +1,7 @@
-import Hamburger from '@vicons/ionicons5/es/Menu'
 import { Icon } from '@vicons/utils'
 import { onClickOutside } from '@vueuse/core'
 import clsx from 'clsx'
+import { HamburgerIcon } from 'components/icons'
 import { WEB_URL } from 'constants/env'
 import { NLayoutContent } from 'naive-ui'
 import { AppStore } from 'stores/app'
@@ -112,7 +112,7 @@ export const Sidebar = defineComponent({
               }}
             >
               <Icon>
-                <Hamburger />
+                <HamburgerIcon />
               </Icon>
             </button>
           </div>

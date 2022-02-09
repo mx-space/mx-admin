@@ -1,5 +1,5 @@
-import CheckCircleOutlined from '@vicons/antd/CheckCircleOutlined'
 import { HeaderActionButton } from 'components/button/rounded-button'
+import { CheckCircleOutlinedIcon } from 'components/icons'
 import { useInjector } from 'hooks/use-deps-injection'
 import { useLayout } from 'layouts/content'
 import { cloneDeep, isEmpty, merge, omit } from 'lodash-es'
@@ -53,7 +53,7 @@ export const TabSystem = defineComponent(() => {
       <HeaderActionButton
         disabled={true}
         onClick={save}
-        icon={<CheckCircleOutlined />}
+        icon={<CheckCircleOutlinedIcon />}
       ></HeaderActionButton>,
     )
   })
@@ -85,7 +85,7 @@ export const TabSystem = defineComponent(() => {
       setHeaderButton(
         <HeaderActionButton
           disabled={!canSave}
-          icon={<CheckCircleOutlined />}
+          icon={<CheckCircleOutlinedIcon />}
           onClick={save}
         ></HeaderActionButton>,
       )

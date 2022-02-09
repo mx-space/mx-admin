@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-empty-function */
-import Moon from '@vicons/fa/es/Moon'
-import Sun from '@vicons/fa/es/Sun'
+
 import { Icon } from '@vicons/utils'
 import clsx from 'clsx'
+import { MoonIcon, SunIcon } from 'components/icons'
 import { useInjector } from 'hooks/use-deps-injection'
 import { UIStore } from 'stores/ui'
 import {
@@ -131,7 +131,7 @@ export const ContentLayout = defineComponent({
               : null}
             {props.footerButtonElement ? <A$fel /> : slots.buttons?.()}
             <button onClick={() => void toggleDark()}>
-              <Icon>{isDark.value ? <Sun /> : <Moon />}</Icon>
+              <Icon>{isDark.value ? <SunIcon /> : <MoonIcon />}</Icon>
             </button>
           </footer>
         )

@@ -1,4 +1,3 @@
-import { React } from '@vicons/fa'
 import { useStorageObject } from 'hooks/use-storage'
 import {
   NForm,

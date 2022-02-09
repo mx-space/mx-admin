@@ -1,8 +1,5 @@
-import Book from '@vicons/fa/es/Book'
-import ThumbsUp from '@vicons/fa/es/ThumbsUp'
-import Add12Filled from '@vicons/fluent/es/Add12Filled'
-import Delete16Regular from '@vicons/fluent/es/Delete16Regular'
 import { Icon } from '@vicons/utils'
+import { AddIcon, BookIcon, DeleteIcon, ThumbsUpIcon } from 'components/icons'
 import { TableTitleLink } from 'components/link/title-link'
 import { Table } from 'components/table'
 import { EditColumn } from 'components/table/edit-column'
@@ -34,6 +31,7 @@ import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
 import { PostModel, PostResponse } from '../../models/post'
 import { RESTManager } from '../../utils/rest'
+
 export const ManagePostListView = defineComponent({
   name: 'PostList',
   setup() {
@@ -172,7 +170,7 @@ export const ManagePostListView = defineComponent({
           {
             title: () => (
               <Icon>
-                <Book />
+                <BookIcon />
               </Icon>
             ),
             key: 'count.read',
@@ -184,7 +182,7 @@ export const ManagePostListView = defineComponent({
           {
             title: () => (
               <Icon>
-                <ThumbsUp />
+                <ThumbsUpIcon />
               </Icon>
             ),
             width: 50,
@@ -360,9 +358,9 @@ export const ManagePostListView = defineComponent({
                       },
                     })
                   }}
-                  icon={<Delete16Regular />}
+                  icon={<DeleteIcon />}
                 />
-                <HeaderActionButton to={'/posts/edit'} icon={<Add12Filled />} />
+                <HeaderActionButton to={'/posts/edit'} icon={<AddIcon />} />
               </>
             ),
             default: () => <DataTable />,

@@ -1,5 +1,4 @@
-import Add12Filled from '@vicons/fluent/es/Add12Filled'
-import Delete16Regular from '@vicons/fluent/es/Delete16Regular'
+import { AddIcon, DeleteIcon } from 'components/icons'
 import { TableTitleLink } from 'components/link/title-link'
 import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
@@ -184,9 +183,9 @@ export const ManagePageListView = defineComponent({
                       },
                     })
                   }}
-                  icon={<Delete16Regular />}
+                  icon={<DeleteIcon />}
                 />
-                <HeaderActionButton to={'/pages/edit'} icon={<Add12Filled />} />
+                <HeaderActionButton to={'/pages/edit'} icon={<AddIcon />} />
               </>
             ),
             default: () => <DataTable />,

@@ -1,9 +1,8 @@
-import SlidersH from '@vicons/fa/es/SlidersH'
-import TelegramPlane from '@vicons/fa/es/TelegramPlane'
 import { Icon } from '@vicons/utils'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { TextBaseDrawer } from 'components/drawer/text-base-drawer'
 import { EditorToggleWrapper } from 'components/editor/universal/toggle'
+import { SlidersHIcon, TelegramPlaneIcon } from 'components/icons'
 import { MaterialInput } from 'components/input/material-input'
 import { GetLocationButton } from 'components/location/get-location-button'
 import { SearchLocationButton } from 'components/location/search-button'
@@ -214,7 +213,7 @@ const NoteWriteView = defineComponent(() => {
           />
 
           <HeaderActionButton
-            icon={<TelegramPlane />}
+            icon={<TelegramPlaneIcon />}
             onClick={handleSubmit}
           ></HeaderActionButton>
         </>
@@ -227,7 +226,7 @@ const NoteWriteView = defineComponent(() => {
             }}
           >
             <Icon>
-              <SlidersH />
+              <SlidersHIcon />
             </Icon>
           </button>
         </>

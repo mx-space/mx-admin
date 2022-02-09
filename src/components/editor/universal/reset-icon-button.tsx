@@ -1,6 +1,5 @@
-import { React } from '@vicons/fa'
-import { RefreshCircle } from '@vicons/ionicons5'
 import { Icon } from '@vicons/utils'
+import { RefreshCircle } from 'components/icons'
 import { NButton, NPopover } from 'naive-ui'
 
 export const ResetIconButton = defineComponent({

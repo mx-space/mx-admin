@@ -4,11 +4,10 @@
  */
 
 // TODO: 全屏预览
-import { React } from '@vicons/fa'
-import FullscreenExitOutlined from '@vicons/material/es/FullscreenExitOutlined'
-import Settings from '@vicons/tabler/es/Settings'
+
 import { Icon } from '@vicons/utils'
 import clsx from 'clsx'
+import { FullscreenExitOutlined, SettingsIcon } from 'components/icons'
 import { useMountAndUnmount } from 'hooks/use-react'
 import { useLayout } from 'layouts/content'
 import { throttle } from 'lodash-es'
@@ -61,7 +60,7 @@ export const _EditorToggleWrapper = defineComponent({
           }}
         >
           <Icon size={18}>
-            <Settings />
+            <SettingsIcon />
           </Icon>
         </button>,
       )

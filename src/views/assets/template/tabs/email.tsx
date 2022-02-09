@@ -1,6 +1,5 @@
-import CheckCircleOutlined from '@vicons/antd/CheckCircleOutlined'
-import TrashSharp from '@vicons/ionicons5/es/TrashSharp'
 import { HeaderActionButton } from 'components/button/rounded-button'
+import { CheckIcon, TrashIcon } from 'components/icons'
 import { useMountAndUnmount } from 'hooks/use-react'
 import { useLayout } from 'layouts/content'
 import { TwoColGridLayout } from 'layouts/two-col'
@@ -57,13 +56,13 @@ export const EmailTab = defineComponent({
       setHeaderButton(
         <>
           <HeaderActionButton
-            icon={<CheckCircleOutlined />}
+            icon={<CheckIcon />}
             name="提交"
             onClick={save}
             variant="success"
           />
           <HeaderActionButton
-            icon={<TrashSharp />}
+            icon={<TrashIcon />}
             name="重置自定义模板"
             onClick={reset}
             variant="error"

@@ -1,7 +1,6 @@
 import { Chart } from '@antv/g2/esm'
-import RefreshOutline from '@vicons/ionicons5/es/RefreshOutline'
-import Trash from '@vicons/ionicons5/es/Trash'
 import { HeaderActionButton } from 'components/button/rounded-button'
+import { RefreshOutlineIcon, TrashIcon } from 'components/icons'
 import { IpInfoPopover } from 'components/ip-info'
 import { Table } from 'components/table'
 import { useTable } from 'hooks/use-table'
@@ -376,7 +375,7 @@ export default defineComponent({
         actionsElement={
           <>
             <HeaderActionButton
-              icon={<RefreshOutline />}
+              icon={<RefreshOutlineIcon />}
               variant="success"
               name="刷新数据"
               onClick={() => {
@@ -391,7 +390,7 @@ export default defineComponent({
               }}
             ></HeaderActionButton>
             <HeaderActionButton
-              icon={<Trash />}
+              icon={<TrashIcon />}
               onClick={() => {
                 dialog.warning({
                   title: '警告',

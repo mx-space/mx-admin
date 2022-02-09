@@ -1,10 +1,12 @@
-import Book from '@vicons/fa/es/Book'
-import Bookmark from '@vicons/fa/es/Bookmark'
-import Heart from '@vicons/fa/es/Heart'
-import Add12Filled from '@vicons/fluent/es/Add12Filled'
-import Delete16Regular from '@vicons/fluent/es/Delete16Regular'
-import EyeHide20Filled from '@vicons/fluent/es/EyeHide20Filled'
 import { Icon } from '@vicons/utils'
+import {
+  BookIcon,
+  BookmarkIcon,
+  DeleteIcon,
+  EyeHideIcon,
+  HeartIcon,
+  PlusIcon,
+} from 'components/icons'
 import { TableTitleLink } from 'components/link/title-link'
 import { Table } from 'components/table'
 import { EditColumn } from 'components/table/edit-column'
@@ -104,12 +106,12 @@ export const ManageNoteListView = defineComponent({
                           (row.secret &&
                             +new Date(row.secret) - +new Date() > 0) ? (
                             <Icon color="#34495e">
-                              <EyeHide20Filled />
+                              <EyeHideIcon />
                             </Icon>
                           ) : null}
                           {row.hasMemory ? (
                             <Icon color="#e74c3c">
-                              <Bookmark />
+                              <BookmarkIcon />
                             </Icon>
                           ) : null}
                         </>
@@ -200,7 +202,7 @@ export const ManageNoteListView = defineComponent({
           {
             title: () => (
               <Icon>
-                <Book />
+                <BookIcon />
               </Icon>
             ),
             key: 'count.read',
@@ -212,7 +214,7 @@ export const ManageNoteListView = defineComponent({
           {
             title: () => (
               <Icon>
-                <Heart />
+                <HeartIcon />
               </Icon>
             ),
             ellipsis: true,
@@ -324,9 +326,9 @@ export const ManageNoteListView = defineComponent({
                       },
                     })
                   }}
-                  icon={<Delete16Regular />}
+                  icon={<DeleteIcon />}
                 />
-                <HeaderActionButton to={'/notes/edit'} icon={<Add12Filled />} />
+                <HeaderActionButton to={'/notes/edit'} icon={<PlusIcon />} />
               </>
             ),
             default: () => <DataTable />,

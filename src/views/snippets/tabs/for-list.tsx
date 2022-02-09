@@ -1,7 +1,6 @@
-import Lock from '@vicons/antd/LockFilled'
-import Add12Filled from '@vicons/fluent/es/Add12Filled'
 import { Icon } from '@vicons/utils'
 import { HeaderActionButton } from 'components/button/rounded-button'
+import { AddIcon, LockIcon } from 'components/icons'
 import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
 import { useMountAndUnmount } from 'hooks/use-react'
@@ -32,7 +31,7 @@ export const Tab1ForList = defineComponent({
               },
             })
           }}
-          icon={<Add12Filled />}
+          icon={<AddIcon />}
         ></HeaderActionButton>,
       )
 
@@ -93,7 +92,7 @@ export const Tab1ForList = defineComponent({
                     </NButton>
                     {isPrivate && (
                       <Icon class={'items-center flex '}>
-                        <Lock />
+                        <LockIcon />
                       </Icon>
                     )}
                   </NSpace>

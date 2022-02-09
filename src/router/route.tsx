@@ -2,28 +2,30 @@
  * 路由在此定义
  * @author Innei <https://innei.ren>
  */
-import Snippet from '@vicons/antd/SnippetsFilled'
-import Book from '@vicons/fa/es/Book'
-import ChartLine from '@vicons/fa/es/ChartLine'
-import Code from '@vicons/fa/es/Code'
-import Cogs from '@vicons/fa/es/Cogs'
-import Comment from '@vicons/fa/es/Comment'
-import Comments from '@vicons/fa/es/Comments'
-import EllipsisH from '@vicons/fa/es/EllipsisH'
-import Eye from '@vicons/fa/es/Eye'
-import File from '@vicons/fa/es/File'
-import Flask from '@vicons/fa/es/Flask'
-import Markdown from '@vicons/fa/es/Markdown'
-import PencilAlt from '@vicons/fa/es/PencilAlt'
-import PuzzlePiece from '@vicons/fa/es/PuzzlePiece'
-import TachometerAlt from '@vicons/fa/es/TachometerAlt'
-import UndoAlt from '@vicons/fa/es/UndoAlt'
-import UserFriends from '@vicons/fa/es/UserFriends'
-import Clock from '@vicons/tabler/es/Clock'
-import Template from '@vicons/tabler/es/Layout2'
-import Log from '@vicons/tabler/es/News'
-import Pencil from '@vicons/tabler/es/Pencil'
 import { Icon } from '@vicons/utils'
+import {
+  BookIcon,
+  ChartLineIcon,
+  ClockIcon,
+  CodeIcon,
+  CogsIcon,
+  CommentIcon,
+  CommentsIcon,
+  EllipsisHIcon,
+  EyeIcon,
+  FileIcon,
+  FlaskIcon,
+  LogIcon,
+  MarkdownIcon,
+  PencilAltIcon,
+  PencilIcon,
+  PuzzlePieceIcon,
+  SnippetIcon,
+  TachometerAltIcon,
+  TemplateIcon,
+  UndoAltIcon,
+  UserFriendsIcon,
+} from 'components/icons'
 import $RouterView from 'layouts/router-view'
 import { SidebarLayout } from 'layouts/sidebar'
 import { DashBoardView } from 'views/dashboard'
@@ -40,7 +42,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
       title: '仪表盘',
       icon: (
         <Icon>
-          <TachometerAlt />
+          <TachometerAltIcon />
         </Icon>
       ),
     },
@@ -52,7 +54,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
       title: '博文',
       icon: (
         <Icon>
-          <Code />
+          <CodeIcon />
         </Icon>
       ),
     },
@@ -66,7 +68,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           title: '管理',
           icon: (
             <Icon>
-              <Eye />
+              <EyeIcon />
             </Icon>
           ),
           query: { page: 1 },
@@ -84,7 +86,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           title: '撰写',
           icon: (
             <Icon>
-              <PencilAlt />
+              <PencilAltIcon />
             </Icon>
           ),
         },
@@ -99,7 +101,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           title: '分类 / 标签',
           icon: (
             <Icon>
-              <PuzzlePiece />
+              <PuzzlePieceIcon />
             </Icon>
           ),
         },
@@ -115,7 +117,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
       title: '生活记录',
       icon: (
         <Icon>
-          <Book />
+          <BookIcon />
         </Icon>
       ),
     },
@@ -130,7 +132,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           query: { page: 1 },
           icon: (
             <Icon>
-              <Eye />
+              <EyeIcon />
             </Icon>
           ),
         },
@@ -146,7 +148,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           title: '撰写',
           icon: (
             <Icon>
-              <PencilAlt />
+              <PencilAltIcon />
             </Icon>
           ),
         },
@@ -162,7 +164,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
       query: { page: 1, state: 0 },
       icon: (
         <Icon>
-          <Comment />
+          <CommentIcon />
         </Icon>
       ),
     },
@@ -176,7 +178,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
       title: '页面',
       icon: (
         <Icon>
-          <File />
+          <FileIcon />
         </Icon>
       ),
     },
@@ -189,7 +191,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           title: '管理',
           icon: (
             <Icon>
-              <Eye />
+              <EyeIcon />
             </Icon>
           ),
           query: { page: 1 },
@@ -206,7 +208,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           title: '编辑',
           icon: (
             <Icon>
-              <PencilAlt />
+              <PencilAltIcon />
             </Icon>
           ),
         },
@@ -221,7 +223,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
       title: '说说',
       icon: (
         <Icon>
-          <Comments />
+          <CommentsIcon />
         </Icon>
       ),
     },
@@ -235,7 +237,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           query: { page: 1 },
           icon: (
             <Icon>
-              <Eye />
+              <EyeIcon />
             </Icon>
           ),
         },
@@ -248,7 +250,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           title: '说点什么呢',
           icon: (
             <Icon>
-              <PencilAlt />
+              <PencilAltIcon />
             </Icon>
           ),
         },
@@ -263,7 +265,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
       title: '速记',
       icon: (
         <Icon>
-          <Pencil />
+          <PencilIcon />
         </Icon>
       ),
     },
@@ -276,7 +278,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
       title: '项目',
       icon: (
         <Icon>
-          <Flask />
+          <FlaskIcon />
         </Icon>
       ),
     },
@@ -290,7 +292,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           query: { page: 1 },
           icon: (
             <Icon>
-              <Eye />
+              <EyeIcon />
             </Icon>
           ),
         },
@@ -303,7 +305,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           title: '创建项目',
           icon: (
             <Icon>
-              <PencilAlt />
+              <PencilAltIcon />
             </Icon>
           ),
         },
@@ -318,7 +320,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
       title: '朋友们',
       icon: (
         <Icon>
-          <UserFriends />
+          <UserFriendsIcon />
         </Icon>
       ),
       query: { state: '0' },
@@ -334,7 +336,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
       title: '数据',
       icon: (
         <Icon>
-          <ChartLine />
+          <ChartLineIcon />
         </Icon>
       ),
       query: { page: 1 },
@@ -347,7 +349,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
       title: '设定',
       icon: (
         <Icon>
-          <Cogs />
+          <CogsIcon />
         </Icon>
       ),
       params: { type: 'user' },
@@ -371,7 +373,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
       title: '其他',
       icon: (
         <Icon>
-          <EllipsisH />
+          <EllipsisHIcon />
         </Icon>
       ),
     },
@@ -384,7 +386,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           title: '区块与片段',
           icon: (
             <Icon>
-              <Snippet />
+              <SnippetIcon />
             </Icon>
           ),
         },
@@ -397,7 +399,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           title: '模板编辑',
           icon: (
             <Icon>
-              <Template />
+              <TemplateIcon />
             </Icon>
           ),
         },
@@ -410,7 +412,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           title: '备份',
           icon: (
             <Icon>
-              <UndoAlt />
+              <UndoAltIcon />
             </Icon>
           ),
         },
@@ -424,7 +426,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
 
           icon: (
             <Icon>
-              <Markdown />
+              <MarkdownIcon />
             </Icon>
           ),
         },
@@ -437,7 +439,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           title: '任务',
           icon: (
             <Icon>
-              <Clock />
+              <ClockIcon />
             </Icon>
           ),
         },
@@ -450,7 +452,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           title: '日志',
           icon: (
             <Icon>
-              <Log />
+              <LogIcon />
             </Icon>
           ),
         },

@@ -1,6 +1,5 @@
-import TelegramPlane from '@vicons/fa/es/TelegramPlane'
-import Comment12Filled from '@vicons/fluent/es/Comment12Filled'
 import { HeaderActionButton } from 'components/button/rounded-button'
+import { CommentIcon, SendIcon } from 'components/icons'
 import { fetchHitokoto, SentenceType } from 'external/api/hitokoto'
 import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
 import { ContentLayout } from 'layouts/content'
@@ -151,7 +150,7 @@ const EditSay = defineComponent({
                 name="更新"
                 variant="info"
                 onClick={handleSubmit}
-                icon={<TelegramPlane></TelegramPlane>}
+                icon={<SendIcon></SendIcon>}
               ></HeaderActionButton>
             ) : (
               <>
@@ -159,13 +158,13 @@ const EditSay = defineComponent({
                   name="发布一言"
                   variant={'info'}
                   onClick={handlePostHitokoto}
-                  icon={<Comment12Filled></Comment12Filled>}
+                  icon={<CommentIcon></CommentIcon>}
                 ></HeaderActionButton>
                 <HeaderActionButton
                   name="发布自己说的"
                   variant={'primary'}
                   onClick={handleSubmit}
-                  icon={<TelegramPlane></TelegramPlane>}
+                  icon={<SendIcon></SendIcon>}
                 ></HeaderActionButton>
               </>
             )}

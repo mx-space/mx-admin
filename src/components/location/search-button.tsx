@@ -1,5 +1,5 @@
-import Search24Regular from '@vicons/fluent/es/Search24Regular'
 import { Icon } from '@vicons/utils'
+import { SearchIcon } from 'components/icons'
 import { debounce } from 'lodash-es'
 import { AMapSearch } from 'models/amap'
 import {
@@ -86,7 +86,7 @@ export const SearchLocationButton = defineComponent({
             icon() {
               return (
                 <Icon>
-                  <Search24Regular />
+                  <SearchIcon />
                 </Icon>
               )
             },

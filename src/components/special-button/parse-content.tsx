@@ -1,8 +1,7 @@
-import QuestionCircleOutlined from '@vicons/antd/es/QuestionCircleOutlined'
-import SlackHash from '@vicons/fa/SlackHash'
 import { Icon } from '@vicons/utils'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { PlainEditor } from 'components/editor/plain/plain'
+import { QuestionCircleIcon, SlackHashIcon } from 'components/icons'
 import { load } from 'js-yaml'
 import {
   NButton,
@@ -64,7 +63,7 @@ export const ParseContentButton = defineComponent({
     return () => (
       <>
         <HeaderActionButton
-          icon={<SlackHash />}
+          icon={<SlackHashIcon />}
           variant="info"
           onClick={() => (parseContentDialogShow.value = true)}
         ></HeaderActionButton>
@@ -112,7 +111,7 @@ permalink: posts/visualize-list-scroll-restoration
                         trigger() {
                           return (
                             <Icon>
-                              <QuestionCircleOutlined></QuestionCircleOutlined>
+                              <QuestionCircleIcon></QuestionCircleIcon>
                             </Icon>
                           )
                         },
