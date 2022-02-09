@@ -1,11 +1,13 @@
 import clsx from 'clsx'
 import { useInjector } from 'hooks/use-deps-injection'
+import { NSpin } from 'naive-ui'
 import { UIStore } from 'stores/ui'
 import { PropType } from 'vue'
-import { ITerminalOptions, Terminal } from 'xterm'
+import type { ITerminalOptions, Terminal } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
 import { Material, MaterialDark } from 'xterm-theme'
 import 'xterm/css/xterm.css'
+
 function changeDarkTheme(term: Terminal, dark: boolean) {
   if (dark) {
     term.options.theme = { ...MaterialDark, background: 'rgba(0,0,0,0)' }
@@ -46,7 +48,11 @@ export const Xterm = defineComponent({
         }
       },
     )
-    onMounted(() => {
+
+    const loading = ref(true)
+    onMounted(async () => {
+      const { Terminal } = await import('xterm')
+
       term = new Terminal({
         rows: 40,
         scrollback: 100000,
@@ -63,7 +69,7 @@ export const Xterm = defineComponent({
       term.open(termRef.value!)
       fitAddon.fit()
       changeDarkTheme(term, isDark.value)
-
+      loading.value = false
       props.onReady?.(term)
     })
 
@@ -71,11 +77,13 @@ export const Xterm = defineComponent({
       props.onDestory?.()
     })
     return () => (
-      <div
-        id="xterm"
-        class={clsx('max-h-[70vh] !bg-transparent', props.class)}
-        ref={termRef}
-      ></div>
+      <NSpin show={loading.value}>
+        <div
+          id="xterm"
+          class={clsx('max-h-[70vh] !bg-transparent', props.class)}
+          ref={termRef}
+        ></div>
+      </NSpin>
     )
   },
 })

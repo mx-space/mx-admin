@@ -12,14 +12,30 @@ export const RealtimeLogPipeline = defineComponent({
     }
 
     let term: Terminal
-    const xtermHandler = (e) => {
-      term?.write(e)
+    let messageQueue: string[] = []
+    const logHandler = (e) => {
+      if (!term) {
+        messageQueue.push(e)
+      } else {
+        if (messageQueue.length > 0) {
+          emptyQueue(term)
+        }
+        term.write(e)
+      }
+    }
+
+    const emptyQueue = (term: Terminal) => {
+      while (messageQueue.length) {
+        const message = messageQueue.shift()
+
+        term.write(message!)
+      }
     }
 
     onMounted(() => {
       listen()
 
-      bus.on(EventTypes.STDOUT, xtermHandler)
+      bus.on(EventTypes.STDOUT, logHandler)
     })
 
     useMountAndUnmount(() => {
@@ -36,13 +52,15 @@ export const RealtimeLogPipeline = defineComponent({
     onUnmounted(() => {
       socket.socket.emit('unlog')
 
-      bus.off(EventTypes.STDOUT, xtermHandler)
+      bus.off(EventTypes.STDOUT, logHandler)
     })
 
     return () => (
       <Xterm
         onReady={(_term) => {
           term = _term
+
+          emptyQueue(term)
         }}
       />
     )
