@@ -60,7 +60,7 @@
     "vite-plugin-windicss": "1.6.3",
     "vue": "3.2.29",
     "vue-router": "4.0.12",
-    "xterm": "4.16.0",
+    "xterm": "4.17.0",
     "xterm-addon-fit": "0.5.0",
     "xterm-theme": "1.1.0"
   },

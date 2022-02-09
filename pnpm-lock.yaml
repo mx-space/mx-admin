@@ -69,7 +69,7 @@ specifiers:
   vue-eslint-parser: 8.2.0
   vue-router: 4.0.12
   windicss: 3.4.3
-  xterm: 4.16.0
+  xterm: 4.17.0
   xterm-addon-fit: 0.5.0
   xterm-theme: 1.1.0
 
@@ -119,8 +119,8 @@ dependencies:
   vite-plugin-windicss: 1.6.3_vite@2.7.13
   vue: 3.2.29
   vue-router: 4.0.12_vue@3.2.29
-  xterm: 4.16.0
-  xterm-addon-fit: 0.5.0_xterm@4.16.0
+  xterm: 4.17.0
+  xterm-addon-fit: 0.5.0_xterm@4.17.0
   xterm-theme: 1.1.0
 
 devDependencies:
@@ -3858,20 +3858,20 @@ packages:
     engines: {node: '>=0.4.0'}
     dev: false
 
-  /xterm-addon-fit/0.5.0_xterm@4.16.0:
+  /xterm-addon-fit/0.5.0_xterm@4.17.0:
     resolution: {integrity: sha512-DsS9fqhXHacEmsPxBJZvfj2la30Iz9xk+UKjhQgnYNkrUIN5CYLbw7WEfz117c7+S86S/tpHPfvNxJsF5/G8wQ==}
     peerDependencies:
       xterm: ^4.0.0
     dependencies:
-      xterm: 4.16.0
+      xterm: 4.17.0
     dev: false
 
   /xterm-theme/1.1.0:
     resolution: {integrity: sha512-n2GocBEbqcz4vEl4OYkU93hEVia8GWdnqchiz/0nQ/olRUyhulGf4wfha23x/D2m0imWaIavRZtt8c6kWZXdsA==}
     dev: false
 
-  /xterm/4.16.0:
-    resolution: {integrity: sha512-nAbuigL9CYkI075mdfqpnB8cHZNKxENCj1CQ9Tm5gSvWkMtkanmRN2mkHGjSaET1/3+X9BqISFFo7Pd2mXVjiQ==}
+  /xterm/4.17.0:
+    resolution: {integrity: sha512-WGXlIHvLvZKtwMdFaL6kUwp+c9abd2Pcakp/GmuefBuOtGCu9fP9tBDPKyL/A17N+5tt44EYk3YsBbvkPBubMw==}
     dev: false
 
   /y18n/5.0.8:
