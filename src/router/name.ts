@@ -39,4 +39,5 @@ export enum RouteName {
   Snippet = 'snippet',
 
   AssetTemplate = 'asset-template',
+  Pty = 'pty',
 }

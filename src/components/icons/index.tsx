@@ -194,3 +194,18 @@ export const CheckIcon = defineComponent({
 })
 
 export const PlusIcon = AddIcon
+
+export const TerminalIcon = () => (
+  <svg width="1em" height="1em" viewBox="0 0 24 24">
+    <g
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="M4 17l6-6l-6-6"></path>
+      <path d="M12 19h8"></path>
+    </g>
+  </svg>
+)

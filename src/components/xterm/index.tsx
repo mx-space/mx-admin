@@ -1,5 +1,6 @@
 import clsx from 'clsx'
 import { useInjector } from 'hooks/use-deps-injection'
+import { useMountAndUnmount } from 'hooks/use-react'
 import { NSpin } from 'naive-ui'
 import { UIStore } from 'stores/ui'
 import { PropType } from 'vue'
@@ -18,6 +19,12 @@ function changeDarkTheme(term: Terminal, dark: boolean) {
 
 export const Xterm = defineComponent({
   props: {
+    onResize: {
+      type: Function as PropType<
+        (size: { cols: number; rows: number }) => void
+      >,
+      required: false,
+    },
     onReady: {
       type: Function as PropType<(term: Terminal) => void>,
       required: false,
@@ -50,7 +57,7 @@ export const Xterm = defineComponent({
     )
 
     const loading = ref(true)
-    onMounted(async () => {
+    useMountAndUnmount(async () => {
       const { Terminal } = await import('xterm')
 
       term = new Terminal({
@@ -68,9 +75,27 @@ export const Xterm = defineComponent({
 
       term.open(termRef.value!)
       fitAddon.fit()
+
+      const observer = new ResizeObserver(() => {
+        fitAddon.fit()
+
+        if (props.onResize) {
+          props.onResize({
+            cols: term.cols,
+            rows: term.rows,
+          })
+        }
+      })
+
+      observer.observe(termRef.value!)
+
       changeDarkTheme(term, isDark.value)
       loading.value = false
       props.onReady?.(term)
+
+      return () => {
+        observer.disconnect()
+      }
     })
 
     onUnmounted(() => {
