@@ -5,11 +5,36 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Modify some icon
+- Change copy
+
+### Documentation
+
+- Update readme
+
+### Features
+
+- Pty support & webshell embed
+- Improve xterm background
+- Add terminal options
+
+### Refactor
+
+- Header comp
+
+## [3.14.3] - 2022-02-09
+
+### Bug Fixes
+
 - Revert vite-check version
 
 ### Ci
 
 - Page build ci
+
+### Release
+
+- V3.14.3
 
 ## [3.14.2] - 2022-02-09
 
