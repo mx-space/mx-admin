@@ -30,7 +30,7 @@ export default defineComponent({
 
     useMountAndUnmount(() => {
       const handler = () => {
-        message.error('连接已断开')
+        message.error('连接已断开', { closable: true })
       }
       socket.socket.on('disconnect', handler)
 

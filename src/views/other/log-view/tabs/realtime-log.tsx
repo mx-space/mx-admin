@@ -7,8 +7,8 @@ import { Terminal } from 'xterm'
 
 export const RealtimeLogPipeline = defineComponent({
   setup() {
-    const listen = () => {
-      socket.socket.emit('log')
+    const listen = (prevLog = true) => {
+      socket.socket.emit('log', { prevLog })
     }
 
     let term: Terminal
@@ -40,12 +40,12 @@ export const RealtimeLogPipeline = defineComponent({
 
     useMountAndUnmount(() => {
       const handler = () => {
-        listen()
+        listen(false)
       }
-      socket.socket.on('reconnect', handler)
+      socket.socket.io.on('open', handler)
 
       return () => {
-        socket.socket.off('reconnect', handler)
+        socket.socket.io.off('open', handler)
       }
     })
 

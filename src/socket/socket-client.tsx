@@ -27,13 +27,15 @@ const Notification = {
   },
 }
 export class SocketClient {
-  public socket!: ReturnType<typeof io>
+  private _socket!: ReturnType<typeof io>
+
+  get socket() {
+    return this._socket
+  }
 
   #title = configs.title
   #notice = new BrowserNotification()
-  constructor() {
-    this.initIO()
-  }
+  constructor() {}
 
   private isInit = false
   initIO() {
@@ -45,18 +47,15 @@ export class SocketClient {
     if (!token) {
       return
     }
-    this.socket = io(GATEWAY_URL + '/admin', {
+    this._socket = io(GATEWAY_URL + '/admin', {
       timeout: 10000,
-      reconnectionDelay: 3000,
-      autoConnect: false,
-      reconnectionAttempts: 3,
       transports: ['websocket'],
+      forceNew: true,
       query: {
         token: token.replace(/^bearer\s/, ''),
       },
     })
 
-    this.socket.open()
     this.socket.on(
       'message',
       (payload: string | Record<'type' | 'data' | 'code', any>) => {
@@ -71,8 +70,42 @@ export class SocketClient {
         this.handleEvent(type, data, code)
       },
     )
-    this.socket.on('error', () => {
-      window.message.error('Socket 连接异常')
+    this.socket.on('connect_error', () => {
+      if (__DEV__) {
+        window.message.error('Socket 连接异常')
+      }
+    })
+
+    this.socket.io.on('error', () => {
+      if (__DEV__) {
+        window.message.error('Socket 连接异常')
+      }
+    })
+    this.socket.io.on('reconnect', () => {
+      if (__DEV__) {
+        window.message.info('Socket 重连成功')
+      }
+    })
+    this.socket.io.on('reconnect_attempt', () => {
+      if (__DEV__) {
+        window.message.info('Socket 重连中')
+      }
+    })
+    this.socket.io.on('reconnect_failed', () => {
+      if (__DEV__) {
+        window.message.info('Socket 重连失败')
+      }
+    })
+
+    this.socket.on('disconnect', () => {
+      const tryReconnect = () => {
+        if (this.socket.connected === false) {
+          this.socket.io.connect()
+        } else {
+          timer = clearInterval(timer)
+        }
+      }
+      let timer: any = setInterval(tryReconnect, 2000)
     })
 
     this.isInit = true
@@ -181,7 +214,9 @@ export class SocketClient {
         break
       }
       default: {
-        console.log(type, payload, code)
+        if (__DEV__) {
+          console.log(type, payload, code)
+        }
       }
     }
 
@@ -194,6 +229,9 @@ export class SocketClient {
     }
     this.socket.disconnect()
     this.socket.off('message')
+    this.socket.offAny()
+
+    this._socket = null!
 
     this.isInit = false
   }
