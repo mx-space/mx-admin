@@ -10,16 +10,21 @@
 
 import { EventTypes } from 'socket/types'
 
+type IDisposable = () => void
 export class EventBus {
   private observers: Record<string, Function[]> = {}
 
-  on(event: EventTypes, handler: any): void
-  on(event: string, handler: any): void
-  on(event: string, handler: (...rest: any) => void) {
+  on(event: EventTypes, handler: any): IDisposable
+  on(event: string, handler: any): IDisposable
+  on(event: string, handler: (...rest: any) => void): IDisposable {
     const queue = this.observers[event]
+
+    const disposer = () => {
+      this.off(event, handler)
+    }
     if (!queue) {
       this.observers[event] = [handler]
-      return
+      return disposer
     }
     const isExist = queue.some((func) => {
       return func === handler
@@ -27,17 +32,19 @@ export class EventBus {
     if (!isExist) {
       this.observers[event].push(handler)
     }
+
+    return disposer
   }
 
-  emit(event: string, payload?: any): void
-  emit(event: EventTypes, payload?: any): void
-  emit(event: EventTypes, payload?: any) {
+  emit(event: string, payload?: any, ...args: any[]): void
+  emit(event: EventTypes, payload?: any, ...args: any[]): void
+  emit(event: EventTypes, payload?: any, ...args: any[]) {
     const queue = this.observers[event]
     if (!queue) {
       return
     }
     for (const func of queue) {
-      func.call(this, payload)
+      func.call(this, payload, ...args)
     }
   }
 

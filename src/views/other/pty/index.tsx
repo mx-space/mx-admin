@@ -1,10 +1,14 @@
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { RefreshIcon } from 'components/icons'
 import { Xterm } from 'components/xterm'
+import { useMountAndUnmount } from 'hooks/use-react'
 import { ContentLayout } from 'layouts/content'
+import { merge } from 'lodash-es'
+import { NButton, NForm, NInput, useDialog, useMessage } from 'naive-ui'
 import { socket } from 'socket'
 import { EventTypes } from 'socket/types'
 import { bus } from 'utils/event-bus'
+import { PropType } from 'vue'
 import { IDisposable, Terminal } from 'xterm'
 
 export default defineComponent({
@@ -18,7 +22,54 @@ export default defineComponent({
 
     const writeHandler = (data) => {
       term.write(data)
+
+      term.focus()
     }
+    const message = useMessage()
+    const modal = useDialog()
+
+    useMountAndUnmount(() => {
+      const handler = () => {
+        message.error('连接已断开')
+      }
+      socket.socket.on('disconnect', handler)
+
+      return () => {
+        socket.socket.off('disconnect', handler)
+      }
+    })
+
+    useMountAndUnmount(() => {
+      const dispose = bus.on(EventTypes.PTY_MESSAGE, (data, code) => {
+        if (code === 10000 || code === 10001) {
+          const $modal = modal.create({
+            title: '验证密码',
+            closable: true,
+            content: () => (
+              <PasswordConfirmDialog
+                onConfirm={(pwd) => {
+                  socket.socket.emit(
+                    'pty',
+                    merge(
+                      term ? { cols: term.cols, rows: term.rows } : undefined,
+                      { password: pwd },
+                    ),
+                  )
+                  requestAnimationFrame(() => {
+                    $modal.destroy()
+                  })
+                }}
+              />
+            ),
+          })
+        }
+        message.info(data)
+      })
+
+      return () => {
+        dispose()
+      }
+    })
 
     const cleaner = watch(
       () => ready.value,
@@ -43,6 +94,20 @@ export default defineComponent({
       bus.off(EventTypes.PTY, writeHandler)
     })
 
+    const reconnection = () => {
+      if (term) {
+        term.clear()
+      }
+
+      socket.socket.emit('pty-exit')
+
+      setTimeout(() => {
+        socket.socket.emit(
+          'pty',
+          term ? { cols: term.cols, rows: term.rows } : undefined,
+        )
+      }, 50)
+    }
     return () => (
       <ContentLayout
         actionsElement={
@@ -50,20 +115,7 @@ export default defineComponent({
             <HeaderActionButton
               icon={<RefreshIcon />}
               name="重新连接"
-              onClick={() => {
-                if (term) {
-                  term.clear()
-                }
-
-                socket.socket.emit('pty-exit')
-
-                setTimeout(() => {
-                  socket.socket.emit(
-                    'pty',
-                    term ? { cols: term.cols, rows: term.rows } : undefined,
-                  )
-                }, 50)
-              }}
+              onClick={reconnection}
             ></HeaderActionButton>
           </>
         }
@@ -79,6 +131,37 @@ export default defineComponent({
           }}
         />
       </ContentLayout>
+    )
+  },
+})
+
+const PasswordConfirmDialog = defineComponent({
+  props: {
+    onConfirm: Function as PropType<(password: string) => void>,
+  },
+  setup(props) {
+    const password = ref('')
+    const submit = (e: Event) => {
+      e.preventDefault()
+      props.onConfirm?.(password.value)
+    }
+    return () => (
+      <NForm onSubmit={submit} class="space-y-6 mt-6">
+        <NInput
+          showPasswordOn="mousedown"
+          type="password"
+          value={password.value}
+          placeholder="请输入密码"
+          onUpdateValue={(val) => {
+            password.value = val
+          }}
+        />
+        <div class="flex justify-center">
+          <NButton round type="primary" onClick={submit}>
+            确认
+          </NButton>
+        </div>
+      </NForm>
     )
   },
 })

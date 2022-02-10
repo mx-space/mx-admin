@@ -59,15 +59,16 @@ export class SocketClient {
     this.socket.open()
     this.socket.on(
       'message',
-      (payload: string | Record<'type' | 'data', any>) => {
+      (payload: string | Record<'type' | 'data' | 'code', any>) => {
         if (typeof payload !== 'string') {
-          return this.handleEvent(payload.type, payload.data)
+          return this.handleEvent(payload.type, payload.data, payload.code)
         }
-        const { data, type } = JSON.parse(payload) as {
+        const { data, type, code } = JSON.parse(payload) as {
           data: any
           type: EventTypes
+          code?: number
         }
-        this.handleEvent(type, data)
+        this.handleEvent(type, data, code)
       },
     )
     this.socket.on('error', () => {
@@ -77,7 +78,7 @@ export class SocketClient {
     this.isInit = true
   }
 
-  handleEvent(type: EventTypes, payload: any) {
+  handleEvent(type: EventTypes, payload: any, code?: number) {
     switch (type) {
       case EventTypes.GATEWAY_CONNECT: {
         break
@@ -180,11 +181,11 @@ export class SocketClient {
         break
       }
       default: {
-        console.log(type, payload)
+        console.log(type, payload, code)
       }
     }
 
-    bus.emit(type, payload)
+    bus.emit(type, payload, code)
   }
 
   destory() {

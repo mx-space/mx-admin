@@ -523,9 +523,19 @@ export const TabSystem = defineComponent(() => {
                   void (configs.value.terminalOptions.password = e)
                 }
               ></NInput>
-              <NText class="text-xs" depth={3}>
+              <NText class="ml-4 text-xs" depth={3}>
                 密码为空则不启用
               </NText>
+            </NFormItem>
+            <NFormItem label="预先执行命令">
+              <NInput
+                type="textarea"
+                autosize={{ minRows: 4 }}
+                value={configs.value.terminalOptions.script}
+                onUpdateValue={(val) =>
+                  void (configs.value.terminalOptions.script = val)
+                }
+              ></NInput>
             </NFormItem>
           </NForm>
         </NCollapseItem>
@@ -582,6 +592,7 @@ function mergeFullConfigs(configs: any): IConfig {
       },
       terminalOptions: {
         enable: false,
+        script: '',
       },
     },
     configs,

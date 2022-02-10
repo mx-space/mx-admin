@@ -52,6 +52,7 @@ export declare class AdminExtraDto {
 export declare class TerminalOptionsDto {
   enable: boolean
   password?: string
+  script?: string
 }
 
 export declare abstract class IConfig {

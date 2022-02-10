@@ -21,15 +21,23 @@
 }
 
 .collapse-button {
-  @apply absolute right-0 mr-4 top-0 bottom-0 text-base;
+  @apply absolute right-8 top-0 bottom-0 text-base;
+
+  transition: right 0.5s;
 }
 
 .toggle-color-btn {
-  @apply absolute left-[1rem] top-0 bottom-0 flex items-center text-base;
+  @apply absolute left-8 top-0 bottom-0 flex items-center text-base;
+
+  transition: left 0.5s;
+}
+
+.root.collapse .collapse-button {
+  @apply right-4;
 }
 
 .root.collapse .toggle-color-btn {
-  @apply left-[-2.5rem];
+  @apply -left-10;
 }
 
 .root.collapse .collapse-button {
