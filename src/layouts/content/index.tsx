@@ -1,12 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-empty-function */
 
-import { Icon } from '@vicons/utils'
 import clsx from 'clsx'
-import { MoonIcon, SunIcon } from 'components/icons'
-import { useInjector } from 'hooks/use-deps-injection'
 import { NLayoutContent } from 'naive-ui'
-import { UIStore } from 'stores/ui'
 import {
   computed,
   defineComponent,
@@ -103,7 +99,6 @@ export const ContentLayout = defineComponent({
         ),
     )
 
-    const { isDark, toggleDark } = useInjector(UIStore)
     const SettingHeaderEl = ref<(() => VNode) | null>()
     // 抽出动态组件, 防止整个子代组件全部重渲染
     const Header = defineComponent({
@@ -131,9 +126,6 @@ export const ContentLayout = defineComponent({
                 ))
               : null}
             {props.footerButtonElement ? <A$fel /> : slots.buttons?.()}
-            <button onClick={() => void toggleDark()}>
-              <Icon>{isDark.value ? <SunIcon /> : <MoonIcon />}</Icon>
-            </button>
           </footer>
         )
       },

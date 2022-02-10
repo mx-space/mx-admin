@@ -1,7 +1,6 @@
-import { Icon } from '@vicons/utils'
 import { onClickOutside } from '@vueuse/core'
 import clsx from 'clsx'
-import { HamburgerIcon } from 'components/icons'
+import { HamburgerIcon, MoonIcon, SunIcon } from 'components/icons'
 import { WEB_URL } from 'constants/env'
 import { NLayoutContent } from 'naive-ui'
 import { AppStore } from 'stores/app'
@@ -87,6 +86,7 @@ export const Sidebar = defineComponent({
         props.onCollapseChange(true)
       }
     })
+    const { isDark, toggleDark } = useInjector(UIStore)
     return () => (
       <div
         class={clsx(styles['root'], props.collapse ? styles['collapse'] : null)}
@@ -102,6 +102,12 @@ export const Sidebar = defineComponent({
           }
         >
           <div class={'title relative font-medium text-center text-2xl'}>
+            <button
+              class={styles['toggle-color-btn']}
+              onClick={() => void toggleDark()}
+            >
+              {!isDark.value ? <SunIcon /> : <MoonIcon />}
+            </button>
             <h1 class="py-6" style={{ display: props.collapse ? 'none' : '' }}>
               {title}
             </h1>
@@ -111,9 +117,7 @@ export const Sidebar = defineComponent({
                 props.onCollapseChange(!props.collapse)
               }}
             >
-              <Icon>
-                <HamburgerIcon />
-              </Icon>
+              <HamburgerIcon />
             </button>
           </div>
 

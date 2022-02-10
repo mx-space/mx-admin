@@ -5,7 +5,6 @@ import Snippet from '@vicons/antd/SnippetsFilled'
 import Book from '@vicons/fa/es/Book'
 import Bookmark from '@vicons/fa/es/Bookmark'
 import ChartLine from '@vicons/fa/es/ChartLine'
-import Code from '@vicons/fa/es/Code'
 import Cogs from '@vicons/fa/es/Cogs'
 import Comment from '@vicons/fa/es/Comment'
 import Comments from '@vicons/fa/es/Comments'
@@ -15,11 +14,9 @@ import File from '@vicons/fa/es/File'
 import Flask from '@vicons/fa/es/Flask'
 import Heart from '@vicons/fa/es/Heart'
 import Markdown from '@vicons/fa/es/Markdown'
-import Moon from '@vicons/fa/es/Moon'
 import PencilAlt from '@vicons/fa/es/PencilAlt'
 import PuzzlePiece from '@vicons/fa/es/PuzzlePiece'
 import SlidersH from '@vicons/fa/es/SlidersH'
-import Sun from '@vicons/fa/es/Sun'
 import TachometerAlt from '@vicons/fa/es/TachometerAlt'
 import TelegramPlane from '@vicons/fa/es/TelegramPlane'
 import ThumbsUp from '@vicons/fa/es/ThumbsUp'
@@ -41,7 +38,6 @@ import ChatbubblesSharp from '@vicons/ionicons5/es/ChatbubblesSharp'
 import CheckmarkSharp from '@vicons/ionicons5/es/CheckmarkSharp'
 import CloseSharp from '@vicons/ionicons5/es/CloseSharp'
 import Extension24Filled from '@vicons/ionicons5/es/ExtensionPuzzle'
-import Hamburger from '@vicons/ionicons5/es/Menu'
 import RefreshCircle from '@vicons/ionicons5/es/RefreshCircle'
 import RefreshOutline from '@vicons/ionicons5/es/RefreshOutline'
 import Trash from '@vicons/ionicons5/es/Trash'
@@ -59,7 +55,6 @@ import ExternalLink from '@vicons/tabler/es/ExternalLink'
 import Template from '@vicons/tabler/es/Layout2'
 import Log from '@vicons/tabler/es/News'
 import Pencil from '@vicons/tabler/es/Pencil'
-import Refresh from '@vicons/tabler/es/Refresh'
 import Settings from '@vicons/tabler/es/Settings'
 export { Lock as LockIcon }
 export { Pen as PenIcon }
@@ -83,7 +78,6 @@ export {
   OnlinePredictionFilled as OnlinePredictionFilledIcon,
   Activity as ActivityIcon,
   Copy as CopyIcon,
-  Refresh as RefreshIcon,
 }
 export { CloseSharp as CloseSharpIcon }
 export { CheckmarkSharp as CheckmarkSharpIcon }
@@ -92,7 +86,6 @@ export { RefreshOutline as RefreshOutlineIcon, Trash as TrashIcon }
 export {
   Snippet as SnippetIcon,
   ChartLine as ChartLineIcon,
-  Code as CodeIcon,
   Cogs as CogsIcon,
   Comment as CommentIcon,
   Comments as CommentsIcon,
@@ -111,10 +104,8 @@ export {
   Log as LogIcon,
   Pencil as PencilIcon,
 }
-export { Moon as MoonIcon, Sun as SunIcon }
 export { QuestionCircleOutlined as QuestionCircleIcon }
 export { SlackHash as SlackHashIcon }
-export { Hamburger as HamburgerIcon }
 export { Search24Regular as SearchIcon }
 export { Location24Regular as LocationIcon }
 export { ExternalLink as ExternalLinkIcon }
@@ -125,6 +116,62 @@ export { Bookmark as BookmarkIcon }
 export { Heart as HeartIcon }
 export { EyeHide20Filled as EyeHideIcon }
 export { RefreshCircle }
+
+export const HamburgerIcon = () => (
+  <svg width="1em" height="1em" viewBox="0 0 24 24">
+    <path
+      d="M18.41 16.59L13.82 12l4.59-4.59L17 6l-6 6l6 6l1.41-1.41M6 6h2v12H6V6z"
+      fill="currentColor"
+    ></path>
+  </svg>
+)
+export const SunIcon = () => (
+  <svg width="1em" height="1em" viewBox="0 0 256 256">
+    <path
+      d="M128 60a68 68 0 1 0 68 68a68.1 68.1 0 0 0-68-68zm0 120a52 52 0 1 1 52-52a52 52 0 0 1-52 52zm-8-144V16a8 8 0 0 1 16 0v20a8 8 0 0 1-16 0zM43.1 54.5a8.1 8.1 0 1 1 11.4-11.4l14.1 14.2a8 8 0 0 1 0 11.3a8.1 8.1 0 0 1-11.3 0zM36 136H16a8 8 0 0 1 0-16h20a8 8 0 0 1 0 16zm32.6 51.4a8 8 0 0 1 0 11.3l-14.1 14.2a8.3 8.3 0 0 1-5.7 2.3a8.5 8.5 0 0 1-5.7-2.3a8.1 8.1 0 0 1 0-11.4l14.2-14.1a8 8 0 0 1 11.3 0zM136 220v20a8 8 0 0 1-16 0v-20a8 8 0 0 1 16 0zm76.9-18.5a8.1 8.1 0 0 1 0 11.4a8.5 8.5 0 0 1-5.7 2.3a8.3 8.3 0 0 1-5.7-2.3l-14.1-14.2a8 8 0 0 1 11.3-11.3zM248 128a8 8 0 0 1-8 8h-20a8 8 0 0 1 0-16h20a8 8 0 0 1 8 8zm-60.6-59.4a8 8 0 0 1 0-11.3l14.1-14.2a8.1 8.1 0 0 1 11.4 11.4l-14.2 14.1a8.1 8.1 0 0 1-11.3 0z"
+      fill="currentColor"
+    ></path>
+  </svg>
+)
+export const MoonIcon = () => (
+  <svg width="1em" height="1em" viewBox="0 0 256 256">
+    <path
+      d="M216.7 152.6A91.9 91.9 0 0 1 103.4 39.3a92 92 0 1 0 113.3 113.3z"
+      opacity=".2"
+      fill="currentColor"
+    ></path>
+    <path
+      d="M224.3 150.3a8.1 8.1 0 0 0-7.8-5.7l-2.2.4A84 84 0 0 1 111 41.6a5.7 5.7 0 0 0 .3-1.8a7.9 7.9 0 0 0-10.3-8.1a100 100 0 1 0 123.3 123.2a7.2 7.2 0 0 0 0-4.6zM128 212A84 84 0 0 1 92.8 51.7a99.9 99.9 0 0 0 111.5 111.5A84.4 84.4 0 0 1 128 212z"
+      fill="currentColor"
+    ></path>
+  </svg>
+)
+export const CodeIcon = () => (
+  <svg width="1em" height="1em" viewBox="0 0 256 256">
+    <path
+      d="M69.1 94.1L28.5 128l40.6 33.9a7.9 7.9 0 0 1 1.1 11.2A8.1 8.1 0 0 1 64 176a7.7 7.7 0 0 1-5.1-1.9l-48-40a7.9 7.9 0 0 1 0-12.2l48-40a8 8 0 1 1 10.2 12.2zm176 27.8l-48-40a8 8 0 0 0-10.2 12.2l40.6 33.9l-40.6 33.9A8 8 0 0 0 192 176a7.7 7.7 0 0 0 5.1-1.9l48-40a7.9 7.9 0 0 0 0-12.2zm-82.4-89.4a7.9 7.9 0 0 0-10.2 4.8l-64 176a7.9 7.9 0 0 0 4.8 10.2a8.6 8.6 0 0 0 2.7.5a7.9 7.9 0 0 0 7.5-5.3l64-176a7.9 7.9 0 0 0-4.8-10.2z"
+      fill="currentColor"
+    ></path>
+  </svg>
+)
+export const RefreshIcon = () => (
+  <svg width="1em" height="1em" viewBox="0 0 24 24">
+    <g stroke-width="1.5" fill="none">
+      <path
+        d="M21.888 13.5C21.164 18.311 17.013 22 12 22C6.477 22 2 17.523 2 12S6.477 2 12 2c4.1 0 7.625 2.468 9.168 6"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      ></path>
+      <path
+        d="M17 8h4.4a.6.6 0 0 0 .6-.6V3"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      ></path>
+    </g>
+  </svg>
+)
 
 export const MagnifyIcon = defineComponent({
   setup() {

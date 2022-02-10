@@ -21,12 +21,21 @@
 }
 
 .collapse-button {
-  @apply absolute right-0 mr-4 top-0 bottom-0 text-lg;
+  @apply absolute right-0 mr-4 top-0 bottom-0 text-base;
+}
+
+.toggle-color-btn {
+  @apply absolute left-[1rem] top-0 bottom-0 flex items-center text-base;
+}
+
+.root.collapse .toggle-color-btn {
+  @apply left-[-2.5rem];
 }
 
 .root.collapse .collapse-button {
   @apply relative py-6 w-full flex items-center justify-center;
 }
+
 .root {
   .sidebar {
     width: var(--w);
