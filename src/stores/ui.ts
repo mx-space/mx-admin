@@ -86,6 +86,8 @@ export function UIStore() {
       }
     },
   )
+
+  const naiveUIDark = ref(false)
   return {
     viewport,
     contentWidth,
@@ -95,5 +97,10 @@ export function UIStore() {
 
     isDark,
     toggleDark,
+
+    naiveUIDark,
+    onlyToggleNaiveUIDark: (dark?: boolean) => {
+      naiveUIDark.value = dark ?? !naiveUIDark.value
+    },
   }
 }

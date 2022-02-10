@@ -6,15 +6,28 @@ import { UIStore } from 'stores/ui'
 import { PropType } from 'vue'
 import type { ITerminalOptions, Terminal } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
-import { Material, MaterialDark } from 'xterm-theme'
 import 'xterm/css/xterm.css'
-
-function changeDarkTheme(term: Terminal, dark: boolean) {
-  if (dark) {
-    term.options.theme = { ...MaterialDark, background: 'rgba(0,0,0,0)' }
-  } else {
-    term.options.theme = { ...Material, background: 'rgba(0,0,0,0)' }
-  }
+const xtermTheme = {
+  black: '#000000',
+  red: '#fd5ff1',
+  green: '#87c38a',
+  yellow: '#ffd7b1',
+  blue: '#85befd',
+  magenta: '#b9b6fc',
+  cyan: '#85befd',
+  white: '#e0e0e0',
+  brightBlack: '#000000',
+  brightRed: '#fd5ff1',
+  brightGreen: '#94fa36',
+  brightYellow: '#f5ffa8',
+  brightBlue: '#96cbfe',
+  brightMagenta: '#b9b6fc',
+  brightCyan: '#85befd',
+  brightWhite: '#e0e0e0',
+  foreground: '#c5c8c6',
+  cursor: '#d0d0d0',
+  selection: '#444444',
+  background: 'rgba(0,0,0,0)',
 }
 
 export const Xterm = defineComponent({
@@ -46,17 +59,16 @@ export const Xterm = defineComponent({
     let term: Terminal
 
     const termRef = ref<HTMLElement>()
-    const { isDark } = useInjector(UIStore)
-    watch(
-      () => isDark.value,
-      (isDark) => {
-        if (term) {
-          changeDarkTheme(term, isDark)
-        }
-      },
-    )
+    const { onlyToggleNaiveUIDark } = useInjector(UIStore)
 
     const loading = ref(true)
+
+    useMountAndUnmount(() => {
+      onlyToggleNaiveUIDark(true)
+      return () => {
+        onlyToggleNaiveUIDark(false)
+      }
+    })
     useMountAndUnmount(async () => {
       const { Terminal } = await import('xterm')
 
@@ -67,7 +79,7 @@ export const Xterm = defineComponent({
         allowTransparency: true,
         convertEol: true,
         cursorStyle: 'underline',
-
+        theme: xtermTheme,
         ...props.terminalOptions,
       })
       const fitAddon = new FitAddon()
@@ -89,7 +101,6 @@ export const Xterm = defineComponent({
 
       observer.observe(termRef.value!)
 
-      changeDarkTheme(term, isDark.value)
       loading.value = false
       props.onReady?.(term)
 

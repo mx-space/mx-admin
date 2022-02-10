@@ -217,7 +217,7 @@ export const TabSystem = defineComponent(() => {
                 round
                 type="primary"
                 value={configs.value.seo.keywords}
-                onChange={(e) => void (configs.value.seo.keywords = e)}
+                onUpdateValue={(e) => void (configs.value.seo.keywords = e)}
               ></NDynamicTags>
             </NFormItem>
           </NForm>
@@ -257,7 +257,7 @@ export const TabSystem = defineComponent(() => {
                 {...autosizeableProps}
                 value={configs.value.adminExtra.gaodemapKey}
                 type={'password'}
-                showPasswordToggle
+                showPasswordOn="click"
                 clearable
                 inputProps={{ autocomplete: 'off' }}
                 onUpdateValue={(e) => {
@@ -338,7 +338,7 @@ export const TabSystem = defineComponent(() => {
               <NFormItemGi span={1} label="发件邮箱端口">
                 <NInputNumber
                   value={configs.value.mailOptions.options?.port || 465}
-                  onChange={(e) => {
+                  onUpdateValue={(e) => {
                     if (!configs.value.mailOptions.options) {
                       // @ts-ignore
                       configs.value.mailOptions.options = {}
@@ -356,7 +356,7 @@ export const TabSystem = defineComponent(() => {
               <NFormItemGi span={1} label="发件邮箱密码">
                 <NInput
                   type="password"
-                  showPasswordToggle
+                  showPasswordOn="click"
                   inputProps={{
                     name: 'email-password',
                     autocomplete: 'new-password',
@@ -411,7 +411,7 @@ export const TabSystem = defineComponent(() => {
                   autocapitalize: 'off',
                   autocorrect: 'off',
                 }}
-                showPasswordToggle
+                showPasswordOn="click"
                 value={configs.value.backupOptions.secretKey}
                 onInput={(e) =>
                   void (configs.value.backupOptions.secretKey = e)
@@ -434,7 +434,7 @@ export const TabSystem = defineComponent(() => {
             <NFormItem label="Token" path="baidu_push">
               <NInput
                 {...autosizeableProps}
-                showPasswordToggle
+                showPasswordOn="click"
                 type="password"
                 inputProps={{
                   name: 'baidu-push-password',
@@ -495,7 +495,44 @@ export const TabSystem = defineComponent(() => {
             </NFormItem>
           </NForm>
         </NCollapseItem>
+
+        <NCollapseItem name="terminal" title="终端设定">
+          <NForm {...formProps}>
+            <NFormItem label="开启 WebShell">
+              <NSwitch
+                value={configs.value.terminalOptions.enable}
+                onUpdateValue={(e) =>
+                  void (configs.value.terminalOptions.enable = e)
+                }
+              ></NSwitch>
+            </NFormItem>
+
+            <NFormItem label="设定密码">
+              <NInput
+                {...autosizeableProps}
+                value={configs.value.terminalOptions.password}
+                showPasswordOn="click"
+                type="password"
+                inputProps={{
+                  name: 'xterm-password',
+                  autocomplete: 'new-password',
+                  autocapitalize: 'off',
+                  autocorrect: 'off',
+                }}
+                onUpdateValue={(e) =>
+                  void (configs.value.terminalOptions.password = e)
+                }
+              ></NInput>
+              <NText class="text-xs" depth={3}>
+                密码为空则不启用
+              </NText>
+            </NFormItem>
+          </NForm>
+        </NCollapseItem>
       </NCollapse>
+      <NText class="ml-4 mt-8 text-xs inline-block" depth={3}>
+        * 敏感字段不显示，后端默认不返回敏感字段，显示为空
+      </NText>
     </Fragment>
   )
 })
@@ -542,6 +579,9 @@ function mergeFullConfigs(configs: any): IConfig {
         background: '',
         gaodemapKey: '',
         title: '静かな森',
+      },
+      terminalOptions: {
+        enable: false,
       },
     },
     configs,

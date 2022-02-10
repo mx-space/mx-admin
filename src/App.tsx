@@ -65,12 +65,12 @@ const Root = defineComponent({
 const App = defineComponent({
   setup() {
     provideStore()
-    const { isDark } = useProvider(UIStore)
+    const { isDark, naiveUIDark } = useProvider(UIStore)
     return () => (
       <NConfigProvider
         locale={zhCN}
         dateLocale={dateZhCN}
-        theme={isDark.value ? darkTheme : null}
+        theme={naiveUIDark.value ? darkTheme : isDark.value ? darkTheme : null}
       >
         <NNotificationProvider>
           <NMessageProvider>

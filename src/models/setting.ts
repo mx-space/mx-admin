@@ -43,19 +43,18 @@ export declare class AlgoliaSearchOptionsDto {
   appId?: string
   indexName?: string
 }
-
 export declare class AdminExtraDto {
   background?: string
-
   gaodemapKey?: string
   title?: string
-  /**
-   * 是否开启后台反代访问
-   */
   enableAdminProxy?: boolean
 }
+export declare class TerminalOptionsDto {
+  enable: boolean
+  password?: string
+}
 
-export interface IConfig {
+export declare abstract class IConfig {
   seo: SeoDto
   url: UrlDto
   mailOptions: MailOptionsDto
@@ -64,5 +63,5 @@ export interface IConfig {
   baiduSearchOptions: BaiduSearchOptionsDto
   algoliaSearchOptions: AlgoliaSearchOptionsDto
   adminExtra: AdminExtraDto
+  terminalOptions: TerminalOptionsDto
 }
-export declare type IConfigKeys = keyof IConfig
