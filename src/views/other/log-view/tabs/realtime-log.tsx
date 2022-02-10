@@ -57,6 +57,7 @@ export const RealtimeLogPipeline = defineComponent({
 
     return () => (
       <Xterm
+        darkMode
         onReady={(_term) => {
           term = _term
 

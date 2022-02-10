@@ -69,6 +69,7 @@ export default defineComponent({
         }
       >
         <Xterm
+          darkMode
           terminalOptions={{
             disableStdin: false,
           }}

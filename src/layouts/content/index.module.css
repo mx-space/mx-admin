@@ -1,22 +1,11 @@
-.header {
-  @apply sticky left-0 right-0 z-10 p-12 top-[-2.5rem];
+.sticky-header {
+  @apply sticky left-0 right-0 z-10 p-12 pb-6 top-[-2.5rem];
 
   @screen phone {
-    & {
-      @apply p-4 top-[0.5rem];
-    }
+    @apply px-6;
   }
-  & .header-blur {
-    @apply absolute inset-0 left-0 bottom-[2.5rem];
-    background-color: var(--n-color);
-
-    @screen phone {
-      & {
-        @apply top-[-2.5rem] left-[-1rem] bottom-0;
-      }
-    }
-  }
-
+}
+.header {
   display: flex;
   justify-content: space-between;
 

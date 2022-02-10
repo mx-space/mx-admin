@@ -5,6 +5,7 @@ import { Icon } from '@vicons/utils'
 import clsx from 'clsx'
 import { MoonIcon, SunIcon } from 'components/icons'
 import { useInjector } from 'hooks/use-deps-injection'
+import { NLayoutContent } from 'naive-ui'
 import { UIStore } from 'stores/ui'
 import {
   computed,
@@ -137,14 +138,16 @@ export const ContentLayout = defineComponent({
         )
       },
     })
+
     return () => (
       <>
-        <header class={styles['header']}>
-          <div class={styles['header-blur']}></div>
-          <h1 class={styles['title']}>{pageTitle.value}</h1>
+        <NLayoutContent class={styles['sticky-header']} embedded>
+          <header class={styles['header']}>
+            <h1 class={styles['title']}>{pageTitle.value}</h1>
 
-          <Header />
-        </header>
+            <Header />
+          </header>
+        </NLayoutContent>
         <main class={styles['main']}>{slots.default?.()}</main>
         <Footer />
       </>

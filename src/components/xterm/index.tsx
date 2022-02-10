@@ -32,6 +32,10 @@ const xtermTheme = {
 
 export const Xterm = defineComponent({
   props: {
+    darkMode: {
+      type: Boolean,
+      required: false,
+    },
     onResize: {
       type: Function as PropType<
         (size: { cols: number; rows: number }) => void
@@ -62,13 +66,14 @@ export const Xterm = defineComponent({
     const { onlyToggleNaiveUIDark } = useInjector(UIStore)
 
     const loading = ref(true)
-
-    useMountAndUnmount(() => {
-      onlyToggleNaiveUIDark(true)
-      return () => {
-        onlyToggleNaiveUIDark(false)
-      }
-    })
+    if (props.darkMode) {
+      useMountAndUnmount(() => {
+        onlyToggleNaiveUIDark(true)
+        return () => {
+          onlyToggleNaiveUIDark(false)
+        }
+      })
+    }
     useMountAndUnmount(async () => {
       const { Terminal } = await import('xterm')
 
