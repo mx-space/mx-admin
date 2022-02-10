@@ -524,7 +524,7 @@ export const TabSystem = defineComponent(() => {
                 }
               ></NInput>
               <NText class="ml-4 text-xs" depth={3}>
-                密码为空则不启用
+                密码为空则不启用密码验证
               </NText>
             </NFormItem>
             <NFormItem label="预先执行命令">
