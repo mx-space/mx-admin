@@ -5,7 +5,6 @@ import { NSpin } from 'naive-ui'
 import { UIStore } from 'stores/ui'
 import { PropType } from 'vue'
 import type { ITerminalOptions, Terminal } from 'xterm'
-import { FitAddon } from 'xterm-addon-fit'
 import { MaterialDark } from 'xterm-theme'
 import 'xterm/css/xterm.css'
 const xtermTheme = { ...MaterialDark, background: 'rgba(0,0,0,0)' }
@@ -77,13 +76,17 @@ export const Xterm = defineComponent({
       })
     }
     useMountAndUnmount(async () => {
-      const { Terminal } = await import('xterm')
+      const [{ Terminal }, { FitAddon }] = await Promise.all([
+        import('xterm'),
+        import('xterm-addon-fit'),
+      ])
 
       term = new Terminal({
         rows: 40,
         scrollback: 100000,
         disableStdin: true,
         allowTransparency: true,
+        fontFamily: 'Operator Mono SSm Lig Book,Operator Mono,Monaco,monospace',
         convertEol: true,
         cursorStyle: 'underline',
         theme: xtermTheme,

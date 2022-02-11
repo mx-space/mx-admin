@@ -31,6 +31,7 @@ export default defineComponent({
     useMountAndUnmount(() => {
       const handler = () => {
         message.error('连接已断开', { closable: true })
+        term.writeln('PTY connection closed')
       }
       socket.socket.on('disconnect', handler)
 
@@ -121,6 +122,7 @@ export default defineComponent({
         }
       >
         <Xterm
+          class="!max-h-[calc(100vh-10.5rem)]"
           darkMode
           terminalOptions={{
             disableStdin: false,
