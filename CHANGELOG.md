@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Socket reconnect if disconnect
+
+## [3.15.0] - 2022-02-10
+
+### Bug Fixes
+
 - Modify some icon
 - Change copy
 
@@ -21,6 +27,10 @@ All notable changes to this project will be documented in this file.
 ### Refactor
 
 - Header comp
+
+### Release
+
+- V3.15.0
 
 ## [3.14.3] - 2022-02-09
 
