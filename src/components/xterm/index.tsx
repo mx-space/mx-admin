@@ -5,9 +5,11 @@ import { NSpin } from 'naive-ui'
 import { UIStore } from 'stores/ui'
 import { PropType } from 'vue'
 import type { ITerminalOptions, Terminal } from 'xterm'
-import { MaterialDark } from 'xterm-theme'
+import { Material, MaterialDark } from 'xterm-theme'
 import 'xterm/css/xterm.css'
-const xtermTheme = { ...MaterialDark, background: 'rgba(0,0,0,0)' }
+
+const xtermThemeDark = { ...MaterialDark, background: 'rgba(0,0,0,0)' }
+const xtermThemeLight = { ...Material, background: 'rgba(0,0,0,0)' }
 // const xtermTheme = {
 //   black: '#000000',
 //   red: '#fd5ff1',
@@ -33,6 +35,10 @@ const xtermTheme = { ...MaterialDark, background: 'rgba(0,0,0,0)' }
 
 export const Xterm = defineComponent({
   props: {
+    colorScheme: {
+      type: String as PropType<'light' | 'dark'>,
+      default: 'dark',
+    },
     darkMode: {
       type: Boolean,
       required: false,
@@ -89,7 +95,7 @@ export const Xterm = defineComponent({
         fontFamily: 'Operator Mono SSm Lig Book,Operator Mono,Monaco,monospace',
         convertEol: true,
         cursorStyle: 'underline',
-        theme: xtermTheme,
+        theme: props.colorScheme === 'dark' ? xtermThemeDark : xtermThemeLight,
         ...props.terminalOptions,
       })
       const fitAddon = new FitAddon()

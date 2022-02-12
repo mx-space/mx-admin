@@ -41,7 +41,7 @@ export const LogListView = defineComponent({
         >
           <NCard
             title="查看日志"
-            class="modal-card !w-[100rem]"
+            class="modal-card !w-[100rem] !bg-dark-400 !text-white !all:text-white "
             bordered={false}
             closable
             onClose={() => {
