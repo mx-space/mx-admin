@@ -93,8 +93,8 @@ export default LoginView
 <template>
   <div>
     <div
-      class="bg transition-opacity duration-700"
-      :style="{ backgroundImage: `url(${bgUrl})`, opacity: loaded ? 1 : 0 }"
+      class="bg"
+      :style="{ backgroundImage: `url(${bgUrl})`, opacity: loaded ? 1 : 0.4 }"
     />
 
     <div class="wrapper">

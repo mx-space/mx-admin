@@ -19,22 +19,22 @@ pnpm build
 
 ## Preview
 
-![0620150948](https://cdn.jsdelivr.net/gh/Innei/fancy@master/2021/0620150948.png)
+![0620150948](https://fastly.jsdelivr.net/gh/Innei/fancy@master/2021/0620150948.png)
 
-![0620150710](https://cdn.jsdelivr.net/gh/Innei/fancy@master/2021/0620150710.png)
+![0620150710](https://fastly.jsdelivr.net/gh/Innei/fancy@master/2021/0620150710.png)
 
-![0620150726](https://cdn.jsdelivr.net/gh/Innei/fancy@master/2021/0620150726.png)
+![0620150726](https://fastly.jsdelivr.net/gh/Innei/fancy@master/2021/0620150726.png)
 
-![0620150743](https://cdn.jsdelivr.net/gh/Innei/fancy@master/2021/0620150743.png)
+![0620150743](https://fastly.jsdelivr.net/gh/Innei/fancy@master/2021/0620150743.png)
 
-![0620150743](https://cdn.jsdelivr.net/gh/Innei/fancy@master/2021/0620150743.png)
+![0620150743](https://fastly.jsdelivr.net/gh/Innei/fancy@master/2021/0620150743.png)
 
-![0620150817](https://cdn.jsdelivr.net/gh/Innei/fancy@master/2021/0620150817.png)
+![0620150817](https://fastly.jsdelivr.net/gh/Innei/fancy@master/2021/0620150817.png)
 
-![0620150835](https://cdn.jsdelivr.net/gh/Innei/fancy@master/2021/0620150835.png)
+![0620150835](https://fastly.jsdelivr.net/gh/Innei/fancy@master/2021/0620150835.png)
 
-![0620150847](https://cdn.jsdelivr.net/gh/Innei/fancy@master/2021/0620150847.png)
+![0620150847](https://fastly.jsdelivr.net/gh/Innei/fancy@master/2021/0620150847.png)
 
-![0620150902](https://cdn.jsdelivr.net/gh/Innei/fancy@master/2021/0620150902.png)
+![0620150902](https://fastly.jsdelivr.net/gh/Innei/fancy@master/2021/0620150902.png)
 
-![0620150917](https://cdn.jsdelivr.net/gh/Innei/fancy@master/2021/0620150917.png)
+![0620150917](https://fastly.jsdelivr.net/gh/Innei/fancy@master/2021/0620150917.png)

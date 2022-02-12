@@ -55,4 +55,5 @@ jobs:
           force_orphan: true
     env:
       CI: true
-      VITE_APP_PUBLIC_URL: ${{ secrets.VITE_APP_PUBLIC_URL }}
+      # VITE_APP_PUBLIC_URL: ${{ secrets.VITE_APP_PUBLIC_URL }}
+      VITE_APP_PUBLIC_URL: https://fastly.jsdelivr.net/gh/mx-space/mx-admin@gh-pages/

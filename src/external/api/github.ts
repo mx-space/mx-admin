@@ -13,13 +13,13 @@ export const getRepoReadme = (owner: string, repo: string) => {
     })
     .then((res) => {
       if (res) {
-        //https://cdn.jsdelivr.net/gh/mx-space/kami@master/README.md
+        //https://fastly.jsdelivr.net/gh/mx-space/kami@master/README.md
         //"download_url": "https://raw.githubusercontent.com/mx-space/kami/master/README.md",
         const url = (() => {
           const split = res.download_url.split('/')
           const filename = split.pop()
           const branch = split.pop()
-          return `https://cdn.jsdelivr.net/gh/${owner}/${repo}@${branch}/${filename}`
+          return `https://fastly.jsdelivr.net/gh/${owner}/${repo}@${branch}/${filename}`
         })()
 
         return fetch(url).then((res) => res.text())
