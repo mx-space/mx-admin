@@ -35,7 +35,6 @@ export class SocketClient {
 
   #title = configs.title
   #notice = new BrowserNotification()
-  constructor() {}
 
   private isInit = false
   initIO() {

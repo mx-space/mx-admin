@@ -1,12 +1,14 @@
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { RefreshIcon } from 'components/icons'
 import { Xterm } from 'components/xterm'
+import { GATEWAY_URL } from 'constants/env'
 import { useMountAndUnmount } from 'hooks/use-react'
 import { ContentLayout } from 'layouts/content'
 import { merge } from 'lodash-es'
 import { NButton, NForm, NInput, useDialog, useMessage } from 'naive-ui'
-import { socket } from 'socket'
+import Io from 'socket.io-client'
 import { EventTypes } from 'socket/types'
+import { getToken } from 'utils'
 import { bus } from 'utils/event-bus'
 import { PropType } from 'vue'
 import { IDisposable, Terminal } from 'xterm'
@@ -28,16 +30,36 @@ export default defineComponent({
     const message = useMessage()
     const modal = useDialog()
 
+    const socket = Io(GATEWAY_URL + '/pty', {
+      timeout: 10000,
+      transports: ['websocket'],
+      forceNew: true,
+      query: {
+        token: getToken()!.replace(/^bearer\s/, ''),
+      },
+    })
+    socket.on(
+      'message',
+      ({ code, data, type }: Record<'type' | 'data' | 'code', any>) => {
+        bus.emit(type, data, code)
+      },
+    )
+
     useMountAndUnmount(() => {
       const handler = () => {
-        message.error('连接已断开', { closable: true })
         term.writeln('PTY connection closed')
+        message.warning('连接已断开', { closable: true })
       }
-      socket.socket.on('disconnect', handler)
+      socket.on('disconnect', handler)
 
       return () => {
-        socket.socket.off('disconnect', handler)
+        socket.off('disconnect', handler)
       }
+    })
+
+    onUnmounted(() => {
+      socket.offAny()
+      socket.disconnect()
     })
 
     useMountAndUnmount(() => {
@@ -49,7 +71,7 @@ export default defineComponent({
             content: () => (
               <PasswordConfirmDialog
                 onConfirm={(pwd) => {
-                  socket.socket.emit(
+                  socket.emit(
                     'pty',
                     merge(
                       term ? { cols: term.cols, rows: term.rows } : undefined,
@@ -77,10 +99,10 @@ export default defineComponent({
       (isReady) => {
         if (isReady) {
           cleaner()
-          socket.socket.emit('pty', { cols: term.cols, rows: term.rows })
+          socket.emit('pty', { cols: term.cols, rows: term.rows })
 
           termDisposer = term.onData((data) => {
-            socket.socket.emit('pty-input', data)
+            socket.emit('pty-input', data)
           })
 
           bus.on(EventTypes.PTY, writeHandler)
@@ -89,21 +111,35 @@ export default defineComponent({
     )
 
     onUnmounted(() => {
+      socket.emit('pty-exit')
       termDisposer?.dispose()
 
-      socket.socket.emit('pty-exit')
       bus.off(EventTypes.PTY, writeHandler)
     })
 
     const reconnection = () => {
+      if (socket.connected === false) {
+        socket.io.connect()
+
+        setTimeout(() => {
+          if (socket.connected) {
+            socket.emit(
+              'pty',
+              term ? { cols: term.cols, rows: term.rows } : undefined,
+            )
+          } else {
+            message.error('重连 Socket 失败')
+          }
+        }, 1500)
+      }
       if (term) {
-        term.clear()
+        term.reset()
       }
 
-      socket.socket.emit('pty-exit')
+      socket.emit('pty-exit')
 
       setTimeout(() => {
-        socket.socket.emit(
+        socket.emit(
           'pty',
           term ? { cols: term.cols, rows: term.rows } : undefined,
         )

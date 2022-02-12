@@ -105,7 +105,9 @@ export const Xterm = defineComponent({
       fitAddon.fit()
 
       const observer = new ResizeObserver(() => {
-        fitAddon.fit()
+        try {
+          fitAddon.fit()
+        } catch {}
 
         if (props.onResize) {
           props.onResize({
