@@ -1,14 +1,24 @@
 import { HeaderActionButton } from 'components/button/rounded-button'
-import { RefreshIcon } from 'components/icons'
+import { RefreshIcon, StatusIcon } from 'components/icons'
+import { IpInfoPopover } from 'components/ip-info'
 import { Xterm } from 'components/xterm'
 import { GATEWAY_URL } from 'constants/env'
 import { useMountAndUnmount } from 'hooks/use-react'
 import { ContentLayout } from 'layouts/content'
 import { merge } from 'lodash-es'
-import { NButton, NForm, NInput, useDialog, useMessage } from 'naive-ui'
+import {
+  NButton,
+  NCard,
+  NForm,
+  NInput,
+  NList,
+  NListItem,
+  useDialog,
+  useMessage,
+} from 'naive-ui'
 import Io from 'socket.io-client'
 import { EventTypes } from 'socket/types'
-import { getToken } from 'utils'
+import { getToken, parseDate, RESTManager } from 'utils'
 import { bus } from 'utils/event-bus'
 import { PropType } from 'vue'
 import { IDisposable, Terminal } from 'xterm'
@@ -145,10 +155,22 @@ export default defineComponent({
         )
       }, 50)
     }
+    const openConnectionStatus = () => {
+      modal.create({
+        title: '连接状态',
+        content: () => <ConnectionStatus />,
+      })
+    }
     return () => (
       <ContentLayout
         actionsElement={
           <>
+            <HeaderActionButton
+              variant="info"
+              icon={<StatusIcon />}
+              name="连接状态"
+              onClick={openConnectionStatus}
+            ></HeaderActionButton>
             <HeaderActionButton
               icon={<RefreshIcon />}
               name="重新连接"
@@ -202,4 +224,51 @@ const PasswordConfirmDialog = defineComponent({
       </NForm>
     )
   },
+})
+
+const ConnectionStatus = defineComponent(() => {
+  const list = ref([] as any[])
+  onMounted(async () => {
+    const data = await RESTManager.api.pty.record.get<{ data: any }>()
+    list.value = data.data
+  })
+  return () => (
+    <NCard bordered={false} class="max-h-[70vh] overflow-auto">
+      <NList bordered={false}>
+        {list.value.map((item) => {
+          return (
+            <NListItem key={item.startTime}>
+              <div>
+                开始于 {parseDate(item.startTime, 'yyyy年M月d日 HH:mm:ss')}
+              </div>
+              <div>
+                IP:{' '}
+                <IpInfoPopover
+                  trigger="hover"
+                  ip={item.ip}
+                  triggerEl={<NButton text>{item.ip}</NButton>}
+                ></IpInfoPopover>
+              </div>
+              <div>
+                {item.endTime
+                  ? '结束于 ' + parseDate(item.endTime, 'yyyy年M月d日 HH:mm:ss')
+                  : '没有结束'}
+              </div>
+              <div>
+                {item.endTime &&
+                  '时长：' +
+                    ((Math.abs(
+                      new Date(item.startTime).getTime() -
+                        new Date(item.endTime).getTime(),
+                    ) /
+                      1000) |
+                      0) +
+                    '秒'}
+              </div>
+            </NListItem>
+          )
+        })}
+      </NList>
+    </NCard>
+  )
 })
