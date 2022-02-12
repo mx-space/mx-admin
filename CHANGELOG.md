@@ -5,7 +5,27 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update dependency naive-ui to v2.25.2
+- Update dependency camelcase-keys to v7.0.2
+
+### Features
+
+- Change xterm font
+
+### Miscellaneous Tasks
+
+- Update pnpm/action-setup action to v2.1.0
+- Replace `cdn` to `fastly`
+
+## [3.15.1] - 2022-02-11
+
+### Bug Fixes
+
 - Socket reconnect if disconnect
+
+### Release
+
+- V3.15.1
 
 ## [3.15.0] - 2022-02-10
 
