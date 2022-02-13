@@ -128,6 +128,10 @@ export default defineComponent({
     })
 
     const reconnection = () => {
+      if (term) {
+        term.reset()
+      }
+
       if (socket.connected === false) {
         socket.io.connect()
 
@@ -141,9 +145,8 @@ export default defineComponent({
             message.error('重连 Socket 失败')
           }
         }, 1500)
-      }
-      if (term) {
-        term.reset()
+
+        return
       }
 
       socket.emit('pty-exit')
