@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Log view color and bg-color
+
+### Features
+
+- Pty session record
+
+### Refactor
+
+- Move pty socket connection
+
+## [3.15.2] - 2022-02-12
+
+### Bug Fixes
+
 - Update dependency naive-ui to v2.25.2
 - Update dependency camelcase-keys to v7.0.2
 
@@ -16,6 +30,10 @@ All notable changes to this project will be documented in this file.
 
 - Update pnpm/action-setup action to v2.1.0
 - Replace `cdn` to `fastly`
+
+### Release
+
+- V3.15.2
 
 ## [3.15.1] - 2022-02-11
 
