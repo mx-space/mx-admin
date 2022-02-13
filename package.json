@@ -15,7 +15,7 @@
     "format": "prettier --write --loglevel warn \"src/**/*.{js,json,tsx,ts,css,scss,vue,html,md}\""
   },
   "dependencies": {
-    "@antv/g2": "4.1.44",
+    "@antv/g2": "4.1.46",
     "@bytebase/vue-kbar": "0.1.6",
     "@codemirror/commands": "0.19.6",
     "@codemirror/gutter": "0.19.9",
