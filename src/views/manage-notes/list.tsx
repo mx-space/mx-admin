@@ -91,20 +91,21 @@ export const ManageNoteListView = defineComponent({
             key: 'title',
             width: 280,
             render(row) {
+              const isSecret =
+                row.secret && +new Date(row.secret) - +new Date() > 0
               return (
                 <TableTitleLink
                   inPageTo={'/notes/edit?id=' + row.id}
                   title={row.title}
                   externalLinkTo={'/notes/' + row.nid}
                   id={row.id}
+                  withToken={row.hide || isSecret}
                 >
                   {{
                     default() {
                       return (
                         <>
-                          {row.hide ||
-                          (row.secret &&
-                            +new Date(row.secret) - +new Date() > 0) ? (
+                          {row.hide || isSecret ? (
                             <Icon color="#34495e">
                               <EyeHideIcon />
                             </Icon>
