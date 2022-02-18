@@ -35,6 +35,7 @@ export const TabUser = defineComponent(() => {
   })
   const message = useMessage()
   const diff = computed(() => deepDiff(origin, data.value))
+
   const handleSave = async () => {
     const submitData = cloneDeep(unref(diff))
     // 数组合并
@@ -117,7 +118,7 @@ export const TabUser = defineComponent(() => {
               <NInput
                 value={data.value.username}
                 onInput={(e) => {
-                  data.value.username = e
+                  data.value.username = e?.trim() || ''
                 }}
               />
             </NFormItem>
@@ -126,7 +127,7 @@ export const TabUser = defineComponent(() => {
               <NInput
                 value={data.value.name}
                 onInput={(e) => {
-                  data.value.name = e
+                  data.value.name = e?.trim() || ''
                 }}
               />
             </NFormItem>
