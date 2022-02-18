@@ -19,17 +19,18 @@ export default ({ mode }) => {
       vue(),
       tsconfigPaths(),
       visualizer({ open: false }),
-      Checker({
-        typescript: true,
-        enableBuild: true,
-      }),
+
       AutoImport({
         include: [
           /\.[tj]sx?$/, // .ts, .tsx, .js, .jsx
           /\.vue\??/, // .vue
         ],
-        dts: true,
+        dts: './src/auto-import.d.ts',
         imports: ['vue'],
+      }),
+      Checker({
+        typescript: true,
+        enableBuild: true,
       }),
       htmlPlugin(env),
     ],
