@@ -6,14 +6,43 @@ All notable changes to this project will be documented in this file.
 ### Bug Fixes
 
 - Log view color and bg-color
+- Reconn pty twice
+- Update dependency @antv/g2 to v4.1.46
+- Update dependency @vueuse/core to v7.6.2
+- Only hide or secret add token search
+- Mocano worker
+- Trim username
+- Downgrade checker
+- Try tsc error (#281)
 
 ### Features
 
 - Pty session record
 
+### Miscellaneous Tasks
+
+- Update vue monorepo to v3.2.31
+- Update dependency vite-plugin-checker to v0.4.2
+- Update readme
+- Update dependency vite to v2.8.1
+- Update dependency @vitejs/plugin-vue-jsx to v1.3.5
+- Update dependency eslint to v8.9.0
+- Update typescript-eslint monorepo to v5.12.0
+- Update dependency @vitejs/plugin-vue-jsx to v1.3.7
+- Update dependency vite to v2.8.3
+- Update dependency unplugin-auto-import to v0.6.0
+
 ### Refactor
 
 - Move pty socket connection
+
+### Ci
+
+- Use latest pnpm
+
+### Release
+
+- V3.15.3
 
 ## [3.15.2] - 2022-02-12
 
