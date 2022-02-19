@@ -57,7 +57,7 @@
     "umi-request": "1.4.0",
     "validator": "13.7.0",
     "vditor": "3.8.11",
-    "vite-plugin-windicss": "1.7.0",
+    "vite-plugin-windicss": "1.7.1",
     "vue": "3.2.31",
     "vue-router": "4.0.12",
     "xterm": "4.17.0",
