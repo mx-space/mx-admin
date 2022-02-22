@@ -44,7 +44,7 @@ specifiers:
   date-fns: 2.28.0
   ejs: 3.1.6
   eslint: 8.9.0
-  eslint-plugin-vue: 8.4.1
+  eslint-plugin-vue: 8.5.0
   js-cookie: 3.0.1
   js-yaml: 4.1.0
   lodash-es: 4.17.21
@@ -137,7 +137,7 @@ devDependencies:
   '@vue/compiler-sfc': 3.2.31
   cors: 2.8.5
   eslint: 8.9.0
-  eslint-plugin-vue: 8.4.1_eslint@8.9.0
+  eslint-plugin-vue: 8.5.0_eslint@8.9.0
   prettier: 2.5.1
   rollup-plugin-visualizer: 5.5.4
   typescript: 4.5.5
@@ -2274,8 +2274,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /eslint-plugin-vue/8.4.1_eslint@8.9.0:
-    resolution: {integrity: sha512-nmWOhNmDx9TZ+yP9ZhezTkZUupSHsYA2TocRm+efPSXMOyFrVczVlaIuQcLBjCtI8CbkBiUQ3VcyQsjlIhDrhA==}
+  /eslint-plugin-vue/8.5.0_eslint@8.9.0:
+    resolution: {integrity: sha512-i1uHCTAKOoEj12RDvdtONWrGzjFm/djkzqfhmQ0d6M/W8KM81mhswd/z+iTZ0jCpdUedW3YRgcVfQ37/J4zoYQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: ^6.2.0 || ^7.0.0 || ^8.0.0
