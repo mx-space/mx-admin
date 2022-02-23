@@ -50,7 +50,7 @@ specifiers:
   lodash-es: 4.17.21
   marked: 4.0.12
   monaco-editor: 0.32.1
-  naive-ui: 2.25.2
+  naive-ui: 2.25.3
   prettier: 2.5.1
   qier-progress: 1.0.4
   reflect-metadata: 0.1.13
@@ -109,7 +109,7 @@ dependencies:
   lodash-es: 4.17.21
   marked: 4.0.12
   monaco-editor: 0.32.1
-  naive-ui: 2.25.2_vue@3.2.31
+  naive-ui: 2.25.3_vue@3.2.31
   qier-progress: 1.0.4
   reflect-metadata: 0.1.13
   socket.io-client: 4.4.1
@@ -2942,8 +2942,8 @@ packages:
   /ms/2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
 
-  /naive-ui/2.25.2_vue@3.2.31:
-    resolution: {integrity: sha512-Jv/hMVHECh1Q7lPtIkGIa+eQVwFpQs6qEAn3r+eaEGmSuTAFJOrIKRL4ob10O5jQ1BxjLyWb+kzSxuwoi/VHWg==}
+  /naive-ui/2.25.3_vue@3.2.31:
+    resolution: {integrity: sha512-gSMJbA7MZMxlewRffkGRhlC2aMcGo2YaXZl+EyNAlPlD3oa3thqNnWEq8Dr8BtxUwd1wJskft56nfV+H11e/dw==}
     peerDependencies:
       vue: ^3.0.0
     dependencies:
@@ -2965,7 +2965,7 @@ packages:
       vfonts: 0.0.3
       vooks: 0.2.12_vue@3.2.31
       vue: 3.2.31
-      vueuc: 0.4.25_vue@3.2.31
+      vueuc: 0.4.26_vue@3.2.31
     dev: false
 
   /nanoid/3.2.0:
@@ -3774,8 +3774,8 @@ packages:
       '@vue/shared': 3.2.31
     dev: false
 
-  /vueuc/0.4.25_vue@3.2.31:
-    resolution: {integrity: sha512-SkQCtJ0N+O24gCgDwc+TYNAptgoOb/+lCTlZ7s9I+eTLo7DiLvfHp0mWI04cGkP1elhH26xdkCN+TCQ0vwaL5g==}
+  /vueuc/0.4.26_vue@3.2.31:
+    resolution: {integrity: sha512-IK6TV4468k7Hpj1SXXPYelT/aYqmfa/SYTLFospwJ/uMebRExS1fh5tx6ZT3fSA0OkmCOHmmi2OGke+eSseAgw==}
     peerDependencies:
       vue: ^3.0.11
     dependencies:
