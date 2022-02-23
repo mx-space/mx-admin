@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update dependency vite-plugin-windicss to v1.7.1 (#277)
+- Update dependency naive-ui to v2.25.3 (#288)
+
+### Miscellaneous Tasks
+
+- Update dependency @vitejs/plugin-vue to v2.2.2 (#282)
+- Update dependency vite to v2.8.4 (#280)
+- Add funding
+- Update pnpm/action-setup action to v2.2.0 (#290)
+- Update dependency vite-tsconfig-paths to v3.4.1 (#289)
+- Update typescript-eslint monorepo to v5.12.1 (#283)
+- Update dependency eslint-plugin-vue to v8.5.0 (#286)
+- Update dependency windicss to v3.4.4 (#285)
+- Update dependency unplugin-auto-import to v0.6.1 (#284)
+- Update dependency vue-eslint-parser to v8.3.0 (#287)
+
+## [3.15.4] - 2022-02-18
+
+### Bug Fixes
+
 - Log view color and bg-color
 - Reconn pty twice
 - Update dependency @antv/g2 to v4.1.46
@@ -43,6 +63,7 @@ All notable changes to this project will be documented in this file.
 ### Release
 
 - V3.15.3
+- V3.15.4
 
 ## [3.15.2] - 2022-02-12
 
