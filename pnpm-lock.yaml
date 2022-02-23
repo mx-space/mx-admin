@@ -64,7 +64,7 @@ specifiers:
   vite: 2.8.4
   vite-plugin-checker: 0.3.4
   vite-plugin-windicss: 1.7.1
-  vite-tsconfig-paths: 3.4.0
+  vite-tsconfig-paths: 3.4.1
   vue: 3.2.31
   vue-eslint-parser: 8.2.0
   vue-router: 4.0.12
@@ -144,7 +144,7 @@ devDependencies:
   unplugin-auto-import: 0.6.0_@vueuse+core@7.6.2+vite@2.8.4
   vite: 2.8.4
   vite-plugin-checker: 0.3.4_vite@2.8.4
-  vite-tsconfig-paths: 3.4.0_vite@2.8.4
+  vite-tsconfig-paths: 3.4.1_vite@2.8.4
   vue-eslint-parser: 8.2.0_eslint@8.9.0
   windicss: 3.4.3
 
@@ -3635,8 +3635,8 @@ packages:
       - supports-color
     dev: false
 
-  /vite-tsconfig-paths/3.4.0_vite@2.8.4:
-    resolution: {integrity: sha512-os+oAdJxkZvNLmisVQ76eDdCWC3aH4bKTy3EXI5oJi//zQ0G+qJfUeFR6Need4iyzL/Xus9R7AECF/YfGS0ZEw==}
+  /vite-tsconfig-paths/3.4.1_vite@2.8.4:
+    resolution: {integrity: sha512-SgK3/pnTuJ3i+gMSAWLR6VCPSw26bnxawrmXGvCDjJgk8MAQgmbCrFrAzfwbwZBXSqSuvWEuX04Wt73qJKx8fQ==}
     peerDependencies:
       vite: '>2.0.0-0'
     dependencies:
