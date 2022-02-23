@@ -87,6 +87,6 @@
     "vite-plugin-checker": "0.3.4",
     "vite-tsconfig-paths": "3.4.1",
     "vue-eslint-parser": "8.2.0",
-    "windicss": "3.4.3"
+    "windicss": "3.4.4"
   }
 }
