@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Add id for injection script
+- Update codemirror by re-resolve lock file
+
+### Miscellaneous Tasks
+
+- Update deps
+
+## [3.15.5] - 2022-02-23
+
+### Bug Fixes
+
 - Update dependency vite-plugin-windicss to v1.7.1 (#277)
 - Update dependency naive-ui to v2.25.3 (#288)
 
@@ -20,6 +31,10 @@ All notable changes to this project will be documented in this file.
 - Update dependency windicss to v3.4.4 (#285)
 - Update dependency unplugin-auto-import to v0.6.1 (#284)
 - Update dependency vue-eslint-parser to v8.3.0 (#287)
+
+### Release
+
+- V3.15.5
 
 ## [3.15.4] - 2022-02-18
 
