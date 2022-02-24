@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Miscellaneous Tasks
+
+- Add hash to asset, server do cache for
+
+## [3.15.6] - 2022-02-24
+
 ### Bug Fixes
 
 - Add id for injection script
@@ -11,6 +17,10 @@ All notable changes to this project will be documented in this file.
 ### Miscellaneous Tasks
 
 - Update deps
+
+### Release
+
+- V3.15.6
 
 ## [3.15.5] - 2022-02-23
 
