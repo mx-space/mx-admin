@@ -43,8 +43,8 @@ export default ({ mode }) => {
       // sourcemap: true,
       rollupOptions: {
         output: {
-          chunkFileNames: `js/[name].js`,
-          entryFileNames: `js/[name].js`,
+          chunkFileNames: `js/[name]-[hash].js`,
+          entryFileNames: `js/[name]-[hash].js`,
         },
       },
     },
