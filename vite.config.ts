@@ -82,7 +82,7 @@ const htmlPlugin: (env: any) => PluginOption = (env) => {
         .replace(/\@gh\-pages/g, '@page_v' + PKG.version)
         .replace(
           '<!-- ENV INJECT -->',
-          `<script>window.injectData = {WEB_URL:'${
+          `<script id="env_injection">window.injectData = {WEB_URL:'${
             env.VITE_APP_WEB_URL || ''
           }', GATEWAY: '${env.VITE_APP_GATEWAY || ''}',BASE_API: '${
             env.VITE_APP_BASE_API || ''
