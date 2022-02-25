@@ -3,9 +3,19 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Bug Fixes
+
+- Nested css `:global` with postcss
+
+## [3.15.7] - 2022-02-24
+
 ### Miscellaneous Tasks
 
 - Add hash to asset, server do cache for
+
+### Release
+
+- V3.15.7
 
 ## [3.15.6] - 2022-02-24
 
