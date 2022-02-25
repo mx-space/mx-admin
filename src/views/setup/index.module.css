@@ -2,7 +2,7 @@
   @apply overflow-auto w-full relative h-[100vh];
   @apply flex items-center justify-center;
 
-  :global {
+  & :global {
     .n-step-content__description {
       font-size: 10px;
     }

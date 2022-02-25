@@ -10,6 +10,9 @@ router.beforeEach(async (to) => {
   // guard for setup route
 
   if (to.path === '/setup') {
+    if (__DEV__) {
+      return
+    }
     const isInit =
       window.injectData.INIT ??
       (await RESTManager.api.init.get<{ isInit: boolean }>()).isInit
