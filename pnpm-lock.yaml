@@ -70,7 +70,7 @@ specifiers:
   vue: 3.2.31
   vue-eslint-parser: 8.3.0
   vue-router: 4.0.12
-  windicss: 3.4.4
+  windicss: 3.5.0
   xterm: 4.17.0
   xterm-addon-fit: 0.5.0
   xterm-theme: 1.1.0
@@ -150,7 +150,7 @@ devDependencies:
   vite-plugin-checker: 0.4.2_vite@2.8.4
   vite-tsconfig-paths: 3.4.1_vite@2.8.4
   vue-eslint-parser: 8.3.0_eslint@8.9.0
-  windicss: 3.4.4
+  windicss: 3.5.0
 
 packages:
 
@@ -3814,17 +3814,10 @@ packages:
       isexe: 2.0.0
     dev: true
 
-  /windicss/3.4.4:
-    resolution: {integrity: sha512-M3ZTw8wiluUjg16Pu7nwqZmmCiX+eEX6yArzXX0a/HFQWhwyghi7ouT2m95XQsXqvnzAw9FKiF2eFHGfOezdsg==}
-    engines: {node: '>= 12'}
-    hasBin: true
-    dev: true
-
   /windicss/3.5.0:
     resolution: {integrity: sha512-+UNYm2Zy4TM2uLiz6bqY2a69LavMqGbILFIwuGhPEJ/uqsPT3kCGSaWlhMw/weIaFOkm1K1cEzZ015Y8pp8N1A==}
     engines: {node: '>= 12'}
     hasBin: true
-    dev: false
 
   /word-wrap/1.2.3:
     resolution: {integrity: sha512-Hz/mrNwitNRh/HUAtM/VT/5VH+ygD6DV7mYKZAtHOrbs8U7lvPS6xf7EJKMF0uW1KJCl0H701g3ZGus+muE5vQ==}
