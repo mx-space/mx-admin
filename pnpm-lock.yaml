@@ -56,7 +56,7 @@ specifiers:
   prettier: 2.5.1
   qier-progress: 1.0.4
   reflect-metadata: 0.1.13
-  rollup-plugin-visualizer: 5.5.4
+  rollup-plugin-visualizer: 5.6.0
   socket.io-client: 4.4.1
   typescript: 4.5.5
   umi-request: 1.4.0
@@ -143,7 +143,7 @@ devDependencies:
   postcss: 8.4.7
   postcss-nested: 5.0.6_postcss@8.4.7
   prettier: 2.5.1
-  rollup-plugin-visualizer: 5.5.4
+  rollup-plugin-visualizer: 5.6.0
   typescript: 4.5.5
   unplugin-auto-import: 0.6.1_@vueuse+core@7.6.2+vite@2.8.4
   vite: 2.8.4
@@ -2945,12 +2945,6 @@ packages:
       vueuc: 0.4.26_vue@3.2.31
     dev: false
 
-  /nanoid/3.2.0:
-    resolution: {integrity: sha512-fmsZYa9lpn69Ad5eDn7FMcnnSR+8R34W9qJEijxYhTbfOWzr22n1QxCMzXLK+ODyW2973V3Fux959iQoUxzUIA==}
-    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
-    hasBin: true
-    dev: true
-
   /nanoid/3.3.1:
     resolution: {integrity: sha512-n6Vs/3KGyxPQd6uO0eH4Bv0ojGSUvuLlIHtC3Y0kEO23YRge8H9x1GCzLn28YX0H66pMkxuaeESFq4tKISKwdw==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
@@ -3243,14 +3237,14 @@ packages:
       glob: 7.2.0
     dev: true
 
-  /rollup-plugin-visualizer/5.5.4:
-    resolution: {integrity: sha512-CJQFUuZ75S1daGEkk62UH7lL6UFCoP86Sn/iz4gXBdamdwFeD5nPGCHHXfXCrly/wNgQOYTH7cdcxk4+OG3Xjw==}
+  /rollup-plugin-visualizer/5.6.0:
+    resolution: {integrity: sha512-CKcc8GTUZjC+LsMytU8ocRr/cGZIfMR7+mdy4YnlyetlmIl/dM8BMnOEpD4JPIGt+ZVW7Db9ZtSsbgyeBH3uTA==}
     engines: {node: '>=12'}
     hasBin: true
     peerDependencies:
       rollup: ^2.0.0
     dependencies:
-      nanoid: 3.2.0
+      nanoid: 3.3.1
       open: 8.4.0
       source-map: 0.7.3
       yargs: 17.3.1
