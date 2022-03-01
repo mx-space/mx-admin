@@ -50,7 +50,7 @@
     "lodash-es": "4.17.21",
     "marked": "4.0.12",
     "monaco-editor": "0.32.1",
-    "naive-ui": "2.25.5",
+    "naive-ui": "2.25.8",
     "qier-progress": "1.0.4",
     "reflect-metadata": "0.1.13",
     "socket.io-client": "4.4.1",
