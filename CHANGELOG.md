@@ -5,7 +5,39 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update dependency vite-plugin-windicss to v1.8.1 (#297)
+- Update dependency @vueuse/core to v7.7.0 (#298)
+- Update dependency naive-ui to v2.25.8 (#291)
+- Update dependency vue-router to v4.0.13 (#302)
+- Update dependency xterm to v4.18.0 (#305)
+- Update dependency naive-ui to v2.26.0 (#306)
+- Update dependency vditor to v3.8.12 (#312)
+- Update dependency @antv/g2 to v4.1.47 (#311)
+- Remove post `hide` field
+
+### Miscellaneous Tasks
+
+- Update dependency windicss to v3.5.0 (#296)
+- Update dependency rollup-plugin-visualizer to v5.6.0 (#294)
+- Update actions/setup-node action to v3 (#293)
+- Update pnpm/action-setup action to v2.2.1 (#292)
+- Update dependency eslint to v8.10.0 (#295)
+- Update dependency typescript to v4.6.2 (#304)
+- Update dependency @vitejs/plugin-vue-jsx to v1.3.8 (#300)
+- Update dependency vite to v2.8.5 (#301)
+- Update dependency vite to v2.8.6 (#308)
+- Update actions/checkout action to v3 (#307)
+- Update typescript-eslint monorepo to v5.13.0 (#303)
+
+## [3.15.8] - 2022-02-25
+
+### Bug Fixes
+
 - Nested css `:global` with postcss
+
+### Release
+
+- V3.15.8
 
 ## [3.15.7] - 2022-02-24
 
