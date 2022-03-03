@@ -1,7 +1,7 @@
 lockfileVersion: 5.3
 
 specifiers:
-  '@antv/g2': 4.1.46
+  '@antv/g2': 4.1.47
   '@bytebase/vue-kbar': 0.1.6
   '@codemirror/commands': 0.19.8
   '@codemirror/gutter': 0.19.9
@@ -76,7 +76,7 @@ specifiers:
   xterm-theme: 1.1.0
 
 dependencies:
-  '@antv/g2': 4.1.46
+  '@antv/g2': 4.1.47
   '@bytebase/vue-kbar': 0.1.6_vue@3.2.31
   '@codemirror/commands': 0.19.8
   '@codemirror/gutter': 0.19.9
@@ -263,8 +263,8 @@ packages:
       tslib: 2.3.1
     dev: false
 
-  /@antv/g2/4.1.46:
-    resolution: {integrity: sha512-ILtfX8EulmrTn+u05aBhnkTHf1vbi1kUQ/AiBt9mNUrKo5ik81rZINnmJ+/2igObFeOsD2b3E6KYvu7Yk3tBWw==}
+  /@antv/g2/4.1.47:
+    resolution: {integrity: sha512-ndJQPEv6PtaYY18iDfw41AyedltbeLLE/lz3W5fAtVmniZ+gaUlaT/ppnlfEyHej621EeerIlsYyKm6m/HRUfQ==}
     dependencies:
       '@antv/adjust': 0.2.5
       '@antv/attr': 0.3.2
