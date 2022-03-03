@@ -8,7 +8,6 @@ export interface PostResponse {
 export interface PostModel {
   commentsIndex: number
   allowComment: boolean
-  hide: boolean
   copyright: boolean
   tags: string[]
   count: Count

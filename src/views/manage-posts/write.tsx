@@ -34,7 +34,6 @@ type PostReactiveType = {
   categoryId: string
   copyright: boolean
   tags: string[]
-  hide: boolean
   summary: string
   allowComment: boolean
 
@@ -57,7 +56,7 @@ const PostWriteView = defineComponent(() => {
     title: '',
     copyright: true,
     tags: [],
-    hide: false,
+
     summary: '',
 
     allowComment: true,
@@ -280,18 +279,6 @@ const PostWriteView = defineComponent(() => {
             value={data.summary}
             onInput={(e) => void (data.summary = e)}
           />
-        </NFormItem>
-
-        <NFormItem
-          label="隐藏"
-          labelWidth={100}
-          labelAlign="right"
-          labelPlacement="left"
-        >
-          <NSwitch
-            value={data.hide}
-            onUpdateValue={(e) => void (data.hide = e)}
-          ></NSwitch>
         </NFormItem>
 
         <NFormItem
