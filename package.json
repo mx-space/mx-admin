@@ -56,7 +56,7 @@
     "socket.io-client": "4.4.1",
     "umi-request": "1.4.0",
     "validator": "13.7.0",
-    "vditor": "3.8.11",
+    "vditor": "3.8.12",
     "vite-plugin-windicss": "1.8.1",
     "vue": "3.2.31",
     "vue-router": "4.0.13",
