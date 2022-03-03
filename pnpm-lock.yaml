@@ -62,7 +62,7 @@ specifiers:
   umi-request: 1.4.0
   unplugin-auto-import: 0.6.1
   validator: 13.7.0
-  vditor: 3.8.11
+  vditor: 3.8.12
   vite: 2.8.6
   vite-plugin-checker: 0.4.2
   vite-plugin-windicss: 1.8.1
@@ -117,7 +117,7 @@ dependencies:
   socket.io-client: 4.4.1
   umi-request: 1.4.0
   validator: 13.7.0
-  vditor: 3.8.11
+  vditor: 3.8.12
   vite-plugin-windicss: 1.8.1_vite@2.8.6
   vue: 3.2.31
   vue-router: 4.0.13_vue@3.2.31
@@ -3586,8 +3586,8 @@ packages:
       vue: 3.2.31
     dev: false
 
-  /vditor/3.8.11:
-    resolution: {integrity: sha512-nwS2TLgu3DnHdfxcjnUESg/qbnYU0YR9YAvn2IKBK/F36h4k1BMqjsfEQqE4TL2RH5RGIapcQfAdJ9xF1iQNWw==}
+  /vditor/3.8.12:
+    resolution: {integrity: sha512-bpYubNGA5PcWSsOOKK6rXYOSU1Wy6plmhwdWB9oXy8D714hj6vcVtJjE/8x8+aZOyX45Rxa+a72h5xOU0SdfFg==}
     dependencies:
       diff-match-patch: 1.0.5
     dev: false
