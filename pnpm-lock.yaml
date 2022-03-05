@@ -65,7 +65,7 @@ specifiers:
   vditor: 3.8.12
   vite: 2.8.6
   vite-plugin-checker: 0.4.2
-  vite-plugin-windicss: 1.8.1
+  vite-plugin-windicss: 1.8.2
   vite-tsconfig-paths: 3.4.1
   vue: 3.2.31
   vue-eslint-parser: 8.3.0
@@ -118,7 +118,7 @@ dependencies:
   umi-request: 1.4.0
   validator: 13.7.0
   vditor: 3.8.12
-  vite-plugin-windicss: 1.8.1_vite@2.8.6
+  vite-plugin-windicss: 1.8.2_vite@2.8.6
   vue: 3.2.31
   vue-router: 4.0.13_vue@3.2.31
   xterm: 4.18.0
@@ -1597,8 +1597,8 @@ packages:
       vue-demi: 0.12.1_vue@3.2.31
     dev: false
 
-  /@windicss/config/1.8.1:
-    resolution: {integrity: sha512-WwrUMa8dT1AXbUjzQUVVCEpCNQg6rvr6wTyLXX8tv5jf9zYyTmj10sl0f7i5tbsMeG66hd2TpDp2JCcQf9knTA==}
+  /@windicss/config/1.8.2:
+    resolution: {integrity: sha512-dGXkzcH1Bnm9716/pE63YSewLQIZXGWerHEotUKf2EMlz/JqsI9Z3yBy/lXVL9HsEoTNpyvMPLk75oquH0vXGg==}
     dependencies:
       debug: 4.3.3
       jiti: 1.13.0
@@ -1607,11 +1607,11 @@ packages:
       - supports-color
     dev: false
 
-  /@windicss/plugin-utils/1.8.1:
-    resolution: {integrity: sha512-bYJDw5cPBhUR8qlyL1g634xtGPF4ABOmtRfDrkL8nf9YAJkNowHao9lAMAJqHLd56Zp6BEoqib3smuwKSJKBnQ==}
+  /@windicss/plugin-utils/1.8.2:
+    resolution: {integrity: sha512-UlinWxojyGxWV18AyQ1ISeGvtpbw4ITQpcRe0v4PyuJZHwnrrHmxp8o/pg10oEcDKnsTIbjGeZfW5DC+mkjYYQ==}
     dependencies:
       '@antfu/utils': 0.5.0
-      '@windicss/config': 1.8.1
+      '@windicss/config': 1.8.2
       debug: 4.3.3
       fast-glob: 3.2.11
       magic-string: 0.25.7
@@ -3620,12 +3620,12 @@ packages:
       vscode-uri: 3.0.3
     dev: true
 
-  /vite-plugin-windicss/1.8.1_vite@2.8.6:
-    resolution: {integrity: sha512-c+900Dkc94kRuZPb6mz79B5XOS2PHNhadf7P9UjIRoimEE5HB7hj1f+A6qGHO4VejwU/MIvA6D5+Sz2lDKAaEQ==}
+  /vite-plugin-windicss/1.8.2_vite@2.8.6:
+    resolution: {integrity: sha512-tO9bCoqIW945ehwMr9D41YPods8b7HXtVtYVPx62dxadxlbcoD7PQ/8wSvLEiIkMMfuDG5WQ6LZaUdmfALC/vQ==}
     peerDependencies:
       vite: ^2.0.1
     dependencies:
-      '@windicss/plugin-utils': 1.8.1
+      '@windicss/plugin-utils': 1.8.2
       debug: 4.3.3
       kolorist: 1.5.1
       vite: 2.8.6
@@ -3812,6 +3812,13 @@ packages:
     resolution: {integrity: sha512-E1hYZATcZFci/XhGS0sJAMRxULjnK+glNukE78Ku7xeb3jxgMY55fFOdIrav+GjQCsgR+IZxPq9/DwmO6eyc4Q==}
     engines: {node: '>= 12'}
     hasBin: true
+    dev: true
+
+  /windicss/3.5.1:
+    resolution: {integrity: sha512-E1hYZATcZFci/XhGS0sJAMRxULjnK+glNukE78Ku7xeb3jxgMY55fFOdIrav+GjQCsgR+IZxPq9/DwmO6eyc4Q==}
+    engines: {node: '>= 12'}
+    hasBin: true
+    dev: false
 
   /word-wrap/1.2.3:
     resolution: {integrity: sha512-Hz/mrNwitNRh/HUAtM/VT/5VH+ygD6DV7mYKZAtHOrbs8U7lvPS6xf7EJKMF0uW1KJCl0H701g3ZGus+muE5vQ==}
