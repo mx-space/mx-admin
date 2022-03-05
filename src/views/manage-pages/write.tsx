@@ -179,14 +179,15 @@ const PageWriteView = defineComponent(() => {
         }}
         data={data}
         show={drawerShow.value}
-      />
-      <NFormItem label="页面顺序">
-        <NInputNumber
-          placeholder=""
-          value={data.order}
-          onChange={(e) => void (data.order = e ?? 0)}
-        ></NInputNumber>
-      </NFormItem>
+      >
+        <NFormItem label="页面顺序">
+          <NInputNumber
+            placeholder=""
+            value={data.order}
+            onChange={(e) => void (data.order = e ?? 0)}
+          ></NInputNumber>
+        </NFormItem>
+      </TextBaseDrawer>
 
       {/* Drawer END */}
     </ContentLayout>
