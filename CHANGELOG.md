@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update dependency vite-plugin-windicss to v1.8.2 (#310)
+- Page drawer
+- Lock file
+
+### Miscellaneous Tasks
+
+- Update dependency windicss to v3.5.1 (#309)
+- Update dependency @vitejs/plugin-vue to v2.2.4 (#299)
+
+## [3.15.9] - 2022-03-03
+
+### Bug Fixes
+
 - Update dependency vite-plugin-windicss to v1.8.1 (#297)
 - Update dependency @vueuse/core to v7.7.0 (#298)
 - Update dependency naive-ui to v2.25.8 (#291)
@@ -28,6 +41,10 @@ All notable changes to this project will be documented in this file.
 - Update dependency vite to v2.8.6 (#308)
 - Update actions/checkout action to v3 (#307)
 - Update typescript-eslint monorepo to v5.13.0 (#303)
+
+### Release
+
+- V3.15.9
 
 ## [3.15.8] - 2022-02-25
 
