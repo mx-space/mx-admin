@@ -1,5 +1,5 @@
 .sticky-header {
-  @apply sticky left-0 right-0 z-10 p-12 pb-6 top-[-2.5rem];
+  @apply sticky left-0 right-0 z-20 p-12 pb-6 top-[-2.5rem];
 
   @screen phone {
     @apply px-6;
