@@ -52,7 +52,7 @@ specifiers:
   lodash-es: 4.17.21
   marked: 4.0.12
   monaco-editor: 0.32.1
-  naive-ui: 2.26.0
+  naive-ui: 2.26.1
   postcss: 8.4.7
   postcss-nested: 5.0.6
   prettier: 2.5.1
@@ -114,7 +114,7 @@ dependencies:
   lodash-es: 4.17.21
   marked: 4.0.12
   monaco-editor: 0.32.1
-  naive-ui: 2.26.0_vue@3.2.31
+  naive-ui: 2.26.1_vue@3.2.31
   qier-progress: 1.0.4
   qs: 6.10.3
   reflect-metadata: 0.1.13
@@ -2954,8 +2954,8 @@ packages:
   /ms/2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
 
-  /naive-ui/2.26.0_vue@3.2.31:
-    resolution: {integrity: sha512-4+78iqpQs1t8Xlq3Hrk1eSsm17d6ZScMNvnyo+KAiYdAWCfEsIdKb6ulkPGu7T0hpWL5A3TctJ5ioSbNlbN4LA==}
+  /naive-ui/2.26.1_vue@3.2.31:
+    resolution: {integrity: sha512-2VP3yJ0InUxfDJ22evq4uOm/4XkGtGGUONQpGvDd5gXmLzp6XB9UO1sNgNee5KImmELKjOLamkH9kCKs0KvJbQ==}
     peerDependencies:
       vue: ^3.0.0
     dependencies:
