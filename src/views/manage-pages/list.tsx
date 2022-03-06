@@ -2,7 +2,7 @@ import { AddIcon, DeleteIcon } from 'components/icons'
 import { TableTitleLink } from 'components/link/title-link'
 import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
-import { useTable } from 'hooks/use-table'
+import { useDataTableFetch } from 'hooks/use-table'
 import { PageModel, PageResponse } from 'models/page'
 import { NButton, NPopconfirm, NSpace, useDialog, useMessage } from 'naive-ui'
 import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
@@ -15,22 +15,23 @@ import { RESTManager } from '../../utils/rest'
 export const ManagePageListView = defineComponent({
   name: 'PageList',
   setup() {
-    const { checkedRowKeys, data, pager, sortProps, fetchDataFn } = useTable(
-      (data, pager) =>
-        async (page = route.query.page || 1, size = 20) => {
-          const response = await RESTManager.api.pages.get<PageResponse>({
-            params: {
-              page,
-              size,
-              select: 'title subtitle _id id created modified slug',
-              ...(sortProps.sortBy
-                ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
-                : {}),
-            },
-          })
-          data.value = response.data
-        },
-    )
+    const { checkedRowKeys, data, pager, sortProps, fetchDataFn } =
+      useDataTableFetch(
+        (data, pager) =>
+          async (page = route.query.page || 1, size = 20) => {
+            const response = await RESTManager.api.pages.get<PageResponse>({
+              params: {
+                page,
+                size,
+                select: 'title subtitle _id id created modified slug',
+                ...(sortProps.sortBy
+                  ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
+                  : {}),
+              },
+            })
+            data.value = response.data
+          },
+      )
 
     const message = useMessage()
     const dialog = useDialog()

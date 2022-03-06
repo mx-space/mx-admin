@@ -1,6 +1,6 @@
 import { AddIcon, DeleteIcon, MenuDownIcon } from 'components/icons'
 import { RelativeTime } from 'components/time/relative-time'
-import { useTable } from 'hooks/use-table'
+import { useDataTableFetch } from 'hooks/use-table'
 import { ProjectModel, ProjectResponse } from 'models/project'
 import {
   NAvatar,
@@ -30,7 +30,7 @@ import { RESTManager } from '../../utils/rest'
 const ManageProjectView = defineComponent({
   setup() {
     const { data, pager, sortProps, fetchDataFn, loading } =
-      useTable<ProjectModel>(
+      useDataTableFetch<ProjectModel>(
         (data, pager) =>
           async (page = route.query.page || 1, size = 30) => {
             const response =

@@ -21,6 +21,7 @@ specifiers:
   '@types/js-yaml': 4.0.5
   '@types/lodash-es': 4.17.6
   '@types/marked': 4.0.2
+  '@types/qs': 6.9.7
   '@types/validator': 13.7.1
   '@typescript-eslint/eslint-plugin': 5.13.0
   '@typescript-eslint/parser': 5.13.0
@@ -45,6 +46,7 @@ specifiers:
   ejs: 3.1.6
   eslint: 8.10.0
   eslint-plugin-vue: 8.5.0
+  i: 0.3.7
   js-cookie: 3.0.1
   js-yaml: 4.1.0
   lodash-es: 4.17.21
@@ -55,6 +57,7 @@ specifiers:
   postcss-nested: 5.0.6
   prettier: 2.5.1
   qier-progress: 1.0.4
+  qs: 6.10.3
   reflect-metadata: 0.1.13
   rollup-plugin-visualizer: 5.6.0
   socket.io-client: 4.4.1
@@ -113,6 +116,7 @@ dependencies:
   monaco-editor: 0.32.1
   naive-ui: 2.26.0_vue@3.2.31
   qier-progress: 1.0.4
+  qs: 6.10.3
   reflect-metadata: 0.1.13
   socket.io-client: 4.4.1
   umi-request: 1.4.0
@@ -131,6 +135,7 @@ devDependencies:
   '@types/js-yaml': 4.0.5
   '@types/lodash-es': 4.17.6
   '@types/marked': 4.0.2
+  '@types/qs': 6.9.7
   '@types/validator': 13.7.1
   '@typescript-eslint/eslint-plugin': 5.13.0_33fffc354ccfa91fbe7d1677b9395a0a
   '@typescript-eslint/parser': 5.13.0_eslint@8.10.0+typescript@4.6.2
@@ -140,6 +145,7 @@ devDependencies:
   cors: 2.8.5
   eslint: 8.10.0
   eslint-plugin-vue: 8.5.0_eslint@8.10.0
+  i: 0.3.7
   postcss: 8.4.7
   postcss-nested: 5.0.6_postcss@8.4.7
   prettier: 2.5.1
@@ -1270,6 +1276,10 @@ packages:
 
   /@types/parse-json/4.0.0:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==}
+    dev: true
+
+  /@types/qs/6.9.7:
+    resolution: {integrity: sha512-FGa1F62FT09qcrueBA6qYTrJPVDzah9a+493+o2PCXsesWHIn27G98TsSMs3WPNbZIEj4+VJf6saSFpvD+3Zsw==}
     dev: true
 
   /@types/validator/13.7.1:
@@ -2622,6 +2632,11 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
+  /i/0.3.7:
+    resolution: {integrity: sha512-FYz4wlXgkQwIPqhzC5TdNMLSE5+GS1IIDJZY/1ZiEPCT2S3COUVZeT5OW4BmW4r5LHLQuOosSwsvnroG9GR59Q==}
+    engines: {node: '>=0.4'}
+    dev: true
+
   /iconv-lite/0.6.3:
     resolution: {integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==}
     engines: {node: '>=0.10.0'}
@@ -3151,8 +3166,8 @@ packages:
     engines: {node: '>=6.0.0'}
     dev: false
 
-  /qs/6.10.1:
-    resolution: {integrity: sha512-M528Hph6wsSVOBiYUnGf+K/7w0hNshs/duGsNXPUCLH5XAqjEtiPGwNONLV0tBH8NoGb0mvD5JubnUTrujKDTg==}
+  /qs/6.10.3:
+    resolution: {integrity: sha512-wr7M2E0OFRfIfJZjKGieI8lBKb7fRCH4Fv5KNPEs7gJ8jadvotdsS08PzOKR7opXhZ/Xkjtt3WF9g38drmyRqQ==}
     engines: {node: '>=0.6'}
     dependencies:
       side-channel: 1.0.4
@@ -3501,7 +3516,7 @@ packages:
     resolution: {integrity: sha512-OknwtQZddZHi0Ggi+Vr/olJ7HNMx4AzlywyK0W3NZBT7B0stjeZ9lcztA85dBgdAj3KVk8uPJPZSnGaDjELhrA==}
     dependencies:
       isomorphic-fetch: 2.2.1
-      qs: 6.10.1
+      qs: 6.10.3
     dev: false
 
   /universalify/2.0.0:

@@ -1,13 +1,13 @@
 import { Table } from 'components/table'
 import { format } from 'date-fns'
-import { useTable } from 'hooks/use-table'
+import { useDataTableFetch } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
 import { NButton, NPopconfirm, NSpace } from 'naive-ui'
 import { RESTManager, toPascalCase } from 'utils'
 
 export default defineComponent({
   setup() {
-    const { data, fetchDataFn, loading } = useTable((dataRef) => {
+    const { data, fetchDataFn, loading } = useDataTableFetch((dataRef) => {
       return async () => {
         const data = (await RESTManager.api.health.cron.get()) as any
         dataRef.value = Array.from(

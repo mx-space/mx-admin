@@ -11,7 +11,7 @@ import { TableTitleLink } from 'components/link/title-link'
 import { Table } from 'components/table'
 import { EditColumn } from 'components/table/edit-column'
 import { RelativeTime } from 'components/time/relative-time'
-import { useTable } from 'hooks/use-table'
+import { useDataTableFetch } from 'hooks/use-table'
 import { Pager } from 'models/base'
 import { NoteModel } from 'models/note'
 import {
@@ -33,14 +33,15 @@ export const ManageNoteListView = defineComponent({
   name: 'NoteList',
   setup() {
     const { loading, checkedRowKeys, data, pager, sortProps, fetchDataFn } =
-      useTable<NoteModel>(
+      useDataTableFetch<NoteModel>(
         (data, pager) =>
-          async (page = route.query.page || 1, size = 20) => {
+          async (page = route.query.page || 1, size = 20, db_query) => {
             const response = await RESTManager.api.notes.get<{
               data: NoteModel[]
               pagination: Pager
             }>({
               params: {
+                db_query,
                 page,
                 size,
                 select:
@@ -90,6 +91,12 @@ export const ManageNoteListView = defineComponent({
             sorter: 'default',
             key: 'title',
             width: 280,
+            filter: true,
+            filterOptions: [
+              { label: '回忆项', value: 'hasMemory' },
+              { label: '隐藏项', value: 'hide' },
+            ],
+
             render(row) {
               const isSecret =
                 row.secret && +new Date(row.secret) - +new Date() > 0
@@ -284,6 +291,20 @@ export const ManageNoteListView = defineComponent({
 
         return () => (
           <Table
+            nTableProps={{
+              async onUpdateFilters(filter: { title: string[] }, column) {
+                const { title } = filter
+                if (!title || title.length === 0) {
+                  await fetchData()
+                  return
+                }
+                await fetchData(
+                  1,
+                  undefined,
+                  title.reduce((acc, i) => ({ ...acc, [i]: true }), {}),
+                )
+              },
+            }}
             loading={loading.value}
             columns={columns}
             data={data}

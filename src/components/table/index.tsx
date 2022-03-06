@@ -60,7 +60,7 @@ export const Table = defineComponent({
       type: Object as PropType<
         Partial<Record<keyof typeof dataTableProps, any>>
       >,
-      default: new Object(),
+      default: () => ({}),
     },
     maxWidth: {
       type: Number,
@@ -116,7 +116,7 @@ export const Table = defineComponent({
 
     return () => (
       <NDataTable
-        {...nTableProps}
+        // @ts-ignore
         loading={props.loading ?? loading.value}
         remote
         scrollX={Math.max(ui.contentInsetWidth.value, maxWidth)}
@@ -182,6 +182,7 @@ export const Table = defineComponent({
           }
         }}
         columns={columns}
+        {...nTableProps}
       ></NDataTable>
     )
   },

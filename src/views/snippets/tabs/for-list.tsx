@@ -4,7 +4,7 @@ import { AddIcon, LockIcon } from 'components/icons'
 import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
 import { useMountAndUnmount } from 'hooks/use-react'
-import { useTable } from 'hooks/use-table'
+import { useDataTableFetch } from 'hooks/use-table'
 import { useLayout } from 'layouts/content'
 import { PaginateResult } from 'models/base'
 import { NButton, NPopconfirm, NSpace } from 'naive-ui'
@@ -40,22 +40,24 @@ export const Tab1ForList = defineComponent({
       }
     })
 
-    const { data, fetchDataFn, loading, pager } = useTable((data, pager) => {
-      return async (page, size) => {
-        const _data = await RESTManager.api.snippets.get<
-          PaginateResult<SnippetModel[]>
-        >({
-          params: {
-            page,
-            size,
-            select: '-raw',
-          },
-        })
+    const { data, fetchDataFn, loading, pager } = useDataTableFetch(
+      (data, pager) => {
+        return async (page, size) => {
+          const _data = await RESTManager.api.snippets.get<
+            PaginateResult<SnippetModel[]>
+          >({
+            params: {
+              page,
+              size,
+              select: '-raw',
+            },
+          })
 
-        data.value = _data.data
-        pager.value = _data.pagination
-      }
-    })
+          data.value = _data.data
+          pager.value = _data.pagination
+        }
+      },
+    )
 
     const router = useRouter()
 

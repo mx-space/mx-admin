@@ -5,7 +5,7 @@ import { Table } from 'components/table'
 import { EditColumn } from 'components/table/edit-column'
 import { RelativeTime } from 'components/time/relative-time'
 import { useInjector } from 'hooks/use-deps-injection'
-import { useTable } from 'hooks/use-table'
+import { useDataTableFetch } from 'hooks/use-table'
 import {
   CategoryWithChildrenModel,
   PickedPostModelInCategoryChildren,
@@ -36,7 +36,7 @@ export const ManagePostListView = defineComponent({
   name: 'PostList',
   setup() {
     const { loading, checkedRowKeys, data, pager, sortProps, fetchDataFn } =
-      useTable(
+      useDataTableFetch(
         (data, pager) =>
           async (page = route.query.page || 1, size = 20) => {
             const response = await RESTManager.api.posts.get<PostResponse>({

@@ -1,7 +1,7 @@
 import { AddIcon, DeleteIcon } from 'components/icons'
 import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
-import { useTable } from 'hooks/use-table'
+import { useDataTableFetch } from 'hooks/use-table'
 import { SayResponse } from 'models/say'
 import { NButton, NPopconfirm, NSpace, useDialog, useMessage } from 'naive-ui'
 import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
@@ -13,20 +13,21 @@ import { RESTManager } from '../../utils/rest'
 const ManageSayListView = defineComponent({
   name: 'SayList',
   setup(props, ctx) {
-    const { checkedRowKeys, data, pager, loading, fetchDataFn } = useTable(
-      (data, pager) =>
-        async (page = route.query.page || 1, size = 30) => {
-          const response = await RESTManager.api.says.get<SayResponse>({
-            params: {
-              page,
-              size,
-              select: 'title text _id id created modified author source',
-            },
-          })
-          data.value = response.data
-          pager.value = response.pagination
-        },
-    )
+    const { checkedRowKeys, data, pager, loading, fetchDataFn } =
+      useDataTableFetch(
+        (data, pager) =>
+          async (page = route.query.page || 1, size = 30) => {
+            const response = await RESTManager.api.says.get<SayResponse>({
+              params: {
+                page,
+                size,
+                select: 'title text _id id created modified author source',
+              },
+            })
+            data.value = response.data
+            pager.value = response.pagination
+          },
+      )
 
     const message = useMessage()
     const dialog = useDialog()

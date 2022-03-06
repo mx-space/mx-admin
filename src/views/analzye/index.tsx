@@ -3,7 +3,7 @@ import { HeaderActionButton } from 'components/button/rounded-button'
 import { RefreshOutlineIcon, TrashIcon } from 'components/icons'
 import { IpInfoPopover } from 'components/ip-info'
 import { Table } from 'components/table'
-import { useTable } from 'hooks/use-table'
+import { useDataTableFetch } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
 import { isEmpty } from 'lodash-es'
 import { UA } from 'models/analyze'
@@ -34,7 +34,7 @@ const SectionTitle = defineComponent((_, { slots }) => () => (
 ))
 export default defineComponent({
   setup() {
-    const { data, pager, sortProps, fetchDataFn } = useTable(
+    const { data, pager, sortProps, fetchDataFn } = useDataTableFetch(
       (data, pager) =>
         async (page = route.query.page || 1, size = 30) => {
           const response = (await RESTManager.api.analyze.get({

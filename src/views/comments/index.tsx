@@ -11,7 +11,7 @@ import { Table } from 'components/table'
 import { WEB_URL } from 'constants/env'
 import { KAOMOJI_LIST } from 'constants/kaomoji'
 import { useInjector } from 'hooks/use-deps-injection'
-import { useTable } from 'hooks/use-table'
+import { useDataTableFetch } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
 import { CommentModel, CommentsResponse, CommentState } from 'models/comment'
 import {
@@ -54,13 +54,10 @@ const ManageComment = defineComponent(() => {
   )
 
   const { data, checkedRowKeys, fetchDataFn, pager, loading } =
-    useTable<CommentModel>(
+    useDataTableFetch<CommentModel>(
       (data, pager) =>
-        async (
-          page = route.query.page || 1,
-          size = 10,
-          state: CommentType = route.query.state as any,
-        ) => {
+        async (page = route.query.page || 1, size = 10) => {
+          const state: CommentType = route.query.state as any
           const response = await RESTManager.api.comments.get<CommentsResponse>(
             {
               params: {

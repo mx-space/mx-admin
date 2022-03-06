@@ -2,7 +2,7 @@ import { HeaderActionButton } from 'components/button/rounded-button'
 import { CheckIcon, PlusIcon as Plus } from 'components/icons'
 import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
-import { useTable } from 'hooks/use-table'
+import { useDataTableFetch } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
 import {
   LinkModel,
@@ -53,13 +53,11 @@ export default defineComponent({
     )
 
     const { data, checkedRowKeys, fetchDataFn, pager, loading } =
-      useTable<LinkModel>(
+      useDataTableFetch<LinkModel>(
         (data, pager) =>
-          async (
-            page = route.query.page || 1,
-            size = 50,
-            state: LinkState = (route.query.state as any | 0) ?? LinkState.Pass,
-          ) => {
+          async (page = route.query.page || 1, size = 50) => {
+            const state: LinkState =
+              (route.query.state as any | 0) ?? LinkState.Pass
             const response = await RESTManager.api.links.get<LinkResponse>({
               params: {
                 page,
