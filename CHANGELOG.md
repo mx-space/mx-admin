@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Header z-index
+
+### Features
+
+- Add note filter
+
+## [3.15.10] - 2022-03-05
+
+### Bug Fixes
+
 - Update dependency vite-plugin-windicss to v1.8.2 (#310)
 - Page drawer
 - Lock file
@@ -13,6 +23,10 @@ All notable changes to this project will be documented in this file.
 
 - Update dependency windicss to v3.5.1 (#309)
 - Update dependency @vitejs/plugin-vue to v2.2.4 (#299)
+
+### Release
+
+- V3.15.10
 
 ## [3.15.9] - 2022-03-03
 
