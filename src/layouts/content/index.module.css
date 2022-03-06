@@ -19,7 +19,7 @@
 .main {
   @apply p-12;
 
-  padding-top: 0;
+  padding-top: 6px;
 
   @screen phone {
     & {
