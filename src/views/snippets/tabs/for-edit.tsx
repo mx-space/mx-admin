@@ -123,9 +123,10 @@ export const Tab2ForEdit = defineComponent({
           }
 
           case SnippetType.Function: {
-            message.error('TODO')
+            message.info('TODO')
             //TODO
-            throw new Error('TODO')
+            // throw new Error('TODO')
+            return currentTypeText
           }
           default: {
             return currentTypeText
