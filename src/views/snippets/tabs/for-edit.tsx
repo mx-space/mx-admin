@@ -16,7 +16,12 @@ import {
 } from 'naive-ui'
 import { RESTManager } from 'utils'
 import { useRoute, useRouter } from 'vue-router'
-import { SnippetModel, SnippetType } from '../../../models/snippet'
+import {
+  defaultServerlessFunction,
+  SnippetModel,
+  SnippetType,
+  SnippetTypeToLanguage,
+} from '../../../models/snippet'
 import { CodeEditorForSnippet } from '../code-editor'
 
 export const Tab2ForEdit = defineComponent({
@@ -30,11 +35,12 @@ export const Tab2ForEdit = defineComponent({
     const typeToValueMap = reactive<Record<SnippetType, string>>(
       // 有 Id 的情况下，避免闪白, 留空数据
       editId.value
-        ? { json: '', yaml: '', text: '' }
+        ? { json: '', yaml: '', text: '', function: '' }
         : {
             json: JSON.stringify({ name: 'hello world' }, null, 2),
             text: '',
             yaml: `name: hello world`,
+            function: defaultServerlessFunction,
           },
     )
 
@@ -114,6 +120,12 @@ export const Tab2ForEdit = defineComponent({
               message.error('YAML 格式错误')
             }
             return currentTypeText
+          }
+
+          case SnippetType.Function: {
+            message.error('TODO')
+            //TODO
+            throw new Error('TODO')
           }
           default: {
             return currentTypeText
@@ -221,7 +233,7 @@ export const Tab2ForEdit = defineComponent({
 
         <NGi span={24}>
           <CodeEditorForSnippet
-            language={data.value.type.toLowerCase()}
+            language={SnippetTypeToLanguage[data.value.type]}
             value={typeToValueMap[data.value.type]}
             onChange={(value) => {
               typeToValueMap[data.value.type] = value
