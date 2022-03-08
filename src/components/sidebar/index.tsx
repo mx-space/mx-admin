@@ -1,3 +1,4 @@
+import { Icon } from '@vicons/utils'
 import { onClickOutside } from '@vueuse/core'
 import clsx from 'clsx'
 import { HamburgerIcon, MoonIcon, SunIcon } from 'components/icons'
@@ -150,7 +151,7 @@ export const Sidebar = defineComponent({
                         style={{ flexBasis: '3rem' }}
                         class="flex justify-center"
                       >
-                        {item.icon}
+                        <Icon>{item.icon}</Icon>
                       </span>
                       <span class={styles['item-title']}>{item.title}</span>
                     </button>
@@ -191,7 +192,7 @@ export const Sidebar = defineComponent({
                                   class="flex justify-center items-center"
                                   style={{ flexBasis: '3rem' }}
                                 >
-                                  {child.icon}
+                                  <Icon>{child.icon}</Icon>
                                 </span>
                                 <span class={styles['item-title']}>
                                   {child.title}

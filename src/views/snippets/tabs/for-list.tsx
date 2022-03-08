@@ -1,6 +1,6 @@
 import { Icon } from '@vicons/utils'
 import { HeaderActionButton } from 'components/button/rounded-button'
-import { AddIcon, LockIcon } from 'components/icons'
+import { AddIcon, FunctionIcon, LockIcon } from 'components/icons'
 import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
 import { useMountAndUnmount } from 'hooks/use-react'
@@ -11,7 +11,7 @@ import { NButton, NPopconfirm, NSpace } from 'naive-ui'
 import { RESTManager } from 'utils'
 import { getToken } from 'utils/auth'
 import { useRouter } from 'vue-router'
-import { SnippetModel } from '../../../models/snippet'
+import { SnippetModel, SnippetType } from '../../../models/snippet'
 
 export const Tab1ForList = defineComponent({
   setup() {
@@ -75,6 +75,11 @@ export const Tab1ForList = defineComponent({
                 const isPrivate = row.private
                 return (
                   <NSpace align="center">
+                    {row.type === SnippetType.Function && (
+                      <Icon>
+                        <FunctionIcon />
+                      </Icon>
+                    )}
                     <NButton
                       tag="a"
                       text

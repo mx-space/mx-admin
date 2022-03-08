@@ -2,7 +2,6 @@
  * 路由在此定义
  * @author Innei <https://innei.ren>
  */
-import { Icon } from '@vicons/utils'
 import {
   BookIcon,
   ChartLineIcon,
@@ -15,12 +14,12 @@ import {
   EyeIcon,
   FileIcon,
   FlaskIcon,
+  FunctionIcon,
   LogIcon,
   MarkdownIcon,
   PencilAltIcon,
   PencilIcon,
   PuzzlePieceIcon,
-  SnippetIcon,
   TachometerAltIcon,
   TemplateIcon,
   TerminalIcon,
@@ -41,11 +40,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     name: RouteName.Dashboard,
     meta: {
       title: '仪表盘',
-      icon: (
-        <Icon>
-          <TachometerAltIcon />
-        </Icon>
-      ),
+      icon: <TachometerAltIcon />,
     },
   },
   {
@@ -53,11 +48,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     name: RouteName.Post,
     meta: {
       title: '博文',
-      icon: (
-        <Icon>
-          <CodeIcon />
-        </Icon>
-      ),
+      icon: <CodeIcon />,
     },
     redirect: '/posts/view',
     component: $RouterView,
@@ -67,11 +58,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         name: RouteName.ViewPost,
         meta: {
           title: '管理',
-          icon: (
-            <Icon>
-              <EyeIcon />
-            </Icon>
-          ),
+          icon: <EyeIcon />,
           query: { page: 1 },
         },
         component: () =>
@@ -85,11 +72,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         name: RouteName.EditPost,
         meta: {
           title: '撰写',
-          icon: (
-            <Icon>
-              <PencilAltIcon />
-            </Icon>
-          ),
+          icon: <PencilAltIcon />,
         },
         props: true,
         component: () => import('../views/manage-posts/write'),
@@ -100,11 +83,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         name: RouteName.EditCategory,
         meta: {
           title: '分类 / 标签',
-          icon: (
-            <Icon>
-              <PuzzlePieceIcon />
-            </Icon>
-          ),
+          icon: <PuzzlePieceIcon />,
         },
         component: () =>
           import('../views/manage-posts/category').then((m) => m.CategoryView),
@@ -116,11 +95,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     name: RouteName.Note,
     meta: {
       title: '生活记录',
-      icon: (
-        <Icon>
-          <BookIcon />
-        </Icon>
-      ),
+      icon: <BookIcon />,
     },
     redirect: '/notes/view',
     component: $RouterView,
@@ -131,11 +106,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         meta: {
           title: '管理',
           query: { page: 1 },
-          icon: (
-            <Icon>
-              <EyeIcon />
-            </Icon>
-          ),
+          icon: <EyeIcon />,
         },
         component: () =>
           import('../views/manage-notes/list').then(
@@ -147,11 +118,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         name: RouteName.EditNote,
         meta: {
           title: '撰写',
-          icon: (
-            <Icon>
-              <PencilAltIcon />
-            </Icon>
-          ),
+          icon: <PencilAltIcon />,
         },
         component: () => import('../views/manage-notes/write'),
       },
@@ -163,11 +130,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     meta: {
       title: '评论',
       query: { page: 1, state: 0 },
-      icon: (
-        <Icon>
-          <CommentIcon />
-        </Icon>
-      ),
+      icon: <CommentIcon />,
     },
     component: () => import('../views/comments/index'),
   },
@@ -177,11 +140,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     redirect: '/pages/list',
     meta: {
       title: '页面',
-      icon: (
-        <Icon>
-          <FileIcon />
-        </Icon>
-      ),
+      icon: <FileIcon />,
     },
     component: $RouterView,
     children: [
@@ -190,11 +149,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         name: RouteName.ListPage,
         meta: {
           title: '管理',
-          icon: (
-            <Icon>
-              <EyeIcon />
-            </Icon>
-          ),
+          icon: <EyeIcon />,
           query: { page: 1 },
         },
         component: () =>
@@ -207,11 +162,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         name: RouteName.EditPage,
         meta: {
           title: '编辑',
-          icon: (
-            <Icon>
-              <PencilAltIcon />
-            </Icon>
-          ),
+          icon: <PencilAltIcon />,
         },
         component: () => import('../views/manage-pages/write'),
       },
@@ -222,11 +173,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     name: RouteName.Say,
     meta: {
       title: '说说',
-      icon: (
-        <Icon>
-          <CommentsIcon />
-        </Icon>
-      ),
+      icon: <CommentsIcon />,
     },
     component: $RouterView,
     children: [
@@ -236,11 +183,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         meta: {
           title: '说什么了',
           query: { page: 1 },
-          icon: (
-            <Icon>
-              <EyeIcon />
-            </Icon>
-          ),
+          icon: <EyeIcon />,
         },
         component: () => import('../views/manage-says/list'),
       },
@@ -249,11 +192,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         name: RouteName.EditSay,
         meta: {
           title: '说点什么呢',
-          icon: (
-            <Icon>
-              <PencilAltIcon />
-            </Icon>
-          ),
+          icon: <PencilAltIcon />,
         },
         component: () => import('../views/manage-says/edit'),
       },
@@ -264,11 +203,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     name: RouteName.ListShortHand,
     meta: {
       title: '速记',
-      icon: (
-        <Icon>
-          <PencilIcon />
-        </Icon>
-      ),
+      icon: <PencilIcon />,
     },
     component: () => import('../views/shorthand'),
   },
@@ -277,11 +212,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     name: RouteName.Project,
     meta: {
       title: '项目',
-      icon: (
-        <Icon>
-          <FlaskIcon />
-        </Icon>
-      ),
+      icon: <FlaskIcon />,
     },
     component: $RouterView,
     children: [
@@ -291,11 +222,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         meta: {
           title: '项目列表',
           query: { page: 1 },
-          icon: (
-            <Icon>
-              <EyeIcon />
-            </Icon>
-          ),
+          icon: <EyeIcon />,
         },
         component: () => import('../views/manage-project/list'),
       },
@@ -304,11 +231,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         name: RouteName.EditProject,
         meta: {
           title: '创建项目',
-          icon: (
-            <Icon>
-              <PencilAltIcon />
-            </Icon>
-          ),
+          icon: <PencilAltIcon />,
         },
         component: () => import('../views/manage-project/edit'),
       },
@@ -319,11 +242,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     name: RouteName.Friend,
     meta: {
       title: '朋友们',
-      icon: (
-        <Icon>
-          <UserFriendsIcon />
-        </Icon>
-      ),
+      icon: <UserFriendsIcon />,
       query: { state: '0' },
     },
     component: () => import('../views/manage-friends'),
@@ -335,11 +254,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     component: () => import('../views/analzye'),
     meta: {
       title: '数据',
-      icon: (
-        <Icon>
-          <ChartLineIcon />
-        </Icon>
-      ),
+      icon: <ChartLineIcon />,
       query: { page: 1 },
     },
   },
@@ -348,11 +263,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     redirect: '/setting/user',
     meta: {
       title: '设定',
-      icon: (
-        <Icon>
-          <CogsIcon />
-        </Icon>
-      ),
+      icon: <CogsIcon />,
       params: { type: 'user' },
     },
     component: () => null,
@@ -372,11 +283,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     name: RouteName.Other,
     meta: {
       title: '其他',
-      icon: (
-        <Icon>
-          <EllipsisHIcon />
-        </Icon>
-      ),
+      icon: <EllipsisHIcon />,
     },
     component: $RouterView,
     children: [
@@ -384,12 +291,8 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         path: 'snippets',
         name: RouteName.Snippet,
         meta: {
-          title: '区块与片段',
-          icon: (
-            <Icon>
-              <SnippetIcon />
-            </Icon>
-          ),
+          title: '配置与云函数',
+          icon: <FunctionIcon />,
         },
         component: () => import('../views/snippets'),
       },
@@ -398,11 +301,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         name: RouteName.AssetTemplate,
         meta: {
           title: '模板编辑',
-          icon: (
-            <Icon>
-              <TemplateIcon />
-            </Icon>
-          ),
+          icon: <TemplateIcon />,
         },
         component: () => import('../views/assets/template'),
       },
@@ -411,11 +310,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         name: RouteName.Backup,
         meta: {
           title: '备份',
-          icon: (
-            <Icon>
-              <UndoAltIcon />
-            </Icon>
-          ),
+          icon: <UndoAltIcon />,
         },
         component: () => import('../views/other/backup'),
       },
@@ -425,11 +320,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         meta: {
           title: 'Markdown 导入导出',
 
-          icon: (
-            <Icon>
-              <MarkdownIcon />
-            </Icon>
-          ),
+          icon: <MarkdownIcon />,
         },
         component: () => import('../views/other/markdown-helper'),
       },
@@ -438,11 +329,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         name: RouteName.Cron,
         meta: {
           title: '任务',
-          icon: (
-            <Icon>
-              <ClockIcon />
-            </Icon>
-          ),
+          icon: <ClockIcon />,
         },
         component: () => import('../views/other/cron'),
       },
@@ -451,11 +338,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         name: RouteName.Log,
         meta: {
           title: '日志',
-          icon: (
-            <Icon>
-              <LogIcon />
-            </Icon>
-          ),
+          icon: <LogIcon />,
         },
         component: () => import('../views/other/log-view'),
       },
@@ -464,11 +347,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         name: RouteName.Pty,
         meta: {
           title: '终端',
-          icon: (
-            <Icon>
-              <TerminalIcon />
-            </Icon>
-          ),
+          icon: <TerminalIcon />,
         },
         component: () => import('../views/other/pty'),
       },
