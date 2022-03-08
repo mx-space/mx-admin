@@ -1,7 +1,7 @@
 import { BaseModel } from './base'
 
 export const defaultServerlessFunction = `
-function handler(ctx, require) {
+async function handler(ctx, require) {
   return 'pong';
 }
 `.trimStart()
@@ -15,7 +15,7 @@ export enum SnippetType {
 export enum SnippetTypeToLanguage {
   json = 'json',
   function = 'javascript',
-  text = 'mark',
+  text = 'markdown',
   yaml = 'yaml',
 }
 export class SnippetModel extends BaseModel {
