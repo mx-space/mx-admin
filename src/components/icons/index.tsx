@@ -56,6 +56,7 @@ import Template from '@vicons/tabler/es/Layout2'
 import Log from '@vicons/tabler/es/News'
 import Pencil from '@vicons/tabler/es/Pencil'
 import Settings from '@vicons/tabler/es/Settings'
+
 export { Lock as LockIcon }
 export { Pen as PenIcon }
 export {
@@ -263,5 +264,20 @@ export const StatusIcon = () => (
       d="M16.5 11L13 7.5l1.4-1.4l2.1 2.1L20.7 4l1.4 1.4l-5.6 5.6M11 7H2v2h9V7m10 6.4L19.6 12L17 14.6L14.4 12L13 13.4l2.6 2.6l-2.6 2.6l1.4 1.4l2.6-2.6l2.6 2.6l1.4-1.4l-2.6-2.6l2.6-2.6M11 15H2v2h9v-2z"
       fill="currentColor"
     ></path>
+  </svg>
+)
+
+export const FunctionIcon = () => (
+  <svg width="1em" height="1em" viewBox="0 0 24 24">
+    <g
+      fill="none"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+    >
+      <path d="M14 10h1c1 0 1 1 2.016 3.527C18 16 18 17 19 17h1"></path>
+      <path d="M13 17c1.5 0 3-2 4-3.5s2.5-3.5 4-3.5M3 19c0 1.5.5 2 2 2s2-4 3-9s1.5-9 3-9s2 .5 2 2m-8 7h6"></path>
+    </g>
   </svg>
 )
