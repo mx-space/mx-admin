@@ -4,7 +4,7 @@ export const defaultServerlessFunction = `
 function handler(ctx, require) {
   return 'pong';
 }
-`
+`.trimStart()
 export enum SnippetType {
   JSON = 'json',
   Function = 'function',
