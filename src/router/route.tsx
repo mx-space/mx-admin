@@ -521,16 +521,22 @@ export const routes: RouteRecordRaw[] = [
     meta: {
       title: '调试',
     },
-    children: [
-      {
-        path: 'events',
-        name: '$$events',
-        meta: {
-          title: 'Events',
-        },
-        component: () => import('../views/debug/events'),
+    children: Object.entries(import.meta.glob('../views/debug/**/*.tsx')).map(
+      ([path, comp]) => {
+        const _title = path.match(/debug\/(.*?)\/index\.tsx$/)![1]
+        const title = _title[0].toUpperCase() + _title.slice(1)
+
+        return {
+          path: _title,
+          component: comp,
+
+          title,
+          meta: {
+            title,
+          },
+        }
       },
-    ],
+    ),
   },
   // v1 compatibility
   {
