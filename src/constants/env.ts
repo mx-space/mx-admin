@@ -12,7 +12,8 @@ export const API_URL = (() => {
   const url =
     new URLSearchParams(location.search).get('__api') ||
     window.injectData.BASE_API ||
-    (import.meta.env.VITE_APP_BASE_API as string)
+    (import.meta.env.VITE_APP_BASE_API as string) ||
+    'http://127.0.0.1:2333'
 
   return url.endsWith('/') ? url.slice(0, -1) : url
 })()
