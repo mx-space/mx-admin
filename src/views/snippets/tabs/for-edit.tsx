@@ -123,9 +123,7 @@ export const Tab2ForEdit = defineComponent({
           }
 
           case SnippetType.Function: {
-            message.info('TODO')
-            //TODO
-            // throw new Error('TODO')
+            // TODO 验证，暂时不验证，服务端验证
             return currentTypeText
           }
           default: {
