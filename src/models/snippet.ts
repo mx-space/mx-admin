@@ -20,7 +20,7 @@ export enum SnippetTypeToLanguage {
 }
 export class SnippetModel extends BaseModel {
   type = SnippetType.JSON
-  private = true
+  private = false
   raw = '{}'
   name = ''
   reference = 'root'
