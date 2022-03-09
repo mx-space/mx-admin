@@ -5,11 +5,42 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update dependency @mx-space/api-client to v0.7.2 (#317)
+- Update dependency vite-plugin-windicss to v1.8.3 (#315)
+- Update dependency naive-ui to v2.26.1 (#316)
+- Update dependency @vueuse/core to v7.7.1 (#314)
+- Add pt for main container
+- Temp allow create func no need valid
+- Env default value
+- Trimstart for default function template
+- Snippet function default
+
+### Features
+
+- Init serverless function
+- Serverless debug
+- Change monaco default theme
+
+### Miscellaneous Tasks
+
+- Add lock registry
+- Add function icon
+- Add todo
+- `private` set default to true
+
+## [3.15.11] - 2022-03-06
+
+### Bug Fixes
+
 - Header z-index
 
 ### Features
 
 - Add note filter
+
+### Release
+
+- V3.15.11
 
 ## [3.15.10] - 2022-03-05
 
