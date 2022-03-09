@@ -46,6 +46,7 @@ specifiers:
   ejs: 3.1.6
   eslint: 8.10.0
   eslint-plugin-vue: 8.5.0
+  highlight.js: 11.4.0
   i: 0.3.7
   js-cookie: 3.0.1
   js-yaml: 4.1.0
@@ -109,6 +110,7 @@ dependencies:
   clsx: 1.1.1
   date-fns: 2.28.0
   ejs: 3.1.6
+  highlight.js: 11.4.0
   js-cookie: 3.0.1
   js-yaml: 4.1.0
   lodash-es: 4.17.21

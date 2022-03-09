@@ -59,6 +59,8 @@ export const useAsyncLoadMonaco = (
         automaticLayout: true,
         minimap: { enabled: false },
         tabSize: 2,
+        fontFamily: 'operator mono, fira code ,monaco, monospace',
+        fontSize: 14,
       })
       ;['onKeyDown', 'onDidPaste', 'onDidBlurEditorText'].forEach(
         (eventName) => {
