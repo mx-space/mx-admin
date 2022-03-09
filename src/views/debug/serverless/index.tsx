@@ -26,7 +26,7 @@ export default defineComponent({
     )
 
     const message = useMessage()
-
+    const previewRef = ref<HTMLPreElement>()
     const runResult = ref('')
     return () => (
       <ContentLayout
@@ -47,6 +47,13 @@ export default defineComponent({
                   })
 
                   runResult.value = JSON.stringify(res, null, 2)
+                  import('highlight.js/styles/github-dark.css')
+
+                  import('highlight.js').then((hljs) => {
+                    nextTick(() => {
+                      hljs.default.highlightElement(previewRef.value!)
+                    })
+                  })
                 } catch (e: any) {}
               }}
             ></HeaderActionButton>
@@ -58,7 +65,12 @@ export default defineComponent({
             <div class="h-[80vh]" ref={editorRef}></div>
           </NGi>
           <NGi span="18">
-            <pre class="overflow-auto">{runResult.value}</pre>
+            <pre
+              class="overflow-auto max-h-[calc(100vh-10rem)]"
+              ref={previewRef}
+            >
+              {runResult.value}
+            </pre>
           </NGi>
         </TwoColGridLayout>
       </ContentLayout>
