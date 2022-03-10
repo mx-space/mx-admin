@@ -46,8 +46,8 @@ export default defineComponent({
                     },
                   })
 
-                  runResult.value = JSON.stringify(res, null, 2)
-                  import('highlight.js/styles/github-dark.css')
+                  runResult.value = JSON.stringify(res.data, null, 2)
+                  import('highlight.js/styles/github.css')
 
                   import('highlight.js').then((hljs) => {
                     nextTick(() => {
@@ -66,7 +66,7 @@ export default defineComponent({
           </NGi>
           <NGi span="18">
             <pre
-              class="overflow-auto max-h-[calc(100vh-10rem)]"
+              class="overflow-auto max-h-[calc(100vh-10rem)] !bg-none !bg-transparent"
               ref={previewRef}
             >
               {runResult.value}
