@@ -14,7 +14,7 @@ export default defineComponent({
 
     const value = useLocalStorage('debug-serverless', defaultServerlessFunction)
 
-    const editor$ = useAsyncLoadMonaco(
+    const $editor = useAsyncLoadMonaco(
       editorRef,
       value,
       (val) => {
@@ -25,9 +25,38 @@ export default defineComponent({
       },
     )
 
+    onMounted(() => {
+      import('monaco-editor').then((monaco) => {
+        monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+          target: monaco.languages.typescript.ScriptTarget.ES2020,
+        })
+
+        monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+          target: monaco.languages.typescript.ScriptTarget.ES2020,
+        })
+      })
+    })
+
+    const cleaner = watch(
+      () => $editor.loaded.value,
+      (done) => {
+        if (done) {
+          cleaner()
+        }
+        import('monaco-editor-auto-typings').then((module) => {
+          const { AutoTypings, LocalStorageCache } = module
+
+          const autoTypings = AutoTypings.create($editor.editor as any, {
+            sourceCache: new LocalStorageCache(), // Cache loaded sources in localStorage. May be omitted
+            // Other options...
+          })
+        })
+      },
+    )
+
     const message = useMessage()
     const previewRef = ref<HTMLPreElement>()
-    const runResult = ref('')
+    const errorMsg = ref('')
     return () => (
       <ContentLayout
         actionsElement={
@@ -41,18 +70,21 @@ export default defineComponent({
                       function: value.value,
                     },
                     errorHandler: (err) => {
-                      runResult.value = `Error: ${err.data.message}`
+                      errorMsg.value = `Error: ${err.data.message}`
                       message.error(err.data.message)
                     },
                   })
 
-                  runResult.value = JSON.stringify(res.data, null, 2)
-                  import('highlight.js/styles/github.css')
-
-                  import('highlight.js').then((hljs) => {
-                    nextTick(() => {
-                      hljs.default.highlightElement(previewRef.value!)
-                    })
+                  import('monaco-editor').then((mo) => {
+                    mo.editor
+                      .colorize(
+                        JSON.stringify(res.data, null, 2),
+                        'typescript',
+                        { tabSize: 2 },
+                      )
+                      .then((res) => {
+                        previewRef.value!.innerHTML = res
+                      })
                   })
                 } catch (e: any) {}
               }}
@@ -69,7 +101,7 @@ export default defineComponent({
               class="overflow-auto max-h-[calc(100vh-10rem)] !bg-none !bg-transparent"
               ref={previewRef}
             >
-              {runResult.value}
+              {errorMsg.value}
             </pre>
           </NGi>
         </TwoColGridLayout>

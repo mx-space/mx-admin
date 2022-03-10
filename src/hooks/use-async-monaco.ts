@@ -22,10 +22,16 @@ export const useAsyncLoadMonaco = (
 ) => {
   const monaco = {
     editor: null as any as editor.IStandaloneCodeEditor,
+    module: null as any as typeof import('monaco-editor'),
+    loaded: null as any as Ref<boolean>,
   }
   const { isDark } = useInjector(UIStore)
 
   let memoInitialValue: string = unref(value)
+
+  const loaded = ref(false)
+
+  monaco.loaded = loaded
 
   watch(
     () => value.value,
@@ -51,17 +57,30 @@ export const useAsyncLoadMonaco = (
   )
 
   onMounted(() => {
-    import('monaco-editor').then((mo) => {
-      monaco.editor = mo.editor.create(editorRef.value, {
+    import('monaco-editor').then((module) => {
+      const monacoOptions: editor.IStandaloneEditorConstructionOptions = {
         ...options,
         value: value.value,
         theme: isDark.value ? 'vs-dark' : 'vs',
         automaticLayout: true,
+        cursorStyle: 'line-thin',
         minimap: { enabled: false },
         tabSize: 2,
-        fontFamily: 'operator mono, fira code ,monaco, monospace',
+        fontFamily: 'operator mono, fira code, monaco, monospace',
         fontSize: 14,
-      })
+      }
+
+      monaco.editor = module.editor.create(editorRef.value, monacoOptions)
+
+      if (
+        options.language &&
+        ['javascript', 'typescript'].includes(options.language)
+      ) {
+        const model = module.editor.createModel(value.value, options.language)
+        monaco.editor.setModel(model)
+      }
+
+      monaco.module = module
       ;['onKeyDown', 'onDidPaste', 'onDidBlurEditorText'].forEach(
         (eventName) => {
           const editor = monaco.editor
@@ -72,6 +91,17 @@ export const useAsyncLoadMonaco = (
           })
         },
       )
+
+      monaco.editor.addAction({
+        id: 'trigger-suggestion',
+        label: 'Trigger Suggestion',
+        keybindings: [module.KeyMod.Shift | module.KeyCode.Space],
+        run: () => {
+          monaco.editor.trigger('', 'editor.action.triggerSuggest', {})
+        },
+      })
+
+      loaded.value = true
     })
   })
 
