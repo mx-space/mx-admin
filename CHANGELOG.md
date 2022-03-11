@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Serverless debug view
+- Update dependency naive-ui to v2.26.3 (#320)
+- Serverless link and editor loading status
+
+### Features
+
+- Add serverless type declare
+- Add code intelisense editor
+
+### Miscellaneous Tasks
+
+- Update dependency postcss to v8.4.8 (#318)
+- Update typescript-eslint monorepo to v5.14.0 (#319)
+
+### Draft
+
+- Monaco auto typings
+
+## [3.16.0] - 2022-03-09
+
+### Bug Fixes
+
 - Update dependency @mx-space/api-client to v0.7.2 (#317)
 - Update dependency vite-plugin-windicss to v1.8.3 (#315)
 - Update dependency naive-ui to v2.26.1 (#316)
@@ -27,6 +49,10 @@ All notable changes to this project will be documented in this file.
 - Add function icon
 - Add todo
 - `private` set default to true
+
+### Release
+
+- V3.16.0
 
 ## [3.15.11] - 2022-03-06
 
@@ -1669,6 +1695,7 @@ All notable changes to this project will be documented in this file.
 ### Bug Fixes
 
 - Prod bug
+- Tsconfig `esModuleInterop` !!!!
 - Update dependency naive-ui to v2.12.0 (#10)
 - Update dependency vue-router to v4.0.9 (#7)
 - Sidebar layout responsive
