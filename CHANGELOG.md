@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update dependency @vueuse/core to v8 (#324)
+- Update dependency naive-ui to v2.26.4 (#321)
+- Update dependency vue-router to v4.0.14 (#322)
+
+### Features
+
+- Fetch type declare from server
+
+## [3.16.1] - 2022-03-11
+
+### Bug Fixes
+
 - Serverless debug view
 - Update dependency naive-ui to v2.26.3 (#320)
 - Serverless link and editor loading status
@@ -22,6 +34,10 @@ All notable changes to this project will be documented in this file.
 ### Draft
 
 - Monaco auto typings
+
+### Release
+
+- V3.16.1
 
 ## [3.16.0] - 2022-03-09
 
@@ -1695,7 +1711,6 @@ All notable changes to this project will be documented in this file.
 ### Bug Fixes
 
 - Prod bug
-- Tsconfig `esModuleInterop` !!!!
 - Update dependency naive-ui to v2.12.0 (#10)
 - Update dependency vue-router to v4.0.9 (#7)
 - Sidebar layout responsive
