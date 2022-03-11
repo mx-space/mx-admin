@@ -49,7 +49,7 @@
     "js-yaml": "4.1.0",
     "lodash-es": "4.17.21",
     "marked": "4.0.12",
-    "monaco-editor": "0.32.1",
+    "monaco-editor": "0.33.0",
     "path": "./polyfills/packages/path",
     "naive-ui": "2.26.4",
     "qier-progress": "1.0.4",
