@@ -1,5 +1,6 @@
 import { CenterSpin } from 'components/spin'
 import { useAsyncLoadMonaco } from 'hooks/use-async-monaco'
+import { RESTManager } from 'utils'
 import { PropType, Ref } from 'vue'
 import * as typeDefines from './lib.declare'
 
@@ -39,9 +40,22 @@ export const FunctionCodeEditor = defineComponent({
           noSyntaxValidation: false,
         })
 
-        // monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
-        //   target: monaco.languages.typescript.ScriptTarget.ES2020,
-        // })
+        RESTManager.api.serverless.types.get<any>().then((data) => {
+          const libSource = data
+
+          const libUri = 'ts:filename/global.d.ts'
+          monaco.languages.typescript.javascriptDefaults.addExtraLib(
+            libSource,
+            libUri,
+          )
+          // When resolving definitions and references, the editor will try to use created models.
+          // Creating a model for the library allows "peek definition/references" commands to work with the library.
+          monaco.editor.createModel(
+            libSource,
+            'javascript',
+            monaco.Uri.parse(libUri),
+          )
+        })
 
         Object.keys(typeDefines).forEach((key) => {
           const namespace = typeDefines[key] as {
