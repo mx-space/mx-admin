@@ -52,7 +52,7 @@ specifiers:
   lodash-es: 4.17.21
   marked: 4.0.12
   monaco-editor: 0.32.1
-  naive-ui: 2.26.3
+  naive-ui: 2.26.4
   path: ./polyfills/packages/path
   postcss: 8.4.8
   postcss-nested: 5.0.6
@@ -115,7 +115,7 @@ dependencies:
   lodash-es: 4.17.21
   marked: 4.0.12
   monaco-editor: 0.32.1
-  naive-ui: 2.26.3_vue@3.2.31
+  naive-ui: 2.26.4_vue@3.2.31
   path: link:polyfills/packages/path
   qier-progress: 1.0.4
   qs: 6.10.3
@@ -2992,8 +2992,8 @@ packages:
   /ms/2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
 
-  /naive-ui/2.26.3_vue@3.2.31:
-    resolution: {integrity: sha512-U7UQzkwNMUntnxa1/qV6kkGwJfrcAO+98FS97HPU6HKlpKq681Cb53VVYqZMYZRVaHEO83BWxzsQJXd+VMPbhQ==}
+  /naive-ui/2.26.4_vue@3.2.31:
+    resolution: {integrity: sha512-yJQl6y58pxQWKi8YAofiFk0+4WVN+dNYoyKiMfaVdvVQTh9VxjBrcs4z5NUT+d98xUXOtmMzpIlrW/4P1xty+w==}
     peerDependencies:
       vue: ^3.0.0
     dependencies:
