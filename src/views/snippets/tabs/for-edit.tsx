@@ -1,3 +1,4 @@
+import { useStorage } from '@vueuse/core'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { CheckCircleOutlinedIcon } from 'components/icons'
 import { useMountAndUnmount } from 'hooks/use-react'
@@ -30,7 +31,10 @@ export const Tab2ForEdit = defineComponent({
     const route = useRoute()
     const editId = computed(() => route.query.id as string)
 
-    const data = ref<SnippetModel>(new SnippetModel())
+    const data = useStorage<SnippetModel>(
+      editId.value ? 'snippet-' + editId.value : 'snippet',
+      new SnippetModel(),
+    )
 
     const typeToValueMap = reactive<Record<SnippetType, string>>(
       // 有 Id 的情况下，避免闪白, 留空数据

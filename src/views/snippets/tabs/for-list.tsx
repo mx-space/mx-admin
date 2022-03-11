@@ -86,7 +86,9 @@ export const Tab1ForList = defineComponent({
                       // @ts-ignore
                       href={
                         RESTManager.endpoint +
-                        '/snippets/' +
+                        (row.type === SnippetType.Function
+                          ? '/serverless/'
+                          : '/snippets/') +
                         row.reference +
                         '/' +
                         row.name +

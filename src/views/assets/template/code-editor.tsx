@@ -17,13 +17,16 @@ export const CodeEditorForTemplateEditing = defineComponent({
     const editorRef = ref()
     const value = usePropsValueToRef(props)
 
-    useAsyncLoadMonaco(editorRef, value, props.onChange, {
+    const obj = useAsyncLoadMonaco(editorRef, value, props.onChange, {
       language: 'html',
     })
 
     return () => (
-      <div ref={editorRef} class={'h-full w-full relative'}>
-        <CenterSpin description="Monaco 体积较大耐心等待加载完成..." />
+      <div class={'h-full w-full relative'}>
+        <div ref={editorRef} class={'h-full w-full relative'} />
+        {!obj.loaded.value && (
+          <CenterSpin description="Monaco 体积较大耐心等待加载完成..." />
+        )}
       </div>
     )
   },

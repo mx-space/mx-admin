@@ -37,23 +37,6 @@ export default defineComponent({
       })
     })
 
-    const cleaner = watch(
-      () => $editor.loaded.value,
-      (done) => {
-        if (done) {
-          cleaner()
-        }
-        import('monaco-editor-auto-typings').then((module) => {
-          const { AutoTypings, LocalStorageCache } = module
-
-          const autoTypings = AutoTypings.create($editor.editor as any, {
-            sourceCache: new LocalStorageCache(), // Cache loaded sources in localStorage. May be omitted
-            // Other options...
-          })
-        })
-      },
-    )
-
     const message = useMessage()
     const previewRef = ref<HTMLPreElement>()
     const errorMsg = ref('')
