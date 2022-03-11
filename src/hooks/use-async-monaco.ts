@@ -14,6 +14,7 @@ export const usePropsValueToRef = <T extends { value: string }>(props: T) => {
   return value
 }
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const useAsyncLoadMonaco = (
   editorRef: Ref<any>,
   value: Ref<string>,
@@ -71,14 +72,6 @@ export const useAsyncLoadMonaco = (
       }
 
       monaco.editor = module.editor.create(editorRef.value, monacoOptions)
-
-      if (
-        options.language &&
-        ['javascript', 'typescript'].includes(options.language)
-      ) {
-        const model = module.editor.createModel(value.value, options.language)
-        monaco.editor.setModel(model)
-      }
 
       monaco.module = module
       ;['onKeyDown', 'onDidPaste', 'onDidBlurEditorText'].forEach(

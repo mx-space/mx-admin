@@ -1,7 +1,11 @@
 import { BaseModel } from './base'
 
 export const defaultServerlessFunction = `
-async function handler(ctx, require) {
+// @ts-check
+/**
+* @param {Context} ctx
+*/
+async function handler(ctx) {
   return 'pong';
 }
 `.trimStart()

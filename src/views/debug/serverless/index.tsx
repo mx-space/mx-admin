@@ -1,7 +1,7 @@
 import { useLocalStorage } from '@vueuse/core'
 import { HeaderActionButton } from 'components/button/rounded-button'
+import { FunctionCodeEditor } from 'components/function-editor'
 import { CheckCircleOutlinedIcon } from 'components/icons'
-import { useAsyncLoadMonaco } from 'hooks/use-async-monaco'
 import { ContentLayout } from 'layouts/content'
 import { TwoColGridLayout } from 'layouts/two-col'
 import { defaultServerlessFunction } from 'models/snippet'
@@ -10,32 +10,7 @@ import { RESTManager } from 'utils'
 
 export default defineComponent({
   setup() {
-    const editorRef = ref()
-
     const value = useLocalStorage('debug-serverless', defaultServerlessFunction)
-
-    const $editor = useAsyncLoadMonaco(
-      editorRef,
-      value,
-      (val) => {
-        value.value = val
-      },
-      {
-        language: 'javascript',
-      },
-    )
-
-    onMounted(() => {
-      import('monaco-editor').then((monaco) => {
-        monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
-          target: monaco.languages.typescript.ScriptTarget.ES2020,
-        })
-
-        monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
-          target: monaco.languages.typescript.ScriptTarget.ES2020,
-        })
-      })
-    })
 
     const message = useMessage()
     const previewRef = ref<HTMLPreElement>()
@@ -77,7 +52,9 @@ export default defineComponent({
       >
         <TwoColGridLayout>
           <NGi span="18">
-            <div class="h-[80vh]" ref={editorRef}></div>
+            <div class="h-[80vh]">
+              <FunctionCodeEditor value={value} />
+            </div>
           </NGi>
           <NGi span="18">
             <pre
