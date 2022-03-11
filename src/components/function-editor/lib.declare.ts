@@ -25,6 +25,8 @@ export namespace globalTypeDeclare {
     headers: Record<string, string>
     params: Record<string, string>
 
+    throws: (code: number, message: string) => void
+
     model: any
     document: any
     name: string

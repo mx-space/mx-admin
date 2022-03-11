@@ -1,3 +1,4 @@
+import { FunctionCodeEditor } from 'components/function-editor'
 import { CenterSpin } from 'components/spin'
 import { useAsyncLoadMonaco, usePropsValueToRef } from 'hooks/use-async-monaco'
 import { PropType } from 'vue'
@@ -21,9 +22,23 @@ export const CodeEditorForSnippet = defineComponent({
 
     const value = usePropsValueToRef(props)
 
-    const obj = useAsyncLoadMonaco(editorRef, value, props.onChange, {
-      language: props.language,
-    })
+    const obj = useAsyncLoadMonaco(
+      editorRef,
+      value,
+      (v) => {
+        value.value = v
+      },
+      {
+        language: props.language,
+      },
+    )
+
+    watch(
+      () => value.value,
+      (v) => {
+        props.onChange(v)
+      },
+    )
     let timer: any = null
     onUnmounted(() => {
       if (timer) {
@@ -58,9 +73,18 @@ export const CodeEditorForSnippet = defineComponent({
     )
     return () => (
       <div class={'h-full w-full relative'}>
-        <div ref={editorRef} class={'h-full w-full relative'} />
+        <div
+          ref={editorRef}
+          class={'h-full w-full relative'}
+          style={{ display: props.language === 'javascript' ? 'none' : '' }}
+        />
+
         {!obj.loaded.value && (
           <CenterSpin description="Monaco 体积较大耐心等待加载完成..." />
+        )}
+
+        {props.language === 'javascript' && (
+          <FunctionCodeEditor value={value} />
         )}
       </div>
     )
