@@ -1,3 +1,4 @@
+import { useDefineMyThemes } from 'components/editor/monaco/use-define-theme'
 import { CenterSpin } from 'components/spin'
 import type { editor } from 'monaco-editor'
 import { UIStore } from 'stores/ui'
@@ -27,7 +28,7 @@ export const useAsyncLoadMonaco = (
 ) => {
   const { unSaveConfirm = true, ...monacoOptions } = options
   useSaveConfirm(unSaveConfirm, () => false, '是否确定离开？')
-
+  useDefineMyThemes()
   const loaded = ref(false)
   const monaco = {
     editor: null as any as editor.IStandaloneCodeEditor,
@@ -60,7 +61,7 @@ export const useAsyncLoadMonaco = (
     (isDark) => {
       const editor = monaco.editor
       editor.updateOptions({
-        theme: isDark ? 'vs-dark' : 'vs',
+        theme: isDark ? 'dark' : 'light',
       })
     },
   )
@@ -70,7 +71,7 @@ export const useAsyncLoadMonaco = (
       monaco.editor = module.editor.create(editorRef.value, {
         ...monacoOptions,
         value: value.value,
-        theme: isDark.value ? 'vs-dark' : 'vs',
+        theme: isDark.value ? 'dark' : 'light',
         automaticLayout: true,
         cursorStyle: 'line-thin',
         minimap: { enabled: false },

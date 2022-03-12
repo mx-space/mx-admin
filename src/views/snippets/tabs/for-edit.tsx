@@ -215,6 +215,13 @@ export const Tab2ForEdit = defineComponent({
               ></NSelect>
             </NFormItem>
 
+            <NFormItem label="Schema">
+              <NInput
+                value={data.value.schema}
+                onUpdateValue={(e) => void (data.value.schema = e)}
+              ></NInput>
+            </NFormItem>
+
             <NFormItem label="公开" labelPlacement="left">
               <div class="w-full flex justify-end">
                 <NSwitch

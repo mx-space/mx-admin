@@ -15,6 +15,7 @@ import {
 } from 'vue'
 import styles from '../universal/editor.module.css'
 import { editorBaseProps } from '../universal/props'
+import { useDefineMyThemes } from './use-define-theme'
 
 const _MonacoEditor = defineComponent({
   props: {
@@ -28,6 +29,7 @@ const _MonacoEditor = defineComponent({
     const loaded = ref(false)
     let editor: Editor.IStandaloneCodeEditor
     const { isDark } = useInjector(UIStore)
+    useDefineMyThemes()
     onMounted(async () => {
       if (!editorRef.value) {
         return
@@ -94,7 +96,7 @@ const initEditor = async (
     automaticLayout: true,
     wrappingStrategy: 'advanced',
     minimap: { enabled: false },
-    theme: isDark.value ? 'vs-dark' : 'vs',
+    theme: isDark.value ? 'dark' : 'light',
     wordWrap: 'on',
     cursorStyle: 'line-thin',
     formatOnType: true,
@@ -112,7 +114,7 @@ const initEditor = async (
     () => isDark.value,
     (isDark) => {
       editor.updateOptions({
-        theme: isDark ? 'vs-dark' : 'vs',
+        theme: isDark ? 'dark' : 'light',
       })
     },
   )

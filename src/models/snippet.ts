@@ -30,4 +30,5 @@ export class SnippetModel extends BaseModel {
   reference = 'root'
   comment?: string
   metatype?: string
+  schema?: string
 }
