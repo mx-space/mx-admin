@@ -57,7 +57,7 @@ export default defineComponent({
           [event.value]: str,
         }
       },
-      { language: 'json' },
+      { language: 'json', unSaveConfirm: false },
     )
     const handleSend = async () => {
       const replaceText =

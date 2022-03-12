@@ -10,6 +10,7 @@ export const FunctionCodeEditor = defineComponent({
       type: Object as PropType<Ref<string>>,
       required: true,
     },
+    onSave: { type: Function as PropType<() => any>, required: false },
   },
   setup(props, { emit }) {
     const editorElRef = ref<HTMLDivElement>()
@@ -24,7 +25,7 @@ export const FunctionCodeEditor = defineComponent({
         language: 'javascript',
       },
     )
-
+    let leakRaf: any
     onMounted(() => {
       import('monaco-editor').then((monaco) => {
         const compilerOptions =
@@ -40,22 +41,24 @@ export const FunctionCodeEditor = defineComponent({
           noSyntaxValidation: false,
         })
 
-        RESTManager.api.serverless.types.get<any>().then((data) => {
-          const libSource = data
+        const libUri = 'ts:filename/global.d.ts'
+        if (!monaco.editor.getModel(monaco.Uri.parse(libUri))) {
+          RESTManager.api.serverless.types.get<any>().then((data) => {
+            const libSource = data
 
-          const libUri = 'ts:filename/global.d.ts'
-          monaco.languages.typescript.javascriptDefaults.addExtraLib(
-            libSource,
-            libUri,
-          )
-          // When resolving definitions and references, the editor will try to use created models.
-          // Creating a model for the library allows "peek definition/references" commands to work with the library.
-          monaco.editor.createModel(
-            libSource,
-            'javascript',
-            monaco.Uri.parse(libUri),
-          )
-        })
+            monaco.languages.typescript.javascriptDefaults.addExtraLib(
+              libSource,
+              libUri,
+            )
+            // When resolving definitions and references, the editor will try to use created models.
+            // Creating a model for the library allows "peek definition/references" commands to work with the library.
+            monaco.editor.createModel(
+              libSource,
+              'javascript',
+              monaco.Uri.parse(libUri),
+            )
+          })
+        }
 
         Object.keys(typeDefines).forEach((key) => {
           const namespace = typeDefines[key] as {
@@ -63,6 +66,11 @@ export const FunctionCodeEditor = defineComponent({
             libUri: string
           }
           const { libSource, libUri } = namespace
+          const uri = monaco.Uri.parse(libUri)
+          if (monaco.editor.getModel(uri)) {
+            return
+          }
+
           monaco.languages.typescript.javascriptDefaults.addExtraLib(
             libSource,
             libUri,
@@ -75,11 +83,33 @@ export const FunctionCodeEditor = defineComponent({
             monaco.Uri.parse(libUri),
           )
         })
+
+        function registerOnEditor() {
+          if (!$editor.editor) {
+            leakRaf = requestAnimationFrame(() => {
+              registerOnEditor()
+            })
+            return
+          }
+
+          $editor.editor.addCommand(
+            monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS,
+            () => {
+              props.onSave?.()
+            },
+          )
+        }
+        registerOnEditor()
       })
+    })
+
+    onUnmounted(() => {
+      cancelAnimationFrame(leakRaf)
     })
 
     return () => {
       const { loaded } = $editor
+
       return (
         <div class="h-full relative w-full">
           <div class="relative h-full w-full" ref={editorElRef}></div>

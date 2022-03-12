@@ -9,6 +9,7 @@ import { onBeforeRouteLeave } from 'vue-router'
 export const useSaveConfirm = (
   enable: boolean,
   comparedFn: () => boolean,
+  message = '文章未保存是否确定离开？',
 ): void => {
   const beforeUnloadHandler = (event) => {
     if (comparedFn()) {
@@ -17,7 +18,7 @@ export const useSaveConfirm = (
     event.preventDefault()
 
     // Chrome requires returnValue to be set.
-    event.returnValue = '文章未保存是否后退'
+    event.returnValue = message
     return false
   }
 
@@ -52,7 +53,7 @@ export const useSaveConfirm = (
 
     const confirm = new Promise<boolean>((r, j) => {
       dialog.warning({
-        title: '文章未保存是否继续',
+        title: message,
         negativeText: '嗯',
         positiveText: '手抖了啦',
         onNegativeClick() {

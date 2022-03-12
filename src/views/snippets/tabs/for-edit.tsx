@@ -102,7 +102,7 @@ export const Tab2ForEdit = defineComponent({
 
     const layout = useLayout()
     const message = useMessage()
-    const handleUpdateOrCreate = async () => {
+    const handleUpdateOrCreate = async (routePushAfterDone = true) => {
       const tinyJson = (text: string) => {
         try {
           return JSON.stringify(JSON.parse(text), null, 0)
@@ -153,18 +153,19 @@ export const Tab2ForEdit = defineComponent({
       }
 
       message.success(`${editId.value ? '更新' : '创建'}成功`)
-      router.replace({
-        query: {
-          ...route.query,
-          tab: 0,
-        },
-      })
+      routePushAfterDone &&
+        router.replace({
+          query: {
+            ...route.query,
+            tab: 0,
+          },
+        })
     }
     useMountAndUnmount(() => {
       layout.setHeaderButton(
         <HeaderActionButton
           variant="success"
-          onClick={handleUpdateOrCreate}
+          onClick={() => handleUpdateOrCreate()}
           icon={<CheckCircleOutlinedIcon />}
         ></HeaderActionButton>,
       )
@@ -236,6 +237,10 @@ export const Tab2ForEdit = defineComponent({
 
         <NGi span={24}>
           <CodeEditorForSnippet
+            onSave={async () => {
+              await handleUpdateOrCreate(false)
+              message.success('Saved!')
+            }}
             language={SnippetTypeToLanguage[data.value.type]}
             value={typeToValueMap[data.value.type]}
             onChange={(value) => {

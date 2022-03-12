@@ -15,37 +15,36 @@ export default defineComponent({
     const message = useMessage()
     const previewRef = ref<HTMLPreElement>()
     const errorMsg = ref('')
+    const runTest = async () => {
+      try {
+        const res = await RESTManager.api.debug.function.post<any>({
+          data: {
+            function: value.value,
+          },
+          errorHandler: (err) => {
+            errorMsg.value = `Error: ${err.data.message}`
+            message.error(err.data.message)
+          },
+        })
+
+        import('monaco-editor').then((mo) => {
+          mo.editor
+            .colorize(JSON.stringify(res.data, null, 2), 'typescript', {
+              tabSize: 2,
+            })
+            .then((res) => {
+              previewRef.value!.innerHTML = res
+            })
+        })
+      } catch (e: any) {}
+    }
     return () => (
       <ContentLayout
         actionsElement={
           <>
             <HeaderActionButton
               icon={<CheckCircleOutlinedIcon></CheckCircleOutlinedIcon>}
-              onClick={async () => {
-                try {
-                  const res = await RESTManager.api.debug.function.post<any>({
-                    data: {
-                      function: value.value,
-                    },
-                    errorHandler: (err) => {
-                      errorMsg.value = `Error: ${err.data.message}`
-                      message.error(err.data.message)
-                    },
-                  })
-
-                  import('monaco-editor').then((mo) => {
-                    mo.editor
-                      .colorize(
-                        JSON.stringify(res.data, null, 2),
-                        'typescript',
-                        { tabSize: 2 },
-                      )
-                      .then((res) => {
-                        previewRef.value!.innerHTML = res
-                      })
-                  })
-                } catch (e: any) {}
-              }}
+              onClick={runTest}
             ></HeaderActionButton>
           </>
         }
@@ -53,7 +52,7 @@ export default defineComponent({
         <TwoColGridLayout>
           <NGi span="18">
             <div class="h-[80vh]">
-              <FunctionCodeEditor value={value} />
+              <FunctionCodeEditor value={value} onSave={runTest} />
             </div>
           </NGi>
           <NGi span="18">
