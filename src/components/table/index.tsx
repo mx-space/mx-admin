@@ -75,18 +75,7 @@ export const Table = defineComponent({
     },
   },
   setup(props) {
-    const {
-      data,
-      noPagination = false,
-      pager,
-      onUpdateCheckedRowKeys,
-      onUpdateSorter,
-      nTableProps,
-      columns,
-      onFetchData: fetchData,
-      checkedRowKey = 'id',
-      maxWidth = 1200,
-    } = props
+    const { data } = props
 
     const router = useRouter()
     const route = useRoute()
@@ -114,76 +103,91 @@ export const Table = defineComponent({
 
     const ui = useInjector(UIStore)
 
-    return () => (
-      <NDataTable
-        // @ts-ignore
-        loading={props.loading ?? loading.value}
-        remote
-        scrollX={Math.max(ui.contentInsetWidth.value, maxWidth)}
-        pagination={
-          noPagination
-            ? undefined
-            : pager && {
-                page: pager.value.currentPage,
-                pageSize: pager.value.size,
-                pageCount: pager.value.totalPage,
-                // showQuickJumper: ui.viewport.value.mobile ? false : true,
-                showQuickJumper: true,
-                pageSlot: ui.viewport.value.mobile
-                  ? ui.contentInsetWidth.value < 400
-                    ? 2
-                    : 3
-                  : undefined,
-                onChange: async (page) => {
-                  router.push({
-                    query: { ...route.query, page },
-                    path: route.path,
-                  })
-                },
-              }
-        }
-        bordered={false}
-        data={data.value}
-        rowClassName={() => tableRowStyle}
-        checkedRowKeys={checkedRowKeys.value}
-        rowKey={(r) => r[checkedRowKey]}
-        onUpdateCheckedRowKeys={(keys) => {
-          checkedRowKeys.value = keys
-          onUpdateCheckedRowKeys?.(keys as any)
-        }}
-        onUpdateSorter={async (status: SortState) => {
-          if (!status) {
-            return
+    return () => {
+      const {
+        data,
+        noPagination = false,
+        pager,
+        onUpdateCheckedRowKeys,
+        onUpdateSorter,
+        nTableProps,
+        columns,
+        onFetchData: fetchData,
+        checkedRowKey = 'id',
+        maxWidth = 1200,
+      } = props
+      return (
+        <NDataTable
+          // @ts-ignore
+          loading={props.loading ?? loading.value}
+          remote
+          scrollX={Math.max(ui.contentInsetWidth.value, maxWidth)}
+          pagination={
+            noPagination
+              ? undefined
+              : pager && {
+                  page: pager.value.currentPage,
+                  pageSize: pager.value.size,
+                  pageCount: pager.value.totalPage,
+                  // showQuickJumper: ui.viewport.value.mobile ? false : true,
+                  showQuickJumper: true,
+                  pageSlot: ui.viewport.value.mobile
+                    ? ui.contentInsetWidth.value < 400
+                      ? 2
+                      : 3
+                    : undefined,
+                  onChange: async (page) => {
+                    router.push({
+                      query: { ...route.query, page },
+                      path: route.path,
+                    })
+                  },
+                }
           }
-
-          columns.forEach((column) => {
-            /** column.sortOrder !== undefined means it is uncontrolled */
-            if (!('sortOrder' in column)) {
-              return
-            }
-            if (column.sortOrder === undefined) return
+          bordered={false}
+          data={data.value}
+          rowClassName={() => tableRowStyle}
+          checkedRowKeys={checkedRowKeys.value}
+          rowKey={(r) => r[checkedRowKey]}
+          onUpdateCheckedRowKeys={(keys) => {
+            checkedRowKeys.value = keys
+            onUpdateCheckedRowKeys?.(keys as any)
+          }}
+          onUpdateSorter={async (status: SortState) => {
             if (!status) {
-              column.sortOrder = false
               return
             }
-            if (column.key === status.columnKey) column.sortOrder = status.order
-            else column.sortOrder = false
-          })
 
-          const { columnKey, order } = status
+            columns.forEach((column) => {
+              /** column.sortOrder !== undefined means it is uncontrolled */
+              if (!('sortOrder' in column)) {
+                return
+              }
+              if (column.sortOrder === undefined) return
+              if (!status) {
+                column.sortOrder = false
+                return
+              }
+              if (column.key === status.columnKey)
+                column.sortOrder = status.order
+              else column.sortOrder = false
+            })
 
-          // 如果改列状态变为未排序状态了,  order 变成了 false
-          sortProps.sortBy = order === false ? '' : columnKey.toString() || ''
+            const { columnKey, order } = status
 
-          sortProps.sortOrder = order ? { descend: -1, ascend: 1 }[order] : 1
-          onUpdateSorter?.(sortProps, status)
-          if (fetchData) {
-            await fetchData()
-          }
-        }}
-        columns={columns}
-        {...nTableProps}
-      ></NDataTable>
-    )
+            // 如果改列状态变为未排序状态了,  order 变成了 false
+            sortProps.sortBy = order === false ? '' : columnKey.toString() || ''
+
+            sortProps.sortOrder = order ? { descend: -1, ascend: 1 }[order] : 1
+            onUpdateSorter?.(sortProps, status)
+            if (fetchData) {
+              await fetchData()
+            }
+          }}
+          columns={columns}
+          {...nTableProps}
+        ></NDataTable>
+      )
+    }
   },
 })
