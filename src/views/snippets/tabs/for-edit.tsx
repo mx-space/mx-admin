@@ -77,6 +77,39 @@ export const Tab2ForEdit = defineComponent({
     )
 
     watch(
+      () => [data.value.type, data.value.schema],
+      ([type, schema]) => {
+        if (type === SnippetType.JSON) {
+          if (!data.value.schema) {
+            import('monaco-editor').then((monaco) => {
+              monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+                validate: false,
+              })
+            })
+            return
+          }
+          const schemaUrl = data.value.schema
+          fetch(schemaUrl)
+            .then((res) => res.text())
+            .then((schema) => {
+              import('monaco-editor').then((monaco) => {
+                monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+                  validate: true,
+                  schemas: [
+                    {
+                      uri: schemaUrl,
+                      fileMatch: ['*'],
+                      schema: JSON.parse(schema),
+                    },
+                  ],
+                })
+              })
+            })
+        }
+      },
+    )
+
+    watch(
       () => editId,
       async (editId) => {
         if (editId.value) {
