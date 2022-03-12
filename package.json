@@ -1,6 +1,6 @@
 {
   "name": "admin-next",
-  "version": "3.16.2",
+  "version": "3.16.3",
   "bump": {
     "before": [
       "git-cliff > CHANGELOG.md"

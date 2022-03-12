@@ -3,6 +3,15 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Features
+
+- Add unSave confirm on editor
+- Add filter of reference name
+- Add monaco theme
+- Json schema validate
+
+## [3.16.2] - 2022-03-11
+
 ### Bug Fixes
 
 - Update dependency @vueuse/core to v8 (#324)
@@ -12,6 +21,10 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - Fetch type declare from server
+
+### Release
+
+- V3.16.2
 
 ## [3.16.1] - 2022-03-11
 
