@@ -99,6 +99,8 @@ export const Tab1ForList = defineComponent({
               )
 
               fetchDataFn(1, 20)
+
+              checkedRowKeys.value.length = 0
             }}
           />
         </>,
