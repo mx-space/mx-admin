@@ -247,30 +247,7 @@ export default defineComponent({
               key: 'avatar',
               width: 80,
               render(row) {
-                const Avatar = defineComponent(() => {
-                  const loaded = ref(row.avatar ? false : true)
-                  onMounted(() => {
-                    if (row.avatar) {
-                      const image = new Image()
-                      image.src = row.avatar
-                      image.onload = (e) => {
-                        loaded.value = true
-                      }
-                    }
-                  })
-
-                  return () =>
-                    row.avatar ? (
-                      loaded.value ? (
-                        <NAvatar src={row.avatar as string} round></NAvatar>
-                      ) : (
-                        <NAvatar round>{row.name.charAt(0)}</NAvatar>
-                      )
-                    ) : (
-                      <NAvatar round>{row.name.charAt(0)}</NAvatar>
-                    )
-                })
-                return <Avatar />
+                return <Avatar name={row.name} avatar={row.avatar} />
               },
             },
             {
@@ -521,3 +498,28 @@ const UrlComponent = defineComponent({
     )
   },
 })
+
+const Avatar = defineComponent<{ avatar: string; name: string }>((props) => {
+  const loaded = ref(props.avatar ? false : true)
+  onMounted(() => {
+    if (props.avatar) {
+      const image = new Image()
+      image.src = props.avatar
+      image.onload = (e) => {
+        loaded.value = true
+      }
+    }
+  })
+
+  return () =>
+    props.avatar ? (
+      loaded.value ? (
+        <NAvatar src={props.avatar as string} round></NAvatar>
+      ) : (
+        <NAvatar round>{props.name.charAt(0)}</NAvatar>
+      )
+    ) : (
+      <NAvatar round>{props.name.charAt(0)}</NAvatar>
+    )
+})
+Avatar.props = ['avatar', 'name']

@@ -89,10 +89,8 @@ export const DashBoardView = defineComponent({
     // 轮询状态计时器
     let timer: any
     onMounted(() => {
-      timer = setTimeout(function polling() {
-        fetchStat().then(() => {
-          timer = setTimeout(polling, 3000)
-        })
+      timer = setInterval(function polling() {
+        fetchStat()
       }, 3000)
     })
     onUnmounted(() => {
