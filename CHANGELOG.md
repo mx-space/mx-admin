@@ -3,12 +3,39 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Bug Fixes
+
+- Stat polling
+- Hide kbar search for debug route
+- Clear list after delete rows
+- Update dependency @mx-space/api-client to v0.7.4 (#325)
+- Update dependency monaco-editor to v0.33.0 (#326)
+
+### Features
+
+- Delete more snippet once
+
+### Miscellaneous Tasks
+
+- Update dependency eslint to v8.11.0 (#327)
+- Update dependency unplugin-auto-import to v0.6.4 (#323)
+
+### Refactor
+
+- Extract delete confirm button
+
+## [3.16.3] - 2022-03-12
+
 ### Features
 
 - Add unSave confirm on editor
 - Add filter of reference name
 - Add monaco theme
 - Json schema validate
+
+### Release
+
+- V3.16.3
 
 ## [3.16.2] - 2022-03-11
 
