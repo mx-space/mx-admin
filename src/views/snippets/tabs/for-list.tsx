@@ -1,6 +1,7 @@
 import { Icon } from '@vicons/utils'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { AddIcon, FunctionIcon, LockIcon } from 'components/icons'
+import { DeleteConfirmButton } from 'components/special-button/delete-confirm'
 import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
 import { useMountAndUnmount } from 'hooks/use-react'
@@ -46,8 +47,8 @@ const useFetchReferenceNames = () => {
 
 export const Tab1ForList = defineComponent({
   setup() {
-    const { data, fetchDataFn, loading, pager } = useDataTableFetch(
-      (data, pager) => {
+    const { data, fetchDataFn, loading, pager, checkedRowKeys } =
+      useDataTableFetch((data, pager) => {
         return async (page, size, db_query) => {
           const _data = await RESTManager.api.snippets.get<
             PaginateResult<SnippetModel[]>
@@ -63,8 +64,7 @@ export const Tab1ForList = defineComponent({
           data.value = _data.data
           pager.value = _data.pagination
         }
-      },
-    )
+      })
     const referenceNames = useFetchReferenceNames()
     onMounted(() => {
       fetchDataFn(1, 20)
@@ -73,21 +73,39 @@ export const Tab1ForList = defineComponent({
     const layout = useLayout()
 
     useMountAndUnmount(() => {
-      layout.setHeaderButton(
-        <HeaderActionButton
-          onClick={() => {
-            router.push({
-              query: {
-                tab: 1,
-              },
-            })
-          }}
-          icon={<AddIcon />}
-        ></HeaderActionButton>,
+      layout.setHeaderButtons(
+        <>
+          <HeaderActionButton
+            onClick={() => {
+              router.push({
+                query: {
+                  tab: 1,
+                },
+              })
+            }}
+            icon={<AddIcon />}
+          ></HeaderActionButton>
+
+          <DeleteConfirmButton
+            checkedRowKeys={checkedRowKeys}
+            onDelete={async (keys) => {
+              if (!keys) {
+                return
+              }
+              await Promise.all(
+                (keys as string[]).map((id) => {
+                  return RESTManager.api.snippets(id).delete()
+                }),
+              )
+
+              fetchDataFn(1, 20)
+            }}
+          />
+        </>,
       )
 
       return () => {
-        layout.setHeaderButton(null)
+        layout.setHeaderButtons(null)
       }
     })
 
@@ -102,6 +120,9 @@ export const Tab1ForList = defineComponent({
       return (
         <>
           <Table
+            onUpdateCheckedRowKeys={(keys) => {
+              checkedRowKeys.value = keys
+            }}
             data={data}
             nTableProps={{
               onUpdateFilters(filterState: any) {

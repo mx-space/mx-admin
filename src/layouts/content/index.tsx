@@ -18,13 +18,18 @@ import styles from './index.module.css'
 
 const ProvideKey = Symbol('inject')
 
+interface Injectable {
+  addFloatButton: (vnode: VNode) => symbol
+  removeFloatButton: (name: symbol) => void
+  setHeaderButtons: (vnode: VNode | null) => void
+}
 export const useLayout = () =>
-  inject(ProvideKey, {
+  inject<Injectable>(ProvideKey, {
     addFloatButton(el: VNode) {
       return Symbol()
     },
     removeFloatButton(name: symbol) {},
-    setHeaderButton(el: VNode | null) {},
+    setHeaderButtons(el: VNode | null) {},
   })
 export const ContentLayout = defineComponent({
   props: {
@@ -49,7 +54,7 @@ export const ContentLayout = defineComponent({
     const footerExtraButtonEl = ref<
       null | ((() => VNode) & { displayName$: symbol })[]
     >(null)
-    provide(ProvideKey, {
+    provide<Injectable>(ProvideKey, {
       addFloatButton(el: VNode | (() => VNode)) {
         footerExtraButtonEl.value ??= []
         const E: any = typeof el === 'function' ? el : () => el
@@ -70,7 +75,7 @@ export const ContentLayout = defineComponent({
         }
       },
 
-      setHeaderButton(el: VNode | null) {
+      setHeaderButtons(el: VNode | null) {
         if (!el) {
           SettingHeaderEl.value = null
           return

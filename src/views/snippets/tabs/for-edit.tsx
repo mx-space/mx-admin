@@ -195,7 +195,7 @@ export const Tab2ForEdit = defineComponent({
         })
     }
     useMountAndUnmount(() => {
-      layout.setHeaderButton(
+      layout.setHeaderButtons(
         <HeaderActionButton
           variant="success"
           onClick={() => handleUpdateOrCreate()}
@@ -204,7 +204,7 @@ export const Tab2ForEdit = defineComponent({
       )
 
       return () => {
-        layout.setHeaderButton(null)
+        layout.setHeaderButtons(null)
       }
     })
 

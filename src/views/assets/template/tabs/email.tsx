@@ -14,7 +14,7 @@ export const EmailTab = defineComponent({
     const templateType = ref<'guest' | 'owner'>('guest')
 
     const renderProps = ref<any>(null)
-    const { setHeaderButton } = useLayout()
+    const { setHeaderButtons: setHeaderButton } = useLayout()
 
     const save = async () => {
       await RESTManager.api.options.email.template.reply.put({

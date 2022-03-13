@@ -1,7 +1,9 @@
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { DeleteIcon } from 'components/icons'
 import { useDialog, useMessage } from 'naive-ui'
-import { PropType } from 'vue'
+import { PropType, Ref } from 'vue'
+
+type AccpetType = string[] | Set<string>
 
 /**
  * 删除之后 onDelete 提示 `删除成功`
@@ -9,12 +11,10 @@ import { PropType } from 'vue'
 export const DeleteConfirmButton = defineComponent({
   props: {
     checkedRowKeys: {
-      type: Object as PropType<string[] | Set<string>>,
+      type: Object as PropType<AccpetType | Ref<AccpetType>>,
     },
     onDelete: {
-      type: Function as PropType<
-        (checkedRowKeys?: string[] | Set<String>) => any
-      >,
+      type: Function as PropType<(checkedRowKeys?: AccpetType) => any>,
       required: true,
     },
 
@@ -43,13 +43,18 @@ export const DeleteConfirmButton = defineComponent({
     return () => {
       const {
         customIcon,
-        checkedRowKeys,
+        checkedRowKeys: _checkedRowKeys,
         onDelete,
         message: content,
         customSuccessMessage,
         showSuccessMessage,
         customButtonTip,
       } = props
+
+      const checkedRowKeys = isRef(_checkedRowKeys)
+        ? _checkedRowKeys.value
+        : _checkedRowKeys
+
       const size = !checkedRowKeys
         ? 0
         : Array.isArray(checkedRowKeys)
