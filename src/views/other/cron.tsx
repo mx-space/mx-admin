@@ -97,7 +97,7 @@ export default defineComponent({
                           )
                         },
                         default: () => (
-                          <span style={{ maxWidth: '12rem' }}>确定要执行?</span>
+                          <span class="max-w-48">确定要执行?</span>
                         ),
                       }}
                     </NPopconfirm>

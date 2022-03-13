@@ -2,6 +2,7 @@ import { Chart } from '@antv/g2/esm'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { RefreshOutlineIcon, TrashIcon } from 'components/icons'
 import { IpInfoPopover } from 'components/ip-info'
+import { DeleteConfirmButton } from 'components/special-button/delete-confirm'
 import { Table } from 'components/table'
 import { useDataTableFetch } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
@@ -389,30 +390,26 @@ export default defineComponent({
                 }
               }}
             ></HeaderActionButton>
-            <HeaderActionButton
-              icon={<TrashIcon />}
-              onClick={() => {
-                dialog.warning({
-                  title: '警告',
-                  content: '你确定要清空数据表？',
-                  positiveText: '达咩',
-                  negativeText: '确定',
-                  onNegativeClick: async () => {
-                    await RESTManager.api.analyze.delete()
-                    message.success('已清空')
+            <DeleteConfirmButton
+              onDelete={async () => {
+                await RESTManager.api.analyze.delete()
 
-                    router.replace({
-                      path: route.path,
-                      query: {
-                        page: 1,
-                      },
-                    })
-                  },
-                })
+                if (parseInt(route.query.page as string) === 1) {
+                  fetchData()
+                } else {
+                  router.replace({
+                    path: route.path,
+                    query: {
+                      page: 1,
+                    },
+                  })
+                }
               }}
-              name="清空表"
-              variant="error"
-            ></HeaderActionButton>
+              customSuccessMessage="已清空"
+              message="你确定要清空数据表？"
+              customButtonTip="清空表"
+              customIcon={<TrashIcon />}
+            />
           </>
         }
       >

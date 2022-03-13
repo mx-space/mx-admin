@@ -349,7 +349,7 @@ export default defineComponent({
                         ),
 
                         default: () => (
-                          <span style={{ maxWidth: '12rem' }}>
+                          <span class="max-w-48">
                             确定要删除友链 {row.name} ?
                           </span>
                         ),

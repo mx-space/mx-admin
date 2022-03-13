@@ -79,10 +79,7 @@ export default defineComponent({
                               ),
 
                               default: () => (
-                                <span
-                                  style={{ maxWidth: '12rem' }}
-                                  class={'break-all'}
-                                >
+                                <span class={'break-all max-w-48'}>
                                   确定要删除 {item.content} ?
                                 </span>
                               ),

@@ -1,5 +1,6 @@
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { RedoRoundIcon, TrashSharpIcon, UndoRoundIcon } from 'components/icons'
+import { DeleteConfirmButton } from 'components/special-button/delete-confirm'
 import { Table } from 'components/table'
 import { useDataTableFetch } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
@@ -120,23 +121,14 @@ export default defineComponent(() => {
             name="上传恢复"
             variant="info"
           ></HeaderActionButton>
-          <HeaderActionButton
-            icon={<TrashSharpIcon />}
-            name="批量删除"
-            variant="error"
-            disabled={!checkedRowKeys.value.length}
-            onClick={() => {
-              dialog.warning({
-                title: '警告',
-                content: '你确定要删除多个备份？',
-                positiveText: '达咩',
-                negativeText: '确定',
-                onNegativeClick: async () => {
-                  handleDelete(checkedRowKeys.value)
-                },
-              })
+          <DeleteConfirmButton
+            checkedRowKeys={checkedRowKeys.value}
+            onDelete={async () => {
+              handleDelete(checkedRowKeys.value)
             }}
-          ></HeaderActionButton>
+            customIcon={<TrashSharpIcon />}
+            customButtonTip="批量删除"
+          />
         </>
       }
     >
@@ -189,9 +181,7 @@ export default defineComponent(() => {
                         </NButton>
                       ),
 
-                      default: () => (
-                        <span style={{ maxWidth: '12rem' }}>确定要回退?</span>
-                      ),
+                      default: () => <span class="max-w-48">确定要回退?</span>,
                     }}
                   </NPopconfirm>
 
@@ -209,9 +199,7 @@ export default defineComponent(() => {
                         </NButton>
                       ),
 
-                      default: () => (
-                        <span style={{ maxWidth: '12rem' }}>确定要删除?</span>
-                      ),
+                      default: () => <span class="max-w-48">确定要删除?</span>,
                     }}
                   </NPopconfirm>
                 </NSpace>

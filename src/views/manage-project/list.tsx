@@ -1,4 +1,5 @@
-import { AddIcon, DeleteIcon, MenuDownIcon } from 'components/icons'
+import { AddIcon, MenuDownIcon } from 'components/icons'
+import { DeleteConfirmButton } from 'components/special-button/delete-confirm'
 import { RelativeTime } from 'components/time/relative-time'
 import { useDataTableFetch } from 'hooks/use-table'
 import { ProjectModel, ProjectResponse } from 'models/project'
@@ -16,7 +17,6 @@ import {
   NSpace,
   NSpin,
   NThing,
-  useDialog,
   useMessage,
 } from 'naive-ui'
 import { router } from 'router'
@@ -48,7 +48,6 @@ const ManageProjectView = defineComponent({
     const checkedRowKeys = reactive(new Set<string>())
 
     const message = useMessage()
-    const dialog = useDialog()
 
     const route = useRoute()
     const fetchData = fetchDataFn
@@ -70,32 +69,20 @@ const ManageProjectView = defineComponent({
           {{
             actions: () => (
               <>
-                <HeaderActionButton
-                  variant="error"
-                  disabled={checkedRowKeys.size == 0}
-                  onClick={() => {
-                    dialog.warning({
-                      title: '警告',
-                      content: '你确定要删除？',
-                      positiveText: '确定',
-                      negativeText: '不确定',
-                      onPositiveClick: async () => {
-                        await Promise.all(
-                          Array.from(checkedRowKeys.values()).map((id) => {
-                            return RESTManager.api
-                              .projects(id as string)
-                              .delete()
-                          }),
-                        )
-                        checkedRowKeys.clear()
-                        message.success('删除成功')
+                <DeleteConfirmButton
+                  checkedRowKeys={checkedRowKeys}
+                  onDelete={async () => {
+                    await Promise.all(
+                      Array.from(checkedRowKeys.values()).map((id) => {
+                        return RESTManager.api.projects(id as string).delete()
+                      }),
+                    )
+                    checkedRowKeys.clear()
 
-                        await fetchData()
-                      },
-                    })
+                    fetchData()
                   }}
-                  icon={<DeleteIcon />}
                 />
+
                 <HeaderActionButton to={'/projects/edit'} icon={<AddIcon />} />
               </>
             ),

@@ -167,9 +167,7 @@ export const CategoryView = defineComponent((props) => {
                       ),
 
                       default: () => (
-                        <span style={{ maxWidth: '12rem' }}>
-                          确定要删除 {row.title} ?
-                        </span>
+                        <span class="max-w-48">确定要删除 {row.title} ?</span>
                       ),
                     }}
                   </NPopconfirm>

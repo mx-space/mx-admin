@@ -1,10 +1,11 @@
-import { AddIcon, DeleteIcon } from 'components/icons'
+import { AddIcon } from 'components/icons'
 import { TableTitleLink } from 'components/link/title-link'
+import { DeleteConfirmButton } from 'components/special-button/delete-confirm'
 import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
 import { useDataTableFetch } from 'hooks/use-table'
 import { PageModel, PageResponse } from 'models/page'
-import { NButton, NPopconfirm, NSpace, useDialog, useMessage } from 'naive-ui'
+import { NButton, NPopconfirm, NSpace, useMessage } from 'naive-ui'
 import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { defineComponent, onMounted, reactive, watch } from 'vue'
 import { useRoute } from 'vue-router'
@@ -34,7 +35,6 @@ export const ManagePageListView = defineComponent({
       )
 
     const message = useMessage()
-    const dialog = useDialog()
 
     const route = useRoute()
     const fetchData = fetchDataFn
@@ -127,9 +127,7 @@ export const ManagePageListView = defineComponent({
                       ),
 
                       default: () => (
-                        <span style={{ maxWidth: '12rem' }}>
-                          确定要删除 {row.title} ?
-                        </span>
+                        <span class="max-w-48">确定要删除 {row.title} ?</span>
                       ),
                     }}
                   </NPopconfirm>
@@ -164,28 +162,26 @@ export const ManagePageListView = defineComponent({
           {{
             actions: () => (
               <>
-                <HeaderActionButton
-                  variant="error"
-                  disabled={checkedRowKeys.value.length == 0}
-                  onClick={() => {
-                    dialog.warning({
-                      title: '警告',
-                      content: '你确定要删除？',
-                      positiveText: '确定',
-                      negativeText: '不确定',
-                      onPositiveClick: async () => {
-                        for (const id of checkedRowKeys.value) {
-                          await RESTManager.api.pages(id as string).delete()
-                        }
-                        checkedRowKeys.value.length = 0
-                        message.success('删除成功')
+                <DeleteConfirmButton
+                  checkedRowKeys={checkedRowKeys.value}
+                  onDelete={async () => {
+                    const status = await Promise.allSettled(
+                      checkedRowKeys.value.map((id) =>
+                        RESTManager.api.pages(id as string).delete(),
+                      ),
+                    )
 
-                        await fetchData()
-                      },
-                    })
+                    for (const s of status) {
+                      if (s.status === 'rejected') {
+                        message.success('删除失败，' + s.reason.message)
+                      }
+                    }
+
+                    checkedRowKeys.value.length = 0
+                    fetchData()
                   }}
-                  icon={<DeleteIcon />}
                 />
+
                 <HeaderActionButton to={'/pages/edit'} icon={<AddIcon />} />
               </>
             ),

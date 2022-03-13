@@ -212,7 +212,7 @@ const ApiToken = defineComponent(() => {
                       ),
 
                       default: () => (
-                        <span style={{ maxWidth: '12rem' }}>
+                        <span class="max-w-48">
                           确定要删除 Token "{name}"?
                         </span>
                       ),
