@@ -412,6 +412,7 @@ export const routes: RouteRecordRaw[] = [
           title,
           meta: {
             title,
+            hideKbar: true,
           },
         }
       },

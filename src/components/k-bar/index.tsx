@@ -23,7 +23,11 @@ export const KBarWrapper = defineComponent({
 
       actions.value = routes
         .map((route) => {
-          if (!route.meta.title || route.children.length > 0) {
+          if (
+            !route.meta.title ||
+            route.children.length > 0 ||
+            route.meta.hideKbar
+          ) {
             return null
           }
           return createAction({
