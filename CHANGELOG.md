@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Features
+
+- Support serverless typescrpt format
+
+## [3.16.4] - 2022-03-13
+
 ### Bug Fixes
 
 - Stat polling
@@ -23,6 +29,10 @@ All notable changes to this project will be documented in this file.
 ### Refactor
 
 - Extract delete confirm button
+
+### Release
+
+- V3.16.4
 
 ## [3.16.3] - 2022-03-12
 
