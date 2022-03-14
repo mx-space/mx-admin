@@ -1,11 +1,7 @@
 import { BaseModel } from './base'
 
 export const defaultServerlessFunction = `
-// @ts-check
-/**
-* @param {Context} ctx
-*/
-async function handler(ctx) {
+async function handler(ctx: Context) {
   return 'pong';
 }
 `.trimStart()
@@ -18,7 +14,7 @@ export enum SnippetType {
 
 export enum SnippetTypeToLanguage {
   json = 'json',
-  function = 'javascript',
+  function = 'typescript',
   text = 'markdown',
   yaml = 'yaml',
 }

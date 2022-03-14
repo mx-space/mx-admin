@@ -35,6 +35,9 @@ export default defineComponent({
             .then((res) => {
               previewRef.value!.innerHTML = res
             })
+            .catch(() => {
+              previewRef.value!.innerHTML = JSON.stringify(res, null, 2)
+            })
         })
       } catch (e: any) {}
     }

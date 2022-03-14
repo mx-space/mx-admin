@@ -35,7 +35,16 @@ export const useAsyncLoadMonaco = (
     module: null as any as typeof import('monaco-editor'),
     loaded: null as any as Ref<boolean>,
 
-    Snip: loaded.value ? null : h(CenterSpin),
+    Snip: defineComponent({
+      setup() {
+        return () =>
+          loaded.value
+            ? null
+            : h(CenterSpin, {
+                description: 'Monaco 体积较大耐心等待加载完成...',
+              })
+      },
+    }),
   }
   const { isDark } = useInjector(UIStore)
 

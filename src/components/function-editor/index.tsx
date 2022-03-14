@@ -1,4 +1,3 @@
-import { CenterSpin } from 'components/spin'
 import { useAsyncLoadMonaco } from 'hooks/use-async-monaco'
 import { RESTManager } from 'utils'
 import { PropType, Ref } from 'vue'
@@ -11,8 +10,12 @@ export const FunctionCodeEditor = defineComponent({
       required: true,
     },
     onSave: { type: Function as PropType<() => any>, required: false },
+    language: {
+      type: String as PropType<string>,
+      default: 'typescript',
+    },
   },
-  setup(props, { emit }) {
+  setup(props, { expose }) {
     const editorElRef = ref<HTMLDivElement>()
 
     const $editor = useAsyncLoadMonaco(
@@ -22,31 +25,48 @@ export const FunctionCodeEditor = defineComponent({
         props.value.value = val
       },
       {
-        language: 'javascript',
+        language: props.language,
       },
     )
-    let leakRaf: any
+
+    expose($editor)
+
+    watch(
+      () => [$editor.loaded.value, props.language],
+      ([loaded, language]) => {
+        if (loaded) {
+          import('monaco-editor').then((mo) => {
+            const model = $editor.editor.getModel()
+            if (!model) {
+              return
+            }
+            mo.editor.setModelLanguage(model, language as string)
+          })
+        }
+      },
+    )
+
+    onUnmounted(() => {
+      $editor.editor.dispose()
+    })
+
     onMounted(() => {
       import('monaco-editor').then((monaco) => {
         const compilerOptions =
-          monaco.languages.typescript.javascriptDefaults.getCompilerOptions()
+          monaco.languages.typescript.typescriptDefaults.getCompilerOptions()
         compilerOptions.target = monaco.languages.typescript.ScriptTarget.ESNext
         compilerOptions.allowNonTsExtensions = true
-        compilerOptions.allowJs = true
-        monaco.languages.typescript.javascriptDefaults.setCompilerOptions(
+
+        monaco.languages.typescript.typescriptDefaults.setCompilerOptions(
           compilerOptions,
         )
-        monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
-          noSemanticValidation: true,
-          noSyntaxValidation: false,
-        })
 
         const libUri = 'ts:filename/global.d.ts'
         if (!monaco.editor.getModel(monaco.Uri.parse(libUri))) {
           RESTManager.api.serverless.types.get<any>().then((data) => {
             const libSource = data
 
-            monaco.languages.typescript.javascriptDefaults.addExtraLib(
+            monaco.languages.typescript.typescriptDefaults.addExtraLib(
               libSource,
               libUri,
             )
@@ -54,7 +74,7 @@ export const FunctionCodeEditor = defineComponent({
             // Creating a model for the library allows "peek definition/references" commands to work with the library.
             monaco.editor.createModel(
               libSource,
-              'javascript',
+              'typescript',
               monaco.Uri.parse(libUri),
             )
           })
@@ -71,7 +91,7 @@ export const FunctionCodeEditor = defineComponent({
             return
           }
 
-          monaco.languages.typescript.javascriptDefaults.addExtraLib(
+          monaco.languages.typescript.typescriptDefaults.addExtraLib(
             libSource,
             libUri,
           )
@@ -79,43 +99,33 @@ export const FunctionCodeEditor = defineComponent({
           // Creating a model for the library allows "peek definition/references" commands to work with the library.
           monaco.editor.createModel(
             libSource,
-            'javascript',
+            'typescript',
             monaco.Uri.parse(libUri),
           )
         })
+      })
+    })
 
-        function registerOnEditor() {
-          if (!$editor.editor) {
-            leakRaf = requestAnimationFrame(() => {
-              registerOnEditor()
-            })
-            return
-          }
-
+    const cleaner = watch(
+      () => $editor.loaded.value,
+      (loaded) => {
+        cleaner()
+        import('monaco-editor').then((monaco) => {
           $editor.editor.addCommand(
             monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS,
             () => {
               props.onSave?.()
             },
           )
-        }
-        registerOnEditor()
-      })
-    })
-
-    onUnmounted(() => {
-      cancelAnimationFrame(leakRaf)
-    })
+        })
+      },
+    )
 
     return () => {
-      const { loaded } = $editor
-
       return (
         <div class="h-full relative w-full">
           <div class="relative h-full w-full" ref={editorElRef}></div>
-          {!loaded.value && (
-            <CenterSpin description="Monaco 体积较大耐心等待加载完成..." />
-          )}
+          {h($editor.Snip)}
         </div>
       )
     }

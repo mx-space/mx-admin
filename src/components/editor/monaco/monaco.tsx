@@ -30,6 +30,9 @@ const _MonacoEditor = defineComponent({
     let editor: Editor.IStandaloneCodeEditor
     const { isDark } = useInjector(UIStore)
     useDefineMyThemes()
+    onUnmounted(() => {
+      editor?.dispose?.()
+    })
     onMounted(async () => {
       if (!editorRef.value) {
         return
