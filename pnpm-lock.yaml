@@ -2,7 +2,7 @@ lockfileVersion: 5.3
 
 specifiers:
   '@antv/g2': 4.1.47
-  '@bytebase/vue-kbar': 0.1.6
+  '@bytebase/vue-kbar': 0.1.7
   '@codemirror/commands': 0.19.8
   '@codemirror/gutter': 0.19.9
   '@codemirror/highlight': 0.19.7
@@ -81,7 +81,7 @@ specifiers:
 
 dependencies:
   '@antv/g2': 4.1.47
-  '@bytebase/vue-kbar': 0.1.6_vue@3.2.31
+  '@bytebase/vue-kbar': 0.1.7_vue@3.2.31
   '@codemirror/commands': 0.19.8
   '@codemirror/gutter': 0.19.9
   '@codemirror/highlight': 0.19.7
@@ -631,8 +631,8 @@ packages:
       to-fast-properties: 2.0.0
     dev: true
 
-  /@bytebase/vue-kbar/0.1.6_vue@3.2.31:
-    resolution: {integrity: sha512-bRtp7UBiFuQ1EffF+F6keUG3bNk2OC1q1FLvUFkZ92kI0owiKDolaj4cBObGLSaDc8yk4L/KtuK9wlGFTJwkkw==}
+  /@bytebase/vue-kbar/0.1.7_vue@3.2.31:
+    resolution: {integrity: sha512-j/+hd2EKx+a+mIfl6hfoZnLTODHBic4oSS8IzweT1rQe1uMsNuRxi7ERovDSVDuEPVaVVZJBIBrpH+kS4LByZQ==}
     peerDependencies:
       vue: ^3.2.23
     dependencies:
