@@ -55,11 +55,16 @@ export declare class TerminalOptionsDto {
   script?: string
 }
 
+export declare class FriendLinkOptionsDto {
+  allowApply: boolean
+}
+
 export declare abstract class IConfig {
   seo: SeoDto
   url: UrlDto
   mailOptions: MailOptionsDto
   commentOptions: CommentOptionsDto
+  friendLinkOptions: FriendLinkOptionsDto
   backupOptions: BackupOptionsDto
   baiduSearchOptions: BaiduSearchOptionsDto
   algoliaSearchOptions: AlgoliaSearchOptionsDto

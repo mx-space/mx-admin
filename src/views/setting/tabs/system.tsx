@@ -312,6 +312,19 @@ export const TabSystem = defineComponent(() => {
           </NForm>
         </NCollapseItem>
 
+        <NCollapseItem title="友链设置" name="friendLink">
+          <NForm {...formProps}>
+            <NFormItem label="是否允许申请友链">
+              <NSwitch
+                value={configs.value.friendLinkOptions.allowApply}
+                onUpdateValue={(e) =>
+                  void (configs.value.friendLinkOptions.allowApply = e)
+                }
+              />
+            </NFormItem>
+          </NForm>
+        </NCollapseItem>
+
         <NCollapseItem title="邮件通知设置" name="mail">
           <NForm {...formProps}>
             <NFormItem label="开启邮箱提醒">
@@ -594,6 +607,7 @@ function mergeFullConfigs(configs: any): IConfig {
         enable: false,
         script: '',
       },
+      friendLinkOptions: { allowApply: true },
     },
     configs,
   )
