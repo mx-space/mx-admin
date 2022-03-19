@@ -261,7 +261,12 @@ export default defineComponent({
                 )
               },
             },
-            { title: '描述', key: 'description' },
+            {
+              title: '描述',
+              key: 'description',
+              width: 250,
+              ellipsis: { lineClamp: 2, tooltip: true },
+            },
             {
               title: '网址',
               key: 'url',
@@ -282,6 +287,14 @@ export default defineComponent({
               width: 80,
               render(row) {
                 return ['朋友', '收藏'][row.type | 0]
+              },
+            },
+            {
+              title: '对方邮箱',
+              key: 'email',
+              // width: 120,
+              render(row) {
+                return <a href={`mailto:${row.email}`}>{row.email}</a>
               },
             },
             {
