@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@antv/g2": "4.1.47",
-    "@bytebase/vue-kbar": "0.1.6",
+    "@bytebase/vue-kbar": "0.1.7",
     "@codemirror/commands": "0.19.8",
     "@codemirror/gutter": "0.19.9",
     "@codemirror/highlight": "0.19.7",
