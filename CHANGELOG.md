@@ -3,9 +3,30 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Bug Fixes
+
+- Update dependency @vueuse/core to v8.0.1 (#329)
+- Update dependency @vueuse/core to v8.1.1 (#335)
+
+### Miscellaneous Tasks
+
+- Update dependency postcss to v8.4.12 (#333)
+- Update dependency @innei-util/prettier to v0.4.1 (#331)
+- Update dependency vite-plugin-checker to v0.4.3 (#328)
+
+### Feaf
+
+- Add clean cache entry
+
+## [3.16.5] - 2022-03-14
+
 ### Features
 
 - Support serverless typescrpt format
+
+### Release
+
+- V3.16.5
 
 ## [3.16.4] - 2022-03-13
 
