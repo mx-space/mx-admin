@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [unreleased]
+## [3.16.6] - 2022-03-19
 
 ### Bug Fixes
 
@@ -17,6 +17,10 @@ All notable changes to this project will be documented in this file.
 ### Feaf
 
 - Add clean cache entry
+
+### Release
+
+- V3.16.6
 
 ## [3.16.5] - 2022-03-14
 
