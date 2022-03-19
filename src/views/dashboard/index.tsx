@@ -16,6 +16,7 @@ import {
   NoteIcon,
   OnlinePredictionFilledIcon,
   PencilIcon,
+  RedisIcon,
   RefreshIcon,
 } from 'components/icons'
 import { IpInfoPopover } from 'components/ip-info'
@@ -334,6 +335,31 @@ export const DashBoardView = defineComponent({
           },
         ],
       },
+      {
+        label: '缓存',
+        value: 'Redis',
+        icon: <RedisIcon />,
+        actions: [
+          {
+            primary: false,
+            name: '清除 API 缓存',
+            onClick() {
+              RESTManager.api.clean_catch.get().then(() => {
+                message.success('清除成功')
+              })
+            },
+          },
+          {
+            primary: false,
+            name: '清除数据缓存',
+            onClick() {
+              RESTManager.api.clean_redis.get().then(() => {
+                message.success('清除成功')
+              })
+            },
+          },
+        ],
+      },
 
       {
         label: 'API 总调用次数',
@@ -350,15 +376,6 @@ export const DashBoardView = defineComponent({
             onClick() {
               router.push({
                 name: RouteName.Analyze,
-              })
-            },
-          },
-
-          {
-            name: '清空缓存',
-            onClick() {
-              RESTManager.api.clean_catch.get().then(() => {
-                message.success('清除成功')
               })
             },
           },
