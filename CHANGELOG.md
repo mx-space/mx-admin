@@ -1,6 +1,18 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+
+### Features
+
+- Add friend options
+
+## [3.16.7] - 2022-03-19
+
+### Release
+
+- V3.16.7
+
 ## [3.16.6] - 2022-03-19
 
 ### Bug Fixes
