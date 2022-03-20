@@ -37,10 +37,6 @@ export const CodeEditorForSnippet = defineComponent({
       },
     )
 
-    onMounted(() => {
-      console.log(editorRef)
-    })
-
     return () => (
       <div class={'h-full w-full relative'}>
         <FunctionCodeEditor

@@ -70,7 +70,10 @@ export default defineComponent({
           },
       )
     const message = useMessage()
-    const resetEditData: () => Omit<LinkModel, 'id' | 'created' | 'hide'> & {
+    const resetEditData: () => Omit<
+      LinkModel,
+      'id' | 'created' | 'hide' | 'email'
+    > & {
       id: null | string
     } = () => ({
       avatar: '',
