@@ -5,6 +5,8 @@ import { UIStore } from 'stores/ui'
 import { Ref } from 'vue'
 import { useInjector } from './use-deps-injection'
 import { useSaveConfirm } from './use-save-confirm'
+import { AutoTypings, LocalStorageCache } from 'monaco-editor-auto-typings'
+import { language } from '@codemirror/language'
 
 export const usePropsValueToRef = <T extends { value: string }>(props: T) => {
   const value = ref(props.value)
@@ -77,7 +79,7 @@ export const useAsyncLoadMonaco = (
 
   onMounted(() => {
     import('monaco-editor').then((module) => {
-      monaco.editor = module.editor.create(editorRef.value, {
+      const options: editor.IStandaloneEditorConstructionOptions = {
         ...monacoOptions,
         value: value.value,
         theme: isDark.value ? 'dark' : 'light',
@@ -87,8 +89,18 @@ export const useAsyncLoadMonaco = (
         tabSize: 2,
         fontFamily: 'operator mono, fira code, monaco, monospace',
         fontSize: 14,
-      })
+      }
+      if (options.language === 'typescript') {
+        Object.assign(options, {
+          model: module.editor.createModel(value.value, 'typescript'),
+        })
+      }
 
+      monaco.editor = module.editor.create(editorRef.value, options)
+      AutoTypings.create(monaco.editor, {
+        sourceCache: new LocalStorageCache(), // Cache loaded sources in localStorage. May be omitted
+        // Other options...
+      })
       monaco.module = module
       ;['onKeyDown', 'onDidPaste', 'onDidBlurEditorText'].forEach(
         (eventName) => {

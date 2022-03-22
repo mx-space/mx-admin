@@ -52,6 +52,7 @@ specifiers:
   lodash-es: 4.17.21
   marked: 4.0.12
   monaco-editor: 0.33.0
+  monaco-editor-auto-typings: 0.2.0
   naive-ui: 2.26.4
   path: ./polyfills/packages/path
   postcss: 8.4.12
@@ -115,6 +116,7 @@ dependencies:
   lodash-es: 4.17.21
   marked: 4.0.12
   monaco-editor: 0.33.0
+  monaco-editor-auto-typings: 0.2.0
   naive-ui: 2.26.4_vue@3.2.31
   path: link:polyfills/packages/path
   qier-progress: 1.0.4
@@ -2893,6 +2895,12 @@ packages:
   /minimist/1.2.5:
     resolution: {integrity: sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==}
     dev: true
+
+  /monaco-editor-auto-typings/0.2.0:
+    resolution: {integrity: sha512-HjKfeYpIqeYcXcajjneooCjMF1t1k3IRRFSb7fQ1JSiN2kKvW8l16iZe3pYnZW2fVkseznINGFw8upLnKs0eqA==}
+    dependencies:
+      monaco-editor: 0.33.0
+    dev: false
 
   /monaco-editor/0.33.0:
     resolution: {integrity: sha512-VcRWPSLIUEgQJQIE0pVT8FcGBIgFoxz7jtqctE+IiCxWugD0DwgyQBcZBhdSrdMC84eumoqMZsGl2GTreOzwqw==}
