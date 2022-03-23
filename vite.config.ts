@@ -34,6 +34,11 @@ export default ({ mode }) => {
       }),
       htmlPlugin(env),
     ],
+    resolve: {
+      alias: {
+        path: require.resolve('path-browserify'),
+      },
+    },
 
     build: {
       chunkSizeWarningLimit: 2500, //monaco is so big

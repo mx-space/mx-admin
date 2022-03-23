@@ -46,7 +46,6 @@ specifiers:
   ejs: 3.1.6
   eslint: 8.11.0
   eslint-plugin-vue: 8.5.0
-  i: 0.3.7
   js-cookie: 3.0.1
   js-yaml: 4.1.0
   lodash-es: 4.17.21
@@ -54,7 +53,7 @@ specifiers:
   monaco-editor: 0.33.0
   monaco-editor-auto-typings: 0.2.0
   naive-ui: 2.26.4
-  path: ./polyfills/packages/path
+  path-browserify: 1.0.1
   postcss: 8.4.12
   postcss-nested: 5.0.6
   prettier: 2.6.0
@@ -118,7 +117,7 @@ dependencies:
   monaco-editor: 0.33.0
   monaco-editor-auto-typings: 0.2.0
   naive-ui: 2.26.4_vue@3.2.31
-  path: link:polyfills/packages/path
+  path-browserify: 1.0.1
   qier-progress: 1.0.4
   qs: 6.10.3
   reflect-metadata: 0.1.13
@@ -149,7 +148,6 @@ devDependencies:
   cors: 2.8.5
   eslint: 8.11.0
   eslint-plugin-vue: 8.5.0_eslint@8.11.0
-  i: 0.3.7
   postcss: 8.4.12
   postcss-nested: 5.0.6_postcss@8.4.12
   prettier: 2.6.0
@@ -2593,11 +2591,6 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /i/0.3.7:
-    resolution: {integrity: sha512-FYz4wlXgkQwIPqhzC5TdNMLSE5+GS1IIDJZY/1ZiEPCT2S3COUVZeT5OW4BmW4r5LHLQuOosSwsvnroG9GR59Q==}
-    engines: {node: '>=0.4'}
-    dev: true
-
   /iconv-lite/0.6.3:
     resolution: {integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==}
     engines: {node: '>=0.10.0'}
@@ -3033,6 +3026,10 @@ packages:
 
   /parseuri/0.0.6:
     resolution: {integrity: sha512-AUjen8sAkGgao7UyCX6Ahv0gIK2fABKmYjvP4xmy5JaKvcbTRueIqIPHLAfq30xJddqSE033IOMUSOMCcK3Sow==}
+    dev: false
+
+  /path-browserify/1.0.1:
+    resolution: {integrity: sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==}
     dev: false
 
   /path-is-absolute/1.0.1:

@@ -38,3 +38,8 @@ self.MonacoEnvironment = {
     return new editorWorker()
   },
 }
+
+// cjs webpack compatibility
+// @ts-ignore
+window.module = {}
+window.module.exports = {}
