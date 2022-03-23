@@ -3,9 +3,31 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Bug Fixes
+
+- Update dependency @bytebase/vue-kbar to v0.1.7 (#336)
+- Update dependency @vueuse/core to v8.1.2 (#337)
+
+### Features
+
+- Add email field for friend
+- Auto typings for monaco
+
+### Miscellaneous Tasks
+
+- Update dependency prettier to v2.6.0 (#334)
+- Update typescript-eslint monorepo to v5.15.0 (#330)
+- Update deps
+
+## [3.16.8] - 2022-03-19
+
 ### Features
 
 - Add friend options
+
+### Release
+
+- V3.16.8
 
 ## [3.16.7] - 2022-03-19
 
