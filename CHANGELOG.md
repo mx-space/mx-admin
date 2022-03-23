@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Resolve path polyfill
+
+## [3.16.9] - 2022-03-23
+
+### Bug Fixes
+
 - Update dependency @bytebase/vue-kbar to v0.1.7 (#336)
 - Update dependency @vueuse/core to v8.1.2 (#337)
 
@@ -18,6 +24,10 @@ All notable changes to this project will be documented in this file.
 - Update dependency prettier to v2.6.0 (#334)
 - Update typescript-eslint monorepo to v5.15.0 (#330)
 - Update deps
+
+### Release
+
+- V3.16.9
 
 ## [3.16.8] - 2022-03-19
 
