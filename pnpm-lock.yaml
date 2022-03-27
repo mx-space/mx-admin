@@ -52,7 +52,7 @@ specifiers:
   marked: 4.0.12
   monaco-editor: 0.33.0
   monaco-editor-auto-typings: 0.2.0
-  naive-ui: 2.26.4
+  naive-ui: 2.27.0
   path-browserify: 1.0.1
   postcss: 8.4.12
   postcss-nested: 5.0.6
@@ -116,7 +116,7 @@ dependencies:
   marked: 4.0.12
   monaco-editor: 0.33.0
   monaco-editor-auto-typings: 0.2.0
-  naive-ui: 2.26.4_vue@3.2.31
+  naive-ui: 2.27.0_vue@3.2.31
   path-browserify: 1.0.1
   qier-progress: 1.0.4
   qs: 6.10.3
@@ -3005,8 +3005,8 @@ packages:
   /ms/2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
 
-  /naive-ui/2.26.4_vue@3.2.31:
-    resolution: {integrity: sha512-yJQl6y58pxQWKi8YAofiFk0+4WVN+dNYoyKiMfaVdvVQTh9VxjBrcs4z5NUT+d98xUXOtmMzpIlrW/4P1xty+w==}
+  /naive-ui/2.27.0_vue@3.2.31:
+    resolution: {integrity: sha512-g9A2uulbQKMuJpUjAyiAqBHQ4xrcbwRPdv+OS2FeNC5u/SrRWFiO64X10YDyMwQNudrwc3VVqKUrw3ZArxtFCg==}
     peerDependencies:
       vue: ^3.0.0
     dependencies:
@@ -3028,7 +3028,7 @@ packages:
       vfonts: 0.0.3
       vooks: 0.2.12_vue@3.2.31
       vue: 3.2.31
-      vueuc: 0.4.27_vue@3.2.31
+      vueuc: 0.4.28_vue@3.2.31
     dev: false
 
   /nanoid/3.3.1:
@@ -3855,8 +3855,8 @@ packages:
       '@vue/shared': 3.2.31
     dev: false
 
-  /vueuc/0.4.27_vue@3.2.31:
-    resolution: {integrity: sha512-wkIM6F1VT9cuzC2YOIzktPcTJ3eI8FoQ39KazAKwcdPv3GcXZGO1vBZc3TspBwap0AIn9eF8dxvQAW80yxhbHg==}
+  /vueuc/0.4.28_vue@3.2.31:
+    resolution: {integrity: sha512-Udr1ROwJocHIThA5G+H5qN1QEFI4pskDvl+w/2Ul2XIjaAeIuQ6ygEOKHOXRJqKX5PxcTi1QQUpb7yQWsDw7ww==}
     peerDependencies:
       vue: ^3.0.11
     dependencies:
