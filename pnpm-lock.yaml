@@ -64,7 +64,7 @@ specifiers:
   socket.io-client: 4.4.1
   typescript: 4.6.2
   umi-request: 1.4.0
-  unplugin-auto-import: 0.6.6
+  unplugin-auto-import: 0.6.8
   validator: 13.7.0
   vditor: 3.8.12
   vite: 2.8.6
@@ -153,7 +153,7 @@ devDependencies:
   prettier: 2.6.1
   rollup-plugin-visualizer: 5.6.0
   typescript: 4.6.2
-  unplugin-auto-import: 0.6.6_@vueuse+core@8.2.0+vite@2.8.6
+  unplugin-auto-import: 0.6.8_@vueuse+core@8.2.0+vite@2.8.6
   vite: 2.8.6
   vite-plugin-checker: 0.4.4_vite@2.8.6
   vite-tsconfig-paths: 3.4.1_vite@2.8.6
@@ -3590,8 +3590,8 @@ packages:
     engines: {node: '>= 10.0.0'}
     dev: true
 
-  /unplugin-auto-import/0.6.6_@vueuse+core@8.2.0+vite@2.8.6:
-    resolution: {integrity: sha512-x3YxAI9ePoumXOakuS5YJlFkSyAkl5vJlaFZSJhSp75nH5gg8LpqQ/0Gz1/CG/JRRv+xaE1CZpEV161AqFGjEg==}
+  /unplugin-auto-import/0.6.8_@vueuse+core@8.2.0+vite@2.8.6:
+    resolution: {integrity: sha512-Nko4z1oSXpV/HNLexxKt+QP+BD4uNS9v2ronHnCWpm4uCMUCj2MXaK9XtFuCvCciIbkLd7wVNXZjpR5eeJs9vA==}
     engines: {node: '>=14'}
     peerDependencies:
       '@vueuse/core': '*'
