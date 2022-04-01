@@ -5,7 +5,35 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update dependency @antv/g2 to v4.1.48 (#343)
+- Update dependency @vueuse/core to v8.2.0 (#349)
+- Update dependency @antv/g2 to v4.1.49 (#348)
+- Update dependency naive-ui to v2.27.0 (#352)
+- Update dependency @mx-space/api-client to v0.8.2 (#338)
+
+### Miscellaneous Tasks
+
+- Update typescript-eslint monorepo to v5.16.0 (#342)
+- Update actions/cache action to v3 (#340)
+- Update dependency @types/marked to v4.0.3 (#341)
+- Update dependency @innei-util/prettier to v0.5.0 (#344)
+- Update dependency eslint to v8.12.0 (#351)
+- Update dependency prettier to v2.6.1 (#347)
+- Update dependency vite-plugin-checker to v0.4.4 (#345)
+- Update dependency @vitejs/plugin-vue to v2.3.1 (#356)
+- Update dependency @types/validator to v13.7.2 (#350)
+- Update dependency unplugin-auto-import to v0.6.8 (#354)
+- Update deps
+
+## [3.16.10] - 2022-03-23
+
+### Bug Fixes
+
 - Resolve path polyfill
+
+### Release
+
+- V3.16.10
 
 ## [3.16.9] - 2022-03-23
 
