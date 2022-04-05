@@ -1,4 +1,3 @@
-import { useStorage } from '@vueuse/core'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { CheckCircleOutlinedIcon } from 'components/icons'
 import { useMountAndUnmount } from 'hooks/use-react'
@@ -17,13 +16,16 @@ import {
 } from 'naive-ui'
 import { RESTManager } from 'utils'
 import { useRoute, useRouter } from 'vue-router'
+
+import { useStorage } from '@vueuse/core'
+
 import {
-  defaultServerlessFunction,
   SnippetModel,
   SnippetType,
   SnippetTypeToLanguage,
+  defaultServerlessFunction,
 } from '../../../models/snippet'
-import { CodeEditorForSnippet } from '../code-editor'
+import { CodeEditorForSnippet } from '../components/code-editor'
 
 export const Tab2ForEdit = defineComponent({
   setup() {

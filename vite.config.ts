@@ -1,10 +1,12 @@
-import vue from '@vitejs/plugin-vue'
 import { visualizer } from 'rollup-plugin-visualizer'
 import AutoImport from 'unplugin-auto-import/vite'
-import { defineConfig, loadEnv, PluginOption } from 'vite'
+import { PluginOption, defineConfig, loadEnv } from 'vite'
 import Checker from 'vite-plugin-checker'
 import WindiCSS from 'vite-plugin-windicss'
 import tsconfigPaths from 'vite-tsconfig-paths'
+
+import vue from '@vitejs/plugin-vue'
+
 import PKG from './package.json'
 
 export default ({ mode }) => {
@@ -34,9 +36,12 @@ export default ({ mode }) => {
       }),
       htmlPlugin(env),
     ],
+
     resolve: {
       alias: {
         path: require.resolve('path-browserify'),
+
+        'node-fetch': 'isomorphic-fetch',
       },
     },
 

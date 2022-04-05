@@ -2,7 +2,7 @@ import { HeaderActionButton } from 'components/button/rounded-button'
 import { EditorToggleWrapper } from 'components/editor/universal/toggle'
 import { SendIcon } from 'components/icons'
 import { FetchGithubRepoButton } from 'components/special-button/fetch-github-repo'
-import { IGithubRepo } from 'external/api/github'
+import { IGithubRepo } from 'external/api/github-repo'
 import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
 import { ContentLayout } from 'layouts/content'
 import { isString, transform } from 'lodash-es'
@@ -12,6 +12,7 @@ import { RouteName } from 'router/name'
 import { RESTManager } from 'utils'
 import { computed, defineComponent, onMounted, reactive, toRaw } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+
 type ProjectReactiveType = {
   name: string
   previewUrl: string

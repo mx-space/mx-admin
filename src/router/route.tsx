@@ -30,6 +30,7 @@ import $RouterView from 'layouts/router-view'
 import { SidebarLayout } from 'layouts/sidebar'
 import { DashBoardView } from 'views/dashboard'
 import { RouteRecordRaw } from 'vue-router'
+
 import LoginView from '../views/login/index.vue'
 import { RouteName } from './name'
 

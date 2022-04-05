@@ -1,6 +1,7 @@
 import { useAsyncLoadMonaco } from 'hooks/use-async-monaco'
 import { RESTManager } from 'utils'
 import { PropType, Ref } from 'vue'
+
 import * as typeDefines from './lib.declare'
 
 export const FunctionCodeEditor = defineComponent({
@@ -45,10 +46,6 @@ export const FunctionCodeEditor = defineComponent({
         }
       },
     )
-
-    onUnmounted(() => {
-      $editor.editor.dispose()
-    })
 
     onMounted(() => {
       import('monaco-editor').then((monaco) => {

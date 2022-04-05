@@ -1,6 +1,5 @@
-import { Icon } from '@vicons/utils'
 import { HeaderActionButton } from 'components/button/rounded-button'
-import { AddIcon, FunctionIcon, LockIcon } from 'components/icons'
+import { AddIcon, FunctionIcon, ImportIcon, LockIcon } from 'components/icons'
 import { DeleteConfirmButton } from 'components/special-button/delete-confirm'
 import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
@@ -12,7 +11,11 @@ import { NButton, NPopconfirm, NSpace } from 'naive-ui'
 import { RESTManager } from 'utils'
 import { getToken } from 'utils/auth'
 import { useRouter } from 'vue-router'
+
+import { Icon } from '@vicons/utils'
+
 import { SnippetModel, SnippetType } from '../../../models/snippet'
+import { ImportSnippetButton } from '../components/import-snippets-button'
 
 const useFetchReferenceNames = () => {
   const referenceNames = ref<string[]>([])
@@ -86,6 +89,11 @@ export const Tab1ForList = defineComponent({
             icon={<AddIcon />}
           ></HeaderActionButton>
 
+          <ImportSnippetButton
+            onFinish={() => {
+              fetchDataFn()
+            }}
+          />
           <DeleteConfirmButton
             checkedRowKeys={checkedRowKeys}
             onDelete={async (keys) => {

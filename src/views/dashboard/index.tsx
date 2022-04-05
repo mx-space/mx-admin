@@ -1,4 +1,3 @@
-import { Icon } from '@vicons/utils'
 import {
   ActivityIcon,
   AddLinkFilledIcon,
@@ -21,8 +20,8 @@ import {
 } from 'components/icons'
 import { IpInfoPopover } from 'components/ip-info'
 import { useShorthand } from 'components/shorthand'
-import { fetchHitokoto, SentenceType } from 'external/api/hitokoto'
-import { getJinRiShiCiOne, ShiJuData } from 'external/api/jinrishici'
+import { SentenceType, fetchHitokoto } from 'external/api/hitokoto'
+import { ShiJuData, getJinRiShiCiOne } from 'external/api/jinrishici'
 import { useInjector } from 'hooks/use-deps-injection'
 import { ContentLayout } from 'layouts/content'
 import { pick } from 'lodash-es'
@@ -44,9 +43,12 @@ import {
 import { RouteName } from 'router/name'
 import { AppStore } from 'stores/app'
 import { UserStore } from 'stores/user'
-import { parseDate, RESTManager } from 'utils'
+import { RESTManager, parseDate } from 'utils'
 import { computed, defineComponent, onBeforeMount, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+
+import { Icon } from '@vicons/utils'
+
 import { Card, CardProps } from './card'
 
 export const DashBoardView = defineComponent({

@@ -1,7 +1,9 @@
 import CheckCircleOutlined from '@vicons/antd/CheckCircleOutlined'
-import QuestionCircleOutlined from '@vicons/antd/es/QuestionCircleOutlined'
 import Lock from '@vicons/antd/LockFilled'
 import Snippet from '@vicons/antd/SnippetsFilled'
+import QuestionCircleOutlined from '@vicons/antd/es/QuestionCircleOutlined'
+import Pen from '@vicons/fa/Pen'
+import SlackHash from '@vicons/fa/SlackHash'
 import Book from '@vicons/fa/es/Book'
 import Bookmark from '@vicons/fa/es/Bookmark'
 import ChartLine from '@vicons/fa/es/ChartLine'
@@ -22,8 +24,6 @@ import TelegramPlane from '@vicons/fa/es/TelegramPlane'
 import ThumbsUp from '@vicons/fa/es/ThumbsUp'
 import UndoAlt from '@vicons/fa/es/UndoAlt'
 import UserFriends from '@vicons/fa/es/UserFriends'
-import Pen from '@vicons/fa/Pen'
-import SlackHash from '@vicons/fa/SlackHash'
 import Add12Filled from '@vicons/fluent/es/Add12Filled'
 import Delete16Regular from '@vicons/fluent/es/Delete16Regular'
 import EmojiAdd24Regular from '@vicons/fluent/es/EmojiAdd24Regular'
@@ -287,6 +287,15 @@ export const RedisIcon = () => (
     <path
       fill="currentColor"
       d="m10.5 2.661l.54.997l-1.797.644l2.409.218l.748 1.246l.467-1.121l2.077-.208l-1.61-.613l.426-1.017l-1.578.519zm6.905 2.077L13.76 6.182l3.292 1.298l.353-.146l3.293-1.298zm-10.51.312a2.97 1.153 0 0 0-2.97 1.152a2.97 1.153 0 0 0 2.97 1.153a2.97 1.153 0 0 0 2.97-1.153a2.97 1.153 0 0 0-2.97-1.152zM24 6.805s-8.983 4.278-10.395 4.953c-1.226.561-1.901.561-3.261.094C8.318 11.022 0 7.241 0 7.241v1.038c0 .24.332.499.966.8c1.277.613 8.34 3.677 9.45 4.206c1.112.53 1.9.54 3.313-.197c1.412-.738 8.049-3.905 9.326-4.57c.654-.342.945-.602.945-.84zm-10.042.602L8.39 8.26l3.884 1.61zM24 10.637s-8.983 4.279-10.395 4.954c-1.226.56-1.901.56-3.261.093C8.318 14.854 0 11.074 0 11.074v1.038c0 .238.332.498.966.8c1.277.612 8.34 3.676 9.45 4.205c1.112.53 1.9.54 3.313-.197c1.412-.737 8.049-3.905 9.326-4.57c.654-.332.945-.602.945-.84zm0 3.842l-10.395 4.954c-1.226.56-1.901.56-3.261.094C8.318 18.696 0 14.916 0 14.916v1.038c0 .239.332.499.966.8c1.277.613 8.34 3.676 9.45 4.206c1.112.53 1.9.54 3.313-.198c1.412-.737 8.049-3.904 9.326-4.569c.654-.343.945-.613.945-.841z"
+    ></path>
+  </svg>
+)
+
+export const ImportIcon = () => (
+  <svg width="1em" height="1em" viewBox="0 0 24 24">
+    <path
+      fill="currentColor"
+      d="M21 14a1 1 0 0 0-1 1v4a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-4a1 1 0 0 0-2 0v4a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-4a1 1 0 0 0-1-1Zm-9.71 1.71a1 1 0 0 0 .33.21a.94.94 0 0 0 .76 0a1 1 0 0 0 .33-.21l4-4a1 1 0 0 0-1.42-1.42L13 12.59V3a1 1 0 0 0-2 0v9.59l-2.29-2.3a1 1 0 1 0-1.42 1.42Z"
     ></path>
   </svg>
 )
