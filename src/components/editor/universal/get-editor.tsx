@@ -1,4 +1,5 @@
 import { NSpin } from 'naive-ui'
+
 import { PlainEditor } from '../plain/plain'
 import { Editor } from './constants'
 

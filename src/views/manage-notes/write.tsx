@@ -1,4 +1,3 @@
-import { Icon } from '@vicons/utils'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { TextBaseDrawer } from 'components/drawer/text-base-drawer'
 import { EditorToggleWrapper } from 'components/editor/universal/toggle'
@@ -41,6 +40,9 @@ import {
   watch,
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+
+import { Icon } from '@vicons/utils'
+
 type NoteReactiveType = {
   title: string
   text: string

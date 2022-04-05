@@ -4,17 +4,19 @@ import { UIStore } from 'stores/ui'
 import Vditor from 'vditor'
 import 'vditor/dist/index.css'
 import {
-  defineComponent,
-  onMounted,
   PropType,
   Ref,
+  defineComponent,
+  onMounted,
   ref,
   toRaw,
   watch,
 } from 'vue'
+
 import styles from '../universal/editor.module.css'
 import { editorBaseProps } from '../universal/props'
 import './vditor.css'
+
 export const VditorEditor = defineComponent({
   props: {
     ...editorBaseProps,

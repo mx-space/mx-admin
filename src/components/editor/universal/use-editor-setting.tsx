@@ -8,6 +8,7 @@ import {
   NP,
   NSwitch,
 } from 'naive-ui'
+
 import { GeneralSettingDto, VditorSettingDto } from './config'
 import { ResetIconButton } from './reset-icon-button'
 

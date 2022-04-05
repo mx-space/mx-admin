@@ -1,4 +1,3 @@
-import { Icon } from '@vicons/utils'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { TextBaseDrawer } from 'components/drawer/text-base-drawer'
 import { EditorToggleWrapper } from 'components/editor/universal/toggle'
@@ -17,6 +16,9 @@ import { RouteName } from 'router/name'
 import { RESTManager } from 'utils/rest'
 import { computed, defineComponent, onMounted, reactive, ref, toRaw } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+
+import { Icon } from '@vicons/utils'
+
 type PageReactiveType = {
   title: string
   text: string

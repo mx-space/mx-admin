@@ -1,6 +1,7 @@
 import { useSaveConfirm } from 'hooks/use-save-confirm'
 import { NInput } from 'naive-ui'
-import { defineComponent, PropType, ref, toRaw, watch } from 'vue'
+import { PropType, defineComponent, ref, toRaw, watch } from 'vue'
+
 import { editorBaseProps } from '../universal/props'
 
 export const PlainEditor = defineComponent({

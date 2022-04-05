@@ -1,6 +1,7 @@
-import { Icon } from '@vicons/utils'
 import { RefreshCircle } from 'components/icons'
 import { NButton, NPopover } from 'naive-ui'
+
+import { Icon } from '@vicons/utils'
 
 export const ResetIconButton = defineComponent({
   props: {

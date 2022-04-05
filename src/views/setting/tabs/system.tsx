@@ -19,7 +19,7 @@ import {
   NText,
 } from 'naive-ui'
 import { UIStore } from 'stores/ui'
-import { deepDiff, RESTManager } from 'utils'
+import { RESTManager, deepDiff } from 'utils'
 import {
   computed,
   defineComponent,

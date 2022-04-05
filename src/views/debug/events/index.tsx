@@ -1,10 +1,11 @@
-import { useLocalStorage } from '@vueuse/core'
 import { useAsyncLoadMonaco, usePropsValueToRef } from 'hooks/use-async-monaco'
 import { ContentLayout } from 'layouts/content'
 import { TwoColGridLayout } from 'layouts/two-col'
 import { NButton, NForm, NFormItem, NGi, NSelect } from 'naive-ui'
 import { EventTypes } from 'socket/types'
 import { RESTManager } from 'utils'
+
+import { useLocalStorage } from '@vueuse/core'
 
 const generateFakeData = (type: string) => {
   switch (type) {

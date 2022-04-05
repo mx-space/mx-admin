@@ -1,7 +1,8 @@
 import { KBarWrapper } from 'components/k-bar'
 import $RouterView from 'layouts/router-view'
 import { NLayoutContent } from 'naive-ui'
-import { computed, CSSProperties, defineComponent, watchEffect } from 'vue'
+import { CSSProperties, computed, defineComponent, watchEffect } from 'vue'
+
 import { Sidebar } from '../../components/sidebar'
 import { useInjector } from '../../hooks/use-deps-injection'
 import { UIStore } from '../../stores/ui'

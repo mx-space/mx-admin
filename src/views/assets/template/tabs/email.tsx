@@ -5,8 +5,10 @@ import { useLayout } from 'layouts/content'
 import { TwoColGridLayout } from 'layouts/two-col'
 import { NGi, NSwitch, useDialog } from 'naive-ui'
 import { RESTManager } from 'utils'
+
 import { CodeEditorForTemplateEditing } from '../code-editor'
 import { EJSRender } from '../ejs-render'
+
 export const EmailTab = defineComponent({
   setup() {
     const templateString = ref('')

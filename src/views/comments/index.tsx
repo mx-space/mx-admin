@@ -1,4 +1,3 @@
-import { Icon } from '@vicons/utils'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import {
   CheckmarkSharpIcon,
@@ -13,7 +12,7 @@ import { KAOMOJI_LIST } from 'constants/kaomoji'
 import { useInjector } from 'hooks/use-deps-injection'
 import { useDataTableFetch } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
-import { CommentModel, CommentsResponse, CommentState } from 'models/comment'
+import { CommentModel, CommentState, CommentsResponse } from 'models/comment'
 import {
   NAvatar,
   NButton,
@@ -38,6 +37,8 @@ import { RESTManager } from 'utils/rest'
 import { relativeTimeFromNow } from 'utils/time'
 import { defineComponent, nextTick, reactive, ref, unref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+
+import { Icon } from '@vicons/utils'
 
 enum CommentType {
   Pending,

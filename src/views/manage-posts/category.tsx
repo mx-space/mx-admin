@@ -22,7 +22,7 @@ import {
 } from 'naive-ui'
 import { CategoryStore } from 'stores/category'
 import { RESTManager } from 'utils/rest'
-import { defineComponent, onMounted, reactive, Ref, ref, watch } from 'vue'
+import { Ref, defineComponent, onMounted, reactive, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 
 export const CategoryView = defineComponent((props) => {

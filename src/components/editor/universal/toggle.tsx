@@ -2,10 +2,7 @@
  * 编辑器切换
  *
  */
-
 // TODO: 全屏预览
-
-import { Icon } from '@vicons/utils'
 import clsx from 'clsx'
 import { FullscreenExitOutlined, SettingsIcon } from 'components/icons'
 import { useMountAndUnmount } from 'hooks/use-react'
@@ -24,7 +21,10 @@ import {
   NText,
 } from 'naive-ui'
 import type Vditor from 'vditor'
-import { defineComponent, ref, Suspense, watch } from 'vue'
+import { Suspense, defineComponent, ref, watch } from 'vue'
+
+import { Icon } from '@vicons/utils'
+
 import { Editor, EditorStorageKeys } from './constants'
 import styles from './editor.module.css'
 import { getDynamicEditor } from './get-editor'

@@ -1,18 +1,20 @@
 /**
  * 最近 & 速记
  */
-
-import { Icon } from '@vicons/utils'
 import { AddIcon, PenIcon } from 'components/icons'
 import { useShorthand } from 'components/shorthand'
 import { RelativeTime } from 'components/time/relative-time'
 import { RecentlyModel } from 'models/recently'
 import { NButton, NPopconfirm, NTimeline, NTimelineItem } from 'naive-ui'
 import { defineComponent, onMounted } from 'vue'
+
+import { Icon } from '@vicons/utils'
+
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
 import styles from './index.module.css'
+
 export default defineComponent({
   setup() {
     const data = ref([] as RecentlyModel[])

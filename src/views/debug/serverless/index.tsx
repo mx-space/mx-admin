@@ -1,4 +1,3 @@
-import { useLocalStorage } from '@vueuse/core'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { FunctionCodeEditor } from 'components/function-editor'
 import { CheckCircleOutlinedIcon } from 'components/icons'
@@ -7,6 +6,8 @@ import { TwoColGridLayout } from 'layouts/two-col'
 import { defaultServerlessFunction } from 'models/snippet'
 import { NGi, useMessage } from 'naive-ui'
 import { RESTManager } from 'utils'
+
+import { useLocalStorage } from '@vueuse/core'
 
 export default defineComponent({
   setup() {

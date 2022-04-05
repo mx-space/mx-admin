@@ -5,7 +5,7 @@ import { Table } from 'components/table'
 import { useDataTableFetch } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
 import { NButton, NPopconfirm, NSpace, useDialog } from 'naive-ui'
-import { responseBlobToFile, RESTManager } from 'utils'
+import { RESTManager, responseBlobToFile } from 'utils'
 import { defineComponent, onBeforeMount } from 'vue'
 
 export default defineComponent(() => {

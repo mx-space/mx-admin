@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+
 /*
  * @Author: Innei
  * @Date: 2020-05-23 14:31:11
@@ -7,7 +8,6 @@
  * @FilePath: /web/utils/observable.ts
  * @MIT
  */
-
 import { EventTypes } from 'socket/types'
 
 type IDisposable = () => void

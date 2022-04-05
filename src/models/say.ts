@@ -1,4 +1,5 @@
 import { Pager } from './base'
+
 export interface SayModel {
   id?: string
   text: string

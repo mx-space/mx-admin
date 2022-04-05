@@ -1,6 +1,7 @@
 import { useDialog } from 'naive-ui'
 import { onMounted, onUnmounted } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
+
 /**
  *
  * @param enable

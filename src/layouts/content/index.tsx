@@ -1,19 +1,20 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/* eslint-disable @typescript-eslint/no-empty-function */
 
+/* eslint-disable @typescript-eslint/no-empty-function */
 import clsx from 'clsx'
 import { NLayoutContent } from 'naive-ui'
 import {
+  PropType,
+  VNode,
   computed,
   defineComponent,
   inject,
   onUnmounted,
-  PropType,
   provide,
   ref,
-  VNode,
 } from 'vue'
 import { useRouter } from 'vue-router'
+
 import styles from './index.module.css'
 
 const ProvideKey = Symbol('inject')

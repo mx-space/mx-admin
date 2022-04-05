@@ -1,6 +1,7 @@
 import { FunctionCodeEditor } from 'components/function-editor'
 import { usePropsValueToRef } from 'hooks/use-async-monaco'
 import { PropType } from 'vue'
+
 export const CodeEditorForSnippet = defineComponent({
   props: {
     onSave: {

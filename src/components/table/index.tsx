@@ -8,14 +8,16 @@ import {
   TableColumns,
 } from 'naive-ui/lib/data-table/src/interface'
 import { UIStore } from 'stores/ui'
-import { defineComponent, PropType, reactive, ref, Ref, watch } from 'vue'
+import { PropType, Ref, defineComponent, reactive, ref, watch } from 'vue'
 import {
   LocationQueryValue,
   onBeforeRouteUpdate,
   useRoute,
   useRouter,
 } from 'vue-router'
+
 import styles from './index.module.css'
+
 export const tableRowStyle = styles['table-row']
 
 export const Table = defineComponent({

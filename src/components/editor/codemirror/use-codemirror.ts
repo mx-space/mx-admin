@@ -1,3 +1,5 @@
+import { Ref, onMounted, ref } from 'vue'
+
 import { defaultKeymap, indentWithTab } from '@codemirror/commands'
 import { highlightActiveLineGutter, lineNumbers } from '@codemirror/gutter'
 import { defaultHighlightStyle } from '@codemirror/highlight'
@@ -7,7 +9,7 @@ import { indentOnInput } from '@codemirror/language'
 import { bracketMatching } from '@codemirror/matchbrackets'
 import { EditorState } from '@codemirror/state'
 import { EditorView, highlightActiveLine, keymap } from '@codemirror/view'
-import { onMounted, ref, Ref } from 'vue'
+
 import { codemirrorReconfigureExtension } from './extension'
 import { syntaxHighlighting } from './syntax-highlight'
 import { useCodeMirrorAutoToggleTheme } from './ui'

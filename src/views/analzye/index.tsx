@@ -1,4 +1,3 @@
-import { Chart } from '@antv/g2/esm'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { RefreshOutlineIcon, TrashIcon } from 'components/icons'
 import { IpInfoPopover } from 'components/ip-info'
@@ -19,7 +18,7 @@ import {
   useMessage,
 } from 'naive-ui'
 import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
-import { parseDate, RESTManager } from 'utils'
+import { RESTManager, parseDate } from 'utils'
 import {
   defineComponent,
   onBeforeMount,
@@ -29,6 +28,8 @@ import {
   watch,
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+
+import { Chart } from '@antv/g2/esm'
 
 const SectionTitle = defineComponent((_, { slots }) => () => (
   <div class="font-semibold text-gray-400 my-[12px] ">{slots}</div>

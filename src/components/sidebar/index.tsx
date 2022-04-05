@@ -1,19 +1,22 @@
-import { Icon } from '@vicons/utils'
-import { onClickOutside } from '@vueuse/core'
 import clsx from 'clsx'
 import { HamburgerIcon, MoonIcon, SunIcon } from 'components/icons'
 import { WEB_URL } from 'constants/env'
 import { NLayoutContent } from 'naive-ui'
 import { AppStore } from 'stores/app'
 import { UIStore } from 'stores/ui'
-import { computed, defineComponent, onMounted, PropType, ref } from 'vue'
+import { PropType, computed, defineComponent, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+
+import { Icon } from '@vicons/utils'
+import { onClickOutside } from '@vueuse/core'
+
 import { configs } from '../../configs'
 import { useInjector } from '../../hooks/use-deps-injection'
 import { UserStore } from '../../stores/user'
-import { buildMenuModel, buildMenus, MenuModel } from '../../utils/build-menus'
+import { MenuModel, buildMenuModel, buildMenus } from '../../utils/build-menus'
 import { Avatar } from '../avatar'
 import styles from './index.module.css'
+
 export const Sidebar = defineComponent({
   name: 'SidebarComp',
   props: {

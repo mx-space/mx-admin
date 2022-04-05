@@ -1,7 +1,9 @@
 import { useInjector } from 'hooks/use-deps-injection'
 import { UIStore } from 'stores/ui'
+
 import Dark from './theme/dark.json'
 import Light from './theme/light.json'
+
 const set = new Set()
 export const useDefineTheme = (
   theme: string,

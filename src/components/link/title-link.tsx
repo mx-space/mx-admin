@@ -1,13 +1,15 @@
-import { Icon } from '@vicons/utils'
 import { ExternalLinkIcon, MagnifyIcon } from 'components/icons'
 import { ArticlePreview } from 'components/preview'
 import { WEB_URL } from 'constants/env'
 import { useInjector } from 'hooks/use-deps-injection'
 import { NButton, NEllipsis, NPopover } from 'naive-ui'
 import { UIStore } from 'stores/ui'
-import { getToken, RESTManager } from 'utils'
+import { RESTManager, getToken } from 'utils'
 import { defineComponent } from 'vue'
 import { RouterLink } from 'vue-router'
+
+import { Icon } from '@vicons/utils'
+
 export const TableTitleLink = defineComponent({
   props: {
     inPageTo: {

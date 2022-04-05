@@ -1,9 +1,11 @@
-import { oneDark } from '@codemirror/theme-one-dark'
-import { EditorView } from '@codemirror/view/dist'
-import { githubLight } from '@ddietr/codemirror-themes/theme/github-light'
 import { useInjector } from 'hooks/use-deps-injection'
 import { UIStore } from 'stores/ui'
 import { Ref } from 'vue'
+
+import { oneDark } from '@codemirror/theme-one-dark'
+import { EditorView } from '@codemirror/view/dist'
+import { githubLight } from '@ddietr/codemirror-themes/theme/github-light'
+
 import { codemirrorReconfigureExtensionMap } from './extension'
 
 export const useCodeMirrorAutoToggleTheme = (

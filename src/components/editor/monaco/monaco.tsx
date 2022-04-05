@@ -5,14 +5,15 @@ import { useSaveConfirm } from 'hooks/use-save-confirm'
 import type { editor as Editor } from 'monaco-editor'
 import { UIStore } from 'stores/ui'
 import {
-  defineComponent,
-  onMounted,
   PropType,
   Ref,
+  defineComponent,
+  onMounted,
   ref,
   toRaw,
   watch,
 } from 'vue'
+
 import styles from '../universal/editor.module.css'
 import { editorBaseProps } from '../universal/props'
 import { useDefineMyThemes } from './use-define-theme'

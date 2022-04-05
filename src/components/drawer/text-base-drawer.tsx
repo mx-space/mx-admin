@@ -16,6 +16,7 @@ import {
 import { getDominantColor } from 'utils/image'
 import { pickImagesFromMarkdown } from 'utils/markdown'
 import { PropType } from 'vue'
+
 export const TextBaseDrawer = defineComponent({
   props: {
     show: {

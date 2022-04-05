@@ -14,7 +14,7 @@
 
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { computed, defineComponent, onMounted, PropType, ref } from 'vue'
+import { PropType, computed, defineComponent, onMounted, ref } from 'vue'
 
 export default defineComponent({
   props: {

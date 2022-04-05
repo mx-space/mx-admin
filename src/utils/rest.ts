@@ -2,11 +2,12 @@ import camelcaseKeys from 'camelcase-keys'
 import { API_URL } from 'constants/env'
 import { isPlainObject } from 'lodash-es'
 import {
-  extend,
   RequestMethod,
   RequestOptionsInit,
   RequestOptionsWithResponse,
+  extend,
 } from 'umi-request'
+
 import { router } from '../router/router'
 import { getToken } from './auth'
 

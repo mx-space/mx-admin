@@ -2,7 +2,7 @@ import { useInjector } from 'hooks/use-deps-injection'
 import { NInput, NSelect, useMessage } from 'naive-ui'
 import { SelectMixedOption } from 'naive-ui/lib/select/src/interface'
 import { CategoryStore } from 'stores/category'
-import { defineComponent, PropType, ref, watch } from 'vue'
+import { PropType, defineComponent, ref, watch } from 'vue'
 
 export const EditColumn = defineComponent({
   props: {

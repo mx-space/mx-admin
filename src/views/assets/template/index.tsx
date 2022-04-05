@@ -1,5 +1,6 @@
 import { ContentLayout } from 'layouts/content'
 import { NTabPane, NTabs } from 'naive-ui'
+
 import { EmailTab } from './tabs/email'
 import { MarkdownTab } from './tabs/markdown'
 

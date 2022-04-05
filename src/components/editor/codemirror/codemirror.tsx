@@ -1,11 +1,14 @@
-import { EditorState } from '@codemirror/state'
 import clsx from 'clsx'
 import { useSaveConfirm } from 'hooks/use-save-confirm'
-import { defineComponent, PropType } from 'vue'
+import { PropType, defineComponent } from 'vue'
+
+import { EditorState } from '@codemirror/state'
+
 import styles from '../universal/editor.module.css'
 import { editorBaseProps } from '../universal/props'
 import './codemirror.css'
 import { useCodeMirror } from './use-codemirror'
+
 export const CodemirrorEditor = defineComponent({
   props: {
     ...editorBaseProps,

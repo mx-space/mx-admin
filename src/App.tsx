@@ -1,10 +1,10 @@
 import {
-  darkTheme,
-  dateZhCN,
   NConfigProvider,
   NDialogProvider,
   NMessageProvider,
   NNotificationProvider,
+  darkTheme,
+  dateZhCN,
   useDialog,
   useMessage,
   useNotification,
@@ -14,9 +14,11 @@ import { RouteName } from 'router/name'
 import { provideStore } from 'stores'
 import { defineComponent, onMounted } from 'vue'
 import { RouterView, useRouter } from 'vue-router'
+
 import { useInjector, useProvider } from './hooks/use-deps-injection'
 import { UIStore } from './stores/ui'
 import { UserStore } from './stores/user'
+
 const Root = defineComponent({
   name: 'Home',
 

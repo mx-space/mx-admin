@@ -1,6 +1,6 @@
 import { Pager } from 'models/base'
 import qs from 'qs'
-import { reactive, ref, Ref } from 'vue'
+import { Ref, reactive, ref } from 'vue'
 import { LocationQueryValue } from 'vue-router'
 
 export type fetchDataFn = (

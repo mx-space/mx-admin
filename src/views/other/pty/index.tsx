@@ -18,7 +18,7 @@ import {
 } from 'naive-ui'
 import Io from 'socket.io-client'
 import { EventTypes } from 'socket/types'
-import { getToken, parseDate, RESTManager } from 'utils'
+import { RESTManager, getToken, parseDate } from 'utils'
 import { bus } from 'utils/event-bus'
 import { PropType } from 'vue'
 import { IDisposable, Terminal } from 'xterm'

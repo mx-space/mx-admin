@@ -8,9 +8,11 @@ import { NButton, NPopconfirm, NSpace, useDialog, useMessage } from 'naive-ui'
 import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { defineComponent, onMounted, reactive, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
+
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
+
 const ManageSayListView = defineComponent({
   name: 'SayList',
   setup(props, ctx) {

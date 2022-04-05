@@ -2,6 +2,7 @@ import { ContentLayout } from 'layouts/content'
 import { NTabPane, NTabs } from 'naive-ui'
 import { defineComponent, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+
 import { TabSecurity } from './tabs/security'
 import { TabSystem } from './tabs/system'
 import { TabUser } from './tabs/user'

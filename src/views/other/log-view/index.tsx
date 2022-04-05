@@ -1,6 +1,7 @@
 import { ContentLayout } from 'layouts/content'
 import { NTabPane, NTabs } from 'naive-ui'
 import { useRoute, useRouter } from 'vue-router'
+
 import { LogListView } from './tabs/log-list'
 import { RealtimeLogPipeline } from './tabs/realtime-log'
 

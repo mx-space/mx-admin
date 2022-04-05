@@ -1,9 +1,10 @@
-import { Icon } from '@vicons/utils'
 import { LocationIcon } from 'components/icons'
 import { Amap, Regeocode } from 'models/amap'
 import { NButton, useMessage } from 'naive-ui'
 import { RESTManager } from 'utils/rest'
-import { defineComponent, PropType, ref } from 'vue'
+import { PropType, defineComponent, ref } from 'vue'
+
+import { Icon } from '@vicons/utils'
 
 export const GetLocationButton = defineComponent({
   props: {

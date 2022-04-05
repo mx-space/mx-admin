@@ -1,4 +1,5 @@
 import { useProviders } from 'hooks/use-deps-injection'
+
 import { AppStore } from './app'
 import { CategoryStore } from './category'
 import { UIStore } from './ui'

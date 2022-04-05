@@ -1,4 +1,3 @@
-import { Icon } from '@vicons/utils'
 import { AddIcon, BookIcon, ThumbsUpIcon } from 'components/icons'
 import { TableTitleLink } from 'components/link/title-link'
 import { DeleteConfirmButton } from 'components/special-button/delete-confirm'
@@ -20,14 +19,17 @@ import {
 } from 'naive-ui/lib/data-table/src/interface'
 import { CategoryStore } from 'stores/category'
 import {
-  computed,
   ComputedRef,
+  computed,
   defineComponent,
   onMounted,
   reactive,
   watch,
 } from 'vue'
 import { useRoute } from 'vue-router'
+
+import { Icon } from '@vicons/utils'
+
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
 import { PostModel, PostResponse } from '../../models/post'

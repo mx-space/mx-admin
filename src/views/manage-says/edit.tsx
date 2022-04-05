@@ -1,6 +1,6 @@
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { CommentIcon, SendIcon } from 'components/icons'
-import { fetchHitokoto, SentenceType } from 'external/api/hitokoto'
+import { SentenceType, fetchHitokoto } from 'external/api/hitokoto'
 import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
 import { ContentLayout } from 'layouts/content'
 import { isString, transform } from 'lodash-es'
@@ -18,6 +18,7 @@ import {
   toRaw,
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+
 type SayReactiveType = {
   text: string
   source: string

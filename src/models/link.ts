@@ -1,4 +1,5 @@
 import type { LinkModel, LinkState, PaginateResult } from '@mx-space/api-client'
+
 export { LinkState, LinkType } from '@mx-space/api-client'
 export { LinkModel }
 

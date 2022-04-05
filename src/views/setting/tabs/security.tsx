@@ -1,4 +1,3 @@
-import { Icon } from '@vicons/utils'
 import { PlusIcon as Plus } from 'components/icons'
 import { RelativeTime } from 'components/time/relative-time'
 import { useInjector } from 'hooks/use-deps-injection'
@@ -21,9 +20,12 @@ import {
 } from 'naive-ui'
 import { RouteName } from 'router/name'
 import { UIStore } from 'stores/ui'
-import { parseDate, removeToken, RESTManager } from 'utils'
+import { RESTManager, parseDate, removeToken } from 'utils'
 import { defineComponent, onBeforeMount, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+
+import { Icon } from '@vicons/utils'
+
 import { autosizeableProps } from './system'
 
 export const TabSecurity = defineComponent(() => {
@@ -212,9 +214,7 @@ const ApiToken = defineComponent(() => {
                       ),
 
                       default: () => (
-                        <span class="max-w-48">
-                          确定要删除 Token "{name}"?
-                        </span>
+                        <span class="max-w-48">确定要删除 Token "{name}"?</span>
                       ),
                     }}
                   </NPopconfirm>

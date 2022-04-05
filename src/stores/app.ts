@@ -6,7 +6,6 @@
  * @FilePath: /admin-next/src/stores/ui.ts
  * Mark: Coding with Love
  */
-
 import { RESTManager } from 'utils'
 import { onMounted, ref } from 'vue'
 

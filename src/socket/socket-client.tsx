@@ -6,6 +6,7 @@ import io from 'socket.io-client'
 import { getToken } from 'utils/auth'
 import { bus } from 'utils/event-bus'
 import { BrowserNotification } from 'utils/notification'
+
 import { configs } from '../configs'
 import { EventTypes, NotificationTypes } from './types'
 

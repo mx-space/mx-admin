@@ -1,7 +1,9 @@
-import { Icon } from '@vicons/utils'
 import { NButton, NCard, NSpace, NThing } from 'naive-ui'
 import Badge from 'naive-ui/lib/badge/src/Badge'
 import { PropType, VNode } from 'vue'
+
+import { Icon } from '@vicons/utils'
+
 import { Statistic } from './statistic'
 
 export interface CardProps {

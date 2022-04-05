@@ -4,6 +4,7 @@ import { useInjector } from 'hooks/use-deps-injection'
 import { useMessage } from 'naive-ui'
 import { defineComponent, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+
 import Avatar from '../../components/avatar/index.vue'
 import ParallaxButtonVue from '../../components/button/parallax-button.vue'
 import { UserModel } from '../../models/user'
