@@ -69,7 +69,7 @@ specifiers:
   validator: 13.7.0
   vditor: 3.8.13
   vite: 2.9.1
-  vite-plugin-checker: 0.4.4
+  vite-plugin-checker: 0.4.5
   vite-plugin-windicss: 1.8.3
   vite-tsconfig-paths: 3.4.1
   vue: 3.2.31
@@ -157,7 +157,7 @@ devDependencies:
   typescript: 4.6.3
   unplugin-auto-import: 0.6.9_@vueuse+core@8.2.3+vite@2.9.1
   vite: 2.9.1
-  vite-plugin-checker: 0.4.4_vite@2.9.1
+  vite-plugin-checker: 0.4.5_vite@2.9.1
   vite-tsconfig-paths: 3.4.1_vite@2.9.1
   vue-eslint-parser: 8.3.0_eslint@8.12.0
   windicss: 3.5.1
@@ -4086,8 +4086,8 @@ packages:
     resolution: {integrity: sha512-nguyw8L6Un8eelg1vQ31vIU2ESxqid7EYmy8V+MDeMaHBqaRSkg3dTBToC1PR00D89UzS/SLkfYPnx0Wf23IQQ==}
     dev: false
 
-  /vite-plugin-checker/0.4.4_vite@2.9.1:
-    resolution: {integrity: sha512-bduh+oPybN0PIBCcAlIe8WlgG5P5WPVK0P43dB3jljsA/pR/Jp7BTXrflPdlWXxuQFdDasyOCVWpEVs1Zt+8yw==}
+  /vite-plugin-checker/0.4.5_vite@2.9.1:
+    resolution: {integrity: sha512-kCfVzfGzK4D/G6vGPpAffpg9e57AlxUFOjMTr4qEiZpqHyy4ejBNi6OD1UzKn+ZIrWryLKMhjxjQ8hkwns45xA==}
     hasBin: true
     peerDependencies:
       vite: ^2.0.0
