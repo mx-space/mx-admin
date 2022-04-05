@@ -1,8 +1,9 @@
 import { Octokit } from 'octokit'
 
-const client = new Octokit({
-  auth: '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',
-})
+const client = new Octokit({})
+if (import.meta.env.GH_TOKEN) {
+  client.auth(import.meta.env.GH_TOKEN)
+}
 
 export namespace GitHubSnippetRepo {
   export async function fetchRepo() {

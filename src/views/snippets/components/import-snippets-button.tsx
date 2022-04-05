@@ -54,6 +54,7 @@ export const ImportSnippetButton = defineComponent({
     const onSubmit = (e: Event): void => {
       e.stopPropagation()
       e.preventDefault()
+      handleProcess()
     }
 
     const [list, fetchAvailableSnippets, loading] = useFetchAvailableSnippets()
