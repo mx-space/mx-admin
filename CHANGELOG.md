@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Monaco dispose
+- Submit method
+
+### Features
+
+- Import snippets
+- Check update
+
+### Miscellaneous Tasks
+
+- Import order
+
+## [3.16.11] - 2022-04-01
+
+### Bug Fixes
+
 - Update dependency @antv/g2 to v4.1.48 (#343)
 - Update dependency @vueuse/core to v8.2.0 (#349)
 - Update dependency @antv/g2 to v4.1.49 (#348)
@@ -24,6 +40,10 @@ All notable changes to this project will be documented in this file.
 - Update dependency @types/validator to v13.7.2 (#350)
 - Update dependency unplugin-auto-import to v0.6.8 (#354)
 - Update deps
+
+### Release
+
+- V3.16.11
 
 ## [3.16.10] - 2022-03-23
 
@@ -1858,6 +1878,7 @@ All notable changes to this project will be documented in this file.
 ### Bug Fixes
 
 - Prod bug
+- Tsconfig `esModuleInterop` !!!!
 - Update dependency naive-ui to v2.12.0 (#10)
 - Update dependency vue-router to v4.0.9 (#7)
 - Sidebar layout responsive
