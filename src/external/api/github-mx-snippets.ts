@@ -1,13 +1,8 @@
-import { Octokit } from 'octokit'
-
-const client = new Octokit({})
-if (import.meta.env.GH_TOKEN) {
-  client.auth(import.meta.env.GH_TOKEN)
-}
+import { octokit } from './octokit'
 
 export namespace GitHubSnippetRepo {
   export async function fetchRepo() {
-    const repo = await client.rest.repos.get({
+    const repo = await octokit.rest.repos.get({
       owner: 'mx-space',
       repo: 'snippets',
     })
@@ -15,7 +10,7 @@ export namespace GitHubSnippetRepo {
   }
 
   export async function fetchFileTree(path = '') {
-    const tree = await client.rest.repos.getContent({
+    const tree = await octokit.rest.repos.getContent({
       owner: 'mx-space',
       repo: 'snippets',
       path,
@@ -25,7 +20,7 @@ export namespace GitHubSnippetRepo {
   }
 
   export async function searchFile(path = '') {
-    const tree = await client.rest.search.code({
+    const tree = await octokit.rest.search.code({
       q: `repo:mx-space/snippets in:path ${path}`,
       sort: 'indexed',
       order: 'desc',

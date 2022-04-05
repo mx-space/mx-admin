@@ -20,6 +20,7 @@ import {
 } from 'components/icons'
 import { IpInfoPopover } from 'components/ip-info'
 import { useShorthand } from 'components/shorthand'
+import { checkUpdateFromGitHub } from 'external/api/github-check-update'
 import { SentenceType, fetchHitokoto } from 'external/api/hitokoto'
 import { ShiJuData, getJinRiShiCiOne } from 'external/api/jinrishici'
 import { useInjector } from 'hooks/use-deps-injection'
@@ -39,6 +40,7 @@ import {
   NSpace,
   NText,
   useMessage,
+  useNotification,
 } from 'naive-ui'
 import { RouteName } from 'router/name'
 import { AppStore } from 'stores/app'
@@ -49,6 +51,7 @@ import { useRouter } from 'vue-router'
 
 import { Icon } from '@vicons/utils'
 
+import PKG from '../../../package.json'
 import { Card, CardProps } from './card'
 
 export const DashBoardView = defineComponent({
@@ -539,6 +542,42 @@ export const DashBoardView = defineComponent({
 const AppIF = defineComponent({
   setup() {
     const { app } = useInjector(AppStore)
+    const notice = useNotification()
+    const versionMap = ref({} as { admin: string; system: string })
+    onMounted(async () => {
+      if (__DEV__) {
+        return
+      }
+      const { dashboard, system } = await checkUpdateFromGitHub()
+      if (dashboard !== PKG.version) {
+        notice.info({
+          title: '[管理中台] 有新版本啦！',
+          content: `当前版本: ${PKG.version}，最新版本: ${dashboard}`,
+          closable: true,
+        })
+      }
+
+      versionMap.value = {
+        admin: dashboard,
+        system: system,
+      }
+    })
+
+    watchEffect(() => {
+      if (__DEV__) {
+        return
+      }
+      if (app.value?.version) {
+        if (versionMap.value.system !== app.value.version) {
+          notice.info({
+            title: '[系统] 有新版本啦！',
+            content: `当前版本: ${app.value.version}，最新版本: ${versionMap.value.system}`,
+            closable: true,
+          })
+        }
+      }
+    })
+
     return () => (
       <NElement tag="footer" class="mt-12">
         <NP
