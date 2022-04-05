@@ -567,7 +567,7 @@ const AppIF = defineComponent({
       if (__DEV__) {
         return
       }
-      if (app.value?.version) {
+      if (app.value?.version && versionMap.value.system) {
         if (versionMap.value.system !== app.value.version) {
           notice.info({
             title: '[系统] 有新版本啦！',
