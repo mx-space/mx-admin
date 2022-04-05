@@ -1,12 +1,12 @@
 import { useDefineMyThemes } from 'components/editor/monaco/use-define-theme'
 import { CenterSpin } from 'components/spin'
 import type { editor } from 'monaco-editor'
+import { AutoTypings, LocalStorageCache } from 'monaco-editor-auto-typings'
 import { UIStore } from 'stores/ui'
 import { Ref } from 'vue'
+
 import { useInjector } from './use-deps-injection'
 import { useSaveConfirm } from './use-save-confirm'
-import { AutoTypings, LocalStorageCache } from 'monaco-editor-auto-typings'
-import { language } from '@codemirror/language'
 
 export const usePropsValueToRef = <T extends { value: string }>(props: T) => {
   const value = ref(props.value)
@@ -76,6 +76,7 @@ export const useAsyncLoadMonaco = (
       })
     },
   )
+  let editorModel: editor.ITextModel
 
   onMounted(() => {
     import('monaco-editor').then((module) => {
@@ -91,8 +92,9 @@ export const useAsyncLoadMonaco = (
         fontSize: 14,
       }
       if (options.language === 'typescript') {
+        editorModel = module.editor.createModel(value.value, 'typescript')
         Object.assign(options, {
-          model: module.editor.createModel(value.value, 'typescript'),
+          model: editorModel,
         })
       }
 
@@ -133,6 +135,16 @@ export const useAsyncLoadMonaco = (
       })
       loaded.value = true
     })
+  })
+
+  onBeforeUnmount(() => {
+    const editor = monaco.editor
+    if (editor) {
+      if (editorModel) {
+        editorModel.dispose()
+      }
+      editor.dispose()
+    }
   })
 
   return monaco

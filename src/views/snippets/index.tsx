@@ -1,6 +1,7 @@
 import { ContentLayout } from 'layouts/content'
 import { NTabPane, NTabs } from 'naive-ui'
 import { useRoute, useRouter } from 'vue-router'
+
 import { Tab2ForEdit } from './tabs/for-edit'
 import { Tab1ForList } from './tabs/for-list'
 
@@ -28,7 +29,7 @@ export default defineComponent({
             <Tab1ForList />
           </NTabPane>
 
-          <NTabPane name={'1'} tab={'编辑'}>
+          <NTabPane name={'1'} tab={'编辑'} displayDirective={'if'}>
             <Tab2ForEdit />
           </NTabPane>
         </NTabs>
