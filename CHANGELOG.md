@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update dependency @vueuse/core to v8.2.4 (#358)
+- Update notice
+- Github api error message
+
+### Miscellaneous Tasks
+
+- Update dependency vite-plugin-checker to v0.4.5 (#363)
+- Update typescript-eslint monorepo to v5.18.0 (#353)
+- Update dependency prettier to v2.6.2 (#361)
+
+## [3.16.12] - 2022-04-05
+
+### Bug Fixes
+
 - Monaco dispose
 - Submit method
 
@@ -16,6 +30,10 @@ All notable changes to this project will be documented in this file.
 ### Miscellaneous Tasks
 
 - Import order
+
+### Release
+
+- V3.16.12
 
 ## [3.16.11] - 2022-04-01
 
