@@ -1,3 +1,4 @@
+import { merge } from 'lodash-es'
 import type { Image as ImageModel } from 'models/base'
 import {
   NButton,
@@ -84,20 +85,35 @@ const ImageDetailSection = defineComponent({
   },
   setup(props) {
     const loading = ref(false)
+
+    const originImageMap = computed(() => {
+      const map = new Map<string, ImageModel>()
+      props.images.forEach((image) => {
+        map.set(image.src, image)
+      })
+      return map
+    })
+
+    const images = computed<ImageModel[]>(() =>
+      props.text
+        ? pickImagesFromMarkdown(props.text).map((src) => {
+            const existImageInfo = originImageMap.value.get(src)
+            return {
+              src,
+              height: existImageInfo?.height,
+              width: existImageInfo?.width,
+              type: existImageInfo?.type,
+              accent: existImageInfo?.accent,
+            } as any
+          })
+        : props.images,
+    )
     const handleCorrectImage = async () => {
-      const images: ImageModel[] = props.text
-        ? pickImagesFromMarkdown(props.text).map((src) => ({
-            src: src,
-            height: 0,
-            width: 0,
-            type: '',
-          }))
-        : props.images
       loading.value = true
 
       try {
         const imagesDetail = await Promise.all(
-          images.map((item, i) => {
+          images.value.map((item, i) => {
             return new Promise<ImageModel>((resolve, reject) => {
               const $image = new Image()
               $image.src = item.src
@@ -145,7 +161,7 @@ const ImageDetailSection = defineComponent({
         </div>
 
         <NCollapse accordion class="mt-4">
-          {props.images.map((image: ImageModel, index: number) => {
+          {images.value.map((image: ImageModel, index: number) => {
             return (
               <NCollapseItem
                 key={image.src}
