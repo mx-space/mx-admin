@@ -53,6 +53,9 @@ export const FunctionCodeEditor = defineComponent({
           monaco.languages.typescript.typescriptDefaults.getCompilerOptions()
         compilerOptions.target = monaco.languages.typescript.ScriptTarget.ESNext
         compilerOptions.allowNonTsExtensions = true
+        compilerOptions.moduleResolution =
+          monaco.languages.typescript.ModuleResolutionKind.NodeJs
+        compilerOptions.esModuleInterop = true
 
         monaco.languages.typescript.typescriptDefaults.setCompilerOptions(
           compilerOptions,
