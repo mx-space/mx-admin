@@ -16,9 +16,9 @@ import {
 import { PropType, defineComponent, ref } from 'vue'
 
 import { UserModel } from '../../models/user'
+import { getToken, removeToken } from '../../utils'
 import { RESTManager } from '../../utils/rest'
 import styles from './index.module.css'
-import {getToken, removeToken} from "../../utils";
 
 const useDefaultConfigs = () => inject<IConfig>('configs')
 export default defineComponent({
@@ -32,10 +32,10 @@ export default defineComponent({
       }
     })
 
-    onMounted(() => {
-       if (getToken()) {
-           removeToken()
-       }
+    onBeforeMount(() => {
+      if (getToken()) {
+        removeToken()
+      }
     })
 
     const defaultConfigs = reactive<IConfig>({} as any)
