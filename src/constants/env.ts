@@ -6,7 +6,7 @@ export const WEB_URL: string =
 export const bgUrl =
   window.injectData.LOGIN_BG ||
   (import.meta.env.VITE_APP_LOGIN_BG as string) ||
-  'https://gitee.com/xun7788/my-imagination/raw/master/uPic/1615516941397.jpg'
+  'https://fastly.jsdelivr.net/gh/mx-space/docs-images@master/images/chichi-1.jpeg'
 
 export const API_URL = (() => {
   const url =
