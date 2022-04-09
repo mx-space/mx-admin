@@ -16,6 +16,7 @@ import {
 import { PropType, defineComponent, ref } from 'vue'
 
 import { UserModel } from '../../models/user'
+import { getToken, removeToken } from '../../utils'
 import { RESTManager } from '../../utils/rest'
 import styles from './index.module.css'
 
@@ -28,6 +29,12 @@ export default defineComponent({
       $$.src = bgUrl
       $$.onload = (e) => {
         loaded.value = true
+      }
+    })
+
+    onBeforeMount(() => {
+      if (getToken()) {
+        removeToken()
       }
     })
 
