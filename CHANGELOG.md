@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Markdown image record parse
+- Monaco resolution
+- Remove token (#369)
+- Login env bg
+- Auto save hook
+
+## [3.16.13] - 2022-04-05
+
+### Bug Fixes
+
 - Update dependency @vueuse/core to v8.2.4 (#358)
 - Update notice
 - Github api error message
@@ -14,6 +24,10 @@ All notable changes to this project will be documented in this file.
 - Update dependency vite-plugin-checker to v0.4.5 (#363)
 - Update typescript-eslint monorepo to v5.18.0 (#353)
 - Update dependency prettier to v2.6.2 (#361)
+
+### Release
+
+- V3.16.13
 
 ## [3.16.12] - 2022-04-05
 

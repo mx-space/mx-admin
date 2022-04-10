@@ -1,6 +1,6 @@
 {
   "name": "mx-admin",
-  "version": "3.16.13",
+  "version": "3.16.14",
   "bump": {
     "before": [
       "git-cliff > CHANGELOG.md"
