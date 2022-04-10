@@ -16,7 +16,7 @@ specifiers:
   '@codemirror/view': 0.19.48
   '@ddietr/codemirror-themes': 1.0.9
   '@innei-util/prettier': 0.5.0
-  '@mx-space/api-client': 0.8.2
+  '@mx-space/api-client': 0.9.1
   '@types/ejs': 3.1.0
   '@types/js-yaml': 4.0.5
   '@types/lodash-es': 4.17.6
@@ -95,7 +95,7 @@ dependencies:
   '@codemirror/theme-one-dark': 0.19.1
   '@codemirror/view': 0.19.48
   '@ddietr/codemirror-themes': 1.0.9
-  '@mx-space/api-client': 0.8.2
+  '@mx-space/api-client': 0.9.1
   '@vicons/antd': 0.12.0
   '@vicons/fa': 0.12.0
   '@vicons/fluent': 0.12.0
@@ -1179,8 +1179,8 @@ packages:
       '@lezer/lr': 0.15.8
     dev: false
 
-  /@mx-space/api-client/0.8.2:
-    resolution: {integrity: sha512-LW/WM1ocogY0CmeoPNnvGAvQ4PulX/lipTwrkmaLBsEWwYcXPBburiAf5jbxdu8qrcn/ldW3AI0oJ8uFvPHzgg==}
+  /@mx-space/api-client/0.9.1:
+    resolution: {integrity: sha512-VTEVcwA+m7EIbxMf0dzyzSxGmrrcTR0s0sBflR4srwhNzlegpZJOtPHenOX6+6r+xDFBZ2PesSh0WGMWvciXKw==}
     engines: {pnpm: '>=6'}
     dependencies:
       camelcase-keys: 7.0.2
