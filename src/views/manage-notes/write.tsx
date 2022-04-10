@@ -102,6 +102,13 @@ const NoteWriteView = defineComponent(() => {
 
   const loading = computed(() => !!(id.value && typeof data.id === 'undefined'))
 
+  const autoSaveHook = useAutoSave('note-' + (id.value || 'new'), 3000, () => ({
+    text: data.text,
+    title: data.title,
+  }))
+
+  const autoSaveInEditor = useAutoSaveInEditor(data, autoSaveHook)
+
   const disposer = watch(
     () => loading.value,
     (loading) => {
@@ -109,16 +116,7 @@ const NoteWriteView = defineComponent(() => {
         return
       }
 
-      const autoSaveHook = useAutoSave(
-        'note-' + (id.value || 'new'),
-        3000,
-        () => ({
-          text: data.text,
-          title: data.title,
-        }),
-      )
-
-      useAutoSaveInEditor(data, autoSaveHook)
+      autoSaveInEditor.enable()
       requestAnimationFrame(() => {
         disposer()
       })
@@ -197,7 +195,8 @@ const NoteWriteView = defineComponent(() => {
       message.success('发布成功')
     }
 
-    router.push({ name: RouteName.ViewNote, hash: '|publish' })
+    await router.push({ name: RouteName.ViewNote, hash: '|publish' })
+    autoSaveInEditor.clearSaved()
   }
 
   return () => (

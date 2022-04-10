@@ -21,11 +21,8 @@ export const useAutoSave = (
   getSaveData: () => Omit<SaveDto, 'savedTime'>,
 ) => {
   let timer: any
-  const { storage, reset, clear } = useStorageObject(
-    SaveDto,
-    'auto-save-' + cacheKey,
-    false,
-  )
+  const key = 'auto-save-' + cacheKey
+  const { storage, reset, clear } = useStorageObject(SaveDto, key, false)
   let memoPreviousValue = getSaveData()
   const save = () => {
     const { text, title } = getSaveData()
@@ -68,8 +65,8 @@ export const useAutoSave = (
 export const useAutoSaveInEditor = <T extends { text: string; title: string }>(
   data: T,
   hook: ReturnType<typeof useAutoSave>,
-): ReturnType<typeof useAutoSave> => {
-  const { disposer, clearSaved, getPrevSaved, reset, save, track } = hook
+) => {
+  const { disposer, clearSaved, getPrevSaved, save, track } = hook
 
   const dialog = window.dialog
 
@@ -100,8 +97,6 @@ export const useAutoSaveInEditor = <T extends { text: string; title: string }>(
       })
     }
   }
-  check()
-  track()
 
   // const initialSaved = getPrevSaved()
   onBeforeRouteLeave(() => {
@@ -112,5 +107,11 @@ export const useAutoSaveInEditor = <T extends { text: string; title: string }>(
     disposer()
   })
 
-  return hook
+  return {
+    ...hook,
+    enable() {
+      check()
+      track()
+    },
+  }
 }
