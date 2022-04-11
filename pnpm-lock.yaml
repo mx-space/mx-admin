@@ -45,7 +45,7 @@ specifiers:
   date-fns: 2.28.0
   ejs: 3.1.6
   eslint: 8.13.0
-  eslint-plugin-vue: 8.5.0
+  eslint-plugin-vue: 8.6.0
   js-cookie: 3.0.1
   js-yaml: 4.1.0
   lodash-es: 4.17.21
@@ -149,7 +149,7 @@ devDependencies:
   '@vue/compiler-sfc': 3.2.31
   cors: 2.8.5
   eslint: 8.13.0
-  eslint-plugin-vue: 8.5.0_eslint@8.13.0
+  eslint-plugin-vue: 8.6.0_eslint@8.13.0
   postcss: 8.4.12
   postcss-nested: 5.0.6_postcss@8.4.12
   prettier: 2.6.2
@@ -2631,8 +2631,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /eslint-plugin-vue/8.5.0_eslint@8.13.0:
-    resolution: {integrity: sha512-i1uHCTAKOoEj12RDvdtONWrGzjFm/djkzqfhmQ0d6M/W8KM81mhswd/z+iTZ0jCpdUedW3YRgcVfQ37/J4zoYQ==}
+  /eslint-plugin-vue/8.6.0_eslint@8.13.0:
+    resolution: {integrity: sha512-abXiF2J18n/7ZPy9foSlJyouKf54IqpKlNvNmzhM93N0zs3QUxZG/oBd3tVPOJTKg7SlhBUtPxugpqzNbgGpQQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: ^6.2.0 || ^7.0.0 || ^8.0.0
