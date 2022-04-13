@@ -49,7 +49,7 @@ specifiers:
   js-cookie: 3.0.1
   js-yaml: 4.1.0
   lodash-es: 4.17.21
-  marked: 4.0.13
+  marked: 4.0.14
   monaco-editor: 0.33.0
   monaco-editor-auto-typings: 0.3.2
   naive-ui: 2.28.0
@@ -114,7 +114,7 @@ dependencies:
   js-cookie: 3.0.1
   js-yaml: 4.1.0
   lodash-es: 4.17.21
-  marked: 4.0.13
+  marked: 4.0.14
   monaco-editor: 0.33.0
   monaco-editor-auto-typings: 0.3.2
   naive-ui: 2.28.0_vue@3.2.31
@@ -3250,8 +3250,8 @@ packages:
     engines: {node: '>=8'}
     dev: false
 
-  /marked/4.0.13:
-    resolution: {integrity: sha512-lS/ZCa4X0gsRcfWs1eoh6dLnHr9kVH3K1t2X4M/tTtNouhZ7anS1Csb6464VGLQHv8b2Tw1cLeZQs58Jav8Rzw==}
+  /marked/4.0.14:
+    resolution: {integrity: sha512-HL5sSPE/LP6U9qKgngIIPTthuxC0jrfxpYMZ3LdGDD3vTnLs59m2Z7r6+LNDR3ToqEQdkKd6YaaEfJhodJmijQ==}
     engines: {node: '>= 12'}
     hasBin: true
     dev: false
