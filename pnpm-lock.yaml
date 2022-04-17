@@ -1,7 +1,7 @@
 lockfileVersion: 5.3
 
 specifiers:
-  '@antv/g2': 4.1.49
+  '@antv/g2': 4.1.50
   '@bytebase/vue-kbar': 0.1.7
   '@codemirror/commands': 0.19.8
   '@codemirror/gutter': 0.19.9
@@ -81,7 +81,7 @@ specifiers:
   xterm-theme: 1.1.0
 
 dependencies:
-  '@antv/g2': 4.1.49
+  '@antv/g2': 4.1.50
   '@bytebase/vue-kbar': 0.1.7_vue@3.2.32
   '@codemirror/commands': 0.19.8
   '@codemirror/gutter': 0.19.9
@@ -196,8 +196,8 @@ packages:
       tslib: 2.3.1
     dev: false
 
-  /@antv/component/0.8.26:
-    resolution: {integrity: sha512-PygBrpJ8ol8/9a31LHqAlyMq+4ykg+j0cVTjCDq9oKf1PVUy4ARpUgRjFGoP83TgoWP93Qw6zNdELExidS7nhg==}
+  /@antv/component/0.8.27:
+    resolution: {integrity: sha512-FY9fgUBjEuWxQ4w7VbcMSwFr7pqnRf1/F1ja1weoEpNndKBlStNYWhXTx4p5uMJVLvMpXoFPqan7RzyP8rel6Q==}
     dependencies:
       '@antv/color-util': 2.0.6
       '@antv/dom-util': 2.0.4
@@ -273,13 +273,13 @@ packages:
       tslib: 2.3.1
     dev: false
 
-  /@antv/g2/4.1.49:
-    resolution: {integrity: sha512-z/wJdPehYjRzm5kMj4fHQZIqVloikATX/4vf8hcLJ3W1wnQVx0qivwWuNLPVxnbbe1PnUbfmovCCFUDUNJlvcw==}
+  /@antv/g2/4.1.50:
+    resolution: {integrity: sha512-GvbmQSY86A5mNPUjFNSrg1Rz6FXv5U5bsmLYvpUGhq5QfVPVX4ikdYxlWZhj5PxRVjGRXOj4sznsNTJcj2XD3A==}
     dependencies:
       '@antv/adjust': 0.2.5
       '@antv/attr': 0.3.3
       '@antv/color-util': 2.0.6
-      '@antv/component': 0.8.26
+      '@antv/component': 0.8.27
       '@antv/coord': 0.3.1
       '@antv/dom-util': 2.0.4
       '@antv/event-emitter': 0.1.3
