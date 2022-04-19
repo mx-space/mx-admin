@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Features
+
+- Setup api
+
+## [3.16.16] - 2022-04-19
+
 ### Bug Fixes
 
 - Update dependency @mx-space/api-client to v0.9.1 (#366)
@@ -30,6 +36,7 @@ All notable changes to this project will be documented in this file.
 ### Release
 
 - V3.16.15
+- V3.16.16
 
 ## [3.16.14] - 2022-04-10
 
