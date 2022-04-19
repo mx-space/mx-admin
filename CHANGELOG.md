@@ -3,9 +3,19 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Miscellaneous Tasks
+
+- Remove env
+
+## [3.16.17] - 2022-04-19
+
 ### Features
 
 - Setup api
+
+### Release
+
+- V3.16.17
 
 ## [3.16.16] - 2022-04-19
 
