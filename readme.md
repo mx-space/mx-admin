@@ -3,6 +3,8 @@
 
 嘿，这是一个为 MX Space Server 打造的后台管理。使用 Vue 3 + Naive UI 编写。添加了许多有趣的小玩意。一起来玩吗？
 
+嘿！现在可以使用共用面板了，立即前往：<https://mx.shizuri.net>
+
 ```
 git clone --single-branch -b master https://github.com/mx-space/mx-admin.git
 ```
