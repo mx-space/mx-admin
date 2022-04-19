@@ -5,7 +5,17 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Remove hash
+
+## [3.16.19-alpha.0] - 2022-04-19
+
+### Bug Fixes
+
 - Guard loop
+
+### Release
+
+- V3.16.19-alpha.0
 
 ## [3.16.18] - 2022-04-19
 
