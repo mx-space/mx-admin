@@ -5,11 +5,38 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update dependency @mx-space/api-client to v0.9.1 (#366)
+- Update dependency marked to v4.0.13 (#367)
+- Update dependency monaco-editor-auto-typings to v0.3.2 (#370)
+- Update dependency naive-ui to v2.28.0 (#373)
+- Update dependency @vueuse/core to v8.2.5 (#365)
+- Update dependency vite-plugin-windicss to v1.8.4 (#379)
+- Update dependency marked to v4.0.14 (#374)
+- Update dependency @mx-space/api-client to v0.9.2 (#376)
+
+### Miscellaneous Tasks
+
+- Update dependency unplugin-auto-import to v0.7.0 (#372)
+- Update dependency eslint to v8.13.0
+- Update dependency eslint-plugin-vue to v8.6.0 (#364)
+- Update dependency @innei-util/prettier to v0.8.2 (#378)
+- Update typescript-eslint monorepo to v5.19.0 (#375)
+- Update vue monorepo to v3.2.32 (#377)
+- Update dependency unplugin-auto-import to v0.7.1 (#380)
+
+## [3.16.14] - 2022-04-10
+
+### Bug Fixes
+
 - Markdown image record parse
 - Monaco resolution
 - Remove token (#369)
 - Login env bg
 - Auto save hook
+
+### Release
+
+- V3.16.14
 
 ## [3.16.13] - 2022-04-05
 
