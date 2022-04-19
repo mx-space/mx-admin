@@ -22,7 +22,7 @@ export default defineComponent({
       const url = new URL(location.href)
       const { apiUrl, gatewayUrl, persist } = apiRecord
       apiUrl && url.searchParams.set('__api', apiUrl)
-      gatewayUrl && url.searchParams.set('____gateway', gatewayUrl)
+      gatewayUrl && url.searchParams.set('__gateway', gatewayUrl)
 
       if (persist) {
         apiUrl && localStorage.setItem('__api', apiUrl)
@@ -31,6 +31,9 @@ export default defineComponent({
 
       url.pathname = '/'
 
+      if (!__DEV__) {
+        url.hash = ''
+      }
       location.href = url.toString()
     }
     const handleReset = () => {
