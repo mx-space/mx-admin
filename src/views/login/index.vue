@@ -1,5 +1,4 @@
 <script lang="ts">
-import { bgUrl } from 'constants/env'
 import { useInjector } from 'hooks/use-deps-injection'
 import { useMessage } from 'naive-ui'
 import { defineComponent, onMounted, onUnmounted, ref } from 'vue'
@@ -14,7 +13,6 @@ import { RESTManager } from '../../utils/rest'
 export const LoginView = defineComponent({
   components: { Avatar, ParallaxButtonVue },
   setup() {
-    const loaded = ref(false)
     const { user, updateToken } = useInjector(UserStore)
     const router = useRouter()
     const input = ref<HTMLInputElement>(null!)
@@ -28,11 +26,6 @@ export const LoginView = defineComponent({
       }
     })
     onMounted(() => {
-      const $$ = new Image()
-      $$.src = bgUrl
-      $$.onload = (e) => {
-        loaded.value = true
-      }
       input.value.focus()
 
       document.onkeydown = (e) => {
@@ -77,9 +70,6 @@ export const LoginView = defineComponent({
     }
 
     return {
-      // bgUrl: loaded.value ? bgUrl : '',
-      bgUrl,
-      loaded,
       user,
       password,
       handleLogin,
@@ -92,28 +82,21 @@ export default LoginView
 </script>
 
 <template>
-  <div>
-    <div
-      class="bg"
-      :style="{ backgroundImage: `url(${bgUrl})`, opacity: loaded ? 1 : 0.4 }"
-    />
-
-    <div class="wrapper">
-      <Avatar :src="user?.avatar" :size="80" />
-      <form action="#" @submit.prevent="handleLogin">
-        <div class="input-wrap">
-          <input ref="input" v-model="password" type="password" autofocus />
-        </div>
-        <ParallaxButtonVue
-          title="登陆"
-          class="p-button-raised p-button-rounded"
-          @click.prevent.stop="handleLogin"
-        />
-      </form>
-    </div>
+  <div class="wrapper">
+    <Avatar :src="user?.avatar" :size="80" />
+    <form action="#" @submit.prevent="handleLogin">
+      <div class="input-wrap">
+        <input ref="input" v-model="password" type="password" autofocus />
+      </div>
+      <ParallaxButtonVue
+        title="登陆"
+        class="p-button-raised p-button-rounded"
+        @click.prevent.stop="handleLogin"
+      />
+    </form>
   </div>
 </template>
 
-<style scoped="">
+<style scoped>
 @import './index.css';
 </style>

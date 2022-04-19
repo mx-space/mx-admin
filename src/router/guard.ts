@@ -1,3 +1,4 @@
+import { API_URL, GATEWAY_URL } from 'constants/env'
 import QProgress from 'qier-progress'
 
 import { configs } from '../configs'
@@ -8,6 +9,10 @@ export const progress = new QProgress({ colorful: false, color: '#1a9cf3' })
 const title = configs.title
 
 router.beforeEach(async (to) => {
+  if (!API_URL || !GATEWAY_URL) {
+    return '/setup-api'
+  }
+
   progress.start()
   // guard for setup route
 

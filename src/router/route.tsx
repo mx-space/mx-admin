@@ -31,6 +31,7 @@ import { SidebarLayout } from 'layouts/sidebar'
 import { DashBoardView } from 'views/dashboard'
 import { RouteRecordRaw } from 'vue-router'
 
+import SetupLayout from '../layouts/setup-view.vue'
 import LoginView from '../views/login/index.vue'
 import { RouteName } from './name'
 
@@ -366,18 +367,32 @@ export const routes: RouteRecordRaw[] = [
   },
 
   {
-    path: '/login',
-    name: RouteName.Login,
-    meta: { isPublic: true, title: '登陆' },
-    component: LoginView,
+    path: '/',
+    component: SetupLayout,
+
+    children: [
+      {
+        path: '/login',
+        name: RouteName.Login,
+        meta: { isPublic: true, title: '登陆' },
+        component: LoginView,
+      },
+
+      {
+        path: '/setup',
+        name: RouteName.Setup,
+        meta: { isPublic: true, title: '初始化' },
+        component: () => import('../views/setup/index'),
+      },
+
+      {
+        path: '/setup-api',
+        meta: { isPublic: true, title: '设置接口地址' },
+        component: () => import('../views/setup-api'),
+      },
+    ],
   },
 
-  {
-    path: '/setup',
-    name: RouteName.Setup,
-    meta: { isPublic: true, title: '初始化' },
-    component: () => import('../views/setup/index'),
-  },
   // for dev
   {
     path: '/dev',

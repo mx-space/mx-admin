@@ -1,4 +1,3 @@
-import { bgUrl } from 'constants/env'
 import { IConfig, UrlDto } from 'models/setting'
 import {
   NButton,
@@ -23,15 +22,6 @@ import styles from './index.module.css'
 const useDefaultConfigs = () => inject<IConfig>('configs')
 export default defineComponent({
   setup() {
-    const loaded = ref(false)
-    onMounted(() => {
-      const $$ = new Image()
-      $$.src = bgUrl
-      $$.onload = (e) => {
-        loaded.value = true
-      }
-    })
-
     onBeforeMount(() => {
       if (getToken()) {
         removeToken()
@@ -49,9 +39,6 @@ export default defineComponent({
 
     return () => (
       <div class={styles.full}>
-        {loaded.value && (
-          <div class="bg-image" style={`--bg: url(${bgUrl})`}></div>
-        )}
         <NCard title="初始化" class="modal-card sm m-auto form-card">
           <NSteps size="small" current={step.value}>
             <NStep
