@@ -287,6 +287,7 @@ const EditCategoryDialog = defineComponent<{
           >
             <NForm
               onSubmit={onSubmit}
+              model={state}
               rules={{
                 name: {
                   required: true,
