@@ -3,9 +3,19 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Bug Fixes
+
+- Guard loop
+
+## [3.16.18] - 2022-04-19
+
 ### Miscellaneous Tasks
 
 - Remove env
+
+### Release
+
+- V3.16.18
 
 ## [3.16.17] - 2022-04-19
 
