@@ -13,6 +13,8 @@ All notable changes to this project will be documented in this file.
 - Update dependency vite-plugin-windicss to v1.8.4 (#379)
 - Update dependency marked to v4.0.14 (#374)
 - Update dependency @mx-space/api-client to v0.9.2 (#376)
+- Update dependency @antv/g2 to v4.1.50 (#381)
+- Category form (#389)
 
 ### Miscellaneous Tasks
 
@@ -23,6 +25,11 @@ All notable changes to this project will be documented in this file.
 - Update typescript-eslint monorepo to v5.19.0 (#375)
 - Update vue monorepo to v3.2.32 (#377)
 - Update dependency unplugin-auto-import to v0.7.1 (#380)
+- Update dependency vite to v2.9.5 (#383)
+
+### Release
+
+- V3.16.15
 
 ## [3.16.14] - 2022-04-10
 
