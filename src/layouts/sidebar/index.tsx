@@ -37,15 +37,17 @@ export const SidebarLayout = defineComponent({
           default() {
             return (
               <div class={styles['root']}>
-                <div
-                  class="h-[40px] fixed top-0 left-0 right-0 bg-gray-600 z-2 text-gray-400 flex items-center transition-all duration-300 whitespace-pre"
-                  style={{
-                    paddingLeft: !collapse.value ? '270px' : '120px',
-                  }}
-                >
-                  Current in Api debug mode, please see:{' '}
-                  <RouterLink to={'/setup-api'}>setup-api</RouterLink>.
-                </div>
+                {isInApiDebugMode && (
+                  <div
+                    class="h-[40px] fixed top-0 left-0 right-0 bg-gray-600 z-2 text-gray-400 flex items-center transition-all duration-300 whitespace-pre"
+                    style={{
+                      paddingLeft: !collapse.value ? '270px' : '120px',
+                    }}
+                  >
+                    Current in Api debug mode, please see:{' '}
+                    <RouterLink to={'/setup-api'}>setup-api</RouterLink>.
+                  </div>
+                )}
                 <Sidebar
                   collapse={collapse.value}
                   width={sidebarWidth.value}
