@@ -5,7 +5,27 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update dependency @vueuse/core to v8.3.0 (#386)
+- Update dependency naive-ui to v2.28.1 (#390)
+- Update dependency ejs to v3.1.7 (#391)
+- Remove banner if not in debug mode
+
+### Miscellaneous Tasks
+
+- Update readme
+- Update typescript-eslint monorepo to v5.20.0 (#387)
+- Update dependency vite-plugin-checker to v0.4.6 (#384)
+- Update dependency @vitejs/plugin-vue-jsx to v1.3.10 (#382)
+
+## [3.16.19-alpha.1] - 2022-04-19
+
+### Bug Fixes
+
 - Remove hash
+
+### Release
+
+- V3.16.19-alpha.1
 
 ## [3.16.19-alpha.0] - 2022-04-19
 
