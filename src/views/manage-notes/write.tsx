@@ -27,6 +27,7 @@ import {
   useMessage,
 } from 'naive-ui'
 import { RouteName } from 'router/name'
+import { WriteBaseType } from 'shared/types/base'
 import { RESTManager } from 'utils/rest'
 import { getDayOfYear } from 'utils/time'
 import {
@@ -44,8 +45,6 @@ import { useRoute, useRouter } from 'vue-router'
 import { Icon } from '@vicons/utils'
 
 type NoteReactiveType = {
-  title: string
-  text: string
   hide: boolean
   mood: string
   weather: string
@@ -55,11 +54,7 @@ type NoteReactiveType = {
   music: NoteMusicRecord[]
   location: null | string
   coordinates: null | Coordinate
-  allowComment: boolean
-
-  id?: string
-  images: []
-}
+} & WriteBaseType
 
 const NoteWriteView = defineComponent(() => {
   const route = useRoute()
@@ -93,6 +88,7 @@ const NoteWriteView = defineComponent(() => {
 
     id: undefined,
     images: [],
+    meta: undefined,
   })
 
   const parsePayloadIntoReactiveData = (payload: NoteModel) =>

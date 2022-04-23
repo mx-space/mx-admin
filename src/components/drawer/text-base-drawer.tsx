@@ -1,4 +1,5 @@
-import { merge } from 'lodash-es'
+import { JSONHighlight } from 'components/json-highlight'
+import { useAsyncLoadMonaco } from 'hooks/use-async-monaco'
 import type { Image as ImageModel } from 'models/base'
 import {
   NButton,
@@ -6,13 +7,16 @@ import {
   NCollapse,
   NCollapseItem,
   NColorPicker,
+  NDivider,
   NDrawer,
   NDrawerContent,
   NForm,
   NFormItem,
   NInput,
   NInputNumber,
+  NModal,
   NSwitch,
+  useDialog,
 } from 'naive-ui'
 import { getDominantColor } from 'utils/image'
 import { pickImagesFromMarkdown } from 'utils/markdown'
@@ -34,6 +38,12 @@ export const TextBaseDrawer = defineComponent({
     },
   },
   setup(props, { slots }) {
+    const modal = useDialog()
+
+    const showJSONEditorModal = ref(false)
+    const handleEdit = () => {
+      showJSONEditorModal.value = true
+    }
     return () => (
       <NDrawer
         show={props.show}
@@ -51,6 +61,9 @@ export const TextBaseDrawer = defineComponent({
                 onUpdateValue={(e) => void (props.data.allowComment = e)}
               />
             </NFormItem>
+
+            <NDivider />
+
             <NFormItem label="图片设定"></NFormItem>
             <NFormItem>
               <ImageDetailSection
@@ -61,10 +74,110 @@ export const TextBaseDrawer = defineComponent({
                 }}
               />
             </NFormItem>
+            <NDivider />
+            <NFormItem label="附加字段" labelPlacement="left">
+              <div class="flex-grow text-right">
+                <NButton onClick={handleEdit} round>
+                  编辑
+                </NButton>
+              </div>
+            </NFormItem>
+
+            {props.data.meta && (
+              <NCollapse accordion>
+                <NCollapseItem title="预览">
+                  <JSONHighlight
+                    class="max-w-full overflow-auto"
+                    code={JSON.stringify(props.data.meta, null, 2)}
+                  />
+                </NCollapseItem>
+              </NCollapse>
+            )}
           </NForm>
         </NDrawerContent>
+
+        <NModal
+          show={showJSONEditorModal.value}
+          zIndex={2222}
+          preset="card"
+          closable
+          closeOnEsc={false}
+          title="编辑附加字段"
+          onClose={() => {
+            showJSONEditorModal.value = false
+          }}
+          class="w-[unset]"
+        >
+          <JSONEditor
+            value={
+              props.data.meta ? JSON.stringify(props.data.meta, null, 2) : ''
+            }
+            onFinish={(jsonString) => {
+              try {
+                const parsed = JSON.parse(jsonString)
+
+                console.log(parsed)
+
+                props.data.meta = parsed
+
+                showJSONEditorModal.value = false
+              } catch (er: any) {
+                message.error(er.message)
+              }
+            }}
+          />
+        </NModal>
       </NDrawer>
     )
+  },
+})
+
+const JSONEditorProps = {
+  value: {
+    type: String,
+    required: true,
+  },
+
+  onFinish: {
+    type: Function as PropType<(s: string) => void>,
+    required: true,
+  },
+} as const
+const JSONEditor = defineComponent({
+  props: JSONEditorProps,
+
+  setup(props) {
+    const htmlRef = ref<HTMLElement>()
+    const refValue = ref(props.value)
+    const editor = useAsyncLoadMonaco(
+      htmlRef,
+      refValue,
+      (val) => {
+        refValue.value = val
+      },
+      {
+        language: 'json',
+      },
+    )
+    const handleFinish = () => {
+      props.onFinish(refValue.value)
+    }
+    return () => {
+      const { Snip } = editor
+      return (
+        <div class="max-w-[60vw] w-[600px] max-h-[70vh] h-[500px] flex flex-col gap-2">
+          <div ref={htmlRef} class="flex-shrink-0 flex-grow">
+            <Snip />
+          </div>
+
+          <div class="text-right flex-shrink-0">
+            <NButton round type="primary" onClick={handleFinish}>
+              提交
+            </NButton>
+          </div>
+        </div>
+      )
+    }
   },
 })
 
@@ -146,7 +259,7 @@ const ImageDetailSection = defineComponent({
 
     return () => (
       <div class="relative w-full flex flex-col flex-grow">
-        <div class="flex justify-between space-x-2 items-center pr-4">
+        <div class="flex justify-between space-x-2 items-center">
           <div class="flex-grow flex-shrink inline-block">
             调整 Markdown 中包含的图片信息
           </div>

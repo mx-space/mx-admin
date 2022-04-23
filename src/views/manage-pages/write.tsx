@@ -13,22 +13,17 @@ import { Image } from 'models/base'
 import { PageModel } from 'models/page'
 import { NFormItem, NInputNumber, useMessage } from 'naive-ui'
 import { RouteName } from 'router/name'
+import { WriteBaseType } from 'shared/types/base'
 import { RESTManager } from 'utils/rest'
 import { computed, defineComponent, onMounted, reactive, ref, toRaw } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import { Icon } from '@vicons/utils'
 
-type PageReactiveType = {
-  title: string
-  text: string
+type PageReactiveType = WriteBaseType & {
   subtitle: string
   slug: string
   order: number
-  allowComment: boolean
-
-  id?: string
-  images: Image[]
 }
 
 const PageWriteView = defineComponent(() => {
@@ -44,6 +39,7 @@ const PageWriteView = defineComponent(() => {
 
     id: undefined,
     images: [],
+    meta: undefined,
   })
 
   const parsePayloadIntoReactiveData = (payload: PageModel) =>

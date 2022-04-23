@@ -12,7 +12,7 @@ import styles from './index.module.css'
 export const SidebarLayout = defineComponent({
   name: 'SidebarLayout',
 
-  setup(props) {
+  setup() {
     const ui = useInjector(UIStore)
 
     const isInApiDebugMode =

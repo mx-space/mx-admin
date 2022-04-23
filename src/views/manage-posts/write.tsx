@@ -22,6 +22,7 @@ import {
 } from 'naive-ui'
 import type { SelectMixedOption } from 'naive-ui/lib/select/src/interface'
 import { RouteName } from 'router/name'
+import { WriteBaseType } from 'shared/types/base'
 import { CategoryStore } from 'stores/category'
 import { RESTManager } from 'utils/rest'
 import { computed, defineComponent, onMounted, reactive, ref, toRaw } from 'vue'
@@ -29,18 +30,12 @@ import { useRoute, useRouter } from 'vue-router'
 
 import { Icon } from '@vicons/utils'
 
-type PostReactiveType = {
-  title: string
-  text: string
+type PostReactiveType = WriteBaseType & {
   slug: string
   categoryId: string
   copyright: boolean
   tags: string[]
   summary: string
-  allowComment: boolean
-
-  images: Image[]
-  id?: string
 }
 
 const PostWriteView = defineComponent(() => {
@@ -64,6 +59,7 @@ const PostWriteView = defineComponent(() => {
     allowComment: true,
     id: undefined,
     images: [],
+    meta: undefined,
   })
 
   const parsePayloadIntoReactiveData = (payload: PostModel) => {
