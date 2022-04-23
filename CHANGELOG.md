@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Features
+
+- Meta editor
+
+## [3.16.19-alpha.2] - 2022-04-22
+
 ### Bug Fixes
 
 - Update dependency @vueuse/core to v8.3.0 (#386)
@@ -16,6 +22,10 @@ All notable changes to this project will be documented in this file.
 - Update typescript-eslint monorepo to v5.20.0 (#387)
 - Update dependency vite-plugin-checker to v0.4.6 (#384)
 - Update dependency @vitejs/plugin-vue-jsx to v1.3.10 (#382)
+
+### Release
+
+- V3.16.19-alpha.2
 
 ## [3.16.19-alpha.1] - 2022-04-19
 
