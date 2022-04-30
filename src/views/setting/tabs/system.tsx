@@ -268,6 +268,19 @@ export const TabSystem = defineComponent(() => {
           </NForm>
         </NCollapseItem>
 
+        <NCollapseItem title="文本设置" name="text">
+          <NForm {...formProps}>
+            <NFormItem label="文本宏替换">
+              <NSwitch
+                value={configs.value.textOptions.macros}
+                onUpdateValue={(e) =>
+                  void (configs.value.textOptions.macros = e)
+                }
+              ></NSwitch>
+            </NFormItem>
+          </NForm>
+        </NCollapseItem>
+
         <NCollapseItem title="评论设置" name="comment">
           <NForm {...formProps}>
             <NFormItem label="反垃圾评论">
@@ -608,6 +621,9 @@ function mergeFullConfigs(configs: any): IConfig {
         script: '',
       },
       friendLinkOptions: { allowApply: true },
+      textOptions: {
+        macros: false,
+      },
     },
     configs,
   )

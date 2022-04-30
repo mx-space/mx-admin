@@ -59,6 +59,10 @@ export declare class FriendLinkOptionsDto {
   allowApply: boolean
 }
 
+export declare class TextOptionsDto {
+  macros: boolean;
+}
+
 export declare abstract class IConfig {
   seo: SeoDto
   url: UrlDto
@@ -70,4 +74,5 @@ export declare abstract class IConfig {
   algoliaSearchOptions: AlgoliaSearchOptionsDto
   adminExtra: AdminExtraDto
   terminalOptions: TerminalOptionsDto
+  textOptions: TextOptionsDto;
 }
