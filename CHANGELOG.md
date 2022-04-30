@@ -5,7 +5,17 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 
+- Add text macro option
+
+## [3.16.19-alpha.3] - 2022-04-23
+
+### Features
+
 - Meta editor
+
+### Release
+
+- V3.16.19-alpha.3
 
 ## [3.16.19-alpha.2] - 2022-04-22
 
