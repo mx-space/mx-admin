@@ -273,18 +273,18 @@ const PostWriteView = defineComponent(() => {
 
         <NFormItem label="概要">
           <NInput
+            type="textarea"
+            autosize={{
+              minRows: 2,
+              maxRows: 4,
+            }}
             placeholder="文章概要"
             value={data.summary}
             onInput={(e) => void (data.summary = e)}
           />
         </NFormItem>
 
-        <NFormItem
-          label="版权注明"
-          labelWidth={100}
-          labelAlign="right"
-          labelPlacement="left"
-        >
+        <NFormItem label="版权注明" labelAlign="right" labelPlacement="left">
           <NSwitch
             value={data.copyright}
             onUpdateValue={(e) => void (data.copyright = e)}

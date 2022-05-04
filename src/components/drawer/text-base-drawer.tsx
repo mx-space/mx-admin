@@ -1,26 +1,23 @@
 import { JSONHighlight } from 'components/json-highlight'
-import { useAsyncLoadMonaco } from 'hooks/use-async-monaco'
-import type { Image as ImageModel } from 'models/base'
+import { isObject, isUndefined } from 'lodash-es'
 import {
   NButton,
-  NButtonGroup,
   NCollapse,
   NCollapseItem,
-  NColorPicker,
   NDivider,
   NDrawer,
   NDrawerContent,
+  NDynamicInput,
   NForm,
   NFormItem,
-  NInput,
-  NInputNumber,
   NModal,
   NSwitch,
-  useDialog,
 } from 'naive-ui'
-import { getDominantColor } from 'utils/image'
-import { pickImagesFromMarkdown } from 'utils/markdown'
+import { JSONParseReturnOriginal } from 'utils/json'
 import { PropType } from 'vue'
+
+import { ImageDetailSection } from './components/image-detail-section'
+import { JSONEditor } from './components/json-editor'
 
 export const TextBaseDrawer = defineComponent({
   props: {
@@ -36,14 +33,54 @@ export const TextBaseDrawer = defineComponent({
       type: Object as PropType<any>,
       required: true,
     },
+
+    labelWidth: {
+      type: Number,
+      required: false,
+    },
   },
   setup(props, { slots }) {
-    const modal = useDialog()
-
     const showJSONEditorModal = ref(false)
     const handleEdit = () => {
       showJSONEditorModal.value = true
     }
+
+    const keyValuePairs = ref([] as { key: string; value: string }[])
+
+    let inUpdatedKeyValue = false
+
+    watch(
+      () => keyValuePairs.value,
+      () => {
+        inUpdatedKeyValue = true
+        props.data.meta = keyValuePairs.value.reduce((acc, { key, value }) => {
+          return isUndefined(value) || value === ''
+            ? acc
+            : { ...acc, [key]: JSONParseReturnOriginal(value) }
+        }, {})
+      },
+    )
+
+    watchEffect(() => {
+      if (inUpdatedKeyValue) {
+        inUpdatedKeyValue = false
+        return
+      }
+      if (props.data.meta && isObject(props.data.meta)) {
+        keyValuePairs.value = Object.entries(props.data.meta).reduce(
+          (acc, [key, value]): any => {
+            return [
+              ...acc,
+              {
+                key,
+                value: JSON.stringify(value),
+              },
+            ]
+          },
+          [],
+        )
+      }
+    })
     return () => (
       <NDrawer
         show={props.show}
@@ -53,7 +90,11 @@ export const TextBaseDrawer = defineComponent({
         onUpdateShow={props.onUpdateShow}
       >
         <NDrawerContent title="文章设定">
-          <NForm labelAlign="right" labelPlacement="left" labelWidth={100}>
+          <NForm
+            labelAlign="right"
+            labelPlacement="left"
+            labelWidth={props.labelWidth ?? 120}
+          >
             {slots.default?.()}
             <NFormItem label="允许评论">
               <NSwitch
@@ -64,7 +105,7 @@ export const TextBaseDrawer = defineComponent({
 
             <NDivider />
 
-            <NFormItem label="图片设定"></NFormItem>
+            <NFormItem label="图片设定" labelAlign="left"></NFormItem>
             <NFormItem>
               <ImageDetailSection
                 text={props.data.text}
@@ -75,16 +116,25 @@ export const TextBaseDrawer = defineComponent({
               />
             </NFormItem>
             <NDivider />
-            <NFormItem label="附加字段" labelPlacement="left">
+            <NFormItem label="附加字段" labelAlign="left">
               <div class="flex-grow text-right">
                 <NButton onClick={handleEdit} round>
                   编辑
                 </NButton>
               </div>
             </NFormItem>
+            <NDynamicInput
+              preset="pair"
+              value={keyValuePairs.value}
+              keyPlaceholder="附加字段名"
+              valuePlaceholder="附加字段值"
+              onUpdateValue={(value: any[]) => {
+                keyValuePairs.value = value
+              }}
+            ></NDynamicInput>
 
             {props.data.meta && (
-              <NCollapse accordion>
+              <NCollapse accordion class="mt-4">
                 <NCollapseItem title="预览">
                   <JSONHighlight
                     class="max-w-full overflow-auto"
@@ -128,242 +178,6 @@ export const TextBaseDrawer = defineComponent({
           />
         </NModal>
       </NDrawer>
-    )
-  },
-})
-
-const JSONEditorProps = {
-  value: {
-    type: String,
-    required: true,
-  },
-
-  onFinish: {
-    type: Function as PropType<(s: string) => void>,
-    required: true,
-  },
-} as const
-const JSONEditor = defineComponent({
-  props: JSONEditorProps,
-
-  setup(props) {
-    const htmlRef = ref<HTMLElement>()
-    const refValue = ref(props.value)
-    const editor = useAsyncLoadMonaco(
-      htmlRef,
-      refValue,
-      (val) => {
-        refValue.value = val
-      },
-      {
-        language: 'json',
-      },
-    )
-    const handleFinish = () => {
-      props.onFinish(refValue.value)
-    }
-    return () => {
-      const { Snip } = editor
-      return (
-        <div class="max-w-[60vw] w-[600px] max-h-[70vh] h-[500px] flex flex-col gap-2">
-          <div ref={htmlRef} class="flex-shrink-0 flex-grow">
-            <Snip />
-          </div>
-
-          <div class="text-right flex-shrink-0">
-            <NButton round type="primary" onClick={handleFinish}>
-              提交
-            </NButton>
-          </div>
-        </div>
-      )
-    }
-  },
-})
-
-const ImageDetailSection = defineComponent({
-  props: {
-    images: {
-      type: Array as PropType<ImageModel[]>,
-      required: true,
-    },
-    onChange: {
-      type: Function as PropType<(images: ImageModel[]) => void>,
-      required: true,
-    },
-    text: {
-      type: String,
-      required: true,
-    },
-  },
-  setup(props) {
-    const loading = ref(false)
-
-    const originImageMap = computed(() => {
-      const map = new Map<string, ImageModel>()
-      props.images.forEach((image) => {
-        map.set(image.src, image)
-      })
-      return map
-    })
-
-    const images = computed<ImageModel[]>(() =>
-      props.text
-        ? pickImagesFromMarkdown(props.text).map((src) => {
-            const existImageInfo = originImageMap.value.get(src)
-            return {
-              src,
-              height: existImageInfo?.height,
-              width: existImageInfo?.width,
-              type: existImageInfo?.type,
-              accent: existImageInfo?.accent,
-            } as any
-          })
-        : props.images,
-    )
-    const handleCorrectImage = async () => {
-      loading.value = true
-
-      try {
-        const imagesDetail = await Promise.all(
-          images.value.map((item, i) => {
-            return new Promise<ImageModel>((resolve, reject) => {
-              const $image = new Image()
-              $image.src = item.src
-              $image.crossOrigin = 'Anonymous'
-              $image.onload = () => {
-                resolve({
-                  width: $image.naturalWidth,
-                  height: $image.naturalHeight,
-                  src: item.src,
-                  type: $image.src.split('.').pop() || '',
-                  accent: getDominantColor($image),
-                })
-              }
-              $image.onerror = (err) => {
-                reject(err)
-              }
-            })
-          }),
-        )
-
-        loading.value = false
-
-        props.onChange(imagesDetail)
-      } catch (err) {
-        console.error(err)
-      } finally {
-        loading.value = false
-      }
-    }
-
-    return () => (
-      <div class="relative w-full flex flex-col flex-grow">
-        <div class="flex justify-between space-x-2 items-center">
-          <div class="flex-grow flex-shrink inline-block">
-            调整 Markdown 中包含的图片信息
-          </div>
-          <NButton
-            loading={loading.value}
-            class="self-end"
-            round
-            onClick={handleCorrectImage}
-          >
-            自动修正
-          </NButton>
-        </div>
-
-        <NCollapse accordion class="mt-4">
-          {images.value.map((image: ImageModel, index: number) => {
-            return (
-              <NCollapseItem
-                key={image.src}
-                // @ts-expect-error
-                title={
-                  <span class="w-full flex flex-shrink break-all">
-                    {image.src}
-                  </span>
-                }
-              >
-                <NForm labelPlacement="left" labelWidth="100">
-                  <NFormItem label="高度">
-                    <NInputNumber
-                      value={image.height}
-                      onUpdateValue={(n) => {
-                        if (!n) {
-                          return
-                        }
-                        props.images[index].height = n
-                      }}
-                    />
-                  </NFormItem>
-
-                  <NFormItem label="宽度">
-                    <NInputNumber
-                      value={image.width}
-                      onUpdateValue={(n) => {
-                        if (!n) {
-                          return
-                        }
-                        props.images[index].width = n
-                      }}
-                    />
-                  </NFormItem>
-                  <NFormItem label="类型">
-                    <NInput
-                      value={image.type || ''}
-                      onUpdateValue={(n) => {
-                        if (!n) {
-                          return
-                        }
-                        props.images[index].type = n
-                      }}
-                    />
-                  </NFormItem>
-                  <NFormItem label="主色调">
-                    <NColorPicker
-                      value={image.accent || ''}
-                      onUpdateValue={(n) => {
-                        if (!n) {
-                          return
-                        }
-                        props.images[index].accent = n
-                      }}
-                    ></NColorPicker>
-                  </NFormItem>
-
-                  <NFormItem label="操作">
-                    <div class="flex justify-end w-full">
-                      <NButtonGroup>
-                        <NButton
-                          round
-                          onClick={() => {
-                            window.open(image.src)
-                          }}
-                          secondary
-                        >
-                          查看
-                        </NButton>
-
-                        <NButton
-                          secondary
-                          round
-                          type="error"
-                          onClick={() => {
-                            props.images.splice(index, 1)
-                          }}
-                        >
-                          删除
-                        </NButton>
-                      </NButtonGroup>
-                    </div>
-                  </NFormItem>
-                </NForm>
-              </NCollapseItem>
-            )
-          })}
-        </NCollapse>
-      </div>
     )
   },
 })

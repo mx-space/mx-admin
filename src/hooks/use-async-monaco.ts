@@ -1,6 +1,6 @@
 import { useDefineMyThemes } from 'components/editor/monaco/use-define-theme'
 import { CenterSpin } from 'components/spin'
-import type { editor } from 'monaco-editor'
+import type { IKeyboardEvent, editor } from 'monaco-editor'
 import { AutoTypings, LocalStorageCache } from 'monaco-editor-auto-typings'
 import { UIStore } from 'stores/ui'
 import { Ref } from 'vue'
@@ -123,15 +123,29 @@ export const useAsyncLoadMonaco = (
           monaco.editor.trigger('', 'editor.action.triggerSuggest', {})
         },
       })
-      monaco.editor.onKeyDown(function (e) {
-        if ((e.ctrlKey || e.metaKey) && e.keyCode === module.KeyCode.KeyS) {
+
+      monaco.editor.addAction({
+        id: 'format',
+        label: 'Format Document',
+        keybindings: [
+          module.KeyMod.Shift | module.KeyCode.KeyF | module.KeyMod.CtrlCmd,
+        ],
+        run: () => {
+          monaco.editor.trigger('', 'editor.action.formatDocument', {})
+        },
+      })
+
+      function stopHotKey(e: IKeyboardEvent) {
+        const keys = [module.KeyCode.KeyS, module.KeyCode.KeyF]
+        if ((e.ctrlKey || e.metaKey) && keys.includes(e.keyCode)) {
           e.preventDefault()
         }
+      }
+      monaco.editor.onKeyDown(function (e) {
+        stopHotKey(e)
       })
       monaco.editor.onKeyUp(function (e) {
-        if ((e.ctrlKey || e.metaKey) && e.keyCode === module.KeyCode.KeyS) {
-          e.preventDefault()
-        }
+        stopHotKey(e)
       })
       loaded.value = true
     })

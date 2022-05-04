@@ -1,4 +1,10 @@
 .cm-editor {
+  @apply bg-transparent;
+
+  & .cm-gutters {
+    @apply bg-transparent;
+  }
+
   & {
     @apply h-full;
   }

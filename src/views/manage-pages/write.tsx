@@ -182,7 +182,7 @@ const PageWriteView = defineComponent(() => {
           <NInputNumber
             placeholder=""
             value={data.order}
-            onChange={(e) => void (data.order = e ?? 0)}
+            onUpdateValue={(e) => void (data.order = e ?? 0)}
           ></NInputNumber>
         </NFormItem>
       </TextBaseDrawer>

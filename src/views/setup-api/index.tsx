@@ -41,6 +41,10 @@ export default defineComponent({
       localStorage.removeItem('__gateway')
       location.href = '/'
     }
+    const handleLocalDev = () => {
+      apiRecord.apiUrl = 'http://localhost:2333'
+      apiRecord.gatewayUrl = 'http://localhost:2333'
+    }
     return () => (
       <div class={'relative h-screen w-full flex items-center justify-center'}>
         <NCard title="设置 API" class="modal-card sm m-auto form-card">
@@ -72,6 +76,9 @@ export default defineComponent({
             </NFormItem>
 
             <div class="text-center space-x-2">
+              <NButton onClick={handleLocalDev} round>
+                本地调试
+              </NButton>
               <NButton onClick={handleReset} round>
                 重置
               </NButton>

@@ -350,7 +350,6 @@ const NoteWriteView = defineComponent(() => {
         )}
         <NFormItem
           label="多久之后公开"
-          labelWidth={'50%'}
           labelAlign="right"
           labelPlacement="left"
         >
@@ -416,12 +415,7 @@ const NoteWriteView = defineComponent(() => {
           </NDatePicker>
         </NFormItem>
 
-        <NFormItem
-          label="隐藏"
-          labelWidth={'50%'}
-          labelAlign="right"
-          labelPlacement="left"
-        >
+        <NFormItem label="隐藏" labelAlign="right" labelPlacement="left">
           <NSwitch
             value={data.hide}
             onUpdateValue={(e) => void (data.hide = e)}
@@ -432,7 +426,6 @@ const NoteWriteView = defineComponent(() => {
           label="标记为存在回忆项"
           labelAlign="right"
           labelPlacement="left"
-          labelWidth={'50%'}
         >
           <NSwitch
             value={data.hasMemory}
