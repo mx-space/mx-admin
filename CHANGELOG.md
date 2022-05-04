@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Ci node version
+
+## [3.16.20] - 2022-05-04
+
+### Bug Fixes
+
 - Update dependency @mx-space/api-client to v0.9.4 (#398)
 - Update dependency @antv/g2 to v4.2.0 (#395)
 - Update dependency naive-ui to v2.28.2 (#394)
@@ -17,6 +23,10 @@ All notable changes to this project will be documented in this file.
 - Update vue monorepo to v3.2.33 (#385)
 - Update deps
 - Update deps
+
+### Release
+
+- V3.16.20
 
 ## [3.16.19] - 2022-04-30
 
