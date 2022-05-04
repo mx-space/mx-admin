@@ -3,9 +3,30 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Bug Fixes
+
+- Update dependency @mx-space/api-client to v0.9.4 (#398)
+- Update dependency @antv/g2 to v4.2.0 (#395)
+- Update dependency naive-ui to v2.28.2 (#394)
+- Update dependency @vueuse/core to v8.3.1 (#393)
+- Text drawer label width & key value input
+
+### Miscellaneous Tasks
+
+- Update dependency eslint-plugin-vue to v8.7.1 (#396)
+- Update vue monorepo to v3.2.33 (#385)
+- Update deps
+- Update deps
+
+## [3.16.19] - 2022-04-30
+
 ### Features
 
 - Add text macro option
+
+### Release
+
+- V3.16.19
 
 ## [3.16.19-alpha.3] - 2022-04-23
 
