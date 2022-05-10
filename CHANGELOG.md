@@ -5,7 +5,25 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Disable pnpm 7 strict peer deps
+- Comment action flash when switch tab
+- Clear selection when switch tab
+
+### Miscellaneous Tasks
+
+- Update deps
+- Update dependency eslint to v8.15.0 (#412)
+- Deps
+
+## [3.16.21] - 2022-05-04
+
+### Bug Fixes
+
 - Ci node version
+
+### Release
+
+- V3.16.21
 
 ## [3.16.20] - 2022-05-04
 
