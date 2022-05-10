@@ -114,7 +114,8 @@ const ManageComment = defineComponent(() => {
   watch(
     () => route.query.state,
     async (_) => {
-      await fetchData()
+      data.value = []
+      nextTick(() => fetchData())
     },
   )
 
@@ -228,62 +229,61 @@ const ManageComment = defineComponent(() => {
                 </NSpace>
               </blockquote>
             )}
-            {!loading.value && (
-              <div class="space-x-3">
-                {tabValue.value !== CommentType.Marked && (
-                  <NButton
-                    text
-                    size="tiny"
-                    type="success"
-                    onClick={() => changeState(row.id, 1)}
-                  >
-                    已读
-                  </NButton>
-                )}
-                {tabValue.value !== CommentType.Trash && (
-                  <NButton
-                    text
-                    size="tiny"
-                    type="warning"
-                    onClick={() => changeState(row.id, 2)}
-                  >
-                    垃圾
-                  </NButton>
-                )}
-                {tabValue.value !== CommentType.Trash && (
-                  <NButton
-                    text
-                    size="tiny"
-                    type="info"
-                    onClick={(e) => {
-                      replyComment.value = row
-                      replyDialogShow.value = true
-                    }}
-                  >
-                    回复
-                  </NButton>
-                )}
-                <NPopconfirm
-                  positiveText={'取消'}
-                  negativeText="删除"
-                  onNegativeClick={() => {
-                    handleDelete(row.id)
+
+            <div class="space-x-3">
+              {tabValue.value !== CommentType.Marked && (
+                <NButton
+                  text
+                  size="tiny"
+                  type="success"
+                  onClick={() => changeState(row.id, 1)}
+                >
+                  已读
+                </NButton>
+              )}
+              {tabValue.value !== CommentType.Trash && (
+                <NButton
+                  text
+                  size="tiny"
+                  type="warning"
+                  onClick={() => changeState(row.id, 2)}
+                >
+                  垃圾
+                </NButton>
+              )}
+              {tabValue.value !== CommentType.Trash && (
+                <NButton
+                  text
+                  size="tiny"
+                  type="info"
+                  onClick={(e) => {
+                    replyComment.value = row
+                    replyDialogShow.value = true
                   }}
                 >
-                  {{
-                    trigger: () => (
-                      <NButton text size="tiny" type="error">
-                        删除
-                      </NButton>
-                    ),
+                  回复
+                </NButton>
+              )}
+              <NPopconfirm
+                positiveText={'取消'}
+                negativeText="删除"
+                onNegativeClick={() => {
+                  handleDelete(row.id)
+                }}
+              >
+                {{
+                  trigger: () => (
+                    <NButton text size="tiny" type="error">
+                      删除
+                    </NButton>
+                  ),
 
-                    default: () => (
-                      <span class="max-w-48">确定要删除 {row.title} ?</span>
-                    ),
-                  }}
-                </NPopconfirm>
-              </div>
-            )}
+                  default: () => (
+                    <span class="max-w-48">确定要删除 {row.title} ?</span>
+                  ),
+                }}
+              </NPopconfirm>
+            </div>
           </NSpace>
         )
       },
