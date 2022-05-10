@@ -115,6 +115,7 @@ const ManageComment = defineComponent(() => {
     () => route.query.state,
     async (_) => {
       data.value = []
+      checkedRowKeys.value = []
       nextTick(() => fetchData())
     },
   )
@@ -301,6 +302,7 @@ const ManageComment = defineComponent(() => {
           {tabValue.value !== CommentType.Marked && (
             <HeaderActionButton
               name="已读"
+              disabled={checkedRowKeys.value.length === 0}
               icon={<CheckmarkSharpIcon />}
               variant="success"
               onClick={() => {
@@ -313,6 +315,7 @@ const ManageComment = defineComponent(() => {
           {tabValue.value !== CommentType.Trash && (
             <HeaderActionButton
               name="标记为垃圾"
+              disabled={checkedRowKeys.value.length === 0}
               icon={<Trash />}
               variant="warning"
               onClick={() => {
@@ -325,6 +328,7 @@ const ManageComment = defineComponent(() => {
             name="删除"
             icon={<CloseSharpIcon />}
             variant="error"
+            disabled={checkedRowKeys.value.length === 0}
             onClick={() => {
               dialog.warning({
                 title: '警告',
