@@ -17,7 +17,7 @@ specifiers:
   '@ddietr/codemirror-themes': 1.1.0
   '@innei-util/prettier': 0.8.2
   '@mx-space/api-client': 0.9.4
-  '@types/ejs': 3.1.0
+  '@types/ejs': 3.1.1
   '@types/js-yaml': 4.0.5
   '@types/lodash-es': 4.17.6
   '@types/marked': 4.0.3
@@ -43,7 +43,7 @@ specifiers:
   clsx: 1.1.1
   cors: 2.8.5
   date-fns: 2.28.0
-  ejs: 3.1.7
+  ejs: 3.1.8
   eslint: 8.15.0
   eslint-plugin-vue: 8.7.1
   js-cookie: 3.0.1
@@ -110,7 +110,7 @@ dependencies:
   class-validator: 0.13.2
   clsx: 1.1.1
   date-fns: 2.28.0
-  ejs: 3.1.7
+  ejs: 3.1.8
   js-cookie: 3.0.1
   js-yaml: 4.1.0
   lodash-es: 4.17.21
@@ -136,7 +136,7 @@ dependencies:
 
 devDependencies:
   '@innei-util/prettier': 0.8.2
-  '@types/ejs': 3.1.0
+  '@types/ejs': 3.1.1
   '@types/js-yaml': 4.0.5
   '@types/lodash-es': 4.17.6
   '@types/marked': 4.0.3
@@ -1493,8 +1493,8 @@ packages:
     resolution: {integrity: sha512-TF8aoF5cHcLO7W7403blM7L1T+6NF3XMyN3fxyUolq2uOcFeicG/khQg/dGxiCJWoAcmYulYN7LYSRKO54IXaA==}
     dev: false
 
-  /@types/ejs/3.1.0:
-    resolution: {integrity: sha512-DCg+Ka+uDQ31lJ/UtEXVlaeV3d6t81gifaVWKJy4MYVVgvJttyX/viREy+If7fz+tK/gVxTGMtyrFPnm4gjrVA==}
+  /@types/ejs/3.1.1:
+    resolution: {integrity: sha512-RQul5wEfY7BjWm0sYY86cmUN/pcXWGyVxWX93DFFJvcrxax5zKlieLwA3T77xJGwNcZW0YW6CYG70p1m8xPFmA==}
     dev: true
 
   /@types/jest/27.4.1:
@@ -2382,8 +2382,8 @@ packages:
       safe-buffer: 5.1.2
     dev: false
 
-  /ejs/3.1.7:
-    resolution: {integrity: sha512-BIar7R6abbUxDA3bfXrO4DSgwo8I+fB5/1zgujl3HLLjwd6+9iOnrT+t3grn2qbk9vOgBubXOFwX2m9axoFaGw==}
+  /ejs/3.1.8:
+    resolution: {integrity: sha512-/sXZeMlhS0ArkfX2Aw780gJzXSMPnKjtspYZv+f3NiKLlubezAHDU5+9xz6gd3/NhG3txQCo6xlglmTS+oTGEQ==}
     engines: {node: '>=0.10.0'}
     hasBin: true
     dependencies:
@@ -4218,7 +4218,7 @@ packages:
     engines: {vscode: ^1.52.0}
     dependencies:
       minimatch: 3.1.2
-      semver: 7.3.5
+      semver: 7.3.7
       vscode-languageserver-protocol: 3.16.0
     dev: true
 
