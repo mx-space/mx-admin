@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update dependency ejs to v3.1.8 (#419)
+- Update dependency vditor to v3.8.14 (#415)
+- Update dependency @vueuse/core to v8.5.0 (#421)
+- Update dependency naive-ui to v2.28.4 (#414)
+
+### Miscellaneous Tasks
+
+- Update dependency windicss to v3.5.3 (#413)
+- Update dependency vite to v2.9.9 (#417)
+- Update dependency vue-eslint-parser to v9 (#420)
+- Update typescript-eslint monorepo to v5.24.0 (#404)
+
+## [3.16.22] - 2022-05-10
+
+### Bug Fixes
+
 - Disable pnpm 7 strict peer deps
 - Comment action flash when switch tab
 - Clear selection when switch tab
@@ -14,6 +30,10 @@ All notable changes to this project will be documented in this file.
 - Update deps
 - Update dependency eslint to v8.15.0 (#412)
 - Deps
+
+### Release
+
+- V3.16.22
 
 ## [3.16.21] - 2022-05-04
 
