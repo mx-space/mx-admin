@@ -75,7 +75,7 @@ specifiers:
   vue: 3.2.33
   vue-eslint-parser: 9.0.2
   vue-router: 4.0.15
-  windicss: 3.5.3
+  windicss: 3.5.4
   xterm: 4.18.0
   xterm-addon-fit: 0.5.0
   xterm-theme: 1.1.0
@@ -160,7 +160,7 @@ devDependencies:
   vite-plugin-checker: 0.4.6_vite@2.9.9
   vite-tsconfig-paths: 3.4.1_vite@2.9.9
   vue-eslint-parser: 9.0.2_eslint@8.15.0
-  windicss: 3.5.3
+  windicss: 3.5.4
 
 packages:
 
@@ -1924,7 +1924,7 @@ packages:
     dependencies:
       debug: 4.3.4
       jiti: 1.13.0
-      windicss: 3.5.3
+      windicss: 3.5.4
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -1938,7 +1938,7 @@ packages:
       fast-glob: 3.2.11
       magic-string: 0.26.1
       micromatch: 4.0.5
-      windicss: 3.5.3
+      windicss: 3.5.4
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -4128,7 +4128,7 @@ packages:
       debug: 4.3.4
       kolorist: 1.5.1
       vite: 2.9.9
-      windicss: 3.5.3
+      windicss: 3.5.4
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -4341,8 +4341,8 @@ packages:
       isexe: 2.0.0
     dev: true
 
-  /windicss/3.5.3:
-    resolution: {integrity: sha512-Zsb38RscfZJa218GUREJyFu6EF1xD5DZ+b0XL1Kac3BGDtYwVmXJMmOahMK4mZSEy3gWO8aqUQMny0nbJFG6yA==}
+  /windicss/3.5.4:
+    resolution: {integrity: sha512-x2Iu0a69dtNiKHMkR886lx0WKbZI5GqvXyvGBCJ2VA6rcjKYjnzCA/Ljd6hNQBfqlkSum8J+qAVcCfLzQFI4rQ==}
     engines: {node: '>= 12'}
     hasBin: true
 
