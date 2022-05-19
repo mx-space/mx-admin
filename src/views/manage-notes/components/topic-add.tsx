@@ -1,7 +1,15 @@
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { PlusIcon } from 'components/icons'
 import { TopicModel } from 'models/topic'
-import { NForm, NModal } from 'naive-ui'
+import {
+  FormInst,
+  NButton,
+  NCard,
+  NForm,
+  NFormItem,
+  NInput,
+  NModal,
+} from 'naive-ui'
 
 export const TopicAddIcon = defineComponent({
   setup() {
@@ -13,6 +21,13 @@ export const TopicAddIcon = defineComponent({
     const handleClose = () => {
       show.value = false
     }
+
+    const handleSubmit = () => {
+      formRef?.value?.validate((err) => {
+        console.log(err)
+      })
+    }
+    const formRef = ref<FormInst>()
     return () => (
       <>
         <HeaderActionButton
@@ -21,13 +36,100 @@ export const TopicAddIcon = defineComponent({
           variant="success"
         ></HeaderActionButton>
 
-        <NModal
-          title={'新建话题'}
-          show={show.value}
-          closable
-          onClose={handleClose}
-        >
-          <NForm></NForm>
+        <NModal show={show.value}>
+          <NCard
+            title={'新建话题'}
+            closable
+            onClose={handleClose}
+            class="modal-card sm"
+          >
+            <NForm labelPlacement="top" ref={formRef}>
+              <NFormItem
+                label="名字"
+                required
+                rule={{
+                  max: 50,
+                  required: true,
+                }}
+                rulePath="name"
+              >
+                <NInput
+                  value={topic.name}
+                  onUpdateValue={(val) => {
+                    topic.name = val
+                  }}
+                ></NInput>
+              </NFormItem>
+
+              <NFormItem
+                label="id"
+                required
+                rule={{
+                  required: true,
+                }}
+                rulePath="slug"
+              >
+                <NInput
+                  value={topic.slug}
+                  onUpdateValue={(val) => {
+                    topic.slug = val
+                  }}
+                ></NInput>
+              </NFormItem>
+
+              <NFormItem
+                label="简介"
+                required
+                rule={{
+                  max: 100,
+                  required: true,
+                }}
+                rulePath="introduce"
+              >
+                <NInput
+                  value={topic.introduce}
+                  onUpdateValue={(val) => {
+                    topic.introduce = val
+                  }}
+                ></NInput>
+              </NFormItem>
+
+              <NFormItem label="图标">
+                <NInput
+                  value={topic.icon}
+                  onUpdateValue={(val) => {
+                    topic.icon = val
+                  }}
+                ></NInput>
+              </NFormItem>
+
+              <NFormItem
+                label="长描述"
+                rule={{
+                  max: 500,
+                }}
+                rulePath="description"
+              >
+                <NInput
+                  type="textarea"
+                  autosize={{
+                    maxRows: 5,
+                    minRows: 2,
+                  }}
+                  value={topic.description}
+                  onUpdateValue={(val) => {
+                    topic.description = val
+                  }}
+                ></NInput>
+              </NFormItem>
+
+              <div class={'flex justify-end gap-2'}>
+                <NButton round type="primary" onClick={handleSubmit}>
+                  提交
+                </NButton>
+              </div>
+            </NForm>
+          </NCard>
         </NModal>
       </>
     )
