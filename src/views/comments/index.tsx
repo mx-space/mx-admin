@@ -9,7 +9,7 @@ import { IpInfoPopover } from 'components/ip-info'
 import { Table } from 'components/table'
 import { WEB_URL } from 'constants/env'
 import { KAOMOJI_LIST } from 'constants/kaomoji'
-import { useInjector } from 'hooks/use-deps-injection'
+import { useStoreRef } from 'hooks/use-store-ref'
 import { useDataTableFetch } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
 import { CommentModel, CommentState, CommentsResponse } from 'models/comment'
@@ -293,7 +293,7 @@ const ManageComment = defineComponent(() => {
 
   const dialog = useDialog()
 
-  const { viewport } = useInjector(UIStore)
+  const { viewport } = useStoreRef(UIStore)
 
   return () => (
     <ContentLayout

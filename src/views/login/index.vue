@@ -1,5 +1,4 @@
 <script lang="ts">
-import { useInjector } from 'hooks/use-deps-injection'
 import { useMessage } from 'naive-ui'
 import { defineComponent, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -7,13 +6,18 @@ import { useRoute, useRouter } from 'vue-router'
 import Avatar from '../../components/avatar/index.vue'
 import ParallaxButtonVue from '../../components/button/parallax-button.vue'
 import { UserModel } from '../../models/user'
-import { UserStore } from '../../stores/user'
+import { useUserStore } from '../../stores/user'
 import { RESTManager } from '../../utils/rest'
 
 export const LoginView = defineComponent({
   components: { Avatar, ParallaxButtonVue },
   setup() {
-    const { user, updateToken } = useInjector(UserStore)
+    const userStore = useUserStore()
+
+    const { updateToken } = userStore
+
+    const { user } = storeToRefs(userStore)
+
     const router = useRouter()
     const input = ref<HTMLInputElement>(null!)
 

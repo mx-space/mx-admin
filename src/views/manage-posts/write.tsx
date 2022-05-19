@@ -6,10 +6,9 @@ import { MaterialInput } from 'components/input/material-input'
 import { UnderlineInput } from 'components/input/underline-input'
 import { ParseContentButton } from 'components/special-button/parse-content'
 import { WEB_URL } from 'constants/env'
-import { useInjector } from 'hooks/use-deps-injection'
+import { useStoreRef } from 'hooks/use-store-ref'
 import { ContentLayout } from 'layouts/content'
 import { isString } from 'lodash-es'
-import { Image } from 'models/base'
 import { CategoryModel, TagModel } from 'models/category'
 import { PostModel } from 'models/post'
 import {
@@ -41,7 +40,7 @@ type PostReactiveType = WriteBaseType & {
 const PostWriteView = defineComponent(() => {
   const route = useRoute()
 
-  const categoryStore = useInjector(CategoryStore)
+  const categoryStore = useStoreRef(CategoryStore)
   onMounted(async () => {
     await categoryStore.fetch()
   })

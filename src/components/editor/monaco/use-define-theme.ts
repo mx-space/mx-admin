@@ -1,4 +1,4 @@
-import { useInjector } from 'hooks/use-deps-injection'
+import { useStoreRef } from 'hooks/use-store-ref'
 import { UIStore } from 'stores/ui'
 
 import Dark from './theme/dark.json'
@@ -25,7 +25,7 @@ export const useDefineTheme = (
 }
 
 export const useDefineMyThemes = () => {
-  const ui = useInjector(UIStore)
+  const ui = useStoreRef(UIStore)
   const isDark = ui.isDark
   const cb = (monaco: any) => {
     if (isDark.value) {

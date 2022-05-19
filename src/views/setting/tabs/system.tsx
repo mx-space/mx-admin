@@ -1,6 +1,6 @@
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { CheckCircleOutlinedIcon } from 'components/icons'
-import { useInjector } from 'hooks/use-deps-injection'
+import { useStoreRef } from 'hooks/use-store-ref'
 import { useLayout } from 'layouts/content'
 import { cloneDeep, isEmpty, merge, omit } from 'lodash-es'
 import { IConfig } from 'models/setting'
@@ -132,7 +132,7 @@ export const TabSystem = defineComponent(() => {
   })
 
   const expandedNames = ref<string[]>(['website'])
-  const uiStore = useInjector(UIStore)
+  const uiStore = useStoreRef(UIStore)
   const gridCols = computed(() => (uiStore.viewport.value.mobile ? 1 : 2))
   const formProps = reactive(NFormBaseProps) as any
 

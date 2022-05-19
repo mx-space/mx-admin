@@ -1,9 +1,13 @@
-import { useProviders } from 'hooks/use-deps-injection'
+import { useAppStore } from './app'
+import { useCategoryStore } from './category'
+import { useUIStore } from './ui'
+import { useUserStore } from './user'
 
-import { AppStore } from './app'
-import { CategoryStore } from './category'
-import { UIStore } from './ui'
-import { UserStore } from './user'
+;([useUserStore, useAppStore, useCategoryStore, useUIStore] as const).forEach(
+  (store) => {
+    if (import.meta.hot)
+      import.meta.hot.accept(acceptHMRUpdate(store, import.meta.hot))
+  },
+)
 
-export const provideStore = () =>
-  useProviders(UIStore, UserStore, CategoryStore, AppStore)
+export const piniaStore = createPinia()

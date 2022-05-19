@@ -5,7 +5,7 @@ import { CSSProperties, computed, defineComponent, watchEffect } from 'vue'
 import { RouterLink } from 'vue-router'
 
 import { Sidebar } from '../../components/sidebar'
-import { useInjector } from '../../hooks/use-deps-injection'
+import { useStoreRef } from '../../hooks/use-store-ref'
 import { UIStore } from '../../stores/ui'
 import styles from './index.module.css'
 
@@ -13,7 +13,7 @@ export const SidebarLayout = defineComponent({
   name: 'SidebarLayout',
 
   setup() {
-    const ui = useInjector(UIStore)
+    const ui = useStoreRef(UIStore)
 
     const isInApiDebugMode =
       localStorage.getItem('__api') ||

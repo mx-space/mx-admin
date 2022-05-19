@@ -1,6 +1,6 @@
 import { PlusIcon as Plus } from 'components/icons'
 import { RelativeTime } from 'components/time/relative-time'
-import { useInjector } from 'hooks/use-deps-injection'
+import { useStoreRef } from 'hooks/use-store-ref'
 import { TokenModel } from 'models/token'
 import {
   NButton,
@@ -99,7 +99,7 @@ const ApiToken = defineComponent(() => {
       tokens.value.splice(index, 1)
     }
   }
-  const uiStore = useInjector(UIStore)
+  const uiStore = useStoreRef(UIStore)
   return () => (
     <NLayoutContent class="!overflow-visible">
       <NModal

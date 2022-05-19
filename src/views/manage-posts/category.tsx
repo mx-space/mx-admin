@@ -1,7 +1,7 @@
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { AddIcon } from 'components/icons'
 import { tableRowStyle } from 'components/table'
-import { useInjector } from 'hooks/use-deps-injection'
+import { useStoreRef } from 'hooks/use-store-ref'
 import { ContentLayout } from 'layouts/content'
 import { TagModel } from 'models/category'
 import { PostModel } from 'models/post'
@@ -26,7 +26,7 @@ import { Ref, defineComponent, onMounted, reactive, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 
 export const CategoryView = defineComponent((props) => {
-  const categoryStore = useInjector(CategoryStore)
+  const categoryStore = useStoreRef(CategoryStore)
 
   const tags = reactive<TagModel[]>([])
   const loading = ref(true)

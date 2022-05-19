@@ -11,7 +11,7 @@ import { Icon } from '@vicons/utils'
 import { onClickOutside } from '@vueuse/core'
 
 import { configs } from '../../configs'
-import { useInjector } from '../../hooks/use-deps-injection'
+import { useStoreRef } from '../../hooks/use-store-ref'
 import { UserStore } from '../../stores/user'
 import { MenuModel, buildMenuModel, buildMenus } from '../../utils/build-menus'
 import { Avatar } from '../avatar'
@@ -35,10 +35,10 @@ export const Sidebar = defineComponent({
   },
   setup(props) {
     const router = useRouter()
-    const { user } = useInjector(UserStore)
+    const { user } = useStoreRef(UserStore)
     const route = computed(() => router.currentRoute.value)
     const menus = ref<MenuModel[]>([])
-    const app = useInjector(AppStore)
+    const app = useStoreRef(AppStore)
     onMounted(() => {
       // @ts-expect-error
       menus.value = buildMenus(router.getRoutes())
@@ -82,7 +82,7 @@ export const Sidebar = defineComponent({
 
     const title = configs.title
     const sidebarRef = ref<HTMLDivElement>()
-    const uiStore = useInjector(UIStore)
+    const uiStore = useStoreRef(UIStore)
     onClickOutside(sidebarRef, (event) => {
       const v = uiStore.viewport
       const isM = v.value.pad || v.value.mobile
@@ -90,7 +90,8 @@ export const Sidebar = defineComponent({
         props.onCollapseChange(true)
       }
     })
-    const { isDark, toggleDark } = useInjector(UIStore)
+    const { isDark, toggleDark } = useStoreRef(UIStore)
+
     return () => (
       <div
         class={clsx(styles['root'], props.collapse ? styles['collapse'] : null)}

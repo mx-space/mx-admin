@@ -1,4 +1,4 @@
-import { useInjector } from 'hooks/use-deps-injection'
+import { useStoreRef } from 'hooks/use-store-ref'
 import { Pager } from 'models/base'
 import { NDataTable } from 'naive-ui'
 import { dataTableProps } from 'naive-ui/lib/data-table/src/DataTable'
@@ -103,7 +103,7 @@ export const Table = defineComponent({
       loading.value = false
     })
 
-    const ui = useInjector(UIStore)
+    const ui = useStoreRef(UIStore)
 
     return () => {
       const {

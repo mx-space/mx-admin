@@ -5,8 +5,8 @@ import { AutoTypings, LocalStorageCache } from 'monaco-editor-auto-typings'
 import { UIStore } from 'stores/ui'
 import { Ref } from 'vue'
 
-import { useInjector } from './use-deps-injection'
 import { useSaveConfirm } from './use-save-confirm'
+import { useStoreRef } from './use-store-ref'
 
 export const usePropsValueToRef = <T extends { value: string }>(props: T) => {
   const value = ref(props.value)
@@ -48,7 +48,7 @@ export const useAsyncLoadMonaco = (
       },
     }),
   }
-  const { isDark } = useInjector(UIStore)
+  const { isDark } = useStoreRef(UIStore)
 
   let memoInitialValue: string = unref(value)
 

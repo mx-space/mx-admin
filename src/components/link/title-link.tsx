@@ -1,7 +1,7 @@
 import { ExternalLinkIcon, MagnifyIcon } from 'components/icons'
 import { ArticlePreview } from 'components/preview'
 import { WEB_URL } from 'constants/env'
-import { useInjector } from 'hooks/use-deps-injection'
+import { useStoreRef } from 'hooks/use-store-ref'
 import { NButton, NEllipsis, NPopover } from 'naive-ui'
 import { UIStore } from 'stores/ui'
 import { RESTManager, getToken } from 'utils'
@@ -35,7 +35,7 @@ export const TableTitleLink = defineComponent({
     },
   },
   setup(props, { slots }) {
-    const { viewport } = useInjector(UIStore)
+    const { viewport } = useStoreRef(UIStore)
     const isPC = computed(() => viewport.value.widest || viewport.value.wider)
     const fullExternalLinkTo = computed(() => {
       if (!props.externalLinkTo) {

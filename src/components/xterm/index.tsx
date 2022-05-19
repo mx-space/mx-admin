@@ -1,6 +1,6 @@
 import clsx from 'clsx'
-import { useInjector } from 'hooks/use-deps-injection'
 import { useMountAndUnmount } from 'hooks/use-react'
+import { useStoreRef } from 'hooks/use-store-ref'
 import { NSpin } from 'naive-ui'
 import { UIStore } from 'stores/ui'
 import { PropType } from 'vue'
@@ -71,7 +71,7 @@ export const Xterm = defineComponent({
     let term: Terminal
 
     const termRef = ref<HTMLElement>()
-    const { onlyToggleNaiveUIDark } = useInjector(UIStore)
+    const { onlyToggleNaiveUIDark } = useStoreRef(UIStore)
 
     const loading = ref(true)
     if (props.darkMode) {

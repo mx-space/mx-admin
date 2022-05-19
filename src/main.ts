@@ -6,6 +6,7 @@ import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 
 import 'reflect-metadata'
 
+import { piniaStore } from 'stores'
 import { bus } from 'utils/event-bus'
 
 import 'virtual:windi.css'
@@ -21,6 +22,7 @@ import { router } from './router'
 const app = createApp(App)
 
 app.use(router)
+app.use(piniaStore)
 app.mount('#app')
 
 if (__DEV__) {

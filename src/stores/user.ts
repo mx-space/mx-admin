@@ -5,7 +5,7 @@ import { UserModel } from '../models/user'
 import { getToken, setToken } from '../utils/auth'
 import { RESTManager } from '../utils/rest'
 
-export function UserStore() {
+export const useUserStore = defineStore('user', () => {
   const user = ref<UserModel | null>(null)
   const token = ref<string>('')
 
@@ -37,4 +37,6 @@ export function UserStore() {
       token.value = $token
     },
   }
-}
+})
+
+export { useUserStore as UserStore }

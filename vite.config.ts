@@ -4,7 +4,7 @@ import { PluginOption, defineConfig, loadEnv } from 'vite'
 import Checker from 'vite-plugin-checker'
 import WindiCSS from 'vite-plugin-windicss'
 import tsconfigPaths from 'vite-tsconfig-paths'
-
+import vueJsx from '@vitejs/plugin-vue-jsx'
 import vue from '@vitejs/plugin-vue'
 
 import PKG from './package.json'
@@ -16,7 +16,7 @@ export default ({ mode }) => {
 
   return defineConfig({
     plugins: [
-      // vueJsx(),
+      vueJsx(),
       WindiCSS(),
       vue(),
       tsconfigPaths(),
@@ -28,7 +28,7 @@ export default ({ mode }) => {
           /\.vue\??/, // .vue
         ],
         dts: './src/auto-import.d.ts',
-        imports: ['vue'],
+        imports: ['vue', 'pinia'],
       }),
       Checker({
         typescript: true,

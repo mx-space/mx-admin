@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { CenterSpin } from 'components/spin'
-import { useInjector } from 'hooks/use-deps-injection'
 import { useSaveConfirm } from 'hooks/use-save-confirm'
+import { useStoreRef } from 'hooks/use-store-ref'
 import type { editor as Editor } from 'monaco-editor'
 import { UIStore } from 'stores/ui'
 import {
@@ -29,7 +29,7 @@ const _MonacoEditor = defineComponent({
     const editorRef = ref<HTMLDivElement>()
     const loaded = ref(false)
     let editor: Editor.IStandaloneCodeEditor
-    const { isDark } = useInjector(UIStore)
+    const { isDark } = useStoreRef(UIStore)
     useDefineMyThemes()
     onUnmounted(() => {
       editor?.dispose?.()

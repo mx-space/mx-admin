@@ -11,19 +11,17 @@ import {
   zhCN,
 } from 'naive-ui'
 import { RouteName } from 'router/name'
-import { provideStore } from 'stores'
 import { defineComponent, onMounted } from 'vue'
 import { RouterView, useRouter } from 'vue-router'
 
-import { useInjector, useProvider } from './hooks/use-deps-injection'
-import { UIStore } from './stores/ui'
-import { UserStore } from './stores/user'
+import { useUIStore } from './stores/ui'
+import { useUserStore } from './stores/user'
 
 const Root = defineComponent({
   name: 'Home',
 
   setup() {
-    const { fetchUser } = useInjector(UserStore)
+    const { fetchUser } = useUserStore()
     const router = useRouter()
     onMounted(() => {
       const message = useMessage()
@@ -66,23 +64,25 @@ const Root = defineComponent({
 
 const App = defineComponent({
   setup() {
-    provideStore()
-    const { isDark, naiveUIDark } = useProvider(UIStore)
-    return () => (
-      <NConfigProvider
-        locale={zhCN}
-        dateLocale={dateZhCN}
-        theme={naiveUIDark.value ? darkTheme : isDark.value ? darkTheme : null}
-      >
-        <NNotificationProvider>
-          <NMessageProvider>
-            <NDialogProvider>
-              <Root />
-            </NDialogProvider>
-          </NMessageProvider>
-        </NNotificationProvider>
-      </NConfigProvider>
-    )
+    const uiStore = useUIStore()
+    return () => {
+      const { isDark, naiveUIDark } = uiStore
+      return (
+        <NConfigProvider
+          locale={zhCN}
+          dateLocale={dateZhCN}
+          theme={naiveUIDark ? darkTheme : isDark ? darkTheme : null}
+        >
+          <NNotificationProvider>
+            <NMessageProvider>
+              <NDialogProvider>
+                <Root />
+              </NDialogProvider>
+            </NMessageProvider>
+          </NNotificationProvider>
+        </NConfigProvider>
+      )
+    }
   },
 })
 

@@ -1,4 +1,4 @@
-import { useInjector } from 'hooks/use-deps-injection'
+import { useStoreRef } from 'hooks/use-store-ref'
 import { NInput, NSelect, useMessage } from 'naive-ui'
 import { SelectMixedOption } from 'naive-ui/lib/select/src/interface'
 import { CategoryStore } from 'stores/category'
@@ -62,7 +62,7 @@ export const EditColumn = defineComponent({
       props.onSubmit(value.value)
       isEdit.value = false
     }
-    const categoryStore = useInjector(CategoryStore)
+    const categoryStore = useStoreRef(CategoryStore)
     return () => (
       <>
         {isEdit.value ? (

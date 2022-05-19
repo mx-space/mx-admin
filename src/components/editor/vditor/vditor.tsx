@@ -1,5 +1,5 @@
-import { useInjector } from 'hooks/use-deps-injection'
 import { useSaveConfirm } from 'hooks/use-save-confirm'
+import { useStoreRef } from 'hooks/use-store-ref'
 import { UIStore } from 'stores/ui'
 import Vditor from 'vditor'
 
@@ -78,7 +78,7 @@ export const VditorEditor = defineComponent({
       return instance.getValue().trim() === memoInitialValue.trim()
     })
 
-    const { isDark } = useInjector(UIStore)
+    const { isDark } = useStoreRef(UIStore)
     watch(
       () => isDark.value,
       (isDark) => {

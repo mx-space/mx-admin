@@ -2,7 +2,7 @@ import { CategoryModel, CategoryResponse } from 'models/category'
 import { RESTManager } from 'utils/rest'
 import { computed, ref } from 'vue'
 
-export function CategoryStore() {
+export const useCategoryStore = defineStore('category', function () {
   const data = ref<CategoryModel[]>()
 
   const map = computed(
@@ -29,4 +29,6 @@ export function CategoryStore() {
       }
     },
   }
-}
+})
+
+export { useCategoryStore as CategoryStore }

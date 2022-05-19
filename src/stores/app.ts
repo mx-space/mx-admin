@@ -20,7 +20,7 @@ export interface ViewportRecord {
   phone: boolean
 }
 
-export function AppStore() {
+export const useAppStore = defineStore('app', function () {
   const app = ref<AppInfo>()
   onMounted(() => {
     RESTManager.api.get<AppInfo>().then((res) => {
@@ -30,4 +30,6 @@ export function AppStore() {
   return {
     app,
   }
-}
+})
+
+export { useAppStore as AppStore }

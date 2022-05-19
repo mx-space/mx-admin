@@ -23,7 +23,7 @@ import { useShorthand } from 'components/shorthand'
 import { checkUpdateFromGitHub } from 'external/api/github-check-update'
 import { SentenceType, fetchHitokoto } from 'external/api/hitokoto'
 import { ShiJuData, getJinRiShiCiOne } from 'external/api/jinrishici'
-import { useInjector } from 'hooks/use-deps-injection'
+import { useStoreRef } from 'hooks/use-store-ref'
 import { ContentLayout } from 'layouts/content'
 import { pick } from 'lodash-es'
 import { Stat } from 'models/stat'
@@ -119,7 +119,7 @@ export const DashBoardView = defineComponent({
     const hitokoto = ref('')
     const message = useMessage()
 
-    const userStore = useInjector(UserStore)
+    const userStore = useStoreRef(UserStore)
     const router = useRouter()
     const UserLoginStat = defineComponent(() => () => (
       <>
@@ -541,7 +541,7 @@ export const DashBoardView = defineComponent({
 })
 const AppIF = defineComponent({
   setup() {
-    const { app } = useInjector(AppStore)
+    const { app } = useStoreRef(AppStore)
     const notice = useNotification()
     const versionMap = ref({} as { admin: string; system: string })
     onMounted(async () => {

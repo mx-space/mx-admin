@@ -22,7 +22,7 @@ export interface ViewportRecord {
   phone: boolean
 }
 
-export function UIStore() {
+export const useUIStore = defineStore('ui', () => {
   const viewport = ref<ViewportRecord>({} as any)
   const sidebarWidth = ref(250)
   const sidebarCollapse = ref(viewport.value.mobile ? true : false)
@@ -103,4 +103,6 @@ export function UIStore() {
       naiveUIDark.value = dark ?? !naiveUIDark.value
     },
   }
-}
+})
+
+export { useUIStore as UIStore }

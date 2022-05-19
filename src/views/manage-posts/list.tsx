@@ -4,7 +4,7 @@ import { DeleteConfirmButton } from 'components/special-button/delete-confirm'
 import { Table } from 'components/table'
 import { EditColumn } from 'components/table/edit-column'
 import { RelativeTime } from 'components/time/relative-time'
-import { useInjector } from 'hooks/use-deps-injection'
+import { useStoreRef } from 'hooks/use-store-ref'
 import { useDataTableFetch } from 'hooks/use-table'
 import {
   CategoryWithChildrenModel,
@@ -71,7 +71,7 @@ export const ManagePostListView = defineComponent({
       },
     )
 
-    const categoryStore = useInjector(CategoryStore)
+    const categoryStore = useStoreRef(CategoryStore)
 
     onMounted(async () => {
       await fetchData()

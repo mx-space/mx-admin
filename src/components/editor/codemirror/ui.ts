@@ -1,4 +1,4 @@
-import { useInjector } from 'hooks/use-deps-injection'
+import { useStoreRef } from 'hooks/use-store-ref'
 import { UIStore } from 'stores/ui'
 import { Ref } from 'vue'
 
@@ -11,7 +11,7 @@ import { codemirrorReconfigureExtensionMap } from './extension'
 export const useCodeMirrorAutoToggleTheme = (
   view: Ref<EditorView | undefined>,
 ) => {
-  const { isDark } = useInjector(UIStore)
+  const { isDark } = useStoreRef(UIStore)
   watch(
     [isDark, view],
     ([isDark]) => {
