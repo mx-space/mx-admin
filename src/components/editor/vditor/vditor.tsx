@@ -2,7 +2,9 @@ import { useInjector } from 'hooks/use-deps-injection'
 import { useSaveConfirm } from 'hooks/use-save-confirm'
 import { UIStore } from 'stores/ui'
 import Vditor from 'vditor'
+
 import 'vditor/dist/index.css'
+
 import {
   PropType,
   Ref,
@@ -15,6 +17,7 @@ import {
 
 import styles from '../universal/editor.module.css'
 import { editorBaseProps } from '../universal/props'
+
 import './vditor.css'
 
 export const VditorEditor = defineComponent({

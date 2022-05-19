@@ -6,7 +6,9 @@ import { EditorState } from '@codemirror/state'
 
 import styles from '../universal/editor.module.css'
 import { editorBaseProps } from '../universal/props'
+
 import './codemirror.css'
+
 import { useCodeMirror } from './use-codemirror'
 
 export const CodemirrorEditor = defineComponent({

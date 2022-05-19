@@ -76,7 +76,7 @@
     "xterm-theme": "1.1.0"
   },
   "devDependencies": {
-    "@innei-util/prettier": "0.8.2",
+    "@innei/prettier": "latest",
     "@types/ejs": "3.1.1",
     "@types/js-yaml": "4.0.5",
     "@types/lodash-es": "4.17.6",

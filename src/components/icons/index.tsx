@@ -117,6 +117,7 @@ export { Bookmark as BookmarkIcon }
 export { Heart as HeartIcon }
 export { EyeHide20Filled as EyeHideIcon }
 export { RefreshCircle }
+export { AddIcon as PlusIcon }
 
 export const HamburgerIcon = () => (
   <svg width="1em" height="1em" viewBox="0 0 24 24">
@@ -240,8 +241,6 @@ export const CheckIcon = defineComponent({
     )
   },
 })
-
-export const PlusIcon = AddIcon
 
 export const TerminalIcon = () => (
   <svg width="1em" height="1em" viewBox="0 0 24 24">

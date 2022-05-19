@@ -6,6 +6,7 @@ import { UIStore } from 'stores/ui'
 import { PropType } from 'vue'
 import type { ITerminalOptions, Terminal } from 'xterm'
 import { Material, MaterialDark } from 'xterm-theme'
+
 import 'xterm/css/xterm.css'
 
 const xtermThemeDark = { ...MaterialDark, background: 'rgba(0,0,0,0)' }

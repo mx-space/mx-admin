@@ -60,7 +60,7 @@ export declare class FriendLinkOptionsDto {
 }
 
 export declare class TextOptionsDto {
-  macros: boolean;
+  macros: boolean
 }
 
 export declare abstract class IConfig {
@@ -74,5 +74,5 @@ export declare abstract class IConfig {
   algoliaSearchOptions: AlgoliaSearchOptionsDto
   adminExtra: AdminExtraDto
   terminalOptions: TerminalOptionsDto
-  textOptions: TextOptionsDto;
+  textOptions: TextOptionsDto
 }

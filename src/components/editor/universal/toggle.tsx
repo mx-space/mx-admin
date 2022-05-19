@@ -29,7 +29,9 @@ import { Editor, EditorStorageKeys } from './constants'
 import styles from './editor.module.css'
 import { getDynamicEditor } from './get-editor'
 import { editorBaseProps } from './props'
+
 import './toggle.css'
+
 import { useEditorConfig } from './use-editor-setting'
 import { useGetPrefEditor } from './use-get-pref-editor'
 

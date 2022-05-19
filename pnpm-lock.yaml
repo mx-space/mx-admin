@@ -15,7 +15,7 @@ specifiers:
   '@codemirror/theme-one-dark': 0.19.1
   '@codemirror/view': 0.19.48
   '@ddietr/codemirror-themes': 1.1.0
-  '@innei-util/prettier': 0.8.2
+  '@innei/prettier': latest
   '@mx-space/api-client': 0.9.4
   '@types/ejs': 3.1.1
   '@types/js-yaml': 4.0.5
@@ -135,7 +135,7 @@ dependencies:
   xterm-theme: 1.1.0
 
 devDependencies:
-  '@innei-util/prettier': 0.8.2
+  '@innei/prettier': 0.9.1
   '@types/ejs': 3.1.1
   '@types/js-yaml': 4.0.5
   '@types/lodash-es': 4.17.6
@@ -1079,8 +1079,8 @@ packages:
       - supports-color
     dev: true
 
-  /@innei-util/prettier/0.8.2:
-    resolution: {integrity: sha512-PuSnBp2zoX1HfmPPKWdr0uEOUQS/nJYBid5HL4RpV+zAiVrUYDfGK0F9N8ugEvPmP7I3gC85BjFTvNCDciYsgg==}
+  /@innei/prettier/0.9.1:
+    resolution: {integrity: sha512-oJyWbEnhX6yxQJZCHEkjjb/DwksFF6/pH4mJLUH98LOOWQZa/c0c07WEX89xvppyEgcnnccu/vPE00JnC+juQA==}
     dependencies:
       '@trivago/prettier-plugin-sort-imports': /@ianvs/prettier-plugin-sort-imports/3.3.0_prettier@2.6.2
       prettier: 2.6.2
@@ -2034,7 +2034,7 @@ packages:
     dev: false
 
   /author-regex/1.0.0:
-    resolution: {integrity: sha1-0IiFvmubv5Q5/gh8dihyRfCoFFA=}
+    resolution: {integrity: sha512-KbWgR8wOYRAPekEmMXrYYdc7BRyhn2Ftk7KWfMUnQ43hFdojWEFRxhhRUm3/OFEdPa1r0KAvTTg9YQK57xTe0g==}
     engines: {node: '>=0.8'}
     dev: true
 
