@@ -7,7 +7,7 @@ export type fetchDataFn = (
   page?: string | number | LocationQueryValue[],
   size?: number,
   db_query?: string | undefined,
-) => Promise<void>
+) => Promise<any>
 export const useDataTableFetch = <T = any>(
   fetchDataFn: (data: Ref<T[]>, pager: Ref<Pager>) => fetchDataFn,
 ) => {

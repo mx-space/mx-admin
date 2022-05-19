@@ -23,6 +23,7 @@ import {
   TachometerAltIcon,
   TemplateIcon,
   TerminalIcon,
+  TopicIcon,
   UndoAltIcon,
   UserFriendsIcon,
 } from 'components/icons'
@@ -123,6 +124,16 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           icon: <PencilAltIcon />,
         },
         component: () => import('../views/manage-notes/write'),
+      },
+
+      {
+        path: 'topic',
+        name: RouteName.Topic,
+        meta: {
+          title: '专栏',
+          icon: <TopicIcon />,
+        },
+        component: () => import('../views/manage-notes/topic'),
       },
     ],
   },

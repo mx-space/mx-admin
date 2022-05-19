@@ -7,6 +7,7 @@ export enum RouteName {
   Note = 'note',
   ViewNote = 'view-notes',
   EditNote = 'edit-notes',
+  Topic = 'topic',
   Comment = 'comment',
   Page = 'page',
   ListPage = 'page-list',

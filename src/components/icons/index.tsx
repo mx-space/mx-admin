@@ -298,3 +298,21 @@ export const ImportIcon = () => (
     ></path>
   </svg>
 )
+
+export const TopicIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+    role="img"
+    class="iconify iconify--material-symbols"
+    width="32"
+    height="32"
+    preserveAspectRatio="xMidYMid meet"
+    viewBox="0 0 24 24"
+  >
+    <path
+      fill="currentColor"
+      d="M6 12h12v-2H6Zm0 4h8v-2H6ZM2 4h8l2 2h10v14H2Zm2 2v12h16V8h-8.825l-2-2Zm0 12V6v12Z"
+    ></path>
+  </svg>
+)
