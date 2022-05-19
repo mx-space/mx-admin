@@ -32,7 +32,7 @@ export const TabSecurity = defineComponent(() => {
   return () => (
     <Fragment>
       <div class="pt-4"></div>
-      <NCollapse defaultExpandedNames={['reset']} displayDirective="if">
+      <NCollapse defaultExpandedNames={['reset']} displayDirective="show">
         <NCollapseItem name="reset" title="修改密码">
           <ResetPass />
         </NCollapseItem>

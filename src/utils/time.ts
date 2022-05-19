@@ -13,7 +13,11 @@ export enum DateFormat {
 export const parseDate = (
   time: string | Date,
   format: keyof typeof DateFormat = 'yyyy年M月d日',
-) => f(new Date(time), format)
+) => {
+  const date = new Date(time)
+  if (isNaN(date as any)) return 'N/A'
+  return f(date, format)
+}
 
 export const relativeTimeFromNow = (
   time: Date | string,
