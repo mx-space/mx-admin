@@ -56,7 +56,7 @@ specifiers:
   octokit: 1.7.1
   path-browserify: 1.0.1
   pinia: 2.0.14
-  postcss: 8.4.13
+  postcss: 8.4.14
   postcss-nested: 5.0.6
   prettier: 2.6.2
   qier-progress: 1.0.4
@@ -152,8 +152,8 @@ devDependencies:
   cors: 2.8.5
   eslint: 8.15.0
   eslint-plugin-vue: 8.7.1_eslint@8.15.0
-  postcss: 8.4.13
-  postcss-nested: 5.0.6_postcss@8.4.13
+  postcss: 8.4.14
+  postcss-nested: 5.0.6_postcss@8.4.14
   prettier: 2.6.2
   rollup-plugin-visualizer: 5.6.0
   typescript: 4.6.4
@@ -1798,7 +1798,7 @@ packages:
       '@vue/shared': 3.2.33
       estree-walker: 2.0.2
       magic-string: 0.25.9
-      postcss: 8.4.13
+      postcss: 8.4.14
       source-map: 0.6.1
 
   /@vue/compiler-ssr/3.2.33:
@@ -3410,8 +3410,8 @@ packages:
     hasBin: true
     dev: true
 
-  /nanoid/3.3.3:
-    resolution: {integrity: sha512-p1sjXuopFs0xg+fPASzQ28agW1oHD7xDsd9Xkf3T15H3c/cifrFHVwrh74PdoklAPi+i7MdRsE47vm2r6JoB+w==}
+  /nanoid/3.3.4:
+    resolution: {integrity: sha512-MqBkQh/OHTS2egovRtLk45wEyNXwF+cokD+1YPf9u5VfJiRdAiRwB2froX5Co9Rh20xs4siNPm8naNotSD6RBw==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
@@ -3582,13 +3582,13 @@ packages:
       vue-demi: 0.12.5_vue@3.2.33
     dev: false
 
-  /postcss-nested/5.0.6_postcss@8.4.13:
+  /postcss-nested/5.0.6_postcss@8.4.14:
     resolution: {integrity: sha512-rKqm2Fk0KbA8Vt3AdGN0FB9OBOMDVajMG6ZCf/GoHgdxUJ4sBFp0A/uMIRm+MJUdo33YXEtjqIz8u7DAp8B7DA==}
     engines: {node: '>=12.0'}
     peerDependencies:
       postcss: ^8.2.14
     dependencies:
-      postcss: 8.4.13
+      postcss: 8.4.14
       postcss-selector-parser: 6.0.10
     dev: true
 
@@ -3600,11 +3600,11 @@ packages:
       util-deprecate: 1.0.2
     dev: true
 
-  /postcss/8.4.13:
-    resolution: {integrity: sha512-jtL6eTBrza5MPzy8oJLFuUscHDXTV5KcLlqAWHl5q5WYRfnNRGSmOZmOZ1T6Gy7A99mOZfqungmZMpMmCVJ8ZA==}
+  /postcss/8.4.14:
+    resolution: {integrity: sha512-E398TUmfAYFPBSdzgeieK2Y1+1cpdxJx8yXbK/m57nRhKSmk1GB2tO4lbLBtlkfPQTDKfe4Xqv1ASWPpayPEig==}
     engines: {node: ^10 || ^12 || >=14}
     dependencies:
-      nanoid: 3.3.3
+      nanoid: 3.3.4
       picocolors: 1.0.0
       source-map-js: 1.0.2
 
@@ -4184,7 +4184,7 @@ packages:
         optional: true
     dependencies:
       esbuild: 0.14.38
-      postcss: 8.4.13
+      postcss: 8.4.14
       resolve: 1.22.0
       rollup: 2.72.0
     optionalDependencies:
