@@ -1,24 +1,49 @@
 import { HeaderActionButton } from 'components/button/rounded-button'
-import { PlusIcon } from 'components/icons'
+import { PlusIcon, TrashIcon } from 'components/icons'
 import { useDataTableFetch } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
 import type { TopicModel } from 'models/topic'
-import { NList, NListItem, NPagination } from 'naive-ui'
+import {
+  NAvatar,
+  NButton,
+  NButtonGroup,
+  NList,
+  NListItem,
+  NPagination,
+  NPopconfirm,
+  NThing,
+} from 'naive-ui'
 import { RESTManager } from 'utils'
+import { useRoute, useRouter } from 'vue-router'
 
 import type { PaginateResult } from '@mx-space/api-client'
+import { Icon } from '@vicons/utils'
 
 import { TopicEditModal } from './components/topic-modal'
 
 export default defineComponent({
   setup() {
+    const router = useRouter()
+    const route = useRoute()
+
+    watch(
+      () => route.query.page,
+      (page) => {
+        if (!page) {
+          fetchTopic(0)
+        } else {
+          fetchTopic(+page)
+        }
+      },
+    )
+
     const {
       fetchDataFn: fetchTopic,
       data: topics,
       pager: pagination,
     } = useDataTableFetch<TopicModel>(
       (topics, pagination) =>
-        async (page = 1, size = 20) => {
+        async (page = parseInt(route.query.page as any) || 1, size = 20) => {
           const res = await RESTManager.api.topics.get<
             PaginateResult<TopicModel>
           >({
@@ -46,6 +71,15 @@ export default defineComponent({
       showTopicModal.value = false
       editTopicId.value = ''
     }
+
+    const handleDelete = async (id: string) => {
+      await RESTManager.api.topics(id).delete()
+      fetchTopic()
+    }
+    const handleEdit = (id: string) => {
+      editTopicId.value = id
+      showTopicModal.value = true
+    }
     return {
       pagination,
       topics,
@@ -64,18 +98,25 @@ export default defineComponent({
           topics.value.push(topic)
         }
       },
+      handleDelete,
+      handleEdit,
+      route,
+      router,
     }
   },
   render() {
     const {
       pagination,
       topics,
-      fetchTopic,
+      router,
+      route,
       editTopicId,
       showTopicModal,
       handleAddTopic,
       handleCloseModal,
       handleSubmit,
+      handleEdit,
+      handleDelete,
     } = this
 
     return (
@@ -95,12 +136,60 @@ export default defineComponent({
           default() {
             return (
               <>
-                <NList>
+                <NList bordered class={'mb-4'}>
                   {topics.map((topic) => (
                     <NListItem key={topic.id}>
                       {{
+                        prefix() {
+                          return (
+                            <NAvatar class={'mt-2'} circle>
+                              {topic.icon || topic.name}
+                            </NAvatar>
+                          )
+                        },
+                        suffix() {
+                          return (
+                            <NButtonGroup>
+                              <NButton
+                                round
+                                onClick={() => handleEdit(topic.id!)}
+                              >
+                                编辑
+                              </NButton>
+                              <NPopconfirm
+                                onPositiveClick={() => handleDelete(topic.id!)}
+                              >
+                                {{
+                                  default() {
+                                    return `确定删除「${topic.name}」？`
+                                  },
+                                  trigger() {
+                                    return (
+                                      <NButton round type="error">
+                                        <Icon>
+                                          <TrashIcon />
+                                        </Icon>
+                                      </NButton>
+                                    )
+                                  },
+                                }}
+                              </NPopconfirm>
+                            </NButtonGroup>
+                          )
+                        },
                         default() {
-                          return topic.name
+                          return (
+                            <NThing
+                              title={topic.name}
+                              description={topic.introduce}
+                            >
+                              {{
+                                default() {
+                                  return topic.description
+                                },
+                              }}
+                            </NThing>
+                          )
                         },
                       }}
                     </NListItem>
@@ -110,7 +199,12 @@ export default defineComponent({
                   <div class={'flex justify-end'}>
                     <NPagination
                       page={pagination.currentPage}
-                      onUpdatePage={(page) => fetchTopic(page)}
+                      onUpdatePage={(page) => {
+                        router.replace({
+                          query: { ...route.query, page },
+                          params: { ...route.params },
+                        })
+                      }}
                       pageCount={pagination.totalPage}
                       pageSize={pagination.size}
                       showQuickJumper

@@ -25,17 +25,24 @@ export const TopicEditModal = defineComponent({
   },
   setup(props) {
     const topic = reactive<Partial<TopicModel>>({})
+    const loading = ref(false)
 
     watch(
       () => props.id,
-      async (id) => {
+      (id) => {
         if (!id) {
           Object.keys(topic).forEach((key) => {
             delete topic[key]
           })
         } else {
-          const data = await RESTManager.api.topics(id).get<TopicModel>()
-          Object.assign(topic, data)
+          loading.value = true
+          RESTManager.api
+            .topics(id)
+            .get<TopicModel>()
+            .then((data) => {
+              Object.assign(topic, data)
+              loading.value = false
+            })
         }
       },
     )
@@ -71,14 +78,26 @@ export const TopicEditModal = defineComponent({
     const formRef = ref<FormInst>()
     return () => (
       <>
-        <NModal show={props.show}>
+        <NModal
+          show={props.show}
+          onUpdateShow={handleClose}
+          closable
+          onClose={handleClose}
+          transformOrigin="center"
+        >
           <NCard
+            role="dialog"
             title={'新建话题'}
             closable
             onClose={handleClose}
             class="modal-card sm"
           >
-            <NForm labelPlacement="top" ref={formRef} model={topic}>
+            <NForm
+              labelPlacement="top"
+              ref={formRef}
+              model={topic}
+              disabled={loading.value}
+            >
               <NFormItem
                 label="名字"
                 required
