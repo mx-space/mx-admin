@@ -2,13 +2,13 @@ import { HeaderActionButton } from 'components/button/rounded-button'
 import { PlusIcon } from 'components/icons'
 import { useDataTableFetch } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
-import { TopicModel } from 'models/topic'
-import { NList, NListItem, NModal, NPagination } from 'naive-ui'
+import type { TopicModel } from 'models/topic'
+import { NList, NListItem, NPagination } from 'naive-ui'
 import { RESTManager } from 'utils'
 
-import { PaginateResult } from '@mx-space/api-client'
+import type { PaginateResult } from '@mx-space/api-client'
 
-import { TopicAddIcon } from './components/topic-add'
+import { TopicEditModal } from './components/topic-modal'
 
 export default defineComponent({
   setup() {
@@ -36,21 +36,59 @@ export default defineComponent({
 
     onMounted(() => fetchTopic())
 
+    const editTopicId = ref('')
+    const showTopicModal = ref(false)
+    const handleAddTopic = () => {
+      showTopicModal.value = true
+      editTopicId.value = ''
+    }
+    const handleCloseModal = () => {
+      showTopicModal.value = false
+      editTopicId.value = ''
+    }
     return {
       pagination,
       topics,
       fetchTopic,
+      handleAddTopic,
+      editTopicId,
+      showTopicModal,
+      handleCloseModal,
+      handleSubmit(topic: TopicModel) {
+        handleCloseModal()
+
+        const index = topics.value.findIndex((item) => item.id === topic.id)
+        if (-~index) {
+          topics.value[index] = topic
+        } else {
+          topics.value.push(topic)
+        }
+      },
     }
   },
   render() {
-    const { pagination, topics, fetchTopic } = this
+    const {
+      pagination,
+      topics,
+      fetchTopic,
+      editTopicId,
+      showTopicModal,
+      handleAddTopic,
+      handleCloseModal,
+      handleSubmit,
+    } = this
+
     return (
       <ContentLayout>
         {{
           actions() {
             return (
               <>
-                <TopicAddIcon />
+                <HeaderActionButton
+                  icon={<PlusIcon />}
+                  onClick={handleAddTopic}
+                  variant="success"
+                ></HeaderActionButton>
               </>
             )
           },
@@ -79,6 +117,13 @@ export default defineComponent({
                     ></NPagination>
                   </div>
                 )}
+
+                <TopicEditModal
+                  onClose={handleCloseModal}
+                  show={Boolean(showTopicModal || editTopicId)}
+                  id={editTopicId}
+                  onSubmit={handleSubmit}
+                />
               </>
             )
           },

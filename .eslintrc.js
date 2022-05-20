@@ -9,9 +9,19 @@ module.exports = {
       jsx: true,
     },
   },
-  extends: [
-    'plugin:vue/vue3-recommended',
-    'plugin:@typescript-eslint/recommended',
+  extends: ['plugin:vue/vue3-recommended', '@innei/eslint-config-ts'],
+  overrides: [
+    {
+      files: [
+        '*.config.[tj]s',
+        'pages/**/*.[tj]sx',
+        'src/pages/**/*.[tj]sx',
+        'src/views/**/*.[tj]sx',
+      ],
+      rules: {
+        'import/no-default-export': 'off',
+      },
+    },
   ],
   rules: {
     'vue/html-self-closing': 'off',

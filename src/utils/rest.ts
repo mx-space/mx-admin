@@ -1,12 +1,12 @@
 import camelcaseKeys from 'camelcase-keys'
 import { API_URL } from 'constants/env'
 import { isPlainObject } from 'lodash-es'
-import {
+import type {
   RequestMethod,
   RequestOptionsInit,
   RequestOptionsWithResponse,
-  extend,
 } from 'umi-request'
+import { extend } from 'umi-request'
 
 import { router } from '../router/router'
 import { getToken } from './auth'
@@ -138,7 +138,7 @@ RESTManager.instance.interceptors.request.use((url, options) => {
     options.headers.Authorization = token
   }
   return {
-    url: url + '?t=' + +new Date(),
+    url: `${url}?t=${+new Date()}`,
     options: {
       ...options,
 

@@ -14,13 +14,6 @@
     "lint": "eslint \"src/**/*.{ts,tsx,js,json,vue}\" --fix",
     "format": "prettier --write --loglevel warn \"src/**/*.{js,json,tsx,ts,css,scss,vue,html,md}\""
   },
-  "pnpm": {
-    "peerDependencyRules": {
-      "ignoreMissing": [
-        "rollup"
-      ]
-    }
-  },
   "dependencies": {
     "@antv/g2": "4.2.1",
     "@bytebase/vue-kbar": "0.1.7",
@@ -77,6 +70,7 @@
     "xterm-theme": "1.1.0"
   },
   "devDependencies": {
+    "@innei/eslint-config-ts": "0.9.1",
     "@innei/prettier": "latest",
     "@types/ejs": "3.1.1",
     "@types/js-yaml": "4.0.5",
@@ -91,6 +85,7 @@
     "@vue/compiler-sfc": "3.2.33",
     "cors": "2.8.5",
     "eslint": "8.15.0",
+    "eslint-plugin-unused-imports": "2.0.0",
     "eslint-plugin-vue": "8.7.1",
     "postcss": "8.4.13",
     "postcss-nested": "5.0.6",

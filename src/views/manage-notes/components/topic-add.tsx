@@ -24,7 +24,9 @@ export const TopicAddIcon = defineComponent({
 
     const handleSubmit = () => {
       formRef?.value?.validate((err) => {
-        console.log(err)
+        if (err?.length) {
+          return
+        }
       })
     }
     const formRef = ref<FormInst>()
@@ -43,15 +45,16 @@ export const TopicAddIcon = defineComponent({
             onClose={handleClose}
             class="modal-card sm"
           >
-            <NForm labelPlacement="top" ref={formRef}>
+            <NForm labelPlacement="top" ref={formRef} model={topic}>
               <NFormItem
                 label="名字"
                 required
                 rule={{
                   max: 50,
                   required: true,
+                  trigger: ['blur', 'input'],
                 }}
-                rulePath="name"
+                path="name"
               >
                 <NInput
                   value={topic.name}
@@ -66,8 +69,9 @@ export const TopicAddIcon = defineComponent({
                 required
                 rule={{
                   required: true,
+                  trigger: ['blur', 'input'],
                 }}
-                rulePath="slug"
+                path="slug"
               >
                 <NInput
                   value={topic.slug}
@@ -83,8 +87,9 @@ export const TopicAddIcon = defineComponent({
                 rule={{
                   max: 100,
                   required: true,
+                  trigger: ['blur', 'input'],
                 }}
-                rulePath="introduce"
+                path="introduce"
               >
                 <NInput
                   value={topic.introduce}
@@ -107,8 +112,9 @@ export const TopicAddIcon = defineComponent({
                 label="长描述"
                 rule={{
                   max: 500,
+                  trigger: ['blur', 'input'],
                 }}
-                rulePath="description"
+                path="description"
               >
                 <NInput
                   type="textarea"
