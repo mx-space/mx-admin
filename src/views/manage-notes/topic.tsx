@@ -14,11 +14,13 @@ import {
   NThing,
 } from 'naive-ui'
 import { RESTManager } from 'utils'
+import { textToBigCharOrWord } from 'utils/word'
 import { useRoute, useRouter } from 'vue-router'
 
 import type { PaginateResult } from '@mx-space/api-client'
 import { Icon } from '@vicons/utils'
 
+import { TopicDetail } from './components/topic-detail'
 import { TopicEditModal } from './components/topic-modal'
 
 export default defineComponent({
@@ -143,7 +145,7 @@ export default defineComponent({
                         prefix() {
                           return (
                             <NAvatar class={'mt-2'} circle>
-                              {topic.icon || topic.name}
+                              {topic.icon || textToBigCharOrWord(topic.name)}
                             </NAvatar>
                           )
                         },
@@ -182,10 +184,14 @@ export default defineComponent({
                             <NThing
                               title={topic.name}
                               description={topic.introduce}
+                              titleExtra={topic.slug}
                             >
                               {{
                                 default() {
                                   return topic.description
+                                },
+                                footer() {
+                                  return <TopicDetail id={topic.id!} />
                                 },
                               }}
                             </NThing>

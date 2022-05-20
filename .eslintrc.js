@@ -35,5 +35,6 @@ module.exports = {
     'vue/require-default-prop': 'off',
     'vue/no-mutating-props': 'off',
     '@typescript-eslint/no-namespace': 'off',
+    '@typescript-eslint/no-non-null-assertion': 0,
   },
 }
