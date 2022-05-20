@@ -47,7 +47,7 @@ specifiers:
   ejs: 3.1.8
   eslint: 8.15.0
   eslint-plugin-unused-imports: 2.0.0
-  eslint-plugin-vue: 8.7.1
+  eslint-plugin-vue: 9.0.1
   js-cookie: 3.0.1
   js-yaml: 4.1.0
   lodash-es: 4.17.21
@@ -155,7 +155,7 @@ devDependencies:
   cors: 2.8.5
   eslint: 8.15.0
   eslint-plugin-unused-imports: 2.0.0_e3xjx4eldkcjaoce22b36s2fhm
-  eslint-plugin-vue: 8.7.1_eslint@8.15.0
+  eslint-plugin-vue: 9.0.1_eslint@8.15.0
   postcss: 8.4.13
   postcss-nested: 5.0.6_postcss@8.4.13
   prettier: 2.6.2
@@ -583,7 +583,6 @@ packages:
     hasBin: true
     dependencies:
       '@babel/types': 7.17.10
-    dev: true
 
   /@babel/parser/7.17.9:
     resolution: {integrity: sha512-vqUSBLP8dQHFPdPi9bc5GK9vRkYHJ49fsZdtoJ8EQ8ibpwk5rPKfvNIwChB0KVXcIjcepEBBd2VHC5r9Gy8ueg==}
@@ -1904,7 +1903,7 @@ packages:
   /@vue/compiler-core/3.2.33:
     resolution: {integrity: sha512-AAmr52ji3Zhk7IKIuigX2osWWsb2nQE5xsdFYjdnmtQ4gymmqXbjLvkSE174+fF3A3kstYrTgGkqgOEbsdLDpw==}
     dependencies:
-      '@babel/parser': 7.17.9
+      '@babel/parser': 7.17.10
       '@vue/shared': 3.2.33
       estree-walker: 2.0.2
       source-map: 0.6.1
@@ -1942,7 +1941,7 @@ packages:
   /@vue/reactivity-transform/3.2.33:
     resolution: {integrity: sha512-4UL5KOIvSQb254aqenW4q34qMXbfZcmEsV/yVidLUgvwYQQ/D21bGX3DlgPUGI3c4C+iOnNmDCkIxkILoX/Pyw==}
     dependencies:
-      '@babel/parser': 7.17.9
+      '@babel/parser': 7.17.10
       '@vue/compiler-core': 3.2.33
       '@vue/shared': 3.2.33
       estree-walker: 2.0.2
@@ -2202,7 +2201,7 @@ packages:
     dev: true
 
   /boolbase/1.0.0:
-    resolution: {integrity: sha1-aN/1++YMUes3cl6p4+0xDcwed24=}
+    resolution: {integrity: sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==}
     dev: true
 
   /bottleneck/2.19.5:
@@ -2974,9 +2973,9 @@ packages:
       eslint-rule-composer: 0.3.0
     dev: true
 
-  /eslint-plugin-vue/8.7.1_eslint@8.15.0:
-    resolution: {integrity: sha512-28sbtm4l4cOzoO1LtzQPxfxhQABararUb1JtqusQqObJpWX2e/gmVyeYVfepizPFne0Q5cILkYGiBoV36L12Wg==}
-    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+  /eslint-plugin-vue/9.0.1_eslint@8.15.0:
+    resolution: {integrity: sha512-/w/9/vzz+4bSYtp5UqXgJ0CfycXTMtpp6lkz7/fMp0CcJxPWyRP6Pr88ihhrsNEcVt2ZweMupWRNYa+5Md41LQ==}
+    engines: {node: ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: ^6.2.0 || ^7.0.0 || ^8.0.0
     dependencies:
@@ -2985,8 +2984,9 @@ packages:
       natural-compare: 1.4.0
       nth-check: 2.0.1
       postcss-selector-parser: 6.0.10
-      semver: 7.3.5
-      vue-eslint-parser: 8.3.0_eslint@8.15.0
+      semver: 7.3.7
+      vue-eslint-parser: 9.0.2_eslint@8.15.0
+      xml-name-validator: 4.0.0
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -4315,14 +4315,6 @@ packages:
     hasBin: true
     dev: true
 
-  /semver/7.3.5:
-    resolution: {integrity: sha512-PoeGJYh8HK4BTO/a9Tf6ZG3veo/A7ZVsYrSA6J8ny9nb3B1VrpkuN+z9OE5wfE5p6H4LchYZsegiQgbJD94ZFQ==}
-    engines: {node: '>=10'}
-    hasBin: true
-    dependencies:
-      lru-cache: 6.0.0
-    dev: true
-
   /semver/7.3.7:
     resolution: {integrity: sha512-QlYTucUYOews+WeEujDoEGziz4K6c47V/Bd+LjSSYcA94p+DmINdf7ncaUinThfvZyu13lN9OY1XDxt8C0Tw0g==}
     engines: {node: '>=10'}
@@ -4807,24 +4799,6 @@ packages:
       vue: 3.2.33
     dev: false
 
-  /vue-eslint-parser/8.3.0_eslint@8.15.0:
-    resolution: {integrity: sha512-dzHGG3+sYwSf6zFBa0Gi9ZDshD7+ad14DGOdTLjruRVgZXe2J+DcZ9iUhyR48z5g1PqRa20yt3Njna/veLJL/g==}
-    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
-    peerDependencies:
-      eslint: '>=6.0.0'
-    dependencies:
-      debug: 4.3.4
-      eslint: 8.15.0
-      eslint-scope: 7.1.1
-      eslint-visitor-keys: 3.3.0
-      espree: 9.3.2
-      esquery: 1.4.0
-      lodash: 4.17.21
-      semver: 7.3.7
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
   /vue-eslint-parser/9.0.2_eslint@8.15.0:
     resolution: {integrity: sha512-uCPQwTGjOtAYrwnU+76pYxalhjsh7iFBsHwBqDHiOPTxtICDaraO4Szw54WFTNZTAEsgHHzqFOu1mmnBOBRzDA==}
     engines: {node: ^14.17.0 || >=16.0.0}
@@ -4957,6 +4931,11 @@ packages:
       utf-8-validate:
         optional: true
     dev: false
+
+  /xml-name-validator/4.0.0:
+    resolution: {integrity: sha512-ICP2e+jsHvAj2E2lIHxa5tjXRlKDJo4IdvPvCXbXQGdzSfmSpNVyIKMvoZHjDY9DP0zV17iI85o90vRFXNccRw==}
+    engines: {node: '>=12'}
+    dev: true
 
   /xmlhttprequest-ssl/2.0.0:
     resolution: {integrity: sha512-QKxVRxiRACQcVuQEYFsI1hhkrMlrXHPegbbd1yn9UHOmRxY+si12nQYzri3vbzt8VdTTRviqcKxcyllFas5z2A==}
