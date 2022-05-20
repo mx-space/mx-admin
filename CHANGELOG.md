@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Setting bug
+- Topic modal
+- Analyze skeleton
+
+### Features
+
+- Topic init
+- Topic api
+- Topic list
+- Topic detail modal
+- Add note to topic
+- Topic note preivew
+- Note topic drawer
+
+### Miscellaneous Tasks
+
+- Code style
+- Lint
+
+### Refactor
+
+- Move to pinia
+
+## [3.16.23] - 2022-05-18
+
+### Bug Fixes
+
 - Update dependency ejs to v3.1.8 (#419)
 - Update dependency vditor to v3.8.14 (#415)
 - Update dependency @vueuse/core to v8.5.0 (#421)
@@ -16,6 +43,10 @@ All notable changes to this project will be documented in this file.
 - Update dependency vite to v2.9.9 (#417)
 - Update dependency vue-eslint-parser to v9 (#420)
 - Update typescript-eslint monorepo to v5.24.0 (#404)
+
+### Release
+
+- V3.16.23
 
 ## [3.16.22] - 2022-05-10
 
