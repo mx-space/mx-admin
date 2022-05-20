@@ -1,8 +1,8 @@
-import { ExternalLinkIcon, MagnifyIcon } from 'components/icons'
-import { ArticlePreview } from 'components/preview'
+import { ExternalLinkIcon } from 'components/icons'
+import { IframePreviewButton } from 'components/special-button/iframe-preview'
 import { WEB_URL } from 'constants/env'
 import { useStoreRef } from 'hooks/use-store-ref'
-import { NButton, NEllipsis, NPopover } from 'naive-ui'
+import { NButton, NEllipsis } from 'naive-ui'
 import { UIStore } from 'stores/ui'
 import { RESTManager, getToken } from 'utils'
 import { defineComponent } from 'vue'
@@ -53,11 +53,9 @@ export const TableTitleLink = defineComponent({
     })
 
     const endpoint = RESTManager.endpoint
-    const path =
-      `${endpoint 
-      }/markdown/render/${ 
-      props.id 
-      }${props.withToken ? `?token=${getToken()}` : ''}`
+    const path = `${endpoint}/markdown/render/${props.id}${
+      props.withToken ? `?token=${getToken()}` : ''
+    }`
     return () => (
       <RouterLink to={props.inPageTo} class="flex items-center space-x-2">
         <NEllipsis lineClamp={2} tooltip={{ width: 500 }}>
@@ -81,33 +79,7 @@ export const TableTitleLink = defineComponent({
           </NButton>
         )}
 
-        {props.id && isPC.value && (
-          <NPopover placement="right" class="!p-0">
-            {{
-              default() {
-                return props.id && <ArticlePreview url={path} />
-              },
-              trigger() {
-                return (
-                  <NButton
-                    text
-                    type="primary"
-                    tag="a"
-                    // @ts-ignore
-                    target="_blank"
-                    // @ts-ignore
-                    href={path}
-                    onClick={(e) => {
-                      e.stopPropagation()
-                    }}
-                  >
-                    <MagnifyIcon />
-                  </NButton>
-                )
-              },
-            }}
-          </NPopover>
-        )}
+        {props.id && isPC.value && <IframePreviewButton path={path} />}
       </RouterLink>
     )
   },

@@ -1,16 +1,21 @@
-import { PlusIcon, SearchIcon } from 'components/icons'
+import { PlusIcon, SearchIcon, TrashIcon } from 'components/icons'
+import { IframePreviewButton } from 'components/special-button/iframe-preview'
 import type { TopicModel } from 'models/topic'
 import {
   NAvatar,
   NButton,
   NCard,
   NEmpty,
+  NList,
+  NListItem,
   NModal,
+  NPagination,
+  NPopconfirm,
   NSelect,
   NSkeleton,
   NThing,
 } from 'naive-ui'
-import { RESTManager } from 'utils'
+import { RESTManager, getToken } from 'utils'
 import { textToBigCharOrWord } from 'utils/word'
 import type { PropType } from 'vue'
 
@@ -39,17 +44,13 @@ export const TopicDetail = defineComponent({
       const topicData = await RESTManager.api.topics(props.id).get<TopicModel>()
       topic.value = topicData
 
-      const { data: notesData, pagination } =
-        await fetchTopicNotesWithPagination(topicData.id!)
-
-      notes.value = notesData as any
-      notePagination.value = pagination
+      await fetchTopicNotesWithPagination(topicData.id!)
     }
 
     const fetchTopicNotesWithPagination = async (
       topicId: string,
       page = 1,
-      size = 10,
+      size = 5,
     ) => {
       loadingNotes.value = true
       const { data, pagination } = await RESTManager.api.notes
@@ -58,12 +59,29 @@ export const TopicDetail = defineComponent({
           params: { page, size },
         })
       loadingNotes.value = false
+      notes.value = data as any
+      notePagination.value = pagination
       return { data, pagination }
+    }
+
+    const handleRemoveTopicFromThisNote = async (noteId: string) => {
+      await RESTManager.api.notes(noteId).patch({
+        data: {
+          topicId: null,
+        },
+      })
+
+      message.success('已移除文章的专栏引用')
+
+      const index = notes.value.findIndex((note) => note.id === noteId)
+      if (-~index) {
+        notes.value.splice(index, 1)
+      }
     }
 
     return () => (
       <>
-        <NButton ghost size="small" onClick={handleFetchDetail}>
+        <NButton size="small" secondary round onClick={handleFetchDetail}>
           <NIcon class={'mr-1'}>
             <SearchIcon />
           </NIcon>
@@ -115,7 +133,7 @@ export const TopicDetail = defineComponent({
                   },
                 }}
               </NThing>
-              {loadingNotes.value ? (
+              {loadingNotes.value && notes.value.length == 0 ? (
                 <NSkeleton animated class="mt-2 h-[350px]"></NSkeleton>
               ) : (
                 <div class={'mt-4'}>
@@ -133,9 +151,67 @@ export const TopicDetail = defineComponent({
                       <NEmpty description="这里还没有任何内容"></NEmpty>
                     </div>
                   )}
-                  {notes.value.map((note) => (
-                    <p>{note.title}</p>
-                  ))}
+                  <NList bordered class={'mt-2'}>
+                    {notes.value.map((note) => (
+                      <NListItem key={note.id}>
+                        {{
+                          default() {
+                            return (
+                              <p class="space-x-2 flex items-center">
+                                <span>{note.title}</span>
+                                <IframePreviewButton
+                                  path={(() => {
+                                    const endpoint = RESTManager.endpoint
+                                    const path = `${endpoint}/markdown/render/${
+                                      note.id
+                                    }${`?token=${getToken()}`}`
+                                    return path
+                                  })()}
+                                />
+                              </p>
+                            )
+                          },
+                          suffix() {
+                            return (
+                              <NPopconfirm
+                                onPositiveClick={() =>
+                                  handleRemoveTopicFromThisNote(note.id)
+                                }
+                              >
+                                {{
+                                  trigger() {
+                                    return (
+                                      <NButton circle tertiary type="error">
+                                        <NIcon>
+                                          <TrashIcon />
+                                        </NIcon>
+                                      </NButton>
+                                    )
+                                  },
+                                  default() {
+                                    return `是否移除此话题「${topic.value?.name}」？`
+                                  },
+                                }}
+                              </NPopconfirm>
+                            )
+                          },
+                        }}
+                      </NListItem>
+                    ))}
+                  </NList>
+
+                  <div class={'flex justify-end'}>
+                    {notePagination.value && (
+                      <NPagination
+                        class={'mt-4'}
+                        onUpdatePage={(page) => {
+                          fetchTopicNotesWithPagination(props.id, page)
+                        }}
+                        page={notePagination.value.currentPage}
+                        pageCount={notePagination.value.totalPage}
+                      ></NPagination>
+                    )}
+                  </div>
                 </div>
               )}
             </NCard>
