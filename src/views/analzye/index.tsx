@@ -8,15 +8,7 @@ import { ContentLayout } from 'layouts/content'
 import { isEmpty } from 'lodash-es'
 import type { UA } from 'models/analyze'
 import type { Pager } from 'models/base'
-import {
-  NButton,
-  NEllipsis,
-  NP,
-  NSkeleton,
-  NSpace,
-  useDialog,
-  useMessage,
-} from 'naive-ui'
+import { NButton, NEllipsis, NP, NSkeleton, NSpace } from 'naive-ui'
 import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { RESTManager, parseDate } from 'utils'
 import {
@@ -32,11 +24,11 @@ import { useRoute, useRouter } from 'vue-router'
 import { Chart } from '@antv/g2/esm'
 
 const SectionTitle = defineComponent((_, { slots }) => () => (
-  <div class="font-semibold text-gray-400 my-[12px] ">{slots}</div>
+  <div class="font-semibold text-gray-400 my-[12px] ">{slots.default?.()}</div>
 ))
 export default defineComponent({
   setup() {
-    const { data, pager, sortProps, fetchDataFn } = useDataTableFetch(
+    const { data, pager, fetchDataFn } = useDataTableFetch(
       (data, pager) =>
         async (page = route.query.page || 1, size = 30) => {
           const response = (await RESTManager.api.analyze.get({
@@ -53,9 +45,6 @@ export default defineComponent({
           pager.value = response.pagination
         },
     )
-
-    const message = useMessage()
-    const dialog = useDialog()
 
     const route = useRoute()
     const router = useRouter()
@@ -175,7 +164,7 @@ export default defineComponent({
 
     // graph
     const count = ref({} as Total)
-    const todayIp = ref([] as string[])
+    const todayIp = ref<string[]>()
     const graphData = ref(
       {} as {
         day: any[]
@@ -423,31 +412,35 @@ export default defineComponent({
           </SectionTitle>
         </NP>
 
-        <NP>
-          <SectionTitle>
-            <span>今天 - 所有请求的 IP {todayIp.value.length} 个</span>
-          </SectionTitle>
+        {!todayIp.value ? (
+          <NSkeleton animated class="mt-2 h-[200px]"></NSkeleton>
+        ) : (
+          <NP>
+            <SectionTitle>
+              <span>今天 - 所有请求的 IP {todayIp.value.length} 个</span>
+            </SectionTitle>
 
-          <NSpace>
-            {todayIp.value.map((ip) => (
-              <IpInfoPopover
-                ip={ip}
-                key={ip}
-                triggerEl={
-                  <NButton
-                    size="tiny"
-                    class="!flex !py-[15px]"
-                    round
-                    type="primary"
-                    ghost
-                  >
-                    {ip}
-                  </NButton>
-                }
-              ></IpInfoPopover>
-            ))}
-          </NSpace>
-        </NP>
+            <NSpace>
+              {todayIp.value.map((ip) => (
+                <IpInfoPopover
+                  ip={ip}
+                  key={ip}
+                  triggerEl={
+                    <NButton
+                      size="tiny"
+                      class="!flex !py-[15px]"
+                      round
+                      type="primary"
+                      ghost
+                    >
+                      {ip}
+                    </NButton>
+                  }
+                ></IpInfoPopover>
+              ))}
+            </NSpace>
+          </NP>
+        )}
 
         <DataTable />
       </ContentLayout>
