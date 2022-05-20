@@ -14,6 +14,7 @@ import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
 import { ContentLayout } from 'layouts/content'
 import { isString } from 'lodash-es'
 import type { Coordinate, NoteModel, NoteMusicRecord } from 'models/note'
+import type { TopicModel } from 'models/topic'
 import {
   NButton,
   NButtonGroup,
@@ -42,6 +43,7 @@ import {
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
+import type { PaginateResult } from '@mx-space/api-client'
 import { Icon } from '@vicons/utils'
 
 type NoteReactiveType = {
@@ -54,7 +56,30 @@ type NoteReactiveType = {
   music: NoteMusicRecord[]
   location: null | string
   coordinates: null | Coordinate
+  topicId: string | null | undefined
 } & WriteBaseType
+
+const useNoteTopic = () => {
+  const topics = ref([] as TopicModel[])
+
+  const fetchTopic = async () => {
+    const { data, pagination } = await RESTManager.api.topics.get<
+      PaginateResult<TopicModel>
+    >({
+      params: {
+        // TODO
+        size: 50,
+      },
+    })
+
+    topics.value = data
+  }
+
+  return {
+    topics,
+    fetchTopic,
+  }
+}
 
 const NoteWriteView = defineComponent(() => {
   const route = useRoute()
@@ -87,6 +112,7 @@ const NoteWriteView = defineComponent(() => {
     allowComment: true,
 
     id: undefined,
+    topicId: undefined,
     images: [],
     meta: undefined,
   })
@@ -130,6 +156,10 @@ const NoteWriteView = defineComponent(() => {
       })) as any
 
       const data = payload.data
+
+      if (data.topic) {
+        topics.value.push(data.topic)
+      }
 
       nid.value = data.nid
       data.secret = data.secret ? new Date(data.secret) : null
@@ -194,6 +224,9 @@ const NoteWriteView = defineComponent(() => {
     await router.push({ name: RouteName.ViewNote, hash: '|publish' })
     autoSaveInEditor.clearSaved()
   }
+  const { fetchTopic, topics } = useNoteTopic()
+
+ 
 
   return () => (
     <ContentLayout
@@ -274,6 +307,23 @@ const NoteWriteView = defineComponent(() => {
             tag
             options={WEATHER_SET.map((i) => ({ label: i, value: i }))}
             onUpdateValue={(e) => void (data.weather = e)}
+          ></NSelect>
+        </NFormItem>
+
+        <NFormItem label="专栏">
+          <NSelect
+            options={topics.value.map((topic) => ({
+              label: topic.name,
+              value: topic.id!,
+              key: topic.id,
+            }))}
+            value={data.topicId}
+            onUpdateValue={(value) => {
+              data.topicId = value
+            }}
+            onFocus={() => {
+              fetchTopic()
+            }}
           ></NSelect>
         </NFormItem>
 

@@ -81,7 +81,7 @@ export const TopicDetail = defineComponent({
 
     return () => (
       <>
-        <NButton size="small" secondary round onClick={handleFetchDetail}>
+        <NButton size="small" secondary onClick={handleFetchDetail}>
           <NIcon class={'mr-1'}>
             <SearchIcon />
           </NIcon>
