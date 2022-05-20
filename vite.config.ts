@@ -1,11 +1,13 @@
 import { visualizer } from 'rollup-plugin-visualizer'
 import AutoImport from 'unplugin-auto-import/vite'
-import { PluginOption, defineConfig, loadEnv } from 'vite'
+import type { PluginOption } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import Checker from 'vite-plugin-checker'
 import WindiCSS from 'vite-plugin-windicss'
 import tsconfigPaths from 'vite-tsconfig-paths'
-import vueJsx from '@vitejs/plugin-vue-jsx'
+
 import vue from '@vitejs/plugin-vue'
+import vueJsx from '@vitejs/plugin-vue-jsx'
 
 import PKG from './package.json'
 
@@ -28,7 +30,7 @@ export default ({ mode }) => {
           /\.vue\??/, // .vue
         ],
         dts: './src/auto-import.d.ts',
-        imports: ['vue', 'pinia'],
+        imports: ['vue', 'pinia', '@vueuse/core'],
       }),
       Checker({
         typescript: true,
@@ -46,7 +48,7 @@ export default ({ mode }) => {
     },
 
     build: {
-      chunkSizeWarningLimit: 2500, //monaco is so big
+      chunkSizeWarningLimit: 2500,
       target: 'esnext',
       brotliSize: false,
 
@@ -89,7 +91,7 @@ const htmlPlugin: (env: any) => PluginOption = (env) => {
           '<!-- MX SPACE ADMIN DASHBOARD VERSION INJECT -->',
           `<script>window.version = '${PKG.version}';</script>`,
         )
-        .replace(/\@gh\-pages/g, '@page_v' + PKG.version)
+        .replace(/@gh-pages/g, `@page_v${PKG.version}`)
         .replace(
           '<!-- ENV INJECT -->',
           `<script id="env_injection">window.injectData = {WEB_URL:'${

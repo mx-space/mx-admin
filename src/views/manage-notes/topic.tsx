@@ -167,7 +167,7 @@ export default defineComponent({
                                   },
                                   trigger() {
                                     return (
-                                      <NButton round type="error">
+                                      <NButton round tertiary type="error">
                                         <Icon>
                                           <TrashIcon />
                                         </Icon>
