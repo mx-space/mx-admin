@@ -3,7 +3,8 @@ import { CodeHighlight } from 'components/code-highlight'
 import { ExternalLinkIcon, ImportIcon } from 'components/icons'
 import { CenterSpin } from 'components/spin'
 import { GitHubSnippetRepo } from 'external/api/github-mx-snippets'
-import { SnippetModel, SnippetType } from 'models/snippet'
+import type { SnippetModel} from 'models/snippet';
+import { SnippetType } from 'models/snippet'
 import {
   NButton,
   NCard,
@@ -17,7 +18,7 @@ import {
 } from 'naive-ui'
 import { basename, extname } from 'path-browserify'
 import { RESTManager } from 'utils'
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 
 type SnippetList = {
   name: string
@@ -195,7 +196,7 @@ const ProcessView = defineComponent({
                       ) {
                         const download_url = file.download_url
                         if (!download_url) {
-                          message.error('获取下载地址失败, ' + file.name)
+                          message.error(`获取下载地址失败, ${file.name}`)
                           return
                         }
                         const text = await fetch(download_url).then((res) =>

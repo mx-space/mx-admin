@@ -4,9 +4,9 @@ import { DeleteConfirmButton } from 'components/special-button/delete-confirm'
 import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
 import { useDataTableFetch } from 'hooks/use-table'
-import { PageModel, PageResponse } from 'models/page'
+import type { PageModel, PageResponse } from 'models/page'
 import { NButton, NPopconfirm, NSpace, useMessage } from 'naive-ui'
-import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
+import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { defineComponent, onMounted, reactive, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -67,9 +67,9 @@ export const ManagePageListView = defineComponent({
             render(row) {
               return (
                 <TableTitleLink
-                  inPageTo={'/pages/edit?id=' + row.id}
+                  inPageTo={`/pages/edit?id=${row.id}`}
                   title={row.title}
-                  externalLinkTo={'/' + row.slug}
+                  externalLinkTo={`/${row.slug}`}
                   id={row.id}
                 ></TableTitleLink>
               )
@@ -83,7 +83,7 @@ export const ManagePageListView = defineComponent({
             title: '路径',
             key: 'slug',
             render(row) {
-              return '/' + row.slug
+              return `/${row.slug}`
             },
           },
           {
@@ -174,7 +174,7 @@ export const ManagePageListView = defineComponent({
 
                     for (const s of status) {
                       if (s.status === 'rejected') {
-                        message.success('删除失败，' + s.reason.message)
+                        message.success(`删除失败，${s.reason.message}`)
                       }
                     }
 

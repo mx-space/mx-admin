@@ -5,9 +5,10 @@ import Vditor from 'vditor'
 
 import 'vditor/dist/index.css'
 
-import {
+import type {
   PropType,
-  Ref,
+  Ref} from 'vue';
+import {
   defineComponent,
   onMounted,
   ref,

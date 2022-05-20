@@ -22,11 +22,12 @@ import { IpInfoPopover } from 'components/ip-info'
 import { useShorthand } from 'components/shorthand'
 import { checkUpdateFromGitHub } from 'external/api/github-check-update'
 import { SentenceType, fetchHitokoto } from 'external/api/hitokoto'
-import { ShiJuData, getJinRiShiCiOne } from 'external/api/jinrishici'
+import type { ShiJuData } from 'external/api/jinrishici'
+import { getJinRiShiCiOne } from 'external/api/jinrishici'
 import { useStoreRef } from 'hooks/use-store-ref'
 import { ContentLayout } from 'layouts/content'
 import { pick } from 'lodash-es'
-import { Stat } from 'models/stat'
+import type { Stat } from 'models/stat'
 import {
   NButton,
   NCard,
@@ -52,10 +53,11 @@ import { useRouter } from 'vue-router'
 import { Icon } from '@vicons/utils'
 
 import PKG from '../../../package.json'
-import { Card, CardProps } from './card'
+import type { CardProps } from './card'
+import { Card } from './card'
 
 export const DashBoardView = defineComponent({
-  name: 'Dashboard',
+  name: 'DashboardView',
   setup() {
     const stat = ref(
       new Proxy(
@@ -87,7 +89,7 @@ export const DashBoardView = defineComponent({
         if (!data.hitokoto) {
           hitokoto.value = '没有获取到句子信息'
         } else {
-          hitokoto.value = data.hitokoto + (postfix ? ' —— ' + postfix : '')
+          hitokoto.value = data.hitokoto + (postfix ? ` —— ${postfix}` : '')
         }
       })
     }
@@ -95,7 +97,7 @@ export const DashBoardView = defineComponent({
     // 轮询状态计时器
     let timer: any
     onMounted(() => {
-      timer = setInterval(function polling() {
+      timer = setInterval(() => {
         fetchStat()
       }, 3000)
     })
@@ -559,7 +561,7 @@ const AppIF = defineComponent({
 
       versionMap.value = {
         admin: dashboard,
-        system: system,
+        system,
       }
     })
 

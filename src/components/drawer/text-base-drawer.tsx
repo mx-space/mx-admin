@@ -14,7 +14,7 @@ import {
   NSwitch,
 } from 'naive-ui'
 import { JSONParseReturnOriginal } from 'utils/json'
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 
 import { ImageDetailSection } from './components/image-detail-section'
 import { JSONEditor } from './components/json-editor'

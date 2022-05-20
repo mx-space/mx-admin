@@ -1,4 +1,4 @@
-import { RecentlyModel } from 'models/recently'
+import type { RecentlyModel } from 'models/recently'
 import { NButton, NInput, NSpace, useDialog } from 'naive-ui'
 import { RESTManager } from 'utils'
 import { ref } from 'vue'

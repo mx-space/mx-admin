@@ -4,7 +4,8 @@ import { WEB_URL } from 'constants/env'
 import { NLayoutContent } from 'naive-ui'
 import { AppStore } from 'stores/app'
 import { UIStore } from 'stores/ui'
-import { PropType, computed, defineComponent, onMounted, ref } from 'vue'
+import type { PropType} from 'vue';
+import { computed, defineComponent, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { Icon } from '@vicons/utils'
@@ -13,7 +14,8 @@ import { onClickOutside } from '@vueuse/core'
 import { configs } from '../../configs'
 import { useStoreRef } from '../../hooks/use-store-ref'
 import { UserStore } from '../../stores/user'
-import { MenuModel, buildMenuModel, buildMenus } from '../../utils/build-menus'
+import type { MenuModel} from '../../utils/build-menus';
+import { buildMenuModel, buildMenus } from '../../utils/build-menus'
 import { Avatar } from '../avatar'
 import styles from './index.module.css'
 
@@ -96,14 +98,14 @@ export const Sidebar = defineComponent({
       <div
         class={clsx(styles['root'], props.collapse ? styles['collapse'] : null)}
         style={{
-          width: !props.collapse && props.width ? props.width + 'px' : '',
+          width: !props.collapse && props.width ? `${props.width}px` : '',
         }}
         ref={sidebarRef}
       >
         <div
           class={
-            'fixed left-0 top-0 h-screen overflow-hidden z-10 text-white ' +
-            styles['sidebar']
+            `fixed left-0 top-0 h-screen overflow-hidden z-10 text-white ${ 
+            styles['sidebar']}`
           }
         >
           <div class={'title relative font-medium text-center text-2xl'}>
@@ -162,14 +164,14 @@ export const Sidebar = defineComponent({
                     {item.subItems && (
                       <ul
                         class={clsx(
-                          'overflow-hidden  ' +
-                            (!!item.subItems.length ? styles['has-child'] : ''),
+                          `overflow-hidden  ${ 
+                            item.subItems.length ? styles['has-child'] : ''}`,
                           _index.value === index ? styles['expand'] : '',
                         )}
                         style={{
                           maxHeight:
                             _index.value === index
-                              ? item.subItems.length * 3.5 + 'rem'
+                              ? `${item.subItems.length * 3.5}rem`
                               : '0',
                         }}
                       >

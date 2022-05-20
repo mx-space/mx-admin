@@ -1,20 +1,17 @@
 import { useStoreRef } from 'hooks/use-store-ref'
-import { Pager } from 'models/base'
+import type { Pager } from 'models/base'
 import { NDataTable } from 'naive-ui'
-import { dataTableProps } from 'naive-ui/lib/data-table/src/DataTable'
-import {
+import type { dataTableProps } from 'naive-ui/lib/data-table/src/DataTable'
+import type {
   RowKey,
   SortState,
   TableColumns,
 } from 'naive-ui/lib/data-table/src/interface'
 import { UIStore } from 'stores/ui'
-import { PropType, Ref, defineComponent, reactive, ref, watch } from 'vue'
-import {
-  LocationQueryValue,
-  onBeforeRouteUpdate,
-  useRoute,
-  useRouter,
-} from 'vue-router'
+import type { PropType, Ref } from 'vue'
+import { defineComponent, reactive, ref, watch } from 'vue'
+import type { LocationQueryValue } from 'vue-router'
+import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 
 import styles from './index.module.css'
 
@@ -77,8 +74,6 @@ export const Table = defineComponent({
     },
   },
   setup(props) {
-    const { data } = props
-
     const router = useRouter()
     const route = useRoute()
     const checkedRowKeys = ref<RowKey[]>([])
@@ -90,7 +85,7 @@ export const Table = defineComponent({
 
     // HACK
     const clean = watch(
-      () => data.value,
+      () => props.data.value,
       (n) => {
         loading.value = false
         clean()

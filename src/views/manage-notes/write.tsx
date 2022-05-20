@@ -13,7 +13,7 @@ import { useAutoSave, useAutoSaveInEditor } from 'hooks/use-auto-save'
 import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
 import { ContentLayout } from 'layouts/content'
 import { isString } from 'lodash-es'
-import { Coordinate, NoteModel, NoteMusicRecord } from 'models/note'
+import type { Coordinate, NoteModel, NoteMusicRecord } from 'models/note'
 import {
   NButton,
   NButtonGroup,
@@ -27,7 +27,7 @@ import {
   useMessage,
 } from 'naive-ui'
 import { RouteName } from 'router/name'
-import { WriteBaseType } from 'shared/types/base'
+import type { WriteBaseType } from 'shared/types/base'
 import { RESTManager } from 'utils/rest'
 import { getDayOfYear } from 'utils/time'
 import {
@@ -98,7 +98,7 @@ const NoteWriteView = defineComponent(() => {
 
   const loading = computed(() => !!(id.value && typeof data.id === 'undefined'))
 
-  const autoSaveHook = useAutoSave('note-' + (id.value || 'new'), 3000, () => ({
+  const autoSaveHook = useAutoSave(`note-${id.value || 'new'}`, 3000, () => ({
     text: data.text,
     title: data.title,
   }))

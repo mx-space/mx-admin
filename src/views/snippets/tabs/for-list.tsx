@@ -1,12 +1,12 @@
 import { HeaderActionButton } from 'components/button/rounded-button'
-import { AddIcon, FunctionIcon, ImportIcon, LockIcon } from 'components/icons'
+import { AddIcon, FunctionIcon, LockIcon } from 'components/icons'
 import { DeleteConfirmButton } from 'components/special-button/delete-confirm'
 import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
 import { useMountAndUnmount } from 'hooks/use-react'
 import { useDataTableFetch } from 'hooks/use-table'
 import { useLayout } from 'layouts/content'
-import { PaginateResult } from 'models/base'
+import type { PaginateResult } from 'models/base'
 import { NButton, NPopconfirm, NSpace } from 'naive-ui'
 import { RESTManager } from 'utils'
 import { getToken } from 'utils/auth'
@@ -14,7 +14,8 @@ import { useRouter } from 'vue-router'
 
 import { Icon } from '@vicons/utils'
 
-import { SnippetModel, SnippetType } from '../../../models/snippet'
+import type { SnippetModel} from '../../../models/snippet';
+import { SnippetType } from '../../../models/snippet'
 import { ImportSnippetButton } from '../components/import-snippets-button'
 
 const useFetchReferenceNames = () => {
@@ -171,14 +172,14 @@ export const Tab1ForList = defineComponent({
                         text
                         // @ts-ignore
                         href={
-                          RESTManager.endpoint +
+                          `${RESTManager.endpoint +
                           (row.type === SnippetType.Function
                             ? '/serverless/'
                             : '/snippets/') +
-                          row.reference +
-                          '/' +
-                          row.name +
-                          (row.private ? `?token=${getToken()}` : '')
+                          row.reference 
+                          }/${ 
+                          row.name 
+                          }${row.private ? `?token=${getToken()}` : ''}`
                         }
                         target="_blank"
                         size="tiny"

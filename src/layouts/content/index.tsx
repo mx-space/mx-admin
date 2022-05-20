@@ -3,9 +3,10 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import clsx from 'clsx'
 import { NLayoutContent } from 'naive-ui'
-import {
+import type {
   PropType,
-  VNode,
+  VNode} from 'vue';
+import {
   computed,
   defineComponent,
   inject,
@@ -98,7 +99,7 @@ export const ContentLayout = defineComponent({
             (cur.meta.title
               ? // t 不为空, 补一个 分隔符
                 t.length > 0
-                ? ' · ' + cur.meta.title
+                ? ` · ${cur.meta.title}`
                 : cur.meta.title
               : ''),
           '',

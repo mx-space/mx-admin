@@ -6,8 +6,8 @@ import { Table } from 'components/table'
 import { useDataTableFetch } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
 import { isEmpty } from 'lodash-es'
-import { UA } from 'models/analyze'
-import { Pager } from 'models/base'
+import type { UA } from 'models/analyze'
+import type { Pager } from 'models/base'
 import {
   NButton,
   NEllipsis,
@@ -17,7 +17,7 @@ import {
   useDialog,
   useMessage,
 } from 'naive-ui'
-import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
+import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { RESTManager, parseDate } from 'utils'
 import {
   defineComponent,
@@ -240,13 +240,13 @@ export default defineComponent({
         })
         chart
           .line()
-          .position(label[0] + '*' + label[2])
+          .position(`${label[0]}*${label[2]}`)
           .label(label[2])
           .color(label[1])
           .shape('smooth')
         chart
           .point()
-          .position(label[0] + '*' + label[2])
+          .position(`${label[0]}*${label[2]}`)
           .label(label[2])
           .color(label[1])
           .shape('circle')

@@ -4,7 +4,6 @@ import {
   NForm,
   NFormItem,
   NInput,
-  NSelect,
   NSwitch,
 } from 'naive-ui'
 import { defineComponent } from 'vue'

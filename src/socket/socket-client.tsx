@@ -8,7 +8,8 @@ import { bus } from 'utils/event-bus'
 import { BrowserNotification } from 'utils/notification'
 
 import { configs } from '../configs'
-import { EventTypes, NotificationTypes } from './types'
+import type { NotificationTypes } from './types';
+import { EventTypes } from './types'
 
 const Notification = {
   get warning() {
@@ -47,7 +48,7 @@ export class SocketClient {
     if (!token) {
       return
     }
-    this._socket = io(GATEWAY_URL + '/admin', {
+    this._socket = io(`${GATEWAY_URL}/admin`, {
       timeout: 10000,
       transports: ['websocket'],
       forceNew: true,
@@ -126,7 +127,7 @@ export class SocketClient {
         break
       }
       case EventTypes.COMMENT_CREATE: {
-        const body = payload.author + ': ' + payload.text
+        const body = `${payload.author}: ${payload.text}`
         const handler = () => {
           router.push({ name: 'comment' })
           notice.destroy()
@@ -145,7 +146,7 @@ export class SocketClient {
           },
         })
 
-        this.#notice.notice(this.#title + ' 收到新的评论', body).then((no) => {
+        this.#notice.notice(`${this.#title} 收到新的评论`, body).then((no) => {
           if (!no) {
             return
           }
@@ -196,7 +197,7 @@ export class SocketClient {
           },
         })
         this.#notice
-          .notice(this.#title + ' 收到新的友链申请', sitename)
+          .notice(`${this.#title} 收到新的友链申请`, sitename)
           .then((n) => {
             if (!n) {
               return

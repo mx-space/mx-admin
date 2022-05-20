@@ -9,8 +9,8 @@ import { WEB_URL } from 'constants/env'
 import { useStoreRef } from 'hooks/use-store-ref'
 import { ContentLayout } from 'layouts/content'
 import { isString } from 'lodash-es'
-import { CategoryModel, TagModel } from 'models/category'
-import { PostModel } from 'models/post'
+import type { CategoryModel, TagModel } from 'models/category'
+import type { PostModel } from 'models/post'
 import {
   NDynamicTags,
   NFormItem,
@@ -21,7 +21,7 @@ import {
 } from 'naive-ui'
 import type { SelectMixedOption } from 'naive-ui/lib/select/src/interface'
 import { RouteName } from 'router/name'
-import { WriteBaseType } from 'shared/types/base'
+import type { WriteBaseType } from 'shared/types/base'
 import { CategoryStore } from 'stores/category'
 import { RESTManager } from 'utils/rest'
 import { computed, defineComponent, onMounted, reactive, ref, toRaw } from 'vue'
@@ -239,7 +239,7 @@ const PostWriteView = defineComponent(() => {
                         params: { type: 'Tag' },
                       })
                       tags.value = data.map((i) => ({
-                        label: i.name + ' (' + i.count + ')',
+                        label: `${i.name} (${i.count})`,
                         value: i.name,
                         key: i.name,
                       }))

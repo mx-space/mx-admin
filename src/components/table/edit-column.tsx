@@ -1,8 +1,9 @@
 import { useStoreRef } from 'hooks/use-store-ref'
 import { NInput, NSelect, useMessage } from 'naive-ui'
-import { SelectMixedOption } from 'naive-ui/lib/select/src/interface'
+import type { SelectMixedOption } from 'naive-ui/lib/select/src/interface'
 import { CategoryStore } from 'stores/category'
-import { PropType, defineComponent, ref, watch } from 'vue'
+import type { PropType} from 'vue';
+import { defineComponent, ref, watch } from 'vue'
 
 export const EditColumn = defineComponent({
   props: {

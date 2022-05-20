@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import { RouteRecordNormalized } from 'vue-router'
+import type { RouteRecordNormalized } from 'vue-router'
 
 type TRouteRecordNormalized = Omit<RouteRecordNormalized, 'meta'> & {
   meta?: {
@@ -23,7 +23,7 @@ export interface MenuModel {
 
 const parsePath = (path: string, params?: KV) => {
   // 1. add slash
-  let n = /^\//.test(path) ? path : '/' + path
+  let n = /^\//.test(path) ? path : `/${path}`
 
   // 2. replace default params into path
   const hasParams = n.match(/(\/?:)/)
@@ -34,7 +34,7 @@ const parsePath = (path: string, params?: KV) => {
     throw new TypeError('params must be object')
   }
   for (const paramKey in params) {
-    n = n.replaceAll(':' + paramKey, params[paramKey])
+    n = n.replaceAll(`:${paramKey}`, params[paramKey])
   }
   return n
 }
@@ -46,11 +46,11 @@ const buildModel = (
 ): MenuModel => {
   const path = parsePath(item.path, item.meta?.params)
 
-  const fullPath = prevPath + '/' + path
+  const fullPath = `${prevPath}/${path}`
 
   return {
     title: (item.meta?.title as string) || item.name?.toString() || path,
-    path: path,
+    path,
     icon: item.meta?.icon as any,
     subItems: buildSubMenus(item, fullPath),
     hasParent,

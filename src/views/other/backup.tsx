@@ -102,7 +102,7 @@ export default defineComponent(() => {
     info.destroy()
     message.success('下载完成')
 
-    responseBlobToFile(blob, filename + '.zip')
+    responseBlobToFile(blob, `${filename}.zip`)
   }
 
   return () => (

@@ -20,7 +20,7 @@ const generateFakeData = (type: string) => {
     case 'randomnumber':
       return Math.floor(Math.random() * 10000)
     default:
-      return '{{' + type + '}}'
+      return `{{${type}}}`
   }
 }
 export default defineComponent({

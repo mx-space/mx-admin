@@ -41,7 +41,7 @@ router.beforeEach(async (to) => {
       ok: number
     }>()
     if (!ok) {
-      return '/login?from=' + encodeURI(to.fullPath)
+      return `/login?from=${encodeURI(to.fullPath)}`
     }
   }
 })

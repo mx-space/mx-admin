@@ -1,8 +1,9 @@
 import clsx from 'clsx'
 import { useRouter } from 'vue-router'
 
+import type {
+  Action} from '@bytebase/vue-kbar';
 import {
-  Action,
   KBarAnimator,
   KBarPortal,
   KBarPositioner,

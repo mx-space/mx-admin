@@ -2,7 +2,7 @@ import { AddIcon, MenuDownIcon } from 'components/icons'
 import { DeleteConfirmButton } from 'components/special-button/delete-confirm'
 import { RelativeTime } from 'components/time/relative-time'
 import { useDataTableFetch } from 'hooks/use-table'
-import { ProjectModel, ProjectResponse } from 'models/project'
+import type { ProjectModel, ProjectResponse } from 'models/project'
 import {
   NAvatar,
   NButton,
@@ -173,7 +173,7 @@ const ManageProjectView = defineComponent({
                                           </NElement>
                                         )
                                       },
-                                      'header-extra'() {
+                                      'header-extra': function() {
                                         return (
                                           <NButtonGroup>
                                             <NButton

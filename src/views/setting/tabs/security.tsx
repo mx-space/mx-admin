@@ -1,7 +1,7 @@
 import { PlusIcon as Plus } from 'components/icons'
 import { RelativeTime } from 'components/time/relative-time'
 import { useStoreRef } from 'hooks/use-store-ref'
-import { TokenModel } from 'models/token'
+import type { TokenModel } from 'models/token'
 import {
   NButton,
   NCard,
@@ -82,7 +82,7 @@ const ApiToken = defineComponent(() => {
     for (const key in n) {
       dataModel[key] = n[key]
     }
-    message.success('生成成功, Token 已复制, ' + response.token)
+    message.success(`生成成功, Token 已复制, ${response.token}`)
     await fetchToken()
     // Backend bug.
     const index = tokens.value.findIndex((i) => i.name === payload.name)

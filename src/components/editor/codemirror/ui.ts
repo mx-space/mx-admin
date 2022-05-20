@@ -1,9 +1,9 @@
 import { useStoreRef } from 'hooks/use-store-ref'
 import { UIStore } from 'stores/ui'
-import { Ref } from 'vue'
+import type { Ref } from 'vue'
 
 import { oneDark } from '@codemirror/theme-one-dark'
-import { EditorView } from '@codemirror/view/dist'
+import type { EditorView } from '@codemirror/view/dist'
 import { githubLight } from '@ddietr/codemirror-themes/theme/github-light'
 
 import { codemirrorReconfigureExtensionMap } from './extension'

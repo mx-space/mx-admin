@@ -21,7 +21,7 @@ export const useAutoSave = (
   getSaveData: () => Omit<SaveDto, 'savedTime'>,
 ) => {
   let timer: any
-  const key = 'auto-save-' + cacheKey
+  const key = `auto-save-${cacheKey}`
   const { storage, reset, clear } = useStorageObject(SaveDto, key, false)
   let memoPreviousValue = getSaveData()
   const save = () => {

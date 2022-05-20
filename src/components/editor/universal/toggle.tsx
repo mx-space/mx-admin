@@ -137,7 +137,7 @@ export const _EditorToggleWrapper = defineComponent({
         style={
           {
             '--editor-font-size': generalSetting.fontSize
-              ? generalSetting.fontSize / 14 + 'rem'
+              ? `${generalSetting.fontSize / 14}rem`
               : '',
             '--editor-font-family': generalSetting.fontFamily,
           } as any
@@ -163,13 +163,15 @@ export const _EditorToggleWrapper = defineComponent({
               const VditorEditor = getDynamicEditor(currentEditor.value)
               return <VditorEditor {...props} innerRef={vditorRef} />
             }
-            case 'plain':
+            case 'plain': {
               const PlainEditor = getDynamicEditor(currentEditor.value)
               return <PlainEditor {...props} />
+            }
 
-            case 'codemirror':
+            case 'codemirror': {
               const CodeMirrorEditor = getDynamicEditor(currentEditor.value)
               return <CodeMirrorEditor {...props} />
+            }
 
             default:
               return null

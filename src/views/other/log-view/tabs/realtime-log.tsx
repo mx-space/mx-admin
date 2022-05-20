@@ -3,7 +3,7 @@ import { useMountAndUnmount } from 'hooks/use-react'
 import { socket } from 'socket'
 import { EventTypes } from 'socket/types'
 import { bus } from 'utils/event-bus'
-import { Terminal } from 'xterm'
+import type { Terminal } from 'xterm'
 
 export const RealtimeLogPipeline = defineComponent({
   setup() {
@@ -12,7 +12,7 @@ export const RealtimeLogPipeline = defineComponent({
     }
 
     let term: Terminal
-    let messageQueue: string[] = []
+    const messageQueue: string[] = []
     const logHandler = (e) => {
       if (!term) {
         messageQueue.push(e)

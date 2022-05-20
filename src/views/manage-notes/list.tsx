@@ -11,10 +11,10 @@ import { Table } from 'components/table'
 import { EditColumn } from 'components/table/edit-column'
 import { RelativeTime } from 'components/time/relative-time'
 import { useDataTableFetch } from 'hooks/use-table'
-import { Pager } from 'models/base'
-import { NoteModel } from 'models/note'
+import type { Pager } from 'models/base'
+import type { NoteModel } from 'models/note'
 import { NButton, NEllipsis, NPopconfirm, NSpace, useMessage } from 'naive-ui'
-import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
+import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { defineComponent, onMounted, reactive, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -96,9 +96,9 @@ export const ManageNoteListView = defineComponent({
                 row.secret && +new Date(row.secret) - +new Date() > 0
               return (
                 <TableTitleLink
-                  inPageTo={'/notes/edit?id=' + row.id}
+                  inPageTo={`/notes/edit?id=${row.id}`}
                   title={row.title}
-                  externalLinkTo={'/notes/' + row.nid}
+                  externalLinkTo={`/notes/${row.nid}`}
                   id={row.id}
                   withToken={row.hide || isSecret}
                 >
@@ -331,7 +331,7 @@ export const ManageNoteListView = defineComponent({
 
                     for (const s of status) {
                       if (s.status === 'rejected') {
-                        message.success('删除失败，' + s.reason.message)
+                        message.success(`删除失败，${s.reason.message}`)
                       }
                     }
 

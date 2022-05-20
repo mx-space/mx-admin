@@ -1,7 +1,7 @@
 import { isEmpty } from 'lodash-es'
 import { NDynamicInput, NInput, NSelect } from 'naive-ui'
-import { SelectMixedOption } from 'naive-ui/lib/select/src/interface'
-import { PropType } from 'vue'
+import type { SelectMixedOption } from 'naive-ui/lib/select/src/interface'
+import type { PropType } from 'vue'
 
 export const KVEditor = defineComponent({
   props: {
@@ -19,7 +19,7 @@ export const KVEditor = defineComponent({
     },
   },
   setup(props) {
-    let memoInitialValue = isEmpty(props.value) ? null : props.value
+    const memoInitialValue = isEmpty(props.value) ? null : props.value
 
     const cleaner = watch(
       () => props.value,

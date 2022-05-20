@@ -13,9 +13,10 @@ import {
   NUpload,
   useMessage,
 } from 'naive-ui'
-import { FileInfo } from 'naive-ui/lib/upload/src/interface'
+import type { FileInfo } from 'naive-ui/lib/upload/src/interface'
 import { RESTManager, responseBlobToFile } from 'utils'
-import { ParseMarkdownYAML, ParsedModel } from 'utils/markdown-parser'
+import type { ParsedModel } from 'utils/markdown-parser';
+import { ParseMarkdownYAML } from 'utils/markdown-parser'
 import { defineComponent, ref, watch } from 'vue'
 
 enum ImportType {
@@ -82,13 +83,13 @@ export default defineComponent(() => {
             (file.type && file.type !== 'text/markdown') ||
             !['md', 'markdown'].includes(ext!)
           ) {
-            message.error('只能解析 markdown 文件, 但是得到了 ' + file.type)
+            message.error(`只能解析 markdown 文件, 但是得到了 ${file.type}`)
 
             reject(
-              'File must be markdown. got type: ' +
-                file.type +
-                ', got ext: ' +
-                ext,
+              `File must be markdown. got type: ${ 
+                file.type 
+                }, got ext: ${ 
+                ext}`,
             )
             return
           }

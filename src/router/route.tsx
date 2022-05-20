@@ -30,7 +30,7 @@ import {
 import $RouterView from 'layouts/router-view'
 import { SidebarLayout } from 'layouts/sidebar'
 import { DashBoardView } from 'views/dashboard'
-import { RouteRecordRaw } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router'
 
 import SetupLayout from '../layouts/setup-view.vue'
 import LoginView from '../views/login/index.vue'

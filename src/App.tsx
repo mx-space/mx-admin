@@ -18,7 +18,7 @@ import { useUIStore } from './stores/ui'
 import { useUserStore } from './stores/user'
 
 const Root = defineComponent({
-  name: 'Home',
+  name: 'RootView',
 
   setup() {
     const { fetchUser } = useUserStore()
@@ -86,4 +86,5 @@ const App = defineComponent({
   },
 })
 
+// eslint-disable-next-line import/no-default-export
 export default App

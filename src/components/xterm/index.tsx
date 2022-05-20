@@ -3,7 +3,7 @@ import { useMountAndUnmount } from 'hooks/use-react'
 import { useStoreRef } from 'hooks/use-store-ref'
 import { NSpin } from 'naive-ui'
 import { UIStore } from 'stores/ui'
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 import type { ITerminalOptions, Terminal } from 'xterm'
 import { Material, MaterialDark } from 'xterm-theme'
 

@@ -1,4 +1,4 @@
-import { Image } from 'models/base'
+import type { Image } from 'models/base'
 
 export type WriteBaseType = {
   title: string

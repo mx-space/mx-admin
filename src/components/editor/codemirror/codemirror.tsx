@@ -1,8 +1,9 @@
 import clsx from 'clsx'
 import { useSaveConfirm } from 'hooks/use-save-confirm'
-import { PropType, defineComponent } from 'vue'
+import type { PropType} from 'vue';
+import { defineComponent } from 'vue'
 
-import { EditorState } from '@codemirror/state'
+import type { EditorState } from '@codemirror/state'
 
 import styles from '../universal/editor.module.css'
 import { editorBaseProps } from '../universal/props'

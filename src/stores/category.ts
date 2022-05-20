@@ -1,8 +1,8 @@
-import { CategoryModel, CategoryResponse } from 'models/category'
+import type { CategoryModel, CategoryResponse } from 'models/category'
 import { RESTManager } from 'utils/rest'
 import { computed, ref } from 'vue'
 
-export const useCategoryStore = defineStore('category', function () {
+export const useCategoryStore = defineStore('category', () => {
   const data = ref<CategoryModel[]>()
 
   const map = computed(

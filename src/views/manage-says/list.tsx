@@ -3,9 +3,9 @@ import { DeleteConfirmButton } from 'components/special-button/delete-confirm'
 import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
 import { useDataTableFetch } from 'hooks/use-table'
-import { SayResponse } from 'models/say'
+import type { SayResponse } from 'models/say'
 import { NButton, NPopconfirm, NSpace, useDialog, useMessage } from 'naive-ui'
-import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
+import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { defineComponent, onMounted, reactive, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 
@@ -62,7 +62,7 @@ const ManageSayListView = defineComponent({
             width: 100,
             render(row) {
               return (
-                <RouterLink to={'/says/edit?id=' + row.id}>
+                <RouterLink to={`/says/edit?id=${row.id}`}>
                   <RelativeTime time={row.created} />
                 </RouterLink>
               )
@@ -82,7 +82,7 @@ const ManageSayListView = defineComponent({
             render(row) {
               return (
                 <NSpace wrap={false}>
-                  <RouterLink to={'/says/edit?id=' + row.id}>
+                  <RouterLink to={`/says/edit?id=${row.id}`}>
                     <NButton text type="primary" size="tiny">
                       编辑
                     </NButton>
@@ -146,7 +146,7 @@ const ManageSayListView = defineComponent({
 
                     for (const s of status) {
                       if (s.status === 'rejected') {
-                        message.success('删除失败，' + s.reason.message)
+                        message.success(`删除失败，${s.reason.message}`)
                       }
                     }
 

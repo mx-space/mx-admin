@@ -3,7 +3,7 @@ import { CenterSpin } from 'components/spin'
 import type { IKeyboardEvent, editor } from 'monaco-editor'
 import { AutoTypings, LocalStorageCache } from 'monaco-editor-auto-typings'
 import { UIStore } from 'stores/ui'
-import { Ref } from 'vue'
+import type { Ref } from 'vue'
 
 import { useSaveConfirm } from './use-save-confirm'
 import { useStoreRef } from './use-store-ref'
@@ -141,10 +141,10 @@ export const useAsyncLoadMonaco = (
           e.preventDefault()
         }
       }
-      monaco.editor.onKeyDown(function (e) {
+      monaco.editor.onKeyDown((e) => {
         stopHotKey(e)
       })
-      monaco.editor.onKeyUp(function (e) {
+      monaco.editor.onKeyUp((e) => {
         stopHotKey(e)
       })
       loaded.value = true

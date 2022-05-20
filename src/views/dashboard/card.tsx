@@ -1,6 +1,6 @@
 import { NButton, NCard, NSpace, NThing } from 'naive-ui'
 import Badge from 'naive-ui/lib/badge/src/Badge'
-import { PropType, VNode } from 'vue'
+import type { PropType, VNode } from 'vue'
 
 import { Icon } from '@vicons/utils'
 
@@ -50,7 +50,7 @@ export const Card = defineComponent({
                   ></Statistic>
                 )
               },
-              ['header-extra']() {
+              ['header-extra']: function() {
                 return (
                   <Icon class="text-4xl opacity-70">
                     {typeof props.icon == 'function'

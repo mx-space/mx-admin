@@ -1,8 +1,9 @@
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { PlusIcon } from 'components/icons'
-import { TopicModel } from 'models/topic'
+import type { TopicModel } from 'models/topic'
+import type {
+  FormInst} from 'naive-ui';
 import {
-  FormInst,
   NButton,
   NCard,
   NForm,

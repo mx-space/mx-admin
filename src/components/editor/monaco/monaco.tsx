@@ -4,9 +4,10 @@ import { useSaveConfirm } from 'hooks/use-save-confirm'
 import { useStoreRef } from 'hooks/use-store-ref'
 import type { editor as Editor } from 'monaco-editor'
 import { UIStore } from 'stores/ui'
-import {
+import type {
   PropType,
-  Ref,
+  Ref} from 'vue';
+import {
   defineComponent,
   onMounted,
   ref,
@@ -186,7 +187,7 @@ const initEditor = async (
     .forEach((_, _i) => {
       const i = _i + 1
       editor.addAction({
-        id: 'head-' + i,
+        id: `head-${i}`,
         label: 'heading',
         keybindings: [KeyMod.CtrlCmd | keycodeMap[i]],
         // @ts-ignore
@@ -204,7 +205,7 @@ const initEditor = async (
           }
           const prefix = e.getModel()?.getValueInRange(prefixRange)
 
-          if (prefix && prefix == '#'.repeat(i) + ' ') {
+          if (prefix && prefix == `${'#'.repeat(i)} `) {
             e.executeEdits('', [{ range: prefixRange, text: '' }])
             return
           }

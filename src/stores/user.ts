@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-import { UserModel } from '../models/user'
+import type { UserModel } from '../models/user'
 import { getToken, setToken } from '../utils/auth'
 import { RESTManager } from '../utils/rest'
 

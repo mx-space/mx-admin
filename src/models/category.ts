@@ -1,4 +1,4 @@
-import { PostModel } from './post'
+import type { PostModel } from './post'
 
 export enum CategoryType {
   Category,

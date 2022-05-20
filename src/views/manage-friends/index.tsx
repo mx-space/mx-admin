@@ -4,11 +4,12 @@ import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
 import { useDataTableFetch } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
-import {
+import type {
   LinkModel,
   LinkResponse,
+  LinkStateCount} from 'models/link';
+import {
   LinkState,
-  LinkStateCount,
   LinkStateNameMap,
   LinkType,
 } from 'models/link'
@@ -324,7 +325,7 @@ export default defineComponent({
                         onClick={async () => {
                           await RESTManager.api.links.audit(row.id).patch()
                           message.success(
-                            '通过了来自' + row.name + '的友链邀请',
+                            `通过了来自${row.name}的友链邀请`,
                           )
                           const idx = data.value.findIndex(
                             (i) => i.id == row.id,
@@ -392,7 +393,7 @@ export default defineComponent({
             headerStyle={{ textAlign: 'center' }}
             title={
               editDialogData.value.id
-                ? '编辑: ' + editDialogData.value.name
+                ? `编辑: ${editDialogData.value.name}`
                 : '新增'
             }
           >

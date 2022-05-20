@@ -3,8 +3,8 @@ import { AddIcon } from 'components/icons'
 import { tableRowStyle } from 'components/table'
 import { useStoreRef } from 'hooks/use-store-ref'
 import { ContentLayout } from 'layouts/content'
-import { TagModel } from 'models/category'
-import { PostModel } from 'models/post'
+import type { TagModel } from 'models/category'
+import type { PostModel } from 'models/post'
 import {
   NBadge,
   NButton,
@@ -22,7 +22,8 @@ import {
 } from 'naive-ui'
 import { CategoryStore } from 'stores/category'
 import { RESTManager } from 'utils/rest'
-import { Ref, defineComponent, onMounted, reactive, ref, watch } from 'vue'
+import type { Ref} from 'vue';
+import { defineComponent, onMounted, reactive, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 
 export const CategoryView = defineComponent((props) => {
@@ -216,7 +217,7 @@ export const CategoryView = defineComponent((props) => {
               key: 'title',
               render(row) {
                 return (
-                  <RouterLink to={'/posts/edit?id=' + row.id}>
+                  <RouterLink to={`/posts/edit?id=${row.id}`}>
                     <NButton type="primary" text>
                       {row.title}
                     </NButton>

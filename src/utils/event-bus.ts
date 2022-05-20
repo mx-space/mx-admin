@@ -8,7 +8,7 @@
  * @FilePath: /web/utils/observable.ts
  * @MIT
  */
-import { EventTypes } from 'socket/types'
+import type { EventTypes } from 'socket/types'
 
 type IDisposable = () => void
 export class EventBus {

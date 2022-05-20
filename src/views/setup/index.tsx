@@ -1,4 +1,4 @@
-import { IConfig, UrlDto } from 'models/setting'
+import type { IConfig, UrlDto } from 'models/setting'
 import {
   NButton,
   NCard,
@@ -12,9 +12,10 @@ import {
   NSteps,
   useMessage,
 } from 'naive-ui'
-import { PropType, defineComponent, ref } from 'vue'
+import type { PropType} from 'vue';
+import { defineComponent, ref } from 'vue'
 
-import { UserModel } from '../../models/user'
+import type { UserModel } from '../../models/user'
 import { getToken, removeToken } from '../../utils'
 import { RESTManager } from '../../utils/rest'
 import styles from './index.module.css'
@@ -99,8 +100,8 @@ const Step1 = defineComponent({
     const keywords = ref(defaultConfigs?.seo?.keywords as string[])
     const description = ref(defaultConfigs?.seo?.description || '')
     const url = reactive<UrlDto>({
-      adminUrl: location.origin + '/qaqdmin',
-      serverUrl: location.origin + '/api/v2',
+      adminUrl: `${location.origin}/qaqdmin`,
+      serverUrl: `${location.origin}/api/v2`,
       webUrl: location.origin,
       wsUrl: location.origin,
     })

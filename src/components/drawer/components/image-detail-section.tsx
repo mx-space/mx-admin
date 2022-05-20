@@ -1,4 +1,4 @@
-import { Image as ImageModel } from 'models/base'
+import type { Image as ImageModel } from 'models/base'
 import {
   NButton,
   NButtonGroup,
@@ -12,7 +12,7 @@ import {
 } from 'naive-ui'
 import { getDominantColor } from 'utils/image'
 import { pickImagesFromMarkdown } from 'utils/markdown'
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 
 export const ImageDetailSection = defineComponent({
   props: {

@@ -3,7 +3,7 @@ import { CheckCircleOutlinedIcon } from 'components/icons'
 import { useStoreRef } from 'hooks/use-store-ref'
 import { useLayout } from 'layouts/content'
 import { cloneDeep, isEmpty, merge, omit } from 'lodash-es'
-import { IConfig } from 'models/setting'
+import type { IConfig } from 'models/setting'
 import {
   NCollapse,
   NCollapseItem,

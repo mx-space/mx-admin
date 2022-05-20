@@ -1,6 +1,8 @@
-import { NPopover, PopoverTrigger } from 'naive-ui'
+import type { PopoverTrigger } from 'naive-ui';
+import { NPopover } from 'naive-ui'
 import { RESTManager } from 'utils'
-import { PropType, defineComponent, ref } from 'vue'
+import type { PropType} from 'vue';
+import { defineComponent, ref } from 'vue'
 
 const ipLocationCacheMap = new Map<string, IP>()
 

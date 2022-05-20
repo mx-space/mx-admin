@@ -1,6 +1,6 @@
 import { useAsyncLoadMonaco } from 'hooks/use-async-monaco'
 import { RESTManager } from 'utils'
-import { PropType, Ref } from 'vue'
+import type { PropType, Ref } from 'vue'
 
 import * as typeDefines from './lib.declare'
 

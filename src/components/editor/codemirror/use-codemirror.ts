@@ -1,4 +1,5 @@
-import { Ref, onMounted, ref } from 'vue'
+import type { Ref} from 'vue';
+import { onMounted, ref } from 'vue'
 
 import { defaultKeymap, indentWithTab } from '@codemirror/commands'
 import { highlightActiveLineGutter, lineNumbers } from '@codemirror/gutter'

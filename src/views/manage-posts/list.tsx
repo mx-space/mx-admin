@@ -6,20 +6,21 @@ import { EditColumn } from 'components/table/edit-column'
 import { RelativeTime } from 'components/time/relative-time'
 import { useStoreRef } from 'hooks/use-store-ref'
 import { useDataTableFetch } from 'hooks/use-table'
-import {
+import type {
   CategoryWithChildrenModel,
   PickedPostModelInCategoryChildren,
 } from 'models/category'
 import { NButton, NPopconfirm, NSpace, useMessage } from 'naive-ui'
-import {
+import type {
   FilterOption,
   FilterState,
   TableBaseColumn,
   TableColumns,
 } from 'naive-ui/lib/data-table/src/interface'
 import { CategoryStore } from 'stores/category'
+import type {
+  ComputedRef} from 'vue';
 import {
-  ComputedRef,
   computed,
   defineComponent,
   onMounted,
@@ -32,7 +33,7 @@ import { Icon } from '@vicons/utils'
 
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
-import { PostModel, PostResponse } from '../../models/post'
+import type { PostModel, PostResponse } from '../../models/post'
 import { RESTManager } from '../../utils/rest'
 
 export const ManagePostListView = defineComponent({
@@ -106,9 +107,9 @@ export const ManagePostListView = defineComponent({
                   <TableTitleLink
                     id={row.id}
                     title={row.title}
-                    inPageTo={'/posts/edit?id=' + row.id}
+                    inPageTo={`/posts/edit?id=${row.id}`}
                     externalLinkTo={
-                      '/posts/' + row.category.slug + '/' + row.slug
+                      `/posts/${row.category.slug}/${row.slug}`
                     }
                   ></TableTitleLink>
                 </>
@@ -273,7 +274,7 @@ export const ManagePostListView = defineComponent({
                   }
                   const ids = filterState.category.join(',')
 
-                  let { entries: _data } =
+                  const { entries: _data } =
                     await RESTManager.api.categories.get<{
                       entries: Record<string, CategoryWithChildrenModel>
                     }>({
@@ -349,7 +350,7 @@ export const ManagePostListView = defineComponent({
 
                     for (const s of status) {
                       if (s.status === 'rejected') {
-                        message.success('删除失败，' + s.reason.message)
+                        message.success(`删除失败，${s.reason.message}`)
                       }
                     }
 

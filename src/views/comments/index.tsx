@@ -12,7 +12,8 @@ import { KAOMOJI_LIST } from 'constants/kaomoji'
 import { useStoreRef } from 'hooks/use-store-ref'
 import { useDataTableFetch } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
-import { CommentModel, CommentState, CommentsResponse } from 'models/comment'
+import type { CommentModel, CommentsResponse } from 'models/comment';
+import { CommentState } from 'models/comment'
 import {
   NAvatar,
   NButton,
@@ -30,7 +31,7 @@ import {
   useDialog,
   useMessage,
 } from 'naive-ui'
-import { TableColumns } from 'naive-ui/lib/data-table/src/interface'
+import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { RouteName } from 'router/name'
 import { UIStore } from 'stores/ui'
 import { RESTManager } from 'utils/rest'
@@ -171,7 +172,7 @@ const ManageComment = defineComponent(() => {
               {row.author}
             </a>
 
-            <a href={(('mailto:' + row.mail) as any) || ''} target="_blank">
+            <a href={((`mailto:${row.mail}`) as any) || ''} target="_blank">
               {row.mail as any}
             </a>
 
@@ -198,14 +199,14 @@ const ManageComment = defineComponent(() => {
           switch (row.refType) {
             case 'Post': {
               return (
-                WEB_URL + '/posts/' + row.ref.category.slug + '/' + row.ref.slug
+                `${WEB_URL}/posts/${row.ref.category.slug}/${row.ref.slug}`
               )
             }
             case 'Note': {
-              return WEB_URL + '/notes/' + row.ref.nid
+              return `${WEB_URL}/notes/${row.ref.nid}`
             }
             case 'Page': {
-              return WEB_URL + '/' + row.ref.slug
+              return `${WEB_URL}/${row.ref.slug}`
             }
           }
         })() as string
@@ -402,10 +403,10 @@ const ManageComment = defineComponent(() => {
           <NCard
             style="width: 500px;max-width: 90vw"
             headerStyle={{ textAlign: 'center' }}
-            title={'回复: ' + replyComment.value.author}
+            title={`回复: ${replyComment.value.author}`}
           >
             <NForm onSubmit={onReplySubmit}>
-              <NFormItemRow label={replyComment.value.author + ' 说:'}>
+              <NFormItemRow label={`${replyComment.value.author} 说:`}>
                 <NInput
                   disabled
                   value={replyComment.value.text}
@@ -461,9 +462,9 @@ const ManageComment = defineComponent(() => {
                                     const end = $ta.selectionEnd as number
 
                                     $ta.value =
-                                      $ta.value.substring(0, start) +
-                                      ` ${kaomoji} ` +
-                                      $ta.value.substring(end, $ta.value.length)
+                                      `${$ta.value.substring(0, start) 
+                                      } ${kaomoji} ${ 
+                                      $ta.value.substring(end, $ta.value.length)}`
                                     replyText.value = $ta.value
                                     nextTick(() => {
                                       const shouldMoveToPos =

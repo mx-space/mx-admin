@@ -1,5 +1,5 @@
-import { MessageApi, useDialog, useNotification } from 'naive-ui'
-import { VNodeProps } from 'vue'
+import type { MessageApi, useDialog, useNotification } from 'naive-ui'
+import type { VNodeProps } from 'vue'
 
 declare global {
   export interface Window {

@@ -1,12 +1,13 @@
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { GithubIcon } from 'components/icons'
+import type {
+  IGithubRepo} from 'external/api/github-repo';
 import {
-  IGithubRepo,
   getRepoDetail,
   getRepoReadme,
 } from 'external/api/github-repo'
 import { NButton, NInput, useDialog } from 'naive-ui'
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 
 export const FetchGithubRepoButton = defineComponent({
   props: {

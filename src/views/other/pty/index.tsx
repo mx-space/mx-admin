@@ -20,11 +20,11 @@ import Io from 'socket.io-client'
 import { EventTypes } from 'socket/types'
 import { RESTManager, getToken, parseDate } from 'utils'
 import { bus } from 'utils/event-bus'
-import { PropType } from 'vue'
-import { IDisposable, Terminal } from 'xterm'
+import type { PropType } from 'vue'
+import type { IDisposable, Terminal } from 'xterm'
 
 export default defineComponent({
-  name: 'pty-view',
+  name: 'PtyView',
   setup() {
     let term: Terminal
 
@@ -40,7 +40,7 @@ export default defineComponent({
     const message = useMessage()
     const modal = useDialog()
 
-    const socket = Io(GATEWAY_URL + '/pty', {
+    const socket = Io(`${GATEWAY_URL}/pty`, {
       timeout: 10000,
       transports: ['websocket'],
       forceNew: true,
@@ -254,19 +254,19 @@ const ConnectionStatus = defineComponent(() => {
               </div>
               <div>
                 {item.endTime
-                  ? '结束于 ' + parseDate(item.endTime, 'yyyy年M月d日 HH:mm:ss')
+                  ? `结束于 ${parseDate(item.endTime, 'yyyy年M月d日 HH:mm:ss')}`
                   : '没有结束'}
               </div>
               <div>
                 {item.endTime &&
-                  '时长：' +
-                    ((Math.abs(
+                  `时长：${ 
+                    (Math.abs(
                       new Date(item.startTime).getTime() -
                         new Date(item.endTime).getTime(),
                     ) /
                       1000) |
-                      0) +
-                    '秒'}
+                      0 
+                    }秒`}
               </div>
             </NListItem>
           )

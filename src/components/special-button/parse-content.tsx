@@ -12,7 +12,8 @@ import {
   NSpace,
   NText,
 } from 'naive-ui'
-import { PropType, defineComponent, ref } from 'vue'
+import type { PropType} from 'vue';
+import { defineComponent, ref } from 'vue'
 
 import { Icon } from '@vicons/utils'
 

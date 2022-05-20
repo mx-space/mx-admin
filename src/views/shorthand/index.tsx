@@ -4,7 +4,7 @@
 import { AddIcon, PenIcon } from 'components/icons'
 import { useShorthand } from 'components/shorthand'
 import { RelativeTime } from 'components/time/relative-time'
-import { RecentlyModel } from 'models/recently'
+import type { RecentlyModel } from 'models/recently'
 import { NButton, NPopconfirm, NTimeline, NTimelineItem } from 'naive-ui'
 import { defineComponent, onMounted } from 'vue'
 

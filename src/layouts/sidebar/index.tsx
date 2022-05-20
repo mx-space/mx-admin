@@ -1,7 +1,8 @@
 import { KBarWrapper } from 'components/k-bar'
 import $RouterView from 'layouts/router-view'
 import { NLayoutContent } from 'naive-ui'
-import { CSSProperties, computed, defineComponent, watchEffect } from 'vue'
+import type { CSSProperties} from 'vue';
+import { computed, defineComponent, watchEffect } from 'vue'
 import { RouterLink } from 'vue-router'
 
 import { Sidebar } from '../../components/sidebar'
@@ -63,7 +64,7 @@ export const SidebarLayout = defineComponent({
                   style={
                     {
                       left: !collapse.value
-                        ? sidebarWidth.value + 'px'
+                        ? `${sidebarWidth.value}px`
                         : '100px',
                       pointerEvents:
                         isLaptop.value && !collapse.value ? 'none' : 'auto',

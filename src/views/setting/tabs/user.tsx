@@ -4,7 +4,7 @@ import { KVEditor } from 'components/kv-editor'
 import { RelativeTime } from 'components/time/relative-time'
 import { socialKeyMap } from 'constants/social'
 import { cloneDeep, isEmpty } from 'lodash-es'
-import { UserModel } from 'models/user'
+import type { UserModel } from 'models/user'
 import {
   NButton,
   NForm,

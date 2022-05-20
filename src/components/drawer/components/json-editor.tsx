@@ -1,6 +1,6 @@
 import { useAsyncLoadMonaco } from 'hooks/use-async-monaco'
 import { NButton } from 'naive-ui'
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 
 const JSONEditorProps = {
   value: {

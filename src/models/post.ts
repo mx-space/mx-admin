@@ -1,4 +1,4 @@
-import { Count, Image, Pager } from './base'
+import type { Count, Image, Pager } from './base'
 
 export interface PostResponse {
   data: PostModel[]

@@ -34,7 +34,7 @@ export const Tab2ForEdit = defineComponent({
     const editId = computed(() => route.query.id as string)
 
     const data = useStorage<SnippetModel>(
-      editId.value ? 'snippet-' + editId.value : 'snippet',
+      editId.value ? `snippet-${editId.value}` : 'snippet',
       new SnippetModel(),
     )
 

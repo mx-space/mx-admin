@@ -17,6 +17,7 @@ module.exports = {
         'pages/**/*.[tj]sx',
         'src/pages/**/*.[tj]sx',
         'src/views/**/*.[tj]sx',
+        'src/layouts/**/*.[tj]sx',
       ],
       rules: {
         'import/no-default-export': 'off',
