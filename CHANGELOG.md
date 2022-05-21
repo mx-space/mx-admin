@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Filter of note select
+
+## [3.17.0-alpha.0] - 2022-05-20
+
+### Bug Fixes
+
 - Setting bug
 - Topic modal
 - Analyze skeleton
@@ -27,6 +33,10 @@ All notable changes to this project will be documented in this file.
 ### Refactor
 
 - Move to pinia
+
+### Release
+
+- V3.17.0-alpha.0
 
 ## [3.16.23] - 2022-05-18
 
