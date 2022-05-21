@@ -27,13 +27,17 @@ export const TopicEditModal = defineComponent({
     const topic = reactive<Partial<TopicModel>>({})
     const loading = ref(false)
 
+    const restTopicData = () => {
+      Object.keys(topic).forEach((key) => {
+        delete topic[key]
+      })
+    }
+
     watch(
       () => props.id,
       (id) => {
         if (!id) {
-          Object.keys(topic).forEach((key) => {
-            delete topic[key]
-          })
+          restTopicData()
         } else {
           loading.value = true
           RESTManager.api
@@ -73,6 +77,9 @@ export const TopicEditModal = defineComponent({
           message.success('添加成功')
         }
         props.onSubmit?.(data)
+        nextTick(() => {
+          restTopicData()
+        })
       }
     }
     const formRef = ref<FormInst>()

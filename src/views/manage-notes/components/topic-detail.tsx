@@ -378,7 +378,6 @@ const AddNoteToThisTopicButton = defineComponent({
                 return (
                   <NSelect
                     maxTagCount={3}
-                    remote
                     filterable
                     clearable
                     loading={fetchingLoading.value}
