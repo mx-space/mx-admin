@@ -3,9 +3,19 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Miscellaneous Tasks
+
+- Update deps
+
+## [3.17.0-alpha.1] - 2022-05-21
+
 ### Bug Fixes
 
 - Filter of note select
+
+### Release
+
+- V3.17.0-alpha.1
 
 ## [3.17.0-alpha.0] - 2022-05-20
 
