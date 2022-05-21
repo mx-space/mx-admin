@@ -3,9 +3,23 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Bug Fixes
+
+- Fix list style and improve css compatibility
+
+### Features
+
+- Header bar mask
+
+## [3.17.0] - 2022-05-21
+
 ### Miscellaneous Tasks
 
 - Update deps
+
+### Release
+
+- V3.17.0
 
 ## [3.17.0-alpha.1] - 2022-05-21
 
