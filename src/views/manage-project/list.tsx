@@ -90,7 +90,7 @@ const ManageProjectView = defineComponent({
             ),
             default: () => (
               <NSpin show={loading.value}>
-                <NList bordered={false} class="min-h-[300px]">
+                <NList bordered={false} class="min-h-[300px] bg-transparent">
                   {{
                     footer() {
                       return (
@@ -173,7 +173,7 @@ const ManageProjectView = defineComponent({
                                           </NElement>
                                         )
                                       },
-                                      'header-extra': function() {
+                                      'header-extra': function () {
                                         return (
                                           <NButtonGroup>
                                             <NButton

@@ -53,7 +53,7 @@ export const LogListView = defineComponent({
         </NModal>
 
         <NSpin show={loading.value}>
-          <NList class="min-h-[300px]">
+          <NList class="min-h-[300px] bg-transparent">
             {{
               header() {
                 return (

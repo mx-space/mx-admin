@@ -32,7 +32,7 @@ export const RealtimeLogPipeline = defineComponent({
       }
     }
 
-    onMounted(() => {
+    tryOnMounted(() => {
       listen()
 
       bus.on(EventTypes.STDOUT, logHandler)

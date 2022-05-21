@@ -4,12 +4,12 @@ import { DeleteConfirmButton } from 'components/special-button/delete-confirm'
 import { Table } from 'components/table'
 import { useDataTableFetch } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
-import { NButton, NPopconfirm, NSpace, useDialog } from 'naive-ui'
+import { NButton, NPopconfirm, NSpace } from 'naive-ui'
 import { RESTManager, responseBlobToFile } from 'utils'
 import { defineComponent, onBeforeMount } from 'vue'
 
 export default defineComponent(() => {
-  const { checkedRowKeys, data, fetchDataFn } = useDataTableFetch<{
+  const { checkedRowKeys, data, fetchDataFn, loading } = useDataTableFetch<{
     filename: string
     size: string
   }>((data) => async () => {
@@ -23,7 +23,7 @@ export default defineComponent(() => {
   onBeforeMount(() => {
     fetchDataFn()
   })
-  const dialog = useDialog()
+
   const handleBackup = async () => {
     const info = message.info('备份中', { duration: 10e8, closable: true })
 
@@ -135,6 +135,7 @@ export default defineComponent(() => {
       <Table
         {...{ data, fetchDataFn }}
         checkedRowKey="filename"
+        loading={loading.value}
         nTableProps={{
           maxHeight: 'calc(100vh - 17rem)',
         }}
@@ -148,11 +149,12 @@ export default defineComponent(() => {
             options: ['none', 'all'],
           },
 
-          { title: '日期', key: 'filename' },
+          { title: '日期', key: 'filename', width: 300 },
           { title: '大小', key: 'size', width: 200 },
           {
             title: '操作',
             fixed: 'right',
+            width: 200,
             key: 'filename',
             render(row) {
               const filename = row.filename

@@ -237,7 +237,7 @@ const ConnectionStatus = defineComponent(() => {
   })
   return () => (
     <NCard bordered={false} class="max-h-[70vh] overflow-auto">
-      <NList bordered={false}>
+      <NList bordered={false} class="bg-transparent">
         {list.value.map((item) => {
           return (
             <NListItem key={item.startTime}>
@@ -259,14 +259,14 @@ const ConnectionStatus = defineComponent(() => {
               </div>
               <div>
                 {item.endTime &&
-                  `时长：${ 
+                  `时长：${
                     (Math.abs(
                       new Date(item.startTime).getTime() -
                         new Date(item.endTime).getTime(),
                     ) /
                       1000) |
-                      0 
-                    }秒`}
+                    0
+                  }秒`}
               </div>
             </NListItem>
           )
