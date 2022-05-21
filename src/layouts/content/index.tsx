@@ -3,9 +3,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import clsx from 'clsx'
 import { NLayoutContent } from 'naive-ui'
-import type {
-  PropType,
-  VNode} from 'vue';
+import type { PropType, VNode } from 'vue'
 import {
   computed,
   defineComponent,
