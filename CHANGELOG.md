@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Topic upload
+
+### Refactor
+
+- Extract upload wrapper
+
+## [3.18.0-alpha.0] - 2022-05-22
+
+### Bug Fixes
+
 - Update lock file
 - Comment table selection column too narrow
 - Thing and hotkey to toggle sidebar
@@ -17,6 +27,10 @@ All notable changes to this project will be documented in this file.
 ### Miscellaneous Tasks
 
 - Rename fn path
+
+### Release
+
+- V3.18.0-alpha.0
 
 ## [3.17.1] - 2022-05-21
 
