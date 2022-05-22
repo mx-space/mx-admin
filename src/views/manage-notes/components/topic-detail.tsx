@@ -1,5 +1,6 @@
 import { PlusIcon, SearchIcon, TrashIcon } from 'components/icons'
 import { IframePreviewButton } from 'components/special-button/iframe-preview'
+import { UploadWrapper } from 'components/upload'
 import type { TopicModel } from 'models/topic'
 import {
   NAvatar,
@@ -14,7 +15,6 @@ import {
   NSelect,
   NSkeleton,
   NThing,
-  NUpload,
   NUploadDragger,
 } from 'naive-ui'
 import { RESTManager, getToken } from 'utils'
@@ -112,14 +112,9 @@ export const TopicDetail = defineComponent({
                 {{
                   avatar() {
                     return (
-                      <NUpload
-                        showFileList={false}
+                      <UploadWrapper
                         class={'p0'}
-                        headers={{
-                          authorization: getToken() || '',
-                        }}
-                        accept="image/*"
-                        action={`${RESTManager.endpoint}/files/upload?type=icon`}
+                        type="icon"
                         onFinish={(e) => {
                           const res = JSON.parse(
                             (e.event?.target as XMLHttpRequest).responseText,
@@ -163,7 +158,7 @@ export const TopicDetail = defineComponent({
                               : textToBigCharOrWord(topic.value?.name)}
                           </NAvatar>
                         </NUploadDragger>
-                      </NUpload>
+                      </UploadWrapper>
                     )
                   },
 

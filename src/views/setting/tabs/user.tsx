@@ -2,6 +2,7 @@ import Avatar from 'components/avatar'
 import { IpInfoPopover } from 'components/ip-info'
 import { KVEditor } from 'components/kv-editor'
 import { RelativeTime } from 'components/time/relative-time'
+import { UploadWrapper } from 'components/upload'
 import { socialKeyMap } from 'constants/social'
 import { cloneDeep, isEmpty } from 'lodash-es'
 import type { UserModel } from 'models/user'
@@ -13,6 +14,7 @@ import {
   NGrid,
   NInput,
   NText,
+  NUploadDragger,
   useMessage,
 } from 'naive-ui'
 import { RESTManager, deepDiff } from 'utils'
@@ -63,7 +65,25 @@ export const TabUser = defineComponent(() => {
           <NForm class="flex flex-col justify-center items-center ">
             <NFormItem>
               <div class={styles['avatar']}>
-                <Avatar src={data.value.avatar} size={200}></Avatar>
+                <UploadWrapper
+                  type="avatar"
+                  onFinish={(ev) => {
+                    const { file, event } = ev
+                    try {
+                      const res = JSON.parse(
+                        (event?.target as XMLHttpRequest).responseText,
+                      )
+                      data.value.avatar = res.url
+                    } catch (e) {}
+                    return file
+                  }}
+                >
+                  <NUploadDragger
+                    class={'border-0 bg-transparent hover:border-0'}
+                  >
+                    <Avatar src={data.value.avatar} size={200}></Avatar>
+                  </NUploadDragger>
+                </UploadWrapper>
               </div>
             </NFormItem>
 

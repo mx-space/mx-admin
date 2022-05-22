@@ -1,4 +1,5 @@
 import { UploadIcon } from 'components/icons'
+import { UploadWrapper } from 'components/upload'
 import type { TopicModel } from 'models/topic'
 import type { FormInst } from 'naive-ui'
 import {
@@ -9,9 +10,7 @@ import {
   NIcon,
   NInput,
   NModal,
-  NUpload,
 } from 'naive-ui'
-import { getToken } from 'utils'
 import { RESTManager } from 'utils/rest'
 import type { PropType } from 'vue'
 
@@ -179,18 +178,9 @@ export const TopicEditModal = defineComponent({
                   {{
                     suffix() {
                       return (
-                        <NUpload
+                        <UploadWrapper
                           class={'flex items-center'}
-                          headers={{
-                            authorization: getToken() || '',
-                          }}
-                          showFileList={false}
-                          accept="image/*"
-                          action={`${RESTManager.endpoint}/files/upload?type=icon`}
-                          onError={(e) => {
-                            message.error('上传失败')
-                            return e.file
-                          }}
+                          type="icon"
                           onFinish={(e) => {
                             const res = JSON.parse(
                               (e.event?.target as XMLHttpRequest).responseText,
@@ -207,7 +197,7 @@ export const TopicEditModal = defineComponent({
                               <UploadIcon />
                             </NIcon>
                           </NButton>
-                        </NUpload>
+                        </UploadWrapper>
                       )
                     },
                   }}
