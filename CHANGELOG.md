@@ -5,11 +5,32 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update lock file
+- Comment table selection column too narrow
+- Thing and hotkey to toggle sidebar
+- Topic icon
+
+### Features
+
+- File manage init
+
+### Miscellaneous Tasks
+
+- Rename fn path
+
+## [3.17.1] - 2022-05-21
+
+### Bug Fixes
+
 - Fix list style and improve css compatibility
 
 ### Features
 
 - Header bar mask
+
+### Release
+
+- V3.17.1
 
 ## [3.17.0] - 2022-05-21
 
