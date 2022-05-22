@@ -1,7 +1,9 @@
 import { KBarWrapper } from 'components/k-bar'
+import { GATEWAY_URL } from 'constants/env'
 import $RouterView from 'layouts/router-view'
 import { NLayoutContent } from 'naive-ui'
-import type { CSSProperties} from 'vue';
+import { RESTManager } from 'utils'
+import type { CSSProperties } from 'vue'
 import { computed, defineComponent, watchEffect } from 'vue'
 import { RouterLink } from 'vue-router'
 
@@ -15,6 +17,13 @@ export const SidebarLayout = defineComponent({
 
   setup() {
     const ui = useStoreRef(UIStore)
+
+    const { meta, b } = useMagicKeys()
+    watchEffect(() => {
+      if (meta.value && b.value) {
+        collapse.value = !collapse.value
+      }
+    })
 
     const isInApiDebugMode =
       localStorage.getItem('__api') ||
@@ -40,13 +49,14 @@ export const SidebarLayout = defineComponent({
               <div class={styles['root']}>
                 {isInApiDebugMode && (
                   <div
-                    class="h-[40px] fixed top-0 left-0 right-0 bg-gray-600 z-2 text-gray-400 flex items-center transition-all duration-300 whitespace-pre"
+                    class="h-[40px] fixed top-0 left-0 right-0 bg-dark-800 z-2 text-gray-400 flex items-center transition-all duration-300 whitespace-pre"
                     style={{
                       paddingLeft: !collapse.value ? '270px' : '120px',
                     }}
                   >
-                    Current in Api debug mode, please see:{' '}
+                    Current in api custom pointing mode, please check:{' '}
                     <RouterLink to={'/setup-api'}>setup-api</RouterLink>.
+                    Endpoint: {RESTManager.endpoint}, Gateway: {GATEWAY_URL}
                   </div>
                 )}
                 <Sidebar

@@ -10,6 +10,7 @@ import {
   CogsIcon,
   CommentIcon,
   CommentsIcon,
+  DebugIcon,
   EllipsisHIcon,
   EyeIcon,
   FileIcon,
@@ -426,6 +427,7 @@ export const routes: RouteRecordRaw[] = [
     component: SidebarLayout,
     meta: {
       title: '调试',
+      icon: <DebugIcon />,
     },
     children: Object.entries(import.meta.glob('../views/debug/**/*.tsx')).map(
       ([path, comp]) => {
@@ -440,6 +442,7 @@ export const routes: RouteRecordRaw[] = [
           meta: {
             title,
             hideKbar: true,
+            icon: <DebugIcon />,
           },
         }
       },
