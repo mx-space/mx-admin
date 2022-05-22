@@ -102,3 +102,7 @@ button {
 .n-upload-file-list {
   @apply w-full;
 }
+
+.p0 .n-upload-dragger {
+  @apply p-0 flex;
+}

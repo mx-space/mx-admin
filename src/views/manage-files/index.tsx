@@ -21,20 +21,36 @@ import {
 import { RESTManager, getToken } from 'utils'
 import { defineComponent } from 'vue'
 
+type FileType = 'file' | 'icon' | 'photo' | 'avatar'
+
 export default defineComponent({
   setup() {
-    const type = ref('icon')
+    const type = ref<FileType>('icon')
 
     const list = ref([] as { url: string; name: string }[])
 
+    watch(
+      () => type.value,
+      () => {
+        fetch()
+      },
+    )
+
     onMounted(() => {
+      fetch()
+    })
+    const loading = ref(false)
+
+    const fetch = () => {
+      loading.value = true
       RESTManager.api
         .files(type.value)
         .get<any>()
         .then(({ data }) => {
           list.value = data
+          loading.value = false
         })
-    })
+    }
 
     const modalShow = ref(false)
     const checkUploadFile = async (data: {
@@ -86,10 +102,17 @@ export default defineComponent({
           </>
         }
       >
-        <NTabs>
-          <NTabPane name={'图标'}></NTabPane>
+        <NTabs
+          value={type.value}
+          onUpdateValue={(val) => {
+            type.value = val
+          }}
+        >
+          <NTabPane tab={'图标'} name={'icon'}></NTabPane>
+          <NTabPane tab={'头像'} name={'avatar'}></NTabPane>
         </NTabs>
         <Table
+          loading={loading.value}
           data={list}
           columns={[
             {

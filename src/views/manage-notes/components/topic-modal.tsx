@@ -1,6 +1,17 @@
+import { UploadIcon } from 'components/icons'
 import type { TopicModel } from 'models/topic'
 import type { FormInst } from 'naive-ui'
-import { NButton, NCard, NForm, NFormItem, NInput, NModal } from 'naive-ui'
+import {
+  NButton,
+  NCard,
+  NForm,
+  NFormItem,
+  NIcon,
+  NInput,
+  NModal,
+  NUpload,
+} from 'naive-ui'
+import { getToken } from 'utils'
 import { RESTManager } from 'utils/rest'
 import type { PropType } from 'vue'
 
@@ -164,7 +175,43 @@ export const TopicEditModal = defineComponent({
                   onUpdateValue={(val) => {
                     topic.icon = val
                   }}
-                ></NInput>
+                >
+                  {{
+                    suffix() {
+                      return (
+                        <NUpload
+                          class={'flex items-center'}
+                          headers={{
+                            authorization: getToken() || '',
+                          }}
+                          showFileList={false}
+                          accept="image/*"
+                          action={`${RESTManager.endpoint}/files/upload?type=icon`}
+                          onError={(e) => {
+                            message.error('上传失败')
+                            return e.file
+                          }}
+                          onFinish={(e) => {
+                            const res = JSON.parse(
+                              (e.event?.target as XMLHttpRequest).responseText,
+                            )
+                            e.file.url = res.url
+
+                            topic.icon = e.file.url as string
+
+                            return e.file
+                          }}
+                        >
+                          <NButton text>
+                            <NIcon>
+                              <UploadIcon />
+                            </NIcon>
+                          </NButton>
+                        </NUpload>
+                      )
+                    },
+                  }}
+                </NInput>
               </NFormItem>
 
               <NFormItem

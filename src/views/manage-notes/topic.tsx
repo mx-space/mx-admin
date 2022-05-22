@@ -146,8 +146,9 @@ export default defineComponent({
                           return (
                             <NAvatar
                               data-src={topic.icon}
-                              class={'mt-2'}
+                              class={`mt-2 ${topic.icon && '!bg-transparent'}`}
                               circle
+                              size={50}
                               src={topic.icon || undefined}
                             >
                               {topic.icon
@@ -174,7 +175,7 @@ export default defineComponent({
                                   },
                                   trigger() {
                                     return (
-                                      <NButton round tertiary type="error">
+                                      <NButton circle tertiary type="error">
                                         <Icon>
                                           <TrashIcon />
                                         </Icon>

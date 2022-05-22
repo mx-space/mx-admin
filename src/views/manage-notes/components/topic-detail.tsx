@@ -14,6 +14,8 @@ import {
   NSelect,
   NSkeleton,
   NThing,
+  NUpload,
+  NUploadDragger,
 } from 'naive-ui'
 import { RESTManager, getToken } from 'utils'
 import { textToBigCharOrWord } from 'utils/word'
@@ -110,15 +112,58 @@ export const TopicDetail = defineComponent({
                 {{
                   avatar() {
                     return (
-                      <NAvatar
-                        size={60}
-                        class="rounded-xl"
-                        src={topic.value?.icon || undefined}
+                      <NUpload
+                        showFileList={false}
+                        class={'p0'}
+                        headers={{
+                          authorization: getToken() || '',
+                        }}
+                        accept="image/*"
+                        action={`${RESTManager.endpoint}/files/upload?type=icon`}
+                        onFinish={(e) => {
+                          const res = JSON.parse(
+                            (e.event?.target as XMLHttpRequest).responseText,
+                          )
+                          e.file.url = res.url
+
+                          topic.value &&
+                            RESTManager.api
+                              .topics(topic.value.id)
+                              .patch({
+                                data: {
+                                  icon: res.url,
+                                },
+                              })
+                              .then(() => {
+                                if (topic.value) {
+                                  topic.value.icon = res.url
+                                }
+                              })
+
+                          return e.file
+                        }}
+                        onError={(e) => {
+                          try {
+                            const res = JSON.parse(
+                              (e.event?.target as XMLHttpRequest).responseText,
+                            )
+                            message.warning(res.message)
+                          } catch (err) {}
+                          return e.file
+                        }}
                       >
-                        {topic.value?.icon
-                          ? undefined
-                          : textToBigCharOrWord(topic.value?.name)}
-                      </NAvatar>
+                        <NUploadDragger>
+                          <NAvatar
+                            size={60}
+                            class="rounded-xl"
+                            src={topic.value?.icon || undefined}
+                          >
+                            {topic.value?.icon
+                              ? undefined
+                              : textToBigCharOrWord(topic.value?.name)}
+                          </NAvatar>
+                        </NUploadDragger>
+                      </NUpload>
                     )
                   },
 

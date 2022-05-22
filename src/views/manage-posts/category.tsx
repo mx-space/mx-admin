@@ -22,7 +22,7 @@ import {
 } from 'naive-ui'
 import { CategoryStore } from 'stores/category'
 import { RESTManager } from 'utils/rest'
-import type { Ref} from 'vue';
+import type { Ref } from 'vue'
 import { defineComponent, onMounted, reactive, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 
@@ -118,7 +118,6 @@ export const CategoryView = defineComponent((props) => {
 
       <NDataTable
         rowClassName={() => tableRowStyle}
-        size="small"
         bordered={false}
         data={categoryStore.data.value || []}
         remote
