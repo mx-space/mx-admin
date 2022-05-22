@@ -14,7 +14,7 @@ import { useRouter } from 'vue-router'
 
 import { Icon } from '@vicons/utils'
 
-import type { SnippetModel} from '../../../models/snippet';
+import type { SnippetModel } from '../../../models/snippet'
 import { SnippetType } from '../../../models/snippet'
 import { ImportSnippetButton } from '../components/import-snippets-button'
 
@@ -171,16 +171,15 @@ export const Tab1ForList = defineComponent({
                         tag="a"
                         text
                         // @ts-ignore
-                        href={
-                          `${RESTManager.endpoint +
+                        href={`${
+                          RESTManager.endpoint +
                           (row.type === SnippetType.Function
-                            ? '/serverless/'
+                            ? '/fn/'
                             : '/snippets/') +
-                          row.reference 
-                          }/${ 
-                          row.name 
-                          }${row.private ? `?token=${getToken()}` : ''}`
-                        }
+                          row.reference
+                        }/${row.name}${
+                          row.private ? `?token=${getToken()}` : ''
+                        }`}
                         target="_blank"
                         size="tiny"
                       >

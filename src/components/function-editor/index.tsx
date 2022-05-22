@@ -63,7 +63,7 @@ export const FunctionCodeEditor = defineComponent({
 
         const libUri = 'ts:filename/global.d.ts'
         if (!monaco.editor.getModel(monaco.Uri.parse(libUri))) {
-          RESTManager.api.serverless.types.get<any>().then((data) => {
+          RESTManager.api.fn.types.get<any>().then((data) => {
             const libSource = data
 
             monaco.languages.typescript.typescriptDefaults.addExtraLib(
