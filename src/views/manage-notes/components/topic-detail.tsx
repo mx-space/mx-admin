@@ -91,6 +91,9 @@ export const TopicDetail = defineComponent({
         <NModal
           show={show.value}
           closable
+          onClose={() => {
+            show.value = false
+          }}
           closeOnEsc
           onUpdateShow={(s) => {
             show.value = s
@@ -107,9 +110,14 @@ export const TopicDetail = defineComponent({
                 {{
                   avatar() {
                     return (
-                      <NAvatar size={60} round>
-                        {topic.value?.icon ||
-                          textToBigCharOrWord(topic.value?.name)}
+                      <NAvatar
+                        size={60}
+                        class="rounded-xl"
+                        src={topic.value?.icon || undefined}
+                      >
+                        {topic.value?.icon
+                          ? undefined
+                          : textToBigCharOrWord(topic.value?.name)}
                       </NAvatar>
                     )
                   },

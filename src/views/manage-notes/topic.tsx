@@ -144,8 +144,15 @@ export default defineComponent({
                       {{
                         prefix() {
                           return (
-                            <NAvatar class={'mt-2'} circle>
-                              {topic.icon || textToBigCharOrWord(topic.name)}
+                            <NAvatar
+                              data-src={topic.icon}
+                              class={'mt-2'}
+                              circle
+                              src={topic.icon || undefined}
+                            >
+                              {topic.icon
+                                ? undefined
+                                : textToBigCharOrWord(topic.name)}
                             </NAvatar>
                           )
                         },
