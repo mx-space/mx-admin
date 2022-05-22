@@ -371,8 +371,9 @@ const AddNoteToThisTopicButton = defineComponent({
 
     const handleFetchNext = (e: Event) => {
       const currentTarget = e.currentTarget as HTMLElement
+
       if (
-        currentTarget.scrollTop + currentTarget.offsetHeight >=
+        currentTarget.scrollTop + currentTarget.offsetHeight + 10 >=
         currentTarget.scrollHeight
       ) {
         fetchNext()
