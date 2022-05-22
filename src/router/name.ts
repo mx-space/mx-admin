@@ -10,6 +10,7 @@ export enum RouteName {
   Topic = 'topic',
   Comment = 'comment',
   Page = 'page',
+
   ListPage = 'page-list',
   EditPage = 'page-edit',
   Say = 'say',

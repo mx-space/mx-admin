@@ -97,3 +97,8 @@ button {
 .n-data-table-base-table-header {
   @apply overflow-hidden;
 }
+
+.n-upload-trigger,
+.n-upload-file-list {
+  @apply w-full;
+}

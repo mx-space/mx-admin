@@ -331,3 +331,53 @@ export const DebugIcon = () => (
     ></path>
   </svg>
 )
+
+export const SymbolIcon = () => (
+  <svg
+    aria-hidden="true"
+    role="img"
+    width="32"
+    height="32"
+    preserveAspectRatio="xMidYMid meet"
+    viewBox="0 0 24 24"
+  >
+    <path
+      fill="currentColor"
+      d="M11.5 22q-2.3 0-3.9-1.6T6 16.5V6q0-1.65 1.175-2.825Q8.35 2 10 2q1.65 0 2.825 1.175Q14 4.35 14 6v9.5q0 1.05-.725 1.775Q12.55 18 11.5 18q-1.05 0-1.775-.725Q9 16.55 9 15.5V6h1.5v9.5q0 .425.288.712q.287.288.712.288t.713-.288q.287-.287.287-.712V6q0-1.05-.725-1.775Q11.05 3.5 10 3.5q-1.05 0-1.775.725Q7.5 4.95 7.5 6v10.5q0 1.65 1.175 2.825Q9.85 20.5 11.5 20.5q1.65 0 2.825-1.175Q15.5 18.15 15.5 16.5V6H17v10.5q0 2.3-1.6 3.9T11.5 22Z"
+    ></path>
+  </svg>
+)
+
+export const UploadIcon = () => (
+  <svg
+    aria-hidden="true"
+    role="img"
+    width="32"
+    height="32"
+    preserveAspectRatio="xMidYMid meet"
+    viewBox="0 0 24 24"
+  >
+    <path
+      fill="currentColor"
+      d="M11 16V7.85l-2.6 2.6L7 9l5-5l5 5l-1.4 1.45l-2.6-2.6V16Zm-5 4q-.825 0-1.412-.587Q4 18.825 4 18v-3h2v3h12v-3h2v3q0 .825-.587 1.413Q18.825 20 18 20Z"
+    ></path>
+  </svg>
+)
+
+export const ArchiveIcon = () => {
+  return (
+    <svg
+      aria-hidden="true"
+      role="img"
+      width="32"
+      height="32"
+      preserveAspectRatio="xMidYMid meet"
+      viewBox="0 0 24 24"
+    >
+      <path
+        fill="currentColor"
+        d="M5 21q-.825 0-1.413-.587Q3 19.825 3 19V6.5q0-.375.125-.675q.125-.3.325-.575l1.4-1.7q.2-.275.5-.413Q5.65 3 6 3h12q.35 0 .65.137q.3.138.5.413l1.4 1.7q.2.275.325.575q.125.3.125.675V19q0 .825-.587 1.413Q19.825 21 19 21Zm.4-15h13.2l-.85-1H6.25ZM5 19h14V8H5v11Zm7-1l4-4l-1.4-1.4l-1.6 1.6V10h-2v4.2l-1.6-1.6L8 14Zm-7 1V8v11Z"
+      ></path>
+    </svg>
+  )
+}

@@ -21,6 +21,7 @@ import {
   PencilAltIcon,
   PencilIcon,
   PuzzlePieceIcon,
+  SymbolIcon,
   TachometerAltIcon,
   TemplateIcon,
   TerminalIcon,
@@ -181,6 +182,15 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         component: () => import('../views/manage-pages/write'),
       },
     ],
+  },
+  {
+    path: '/files',
+    name: RouteName.File,
+    meta: {
+      title: '文件',
+      icon: <SymbolIcon />,
+    },
+    component: () => import('../views/manage-files'),
   },
   {
     path: '/says',
