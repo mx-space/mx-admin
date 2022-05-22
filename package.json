@@ -29,7 +29,7 @@
     "@codemirror/theme-one-dark": "0.19.1",
     "@codemirror/view": "0.19.48",
     "@ddietr/codemirror-themes": "1.1.0",
-    "@mx-space/api-client": "0.10.2",
+    "@mx-space/api-client": "0.10.4",
     "@vicons/antd": "0.12.0",
     "@vicons/fa": "0.12.0",
     "@vicons/fluent": "0.12.0",
