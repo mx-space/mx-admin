@@ -383,7 +383,7 @@ const ManageComment = defineComponent(() => {
           {
             type: 'selection',
             options: ['none', 'all'],
-            width: 30,
+            width: 50,
           },
           ...columns,
         ]}
