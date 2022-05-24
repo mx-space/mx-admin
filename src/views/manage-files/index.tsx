@@ -193,6 +193,9 @@ export default defineComponent({
         <NModal
           closable
           closeOnEsc
+          onClose={() => {
+            modalShow.value = false
+          }}
           show={modalShow.value}
           onUpdateShow={(s) => {
             modalShow.value = s
