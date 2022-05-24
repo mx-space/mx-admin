@@ -5,11 +5,27 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Scroll container scroll end event
+- Update dependency @mx-space/api-client to v0.10.4 (#430)
+- Parse meta field
+
+### Miscellaneous Tasks
+
+- Update typescript-eslint monorepo to v5.26.0 (#423)
+
+## [3.18.0-alpha.1] - 2022-05-22
+
+### Bug Fixes
+
 - Topic upload
 
 ### Refactor
 
 - Extract upload wrapper
+
+### Release
+
+- V3.18.0-alpha.1
 
 ## [3.18.0-alpha.0] - 2022-05-22
 
