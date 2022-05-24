@@ -1,11 +1,4 @@
-import {
-  NButton,
-  NCard,
-  NForm,
-  NFormItem,
-  NInput,
-  NSwitch,
-} from 'naive-ui'
+import { NButton, NCard, NForm, NFormItem, NInput, NSwitch } from 'naive-ui'
 import { defineComponent } from 'vue'
 
 export default defineComponent({

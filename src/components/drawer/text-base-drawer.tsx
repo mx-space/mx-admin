@@ -148,6 +148,9 @@ export const TextBaseDrawer = defineComponent({
 
         <NModal
           show={showJSONEditorModal.value}
+          onUpdateShow={(e) => {
+            showJSONEditorModal.value = e
+          }}
           zIndex={2222}
           preset="card"
           closable
@@ -166,7 +169,7 @@ export const TextBaseDrawer = defineComponent({
               try {
                 const parsed = JSON.parse(jsonString)
 
-                console.log(parsed)
+                // console.log(parsed)
 
                 props.data.meta = parsed
 

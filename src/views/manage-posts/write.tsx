@@ -132,9 +132,11 @@ const PostWriteView = defineComponent(() => {
             data={data}
             onHandleYamlParsedMeta={(meta) => {
               // TODO: other meta field attach to data
-              // TODO: validate meta data type
-              data.title = meta.title ?? data.title
-              data.slug = meta.slug ?? data.slug
+              const { title, slug, ...rest } = meta
+              data.title = title ?? data.title
+              data.slug = slug ?? data.slug
+
+              data.meta = { ...rest }
             }}
           />
           <HeaderActionButton

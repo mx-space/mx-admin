@@ -109,11 +109,12 @@ const PageWriteView = defineComponent(() => {
           <ParseContentButton
             data={data}
             onHandleYamlParsedMeta={(meta) => {
-              // TODO: other meta field attach to data
-              // TODO: validate meta data type
-              data.title = meta.title ?? data.title
-              data.slug = meta.slug ?? data.slug
-              data.subtitle = meta.subtitle ?? data.subtitle
+              const { title, slug, subtitle, ...rest } = meta
+              data.title = title ?? data.title
+              data.slug = slug ?? data.slug
+              data.subtitle = subtitle ?? data.subtitle
+
+              data.meta = { ...rest }
             }}
           />
 

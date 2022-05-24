@@ -226,8 +226,6 @@ const NoteWriteView = defineComponent(() => {
   }
   const { fetchTopic, topics } = useNoteTopic()
 
- 
-
   return () => (
     <ContentLayout
       title={'树洞'}
@@ -236,9 +234,12 @@ const NoteWriteView = defineComponent(() => {
           <ParseContentButton
             data={data}
             onHandleYamlParsedMeta={(meta) => {
-              data.title = meta.title ?? data.title
-              data.mood = meta.mood ?? data.mood
-              data.weather = meta.weather ?? data.weather
+              const { title, mood, weather, ...rest } = meta
+              data.title = title ?? data.title
+              data.mood = mood ?? data.mood
+              data.weather = weather ?? data.weather
+
+              data.meta = { ...rest }
             }}
           />
 
