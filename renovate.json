@@ -1,5 +1,19 @@
 {
   "extends": [
     "config:base"
+  ],
+  "ignoreDeps": [
+    "@codemirror/commands",
+    "@codemirror/gutter",
+    "@codemirror/highlight",
+    "@codemirror/history",
+    "@codemirror/lang-markdown",
+    "@codemirror/language",
+    "@codemirror/language-data",
+    "@codemirror/matchbrackets",
+    "@codemirror/state",
+    "@codemirror/theme-one",
+    "@codemirror/view",
+    "@ddietr/codemirror-themes"
   ]
 }
