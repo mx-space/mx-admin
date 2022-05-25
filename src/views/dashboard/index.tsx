@@ -569,6 +569,15 @@ const AppIF = defineComponent({
       if (__DEV__) {
         return
       }
+
+      if (app.value?.version.startsWith('demo')) {
+        notice.info({
+          title: 'Demo Mode',
+          content: '当前处于 Demo 模式，部分功能不可用',
+        })
+        return
+      }
+
       if (
         app.value?.version &&
         versionMap.value.system &&
