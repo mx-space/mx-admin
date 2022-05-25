@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Miscellaneous Tasks
+
+- Add notice for demo
+
+## [3.18.1] - 2022-05-25
+
 ### Bug Fixes
 
 - File upload modal can not close
@@ -11,6 +17,10 @@ All notable changes to this project will be documented in this file.
 ### Miscellaneous Tasks
 
 - Ignore codemirror deps
+
+### Release
+
+- V3.18.1
 
 ## [3.18.0] - 2022-05-24
 
