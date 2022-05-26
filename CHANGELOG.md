@@ -3,9 +3,27 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Bug Fixes
+
+- Revert deploy
+
+### Documentation
+
+- Add demo
+
+### Miscellaneous Tasks
+
+- Update deps
+
+## [3.18.2] - 2022-05-25
+
 ### Miscellaneous Tasks
 
 - Add notice for demo
+
+### Release
+
+- V3.18.2
 
 ## [3.18.1] - 2022-05-25
 
