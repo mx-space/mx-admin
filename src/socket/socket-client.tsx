@@ -122,7 +122,7 @@ export class SocketClient {
         break
       }
       case EventTypes.AUTH_FAILED: {
-        console.log('等待登陆中...')
+        console.log('等待登录中...')
         this.socket.close()
         break
       }

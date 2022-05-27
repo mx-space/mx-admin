@@ -396,7 +396,7 @@ export const routes: RouteRecordRaw[] = [
       {
         path: '/login',
         name: RouteName.Login,
-        meta: { isPublic: true, title: '登陆' },
+        meta: { isPublic: true, title: '登录' },
         component: LoginView,
       },
 

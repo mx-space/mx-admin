@@ -69,7 +69,7 @@ export const LoginView = defineComponent({
         )
         toast.success('欢迎回来')
       } catch (e) {
-        toast.error('登陆失败')
+        toast.error('登录失败')
       }
     }
 
@@ -93,7 +93,7 @@ export default LoginView
         <input ref="input" v-model="password" type="password" autofocus />
       </div>
       <ParallaxButtonVue
-        title="登陆"
+        title="登录"
         class="p-button-raised p-button-rounded"
         @click.prevent.stop="handleLogin"
       />

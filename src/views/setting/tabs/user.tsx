@@ -87,7 +87,7 @@ export const TabUser = defineComponent(() => {
               </div>
             </NFormItem>
 
-            <NFormItem label="上次登陆时间" class="!mt-4">
+            <NFormItem label="上次登录时间" class="!mt-4">
               <div class="text-center w-full">
                 <NText>
                   {data.value.lastLoginTime ? (
@@ -101,7 +101,7 @@ export const TabUser = defineComponent(() => {
               </div>
             </NFormItem>
 
-            <NFormItem label="上次登陆地址">
+            <NFormItem label="上次登录地址">
               <div class="text-center w-full">
                 {data.value.lastLoginIp ? (
                   <IpInfoPopover
