@@ -125,10 +125,10 @@ export const DashBoardView = defineComponent({
     const router = useRouter()
     const UserLoginStat = defineComponent(() => () => (
       <>
-        <NH3 class="text-opacity-80 font-light">登陆记录</NH3>
+        <NH3 class="text-opacity-80 font-light">登录记录</NH3>
         <p class="-mt-2 mb-3 relative text-gray-500">
           <span>
-            上次登陆 IP:{' '}
+            上次登录 IP:{' '}
             {userStore.user.value?.lastLoginIp ? (
               <IpInfoPopover
                 trigger="hover"
@@ -141,7 +141,7 @@ export const DashBoardView = defineComponent({
           </span>
           <div class="pt-[.5rem]"></div>
           <span>
-            上次登陆时间:{' '}
+            上次登录时间:{' '}
             {userStore.user.value?.lastLoginTime ? (
               <time>
                 {parseDate(
