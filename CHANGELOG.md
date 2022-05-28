@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Correct spelling mistakes (#439)
+
+### Documentation
+
+- Add password
+
+### Features
+
+- Idempotence key
+
+## [3.18.3] - 2022-05-26
+
+### Bug Fixes
+
 - Revert deploy
 
 ### Documentation
@@ -14,6 +28,10 @@ All notable changes to this project will be documented in this file.
 ### Miscellaneous Tasks
 
 - Update deps
+
+### Release
+
+- V3.18.3
 
 ## [3.18.2] - 2022-05-25
 
