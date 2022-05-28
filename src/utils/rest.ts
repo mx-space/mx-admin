@@ -7,6 +7,7 @@ import type {
   RequestOptionsWithResponse,
 } from 'umi-request'
 import { extend } from 'umi-request'
+import { uuid } from 'utils'
 
 import { router } from '../router/router'
 import { getToken } from './auth'
@@ -129,19 +130,25 @@ if (__DEV__ && !window.api) {
     },
   })
 }
-
+const _uuid = uuid()
 RESTManager.instance.interceptors.request.use((url, options) => {
   const token = getToken()
 
-  if (token) {
-    // @ts-ignore
-    options.headers.Authorization = token
+  let modifiedUrl = url
+  if (options.method?.toUpperCase() === 'GET') {
+    modifiedUrl = `${url}?t=${+new Date()}`
+  }
+  if (options.headers) {
+    if (token) {
+      options.headers['Authorization'] = token
+    }
+
+    options.headers['x-uuid'] = _uuid
   }
   return {
-    url: `${url}?t=${+new Date()}`,
+    url: modifiedUrl,
     options: {
       ...options,
-
       interceptors: true,
     },
   }
