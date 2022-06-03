@@ -65,8 +65,6 @@ export const TabSystem = defineComponent(() => {
     () => configs,
     (n) => {
       diff.value = deepDiff(originConfigs, toRaw(n))
-
-      console.log(toRaw(n))
     },
     { deep: true },
   )
@@ -148,9 +146,6 @@ export const TabSystem = defineComponent(() => {
       {schema.value && (
         <ConfigForm
           initialValue={configs}
-          onValueChange={(val) => {
-            console.log(val)
-          }}
           getKey={(key) => {
             return key
               .split('.')

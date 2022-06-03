@@ -38,7 +38,7 @@ export const ConfigForm = defineComponent({
     },
     onValueChange: {
       type: Function as PropType<(val: any) => any>,
-      required: true,
+      required: false,
     },
     initialValue: {
       type: Object as PropType<KV>,
@@ -54,6 +54,15 @@ export const ConfigForm = defineComponent({
 
   setup(props) {
     const formData = ref(props.initialValue)
+
+    watchEffect(
+      () => {
+        props.onValueChange?.(formData.value)
+      },
+      {
+        flush: 'post',
+      },
+    )
 
     const definitions = computed(() => props.schema.definitions)
     const defintionMap = computed(
