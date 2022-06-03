@@ -19,7 +19,8 @@
     "lib": [
       "esnext",
       "dom"
-    ]
+    ],
+    "types": []
   },
   "include": [
     "src/**/*.ts",

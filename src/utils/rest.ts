@@ -34,7 +34,7 @@ class RESTManagerStatic {
         }
 
         if (error.response) {
-          if (process.env.NODE_ENV === 'development') {
+          if (import.meta.env.DEV) {
             console.log(error.response)
             console.dir(error.response)
           }

@@ -1,0 +1,300 @@
+{
+  "properties": {
+    "seo": {
+      "$ref": "#/definitions/SeoDto"
+    },
+    "url": {
+      "$ref": "#/definitions/UrlDto"
+    },
+    "mailOptions": {
+      "$ref": "#/definitions/MailOptionsDto"
+    },
+    "commentOptions": {
+      "$ref": "#/definitions/CommentOptionsDto"
+    },
+    "friendLinkOptions": {
+      "$ref": "#/definitions/FriendLinkOptionsDto"
+    },
+    "backupOptions": {
+      "$ref": "#/definitions/BackupOptionsDto"
+    },
+    "baiduSearchOptions": {
+      "$ref": "#/definitions/BaiduSearchOptionsDto"
+    },
+    "algoliaSearchOptions": {
+      "$ref": "#/definitions/AlgoliaSearchOptionsDto"
+    },
+    "adminExtra": {
+      "$ref": "#/definitions/AdminExtraDto"
+    },
+    "terminalOptions": {
+      "$ref": "#/definitions/TerminalOptionsDto"
+    }
+  },
+  "type": "object",
+  "required": [
+    "seo",
+    "url",
+    "mailOptions",
+    "commentOptions",
+    "friendLinkOptions",
+    "backupOptions",
+    "baiduSearchOptions",
+    "algoliaSearchOptions",
+    "adminExtra",
+    "terminalOptions"
+  ],
+  "title": "设置",
+  "definitions": {
+    "SeoDto": {
+      "properties": {
+        "title": {
+          "minLength": 1,
+          "type": "string",
+          "title": "网站标题"
+        },
+        "description": {
+          "minLength": 1,
+          "type": "string",
+          "title": "网站描述"
+        },
+        "keywords": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "title": "关键字"
+        }
+      },
+      "type": "object",
+      "title": "SEO 优化"
+    },
+    "UrlDto": {
+      "properties": {
+        "webUrl": {
+          "format": "url",
+          "type": "string",
+          "title": "前端地址"
+        },
+        "adminUrl": {
+          "format": "url",
+          "type": "string",
+          "title": "管理后台地址"
+        },
+        "serverUrl": {
+          "format": "url",
+          "type": "string",
+          "title": "API 地址"
+        },
+        "wsUrl": {
+          "format": "url",
+          "type": "string",
+          "title": "Gateway 地址"
+        }
+      },
+      "type": "object",
+      "title": "网站设置"
+    },
+    "MailOption": {
+      "properties": {
+        "port": {
+          "type": "integer",
+          "title": "发件邮箱端口"
+        },
+        "host": {
+          "format": "url",
+          "type": "string",
+          "title": "发件邮箱 host"
+        }
+      },
+      "type": "object"
+    },
+    "MailOptionsDto": {
+      "properties": {
+        "enable": {
+          "type": "boolean",
+          "title": "开启邮箱提醒"
+        },
+        "user": {
+          "format": "email",
+          "type": "string",
+          "title": "发件邮箱地址"
+        },
+        "pass": {
+          "minLength": 1,
+          "type": "string",
+          "title": "发件邮箱密码",
+          "ui:options": {
+            "showPassword": true
+          }
+        },
+        "options": {
+          "$ref": "#/definitions/MailOption",
+          "ui:option": {
+            "connect": true
+          }
+        }
+      },
+      "type": "object",
+      "title": "邮件通知设置"
+    },
+    "CommentOptionsDto": {
+      "properties": {
+        "antiSpam": {
+          "type": "boolean",
+          "title": "反垃圾评论"
+        },
+        "spamKeywords": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true,
+          "title": "自定义屏蔽关键词"
+        },
+        "blockIps": {
+          "items": {
+            "format": "ipv4",
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true,
+          "title": "自定义屏蔽 IP"
+        },
+        "disableNoChinese": {
+          "type": "boolean",
+          "title": "禁止非中文评论"
+        }
+      },
+      "type": "object",
+      "title": "评论设置"
+    },
+    "FriendLinkOptionsDto": {
+      "properties": {
+        "allowApply": {
+          "type": "boolean",
+          "title": "允许申请友链"
+        }
+      },
+      "type": "object",
+      "title": "友链设定"
+    },
+    "BackupOptionsDto": {
+      "properties": {
+        "enable": {
+          "type": "boolean",
+          "title": "开启自动备份",
+          "description": "填写以下 COS 信息, 将同时上传备份到 COS"
+        },
+        "secretId": {
+          "type": "string",
+          "title": "SecretId"
+        },
+        "secretKey": {
+          "type": "string",
+          "title": "SecretKey",
+          "ui:options": {
+            "showPassword": true
+          }
+        },
+        "bucket": {
+          "type": "string",
+          "title": "Bucket"
+        },
+        "region": {
+          "type": "string",
+          "title": "地域 Region"
+        }
+      },
+      "type": "object",
+      "title": "备份"
+    },
+    "BaiduSearchOptionsDto": {
+      "properties": {
+        "enable": {
+          "type": "boolean",
+          "title": "开启推送"
+        },
+        "token": {
+          "minLength": 1,
+          "type": "string",
+          "title": "Token",
+          "ui:options": {
+            "showPassword": true
+          }
+        }
+      },
+      "type": "object",
+      "title": "百度推送设定"
+    },
+    "AlgoliaSearchOptionsDto": {
+      "properties": {
+        "enable": {
+          "type": "boolean",
+          "title": "开启 Algolia Search"
+        },
+        "apiKey": {
+          "type": "string",
+          "format": "password"
+        },
+        "appId": {
+          "type": "string",
+          "title": "AppId"
+        },
+        "indexName": {
+          "type": "string",
+          "title": "IndexName"
+        }
+      },
+      "type": "object",
+      "title": "Algolia Search"
+    },
+    "AdminExtraDto": {
+      "properties": {
+        "background": {
+          "type": "string",
+          "title": "登录页面背景"
+        },
+        "gaodemapKey": {
+          "type": "string",
+          "title": "高德查询 API Key",
+          "ui:options": {
+            "showPassword": true
+          },
+          "description": "日记地点定位"
+        },
+        "title": {
+          "type": "string",
+          "title": "中后台标题"
+        },
+        "enableAdminProxy": {
+          "type": "boolean",
+          "title": "开启后台管理反代"
+        }
+      },
+      "type": "object",
+      "title": "后台附加设置"
+    },
+    "TerminalOptionsDto": {
+      "properties": {
+        "enable": {
+          "type": "boolean",
+          "title": "开启 WebShell"
+        },
+        "password": {
+          "type": "string",
+          "title": "设定密码",
+          "ui:options": {
+            "showPassword": true
+          }
+        },
+        "script": {
+          "type": "string",
+          "title": "前置脚本"
+        }
+      },
+      "type": "object",
+      "title": "终端设定"
+    }
+  }
+}
