@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update dependency @mx-space/api-client to v0.10.5 (#435)
+- Update dependency vditor to v3.8.15 (#432)
+- Update dependency @antv/g2 to v4.2.2 (#437)
+- Jsonschema form get value
+- Chrome autofill
+
+### Features
+
+- Json schema generate form init
+
+### Miscellaneous Tasks
+
+- Update dependency unplugin-auto-import to v0.8.6 (#441)
+- Update pnpm/action-setup action to v2.2.2 (#440)
+- Update dependency vite-tsconfig-paths to v3.5.0 (#436)
+- Update typescript-eslint monorepo to v5.27.0 (#442)
+- Cleanup
+
+## [3.18.4] - 2022-05-28
+
+### Bug Fixes
+
 - Correct spelling mistakes (#439)
 
 ### Documentation
@@ -14,6 +36,10 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - Idempotence key
+
+### Release
+
+- V3.18.4
 
 ## [3.18.3] - 2022-05-26
 
