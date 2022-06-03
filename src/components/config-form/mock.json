@@ -29,6 +29,9 @@
     },
     "terminalOptions": {
       "$ref": "#/definitions/TerminalOptionsDto"
+    },
+    "textOptions": {
+      "$ref": "#/definitions/TextOptionsDto"
     }
   },
   "type": "object",
@@ -42,9 +45,13 @@
     "baiduSearchOptions",
     "algoliaSearchOptions",
     "adminExtra",
-    "terminalOptions"
+    "terminalOptions",
+    "textOptions"
   ],
   "title": "设置",
+  "ps": [
+    "* 敏感字段不显示，后端默认不返回敏感字段，显示为空"
+  ],
   "definitions": {
     "SeoDto": {
       "properties": {
@@ -72,24 +79,32 @@
     "UrlDto": {
       "properties": {
         "webUrl": {
-          "format": "url",
           "type": "string",
-          "title": "前端地址"
+          "title": "前端地址",
+          "ui:options": {
+            "halfGrid": true
+          }
         },
         "adminUrl": {
-          "format": "url",
           "type": "string",
-          "title": "管理后台地址"
+          "title": "管理后台地址",
+          "ui:options": {
+            "halfGrid": true
+          }
         },
         "serverUrl": {
-          "format": "url",
           "type": "string",
-          "title": "API 地址"
+          "title": "API 地址",
+          "ui:options": {
+            "halfGrid": true
+          }
         },
         "wsUrl": {
-          "format": "url",
           "type": "string",
-          "title": "Gateway 地址"
+          "title": "Gateway 地址",
+          "ui:options": {
+            "halfGrid": true
+          }
         }
       },
       "type": "object",
@@ -99,12 +114,18 @@
       "properties": {
         "port": {
           "type": "integer",
-          "title": "发件邮箱端口"
+          "title": "发件邮箱端口",
+          "ui:options": {
+            "halfGrid": true
+          }
         },
         "host": {
           "format": "url",
           "type": "string",
-          "title": "发件邮箱 host"
+          "title": "发件邮箱 host",
+          "ui:options": {
+            "halfGrid": true
+          }
         }
       },
       "type": "object"
@@ -118,14 +139,17 @@
         "user": {
           "format": "email",
           "type": "string",
-          "title": "发件邮箱地址"
+          "title": "发件邮箱地址",
+          "ui:options": {
+            "halfGrid": true
+          }
         },
         "pass": {
           "minLength": 1,
           "type": "string",
           "title": "发件邮箱密码",
           "ui:options": {
-            "showPassword": true
+            "halfGrid": true
           }
         },
         "options": {
@@ -235,7 +259,10 @@
         },
         "apiKey": {
           "type": "string",
-          "format": "password"
+          "title": "ApiKey",
+          "ui:options": {
+            "showPassword": true
+          }
         },
         "appId": {
           "type": "string",
@@ -286,7 +313,8 @@
           "title": "设定密码",
           "ui:options": {
             "showPassword": true
-          }
+          },
+          "description": "密码为空则不启用密码验证"
         },
         "script": {
           "type": "string",
@@ -295,6 +323,16 @@
       },
       "type": "object",
       "title": "终端设定"
+    },
+    "TextOptionsDto": {
+      "properties": {
+        "macros": {
+          "type": "boolean",
+          "title": "开启文本宏替换"
+        }
+      },
+      "type": "object",
+      "title": "文本设定"
     }
   }
 }

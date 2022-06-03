@@ -88,14 +88,19 @@ function buildRoute(manager: RESTManagerStatic): IRequestHandler {
     get(target: any, name: Method) {
       if (reflectors.includes(name)) return () => route.join('/')
       if (methods.includes(name)) {
-        return async (options: RequestOptionsWithResponse) => {
+        // @ts-ignore
+        return async (options: RequestOptionsWithResponse = {}) => {
           const res = await manager.request(name, route.join('/'), {
             ...options,
           })
 
+          const shouldTransformData = options.transform ?? true
+
           return Array.isArray(res) || isPlainObject(res)
             ? (() => {
-                const transform = camelcaseKeys(res, { deep: true })
+                const transform = shouldTransformData
+                  ? camelcaseKeys(res, { deep: true })
+                  : res
 
                 return {
                   ...transform,
