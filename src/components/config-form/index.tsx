@@ -21,7 +21,8 @@ const NFormBaseProps = {
   labelPlacement: 'left',
   labelAlign: 'right',
   labelWidth: 150,
-  autocomplete: 'chrome-off',
+
+  autocomplete: 'do-not-autofill',
 }
 
 export const JSONSchemaFormInjectKey: InjectionKey<{
@@ -254,6 +255,8 @@ const ScheamFormItem = defineComponent({
                 innerValue.value = val
               }}
               type={showPassword ? 'password' : 'text'}
+              showPasswordToggle
+              clearable
             ></NInput>
           )
         }
