@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update dependency naive-ui to v2.29.1 (#447)
+- Update dependency @vueuse/core to v8.6.0 (#445)
+- Update dependency @mx-space/api-client to v0.10.8 (#443)
+- Json config form
+
+### Miscellaneous Tasks
+
+- Update dependency unplugin-auto-import to v0.8.7 (#448)
+- Update dependency eslint-plugin-vue to v9.1.0 (#446)
+- Update dependency postcss-preset-env to v7.7.1 (#444)
+
+## [3.19.0] - 2022-06-03
+
+### Bug Fixes
+
 - Update dependency @mx-space/api-client to v0.10.5 (#435)
 - Update dependency vditor to v3.8.15 (#432)
 - Update dependency @antv/g2 to v4.2.2 (#437)
@@ -22,6 +37,10 @@ All notable changes to this project will be documented in this file.
 - Update dependency vite-tsconfig-paths to v3.5.0 (#436)
 - Update typescript-eslint monorepo to v5.27.0 (#442)
 - Cleanup
+
+### Release
+
+- V3.19.0
 
 ## [3.18.4] - 2022-05-28
 
