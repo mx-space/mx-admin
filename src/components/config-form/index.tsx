@@ -13,6 +13,7 @@ import {
   NText,
 } from 'naive-ui'
 import { UIStore } from 'stores/ui'
+import { uuid } from 'utils'
 import type { ComputedRef, InjectionKey, PropType, Ref } from 'vue'
 
 const NFormPrefixCls = 'mt-6'
@@ -207,6 +208,7 @@ const SchemaSection = defineComponent({
                 title={current.title}
                 type={current.type}
                 options={current?.['ui:options']}
+                description={current.description}
               />
             )
           })}
@@ -256,15 +258,26 @@ const ScheamFormItem = defineComponent({
       switch (props.type) {
         case 'url':
         case 'string': {
-          const { showPassword } = options
+          const { type } = options
           return (
             <NInput
+              inputProps={{
+                id: uuid(),
+              }}
               value={innerValue.value}
               onUpdateValue={(val) => {
                 innerValue.value = val
               }}
-              type={showPassword ? 'password' : 'text'}
+              type={type || 'text'}
               showPasswordToggle
+              autosize={
+                type == 'textarea'
+                  ? {
+                      maxRows: 5,
+                      minRows: 3,
+                    }
+                  : undefined
+              }
               clearable
             ></NInput>
           )
