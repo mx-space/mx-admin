@@ -3,8 +3,7 @@ import { ConfigForm } from 'components/config-form'
 import { CheckCircleOutlinedIcon } from 'components/icons'
 import { useStoreRef } from 'hooks/use-store-ref'
 import { useLayout } from 'layouts/content'
-import { camelCase, cloneDeep, isEmpty, merge, omit } from 'lodash-es'
-import type { IConfig } from 'models/setting'
+import { camelCase, cloneDeep, isEmpty, merge } from 'lodash-es'
 import { UIStore } from 'stores/ui'
 import { RESTManager, deepDiff } from 'utils'
 import {
@@ -51,15 +50,15 @@ export const TabSystem = defineComponent(() => {
   const schema = ref()
 
   onBeforeMount(async () => {
-    await fetchConfig()
     schema.value = await RESTManager.api.config.jsonschema.get({
       transform: false,
     })
+    await fetchConfig()
   })
 
-  let originConfigs: IConfig = {} as IConfig
-  const configs = reactive(mergeFullConfigs({}))
-  const diff = ref({} as Partial<IConfig>)
+  let originConfigs: any = {}
+  const configs = reactive({})
+  const diff = ref({} as any)
 
   watch(
     () => configs,
@@ -92,7 +91,7 @@ export const TabSystem = defineComponent(() => {
       return
     }
 
-    const entries = Object.entries(diff.value) as [keyof IConfig, any][]
+    const entries = Object.entries(diff.value) as [string, any][]
 
     for await (const [key, value] of entries) {
       const val = Object.fromEntries(
@@ -115,7 +114,7 @@ export const TabSystem = defineComponent(() => {
 
   const fetchConfig = async () => {
     let response = (await RESTManager.api.options.get()) as any
-    response = mergeFullConfigs(omit(response, ['ok'])) as IConfig
+    response = merge(schema.value.default, response) as any
 
     originConfigs = cloneDeep(response)
 
@@ -159,59 +158,3 @@ export const TabSystem = defineComponent(() => {
     </Fragment>
   )
 })
-
-function mergeFullConfigs(configs: any): IConfig {
-  return merge<IConfig, IConfig>(
-    {
-      seo: { title: '', description: '', keywords: [] },
-      url: {
-        wsUrl: '',
-        adminUrl: '',
-        serverUrl: '',
-        webUrl: '',
-      },
-
-      mailOptions: {
-        user: '',
-        pass: '',
-        options: { host: '', port: 465 },
-        enable: false,
-      },
-      commentOptions: {
-        antiSpam: false,
-        spamKeywords: [],
-        blockIps: [],
-        disableNoChinese: false,
-      },
-      backupOptions: {
-        enable: false,
-        secretId: '',
-        secretKey: '',
-        bucket: '',
-        region: '',
-      },
-      baiduSearchOptions: {
-        enable: false,
-        token: '',
-      },
-      algoliaSearchOptions: {
-        enable: false,
-      },
-      adminExtra: {
-        enableAdminProxy: false,
-        background: '',
-        gaodemapKey: '',
-        title: '静かな森',
-      },
-      terminalOptions: {
-        enable: false,
-        script: '',
-      },
-      friendLinkOptions: { allowApply: true },
-      textOptions: {
-        macros: false,
-      },
-    },
-    configs,
-  )
-}

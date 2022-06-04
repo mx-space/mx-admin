@@ -1,4 +1,3 @@
-import type { IConfig, UrlDto } from 'models/setting'
 import {
   NButton,
   NCard,
@@ -12,7 +11,7 @@ import {
   NSteps,
   useMessage,
 } from 'naive-ui'
-import type { PropType} from 'vue';
+import type { PropType } from 'vue'
 import { defineComponent, ref } from 'vue'
 
 import type { UserModel } from '../../models/user'
@@ -20,7 +19,7 @@ import { getToken, removeToken } from '../../utils'
 import { RESTManager } from '../../utils/rest'
 import styles from './index.module.css'
 
-const useDefaultConfigs = () => inject<IConfig>('configs')
+const useDefaultConfigs = () => inject<any>('configs')
 export default defineComponent({
   setup() {
     onBeforeMount(() => {
@@ -29,9 +28,9 @@ export default defineComponent({
       }
     })
 
-    const defaultConfigs = reactive<IConfig>({} as any)
+    const defaultConfigs = reactive<any>({})
     onMounted(async () => {
-      const configs = await RESTManager.api.init.configs.default.get<IConfig>()
+      const configs = await RESTManager.api.init.configs.default.get<any>()
       Object.assign(defaultConfigs, configs)
     })
     provide('configs', defaultConfigs)
@@ -99,7 +98,7 @@ const Step1 = defineComponent({
     const title = ref(defaultConfigs?.seo?.title || '')
     const keywords = ref(defaultConfigs?.seo?.keywords as string[])
     const description = ref(defaultConfigs?.seo?.description || '')
-    const url = reactive<UrlDto>({
+    const url = reactive({
       adminUrl: `${location.origin}/qaqdmin`,
       serverUrl: `${location.origin}/api/v2`,
       webUrl: location.origin,
@@ -300,7 +299,7 @@ const Step2 = defineComponent({
 
 const Step3 = defineComponent({
   props: stepFormProps,
-  setup(props) {
+  setup() {
     return () => (
       <NSpace class="text-center" vertical>
         <span class="text-base">你已经完成了所有的步骤，干得漂亮。</span>
