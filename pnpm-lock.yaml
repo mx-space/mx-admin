@@ -38,7 +38,7 @@ specifiers:
   '@vitejs/plugin-vue-jsx': 1.3.10
   '@vue/compiler-sfc': 3.2.36
   '@vueuse/core': 8.6.0
-  camelcase-keys: 7.0.2
+  camelcase-keys: 8.0.0
   class-transformer: 0.5.1
   class-validator: 0.13.2
   clsx: 1.1.1
@@ -109,7 +109,7 @@ dependencies:
   '@vicons/tabler': 0.12.0
   '@vicons/utils': 0.1.4_vue@3.2.36
   '@vueuse/core': 8.6.0_vue@3.2.36
-  camelcase-keys: 7.0.2
+  camelcase-keys: 8.0.0
   class-transformer: 0.5.1
   class-validator: 0.13.2
   clsx: 1.1.1
@@ -2387,9 +2387,24 @@ packages:
       type-fest: 1.4.0
     dev: false
 
+  /camelcase-keys/8.0.0:
+    resolution: {integrity: sha512-SKySgtaMjkouTJ/AIQdK1eit41Nq7+8uU/TQCU17sPSQwmAtAIPGrpDAey4oz0D7iiee3ylqt44KEBy+whyy+Q==}
+    engines: {node: '>=14.16'}
+    dependencies:
+      camelcase: 7.0.0
+      map-obj: 4.3.0
+      quick-lru: 6.1.1
+      type-fest: 2.13.0
+    dev: false
+
   /camelcase/6.3.0:
     resolution: {integrity: sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==}
     engines: {node: '>=10'}
+
+  /camelcase/7.0.0:
+    resolution: {integrity: sha512-JToIvOmz6nhGsUhAYScbo2d6Py5wojjNfoxoc2mEVLUdJ70gJK2gnd+ABY1Tc3sVMyK7QDPtN0T/XdlCQWITyQ==}
+    engines: {node: '>=14.16'}
+    dev: false
 
   /caniuse-lite/1.0.30001341:
     resolution: {integrity: sha512-2SodVrFFtvGENGCv0ChVJIDQ0KPaS1cg7/qtfMaICgeMolDdo/Z2OD32F0Aq9yl6F4YFwGPBS5AaPqNYiW4PoA==}
@@ -4703,6 +4718,11 @@ packages:
     engines: {node: '>=10'}
     dev: false
 
+  /quick-lru/6.1.1:
+    resolution: {integrity: sha512-S27GBT+F0NTRiehtbrgaSE1idUAJ5bX8dPAQTdylEyNlrdcH5X4Lz7Edz3DYzecbsCluD5zO8ZNEe04z3D3u6Q==}
+    engines: {node: '>=12'}
+    dev: false
+
   /react-is/17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
     dev: false
@@ -5061,6 +5081,11 @@ packages:
   /type-fest/1.4.0:
     resolution: {integrity: sha512-yGSza74xk0UG8k+pLh5oeoYirvIiWo5t0/o3zHHAO2tRDiZcxWP7fywNlXhqb6/r6sWvwi+RsyQMWhVLe4BVuA==}
     engines: {node: '>=10'}
+    dev: false
+
+  /type-fest/2.13.0:
+    resolution: {integrity: sha512-lPfAm42MxE4/456+QyIaaVBAwgpJb6xZ8PRu09utnhPdWwcyj9vgy6Sq0Z5yNbJ21EdxB5dRU/Qg8bsyAMtlcw==}
+    engines: {node: '>=12.20'}
     dev: false
 
   /typescript/4.6.4:
