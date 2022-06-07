@@ -23,7 +23,7 @@ specifiers:
   '@types/lodash-es': 4.17.6
   '@types/marked': 4.0.3
   '@types/qs': 6.9.7
-  '@types/validator': 13.7.2
+  '@types/validator': 13.7.3
   '@typescript-eslint/eslint-plugin': 5.27.1
   '@typescript-eslint/parser': 5.27.1
   '@vicons/antd': 0.12.0
@@ -147,7 +147,7 @@ devDependencies:
   '@types/lodash-es': 4.17.6
   '@types/marked': 4.0.3
   '@types/qs': 6.9.7
-  '@types/validator': 13.7.2
+  '@types/validator': 13.7.3
   '@typescript-eslint/eslint-plugin': 5.27.1_6wijkoxbxhuzdfry4i2bosavx4
   '@typescript-eslint/parser': 5.27.1_utdtartgf6fqqgkivzeynh76la
   '@vitejs/plugin-vue': 2.3.3_vite@2.9.9+vue@3.2.36
@@ -1698,8 +1698,8 @@ packages:
     resolution: {integrity: sha512-FGa1F62FT09qcrueBA6qYTrJPVDzah9a+493+o2PCXsesWHIn27G98TsSMs3WPNbZIEj4+VJf6saSFpvD+3Zsw==}
     dev: true
 
-  /@types/validator/13.7.2:
-    resolution: {integrity: sha512-KFcchQ3h0OPQgFirBRPZr5F/sVjxZsOrQHedj3zi8AH3Zv/hOLx2OLR4hxR5HcfoU+33n69ZuOfzthKVdMoTiw==}
+  /@types/validator/13.7.3:
+    resolution: {integrity: sha512-DNviAE5OUcZ5s+XEQHRhERLg8fOp8gSgvyJ4aaFASx5wwaObm+PBwTIMXiOFm1QrSee5oYwEAYb7LMzX2O88gA==}
     dev: true
 
   /@typescript-eslint/eslint-plugin/5.25.0_6wijkoxbxhuzdfry4i2bosavx4:
