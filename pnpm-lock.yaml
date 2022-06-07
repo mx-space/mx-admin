@@ -63,7 +63,7 @@ specifiers:
   postcss-preset-env: 7.7.1
   prettier: 2.6.2
   qier-progress: 1.0.4
-  qs: 6.10.3
+  qs: 6.10.5
   reflect-metadata: 0.1.13
   rollup-plugin-visualizer: 5.6.0
   socket.io-client: 4.5.1
@@ -126,7 +126,7 @@ dependencies:
   path-browserify: 1.0.1
   pinia: 2.0.14_7gwbvmtszsbbeay4sidijbp26i
   qier-progress: 1.0.4
-  qs: 6.10.3
+  qs: 6.10.5
   reflect-metadata: 0.1.13
   socket.io-client: 4.5.1
   umi-request: 1.4.0
@@ -4688,8 +4688,8 @@ packages:
     engines: {node: '>=6.0.0'}
     dev: false
 
-  /qs/6.10.3:
-    resolution: {integrity: sha512-wr7M2E0OFRfIfJZjKGieI8lBKb7fRCH4Fv5KNPEs7gJ8jadvotdsS08PzOKR7opXhZ/Xkjtt3WF9g38drmyRqQ==}
+  /qs/6.10.5:
+    resolution: {integrity: sha512-O5RlPh0VFtR78y79rgcgKK4wbAI0C5zGVLztOIdpWX6ep368q5Hv6XRxDvXuZ9q3C6v+e3n8UfZZJw7IIG27eQ==}
     engines: {node: '>=0.6'}
     dependencies:
       side-channel: 1.0.4
@@ -5072,7 +5072,7 @@ packages:
     resolution: {integrity: sha512-OknwtQZddZHi0Ggi+Vr/olJ7HNMx4AzlywyK0W3NZBT7B0stjeZ9lcztA85dBgdAj3KVk8uPJPZSnGaDjELhrA==}
     dependencies:
       isomorphic-fetch: 2.2.1
-      qs: 6.10.3
+      qs: 6.10.5
     dev: false
 
   /unbox-primitive/1.0.2:
