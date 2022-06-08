@@ -1,5 +1,8 @@
-import { NButton, NCard, NForm, NFormItem, NInput, NSwitch } from 'naive-ui'
+import { NButton, NCard, NForm, NFormItem, NSelect, NSwitch } from 'naive-ui'
 import { defineComponent } from 'vue'
+
+const storeApiUrlKey = 'mx-admin:setup-api:url'
+const storeGatewayUrlKey = 'mx-admin:setup-api:gateway'
 
 export default defineComponent({
   setup() {
@@ -26,6 +29,16 @@ export default defineComponent({
       if (!__DEV__) {
         url.hash = ''
       }
+
+      localStorage.setItem(
+        storeApiUrlKey,
+        JSON.stringify(historyApiUrl.concat(apiUrl)),
+      )
+      localStorage.setItem(
+        storeGatewayUrlKey,
+        JSON.stringify(historyApiUrl.concat(gatewayUrl)),
+      )
+
       location.href = url.toString()
     }
     const handleReset = () => {
@@ -37,12 +50,28 @@ export default defineComponent({
       apiRecord.apiUrl = 'http://localhost:2333'
       apiRecord.gatewayUrl = 'http://localhost:2333'
     }
+
+    const historyApiUrl: string[] = JSON.safeParse(
+      localStorage.getItem(storeApiUrlKey) || '[]',
+    )
+    const historyGatewayUrl: string[] = JSON.safeParse(
+      localStorage.getItem(storeGatewayUrlKey) || '[]',
+    )
+
     return () => (
       <div class={'relative h-screen w-full flex items-center justify-center'}>
         <NCard title="设置 API" class="modal-card sm m-auto form-card">
           <NForm onSubmit={handleOk}>
             <NFormItem label="API 地址">
-              <NInput
+              <NSelect
+                options={historyApiUrl.map((url) => ({
+                  key: url,
+                  value: url,
+                  label: url,
+                }))}
+                filterable
+                tag
+                clearable
                 value={apiRecord.apiUrl}
                 onUpdateValue={(val) => {
                   apiRecord.apiUrl = val
@@ -50,7 +79,15 @@ export default defineComponent({
               />
             </NFormItem>
             <NFormItem label="Gateway 地址">
-              <NInput
+              <NSelect
+                tag
+                options={historyGatewayUrl.map((url) => ({
+                  key: url,
+                  value: url,
+                  label: url,
+                }))}
+                filterable
+                clearable
                 value={apiRecord.gatewayUrl}
                 onUpdateValue={(val) => {
                   apiRecord.gatewayUrl = val
