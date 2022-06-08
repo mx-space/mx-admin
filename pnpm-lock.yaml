@@ -54,7 +54,7 @@ specifiers:
   marked: 4.0.16
   monaco-editor: 0.33.0
   monaco-editor-auto-typings: 0.4.0
-  naive-ui: 2.30.2
+  naive-ui: 2.30.3
   octokit: 1.7.1
   path-browserify: 1.0.1
   pinia: 2.0.14
@@ -121,7 +121,7 @@ dependencies:
   marked: 4.0.16
   monaco-editor: 0.33.0
   monaco-editor-auto-typings: 0.4.0_monaco-editor@0.33.0
-  naive-ui: 2.30.2_vue@3.2.37
+  naive-ui: 2.30.3_vue@3.2.37
   octokit: 1.7.1
   path-browserify: 1.0.1
   pinia: 2.0.14_3wx4hvlpf33h4r5e7sgliqloou
@@ -4024,8 +4024,8 @@ packages:
   /ms/2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
 
-  /naive-ui/2.30.2_vue@3.2.37:
-    resolution: {integrity: sha512-NS6bCrZlmQUDVLFLwFGcafTT2KteVV+HGuYRqemybZCGI8QnvHmGWWtEXhikZvu6lzInvPZHu41RrdlUGsWz3g==}
+  /naive-ui/2.30.3_vue@3.2.37:
+    resolution: {integrity: sha512-s6iphodOfLklhgAGtzhzoE0oPi6eY72UufUDRySBbfV+r+64vw9omYUOqk3Z1M/t/Mh8KwqW6z+ex8bYftFKPA==}
     peerDependencies:
       vue: ^3.0.0
     dependencies:
@@ -4041,7 +4041,7 @@ packages:
       highlight.js: 11.5.1
       lodash: 4.17.21
       lodash-es: 4.17.21
-      seemly: 0.3.3
+      seemly: 0.3.4
       treemate: 0.3.11
       vdirs: 0.1.8_vue@3.2.37
       vooks: 0.2.12_vue@3.2.37
@@ -4826,8 +4826,8 @@ packages:
     resolution: {integrity: sha512-M9gnWtn3J0W+UhJOHmBxBTwv8mZCan5i1Himp60t6vvZcor0wr+IM0URKmIglsWJ7bRujNAVVN77fp+uZaWoKg==}
     dev: true
 
-  /seemly/0.3.3:
-    resolution: {integrity: sha512-mAyqemz41e9HiZPMXAn7NtTExJgztwco5cdZjrt/iViU/oFeav+Q8K1c93M/tIZZ00QkT65JMr4xXQk7Vv5hWQ==}
+  /seemly/0.3.4:
+    resolution: {integrity: sha512-/crL+UfbtYd6NdLdnf58xaABfeSRt5uKE4N1SFQAW7nIznOrJQchAaslJHxV8/iAfV0LWInrmxJBFdDb0c2/sw==}
     dependencies:
       '@types/jest': 27.5.1
     dev: false
@@ -5399,7 +5399,7 @@ packages:
       '@juggle/resize-observer': 3.3.1
       css-render: 0.15.10
       evtd: 0.2.3
-      seemly: 0.3.3
+      seemly: 0.3.4
       vdirs: 0.1.8_vue@3.2.37
       vooks: 0.2.12_vue@3.2.37
       vue: 3.2.37
