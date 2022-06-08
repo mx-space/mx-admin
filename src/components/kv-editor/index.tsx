@@ -20,24 +20,20 @@ export const KVEditor = defineComponent({
   },
   setup(props) {
     const memoInitialValue = isEmpty(props.value) ? null : props.value
-
-    const cleaner = watch(
-      () => props.value,
-      (newValue) => {
-        if (!memoInitialValue && newValue) {
-          const arr = Object.entries(newValue).map(([k, v]) => {
-            return {
-              key: k,
-              value: v.toString(),
-            }
-          })
-
-          KVArray.value = arr
-          cleaner()
-        }
-      },
-    )
     const KVArray = ref<{ key: string; value: string }[]>([])
+
+    onMounted(() => {
+      if (memoInitialValue && props.value) {
+        const arr = Object.entries(props.value).map(([k, v]) => {
+          return {
+            key: k,
+            value: v.toString(),
+          }
+        })
+        KVArray.value = arr
+      }
+    })
+
     watch(
       () => KVArray.value,
       (newValue) => {
