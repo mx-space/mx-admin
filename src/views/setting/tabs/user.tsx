@@ -191,15 +191,17 @@ export const TabUser = defineComponent(() => {
             </NFormItem>
 
             <NFormItem label="社交平台 ID 录入">
-              <KVEditor
-                options={Object.keys(socialKeyMap).map((key) => {
-                  return { label: key, value: socialKeyMap[key] }
-                })}
-                onChange={(newValue) => {
-                  data.value.socialIds = newValue
-                }}
-                value={data.value.socialIds || {}}
-              ></KVEditor>
+              {data.value.socialIds ? (
+                <KVEditor
+                  options={Object.keys(socialKeyMap).map((key) => {
+                    return { label: key, value: socialKeyMap[key] }
+                  })}
+                  onChange={(newValue) => {
+                    data.value.socialIds = newValue
+                  }}
+                  value={data.value.socialIds || {}}
+                ></KVEditor>
+              ) : null}
             </NFormItem>
           </NForm>
         </NGi>
