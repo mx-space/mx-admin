@@ -58,8 +58,11 @@ router.afterEach((to) => {
   }
 })
 
-router.onError(() => {
+router.onError((err) => {
   progress.finish()
+  if (err == '网络错误') {
+    return router.push('/setup-api')
+  }
 })
 
 function getPageTitle(pageTitle?: string | null) {

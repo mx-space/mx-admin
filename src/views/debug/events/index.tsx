@@ -40,7 +40,7 @@ export default defineComponent({
     )
 
     const value = usePropsValueToRef({
-      value: payload.value[event.value] ?? '',
+      value: payload.value[event.value] ?? 'const data = {}',
     })
     const editorRef = ref()
     watch(
@@ -58,7 +58,7 @@ export default defineComponent({
           [event.value]: str,
         }
       },
-      { language: 'json', unSaveConfirm: false },
+      { language: 'typescript', unSaveConfirm: false },
     )
     const handleSend = async () => {
       const replaceText =
@@ -69,14 +69,15 @@ export default defineComponent({
             return generateFakeData(p2)
           },
         ) ?? ''
-      console.log(replaceText)
 
       RESTManager.api.debug.events.post({
         params: {
           type: type.value,
           event: event.value,
         },
-        data: JSON.parse(replaceText),
+        data: new Function(
+          `return ${replaceText.replace(/^const data = /, '')}`,
+        )(),
       })
     }
     return () => (
