@@ -32,11 +32,11 @@ export default defineComponent({
 
       localStorage.setItem(
         storeApiUrlKey,
-        JSON.stringify(historyApiUrl.concat(apiUrl)),
+        JSON.stringify([...new Set(historyApiUrl.concat(apiUrl))]),
       )
       localStorage.setItem(
         storeGatewayUrlKey,
-        JSON.stringify(historyApiUrl.concat(gatewayUrl)),
+        JSON.stringify([...new Set(historyApiUrl.concat(gatewayUrl))]),
       )
 
       location.href = url.toString()

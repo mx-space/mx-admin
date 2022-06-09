@@ -1,18 +1,25 @@
-import type { Ref} from 'vue';
+import type { Ref } from 'vue'
 import { onMounted, ref } from 'vue'
 
-import { defaultKeymap, indentWithTab } from '@codemirror/commands'
-import { highlightActiveLineGutter, lineNumbers } from '@codemirror/gutter'
-import { defaultHighlightStyle } from '@codemirror/highlight'
-import { history, historyKeymap } from '@codemirror/history'
+import {
+  defaultKeymap,
+  history,
+  historyKeymap,
+  indentWithTab,
+} from '@codemirror/commands'
 import { markdownKeymap } from '@codemirror/lang-markdown'
-import { indentOnInput } from '@codemirror/language'
-import { bracketMatching } from '@codemirror/matchbrackets'
+import { bracketMatching, indentOnInput } from '@codemirror/language'
 import { EditorState } from '@codemirror/state'
-import { EditorView, highlightActiveLine, keymap } from '@codemirror/view'
+import {
+  EditorView,
+  highlightActiveLine,
+  highlightActiveLineGutter,
+  keymap,
+  lineNumbers,
+} from '@codemirror/view'
 
 import { codemirrorReconfigureExtension } from './extension'
-import { syntaxHighlighting } from './syntax-highlight'
+import { syntaxTheme } from './syntax-highlight'
 import { useCodeMirrorAutoToggleTheme } from './ui'
 
 export const customTheme = EditorView.theme({
@@ -48,7 +55,7 @@ export const useCodeMirror = <T extends Element>(
         keymap.of([
           {
             key: 'Mod-s',
-            run(view) {
+            run() {
               return false
             },
             preventDefault: true,
@@ -60,11 +67,11 @@ export const useCodeMirror = <T extends Element>(
         history(),
         indentOnInput(),
         bracketMatching(),
-        defaultHighlightStyle.fallback,
         highlightActiveLine(),
         EditorState.tabSize.of(2),
 
-        syntaxHighlighting,
+        syntaxTheme,
+
         ...codemirrorReconfigureExtension,
 
         EditorView.lineWrapping,

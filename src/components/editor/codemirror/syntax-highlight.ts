@@ -1,6 +1,9 @@
-import { HighlightStyle, tags } from '@codemirror/highlight'
+import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
+import type { Extension } from '@codemirror/state'
+import { EditorView } from '@codemirror/view'
+import { tags } from '@lezer/highlight'
 
-export const syntaxHighlighting = HighlightStyle.define([
+export const syntaxHighlightingStyle = HighlightStyle.define([
   {
     tag: tags.heading1,
     fontSize: '1.4em',
@@ -35,3 +38,8 @@ export const syntaxHighlighting = HighlightStyle.define([
   { tag: tags.emphasis, fontStyle: 'italic' },
   { tag: tags.deleted, textDecoration: 'line-through' },
 ])
+
+export const syntaxTheme: Extension = [
+  EditorView.theme({}),
+  syntaxHighlighting(syntaxHighlightingStyle),
+]
