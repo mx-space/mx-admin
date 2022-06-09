@@ -1,6 +1,0 @@
-html.dark .vditor-reset {
-  color: #bbb;
-}
-.vditor-toolbar--hide {
-  @apply hidden;
-}

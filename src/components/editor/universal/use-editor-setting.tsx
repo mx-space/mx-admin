@@ -1,22 +1,12 @@
 import { useStorageObject } from 'hooks/use-storage'
-import {
-  NForm,
-  NFormItem,
-  NH5,
-  NInput,
-  NInputNumber,
-  NP,
-  NSwitch,
-} from 'naive-ui'
+import { NFormItem, NH5, NInput, NInputNumber, NP } from 'naive-ui'
 
-import { GeneralSettingDto, VditorSettingDto } from './config'
+import { GeneralSettingDto } from './config'
 import { ResetIconButton } from './reset-icon-button'
 
 const StorageKeys = {
   editor: 'editor-pref',
   general: 'editor-general',
-
-  vditor: 'editor-vditor-pref',
 } as const
 export const useEditorConfig = () => {
   const { storage: generalSetting, reset: resetGeneralSetting } =
@@ -48,30 +38,11 @@ export const useEditorConfig = () => {
     )
   })
 
-  const { storage: vditorSetting, reset: resetVditorSetting } =
-    useStorageObject(VditorSettingDto, StorageKeys.vditor)
-
-  const VditorSetting = defineComponent(() => {
-    return () => (
-      <>
-        <NH5 class="!flex items-center !mt-0">
-          Vditor 设定
-          <ResetIconButton resetFn={resetVditorSetting} />
-        </NH5>
-        <NForm labelWidth="8rem" labelAlign="right">
-          <NFormItem label="打字机模式" labelPlacement="left">
-            <NSwitch
-              value={vditorSetting.typewriterMode}
-              onUpdateValue={(e) => void (vditorSetting.typewriterMode = e)}
-            ></NSwitch>
-          </NFormItem>
-        </NForm>
-      </>
-    )
-  })
-
-  return [
-    { generalSetting, resetGeneralSetting, GeneralSetting },
-    { vditorSetting, resetVditorSetting, VditorSetting },
-  ] as const
+  return {
+    general: {
+      setting: generalSetting,
+      resetSetting: resetGeneralSetting,
+      Panel: GeneralSetting,
+    },
+  }
 }

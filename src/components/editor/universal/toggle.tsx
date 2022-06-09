@@ -20,7 +20,6 @@ import {
   NSpin,
   NText,
 } from 'naive-ui'
-import type Vditor from 'vditor'
 import { Suspense, defineComponent, ref, watch } from 'vue'
 
 import { Icon } from '@vicons/utils'
@@ -108,114 +107,93 @@ export const _EditorToggleWrapper = defineComponent({
     )
 
     const monacoRef = ref<editor.IStandaloneCodeEditor>()
-    const vditorRef = ref<Vditor>()
 
-    const [
-      { GeneralSetting, generalSetting, resetGeneralSetting },
-      { VditorSetting, resetVditorSetting, vditorSetting },
-    ] = useEditorConfig()
-    // vditor 监听
-    // FIXME: vditor bug, can't re-set option on instance
-    {
-      watch(
-        () => vditorSetting.typewriterMode,
-        (n) => {
-          const vRef = vditorRef.value
-          if (!vRef) {
-            return
+    const { general } = useEditorConfig()
+
+    const EditorComponent = computed(() => {
+      if (props.loading) {
+        return (
+          <div class={clsx(styles['editor'], styles['loading'])}>
+            <NSpin strokeWidth={14} show rotate />
+          </div>
+        )
+      }
+      switch (currentEditor.value) {
+        case 'monaco': {
+          const MonacoEditor = getDynamicEditor(currentEditor.value)
+
+          return <MonacoEditor ref={monacoRef} {...props} />
+        }
+
+        case 'plain': {
+          const PlainEditor = getDynamicEditor(currentEditor.value)
+          return <PlainEditor {...props} />
+        }
+
+        case 'codemirror': {
+          const CodeMirrorEditor = getDynamicEditor(currentEditor.value)
+          return <CodeMirrorEditor {...props} />
+        }
+
+        default:
+          return null
+      }
+    })
+
+    return () => {
+      const { Panel: GeneralSetting, setting: generalSetting } = general
+      return (
+        <NElement
+          tag="div"
+          style={
+            {
+              '--editor-font-size': generalSetting.fontSize
+                ? `${generalSetting.fontSize / 14}rem`
+                : '',
+              '--editor-font-family': generalSetting.fontFamily,
+            } as any
           }
-          const options = vRef.vditor.options
+          class={'editor-wrapper'}
+          ref={wrapperRef}
+        >
+          {EditorComponent.value}
+          <NModal
+            transformOrigin="center"
+            show={modalOpen.value}
+            onUpdateShow={(s) => void (modalOpen.value = s)}
+          >
+            <NCard
+              closable
+              onClose={() => {
+                modalOpen.value = false
+              }}
+              title="编辑器设定"
+              style="max-width: 90vw;width: 500px; max-height: 65vh; overflow: auto"
+              bordered={false}
+            >
+              <NP class="text-center">
+                <NText depth="3">此设定仅存储在本地!</NText>
+              </NP>
+              <NForm labelPlacement="left" labelWidth="8rem" labelAlign="right">
+                <NFormItem label="编辑器选择">
+                  <NSelect
+                    value={currentEditor.value}
+                    onUpdateValue={(e) => void (currentEditor.value = e)}
+                    options={Object.keys(Editor).map((i) => ({
+                      key: i,
+                      label: i,
+                      value: i,
+                    }))}
+                  ></NSelect>
+                </NFormItem>
 
-          options.typewriterMode = n
-        },
+                <GeneralSetting />
+              </NForm>
+            </NCard>
+          </NModal>
+        </NElement>
       )
     }
-
-    return () => (
-      <NElement
-        tag="div"
-        style={
-          {
-            '--editor-font-size': generalSetting.fontSize
-              ? `${generalSetting.fontSize / 14}rem`
-              : '',
-            '--editor-font-family': generalSetting.fontFamily,
-          } as any
-        }
-        class={'editor-wrapper'}
-        ref={wrapperRef}
-      >
-        {(() => {
-          if (props.loading) {
-            return (
-              <div class={clsx(styles['editor'], styles['loading'])}>
-                <NSpin strokeWidth={14} show rotate />
-              </div>
-            )
-          }
-          switch (currentEditor.value) {
-            case 'monaco': {
-              const MonacoEditor = getDynamicEditor(currentEditor.value)
-
-              return <MonacoEditor ref={monacoRef} {...props} />
-            }
-            case 'vditor': {
-              const VditorEditor = getDynamicEditor(currentEditor.value)
-              return <VditorEditor {...props} innerRef={vditorRef} />
-            }
-            case 'plain': {
-              const PlainEditor = getDynamicEditor(currentEditor.value)
-              return <PlainEditor {...props} />
-            }
-
-            case 'codemirror': {
-              const CodeMirrorEditor = getDynamicEditor(currentEditor.value)
-              return <CodeMirrorEditor {...props} />
-            }
-
-            default:
-              return null
-          }
-        })()}
-
-        <NModal
-          transformOrigin="center"
-          show={modalOpen.value}
-          onUpdateShow={(s) => void (modalOpen.value = s)}
-        >
-          <NCard
-            closable
-            onClose={() => {
-              modalOpen.value = false
-            }}
-            title="编辑器设定"
-            style="max-width: 90vw;width: 500px; max-height: 65vh; overflow: auto"
-            bordered={false}
-          >
-            <NP class="text-center">
-              <NText depth="3">此设定仅存储在本地!</NText>
-            </NP>
-            <NForm labelPlacement="left" labelWidth="8rem" labelAlign="right">
-              <NFormItem label="编辑器选择">
-                <NSelect
-                  value={currentEditor.value}
-                  onUpdateValue={(e) => void (currentEditor.value = e)}
-                  options={Object.keys(Editor).map((i) => ({
-                    key: i,
-                    label: i,
-                    value: i,
-                  }))}
-                ></NSelect>
-              </NFormItem>
-
-              <GeneralSetting />
-
-              {currentEditor.value == Editor.vditor && <VditorSetting />}
-            </NForm>
-          </NCard>
-        </NModal>
-      </NElement>
-    )
   },
 })
 

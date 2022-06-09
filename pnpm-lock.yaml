@@ -68,7 +68,6 @@ specifiers:
   umi-request: 1.4.0
   unplugin-auto-import: 0.8.7
   validator: 13.7.0
-  vditor: 3.8.15
   vite: 2.9.10
   vite-plugin-checker: 0.4.6
   vite-plugin-windicss: 1.8.4
@@ -125,7 +124,6 @@ dependencies:
   socket.io-client: 4.5.1
   umi-request: 1.4.0
   validator: 13.7.0
-  vditor: 3.8.15
   vite-plugin-windicss: 1.8.4_vite@2.9.10
   vue: 3.2.37
   vue-router: 4.0.15_vue@3.2.37
@@ -2669,10 +2667,6 @@ packages:
 
   /detect-browser/5.3.0:
     resolution: {integrity: sha512-53rsFbGdwMwlF7qvCt0ypLM5V5/Mbl0szB7GPN8y9NCcbknYOeVVXdrXEq+90IwAfrrzt6Hd+u2E2ntakICU8w==}
-    dev: false
-
-  /diff-match-patch/1.0.5:
-    resolution: {integrity: sha512-IayShXAgj/QMXgB0IWmKx+rOPuGMhqm5w6jvFxmVenXKIzRqTAAsbBPT3kWQeGANj3jGgvcvv4yK6SxqYmikgw==}
     dev: false
 
   /diff-sequences/27.5.1:
@@ -5270,12 +5264,6 @@ packages:
     dependencies:
       evtd: 0.2.3
       vue: 3.2.37
-    dev: false
-
-  /vditor/3.8.15:
-    resolution: {integrity: sha512-BYSBNUuhtvOfu1OU+NhS7R6TcrNP0UmQ8Vtbzq9BnLoG1uIHPZaTjtJIv00OPqHEcZa4KpR7mU+n9P+i+9SHuA==}
-    dependencies:
-      diff-match-patch: 1.0.5
     dev: false
 
   /vite-plugin-checker/0.4.6_vite@2.9.10:
