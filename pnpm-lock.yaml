@@ -74,7 +74,7 @@ specifiers:
   vite-tsconfig-paths: 3.5.0
   vue: 3.2.37
   vue-eslint-parser: 9.0.2
-  vue-router: 4.0.15
+  vue-router: 4.0.16
   windicss: 3.5.4
   xterm: 4.18.0
   xterm-addon-fit: 0.5.0
@@ -126,7 +126,7 @@ dependencies:
   validator: 13.7.0
   vite-plugin-windicss: 1.8.4_vite@2.9.10
   vue: 3.2.37
-  vue-router: 4.0.15_vue@3.2.37
+  vue-router: 4.0.16_vue@3.2.37
   xterm: 4.18.0
   xterm-addon-fit: 0.5.0_xterm@4.18.0
   xterm-theme: 1.1.0
@@ -355,10 +355,10 @@ packages:
       '@babel/helper-compilation-targets': 7.18.2_@babel+core@7.17.9
       '@babel/helper-module-transforms': 7.18.0
       '@babel/helpers': 7.18.2
-      '@babel/parser': 7.18.3
+      '@babel/parser': 7.18.4
       '@babel/template': 7.16.7
       '@babel/traverse': 7.18.2
-      '@babel/types': 7.18.2
+      '@babel/types': 7.18.4
       convert-source-map: 1.8.0
       debug: 4.3.4
       gensync: 1.0.0-beta.2
@@ -1928,7 +1928,7 @@ packages:
       '@babel/plugin-syntax-jsx': 7.16.7_@babel+core@7.17.9
       '@babel/template': 7.16.7
       '@babel/traverse': 7.18.2
-      '@babel/types': 7.18.2
+      '@babel/types': 7.18.4
       '@vue/babel-helper-vue-transform-on': 1.0.2
       camelcase: 6.3.0
       html-tags: 3.1.0
@@ -3739,7 +3739,7 @@ packages:
     dev: false
 
   /javascript-natural-sort/0.7.1:
-    resolution: {integrity: sha1-+eIwPUUH9tdDVac2ZNFED7Wg71k=}
+    resolution: {integrity: sha512-nO6jcEfZWQXDhOiBtG2KvKyEptz7RVbpGP4vTD2hLBdmNQSsCiicO2Ioinv6UI4y9ukqnBpy+XZ9H6uLNgJTlw==}
     dev: true
 
   /jest-diff/27.5.1:
@@ -5422,8 +5422,8 @@ packages:
       - supports-color
     dev: true
 
-  /vue-router/4.0.15_vue@3.2.37:
-    resolution: {integrity: sha512-xa+pIN9ZqORdIW1MkN2+d9Ui2pCM1b/UMgwYUCZOiFYHAvz/slKKBDha8DLrh5aCG/RibtrpyhKjKOZ85tYyWg==}
+  /vue-router/4.0.16_vue@3.2.37:
+    resolution: {integrity: sha512-JcO7cb8QJLBWE+DfxGUL3xUDOae/8nhM1KVdnudadTAORbuxIC/xAydC5Zr/VLHUDQi1ppuTF5/rjBGzgzrJNA==}
     peerDependencies:
       vue: ^3.2.0
     dependencies:
