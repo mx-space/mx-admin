@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Router guard
+
+### Features
+
+- Update codemirror to v6
+
+### Refactor
+
+- Remove vditor
+
+## [3.19.2] - 2022-06-08
+
+### Bug Fixes
+
 - Update dependency qs to v6.10.5 (#456)
 - Update dependency naive-ui to v2.30.2 (#451)
 - Update dependency camelcase-keys to v8 (#452)
@@ -19,6 +33,10 @@ All notable changes to this project will be documented in this file.
 - Cleanup
 - Update typescript-eslint monorepo to v5.27.1 (#455)
 - Update vue monorepo to v3.2.37 (#453)
+
+### Release
+
+- V3.19.2
 
 ## [3.19.1] - 2022-06-04
 
