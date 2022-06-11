@@ -6,6 +6,9 @@ All notable changes to this project will be documented in this file.
 ### Bug Fixes
 
 - Router guard
+- Update dependency vue-router to v4.0.16 (#461)
+- Remove auth token expired time
+- Card badge flash
 
 ### Features
 
@@ -14,6 +17,10 @@ All notable changes to this project will be documented in this file.
 ### Refactor
 
 - Remove vditor
+
+### Release
+
+- V3.19.3
 
 ## [3.19.2] - 2022-06-08
 
