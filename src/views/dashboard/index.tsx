@@ -36,6 +36,7 @@ import {
   NGrid,
   NH1,
   NH3,
+  NH4,
   NP,
   NPopover,
   NSpace,
@@ -519,13 +520,22 @@ export const DashBoardView = defineComponent({
                     }
                     return (
                       <NCard
-                        class="text-center min-w-[350px] max-w-[65vw] max-h-[60vh] overflow-auto"
+                        class="text-center box-border max-w-[65vw] max-h-[60vh] overflow-auto"
                         bordered={false}
                       >
-                        <NH3>{origin.title}</NH3>
-                        {origin.content.map((c) => (
-                          <NP key={c}>{c}</NP>
-                        ))}
+                        <NH3 class={'sticky top-0 bg-white py-2'}>
+                          {origin.title}
+                        </NH3>
+                        <NH4>
+                          【{origin.dynasty.replace(/代$/, '')}】{origin.author}
+                        </NH4>
+                        <div class={'px-6'}>
+                          {origin.content.map((c) => (
+                            <NP key={c} class="flex">
+                              {c}
+                            </NP>
+                          ))}
+                        </div>
                       </NCard>
                     )
                   },
@@ -550,6 +560,10 @@ const AppIF = defineComponent({
       if (__DEV__) {
         return
       }
+      if (app.value?.version.startsWith('demo')) {
+        return
+      }
+
       const { dashboard, system } = await checkUpdateFromGitHub()
       if (dashboard !== PKG.version) {
         notice.info({

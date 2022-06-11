@@ -50,7 +50,7 @@ export const Card = defineComponent({
                   ></Statistic>
                 )
               },
-              ['header-extra']: function() {
+              ['header-extra']: function () {
                 return (
                   <Icon class="text-4xl opacity-70">
                     {typeof props.icon == 'function'
@@ -77,7 +77,9 @@ export const Card = defineComponent({
                             {i.name}
                           </NButton>
                         )
-                      return i.showBadage ? (
+                      return i.showBadage &&
+                        props.value &&
+                        props.value !== 'N/A' ? (
                         <Badge value={props.value} processing>
                           <Inner />
                         </Badge>
