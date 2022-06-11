@@ -31,7 +31,7 @@ export const useUserStore = defineStore('user', () => {
 
     updateToken($token: string) {
       if ($token) {
-        setToken($token, 7)
+        setToken($token)
       }
 
       token.value = $token
