@@ -300,7 +300,13 @@ const PostWriteView = defineComponent(() => {
         <NFormItem label="置顶" labelAlign="right" labelPlacement="left">
           <NSwitch
             value={!!data.pin}
-            onUpdateValue={(e) => void (data.pin = e)}
+            onUpdateValue={(e) => {
+              data.pin = e
+
+              if (!e) {
+                data.pinOrder = 1
+              }
+            }}
           ></NSwitch>
         </NFormItem>
 
