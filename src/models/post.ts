@@ -20,6 +20,8 @@ export interface PostModel {
   modified: string
   created: string
   category: Category
+  pin?: string | null
+  pinOrder?: number
 }
 
 export interface Category {

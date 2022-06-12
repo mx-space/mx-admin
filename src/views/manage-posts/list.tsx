@@ -1,4 +1,4 @@
-import { AddIcon, BookIcon, ThumbsUpIcon } from 'components/icons'
+import { AddIcon, BookIcon, PhPushPin, ThumbsUpIcon } from 'components/icons'
 import { TableTitleLink } from 'components/link/title-link'
 import { DeleteConfirmButton } from 'components/special-button/delete-confirm'
 import { Table } from 'components/table'
@@ -10,7 +10,14 @@ import type {
   CategoryWithChildrenModel,
   PickedPostModelInCategoryChildren,
 } from 'models/category'
-import { NButton, NPopconfirm, NSpace, useMessage } from 'naive-ui'
+import {
+  NButton,
+  NIcon,
+  NPopconfirm,
+  NPopover,
+  NSpace,
+  useMessage,
+} from 'naive-ui'
 import type {
   FilterOption,
   FilterState,
@@ -18,15 +25,9 @@ import type {
   TableColumns,
 } from 'naive-ui/lib/data-table/src/interface'
 import { CategoryStore } from 'stores/category'
-import type {
-  ComputedRef} from 'vue';
-import {
-  computed,
-  defineComponent,
-  onMounted,
-  reactive,
-  watch,
-} from 'vue'
+import { parseDate } from 'utils'
+import type { ComputedRef } from 'vue'
+import { computed, defineComponent, onMounted, reactive, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 import { Icon } from '@vicons/utils'
@@ -48,7 +49,7 @@ export const ManagePostListView = defineComponent({
                 page,
                 size,
                 select:
-                  'title _id id created modified slug categoryId copyright tags count',
+                  'title _id id created modified slug categoryId copyright tags count pin',
                 ...(sortProps.sortBy
                   ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
                   : {}),
@@ -103,16 +104,36 @@ export const ManagePostListView = defineComponent({
             ellipsis: true,
             render(row) {
               return (
-                <>
+                <div class={'flex items-center space-x-2'}>
+                  {row.pin && (
+                    <NPopover>
+                      {{
+                        trigger() {
+                          return (
+                            <NIcon class={'text-yellow-200'}>
+                              <PhPushPin />
+                            </NIcon>
+                          )
+                        },
+                        default() {
+                          if (!row.pin) return null
+                          return (
+                            <span>
+                              置顶于{' '}
+                              {parseDate(row.pin, 'yyyy年M月d日 HH:mm:ss')}
+                            </span>
+                          )
+                        },
+                      }}
+                    </NPopover>
+                  )}
                   <TableTitleLink
                     id={row.id}
                     title={row.title}
                     inPageTo={`/posts/edit?id=${row.id}`}
-                    externalLinkTo={
-                      `/posts/${row.category.slug}/${row.slug}`
-                    }
+                    externalLinkTo={`/posts/${row.category.slug}/${row.slug}`}
                   ></TableTitleLink>
-                </>
+                </div>
               )
             },
           },

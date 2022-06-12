@@ -15,6 +15,7 @@ import {
   NDynamicTags,
   NFormItem,
   NInput,
+  NInputNumber,
   NSelect,
   NSwitch,
   useMessage,
@@ -35,6 +36,8 @@ type PostReactiveType = WriteBaseType & {
   copyright: boolean
   tags: string[]
   summary: string
+  pinOrder: number
+  pin: boolean
 }
 
 const PostWriteView = defineComponent(() => {
@@ -59,6 +62,8 @@ const PostWriteView = defineComponent(() => {
     id: undefined,
     images: [],
     meta: undefined,
+    pin: false,
+    pinOrder: 1,
   })
 
   const parsePayloadIntoReactiveData = (payload: PostModel) => {
@@ -290,6 +295,21 @@ const PostWriteView = defineComponent(() => {
             value={data.copyright}
             onUpdateValue={(e) => void (data.copyright = e)}
           ></NSwitch>
+        </NFormItem>
+
+        <NFormItem label="置顶" labelAlign="right" labelPlacement="left">
+          <NSwitch
+            value={!!data.pin}
+            onUpdateValue={(e) => void (data.pin = e)}
+          ></NSwitch>
+        </NFormItem>
+
+        <NFormItem label="置顶" labelAlign="right" labelPlacement="left">
+          <NInputNumber
+            disabled={!data.pin}
+            value={data.pinOrder}
+            onUpdateValue={(e) => void (data.pinOrder = e || 1)}
+          ></NInputNumber>
         </NFormItem>
       </TextBaseDrawer>
     </ContentLayout>

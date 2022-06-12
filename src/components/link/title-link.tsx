@@ -57,7 +57,10 @@ export const TableTitleLink = defineComponent({
       props.withToken ? `?token=${getToken()}` : ''
     }`
     return () => (
-      <RouterLink to={props.inPageTo} class="flex items-center space-x-2">
+      <RouterLink
+        to={props.inPageTo}
+        class="inline-flex items-center space-x-2"
+      >
         <NEllipsis lineClamp={2} tooltip={{ width: 500 }}>
           {props.title}
         </NEllipsis>
