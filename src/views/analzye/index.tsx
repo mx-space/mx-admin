@@ -413,7 +413,7 @@ export default defineComponent({
         </NP>
 
         {!todayIp.value ? (
-          <NSkeleton animated class="mt-2 h-[200px]"></NSkeleton>
+          <NSkeleton animated class="my-2 h-[200px]"></NSkeleton>
         ) : (
           <NP>
             <SectionTitle>

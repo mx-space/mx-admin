@@ -150,7 +150,7 @@ export const TopicDetail = defineComponent({
                         <NUploadDragger>
                           <NAvatar
                             size={60}
-                            class="rounded-xl"
+                            class="rounded-xl bg-transparent"
                             src={topic.value?.icon || undefined}
                           >
                             {topic.value?.icon
@@ -288,6 +288,7 @@ export const TopicDetail = defineComponent({
 
 const useMemoNoteList = createGlobalState(() => {
   const notes = ref([] as { id: string; title: string; nid: number }[])
+  const noteIdSet = new Set<string>()
   let currentPage = 0
   let isEnd = false
 
@@ -299,13 +300,14 @@ const useMemoNoteList = createGlobalState(() => {
     >({
       params: {
         page,
-        size: 20,
+        size: 50,
         select: 'nid title _id id',
       },
     })
 
-    notes.value.push(...data)
+    notes.value.push(...data.filter((note) => !noteIdSet.has(note.id)))
     loading.value = false
+    data.forEach((i) => noteIdSet.add(i.id))
 
     currentPage = pagination.currentPage
     if (!pagination.hasNextPage) {

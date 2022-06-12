@@ -37,7 +37,7 @@ export const TopicEditModal = defineComponent({
     const topic = reactive<Partial<TopicModel>>({})
     const loading = ref(false)
 
-    const restTopicData = () => {
+    const resetTopicData = () => {
       Object.keys(topic).forEach((key) => {
         delete topic[key]
       })
@@ -47,7 +47,7 @@ export const TopicEditModal = defineComponent({
       () => props.id,
       (id) => {
         if (!id) {
-          restTopicData()
+          resetTopicData()
         } else {
           loading.value = true
           RESTManager.api
@@ -88,7 +88,7 @@ export const TopicEditModal = defineComponent({
         }
         props.onSubmit?.(data)
         nextTick(() => {
-          restTopicData()
+          resetTopicData()
         })
       }
     }

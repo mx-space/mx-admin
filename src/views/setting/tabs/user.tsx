@@ -81,7 +81,11 @@ export const TabUser = defineComponent(() => {
                   <NUploadDragger
                     class={'border-0 bg-transparent hover:border-0'}
                   >
-                    <Avatar src={data.value.avatar} size={200}></Avatar>
+                    <Avatar
+                      class="flex"
+                      src={data.value.avatar}
+                      size={200}
+                    ></Avatar>
                   </NUploadDragger>
                 </UploadWrapper>
               </div>
