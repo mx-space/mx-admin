@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
 /* eslint-disable @typescript-eslint/no-empty-function */
-import clsx from 'clsx'
 import { NLayoutContent } from 'naive-ui'
 import type { PropType, VNode } from 'vue'
 import {
@@ -109,7 +108,7 @@ export const ContentLayout = defineComponent({
     const Header = defineComponent({
       setup() {
         return () => (
-          <div class={clsx(styles['header-actions'], 'space-x-4')}>
+          <div class={[styles['header-actions'], 'space-x-4']}>
             {SettingHeaderEl.value ? (
               <SettingHeaderEl.value />
             ) : props.actionsElement ? (

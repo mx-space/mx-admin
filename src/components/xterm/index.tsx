@@ -1,4 +1,3 @@
-import clsx from 'clsx'
 import { useMountAndUnmount } from 'hooks/use-react'
 import { useStoreRef } from 'hooks/use-store-ref'
 import { NSpin } from 'naive-ui'
@@ -135,7 +134,7 @@ export const Xterm = defineComponent({
       <NSpin show={loading.value}>
         <div
           id="xterm"
-          class={clsx('max-h-[70vh] !bg-transparent', props.class)}
+          class={['max-h-[70vh] !bg-transparent', props.class]}
           ref={termRef}
         ></div>
       </NSpin>

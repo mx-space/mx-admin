@@ -1,19 +1,10 @@
-import clsx from 'clsx'
 import { CenterSpin } from 'components/spin'
 import { useSaveConfirm } from 'hooks/use-save-confirm'
 import { useStoreRef } from 'hooks/use-store-ref'
 import type { editor as Editor } from 'monaco-editor'
 import { UIStore } from 'stores/ui'
-import type {
-  PropType,
-  Ref} from 'vue';
-import {
-  defineComponent,
-  onMounted,
-  ref,
-  toRaw,
-  watch,
-} from 'vue'
+import type { PropType, Ref } from 'vue'
+import { defineComponent, onMounted, ref, toRaw, watch } from 'vue'
 
 import styles from '../universal/editor.module.css'
 import { editorBaseProps } from '../universal/props'
@@ -77,7 +68,7 @@ const _MonacoEditor = defineComponent({
 
     return () => (
       <div
-        class={clsx('editor relative overflow-hidden', styles.editor)}
+        class={['editor relative overflow-hidden', styles.editor]}
         ref={editorRef}
       >
         {loaded.value ? null : <CenterSpin />}

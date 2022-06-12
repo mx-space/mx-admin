@@ -3,7 +3,6 @@
  *
  */
 // TODO: 全屏预览
-import clsx from 'clsx'
 import { FullscreenExitOutlined, SettingsIcon } from 'components/icons'
 import { useMountAndUnmount } from 'hooks/use-react'
 import { useLayout } from 'layouts/content'
@@ -113,7 +112,7 @@ export const _EditorToggleWrapper = defineComponent({
     const EditorComponent = computed(() => {
       if (props.loading) {
         return (
-          <div class={clsx(styles['editor'], styles['loading'])}>
+          <div class={[styles['editor'], styles['loading']]}>
             <NSpin strokeWidth={14} show rotate />
           </div>
         )
@@ -219,7 +218,7 @@ export const EditorToggleWrapper = defineComponent({
           },
           fallback() {
             return (
-              <div class={clsx(styles['editor'], styles['loading'])}>
+              <div class={[styles['editor'], styles['loading']]}>
                 <NSpin strokeWidth={14} show rotate />
               </div>
             )

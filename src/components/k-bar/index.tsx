@@ -1,8 +1,6 @@
-import clsx from 'clsx'
 import { useRouter } from 'vue-router'
 
-import type {
-  Action} from '@bytebase/vue-kbar';
+import type { Action } from '@bytebase/vue-kbar'
 import {
   KBarAnimator,
   KBarPortal,
@@ -69,7 +67,7 @@ const SearchResult = defineComponent({
   setup() {
     const matches = useKBarMatches()
 
-    return () => (
+    return () => [
       <KBarResults
         class="max-h-96"
         itemHeight={50}
@@ -80,23 +78,23 @@ const SearchResult = defineComponent({
             if (typeof item === 'string') {
               return <div class="p-2">{item}</div>
             } else {
-              return (
+              return [
                 <div
-                  class={clsx(
+                  class={[
                     'flex flex-col px-3 py-2 h-[50px] box-border select-none cursor-pointer',
                     active && 'bg-gray-200 bg-opacity-50',
-                  )}
+                  ]}
                 >
                   <div>{item.name}</div>
                   {item.subtitle && (
                     <div class="text-gray-400">{item.subtitle}</div>
                   )}
-                </div>
-              )
+                </div>,
+              ]
             }
           },
         }}
-      </KBarResults>
-    )
+      </KBarResults>,
+    ]
   },
 })

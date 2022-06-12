@@ -40,7 +40,6 @@
     "camelcase-keys": "8.0.0",
     "class-transformer": "0.5.1",
     "class-validator": "0.13.2",
-    "clsx": "1.1.1",
     "date-fns": "2.28.0",
     "ejs": "3.1.8",
     "js-cookie": "3.0.1",

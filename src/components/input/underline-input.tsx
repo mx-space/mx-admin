@@ -1,4 +1,3 @@
-import clsx from 'clsx'
 import { defineComponent } from 'vue'
 
 import { inputBaseProps } from './base'
@@ -9,10 +8,10 @@ export const UnderlineInput = defineComponent({
   setup(props) {
     return () => (
       <div
-        class={clsx(
+        class={[
           props.autoShrink ? 'min-w-[2rem]' : 'min-w-[120px]',
           styles['root'],
-        )}
+        ]}
       >
         <input
           class="absolute w-full"

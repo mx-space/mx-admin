@@ -38,7 +38,6 @@ specifiers:
   camelcase-keys: 8.0.0
   class-transformer: 0.5.1
   class-validator: 0.13.2
-  clsx: 1.1.1
   cors: 2.8.5
   date-fns: 2.28.0
   ejs: 3.1.8
@@ -105,7 +104,6 @@ dependencies:
   camelcase-keys: 8.0.0
   class-transformer: 0.5.1
   class-validator: 0.13.2
-  clsx: 1.1.1
   date-fns: 2.28.0
   ejs: 3.1.8
   js-cookie: 3.0.1
@@ -2435,11 +2433,6 @@ packages:
       wrap-ansi: 7.0.0
     dev: true
 
-  /clsx/1.1.1:
-    resolution: {integrity: sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA==}
-    engines: {node: '>=6'}
-    dev: false
-
   /color-convert/1.9.3:
     resolution: {integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==}
     dependencies:
@@ -3739,7 +3732,7 @@ packages:
     dev: false
 
   /javascript-natural-sort/0.7.1:
-    resolution: {integrity: sha512-nO6jcEfZWQXDhOiBtG2KvKyEptz7RVbpGP4vTD2hLBdmNQSsCiicO2Ioinv6UI4y9ukqnBpy+XZ9H6uLNgJTlw==}
+    resolution: {integrity: sha1-+eIwPUUH9tdDVac2ZNFED7Wg71k=}
     dev: true
 
   /jest-diff/27.5.1:
@@ -5039,7 +5032,7 @@ packages:
     resolution: {integrity: sha512-1Uhn/aqw5C6RI4KejVeTg6mIS7IqxnLJ8Mv2tV5rTc0qWobay7pDUz6Wi392Cnc8ak1H0F2cjoRzb2/AW4+Fvg==}
 
   /to-fast-properties/2.0.0:
-    resolution: {integrity: sha1-3F5pjL0HkmW8c+A3doGk5Og/YW4=}
+    resolution: {integrity: sha512-/OaKK0xYrs3DmxRYqL/yDc+FxFUVYhDlXMhRmv3z915w2HF1tnN1omB354j8VUGO/hbRzyD6Y3sA7v7GS/ceog==}
     engines: {node: '>=4'}
 
   /to-regex-range/5.0.1:

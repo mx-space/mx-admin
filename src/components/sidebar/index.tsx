@@ -1,10 +1,9 @@
-import clsx from 'clsx'
 import { HamburgerIcon, MoonIcon, SunIcon } from 'components/icons'
 import { WEB_URL } from 'constants/env'
 import { NLayoutContent } from 'naive-ui'
 import { AppStore } from 'stores/app'
 import { UIStore } from 'stores/ui'
-import type { PropType} from 'vue';
+import type { PropType } from 'vue'
 import { computed, defineComponent, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -14,7 +13,7 @@ import { onClickOutside } from '@vueuse/core'
 import { configs } from '../../configs'
 import { useStoreRef } from '../../hooks/use-store-ref'
 import { UserStore } from '../../stores/user'
-import type { MenuModel} from '../../utils/build-menus';
+import type { MenuModel } from '../../utils/build-menus'
 import { buildMenuModel, buildMenus } from '../../utils/build-menus'
 import { Avatar } from '../avatar'
 import styles from './index.module.css'
@@ -96,17 +95,14 @@ export const Sidebar = defineComponent({
 
     return () => (
       <div
-        class={clsx(styles['root'], props.collapse ? styles['collapse'] : null)}
+        class={[styles['root'], props.collapse ? styles['collapse'] : null]}
         style={{
           width: !props.collapse && props.width ? `${props.width}px` : '',
         }}
         ref={sidebarRef}
       >
         <div
-          class={
-            `fixed left-0 top-0 h-screen overflow-hidden z-10 text-white ${ 
-            styles['sidebar']}`
-          }
+          class={`fixed left-0 top-0 h-screen overflow-hidden z-10 text-white ${styles['sidebar']}`}
         >
           <div class={'title relative font-medium text-center text-2xl'}>
             <button
@@ -133,15 +129,15 @@ export const Sidebar = defineComponent({
               {menus.value.map((item, index) => {
                 return (
                   <div
-                    class={clsx(
+                    class={[
                       'py-2',
                       route.value.fullPath === item.fullPath ||
-                        route.value.fullPath.startsWith(item.fullPath)
+                      route.value.fullPath.startsWith(item.fullPath)
                         ? styles['active']
                         : '',
 
                       styles['item'],
-                    )}
+                    ]}
                     data-path={item.fullPath}
                   >
                     <button
@@ -163,11 +159,12 @@ export const Sidebar = defineComponent({
                     </button>
                     {item.subItems && (
                       <ul
-                        class={clsx(
-                          `overflow-hidden  ${ 
-                            item.subItems.length ? styles['has-child'] : ''}`,
+                        class={[
+                          `overflow-hidden  ${
+                            item.subItems.length ? styles['has-child'] : ''
+                          }`,
                           _index.value === index ? styles['expand'] : '',
-                        )}
+                        ]}
                         style={{
                           maxHeight:
                             _index.value === index
@@ -180,15 +177,13 @@ export const Sidebar = defineComponent({
                             <li
                               key={child.path}
                               // data-fullPath={child.fullPath}
-                              class={clsx(
+                              class={[
                                 route.value.fullPath === child.fullPath ||
-                                  route.value.fullPath.startsWith(
-                                    child.fullPath,
-                                  )
+                                route.value.fullPath.startsWith(child.fullPath)
                                   ? styles['active']
                                   : '',
                                 styles['item'],
-                              )}
+                              ]}
                             >
                               <button
                                 onClick={() => handleRoute(child)}
@@ -216,10 +211,10 @@ export const Sidebar = defineComponent({
           </NLayoutContent>
 
           <button
-            class={clsx(
+            class={[
               'bottom-bar flex space-x-2 items-center  transform translate-y-1/3 phone:hidden',
               props.collapse ? 'px-8' : 'px-12',
-            )}
+            ]}
             onClick={() => {
               window.open(WEB_URL)
             }}

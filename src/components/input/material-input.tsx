@@ -1,4 +1,3 @@
-import clsx from 'clsx'
 import { defineComponent, onMounted, ref } from 'vue'
 
 import { inputBaseProps } from './base'
@@ -30,7 +29,7 @@ export const MaterialInput = defineComponent({
     })
 
     return () => (
-      <div class={clsx(styles['root'], styles['group'])}>
+      <div class={[styles['root'], styles['group']]}>
         <input
           required
           ref={inputRef}

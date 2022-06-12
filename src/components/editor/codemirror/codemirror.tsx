@@ -1,6 +1,5 @@
-import clsx from 'clsx'
 import { useSaveConfirm } from 'hooks/use-save-confirm'
-import type { PropType} from 'vue';
+import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
 
 import type { EditorState } from '@codemirror/state'
@@ -60,7 +59,7 @@ export const CodemirrorEditor = defineComponent({
     // })
 
     return () => (
-      <div class={clsx(styles['editor'], props.className)} ref={refContainer} />
+      <div class={[styles['editor'], props.className]} ref={refContainer} />
     )
   },
 })
