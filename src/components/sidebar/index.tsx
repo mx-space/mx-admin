@@ -1,8 +1,10 @@
-import { HamburgerIcon, MoonIcon, SunIcon } from 'components/icons'
+import { HamburgerIcon, LogoutIcon, MoonIcon, SunIcon } from 'components/icons'
 import { WEB_URL } from 'constants/env'
-import { NLayoutContent } from 'naive-ui'
+import { NIcon, NLayoutContent } from 'naive-ui'
+import { RouteName } from 'router/name'
 import { AppStore } from 'stores/app'
 import { UIStore } from 'stores/ui'
+import { RESTManager } from 'utils'
 import type { PropType } from 'vue'
 import { computed, defineComponent, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -84,7 +86,7 @@ export const Sidebar = defineComponent({
     const title = configs.title
     const sidebarRef = ref<HTMLDivElement>()
     const uiStore = useStoreRef(UIStore)
-    onClickOutside(sidebarRef, (event) => {
+    onClickOutside(sidebarRef, () => {
       const v = uiStore.viewport
       const isM = v.value.pad || v.value.mobile
       if (isM) {
@@ -219,7 +221,7 @@ export const Sidebar = defineComponent({
               window.open(WEB_URL)
             }}
           >
-            <Avatar src={user.value?.avatar} size={40} />
+            <LogoutAvatarButton />
             {!props.collapse ? (
               <span class="pl-12">{user.value?.name}</span>
             ) : null}
@@ -230,10 +232,46 @@ export const Sidebar = defineComponent({
               window.open(WEB_URL)
             }}
           >
-            <Avatar src={user.value?.avatar} size={40} />
+            <LogoutAvatarButton />
           </button>
         </div>
       </div>
     )
+  },
+})
+
+const LogoutAvatarButton = defineComponent({
+  setup() {
+    const { user } = useStoreRef(UserStore)
+    const router = useRouter()
+    const handleLogout = async (e: MouseEvent) => {
+      e.stopPropagation()
+      await RESTManager.api.user.logout.post({})
+      router.push({
+        name: RouteName.Login,
+      })
+    }
+    return () => {
+      const avatar = user.value?.avatar
+      return (
+        <div
+          class={'h-[40px] w-[40px] relative'}
+          onClick={handleLogout}
+          role="button"
+        >
+          <Avatar src={avatar} size={40} class="absolute inset-0 z-1" />
+          <div
+            class={[
+              'absolute z-2 inset-0 flex items-center justify-center bg-dark-200 bg-opacity-80 rounded-full hover:opacity-50 opacity-0 transition-opacity',
+              'text-xl',
+            ]}
+          >
+            <NIcon>
+              <LogoutIcon />
+            </NIcon>
+          </div>
+        </div>
+      )
+    }
   },
 })
