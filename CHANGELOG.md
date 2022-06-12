@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Filter duplicate note
+
+### Features
+
+- Add logout
+- Post pin
+
+### Refactor
+
+- Remove clsx
+
+## [3.19.4] - 2022-06-11
+
+### Bug Fixes
+
 - Router guard
 - Update dependency vue-router to v4.0.16 (#461)
 - Remove auth token expired time
@@ -21,6 +36,7 @@ All notable changes to this project will be documented in this file.
 ### Release
 
 - V3.19.3
+- V3.19.4
 
 ## [3.19.2] - 2022-06-08
 
