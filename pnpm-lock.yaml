@@ -51,7 +51,7 @@ specifiers:
   monaco-editor: 0.33.0
   monaco-editor-auto-typings: 0.4.0
   naive-ui: 2.30.3
-  octokit: 1.7.2
+  octokit: 1.8.0
   path-browserify: 1.0.1
   pinia: 2.0.14
   postcss: 8.4.14
@@ -113,7 +113,7 @@ dependencies:
   monaco-editor: 0.33.0
   monaco-editor-auto-typings: 0.4.0_monaco-editor@0.33.0
   naive-ui: 2.30.3_vue@3.2.37
-  octokit: 1.7.2
+  octokit: 1.8.0
   path-browserify: 1.0.1
   pinia: 2.0.14_3wx4hvlpf33h4r5e7sgliqloou
   qier-progress: 1.0.4
@@ -1291,8 +1291,8 @@ packages:
       '@octokit/auth-unauthenticated': 2.1.0
       '@octokit/core': 3.6.0
       '@octokit/oauth-app': 3.6.2
-      '@octokit/plugin-paginate-rest': 2.17.0_@octokit+core@3.6.0
-      '@octokit/types': 6.34.0
+      '@octokit/plugin-paginate-rest': 2.18.0_@octokit+core@3.6.0
+      '@octokit/types': 6.35.0
       '@octokit/webhooks': 9.25.0
     transitivePeerDependencies:
       - encoding
@@ -1305,7 +1305,7 @@ packages:
       '@octokit/auth-oauth-user': 1.3.0
       '@octokit/request': 5.6.3
       '@octokit/request-error': 2.1.0
-      '@octokit/types': 6.34.0
+      '@octokit/types': 6.35.0
       '@types/lru-cache': 5.1.1
       deprecation: 2.3.1
       lru-cache: 6.0.0
@@ -1321,7 +1321,7 @@ packages:
       '@octokit/auth-oauth-device': 3.1.2
       '@octokit/auth-oauth-user': 1.3.0
       '@octokit/request': 5.6.3
-      '@octokit/types': 6.34.0
+      '@octokit/types': 6.35.0
       '@types/btoa-lite': 1.0.0
       btoa-lite: 1.0.0
       universal-user-agent: 6.0.0
@@ -1334,7 +1334,7 @@ packages:
     dependencies:
       '@octokit/oauth-methods': 1.2.6
       '@octokit/request': 5.6.3
-      '@octokit/types': 6.34.0
+      '@octokit/types': 6.35.0
       universal-user-agent: 6.0.0
     transitivePeerDependencies:
       - encoding
@@ -1346,7 +1346,7 @@ packages:
       '@octokit/auth-oauth-device': 3.1.2
       '@octokit/oauth-methods': 1.2.6
       '@octokit/request': 5.6.3
-      '@octokit/types': 6.34.0
+      '@octokit/types': 6.35.0
       btoa-lite: 1.0.0
       universal-user-agent: 6.0.0
     transitivePeerDependencies:
@@ -1356,14 +1356,14 @@ packages:
   /@octokit/auth-token/2.5.0:
     resolution: {integrity: sha512-r5FVUJCOLl19AxiuZD2VRZ/ORjp/4IN98Of6YJoJOkY75CIBuYfmiNHGrDwXr+aLGG55igl9QrxX3hbiXlLb+g==}
     dependencies:
-      '@octokit/types': 6.34.0
+      '@octokit/types': 6.35.0
     dev: false
 
   /@octokit/auth-unauthenticated/2.1.0:
     resolution: {integrity: sha512-+baofLfSL0CAv3CfGQ9rxiZZQEX8VNJMGuuS4PgrMRBUL52Ho5+hQYb63UJQshw7EXYMPDZxbXznc0y33cbPqw==}
     dependencies:
       '@octokit/request-error': 2.1.0
-      '@octokit/types': 6.34.0
+      '@octokit/types': 6.35.0
     dev: false
 
   /@octokit/core/3.6.0:
@@ -1373,7 +1373,7 @@ packages:
       '@octokit/graphql': 4.8.0
       '@octokit/request': 5.6.3
       '@octokit/request-error': 2.1.0
-      '@octokit/types': 6.34.0
+      '@octokit/types': 6.35.0
       before-after-hook: 2.2.2
       universal-user-agent: 6.0.0
     transitivePeerDependencies:
@@ -1383,7 +1383,7 @@ packages:
   /@octokit/endpoint/6.0.12:
     resolution: {integrity: sha512-lF3puPwkQWGfkMClXb4k/eUT/nZKQfxinRWJrdZaJO85Dqwo/G0yOC434Jr2ojwafWJMYqFGFa5ms4jJUgujdA==}
     dependencies:
-      '@octokit/types': 6.34.0
+      '@octokit/types': 6.35.0
       is-plain-object: 5.0.0
       universal-user-agent: 6.0.0
     dev: false
@@ -1392,7 +1392,7 @@ packages:
     resolution: {integrity: sha512-0gv+qLSBLKF0z8TKaSKTsS39scVKF9dbMxJpj3U0vC7wjNWFuIpL/z76Qe2fiuCbDRcJSavkXsVtMS6/dtQQsg==}
     dependencies:
       '@octokit/request': 5.6.3
-      '@octokit/types': 6.34.0
+      '@octokit/types': 6.35.0
       universal-user-agent: 6.0.0
     transitivePeerDependencies:
       - encoding
@@ -1426,39 +1426,39 @@ packages:
       '@octokit/oauth-authorization-url': 4.3.3
       '@octokit/request': 5.6.3
       '@octokit/request-error': 2.1.0
-      '@octokit/types': 6.34.0
+      '@octokit/types': 6.35.0
       btoa-lite: 1.0.0
     transitivePeerDependencies:
       - encoding
     dev: false
 
-  /@octokit/openapi-types/11.2.0:
-    resolution: {integrity: sha512-PBsVO+15KSlGmiI8QAzaqvsNlZlrDlyAJYcrXBCvVUxCp7VnXjkwPoFHgjEJXx3WF9BAwkA6nfCUA7i9sODzKA==}
+  /@octokit/openapi-types/12.1.0:
+    resolution: {integrity: sha512-kQzJh3ZUv3lDpi6M+uekMRHULvf9DlWoI1XgKN6nPeGDzkSgtkhVq1MMz3bFKQ6H6GbdC3ZqG/a6VzKhIx0VeA==}
     dev: false
 
-  /@octokit/plugin-paginate-rest/2.17.0_@octokit+core@3.6.0:
-    resolution: {integrity: sha512-tzMbrbnam2Mt4AhuyCHvpRkS0oZ5MvwwcQPYGtMv4tUa5kkzG58SVB0fcsLulOZQeRnOgdkZWkRUiyBlh0Bkyw==}
+  /@octokit/plugin-paginate-rest/2.18.0_@octokit+core@3.6.0:
+    resolution: {integrity: sha512-n5/AzIoy5Wzp85gqzSbR+dWQDHlyHZrGijnDfLh452547Ynu0hCvszH7EfRE0eqM5ZjfkplO0k+q+P8AAIIJEA==}
     peerDependencies:
       '@octokit/core': '>=2'
     dependencies:
       '@octokit/core': 3.6.0
-      '@octokit/types': 6.34.0
+      '@octokit/types': 6.35.0
     dev: false
 
-  /@octokit/plugin-rest-endpoint-methods/5.13.0_@octokit+core@3.6.0:
-    resolution: {integrity: sha512-uJjMTkN1KaOIgNtUPMtIXDOjx6dGYysdIFhgA52x4xSadQCz3b/zJexvITDVpANnfKPW/+E0xkOvLntqMYpviA==}
+  /@octokit/plugin-rest-endpoint-methods/5.14.0_@octokit+core@3.6.0:
+    resolution: {integrity: sha512-MRnMs4Dcm1OSaz/g/RLr4YY9otgysS7vN5SUkHGd7t+R8323cHsHFoEWHYPSmgUC0BieHRhvnCRWb4i3Pl+Lgg==}
     peerDependencies:
       '@octokit/core': '>=3'
     dependencies:
       '@octokit/core': 3.6.0
-      '@octokit/types': 6.34.0
+      '@octokit/types': 6.35.0
       deprecation: 2.3.1
     dev: false
 
   /@octokit/plugin-retry/3.0.9:
     resolution: {integrity: sha512-r+fArdP5+TG6l1Rv/C9hVoty6tldw6cE2pRHNGmFPdyfrc696R6JjrQ3d7HdVqGwuzfyrcaLAKD7K8TX8aehUQ==}
     dependencies:
-      '@octokit/types': 6.34.0
+      '@octokit/types': 6.35.0
       bottleneck: 2.19.5
     dev: false
 
@@ -1468,14 +1468,14 @@ packages:
       '@octokit/core': ^3.5.0
     dependencies:
       '@octokit/core': 3.6.0
-      '@octokit/types': 6.34.0
+      '@octokit/types': 6.35.0
       bottleneck: 2.19.5
     dev: false
 
   /@octokit/request-error/2.1.0:
     resolution: {integrity: sha512-1VIvgXxs9WHSjicsRwq8PlR2LR2x6DwsJAaFgzdi0JfJoGSO8mYI/cHJQ+9FbN21aa+DrgNLnwObmyeSC8Rmpg==}
     dependencies:
-      '@octokit/types': 6.34.0
+      '@octokit/types': 6.35.0
       deprecation: 2.3.1
       once: 1.4.0
     dev: false
@@ -1485,7 +1485,7 @@ packages:
     dependencies:
       '@octokit/endpoint': 6.0.12
       '@octokit/request-error': 2.1.0
-      '@octokit/types': 6.34.0
+      '@octokit/types': 6.35.0
       is-plain-object: 5.0.0
       node-fetch: 2.6.7
       universal-user-agent: 6.0.0
@@ -1493,10 +1493,10 @@ packages:
       - encoding
     dev: false
 
-  /@octokit/types/6.34.0:
-    resolution: {integrity: sha512-s1zLBjWhdEI2zwaoSgyOFoKSl109CUcVBCc7biPJ3aAf6LGLU6szDvi31JPU7bxfla2lqfhjbbg/5DdFNxOwHw==}
+  /@octokit/types/6.35.0:
+    resolution: {integrity: sha512-DhLfdUuv3H37u6jBDfkwamypx3HflHg29b26nbA6iVFYkAlZ5cMEtu/9pQoihGnQE5M7jJFnNo25Rr1UwQNF8Q==}
     dependencies:
-      '@octokit/openapi-types': 11.2.0
+      '@octokit/openapi-types': 12.1.0
     dev: false
 
   /@octokit/webhooks-methods/2.0.0:
@@ -3732,7 +3732,7 @@ packages:
     dev: false
 
   /javascript-natural-sort/0.7.1:
-    resolution: {integrity: sha1-+eIwPUUH9tdDVac2ZNFED7Wg71k=}
+    resolution: {integrity: sha512-nO6jcEfZWQXDhOiBtG2KvKyEptz7RVbpGP4vTD2hLBdmNQSsCiicO2Ioinv6UI4y9ukqnBpy+XZ9H6uLNgJTlw==}
     dev: true
 
   /jest-diff/27.5.1:
@@ -4155,23 +4155,23 @@ packages:
       es-abstract: 1.20.1
     dev: true
 
-  /octokit/1.7.2:
-    resolution: {integrity: sha512-C+iwOeUMWwbvHxGbLX5rAde5WuEVGe/hNQniU1haZAPMHqUz1+ppffvkP4v/2R3dkSLJnzceUG+ir0klNmEoBA==}
+  /octokit/1.8.0:
+    resolution: {integrity: sha512-HtArk9ttGy5effKNiaqKCirR6VSZoYjqgLgvVm/1mSRR4WYmww5DHjLnZlCbvj8+DwBLLLduJ3XnX/SPCCcp6A==}
     dependencies:
       '@octokit/app': 12.0.5
       '@octokit/core': 3.6.0
       '@octokit/oauth-app': 3.6.2
-      '@octokit/plugin-paginate-rest': 2.17.0_@octokit+core@3.6.0
-      '@octokit/plugin-rest-endpoint-methods': 5.13.0_@octokit+core@3.6.0
+      '@octokit/plugin-paginate-rest': 2.18.0_@octokit+core@3.6.0
+      '@octokit/plugin-rest-endpoint-methods': 5.14.0_@octokit+core@3.6.0
       '@octokit/plugin-retry': 3.0.9
       '@octokit/plugin-throttling': 3.6.2_@octokit+core@3.6.0
-      '@octokit/types': 6.34.0
+      '@octokit/types': 6.35.0
     transitivePeerDependencies:
       - encoding
     dev: false
 
   /once/1.4.0:
-    resolution: {integrity: sha1-WDsap3WWHUsROsF9nFC6753Xa9E=}
+    resolution: {integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==}
     dependencies:
       wrappy: 1.0.2
 
@@ -5042,7 +5042,7 @@ packages:
       is-number: 7.0.0
 
   /tr46/0.0.3:
-    resolution: {integrity: sha1-gYT9NH2snNwYWZLzpmIuFLnZq2o=}
+    resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
     dev: false
 
   /treemate/0.3.11:
@@ -5219,7 +5219,7 @@ packages:
     dev: true
 
   /url/0.10.3:
-    resolution: {integrity: sha1-Ah5NnHcF8hu/N9A861h2dAJ3TGQ=}
+    resolution: {integrity: sha512-hzSUW2q06EqL1gKM/a+obYHLIO6ct2hwPuviqTTOcfFVc61UbfJ2Q32+uGL/HCPxKqrdGB5QUwIe7UqlDgwsOQ==}
     dependencies:
       punycode: 1.3.2
       querystring: 0.2.0
@@ -5462,7 +5462,7 @@ packages:
     optional: true
 
   /webidl-conversions/3.0.1:
-    resolution: {integrity: sha1-JFNCdeKnvGvnvIZhHMFq4KVlSHE=}
+    resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
     dev: false
 
   /webpack-sources/3.2.3:
@@ -5479,7 +5479,7 @@ packages:
     dev: false
 
   /whatwg-url/5.0.0:
-    resolution: {integrity: sha1-lmRU6HZUYuN2RNNib2dCzotwll0=}
+    resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}
     dependencies:
       tr46: 0.0.3
       webidl-conversions: 3.0.1
@@ -5523,7 +5523,7 @@ packages:
     dev: true
 
   /wrappy/1.0.2:
-    resolution: {integrity: sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8=}
+    resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
   /ws/8.2.3:
     resolution: {integrity: sha512-wBuoj1BDpC6ZQ1B7DWQBYVLphPWkm8i9Y0/3YdHjHKHiohOJ1ws+3OccDWtH+PoC9DZD5WOTrJvNbWvjS6JWaA==}
@@ -5552,7 +5552,7 @@ packages:
     optional: true
 
   /xmlbuilder/9.0.7:
-    resolution: {integrity: sha1-Ey7mPS7FVlxVfiD0wi35rKaGsQ0=}
+    resolution: {integrity: sha512-7YXTQc3P2l9+0rjaUbLwMKRhtmwg1M1eDf6nag7urC7pIPYLD9W/jmzQ4ptRSUbodw5S0jfoGTflLemQibSpeQ==}
     engines: {node: '>=4.0'}
     dev: false
     optional: true
