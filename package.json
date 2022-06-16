@@ -45,7 +45,7 @@
     "js-cookie": "3.0.1",
     "js-yaml": "4.1.0",
     "lodash-es": "4.17.21",
-    "marked": "4.0.16",
+    "marked": "4.0.17",
     "monaco-editor": "0.33.0",
     "monaco-editor-auto-typings": "0.4.0",
     "naive-ui": "2.30.3",
