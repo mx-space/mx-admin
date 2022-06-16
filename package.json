@@ -27,7 +27,7 @@
     "@codemirror/view": "6.0.0",
     "@ddietr/codemirror-themes": "https://github.com/Innei/codemirror-themes.git",
     "@lezer/highlight": "*",
-    "@mx-space/api-client": "0.10.9",
+    "@mx-space/api-client": "0.10.10",
     "@vicons/antd": "0.12.0",
     "@vicons/fa": "0.12.0",
     "@vicons/fluent": "0.12.0",
