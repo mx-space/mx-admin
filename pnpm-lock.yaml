@@ -1,7 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@antv/g2': 4.2.2
+  '@antv/g2': 4.2.3
   '@bytebase/vue-kbar': 0.1.7
   '@codemirror/commands': 6.0.0
   '@codemirror/lang-markdown': 6.0.0
@@ -80,7 +80,7 @@ specifiers:
   xterm-theme: 1.1.0
 
 dependencies:
-  '@antv/g2': 4.2.2
+  '@antv/g2': 4.2.3
   '@bytebase/vue-kbar': 0.1.7_vue@3.2.37
   '@codemirror/commands': 6.0.0
   '@codemirror/lang-markdown': 6.0.0
@@ -272,8 +272,8 @@ packages:
       tslib: 2.4.0
     dev: false
 
-  /@antv/g2/4.2.2:
-    resolution: {integrity: sha512-wAzVlbVUWg4Oum4tNgBy39Wltw2jwHW9+aIkK6CjXbv2gSrxGAQclNfpBZ37FPQGVf7/DTlMTw6/sdZbnuTyJA==}
+  /@antv/g2/4.2.3:
+    resolution: {integrity: sha512-V18h8cUPgBNSbuY3VEsabYB5bua6YDBBBJqi8YO+1Pk7zJwiJrpC18zV9wKl/BuoMrjHEKUZmMqIKCVrQNjSfg==}
     dependencies:
       '@antv/adjust': 0.2.5
       '@antv/attr': 0.3.3
@@ -572,7 +572,7 @@ packages:
     engines: {node: '>=6.0.0'}
     hasBin: true
     dependencies:
-      '@babel/types': 7.18.2
+      '@babel/types': 7.18.4
 
   /@babel/parser/7.18.4:
     resolution: {integrity: sha512-FDge0dFazETFcxGw/EXzOkN8uJp0PC7Qbm+Pe9T+av2zlBpOgunFHkQPPn+eRuClU73JF+98D531UgayY89tow==}
@@ -580,7 +580,6 @@ packages:
     hasBin: true
     dependencies:
       '@babel/types': 7.18.4
-    dev: true
 
   /@babel/plugin-syntax-import-meta/7.10.4_@babel+core@7.17.9:
     resolution: {integrity: sha512-Yqfm+XDx0+Prh3VSeEQCPU81yC+JWZ2pDPFSS4ZdpfZhp4MkFMaDC1UqseovEKwSUpnIL7+vK+Clp7bfh0iD7g==}
@@ -659,20 +658,12 @@ packages:
       - supports-color
     dev: true
 
-  /@babel/types/7.18.2:
-    resolution: {integrity: sha512-0On6B8A4/+mFUto5WERt3EEuG1NznDirvwca1O8UwXQHVY8g3R7OzYgxXdOfMwLO08UrpUD/2+3Bclyq+/C94Q==}
-    engines: {node: '>=6.9.0'}
-    dependencies:
-      '@babel/helper-validator-identifier': 7.16.7
-      to-fast-properties: 2.0.0
-
   /@babel/types/7.18.4:
     resolution: {integrity: sha512-ThN1mBcMq5pG/Vm2IcBmPPfyPXbd8S02rS+OBIDENdufvqC7Z/jHPCv9IcP01277aKtDI8g/2XysBN4hA8niiw==}
     engines: {node: '>=6.9.0'}
     dependencies:
       '@babel/helper-validator-identifier': 7.16.7
       to-fast-properties: 2.0.0
-    dev: true
 
   /@bytebase/vue-kbar/0.1.7_vue@3.2.37:
     resolution: {integrity: sha512-j/+hd2EKx+a+mIfl6hfoZnLTODHBic4oSS8IzweT1rQe1uMsNuRxi7ERovDSVDuEPVaVVZJBIBrpH+kS4LByZQ==}
@@ -1939,7 +1930,7 @@ packages:
   /@vue/compiler-core/3.2.37:
     resolution: {integrity: sha512-81KhEjo7YAOh0vQJoSmAD68wLfYqJvoiD4ulyedzF+OEk/bk6/hx3fTNVfuzugIIaTrOx4PGx6pAiBRe5e9Zmg==}
     dependencies:
-      '@babel/parser': 7.18.3
+      '@babel/parser': 7.18.4
       '@vue/shared': 3.2.37
       estree-walker: 2.0.2
       source-map: 0.6.1
@@ -1977,7 +1968,7 @@ packages:
   /@vue/reactivity-transform/3.2.37:
     resolution: {integrity: sha512-IWopkKEb+8qpu/1eMKVeXrK0NLw9HicGviJzhJDEyfxTR9e1WtpnnbYkJWurX6WwoFP0sz10xQg8yL8lgskAZg==}
     dependencies:
-      '@babel/parser': 7.18.3
+      '@babel/parser': 7.18.4
       '@vue/compiler-core': 3.2.37
       '@vue/shared': 3.2.37
       estree-walker: 2.0.2
