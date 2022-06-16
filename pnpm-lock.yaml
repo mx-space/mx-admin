@@ -43,7 +43,7 @@ specifiers:
   ejs: 3.1.8
   eslint: 8.17.0
   eslint-plugin-unused-imports: 2.0.0
-  eslint-plugin-vue: 9.1.0
+  eslint-plugin-vue: 9.1.1
   js-cookie: 3.0.1
   js-yaml: 4.1.0
   lodash-es: 4.17.21
@@ -146,7 +146,7 @@ devDependencies:
   cors: 2.8.5
   eslint: 8.17.0
   eslint-plugin-unused-imports: 2.0.0_tjwv4ig2otjpl5zmysfn2moz3y
-  eslint-plugin-vue: 9.1.0_eslint@8.17.0
+  eslint-plugin-vue: 9.1.1_eslint@8.17.0
   postcss: 8.4.14
   postcss-nested: 5.0.6_postcss@8.4.14
   postcss-preset-env: 7.7.1_postcss@8.4.14
@@ -3097,8 +3097,8 @@ packages:
       eslint-rule-composer: 0.3.0
     dev: true
 
-  /eslint-plugin-vue/9.1.0_eslint@8.17.0:
-    resolution: {integrity: sha512-EPCeInPicQ/YyfOWJDr1yfEeSNoFCMzUus107lZyYi37xejdOolNzS5MXGXp8+9bkoKZMdv/1AcZzQebME6r+g==}
+  /eslint-plugin-vue/9.1.1_eslint@8.17.0:
+    resolution: {integrity: sha512-W9n5PB1X2jzC7CK6riG0oAcxjmKrjTF6+keL1rni8n57DZeilx/Fulz+IRJK3lYseLNAygN0I62L7DvioW40Tw==}
     engines: {node: ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: ^6.2.0 || ^7.0.0 || ^8.0.0
