@@ -14,7 +14,7 @@ specifiers:
   '@innei/eslint-config-ts': 0.9.2
   '@innei/prettier': 0.9.2
   '@lezer/highlight': '*'
-  '@mx-space/api-client': 0.10.9
+  '@mx-space/api-client': 0.10.10
   '@types/ejs': 3.1.1
   '@types/js-yaml': 4.0.5
   '@types/lodash-es': 4.17.6
@@ -91,7 +91,7 @@ dependencies:
   '@codemirror/view': 6.0.0
   '@ddietr/codemirror-themes': github.com/Innei/codemirror-themes/d7dee7637d330d10cc6d0984c1b5720d3d8a60af
   '@lezer/highlight': 1.0.0
-  '@mx-space/api-client': 0.10.9
+  '@mx-space/api-client': 0.10.10
   '@vicons/antd': 0.12.0
   '@vicons/fa': 0.12.0
   '@vicons/fluent': 0.12.0
@@ -1250,8 +1250,8 @@ packages:
       '@lezer/lr': 1.0.0
     dev: false
 
-  /@mx-space/api-client/0.10.9:
-    resolution: {integrity: sha512-miFAcdBitj9Lrx/Ei4MFrFqk+jh/in5J/j1IJFKVM+KuyYwB1hVuJ3gNJwLDWZ0AVtyjA33KGQnDsKGsQktdKA==}
+  /@mx-space/api-client/0.10.10:
+    resolution: {integrity: sha512-WyisWutPNY5AujWXGWMAuz+bc5V5BexT7LVuvdi41A88Ey5OilmtX9F4lv9vnSaxGkAprYRlIkwS68t3f18fGA==}
     engines: {pnpm: '>=6'}
     dependencies:
       camelcase-keys: 7.0.2
