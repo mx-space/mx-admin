@@ -21,16 +21,19 @@ export const KVEditor = defineComponent({
   setup(props) {
     const memoInitialValue = isEmpty(props.value) ? null : props.value
     const KVArray = ref<{ key: string; value: string }[]>([])
-    const options = ref(props.options)
+
+    const keySet = ref(new Set<string>())
 
     onMounted(() => {
       if (memoInitialValue && props.value) {
         const arr = Object.entries(props.value).map(([k, v]) => {
+          keySet.value.add(k)
           return {
             key: k,
             value: v.toString(),
           }
         })
+
         KVArray.value = arr
       }
     })
@@ -47,14 +50,18 @@ export const KVEditor = defineComponent({
           return acc
         }, {} as { [key: string]: string })
         props.onChange(record)
-
-        options.value?.forEach((option) => {
-          option.disabled = !!KVArray.value.find(
-            (item) => item.key === option.value,
-          )
-        })
       },
       { deep: true },
+    )
+
+    watch(
+      () => KVArray.value,
+      (newValue) => {
+        keySet.value.clear()
+        newValue.forEach((item) => {
+          keySet.value.add(item.key)
+        })
+      },
     )
 
     return () => (
@@ -85,7 +92,10 @@ export const KVEditor = defineComponent({
                   onUpdateValue={(platform) => {
                     rowProps.value.key = platform
                   }}
-                  options={options.value}
+                  options={props.options?.map((option) => ({
+                    ...option,
+                    disabled: keySet.value.has(option.value as string),
+                  }))}
                 ></NSelect>
                 <NInput
                   value={rowProps.value.value.toString()}
