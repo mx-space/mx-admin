@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Order
+- Update dependency octokit to v1.8.0 (#458)
+- Update dependency @antv/g2 to v4.2.3 (#469)
+- Update dependency marked to v4.0.17 (#464)
+- Update dependency @mx-space/api-client to v0.10.10 (#470)
+- Update dependency @vueuse/core to v8.7.4 (#472)
+- Update dependency naive-ui to v2.30.4 (#468)
+
+### Features
+
+- Make select become single choice (#473)
+- Json5 snippate
+
+### Miscellaneous Tasks
+
+- Update dependency vite to v2.9.12 (#462)
+- Update dependency prettier to v2.7.0 (#467)
+- Update dependency eslint-plugin-vue to v9.1.1 (#463)
+- Ci config
+
+### Refactor
+
+- Kv editor disabled label
+
+## [3.19.5] - 2022-06-12
+
+### Bug Fixes
+
 - Filter duplicate note
 
 ### Features
@@ -15,6 +43,10 @@ All notable changes to this project will be documented in this file.
 ### Refactor
 
 - Remove clsx
+
+### Release
+
+- V3.19.5
 
 ## [3.19.4] - 2022-06-11
 
