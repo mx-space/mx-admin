@@ -92,6 +92,7 @@ export const useAsyncLoadMonaco = (
         fontSize: 14,
       }
       if (options.language === 'typescript') {
+        editorModel?.dispose()
         editorModel = module.editor.createModel(value.value, 'typescript')
         Object.assign(options, {
           model: editorModel,

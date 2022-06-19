@@ -2,9 +2,10 @@ import { HeaderActionButton } from 'components/button/rounded-button'
 import { CheckCircleOutlinedIcon } from 'components/icons'
 import { useMountAndUnmount } from 'hooks/use-react'
 import { dump, load } from 'js-yaml'
+import JSON5 from 'json5'
 import { useLayout } from 'layouts/content'
 import { TwoColGridLayout } from 'layouts/two-col'
-import { debounce, omit } from 'lodash-es'
+import { omit } from 'lodash-es'
 import {
   NForm,
   NFormItem,
@@ -41,41 +42,63 @@ export const Tab2ForEdit = defineComponent({
     const typeToValueMap = reactive<Record<SnippetType, string>>(
       // 有 Id 的情况下，避免闪白, 留空数据
       editId.value
-        ? { json: '', yaml: '', text: '', function: '' }
+        ? { json: '', yaml: '', text: '', function: '', json5: '' }
         : {
             json: JSON.stringify({ name: 'hello world' }, null, 2),
             text: '',
             yaml: `name: hello world`,
             function: defaultServerlessFunction,
+            json5: JSON5.stringify({ name: 'hello world' }, null, 2),
           },
     )
 
+    let jsonFormatBeforeType: SnippetType = SnippetType.JSON
     // 监听 type 变化, 实时同时 typeToValueMap 中的值 到 data.raw
     watch(
       () => data.value.type,
-      (type) => {
-        data.value.raw = typeToValueMap[type]
-      },
-    )
+      (type, beforeType) => {
+        if (type === 'function' || type === 'text') {
+          data.value.raw = typeToValueMap[type]
+          return
+        }
 
-    // json yaml 同步转换
-    watch(
-      () => [typeToValueMap.json, typeToValueMap.yaml],
-      debounce(([json, yaml], [oldJson, oldYaml]) => {
-        const isUpdateJSON = json !== oldJson
-        const isUpdateYAML = yaml !== oldYaml
+        if (beforeType !== 'function' && beforeType !== 'text') {
+          jsonFormatBeforeType = beforeType
+        }
 
-        // use escapeObject to avoid re-render hell
-        const escapeObject = toRaw(typeToValueMap)
+        const object = (() => {
+          switch (jsonFormatBeforeType) {
+            case 'json': {
+              return JSON.parse(typeToValueMap.json)
+            }
+            case 'yaml': {
+              return load(typeToValueMap.yaml)
+            }
 
-        try {
-          if (isUpdateJSON) {
-            escapeObject.yaml = dump(JSON.parse(json))
-          } else if (isUpdateYAML) {
-            escapeObject.json = JSON.stringify(load(yaml), null, 2)
+            case 'json5': {
+              return JSON5.parse(typeToValueMap.json5)
+            }
           }
-        } catch {}
-      }, 100),
+        })()
+
+        const current = (() => {
+          switch (type) {
+            case 'json': {
+              return JSON.stringify(object, null, 2)
+            }
+            case 'yaml': {
+              return dump(object)
+            }
+
+            case 'json5': {
+              return JSON5.stringify(object, null, 2)
+            }
+          }
+        })()
+
+        data.value.raw = current || ''
+        typeToValueMap[type] = current || ''
+      },
     )
 
     watch(
@@ -120,12 +143,15 @@ export const Tab2ForEdit = defineComponent({
             .get<SnippetModel>()
           switch (_data.type) {
             case SnippetType.JSON: {
-              _data.raw = JSON.stringify(JSON.parse(_data.raw), null, 2)
+              _data.raw = JSON.stringify(JSON5.parse(_data.raw), null, 2)
 
               break
             }
           }
           data.value = _data
+
+          jsonFormatBeforeType = _data.type
+
           // 同时更新 typeToValueMap 中的值
           typeToValueMap[_data.type] = _data.raw
         }

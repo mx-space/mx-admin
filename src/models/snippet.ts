@@ -7,6 +7,7 @@ async function handler(ctx: Context) {
 `.trimStart()
 export enum SnippetType {
   JSON = 'json',
+  JSON5 = 'json5',
   Function = 'function',
   Text = 'text',
   YAML = 'yaml',
@@ -14,6 +15,7 @@ export enum SnippetType {
 
 export enum SnippetTypeToLanguage {
   json = 'json',
+  json5 = 'plaintext',
   function = 'typescript',
   text = 'markdown',
   yaml = 'yaml',

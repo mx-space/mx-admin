@@ -41,6 +41,7 @@ export const FunctionCodeEditor = defineComponent({
             if (!model) {
               return
             }
+
             mo.editor.setModelLanguage(model, language as string)
           })
         }
