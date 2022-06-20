@@ -99,7 +99,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     path: '/notes',
     name: RouteName.Note,
     meta: {
-      title: '生活记录',
+      title: '点滴',
       icon: <BookIcon />,
     },
     redirect: '/notes/view',

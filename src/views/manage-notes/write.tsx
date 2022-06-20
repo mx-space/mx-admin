@@ -228,7 +228,7 @@ const NoteWriteView = defineComponent(() => {
 
   return () => (
     <ContentLayout
-      title={'树洞'}
+      title={'记录生活点滴'}
       actionsElement={
         <>
           <ParseContentButton
