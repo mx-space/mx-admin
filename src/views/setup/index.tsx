@@ -281,7 +281,7 @@ const Step2 = defineComponent({
           <NButton
             disabled={
               !user.username ||
-              !user.username ||
+              !user.mail ||
               !user.password ||
               !repassword.value
             }
