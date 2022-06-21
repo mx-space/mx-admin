@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update dependency naive-ui to v2.30.5 (#476)
+- Update dependency @mx-space/api-client to v0.10.11 (#475)
+- Step2 validation (#478)
+
+### Miscellaneous Tasks
+
+- Copywrite
+- Update typescript-eslint monorepo to v5.29.0 (#466)
+- Update dependency prettier to v2.7.1 (#471)
+- Update dependency unplugin-auto-import to v0.8.8 (#465)
+
+## [3.19.6] - 2022-06-19
+
+### Bug Fixes
+
 - Order
 - Update dependency octokit to v1.8.0 (#458)
 - Update dependency @antv/g2 to v4.2.3 (#469)
@@ -28,6 +43,10 @@ All notable changes to this project will be documented in this file.
 ### Refactor
 
 - Kv editor disabled label
+
+### Release
+
+- V3.19.6
 
 ## [3.19.5] - 2022-06-12
 
