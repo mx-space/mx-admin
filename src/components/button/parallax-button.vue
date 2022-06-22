@@ -14,7 +14,10 @@
 
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { PropType, computed, defineComponent, onMounted, ref } from 'vue'
+import { useStoreRef } from 'hooks/use-store-ref'
+import { UIStore } from 'stores/ui'
+import type { PropType } from 'vue'
+import { defineComponent, onMounted, ref } from 'vue'
 
 export default defineComponent({
   props: {
@@ -41,23 +44,27 @@ export default defineComponent({
       btnStyle.value = parallaxBtn.value?.style
     })
 
-    const boundingClientRect = computed(() =>
-      parallaxBtn.value?.getBoundingClientRect(),
-    )
+    const boundingClientRect = ref(parallaxBtn.value?.getBoundingClientRect())
+    const store = useStoreRef(UIStore)
+    watchEffect(() => {
+      void (store.viewport.value.h | store.viewport.value.w)
+
+      boundingClientRect.value = parallaxBtn.value?.getBoundingClientRect()
+    })
 
     return {
       parallaxBtn,
       btnStyle,
       boundingClientRect,
-      down(e) {
+      down() {
         btnStyle.value!.setProperty('--tz', '-25px')
       },
-      leave(e) {
+      leave() {
         btnStyle.value!.setProperty('--ty', '0')
         btnStyle.value!.setProperty('--rx', '0')
         btnStyle.value!.setProperty('--ry', '0')
       },
-      move(e) {
+      move(e: MouseEvent) {
         const x = e.clientX - boundingClientRect.value!.left
         const y = e.clientY - boundingClientRect.value!.top
         const xc = boundingClientRect.value!.width / 2

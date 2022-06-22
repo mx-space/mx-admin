@@ -20,7 +20,9 @@ export default ({ mode }) => {
     plugins: [
       vueJsx(),
       WindiCSS(),
-      vue(),
+      vue({
+        reactivityTransform: true,
+      }),
       tsconfigPaths(),
       visualizer({ open: false }),
 
