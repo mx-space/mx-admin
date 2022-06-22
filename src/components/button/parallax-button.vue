@@ -14,7 +14,9 @@
 
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { PropType, computed, defineComponent, onMounted, ref } from 'vue'
+import { PropType, defineComponent, onMounted, ref, watch } from 'vue'
+
+import { useWindowSize } from '@vueuse/core'
 
 export default defineComponent({
   props: {
@@ -37,12 +39,18 @@ export default defineComponent({
   setup() {
     const btnStyle = ref<CSSStyleDeclaration>()
     const parallaxBtn = ref<HTMLAnchorElement>()
+    const boundingClientRect = ref<DOMRect>()
     onMounted(() => {
+      boundingClientRect.value = parallaxBtn.value?.getBoundingClientRect()
       btnStyle.value = parallaxBtn.value?.style
     })
 
-    const boundingClientRect = computed(() =>
-      parallaxBtn.value?.getBoundingClientRect(),
+    watch(
+      () => useWindowSize(),
+      () => {
+        boundingClientRect.value = parallaxBtn.value?.getBoundingClientRect()
+      },
+      { deep: true },
     )
 
     return {
