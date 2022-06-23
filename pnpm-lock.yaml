@@ -52,7 +52,7 @@ specifiers:
   monaco-editor: 0.33.0
   monaco-editor-auto-typings: 0.4.2
   naive-ui: 2.30.5
-  octokit: 1.8.0
+  octokit: 1.8.1
   path-browserify: 1.0.1
   pinia: 2.0.14
   postcss: 8.4.14
@@ -115,7 +115,7 @@ dependencies:
   monaco-editor: 0.33.0
   monaco-editor-auto-typings: 0.4.2_monaco-editor@0.33.0
   naive-ui: 2.30.5_vue@3.2.37
-  octokit: 1.8.0
+  octokit: 1.8.1
   path-browserify: 1.0.1
   pinia: 2.0.14_3wx4hvlpf33h4r5e7sgliqloou
   qier-progress: 1.0.4
@@ -4147,8 +4147,8 @@ packages:
       es-abstract: 1.20.1
     dev: true
 
-  /octokit/1.8.0:
-    resolution: {integrity: sha512-HtArk9ttGy5effKNiaqKCirR6VSZoYjqgLgvVm/1mSRR4WYmww5DHjLnZlCbvj8+DwBLLLduJ3XnX/SPCCcp6A==}
+  /octokit/1.8.1:
+    resolution: {integrity: sha512-xBLKFIivbl7wnLwxzLYuDO/JDNYxdyxoSjFrl/QMrY/fwGGQYYklvKUDTUyGMU0aXPrQtJ0IZnG3BXpCkDQzWg==}
     dependencies:
       '@octokit/app': 12.0.5
       '@octokit/core': 3.6.0
