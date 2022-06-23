@@ -66,7 +66,7 @@ specifiers:
   socket.io-client: 4.5.1
   typescript: 4.6.4
   umi-request: 1.4.0
-  unplugin-auto-import: 0.8.8
+  unplugin-auto-import: 0.9.0
   validator: 13.7.0
   vite: 2.9.12
   vite-plugin-checker: 0.4.6
@@ -155,7 +155,7 @@ devDependencies:
   prettier: 2.7.1
   rollup-plugin-visualizer: 5.6.0
   typescript: 4.6.4
-  unplugin-auto-import: 0.8.8_2stne5n5kyl6qbsin45drmlmkm
+  unplugin-auto-import: 0.9.0_2stne5n5kyl6qbsin45drmlmkm
   vite: 2.9.12
   vite-plugin-checker: 0.4.6_vite@2.9.12
   vite-tsconfig-paths: 3.5.0_vite@2.9.12
@@ -4000,8 +4000,8 @@ packages:
     resolution: {integrity: sha512-zMq5n3cOf4fOzA4WoeulxagbAgMChdev3MgP6K51k7M0u2whTXxupfIY4VVzws4vxkiWhwH1rVQcsw7zDGfRhA==}
     dev: true
 
-  /mlly/0.5.2:
-    resolution: {integrity: sha512-4GTELSSErv6ZZJYU98fZNuIBJcXSz+ktHdRrCYEqU1m6ZlebOCG0jwZ+IEd9vOrbpYsVBBMC5OTrEyLnKRcauQ==}
+  /mlly/0.5.3:
+    resolution: {integrity: sha512-im69tuLD9EJh9fc9TZRpJEFvsBcGMez7glUCWDcHWWCKzhvPmNvyaYjp/+h0qJJN/Xovrs//GzGjOOKmFw4Gog==}
     dependencies:
       pathe: 0.2.0
       pkg-types: 0.3.2
@@ -5129,15 +5129,15 @@ packages:
       which-boxed-primitive: 1.0.2
     dev: true
 
-  /unimport/0.2.9_vite@2.9.12:
-    resolution: {integrity: sha512-5SLmZZL2rwaNOQa/yTGaG0QI0meRhb6MDdIlS9s1uHPSYO6Gfzr7ugl5Rf35/CJioW6wYiNJsN9dru5JMzaD8w==}
+  /unimport/0.3.0_vite@2.9.12:
+    resolution: {integrity: sha512-RxvfvKBY+CyBmIuYSuBeosSiudgcVakdhVofy5mO5sJ3purQRc5yjLw0Lir7MKHnqe6XT1++8flgAvpxu1UkqQ==}
     dependencies:
       '@rollup/pluginutils': 4.2.1
       escape-string-regexp: 5.0.0
       fast-glob: 3.2.11
       local-pkg: 0.4.1
       magic-string: 0.26.2
-      mlly: 0.5.2
+      mlly: 0.5.3
       pathe: 0.3.0
       scule: 0.2.1
       strip-literal: 0.4.0
@@ -5165,8 +5165,8 @@ packages:
     engines: {node: '>= 10.0.0'}
     dev: true
 
-  /unplugin-auto-import/0.8.8_2stne5n5kyl6qbsin45drmlmkm:
-    resolution: {integrity: sha512-cVZ79zMR1v4VCZ9emFTUnltmazCc2B4hObyVrxJdlgJ2sK8qub6JfjFt38rCF6MVEddkHiWCU6wZR1qbdqe+ig==}
+  /unplugin-auto-import/0.9.0_2stne5n5kyl6qbsin45drmlmkm:
+    resolution: {integrity: sha512-6h32xuwfpXQwXN9lAZtEDbb8rNGdBn/zg/H8HoXHtnm63t67zL2NDLxb0S3rJugKrQdhHhxaLgckN3gB36TnXw==}
     engines: {node: '>=14'}
     peerDependencies:
       '@vueuse/core': '*'
@@ -5179,7 +5179,7 @@ packages:
       '@vueuse/core': 8.7.4_vue@3.2.37
       local-pkg: 0.4.1
       magic-string: 0.26.2
-      unimport: 0.2.9_vite@2.9.12
+      unimport: 0.3.0_vite@2.9.12
       unplugin: 0.7.0_vite@2.9.12
     transitivePeerDependencies:
       - esbuild
