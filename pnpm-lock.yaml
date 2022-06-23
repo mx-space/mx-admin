@@ -50,7 +50,7 @@ specifiers:
   lodash-es: 4.17.21
   marked: 4.0.17
   monaco-editor: 0.33.0
-  monaco-editor-auto-typings: 0.4.0
+  monaco-editor-auto-typings: 0.4.2
   naive-ui: 2.30.5
   octokit: 1.8.0
   path-browserify: 1.0.1
@@ -113,7 +113,7 @@ dependencies:
   lodash-es: 4.17.21
   marked: 4.0.17
   monaco-editor: 0.33.0
-  monaco-editor-auto-typings: 0.4.0_monaco-editor@0.33.0
+  monaco-editor-auto-typings: 0.4.2_monaco-editor@0.33.0
   naive-ui: 2.30.5_vue@3.2.37
   octokit: 1.8.0
   path-browserify: 1.0.1
@@ -4007,8 +4007,8 @@ packages:
       pkg-types: 0.3.2
     dev: true
 
-  /monaco-editor-auto-typings/0.4.0_monaco-editor@0.33.0:
-    resolution: {integrity: sha512-rd98fgFtHIvetD/Pr3bU5u2lZkd39d8mFJJOIOuEPcf+ZLj1YpRWM0rv/7KKBbOkR50ya6IAp/xR1gE1BEiXrw==}
+  /monaco-editor-auto-typings/0.4.2_monaco-editor@0.33.0:
+    resolution: {integrity: sha512-97RfXOeHFTb4NDi1DSj+YZyU0lx8ksSLQum8bZ15hU0POCsUCfRe0DiGEhXl/kJaxEsRB5SjjZUBMDbAqjya+Q==}
     peerDependencies:
       monaco-editor: '*'
     dependencies:
