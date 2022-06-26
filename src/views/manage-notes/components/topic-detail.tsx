@@ -23,7 +23,7 @@ import type { PropType } from 'vue'
 
 import type { NoteModel, Pager, PaginateResult } from '@mx-space/api-client'
 import { Icon as NIcon } from '@vicons/utils'
-import { createGlobalState } from '@vueuse/core'
+import { useMemoNoteList } from '../hooks/use-memo-note-list'
 
 export const TopicDetail = defineComponent({
   props: {
@@ -286,52 +286,6 @@ export const TopicDetail = defineComponent({
   },
 })
 
-const useMemoNoteList = createGlobalState(() => {
-  const notes = ref([] as { id: string; title: string; nid: number }[])
-  const noteIdSet = new Set<string>()
-  let currentPage = 0
-  let isEnd = false
-
-  const loading = ref(true)
-  const fetchNotes = async (page = 1) => {
-    loading.value = true
-    const { data, pagination } = await RESTManager.api.notes.get<
-      PaginateResult<NoteModel>
-    >({
-      params: {
-        page,
-        size: 50,
-        select: 'nid title _id id',
-      },
-    })
-
-    notes.value.push(...data.filter((note) => !noteIdSet.has(note.id)))
-    loading.value = false
-    data.forEach((i) => noteIdSet.add(i.id))
-
-    currentPage = pagination.currentPage
-    if (!pagination.hasNextPage) {
-      isEnd = true
-    }
-  }
-
-  return {
-    loading,
-    notes,
-    fetchNext: () => {
-      if (isEnd) {
-        return
-      }
-      fetchNotes(currentPage + 1)
-    },
-    refresh: () => {
-      currentPage = 1
-      isEnd = false
-      notes.value = []
-      fetchNotes(currentPage)
-    },
-  }
-})
 
 const AddNoteToThisTopicButton = defineComponent({
   props: {
@@ -365,7 +319,7 @@ const AddNoteToThisTopicButton = defineComponent({
     const {
       refresh,
       fetchNext,
-      notes,
+      datalist: notes,
       loading: fetchingLoading,
     } = useMemoNoteList()
 

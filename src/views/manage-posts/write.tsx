@@ -30,6 +30,8 @@ import { useRoute, useRouter } from 'vue-router'
 
 import { Icon } from '@vicons/utils'
 
+import { useMemoPostList } from './hooks/use-memo-post-list'
+
 type PostReactiveType = WriteBaseType & {
   slug: string
   categoryId: string
@@ -38,6 +40,7 @@ type PostReactiveType = WriteBaseType & {
   summary: string
   pinOrder: number
   pin: boolean
+  relatedId: string[]
 }
 
 const PostWriteView = defineComponent(() => {
@@ -64,6 +67,7 @@ const PostWriteView = defineComponent(() => {
     meta: undefined,
     pin: false,
     pinOrder: 1,
+    relatedId: [],
   })
 
   const parsePayloadIntoReactiveData = (payload: PostModel) => {
@@ -75,6 +79,8 @@ const PostWriteView = defineComponent(() => {
       }
     }
   }
+
+  const postListState = useMemoPostList()
 
   const data = reactive<PostReactiveType>(resetReactive())
   const id = computed(() => route.query.id)
@@ -91,6 +97,11 @@ const PostWriteView = defineComponent(() => {
     const $id = id.value
     if ($id && typeof $id == 'string') {
       const payload = (await RESTManager.api.posts($id).get()) as any
+
+      // HACK: transform
+      payload.data.relatedId = payload.data.related?.map((r: any) => r.id) || []
+      postListState.append(payload.data.related)
+
       parsePayloadIntoReactiveData(payload.data as PostModel)
     }
   })
@@ -128,6 +139,28 @@ const PostWriteView = defineComponent(() => {
 
     router.push({ name: RouteName.ViewPost, hash: '|publish' })
   }
+  const handleOpenDrawer = () => {
+    drawerShow.value = true
+
+    if (postListState.loading.value) {
+      postListState.fetchNext()
+    }
+  }
+  const handleFetchNext = (e: Event) => {
+    const currentTarget = e.currentTarget as HTMLElement
+
+    if (
+      currentTarget.scrollTop + currentTarget.offsetHeight + 10 >=
+      currentTarget.scrollHeight
+    ) {
+      postListState.fetchNext()
+    }
+  }
+
+  onUnmounted(() => {
+    postListState.refresh()
+  })
+
   return () => (
     <ContentLayout
       title={id.value ? '修改文章' : '撰写新文章'}
@@ -152,11 +185,7 @@ const PostWriteView = defineComponent(() => {
       }
       footerButtonElement={
         <>
-          <button
-            onClick={() => {
-              drawerShow.value = true
-            }}
-          >
+          <button onClick={handleOpenDrawer}>
             <Icon>
               <SlidersHIcon />
             </Icon>
@@ -277,6 +306,31 @@ const PostWriteView = defineComponent(() => {
           </NDynamicTags>
         </NFormItem>
 
+        <NFormItem label="关联阅读">
+          <NSelect
+            maxTagCount={3}
+            filterable
+            clearable
+            loading={postListState.loading.value}
+            multiple
+            onClear={() => {
+              postListState.refresh()
+            }}
+            value={data.relatedId}
+            onUpdateValue={(values) => {
+              data.relatedId = values
+            }}
+            resetMenuOnOptionsChange={false}
+            options={postListState.datalist.value.map((item) => ({
+              label: item.title,
+              value: item.id,
+              key: item.id,
+              disabled: item.id == data.id,
+            }))}
+            onScroll={handleFetchNext}
+          ></NSelect>
+        </NFormItem>
+
         <NFormItem label="概要">
           <NInput
             type="textarea"
@@ -310,7 +364,7 @@ const PostWriteView = defineComponent(() => {
           ></NSwitch>
         </NFormItem>
 
-        <NFormItem label="置顶" labelAlign="right" labelPlacement="left">
+        <NFormItem label="置顶顺序" labelAlign="right" labelPlacement="left">
           <NInputNumber
             disabled={!data.pin}
             value={data.pinOrder}

@@ -22,6 +22,7 @@ export interface PostModel {
   category: Category
   pin?: string | null
   pinOrder?: number
+  related?: Pick<PostModel, 'id' | 'title'>[]
 }
 
 export interface Category {
