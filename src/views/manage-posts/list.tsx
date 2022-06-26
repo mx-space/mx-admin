@@ -110,7 +110,7 @@ export const ManagePostListView = defineComponent({
                       {{
                         trigger() {
                           return (
-                            <NIcon class={'text-yellow-200'}>
+                            <NIcon class={'text-yellow-500'}>
                               <PhPushPin />
                             </NIcon>
                           )
