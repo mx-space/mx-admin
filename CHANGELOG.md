@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Login button dislocation when resize close #480
+- Update dependency monaco-editor-auto-typings to v0.4.2 (#477)
+- Update dependency camelcase-keys to v8.0.1 (#483)
+- Update dependency octokit to v1.8.1 (#484)
+
+### Features
+
+- Related post (#491)
+
+### Miscellaneous Tasks
+
+- Update dependency unplugin-auto-import to v0.9.0 (#485)
+
+## [3.19.7] - 2022-06-21
+
+### Bug Fixes
+
 - Update dependency naive-ui to v2.30.5 (#476)
 - Update dependency @mx-space/api-client to v0.10.11 (#475)
 - Step2 validation (#478)
@@ -15,6 +32,10 @@ All notable changes to this project will be documented in this file.
 - Update typescript-eslint monorepo to v5.29.0 (#466)
 - Update dependency prettier to v2.7.1 (#471)
 - Update dependency unplugin-auto-import to v0.8.8 (#465)
+
+### Release
+
+- V3.19.7
 
 ## [3.19.6] - 2022-06-19
 
