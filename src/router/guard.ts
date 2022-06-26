@@ -1,5 +1,6 @@
 import { API_URL, GATEWAY_URL } from 'constants/env'
 import QProgress from 'qier-progress'
+import { removeToken, setToken } from 'utils/auth'
 
 import { configs } from '../configs'
 import { RESTManager } from '../utils/rest'
@@ -7,6 +8,8 @@ import { router } from './router'
 
 export const progress = new QProgress({ colorful: false, color: '#1a9cf3' })
 const title = configs.title
+
+let loginOnly = false
 
 router.beforeEach(async (to) => {
   if (to.path === '/setup-api') {
@@ -42,6 +45,19 @@ router.beforeEach(async (to) => {
     }>()
     if (!ok) {
       return `/login?from=${encodeURI(to.fullPath)}`
+    } else {
+      // login with token only
+      if (loginOnly) {
+        return
+      } else {
+        await RESTManager.api.master.login
+          .put<{ token: string }>()
+          .then((res) => {
+            loginOnly = true
+            removeToken()
+            setToken(res.token)
+          })
+      }
     }
   }
 })

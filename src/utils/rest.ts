@@ -54,7 +54,11 @@ class RESTManagerStatic {
           }
 
           if (error?.response?.status === 401) {
-            router.push('/login')
+            router.push(
+              `/login?from=${encodeURIComponent(
+                router.currentRoute.value.fullPath,
+              )}`,
+            )
           }
           return Promise.reject(error)
         }

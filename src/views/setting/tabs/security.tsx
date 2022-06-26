@@ -1,9 +1,12 @@
+import { If } from 'components/directives/if'
 import { PlusIcon as Plus } from 'components/icons'
+import { IpInfoPopover } from 'components/ip-info'
 import { RelativeTime } from 'components/time/relative-time'
 import { useStoreRef } from 'hooks/use-store-ref'
 import type { TokenModel } from 'models/token'
 import {
   NButton,
+  NButtonGroup,
   NCard,
   NCollapse,
   NCollapseItem,
@@ -11,9 +14,13 @@ import {
   NDatePicker,
   NForm,
   NFormItem,
+  NH4,
   NInput,
   NLayoutContent,
+  NList,
+  NListItem,
   NModal,
+  NP,
   NPopconfirm,
   NSpace,
   NSwitch,
@@ -28,11 +35,101 @@ import { Icon } from '@vicons/utils'
 
 import { autosizeableProps } from './system'
 
+type Session = {
+  id: string
+  ua?: string
+  ip?: string
+  date: string
+  current?: boolean
+}
 export const TabSecurity = defineComponent(() => {
+  const session = ref<Session[]>([])
+  onMounted(async () => {
+    const res = await RESTManager.api.user.session.get<{ data: Session[] }>({})
+    session.value = [...res.data]
+  })
+  const handleKick = async (current: boolean, id?: string) => {
+    if (current) {
+      await RESTManager.api.user.logout.post<{}>({})
+
+      removeToken()
+      window.location.reload()
+    } else {
+      await RESTManager.api.user.session(id).delete<{}>({})
+      session.value = session.value.filter((item) => item.id !== id)
+    }
+  }
   return () => (
     <Fragment>
+      <NH4>登录设备</NH4>
+      <NList bordered>
+        {session.value.map(({ id, ua, ip, date, current }) => (
+          <NListItem key={id}>
+            {{
+              prefix() {
+                return (
+                  <div class={'w-20 text-center'}>
+                    {current ? '当前' : null}
+                  </div>
+                )
+              },
+              suffix() {
+                return (
+                  <NButtonGroup>
+                    <NPopconfirm
+                      onPositiveClick={() => handleKick(!!current, id)}
+                    >
+                      {{
+                        trigger() {
+                          return (
+                            <NButton tertiary type="error">
+                              {current ? '注销' : '踢'}
+                            </NButton>
+                          )
+                        },
+                        default() {
+                          return current ? '登出？' : '确定要踢出吗？'
+                        },
+                      }}
+                    </NPopconfirm>
+                  </NButtonGroup>
+                )
+              },
+              default() {
+                return (
+                  <NSpace vertical>
+                    <If condition={!!ua}>
+                      <NP>User Agent: {ua}</NP>
+                    </If>
+
+                    <If condition={!!ip}>
+                      <NP>
+                        IP:{' '}
+                        <IpInfoPopover
+                          ip={ip!}
+                          triggerEl={
+                            <NButton text size="tiny" type="primary">
+                              {ip}
+                            </NButton>
+                          }
+                        ></IpInfoPopover>
+                      </NP>
+                    </If>
+
+                    <NP>
+                      {current ? '活跃时间' : '登录时间'}:{' '}
+                      <RelativeTime time={date} />
+                    </NP>
+                  </NSpace>
+                )
+              },
+            }}
+          </NListItem>
+        ))}
+      </NList>
+
       <div class="pt-4"></div>
-      <NCollapse defaultExpandedNames={['reset']} displayDirective="show">
+      <NCollapse defaultExpandedNames={['']} displayDirective="show">
         <NCollapseItem name="reset" title="修改密码">
           <ResetPass />
         </NCollapseItem>

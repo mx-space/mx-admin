@@ -1,4 +1,5 @@
 import { defineConfig } from 'windicss/helpers'
+import lineClamp from 'windicss/plugin/line-clamp'
 
 export default defineConfig({
   content: ['./src/**/*.html', './src/**/*.vue', './src/**/*.tsx'],
@@ -43,5 +44,5 @@ export default defineConfig({
     },
   },
 
-  plugins: [],
+  plugins: [lineClamp],
 })
