@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Pin icon color
+- Replace render path
+
+### Features
+
+- Login session
+
+## [3.20.0] - 2022-06-26
+
+### Bug Fixes
+
 - Login button dislocation when resize close #480
 - Update dependency monaco-editor-auto-typings to v0.4.2 (#477)
 - Update dependency camelcase-keys to v8.0.1 (#483)
@@ -17,6 +28,10 @@ All notable changes to this project will be documented in this file.
 ### Miscellaneous Tasks
 
 - Update dependency unplugin-auto-import to v0.9.0 (#485)
+
+### Release
+
+- V3.20.0
 
 ## [3.19.7] - 2022-06-21
 
