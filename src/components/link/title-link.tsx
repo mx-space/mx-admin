@@ -53,7 +53,9 @@ export const TableTitleLink = defineComponent({
     })
 
     const endpoint = RESTManager.endpoint
-    const path = `${endpoint}/markdown/render/${props.id}${
+    const url = new URL(endpoint)
+
+    const path = `${url.protocol}//${url.host}/render/markdown/${props.id}${
       props.withToken ? `?token=${getToken()}` : ''
     }`
     return () => (
