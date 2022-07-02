@@ -275,7 +275,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
   {
     path: '/analyze',
     name: RouteName.Analyze,
-    component: () => import('../views/analzye'),
+    component: () => import('../views/analyze'),
     meta: {
       title: '数据',
       icon: <ChartLineIcon />,
