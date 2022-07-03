@@ -594,8 +594,8 @@ const AppIF = defineComponent({
 
       if (
         app.value?.version &&
-        versionMap.value.system &&
-        versionMap.value.system !== 'dev'
+        app.value.version !== 'dev' &&
+        versionMap.value.system
       ) {
         if (versionMap.value.system !== app.value.version) {
           notice.info({
