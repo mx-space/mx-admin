@@ -5,12 +5,34 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Do not show update app if in dev
+- Ws auth failed
+- Add auth on output
+
+### Features
+
+- Realtime output when install deps
+- Support install and update deps
+
+### Ci
+
+- Speed up
+- Fix
+
+## [3.20.1] - 2022-06-26
+
+### Bug Fixes
+
 - Pin icon color
 - Replace render path
 
 ### Features
 
 - Login session
+
+### Release
+
+- V3.20.1
 
 ## [3.20.0] - 2022-06-26
 
