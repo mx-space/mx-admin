@@ -1,9 +1,17 @@
 import { Octokit } from 'octokit'
 
+const getGHTokenFromLocalStorage = () => {
+  const token = localStorage.getItem('ghToken')
+  if (token) {
+    return token
+  }
+  return null
+}
+
 const octokit = new Octokit(
-  import.meta.env.GH_TOKEN
+  getGHTokenFromLocalStorage()
     ? {
-        auth: import.meta.env.GH_TOKEN,
+        auth: getGHTokenFromLocalStorage(),
       }
     : {},
 )
