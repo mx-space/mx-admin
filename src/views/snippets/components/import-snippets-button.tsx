@@ -3,6 +3,7 @@ import { CodeHighlight } from 'components/code-highlight'
 import { ExternalLinkIcon, ImportIcon } from 'components/icons'
 import { CenterSpin } from 'components/spin'
 import { Xterm } from 'components/xterm'
+import { EventSourcePolyfill } from 'event-source-polyfill'
 import { GitHubSnippetRepo } from 'external/api/github-mx-snippets'
 import type { SnippetModel } from 'models/snippet'
 import { SnippetType } from 'models/snippet'
@@ -19,7 +20,7 @@ import {
   useDialog,
 } from 'naive-ui'
 import { basename, extname } from 'path-browserify'
-import { RESTManager } from 'utils'
+import { RESTManager, getToken } from 'utils'
 import type { PropType } from 'vue'
 import type { Terminal } from 'xterm'
 
@@ -296,8 +297,13 @@ const ProcessView = defineComponent({
       if (depsQueueId) {
         logViewOpen.value = true
 
-        const event = new EventSource(
-          `${RESTManager.endpoint}/snippets/install_deps?id=${depsQueueId}`,
+        const event = new EventSourcePolyfill(
+          `${RESTManager.endpoint}/dependencies/install_deps?id=${depsQueueId}`,
+          {
+            headers: {
+              Authorization: getToken()!,
+            },
+          },
         )
 
         event.onmessage = (e) => {

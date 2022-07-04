@@ -16,6 +16,7 @@ specifiers:
   '@lezer/highlight': '*'
   '@mx-space/api-client': 0.10.11
   '@types/ejs': 3.1.1
+  '@types/event-source-polyfill': 1.0.0
   '@types/js-yaml': 4.0.5
   '@types/lodash-es': 4.17.6
   '@types/marked': 4.0.3
@@ -44,6 +45,7 @@ specifiers:
   eslint: 8.17.0
   eslint-plugin-unused-imports: 2.0.0
   eslint-plugin-vue: 9.1.1
+  event-source-polyfill: 1.0.26
   js-cookie: 3.0.1
   js-yaml: 4.1.0
   json5: 2.2.1
@@ -107,6 +109,7 @@ dependencies:
   class-validator: 0.13.2
   date-fns: 2.28.0
   ejs: 3.1.8
+  event-source-polyfill: 1.0.26
   js-cookie: 3.0.1
   js-yaml: 4.1.0
   json5: 2.2.1
@@ -135,6 +138,7 @@ devDependencies:
   '@innei/eslint-config-ts': 0.9.2_typescript@4.6.4
   '@innei/prettier': 0.9.2
   '@types/ejs': 3.1.1
+  '@types/event-source-polyfill': 1.0.0
   '@types/js-yaml': 4.0.5
   '@types/lodash-es': 4.17.6
   '@types/marked': 4.0.3
@@ -1543,6 +1547,10 @@ packages:
 
   /@types/ejs/3.1.1:
     resolution: {integrity: sha512-RQul5wEfY7BjWm0sYY86cmUN/pcXWGyVxWX93DFFJvcrxax5zKlieLwA3T77xJGwNcZW0YW6CYG70p1m8xPFmA==}
+    dev: true
+
+  /@types/event-source-polyfill/1.0.0:
+    resolution: {integrity: sha512-b8O8/rg7NIW0iJ8i9MNDBZqPljHA+b7AjC3QFqH3dSyW6vgrl3oBgyIv5dw2fibh5enHHDkkPZG5PHza7U4NRw==}
     dev: true
 
   /@types/jest/27.5.2:
@@ -3240,6 +3248,10 @@ packages:
     resolution: {integrity: sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g==}
     engines: {node: '>=0.10.0'}
     dev: true
+
+  /event-source-polyfill/1.0.26:
+    resolution: {integrity: sha512-IwDLs9fUTcGAyacHBeS53T8wcEkDyDn0UP4tfQqJ4wQP8AyH0mszuQf2ULTylnpI0sMquzJ4usrNV7+uztwI9A==}
+    dev: false
 
   /events/1.1.1:
     resolution: {integrity: sha512-kEcvvCBByWXGnZy6JUlgAp2gBIUjfCAV6P6TgT1/aaQKcmuAEC4OZTV1I4EWQLz2gxZw76atuVyvHhTxvi0Flw==}
