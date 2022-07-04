@@ -27,6 +27,7 @@ import {
   defaultServerlessFunction,
 } from '../../../models/snippet'
 import { CodeEditorForSnippet } from '../components/code-editor'
+import { InstallDependencyButton } from '../components/install-dep-button'
 
 export const Tab2ForEdit = defineComponent({
   setup() {
@@ -224,11 +225,14 @@ export const Tab2ForEdit = defineComponent({
     }
     useMountAndUnmount(() => {
       layout.setHeaderButtons(
-        <HeaderActionButton
-          variant="success"
-          onClick={() => handleUpdateOrCreate()}
-          icon={<CheckCircleOutlinedIcon />}
-        ></HeaderActionButton>,
+        <>
+          <InstallDependencyButton />
+          <HeaderActionButton
+            variant="success"
+            onClick={() => handleUpdateOrCreate()}
+            icon={<CheckCircleOutlinedIcon />}
+          ></HeaderActionButton>
+        </>,
       )
 
       return () => {

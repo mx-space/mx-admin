@@ -17,6 +17,7 @@ import { Icon } from '@vicons/utils'
 import type { SnippetModel } from '../../../models/snippet'
 import { SnippetType } from '../../../models/snippet'
 import { ImportSnippetButton } from '../components/import-snippets-button'
+import { UpdateDependencyButton } from '../components/update-deps-button'
 
 const useFetchReferenceNames = () => {
   const referenceNames = ref<string[]>([])
@@ -95,6 +96,7 @@ export const Tab1ForList = defineComponent({
               fetchDataFn()
             }}
           />
+          <UpdateDependencyButton />
           <DeleteConfirmButton
             checkedRowKeys={checkedRowKeys}
             onDelete={async (keys) => {

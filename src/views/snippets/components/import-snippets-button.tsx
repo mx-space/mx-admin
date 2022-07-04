@@ -2,8 +2,6 @@ import { HeaderActionButton } from 'components/button/rounded-button'
 import { CodeHighlight } from 'components/code-highlight'
 import { ExternalLinkIcon, ImportIcon } from 'components/icons'
 import { CenterSpin } from 'components/spin'
-import { Xterm } from 'components/xterm'
-import { EventSourcePolyfill } from 'event-source-polyfill'
 import { GitHubSnippetRepo } from 'external/api/github-mx-snippets'
 import type { SnippetModel } from 'models/snippet'
 import { SnippetType } from 'models/snippet'
@@ -15,14 +13,14 @@ import {
   NInput,
   NModal,
   NPopover,
-  NSpin,
   NTag,
   useDialog,
 } from 'naive-ui'
 import { basename, extname } from 'path-browserify'
-import { RESTManager, getToken } from 'utils'
+import { RESTManager } from 'utils'
 import type { PropType } from 'vue'
-import type { Terminal } from 'xterm'
+
+import { InstallDepsXterm } from './install-dep-xterm'
 
 type SnippetList = {
   name: string
@@ -88,6 +86,10 @@ export const ImportSnippetButton = defineComponent({
               instance.destroy()
               props.onFinish()
             },
+            // FIXME 传一个 rootOnFinish 给 PTY 完事之后用
+            onRootFinish: () => {
+              props.onFinish()
+            },
           }),
         closable: true,
       })
@@ -101,6 +103,7 @@ export const ImportSnippetButton = defineComponent({
             show.value = true
           }}
           icon={<ImportIcon />}
+          name="下载扩展包"
         ></HeaderActionButton>
         <NModal
           show={show.value}
@@ -175,6 +178,10 @@ const ProcessView = defineComponent({
     },
 
     onFinish: {
+      type: Function as PropType<() => void>,
+      required: true,
+    },
+    onRootFinish: {
       type: Function as PropType<() => void>,
       required: true,
     },
@@ -265,11 +272,6 @@ const ProcessView = defineComponent({
       }
     })
 
-    const logViewOpen = ref(false)
-    const xtermData = ref([] as string[])
-
-    let needCallOnFinish = false
-
     const handleSubmit = async () => {
       const payload = {
         snippets: functions.value.map((item) => {
@@ -287,103 +289,23 @@ const ProcessView = defineComponent({
       const message$ = message.loading('正在导入...', {
         duration: 10e5,
       })
-      const { depsQueueId } = await RESTManager.api.snippets.more.post<{
-        depsQueueId?: string
-      }>({
+      await RESTManager.api.snippets.more.post({
         data: payload,
         timeout: 10e5,
       })
       message$.destroy()
-      if (depsQueueId) {
-        logViewOpen.value = true
-
-        const event = new EventSourcePolyfill(
-          `${RESTManager.endpoint}/dependencies/install_deps?id=${depsQueueId}`,
-          {
-            headers: {
-              Authorization: getToken()!,
-            },
-          },
-        )
-
-        event.onmessage = (e) => {
-          xtermData.value.push(e.data)
-          if (e.data === '任务完成，可关闭此窗口。') {
-            event.close()
-            needCallOnFinish = true
-          }
-        }
-        event.onerror = (e: any) => {
-          event.close()
-          if (e?.data) {
-            message.error(e.data)
-          } else {
-            console.error(e)
-            message.error('执行发生未知错误')
-          }
-        }
+      if (payload.packages.length > 0) {
+        // @ts-ignore
+        $installDepsComponent.value?.install(payload.packages, () => {
+          props.onRootFinish()
+        })
       } else {
         message.success('导入成功')
         props.onFinish()
       }
     }
 
-    let XtermRef: Terminal
-
-    watch(
-      () => xtermData.value,
-      (dataArr) => {
-        if (!XtermRef) {
-          return
-        }
-        if (dataArr.length > 0) {
-          dataArr.forEach((data) => XtermRef.write(data))
-          xtermData.value.length = 0
-        }
-      },
-
-      {
-        deep: true,
-      },
-    )
-
-    onUnmounted(() => {
-      needCallOnFinish && props.onFinish()
-    })
-
-    const XtermComp = defineComponent({
-      setup() {
-        // wait for modal transition done
-        const wait = ref(true)
-        onMounted(() => {
-          setTimeout(() => {
-            wait.value = false
-          }, 1000)
-        })
-
-        return () => (
-          <div class="h-full w-full">
-            {wait.value ? (
-              <div class="w-full flex items-center justify-center h-full">
-                <NSpin show strokeWidth={14} />
-              </div>
-            ) : (
-              <Xterm
-                colorScheme="light"
-                onReady={(xterm) => {
-                  xtermData.value.forEach((data) => {
-                    xterm.write(data)
-                  })
-
-                  xtermData.value.length = 0
-                  XtermRef = xterm
-                }}
-              ></Xterm>
-            )}
-          </div>
-        )
-      },
-    })
+    const $installDepsComponent = ref<InstanceType<typeof InstallDepsXterm>>()
 
     return () => {
       const { name } = props
@@ -472,17 +394,7 @@ const ProcessView = defineComponent({
             </NForm>
           )}
 
-          <NModal
-            show={logViewOpen.value}
-            onUpdateShow={(s) => {
-              logViewOpen.value = s
-            }}
-            transformOrigin="center"
-          >
-            <NCard class={'modal-card md'} title="Output">
-              <XtermComp />
-            </NCard>
-          </NModal>
+          <InstallDepsXterm ref={$installDepsComponent} />
         </div>
       )
     }
