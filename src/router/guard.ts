@@ -9,7 +9,7 @@ import { router } from './router'
 export const progress = new QProgress({ colorful: false, color: '#1a9cf3' })
 const title = configs.title
 
-let loginOnly = false
+let loginWithTokenOnce = false
 
 router.beforeEach(async (to) => {
   if (to.path === '/setup-api') {
@@ -47,15 +47,23 @@ router.beforeEach(async (to) => {
       return `/login?from=${encodeURI(to.fullPath)}`
     } else {
       // login with token only
-      if (loginOnly) {
+      if (loginWithTokenOnce) {
         return
       } else {
         await RESTManager.api.master.login
           .put<{ token: string }>()
           .then((res) => {
-            loginOnly = true
+            loginWithTokenOnce = true
             removeToken()
             setToken(res.token)
+
+            import('socket').then((mo) => {
+              mo.socket.initIO()
+            })
+          })
+          .catch((err) => {
+            console.log('登陆失败')
+            location.reload()
           })
       }
     }

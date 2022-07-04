@@ -38,10 +38,6 @@ const Root = defineComponent({
       window.notification = useNotification()
       window.dialog = useDialog()
 
-      import('socket').then((mo) => {
-        mo.socket.initIO()
-      })
-
       fetchUser().then(() => {
         const toSetting = localStorage.getItem('to-setting')
         if (toSetting === 'true') {
