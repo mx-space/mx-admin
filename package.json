@@ -60,7 +60,7 @@
     "socket.io-client": "4.5.1",
     "umi-request": "1.4.0",
     "validator": "13.7.0",
-    "vite-plugin-windicss": "1.8.4",
+    "vite-plugin-windicss": "1.8.6",
     "vue": "3.2.37",
     "vue-router": "4.0.16",
     "xterm": "4.18.0",
