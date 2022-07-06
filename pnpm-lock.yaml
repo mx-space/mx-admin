@@ -75,7 +75,7 @@ specifiers:
   vite-plugin-windicss: 1.8.4
   vite-tsconfig-paths: 3.5.0
   vue: 3.2.37
-  vue-eslint-parser: 9.0.2
+  vue-eslint-parser: 9.0.3
   vue-router: 4.0.16
   windicss: 3.5.4
   xterm: 4.18.0
@@ -163,7 +163,7 @@ devDependencies:
   vite: 2.9.12
   vite-plugin-checker: 0.4.6_vite@2.9.12
   vite-tsconfig-paths: 3.5.0_vite@2.9.12
-  vue-eslint-parser: 9.0.2_eslint@8.19.0
+  vue-eslint-parser: 9.0.3_eslint@8.19.0
   windicss: 3.5.4
 
 packages:
@@ -3113,7 +3113,7 @@ packages:
       nth-check: 2.0.1
       postcss-selector-parser: 6.0.10
       semver: 7.3.7
-      vue-eslint-parser: 9.0.2_eslint@8.19.0
+      vue-eslint-parser: 9.0.3_eslint@8.19.0
       xml-name-validator: 4.0.0
     transitivePeerDependencies:
       - supports-color
@@ -5424,8 +5424,8 @@ packages:
     dependencies:
       vue: 3.2.37
 
-  /vue-eslint-parser/9.0.2_eslint@8.19.0:
-    resolution: {integrity: sha512-uCPQwTGjOtAYrwnU+76pYxalhjsh7iFBsHwBqDHiOPTxtICDaraO4Szw54WFTNZTAEsgHHzqFOu1mmnBOBRzDA==}
+  /vue-eslint-parser/9.0.3_eslint@8.19.0:
+    resolution: {integrity: sha512-yL+ZDb+9T0ELG4VIFo/2anAOz8SvBdlqEnQnvJ3M7Scq56DvtjY0VY88bByRZB0D4J0u8olBcfrXTVONXsh4og==}
     engines: {node: ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: '>=6.0.0'
