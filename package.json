@@ -76,7 +76,7 @@
     "@types/lodash-es": "4.17.6",
     "@types/marked": "4.0.3",
     "@types/qs": "6.9.7",
-    "@types/validator": "13.7.3",
+    "@types/validator": "13.7.4",
     "@typescript-eslint/eslint-plugin": "5.29.0",
     "@typescript-eslint/parser": "5.29.0",
     "@vitejs/plugin-vue": "2.3.3",
