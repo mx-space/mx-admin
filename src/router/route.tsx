@@ -291,6 +291,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
       params: { type: 'user' },
     },
     component: () => null,
+    children: [],
   },
   {
     path: '/setting/:type',

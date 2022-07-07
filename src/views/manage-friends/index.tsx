@@ -4,15 +4,8 @@ import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
 import { useDataTableFetch } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
-import type {
-  LinkModel,
-  LinkResponse,
-  LinkStateCount} from 'models/link';
-import {
-  LinkState,
-  LinkStateNameMap,
-  LinkType,
-} from 'models/link'
+import type { LinkModel, LinkResponse, LinkStateCount } from 'models/link'
+import { LinkState, LinkStateNameMap, LinkType } from 'models/link'
 import {
   NAvatar,
   NBadge,
@@ -34,15 +27,11 @@ import {
 import { omit } from 'naive-ui/lib/_utils'
 import { RouteName } from 'router/name'
 import { RESTManager } from 'utils'
-import {
-  defineComponent,
-  onBeforeMount,
-  onMounted,
-  ref,
-  toRaw,
-  watch,
-} from 'vue'
+import { defineComponent, onBeforeMount, ref, toRaw, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import FallbackAvatar from './fallback.jpg'
+
+
 
 export default defineComponent({
   setup() {
@@ -324,9 +313,7 @@ export default defineComponent({
                         type="success"
                         onClick={async () => {
                           await RESTManager.api.links.audit(row.id).patch()
-                          message.success(
-                            `通过了来自${row.name}的友链邀请`,
-                          )
+                          message.success(`通过了来自${row.name}的友链邀请`)
                           const idx = data.value.findIndex(
                             (i) => i.id == row.id,
                           )
@@ -517,26 +504,37 @@ const UrlComponent = defineComponent({
 })
 
 const Avatar = defineComponent<{ avatar: string; name: string }>((props) => {
-  const loaded = ref(props.avatar ? false : true)
-  onMounted(() => {
-    if (props.avatar) {
-      const image = new Image()
-      image.src = props.avatar
-      image.onload = (e) => {
-        loaded.value = true
-      }
+  const $ref = ref<HTMLElement>()
+
+  const inView = ref(false)
+  const observer = useIntersectionObserver($ref, (intersection) => {
+    if (intersection[0].isIntersecting) {
+      inView.value = true
+      observer.stop()
     }
   })
-
-  return () =>
-    props.avatar ? (
-      loaded.value ? (
-        <NAvatar src={props.avatar as string} round></NAvatar>
+  return () => (
+    <div ref={$ref}>
+      {props.avatar ? (
+        inView.value ? (
+          <NAvatar
+            src={props.avatar as string}
+            round
+            onError={(e) => {
+              console.log(FallbackAvatar);
+              
+               (e.target as HTMLImageElement).src = FallbackAvatar
+            }}
+          ></NAvatar>
+        ) : (
+          <NAvatar round>{props.name.charAt(0)}</NAvatar>
+        )
       ) : (
         <NAvatar round>{props.name.charAt(0)}</NAvatar>
-      )
-    ) : (
-      <NAvatar round>{props.name.charAt(0)}</NAvatar>
-    )
+      )}
+    </div>
+  )
 })
 Avatar.props = ['avatar', 'name']
+
+
