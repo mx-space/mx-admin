@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update dependency naive-ui to v2.30.8 (#479)
+- Update dependency @mx-space/api-client to v0.10.12 (#492)
+- Kbar
+
+### Features
+
+- Load avatar lazy
+
+### Miscellaneous Tasks
+
+- Update dependency eslint to v8.19.0 (#474)
+- Update dependency unplugin-auto-import to v0.9.2 (#488)
+- Update dependency postcss-preset-env to v7.7.2 (#487)
+- Remove ignore deps `@codemirror`
+
+### Ci
+
+- Fix release ci
+
+## [3.21.0] - 2022-07-04
+
+### Bug Fixes
+
 - Do not show update app if in dev
 - Ws auth failed
 - Add auth on output
@@ -18,6 +41,10 @@ All notable changes to this project will be documented in this file.
 
 - Speed up
 - Fix
+
+### Release
+
+- V3.21.0
 
 ## [3.20.1] - 2022-06-26
 
