@@ -19,6 +19,7 @@ import {
   RefreshIcon,
 } from 'components/icons'
 import { IpInfoPopover } from 'components/ip-info'
+import { ShellOutputXterm } from 'components/output-xterm'
 import { useShorthand } from 'components/shorthand'
 import { checkUpdateFromGitHub } from 'external/api/github-check-update'
 import { SentenceType, fetchHitokoto } from 'external/api/hitokoto'
@@ -37,6 +38,7 @@ import {
   NH1,
   NH3,
   NH4,
+  NIcon,
   NP,
   NPopover,
   NSpace,
@@ -606,7 +608,11 @@ const AppIF = defineComponent({
         }
       }
     })
+    const $shellRef = ref<any>()
 
+    const handleUpdate = () => {
+      $shellRef.value.run(`${RESTManager.endpoint}/update/upgrade/dashboard`)
+    }
     return () => (
       <NElement tag="footer" class="mt-12">
         <NP
@@ -614,12 +620,21 @@ const AppIF = defineComponent({
           style={{ color: 'var(--text-color-3)' }}
           depth="1"
         >
-          面板版本: {__DEV__ ? 'dev mode' : window.version || 'N/A'}
+          <div class={'inline-flex items-center'}>
+            面板版本: {__DEV__ ? 'dev mode' : window.version || 'N/A'}
+            <NButton text onClick={handleUpdate} size="small" class={'ml-4'}>
+              <NIcon size={12}>
+                <RefreshIcon />
+              </NIcon>
+            </NButton>
+          </div>
           <br />
           系统版本: {app.value?.version || 'N/A'}
           <br />
           页面来源: {window.pageSource || ''}
         </NP>
+
+        <ShellOutputXterm ref={$shellRef} />
       </NElement>
     )
   },

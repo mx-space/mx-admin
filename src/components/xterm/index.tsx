@@ -10,33 +10,11 @@ import 'xterm/css/xterm.css'
 
 const xtermThemeDark = { ...MaterialDark, background: 'rgba(0,0,0,0)' }
 const xtermThemeLight = { ...Material, background: 'rgba(0,0,0,0)' }
-// const xtermTheme = {
-//   black: '#000000',
-//   red: '#fd5ff1',
-//   green: '#87c38a',
-//   yellow: '#ffd7b1',
-//   blue: '#85befd',
-//   magenta: '#b9b6fc',
-//   cyan: '#85befd',
-//   white: '#e0e0e0',
-//   brightBlack: '#000000',
-//   brightRed: '#fd5ff1',
-//   brightGreen: '#94fa36',
-//   brightYellow: '#f5ffa8',
-//   brightBlue: '#96cbfe',
-//   brightMagenta: '#b9b6fc',
-//   brightCyan: '#85befd',
-//   brightWhite: '#e0e0e0',
-//   foreground: '#c5c8c6',
-//   cursor: '#d0d0d0',
-//   selection: '#444444',
-//   background: 'rgba(0,0,0,0)',
-// }
 
 export const Xterm = defineComponent({
   props: {
     colorScheme: {
-      type: String as PropType<'light' | 'dark'>,
+      type: String as PropType<'light' | 'dark' | 'auto'>,
       default: 'dark',
     },
     darkMode: {
@@ -70,7 +48,7 @@ export const Xterm = defineComponent({
     let term: Terminal
 
     const termRef = ref<HTMLElement>()
-    const { onlyToggleNaiveUIDark } = useStoreRef(UIStore)
+    const { onlyToggleNaiveUIDark, isDark } = useStoreRef(UIStore)
 
     const loading = ref(true)
     if (props.darkMode) {
@@ -87,6 +65,12 @@ export const Xterm = defineComponent({
         import('xterm-addon-fit'),
       ])
 
+      const themes = {
+        dark: xtermThemeDark,
+        light: xtermThemeLight,
+        auto: isDark.value ? xtermThemeDark : xtermThemeLight,
+      }
+
       term = new Terminal({
         rows: 40,
         scrollback: 100000,
@@ -95,7 +79,7 @@ export const Xterm = defineComponent({
         fontFamily: 'Operator Mono SSm Lig Book,Operator Mono,Monaco,monospace',
         convertEol: true,
         cursorStyle: 'underline',
-        theme: props.colorScheme === 'dark' ? xtermThemeDark : xtermThemeLight,
+        theme: themes[props.colorScheme],
         ...props.terminalOptions,
       })
       const fitAddon = new FitAddon()

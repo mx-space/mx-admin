@@ -23,7 +23,7 @@ export const InstallDependencyButton = defineComponent({
           <HeaderActionButton
             icon={<DownloadOutlined />}
             name="安装依赖"
-            color="#FADC4A"
+            color="#FADC"
             onClick={() => {
               modalShow.value = true
             }}
