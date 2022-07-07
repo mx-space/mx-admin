@@ -23,6 +23,10 @@ export const KBarWrapper = defineComponent({
 
       actions.value = routes
         .map((route) => {
+          if (route?.path.match(':')) {
+            return null
+          }
+
           if (
             !route.meta.title ||
             route.children.length > 0 ||
@@ -34,12 +38,17 @@ export const KBarWrapper = defineComponent({
             id: route.path,
             name: route.meta.title as string,
             subtitle: route.path,
-            // keywords: [route.path, route.meta.title, route.name] as string[],
             keywords: route.name as string,
             perform: () =>
-              router.push({
-                name: route.name as string,
-              }),
+              router.push(
+                route.name
+                  ? {
+                      name: route.name as string,
+                    }
+                  : {
+                      path: (route.redirect || route.path) as string,
+                    },
+              ),
           })
         })
         .filter(Boolean) as Action[]
