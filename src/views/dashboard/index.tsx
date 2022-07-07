@@ -558,6 +558,10 @@ const AppIF = defineComponent({
     const { app } = useStoreRef(AppStore)
     const notice = useNotification()
     const versionMap = ref({} as { admin: string; system: string })
+    const handleUpdate = () => {
+      $shellRef.value.run(`${RESTManager.endpoint}/update/upgrade/dashboard`)
+    }
+
     onMounted(async () => {
       if (__DEV__) {
         return
@@ -568,9 +572,24 @@ const AppIF = defineComponent({
 
       const { dashboard, system } = await checkUpdateFromGitHub()
       if (dashboard !== PKG.version) {
-        notice.info({
+        const $notice = notice.info({
           title: '[管理中台] 有新版本啦！',
-          content: `当前版本: ${PKG.version}，最新版本: ${dashboard}`,
+          content: () => (
+            <div>
+              <p>{`当前版本: ${PKG.version}，最新版本: ${dashboard}`}</p>
+              <div class={'text-right'}>
+                <NButton
+                  round
+                  onClick={() => {
+                    handleUpdate()
+                    $notice.destroy()
+                  }}
+                >
+                  更更更！
+                </NButton>
+              </div>
+            </div>
+          ),
           closable: true,
         })
       }
@@ -610,9 +629,6 @@ const AppIF = defineComponent({
     })
     const $shellRef = ref<any>()
 
-    const handleUpdate = () => {
-      $shellRef.value.run(`${RESTManager.endpoint}/update/upgrade/dashboard`)
-    }
     return () => (
       <NElement tag="footer" class="mt-12">
         <NP
