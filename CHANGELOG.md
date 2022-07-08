@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Features
+
+- Add support update
+- Add update button to notification
+- Support parse netease id from url
+
+## [3.21.1] - 2022-07-07
+
 ### Bug Fixes
 
 - Update dependency naive-ui to v2.30.8 (#479)
@@ -23,6 +31,10 @@ All notable changes to this project will be documented in this file.
 ### Ci
 
 - Fix release ci
+
+### Release
+
+- V3.21.1
 
 ## [3.21.0] - 2022-07-04
 
