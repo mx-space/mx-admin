@@ -10,10 +10,12 @@
   "scripts": {
     "prebuild": "rm -rf dist",
     "dev": "NODE_ENV=development vite --mode development --open",
+    "dev:no-open": "NODE_ENV=development vite --mode development",
     "build": "NODE_ENV=production vite build --mode production",
     "preview": "vite preview --port 2323",
     "lint": "eslint \"src/**/*.{ts,tsx,js,json,vue}\" --fix",
-    "format": "prettier --write --loglevel warn \"src/**/*.{js,json,tsx,ts,css,scss,vue,html,md}\""
+    "format": "prettier --write --loglevel warn \"src/**/*.{js,json,tsx,ts,css,scss,vue,html,md}\"",
+    "tauri": "tauri"
   },
   "dependencies": {
     "@antv/g2": "4.2.5",
@@ -70,6 +72,7 @@
   "devDependencies": {
     "@innei/eslint-config-ts": "0.9.2",
     "@innei/prettier": "0.9.2",
+    "@tauri-apps/cli": "1.0.3",
     "@types/ejs": "3.1.1",
     "@types/event-source-polyfill": "1.0.0",
     "@types/js-yaml": "4.0.5",
