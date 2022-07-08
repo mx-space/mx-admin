@@ -486,9 +486,29 @@ const NoteWriteView = defineComponent(() => {
 
         <NFormItem label="音乐 (网易云 ID)">
           <NDynamicTags
+            inputProps={{
+              // @ts-expect-error
+              class: 'max-w-40',
+              inputProps: {
+                class: 'max-w-40',
+              },
+            }}
             value={data.music.map((i) => i.id)}
-            onUpdateValue={(e) => {
-              data.music = e.map((id) => ({ type: 'netease', id }))
+            onUpdateValue={(value: string[]) => {
+              const musics = [] as typeof data.music
+              const idSet = new Set<string>()
+              for (const id of value) {
+                const currentId = pickNeteaseIdFromUrl(id) ?? id
+                if (idSet.has(currentId)) {
+                  continue
+                }
+                idSet.add(currentId)
+                musics.push({
+                  type: 'netease',
+                  id: pickNeteaseIdFromUrl(id) ?? id,
+                })
+              }
+              data.music = musics
             }}
           ></NDynamicTags>
         </NFormItem>
@@ -500,3 +520,11 @@ const NoteWriteView = defineComponent(() => {
 })
 
 export default NoteWriteView
+
+function pickNeteaseIdFromUrl(url: string) {
+  const match = url.match(/^https?:\/\/music\.163\.com\/song\?id=(\d+)/)
+  if (match) {
+    return match[1]
+  }
+  return null
+}
