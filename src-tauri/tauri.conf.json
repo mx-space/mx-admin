@@ -56,10 +56,10 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
+        "height": 800,
         "resizable": true,
-        "title": "Tauri App",
-        "width": 800
+        "title": "Mix Space Dashboard",
+        "width": 1200
       }
     ]
   }
