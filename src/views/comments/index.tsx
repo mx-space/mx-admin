@@ -12,7 +12,8 @@ import { KAOMOJI_LIST } from 'constants/kaomoji'
 import { useStoreRef } from 'hooks/use-store-ref'
 import { useDataTableFetch } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
-import type { CommentModel, CommentsResponse } from 'models/comment';
+import markdownEscape from 'markdown-escape'
+import type { CommentModel, CommentsResponse } from 'models/comment'
 import { CommentState } from 'models/comment'
 import {
   NAvatar,
@@ -40,6 +41,8 @@ import { defineComponent, nextTick, reactive, ref, unref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import { Icon } from '@vicons/utils'
+
+import { CommentMarkdownRender } from './markdown-render'
 
 enum CommentType {
   Pending,
@@ -172,7 +175,7 @@ const ManageComment = defineComponent(() => {
               {row.author}
             </a>
 
-            <a href={((`mailto:${row.mail}`) as any) || ''} target="_blank">
+            <a href={(`mailto:${row.mail}` as any) || ''} target="_blank">
               {row.mail as any}
             </a>
 
@@ -198,9 +201,7 @@ const ManageComment = defineComponent(() => {
         const link = (() => {
           switch (row.refType) {
             case 'Post': {
-              return (
-                `${WEB_URL}/posts/${row.ref.category.slug}/${row.ref.slug}`
-              )
+              return `${WEB_URL}/posts/${row.ref.category.slug}/${row.ref.slug}`
             }
             case 'Note': {
               return `${WEB_URL}/notes/${row.ref.nid}`
@@ -219,14 +220,16 @@ const ManageComment = defineComponent(() => {
                 {row.ref.title}
               </a>
             </NSpace>
-            <p>{row.text}</p>
+            <p>
+              <CommentMarkdownRender text={row.text} />
+            </p>
             {row.parent && (
               <blockquote class="border-l-[3px] border-solid border-primary-default pl-[12px] my-2 ml-4">
                 <NSpace size={2} align="center">
                   <NText depth="2">
                     {row.parent.author}&nbsp;在&nbsp;
                     {relativeTimeFromNow(row.parent.created)}&nbsp;说:&nbsp;
-                    {row.parent.text}
+                    <CommentMarkdownRender text={row.parent.text} />
                   </NText>
                 </NSpace>
               </blockquote>
@@ -407,12 +410,16 @@ const ManageComment = defineComponent(() => {
           >
             <NForm onSubmit={onReplySubmit}>
               <NFormItemRow label={`${replyComment.value.author} 说:`}>
-                <NInput
-                  disabled
-                  value={replyComment.value.text}
-                  type="textarea"
-                  autosize={{ minRows: 4, maxRows: 10 }}
-                ></NInput>
+                <NCard
+                  embedded
+                  bordered
+                  class={
+                    'h-[100px] overflow-auto !p-2 !px-4 cursor-default !text-gray-500'
+                  }
+                  contentStyle={{ padding: '0' }}
+                >
+                  <CommentMarkdownRender text={replyComment.value.text} />
+                </NCard>
               </NFormItemRow>
 
               <NFormItemRow label={'回复内容'}>
@@ -442,7 +449,11 @@ const ManageComment = defineComponent(() => {
                     },
                     default() {
                       return (
-                        <NCard style="max-width: 300px" bordered={false}>
+                        <NCard
+                          style="max-width: 300px; max-height: 500px"
+                          class={'overflow-auto'}
+                          bordered={false}
+                        >
                           <NSpace align="center" class={'!justify-between'}>
                             {KAOMOJI_LIST.map((kaomoji) => (
                               <NButton
@@ -460,15 +471,19 @@ const ManageComment = defineComponent(() => {
                                   nextTick(() => {
                                     const start = $ta.selectionStart as number
                                     const end = $ta.selectionEnd as number
-
-                                    $ta.value =
-                                      `${$ta.value.substring(0, start) 
-                                      } ${kaomoji} ${ 
-                                      $ta.value.substring(end, $ta.value.length)}`
+                                    const escapeKaomoji =
+                                      markdownEscape(kaomoji)
+                                    $ta.value = `${$ta.value.substring(
+                                      0,
+                                      start,
+                                    )} ${escapeKaomoji} ${$ta.value.substring(
+                                      end,
+                                      $ta.value.length,
+                                    )}`
                                     replyText.value = $ta.value
                                     nextTick(() => {
                                       const shouldMoveToPos =
-                                        start + kaomoji.length + 2
+                                        start + escapeKaomoji.length + 2
                                       $ta.selectionStart = shouldMoveToPos
                                       $ta.selectionEnd = shouldMoveToPos
 
