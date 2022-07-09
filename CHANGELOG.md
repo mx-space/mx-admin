@@ -3,11 +3,29 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Bug Fixes
+
+- Update lock file
+
+### Features
+
+- Comment markdown render
+
+### Miscellaneous Tasks
+
+- Remove default logo
+
+## [3.22.0] - 2022-07-08
+
 ### Features
 
 - Add support update
 - Add update button to notification
 - Support parse netease id from url
+
+### Release
+
+- V3.22.0
 
 ## [3.21.1] - 2022-07-07
 
