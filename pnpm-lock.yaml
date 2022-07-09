@@ -42,7 +42,6 @@ specifiers:
   class-validator: 0.13.2
   cors: 2.8.5
   date-fns: 2.28.0
-  dompurify: 2.3.8
   ejs: 3.1.8
   eslint: 8.19.0
   eslint-plugin-unused-imports: 2.0.0
@@ -112,7 +111,6 @@ dependencies:
   class-transformer: 0.5.1
   class-validator: 0.13.2
   date-fns: 2.28.0
-  dompurify: 2.3.8
   ejs: 3.1.8
   event-source-polyfill: 1.0.26
   js-cookie: 3.0.1
@@ -2874,10 +2872,6 @@ packages:
     dependencies:
       esutils: 2.0.3
     dev: true
-
-  /dompurify/2.3.8:
-    resolution: {integrity: sha512-eVhaWoVibIzqdGYjwsBWodIQIaXFSB+cKDf4cfxLMsK0xiud6SE+/WCVx/Xw/UwQsa4cS3T2eITcdtmTg2UKcw==}
-    dev: false
 
   /ecdsa-sig-formatter/1.0.11:
     resolution: {integrity: sha512-nagl3RYrbNv6kQkeJIpt6NJZy8twLB/2vtz6yN9Z4vRKHN4/QZJIEbqohALSgwKdnksuY3k5Addp5lg8sVoVcQ==}
