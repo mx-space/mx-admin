@@ -59,7 +59,7 @@ export const ShellOutputNormal = defineComponent({
         <NCard class={'modal-card md min-h-[100px]'} title="Output">
           <div class="h-full w-full">
             <div
-              class={'font-mono break-all'}
+              class={'font-mono break-all h-[75vh] overflow-auto'}
               style={{
                 whiteSpace: 'break-spaces',
               }}
