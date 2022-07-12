@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update dependency marked to v4.0.18 (#506)
+- Update dependency pinia to v2.0.15 (#505)
+- Update dependency vue-router to v4.1.2 (#504)
+- Update dependency octokit to v2 (#500)
+- Tag check value
+- Add height limit for shell output
+
+### Features
+
+- Add new shell output modal
+
+### Miscellaneous Tasks
+
+- Update typescript-eslint monorepo to v5.30.6 (#507)
+
+## [3.22.1] - 2022-07-09
+
+### Bug Fixes
+
 - Update lock file
 
 ### Features
@@ -14,6 +33,10 @@ All notable changes to this project will be documented in this file.
 ### Miscellaneous Tasks
 
 - Remove default logo
+
+### Release
+
+- V3.22.1
 
 ## [3.22.0] - 2022-07-08
 
