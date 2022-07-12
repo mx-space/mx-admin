@@ -19,7 +19,7 @@ import {
   RefreshIcon,
 } from 'components/icons'
 import { IpInfoPopover } from 'components/ip-info'
-import { ShellOutputXterm } from 'components/output-xterm'
+import { ShellOutputNormal } from 'components/output-modal/normal'
 import { useShorthand } from 'components/shorthand'
 import { checkUpdateFromGitHub } from 'external/api/github-check-update'
 import { SentenceType, fetchHitokoto } from 'external/api/hitokoto'
@@ -650,7 +650,7 @@ const AppIF = defineComponent({
           页面来源: {window.pageSource || ''}
         </NP>
 
-        <ShellOutputXterm ref={$shellRef} />
+        <ShellOutputNormal ref={$shellRef} />
       </NElement>
     )
   },

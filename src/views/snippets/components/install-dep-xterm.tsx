@@ -1,4 +1,4 @@
-import { ShellOutputXterm } from 'components/output-xterm'
+import { ShellOutputXterm } from 'components/output-modal/xterm'
 import { RESTManager } from 'utils'
 
 export const InstallDepsXterm = defineComponent({
