@@ -52,7 +52,7 @@ specifiers:
   json5: 2.2.1
   lodash-es: 4.17.21
   markdown-escape: 1.1.0
-  marked: 4.0.17
+  marked: 4.0.18
   monaco-editor: 0.33.0
   monaco-editor-auto-typings: 0.4.2
   naive-ui: 2.31.0
@@ -118,7 +118,7 @@ dependencies:
   json5: 2.2.1
   lodash-es: 4.17.21
   markdown-escape: 1.1.0
-  marked: 4.0.17
+  marked: 4.0.18
   monaco-editor: 0.33.0
   monaco-editor-auto-typings: 0.4.2_monaco-editor@0.33.0
   naive-ui: 2.31.0_vue@3.2.37
@@ -4059,8 +4059,8 @@ packages:
     resolution: {integrity: sha512-f1+ARFbzLrBdC0Lj30uREn+zthrK/h1PO5UhN5IMDQvI2lSFn+8U06a5LHaxxYMhHD0mJoJ2BROJ/Sju5aw6+g==}
     dev: false
 
-  /marked/4.0.17:
-    resolution: {integrity: sha512-Wfk0ATOK5iPxM4ptrORkFemqroz0ZDxp5MWfYA7H/F+wO17NRWV5Ypxi6p3g2Xmw2bKeiYOl6oVnLHKxBA0VhA==}
+  /marked/4.0.18:
+    resolution: {integrity: sha512-wbLDJ7Zh0sqA0Vdg6aqlbT+yPxqLblpAZh1mK2+AO2twQkPywvvqQNfEPVwSSRjZ7dZcdeVBIAgiO7MMp3Dszw==}
     engines: {node: '>= 12'}
     hasBin: true
     dev: false
