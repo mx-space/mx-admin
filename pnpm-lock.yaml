@@ -78,7 +78,7 @@ specifiers:
   vite-tsconfig-paths: 3.5.0
   vue: 3.2.37
   vue-eslint-parser: 9.0.3
-  vue-router: 4.1.1
+  vue-router: 4.1.2
   windicss: 3.5.6
   xss: 1.0.13
   xterm: 4.19.0
@@ -133,7 +133,7 @@ dependencies:
   validator: 13.7.0
   vite-plugin-windicss: 1.8.6_vite@2.9.13
   vue: 3.2.37
-  vue-router: 4.1.1_vue@3.2.37
+  vue-router: 4.1.2_vue@3.2.37
   xss: 1.0.13
   xterm: 4.19.0
   xterm-addon-fit: 0.5.0_xterm@4.19.0
@@ -5530,8 +5530,8 @@ packages:
       - supports-color
     dev: true
 
-  /vue-router/4.1.1_vue@3.2.37:
-    resolution: {integrity: sha512-Wp1mEf2xCwT0ez7o9JvgpfBp9JGnVb+dPERzXDbugTatzJAJ60VWOhJKifQty85k+jOreoFHER4r5fu062PhPw==}
+  /vue-router/4.1.2_vue@3.2.37:
+    resolution: {integrity: sha512-5BP1qXFncVRwgV/XnqzsKApdMjQPqWIpoUBdL1ynz8HyLxIX/UDAx7Ql2BjmA5CXT/p61JfZvkpiFWFpaqcfag==}
     peerDependencies:
       vue: ^3.2.0
     dependencies:
