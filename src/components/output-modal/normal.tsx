@@ -11,6 +11,8 @@ export const ShellOutputNormal = defineComponent({
 
     const shellOutput = ref('')
 
+    const $output = ref<HTMLDivElement>()
+
     expose({
       run(ssePath: string, onFinish?: () => any) {
         logViewOpen.value = true
@@ -28,6 +30,14 @@ export const ShellOutputNormal = defineComponent({
             return
           }
           shellOutput.value += e.data
+
+          requestAnimationFrame(() => {
+            if (!$output.value) {
+              return
+            }
+            // scroll to el end
+            $output.value.scrollTop = $output.value.scrollHeight
+          })
         }
         event.onerror = (e: any) => {
           event.close()
@@ -48,6 +58,7 @@ export const ShellOutputNormal = defineComponent({
         }
       },
     )
+
     return () => (
       <NModal
         show={logViewOpen.value}
@@ -59,6 +70,7 @@ export const ShellOutputNormal = defineComponent({
         <NCard class={'modal-card md min-h-[100px]'} title="Output">
           <div class="h-full w-full">
             <div
+              ref={$output}
               class={'font-mono break-all h-[75vh] overflow-auto'}
               style={{
                 whiteSpace: 'break-spaces',
