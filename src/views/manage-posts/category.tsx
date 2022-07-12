@@ -51,6 +51,9 @@ export const CategoryView = defineComponent((props) => {
   watch(
     () => checkedTag.value,
     async (name) => {
+      if (!name) {
+        return
+      }
       const res = (await RESTManager.api
         .categories(name)
         .get({ params: { tag: 'true' } })) as any
@@ -193,8 +196,6 @@ export const CategoryView = defineComponent((props) => {
                 onUpdateChecked={(check) => {
                   if (check) {
                     checkedTag.value = tag.name
-                  } else {
-                    checkedTag.value = ''
                   }
                 }}
               >
