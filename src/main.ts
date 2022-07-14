@@ -53,7 +53,11 @@ self.MonacoEnvironment = {
 window.module = {}
 window.module.exports = {}
 window.global = window
-
+window.os = {
+  homedir() {
+    return ''
+  }
+}
 declare global {
   interface JSON {
     safeParse: typeof JSON.parse

@@ -44,7 +44,7 @@ export default ({ mode }) => {
     resolve: {
       alias: {
         path: require.resolve('path-browserify'),
-
+        os: require.resolve('os-browserify'),
         'node-fetch': 'isomorphic-fetch',
       },
     },
@@ -52,7 +52,6 @@ export default ({ mode }) => {
     build: {
       chunkSizeWarningLimit: 2500,
       target: 'esnext',
-      brotliSize: false,
 
       // sourcemap: true,
       rollupOptions: {
