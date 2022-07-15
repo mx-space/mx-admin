@@ -36,7 +36,7 @@
     "@vicons/material": "0.12.0",
     "@vicons/tabler": "0.12.0",
     "@vicons/utils": "0.1.4",
-    "@vueuse/core": "8.9.2",
+    "@vueuse/core": "8.9.3",
     "ansi_up": "5.1.0",
     "camelcase-keys": "8.0.1",
     "class-transformer": "0.5.1",
