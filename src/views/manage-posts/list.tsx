@@ -21,7 +21,6 @@ import {
 import type {
   FilterOption,
   FilterState,
-  TableBaseColumn,
   TableColumns,
 } from 'naive-ui/lib/data-table/src/interface'
 import { CategoryStore } from 'stores/category'
@@ -110,7 +109,7 @@ export const ManagePostListView = defineComponent({
                       {{
                         trigger() {
                           return (
-                            <NIcon class={'text-yellow-500'}>
+                            <NIcon class={'text-orange-400'}>
                               <PhPushPin />
                             </NIcon>
                           )
@@ -132,7 +131,7 @@ export const ManagePostListView = defineComponent({
                     title={row.title}
                     inPageTo={`/posts/edit?id=${row.id}`}
                     externalLinkTo={`/posts/${row.category.slug}/${row.slug}`}
-                  ></TableTitleLink>
+                  />
                 </div>
               )
             },
@@ -178,7 +177,7 @@ export const ManagePostListView = defineComponent({
                       key: i.id,
                     })) || []
                   }
-                ></EditColumn>
+                />
               )
             },
           },
@@ -276,10 +275,7 @@ export const ManagePostListView = defineComponent({
             columns={columns}
             data={data}
             nTableProps={{
-              onUpdateFilters: async (
-                filterState: FilterState,
-                sourceColumn?: TableBaseColumn,
-              ) => {
+              onUpdateFilters: async (filterState: FilterState) => {
                 if (!filterState) {
                   return
                 }
