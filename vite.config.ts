@@ -1,3 +1,4 @@
+import dns from 'dns'
 import { visualizer } from 'rollup-plugin-visualizer'
 import AutoImport from 'unplugin-auto-import/vite'
 import type { PluginOption } from 'vite'
@@ -11,6 +12,7 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 
 import PKG from './package.json'
 
+dns.setDefaultResultOrder('verbatim')
 export default ({ mode }) => {
   const env = loadEnv(mode, process.cwd())
   const { VITE_APP_PUBLIC_URL } = env
