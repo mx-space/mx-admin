@@ -12,7 +12,7 @@ specifiers:
   '@codemirror/view': 6.0.2
   '@ddietr/codemirror-themes': https://github.com/Innei/codemirror-themes.git
   '@innei/eslint-config-vue-ts': 0.9.3
-  '@innei/prettier': 0.9.2
+  '@innei/prettier': 0.9.3
   '@lezer/highlight': '*'
   '@mx-space/api-client': 0.10.12
   '@types/ejs': 3.1.1
@@ -141,7 +141,7 @@ dependencies:
 
 devDependencies:
   '@innei/eslint-config-vue-ts': 0.9.3_g4cxuhevh5o54harssx6h7xjim
-  '@innei/prettier': 0.9.2
+  '@innei/prettier': 0.9.3
   '@types/ejs': 3.1.1
   '@types/event-source-polyfill': 1.0.0
   '@types/js-yaml': 4.0.5
@@ -1078,8 +1078,8 @@ packages:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
     dev: true
 
-  /@ianvs/prettier-plugin-sort-imports/3.3.1_prettier@2.7.1:
-    resolution: {integrity: sha512-AXdV6NJPQUu6ME2qLdm1/eu08ipVCiwfJ3p8denC4SXnbjq8OOe1+lz4Y/WF5kYsR4Cm4kV76qZPj9aTTgzrKw==}
+  /@ianvs/prettier-plugin-sort-imports/3.4.2_prettier@2.7.1:
+    resolution: {integrity: sha512-HB2BLfnm3Jee+GiGtK7f5hLcFbF54VbSAoH9UEaWpjMmrbaZCTViJeuXsycA1Adm2colaHCpqhLW5E70umh6ug==}
     peerDependencies:
       prettier: 2.x
     dependencies:
@@ -1129,12 +1129,12 @@ packages:
       - supports-color
     dev: true
 
-  /@innei/prettier/0.9.2:
-    resolution: {integrity: sha512-uhtQroanY4UBvpwnwYtaV8sseAgiqYXBwxQI/e+7+jRtiTT+DiYPixZmko4rtzqPsQHQE81bb4ShuJIiKrnbMQ==}
+  /@innei/prettier/0.9.3:
+    resolution: {integrity: sha512-7uJS30e/tlVPNGjDi7nUnCzXM8UI7ltFQ1DG5D3XMDWXuskMjh0uJT73VreAtnduky7KRK/aAic4MiHfa3XYLQ==}
     dependencies:
-      '@trivago/prettier-plugin-sort-imports': /@ianvs/prettier-plugin-sort-imports/3.3.1_prettier@2.7.1
+      '@trivago/prettier-plugin-sort-imports': /@ianvs/prettier-plugin-sort-imports/3.4.2_prettier@2.7.1
       prettier: 2.7.1
-      prettier-package-json: 2.6.3
+      prettier-package-json: 2.6.4
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -3629,7 +3629,7 @@ packages:
     dev: true
 
   /is-arrayish/0.2.1:
-    resolution: {integrity: sha1-d8mYQFJ6qOyxqLppe4BkWnqSap0=}
+    resolution: {integrity: sha512-zz06S8t0ozoDXMG+ube26zeCTNXcKIPJZJi8hBrF4idCLms4CG9QtK7qBl1boi5ODzFpjswb5JPmHCbMpjaYzg==}
     dev: true
 
   /is-bigint/1.0.4:
@@ -4323,7 +4323,7 @@ packages:
     dev: true
 
   /parse-author/2.0.0:
-    resolution: {integrity: sha1-00YL8d3Q367tQtp1QkLmX7aEqB8=}
+    resolution: {integrity: sha512-yx5DfvkN8JsHL2xk2Os9oTia467qnvRgey4ahSm2X8epehBLx/gWLcy5KI+Y36ful5DzGbCS6RazqZGgy1gHNw==}
     engines: {node: '>=0.10.0'}
     dependencies:
       author-regex: 1.0.0
@@ -4764,8 +4764,8 @@ packages:
     engines: {node: '>= 0.8.0'}
     dev: true
 
-  /prettier-package-json/2.6.3:
-    resolution: {integrity: sha512-0zFMAyiSHImUb7VWJQFiORFaFJ46gtLZ05sHRkehSZ6aO9mO8pxSStkTnpIT7rIioQMJhnaF9LKcqJpmhHf6JQ==}
+  /prettier-package-json/2.6.4:
+    resolution: {integrity: sha512-aNZvEf0yy0UeqLdTHsFZiYjOEM9kACO02CGUR5XIHdqj3jrpHNlLkmfTaj1V/rvB4vYHHTH0i3qMf2FZ2Qtr/g==}
     hasBin: true
     dependencies:
       '@types/parse-author': 2.0.1
@@ -5055,7 +5055,7 @@ packages:
     dev: true
 
   /sort-order/1.0.1:
-    resolution: {integrity: sha1-2CK4zbkOpqnfloxL1FmHz1SBmeY=}
+    resolution: {integrity: sha512-BiExT7C1IVF4DNd5dttR/dEq3wunGOHpy4phvqFUQA1pY6j2ye8WWEAV8LhRbfdF0EWDX12FfyPPf9P71eT+cA==}
     dev: true
 
   /source-map-js/1.0.2:
