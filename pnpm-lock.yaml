@@ -53,7 +53,7 @@ specifiers:
   monaco-editor: 0.33.0
   monaco-editor-auto-typings: 0.4.2
   naive-ui: 2.31.0
-  octokit: 2.0.3
+  octokit: 2.0.4
   os-browserify: 0.3.0
   path-browserify: 1.0.1
   pinia: 2.0.16
@@ -121,7 +121,7 @@ dependencies:
   monaco-editor: 0.33.0
   monaco-editor-auto-typings: 0.4.2_monaco-editor@0.33.0
   naive-ui: 2.31.0_vue@3.2.37
-  octokit: 2.0.3
+  octokit: 2.0.4
   os-browserify: 0.3.0
   path-browserify: 1.0.1
   pinia: 2.0.16_3wx4hvlpf33h4r5e7sgliqloou
@@ -1396,7 +1396,7 @@ packages:
       '@octokit/graphql': 5.0.0
       '@octokit/request': 6.0.2
       '@octokit/request-error': 3.0.0
-      '@octokit/types': 6.35.0
+      '@octokit/types': 6.39.0
       before-after-hook: 2.2.2
       universal-user-agent: 6.0.0
     transitivePeerDependencies:
@@ -1484,10 +1484,6 @@ packages:
       - encoding
     dev: false
 
-  /@octokit/openapi-types/12.1.0:
-    resolution: {integrity: sha512-kQzJh3ZUv3lDpi6M+uekMRHULvf9DlWoI1XgKN6nPeGDzkSgtkhVq1MMz3bFKQ6H6GbdC3ZqG/a6VzKhIx0VeA==}
-    dev: false
-
   /@octokit/openapi-types/12.8.0:
     resolution: {integrity: sha512-ydcKLs2KKcxlhpdWLzJxEBDEk/U5MUeqtqkXlrtAUXXFPs6vLl1PEGghFC/BbpleosB7iXs0Z4P2DGe7ZT5ZNg==}
     dev: false
@@ -1527,7 +1523,7 @@ packages:
       '@octokit/core': ^4.0.0
     dependencies:
       '@octokit/core': 4.0.4
-      '@octokit/types': 6.35.0
+      '@octokit/types': 6.39.0
       bottleneck: 2.19.5
     dev: false
 
@@ -1573,12 +1569,6 @@ packages:
       universal-user-agent: 6.0.0
     transitivePeerDependencies:
       - encoding
-    dev: false
-
-  /@octokit/types/6.35.0:
-    resolution: {integrity: sha512-DhLfdUuv3H37u6jBDfkwamypx3HflHg29b26nbA6iVFYkAlZ5cMEtu/9pQoihGnQE5M7jJFnNo25Rr1UwQNF8Q==}
-    dependencies:
-      '@octokit/openapi-types': 12.1.0
     dev: false
 
   /@octokit/types/6.39.0:
@@ -2236,8 +2226,8 @@ packages:
     peerDependencies:
       postcss: ^8.1.0
     dependencies:
-      browserslist: 4.21.1
-      caniuse-lite: 1.0.30001363
+      browserslist: 4.21.2
+      caniuse-lite: 1.0.30001366
       fraction.js: 4.2.0
       normalize-range: 0.1.2
       picocolors: 1.0.0
@@ -2315,21 +2305,10 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001363
-      electron-to-chromium: 1.4.182
-      node-releases: 2.0.5
+      caniuse-lite: 1.0.30001366
+      electron-to-chromium: 1.4.189
+      node-releases: 2.0.6
       update-browserslist-db: 1.0.4_browserslist@4.21.0
-    dev: true
-
-  /browserslist/4.21.1:
-    resolution: {integrity: sha512-Nq8MFCSrnJXSc88yliwlzQe3qNe3VntIjhsArW9IJOEPSHNx23FalwApUVbzAWABLhYJJ7y8AynWI/XM8OdfjQ==}
-    engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
-    hasBin: true
-    dependencies:
-      caniuse-lite: 1.0.30001363
-      electron-to-chromium: 1.4.182
-      node-releases: 2.0.5
-      update-browserslist-db: 1.0.4_browserslist@4.21.1
     dev: true
 
   /browserslist/4.21.2:
@@ -2399,10 +2378,6 @@ packages:
     resolution: {integrity: sha512-JToIvOmz6nhGsUhAYScbo2d6Py5wojjNfoxoc2mEVLUdJ70gJK2gnd+ABY1Tc3sVMyK7QDPtN0T/XdlCQWITyQ==}
     engines: {node: '>=14.16'}
     dev: false
-
-  /caniuse-lite/1.0.30001363:
-    resolution: {integrity: sha512-HpQhpzTGGPVMnCjIomjt+jvyUu8vNFo3TaDiZ/RcoTrlOq/5+tC8zHdsbgFB6MxmaY+jCpsH09aD80Bb4Ow3Sg==}
-    dev: true
 
   /caniuse-lite/1.0.30001366:
     resolution: {integrity: sha512-yy7XLWCubDobokgzudpkKux8e0UOOnLHE6mlNJBzT3lZJz6s5atSEzjoL+fsCPkI0G8MP5uVdDx1ur/fXEWkZA==}
@@ -2743,10 +2718,6 @@ packages:
     dependencies:
       jake: 10.8.5
     dev: false
-
-  /electron-to-chromium/1.4.182:
-    resolution: {integrity: sha512-OpEjTADzGoXABjqobGhpy0D2YsTncAax7IkER68ycc4adaq0dqEG9//9aenKPy7BGA90bqQdLac0dPp6uMkcSg==}
-    dev: true
 
   /electron-to-chromium/1.4.189:
     resolution: {integrity: sha512-dQ6Zn4ll2NofGtxPXaDfY2laIa6NyCQdqXYHdwH90GJQW0LpJJib0ZU/ERtbb0XkBEmUD2eJtagbOie3pdMiPg==}
@@ -4158,10 +4129,6 @@ packages:
       whatwg-url: 5.0.0
     dev: false
 
-  /node-releases/2.0.5:
-    resolution: {integrity: sha512-U9h1NLROZTq9uE1SNffn6WuPDg8icmi3ns4rEl/oTfIle4iLjTliCzgTsbaIFMq/Xn078/lfY/BL0GWZ+psK4Q==}
-    dev: true
-
   /node-releases/2.0.6:
     resolution: {integrity: sha512-PiVXnNuFm5+iYkLBNeq5211hvO38y63T0i2KKh2KnUs3RpzJ+JtODFjkD8yjLwnDkTYF1eKXheUwdssR+NRZdg==}
     dev: true
@@ -4246,8 +4213,8 @@ packages:
       es-abstract: 1.20.1
     dev: true
 
-  /octokit/2.0.3:
-    resolution: {integrity: sha512-k9YfQ/0vx1vCAhhmx/8LAvevY5eTRCURqqSkxZCdLVvlX12ke4tp6TxFnKo7/ewIQbrWlFd7KpzOyQCNrOlSRQ==}
+  /octokit/2.0.4:
+    resolution: {integrity: sha512-9QvgYGzrSTGmr3koSGtbgeMgqYI20QI0Vv8Bk9y6phchk6L2aHFhcrUOIeNUPj1Z+KZnEBd6A/8faNpDFNfVjg==}
     engines: {node: '>= 14'}
     dependencies:
       '@octokit/app': 13.0.5
@@ -4257,7 +4224,7 @@ packages:
       '@octokit/plugin-rest-endpoint-methods': 6.0.0_@octokit+core@4.0.4
       '@octokit/plugin-retry': 3.0.9
       '@octokit/plugin-throttling': 4.0.1_@octokit+core@4.0.4
-      '@octokit/types': 6.35.0
+      '@octokit/types': 6.39.0
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -5354,17 +5321,6 @@ packages:
       browserslist: '>= 4.21.0'
     dependencies:
       browserslist: 4.21.0
-      escalade: 3.1.1
-      picocolors: 1.0.0
-    dev: true
-
-  /update-browserslist-db/1.0.4_browserslist@4.21.1:
-    resolution: {integrity: sha512-jnmO2BEGUjsMOe/Fg9u0oczOe/ppIDZPebzccl1yDWGLFP16Pa1/RM5wEoKYPG2zstNcDuAStejyxsOuKINdGA==}
-    hasBin: true
-    peerDependencies:
-      browserslist: '>= 4.21.0'
-    dependencies:
-      browserslist: 4.21.1
       escalade: 3.1.1
       picocolors: 1.0.0
     dev: true
