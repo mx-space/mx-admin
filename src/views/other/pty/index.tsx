@@ -67,7 +67,7 @@ export default defineComponent({
       }
     })
 
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
       socket.offAny()
       socket.disconnect()
     })
@@ -120,7 +120,7 @@ export default defineComponent({
       },
     )
 
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
       socket.emit('pty-exit')
       termDisposer?.dispose()
 

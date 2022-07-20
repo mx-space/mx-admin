@@ -111,7 +111,7 @@ export const Xterm = defineComponent({
       }
     })
 
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
       props.onDestory?.()
     })
     return () => (

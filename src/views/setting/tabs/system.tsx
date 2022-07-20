@@ -8,8 +8,8 @@ import { UIStore } from 'stores/ui'
 import { RESTManager, deepDiff } from 'utils'
 import {
   defineComponent,
+  onBeforeUnmount,
   onMounted,
-  onUnmounted,
   reactive,
   ref,
   toRaw,
@@ -43,7 +43,7 @@ export const TabSystem = defineComponent(() => {
     )
   })
 
-  onUnmounted(() => {
+  onBeforeUnmount(() => {
     setHeaderButton(null)
   })
 

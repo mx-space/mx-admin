@@ -157,7 +157,7 @@ const PostWriteView = defineComponent(() => {
     }
   }
 
-  onUnmounted(() => {
+  onBeforeUnmount(() => {
     postListState.refresh()
   })
 

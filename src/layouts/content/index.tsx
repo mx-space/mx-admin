@@ -7,7 +7,7 @@ import {
   computed,
   defineComponent,
   inject,
-  onUnmounted,
+  onBeforeUnmount,
   provide,
   ref,
 } from 'vue'
@@ -83,7 +83,7 @@ export const ContentLayout = defineComponent({
       },
     })
 
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
       footerExtraButtonEl.value = null
     })
 

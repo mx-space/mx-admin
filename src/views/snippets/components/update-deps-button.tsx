@@ -58,7 +58,7 @@ export const UpdateDependencyButton = defineComponent({
 
     const $installDepsComponent = ref<InstanceType<typeof InstallDepsXterm>>()
 
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
       cacheRef.value = {}
     })
     return () => {

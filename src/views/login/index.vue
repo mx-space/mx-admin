@@ -1,6 +1,6 @@
 <script lang="ts">
 import { useMessage } from 'naive-ui'
-import { defineComponent, onMounted, onUnmounted, ref } from 'vue'
+import { defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import Avatar from '../../components/avatar/index.vue'
@@ -37,7 +37,7 @@ export const LoginView = defineComponent({
       }
     })
 
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
       document.onkeydown = null
     })
 

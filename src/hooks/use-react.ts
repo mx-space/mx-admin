@@ -5,7 +5,7 @@ export const useMountAndUnmount = (callback: () => any) => {
     res = callback()
   })
 
-  onUnmounted(() => {
+  onBeforeUnmount(() => {
     if (res && typeof res === 'function') {
       res()
     }

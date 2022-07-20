@@ -50,7 +50,13 @@ import { RouteName } from 'router/name'
 import { AppStore } from 'stores/app'
 import { UserStore } from 'stores/user'
 import { RESTManager, parseDate } from 'utils'
-import { computed, defineComponent, onBeforeMount, onUnmounted, ref } from 'vue'
+import {
+  computed,
+  defineComponent,
+  onBeforeMount,
+  onBeforeUnmount,
+  ref,
+} from 'vue'
 import { useRouter } from 'vue-router'
 
 import { Icon } from '@vicons/utils'
@@ -104,7 +110,7 @@ export const DashBoardView = defineComponent({
         fetchStat()
       }, 3000)
     })
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
       timer = clearTimeout(timer)
     })
 

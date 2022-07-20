@@ -49,7 +49,7 @@ export const RealtimeLogPipeline = defineComponent({
       }
     })
 
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
       socket.socket.emit('unlog')
 
       bus.off(EventTypes.STDOUT, logHandler)

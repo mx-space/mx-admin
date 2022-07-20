@@ -1,6 +1,6 @@
 import { NPopover } from 'naive-ui'
 import { parseDate, relativeTimeFromNow } from 'utils/time'
-import { defineComponent, onMounted, onUnmounted, ref } from 'vue'
+import { defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 
 const _RelativeTime = defineComponent({
   props: {
@@ -21,7 +21,7 @@ const _RelativeTime = defineComponent({
       }, 1000)
     })
 
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
       timer && (timer = clearInterval(timer))
     })
 

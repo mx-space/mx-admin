@@ -1,5 +1,5 @@
 import { useDialog } from 'naive-ui'
-import { onMounted, onUnmounted } from 'vue'
+import { onBeforeUnmount, onMounted } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
 
 /**
@@ -28,7 +28,7 @@ export const useSaveConfirm = (
       window.addEventListener('beforeunload', beforeUnloadHandler)
     }
   })
-  onUnmounted(() => {
+  onBeforeUnmount(() => {
     if (enable) {
       window.removeEventListener('beforeunload', beforeUnloadHandler)
     }
