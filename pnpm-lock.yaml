@@ -31,7 +31,7 @@ specifiers:
   '@vicons/material': 0.12.0
   '@vicons/tabler': 0.12.0
   '@vicons/utils': 0.1.4
-  '@vitejs/plugin-vue': 3.0.0
+  '@vitejs/plugin-vue': 3.0.1
   '@vitejs/plugin-vue-jsx': 2.0.0
   '@vue/compiler-sfc': 3.2.37
   '@vueuse/core': 8.9.3
@@ -150,7 +150,7 @@ devDependencies:
   '@types/marked': 4.0.3
   '@types/qs': 6.9.7
   '@types/validator': 13.7.4
-  '@vitejs/plugin-vue': 3.0.0_vite@3.0.1+vue@3.2.37
+  '@vitejs/plugin-vue': 3.0.1_vite@3.0.1+vue@3.2.37
   '@vitejs/plugin-vue-jsx': 2.0.0_vite@3.0.1+vue@3.2.37
   '@vue/compiler-sfc': 3.2.37
   cors: 2.8.5
@@ -1924,9 +1924,9 @@ packages:
       - supports-color
     dev: true
 
-  /@vitejs/plugin-vue/3.0.0_vite@3.0.1+vue@3.2.37:
-    resolution: {integrity: sha512-yWP34ArFh/jAeNUDkkLz/kVRLjf5ppJiq4L36f64Cp6dIrMQeYZGDP9xxdemlXfZR9ylN9JgHUl3GzfqOtgYDg==}
-    engines: {node: '>=14.18.0'}
+  /@vitejs/plugin-vue/3.0.1_vite@3.0.1+vue@3.2.37:
+    resolution: {integrity: sha512-Ll9JgxG7ONIz/XZv3dssfoMUDu9qAnlJ+km+pBA0teYSXzwPCIzS/e1bmwNYl5dcQGs677D21amgfYAnzMl17A==}
+    engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       vite: ^3.0.0
       vue: ^3.2.25
