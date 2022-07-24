@@ -356,7 +356,7 @@ const NoteWriteView = defineComponent(() => {
                   data.coordinates = null
                 }}
               >
-                清楚
+                清除
               </NButton>
             </NButtonGroup>
 

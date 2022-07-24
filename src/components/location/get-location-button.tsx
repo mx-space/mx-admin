@@ -2,7 +2,7 @@ import { LocationIcon } from 'components/icons'
 import type { Amap, Regeocode } from 'models/amap'
 import { NButton, useMessage } from 'naive-ui'
 import { RESTManager } from 'utils/rest'
-import type { PropType} from 'vue';
+import type { PropType } from 'vue'
 import { defineComponent, ref } from 'vue'
 
 import { Icon } from '@vicons/utils'
@@ -35,9 +35,11 @@ export const GetLocationButton = defineComponent({
           )
         })
       if (navigator.geolocation) {
+        console.log('---------')
+
         try {
           const coordinates = await promisify()
-          // console.log(coordinates)
+          console.log(coordinates)
 
           const {
             coords: { latitude, longitude },
@@ -52,8 +54,14 @@ export const GetLocationButton = defineComponent({
           })
 
           props.onChange(res.regeocode, coo)
-        } catch (e) {
-          message.error('定位权限未打开')
+        } catch (e: any) {
+          console.error(e)
+
+          if (e.code == 2) {
+            message.error('获取定位失败, 连接超时')
+          } else {
+            message.error('定位权限未打开')
+          }
         }
       } else {
         message.error('浏览器不支持定位')
