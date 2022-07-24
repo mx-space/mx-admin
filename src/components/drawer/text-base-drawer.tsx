@@ -61,26 +61,34 @@ export const TextBaseDrawer = defineComponent({
       },
     )
 
-    watchEffect(() => {
-      if (inUpdatedKeyValue) {
-        inUpdatedKeyValue = false
-        return
-      }
-      if (props.data.meta && isObject(props.data.meta)) {
-        keyValuePairs.value = Object.entries(props.data.meta).reduce(
-          (acc, [key, value]): any => {
-            return [
-              ...acc,
-              {
-                key,
-                value: JSON.stringify(value),
-              },
-            ]
-          },
-          [],
-        )
-      }
-    })
+    watch(
+      () => props.data.meta,
+      () => {
+        if (inUpdatedKeyValue) {
+          inUpdatedKeyValue = false
+          return
+        }
+
+        if (props.data.meta && isObject(props.data.meta)) {
+          keyValuePairs.value = Object.entries(props.data.meta).reduce(
+            (acc, [key, value]): any => {
+              return [
+                ...acc,
+                {
+                  key,
+                  value: JSON.stringify(value),
+                },
+              ]
+            },
+            [],
+          )
+        }
+      },
+      {
+        flush: 'post',
+        deep: true,
+      },
+    )
     return () => (
       <NDrawer
         show={props.show}
@@ -167,6 +175,7 @@ export const TextBaseDrawer = defineComponent({
             }
             onFinish={(jsonString) => {
               try {
+                inUpdatedKeyValue = false
                 const parsed = JSON.parse(jsonString)
 
                 // console.log(parsed)
