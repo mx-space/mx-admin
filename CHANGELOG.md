@@ -5,6 +5,40 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Auto scroll to end
+- Update dependency pinia to v2.0.16 (#508)
+- Update dependency @vueuse/core to v8.9.2 (#502)
+- Update dependency @vueuse/core to v8.9.3 (#516)
+- Vite dns
+- Update dependency vite-plugin-windicss to v1.8.7 (#515)
+- Update dependency octokit to v2.0.4 (#521)
+- Vue lifecycle unmount
+- Update dependency date-fns to v2.29.1 (#525)
+- Update dependency @vueuse/core to v8.9.4 (#520)
+- Update dependency @mx-space/api-client to v0.10.13 (#523)
+- Geo timeout info
+- Meta sync
+
+### Miscellaneous Tasks
+
+- Update dependency vite-plugin-checker to v0.4.9 (#509)
+- Update dependency rollup-plugin-visualizer to v5.7.0 (#517)
+- Optimize eslint config
+- Update dependency @innei/prettier to v0.9.3 (#519)
+- Update dependency unplugin-auto-import to v0.9.3 (#514)
+- Update dependency rollup-plugin-visualizer to v5.7.1 (#518)
+- Update dependency vite to v3.0.1 (#510)
+- Update dependency @innei/prettier to v0.9.4 (#527)
+- Update dependency @vitejs/plugin-vue to v3.0.1 (#511)
+
+### Performance
+
+- Upgrade vite 3 (#513)
+
+## [3.22.2] - 2022-07-12
+
+### Bug Fixes
+
 - Update dependency marked to v4.0.18 (#506)
 - Update dependency pinia to v2.0.15 (#505)
 - Update dependency vue-router to v4.1.2 (#504)
@@ -19,6 +53,10 @@ All notable changes to this project will be documented in this file.
 ### Miscellaneous Tasks
 
 - Update typescript-eslint monorepo to v5.30.6 (#507)
+
+### Release
+
+- V3.22.2
 
 ## [3.22.1] - 2022-07-09
 
