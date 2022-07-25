@@ -56,7 +56,7 @@ specifiers:
   octokit: 2.0.4
   os-browserify: 0.3.0
   path-browserify: 1.0.1
-  pinia: 2.0.16
+  pinia: 2.0.17
   postcss: 8.4.14
   postcss-nested: 5.0.6
   postcss-preset-env: 7.7.2
@@ -124,7 +124,7 @@ dependencies:
   octokit: 2.0.4
   os-browserify: 0.3.0
   path-browserify: 1.0.1
-  pinia: 2.0.16_3wx4hvlpf33h4r5e7sgliqloou
+  pinia: 2.0.17_3wx4hvlpf33h4r5e7sgliqloou
   qier-progress: 1.0.4
   qs: 6.11.0
   reflect-metadata: 0.1.13
@@ -1990,6 +1990,10 @@ packages:
 
   /@vue/devtools-api/6.2.0:
     resolution: {integrity: sha512-pF1G4wky+hkifDiZSWn8xfuLOJI1ZXtuambpBEYaf7Xaf6zC/pM29rvAGpd3qaGXnr4BAXU1Pxz/VfvBGwexGA==}
+    dev: false
+
+  /@vue/devtools-api/6.2.1:
+    resolution: {integrity: sha512-OEgAMeQXvCoJ+1x8WyQuVZzFo0wcyCmUR3baRVLmKBo1LmYZWMlRiXlux5jd0fqVJu6PfDbOrZItVqUEzLobeQ==}
     dev: false
 
   /@vue/reactivity-transform/3.2.37:
@@ -4378,8 +4382,8 @@ packages:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
     engines: {node: '>=8.6'}
 
-  /pinia/2.0.16_3wx4hvlpf33h4r5e7sgliqloou:
-    resolution: {integrity: sha512-9/LMVO+/epny1NBfC77vnps4g3JRezxhhoF1xLUk8mZkUIxVnwfEAIRiAX8mYBTD/KCwZqnDMqXc8w3eU0FQGg==}
+  /pinia/2.0.17_3wx4hvlpf33h4r5e7sgliqloou:
+    resolution: {integrity: sha512-AtwLwEWQgIjofjgeFT+nxbnK5lT2QwQjaHNEDqpsi2AiCwf/NY78uWTeHUyEhiiJy8+sBmw0ujgQMoQbWiZDfA==}
     peerDependencies:
       '@vue/composition-api': ^1.4.0
       typescript: '>=4.4.4'
@@ -4390,7 +4394,7 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@vue/devtools-api': 6.2.0
+      '@vue/devtools-api': 6.2.1
       typescript: 4.6.4
       vue: 3.2.37
       vue-demi: 0.13.2_vue@3.2.37

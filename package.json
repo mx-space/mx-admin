@@ -56,7 +56,7 @@
     "octokit": "2.0.4",
     "os-browserify": "0.3.0",
     "path-browserify": "1.0.1",
-    "pinia": "2.0.16",
+    "pinia": "2.0.17",
     "qier-progress": "1.0.4",
     "qs": "6.11.0",
     "reflect-metadata": "0.1.13",
