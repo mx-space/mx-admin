@@ -52,7 +52,7 @@
     "marked": "4.0.18",
     "monaco-editor": "0.33.0",
     "monaco-editor-auto-typings": "0.4.2",
-    "naive-ui": "2.31.0",
+    "naive-ui": "2.32.1",
     "octokit": "2.0.4",
     "os-browserify": "0.3.0",
     "path-browserify": "1.0.1",
