@@ -1,7 +1,7 @@
-import type { PopoverTrigger } from 'naive-ui';
+import type { PopoverTrigger } from 'naive-ui'
 import { NPopover } from 'naive-ui'
 import { RESTManager } from 'utils'
-import type { PropType} from 'vue';
+import type { PropType } from 'vue'
 import { defineComponent, ref } from 'vue'
 
 const ipLocationCacheMap = new Map<string, IP>()
@@ -94,21 +94,4 @@ interface IP {
     from: string
     to: string
   }
-}
-
-interface IPv6 {
-  status: string
-  country: string
-  countryCode: string
-  region: string
-  regionName: string
-  city: string
-  zip: string
-  lat: number
-  lon: number
-  timezone: string
-  isp: string
-  org: string
-  as: string
-  query: string
 }
