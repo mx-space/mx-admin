@@ -14,7 +14,7 @@ import {
   NDatePicker,
   NForm,
   NFormItem,
-  NH4,
+  NH3,
   NInput,
   NLayoutContent,
   NList,
@@ -44,9 +44,12 @@ type Session = {
 }
 export const TabSecurity = defineComponent(() => {
   const session = ref<Session[]>([])
-  onMounted(async () => {
+  const fetchSession = async () => {
     const res = await RESTManager.api.user.session.get<{ data: Session[] }>({})
     session.value = [...res.data]
+  }
+  onMounted(() => {
+    fetchSession()
   })
   const handleKick = async (current: boolean, id?: string) => {
     if (current) {
@@ -59,9 +62,46 @@ export const TabSecurity = defineComponent(() => {
       session.value = session.value.filter((item) => item.id !== id)
     }
   }
+  const handleKickAll = async () => {
+    await Promise.all(
+      session.value.map((currentItem) => {
+        if (currentItem.current) {
+          return
+        }
+        return handleKick(false, currentItem.id)
+      }),
+    )
+
+    await fetchSession()
+  }
   return () => (
     <Fragment>
-      <NH4>登录设备</NH4>
+      <NH3 class={'flex items-center justify-between'}>
+        <span class={'ml-4'}>登录设备</span>
+
+        <NPopconfirm onPositiveClick={handleKickAll}>
+          {{
+            trigger() {
+              return (
+                <NButton
+                  size="small"
+                  text
+                  type="error"
+                  disabled={
+                    session.value.length == 1 && session.value[0].current
+                  }
+                >
+                  踢掉全部
+                </NButton>
+              )
+            },
+            default() {
+              return '确定踢掉全部登录设备（除当前会话）？'
+            },
+          }}
+        </NPopconfirm>
+      </NH3>
+
       <NList bordered>
         {session.value.map(({ id, ua, ip, date, current }) => (
           <NListItem key={id}>
