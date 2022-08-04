@@ -3,7 +3,7 @@ import { NTabPane, NTabs } from 'naive-ui'
 import { useRoute, useRouter } from 'vue-router'
 
 import { Tab2ForEdit } from './tabs/for-edit'
-import { Tab1ForList } from './tabs/for-list'
+import { Tab1ForList } from './tabs/for-route-list'
 
 export default defineComponent({
   name: 'SnippetView',
@@ -25,7 +25,7 @@ export default defineComponent({
             })
           }}
         >
-          <NTabPane name={'0'} tab={'列表'}>
+          <NTabPane name={'0'} tab={'路由'}>
             <Tab1ForList />
           </NTabPane>
 

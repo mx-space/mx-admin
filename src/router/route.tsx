@@ -316,7 +316,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         path: 'snippets',
         name: RouteName.Snippet,
         meta: {
-          title: '配置与云函数',
+          title: '路由、配置与云函数',
           icon: <FunctionIcon />,
         },
         component: () => import('../views/snippets'),

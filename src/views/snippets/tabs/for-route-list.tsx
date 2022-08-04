@@ -7,7 +7,7 @@ import { useMountAndUnmount } from 'hooks/use-react'
 import { useDataTableFetch } from 'hooks/use-table'
 import { useLayout } from 'layouts/content'
 import type { PaginateResult } from 'models/base'
-import { NButton, NPopconfirm, NSpace } from 'naive-ui'
+import { NButton, NPopconfirm, NPopover, NSpace } from 'naive-ui'
 import { RESTManager } from 'utils'
 import { getToken } from 'utils/auth'
 import { useRouter } from 'vue-router'
@@ -162,6 +162,11 @@ export const Tab1ForList = defineComponent({
                 render(row: SnippetModel) {
                   const name = row.name
                   const isPrivate = row.private
+                  const path = `${
+                    (row.type === SnippetType.Function
+                      ? '/fn/'
+                      : '/snippets/') + row.reference
+                  }/${row.name}`
                   return (
                     <NSpace align="center">
                       {row.type === SnippetType.Function && (
@@ -169,24 +174,29 @@ export const Tab1ForList = defineComponent({
                           <FunctionIcon />
                         </Icon>
                       )}
-                      <NButton
-                        tag="a"
-                        text
-                        // @ts-ignore
-                        href={`${
-                          RESTManager.endpoint +
-                          (row.type === SnippetType.Function
-                            ? '/fn/'
-                            : '/snippets/') +
-                          row.reference
-                        }/${row.name}${
-                          row.private ? `?token=${getToken()}` : ''
-                        }`}
-                        target="_blank"
-                        size="tiny"
-                      >
-                        {name}
-                      </NButton>
+                      <NPopover>
+                        {{
+                          default() {
+                            return path
+                          },
+                          trigger() {
+                            return (
+                              <NButton
+                                tag="a"
+                                text
+                                // @ts-ignore
+                                href={`${RESTManager.endpoint + path}${
+                                  row.private ? `?token=${getToken()}` : ''
+                                }`}
+                                target="_blank"
+                                size="tiny"
+                              >
+                                {name}
+                              </NButton>
+                            )
+                          },
+                        }}
+                      </NPopover>
                       {isPrivate && (
                         <Icon class={'items-center flex '}>
                           <LockIcon />
