@@ -208,7 +208,7 @@ export const ManageNoteListView = defineComponent({
               </Icon>
             ),
             key: 'count.read',
-            ellipsis: true,
+            ellipsis: false,
             render(row) {
               return row.count?.read || 0
             },
@@ -219,7 +219,7 @@ export const ManageNoteListView = defineComponent({
                 <HeartIcon />
               </Icon>
             ),
-            ellipsis: true,
+            ellipsis: false,
             key: 'count.like',
             render(row) {
               return row.count?.like || 0
