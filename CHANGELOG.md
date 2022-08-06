@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update dependency @mx-space/api-client to v0.10.14 (#528)
+- Update dependency vue-router to v4.1.3 (#531)
+- Update dependency pinia to v2.0.17 (#529)
+- Update dependency naive-ui to v2.32.1 (#533)
+- Update dependency event-source-polyfill to v1.0.28 (#534)
+- Note icon dislocation when resize (#537)
+
+### Features
+
+- Kick out all session
+
+### Miscellaneous Tasks
+
+- Update dependency unplugin-auto-import to v0.10.1 (#524)
+- Update dependency @innei/eslint-config-vue-ts to v0.9.4 (#526)
+- Update dependency vite to v3.0.4 (#522)
+- Cleanup
+- Update deps
+
+### Ci
+
+- Comment temporary
+
+## [3.22.3] - 2022-07-24
+
+### Bug Fixes
+
 - Auto scroll to end
 - Update dependency pinia to v2.0.16 (#508)
 - Update dependency @vueuse/core to v8.9.2 (#502)
@@ -34,6 +61,10 @@ All notable changes to this project will be documented in this file.
 ### Performance
 
 - Upgrade vite 3 (#513)
+
+### Release
+
+- V3.22.3
 
 ## [3.22.2] - 2022-07-12
 
