@@ -36,7 +36,7 @@
     "@vicons/material": "0.12.0",
     "@vicons/tabler": "0.12.0",
     "@vicons/utils": "0.1.4",
-    "@vueuse/core": "8.9.4",
+    "@vueuse/core": "9.1.0",
     "ansi_up": "5.1.0",
     "camelcase-keys": "8.0.1",
     "class-transformer": "0.5.1",
@@ -50,7 +50,7 @@
     "lodash-es": "4.17.21",
     "markdown-escape": "1.1.0",
     "marked": "4.0.18",
-    "monaco-editor": "0.33.0",
+    "monaco-editor": "0.34.0",
     "monaco-editor-auto-typings": "0.4.2",
     "naive-ui": "2.32.1",
     "octokit": "2.0.4",
@@ -93,11 +93,15 @@
     "prettier": "2.7.1",
     "rollup-plugin-visualizer": "5.7.1",
     "typescript": "4.6.4",
-    "unplugin-auto-import": "0.10.1",
+    "unplugin-auto-import": "0.11.1",
     "vite": "3.0.4",
     "vite-plugin-checker": "0.4.9",
     "vite-tsconfig-paths": "3.5.0",
     "vue-eslint-parser": "9.0.3",
-    "windicss": "3.5.6"
+    "windicss": "3.5.6",
+    "rollup": "*"
+  },
+  "resolutions": {
+    "@vueuse/core": "9.1.0"
   }
 }
