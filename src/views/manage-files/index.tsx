@@ -205,6 +205,9 @@ export default defineComponent({
             title="文件上传"
             class={'modal-card sm flex justify-center'}
             closable
+            onClose={() => {
+              modalShow.value = false
+            }}
           >
             <NUpload
               class={'flex flex-col items-center w-full'}
