@@ -208,9 +208,18 @@ const PasswordConfirmDialog = defineComponent({
       e.preventDefault()
       props.onConfirm?.(password.value)
     }
+
+    onMounted(() => {
+      requestAnimationFrame(() => {
+        inputRef.value.focus()
+      })
+    })
+    // FUCK VUE ALWAYS ANY
+    const inputRef = ref()
     return () => (
       <NForm onSubmit={submit} class="space-y-6 mt-6">
         <NInput
+          ref={inputRef}
           showPasswordOn="mousedown"
           type="password"
           value={password.value}
