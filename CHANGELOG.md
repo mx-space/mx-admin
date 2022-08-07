@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Note count number overflow
+- Auto focus password input
+
+### Features
+
+- Add comment is whispers icon
+
+## [3.22.4] - 2022-08-06
+
+### Bug Fixes
+
 - Update dependency @mx-space/api-client to v0.10.14 (#528)
 - Update dependency vue-router to v4.1.3 (#531)
 - Update dependency pinia to v2.0.17 (#529)
@@ -27,6 +38,10 @@ All notable changes to this project will be documented in this file.
 ### Ci
 
 - Comment temporary
+
+### Release
+
+- V3.22.4
 
 ## [3.22.3] - 2022-07-24
 
