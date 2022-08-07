@@ -4,6 +4,7 @@ import {
   CloseSharpIcon,
   EmojiAddIcon,
   TrashIcon as Trash,
+  UserAnonymouse,
 } from 'components/icons'
 import { IpInfoPopover } from 'components/ip-info'
 import { Table } from 'components/table'
@@ -168,13 +169,23 @@ const ManageComment = defineComponent(() => {
       title: '作者',
       key: 'author',
       width: 200,
-      render(row, index) {
+      render(row) {
         return (
           <NSpace vertical size={2}>
-            <a href={(row.url as any) || '#'} target="_blank" rel="noreferrer">
-              {row.author}
-            </a>
-
+            <div class={'inline-flex items-center space-x-2'}>
+              {row.isWhispers && (
+                <Icon>
+                  <UserAnonymouse />
+                </Icon>
+              )}
+              <a
+                href={(row.url as any) || '#'}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {row.author}
+              </a>
+            </div>
             <a href={(`mailto:${row.mail}` as any) || ''} target="_blank">
               {row.mail as any}
             </a>

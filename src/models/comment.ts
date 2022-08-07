@@ -17,6 +17,7 @@ export interface CommentModel {
   created: string
   modified: string
   avatar: string
+  isWhispers?: boolean
 }
 
 export interface CommentsResponse {
