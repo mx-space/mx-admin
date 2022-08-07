@@ -15,6 +15,7 @@ import type { Pager } from 'models/base'
 import type { NoteModel } from 'models/note'
 import { NButton, NEllipsis, NPopconfirm, NSpace, useMessage } from 'naive-ui'
 import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
+import { formatNumber } from 'utils/number'
 import { defineComponent, onMounted, reactive, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -208,9 +209,12 @@ export const ManageNoteListView = defineComponent({
               </Icon>
             ),
             key: 'count.read',
-            ellipsis: false,
+            width: 50,
+            ellipsis: {
+              tooltip: true,
+            },
             render(row) {
-              return row.count?.read || 0
+              return formatNumber(row.count?.read || 0)
             },
           },
           {
@@ -219,10 +223,13 @@ export const ManageNoteListView = defineComponent({
                 <HeartIcon />
               </Icon>
             ),
-            ellipsis: false,
+            width: 50,
+            ellipsis: {
+              tooltip: true,
+            },
             key: 'count.like',
             render(row) {
-              return row.count?.like || 0
+              return formatNumber(row.count?.like || 0)
             },
           },
 
