@@ -81,7 +81,7 @@
     "@types/markdown-escape": "1.1.0",
     "@types/marked": "4.0.3",
     "@types/qs": "6.9.7",
-    "@types/validator": "13.7.4",
+    "@types/validator": "13.7.5",
     "@vitejs/plugin-vue": "3.0.1",
     "@vitejs/plugin-vue-jsx": "2.0.0",
     "@vue/compiler-sfc": "3.2.37",
