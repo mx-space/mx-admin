@@ -51,7 +51,7 @@
     "markdown-escape": "1.1.0",
     "marked": "4.0.18",
     "monaco-editor": "0.34.0",
-    "monaco-editor-auto-typings": "0.4.2",
+    "monaco-editor-auto-typings": "0.4.3",
     "naive-ui": "2.32.1",
     "octokit": "2.0.4",
     "os-browserify": "0.3.0",
