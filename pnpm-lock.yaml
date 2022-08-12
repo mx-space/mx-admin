@@ -54,7 +54,7 @@ specifiers:
   markdown-escape: 1.1.0
   marked: 4.0.18
   monaco-editor: 0.34.0
-  monaco-editor-auto-typings: 0.4.2
+  monaco-editor-auto-typings: 0.4.3
   naive-ui: 2.32.1
   octokit: 2.0.4
   os-browserify: 0.3.0
@@ -123,7 +123,7 @@ dependencies:
   markdown-escape: 1.1.0
   marked: 4.0.18
   monaco-editor: 0.34.0
-  monaco-editor-auto-typings: 0.4.2_monaco-editor@0.34.0
+  monaco-editor-auto-typings: 0.4.3_monaco-editor@0.34.0
   naive-ui: 2.32.1_vue@3.2.37
   octokit: 2.0.4
   os-browserify: 0.3.0
@@ -3706,12 +3706,6 @@ packages:
     resolution: {integrity: sha512-Erxj2n/LDAZ7H8WNJXd9tw38GYM3dv8rk8Zcs+jJuxYTW7sozH+SS8NtrSjVL1/vpLvWi1hxy96IzjJ3EHTJJg==}
     dependencies:
       has: 1.0.3
-    dev: true
-
-  /is-core-module/2.9.0:
-    resolution: {integrity: sha512-+5FPy5PnwmO3lvfMb0AsoPaBG+5KHUI0wYFXOtYPnVVVspTFUuMZNfNaNVRt3FZadstu2c8x23vykRW/NBoU6A==}
-    dependencies:
-      has: 1.0.3
 
   /is-date-object/1.0.5:
     resolution: {integrity: sha512-9YQaSxsAiSwcvS33MBk3wTCVnWK+HhF8VZR2jRxehM16QcVOdHqPn4VPHmRK4lSr38n9JriurInLcP90xsYNfQ==}
@@ -4141,8 +4135,8 @@ packages:
       pkg-types: 0.3.3
     dev: true
 
-  /monaco-editor-auto-typings/0.4.2_monaco-editor@0.34.0:
-    resolution: {integrity: sha512-97RfXOeHFTb4NDi1DSj+YZyU0lx8ksSLQum8bZ15hU0POCsUCfRe0DiGEhXl/kJaxEsRB5SjjZUBMDbAqjya+Q==}
+  /monaco-editor-auto-typings/0.4.3_monaco-editor@0.34.0:
+    resolution: {integrity: sha512-7lpiWHkg8eX2DRJGApaFq1wGn95Ute3Xv4PLz36qFyTytzz86irjxwMl00JnOOGX/R0eUbfuudbEtkQh2VK9Gg==}
     peerDependencies:
       monaco-editor: '*'
     dependencies:
@@ -4973,7 +4967,7 @@ packages:
     resolution: {integrity: sha512-nBpuuYuY5jFsli/JIs1oldw6fOQCBioohqWZg/2hiaOybXOft4lonv85uDOKXdf8rhyK159cxU5cDcK/NKk8zw==}
     hasBin: true
     dependencies:
-      is-core-module: 2.9.0
+      is-core-module: 2.10.0
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
 
