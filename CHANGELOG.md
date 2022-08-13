@@ -5,12 +5,33 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update dependency pinia to v2.0.18 (#542)
+- Update dependency monaco-editor-auto-typings to v0.4.3 (#541)
+
+### Miscellaneous Tasks
+
+- Update dependency postcss to v8.4.16 (#538)
+- Update dependency @types/validator to v13.7.5 (#536)
+- Update dependency @vitejs/plugin-vue to v3.0.2 (#544)
+
+### Performance
+
+- Improve editor perfermance
+
+## [3.22.5] - 2022-08-07
+
+### Bug Fixes
+
 - Note count number overflow
 - Auto focus password input
 
 ### Features
 
 - Add comment is whispers icon
+
+### Release
+
+- V3.22.5
 
 ## [3.22.4] - 2022-08-06
 
