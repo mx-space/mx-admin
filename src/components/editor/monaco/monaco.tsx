@@ -10,7 +10,8 @@ import styles from '../universal/editor.module.css'
 import { editorBaseProps } from '../universal/props'
 import { useDefineMyThemes } from './use-define-theme'
 
-const _MonacoEditor = defineComponent({
+export const MonacoEditor = defineComponent({
+  name: 'MonacoEditor',
   props: {
     innerRef: {
       type: Object as PropType<Ref<Editor.IStandaloneCodeEditor> | undefined>,
@@ -76,8 +77,6 @@ const _MonacoEditor = defineComponent({
     )
   },
 })
-
-export const MonacoEditor = _MonacoEditor
 
 const initEditor = async (
   $el: HTMLElement,

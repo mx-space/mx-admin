@@ -12,6 +12,7 @@ import './codemirror.css'
 import { useCodeMirror } from './use-codemirror'
 
 export const CodemirrorEditor = defineComponent({
+  name: 'CodemirrorEditor',
   props: {
     ...editorBaseProps,
     onStateChange: {

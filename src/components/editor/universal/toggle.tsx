@@ -19,7 +19,7 @@ import {
   NSpin,
   NText,
 } from 'naive-ui'
-import { Suspense, defineComponent, ref, watch } from 'vue'
+import { defineComponent, ref, watch } from 'vue'
 
 import { Icon } from '@vicons/utils'
 
@@ -33,8 +33,8 @@ import './toggle.css'
 import { useEditorConfig } from './use-editor-setting'
 import { useGetPrefEditor } from './use-get-pref-editor'
 
-let hasFloatButton = false
-export const _EditorToggleWrapper = defineComponent({
+export const EditorToggleWrapper = defineComponent({
+  name: 'EditorToggleWrapper',
   props: {
     ...editorBaseProps,
     loading: {
@@ -50,9 +50,6 @@ export const _EditorToggleWrapper = defineComponent({
     // FIXME vue 3 cannot ref type as custom component
     const wrapperRef = ref<any>()
     useMountAndUnmount(() => {
-      if (hasFloatButton) {
-        return
-      }
       const settingButton = layout.addFloatButton(
         <button
           onClick={() => {
@@ -76,11 +73,10 @@ export const _EditorToggleWrapper = defineComponent({
           </Icon>
         </button>,
       )
-      hasFloatButton = true
+
       return () => {
         layout.removeFloatButton(settingButton)
         layout.removeFloatButton(fullScreenButton)
-        hasFloatButton = false
       }
     })
 
@@ -139,8 +135,53 @@ export const _EditorToggleWrapper = defineComponent({
       }
     })
 
+    const Modal = defineComponent({
+      setup() {
+        const handleModalClose = () => {
+          modalOpen.value = false
+        }
+        const { Panel: GeneralSetting } = general
+        const handleUpdateValue = (e: any) => void (currentEditor.value = e)
+        const handleUpdateShow = (s: boolean) => void (modalOpen.value = s)
+        return () => (
+          <NModal
+            transformOrigin="center"
+            show={modalOpen.value}
+            onUpdateShow={handleUpdateShow}
+          >
+            <NCard
+              closable
+              onClose={handleModalClose}
+              title="编辑器设定"
+              style="max-width: 90vw;width: 500px; max-height: 65vh; overflow: auto"
+              bordered={false}
+            >
+              <NP class="text-center">
+                <NText depth="3">此设定仅存储在本地!</NText>
+              </NP>
+              <NForm labelPlacement="left" labelWidth="8rem" labelAlign="right">
+                <NFormItem label="编辑器选择">
+                  <NSelect
+                    value={currentEditor.value}
+                    onUpdateValue={handleUpdateValue}
+                    options={Object.keys(Editor).map((i) => ({
+                      key: i,
+                      label: i,
+                      value: i,
+                    }))}
+                  ></NSelect>
+                </NFormItem>
+
+                <GeneralSetting />
+              </NForm>
+            </NCard>
+          </NModal>
+        )
+      },
+    })
+
     return () => {
-      const { Panel: GeneralSetting, setting: generalSetting } = general
+      const { setting: generalSetting } = general
       return (
         <NElement
           tag="div"
@@ -156,75 +197,9 @@ export const _EditorToggleWrapper = defineComponent({
           ref={wrapperRef}
         >
           {EditorComponent.value}
-          <NModal
-            transformOrigin="center"
-            show={modalOpen.value}
-            onUpdateShow={(s) => void (modalOpen.value = s)}
-          >
-            <NCard
-              closable
-              onClose={() => {
-                modalOpen.value = false
-              }}
-              title="编辑器设定"
-              style="max-width: 90vw;width: 500px; max-height: 65vh; overflow: auto"
-              bordered={false}
-            >
-              <NP class="text-center">
-                <NText depth="3">此设定仅存储在本地!</NText>
-              </NP>
-              <NForm labelPlacement="left" labelWidth="8rem" labelAlign="right">
-                <NFormItem label="编辑器选择">
-                  <NSelect
-                    value={currentEditor.value}
-                    onUpdateValue={(e) => void (currentEditor.value = e)}
-                    options={Object.keys(Editor).map((i) => ({
-                      key: i,
-                      label: i,
-                      value: i,
-                    }))}
-                  ></NSelect>
-                </NFormItem>
-
-                <GeneralSetting />
-              </NForm>
-            </NCard>
-          </NModal>
+          <Modal />
         </NElement>
       )
     }
-  },
-})
-
-export const __EditorToggleWrapper = defineAsyncComponent({
-  loader: () => Promise.resolve(_EditorToggleWrapper),
-  loadingComponent: () => <NSpin strokeWidth={14} show rotate />,
-})
-
-export const EditorToggleWrapper = defineComponent({
-  props: {
-    ...editorBaseProps,
-    loading: {
-      type: Boolean,
-      required: true,
-    },
-  },
-  setup(props) {
-    return () => (
-      <Suspense>
-        {{
-          default() {
-            return <__EditorToggleWrapper {...props} />
-          },
-          fallback() {
-            return (
-              <div class={[styles['editor'], styles['loading']]}>
-                <NSpin strokeWidth={14} show rotate />
-              </div>
-            )
-          },
-        }}
-      </Suspense>
-    )
   },
 })
