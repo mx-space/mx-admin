@@ -46,7 +46,7 @@ specifiers:
   date-fns: 2.29.1
   ejs: 3.1.8
   eslint: '*'
-  event-source-polyfill: 1.0.28
+  event-source-polyfill: 1.0.31
   js-cookie: 3.0.1
   js-yaml: 4.1.0
   json5: 2.2.1
@@ -115,7 +115,7 @@ dependencies:
   class-validator: 0.13.2
   date-fns: 2.29.1
   ejs: 3.1.8
-  event-source-polyfill: 1.0.28
+  event-source-polyfill: 1.0.31
   js-cookie: 3.0.1
   js-yaml: 4.1.0
   json5: 2.2.1
@@ -3354,8 +3354,8 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /event-source-polyfill/1.0.28:
-    resolution: {integrity: sha512-S4Je04Br394hKTiyUXKAkNpha/7r172rLNu76sdxB3Nw2g9sjuEc4kxMu/miaikvWA4jvJ2x6Xkg6BOAb1aM7g==}
+  /event-source-polyfill/1.0.31:
+    resolution: {integrity: sha512-4IJSItgS/41IxN5UVAVuAyczwZF7ZIEsM1XAoUzIHA6A+xzusEZUutdXz2Nr+MQPLxfTiCvqE79/C8HT8fKFvA==}
     dev: false
 
   /events/1.1.1:
