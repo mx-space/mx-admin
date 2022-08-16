@@ -89,7 +89,7 @@
     "eslint": "*",
     "postcss": "8.4.16",
     "postcss-nested": "5.0.6",
-    "postcss-preset-env": "7.7.2",
+    "postcss-preset-env": "7.8.0",
     "prettier": "2.7.1",
     "rollup-plugin-visualizer": "5.7.1",
     "typescript": "4.6.4",
