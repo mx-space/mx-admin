@@ -9,7 +9,7 @@
   },
   "scripts": {
     "prebuild": "rm -rf dist",
-    "dev": "NODE_ENV=development vite --mode development --open",
+    "dev": "NODE_ENV=development vite --mode development --open --host",
     "build": "NODE_ENV=production vite build --mode production",
     "preview": "vite preview --port 2323",
     "lint": "eslint \"src/**/*.{ts,tsx,js,json,vue}\" --fix",

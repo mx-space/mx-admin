@@ -1,7 +1,7 @@
 import { BaseModel } from './base'
 
 export const defaultServerlessFunction = `
-async function handler(ctx: Context) {
+export default async function handler(ctx: Context) {
   return 'pong';
 }
 `.trimStart()
@@ -29,4 +29,8 @@ export class SnippetModel extends BaseModel {
   comment?: string
   metatype?: string
   schema?: string
+
+  // for serverless function
+  enable?: boolean
+  method?: string
 }

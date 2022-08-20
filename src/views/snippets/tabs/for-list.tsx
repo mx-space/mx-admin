@@ -185,10 +185,18 @@ export const Tab1ForList = defineComponent({
                         target="_blank"
                         size="tiny"
                       >
-                        {name}
+                        {row.type == SnippetType.Function &&
+                          row.method != 'GET' && (
+                            <span class={'mr-2'}>{row.method} - </span>
+                          )}
+                        {row.enable === false ? (
+                          <del>{name}</del>
+                        ) : (
+                          <span>{name}</span>
+                        )}
                       </NButton>
                       {isPrivate && (
-                        <Icon class={'items-center flex '}>
+                        <Icon class={'items-center flex'}>
                           <LockIcon />
                         </Icon>
                       )}

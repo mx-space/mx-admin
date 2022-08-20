@@ -11,6 +11,7 @@ import {
   NFormItem,
   NGi,
   NInput,
+  NPopover,
   NSelect,
   NSwitch,
   useMessage,
@@ -60,6 +61,12 @@ export const Tab2ForEdit = defineComponent({
       (type, beforeType) => {
         if (type === 'function' || type === 'text') {
           data.value.raw = typeToValueMap[type]
+
+          if (type != 'text') {
+            data.value.method ??= 'GET'
+            data.value.enable ??= true
+          }
+
           return
         }
 
@@ -78,6 +85,12 @@ export const Tab2ForEdit = defineComponent({
 
             case 'json5': {
               return JSON5.parse(typeToValueMap.json5)
+            }
+
+            case 'function': {
+              // FIXME
+              delete data.value.method
+              return data.value.enable
             }
           }
         })()
@@ -135,32 +148,27 @@ export const Tab2ForEdit = defineComponent({
       },
     )
 
-    watch(
-      () => editId,
-      async (editId) => {
-        if (editId.value) {
-          const _data = await RESTManager.api
-            .snippets(editId.value)
-            .get<SnippetModel>()
-          switch (_data.type) {
-            case SnippetType.JSON: {
-              _data.raw = JSON.stringify(JSON5.parse(_data.raw), null, 2)
+    onMounted(async () => {
+      if (!editId.value) {
+        return
+      }
+      const _data = await RESTManager.api
+        .snippets(editId.value)
+        .get<SnippetModel>()
+      switch (_data.type) {
+        case SnippetType.JSON: {
+          _data.raw = JSON.stringify(JSON5.parse(_data.raw), null, 2)
 
-              break
-            }
-          }
-          data.value = _data
-
-          jsonFormatBeforeType = _data.type
-
-          // 同时更新 typeToValueMap 中的值
-          typeToValueMap[_data.type] = _data.raw
+          break
         }
-      },
-      {
-        immediate: true,
-      },
-    )
+      }
+      data.value = _data
+
+      jsonFormatBeforeType = _data.type
+
+      // 同时更新 typeToValueMap 中的值
+      typeToValueMap[_data.type] = _data.raw
+    })
 
     const layout = useLayout()
     const message = useMessage()
@@ -200,6 +208,7 @@ export const Tab2ForEdit = defineComponent({
 
       const omitData = omit(data.value, ['_id', 'id', 'created', 'data'])
       const finalData = { ...omitData, raw: handleRawText() }
+
       if (!finalData.metatype) {
         delete finalData.metatype
       }
@@ -240,6 +249,10 @@ export const Tab2ForEdit = defineComponent({
       }
     })
 
+    const isFunctionType = computed(
+      () => data.value.type === SnippetType.Function,
+    )
+
     return () => (
       <TwoColGridLayout>
         <NGi span={12}>
@@ -259,41 +272,85 @@ export const Tab2ForEdit = defineComponent({
               ></NInput>
             </NFormItem>
 
-            <NFormItem label="元类型">
-              <NInput
-                value={data.value.metatype}
-                onUpdateValue={(e) => void (data.value.metatype = e)}
-              ></NInput>
-            </NFormItem>
+            {!isFunctionType.value && (
+              <NFormItem label="元类型">
+                <NInput
+                  value={data.value.metatype}
+                  onUpdateValue={(e) => void (data.value.metatype = e)}
+                ></NInput>
+              </NFormItem>
+            )}
 
             <NFormItem label="数据类型">
-              <NSelect
-                value={data.value.type}
-                defaultValue={SnippetType.JSON}
-                onUpdateValue={(val) => void (data.value.type = val)}
-                options={Object.entries(SnippetType).map(([k, v]) => {
-                  return {
-                    label: k,
-                    value: v,
-                  }
-                })}
-              ></NSelect>
+              <NPopover>
+                {{
+                  default() {
+                    return '设定为 Function 类型无法再更改其类型'
+                  },
+                  trigger() {
+                    return (
+                      <NSelect
+                        value={data.value.type}
+                        defaultValue={SnippetType.JSON}
+                        onUpdateValue={(val) => void (data.value.type = val)}
+                        options={Object.entries(SnippetType).map(([k, v]) => {
+                          return {
+                            label: k,
+                            value: v,
+                          }
+                        })}
+                        disabled={!!(editId.value && isFunctionType.value)}
+                      ></NSelect>
+                    )
+                  },
+                }}
+              </NPopover>
             </NFormItem>
+            {isFunctionType.value && (
+              <>
+                <NFormItem label="请求方式">
+                  <NSelect
+                    options={['GET', 'POST', 'PUT', 'DELETE', 'PATCH'].map(
+                      (v) => {
+                        return {
+                          label: v,
+                          value: v,
+                        }
+                      },
+                    )}
+                    value={data.value.method}
+                    onUpdateValue={(value) => {
+                      data.value.method = value
+                    }}
+                  ></NSelect>
+                </NFormItem>
 
-            <NFormItem label="Schema">
-              <NInput
-                value={data.value.schema}
-                onUpdateValue={(e) => void (data.value.schema = e)}
-              ></NInput>
-            </NFormItem>
+                <NFormItem label="启用" labelPlacement={'left'}>
+                  <NSwitch
+                    class={'w-full flex justify-end'}
+                    value={data.value.enable}
+                    onUpdateValue={(value) => {
+                      data.value.enable = value
+                    }}
+                  />
+                </NFormItem>
+              </>
+            )}
 
+            {!isFunctionType.value && (
+              <NFormItem label="Schema">
+                <NInput
+                  value={data.value.schema}
+                  onUpdateValue={(e) => void (data.value.schema = e)}
+                ></NInput>
+              </NFormItem>
+            )}
             <NFormItem label="公开" labelPlacement="left">
-              <div class="w-full flex justify-end">
-                <NSwitch
-                  value={!data.value.private}
-                  onUpdateValue={(val) => void (data.value.private = !val)}
-                ></NSwitch>
-              </div>
+              <NSwitch
+                class={'w-full flex justify-end'}
+                value={!data.value.private}
+                onUpdateValue={(val) => void (data.value.private = !val)}
+              ></NSwitch>
             </NFormItem>
             <NFormItem label="备注">
               <NInput

@@ -129,7 +129,7 @@ export default defineComponent({
               title: 'URL',
               render(row) {
                 return (
-                  <NPopover placement="bottom" class={'w-[400px]'}>
+                  <NPopover placement="bottom" class={'max-w-[400px]'}>
                     {{
                       trigger() {
                         return (

@@ -25,7 +25,7 @@ export default defineComponent({
             })
           }}
         >
-          <NTabPane name={'0'} tab={'列表'}>
+          <NTabPane name={'0'} tab={'列表'} displayDirective={'if'}>
             <Tab1ForList />
           </NTabPane>
 

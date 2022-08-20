@@ -33,7 +33,7 @@ export const CodeEditorForSnippet = defineComponent({
           return
         }
         if (editorRef.value.loaded) {
-          props.onChange(value.value)
+          props.onChange?.(value.value)
         }
       },
     )

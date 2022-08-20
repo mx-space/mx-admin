@@ -2,6 +2,7 @@ import { useDefineMyThemes } from 'components/editor/monaco/use-define-theme'
 import { CenterSpin } from 'components/spin'
 import type { IKeyboardEvent, editor } from 'monaco-editor'
 import { AutoTypings, LocalStorageCache } from 'monaco-editor-auto-typings'
+import type { AutoTypingsCore } from 'monaco-editor-auto-typings/lib/AutoTypingsCore'
 import { UIStore } from 'stores/ui'
 import type { Ref } from 'vue'
 
@@ -76,7 +77,9 @@ export const useAsyncLoadMonaco = (
       })
     },
   )
-  let editorModel: editor.ITextModel
+
+  let editorModelMemo: editor.ITextModel | null = null
+  let typingCore: Promise<AutoTypingsCore | null>
 
   onMounted(() => {
     import('monaco-editor').then((module) => {
@@ -92,18 +95,20 @@ export const useAsyncLoadMonaco = (
         fontSize: 14,
       }
       if (options.language === 'typescript') {
-        editorModel?.dispose()
-        editorModel = module.editor.createModel(value.value, 'typescript')
+        const editorModel = module.editor.createModel(value.value, 'typescript')
         Object.assign(options, {
           model: editorModel,
         })
+
+        editorModelMemo = editorModel
       }
 
       monaco.editor = module.editor.create(editorRef.value, options)
-      AutoTypings.create(monaco.editor, {
+      typingCore = AutoTypings.create(monaco.editor, {
         sourceCache: new LocalStorageCache(), // Cache loaded sources in localStorage. May be omitted
         // Other options...
       })
+
       monaco.module = module
       ;['onKeyDown', 'onDidPaste', 'onDidBlurEditorText'].forEach(
         (eventName) => {
@@ -152,14 +157,16 @@ export const useAsyncLoadMonaco = (
     })
   })
 
-  onBeforeUnmount(() => {
-    const editor = monaco.editor
-    if (editor) {
-      if (editorModel) {
-        editorModel.dispose()
-      }
-      editor.dispose()
-    }
+  onUnmounted(() => {
+    monaco.editor?.dispose?.()
+    // @ts-expect-error
+    monaco.editor = null
+    // @ts-expect-error
+    monaco.module = null
+    editorModelMemo?.dispose()
+    typingCore.then((core) => {
+      core?.dispose()
+    })
   })
 
   return monaco
