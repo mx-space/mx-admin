@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update dependency octokit to v2.0.7 (#540)
+- Update dependency event-source-polyfill to v1.0.31 (#543)
+
+### Features
+
+- Function method support
+- Re-design list of snippet
+
+### Miscellaneous Tasks
+
+- Update dependency @vitejs/plugin-vue to v3.0.3 (#546)
+
+## [3.22.6] - 2022-08-13
+
+### Bug Fixes
+
 - Update dependency pinia to v2.0.18 (#542)
 - Update dependency monaco-editor-auto-typings to v0.4.3 (#541)
 
@@ -17,6 +33,10 @@ All notable changes to this project will be documented in this file.
 ### Performance
 
 - Improve editor perfermance
+
+### Release
+
+- V3.22.6
 
 ## [3.22.5] - 2022-08-07
 
