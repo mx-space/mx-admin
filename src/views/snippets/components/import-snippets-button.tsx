@@ -289,7 +289,7 @@ const ProcessView = defineComponent({
       const message$ = message.loading('正在导入...', {
         duration: 10e5,
       })
-      await RESTManager.api.snippets.more.post({
+      await RESTManager.api.snippets.import.post({
         data: payload,
         timeout: 10e5,
       })

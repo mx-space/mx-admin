@@ -10,7 +10,7 @@ export const progress = new QProgress({ colorful: false, color: '#1a9cf3' })
 const title = configs.title
 
 let loginWithTokenOnce = false
-
+let lastCheckedLogAt = 0
 router.beforeEach(async (to) => {
   if (to.path === '/setup-api') {
     return
@@ -40,9 +40,14 @@ router.beforeEach(async (to) => {
   if (to.meta.isPublic || to.fullPath.startsWith('/dev')) {
     return
   } else {
+    const now = +new Date()
+    if (now - lastCheckedLogAt < 1000 * 60 * 5) {
+      return
+    }
     const { ok } = await RESTManager.api('master')('check_logged').get<{
       ok: number
     }>()
+    lastCheckedLogAt = now
     if (!ok) {
       return `/login?from=${encodeURI(to.fullPath)}`
     } else {

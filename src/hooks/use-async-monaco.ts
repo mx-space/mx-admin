@@ -157,16 +157,16 @@ export const useAsyncLoadMonaco = (
     })
   })
 
-  onUnmounted(() => {
+  onUnmounted(async () => {
     monaco.editor?.dispose?.()
     // @ts-expect-error
     monaco.editor = null
     // @ts-expect-error
     monaco.module = null
-    editorModelMemo?.dispose()
-    typingCore.then((core) => {
+    await typingCore.then((core) => {
       core?.dispose()
     })
+    editorModelMemo?.dispose()
   })
 
   return monaco

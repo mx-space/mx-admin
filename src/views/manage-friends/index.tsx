@@ -4,6 +4,7 @@ import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
 import { useDataTableFetch } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
+import omit from 'lodash-es/omit'
 import type { LinkModel, LinkResponse, LinkStateCount } from 'models/link'
 import { LinkState, LinkStateNameMap, LinkType } from 'models/link'
 import {
@@ -24,14 +25,12 @@ import {
   NText,
   useMessage,
 } from 'naive-ui'
-import { omit } from 'naive-ui/lib/_utils'
 import { RouteName } from 'router/name'
 import { RESTManager } from 'utils'
 import { defineComponent, onBeforeMount, ref, toRaw, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+
 import FallbackAvatar from './fallback.jpg'
-
-
 
 export default defineComponent({
   setup() {
@@ -106,7 +105,7 @@ export default defineComponent({
 
       if (id) {
         const newData = await RESTManager.api.links(id).put<LinkModel>({
-          data: omit<any, keyof LinkModel, LinkModel>(editDialogData.value, [
+          data: omit<any, keyof LinkModel>(editDialogData.value, [
             'id',
             'created',
             'hide',
@@ -521,9 +520,8 @@ const Avatar = defineComponent<{ avatar: string; name: string }>((props) => {
             src={props.avatar as string}
             round
             onError={(e) => {
-              console.log(FallbackAvatar);
-              
-               (e.target as HTMLImageElement).src = FallbackAvatar
+              console.log(FallbackAvatar)
+              ;(e.target as HTMLImageElement).src = FallbackAvatar
             }}
           ></NAvatar>
         ) : (
@@ -536,5 +534,3 @@ const Avatar = defineComponent<{ avatar: string; name: string }>((props) => {
   )
 })
 Avatar.props = ['avatar', 'name']
-
-

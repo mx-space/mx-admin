@@ -1,5 +1,4 @@
-import { NButton, NCard, NSpace, NThing } from 'naive-ui'
-import Badge from 'naive-ui/lib/badge/src/Badge'
+import { NBadge, NButton, NCard, NSpace, NThing } from 'naive-ui'
 import type { PropType, VNode } from 'vue'
 
 import { Icon } from '@vicons/utils'
@@ -80,9 +79,9 @@ export const Card = defineComponent({
                       return i.showBadage &&
                         props.value &&
                         props.value !== 'N/A' ? (
-                        <Badge value={props.value} processing>
+                        <NBadge value={props.value} processing>
                           <Inner />
-                        </Badge>
+                        </NBadge>
                       ) : (
                         <Inner />
                       )
