@@ -7,6 +7,7 @@ import Avatar from '../../components/avatar/index.vue'
 import ParallaxButtonVue from '../../components/button/parallax-button.vue'
 import type { UserModel } from '../../models/user'
 import { useUserStore } from '../../stores/user'
+import { checkIsInit } from '../../utils/is-init'
 import { RESTManager } from '../../utils/rest'
 
 export const LoginView = defineComponent({
@@ -22,9 +23,7 @@ export const LoginView = defineComponent({
     const input = ref<HTMLInputElement>(null!)
 
     onBeforeMount(async () => {
-      const isInit =
-        window.injectData.INIT ??
-        (await RESTManager.api.init.get<{ isInit: boolean }>()).isInit
+      const isInit = await checkIsInit()
       if (!isInit) {
         return router.replace('/setup')
       }

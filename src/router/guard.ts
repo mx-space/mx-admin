@@ -1,6 +1,7 @@
 import { API_URL, GATEWAY_URL } from 'constants/env'
 import QProgress from 'qier-progress'
 import { removeToken, setToken } from 'utils/auth'
+import { checkIsInit } from 'utils/is-init'
 
 import { configs } from '../configs'
 import { RESTManager } from '../utils/rest'
@@ -27,10 +28,7 @@ router.beforeEach(async (to) => {
     if (__DEV__) {
       return
     }
-    const isInit =
-      window.injectData.INIT ??
-      (await RESTManager.api.init.get<{ isInit: boolean }>()).isInit
-
+    const isInit = await checkIsInit()
     console.log('[isInit]', isInit)
     if (isInit) {
       return '/'
