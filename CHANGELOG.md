@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Refactor
+
+- Pick out check init
+
+## [3.23.0] - 2022-08-21
+
 ### Bug Fixes
 
 - Update dependency octokit to v2.0.7 (#540)
@@ -16,6 +22,10 @@ All notable changes to this project will be documented in this file.
 ### Miscellaneous Tasks
 
 - Update dependency @vitejs/plugin-vue to v3.0.3 (#546)
+
+### Release
+
+- V3.23.0
 
 ## [3.22.6] - 2022-08-13
 
