@@ -598,6 +598,10 @@ const AppIF = defineComponent({
           ),
           closable: true,
         })
+
+        onBeforeUnmount(() => {
+          $notice.destroy()
+        })
       }
 
       versionMap.value = {
