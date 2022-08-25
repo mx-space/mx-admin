@@ -4,6 +4,7 @@ import {
   NButton,
   NCollapse,
   NCollapseItem,
+  NDatePicker,
   NDivider,
   NDrawer,
   NDrawerContent,
@@ -19,6 +20,7 @@ import type { PropType } from 'vue'
 import { ImageDetailSection } from './components/image-detail-section'
 import { JSONEditor } from './components/json-editor'
 
+type ItemType = 'date-picker'
 export const TextBaseDrawer = defineComponent({
   props: {
     show: {
@@ -38,8 +40,15 @@ export const TextBaseDrawer = defineComponent({
       type: Number,
       required: false,
     },
+
+    disabledItem: {
+      type: Array as PropType<ItemType[]>,
+      required: false,
+    },
   },
   setup(props, { slots }) {
+    const disabledItem = new Set(props.disabledItem || [])
+
     const showJSONEditorModal = ref(false)
     const handleEdit = () => {
       showJSONEditorModal.value = true
@@ -110,6 +119,27 @@ export const TextBaseDrawer = defineComponent({
                 onUpdateValue={(e) => void (props.data.allowComment = e)}
               />
             </NFormItem>
+
+            {!disabledItem.has('date-picker') && (
+              <NFormItem label="自定义创建时间">
+                <NDatePicker
+                  clearable
+                  isDateDisabled={(ts: number) => {
+                    return ts > Date.now()
+                  }}
+                  type="datetime"
+                  value={
+                    props.data.created
+                      ? new Date(props.data.created).getTime()
+                      : undefined
+                  }
+                  onUpdateValue={(e) => {
+                    const value = e ? new Date(e).toISOString() : undefined
+                    props.data.created = value
+                  }}
+                />
+              </NFormItem>
+            )}
 
             <NDivider />
 

@@ -172,6 +172,7 @@ const PageWriteView = defineComponent(() => {
       {/* Drawer  */}
 
       <TextBaseDrawer
+        disabledItem={['date-picker']}
         onUpdateShow={(s) => {
           drawerShow.value = s
         }}

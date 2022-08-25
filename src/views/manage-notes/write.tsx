@@ -63,7 +63,7 @@ const useNoteTopic = () => {
   const topics = ref([] as TopicModel[])
 
   const fetchTopic = async () => {
-    const { data, pagination } = await RESTManager.api.topics.get<
+    const { data } = await RESTManager.api.topics.get<
       PaginateResult<TopicModel>
     >({
       params: {
@@ -115,6 +115,7 @@ const NoteWriteView = defineComponent(() => {
     topicId: undefined,
     images: [],
     meta: undefined,
+    created: undefined,
   })
 
   const parsePayloadIntoReactiveData = (payload: NoteModel) =>

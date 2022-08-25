@@ -68,6 +68,7 @@ const PostWriteView = defineComponent(() => {
     pin: false,
     pinOrder: 1,
     relatedId: [],
+    created: undefined,
   })
 
   const parsePayloadIntoReactiveData = (payload: PostModel) => {
