@@ -29,15 +29,15 @@
 .toggle-color-btn {
   @apply absolute left-8 top-0 bottom-0 flex items-center text-base;
 
-  transition: left 0.5s;
+  transition: left 0.5s, opacity 0.5s;
 }
 
 .root.collapse .collapse-button {
-  @apply right-4;
+  @apply absolute left-0 right-0 m-auto;
 }
 
 .root.collapse .toggle-color-btn {
-  @apply -left-10;
+  @apply -left-10 opacity-0;
 }
 
 .root.collapse .collapse-button {

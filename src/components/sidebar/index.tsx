@@ -1,4 +1,9 @@
-import { HamburgerIcon, LogoutIcon, MoonIcon, SunIcon } from 'components/icons'
+import {
+  LogoutIcon,
+  MoonIcon,
+  SidebarCloseIcon,
+  SunIcon,
+} from 'components/icons'
 import { WEB_URL } from 'constants/env'
 import { NIcon, NLayoutContent } from 'naive-ui'
 import { RouteName } from 'router/name'
@@ -114,16 +119,14 @@ export const Sidebar = defineComponent({
             >
               {!isDark.value ? <SunIcon /> : <MoonIcon />}
             </button>
-            <h1 class="py-6" style={{ display: props.collapse ? 'none' : '' }}>
-              {title}
-            </h1>
+            <h1 class={['py-6', props.collapse ? 'hidden' : '']}>{title}</h1>
             <button
               class={styles['collapse-button']}
               onClick={() => {
                 props.onCollapseChange(!props.collapse)
               }}
             >
-              <HamburgerIcon />
+              <SidebarCloseIcon />
             </button>
           </div>
 

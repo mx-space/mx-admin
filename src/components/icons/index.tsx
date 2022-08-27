@@ -119,7 +119,7 @@ export { EyeHide20Filled as EyeHideIcon }
 export { RefreshCircle }
 export { AddIcon as PlusIcon }
 
-export const HamburgerIcon = () => (
+export const SidebarCloseIcon = () => (
   <svg width="1em" height="1em" viewBox="0 0 24 24">
     <path
       d="M18.41 16.59L13.82 12l4.59-4.59L17 6l-6 6l6 6l1.41-1.41M6 6h2v12H6V6z"
