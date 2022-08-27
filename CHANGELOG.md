@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Sidebar navigation
+
+## [3.23.2] - 2022-08-27
+
+### Bug Fixes
+
 - Check init error
 - Sidebar layout
 - Collapse button style
@@ -12,6 +18,10 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - Custom created time
+
+### Release
+
+- V3.23.2
 
 ## [3.23.1] - 2022-08-23
 
