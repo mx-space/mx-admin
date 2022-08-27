@@ -74,7 +74,7 @@ export const Sidebar = defineComponent({
     }
 
     function handleRoute(item: MenuModel, index?: number) {
-      if (!item.subItems?.length) {
+      if (item.subItems?.length) {
         return
       }
 
