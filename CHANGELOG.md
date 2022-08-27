@@ -3,9 +3,25 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Bug Fixes
+
+- Check init error
+- Sidebar layout
+- Collapse button style
+
+### Features
+
+- Custom created time
+
+## [3.23.1] - 2022-08-23
+
 ### Refactor
 
 - Pick out check init
+
+### Release
+
+- V3.23.1
 
 ## [3.23.0] - 2022-08-21
 
