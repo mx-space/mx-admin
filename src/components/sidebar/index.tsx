@@ -69,17 +69,16 @@ export const Sidebar = defineComponent({
     }
 
     function handleRoute(item: MenuModel, index?: number) {
-      if (item.subItems?.length) {
-      } else {
-        // console.log(item.fullPath)
+      if (!item.subItems?.length) {
+        return
+      }
 
-        router.push({
-          path: item.fullPath,
-          query: item.query,
-        })
-        if (index) {
-          updateIndex(index)
-        }
+      router.push({
+        path: item.fullPath,
+        query: item.query,
+      })
+      if (index) {
+        updateIndex(index)
       }
     }
 
@@ -106,7 +105,9 @@ export const Sidebar = defineComponent({
         <div
           class={`fixed left-0 top-0 h-screen overflow-hidden z-10 text-white ${styles['sidebar']}`}
         >
-          <div class={'title relative font-medium text-center text-2xl'}>
+          <div
+            class={'flex-shrink-0 relative font-medium text-center text-2xl'}
+          >
             <button
               class={styles['toggle-color-btn']}
               onClick={() => void toggleDark()}
@@ -214,7 +215,7 @@ export const Sidebar = defineComponent({
 
           <button
             class={[
-              'bottom-bar flex space-x-2 items-center  transform translate-y-1/3 phone:hidden',
+              'bottom-bar flex space-x-2 items-center phone:hidden flex-shrink-0 py-8',
               props.collapse ? 'px-8' : 'px-12',
             ]}
             onClick={() => {
