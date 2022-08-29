@@ -55,7 +55,7 @@ specifiers:
   marked: 4.0.18
   monaco-editor: 0.34.0
   monaco-editor-auto-typings: 0.4.3
-  naive-ui: 2.32.2
+  naive-ui: 2.33.0
   octokit: 2.0.7
   os-browserify: 0.3.0
   path-browserify: 1.0.1
@@ -124,7 +124,7 @@ dependencies:
   marked: 4.0.18
   monaco-editor: 0.34.0
   monaco-editor-auto-typings: 0.4.3_monaco-editor@0.34.0
-  naive-ui: 2.32.2_vue@3.2.37
+  naive-ui: 2.33.0_vue@3.2.37
   octokit: 2.0.7
   os-browserify: 0.3.0
   path-browserify: 1.0.1
@@ -4145,8 +4145,8 @@ packages:
   /ms/2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
 
-  /naive-ui/2.32.2_vue@3.2.37:
-    resolution: {integrity: sha512-vTNuZ8LBlfo/cdiv4S8o6Cg5g7p9V9cR5rK+Fag2cplOnng5twTILD3sBaCqw3k/BV1331Xdk26ml8Me8QJ7iA==}
+  /naive-ui/2.33.0_vue@3.2.37:
+    resolution: {integrity: sha512-pYfjXXxGa1hPRRsL+PNf39vp/+je4+q37Pqh9Pd/x1CI3guwbjs2oWabbsiKBhQaYDP0gWnptS8RrjQALHyoCQ==}
     peerDependencies:
       vue: ^3.0.0
     dependencies:
