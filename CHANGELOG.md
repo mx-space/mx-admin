@@ -5,7 +5,24 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update dependency camelcase-keys to v8.0.2 (#559)
+- Update dependency naive-ui to v2.33.0 (#558)
+- Update dependency pinia to v2.0.21 (#551)
+- Update dependency vue-router to v4.1.5 (#553)
+
+### Miscellaneous Tasks
+
+- Update dependency @vueuse/core to v9.1.1 (#554)
+
+## [3.23.3] - 2022-08-27
+
+### Bug Fixes
+
 - Sidebar navigation
+
+### Release
+
+- V3.23.3
 
 ## [3.23.2] - 2022-08-27
 
