@@ -60,7 +60,7 @@
     "qier-progress": "1.0.4",
     "qs": "6.11.0",
     "reflect-metadata": "0.1.13",
-    "socket.io-client": "4.5.1",
+    "socket.io-client": "4.5.2",
     "umi-request": "1.4.0",
     "validator": "13.7.0",
     "vite-plugin-windicss": "1.8.7",
