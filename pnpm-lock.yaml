@@ -23,7 +23,7 @@ specifiers:
   '@types/js-yaml': 4.0.5
   '@types/lodash-es': 4.17.6
   '@types/markdown-escape': 1.1.0
-  '@types/marked': 4.0.5
+  '@types/marked': 4.0.6
   '@types/qs': 6.9.7
   '@types/validator': 13.7.5
   '@vicons/antd': 0.12.0
@@ -52,7 +52,7 @@ specifiers:
   json5: 2.2.1
   lodash-es: 4.17.21
   markdown-escape: 1.1.0
-  marked: 4.0.18
+  marked: 4.1.0
   monaco-editor: 0.34.0
   monaco-editor-auto-typings: 0.4.3
   naive-ui: 2.33.2
@@ -121,7 +121,7 @@ dependencies:
   json5: 2.2.1
   lodash-es: 4.17.21
   markdown-escape: 1.1.0
-  marked: 4.0.18
+  marked: 4.1.0
   monaco-editor: 0.34.0
   monaco-editor-auto-typings: 0.4.3_monaco-editor@0.34.0
   naive-ui: 2.33.2_vue@3.2.38
@@ -151,7 +151,7 @@ devDependencies:
   '@types/js-yaml': 4.0.5
   '@types/lodash-es': 4.17.6
   '@types/markdown-escape': 1.1.0
-  '@types/marked': 4.0.5
+  '@types/marked': 4.0.6
   '@types/qs': 6.9.7
   '@types/validator': 13.7.5
   '@vitejs/plugin-vue': 3.0.3_vite@3.0.9+vue@3.2.38
@@ -1717,8 +1717,8 @@ packages:
     resolution: {integrity: sha512-bJZh73L6fSt8MmTON/btR8hiKRipoIoPfLO41lxr6l65QXdG1rwUjR8Hu5xU7XYHBwKHiJZ+sTQ8L2TKkQrBpw==}
     dev: true
 
-  /@types/marked/4.0.5:
-    resolution: {integrity: sha512-jMN2moJ+lSf1VZXQo3VXeMCjoXuciVONig8+U0YNBop5aBvQw4qkolx1Nzn1i0T8L2l9IZ3jju6bS1pPwlaY1w==}
+  /@types/marked/4.0.6:
+    resolution: {integrity: sha512-ITAVUzsnVbhy5afxhs4PPPbrv2hKVEDH5BhhaQNQlVG0UNu+9A18XSdYr53nBdHZ0ADEQLl+ciOjXbs7eHdiQQ==}
     dev: true
 
   /@types/node/14.14.45:
@@ -4072,8 +4072,8 @@ packages:
     resolution: {integrity: sha512-f1+ARFbzLrBdC0Lj30uREn+zthrK/h1PO5UhN5IMDQvI2lSFn+8U06a5LHaxxYMhHD0mJoJ2BROJ/Sju5aw6+g==}
     dev: false
 
-  /marked/4.0.18:
-    resolution: {integrity: sha512-wbLDJ7Zh0sqA0Vdg6aqlbT+yPxqLblpAZh1mK2+AO2twQkPywvvqQNfEPVwSSRjZ7dZcdeVBIAgiO7MMp3Dszw==}
+  /marked/4.1.0:
+    resolution: {integrity: sha512-+Z6KDjSPa6/723PQYyc1axYZpYYpDnECDaU6hkaf5gqBieBkMKYReL5hteF2QizhlMbgbo8umXl/clZ67+GlsA==}
     engines: {node: '>= 12'}
     hasBin: true
     dev: false
