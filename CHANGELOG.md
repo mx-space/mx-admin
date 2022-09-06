@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update dependency naive-ui to v2.33.2 (#560)
+- Update dependency socket.io-client to v4.5.2 (#563)
+- Kv-editor may disappear (#567)
+- Update dependency marked to v4.1.0 (#549)
+
+### Miscellaneous Tasks
+
+- Update vue monorepo to v3.2.38 (#561)
+- Update dependency @vitejs/plugin-vue-jsx to v2.0.1 (#562)
+- Update dependency @vueuse/core to v9.2.0 (#568)
+- Update dependency @vitejs/plugin-vue to v3.1.0 (#565)
+- Update dependency vite-plugin-checker to v0.5.1 (#556)
+- Update dependency rollup-plugin-visualizer to v5.8.1 (#564)
+
+## [3.23.4] - 2022-08-29
+
+### Bug Fixes
+
 - Update dependency camelcase-keys to v8.0.2 (#559)
 - Update dependency naive-ui to v2.33.0 (#558)
 - Update dependency pinia to v2.0.21 (#551)
@@ -13,6 +31,10 @@ All notable changes to this project will be documented in this file.
 ### Miscellaneous Tasks
 
 - Update dependency @vueuse/core to v9.1.1 (#554)
+
+### Release
+
+- V3.23.4
 
 ## [3.23.3] - 2022-08-27
 
