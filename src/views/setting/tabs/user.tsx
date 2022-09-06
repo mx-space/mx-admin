@@ -195,7 +195,6 @@ export const TabUser = defineComponent(() => {
             </NFormItem>
 
             <NFormItem label="社交平台 ID 录入">
-              {data.value.socialIds ? (
                 <KVEditor
                   options={Object.keys(socialKeyMap).map((key) => {
                     return { label: key, value: socialKeyMap[key] }
@@ -205,7 +204,6 @@ export const TabUser = defineComponent(() => {
                   }}
                   value={data.value.socialIds || {}}
                 ></KVEditor>
-              ) : null}
             </NFormItem>
           </NForm>
         </NGi>
