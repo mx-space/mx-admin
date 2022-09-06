@@ -75,7 +75,7 @@ specifiers:
   unplugin-auto-import: 0.11.2
   validator: 13.7.0
   vite: 3.0.9
-  vite-plugin-checker: 0.4.9
+  vite-plugin-checker: 0.5.1
   vite-plugin-windicss: 1.8.7
   vite-tsconfig-paths: 3.5.0
   vue: 3.2.38
@@ -168,7 +168,7 @@ devDependencies:
   typescript: 4.6.4
   unplugin-auto-import: 0.11.2_goxw7lwndk5w36pgb3ylk5sc5q
   vite: 3.0.9
-  vite-plugin-checker: 0.4.9_vite@3.0.9
+  vite-plugin-checker: 0.5.1_chmclj5bm43ejt4qgmtbufyaga
   vite-tsconfig-paths: 3.5.0_vite@3.0.9
   vue-eslint-parser: 9.0.3_eslint@8.22.0
   windicss: 3.5.6
@@ -5435,23 +5435,38 @@ packages:
       vue: 3.2.38
     dev: false
 
-  /vite-plugin-checker/0.4.9_vite@3.0.9:
-    resolution: {integrity: sha512-Oii9mTum8bqZovWejcR739kCqST32oG6LdB/XMdwcLVzmcjq0gf1iVDIedVzJJ7t6GLQAYgjNwvB0fuMiT3tlg==}
-    hasBin: true
+  /vite-plugin-checker/0.5.1_chmclj5bm43ejt4qgmtbufyaga:
+    resolution: {integrity: sha512-NFiO1PyK9yGuaeSnJ7Whw9fnxLc1AlELnZoyFURnauBYhbIkx9n+PmIXxSFUuC9iFyACtbJQUAEuQi6yHs2Adg==}
+    engines: {node: '>=14.16'}
     peerDependencies:
+      eslint: '>=7'
+      typescript: '*'
       vite: ^2.0.0 || ^3.0.0-0
+      vls: '*'
+      vti: '*'
+    peerDependenciesMeta:
+      eslint:
+        optional: true
+      typescript:
+        optional: true
+      vls:
+        optional: true
+      vti:
+        optional: true
     dependencies:
       '@babel/code-frame': 7.18.6
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       chokidar: 3.5.3
       commander: 8.3.0
+      eslint: 8.22.0
       fast-glob: 3.2.11
       lodash.debounce: 4.0.8
       lodash.pick: 4.4.0
       npm-run-path: 4.0.1
       strip-ansi: 6.0.1
       tiny-invariant: 1.2.0
+      typescript: 4.6.4
       vite: 3.0.9
       vscode-languageclient: 7.0.0
       vscode-languageserver: 7.0.0
