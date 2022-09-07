@@ -25,7 +25,7 @@ specifiers:
   '@types/markdown-escape': 1.1.0
   '@types/marked': 4.0.6
   '@types/qs': 6.9.7
-  '@types/validator': 13.7.5
+  '@types/validator': 13.7.6
   '@vicons/antd': 0.12.0
   '@vicons/fa': 0.12.0
   '@vicons/fluent': 0.12.0
@@ -153,7 +153,7 @@ devDependencies:
   '@types/markdown-escape': 1.1.0
   '@types/marked': 4.0.6
   '@types/qs': 6.9.7
-  '@types/validator': 13.7.5
+  '@types/validator': 13.7.6
   '@vitejs/plugin-vue': 3.1.0_vite@3.1.0+vue@3.2.38
   '@vitejs/plugin-vue-jsx': 2.0.1_vite@3.1.0+vue@3.2.38
   '@vue/compiler-sfc': 3.2.38
@@ -1745,8 +1745,8 @@ packages:
     resolution: {integrity: sha512-FGa1F62FT09qcrueBA6qYTrJPVDzah9a+493+o2PCXsesWHIn27G98TsSMs3WPNbZIEj4+VJf6saSFpvD+3Zsw==}
     dev: true
 
-  /@types/validator/13.7.5:
-    resolution: {integrity: sha512-9rQHeAqz6Jw3gDhttkmWetoriW5FPbxylv/6h6mXtaj2NKRcOvOmvfcswVdLVpbuy10NrO486K3lCoLgoIhiIA==}
+  /@types/validator/13.7.6:
+    resolution: {integrity: sha512-uBsnWETsUagQ0n6G2wcXNIufpTNJir0zqzG4p62fhnwzs48d/iuOWEEo0d3iUxN7D+9R/8CSvWGKS+KmaD0mWA==}
     dev: true
 
   /@types/web-bluetooth/0.0.15:
