@@ -41,7 +41,7 @@
     "camelcase-keys": "8.0.2",
     "class-transformer": "0.5.1",
     "class-validator": "0.13.2",
-    "date-fns": "2.29.2",
+    "date-fns": "2.29.3",
     "ejs": "3.1.8",
     "event-source-polyfill": "1.0.31",
     "js-cookie": "3.0.1",
