@@ -23,7 +23,7 @@ specifiers:
   '@types/js-yaml': 4.0.5
   '@types/lodash-es': 4.17.6
   '@types/markdown-escape': 1.1.0
-  '@types/marked': 4.0.6
+  '@types/marked': 4.0.7
   '@types/qs': 6.9.7
   '@types/validator': 13.7.5
   '@vicons/antd': 0.12.0
@@ -151,7 +151,7 @@ devDependencies:
   '@types/js-yaml': 4.0.5
   '@types/lodash-es': 4.17.6
   '@types/markdown-escape': 1.1.0
-  '@types/marked': 4.0.6
+  '@types/marked': 4.0.7
   '@types/qs': 6.9.7
   '@types/validator': 13.7.5
   '@vitejs/plugin-vue': 3.1.0_vite@3.1.0+vue@3.2.38
@@ -1687,8 +1687,8 @@ packages:
     resolution: {integrity: sha512-bJZh73L6fSt8MmTON/btR8hiKRipoIoPfLO41lxr6l65QXdG1rwUjR8Hu5xU7XYHBwKHiJZ+sTQ8L2TKkQrBpw==}
     dev: true
 
-  /@types/marked/4.0.6:
-    resolution: {integrity: sha512-ITAVUzsnVbhy5afxhs4PPPbrv2hKVEDH5BhhaQNQlVG0UNu+9A18XSdYr53nBdHZ0ADEQLl+ciOjXbs7eHdiQQ==}
+  /@types/marked/4.0.7:
+    resolution: {integrity: sha512-eEAhnz21CwvKVW+YvRvcTuFKNU9CV1qH+opcgVK3pIMI6YZzDm6gc8o2vHjldFk6MGKt5pueSB7IOpvpx5Qekw==}
     dev: true
 
   /@types/node/14.14.45:
