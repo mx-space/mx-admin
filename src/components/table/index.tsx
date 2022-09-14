@@ -1,7 +1,7 @@
 import { useStoreRef } from 'hooks/use-store-ref'
 import type { Pager } from 'models/base'
 import { NDataTable } from 'naive-ui'
-import type { dataTableProps } from 'naive-ui/lib/data-table/src/DataTable'
+import type dataTableProps from 'naive-ui/lib/data-table/src/DataTable'
 import type {
   RowKey,
   SortState,
