@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update dependency vite-plugin-windicss to v1.8.8 (#574)
+- Update dependency @bytebase/vue-kbar to v0.1.8 (#573)
+
+### Miscellaneous Tasks
+
+- Update dependency vite to v3.1.0 (#566)
+- Update dependency typescript to v4.8.3 (#434)
+- Update dependency @types/marked to v4.0.7 (#571)
+- Update dependency postcss-preset-env to v7.8.1 (#570)
+- Update vue & naive-ui
+
+## [3.23.5] - 2022-09-06
+
+### Bug Fixes
+
 - Update dependency naive-ui to v2.33.2 (#560)
 - Update dependency socket.io-client to v4.5.2 (#563)
 - Kv-editor may disappear (#567)
@@ -18,6 +33,10 @@ All notable changes to this project will be documented in this file.
 - Update dependency @vitejs/plugin-vue to v3.1.0 (#565)
 - Update dependency vite-plugin-checker to v0.5.1 (#556)
 - Update dependency rollup-plugin-visualizer to v5.8.1 (#564)
+
+### Release
+
+- V3.23.5
 
 ## [3.23.4] - 2022-08-29
 
