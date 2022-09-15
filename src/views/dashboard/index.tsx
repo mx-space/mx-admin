@@ -19,12 +19,12 @@ import {
   RefreshIcon,
 } from 'components/icons'
 import { IpInfoPopover } from 'components/ip-info'
-import { ShellOutputNormal } from 'components/output-modal/normal'
 import { useShorthand } from 'components/shorthand'
 import { checkUpdateFromGitHub } from 'external/api/github-check-update'
 import { SentenceType, fetchHitokoto } from 'external/api/hitokoto'
 import type { ShiJuData } from 'external/api/jinrishici'
 import { getJinRiShiCiOne } from 'external/api/jinrishici'
+import { usePortalElement } from 'hooks/use-portal-element'
 import { useStoreRef } from 'hooks/use-store-ref'
 import { ContentLayout } from 'layouts/content'
 import { pick } from 'lodash-es'
@@ -64,6 +64,7 @@ import { Icon } from '@vicons/utils'
 import PKG from '../../../package.json'
 import type { CardProps } from './card'
 import { Card } from './card'
+import { UpdatePanel } from './update-panel'
 
 export const DashBoardView = defineComponent({
   name: 'DashboardView',
@@ -564,10 +565,11 @@ const AppIF = defineComponent({
     const { app } = useStoreRef(AppStore)
     const notice = useNotification()
     const versionMap = ref({} as { admin: string; system: string })
-    const handleUpdate = () => {
-      $shellRef.value.run(`${RESTManager.endpoint}/update/upgrade/dashboard`)
-    }
 
+    const portal = usePortalElement()
+    const handleUpdate = () => {
+      portal(<UpdatePanel />)
+    }
     onMounted(async () => {
       if (__DEV__) {
         return
@@ -577,6 +579,7 @@ const AppIF = defineComponent({
       }
 
       const { dashboard, system } = await checkUpdateFromGitHub()
+
       if (dashboard !== PKG.version) {
         const $notice = notice.info({
           title: '[管理中台] 有新版本啦！',
@@ -597,10 +600,6 @@ const AppIF = defineComponent({
             </div>
           ),
           closable: true,
-        })
-
-        onBeforeUnmount(() => {
-          $notice.destroy()
         })
       }
 
@@ -637,7 +636,6 @@ const AppIF = defineComponent({
         }
       }
     })
-    const $shellRef = ref<any>()
 
     return () => (
       <NElement tag="footer" class="mt-12">
@@ -659,8 +657,6 @@ const AppIF = defineComponent({
           <br />
           页面来源: {window.pageSource || ''}
         </NP>
-
-        <ShellOutputNormal ref={$shellRef} />
       </NElement>
     )
   },

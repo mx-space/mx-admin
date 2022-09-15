@@ -6,7 +6,12 @@ import { getToken } from 'utils'
 
 const ansi_up = new AnsiUp()
 export const ShellOutputNormal = defineComponent({
-  setup(_, { expose }) {
+  props: {
+    onClose: {
+      type: Function,
+    },
+  },
+  setup(props, { expose }) {
     const logViewOpen = ref(false)
 
     const shellOutput = ref('')
@@ -64,6 +69,10 @@ export const ShellOutputNormal = defineComponent({
         show={logViewOpen.value}
         onUpdateShow={(s) => {
           logViewOpen.value = s
+
+          if (!s) {
+            props.onClose?.()
+          }
         }}
         transformOrigin="center"
       >

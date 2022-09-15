@@ -1,3 +1,4 @@
+import { PortalInjectKey } from 'hooks/use-portal-element'
 import {
   NConfigProvider,
   NDialogProvider,
@@ -51,9 +52,24 @@ const Root = defineComponent({
         }
       })
     })
+    const $portalElement = ref<JSX.Element | null>(null)
+
+    provide(PortalInjectKey, {
+      setElement(el) {
+        $portalElement.value = el
+        return () => {
+          $portalElement.value = null
+        }
+      },
+    })
 
     return () => {
-      return <RouterView />
+      return (
+        <>
+          <RouterView />
+          {$portalElement.value}
+        </>
+      )
     }
   },
 })
