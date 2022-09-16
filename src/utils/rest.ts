@@ -132,7 +132,7 @@ function buildRoute(manager: RESTManagerStatic): IRequestHandler {
 export const RESTManager = new RESTManagerStatic()
 
 // @ts-ignore
-if (__DEV__ && !window.api) {
+if (!window.api) {
   Object.defineProperty(window, 'api', {
     get() {
       return RESTManager.api

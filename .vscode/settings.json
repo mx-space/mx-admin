@@ -3,5 +3,10 @@
     "hitokoto",
     "vditor"
   ],
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  // Note that `javascript.preferences.autoImportFileExcludePatterns` can be specified for JavaScript too.
+  "typescript.preferences.autoImportFileExcludePatterns": [
+    "**/node_modules/@types/node",
+    "**/node_modules/@vicons/**"
+  ]
 }
