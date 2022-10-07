@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update panel
+- Update dependency @antv/g2 to v4.2.8 (#581)
+- Update dependency marked to v4.1.1 (#593)
+- Add clearable on some field in drawer
+
+### Miscellaneous Tasks
+
+- Update dependency postcss-preset-env to v7.8.2 (#577)
+- Setting
+- Update dependency vite to v3.1.3 (#578)
+- Update dependency @vueuse/core to v9.3.0 (#586)
+- Update dependency vite-tsconfig-paths to v3.5.1 (#583)
+- Update dependency rollup-plugin-visualizer to v5.8.2 (#585)
+- Update dependency @types/validator to v13.7.7 (#584)
+- Update vue monorepo to v3.2.40 (#588)
+- Update dependency postcss to v8.4.17 (#592)
+- Update dependency @innei/eslint-config-vue-ts to v0.9.5 (#590)
+
+## [3.23.6] - 2022-09-14
+
+### Bug Fixes
+
 - Update dependency vite-plugin-windicss to v1.8.8 (#574)
 - Update dependency @bytebase/vue-kbar to v0.1.8 (#573)
 
@@ -15,6 +37,10 @@ All notable changes to this project will be documented in this file.
 - Update dependency @types/marked to v4.0.7 (#571)
 - Update dependency postcss-preset-env to v7.8.1 (#570)
 - Update vue & naive-ui
+
+### Release
+
+- V3.23.6
 
 ## [3.23.5] - 2022-09-06
 
