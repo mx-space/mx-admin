@@ -295,6 +295,7 @@ const NoteWriteView = defineComponent(() => {
       >
         <NFormItem label="心情" required>
           <NSelect
+            clearable
             value={data.mood}
             filterable
             tag
@@ -304,6 +305,7 @@ const NoteWriteView = defineComponent(() => {
         </NFormItem>
         <NFormItem label="天气" required>
           <NSelect
+            clearable
             value={data.weather}
             filterable
             tag
@@ -400,17 +402,13 @@ const NoteWriteView = defineComponent(() => {
             ></NInput>
           </NFormItem>
         )}
-        <NFormItem
-          label="多久之后公开"
-          labelAlign="right"
-          labelPlacement="left"
-        >
+        <NFormItem label="公开时间" labelAlign="right" labelPlacement="left">
           <NDatePicker
             type="datetime"
             isDateDisabled={(ts: number) => +new Date(ts) - +new Date() < 0}
             placeholder="选择时间"
-            // @ts-expect-error
-            value={data.secret}
+            clearable
+            value={data.secret ? +new Date(data.secret) : undefined}
             onUpdateValue={(e) => {
               data.secret = e ? new Date(e) : null
             }}
@@ -475,7 +473,7 @@ const NoteWriteView = defineComponent(() => {
         </NFormItem>
 
         <NFormItem
-          label="标记为存在回忆项"
+          label="标记为回忆项"
           labelAlign="right"
           labelPlacement="left"
         >
