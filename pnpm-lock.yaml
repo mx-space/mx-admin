@@ -15,7 +15,7 @@ specifiers:
   '@codemirror/view': 6.2.0
   '@ddietr/codemirror-themes': https://github.com/Innei/codemirror-themes.git
   '@innei/eslint-config-vue-ts': 0.9.5
-  '@innei/prettier': 0.9.4
+  '@innei/prettier': 0.9.5
   '@lezer/highlight': '*'
   '@mx-space/api-client': 0.10.14
   '@types/ejs': 3.1.1
@@ -145,7 +145,7 @@ dependencies:
 
 devDependencies:
   '@innei/eslint-config-vue-ts': 0.9.5_typescript@4.8.3
-  '@innei/prettier': 0.9.4
+  '@innei/prettier': 0.9.5
   '@types/ejs': 3.1.1
   '@types/event-source-polyfill': 1.0.0
   '@types/js-yaml': 4.0.5
@@ -763,21 +763,6 @@ packages:
       '@codemirror/language': ^6.0.0
       '@codemirror/state': ^6.0.0
       '@codemirror/view': ^6.0.0
-      '@lezer/common': ^1.0.0
-    dependencies:
-      '@codemirror/language': 6.2.1
-      '@codemirror/state': 6.1.1
-      '@codemirror/view': 6.2.0
-      '@lezer/common': 1.0.0
-    dev: false
-
-  /@codemirror/autocomplete/6.0.3_nq4pwfkqi5icglf26kczcr4s2i:
-    resolution: {integrity: sha512-JTSBDC4tUyR8iRmCwQJaYpTXtOZmRn4gKjw1Fu4xIatFPqTJ7m0QRCdkdbzlvMovzjTiuHp4a8WUEB1c/LtiHg==}
-    peerDependencies:
-      '@codemirror/language': ^6.0.0
-      '@codemirror/state': ^6.0.0
-      '@codemirror/view': ^6.0.0
-      '@lezer/common': ^1.0.0
     dependencies:
       '@codemirror/language': 6.2.1
       '@codemirror/state': 6.1.1
@@ -810,26 +795,13 @@ packages:
       '@lezer/css': 1.0.0
     transitivePeerDependencies:
       - '@codemirror/view'
-      - '@lezer/common'
-    dev: false
-
-  /@codemirror/lang-css/6.0.0_bmjizg7gr5ieupmvn5u62mbipm:
-    resolution: {integrity: sha512-jBqc+BTuwhNOTlrimFghLlSrN6iFuE44HULKWoR4qKYObhOIl9Lci1iYj6zMIte1XTQmZguNvjXMyr43LUKwSw==}
-    dependencies:
-      '@codemirror/autocomplete': 6.0.3_nq4pwfkqi5icglf26kczcr4s2i
-      '@codemirror/language': 6.2.1
-      '@codemirror/state': 6.1.1
-      '@lezer/css': 1.0.0
-    transitivePeerDependencies:
-      - '@codemirror/view'
-      - '@lezer/common'
     dev: false
 
   /@codemirror/lang-html/6.1.0_@codemirror+view@6.2.0:
     resolution: {integrity: sha512-gA7NmJxqvnhwza05CvR7W/39Ap9r/4Vs9uiC0IeFYo1hSlJzc/8N6Evviz6vTW1x8SpHcRYyqKOf6rpl6LfWtg==}
     dependencies:
-      '@codemirror/autocomplete': 6.0.3_nq4pwfkqi5icglf26kczcr4s2i
-      '@codemirror/lang-css': 6.0.0_bmjizg7gr5ieupmvn5u62mbipm
+      '@codemirror/autocomplete': 6.0.3_d7mo6becmtqongve6btgjyline
+      '@codemirror/lang-css': 6.0.0_@codemirror+view@6.2.0
       '@codemirror/lang-javascript': 6.0.1
       '@codemirror/language': 6.2.1
       '@codemirror/state': 6.1.1
@@ -849,7 +821,7 @@ packages:
   /@codemirror/lang-javascript/6.0.1:
     resolution: {integrity: sha512-kjGbBEosl+ozDU5ruDV48w4v3H6KECTFiDjqMLT0KhVwESPfv3wOvnDrTT0uaMOg3YRGnBWsyiIoKHl/tNWWDg==}
     dependencies:
-      '@codemirror/autocomplete': 6.0.3_nq4pwfkqi5icglf26kczcr4s2i
+      '@codemirror/autocomplete': 6.0.3_d7mo6becmtqongve6btgjyline
       '@codemirror/language': 6.2.1
       '@codemirror/lint': 6.0.0
       '@codemirror/state': 6.1.1
@@ -912,7 +884,6 @@ packages:
       '@lezer/lr': 1.2.3
     transitivePeerDependencies:
       - '@codemirror/view'
-      - '@lezer/common'
     dev: false
 
   /@codemirror/lang-wast/6.0.0:
@@ -926,7 +897,7 @@ packages:
   /@codemirror/lang-xml/6.0.0_@codemirror+view@6.2.0:
     resolution: {integrity: sha512-M/HLWxIiP956xGjtrxkeHkCmDGVQGKu782x8pOH5CLJIMkWtiB1DWfDoDHqpFjdEE9dkfcqPWvYfVi6GbhuXEg==}
     dependencies:
-      '@codemirror/autocomplete': 6.0.3_nq4pwfkqi5icglf26kczcr4s2i
+      '@codemirror/autocomplete': 6.0.3_d7mo6becmtqongve6btgjyline
       '@codemirror/language': 6.2.1
       '@codemirror/state': 6.1.1
       '@lezer/common': 1.0.0
@@ -955,7 +926,6 @@ packages:
       '@codemirror/legacy-modes': 6.1.0
     transitivePeerDependencies:
       - '@codemirror/view'
-      - '@lezer/common'
     dev: false
 
   /@codemirror/language/6.2.1:
@@ -1283,8 +1253,8 @@ packages:
       - supports-color
     dev: true
 
-  /@innei/prettier/0.9.4:
-    resolution: {integrity: sha512-Rf5X/EqVw0iz0L4DN5MHTNiAQOq9ez/N/8sLdS9q+uCQ/vsYI64I52QNvXXM3ljSMEwSmijViF6oAbrDCHRsuA==}
+  /@innei/prettier/0.9.5:
+    resolution: {integrity: sha512-BsVsCo9ygB0DOefqwIl7okmTvN8kSiYXHANiEWcnia3z8AD+wZ69Ruv6s8JLa7Fhds0kXGnlnFaVF/1xjgCJDA==}
     dependencies:
       '@trivago/prettier-plugin-sort-imports': /@ianvs/prettier-plugin-sort-imports/3.4.2_prettier@2.7.1
       prettier: 2.7.1
