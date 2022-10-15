@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
+- Update dependency naive-ui to v2.33.5 (#595)
+- Update dependency pinia to v2.0.23 (#597)
+
+### Features
+
+- Support audit result form
+
+### Miscellaneous Tasks
+
+- Update dependency @vitejs/plugin-vue to v3.1.2 (#594)
+- Update dependency @innei/prettier to v0.9.5 (#591)
+- Update vue monorepo to v3.2.41 (#601)
+- Update pnpm/action-setup action to v2.2.3 (#598)
+
+## [3.23.7] - 2022-10-07
+
+### Bug Fixes
+
 - Update panel
 - Update dependency @antv/g2 to v4.2.8 (#581)
 - Update dependency marked to v4.1.1 (#593)
@@ -22,6 +40,10 @@ All notable changes to this project will be documented in this file.
 - Update vue monorepo to v3.2.40 (#588)
 - Update dependency postcss to v8.4.17 (#592)
 - Update dependency @innei/eslint-config-vue-ts to v0.9.5 (#590)
+
+### Release
+
+- V3.23.7
 
 ## [3.23.6] - 2022-09-14
 
