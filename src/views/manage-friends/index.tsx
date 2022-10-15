@@ -8,7 +8,6 @@ import omit from 'lodash-es/omit'
 import type { LinkModel, LinkResponse, LinkStateCount } from 'models/link'
 import { LinkState, LinkStateNameMap, LinkType } from 'models/link'
 import {
-  NAvatar,
   NBadge,
   NButton,
   NCard,
@@ -17,12 +16,12 @@ import {
   NInput,
   NModal,
   NPopconfirm,
-  NPopover,
   NSelect,
   NSpace,
   NTabPane,
   NTabs,
   NText,
+  useDialog,
   useMessage,
 } from 'naive-ui'
 import { RouteName } from 'router/name'
@@ -30,7 +29,9 @@ import { RESTManager } from 'utils'
 import { defineComponent, onBeforeMount, ref, toRaw, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-import FallbackAvatar from './fallback.jpg'
+import { Avatar } from './components/avatar'
+import { LinkAuditModal } from './components/reason-modal'
+import { UrlComponent } from './url-components'
 
 export default defineComponent({
   setup() {
@@ -41,23 +42,22 @@ export default defineComponent({
       (route.query.state as any) ?? LinkState.Pass,
     )
 
-    const { data, checkedRowKeys, fetchDataFn, pager, loading } =
-      useDataTableFetch<LinkModel>(
-        (data, pager) =>
-          async (page = route.query.page || 1, size = 50) => {
-            const state: LinkState =
-              (route.query.state as any | 0) ?? LinkState.Pass
-            const response = await RESTManager.api.links.get<LinkResponse>({
-              params: {
-                page,
-                size,
-                state: state | 0,
-              },
-            })
-            data.value = response.data
-            pager.value = response.pagination
-          },
-      )
+    const { data, fetchDataFn, pager, loading } = useDataTableFetch<LinkModel>(
+      (data, pager) =>
+        async (page = route.query.page || 1, size = 50) => {
+          const state: LinkState =
+            (route.query.state as any | 0) ?? LinkState.Pass
+          const response = await RESTManager.api.links.get<LinkResponse>({
+            params: {
+              page,
+              size,
+              state: state | 0,
+            },
+          })
+          data.value = response.data
+          pager.value = response.pagination
+        },
+    )
     const message = useMessage()
     const resetEditData: () => Omit<
       LinkModel,
@@ -167,6 +167,8 @@ export default defineComponent({
       }
     }
 
+    const modal = useDialog()
+
     return () => (
       <ContentLayout
         actionsElement={
@@ -195,6 +197,7 @@ export default defineComponent({
           value={tabValue.value}
           onUpdateValue={(e) => {
             tabValue.value = e
+
             router.replace({ name: RouteName.Friend, query: { state: e } })
           }}
         >
@@ -216,11 +219,18 @@ export default defineComponent({
               </NBadge>
             )}
           ></NTabPane>
-
+          <NTabPane
+            name={LinkState.Reject}
+            tab={() => (
+              <NBadge value={stateCount.value.reject} type="warning">
+                <NText>已拒绝</NText>
+              </NBadge>
+            )}
+          ></NTabPane>
           <NTabPane
             name={LinkState.Banned}
             tab={() => (
-              <NBadge value={stateCount.value.banned} type="warning">
+              <NBadge value={stateCount.value.banned} type="error">
                 <NText>封禁的</NText>
               </NBadge>
             )}
@@ -306,22 +316,65 @@ export default defineComponent({
                 return (
                   <NSpace wrap={false}>
                     {row.state == LinkState.Audit && (
-                      <NButton
-                        text
-                        size="tiny"
-                        type="success"
-                        onClick={async () => {
-                          await RESTManager.api.links.audit(row.id).patch()
-                          message.success(`通过了来自${row.name}的友链邀请`)
-                          const idx = data.value.findIndex(
-                            (i) => i.id == row.id,
-                          )
-                          data.value.splice(idx, 1)
-                          stateCount.value.audit--
-                        }}
-                      >
-                        通过
-                      </NButton>
+                      <>
+                        <NButton
+                          text
+                          size="tiny"
+                          type="success"
+                          onClick={async () => {
+                            await RESTManager.api.links.audit(row.id).patch()
+                            message.success(`通过了来自${row.name}的友链邀请`)
+                            const idx = data.value.findIndex(
+                              (i) => i.id == row.id,
+                            )
+                            data.value.splice(idx, 1)
+                            stateCount.value.audit--
+                          }}
+                        >
+                          通过
+                        </NButton>
+
+                        <NButton
+                          text
+                          size="tiny"
+                          type="info"
+                          onClick={async () => {
+                            modal.create({
+                              title: '发送友链结果',
+                              closeOnEsc: true,
+                              closable: true,
+                              content: () => {
+                                return (
+                                  <LinkAuditModal
+                                    onCallback={async (state, reason) => {
+                                      await RESTManager.api.links.audit
+                                        .reason(row.id)
+                                        .post({
+                                          data: {
+                                            state,
+                                            reason,
+                                          },
+                                        })
+                                      message.success(
+                                        `已发送友链结果给「${row.name}」`,
+                                      )
+                                      const idx = data.value.findIndex(
+                                        (i) => i.id == row.id,
+                                      )
+                                      data.value.splice(idx, 1)
+                                      stateCount.value.audit--
+
+                                      modal.destroyAll()
+                                    }}
+                                  />
+                                )
+                              },
+                            })
+                          }}
+                        >
+                          理由
+                        </NButton>
+                      </>
                     )}
                     <NButton
                       text
@@ -468,69 +521,3 @@ export default defineComponent({
     )
   },
 })
-
-const UrlComponent = defineComponent({
-  props: {
-    url: String,
-    errorMessage: String,
-    status: [String, Number],
-  },
-  setup(props) {
-    return () => (
-      <div class="flex space-x-2 items-center">
-        <a target="_blank" href={props.url} rel="noreferrer">
-          {props.url}
-        </a>
-
-        {typeof props.status !== 'undefined' &&
-          (props.errorMessage ? (
-            <NPopover>
-              {{
-                trigger() {
-                  return <div class="h-2 w-2 bg-red-400 rounded-full"></div>
-                },
-                default() {
-                  return props.errorMessage
-                },
-              }}
-            </NPopover>
-          ) : (
-            <div class="h-2 w-2 bg-green-300 rounded-full"></div>
-          ))}
-      </div>
-    )
-  },
-})
-
-const Avatar = defineComponent<{ avatar: string; name: string }>((props) => {
-  const $ref = ref<HTMLElement>()
-
-  const inView = ref(false)
-  const observer = useIntersectionObserver($ref, (intersection) => {
-    if (intersection[0].isIntersecting) {
-      inView.value = true
-      observer.stop()
-    }
-  })
-  return () => (
-    <div ref={$ref}>
-      {props.avatar ? (
-        inView.value ? (
-          <NAvatar
-            src={props.avatar as string}
-            round
-            onError={(e) => {
-              console.log(FallbackAvatar)
-              ;(e.target as HTMLImageElement).src = FallbackAvatar
-            }}
-          ></NAvatar>
-        ) : (
-          <NAvatar round>{props.name.charAt(0)}</NAvatar>
-        )
-      ) : (
-        <NAvatar round>{props.name.charAt(0)}</NAvatar>
-      )}
-    </div>
-  )
-})
-Avatar.props = ['avatar', 'name']
