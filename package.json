@@ -3,9 +3,9 @@
   "version": "3.24.0",
   "bump": {
     "before": [
-      "git pull --rebase",
-      "git-cliff > CHANGELOG.md"
-    ]
+      "git pull --rebase"
+    ],
+    "changelog": true
   },
   "scripts": {
     "prebuild": "rm -rf dist",
