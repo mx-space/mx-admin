@@ -25,7 +25,7 @@ specifiers:
   '@types/markdown-escape': 1.1.0
   '@types/marked': 4.0.7
   '@types/qs': 6.9.7
-  '@types/validator': 13.7.7
+  '@types/validator': 13.7.8
   '@vicons/antd': 0.12.0
   '@vicons/fa': 0.12.0
   '@vicons/fluent': 0.12.0
@@ -153,7 +153,7 @@ devDependencies:
   '@types/markdown-escape': 1.1.0
   '@types/marked': 4.0.7
   '@types/qs': 6.9.7
-  '@types/validator': 13.7.7
+  '@types/validator': 13.7.8
   '@vitejs/plugin-vue': 3.1.2_vite@3.1.8+vue@3.2.41
   '@vitejs/plugin-vue-jsx': 2.0.1_vite@3.1.8+vue@3.2.41
   '@vue/compiler-sfc': 3.2.41
@@ -763,20 +763,6 @@ packages:
       '@codemirror/language': ^6.0.0
       '@codemirror/state': ^6.0.0
       '@codemirror/view': ^6.0.0
-      '@lezer/common': ^1.0.0
-    dependencies:
-      '@codemirror/language': 6.2.1
-      '@codemirror/state': 6.1.1
-      '@codemirror/view': 6.2.0
-    dev: false
-
-  /@codemirror/autocomplete/6.0.3_nq4pwfkqi5icglf26kczcr4s2i:
-    resolution: {integrity: sha512-JTSBDC4tUyR8iRmCwQJaYpTXtOZmRn4gKjw1Fu4xIatFPqTJ7m0QRCdkdbzlvMovzjTiuHp4a8WUEB1c/LtiHg==}
-    peerDependencies:
-      '@codemirror/language': ^6.0.0
-      '@codemirror/state': ^6.0.0
-      '@codemirror/view': ^6.0.0
-      '@lezer/common': ^1.0.0
     dependencies:
       '@codemirror/language': 6.2.1
       '@codemirror/state': 6.1.1
@@ -809,26 +795,13 @@ packages:
       '@lezer/css': 1.0.0
     transitivePeerDependencies:
       - '@codemirror/view'
-      - '@lezer/common'
-    dev: false
-
-  /@codemirror/lang-css/6.0.0_bmjizg7gr5ieupmvn5u62mbipm:
-    resolution: {integrity: sha512-jBqc+BTuwhNOTlrimFghLlSrN6iFuE44HULKWoR4qKYObhOIl9Lci1iYj6zMIte1XTQmZguNvjXMyr43LUKwSw==}
-    dependencies:
-      '@codemirror/autocomplete': 6.0.3_nq4pwfkqi5icglf26kczcr4s2i
-      '@codemirror/language': 6.2.1
-      '@codemirror/state': 6.1.1
-      '@lezer/css': 1.0.0
-    transitivePeerDependencies:
-      - '@codemirror/view'
-      - '@lezer/common'
     dev: false
 
   /@codemirror/lang-html/6.1.0_@codemirror+view@6.2.0:
     resolution: {integrity: sha512-gA7NmJxqvnhwza05CvR7W/39Ap9r/4Vs9uiC0IeFYo1hSlJzc/8N6Evviz6vTW1x8SpHcRYyqKOf6rpl6LfWtg==}
     dependencies:
-      '@codemirror/autocomplete': 6.0.3_nq4pwfkqi5icglf26kczcr4s2i
-      '@codemirror/lang-css': 6.0.0_bmjizg7gr5ieupmvn5u62mbipm
+      '@codemirror/autocomplete': 6.0.3_d7mo6becmtqongve6btgjyline
+      '@codemirror/lang-css': 6.0.0_@codemirror+view@6.2.0
       '@codemirror/lang-javascript': 6.0.1
       '@codemirror/language': 6.2.1
       '@codemirror/state': 6.1.1
@@ -848,7 +821,7 @@ packages:
   /@codemirror/lang-javascript/6.0.1:
     resolution: {integrity: sha512-kjGbBEosl+ozDU5ruDV48w4v3H6KECTFiDjqMLT0KhVwESPfv3wOvnDrTT0uaMOg3YRGnBWsyiIoKHl/tNWWDg==}
     dependencies:
-      '@codemirror/autocomplete': 6.0.3_nq4pwfkqi5icglf26kczcr4s2i
+      '@codemirror/autocomplete': 6.0.3_d7mo6becmtqongve6btgjyline
       '@codemirror/language': 6.2.1
       '@codemirror/lint': 6.0.0
       '@codemirror/state': 6.1.1
@@ -911,7 +884,6 @@ packages:
       '@lezer/lr': 1.2.3
     transitivePeerDependencies:
       - '@codemirror/view'
-      - '@lezer/common'
     dev: false
 
   /@codemirror/lang-wast/6.0.0:
@@ -925,7 +897,7 @@ packages:
   /@codemirror/lang-xml/6.0.0_@codemirror+view@6.2.0:
     resolution: {integrity: sha512-M/HLWxIiP956xGjtrxkeHkCmDGVQGKu782x8pOH5CLJIMkWtiB1DWfDoDHqpFjdEE9dkfcqPWvYfVi6GbhuXEg==}
     dependencies:
-      '@codemirror/autocomplete': 6.0.3_nq4pwfkqi5icglf26kczcr4s2i
+      '@codemirror/autocomplete': 6.0.3_d7mo6becmtqongve6btgjyline
       '@codemirror/language': 6.2.1
       '@codemirror/state': 6.1.1
       '@lezer/common': 1.0.0
@@ -954,7 +926,6 @@ packages:
       '@codemirror/legacy-modes': 6.1.0
     transitivePeerDependencies:
       - '@codemirror/view'
-      - '@lezer/common'
     dev: false
 
   /@codemirror/language/6.2.1:
@@ -1847,8 +1818,8 @@ packages:
     resolution: {integrity: sha512-FGa1F62FT09qcrueBA6qYTrJPVDzah9a+493+o2PCXsesWHIn27G98TsSMs3WPNbZIEj4+VJf6saSFpvD+3Zsw==}
     dev: true
 
-  /@types/validator/13.7.7:
-    resolution: {integrity: sha512-jiEw2kTUJ8Jsh4A1K4b5Pkjj9Xz6FktLLOQ36ZVLRkmxFbpTvAV2VRoKMojz8UlZxNg/2dZqzpigH4JYn1bkQg==}
+  /@types/validator/13.7.8:
+    resolution: {integrity: sha512-HKayOBe2ThTcQykiycCQYf70Fvo0WaJEJdxxNjvX3D/mnC0IUAhMe6wsIb1wwthmjiqBAR3qGkEzHYx74MS2yw==}
     dev: true
 
   /@types/web-bluetooth/0.0.15:
