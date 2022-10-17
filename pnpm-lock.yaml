@@ -56,7 +56,7 @@ specifiers:
   monaco-editor: 0.34.0
   monaco-editor-auto-typings: 0.4.3
   naive-ui: 2.33.5
-  octokit: 2.0.7
+  octokit: 2.0.9
   os-browserify: 0.3.0
   path-browserify: 1.0.1
   pinia: 2.0.23
@@ -125,7 +125,7 @@ dependencies:
   monaco-editor: 0.34.0
   monaco-editor-auto-typings: 0.4.3_monaco-editor@0.34.0
   naive-ui: 2.33.5_vue@3.2.41
-  octokit: 2.0.7
+  octokit: 2.0.9
   os-browserify: 0.3.0
   path-browserify: 1.0.1
   pinia: 2.0.23_l7r24p6nevbtlimqmqcwa3ouhu
@@ -1606,6 +1606,10 @@ packages:
     resolution: {integrity: sha512-2mVzW0X1+HDO3jF80/+QFZNzJiTefELKbhMu6yaBYbp/1gSMkVDm4rT472gJljTokWUlXaaE63m7WrWENhMDLw==}
     dev: false
 
+  /@octokit/openapi-types/14.0.0:
+    resolution: {integrity: sha512-HNWisMYlR8VCnNurDU6os2ikx0s0VyEjDYHNS/h4cgb8DeOxQ0n72HyinUtdDVxJhFy3FWLGl0DJhfEWk3P5Iw==}
+    dev: false
+
   /@octokit/plugin-paginate-rest/4.0.0_@octokit+core@4.0.5:
     resolution: {integrity: sha512-g4GJMt/7VDmIMMdQenN6bmsmRoZca1c7IxOdF2yMiMwQYrE2bmmypGQeQSD5rsaffsFMCUS7Br4pMVZamareYA==}
     engines: {node: '>= 14'}
@@ -1614,6 +1618,16 @@ packages:
     dependencies:
       '@octokit/core': 4.0.5
       '@octokit/types': 7.1.1
+    dev: false
+
+  /@octokit/plugin-paginate-rest/5.0.1_@octokit+core@4.0.5:
+    resolution: {integrity: sha512-7A+rEkS70pH36Z6JivSlR7Zqepz3KVucEFVDnSrgHXzG7WLAzYwcHZbKdfTXHwuTHbkT1vKvz7dHl1+HNf6Qyw==}
+    engines: {node: '>= 14'}
+    peerDependencies:
+      '@octokit/core': '>=4'
+    dependencies:
+      '@octokit/core': 4.0.5
+      '@octokit/types': 8.0.0
     dev: false
 
   /@octokit/plugin-rest-endpoint-methods/6.3.0_@octokit+core@4.0.5:
@@ -1699,6 +1713,12 @@ packages:
     resolution: {integrity: sha512-Dx6cNTORyVaKY0Yeb9MbHksk79L8GXsihbG6PtWqTpkyA2TY1qBWE26EQXVG3dHwY9Femdd/WEeRUEiD0+H3TQ==}
     dependencies:
       '@octokit/openapi-types': 13.4.0
+    dev: false
+
+  /@octokit/types/8.0.0:
+    resolution: {integrity: sha512-65/TPpOJP1i3K4lBJMnWqPUJ6zuOtzhtagDvydAWbEXpbFYA0oMKKyLb95NFZZP0lSh/4b6K+DQlzvYQJQQePg==}
+    dependencies:
+      '@octokit/openapi-types': 14.0.0
     dev: false
 
   /@octokit/webhooks-methods/3.0.0:
@@ -4332,18 +4352,18 @@ packages:
       es-abstract: 1.20.2
     dev: true
 
-  /octokit/2.0.7:
-    resolution: {integrity: sha512-Rf+pY3fCphmS4jjLqQ+D0xS1U+Ry/pAZHLJNvsQksuj4aopl7qFLlV4Id2KIlaUpKZrUCPzOkLiZOaoEb47RZQ==}
+  /octokit/2.0.9:
+    resolution: {integrity: sha512-+4XOeV1pvr5aVdlrj/WGl8VE6yJHt/XAPr/x4+gRQFp1p8l0Wu/w3ZIvlIpnPJFx5yiHrVWHd5syPLWOip89LQ==}
     engines: {node: '>= 14'}
     dependencies:
       '@octokit/app': 13.0.7
       '@octokit/core': 4.0.5
       '@octokit/oauth-app': 4.0.6
-      '@octokit/plugin-paginate-rest': 4.0.0_@octokit+core@4.0.5
+      '@octokit/plugin-paginate-rest': 5.0.1_@octokit+core@4.0.5
       '@octokit/plugin-rest-endpoint-methods': 6.3.0_@octokit+core@4.0.5
       '@octokit/plugin-retry': 3.0.9
       '@octokit/plugin-throttling': 4.2.0_@octokit+core@4.0.5
-      '@octokit/types': 7.1.1
+      '@octokit/types': 8.0.0
     transitivePeerDependencies:
       - encoding
     dev: false
