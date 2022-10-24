@@ -80,7 +80,7 @@ specifiers:
   vite-tsconfig-paths: 3.5.1
   vue: 3.2.41
   vue-eslint-parser: 9.1.0
-  vue-router: 4.1.5
+  vue-router: 4.1.6
   windicss: 3.5.6
   xss: 1.0.14
   xterm: 4.19.0
@@ -137,7 +137,7 @@ dependencies:
   validator: 13.7.0
   vite-plugin-windicss: 1.8.8_vite@3.1.8
   vue: 3.2.41
-  vue-router: 4.1.5_vue@3.2.41
+  vue-router: 4.1.6_vue@3.2.41
   xss: 1.0.14
   xterm: 4.19.0
   xterm-addon-fit: 0.5.0_xterm@4.19.0
@@ -763,6 +763,21 @@ packages:
       '@codemirror/language': ^6.0.0
       '@codemirror/state': ^6.0.0
       '@codemirror/view': ^6.0.0
+      '@lezer/common': ^1.0.0
+    dependencies:
+      '@codemirror/language': 6.2.1
+      '@codemirror/state': 6.1.1
+      '@codemirror/view': 6.2.0
+      '@lezer/common': 1.0.0
+    dev: false
+
+  /@codemirror/autocomplete/6.0.3_nq4pwfkqi5icglf26kczcr4s2i:
+    resolution: {integrity: sha512-JTSBDC4tUyR8iRmCwQJaYpTXtOZmRn4gKjw1Fu4xIatFPqTJ7m0QRCdkdbzlvMovzjTiuHp4a8WUEB1c/LtiHg==}
+    peerDependencies:
+      '@codemirror/language': ^6.0.0
+      '@codemirror/state': ^6.0.0
+      '@codemirror/view': ^6.0.0
+      '@lezer/common': ^1.0.0
     dependencies:
       '@codemirror/language': 6.2.1
       '@codemirror/state': 6.1.1
@@ -795,13 +810,26 @@ packages:
       '@lezer/css': 1.0.0
     transitivePeerDependencies:
       - '@codemirror/view'
+      - '@lezer/common'
+    dev: false
+
+  /@codemirror/lang-css/6.0.0_bmjizg7gr5ieupmvn5u62mbipm:
+    resolution: {integrity: sha512-jBqc+BTuwhNOTlrimFghLlSrN6iFuE44HULKWoR4qKYObhOIl9Lci1iYj6zMIte1XTQmZguNvjXMyr43LUKwSw==}
+    dependencies:
+      '@codemirror/autocomplete': 6.0.3_nq4pwfkqi5icglf26kczcr4s2i
+      '@codemirror/language': 6.2.1
+      '@codemirror/state': 6.1.1
+      '@lezer/css': 1.0.0
+    transitivePeerDependencies:
+      - '@codemirror/view'
+      - '@lezer/common'
     dev: false
 
   /@codemirror/lang-html/6.1.0_@codemirror+view@6.2.0:
     resolution: {integrity: sha512-gA7NmJxqvnhwza05CvR7W/39Ap9r/4Vs9uiC0IeFYo1hSlJzc/8N6Evviz6vTW1x8SpHcRYyqKOf6rpl6LfWtg==}
     dependencies:
-      '@codemirror/autocomplete': 6.0.3_d7mo6becmtqongve6btgjyline
-      '@codemirror/lang-css': 6.0.0_@codemirror+view@6.2.0
+      '@codemirror/autocomplete': 6.0.3_nq4pwfkqi5icglf26kczcr4s2i
+      '@codemirror/lang-css': 6.0.0_bmjizg7gr5ieupmvn5u62mbipm
       '@codemirror/lang-javascript': 6.0.1
       '@codemirror/language': 6.2.1
       '@codemirror/state': 6.1.1
@@ -821,7 +849,7 @@ packages:
   /@codemirror/lang-javascript/6.0.1:
     resolution: {integrity: sha512-kjGbBEosl+ozDU5ruDV48w4v3H6KECTFiDjqMLT0KhVwESPfv3wOvnDrTT0uaMOg3YRGnBWsyiIoKHl/tNWWDg==}
     dependencies:
-      '@codemirror/autocomplete': 6.0.3_d7mo6becmtqongve6btgjyline
+      '@codemirror/autocomplete': 6.0.3_nq4pwfkqi5icglf26kczcr4s2i
       '@codemirror/language': 6.2.1
       '@codemirror/lint': 6.0.0
       '@codemirror/state': 6.1.1
@@ -884,6 +912,7 @@ packages:
       '@lezer/lr': 1.2.3
     transitivePeerDependencies:
       - '@codemirror/view'
+      - '@lezer/common'
     dev: false
 
   /@codemirror/lang-wast/6.0.0:
@@ -897,7 +926,7 @@ packages:
   /@codemirror/lang-xml/6.0.0_@codemirror+view@6.2.0:
     resolution: {integrity: sha512-M/HLWxIiP956xGjtrxkeHkCmDGVQGKu782x8pOH5CLJIMkWtiB1DWfDoDHqpFjdEE9dkfcqPWvYfVi6GbhuXEg==}
     dependencies:
-      '@codemirror/autocomplete': 6.0.3_d7mo6becmtqongve6btgjyline
+      '@codemirror/autocomplete': 6.0.3_nq4pwfkqi5icglf26kczcr4s2i
       '@codemirror/language': 6.2.1
       '@codemirror/state': 6.1.1
       '@lezer/common': 1.0.0
@@ -926,6 +955,7 @@ packages:
       '@codemirror/legacy-modes': 6.1.0
     transitivePeerDependencies:
       - '@codemirror/view'
+      - '@lezer/common'
     dev: false
 
   /@codemirror/language/6.2.1:
@@ -2133,12 +2163,12 @@ packages:
       '@vue/compiler-dom': 3.2.41
       '@vue/shared': 3.2.41
 
-  /@vue/devtools-api/6.2.1:
-    resolution: {integrity: sha512-OEgAMeQXvCoJ+1x8WyQuVZzFo0wcyCmUR3baRVLmKBo1LmYZWMlRiXlux5jd0fqVJu6PfDbOrZItVqUEzLobeQ==}
-    dev: false
-
   /@vue/devtools-api/6.4.4:
     resolution: {integrity: sha512-Ku31WzpOV/8cruFaXaEZKF81WkNnvCSlBY4eOGtz5WMSdJvX1v1WWlSMGZeqUwPtQ27ZZz7B62erEMq8JDjcXw==}
+    dev: false
+
+  /@vue/devtools-api/6.4.5:
+    resolution: {integrity: sha512-JD5fcdIuFxU4fQyXUu3w2KpAJHzTVdN+p4iOX2lMWSHMOoQdMAcpFLZzm9Z/2nmsoZ1a96QEhZ26e50xLBsgOQ==}
     dev: false
 
   /@vue/reactivity-transform/3.2.41:
@@ -5678,12 +5708,12 @@ packages:
       - supports-color
     dev: true
 
-  /vue-router/4.1.5_vue@3.2.41:
-    resolution: {integrity: sha512-IsvoF5D2GQ/EGTs/Th4NQms9gd2NSqV+yylxIyp/OYp8xOwxmU8Kj/74E9DTSYAyH5LX7idVUngN3JSj1X4xcQ==}
+  /vue-router/4.1.6_vue@3.2.41:
+    resolution: {integrity: sha512-DYWYwsG6xNPmLq/FmZn8Ip+qrhFEzA14EI12MsMgVxvHFDYvlr4NXpVF5hrRH1wVcDP8fGi5F4rxuJSl8/r+EQ==}
     peerDependencies:
       vue: ^3.2.0
     dependencies:
-      '@vue/devtools-api': 6.2.1
+      '@vue/devtools-api': 6.4.5
       vue: 3.2.41
     dev: false
 
