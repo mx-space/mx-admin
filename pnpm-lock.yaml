@@ -17,7 +17,7 @@ specifiers:
   '@innei/eslint-config-vue-ts': 0.9.5
   '@innei/prettier': 0.9.5
   '@lezer/highlight': '*'
-  '@mx-space/api-client': 1.0.0-beta.1
+  '@mx-space/api-client': 1.0.0-beta.3
   '@types/ejs': 3.1.1
   '@types/event-source-polyfill': 1.0.0
   '@types/js-yaml': 4.0.5
@@ -99,7 +99,7 @@ dependencies:
   '@codemirror/view': 6.2.0
   '@ddietr/codemirror-themes': github.com/Innei/codemirror-themes/d7dee7637d330d10cc6d0984c1b5720d3d8a60af
   '@lezer/highlight': 1.0.0
-  '@mx-space/api-client': 1.0.0-beta.1
+  '@mx-space/api-client': 1.0.0-beta.3
   '@vicons/antd': 0.12.0
   '@vicons/fa': 0.12.0
   '@vicons/fluent': 0.12.0
@@ -1441,8 +1441,8 @@ packages:
       '@lezer/lr': 1.2.3
     dev: false
 
-  /@mx-space/api-client/1.0.0-beta.1:
-    resolution: {integrity: sha512-fHfLc9Wj2c8mW2Rs0TtfNuWCSp0ecjQuwZAW8b7OUTtvvOgQOYbspvFAIRMJQpTa5xV7KGPio9DNGEZ4VL2nEQ==}
+  /@mx-space/api-client/1.0.0-beta.3:
+    resolution: {integrity: sha512-HvMUVO9vu9xGiNHZChYbPOzLB6sVe2Ro18jZxhtIQ+RfXu7P60o8UV4eKRJueOu4GUr2OqLmCLXrPZyFNNjTKw==}
     engines: {pnpm: '>=6'}
     dev: false
 
