@@ -213,7 +213,7 @@ const EditProjectView = defineComponent({
             <div class="w-full">
               <EditorToggleWrapper
                 unSaveConfirm={false}
-                class="h-80 w-full"
+                class="min-h-80 w-full h-[calc(100vh-40rem)]"
                 loading={!!(id.value && !project.id)}
                 onChange={(v) => {
                   project.text = v

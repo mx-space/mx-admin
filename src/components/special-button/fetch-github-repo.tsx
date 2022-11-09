@@ -1,11 +1,7 @@
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { GithubIcon } from 'components/icons'
-import type {
-  IGithubRepo} from 'external/api/github-repo';
-import {
-  getRepoDetail,
-  getRepoReadme,
-} from 'external/api/github-repo'
+import type { IGithubRepo } from 'external/api/github-repo'
+import { getRepoDetail, getRepoReadme } from 'external/api/github-repo'
 import { NButton, NInput, useDialog } from 'naive-ui'
 import type { PropType } from 'vue'
 
@@ -50,9 +46,17 @@ export const FetchGithubRepoButton = defineComponent({
                   instance.destroy()
                 })
               }
+              const inputRef = ref()
+
+              onMounted(() => {
+                setTimeout(() => {
+                  inputRef.value.focus()
+                }, 10)
+              })
               return () => (
                 <>
                   <NInput
+                    ref={inputRef}
                     onKeydown={(e) => {
                       if (e.code === 'Enter') {
                         handleFetch()
