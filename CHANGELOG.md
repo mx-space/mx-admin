@@ -1,3 +1,21 @@
+# CHANGELOG
+
+## [3.24.2](https://github.com/mx-space/mx-admin/compare/v3.24.1...v3.24.2) (2022-11-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @mx-space/api-client to v1.0.0-beta.3 ([#609](https://github.com/mx-space/mx-admin/issues/609)) ([b77b0a3](https://github.com/mx-space/mx-admin/commit/b77b0a30ac35269506daf12ef45b1e6947d7641e))
+* **deps:** update dependency marked to v4.2.2 ([#620](https://github.com/mx-space/mx-admin/issues/620)) ([ff93b81](https://github.com/mx-space/mx-admin/commit/ff93b81bf7fad31bd664474dcb8fb43ba953ae7d))
+* **deps:** update dependency monaco-editor to v0.34.1 ([#608](https://github.com/mx-space/mx-admin/issues/608)) ([296640e](https://github.com/mx-space/mx-admin/commit/296640e86e73a65a57ec35815bc3f4cfbe706f91))
+* **deps:** update dependency octokit to v2.0.10 ([#614](https://github.com/mx-space/mx-admin/issues/614)) ([7dd01d0](https://github.com/mx-space/mx-admin/commit/7dd01d0b9ed9086af123d60424cdf7905a5ef6bf))
+* **deps:** update dependency octokit to v2.0.9 ([#600](https://github.com/mx-space/mx-admin/issues/600)) ([a7c6436](https://github.com/mx-space/mx-admin/commit/a7c64362622317df453887411f9ff1aec01fa973))
+* **deps:** update dependency socket.io-client to v4.5.3 ([#602](https://github.com/mx-space/mx-admin/issues/602)) ([f3f56a6](https://github.com/mx-space/mx-admin/commit/f3f56a6ec14e0e71fad40b340b7c510d2fbf04ca))
+* **deps:** update dependency vue-router to v4.1.6 ([#612](https://github.com/mx-space/mx-admin/issues/612)) ([6b1272b](https://github.com/mx-space/mx-admin/commit/6b1272b9beb0806bcfa17973ed053b76daebc85b))
+* project editor height ([644eb65](https://github.com/mx-space/mx-admin/commit/644eb6595e113b7bffd0eda777498b4253807f57))
+
+
+
 ## [3.24.1](https://github.com/mx-space/mx-admin/compare/v3.24.0...v3.24.1) (2022-10-15)
 
 
