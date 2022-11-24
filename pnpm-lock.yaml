@@ -34,7 +34,7 @@ specifiers:
   '@vicons/material': 0.12.0
   '@vicons/tabler': 0.12.0
   '@vicons/utils': 0.1.4
-  '@vitejs/plugin-vue': 3.1.2
+  '@vitejs/plugin-vue': 3.2.0
   '@vitejs/plugin-vue-jsx': 2.0.1
   '@vue/compiler-sfc': 3.2.45
   '@vueuse/core': 9.5.0
@@ -154,7 +154,7 @@ devDependencies:
   '@types/marked': 4.0.7
   '@types/qs': 6.9.7
   '@types/validator': 13.7.10
-  '@vitejs/plugin-vue': 3.1.2_vite@3.2.3+vue@3.2.45
+  '@vitejs/plugin-vue': 3.2.0_vite@3.2.3+vue@3.2.45
   '@vitejs/plugin-vue-jsx': 2.0.1_vite@3.2.3+vue@3.2.45
   '@vue/compiler-sfc': 3.2.45
   cors: 2.8.5
@@ -2117,8 +2117,8 @@ packages:
       - supports-color
     dev: true
 
-  /@vitejs/plugin-vue/3.1.2_vite@3.2.3+vue@3.2.45:
-    resolution: {integrity: sha512-3zxKNlvA3oNaKDYX0NBclgxTQ1xaFdL7PzwF6zj9tGFziKwmBa3Q/6XcJQxudlT81WxDjEhHmevvIC4Orc1LhQ==}
+  /@vitejs/plugin-vue/3.2.0_vite@3.2.3+vue@3.2.45:
+    resolution: {integrity: sha512-E0tnaL4fr+qkdCNxJ+Xd0yM31UwMkQje76fsDVBBUCoGOUPexu2VDUYHL8P4CwV+zMvWw6nlRw19OnRKmYAJpw==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       vite: ^3.0.0
