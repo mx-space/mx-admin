@@ -63,7 +63,7 @@ specifiers:
   postcss: 8.4.19
   postcss-nested: 6.0.0
   postcss-preset-env: 7.8.3
-  prettier: 2.7.1
+  prettier: 2.8.0
   qier-progress: 1.0.4
   qs: 6.11.0
   reflect-metadata: 0.1.13
@@ -162,7 +162,7 @@ devDependencies:
   postcss: 8.4.19
   postcss-nested: 6.0.0_postcss@8.4.19
   postcss-preset-env: 7.8.3_postcss@8.4.19
-  prettier: 2.7.1
+  prettier: 2.8.0
   rollup: 2.79.0
   rollup-plugin-visualizer: 5.8.3_rollup@2.79.0
   typescript: 4.8.4
@@ -1245,7 +1245,7 @@ packages:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
     dev: true
 
-  /@ianvs/prettier-plugin-sort-imports/3.4.2_prettier@2.7.1:
+  /@ianvs/prettier-plugin-sort-imports/3.4.2_prettier@2.8.0:
     resolution: {integrity: sha512-HB2BLfnm3Jee+GiGtK7f5hLcFbF54VbSAoH9UEaWpjMmrbaZCTViJeuXsycA1Adm2colaHCpqhLW5E70umh6ug==}
     peerDependencies:
       prettier: 2.x
@@ -1257,7 +1257,7 @@ packages:
       '@babel/types': 7.19.0
       javascript-natural-sort: 0.7.1
       lodash: 4.17.21
-      prettier: 2.7.1
+      prettier: 2.8.0
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -1299,8 +1299,8 @@ packages:
   /@innei/prettier/0.9.5:
     resolution: {integrity: sha512-BsVsCo9ygB0DOefqwIl7okmTvN8kSiYXHANiEWcnia3z8AD+wZ69Ruv6s8JLa7Fhds0kXGnlnFaVF/1xjgCJDA==}
     dependencies:
-      '@trivago/prettier-plugin-sort-imports': /@ianvs/prettier-plugin-sort-imports/3.4.2_prettier@2.7.1
-      prettier: 2.7.1
+      '@trivago/prettier-plugin-sort-imports': /@ianvs/prettier-plugin-sort-imports/3.4.2_prettier@2.8.0
+      prettier: 2.8.0
       prettier-package-json: 2.6.4
     transitivePeerDependencies:
       - supports-color
@@ -4921,8 +4921,8 @@ packages:
       sort-order: 1.0.1
     dev: true
 
-  /prettier/2.7.1:
-    resolution: {integrity: sha512-ujppO+MkdPqoVINuDFDRLClm7D78qbDt0/NR+wp5FqEZOoTNAjPHWj17QRhu7geIHJfcNhRk1XVQmF8Bp3ye+g==}
+  /prettier/2.8.0:
+    resolution: {integrity: sha512-9Lmg8hTFZKG0Asr/kW9Bp8tJjRVluO8EJQVfY2T7FMw9T5jy4I/Uvx0Rca/XWf50QQ1/SS48+6IJWnrb+2yemA==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true
