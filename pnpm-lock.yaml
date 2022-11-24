@@ -69,7 +69,7 @@ specifiers:
   reflect-metadata: 0.1.13
   rollup: '*'
   rollup-plugin-visualizer: 5.8.3
-  socket.io-client: 4.5.3
+  socket.io-client: 4.5.4
   typescript: 4.8.4
   umi-request: 1.4.0
   unplugin-auto-import: 0.11.5
@@ -132,7 +132,7 @@ dependencies:
   qier-progress: 1.0.4
   qs: 6.11.0
   reflect-metadata: 0.1.13
-  socket.io-client: 4.5.3
+  socket.io-client: 4.5.4
   umi-request: 1.4.0
   validator: 13.7.0
   vite-plugin-windicss: 1.8.8_vite@3.2.3
@@ -5158,22 +5158,22 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /socket.io-client/4.5.3:
-    resolution: {integrity: sha512-I/hqDYpQ6JKwtJOf5ikM+Qz+YujZPMEl6qBLhxiP0nX+TfXKhW4KZZG8lamrD6Y5ngjmYHreESVasVCgi5Kl3A==}
+  /socket.io-client/4.5.4:
+    resolution: {integrity: sha512-ZpKteoA06RzkD32IbqILZ+Cnst4xewU7ZYK12aS1mzHftFFjpoMz69IuhP/nL25pJfao/amoPI527KnuhFm01g==}
     engines: {node: '>=10.0.0'}
     dependencies:
       '@socket.io/component-emitter': 3.1.0
       debug: 4.3.4
       engine.io-client: 6.2.3
-      socket.io-parser: 4.2.0
+      socket.io-parser: 4.2.1
     transitivePeerDependencies:
       - bufferutil
       - supports-color
       - utf-8-validate
     dev: false
 
-  /socket.io-parser/4.2.0:
-    resolution: {integrity: sha512-tLfmEwcEwnlQTxFB7jibL/q2+q8dlVQzj4JdRLJ/W/G1+Fu9VSxCx1Lo+n1HvXxKnM//dUuD0xgiA7tQf57Vng==}
+  /socket.io-parser/4.2.1:
+    resolution: {integrity: sha512-V4GrkLy+HeF1F/en3SpUaM+7XxYXpuMUWLGde1kSSh5nQMN4hLrbPIkD+otwh6q9R6NOQBN4AMaOZ2zVjui82g==}
     engines: {node: '>=10.0.0'}
     dependencies:
       '@socket.io/component-emitter': 3.1.0
