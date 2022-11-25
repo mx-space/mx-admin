@@ -17,6 +17,11 @@ export const KVEditor = defineComponent({
       type: Array as PropType<SelectMixedOption[]>,
       required: false,
     },
+    plainKeyInput: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   setup(props) {
     const KVArray = ref<{ key: string; value: string }[]>([])
@@ -65,7 +70,7 @@ export const KVEditor = defineComponent({
           keySet.value.add(item.key)
         })
       },
-      { deep: true }
+      { deep: true },
     )
 
     return () => (
@@ -87,20 +92,31 @@ export const KVEditor = defineComponent({
           default(rowProps: { index: number; value: typeof KVArray.value[0] }) {
             return (
               <div class="flex items-center w-full">
-                <NSelect
-                  class="mr-4"
-                  filterable
-                  tag
-                  placeholder="请选择"
-                  value={rowProps.value.key}
-                  onUpdateValue={(platform) => {
-                    rowProps.value.key = platform
-                  }}
-                  options={props.options?.map((option) => ({
-                    ...option,
-                    disabled: keySet.value.has(option.value as string),
-                  }))}
-                ></NSelect>
+                {props.plainKeyInput ? (
+                  <NInput
+                    class="mr-4"
+                    placeholder={'请输入'}
+                    value={rowProps.value.key}
+                    onUpdateValue={(key) => {
+                      rowProps.value.key = key
+                    }}
+                  ></NInput>
+                ) : (
+                  <NSelect
+                    class="mr-4"
+                    filterable
+                    tag
+                    placeholder="请选择"
+                    value={rowProps.value.key}
+                    onUpdateValue={(key) => {
+                      rowProps.value.key = key
+                    }}
+                    options={props.options?.map((option) => ({
+                      ...option,
+                      disabled: keySet.value.has(option.value as string),
+                    }))}
+                  ></NSelect>
+                )}
                 <NInput
                   value={rowProps.value.value.toString()}
                   onUpdateValue={(id) => {

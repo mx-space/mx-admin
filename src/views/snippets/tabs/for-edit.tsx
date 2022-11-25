@@ -1,5 +1,6 @@
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { CheckCircleOutlinedIcon } from 'components/icons'
+import { KVEditor } from 'components/kv-editor'
 import { useMountAndUnmount } from 'hooks/use-react'
 import { dump, load } from 'js-yaml'
 import JSON5 from 'json5'
@@ -90,7 +91,8 @@ export const Tab2ForEdit = defineComponent({
             case 'function': {
               // FIXME
               delete data.value.method
-              return data.value.enable
+              delete data.value.enable
+              return ''
             }
           }
         })()
@@ -308,6 +310,16 @@ export const Tab2ForEdit = defineComponent({
             </NFormItem>
             {isFunctionType.value && (
               <>
+                <NFormItem label="启用" labelPlacement={'left'}>
+                  <NSwitch
+                    class={'w-full flex justify-end'}
+                    value={data.value.enable}
+                    onUpdateValue={(value) => {
+                      data.value.enable = value
+                    }}
+                  />
+                </NFormItem>
+
                 <NFormItem label="请求方式">
                   <NSelect
                     options={['GET', 'POST', 'PUT', 'DELETE', 'PATCH'].map(
@@ -325,13 +337,13 @@ export const Tab2ForEdit = defineComponent({
                   ></NSelect>
                 </NFormItem>
 
-                <NFormItem label="启用" labelPlacement={'left'}>
-                  <NSwitch
-                    class={'w-full flex justify-end'}
-                    value={data.value.enable}
-                    onUpdateValue={(value) => {
-                      data.value.enable = value
+                <NFormItem label="Secret">
+                  <KVEditor
+                    plainKeyInput
+                    onChange={(kv) => {
+                      data.value.secret = kv
                     }}
+                    value={data.value.secret || {}}
                   />
                 </NFormItem>
               </>

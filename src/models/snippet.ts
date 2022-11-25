@@ -33,4 +33,5 @@ export class SnippetModel extends BaseModel {
   // for serverless function
   enable?: boolean
   method?: string
+  secret?: Record<string, any>
 }
