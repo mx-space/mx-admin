@@ -102,6 +102,6 @@
     "windicss": "3.5.6"
   },
   "resolutions": {
-    "@vueuse/core": "9.5.0"
+    "@vueuse/core": "9.6.0"
   }
 }
