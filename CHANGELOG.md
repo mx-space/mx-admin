@@ -1,5 +1,22 @@
 # CHANGELOG
 
+# [3.25.0](https://github.com/mx-space/mx-admin/compare/v3.24.2...v3.25.0) (2022-11-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency markdown-escape to v2 ([#627](https://github.com/mx-space/mx-admin/issues/627)) ([7326731](https://github.com/mx-space/mx-admin/commit/7326731b9db3a374b62c46be22d4eef8c14c910f))
+* **deps:** update dependency marked to v4.2.3 ([#630](https://github.com/mx-space/mx-admin/issues/630)) ([2413930](https://github.com/mx-space/mx-admin/commit/241393064d2dc6237e93f32ff115e9f291691900))
+* **deps:** update dependency pinia to v2.0.25 ([#628](https://github.com/mx-space/mx-admin/issues/628)) ([dc7b709](https://github.com/mx-space/mx-admin/commit/dc7b70976d0500bba8063abfe135a423928f5502))
+* lock spec deps ([a3961f9](https://github.com/mx-space/mx-admin/commit/a3961f97390d6ab130050c2d10a5ddbc99798034))
+
+
+### Features
+
+* **snippet:** support for secret ([4987863](https://github.com/mx-space/mx-admin/commit/4987863dda8842f10aa14c331a0392727468c9bd))
+
+
+
 ## [3.24.2](https://github.com/mx-space/mx-admin/compare/v3.24.1...v3.24.2) (2022-11-12)
 
 
