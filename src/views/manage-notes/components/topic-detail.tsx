@@ -107,6 +107,9 @@ export const TopicDetail = defineComponent({
               role="dialog"
               class={'modal-card md'}
               title={`专栏 - ${topic.value.name}`}
+              onClose={() => {
+                show.value = false
+              }}
             >
               <NThing>
                 {{
