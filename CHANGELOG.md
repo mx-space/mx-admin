@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## [3.25.1](https://github.com/mx-space/mx-admin/compare/v3.25.0...v3.25.1) (2022-12-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency marked to v4.2.4 ([#640](https://github.com/mx-space/mx-admin/issues/640)) ([0580f10](https://github.com/mx-space/mx-admin/commit/0580f10dab9a3f7a9455c287612a35a5fd59db5e))
+* **deps:** update dependency pinia to v2.0.28 ([#631](https://github.com/mx-space/mx-admin/issues/631)) ([99c9d5f](https://github.com/mx-space/mx-admin/commit/99c9d5fb33d40ee2332222811924f402295243dd))
+* dialog cannot be closed ([#643](https://github.com/mx-space/mx-admin/issues/643)) ([d1b0551](https://github.com/mx-space/mx-admin/commit/d1b05517a2a46e0451d5ca96072efb6d0b4456ca))
+
+
+
 # [3.25.0](https://github.com/mx-space/mx-admin/compare/v3.24.2...v3.25.0) (2022-11-25)
 
 
