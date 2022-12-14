@@ -77,7 +77,7 @@ specifiers:
   vite: 4.0.0
   vite-plugin-checker: 0.5.2
   vite-plugin-windicss: 1.8.8
-  vite-tsconfig-paths: 4.0.2
+  vite-tsconfig-paths: 4.0.3
   vue: 3.2.45
   vue-eslint-parser: 9.1.0
   vue-router: 4.1.6
@@ -169,7 +169,7 @@ devDependencies:
   unplugin-auto-import: 0.12.1_6jpckgnx4h2adshl3gnhjx4by4
   vite: 4.0.0
   vite-plugin-checker: 0.5.2_zvwhd7vldrpf23rapfmvoq3nla
-  vite-tsconfig-paths: 4.0.2_fc7ydvnmupx4m7g7zo7ycij6yq
+  vite-tsconfig-paths: 4.0.3_fc7ydvnmupx4m7g7zo7ycij6yq
   vue-eslint-parser: 9.1.0_eslint@8.29.0
   windicss: 3.5.6
 
@@ -1466,7 +1466,7 @@ packages:
   /@lezer/lr/1.2.3:
     resolution: {integrity: sha512-qpB7rBzH8f6Mzjv2AVZRahcm+2Cf7nbIH++uXbvVOL1yIRvVWQ3HAM/saeBLCyz/togB7LGo76qdJYL1uKQlqA==}
     dependencies:
-      '@lezer/common': 1.0.0
+      '@lezer/common': 1.0.2
     dev: false
 
   /@lezer/markdown/1.0.1:
@@ -5565,8 +5565,8 @@ packages:
       - supports-color
     dev: false
 
-  /vite-tsconfig-paths/4.0.2_fc7ydvnmupx4m7g7zo7ycij6yq:
-    resolution: {integrity: sha512-UzU8zwbCQrdUkj/Z0tnh293n4ScRcjJLoS8nPme2iB2FHoU5q8rhilb7AbhLlUC1uv4t6jSzVWnENjPnyGseeQ==}
+  /vite-tsconfig-paths/4.0.3_fc7ydvnmupx4m7g7zo7ycij6yq:
+    resolution: {integrity: sha512-gRO2Q/tOkV+9kMht5tz90+IaEKvW2zCnvwJV3tp2ruPNZOTM5rF+yXorJT4ggmAMYEaJ3nyXjx5P5jY5FwiZ+A==}
     peerDependencies:
       vite: '>2.0.0-0'
     dependencies:
