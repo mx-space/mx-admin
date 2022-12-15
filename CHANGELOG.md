@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.25.2](https://github.com/mx-space/mx-admin/compare/v3.25.1...v3.25.2) (2022-12-15)
+
+
+### Features
+
+* update xterm.4 ([f6359ab](https://github.com/mx-space/mx-admin/commit/f6359abc03d04c0f592eb88f834c2411be023b04))
+
+
+
 ## [3.25.1](https://github.com/mx-space/mx-admin/compare/v3.25.0...v3.25.1) (2022-12-11)
 
 
