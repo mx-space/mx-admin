@@ -81,15 +81,16 @@ export default defineComponent({
             content: () => (
               <PasswordConfirmDialog
                 onConfirm={(pwd) => {
-                  socket.emit(
-                    'pty',
-                    merge(
-                      term ? { cols: term.cols, rows: term.rows } : undefined,
-                      { password: pwd },
-                    ),
-                  )
+                  $modal.destroy()
+
                   requestAnimationFrame(() => {
-                    $modal.destroy()
+                    socket.emit(
+                      'pty',
+                      merge(
+                        term ? { cols: term.cols, rows: term.rows } : undefined,
+                        { password: pwd },
+                      ),
+                    )
                   })
                 }}
               />
@@ -222,6 +223,11 @@ const PasswordConfirmDialog = defineComponent({
           ref={inputRef}
           showPasswordOn="mousedown"
           type="password"
+          inputProps={{
+            name: 'note-password',
+            autocapitalize: 'off',
+            autocomplete: 'new-password',
+          }}
           value={password.value}
           placeholder="请输入密码"
           onUpdateValue={(val) => {

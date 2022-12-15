@@ -83,8 +83,8 @@ specifiers:
   vue-router: 4.1.6
   windicss: 3.5.6
   xss: 1.0.14
-  xterm: 4.19.0
-  xterm-addon-fit: 0.5.0
+  xterm: 5.0.0
+  xterm-addon-fit: 0.6.0
   xterm-theme: 1.1.0
 
 dependencies:
@@ -139,8 +139,8 @@ dependencies:
   vue: 3.2.45
   vue-router: 4.1.6_vue@3.2.45
   xss: 1.0.14
-  xterm: 4.19.0
-  xterm-addon-fit: 0.5.0_xterm@4.19.0
+  xterm: 5.0.0
+  xterm-addon-fit: 0.6.0_xterm@5.0.0
   xterm-theme: 1.1.0
 
 devDependencies:
@@ -5834,20 +5834,20 @@ packages:
       cssfilter: 0.0.10
     dev: false
 
-  /xterm-addon-fit/0.5.0_xterm@4.19.0:
-    resolution: {integrity: sha512-DsS9fqhXHacEmsPxBJZvfj2la30Iz9xk+UKjhQgnYNkrUIN5CYLbw7WEfz117c7+S86S/tpHPfvNxJsF5/G8wQ==}
+  /xterm-addon-fit/0.6.0_xterm@5.0.0:
+    resolution: {integrity: sha512-9/7A+1KEjkFam0yxTaHfuk9LEvvTSBi0PZmEkzJqgafXPEXL9pCMAVV7rB09sX6ATRDXAdBpQhZkhKj7CGvYeg==}
     peerDependencies:
-      xterm: ^4.0.0
+      xterm: ^5.0.0
     dependencies:
-      xterm: 4.19.0
+      xterm: 5.0.0
     dev: false
 
   /xterm-theme/1.1.0:
     resolution: {integrity: sha512-n2GocBEbqcz4vEl4OYkU93hEVia8GWdnqchiz/0nQ/olRUyhulGf4wfha23x/D2m0imWaIavRZtt8c6kWZXdsA==}
     dev: false
 
-  /xterm/4.19.0:
-    resolution: {integrity: sha512-c3Cp4eOVsYY5Q839dR5IejghRPpxciGmLWWaP9g+ppfMeBChMeLa1DCA+pmX/jyDZ+zxFOmlJL/82qVdayVoGQ==}
+  /xterm/5.0.0:
+    resolution: {integrity: sha512-tmVsKzZovAYNDIaUinfz+VDclraQpPUnAME+JawosgWRMphInDded/PuY0xmU5dOhyeYZsI0nz5yd8dPYsdLTA==}
     dev: false
 
   /y18n/5.0.8:
