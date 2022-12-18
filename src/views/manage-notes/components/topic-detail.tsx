@@ -17,12 +17,14 @@ import {
   NThing,
   NUploadDragger,
 } from 'naive-ui'
-import { RESTManager, getToken } from 'utils'
+import { RESTManager } from 'utils'
+import { buildMarkdownRenderUrl } from 'utils/endpoint'
 import { textToBigCharOrWord } from 'utils/word'
 import type { PropType } from 'vue'
 
 import type { NoteModel, Pager, PaginateResult } from '@mx-space/api-client'
 import { Icon as NIcon } from '@vicons/utils'
+
 import { useMemoNoteList } from '../hooks/use-memo-note-list'
 
 export const TopicDetail = defineComponent({
@@ -211,13 +213,7 @@ export const TopicDetail = defineComponent({
                               <p class="space-x-2 flex items-center">
                                 <span>{note.title}</span>
                                 <IframePreviewButton
-                                  path={(() => {
-                                    const endpoint = RESTManager.endpoint
-                                    const path = `${endpoint}/markdown/render/${
-                                      note.id
-                                    }${`?token=${getToken()}`}`
-                                    return path
-                                  })()}
+                                  path={buildMarkdownRenderUrl(note.id)}
                                 />
                               </p>
                             )
@@ -288,7 +284,6 @@ export const TopicDetail = defineComponent({
     )
   },
 })
-
 
 const AddNoteToThisTopicButton = defineComponent({
   props: {

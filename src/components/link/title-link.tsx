@@ -4,7 +4,7 @@ import { WEB_URL } from 'constants/env'
 import { useStoreRef } from 'hooks/use-store-ref'
 import { NButton, NEllipsis } from 'naive-ui'
 import { UIStore } from 'stores/ui'
-import { RESTManager, getToken } from 'utils'
+import { buildMarkdownRenderUrl } from 'utils/endpoint'
 import { defineComponent } from 'vue'
 import { RouterLink } from 'vue-router'
 
@@ -52,12 +52,7 @@ export const TableTitleLink = defineComponent({
       }
     })
 
-    const endpoint = RESTManager.endpoint
-    const url = new URL(endpoint)
-
-    const path = `${url.protocol}//${url.host}/render/markdown/${props.id}${
-      props.withToken ? `?token=${getToken()}` : ''
-    }`
+    const path = buildMarkdownRenderUrl(props.id!, props.withToken)
     return () => (
       <RouterLink
         to={props.inPageTo}
