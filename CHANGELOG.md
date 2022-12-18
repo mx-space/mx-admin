@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.25.3](https://github.com/mx-space/mx-admin/compare/v3.25.2...v3.25.3) (2022-12-18)
+
+
+### Bug Fixes
+
+* build render url ([ab65acf](https://github.com/mx-space/mx-admin/commit/ab65acf6eaff1c97f40e2c5ce8284c06e4f7f782))
+
+
+
 ## [3.25.2](https://github.com/mx-space/mx-admin/compare/v3.25.1...v3.25.2) (2022-12-15)
 
 
