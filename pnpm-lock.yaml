@@ -83,8 +83,8 @@ specifiers:
   vue-router: 4.1.6
   windicss: 3.5.6
   xss: 1.0.14
-  xterm: 5.0.0
-  xterm-addon-fit: 0.6.0
+  xterm: 5.1.0
+  xterm-addon-fit: 0.7.0
   xterm-theme: 1.1.0
 
 dependencies:
@@ -139,8 +139,8 @@ dependencies:
   vue: 3.2.45
   vue-router: 4.1.6_vue@3.2.45
   xss: 1.0.14
-  xterm: 5.0.0
-  xterm-addon-fit: 0.6.0_xterm@5.0.0
+  xterm: 5.1.0
+  xterm-addon-fit: 0.7.0_xterm@5.1.0
   xterm-theme: 1.1.0
 
 devDependencies:
@@ -657,21 +657,6 @@ packages:
       '@codemirror/language': ^6.0.0
       '@codemirror/state': ^6.0.0
       '@codemirror/view': ^6.0.0
-      '@lezer/common': ^1.0.0
-    dependencies:
-      '@codemirror/language': 6.2.1
-      '@codemirror/state': 6.1.1
-      '@codemirror/view': 6.2.0
-      '@lezer/common': 1.0.0
-    dev: false
-
-  /@codemirror/autocomplete/6.0.3_dkskjb6hskmxi4dkqhs7vcay3i:
-    resolution: {integrity: sha512-JTSBDC4tUyR8iRmCwQJaYpTXtOZmRn4gKjw1Fu4xIatFPqTJ7m0QRCdkdbzlvMovzjTiuHp4a8WUEB1c/LtiHg==}
-    peerDependencies:
-      '@codemirror/language': ^6.0.0
-      '@codemirror/state': ^6.0.0
-      '@codemirror/view': ^6.0.0
-      '@lezer/common': ^1.0.0
     dependencies:
       '@codemirror/language': 6.2.1
       '@codemirror/state': 6.1.1
@@ -704,26 +689,13 @@ packages:
       '@lezer/css': 1.0.0
     transitivePeerDependencies:
       - '@codemirror/view'
-      - '@lezer/common'
-    dev: false
-
-  /@codemirror/lang-css/6.0.0_rjf3xs347zrig6tysovd5u6o7a:
-    resolution: {integrity: sha512-jBqc+BTuwhNOTlrimFghLlSrN6iFuE44HULKWoR4qKYObhOIl9Lci1iYj6zMIte1XTQmZguNvjXMyr43LUKwSw==}
-    dependencies:
-      '@codemirror/autocomplete': 6.0.3_dkskjb6hskmxi4dkqhs7vcay3i
-      '@codemirror/language': 6.2.1
-      '@codemirror/state': 6.1.1
-      '@lezer/css': 1.0.0
-    transitivePeerDependencies:
-      - '@codemirror/view'
-      - '@lezer/common'
     dev: false
 
   /@codemirror/lang-html/6.1.0_@codemirror+view@6.2.0:
     resolution: {integrity: sha512-gA7NmJxqvnhwza05CvR7W/39Ap9r/4Vs9uiC0IeFYo1hSlJzc/8N6Evviz6vTW1x8SpHcRYyqKOf6rpl6LfWtg==}
     dependencies:
-      '@codemirror/autocomplete': 6.0.3_dkskjb6hskmxi4dkqhs7vcay3i
-      '@codemirror/lang-css': 6.0.0_rjf3xs347zrig6tysovd5u6o7a
+      '@codemirror/autocomplete': 6.0.3_d7mo6becmtqongve6btgjyline
+      '@codemirror/lang-css': 6.0.0_@codemirror+view@6.2.0
       '@codemirror/lang-javascript': 6.0.1
       '@codemirror/language': 6.2.1
       '@codemirror/state': 6.1.1
@@ -743,7 +715,7 @@ packages:
   /@codemirror/lang-javascript/6.0.1:
     resolution: {integrity: sha512-kjGbBEosl+ozDU5ruDV48w4v3H6KECTFiDjqMLT0KhVwESPfv3wOvnDrTT0uaMOg3YRGnBWsyiIoKHl/tNWWDg==}
     dependencies:
-      '@codemirror/autocomplete': 6.0.3_dkskjb6hskmxi4dkqhs7vcay3i
+      '@codemirror/autocomplete': 6.0.3_d7mo6becmtqongve6btgjyline
       '@codemirror/language': 6.2.1
       '@codemirror/lint': 6.0.0
       '@codemirror/state': 6.1.1
@@ -806,7 +778,6 @@ packages:
       '@lezer/lr': 1.2.3
     transitivePeerDependencies:
       - '@codemirror/view'
-      - '@lezer/common'
     dev: false
 
   /@codemirror/lang-wast/6.0.0:
@@ -820,7 +791,7 @@ packages:
   /@codemirror/lang-xml/6.0.0_@codemirror+view@6.2.0:
     resolution: {integrity: sha512-M/HLWxIiP956xGjtrxkeHkCmDGVQGKu782x8pOH5CLJIMkWtiB1DWfDoDHqpFjdEE9dkfcqPWvYfVi6GbhuXEg==}
     dependencies:
-      '@codemirror/autocomplete': 6.0.3_dkskjb6hskmxi4dkqhs7vcay3i
+      '@codemirror/autocomplete': 6.0.3_d7mo6becmtqongve6btgjyline
       '@codemirror/language': 6.2.1
       '@codemirror/state': 6.1.1
       '@lezer/common': 1.0.2
@@ -849,7 +820,6 @@ packages:
       '@codemirror/legacy-modes': 6.1.0
     transitivePeerDependencies:
       - '@codemirror/view'
-      - '@lezer/common'
     dev: false
 
   /@codemirror/language/6.2.1:
@@ -5834,20 +5804,20 @@ packages:
       cssfilter: 0.0.10
     dev: false
 
-  /xterm-addon-fit/0.6.0_xterm@5.0.0:
-    resolution: {integrity: sha512-9/7A+1KEjkFam0yxTaHfuk9LEvvTSBi0PZmEkzJqgafXPEXL9pCMAVV7rB09sX6ATRDXAdBpQhZkhKj7CGvYeg==}
+  /xterm-addon-fit/0.7.0_xterm@5.1.0:
+    resolution: {integrity: sha512-tQgHGoHqRTgeROPnvmtEJywLKoC/V9eNs4bLLz7iyJr1aW/QFzRwfd3MGiJ6odJd9xEfxcW36/xRU47JkD5NKQ==}
     peerDependencies:
       xterm: ^5.0.0
     dependencies:
-      xterm: 5.0.0
+      xterm: 5.1.0
     dev: false
 
   /xterm-theme/1.1.0:
     resolution: {integrity: sha512-n2GocBEbqcz4vEl4OYkU93hEVia8GWdnqchiz/0nQ/olRUyhulGf4wfha23x/D2m0imWaIavRZtt8c6kWZXdsA==}
     dev: false
 
-  /xterm/5.0.0:
-    resolution: {integrity: sha512-tmVsKzZovAYNDIaUinfz+VDclraQpPUnAME+JawosgWRMphInDded/PuY0xmU5dOhyeYZsI0nz5yd8dPYsdLTA==}
+  /xterm/5.1.0:
+    resolution: {integrity: sha512-LovENH4WDzpwynj+OTkLyZgJPeDom9Gra4DMlGAgz6pZhIDCQ+YuO7yfwanY+gVbn/mmZIStNOnVRU/ikQuAEQ==}
     dev: false
 
   /y18n/5.0.8:
