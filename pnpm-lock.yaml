@@ -74,7 +74,7 @@ specifiers:
   umi-request: 1.4.0
   unplugin-auto-import: 0.12.1
   validator: 13.7.0
-  vite: 4.0.1
+  vite: 4.0.3
   vite-plugin-checker: 0.5.2
   vite-plugin-windicss: 1.8.10
   vite-tsconfig-paths: 4.0.3
@@ -135,7 +135,7 @@ dependencies:
   socket.io-client: 4.5.4
   umi-request: 1.4.0
   validator: 13.7.0
-  vite-plugin-windicss: 1.8.10_vite@4.0.1
+  vite-plugin-windicss: 1.8.10_vite@4.0.3
   vue: 3.2.45
   vue-router: 4.1.6_vue@3.2.45
   xss: 1.0.14
@@ -154,8 +154,8 @@ devDependencies:
   '@types/marked': 4.0.8
   '@types/qs': 6.9.7
   '@types/validator': 13.7.10
-  '@vitejs/plugin-vue': 4.0.0_vite@4.0.1+vue@3.2.45
-  '@vitejs/plugin-vue-jsx': 3.0.0_vite@4.0.1+vue@3.2.45
+  '@vitejs/plugin-vue': 4.0.0_vite@4.0.3+vue@3.2.45
+  '@vitejs/plugin-vue-jsx': 3.0.0_vite@4.0.3+vue@3.2.45
   '@vue/compiler-sfc': 3.2.45
   cors: 2.8.5
   eslint: 8.29.0
@@ -167,9 +167,9 @@ devDependencies:
   rollup-plugin-visualizer: 5.8.3_rollup@3.7.4
   typescript: 4.9.4
   unplugin-auto-import: 0.12.1_eakrs3mtbhqzvtuiai4nqp5yq4
-  vite: 4.0.1
-  vite-plugin-checker: 0.5.2_6h2l5njob6n7h2d7yz3ahhdogu
-  vite-tsconfig-paths: 4.0.3_rftvpiefqgupx5rdsozqbqx3tq
+  vite: 4.0.3
+  vite-plugin-checker: 0.5.2_3oro3tfsfptunvkyn3lgqhnhga
+  vite-tsconfig-paths: 4.0.3_p2fwcaxbionflq6hjivvbcsv5a
   vue-eslint-parser: 9.1.0_eslint@8.29.0
   windicss: 3.5.6
 
@@ -1460,7 +1460,7 @@ packages:
   /@lezer/lr/1.2.3:
     resolution: {integrity: sha512-qpB7rBzH8f6Mzjv2AVZRahcm+2Cf7nbIH++uXbvVOL1yIRvVWQ3HAM/saeBLCyz/togB7LGo76qdJYL1uKQlqA==}
     dependencies:
-      '@lezer/common': 1.0.0
+      '@lezer/common': 1.0.2
     dev: false
 
   /@lezer/markdown/1.0.1:
@@ -2167,7 +2167,7 @@ packages:
       vue: 3.2.45
     dev: false
 
-  /@vitejs/plugin-vue-jsx/3.0.0_vite@4.0.1+vue@3.2.45:
+  /@vitejs/plugin-vue-jsx/3.0.0_vite@4.0.3+vue@3.2.45:
     resolution: {integrity: sha512-vurkuzgac5SYuxd2HUZqAFAWGTF10diKBwJNbCvnWijNZfXd+7jMtqjPFbGt7idOJUn584fP1Ar9j/GN2jQ3Ew==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
@@ -2177,20 +2177,20 @@ packages:
       '@babel/core': 7.20.5
       '@babel/plugin-transform-typescript': 7.20.2_@babel+core@7.20.5
       '@vue/babel-plugin-jsx': 1.1.1_@babel+core@7.20.5
-      vite: 4.0.1
+      vite: 4.0.3
       vue: 3.2.45
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /@vitejs/plugin-vue/4.0.0_vite@4.0.1+vue@3.2.45:
+  /@vitejs/plugin-vue/4.0.0_vite@4.0.3+vue@3.2.45:
     resolution: {integrity: sha512-e0X4jErIxAB5oLtDqbHvHpJe/uWNkdpYV83AOG2xo2tEVSzCzewgJMtREZM30wXnM5ls90hxiOtAuVU6H5JgbA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       vite: ^4.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 4.0.1
+      vite: 4.0.3
       vue: 3.2.45
     dev: true
 
@@ -5477,7 +5477,7 @@ packages:
       vue: 3.2.45
     dev: false
 
-  /vite-plugin-checker/0.5.2_6h2l5njob6n7h2d7yz3ahhdogu:
+  /vite-plugin-checker/0.5.2_3oro3tfsfptunvkyn3lgqhnhga:
     resolution: {integrity: sha512-RtpoXS1+A31HcXcNiuHyVDU3SlH1tU/ufOZEBlBrKclNsE+P9BdVsXiO5AWpczZCM6G2k/7GeH/BRi9lDvvakQ==}
     engines: {node: '>=14.16'}
     peerDependencies:
@@ -5518,14 +5518,14 @@ packages:
       strip-ansi: 6.0.1
       tiny-invariant: 1.3.1
       typescript: 4.9.4
-      vite: 4.0.1
+      vite: 4.0.3
       vscode-languageclient: 7.0.0
       vscode-languageserver: 7.0.0
       vscode-languageserver-textdocument: 1.0.8
       vscode-uri: 3.0.6
     dev: true
 
-  /vite-plugin-windicss/1.8.10_vite@4.0.1:
+  /vite-plugin-windicss/1.8.10_vite@4.0.3:
     resolution: {integrity: sha512-scywsuzo46lcTBohspmF0WiwhWEte6p+OUVrX4yr7VMRvLHMHVfLtJReyD5pppjijG7YOwVsZn7XBWWZtF658Q==}
     peerDependencies:
       vite: ^2.0.1 || ^3.0.0 || ^4.0.0
@@ -5533,13 +5533,13 @@ packages:
       '@windicss/plugin-utils': 1.8.10
       debug: 4.3.4
       kolorist: 1.6.0
-      vite: 4.0.1
+      vite: 4.0.3
       windicss: 3.5.6
     transitivePeerDependencies:
       - supports-color
     dev: false
 
-  /vite-tsconfig-paths/4.0.3_rftvpiefqgupx5rdsozqbqx3tq:
+  /vite-tsconfig-paths/4.0.3_p2fwcaxbionflq6hjivvbcsv5a:
     resolution: {integrity: sha512-gRO2Q/tOkV+9kMht5tz90+IaEKvW2zCnvwJV3tp2ruPNZOTM5rF+yXorJT4ggmAMYEaJ3nyXjx5P5jY5FwiZ+A==}
     peerDependencies:
       vite: '>2.0.0-0'
@@ -5547,14 +5547,14 @@ packages:
       debug: 4.3.4
       globrex: 0.1.2
       tsconfck: 2.0.1_typescript@4.9.4
-      vite: 4.0.1
+      vite: 4.0.3
     transitivePeerDependencies:
       - supports-color
       - typescript
     dev: true
 
-  /vite/4.0.1:
-    resolution: {integrity: sha512-kZQPzbDau35iWOhy3CpkrRC7It+HIHtulAzBhMqzGHKRf/4+vmh8rPDDdv98SWQrFWo6//3ozwsRmwQIPZsK9g==}
+  /vite/4.0.3:
+    resolution: {integrity: sha512-HvuNv1RdE7deIfQb8mPk51UKjqptO/4RXZ5yXSAvurd5xOckwS/gg8h9Tky3uSbnjYTgUm0hVCet1cyhKd73ZA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
     peerDependencies:
