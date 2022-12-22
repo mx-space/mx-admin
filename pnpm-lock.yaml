@@ -75,7 +75,7 @@ specifiers:
   unplugin-auto-import: 0.12.1
   validator: 13.7.0
   vite: 4.0.1
-  vite-plugin-checker: 0.5.2
+  vite-plugin-checker: 0.5.3
   vite-plugin-windicss: 1.8.10
   vite-tsconfig-paths: 4.0.3
   vue: 3.2.45
@@ -168,7 +168,7 @@ devDependencies:
   typescript: 4.9.4
   unplugin-auto-import: 0.12.1_eakrs3mtbhqzvtuiai4nqp5yq4
   vite: 4.0.1
-  vite-plugin-checker: 0.5.2_6h2l5njob6n7h2d7yz3ahhdogu
+  vite-plugin-checker: 0.5.3_6h2l5njob6n7h2d7yz3ahhdogu
   vite-tsconfig-paths: 4.0.3_rftvpiefqgupx5rdsozqbqx3tq
   vue-eslint-parser: 9.1.0_eslint@8.29.0
   windicss: 3.5.6
@@ -5477,8 +5477,8 @@ packages:
       vue: 3.2.45
     dev: false
 
-  /vite-plugin-checker/0.5.2_6h2l5njob6n7h2d7yz3ahhdogu:
-    resolution: {integrity: sha512-RtpoXS1+A31HcXcNiuHyVDU3SlH1tU/ufOZEBlBrKclNsE+P9BdVsXiO5AWpczZCM6G2k/7GeH/BRi9lDvvakQ==}
+  /vite-plugin-checker/0.5.3_6h2l5njob6n7h2d7yz3ahhdogu:
+    resolution: {integrity: sha512-upPESKsQTypC2S7LPjxu9HknOymNSToAAHTYSFHb0at5GKLcN1QGMAR5Hb+7KqZclGMVniXAj7QdhZv+fTx83Q==}
     engines: {node: '>=14.16'}
     peerDependencies:
       eslint: '>=7'
