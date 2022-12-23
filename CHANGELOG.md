@@ -1,5 +1,14 @@
 # CHANGELOG
 
+# [3.26.0](https://github.com/mx-space/mx-admin/compare/v3.25.3...v3.26.0) (2022-12-23)
+
+
+### Bug Fixes
+
+* support shorthand comment ([f868372](https://github.com/mx-space/mx-admin/commit/f86837217bc7441c743abbd70ec9cf0d10d6af86))
+
+
+
 ## [3.25.3](https://github.com/mx-space/mx-admin/compare/v3.25.2...v3.25.3) (2022-12-18)
 
 
