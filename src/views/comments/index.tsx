@@ -227,9 +227,27 @@ const ManageComment = defineComponent(() => {
             <NSpace size={5}>
               <span>{relativeTimeFromNow(row.created)}</span>
               <span>于</span>
-              <a href={link} target="_blank">
-                {row.ref.title}
-              </a>
+              {row.ref.title && (
+                <a href={link} target="_blank">
+                  {row.ref.title}
+                </a>
+              )}
+              {row.ref.content && (
+                <NPopover>
+                  {{
+                    default() {
+                      return <p>{row.ref.content}</p>
+                    },
+                    trigger() {
+                      return (
+                        <NButton text size="tiny" type="primary">
+                          速记
+                        </NButton>
+                      )
+                    },
+                  }}
+                </NPopover>
+              )}
             </NSpace>
             <p>
               <CommentMarkdownRender text={row.text} />

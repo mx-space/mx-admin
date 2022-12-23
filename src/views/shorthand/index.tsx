@@ -1,11 +1,22 @@
 /**
  * 最近 & 速记
  */
-import { AddIcon, PenIcon } from 'components/icons'
+import {
+  AddIcon,
+  MaterialSymbolsThumbDownOutline,
+  MaterialSymbolsThumbUpOutline,
+  PenIcon,
+} from 'components/icons'
 import { useShorthand } from 'components/shorthand'
 import { RelativeTime } from 'components/time/relative-time'
 import type { RecentlyModel } from 'models/recently'
-import { NButton, NPopconfirm, NTimeline, NTimelineItem } from 'naive-ui'
+import {
+  NButton,
+  NPopconfirm,
+  NSpace,
+  NTimeline,
+  NTimelineItem,
+} from 'naive-ui'
 import { defineComponent, onMounted } from 'vue'
 
 import { Icon } from '@vicons/utils'
@@ -65,7 +76,7 @@ export default defineComponent({
                         <div class="action">
                           <NPopconfirm
                             placement="left"
-                            positiveText={'取消'}
+                            positiveText="取消"
                             negativeText="删除"
                             onNegativeClick={async () => {
                               await RESTManager.api.recently(item.id).delete()
@@ -92,7 +103,16 @@ export default defineComponent({
                     )
                   },
                   footer() {
-                    return <RelativeTime time={item.created} />
+                    return (
+                      <NSpace inline size={5}>
+                        <RelativeTime time={item.created} />
+                        <NSpace inline size={1} align="center">
+                          <MaterialSymbolsThumbUpOutline /> {item.up}
+                          <span class={'mx-2'}>/</span>
+                          <MaterialSymbolsThumbDownOutline /> {item.down}
+                        </NSpace>
+                      </NSpace>
+                    )
                   },
                 }}
               </NTimelineItem>
