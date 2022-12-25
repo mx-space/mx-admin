@@ -68,7 +68,7 @@ export default defineComponent(() => {
       files = filename
     }
     await RESTManager.api.backups.delete({
-      params: {
+      data: {
         files,
       },
     })
