@@ -25,14 +25,14 @@ export const IpInfoPopover = defineComponent({
     const ipInfoText = ref('获取中..')
     const setIpInfoText = (info: IP) => {
       ipInfoText.value = `IP: ${info.ip}<br />
-      城市: ${
+      城市：${
         [info.countryName, info.regionName, info.cityName]
           .filter(Boolean)
           .join(' - ') || 'N/A'
       }<br />
       ISP: ${info.ispDomain || 'N/A'}<br />
-      组织: ${info.ownerDomain || 'N/A'}<br />
-      范围: ${info.range ? Object.values(info.range).join(' - ') : 'N/A'}
+      组织：${info.ownerDomain || 'N/A'}<br />
+      范围：${info.range ? Object.values(info.range).join(' - ') : 'N/A'}
       `
     }
     const resetIpInfoText = () => (ipInfoText.value = '获取中..')

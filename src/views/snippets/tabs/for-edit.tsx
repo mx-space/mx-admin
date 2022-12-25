@@ -43,7 +43,7 @@ export const Tab2ForEdit = defineComponent({
     )
 
     const typeToValueMap = reactive<Record<SnippetType, string>>(
-      // 有 Id 的情况下，避免闪白, 留空数据
+      // 有 Id 的情况下，避免闪白，留空数据
       editId.value
         ? { json: '', yaml: '', text: '', function: '', json5: '' }
         : {
@@ -56,7 +56,7 @@ export const Tab2ForEdit = defineComponent({
     )
 
     let jsonFormatBeforeType: SnippetType = SnippetType.JSON
-    // 监听 type 变化, 实时同时 typeToValueMap 中的值 到 data.raw
+    // 监听 type 变化，实时同时 typeToValueMap 中的值 到 data.raw
     watch(
       () => data.value.type,
       (type, beforeType) => {

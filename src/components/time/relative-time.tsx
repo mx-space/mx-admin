@@ -54,7 +54,7 @@ export const RelativeTime = defineComponent({
             },
             default() {
               return props.time
-                ? parseDate(props.time, 'yyyy年M月d日 HH:mm:ss')
+                ? parseDate(props.time, 'yyyy 年 M 月 d 日 HH:mm:ss')
                 : '此内容自发布以来没有被修改过'
             },
           }}

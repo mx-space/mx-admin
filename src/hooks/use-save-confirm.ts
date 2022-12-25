@@ -5,7 +5,7 @@ import { onBeforeRouteLeave } from 'vue-router'
 /**
  *
  * @param enable
- * @param comparedFn true: 不提示, false: 提示
+ * @param comparedFn true: 不提示，false: 提示
  */
 export const useSaveConfirm = (
   enable: boolean,

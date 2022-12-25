@@ -211,7 +211,7 @@ const ProcessView = defineComponent({
                       ) {
                         const download_url = file.download_url
                         if (!download_url) {
-                          message.error(`获取下载地址失败, ${file.name}`)
+                          message.error(`获取下载地址失败，${file.name}`)
                           return
                         }
                         const text = await fetch(download_url).then((res) =>

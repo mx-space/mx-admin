@@ -83,7 +83,7 @@ export default defineComponent(() => {
             (file.type && file.type !== 'text/markdown') ||
             !['md', 'markdown'].includes(ext!)
           ) {
-            message.error(`只能解析 markdown 文件, 但是得到了 ${file.type}`)
+            message.error(`只能解析 markdown 文件，但是得到了 ${file.type}`)
 
             reject(
               `File must be markdown. got type: ${ 
@@ -106,7 +106,7 @@ export default defineComponent(() => {
       strList.push(res as string)
     }
     const parsedList_ = parseMarkdown(strList)
-    message.success('解析完成, 结果查看 console 哦')
+    message.success('解析完成，结果查看 console 哦')
     parsedList.value = parsedList_.map((v, index) => ({
       ...v,
       filename: fileList.value[index].file?.name ?? '',
@@ -127,7 +127,7 @@ export default defineComponent(() => {
       },
     })
 
-    message.success('上传成功!')
+    message.success('上传成功！')
     fileList.value = []
   }
 
@@ -214,7 +214,7 @@ export default defineComponent(() => {
             </NUpload>
 
             <NText depth={2} class="!text-sm">
-              只能上传markdown文件
+              只能上传 markdown 文件
             </NText>
           </NSpace>
         </NFormItem>

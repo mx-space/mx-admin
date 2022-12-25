@@ -58,7 +58,7 @@ export const GetLocationButton = defineComponent({
           console.error(e)
 
           if (e.code == 2) {
-            message.error('获取定位失败, 连接超时')
+            message.error('获取定位失败，连接超时')
           } else {
             message.error('定位权限未打开')
           }

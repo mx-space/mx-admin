@@ -49,7 +49,7 @@ class RESTManagerStatic {
               Message.error(message)
             }
           } catch (e) {
-            // Message.error('出错了, 请查看控制台')
+            // Message.error('出错了，请查看控制台')
             console.log(e)
           }
 

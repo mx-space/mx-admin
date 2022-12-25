@@ -23,7 +23,7 @@ export const useUserStore = defineStore('user', () => {
         const $user = await RESTManager.api.master.get<UserModel>()
         user.value = $user
       } catch (e: any) {
-        if (e.data?.message == '没有完成初始化!') {
+        if (e.data?.message == '没有完成初始化！') {
           router.replace('/setup')
         }
       }

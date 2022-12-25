@@ -219,7 +219,7 @@ const ApiToken = defineComponent(() => {
     for (const key in n) {
       dataModel[key] = n[key]
     }
-    message.success(`生成成功, Token 已复制, ${response.token}`)
+    message.success(`生成成功，Token 已复制，${response.token}`)
     await fetchToken()
     // Backend bug.
     const index = tokens.value.findIndex((i) => i.name === payload.name)
@@ -327,7 +327,7 @@ const ApiToken = defineComponent(() => {
             title: '过期时间',
             key: 'expired',
             render({ expired }) {
-              return parseDate(expired, 'yyyy年M月d日 HH:mm:ss')
+              return parseDate(expired, 'yyyy 年 M 月 d 日 HH:mm:ss')
             },
           },
           {

@@ -257,7 +257,7 @@ const ConnectionStatus = defineComponent(() => {
           return (
             <NListItem key={item.startTime}>
               <div>
-                开始于 {parseDate(item.startTime, 'yyyy年M月d日 HH:mm:ss')}
+                开始于 {parseDate(item.startTime, 'yyyy 年 M 月 d 日 HH:mm:ss')}
               </div>
               <div>
                 IP:{' '}
@@ -269,7 +269,7 @@ const ConnectionStatus = defineComponent(() => {
               </div>
               <div>
                 {item.endTime
-                  ? `结束于 ${parseDate(item.endTime, 'yyyy年M月d日 HH:mm:ss')}`
+                  ? `结束于 ${parseDate(item.endTime, 'yyyy 年 M 月 d 日 HH:mm:ss')}`
                   : '没有结束'}
               </div>
               <div>

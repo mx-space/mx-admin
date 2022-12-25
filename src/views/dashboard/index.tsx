@@ -156,7 +156,7 @@ export const DashBoardView = defineComponent({
               <time>
                 {parseDate(
                   userStore.user.value?.lastLoginTime,
-                  'yyyy年M月d日 HH:mm:ss',
+                  'yyyy 年 M 月 d 日 HH:mm:ss',
                 )}
               </time>
             ) : (
@@ -439,11 +439,11 @@ export const DashBoardView = defineComponent({
             <NH3 class="text-opacity-80 font-light">数据统计</NH3>
 
             <p class="-mt-4 mb-3 relative text-gray-500 flex items-center">
-              <span>数据更新于: </span>
+              <span>数据更新于：</span>
               <time>
                 {' '}
                 {statTime.value
-                  ? parseDate(statTime.value, 'yyyy年M月d日 HH:mm:ss')
+                  ? parseDate(statTime.value, 'yyyy 年 M 月 d 日 HH:mm:ss')
                   : 'N/A'}
               </time>
 
@@ -585,7 +585,7 @@ const AppIF = defineComponent({
           title: '[管理中台] 有新版本啦！',
           content: () => (
             <div>
-              <p>{`当前版本: ${PKG.version}，最新版本: ${dashboard}`}</p>
+              <p>{`当前版本：${PKG.version}，最新版本：${dashboard}`}</p>
               <div class={'text-right'}>
                 <NButton
                   round
@@ -630,7 +630,7 @@ const AppIF = defineComponent({
         if (versionMap.value.system !== app.value.version) {
           notice.info({
             title: '[系统] 有新版本啦！',
-            content: `当前版本: ${app.value.version}，最新版本: ${versionMap.value.system}`,
+            content: `当前版本：${app.value.version}，最新版本：${versionMap.value.system}`,
             closable: true,
           })
         }
@@ -653,9 +653,9 @@ const AppIF = defineComponent({
             </NButton>
           </div>
           <br />
-          系统版本: {app.value?.version || 'N/A'}
+          系统版本：{app.value?.version || 'N/A'}
           <br />
-          页面来源: {window.pageSource || ''}
+          页面来源：{window.pageSource || ''}
         </NP>
       </NElement>
     )

@@ -157,7 +157,7 @@ export const EditorToggleWrapper = defineComponent({
               bordered={false}
             >
               <NP class="text-center">
-                <NText depth="3">此设定仅存储在本地!</NText>
+                <NText depth="3">此设定仅存储在本地！</NText>
               </NP>
               <NForm labelPlacement="left" labelWidth="8rem" labelAlign="right">
                 <NFormItem label="编辑器选择">

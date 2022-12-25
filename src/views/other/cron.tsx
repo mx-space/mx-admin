@@ -34,7 +34,7 @@ export default defineComponent({
               message.success(`${niceName} 执行完成`)
               timer = clearTimeout(timer)
             } else if (data.status === 'reject') {
-              message.error(`${niceName} 执行失败, ${data.message}`)
+              message.error(`${niceName} 执行失败，${data.message}`)
               timer = clearTimeout(timer)
             } else {
               timer = setTimeout(polling, 1000)
@@ -97,7 +97,7 @@ export default defineComponent({
                           )
                         },
                         default: () => (
-                          <span class="max-w-48">确定要执行?</span>
+                          <span class="max-w-48">确定要执行？</span>
                         ),
                       }}
                     </NPopconfirm>

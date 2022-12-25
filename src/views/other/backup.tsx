@@ -53,7 +53,7 @@ export default defineComponent(() => {
           timeout: 1 << 30,
         })
         .then(() => {
-          message.success('恢复成功, 页面将会重载')
+          message.success('恢复成功，页面将会重载')
           setTimeout(() => {
             location.reload()
           }, 1000)
@@ -183,7 +183,7 @@ export default defineComponent(() => {
                         </NButton>
                       ),
 
-                      default: () => <span class="max-w-48">确定要回退?</span>,
+                      default: () => <span class="max-w-48">确定要回退？</span>,
                     }}
                   </NPopconfirm>
 
@@ -201,7 +201,7 @@ export default defineComponent(() => {
                         </NButton>
                       ),
 
-                      default: () => <span class="max-w-48">确定要删除?</span>,
+                      default: () => <span class="max-w-48">确定要删除？</span>,
                     }}
                   </NPopconfirm>
                 </NSpace>

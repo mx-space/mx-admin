@@ -64,7 +64,7 @@ const EditSay = defineComponent({
       if (data.text || data.author || data.source) {
         dialog.create({
           title: '警告',
-          content: '发布一言会覆盖现有的内容, 要继续吗',
+          content: '发布一言会覆盖现有的内容，要继续吗',
           type: 'warning',
           negativeText: '取消',
           positiveText: '确定',

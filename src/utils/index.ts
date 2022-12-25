@@ -7,7 +7,7 @@ export * from './rest'
 export * from './time'
 
 /**
- * diff 两层, Object 浅层比较, 引用不一致返回整个不一样的 Object
+ * diff 两层，Object 浅层比较，引用不一致返回整个不一样的 Object
  * @param origin
  * @param newObject
  * @returns

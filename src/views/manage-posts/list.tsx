@@ -119,7 +119,7 @@ export const ManagePostListView = defineComponent({
                           return (
                             <span>
                               置顶于{' '}
-                              {parseDate(row.pin, 'yyyy年M月d日 HH:mm:ss')}
+                              {parseDate(row.pin, 'yyyy 年 M 月 d 日 HH:mm:ss')}
                             </span>
                           )
                         },

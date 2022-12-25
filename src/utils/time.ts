@@ -2,8 +2,8 @@
 import { format as f } from 'date-fns'
 
 export enum DateFormat {
-  'yyyy年M月d日',
-  'yyyy年M月d日 HH:mm:ss',
+  'yyyy 年 M 月 d 日',
+  'yyyy 年 M 月 d 日 HH:mm:ss',
   'HH:mm',
 
   'H:mm:ss A',
@@ -12,7 +12,7 @@ export enum DateFormat {
 
 export const parseDate = (
   time: string | Date,
-  format: keyof typeof DateFormat = 'yyyy年M月d日',
+  format: keyof typeof DateFormat = 'yyyy 年 M 月 d 日',
 ) => {
   const date = new Date(time)
   if (isNaN(date as any)) return 'N/A'

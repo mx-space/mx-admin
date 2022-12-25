@@ -407,7 +407,7 @@ export default defineComponent({
         <NP>
           <SectionTitle>
             <span>
-              总请求量中: PV {count.value.callTime} UV {count.value.uv}
+              总请求量中：PV {count.value.callTime} UV {count.value.uv}
             </span>
           </SectionTitle>
         </NP>

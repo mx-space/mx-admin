@@ -30,8 +30,8 @@ export const EmailTab = defineComponent({
 
     const reset = () => {
       modal.warning({
-        title: '确认重置?',
-        content: '重置后, 模板将被恢复为默认模板',
+        title: '确认重置？',
+        content: '重置后，模板将被恢复为默认模板',
         async onNegativeClick() {
           await RESTManager.api.options.email.template.reply.delete({
             params: { type: templateType.value },

@@ -94,7 +94,7 @@ export const ContentLayout = defineComponent({
           (t, cur) =>
             t +
             (cur.meta.title
-              ? // t 不为空, 补一个 分隔符
+              ? // t 不为空，补一个 分隔符
                 t.length > 0
                 ? ` · ${cur.meta.title}`
                 : cur.meta.title
@@ -104,7 +104,7 @@ export const ContentLayout = defineComponent({
     )
 
     const SettingHeaderEl = ref<(() => VNode) | null>()
-    // 抽出动态组件, 防止整个子代组件全部重渲染
+    // 抽出动态组件，防止整个子代组件全部重渲染
     const Header = defineComponent({
       setup() {
         return () => (

@@ -208,7 +208,7 @@
         "enable": {
           "type": "boolean",
           "title": "开启自动备份",
-          "description": "填写以下 COS 信息, 将同时上传备份到 COS"
+          "description": "填写以下 COS 信息，将同时上传备份到 COS"
         },
         "secretId": {
           "type": "string",
