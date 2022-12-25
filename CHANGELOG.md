@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.26.1](https://github.com/mx-space/mx-admin/compare/v3.26.0...v3.26.1) (2022-12-25)
+
+
+### Bug Fixes
+
+* delete more backup ([7c50a2b](https://github.com/mx-space/mx-admin/commit/7c50a2b34bc5e4e62df84e4aa1fc5599233e7438))
+
+
+
 # [3.26.0](https://github.com/mx-space/mx-admin/compare/v3.25.3...v3.26.0) (2022-12-23)
 
 
