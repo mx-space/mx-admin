@@ -61,6 +61,10 @@ export const useStorageObject = <U extends object>(
     { deep: true },
   )
 
+  onBeforeMount(() => {
+    localStorage.setItem(storageKey, JSON.stringify(objectStorage))
+  })
+
   return {
     storage: objectStorage as U,
     reset: () => {

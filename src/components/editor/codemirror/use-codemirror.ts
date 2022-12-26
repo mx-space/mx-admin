@@ -18,6 +18,7 @@ import {
   lineNumbers,
 } from '@codemirror/view'
 
+import { useEditorConfig } from '../universal/use-editor-setting'
 import { codemirrorReconfigureExtension } from './extension'
 import { syntaxTheme } from './syntax-highlight'
 import { useCodeMirrorAutoToggleTheme } from './ui'
@@ -38,6 +39,11 @@ export const useCodeMirror = <T extends Element>(
 ): [Ref<T | undefined>, Ref<EditorView | undefined>] => {
   const refContainer = ref<T>()
   const editorView = ref<EditorView>()
+  const {
+    general: {
+      setting: { autocorrect },
+    },
+  } = useEditorConfig()
   const { onChange } = props
 
   onMounted(() => {
@@ -47,12 +53,6 @@ export const useCodeMirror = <T extends Element>(
       doc: props.initialDoc,
       extensions: [
         keymap.of([
-          ...defaultKeymap,
-          ...historyKeymap,
-          ...markdownKeymap,
-          indentWithTab,
-        ]),
-        keymap.of([
           {
             key: 'Mod-s',
             run() {
@@ -60,6 +60,41 @@ export const useCodeMirror = <T extends Element>(
             },
             preventDefault: true,
           },
+          {
+            key: 'Enter',
+            run(ev) {
+              console.log('-')
+
+              if (autocorrect) {
+                import('@huacnlee/autocorrect')
+                  .then(({ format }) => {
+                    const newText = format(ev.state.doc.toString())
+
+                    ev.dispatch({
+                      changes: {
+                        from: 0,
+                        to: ev.state.doc.length,
+                        insert: newText,
+                      },
+                      selection: {
+                        // FIXME
+                        anchor: newText.length,
+                      },
+                    })
+                  })
+                  .catch(() => {
+                    console.log('not support wasm')
+                  })
+              }
+              return false
+            },
+          },
+        ]),
+        keymap.of([
+          ...defaultKeymap,
+          ...historyKeymap,
+          ...markdownKeymap,
+          indentWithTab,
         ]),
 
         lineNumbers(),

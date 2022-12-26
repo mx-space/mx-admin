@@ -55,10 +55,6 @@ export const CodemirrorEditor = defineComponent({
       () => memoInitialValue === editorView.value?.state.doc.toString(),
     )
 
-    // watchEffect(() => {
-    //   console.log(toRaw(editorView.value))
-    // })
-
     return () => (
       <div class={[styles['editor'], props.className]} ref={refContainer} />
     )
