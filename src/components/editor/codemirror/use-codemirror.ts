@@ -46,6 +46,47 @@ export const useCodeMirror = <T extends Element>(
   } = useEditorConfig()
   const { onChange } = props
 
+  const format = () => {
+    const ev = editorView.value
+
+    if (autocorrect && ev) {
+      import('@huacnlee/autocorrect')
+        .then(({ format }) => {
+          const { state, dispatch } = ev
+          const currentLine = state.doc.lineAt(state.selection.main.head)
+          if (currentLine.text) {
+            return
+          }
+
+          const allLineBeforeCurrentLine = state.doc.sliceString(
+            0,
+            currentLine.from,
+          )
+          const newText = format(allLineBeforeCurrentLine)
+          const delta = newText.length - allLineBeforeCurrentLine.length
+
+          const afterCurrentLine = state.doc.sliceString(
+            currentLine.to,
+            state.doc.length,
+          )
+          const newAfterCurrentLine = format(afterCurrentLine)
+
+          dispatch({
+            changes: {
+              from: 0,
+              to: state.doc.length,
+              insert: newText + newAfterCurrentLine,
+            },
+            selection: {
+              anchor: state.selection.main.anchor + delta,
+            },
+          })
+        })
+        .catch(() => {
+          console.log('not support wasm')
+        })
+    }
+  }
   onMounted(() => {
     if (!refContainer.value) return
 
@@ -62,30 +103,8 @@ export const useCodeMirror = <T extends Element>(
           },
           {
             key: 'Enter',
-            run(ev) {
-              console.log('-')
-
-              if (autocorrect) {
-                import('@huacnlee/autocorrect')
-                  .then(({ format }) => {
-                    const newText = format(ev.state.doc.toString())
-
-                    ev.dispatch({
-                      changes: {
-                        from: 0,
-                        to: ev.state.doc.length,
-                        insert: newText,
-                      },
-                      selection: {
-                        // FIXME
-                        anchor: newText.length,
-                      },
-                    })
-                  })
-                  .catch(() => {
-                    console.log('not support wasm')
-                  })
-              }
+            run() {
+              requestAnimationFrame(format)
               return false
             },
           },
@@ -127,6 +146,10 @@ export const useCodeMirror = <T extends Element>(
   })
 
   useCodeMirrorAutoToggleTheme(editorView)
+
+  onBeforeUnmount(() => {
+    editorView.value?.destroy()
+  })
 
   return [refContainer, editorView]
 }

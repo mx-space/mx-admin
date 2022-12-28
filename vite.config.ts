@@ -39,7 +39,6 @@ export default ({ mode }) => {
         imports: ['vue', 'pinia', '@vueuse/core'],
       }),
       Checker({
-        typescript: true,
         enableBuild: true,
       }),
       htmlPlugin(env),
