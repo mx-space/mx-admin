@@ -104,6 +104,6 @@
     "windicss": "3.5.6"
   },
   "resolutions": {
-    "@vueuse/core": "9.6.0"
+    "@bytebase/vue-kbar>@vueuse/core": "^9.9.0"
   }
 }
