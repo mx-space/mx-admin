@@ -2,12 +2,15 @@ import { CenterSpin } from 'components/spin'
 import { useSaveConfirm } from 'hooks/use-save-confirm'
 import { useStoreRef } from 'hooks/use-store-ref'
 import type { editor as Editor } from 'monaco-editor'
+// eslint-disable-next-line
+import type monaco from 'monaco-editor'
 import { UIStore } from 'stores/ui'
 import type { PropType, Ref } from 'vue'
 import { defineComponent, onMounted, ref, toRaw, watch } from 'vue'
 
 import styles from '../universal/editor.module.css'
 import { editorBaseProps } from '../universal/props'
+import { useEditorConfig } from '../universal/use-editor-setting'
 import { useDefineMyThemes } from './use-define-theme'
 
 export const MonacoEditor = defineComponent({
@@ -23,6 +26,80 @@ export const MonacoEditor = defineComponent({
     const loaded = ref(false)
     let editor: Editor.IStandaloneCodeEditor
     const { isDark } = useStoreRef(UIStore)
+    const {
+      general: {
+        setting: { autocorrect },
+      },
+    } = useEditorConfig()
+
+    watch(
+      () => [autocorrect],
+      () => {
+        if (!editor) {
+          return
+        }
+      },
+    )
+
+    const initAutoCorrect = (editor: Editor.IStandaloneCodeEditor) => {
+      Promise.all([
+        import('@huacnlee/autocorrect'),
+        import('monaco-editor'),
+      ]).then(([autocorrect, monaco]) => {
+        editor.onKeyDown((e) => {
+          if (e.code === 'Enter') {
+            const result = autocorrect.lintFor(editor.getValue(), 'text')
+
+            if (result.lines.length) {
+              const { l, c, new: newText } = result.lines[0]
+              const position = editor.getPosition()
+
+              if (!position) {
+                return
+              }
+
+              editor.executeEdits('autocorrect', [
+                {
+                  range: new monaco.Range(l, c, l, Infinity),
+                  text: newText,
+                },
+              ])
+            }
+          }
+        })
+        editor.onDidChangeModelContent(() => {
+          const result = autocorrect.lintFor(editor.getValue(), 'text')
+
+          monaco.editor.setModelMarkers(
+            // @ts-ignore
+            editor.getModel(),
+            'autocorrect',
+            createMarkers(result),
+          )
+        })
+
+        function createMarkers(result: any) {
+          const markers: monaco.editor.IMarkerData[] = result.lines.map(
+            (lineResult: any) => {
+              return {
+                severity:
+                  lineResult.severity === 1
+                    ? monaco.MarkerSeverity.Warning
+                    : monaco.MarkerSeverity.Info,
+                startLineNumber: lineResult.l,
+                startColumn: lineResult.c,
+                endLineNumber: lineResult.l,
+                endColumn: lineResult.c + lineResult.old.length + 1,
+                message: `AutoCorrect: ${lineResult.new}`,
+              }
+            },
+          )
+
+          return markers
+        }
+      })
+    }
+
     useDefineMyThemes()
     onBeforeUnmount(() => {
       editor?.dispose?.()
@@ -45,6 +122,10 @@ export const MonacoEditor = defineComponent({
 
       if (props.innerRef) {
         props.innerRef.value = editor
+      }
+
+      if (autocorrect) {
+        initAutoCorrect(editor)
       }
     })
     // HACK

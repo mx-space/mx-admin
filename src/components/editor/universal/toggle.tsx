@@ -81,7 +81,7 @@ export const EditorToggleWrapper = defineComponent({
     })
 
     useMountAndUnmount(() => {
-      document.addEventListener('fullscreenchange', (e) => {
+      document.addEventListener('fullscreenchange', () => {
         if (document.fullscreenElement === wrapperRef.value) {
           document.documentElement.classList.add('editor-fullscreen')
         } else {

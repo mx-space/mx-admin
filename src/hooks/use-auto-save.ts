@@ -82,7 +82,7 @@ export const useAutoSaveInEditor = <T extends { text: string; title: string }>(
       requestAnimationFrame(() => {
         dialog.info({
           title: '发现有未保存的内容，是否还原？',
-          negativeText: '清楚',
+          negativeText: '清除',
           positiveText: '嗯',
           onNegativeClick() {
             clearSaved()

@@ -4,6 +4,7 @@ import AutoImport from 'unplugin-auto-import/vite'
 import type { PluginOption } from 'vite'
 import { defineConfig, loadEnv } from 'vite'
 import Checker from 'vite-plugin-checker'
+import wasm from 'vite-plugin-wasm'
 import WindiCSS from 'vite-plugin-windicss'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
@@ -20,6 +21,7 @@ export default ({ mode }) => {
 
   return defineConfig({
     plugins: [
+      wasm(),
       vueJsx(),
       WindiCSS(),
       vue({
@@ -37,7 +39,6 @@ export default ({ mode }) => {
         imports: ['vue', 'pinia', '@vueuse/core'],
       }),
       Checker({
-        typescript: true,
         enableBuild: true,
       }),
       htmlPlugin(env),
@@ -64,7 +65,7 @@ export default ({ mode }) => {
       },
     },
     optimizeDeps: {
-      exclude: [],
+      exclude: ['@huacnlee/autocorrect'],
     },
 
     define: {
