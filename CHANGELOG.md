@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## [3.26.2](https://github.com/mx-space/mx-admin/compare/v3.26.1...v3.26.2) (2022-12-30)
+
+
+### Bug Fixes
+
+* ci build ([a66f1b9](https://github.com/mx-space/mx-admin/commit/a66f1b9f8a4c4f3f620fab9f5ffb6b7e41f4dcb7))
+
+
+### Features
+
+* autocorrect ([#657](https://github.com/mx-space/mx-admin/issues/657)) ([e26e3da](https://github.com/mx-space/mx-admin/commit/e26e3da9ad2da44cfee057532d688493a52d07b9))
+
+
+
 ## [3.26.1](https://github.com/mx-space/mx-admin/compare/v3.26.0...v3.26.1) (2022-12-25)
 
 
