@@ -46,6 +46,27 @@ export const MonacoEditor = defineComponent({
         import('@huacnlee/autocorrect'),
         import('monaco-editor'),
       ]).then(([autocorrect, monaco]) => {
+        editor.onKeyDown((e) => {
+          if (e.code === 'Enter') {
+            const result = autocorrect.lintFor(editor.getValue(), 'text')
+
+            if (result.lines.length) {
+              const { l, c, new: newText } = result.lines[0]
+              const position = editor.getPosition()
+
+              if (!position) {
+                return
+              }
+
+              editor.executeEdits('autocorrect', [
+                {
+                  range: new monaco.Range(l, c, l, Infinity),
+                  text: newText,
+                },
+              ])
+            }
+          }
+        })
         editor.onDidChangeModelContent(() => {
           const result = autocorrect.lintFor(editor.getValue(), 'text')
 
