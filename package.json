@@ -74,7 +74,7 @@
   },
   "devDependencies": {
     "@innei/eslint-config-vue-ts": "0.9.6",
-    "@innei/prettier": "0.9.6",
+    "@innei/prettier": "0.9.7",
     "@types/ejs": "3.1.1",
     "@types/event-source-polyfill": "1.0.0",
     "@types/js-yaml": "4.0.5",
