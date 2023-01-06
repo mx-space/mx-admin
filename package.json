@@ -88,7 +88,7 @@
     "@vue/compiler-sfc": "3.2.45",
     "cors": "2.8.5",
     "eslint": "*",
-    "postcss": "8.4.20",
+    "postcss": "8.4.21",
     "postcss-nested": "6.0.0",
     "postcss-preset-env": "7.8.3",
     "prettier": "2.8.1",
