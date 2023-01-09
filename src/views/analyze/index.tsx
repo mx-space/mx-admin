@@ -167,9 +167,9 @@ export default defineComponent({
     const todayIp = ref<string[]>()
     const graphData = ref(
       {} as {
-        day: any[]
-        week: any[]
-        month: any[]
+        day: Today[]
+        week: Week[]
+        month: Month[]
       },
     )
     const topPaths = ref([] as Path[])
@@ -209,7 +209,7 @@ export default defineComponent({
           container: element,
           autoFit: true,
           height: 250,
-          padding: [30, 20, 70, 30],
+          padding: [30, 20, 70, 40],
         })
         charts[field] = chart
 
