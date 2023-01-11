@@ -39,4 +39,6 @@ jobs:
         with:
           version: latest
           run_install: true
-      - run: pnpm run build
+      - run: |
+          export NODE_OPTIONS=--max-old-space-size=32768
+          pnpm run build
