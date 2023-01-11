@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.26.3](https://github.com/mx-space/mx-admin/compare/v3.26.2...v3.26.3) (2023-01-11)
+
+
+### Bug Fixes
+
+* graph number overflow ([#664](https://github.com/mx-space/mx-admin/issues/664)) ([d766e30](https://github.com/mx-space/mx-admin/commit/d766e30876cb9366bb2edcc124ca621f04e98257))
+
+
+
 ## [3.26.2](https://github.com/mx-space/mx-admin/compare/v3.26.1...v3.26.2) (2022-12-30)
 
 
