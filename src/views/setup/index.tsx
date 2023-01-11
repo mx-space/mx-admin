@@ -174,7 +174,12 @@ const Step1 = defineComponent({
           ></NInput>
         </NFormItem>
         <NSpace justify="end">
-          <NButton onClick={handleNext} round type="primary">
+          <NButton
+            onClick={handleNext}
+            round
+            type="primary"
+            disabled={!title.value || !description.value}
+          >
             下一步
           </NButton>
         </NSpace>
@@ -186,7 +191,7 @@ const Step1 = defineComponent({
 const Step2 = defineComponent({
   props: stepFormProps,
   setup(props) {
-    const user = reactive<UserModel & { password: string }>({} as any)
+    const user = reactive({} as UserModel & { password: string })
     const repassword = ref('')
     const message = useMessage()
     const handleNext = async () => {
@@ -194,7 +199,11 @@ const Step2 = defineComponent({
         message.error('两次密码不一致')
         return
       }
-
+      for (const key in user) {
+        if (user[key] === '') {
+          user[key] = undefined
+        }
+      }
       await RESTManager.api.user.register.post({
         data: {
           ...user,
