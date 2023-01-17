@@ -14,7 +14,7 @@ specifiers:
   '@codemirror/theme-one-dark': 6.1.0
   '@codemirror/view': 6.7.1
   '@ddietr/codemirror-themes': https://github.com/Innei/codemirror-themes.git
-  '@huacnlee/autocorrect': 2.5.8
+  '@huacnlee/autocorrect': 2.6.1
   '@innei/eslint-config-vue-ts': 0.9.7
   '@innei/prettier': 0.9.7
   '@lezer/highlight': '*'
@@ -100,7 +100,7 @@ dependencies:
   '@codemirror/theme-one-dark': 6.1.0
   '@codemirror/view': 6.7.1
   '@ddietr/codemirror-themes': github.com/Innei/codemirror-themes/d7dee7637d330d10cc6d0984c1b5720d3d8a60af
-  '@huacnlee/autocorrect': 2.5.8
+  '@huacnlee/autocorrect': 2.6.1
   '@lezer/highlight': 1.1.3
   '@mx-space/api-client': 1.0.3
   '@vicons/antd': 0.12.0
@@ -360,11 +360,6 @@ packages:
     engines: {node: '>=6.9.0'}
     dev: true
 
-  /@babel/compat-data/7.20.5:
-    resolution: {integrity: sha512-KZXo2t10+/jxmkhNXc7pZTqRvSOIvVv/+lJwHS+B2rErwOyjuVRh60yVpb7liQ1U5t7lLJ1bz+t8tSypUZdm0g==}
-    engines: {node: '>=6.9.0'}
-    dev: true
-
   /@babel/core/7.20.12:
     resolution: {integrity: sha512-XsMfHovsUYHFMdrIHkZphTN/2Hzzi78R08NuHfDBehym2VsPDL6Zn/JAD/JQdnRvbSsbQc4mVaU1m6JgtTEElg==}
     engines: {node: '>=6.9.0'}
@@ -442,7 +437,7 @@ packages:
     peerDependencies:
       '@babel/core': ^7.0.0
     dependencies:
-      '@babel/compat-data': 7.20.5
+      '@babel/compat-data': 7.20.10
       '@babel/core': 7.20.5
       '@babel/helper-validator-option': 7.18.6
       browserslist: 4.21.4
@@ -540,8 +535,8 @@ packages:
       '@babel/helper-simple-access': 7.20.2
       '@babel/helper-split-export-declaration': 7.18.6
       '@babel/helper-validator-identifier': 7.19.1
-      '@babel/template': 7.18.10
-      '@babel/traverse': 7.20.10
+      '@babel/template': 7.20.7
+      '@babel/traverse': 7.20.12
       '@babel/types': 7.20.7
     transitivePeerDependencies:
       - supports-color
@@ -603,8 +598,8 @@ packages:
     resolution: {integrity: sha512-Pf/OjgfgFRW5bApskEz5pvidpim7tEDPlFtKcNRXWmfHGn9IEI2W2flqRQXTFb7gIPTyK++N6rVHuwKut4XK6w==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/template': 7.18.10
-      '@babel/traverse': 7.20.10
+      '@babel/template': 7.20.7
+      '@babel/traverse': 7.20.12
       '@babel/types': 7.20.7
     transitivePeerDependencies:
       - supports-color
@@ -635,7 +630,7 @@ packages:
     engines: {node: '>=6.0.0'}
     hasBin: true
     dependencies:
-      '@babel/types': 7.20.5
+      '@babel/types': 7.20.7
 
   /@babel/parser/7.20.5:
     resolution: {integrity: sha512-r27t/cy/m9uKLXQNWWebeCUHgnAZq0CpG1OwKRxzJMP1vpSU4bSIK2hq+/cp0bQxetkXx38n09rNu8jVkcK/zA==}
@@ -643,6 +638,7 @@ packages:
     hasBin: true
     dependencies:
       '@babel/types': 7.20.7
+    dev: true
 
   /@babel/parser/7.20.7:
     resolution: {integrity: sha512-T3Z9oHybU+0vZlY9CiDSJQTD5ZapcW18ZctFMi0MOAl/4BjFF4ul7NVSARLdbGO5vDqy9eQiGTV0LtKfvCYvcg==}
@@ -650,7 +646,6 @@ packages:
     hasBin: true
     dependencies:
       '@babel/types': 7.20.7
-    dev: true
 
   /@babel/plugin-syntax-jsx/7.18.6_@babel+core@7.20.5:
     resolution: {integrity: sha512-6mmljtAedFGTWu2p/8WIORGwy+61PLgOMPOdazc7YoJ9ZCWUyFy3A6CpPkRKLKD1ToAesxX8KGEViAiLo9N+7Q==}
@@ -772,6 +767,7 @@ packages:
       '@babel/helper-string-parser': 7.19.4
       '@babel/helper-validator-identifier': 7.19.1
       to-fast-properties: 2.0.0
+    dev: true
 
   /@babel/types/7.20.7:
     resolution: {integrity: sha512-69OnhBxSSgK0OzTJai4kyPDiKTIe3j+ctaHdIGVbRahTLAT7L3R9oeXHC2aVSuGYt3cVnoAMDmOCgJ2yaiLMvg==}
@@ -1457,8 +1453,8 @@ packages:
       - supports-color
     dev: true
 
-  /@huacnlee/autocorrect/2.5.8:
-    resolution: {integrity: sha512-Q5YQNDHkpbkIVOlELcJBpxAYbx+J4hOwy2d/WS0U7g3AT2ZW4vQeVNq8dn1aBiWoMPi9ZZXiL4GTgBVdBIE7xQ==}
+  /@huacnlee/autocorrect/2.6.1:
+    resolution: {integrity: sha512-nflO7Lv/eYkUyr113tYnYhbXDzWOppMmnn64NXQlvbzsBDHHSKouminubnWlEiaDZ3ZDNH74a9Lxphma67Aiqg==}
     dev: false
 
   /@humanwhocodes/config-array/0.11.8:
@@ -2366,7 +2362,7 @@ packages:
   /@vue/compiler-core/3.2.45:
     resolution: {integrity: sha512-rcMj7H+PYe5wBV3iYeUgbCglC+pbpN8hBLTJvRiK2eKQiWqu+fG9F+8sW99JdL4LQi7Re178UOxn09puSXvn4A==}
     dependencies:
-      '@babel/parser': 7.20.5
+      '@babel/parser': 7.20.7
       '@vue/shared': 3.2.45
       estree-walker: 2.0.2
       source-map: 0.6.1
@@ -2404,7 +2400,7 @@ packages:
   /@vue/reactivity-transform/3.2.45:
     resolution: {integrity: sha512-BHVmzYAvM7vcU5WmuYqXpwaBHjsS8T63jlKGWVtHxAHIoMIlmaMyurUSEs1Zcg46M4AYT5MtB1U274/2aNzjJQ==}
     dependencies:
-      '@babel/parser': 7.20.5
+      '@babel/parser': 7.20.7
       '@vue/compiler-core': 3.2.45
       '@vue/shared': 3.2.45
       estree-walker: 2.0.2
@@ -2680,7 +2676,7 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001400
+      caniuse-lite: 1.0.30001431
       electron-to-chromium: 1.4.284
       node-releases: 2.0.6
       update-browserslist-db: 1.0.10_browserslist@4.21.4
@@ -2724,10 +2720,6 @@ packages:
     resolution: {integrity: sha512-JToIvOmz6nhGsUhAYScbo2d6Py5wojjNfoxoc2mEVLUdJ70gJK2gnd+ABY1Tc3sVMyK7QDPtN0T/XdlCQWITyQ==}
     engines: {node: '>=14.16'}
     dev: false
-
-  /caniuse-lite/1.0.30001400:
-    resolution: {integrity: sha512-Mv659Hn65Z4LgZdJ7ge5JTVbE3rqbJaaXgW5LEI9/tOaXclfIZ8DW7D7FCWWWmWiiPS7AC48S8kf3DApSxQdgA==}
-    dev: true
 
   /caniuse-lite/1.0.30001431:
     resolution: {integrity: sha512-zBUoFU0ZcxpvSt9IU66dXVT/3ctO1cy4y9cscs1szkPlcWb6pasYM144GqrUygUbT+k7cmUCW61cvskjcv0enQ==}
