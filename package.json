@@ -99,7 +99,7 @@
     "vite": "4.0.4",
     "vite-plugin-checker": "0.5.3",
     "vite-plugin-wasm": "3.1.1",
-    "vite-tsconfig-paths": "4.0.3",
+    "vite-tsconfig-paths": "4.0.5",
     "vue-eslint-parser": "9.1.0",
     "windicss": "3.5.6"
   },
