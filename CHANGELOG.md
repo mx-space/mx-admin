@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.26.5](https://github.com/mx-space/mx-admin/compare/v3.26.4...v3.26.5) (2023-01-24)
+
+
+### Bug Fixes
+
+* **setup:** form submit error ([#665](https://github.com/mx-space/mx-admin/issues/665)) ([78cba92](https://github.com/mx-space/mx-admin/commit/78cba924d0b0895d4855a88e8b1245cfaad63584))
+
+
+
 ## [3.26.4](https://github.com/mx-space/mx-admin/compare/v3.26.3...v3.26.4) (2023-01-11)
 
 
