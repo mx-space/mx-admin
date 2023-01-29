@@ -67,7 +67,13 @@ export const useUIStore = defineStore('ui', () => {
     () =>
       viewport.value.w -
       sidebarWidth.value +
-      (sidebarCollapse.value ? (viewport.value.mobile ? 50 : 100) : 0),
+      (sidebarCollapse.value
+        ? parseInt(
+            getComputedStyle(document.documentElement).getPropertyValue(
+              '--sidebar-collapse-width',
+            ),
+          )
+        : 0),
   )
 
   const contentInsetWidth = computed(

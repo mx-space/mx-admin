@@ -49,12 +49,12 @@ export const SidebarLayout = defineComponent({
               <div class={styles['root']}>
                 {isInApiDebugMode && (
                   <div
-                    class="h-[40px] fixed top-0 left-0 right-0 bg-dark-800 z-2 text-gray-400 flex items-center transition-all duration-300 whitespace-pre"
+                    class="h-[40px] fixed top-0 left-0 right-0 bg-dark-800 z-2 text-gray-400 flex items-center transition-all duration-500 whitespace-pre"
                     style={{
-                      paddingLeft: !collapse.value ? '270px' : '120px',
+                      paddingLeft: !collapse.value ? '270px' : '80px',
                     }}
                   >
-                    Current in api custom pointing mode, please check:{' '}
+                    You are in customizing the API endpoint mode, please check:{' '}
                     <RouterLink to={'/setup-api'}>setup-api</RouterLink>.
                     Endpoint: {RESTManager.endpoint}, Gateway: {GATEWAY_URL}
                   </div>
@@ -75,7 +75,7 @@ export const SidebarLayout = defineComponent({
                     {
                       left: !collapse.value
                         ? `${sidebarWidth.value}px`
-                        : '100px',
+                        : '50px',
                       pointerEvents:
                         isLaptop.value && !collapse.value ? 'none' : 'auto',
                       top: isInApiDebugMode && '40px',
