@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## [3.26.6](https://github.com/mx-space/mx-admin/compare/v3.26.5...v3.26.6) (2023-01-29)
+
+
+### Bug Fixes
+
+* **ci:** max_old_size for build ([0f7b742](https://github.com/mx-space/mx-admin/commit/0f7b742e7e69c4767dde05577dee3e5fa7acc71b))
+
+
+### Features
+
+* **sidebar:** optimized collapse animation ([942c520](https://github.com/mx-space/mx-admin/commit/942c520bc02d65651779c1e8b1af0c94987707fb))
+
+
+
 ## [3.26.5](https://github.com/mx-space/mx-admin/compare/v3.26.4...v3.26.5) (2023-01-24)
 
 
