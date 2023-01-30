@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.26.7](https://github.com/mx-space/mx-admin/compare/v3.26.6...v3.26.7) (2023-01-30)
+
+
+### Bug Fixes
+
+* sidebar layout margin left on phone ([5455cb2](https://github.com/mx-space/mx-admin/commit/5455cb2e936ce00c1b826b9d9ccf4b3fc84baa4e))
+
+
+
 ## [3.26.6](https://github.com/mx-space/mx-admin/compare/v3.26.5...v3.26.6) (2023-01-29)
 
 
