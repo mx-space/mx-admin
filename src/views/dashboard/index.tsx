@@ -532,9 +532,15 @@ export const DashBoardView = defineComponent({
                         class="text-center box-border max-w-[65vw] max-h-[60vh] overflow-auto"
                         bordered={false}
                       >
-                        <NH3 class={'sticky top-0 bg-white py-2'}>
-                          {origin.title}
-                        </NH3>
+                        <NElement>
+                          <NH3
+                            class={
+                              'sticky top-0 bg-[var(--popover-color)] py-2'
+                            }
+                          >
+                            {origin.title}
+                          </NH3>
+                        </NElement>
                         <NH4>
                           【{origin.dynasty.replace(/代$/, '')}】{origin.author}
                         </NH4>
