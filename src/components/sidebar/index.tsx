@@ -139,7 +139,7 @@ export const Sidebar = defineComponent({
                   props.onCollapseChange(!props.collapse)
                 }}
               >
-                <SidebarCloseIcon />
+                <SidebarCloseIcon class={styles['collapse-icon']} />
               </button>
             </div>
 

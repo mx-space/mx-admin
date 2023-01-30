@@ -43,13 +43,20 @@
     @apply overflow-hidden max-w-0 opacity-0;
   }
 
-  & .header-title,
-  & .sidebar-username {
-    @apply max-w-0 opacity-0 absolute;
-  }
-
   & .sidebar .items {
     @apply px-0;
+  }
+
+  & .header-title,
+  & .sidebar-username {
+    @apply max-w-0 opacity-0;
+  }
+}
+
+.root.collapsed {
+  & .header-title,
+  & .sidebar-username {
+    @apply hidden;
   }
 }
 
@@ -62,18 +69,24 @@
 .root.expanded,
 .root.expanding {
   & .header-title {
-    @apply max-w-[var(--w)] opacity-100;
+    @apply opacity-100;
   }
 }
 
 .header-title {
-  @apply py-6 transition-all duration-[var(--duration)] truncate;
+  @apply py-6 transition-all duration-[var(--duration)] truncate max-w-[var(--w)] overflow-clip;
 }
 
 .collapse-button {
   @apply absolute right-8 top-0 bottom-0 text-base;
 
   transition: right 0.5s;
+
+  & .collapse-icon {
+    @apply transition-transform;
+
+    transition-duration: var(--duration);
+  }
 }
 
 .toggle-color-btn {
@@ -85,6 +98,10 @@
 .root.collapse {
   & .collapse-button {
     @apply absolute left-0 right-0 m-auto;
+
+    & .collapse-icon {
+      @apply transform rotate-180;
+    }
   }
 
   & .toggle-color-btn {
@@ -175,5 +192,5 @@
 }
 
 .sidebar-username {
-  @apply pl-12 transition-all duration-[var(--duration)] truncate;
+  @apply pl-12 transition-all duration-[var(--duration)] truncate max-w-[var(--w)];
 }

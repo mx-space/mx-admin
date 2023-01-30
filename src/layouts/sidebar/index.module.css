@@ -5,4 +5,10 @@
     @apply transition-all duration-500;
     @apply fixed inset-0 overflow-hidden;
   }
+
+  @screen phone {
+    .content {
+      left: var(--sidebar-collapse-width) !important;
+    }
+  }
 }
