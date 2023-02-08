@@ -28,7 +28,7 @@
     "@ddietr/codemirror-themes": "https://github.com/Innei/codemirror-themes.git",
     "@huacnlee/autocorrect": "2.6.1",
     "@lezer/highlight": "*",
-    "@mx-space/api-client": "1.0.3",
+    "@mx-space/api-client": "1.2.0",
     "@vicons/antd": "0.12.0",
     "@vicons/fa": "0.12.0",
     "@vicons/fluent": "0.12.0",
