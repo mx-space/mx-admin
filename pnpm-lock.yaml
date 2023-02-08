@@ -20,7 +20,7 @@ specifiers:
   '@lezer/highlight': '*'
   '@mx-space/api-client': 1.0.3
   '@types/ejs': 3.1.1
-  '@types/event-source-polyfill': 1.0.0
+  '@types/event-source-polyfill': 1.0.1
   '@types/js-yaml': 4.0.5
   '@types/lodash-es': 4.17.6
   '@types/markdown-escape': 1.1.0
@@ -150,7 +150,7 @@ devDependencies:
   '@innei/eslint-config-vue-ts': 0.9.7_typescript@4.9.4
   '@innei/prettier': 0.9.7_@vue+compiler-sfc@3.2.47
   '@types/ejs': 3.1.1
-  '@types/event-source-polyfill': 1.0.0
+  '@types/event-source-polyfill': 1.0.1
   '@types/js-yaml': 4.0.5
   '@types/lodash-es': 4.17.6
   '@types/markdown-escape': 1.1.0
@@ -2116,8 +2116,8 @@ packages:
     resolution: {integrity: sha512-WulqXMDUTYAXCjZnk6JtIHPigp55cVtDgDrO2gHRwhyJto21+1zbVCtOYB2L1F9w4qCQ0rOGWBnBe0FNTiEJIQ==}
     dev: true
 
-  /@types/event-source-polyfill/1.0.0:
-    resolution: {integrity: sha512-b8O8/rg7NIW0iJ8i9MNDBZqPljHA+b7AjC3QFqH3dSyW6vgrl3oBgyIv5dw2fibh5enHHDkkPZG5PHza7U4NRw==}
+  /@types/event-source-polyfill/1.0.1:
+    resolution: {integrity: sha512-dls8b0lUgJ/miRApF0efboQ9QZnAm7ofTO6P1ILu8bRPxUFKDxVwFf8+TeuuErmNui6blpltyr7+eV72dbQXlQ==}
     dev: true
 
   /@types/js-yaml/4.0.5:
