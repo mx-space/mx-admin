@@ -14,7 +14,7 @@ specifiers:
   '@codemirror/theme-one-dark': 6.1.0
   '@codemirror/view': 6.7.1
   '@ddietr/codemirror-themes': https://github.com/Innei/codemirror-themes.git
-  '@huacnlee/autocorrect': 2.6.1
+  '@huacnlee/autocorrect': 2.6.2
   '@innei/eslint-config-vue-ts': 0.9.7
   '@innei/prettier': 0.9.7
   '@lezer/highlight': '*'
@@ -100,7 +100,7 @@ dependencies:
   '@codemirror/theme-one-dark': 6.1.0
   '@codemirror/view': 6.7.1
   '@ddietr/codemirror-themes': github.com/Innei/codemirror-themes/d7dee7637d330d10cc6d0984c1b5720d3d8a60af
-  '@huacnlee/autocorrect': 2.6.1
+  '@huacnlee/autocorrect': 2.6.2
   '@lezer/highlight': 1.1.3
   '@mx-space/api-client': 1.2.0
   '@vicons/antd': 0.12.0
@@ -1531,8 +1531,8 @@ packages:
       - supports-color
     dev: true
 
-  /@huacnlee/autocorrect/2.6.1:
-    resolution: {integrity: sha512-nflO7Lv/eYkUyr113tYnYhbXDzWOppMmnn64NXQlvbzsBDHHSKouminubnWlEiaDZ3ZDNH74a9Lxphma67Aiqg==}
+  /@huacnlee/autocorrect/2.6.2:
+    resolution: {integrity: sha512-bwSSKKeHM8uTmnyAWidtpa5Lu7GOt5/4UbMxroZUgW3qVFc1KXTpW+hjj+dkC57q57ZQgVTUN10SubFlcXkAOg==}
     dev: false
 
   /@humanwhocodes/config-array/0.11.8:
