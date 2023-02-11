@@ -77,7 +77,7 @@ specifiers:
   validator: 13.7.0
   vite: 4.0.4
   vite-plugin-checker: 0.5.4
-  vite-plugin-wasm: 3.1.1
+  vite-plugin-wasm: 3.2.1
   vite-plugin-windicss: 1.8.10
   vite-tsconfig-paths: 4.0.5
   vue: 3.2.47
@@ -172,7 +172,7 @@ devDependencies:
   unplugin-auto-import: 0.13.0_mcp4nn3ocxtzeg4jc57siuxiyq
   vite: 4.0.4
   vite-plugin-checker: 0.5.4_f44pu4hq42tn7dlrkrczp53h7a
-  vite-plugin-wasm: 3.1.1
+  vite-plugin-wasm: 3.2.1
   vite-tsconfig-paths: 4.0.5_typescript@4.9.4
   vue-eslint-parser: 9.1.0_eslint@8.32.0
   windicss: 3.5.6
@@ -5868,8 +5868,8 @@ packages:
       vscode-uri: 3.0.7
     dev: true
 
-  /vite-plugin-wasm/3.1.1:
-    resolution: {integrity: sha512-m1Y2QKWVNRXOfVyT6E/VcaL1yugq1nqGgFMRUIUS8S3rstFjdMxClyzG65casCQo7O9bGcUB3NU0n/RBgDMqGQ==}
+  /vite-plugin-wasm/3.2.1:
+    resolution: {integrity: sha512-38TPuRUHC+s62JFhZxWtNStujhsav/qFEspDa/+huGCUvn0SbXdXexnxQ+UgIs2pmBnd/xd70fm1R9jW/0qALA==}
     dependencies:
       vite: 3.2.5
     transitivePeerDependencies:
