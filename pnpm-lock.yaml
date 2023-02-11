@@ -60,7 +60,7 @@ specifiers:
   octokit: 2.0.14
   os-browserify: 0.3.0
   path-browserify: 1.0.1
-  pinia: 2.0.29
+  pinia: 2.0.30
   postcss: 8.4.21
   postcss-nested: 6.0.0
   postcss-preset-env: 8.0.0
@@ -131,7 +131,7 @@ dependencies:
   octokit: 2.0.14
   os-browserify: 0.3.0
   path-browserify: 1.0.1
-  pinia: 2.0.29_yq2pyqi2yjztetnx45sawcgrle
+  pinia: 2.0.30_yq2pyqi2yjztetnx45sawcgrle
   qier-progress: 1.0.4
   qs: 6.11.0
   reflect-metadata: 0.1.13
@@ -4819,8 +4819,8 @@ packages:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
     engines: {node: '>=8.6'}
 
-  /pinia/2.0.29_yq2pyqi2yjztetnx45sawcgrle:
-    resolution: {integrity: sha512-5z/KpFecq/cIgfeTnulJXldiLcTITRkTe3N58RKYSj0Pc1EdR6oyCdnf5A9jLoVwBqX5LtHhd0kGlpzWvk9oiQ==}
+  /pinia/2.0.30_yq2pyqi2yjztetnx45sawcgrle:
+    resolution: {integrity: sha512-q6DUmxWwe/mQgg+55QQjykpKC+aGeGdaJV3niminl19V08dE+LRTvSEuqi6/NLSGCKHI49KGL6tMNEOssFiMyA==}
     peerDependencies:
       '@vue/composition-api': ^1.4.0
       typescript: '>=4.4.4'
