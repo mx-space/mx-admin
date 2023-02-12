@@ -3,9 +3,14 @@ import { RelativeTime } from 'components/time/relative-time'
 import { useDataTableFetch } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
 import type { SubscribeResponse } from 'models/subscribe'
-import { NButton, NPopconfirm, NSpace } from 'naive-ui'
+import { NButton, NPopconfirm, NSpace, NTag } from 'naive-ui'
 import { RESTManager } from 'utils'
 import { useRoute } from 'vue-router'
+
+export const SubscribePostCreateBit = 1 << 0
+export const SubscribeNoteCreateBit = 1 << 1
+export const SubscribeSayCreateBit = 1 << 2
+export const SubscribeRecentCreateBit = 1 << 3
 
 export default defineComponent({
   setup() {
@@ -52,10 +57,12 @@ export default defineComponent({
               width: 250,
             },
             {
-              title: '内容',
+              title: '订阅内容',
               key: 'subscribe',
               width: 250,
-              ellipsis: { tooltip: true },
+              render(row) {
+                return <SubscribeBit bit={row.subscribe} />
+              },
             },
             {
               title: '创建于',
@@ -75,7 +82,7 @@ export default defineComponent({
                 return (
                   <NSpace>
                     <NPopconfirm
-                      positiveText={'取消'}
+                      positiveText="取消"
                       negativeText="删除"
                       onNegativeClick={async () => {
                         await RESTManager.api.subscribe.unsubscribe.get({
@@ -96,7 +103,7 @@ export default defineComponent({
                         ),
 
                         default: () => (
-                          <span class="max-w-48">确定要删除 {row.title} ?</span>
+                          <span class="max-w-48">确定要删除 {row.title}？</span>
                         ),
                       }}
                     </NPopconfirm>
@@ -113,5 +120,29 @@ export default defineComponent({
         ></Table>
       </ContentLayout>
     )
+  },
+})
+
+const bit2TextMap = new Map([
+  [SubscribePostCreateBit, '博文'],
+  [SubscribeNoteCreateBit, '点滴'],
+  [SubscribeRecentCreateBit, '速记'],
+  [SubscribeSayCreateBit, '说说'],
+])
+export const SubscribeBit = defineComponent({
+  props: {
+    bit: {
+      type: Number,
+      required: true,
+    },
+  },
+  render() {
+    const tagElements = [] as JSX.Element[]
+
+    for (const [bit, text] of bit2TextMap.entries()) {
+      bit & this.bit && tagElements.push(<NTag round>{text}</NTag>)
+    }
+
+    return <NSpace>{tagElements}</NSpace>
   },
 })
