@@ -350,6 +350,15 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         component: () => import('../views/other/markdown-helper'),
       },
       {
+        path: 'subscribe',
+        name: RouteName.Subscribe,
+        meta: {
+          title: '订阅',
+          icon: <MarkdownIcon />,
+        },
+        component: () => import('../views/other/subscribe'),
+      },
+      {
         path: 'cron',
         name: RouteName.Cron,
         meta: {
