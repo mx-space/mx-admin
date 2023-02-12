@@ -267,7 +267,7 @@ export const Tab2ForEdit = defineComponent({
       <TwoColGridLayout>
         <NGi span={12}>
           <NForm>
-            {isFunctionType.value && (
+            {isBuiltFunction.value && (
               <NP>
                 这是一个内置函数，无法修改原信息。但是你可以自定义函数实现。
               </NP>

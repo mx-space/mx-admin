@@ -20,7 +20,7 @@ export const GetLocationButton = defineComponent({
     const message = useMessage()
     const loading = ref(false)
     const handleGetLocation = async () => {
-      const promisify = () =>
+      const GetGeo = () =>
         new Promise<GeolocationPosition>((r, j) => {
           navigator.geolocation.getCurrentPosition(
             (pos) => {
@@ -35,23 +35,23 @@ export const GetLocationButton = defineComponent({
           )
         })
       if (navigator.geolocation) {
-        console.log('---------')
-
         try {
-          const coordinates = await promisify()
-          console.log(coordinates)
+          const coordinates = await GetGeo()
+          // console.log(coordinates)
 
           const {
             coords: { latitude, longitude },
           } = coordinates
 
           const coo = [longitude, latitude] as const
-          const res = await RESTManager.api.tools.geocode.location.get<Amap>({
-            params: {
-              longitude,
-              latitude,
-            },
-          })
+          const res = await RESTManager.api
+            .fn('built-in')
+            .geocode_location.get<Amap>({
+              params: {
+                longitude,
+                latitude,
+              },
+            })
 
           props.onChange(res.regeocode, coo)
         } catch (e: any) {
