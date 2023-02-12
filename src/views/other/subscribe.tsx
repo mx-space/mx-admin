@@ -2,7 +2,7 @@ import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
 import { useDataTableFetch } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
-import type { SubscribeResponse } from 'models/subscribe';
+import type { SubscribeResponse } from 'models/subscribe'
 import { NButton, NPopconfirm, NSpace } from 'naive-ui'
 import { RESTManager } from 'utils'
 import { useRoute } from 'vue-router'
@@ -10,7 +10,7 @@ import { useRoute } from 'vue-router'
 export default defineComponent({
   setup() {
     const route = useRoute()
-    const { loading, checkedRowKeys, data, pager, sortProps, fetchDataFn } =
+    const { loading, checkedRowKeys, data, pager, fetchDataFn } =
       useDataTableFetch((data, pager) => {
         return async (page = route.query.page || 1, size = 10) => {
           const response =
@@ -18,9 +18,8 @@ export default defineComponent({
               params: {
                 page,
                 size,
-                ...(sortProps.sortBy
-                  ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
-                  : {}),
+                sortBy: 'created',
+                sortOrder: '-1',
               },
             })
           data.value = response.data
@@ -39,7 +38,6 @@ export default defineComponent({
     onMounted(async () => {
       await fetchDataFn()
     })
-
 
     return () => (
       <ContentLayout>
@@ -61,7 +59,7 @@ export default defineComponent({
             },
             {
               title: '创建于',
-              width: 150,
+              width: 250,
               key: 'created',
               sortOrder: 'descend',
               render(row) {
