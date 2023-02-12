@@ -26,7 +26,7 @@ specifiers:
   '@types/markdown-escape': 1.1.0
   '@types/marked': 4.0.8
   '@types/qs': 6.9.7
-  '@types/validator': 13.7.11
+  '@types/validator': 13.7.12
   '@vicons/antd': 0.12.0
   '@vicons/fa': 0.12.0
   '@vicons/fluent': 0.12.0
@@ -74,7 +74,7 @@ specifiers:
   typescript: 4.9.4
   umi-request: 1.4.0
   unplugin-auto-import: 0.13.0
-  validator: 13.7.0
+  validator: 13.9.0
   vite: 4.0.4
   vite-plugin-checker: 0.5.4
   vite-plugin-wasm: 3.2.1
@@ -137,7 +137,7 @@ dependencies:
   reflect-metadata: 0.1.13
   socket.io-client: 4.5.4
   umi-request: 1.4.0
-  validator: 13.7.0
+  validator: 13.9.0
   vite-plugin-windicss: 1.8.10_vite@4.0.4
   vue: 3.2.47
   vue-router: 4.1.6_vue@3.2.47
@@ -156,7 +156,7 @@ devDependencies:
   '@types/markdown-escape': 1.1.0
   '@types/marked': 4.0.8
   '@types/qs': 6.9.7
-  '@types/validator': 13.7.11
+  '@types/validator': 13.7.12
   '@vitejs/plugin-vue': 4.0.0_vite@4.0.4+vue@3.2.47
   '@vitejs/plugin-vue-jsx': 3.0.0_vite@4.0.4+vue@3.2.47
   '@vue/compiler-sfc': 3.2.47
@@ -2185,8 +2185,8 @@ packages:
     resolution: {integrity: sha512-21cFJr9z3g5dW8B0CVI9g2O9beqaThGQ6ZFBqHfwhzLDKUxaqTIy3vnfah/UPkfOiF2pLq+tGz+W8RyCskuslw==}
     dev: true
 
-  /@types/validator/13.7.11:
-    resolution: {integrity: sha512-WqTos+CnAKN64YwyBMhgUYhb5VsTNKwUY6AuzG5qu9/pFZJar/RJFMZBXwX7VS+uzYi+lIAr3WkvuWqEI9F2eg==}
+  /@types/validator/13.7.12:
+    resolution: {integrity: sha512-YVtyAPqpefU+Mm/qqnOANW6IkqKpCSrarcyV269C8MA8Ux0dbkEuQwM/4CjL47kVEM2LgBef/ETfkH+c6+moFA==}
 
   /@types/web-bluetooth/0.0.16:
     resolution: {integrity: sha512-oh8q2Zc32S6gd/j50GowEjKLoOVOwHP/bWVjKJInBwQqdOYMdPrf1oVlelTlyfFK3CKxL1uahMDAr+vy8T7yMQ==}
@@ -2873,9 +2873,9 @@ packages:
   /class-validator/0.14.0:
     resolution: {integrity: sha512-ct3ltplN8I9fOwUd8GrP8UQixwff129BkEtuWDKL5W45cQuLd19xqmTLu5ge78YDm/fdje6FMt0hGOhl0lii3A==}
     dependencies:
-      '@types/validator': 13.7.11
+      '@types/validator': 13.7.12
       libphonenumber-js: 1.10.15
-      validator: 13.7.0
+      validator: 13.9.0
     dev: false
 
   /clean-stack/2.2.0:
@@ -5798,8 +5798,8 @@ packages:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
     dev: true
 
-  /validator/13.7.0:
-    resolution: {integrity: sha512-nYXQLCBkpJ8X6ltALua9dRrZDHVYxjJ1wgskNt1lH9fzGjs3tgojGSCBjmEPwkWS1y29+DrizMTW19Pr9uB2nw==}
+  /validator/13.9.0:
+    resolution: {integrity: sha512-B+dGG8U3fdtM0/aNK4/X8CXq/EcxU2WPrPEkJGslb47qyHsxmbggTWK0yEA4qnYVNF+nxNlN88o14hIcPmSIEA==}
     engines: {node: '>= 0.10'}
     dev: false
 
