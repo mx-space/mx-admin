@@ -12,6 +12,7 @@ import {
   NFormItem,
   NGi,
   NInput,
+  NP,
   NPopover,
   NSelect,
   NSwitch,
@@ -255,14 +256,27 @@ export const Tab2ForEdit = defineComponent({
       () => data.value.type === SnippetType.Function,
     )
 
+    const isBuiltFunction = computed(
+      () =>
+        data.value.type === SnippetType.Function &&
+        data.value.reference === 'built-in' &&
+        !!editId.value,
+    )
+
     return () => (
       <TwoColGridLayout>
         <NGi span={12}>
           <NForm>
+            {isFunctionType.value && (
+              <NP>
+                这是一个内置函数，无法修改原信息。但是你可以自定义函数实现。
+              </NP>
+            )}
             <NFormItem label="名称" required>
               <NInput
                 onUpdateValue={(e) => void (data.value.name = e)}
                 value={data.value.name}
+                disabled={isBuiltFunction.value}
               ></NInput>
             </NFormItem>
 
@@ -271,6 +285,7 @@ export const Tab2ForEdit = defineComponent({
                 value={data.value.reference}
                 onUpdateValue={(e) => void (data.value.reference = e)}
                 defaultValue={'root'}
+                disabled={isBuiltFunction.value}
               ></NInput>
             </NFormItem>
 
@@ -317,11 +332,13 @@ export const Tab2ForEdit = defineComponent({
                     onUpdateValue={(value) => {
                       data.value.enable = value
                     }}
+                    disabled={isBuiltFunction.value}
                   />
                 </NFormItem>
 
                 <NFormItem label="请求方式">
                   <NSelect
+                    disabled={isBuiltFunction.value}
                     options={['GET', 'POST', 'PUT', 'DELETE', 'PATCH'].map(
                       (v) => {
                         return {
@@ -359,6 +376,7 @@ export const Tab2ForEdit = defineComponent({
             )}
             <NFormItem label="公开" labelPlacement="left">
               <NSwitch
+                disabled={isBuiltFunction.value}
                 class={'w-full flex justify-end'}
                 value={!data.value.private}
                 onUpdateValue={(val) => void (data.value.private = !val)}

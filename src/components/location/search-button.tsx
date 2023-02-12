@@ -12,7 +12,7 @@ import {
 } from 'naive-ui'
 import type { AutoCompleteOption } from 'naive-ui/lib/auto-complete/src/interface'
 import { RESTManager } from 'utils/rest'
-import type { PropType} from 'vue';
+import type { PropType } from 'vue'
 import { defineComponent, ref, watch } from 'vue'
 
 import { Icon } from '@vicons/utils'
@@ -41,9 +41,11 @@ export const SearchLocationButton = defineComponent({
     const modalOpen = ref(false)
     const keyword = ref('')
     const searchLocation = async (keyword: string) => {
-      const res = await RESTManager.api.tools.geocode.search.get<AMapSearch>({
-        params: { keywords: keyword },
-      })
+      const res = await RESTManager.api
+        .fn('built-in')
+        .geocode_search.get<AMapSearch>({
+          params: { keywords: keyword },
+        })
       return res
     }
 

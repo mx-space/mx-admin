@@ -134,6 +134,26 @@ export const Tab1ForList = defineComponent({
       }
     })
 
+    const onRowDelete = async (
+      row: SnippetModel,
+      deleteText: string,
+      isBuiltFunction: boolean,
+    ) => {
+      if (isBuiltFunction) {
+        await RESTManager.api.fn.reset(row.id).delete()
+      } else {
+        await RESTManager.api.snippets(row.id).delete()
+      }
+      message.success(`${deleteText}成功`)
+
+      if (!datatableSource.value || isBuiltFunction) {
+        return
+      }
+      datatableSource.value = datatableSource.value.filter((source) => {
+        return source.id !== row.id
+      })
+    }
+
     return () => {
       return (
         <NLayout hasSider embedded>
@@ -231,6 +251,11 @@ export const Tab1ForList = defineComponent({
                   key: 'id',
                   fixed: 'right',
                   render(row) {
+                    const isBuiltFunction =
+                      row.reference === 'built-in' &&
+                      row.type === SnippetType.Function
+
+                    const deleteText = isBuiltFunction ? '重置' : '删除'
                     return (
                       <NSpace>
                         <NButton
@@ -251,30 +276,22 @@ export const Tab1ForList = defineComponent({
                         </NButton>
 
                         <NPopconfirm
-                          positiveText={'取消'}
-                          negativeText="删除"
-                          onNegativeClick={async () => {
-                            await RESTManager.api.snippets(row.id).delete()
-                            message.success('删除成功')
-                            if (!datatableSource.value) {
-                              return
-                            }
-                            datatableSource.value =
-                              datatableSource.value.filter((source) => {
-                                return source.id !== row.id
-                              })
-                          }}
+                          positiveText="取消"
+                          negativeText={deleteText}
+                          onNegativeClick={() =>
+                            onRowDelete(row, deleteText, isBuiltFunction)
+                          }
                         >
                           {{
                             trigger: () => (
                               <NButton text type="error" size="tiny">
-                                移除
+                                {deleteText}
                               </NButton>
                             ),
 
                             default: () => (
                               <span class="max-w-48">
-                                确定要删除 {row.title} ?
+                                确定要{deleteText} {row.title} ?
                               </span>
                             ),
                           }}

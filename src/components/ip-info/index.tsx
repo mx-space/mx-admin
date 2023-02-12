@@ -48,7 +48,11 @@ export const IpInfoPopover = defineComponent({
           return
         }
 
-        const data: any = await RESTManager.api.tools.ip(ip).get()
+        const data: any = await RESTManager.api.fn('built-in').ip.get({
+          params: {
+            ip,
+          },
+        })
 
         setIpInfoText(data)
         ipLocationCacheMap.set(ip, data)
