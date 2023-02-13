@@ -40,7 +40,7 @@ export default defineComponent({
     )
 
     const value = usePropsValueToRef({
-      value: payload.value[event.value] ?? 'const data = {}',
+      value: payload.value[event.value] || 'export default {}',
     })
     const editorRef = ref()
     watch(
@@ -76,7 +76,7 @@ export default defineComponent({
           event: event.value,
         },
         data: new Function(
-          `return ${replaceText.replace(/^const data = /, '')}`,
+          `return ${replaceText.replace(/^export default /, '')}`,
         )(),
       })
     }
