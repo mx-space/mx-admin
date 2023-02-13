@@ -3,23 +3,34 @@ import { CheckIcon, TrashIcon } from 'components/icons'
 import { useMountAndUnmount } from 'hooks/use-react'
 import { useLayout } from 'layouts/content'
 import { TwoColGridLayout } from 'layouts/two-col'
-import { NGi, NSwitch, useDialog } from 'naive-ui'
+import { NForm, NFormItem, NGi, NSelect, useDialog } from 'naive-ui'
 import { RESTManager } from 'utils'
 
 import { CodeEditorForTemplateEditing } from '../code-editor'
 import { EJSRender } from '../ejs-render'
 
+export enum ReplyMailType {
+  Owner = 'owner',
+  Guest = 'guest',
+}
+
+export enum NewsletterMailType {
+  Newsletter = 'newsletter',
+}
+
 export const EmailTab = defineComponent({
   setup() {
     const templateString = ref('')
     const modifiedTemplate = ref('')
-    const templateType = ref<'guest' | 'owner'>('guest')
+    const templateType = ref<ReplyMailType | NewsletterMailType>(
+      ReplyMailType.Guest,
+    )
 
     const renderProps = ref<any>(null)
     const { setHeaderButtons: setHeaderButton } = useLayout()
 
     const save = async () => {
-      await RESTManager.api.options.email.template.reply.put({
+      await RESTManager.api.options.email.template.put({
         params: { type: templateType.value },
         data: { source: modifiedTemplate.value },
       })
@@ -33,7 +44,7 @@ export const EmailTab = defineComponent({
         title: '确认重置？',
         content: '重置后，模板将被恢复为默认模板',
         async onNegativeClick() {
-          await RESTManager.api.options.email.template.reply.delete({
+          await RESTManager.api.options.email.template.delete({
             params: { type: templateType.value },
           })
 
@@ -81,11 +92,12 @@ export const EmailTab = defineComponent({
 
     const fetch = async () => {
       const { template, props } =
-        await RESTManager.api.options.email.template.reply.get<{
+        await RESTManager.api.options.email.template.get<{
           template: string
           props: any
         }>({
           params: { type: templateType.value },
+          transform: false,
         })
       templateString.value = template
       modifiedTemplate.value = template
@@ -93,27 +105,47 @@ export const EmailTab = defineComponent({
     }
 
     watch(() => templateType.value, fetch)
+    const isTemplateError = ref(false)
+
+    watch(
+      () => modifiedTemplate.value,
+      () => {
+        isTemplateError.value = false
+      },
+    )
 
     return () => (
       <div>
-        <NSwitch
-          defaultValue={templateType.value === 'guest' ? true : false}
-          onUpdateValue={(isGuest) => {
-            templateType.value = isGuest ? 'guest' : 'owner'
-          }}
-        >
-          {{
-            checked() {
-              return '游客'
-            },
-            unchecked() {
-              return '主人'
-            },
-          }}
-        </NSwitch>
+        <NForm class={'w-[300px]'}>
+          <NFormItem label="模板类型" labelPlacement="left">
+            <NSelect
+              value={templateType.value}
+              onUpdateValue={(val) => (templateType.value = val)}
+              options={[
+                {
+                  label: '回复邮件（访客）',
+                  value: ReplyMailType.Guest,
+                },
+                {
+                  label: '回复邮件（博主）',
+                  value: ReplyMailType.Owner,
+                },
+                {
+                  label: '订阅邮件',
+                  value: NewsletterMailType.Newsletter,
+                },
+              ]}
+            ></NSelect>
+          </NFormItem>
+        </NForm>
         <div class="pb-4"></div>
         <TwoColGridLayout>
-          <NGi span={18}>
+          <NGi
+            span={18}
+            class={
+              isTemplateError.value && 'outline outline-[3px] outline-red-300'
+            }
+          >
             <CodeEditorForTemplateEditing
               onChange={(val) => {
                 modifiedTemplate.value = val
@@ -125,6 +157,9 @@ export const EmailTab = defineComponent({
             <EJSRender
               data={renderProps.value}
               template={modifiedTemplate.value}
+              onError={(err) => {
+                isTemplateError.value = true
+              }}
             />
           </NGi>
         </TwoColGridLayout>

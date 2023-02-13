@@ -21,6 +21,7 @@ import {
   PencilAltIcon,
   PencilIcon,
   PuzzlePieceIcon,
+  SubscribeIcon,
   SymbolIcon,
   TachometerAltIcon,
   TemplateIcon,
@@ -348,6 +349,15 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           icon: <MarkdownIcon />,
         },
         component: () => import('../views/other/markdown-helper'),
+      },
+      {
+        path: 'subscribe',
+        name: RouteName.Subscribe,
+        meta: {
+          title: '订阅',
+          icon: <SubscribeIcon />,
+        },
+        component: () => import('../views/other/subscribe'),
       },
       {
         path: 'cron',

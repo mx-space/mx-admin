@@ -16,7 +16,7 @@ export default defineComponent({
             tab.value = tabvalue
           }}
         >
-          <NTabPane name="1" tab="评论邮件模板">
+          <NTabPane name="1" tab="邮件模板">
             <EmailTab />
           </NTabPane>
           <NTabPane name="2" tab="预览 Markdown 模板">

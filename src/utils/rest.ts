@@ -1,11 +1,7 @@
 import camelcaseKeys from 'camelcase-keys'
 import { API_URL } from 'constants/env'
 import { isPlainObject } from 'lodash-es'
-import type {
-  RequestMethod,
-  RequestOptionsInit,
-  RequestOptionsWithResponse,
-} from 'umi-request'
+import type { RequestMethod, RequestOptionsInit } from 'umi-request'
 import { extend } from 'umi-request'
 import { uuid } from 'utils'
 
@@ -65,7 +61,7 @@ class RESTManagerStatic {
       },
     })
   }
-  request(method: Method, route: string, options: RequestOptionsWithResponse) {
+  request(method: Method, route: string, options: RequestOptionsInit) {
     return this._$$instance[method](route, options)
   }
 
@@ -86,6 +82,12 @@ const reflectors = [
   Symbol.for('util.inspect.custom'),
 ]
 
+declare module 'umi-request' {
+  export interface RequestOptionsInit {
+    transform?: boolean
+  }
+}
+
 function buildRoute(manager: RESTManagerStatic): IRequestHandler {
   const route = ['']
   const handler: any = {
@@ -93,7 +95,7 @@ function buildRoute(manager: RESTManagerStatic): IRequestHandler {
       if (reflectors.includes(name)) return () => route.join('/')
       if (methods.includes(name)) {
         // @ts-ignore
-        return async (options: RequestOptionsWithResponse = {}) => {
+        return async (options: RequestOptionsInit = {}) => {
           const res = await manager.request(name, route.join('/'), {
             ...options,
           })

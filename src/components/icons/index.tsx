@@ -48,6 +48,7 @@ import FullscreenExitOutlined from '@vicons/material/es/FullscreenExitOutlined'
 import OnlinePredictionFilled from '@vicons/material/es/OnlinePredictionFilled'
 import RedoRound from '@vicons/material/es/RedoRound'
 import UndoRound from '@vicons/material/es/UndoRound'
+import subscribe from '@vicons/material/es/UnsubscribeOutlined'
 import Activity from '@vicons/tabler/es/Activity'
 import Clock from '@vicons/tabler/es/Clock'
 import Copy from '@vicons/tabler/es/Copy'
@@ -95,6 +96,7 @@ export {
   File as FileIcon,
   Flask as FlaskIcon,
   Markdown as MarkdownIcon,
+  subscribe as SubscribeIcon,
   PencilAlt as PencilAltIcon,
   PuzzlePiece as PuzzlePieceIcon,
   TachometerAlt as TachometerAltIcon,

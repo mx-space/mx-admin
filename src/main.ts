@@ -56,7 +56,7 @@ window.global = window
 window.os = {
   homedir() {
     return ''
-  }
+  },
 }
 declare global {
   interface JSON {
