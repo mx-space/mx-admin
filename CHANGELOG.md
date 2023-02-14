@@ -1,5 +1,29 @@
 # CHANGELOG
 
+# [3.27.0](https://github.com/mx-space/mx-admin/compare/v3.26.7...v3.27.0) (2023-02-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @antv/g2 to v4.2.9 ([#681](https://github.com/mx-space/mx-admin/issues/681)) ([2010e62](https://github.com/mx-space/mx-admin/commit/2010e623b7397b0462ef8298ccd116aeec321718))
+* **deps:** update dependency @huacnlee/autocorrect to v2.6.2 ([#685](https://github.com/mx-space/mx-admin/issues/685)) ([9f1d751](https://github.com/mx-space/mx-admin/commit/9f1d75166b43b50e3fb50ad66c44c74ad0e4bd36))
+* **deps:** update dependency @mx-space/api-client to v1.2.0 ([#676](https://github.com/mx-space/mx-admin/issues/676)) ([37ee9c0](https://github.com/mx-space/mx-admin/commit/37ee9c04304c74993f6c325b7cf9b39650b530dc))
+* **deps:** update dependency @vueuse/core to v9.12.0 ([#650](https://github.com/mx-space/mx-admin/issues/650)) ([872ec79](https://github.com/mx-space/mx-admin/commit/872ec796dc72c259b3536ae58263f7517b32a911))
+* **deps:** update dependency monaco-editor to v0.35.0 ([#687](https://github.com/mx-space/mx-admin/issues/687)) ([2ed2ab6](https://github.com/mx-space/mx-admin/commit/2ed2ab6274870d8877529bf73a405369a56a419e))
+* **deps:** update dependency pinia to v2.0.30 ([#679](https://github.com/mx-space/mx-admin/issues/679)) ([fbc0af2](https://github.com/mx-space/mx-admin/commit/fbc0af2b63365231cc6a1665f03ff60f313aa3c8))
+* **deps:** update dependency socket.io-client to v4.6.0 ([#688](https://github.com/mx-space/mx-admin/issues/688)) ([9b4b75c](https://github.com/mx-space/mx-admin/commit/9b4b75cf5333d72a60a7788b5e6b684cb9ca0cb9))
+* **deps:** update dependency validator to v13.9.0 ([#689](https://github.com/mx-space/mx-admin/issues/689)) ([97d5c92](https://github.com/mx-space/mx-admin/commit/97d5c92bd1f47f26b9a9c3b142fffcad4fdb2097))
+* **location:** built-in fn ([9db5dda](https://github.com/mx-space/mx-admin/commit/9db5ddaa25935d3c63dc05bab0ec66d8263871b7))
+* **shiju:** popover color ([0850fc3](https://github.com/mx-space/mx-admin/commit/0850fc3082bd784930935034a3362e41d4bc3e10))
+
+
+### Features
+
+* **snippet:** support built-in action ([d776fe3](https://github.com/mx-space/mx-admin/commit/d776fe34cf905081b12964c1c14678c4fec997e3))
+* subscribe support ([#690](https://github.com/mx-space/mx-admin/issues/690)) ([bd5e327](https://github.com/mx-space/mx-admin/commit/bd5e327c7c7503b175aa3332608ed39eaf5f76ef))
+
+
+
 ## [3.26.7](https://github.com/mx-space/mx-admin/compare/v3.26.6...v3.26.7) (2023-01-30)
 
 
