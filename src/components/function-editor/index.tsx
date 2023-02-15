@@ -2,7 +2,8 @@ import { useAsyncLoadMonaco } from 'hooks/use-async-monaco'
 import { RESTManager } from 'utils'
 import type { PropType, Ref } from 'vue'
 
-import * as typeDefines from './lib.declare'
+import * as typeDefines from './libs/lib.declare'
+import { NodeDeclare } from './libs/node.declare'
 
 export const FunctionCodeEditor = defineComponent({
   props: {
@@ -104,6 +105,21 @@ export const FunctionCodeEditor = defineComponent({
             monaco.Uri.parse(libUri),
           )
         })
+
+        for (const libUri in NodeDeclare) {
+          const libSource = NodeDeclare[libUri]
+
+          monaco.languages.typescript.typescriptDefaults.addExtraLib(
+            libSource,
+            libUri,
+          )
+
+          monaco.editor.createModel(
+            libSource,
+            'typescript',
+            monaco.Uri.parse(libUri),
+          )
+        }
       })
     })
 

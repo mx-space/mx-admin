@@ -106,7 +106,10 @@ export const useAsyncLoadMonaco = (
       monaco.editor = module.editor.create(editorRef.value, options)
       typingCore = AutoTypings.create(monaco.editor, {
         sourceCache: new LocalStorageCache(), // Cache loaded sources in localStorage. May be omitted
-        // Other options...
+        preloadPackages: true,
+        versions: {
+          '@types/node': '^18',
+        },
       })
 
       monaco.module = module
@@ -166,6 +169,7 @@ export const useAsyncLoadMonaco = (
     await typingCore.then((core) => {
       core?.dispose()
     })
+
     editorModelMemo?.dispose()
   })
 

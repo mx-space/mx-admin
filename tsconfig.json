@@ -30,6 +30,8 @@
   ],
   "exclude": [
     "node_modules",
-    "assets"
+    "assets",
+    "src/components/function-editor/libs/node/**/*",
+    "dist/**"
   ]
 }
