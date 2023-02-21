@@ -19,7 +19,7 @@ specifiers:
   '@innei/prettier': 0.9.7
   '@lezer/highlight': '*'
   '@mx-space/api-client': 1.3.2
-  '@types/ejs': 3.1.1
+  '@types/ejs': 3.1.2
   '@types/event-source-polyfill': 1.0.1
   '@types/js-yaml': 4.0.5
   '@types/lodash-es': 4.17.6
@@ -149,7 +149,7 @@ dependencies:
 devDependencies:
   '@innei/eslint-config-vue-ts': 0.9.7_typescript@4.9.5
   '@innei/prettier': 0.9.7_@vue+compiler-sfc@3.2.47
-  '@types/ejs': 3.1.1
+  '@types/ejs': 3.1.2
   '@types/event-source-polyfill': 1.0.1
   '@types/js-yaml': 4.0.5
   '@types/lodash-es': 4.17.6
@@ -2150,8 +2150,8 @@ packages:
     resolution: {integrity: sha512-TF8aoF5cHcLO7W7403blM7L1T+6NF3XMyN3fxyUolq2uOcFeicG/khQg/dGxiCJWoAcmYulYN7LYSRKO54IXaA==}
     dev: false
 
-  /@types/ejs/3.1.1:
-    resolution: {integrity: sha512-RQul5wEfY7BjWm0sYY86cmUN/pcXWGyVxWX93DFFJvcrxax5zKlieLwA3T77xJGwNcZW0YW6CYG70p1m8xPFmA==}
+  /@types/ejs/3.1.2:
+    resolution: {integrity: sha512-ZmiaE3wglXVWBM9fyVC17aGPkLo/UgaOjEiI2FXQfyczrCefORPxIe+2dVmnmk3zkVIbizjrlQzmPGhSYGXG5g==}
     dev: true
 
   /@types/estree/1.0.0:
