@@ -70,7 +70,7 @@ specifiers:
   reflect-metadata: 0.1.13
   rollup: ^3.15.0
   rollup-plugin-visualizer: 5.9.0
-  socket.io-client: 4.6.0
+  socket.io-client: 4.6.1
   typescript: 4.9.5
   umi-request: 1.4.0
   unplugin-auto-import: 0.14.4
@@ -135,7 +135,7 @@ dependencies:
   qier-progress: 1.0.4
   qs: 6.11.0
   reflect-metadata: 0.1.13
-  socket.io-client: 4.6.0
+  socket.io-client: 4.6.1
   umi-request: 1.4.0
   validator: 13.9.0
   vite-plugin-windicss: 1.8.10_vite@4.1.1
@@ -5776,8 +5776,8 @@ packages:
     engines: {node: '>=12'}
     dev: true
 
-  /socket.io-client/4.6.0:
-    resolution: {integrity: sha512-2XOp18xnGghUICSd5ziUIS4rB0dhr6S8OvAps8y+HhOjFQlqGcf+FIh6fCIsKKZyWFxJeFPrZRNPGsHDTsz1Ug==}
+  /socket.io-client/4.6.1:
+    resolution: {integrity: sha512-5UswCV6hpaRsNg5kkEHVcbBIXEYoVbMQaHJBXJCyEQ+CiFPV1NIOY0XOFWG4XR4GZcB8Kn6AsRs/9cy9TbqVMQ==}
     engines: {node: '>=10.0.0'}
     dependencies:
       '@socket.io/component-emitter': 3.1.0
