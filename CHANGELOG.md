@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## [3.27.1](https://github.com/mx-space/mx-admin/compare/v3.27.0...v3.27.1) (2023-02-21)
+
+
+### Bug Fixes
+
+* **deps:** update dependency pinia to v2.0.32 ([#697](https://github.com/mx-space/mx-admin/issues/697)) ([052b6ff](https://github.com/mx-space/mx-admin/commit/052b6ff83f6909fb6ad962d8029d381b754d37ef))
+* **deps:** update dependency socket.io-client to v4.6.1 ([#698](https://github.com/mx-space/mx-admin/issues/698)) ([f322cdb](https://github.com/mx-space/mx-admin/commit/f322cdb4de76d592e586d15a2c4b8a1e127c2239))
+
+
+### Features
+
+* add `@type/node` for function editor completion ([60799ee](https://github.com/mx-space/mx-admin/commit/60799ee8a98f59fbca3594dd578cc45a4d9c9b9b))
+* subscribe enable status show on page title ([d6329a3](https://github.com/mx-space/mx-admin/commit/d6329a389aab2b8d20fe929b5d9a500defc66dfe))
+
+
+
 # [3.27.0](https://github.com/mx-space/mx-admin/compare/v3.26.7...v3.27.0) (2023-02-14)
 
 
