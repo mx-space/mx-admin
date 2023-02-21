@@ -19,8 +19,10 @@
   display: flex;
   justify-content: space-between;
 
+  @apply select-none relative z-10;
+
   & .title {
-    @apply flex items-center select-none relative z-10;
+    @apply flex items-center;
 
     font-size: 1.73rem;
   }

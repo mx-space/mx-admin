@@ -127,7 +127,6 @@
   }
 
   & .items {
-    font-family: 'Josefin Sans';
     transition: padding var(--duration);
 
     @apply pl-4;

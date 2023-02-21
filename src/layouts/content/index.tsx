@@ -43,6 +43,9 @@ export const ContentLayout = defineComponent({
     title: {
       type: String,
     },
+    description: {
+      type: [String, Object] as PropType<string | JSX.Element>,
+    },
   },
   setup(props, ctx) {
     const { slots } = ctx
@@ -87,25 +90,35 @@ export const ContentLayout = defineComponent({
       footerExtraButtonEl.value = null
     })
 
-    const pageTitle = computed(
-      () =>
-        props.title ??
-        route.value.value.matched.reduce(
-          (t, cur) =>
-            t +
-            (cur.meta.title
-              ? // t 不为空，补一个 分隔符
-                t.length > 0
-                ? ` · ${cur.meta.title}`
-                : cur.meta.title
-              : ''),
-          '',
-        ),
+    const breadcrumbText = computed(() =>
+      route.value.value.matched.reduce(
+        (t, cur) =>
+          t +
+          (cur.meta.title
+            ? // t 不为空，补一个 分隔符
+              t.length > 0
+              ? ` · ${cur.meta.title}`
+              : cur.meta.title
+            : ''),
+        '',
+      ),
     )
+
+    const pageTitle = computed(
+      () => props.title ?? route.value.value.matched.slice(-1)[0].meta.title,
+    )
+
+    const descriptionElement = computed(() => {
+      if (!props.description && breadcrumbText.value === pageTitle.value) {
+        return null
+      }
+
+      return props.description ?? breadcrumbText.value
+    })
 
     const SettingHeaderEl = ref<(() => VNode) | null>()
     // 抽出动态组件，防止整个子代组件全部重渲染
-    const Header = defineComponent({
+    const HeaderActionComponent = defineComponent({
       setup() {
         return () => (
           <div class={[styles['header-actions'], 'space-x-4']}>
@@ -139,9 +152,13 @@ export const ContentLayout = defineComponent({
       <>
         <NLayoutContent class={styles['sticky-header']} embedded>
           <header class={styles['header']}>
-            <h1 class={styles['title']}>{pageTitle.value}</h1>
-
-            <Header />
+            <div class={'flex flex-col'}>
+              <h1 class={styles['title']}>{pageTitle.value}</h1>
+              {descriptionElement.value && (
+                <h2 class={'opacity-80'}>{descriptionElement.value}</h2>
+              )}
+            </div>
+            <HeaderActionComponent />
           </header>
         </NLayoutContent>
         <main class={styles['main']}>{slots.default?.()}</main>
