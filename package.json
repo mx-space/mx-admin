@@ -59,7 +59,7 @@
     "path-browserify": "1.0.1",
     "pinia": "2.0.32",
     "qier-progress": "1.0.4",
-    "qs": "6.11.0",
+    "qs": "6.11.1",
     "reflect-metadata": "0.1.13",
     "socket.io-client": "4.6.1",
     "umi-request": "1.4.0",
