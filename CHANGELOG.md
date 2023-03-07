@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## [3.27.2](https://github.com/mx-space/mx-admin/compare/v3.27.1...v3.27.2) (2023-03-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @vueuse/core to v9.13.0 ([#695](https://github.com/mx-space/mx-admin/issues/695)) ([9a0b6e5](https://github.com/mx-space/mx-admin/commit/9a0b6e531d54c4a68390eeb284593455fbc518d9))
+* **deps:** update dependency monaco-editor to v0.36.1 ([#700](https://github.com/mx-space/mx-admin/issues/700)) ([f7cde0b](https://github.com/mx-space/mx-admin/commit/f7cde0bdc2a6328f2b3769c551b32a36cbbc4b70))
+* **deps:** update dependency pinia to v2.0.33 ([#702](https://github.com/mx-space/mx-admin/issues/702)) ([a1828bd](https://github.com/mx-space/mx-admin/commit/a1828bdad119fe771332cafefe6785a4a21c7de8))
+* **deps:** update dependency qs to v6.11.1 ([#703](https://github.com/mx-space/mx-admin/issues/703)) ([710629c](https://github.com/mx-space/mx-admin/commit/710629c4674e6cf58a59778d61866a90a2e3a882))
+
+
+
 ## [3.27.1](https://github.com/mx-space/mx-admin/compare/v3.27.0...v3.27.1) (2023-02-21)
 
 
