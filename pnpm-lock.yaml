@@ -54,7 +54,7 @@ specifiers:
   lodash-es: 4.17.21
   markdown-escape: 2.0.0
   marked: 4.2.12
-  monaco-editor: 0.35.0
+  monaco-editor: 0.36.1
   monaco-editor-auto-typings: 0.4.3
   naive-ui: 2.34.3
   octokit: 2.0.14
@@ -125,8 +125,8 @@ dependencies:
   lodash-es: 4.17.21
   markdown-escape: 2.0.0
   marked: 4.2.12
-  monaco-editor: 0.35.0
-  monaco-editor-auto-typings: 0.4.3_monaco-editor@0.35.0
+  monaco-editor: 0.36.1
+  monaco-editor-auto-typings: 0.4.3_monaco-editor@0.36.1
   naive-ui: 2.34.3_vue@3.2.47
   octokit: 2.0.14
   os-browserify: 0.3.0
@@ -4558,16 +4558,16 @@ packages:
       ufo: 1.1.0
     dev: true
 
-  /monaco-editor-auto-typings/0.4.3_monaco-editor@0.35.0:
+  /monaco-editor-auto-typings/0.4.3_monaco-editor@0.36.1:
     resolution: {integrity: sha512-7lpiWHkg8eX2DRJGApaFq1wGn95Ute3Xv4PLz36qFyTytzz86irjxwMl00JnOOGX/R0eUbfuudbEtkQh2VK9Gg==}
     peerDependencies:
       monaco-editor: '*'
     dependencies:
-      monaco-editor: 0.35.0
+      monaco-editor: 0.36.1
     dev: false
 
-  /monaco-editor/0.35.0:
-    resolution: {integrity: sha512-BJfkAZ0EJ7JgrgWzqjfBNP9hPSS8NlfECEDMEIIiozV2UaPq22yeuOjgbd3TwMh3anH0krWZirXZfn8KUSxiOA==}
+  /monaco-editor/0.36.1:
+    resolution: {integrity: sha512-/CaclMHKQ3A6rnzBzOADfwdSJ25BFoFT0Emxsc4zYVyav5SkK9iA6lEtIeuN/oRYbwPgviJT+t3l+sjFa28jYg==}
     dev: false
 
   /ms/2.1.2:
