@@ -39,16 +39,12 @@ export const useCodeMirror = <T extends Element>(
 ): [Ref<T | undefined>, Ref<EditorView | undefined>] => {
   const refContainer = ref<T>()
   const editorView = ref<EditorView>()
-  const {
-    general: {
-      setting: { autocorrect },
-    },
-  } = useEditorConfig()
+  const { general } = useEditorConfig()
   const { onChange } = props
 
   const format = () => {
     const ev = editorView.value
-
+    const { autocorrect } = general.setting
     if (autocorrect && ev) {
       import('@huacnlee/autocorrect')
         .then(({ format }) => {
