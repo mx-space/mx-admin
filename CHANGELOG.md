@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## [3.27.3](https://github.com/mx-space/mx-admin/compare/v3.27.2...v3.27.3) (2023-03-14)
+
+
+### Bug Fixes
+
+* autocorrect reactive ([c857ba2](https://github.com/mx-space/mx-admin/commit/c857ba23c86ea6bb91586a5afd27cdb0e1dc5d4a))
+* **deps:** update dependency @mx-space/api-client to v1.3.5 ([#707](https://github.com/mx-space/mx-admin/issues/707)) ([b3fceee](https://github.com/mx-space/mx-admin/commit/b3fceeefefc2196f7fa0d0470856ca893ee16b28))
+* useStorageObject cached ([6c552d1](https://github.com/mx-space/mx-admin/commit/6c552d1b0ae716cc3811b9548c6a5c5c41728142))
+
+
+
 ## [3.27.2](https://github.com/mx-space/mx-admin/compare/v3.27.1...v3.27.2) (2023-03-07)
 
 
