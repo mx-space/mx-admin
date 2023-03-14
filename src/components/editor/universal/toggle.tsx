@@ -103,7 +103,11 @@ export const EditorToggleWrapper = defineComponent({
 
     const monacoRef = ref<editor.IStandaloneCodeEditor>()
 
-    const { general } = useEditorConfig()
+    const { general, destory } = useEditorConfig()
+
+    onUnmounted(() => {
+      destory()
+    })
 
     const EditorComponent = computed(() => {
       if (props.loading) {

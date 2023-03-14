@@ -9,8 +9,15 @@ const StorageKeys = {
   general: 'editor-general',
 } as const
 export const useEditorConfig = () => {
-  const { storage: generalSetting, reset: resetGeneralSetting } =
-    useStorageObject(GeneralSettingDto, StorageKeys.general)
+  const {
+    storage: generalSetting,
+    reset: resetGeneralSetting,
+    destory: generalDestory,
+  } = useStorageObject(GeneralSettingDto, StorageKeys.general)
+
+  const destory = () => {
+    generalDestory()
+  }
 
   const GeneralSetting = defineComponent(() => {
     return () => (
@@ -51,5 +58,7 @@ export const useEditorConfig = () => {
       resetSetting: resetGeneralSetting,
       Panel: GeneralSetting,
     },
+
+    destory,
   }
 }

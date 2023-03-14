@@ -29,12 +29,9 @@ export const PlainEditor = defineComponent({
     )
 
     useSaveConfirm(props.unSaveConfirm, () => memoInitialValue === props.text)
-    const {
-      general: {
-        setting: { autocorrect },
-      },
-    } = useEditorConfig()
+    const { general } = useEditorConfig()
     const handleKeydown = (e: KeyboardEvent) => {
+      const autocorrect = general.setting.autocorrect
       if (!autocorrect) {
         return
       }

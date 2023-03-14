@@ -3,6 +3,7 @@ import { validateSync } from 'class-validator'
 import { throttle } from 'lodash-es'
 import { reactive, watch } from 'vue'
 
+const key2reactive = new Map<string, any>()
 export const useStorageObject = <U extends object>(
   DTO: Class<U>,
   storageKey: string,
@@ -11,6 +12,7 @@ export const useStorageObject = <U extends object>(
   const getObjectStorage = () => {
     const saved = localStorage.getItem(storageKey)
     if (!saved) {
+      console.debug(storageKey, ': no saved data')
       return null
     }
     try {
@@ -45,10 +47,13 @@ export const useStorageObject = <U extends object>(
       return null
     }
   }
-
-  const objectStorage = reactive<U>(
-    getObjectStorage() ?? instanceToPlain(new DTO()),
-  )
+  const storedReactive = key2reactive.get(storageKey)
+  const objectStorage: U =
+    storedReactive ??
+    reactive<U>(getObjectStorage() ?? instanceToPlain(new DTO()))
+  if (!storedReactive) {
+    key2reactive.set(storageKey, objectStorage)
+  }
   watch(
     () => objectStorage,
     throttle(
@@ -72,6 +77,9 @@ export const useStorageObject = <U extends object>(
     },
     clear() {
       localStorage.removeItem(storageKey)
+    },
+    destory() {
+      key2reactive.delete(storageKey)
     },
   }
 }

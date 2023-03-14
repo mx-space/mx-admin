@@ -22,7 +22,11 @@ export const useAutoSave = (
 ) => {
   let timer: any
   const key = `auto-save-${cacheKey}`
-  const { storage, reset, clear } = useStorageObject(SaveDto, key, false)
+  const { storage, reset, clear, destory } = useStorageObject(
+    SaveDto,
+    key,
+    false,
+  )
   let memoPreviousValue = getSaveData()
   const save = () => {
     const { text, title } = getSaveData()
@@ -46,6 +50,10 @@ export const useAutoSave = (
   function disposer() {
     clearInterval(timer)
   }
+
+  onUnmounted(() => {
+    destory()
+  })
   return {
     reset,
     getPrevSaved() {

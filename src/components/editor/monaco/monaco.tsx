@@ -26,20 +26,8 @@ export const MonacoEditor = defineComponent({
     const loaded = ref(false)
     let editor: Editor.IStandaloneCodeEditor
     const { isDark } = useStoreRef(UIStore)
-    const {
-      general: {
-        setting: { autocorrect },
-      },
-    } = useEditorConfig()
-
-    watch(
-      () => [autocorrect],
-      () => {
-        if (!editor) {
-          return
-        }
-      },
-    )
+    const { general } = useEditorConfig()
+    const autocorrect = computed(() => general.setting.autocorrect)
 
     const initAutoCorrect = (editor: Editor.IStandaloneCodeEditor) => {
       Promise.all([
@@ -48,7 +36,7 @@ export const MonacoEditor = defineComponent({
       ]).then(([autocorrect, monaco]) => {
         editor.onKeyDown((e) => {
           if (e.code === 'Enter') {
-            const result = autocorrect.lintFor(editor.getValue(), 'text')
+            const result = autocorrect.lintFor(editor.getValue(), 'monaco.md')
 
             if (result.lines.length) {
               const { l, c, new: newText } = result.lines[0]
@@ -68,7 +56,7 @@ export const MonacoEditor = defineComponent({
           }
         })
         editor.onDidChangeModelContent(() => {
-          const result = autocorrect.lintFor(editor.getValue(), 'text')
+          const result = autocorrect.lintFor(editor.getValue(), 'monaco.md')
 
           monaco.editor.setModelMarkers(
             // @ts-ignore
@@ -124,7 +112,7 @@ export const MonacoEditor = defineComponent({
         props.innerRef.value = editor
       }
 
-      if (autocorrect) {
+      if (autocorrect.value) {
         initAutoCorrect(editor)
       }
     })

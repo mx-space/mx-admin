@@ -44,10 +44,11 @@ export const useCodeMirror = <T extends Element>(
 
   const format = () => {
     const ev = editorView.value
-    const { autocorrect } = general.setting
+    const autocorrect = general.setting.autocorrect
+
     if (autocorrect && ev) {
       import('@huacnlee/autocorrect')
-        .then(({ format }) => {
+        .then(({ formatFor }) => {
           const { state, dispatch } = ev
           const currentLine = state.doc.lineAt(state.selection.main.head)
           if (currentLine.text) {
@@ -58,7 +59,11 @@ export const useCodeMirror = <T extends Element>(
             0,
             currentLine.from,
           )
+          const format = (text: string) => {
+            return formatFor(text, 'cm.md').out as string
+          }
           const newText = format(allLineBeforeCurrentLine)
+
           const delta = newText.length - allLineBeforeCurrentLine.length
 
           const afterCurrentLine = state.doc.sliceString(
