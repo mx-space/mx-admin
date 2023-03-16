@@ -15,7 +15,7 @@ specifiers:
   '@codemirror/view': 6.9.2
   '@ddietr/codemirror-themes': https://github.com/Innei/codemirror-themes.git
   '@huacnlee/autocorrect': 2.6.2
-  '@innei/eslint-config-vue-ts': 0.9.7
+  '@innei/eslint-config-vue-ts': 0.9.8
   '@innei/prettier': 0.9.8
   '@lezer/highlight': '*'
   '@mx-space/api-client': 1.3.5
@@ -147,7 +147,7 @@ dependencies:
   xterm-theme: 1.1.0
 
 devDependencies:
-  '@innei/eslint-config-vue-ts': 0.9.7_typescript@4.9.5
+  '@innei/eslint-config-vue-ts': 0.9.8_typescript@4.9.5
   '@innei/prettier': 0.9.8_@vue+compiler-sfc@3.2.47
   '@types/ejs': 3.1.2
   '@types/event-source-polyfill': 1.0.1
@@ -1564,15 +1564,15 @@ packages:
       - supports-color
     dev: true
 
-  /@innei/eslint-config-vue-ts/0.9.7_typescript@4.9.5:
-    resolution: {integrity: sha512-QyW6rH1TwoIrLWlnXUipM0hoeJ1xv447v7Q/F2xc5o5znYu5zq3YQ/tyyPJAnuidSxXSSpgRrlQF0eDfFrZwTA==}
+  /@innei/eslint-config-vue-ts/0.9.8_typescript@4.9.5:
+    resolution: {integrity: sha512-qJRNVj3fLY79kY0EGibFe8L1UBS7GWJ3yY0Myw7+v40I+CAu2z6i4KyNNNhW+5FvKkephk6jDEAl9KkiLjfAbg==}
     peerDependencies:
       typescript: '>=4'
     dependencies:
       '@innei/eslint-config-ts': 0.9.8_typescript@4.9.5
       eslint: 8.34.0
       eslint-plugin-react: 7.32.0_eslint@8.34.0
-      eslint-plugin-vue: 9.8.0_eslint@8.34.0
+      eslint-plugin-vue: 9.9.0_eslint@8.34.0
       typescript: 4.9.5
     transitivePeerDependencies:
       - eslint-import-resolver-typescript
@@ -3361,8 +3361,8 @@ packages:
       eslint-rule-composer: 0.3.0
     dev: true
 
-  /eslint-plugin-vue/9.8.0_eslint@8.34.0:
-    resolution: {integrity: sha512-E/AXwcTzunyzM83C2QqDHxepMzvI2y6x+mmeYHbVDQlKFqmKYvRrhaVixEeeG27uI44p9oKDFiyCRw4XxgtfHA==}
+  /eslint-plugin-vue/9.9.0_eslint@8.34.0:
+    resolution: {integrity: sha512-YbubS7eK0J7DCf0U2LxvVP7LMfs6rC6UltihIgval3azO3gyDwEGVgsCMe1TmDiEkl6GdMKfRpaME6QxIYtzDQ==}
     engines: {node: ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: ^6.2.0 || ^7.0.0 || ^8.0.0
