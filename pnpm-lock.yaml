@@ -4,7 +4,7 @@ overrides:
   '@bytebase/vue-kbar>@vueuse/core': ^9.9.0
 
 specifiers:
-  '@antv/g2': 4.2.9
+  '@antv/g2': 4.2.10
   '@bytebase/vue-kbar': 0.1.8
   '@codemirror/commands': 6.2.0
   '@codemirror/lang-markdown': 6.0.5
@@ -90,7 +90,7 @@ specifiers:
   xterm-theme: 1.1.0
 
 dependencies:
-  '@antv/g2': 4.2.9
+  '@antv/g2': 4.2.10
   '@bytebase/vue-kbar': 0.1.8_vue@3.2.47
   '@codemirror/commands': 6.2.0
   '@codemirror/lang-markdown': 6.0.5
@@ -289,8 +289,8 @@ packages:
       tslib: 2.5.0
     dev: false
 
-  /@antv/g2/4.2.9:
-    resolution: {integrity: sha512-7Ah96Hdg8N6k+aA356Wz1zufQFcXENSxH3iXEjBr2vU1yvcdzPWT640C+zB/hrEmFd+rWSb0teqXcyzGDiio+A==}
+  /@antv/g2/4.2.10:
+    resolution: {integrity: sha512-/ZlJ/DFJBCvtEQgE6roxdd6sBml0fZ8ZVfzG+HdjGpA7/ceURb8XkxUcqa0E8NV+e4sFijnaAhBCdUm2whiuyA==}
     dependencies:
       '@antv/adjust': 0.2.5
       '@antv/attr': 0.3.3
