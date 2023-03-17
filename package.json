@@ -84,7 +84,7 @@
     "@types/qs": "6.9.7",
     "@types/validator": "13.7.13",
     "@vitejs/plugin-vue": "4.0.0",
-    "@vitejs/plugin-vue-jsx": "3.0.0",
+    "@vitejs/plugin-vue-jsx": "3.0.1",
     "@vue/compiler-sfc": "3.2.47",
     "cors": "2.8.5",
     "eslint": "^8.34.0",
