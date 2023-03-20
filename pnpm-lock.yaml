@@ -35,7 +35,7 @@ specifiers:
   '@vicons/material': 0.12.0
   '@vicons/tabler': 0.12.0
   '@vicons/utils': 0.1.4
-  '@vitejs/plugin-vue': 4.0.0
+  '@vitejs/plugin-vue': 4.1.0
   '@vitejs/plugin-vue-jsx': 3.0.1
   '@vue/compiler-sfc': 3.2.47
   '@vueuse/core': 9.13.0
@@ -157,7 +157,7 @@ devDependencies:
   '@types/marked': 4.0.8
   '@types/qs': 6.9.7
   '@types/validator': 13.7.13
-  '@vitejs/plugin-vue': 4.0.0_vite@4.2.0+vue@3.2.47
+  '@vitejs/plugin-vue': 4.1.0_vite@4.2.0+vue@3.2.47
   '@vitejs/plugin-vue-jsx': 3.0.1_vite@4.2.0+vue@3.2.47
   '@vue/compiler-sfc': 3.2.47
   cors: 2.8.5
@@ -396,7 +396,7 @@ packages:
     resolution: {integrity: sha512-duORpUiYrEpzKIop6iNbjnwKLAKnJ47csTyRACyEmWj0QdUrm5aqNJGHSSEQSUAvNW0ojX0dOmK9dZduvkfeXA==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/types': 7.20.7
+      '@babel/types': 7.21.3
     dev: true
 
   /@babel/helper-compilation-targets/7.20.7_@babel+core@7.20.12:
@@ -494,7 +494,7 @@ packages:
     resolution: {integrity: sha512-HP59oD9/fEHQkdcbgFCnbmgH5vIQTJbxh2yf+CdM89/glUNnuzr87Q8GIjGEnOktTROemO0Pe0iPAYbqZuOUiA==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/types': 7.20.7
+      '@babel/types': 7.21.3
     dev: true
 
   /@babel/helper-plugin-utils/7.20.2:
@@ -1447,7 +1447,7 @@ packages:
       '@babel/generator': 7.20.14
       '@babel/parser': 7.20.15
       '@babel/traverse': 7.20.13
-      '@babel/types': 7.20.7
+      '@babel/types': 7.21.3
       '@vue/compiler-sfc': 3.2.47
       javascript-natural-sort: 0.7.1
       lodash.clone: 4.5.0
@@ -2264,8 +2264,8 @@ packages:
       - supports-color
     dev: true
 
-  /@vitejs/plugin-vue/4.0.0_vite@4.2.0+vue@3.2.47:
-    resolution: {integrity: sha512-e0X4jErIxAB5oLtDqbHvHpJe/uWNkdpYV83AOG2xo2tEVSzCzewgJMtREZM30wXnM5ls90hxiOtAuVU6H5JgbA==}
+  /@vitejs/plugin-vue/4.1.0_vite@4.2.0+vue@3.2.47:
+    resolution: {integrity: sha512-++9JOAFdcXI3lyer9UKUV4rfoQ3T1RN8yDqoCLar86s0xQct5yblxAE+yWgRnU5/0FOlVCpTZpYSBV/bGWrSrQ==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       vite: ^4.0.0
