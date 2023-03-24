@@ -50,7 +50,7 @@
     "json5": "2.2.3",
     "lodash-es": "4.17.21",
     "markdown-escape": "2.0.0",
-    "marked": "4.2.12",
+    "marked": "4.3.0",
     "monaco-editor": "0.36.1",
     "monaco-editor-auto-typings": "0.4.3",
     "naive-ui": "2.34.3",
