@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## [3.27.4](https://github.com/mx-space/mx-admin/compare/v3.27.3...v3.27.4) (2023-03-24)
+
+
+### Bug Fixes
+
+* **deps:** update codemirror ([#503](https://github.com/mx-space/mx-admin/issues/503)) ([465b0e6](https://github.com/mx-space/mx-admin/commit/465b0e6237844d9feae5e1576426106bbb41e333))
+* **deps:** update dependency @antv/g2 to v4.2.10 ([#712](https://github.com/mx-space/mx-admin/issues/712)) ([89bb469](https://github.com/mx-space/mx-admin/commit/89bb469529482a58bbe0b6fc8f48e77456fb816e))
+* **deps:** update dependency ejs to v3.1.9 ([#708](https://github.com/mx-space/mx-admin/issues/708)) ([e6787cc](https://github.com/mx-space/mx-admin/commit/e6787cc44ee3f3d9df55716959aecc64c5e4d39a))
+* markdown yaml parser ([57efe5d](https://github.com/mx-space/mx-admin/commit/57efe5d5f1c0ede92df33b2a0e319aa6f63a6521))
+
+
+
 ## [3.27.3](https://github.com/mx-space/mx-admin/compare/v3.27.2...v3.27.3) (2023-03-14)
 
 
