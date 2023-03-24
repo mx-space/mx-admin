@@ -96,7 +96,7 @@
     "rollup": "^3.15.0",
     "rollup-plugin-visualizer": "5.9.0",
     "typescript": "5.0.2",
-    "unplugin-auto-import": "0.15.1",
+    "unplugin-auto-import": "0.15.2",
     "vite": "4.2.0",
     "vite-plugin-checker": "0.5.6",
     "vite-plugin-wasm": "3.2.2",
