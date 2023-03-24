@@ -1,7 +1,7 @@
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { TextBaseDrawer } from 'components/drawer/text-base-drawer'
 import { EditorToggleWrapper } from 'components/editor/universal/toggle'
-import { SlidersHIcon, TelegramPlaneIcon } from 'components/icons'
+import { LightOn, SlidersHIcon, TelegramPlaneIcon } from 'components/icons'
 import { MaterialInput } from 'components/input/material-input'
 import { UnderlineInput } from 'components/input/underline-input'
 import { ParseContentButton } from 'components/special-button/parse-content'
@@ -12,12 +12,15 @@ import { isString } from 'lodash-es'
 import type { CategoryModel, TagModel } from 'models/category'
 import type { PostModel } from 'models/post'
 import {
+  NButton,
   NDynamicTags,
   NFormItem,
   NInput,
   NInputNumber,
+  NPopover,
   NSelect,
   NSwitch,
+  useDialog,
   useMessage,
 } from 'naive-ui'
 import type { SelectMixedOption } from 'naive-ui/lib/select/src/interface'
@@ -30,6 +33,7 @@ import { useRoute, useRouter } from 'vue-router'
 
 import { Icon } from '@vicons/utils'
 
+import { AskAiDialog } from './components/ask-ai'
 import { useMemoPostList } from './hooks/use-memo-post-list'
 
 type PostReactiveType = WriteBaseType & {
@@ -161,6 +165,21 @@ const PostWriteView = defineComponent(() => {
   onBeforeUnmount(() => {
     postListState.refresh()
   })
+  const dialog = useDialog()
+  const handleAskAI = () => {
+    const $dialog = dialog.create({
+      title: 'Ask AI',
+      content: () => (
+        <AskAiDialog
+          article={data.text}
+          onSuccess={(summary) => {
+            data.summary = summary
+            $dialog.destroy()
+          }}
+        />
+      ),
+    })
+  }
 
   return () => (
     <ContentLayout
@@ -332,17 +351,38 @@ const PostWriteView = defineComponent(() => {
           ></NSelect>
         </NFormItem>
 
-        <NFormItem label="概要">
+        <NFormItem label="摘要">
           <NInput
             type="textarea"
             autosize={{
               minRows: 2,
               maxRows: 4,
             }}
-            placeholder="文章概要"
+            placeholder="文章摘要"
             value={data.summary}
             onInput={(e) => void (data.summary = e)}
-          />
+          >
+            {{
+              suffix() {
+                return (
+                  <NPopover>
+                    {{
+                      trigger() {
+                        return (
+                          <NButton text onClick={handleAskAI}>
+                            <LightOn />
+                          </NButton>
+                        )
+                      },
+                      default() {
+                        return 'Ask AI'
+                      },
+                    }}
+                  </NPopover>
+                )
+              },
+            }}
+          </NInput>
         </NFormItem>
 
         <NFormItem label="版权注明" labelAlign="right" labelPlacement="left">

@@ -65,7 +65,8 @@ export default ({ mode }) => {
       },
     },
     optimizeDeps: {
-      exclude: ['@huacnlee/autocorrect'],
+      exclude: ['@huacnlee/autocorrect', 
+    '@dqbd/tiktoken'],
     },
 
     define: {

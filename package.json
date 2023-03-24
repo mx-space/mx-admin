@@ -55,6 +55,7 @@
     "monaco-editor-auto-typings": "0.4.3",
     "naive-ui": "2.34.3",
     "octokit": "2.0.14",
+    "openai": "3.2.1",
     "os-browserify": "0.3.0",
     "path-browserify": "1.0.1",
     "pinia": "2.0.33",
