@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.27.5](https://github.com/mx-space/mx-admin/compare/v3.27.4...v3.27.5) (2023-03-24)
+
+
+### Features
+
+* ai generate summary ([5da9b15](https://github.com/mx-space/mx-admin/commit/5da9b1505a5c169112159a41dd1e968c15979fb1))
+
+
+
 ## [3.27.4](https://github.com/mx-space/mx-admin/compare/v3.27.3...v3.27.4) (2023-03-24)
 
 
