@@ -1,3 +1,5 @@
+import { load } from 'js-yaml'
+
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 export class ParseMarkdownYAML {
   constructor(private strList: string[]) {}
@@ -9,56 +11,23 @@ export class ParseMarkdownYAML {
     if (!parts) {
       return { text: raw }
     }
-    const parttenYAML = parts[1]
+
     const text = parts.pop()
-    const parseYAML = parttenYAML.split('\n')
+    const parseYAML = load(parts[1])
+    const meta: Partial<NonNullable<ParsedModel['meta']>> = {}
+    const { categories, tags, date, updated, created } = parseYAML as any
 
-    const tags = [] as string[]
-    const categories = [] as string[]
-
-    let cur: 'cate' | 'tag' | null = null
-    const meta: any = parseYAML.reduce((meta, current) => {
-      const splitPart = current
-        .trim()
-        .split(':')
-        .filter((item) => item.length)
-      const sp =
-        splitPart.length >= 2
-          ? [
-              splitPart[0],
-              splitPart
-                .slice(1)
-                .filter((item) => item.length)
-                .join(':')
-                .trim(),
-            ]
-          : [splitPart[0]]
-
-      if (sp.length === 2) {
-        const [property, value] = sp
-        if (['date', 'updated'].includes(property)) {
-          meta[property] = new Date(value.trim()).toISOString()
-        } else if (['categories:', 'tags:'].includes(property)) {
-          cur = property === 'categories:' ? 'cate' : 'tag'
-        } else meta[property] = value.trim()
-      } else {
-        const item = current.trim().replace(/^\s*-\s*/, '')
-
-        if (['', 'tags:', 'categories:'].includes(item)) {
-          cur = item === 'categories:' ? 'cate' : 'tag'
-          return meta
-        }
-        if (cur === 'tag') {
-          tags.push(item)
-        } else {
-          categories.push(item)
-        }
-      }
-      return meta
-    }, {})
+    if (date || created) meta.date = new Date(date || created).toISOString()
+    if (updated) meta.updated = new Date(updated).toISOString()
 
     meta.categories = categories
     meta.tags = tags
+
+    Object.keys(meta).forEach((key) => {
+      const value = meta[key]
+      if (typeof value === 'undefined') delete meta[key]
+    })
+
     return { meta, text } as ParsedModel
   }
 
