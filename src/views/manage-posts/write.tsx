@@ -33,7 +33,7 @@ import { useRoute, useRouter } from 'vue-router'
 
 import { Icon } from '@vicons/utils'
 
-import { AskAiDialog } from './components/ask-ai'
+import { AISummaryDialog } from './components/ask-ai'
 import { useMemoPostList } from './hooks/use-memo-post-list'
 
 type PostReactiveType = WriteBaseType & {
@@ -168,9 +168,9 @@ const PostWriteView = defineComponent(() => {
   const dialog = useDialog()
   const handleAskAI = () => {
     const $dialog = dialog.create({
-      title: 'Ask AI',
+      title: 'OpenAI article summary',
       content: () => (
-        <AskAiDialog
+        <AISummaryDialog
           article={data.text}
           onSuccess={(summary) => {
             data.summary = summary

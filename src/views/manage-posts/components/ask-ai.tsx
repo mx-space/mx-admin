@@ -8,7 +8,7 @@ import {
 } from 'naive-ui'
 import { Configuration, OpenAIApi } from 'openai'
 
-export const AskAiDialog = defineComponent({
+export const AISummaryDialog = defineComponent({
   props: {
     article: {
       type: String,
@@ -21,8 +21,10 @@ export const AskAiDialog = defineComponent({
   },
   setup(props) {
     const token = useStorage('openai-token', '')
-    const promptDefault = `为下面文章生成一篇摘要，100 字之内：\n\n{{text}}`
-    const prompt = ref('')
+
+    const promptRef = ref(`Summarize this in Chinese language:
+"{text}"
+CONCISE SUMMARY:`)
     const message = useMessage()
     const isLoading = ref(false)
     const handleAskAI = async () => {
@@ -31,10 +33,7 @@ export const AskAiDialog = defineComponent({
       })
       const ai = new OpenAIApi(config)
 
-      const finalPrompt = (prompt.value || promptDefault).replace(
-        '{{text}}',
-        props.article,
-      )
+      const finalPrompt = promptRef.value.replace('{text}', props.article)
       const messageIns = message.loading('AI 正在生成摘要...')
       isLoading.value = true
       const response = await ai
@@ -65,8 +64,6 @@ export const AskAiDialog = defineComponent({
         return
       }
 
-      console.log(summary, 's')
-
       messageIns.destroy()
       message.success(`AI 生成的摘要： ${summary}`)
       props.onSuccess(summary)
@@ -81,9 +78,8 @@ export const AskAiDialog = defineComponent({
               minRows: 4,
             }}
             type="textarea"
-            placeholder={promptDefault}
-            value={prompt.value}
-            onUpdateValue={(val) => void (prompt.value = val)}
+            value={promptRef.value}
+            onUpdateValue={(val) => void (promptRef.value = val)}
           ></NInput>
         </NFormItem>
 
