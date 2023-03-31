@@ -33,7 +33,7 @@ jobs:
 
       - uses: pnpm/action-setup@v2.2.4
         with:
-          version: latest
+          version: 8.x.x
           run_install: true
       - name: Build project # This would actually build your project, using zip for an example artifact
         run: |
