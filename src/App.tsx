@@ -18,15 +18,6 @@ import { RouterView, useRouter } from 'vue-router'
 import { useUIStore } from './stores/ui'
 import { useUserStore } from './stores/user'
 
-import('typescript').then(({ createSourceFile, ScriptTarget }) => {
-  const file = createSourceFile(
-    'a.ts',
-    `export interface a {}`,
-    ScriptTarget.ES2022,
-  )
-  console.log(file)
-})
-
 const Root = defineComponent({
   name: 'RootView',
 

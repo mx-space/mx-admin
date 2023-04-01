@@ -1,7 +1,7 @@
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { TextBaseDrawer } from 'components/drawer/text-base-drawer'
 import { EditorToggleWrapper } from 'components/editor/universal/toggle'
-import { LightOn, SlidersHIcon, TelegramPlaneIcon } from 'components/icons'
+import { OpenAI, SlidersHIcon, TelegramPlaneIcon } from 'components/icons'
 import { MaterialInput } from 'components/input/material-input'
 import { UnderlineInput } from 'components/input/underline-input'
 import { ParseContentButton } from 'components/special-button/parse-content'
@@ -370,7 +370,7 @@ const PostWriteView = defineComponent(() => {
                       trigger() {
                         return (
                           <NButton text onClick={handleAskAI}>
-                            <LightOn />
+                            <OpenAI />
                           </NButton>
                         )
                       },
