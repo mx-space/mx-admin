@@ -269,7 +269,7 @@ export const Tab2ForEdit = defineComponent({
           <NForm>
             {isBuiltFunction.value && (
               <NP>
-                这是一个内置函数，无法修改原信息。但是你可以自定义函数实现。
+                这是一个内置函数，无法修改元信息。但是你可以自定义函数实现。
               </NP>
             )}
             <NFormItem label="名称" required>
