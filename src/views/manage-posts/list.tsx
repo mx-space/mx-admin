@@ -48,7 +48,7 @@ export const ManagePostListView = defineComponent({
                 page,
                 size,
                 select:
-                  'title _id id created modified slug categoryId copyright tags count pin',
+                  'title _id id created modified slug categoryId copyright tags count pin meta',
                 ...(sortProps.sortBy
                   ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
                   : {}),
@@ -131,6 +131,7 @@ export const ManagePostListView = defineComponent({
                     title={row.title}
                     inPageTo={`/posts/edit?id=${row.id}`}
                     externalLinkTo={`/posts/${row.category.slug}/${row.slug}`}
+                    xLog={row.meta?.xLog}
                   />
                 </div>
               )

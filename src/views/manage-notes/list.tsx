@@ -41,7 +41,7 @@ export const ManageNoteListView = defineComponent({
                 page,
                 size,
                 select:
-                  'title _id nid id created modified mood weather hide secret hasMemory coordinates location count',
+                  'title _id nid id created modified mood weather hide secret hasMemory coordinates location count meta',
                 ...(sortProps.sortBy
                   ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
                   : {}),
@@ -86,6 +86,7 @@ export const ManageNoteListView = defineComponent({
             sorter: 'default',
             key: 'title',
             width: 280,
+
             filter: true,
             filterOptions: [
               { label: '回忆项', value: 'hasMemory' },
@@ -102,6 +103,7 @@ export const ManageNoteListView = defineComponent({
                   externalLinkTo={`/notes/${row.nid}`}
                   id={row.id}
                   withToken={row.hide || isSecret}
+                  xLog={row.meta?.xLog}
                 >
                   {{
                     default() {
