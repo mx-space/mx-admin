@@ -34,4 +34,6 @@ export class SnippetModel extends BaseModel {
   enable?: boolean
   method?: string
   secret?: Record<string, any>
+
+  builtIn = false
 }

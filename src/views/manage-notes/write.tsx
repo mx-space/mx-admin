@@ -219,10 +219,11 @@ const NoteWriteView = defineComponent(() => {
         return
       }
       const $id = id.value as string
-      await RESTManager.api.notes($id).put({
+      const response = await RESTManager.api.notes($id).put<NoteModel>({
         data: parseDataToPayload(),
       })
       message.success('修改成功')
+      await CrossBellConnector.createOrUpdate(response)
     } else {
       const data = parseDataToPayload()
       // create
@@ -231,7 +232,7 @@ const NoteWriteView = defineComponent(() => {
       })
       message.success('发布成功')
 
-      await CrossBellConnector.createPost(response)
+      await CrossBellConnector.createOrUpdate(response)
     }
 
     await router.push({ name: RouteName.ViewNote, hash: '|publish' })
