@@ -95,9 +95,11 @@ export const TableTitleLink = defineComponent({
                     <p>此文章同步到 Crossbell 网络。</p>
                     <p>xLog pageId: {props.xLog!.pageId}</p>
                     {props.xLog!.relatedUrls?.map((url) => (
-                      <a href={url} target="_blank">
-                        {url}
-                      </a>
+                      <p key={url}>
+                        <a href={url} target="_blank">
+                          {url}
+                        </a>
+                      </p>
                     ))}
                   </div>
                 )
