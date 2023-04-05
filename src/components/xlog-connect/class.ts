@@ -45,7 +45,7 @@ export class CrossBellConnector {
       const { state } = instance
       const { account } = state
 
-      message.loading('准备发布到 xLog，等待钱包相应...')
+      message.loading('准备发布到 xLog，等待钱包响应...')
       let postCallOnce = false
       let pageId = data.meta?.xLog?.pageId
 
