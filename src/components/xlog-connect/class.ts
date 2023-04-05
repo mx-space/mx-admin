@@ -39,12 +39,15 @@ export class CrossBellConnector {
       message.loading('准备发布到 xLog，等待钱包相应...')
       let postCallOnce = false
 
-      const post = () => {
+      const post = async () => {
         if (postCallOnce) return Promise.resolve()
         const { text, title } = data
         const slug = 'slug' in data ? data.slug : `note-${data.nid}`
         postCallOnce = true
         message.loading('正在发布到 xLog...')
+        let pageId = data.meta?.xLog?.pageId
+
+        if (!pageId) pageId = await this.fetchPageId(data)
         return instance.createOrUpdatePage({
           siteId: SITE_ID,
           content: text,
@@ -54,7 +57,7 @@ export class CrossBellConnector {
           published: true,
           applications: ['xlog'],
           externalUrl: `https://${SITE_ID}.xlog.app/posts/${slug}`,
-          pageId: data.meta?.xLog?.pageId,
+          pageId,
           tags: 'tags' in data ? data.tags.toString() : undefined,
           publishedAt: data.created,
         })
@@ -154,8 +157,8 @@ export class CrossBellConnector {
 
   private static async fetchPageId(data: NoteModel | PostModel) {
     if (!this.SITE_ID) return
-    const { characterId, noteId } =
-      await RESTManager.api.fn.xlog.get_page_id.get<{
+    const { characterId, noteId } = await RESTManager.api.fn.xlog.get_page_id
+      .get<{
         noteId: string
         characterId: string
       }>({
@@ -163,6 +166,12 @@ export class CrossBellConnector {
           handle: this.SITE_ID,
           slug: this.isNoteModel(data) ? `note-${data.nid}` : data.slug,
         },
+      })
+      .catch(() => {
+        return {
+          noteId: '',
+          characterId: '',
+        }
       })
 
     if (!characterId || !noteId) return
