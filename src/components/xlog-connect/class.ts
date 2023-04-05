@@ -34,10 +34,13 @@ export class CrossBellConnector {
       const { account } = state
 
       message.loading('准备发布到 xLog，等待钱包相应...')
+      let postCallOnce = false
 
       const post = () => {
+        if (postCallOnce) return Promise.resolve()
         const { text, title } = data
         const slug = 'slug' in data ? data.slug : `note-${data.nid}`
+        postCallOnce = true
         return instance.createOrUpdatePage({
           siteId: SITE_ID,
           content: text,
