@@ -1,5 +1,20 @@
 # CHANGELOG
 
+# [3.28.0](https://github.com/mx-space/mx-admin/compare/v3.27.5...v3.28.0) (2023-04-05)
+
+
+### Bug Fixes
+
+* async load xLog connector ([2841c88](https://github.com/mx-space/mx-admin/commit/2841c889d9a5ef6e9dbf04834bede558a3d59463))
+* change open ai icon ([52ac47b](https://github.com/mx-space/mx-admin/commit/52ac47bd6072eac8ca48868a146af91531d783ce))
+
+
+### Features
+
+* support connect to rss3 xLog ([#728](https://github.com/mx-space/mx-admin/issues/728) ([097976b](https://github.com/mx-space/mx-admin/commit/097976b26beeeacc4a24370dcaa706039946d17e))
+
+
+
 ## [3.27.5](https://github.com/mx-space/mx-admin/compare/v3.27.4...v3.27.5) (2023-03-24)
 
 
