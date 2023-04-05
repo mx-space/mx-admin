@@ -47,6 +47,7 @@ export class CrossBellConnector {
 
       message.loading('准备发布到 xLog，等待钱包相应...')
       let postCallOnce = false
+      let pageId = data.meta?.xLog?.pageId
 
       const post = async () => {
         if (postCallOnce) return Promise.resolve()
@@ -54,7 +55,6 @@ export class CrossBellConnector {
         const slug = 'slug' in data ? data.slug : `note-${data.nid}`
         postCallOnce = true
         message.loading('正在发布到 xLog...')
-        let pageId = data.meta?.xLog?.pageId
 
         if (!pageId) pageId = await this.fetchPageId(data)
         return instance.createOrUpdatePage({
@@ -77,50 +77,52 @@ export class CrossBellConnector {
             const unidata = getUniData()
 
             message.success('xLog 发布成功')
-            this.fetchPageId(data).then((pageId) => {
-              if (!pageId) {
-                message.error('无法获取 xLog pageId 任务终止')
-                return
-              }
+            ;(pageId ? Promise.resolve(pageId) : this.fetchPageId(data)).then(
+              (pageId) => {
+                if (!pageId) {
+                  message.error('无法获取 xLog pageId 任务终止')
+                  return
+                }
 
-              // update meta for pageId
-              this.updateModel(data, {
-                pageId,
-              })
-
-              // update meta for ipfs
-              unidata.notes
-                .get({
-                  source: 'Crossbell Note',
-                  identity: SITE_ID,
-                  platform: 'Crossbell',
-                  filter: {
-                    id: pageId,
-                  },
+                // update meta for pageId
+                this.updateModel(data, {
+                  pageId,
                 })
-                .then((note$) => {
-                  if (!note$) return
-                  const { list } = note$
-                  const note = list[0]
-                  if (!note) return
-                  const { metadata, related_urls } = note
-                  const minifyMetadata = {
-                    ...metadata,
-                  }
 
-                  delete minifyMetadata.raw
-
-                  console.debug(note)
-                  this.updateModel(data, {
-                    pageId,
-                    related_urls,
-                    metadata: minifyMetadata,
-                    // @copy from xlog
-                    // https://github.com/Innei/xLog/blob/33a3f2306467fd067e85dbd75a7a08ab584fd3f7/src/components/site/PostMeta.tsx#L25
-                    cid: toCid(related_urls?.[0] || ''),
+                // update meta for ipfs
+                unidata.notes
+                  .get({
+                    source: 'Crossbell Note',
+                    identity: SITE_ID,
+                    platform: 'Crossbell',
+                    filter: {
+                      id: pageId,
+                    },
                   })
-                })
-            })
+                  .then((note$) => {
+                    if (!note$) return
+                    const { list } = note$
+                    const note = list[0]
+                    if (!note) return
+                    const { metadata, related_urls } = note
+                    const minifyMetadata = {
+                      ...metadata,
+                    }
+
+                    delete minifyMetadata.raw
+
+                    console.debug(note)
+                    this.updateModel(data, {
+                      pageId,
+                      related_urls,
+                      metadata: minifyMetadata,
+                      // @copy from xlog
+                      // https://github.com/Innei/xLog/blob/33a3f2306467fd067e85dbd75a7a08ab584fd3f7/src/components/site/PostMeta.tsx#L25
+                      cid: toCid(related_urls?.[0] || ''),
+                    })
+                  })
+              },
+            )
             resolve(null)
           })
           .catch(() => {
