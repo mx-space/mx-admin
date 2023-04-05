@@ -35,7 +35,7 @@ export const JSONEditor = defineComponent({
     return () => {
       const { Snip } = editor
       return (
-        <div class="max-w-[60vw] w-[600px] max-h-[70vh] h-[500px] flex flex-col gap-2">
+        <div class="max-w-[80vw] w-[1024px] max-h-[70vh] h-[500px] flex flex-col gap-2">
           <div ref={htmlRef} class="flex-shrink-0 flex-grow">
             <Snip />
           </div>

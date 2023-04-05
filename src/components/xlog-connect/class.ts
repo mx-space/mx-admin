@@ -1,7 +1,12 @@
 import type { NoteModel } from 'models/note'
 import type { PostModel } from 'models/post'
+import {
+  getUniData,
+  toCid,
+  useAccountState,
+  useConnectModal,
+} from 'use-crossbell-xlog'
 import type { CrossBellInstance } from 'use-crossbell-xlog'
-import { useAccountState, useConnectModal } from 'use-crossbell-xlog'
 import { RESTManager } from 'utils'
 
 export const instanceRef = ref<CrossBellInstance>()
@@ -9,8 +14,6 @@ export const instanceRef = ref<CrossBellInstance>()
 export class CrossBellConnector {
   static SITE_ID = ''
   static setSiteId(siteId: string) {
-    console.log('setSiteId', siteId)
-
     this.SITE_ID = siteId
   }
   static getInstance(): CrossBellInstance | undefined {
@@ -59,8 +62,53 @@ export class CrossBellConnector {
       const postHandler = () =>
         post()
           .then(() => {
+            const unidata = getUniData()
+
             message.success('xLog 发布成功')
-            this.updateModel(data)
+            this.fetchPageId(data).then((pageId) => {
+              if (!pageId) {
+                message.error('无法获取 xLog pageId 任务终止')
+                return
+              }
+
+              // update meta for pageId
+              this.updateModel(data, {
+                pageId,
+              })
+
+              // update meta for ipfs
+              unidata.notes
+                .get({
+                  source: 'Crossbell Note',
+                  identity: SITE_ID,
+                  platform: 'Crossbell',
+                  filter: {
+                    id: pageId,
+                  },
+                })
+                .then((note$) => {
+                  if (!note$) return
+                  const { list } = note$
+                  const note = list[0]
+                  if (!note) return
+                  const { metadata, related_urls } = note
+                  const minifyMetadata = {
+                    ...metadata,
+                  }
+
+                  delete minifyMetadata.raw
+
+                  console.debug(note)
+                  this.updateModel(data, {
+                    pageId,
+                    related_urls,
+                    metadata: minifyMetadata,
+                    // @copy from xlog
+                    // https://github.com/Innei/xLog/blob/33a3f2306467fd067e85dbd75a7a08ab584fd3f7/src/components/site/PostMeta.tsx#L25
+                    ipfs: toCid(related_urls?.[0] || ''),
+                  })
+                })
+            })
             resolve(null)
           })
           .catch(() => {
@@ -103,7 +151,8 @@ export class CrossBellConnector {
   private static isNoteModel(data: NoteModel | PostModel): data is NoteModel {
     return 'nid' in data
   }
-  private static async updateModel(data: NoteModel | PostModel) {
+
+  private static async fetchPageId(data: NoteModel | PostModel) {
     if (!this.SITE_ID) return
     const { characterId, noteId } =
       await RESTManager.api.fn.xlog.get_page_id.get<{
@@ -116,22 +165,48 @@ export class CrossBellConnector {
         },
       })
 
-    const pageId = `${characterId}-${noteId}`
+    if (!characterId || !noteId) return
+    return `${characterId}-${noteId}`
+  }
+  private static async updateModel(
+    data: NoteModel | PostModel,
+
+    meta: {
+      pageId?: string
+      ipfs?: string
+      related_urls?: string[]
+      metadata?: any
+    },
+  ) {
+    const id = data.id
+    const { ipfs, pageId, related_urls, metadata } = meta
+
+    // delete undefined value in meta object
+
+    for (const key in meta) {
+      if (meta[key] === undefined) {
+        delete meta[key]
+      }
+    }
 
     const patchedData = {
       meta: {
-        ...(data.meta || {}),
+        ...data.meta,
         xLog: {
+          ...data.meta?.xLog,
           pageId,
+          ipfs,
+          related_urls,
+          metadata,
         },
       },
     }
     if (this.isNoteModel(data)) {
-      await RESTManager.api.notes(data.id).patch({
+      await RESTManager.api.notes(id).patch({
         data: patchedData,
       })
     } else {
-      await RESTManager.api.posts(data.id).patch({
+      await RESTManager.api.posts(id).patch({
         data: patchedData,
       })
     }

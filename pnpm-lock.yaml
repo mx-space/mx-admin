@@ -148,9 +148,12 @@ dependencies:
   umi-request:
     specifier: 1.4.0
     version: 1.4.0
+  unidata.js:
+    specifier: 0.7.17
+    version: 0.7.17
   use-crossbell-xlog:
-    specifier: 0.0.4
-    version: 0.0.4(@babel/core@7.21.4)(@types/node@18.11.18)(ethers@5.7.2)(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.3)
+    specifier: 0.0.6
+    version: 0.0.6(@babel/core@7.21.4)(@types/node@18.11.18)(ethers@5.7.2)(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.3)
   validator:
     specifier: 13.9.0
     version: 13.9.0
@@ -9468,8 +9471,8 @@ packages:
       react: 18.2.0
     dev: false
 
-  /use-crossbell-xlog@0.0.4(@babel/core@7.21.4)(@types/node@18.11.18)(ethers@5.7.2)(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.3):
-    resolution: {integrity: sha512-vUkZO4S0UAocPsCnPD0ekNShdUba/wsalPaWKG+doTgVpeGaL6VdrTvfWc+KyY/VwZf7/m6L1s62QbDohj9N/A==}
+  /use-crossbell-xlog@0.0.6(@babel/core@7.21.4)(@types/node@18.11.18)(ethers@5.7.2)(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.3):
+    resolution: {integrity: sha512-huESorm5xUH4quKMNk7pyc3u84ARAyog8qCHVbNHkEvzDtHw3aJGdkm897SXM2QREddU38EyFy9MwLfDALMKQg==}
     dependencies:
       '@crossbell/connect-kit': 0.0.55(@tanstack/react-query@4.28.0)(ethers@5.7.2)(react-dom@18.2.0)(typescript@5.0.3)(wagmi@0.12.8)
       '@crossbell/contract': 0.0.55(ethers@5.7.2)(react-dom@18.2.0)(react@18.2.0)(wagmi@0.12.8)
