@@ -5,8 +5,6 @@
 
 嘿！现在可以使用共享面板了，立即前往：<https://mx.shizuri.net>
 
-:tada: 现在有 Demo 版本可体验了：<https://mx-demo.shizuri.net/proxy/qaqdmin> 密码是 `demo`
-
 ```
 git clone --single-branch -b master https://github.com/mx-space/mx-admin.git
 ```

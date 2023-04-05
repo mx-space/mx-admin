@@ -53,6 +53,7 @@ export class CrossBellConnector {
           externalUrl: `https://${SITE_ID}.xlog.app/posts/${slug}`,
           pageId: data.meta?.xLog?.pageId,
           tags: 'tags' in data ? data.tags.toString() : undefined,
+          publishedAt: data.created,
         })
       }
       const postHandler = () =>
