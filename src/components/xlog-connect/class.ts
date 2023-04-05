@@ -22,6 +22,15 @@ export class CrossBellConnector {
   }
 
   static createOrUpdate(data: NoteModel | PostModel) {
+    // 跳过隐藏的笔记
+    const passedFields = ['hide', 'password', 'secret']
+    for (const field of passedFields) {
+      if (field in data && data[field]) {
+        message.info(`跳过隐藏笔记，命中字段：${field}`)
+        return Promise.resolve()
+      }
+    }
+
     return new Promise((resolve) => {
       if (!this.SITE_ID) {
         resolve(null)
