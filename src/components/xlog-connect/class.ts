@@ -41,6 +41,7 @@ export class CrossBellConnector {
         const { text, title } = data
         const slug = 'slug' in data ? data.slug : `note-${data.nid}`
         postCallOnce = true
+        message.loading('正在发布到 xLog...')
         return instance.createOrUpdatePage({
           siteId: SITE_ID,
           content: text,
@@ -128,7 +129,7 @@ export class CrossBellConnector {
         data: patchedData,
       })
     } else {
-      await RESTManager.api.posts(data.id).put({
+      await RESTManager.api.posts(data.id).patch({
         data: patchedData,
       })
     }

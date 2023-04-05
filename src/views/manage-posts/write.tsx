@@ -5,6 +5,8 @@ import { OpenAI, SlidersHIcon, TelegramPlaneIcon } from 'components/icons'
 import { MaterialInput } from 'components/input/material-input'
 import { UnderlineInput } from 'components/input/underline-input'
 import { ParseContentButton } from 'components/special-button/parse-content'
+import { CrossBellConnectorIndirector } from 'components/xlog-connect'
+import { CrossBellConnector } from 'components/xlog-connect/class'
 import { WEB_URL } from 'constants/env'
 import { useStoreRef } from 'hooks/use-store-ref'
 import { ContentLayout } from 'layouts/content'
@@ -130,16 +132,18 @@ const PostWriteView = defineComponent(() => {
         return
       }
       const $id = id.value as string
-      await RESTManager.api.posts($id).put({
+      const response = await RESTManager.api.posts($id).put<PostModel>({
         data: payload,
       })
       message.success('修改成功')
+      await CrossBellConnector.createOrUpdate(response)
     } else {
       // create
-      await RESTManager.api.posts.post({
+      const response = await RESTManager.api.posts.post<PostModel>({
         data: payload,
       })
       message.success('发布成功')
+      await CrossBellConnector.createOrUpdate(response)
     }
 
     router.push({ name: RouteName.ViewPost, hash: '|publish' })
@@ -234,6 +238,7 @@ const PostWriteView = defineComponent(() => {
         />
       </div>
 
+      <CrossBellConnectorIndirector />
       <EditorToggleWrapper
         loading={!!(id.value && typeof data.id == 'undefined')}
         onChange={(v) => {
