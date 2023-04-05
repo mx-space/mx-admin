@@ -105,7 +105,7 @@ export class CrossBellConnector {
                     metadata: minifyMetadata,
                     // @copy from xlog
                     // https://github.com/Innei/xLog/blob/33a3f2306467fd067e85dbd75a7a08ab584fd3f7/src/components/site/PostMeta.tsx#L25
-                    ipfs: toCid(related_urls?.[0] || ''),
+                    cid: toCid(related_urls?.[0] || ''),
                   })
                 })
             })
@@ -173,13 +173,13 @@ export class CrossBellConnector {
 
     meta: {
       pageId?: string
-      ipfs?: string
+      cid?: string
       related_urls?: string[]
       metadata?: any
     },
   ) {
     const id = data.id
-    const { ipfs, pageId, related_urls, metadata } = meta
+    const { cid, pageId, related_urls, metadata } = meta
 
     // delete undefined value in meta object
 
@@ -195,7 +195,7 @@ export class CrossBellConnector {
         xLog: {
           ...data.meta?.xLog,
           pageId,
-          ipfs,
+          cid,
           related_urls,
           metadata,
         },
