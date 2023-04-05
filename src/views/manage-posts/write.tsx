@@ -6,7 +6,6 @@ import { MaterialInput } from 'components/input/material-input'
 import { UnderlineInput } from 'components/input/underline-input'
 import { ParseContentButton } from 'components/special-button/parse-content'
 import { CrossBellConnectorIndirector } from 'components/xlog-connect'
-import { CrossBellConnector } from 'components/xlog-connect/class'
 import { WEB_URL } from 'constants/env'
 import { useStoreRef } from 'hooks/use-store-ref'
 import { ContentLayout } from 'layouts/content'
@@ -125,6 +124,8 @@ const PostWriteView = defineComponent(() => {
       summary:
         data.summary && data.summary.trim() != '' ? data.summary.trim() : null,
     }
+
+    const { CrossBellConnector } = await import('components/xlog-connect/class')
 
     if (id.value) {
       // update

@@ -6,7 +6,6 @@ import { MaterialInput } from 'components/input/material-input'
 import { GetLocationButton } from 'components/location/get-location-button'
 import { SearchLocationButton } from 'components/location/search-button'
 import { ParseContentButton } from 'components/special-button/parse-content'
-import { CrossBellConnector } from 'components/xlog-connect/class'
 import { WEB_URL } from 'constants/env'
 import { MOOD_SET, WEATHER_SET } from 'constants/note'
 import { add } from 'date-fns/esm'
@@ -213,6 +212,9 @@ const NoteWriteView = defineComponent(() => {
         music: data.music,
       }
     }
+
+    const { CrossBellConnector } = await import('components/xlog-connect/class')
+
     if (id.value) {
       // update
       if (!isString(id.value)) {
@@ -223,6 +225,7 @@ const NoteWriteView = defineComponent(() => {
         data: parseDataToPayload(),
       })
       message.success('修改成功')
+
       await CrossBellConnector.createOrUpdate(response)
     } else {
       const data = parseDataToPayload()
