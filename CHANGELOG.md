@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## [3.28.2](https://github.com/mx-space/mx-admin/compare/v3.28.1...v3.28.2) (2023-04-05)
+
+
+### Bug Fixes
+
+* skip sync to xlog if post if hide ([759a5af](https://github.com/mx-space/mx-admin/commit/759a5af7ff67943497fba49e45b0edc49e17e45c))
+
+
+### Features
+
+* add info of xLog in post list view ([14654c7](https://github.com/mx-space/mx-admin/commit/14654c7cff452425f3d01e572e82d73e710a54d1))
+* fetch pageId first if meta is empty ([1c8e075](https://github.com/mx-space/mx-admin/commit/1c8e0758a6c339db4a4f2f27860bc7d73b387ed8))
+
+
+
 ## [3.28.1](https://github.com/mx-space/mx-admin/compare/v3.28.0...v3.28.1) (2023-04-05)
 
 
