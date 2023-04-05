@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## [3.28.1](https://github.com/mx-space/mx-admin/compare/v3.28.0...v3.28.1) (2023-04-05)
+
+
+### Features
+
+* add store crossbell metadata ([08712c1](https://github.com/mx-space/mx-admin/commit/08712c1d77df7aecc17d1c816e9a1d0ecf7f6313))
+* add tags for sync to xlog ([ce7607d](https://github.com/mx-space/mx-admin/commit/ce7607dc0e629c38d89e705632647e7d13eaa05c))
+
+
+
 # [3.28.0](https://github.com/mx-space/mx-admin/compare/v3.27.5...v3.28.0) (2023-04-05)
 
 
