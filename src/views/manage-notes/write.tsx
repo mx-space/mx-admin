@@ -6,6 +6,7 @@ import { MaterialInput } from 'components/input/material-input'
 import { GetLocationButton } from 'components/location/get-location-button'
 import { SearchLocationButton } from 'components/location/search-button'
 import { ParseContentButton } from 'components/special-button/parse-content'
+import { CrossBellConnector } from 'components/xlog-connect/class'
 import { WEB_URL } from 'constants/env'
 import { MOOD_SET, WEATHER_SET } from 'constants/note'
 import { add } from 'date-fns/esm'
@@ -45,6 +46,14 @@ import { useRoute, useRouter } from 'vue-router'
 
 import type { PaginateResult } from '@mx-space/api-client'
 import { Icon } from '@vicons/utils'
+
+const CrossBellConnectorIndirector = defineAsyncComponent({
+  loader: () =>
+    import('components/xlog-connect').then(
+      (mo) => mo.CrossBellConnectorIndirector,
+    ),
+  suspensible: true,
+})
 
 type NoteReactiveType = {
   hide: boolean
@@ -210,16 +219,20 @@ const NoteWriteView = defineComponent(() => {
         return
       }
       const $id = id.value as string
-      await RESTManager.api.notes($id).put({
+      const response = await RESTManager.api.notes($id).put<NoteModel>({
         data: parseDataToPayload(),
       })
       message.success('修改成功')
+      await CrossBellConnector.createOrUpdate(response)
     } else {
+      const data = parseDataToPayload()
       // create
-      await RESTManager.api.notes.post({
-        data: parseDataToPayload(),
+      const response = await RESTManager.api.notes.post<NoteModel>({
+        data,
       })
       message.success('发布成功')
+
+      await CrossBellConnector.createOrUpdate(response)
     }
 
     await router.push({ name: RouteName.ViewNote, hash: '|publish' })
@@ -264,6 +277,7 @@ const NoteWriteView = defineComponent(() => {
         </>
       }
     >
+      <CrossBellConnectorIndirector />
       <MaterialInput
         class="mt-3 relative z-10"
         label={defaultTitle.value}

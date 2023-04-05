@@ -252,8 +252,7 @@ export const Tab1ForList = defineComponent({
                   fixed: 'right',
                   render(row) {
                     const isBuiltFunction =
-                      row.reference === 'built-in' &&
-                      row.type === SnippetType.Function
+                      row.builtIn && row.type === SnippetType.Function
 
                     const deleteText = isBuiltFunction ? '重置' : '删除'
                     return (

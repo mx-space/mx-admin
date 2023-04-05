@@ -259,7 +259,7 @@ export const Tab2ForEdit = defineComponent({
     const isBuiltFunction = computed(
       () =>
         data.value.type === SnippetType.Function &&
-        data.value.reference === 'built-in' &&
+        data.value.builtIn &&
         !!editId.value,
     )
 

@@ -1,5 +1,6 @@
 import { useStoreRef } from 'hooks/use-store-ref'
 import { get, set } from 'lodash-es'
+import { marked } from 'marked'
 import {
   NCollapse,
   NCollapseItem,
@@ -331,7 +332,7 @@ const ScheamFormItem = defineComponent({
                 {renderComponent()}
 
                 <NText class="text-xs" depth={3}>
-                  {description}
+                  <span innerHTML={marked.parse(description)} />
                 </NText>
               </NSpace>
             ) : (

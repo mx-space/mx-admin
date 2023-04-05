@@ -20,6 +20,8 @@ export interface NoteModel {
   location?: string
 
   coordinates?: Coordinate
+
+  meta?: any
 }
 
 export interface NoteMusicRecord {
