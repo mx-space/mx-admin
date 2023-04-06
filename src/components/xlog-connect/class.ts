@@ -9,6 +9,8 @@ import {
 import type { CrossBellInstance } from 'use-crossbell-xlog'
 import { RESTManager } from 'utils'
 
+import { showConfetti } from '~/utils/confetti'
+
 export const instanceRef = ref<CrossBellInstance>()
 
 export class CrossBellConnector {
@@ -93,6 +95,7 @@ export class CrossBellConnector {
               const unidata = getUniData()
 
               message.success('xLog 发布成功')
+              showConfetti()
               ;(pageId ? Promise.resolve(pageId) : this.fetchPageId(data)).then(
                 (pageId) => {
                   if (!pageId) {

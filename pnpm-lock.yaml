@@ -43,6 +43,9 @@ dependencies:
   '@mx-space/api-client':
     specifier: 1.3.5
     version: 1.3.5
+  '@types/canvas-confetti':
+    specifier: 1.6.0
+    version: 1.6.0
   '@vicons/antd':
     specifier: 0.12.0
     version: 0.12.0
@@ -76,6 +79,9 @@ dependencies:
   camelcase-keys:
     specifier: 8.0.2
     version: 8.0.2
+  canvas-confetti:
+    specifier: 1.6.0
+    version: 1.6.0
   class-transformer:
     specifier: 0.5.1
     version: 0.5.1
@@ -3451,6 +3457,10 @@ packages:
 
   /@types/btoa-lite@1.0.0:
     resolution: {integrity: sha512-wJsiX1tosQ+J5+bY5LrSahHxr2wT+uME5UDwdN1kg4frt40euqA+wzECkmq4t5QbveHiJepfdThgQrPw6KiSlg==}
+    dev: false
+
+  /@types/canvas-confetti@1.6.0:
+    resolution: {integrity: sha512-Yq6rIccwcco0TLD5SMUrIM7Fk7Fe/C0jmNRxJJCLtAF6gebDkPuUjK5EHedxecm69Pi/aA+It39Ux4OHmFhjRw==}
     dev: false
 
   /@types/connect@3.4.35:
