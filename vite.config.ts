@@ -27,7 +27,7 @@ export default ({ mode }) => {
         reactivityTransform: true,
       }),
       tsconfigPaths(),
-      visualizer({ open: false }),
+      visualizer({ open: process.env.CI ? false : true }),
 
       AutoImport({
         include: [

@@ -32,8 +32,8 @@ dependencies:
     specifier: 6.9.3
     version: 6.9.3
   '@ddietr/codemirror-themes':
-    specifier: https://github.com/Innei/codemirror-themes.git
-    version: github.com/Innei/codemirror-themes/d7dee7637d330d10cc6d0984c1b5720d3d8a60af
+    specifier: 1.4.0
+    version: 1.4.0
   '@huacnlee/autocorrect':
     specifier: 2.6.2
     version: 2.6.2
@@ -1732,6 +1732,15 @@ packages:
     dependencies:
       postcss-selector-parser: 6.0.11
     dev: true
+
+  /@ddietr/codemirror-themes@1.4.0:
+    resolution: {integrity: sha512-FPEHcpK3FusL5cDxZk8rgw89Y2VR1BtUEhClsDE11VwusHONjWTctrPxj1zlRWiP8aujCV0PHUYyTqDErL1C/g==}
+    dependencies:
+      '@codemirror/language': 6.6.0
+      '@codemirror/state': 6.2.0
+      '@codemirror/view': 6.9.3
+      '@lezer/highlight': 1.1.4
+    dev: false
 
   /@emotion/babel-plugin@11.10.6:
     resolution: {integrity: sha512-p2dAqtVrkhSa7xz1u/m9eHYdLi+en8NowrmXeF/dKtJpU8lCWli8RUAati7NcSl0afsBott48pdnANuD0wh9QQ==}
@@ -10202,17 +10211,4 @@ packages:
       immer: 9.0.21
       react: 18.2.0
       use-sync-external-store: 1.2.0(react@18.2.0)
-    dev: false
-
-  github.com/Innei/codemirror-themes/d7dee7637d330d10cc6d0984c1b5720d3d8a60af:
-    resolution: {tarball: https://codeload.github.com/Innei/codemirror-themes/tar.gz/d7dee7637d330d10cc6d0984c1b5720d3d8a60af}
-    name: '@ddietr/codemirror-themes'
-    version: 1.1.0
-    prepare: true
-    requiresBuild: true
-    dependencies:
-      '@codemirror/language': 6.6.0
-      '@codemirror/state': 6.2.0
-      '@codemirror/view': 6.9.3
-      '@lezer/highlight': 1.1.4
     dev: false
