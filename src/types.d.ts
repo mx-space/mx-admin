@@ -20,6 +20,8 @@ declare global {
   }
 
   export const message: MessageApi
+  export const dialog: ReturnType<typeof useDialog>
+  export const notification: ReturnType<typeof useNotification>
 
   export const Fragment: {
     new (): {
