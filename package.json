@@ -67,7 +67,7 @@
     "socket.io-client": "4.6.1",
     "umi-request": "1.4.0",
     "unidata.js": "0.7.17",
-    "use-crossbell-xlog": "0.0.6",
+    "use-crossbell-xlog": "0.0.7",
     "validator": "13.9.0",
     "vite-plugin-windicss": "1.8.10",
     "vue": "3.2.47",
