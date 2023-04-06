@@ -9,6 +9,8 @@ import {
 import type { CrossBellInstance } from 'use-crossbell-xlog'
 import { RESTManager } from 'utils'
 
+import { showConfetti } from '~/utils/confetti'
+
 export const instanceRef = ref<CrossBellInstance>()
 
 export class CrossBellConnector {
@@ -17,7 +19,7 @@ export class CrossBellConnector {
     this.SITE_ID = siteId
   }
   static getInstance(): CrossBellInstance | undefined {
-    if (!('ethereum' in window)) return
+    // if (!('ethereum' in window)) return
     return instanceRef.value
   }
 
@@ -36,128 +38,146 @@ export class CrossBellConnector {
         resolve(null)
         return
       }
-      const SITE_ID = this.SITE_ID
+
       const instance = this.getInstance()
       if (!instance) {
         resolve(null)
         return
       }
-      const { state } = instance
-      const { account } = state
+      dialog.create({
+        title: `已连接到 xLog`,
+        content: `已连接到 xLog (${this.SITE_ID})，此文章的更新需要同步吗？`,
+        onNegativeClick() {
+          resolve(null)
+        },
+        onPositiveClick() {
+          connectToXLog()
+        },
+        negativeText: '不需要',
+        positiveText: '嗯！',
+      })
 
-      message.loading('准备发布到 xLog，等待钱包响应...')
-      let postCallOnce = false
-      let pageId = data.meta?.xLog?.pageId
+      const connectToXLog = () => {
+        const SITE_ID = this.SITE_ID
 
-      const post = async () => {
-        if (postCallOnce) return Promise.resolve()
-        const { text, title } = data
-        const slug = 'slug' in data ? data.slug : `note-${data.nid}`
-        postCallOnce = true
-        message.loading('正在发布到 xLog...')
+        const { state } = instance
+        const { account } = state
 
-        if (!pageId) pageId = await this.fetchPageId(data)
-        return instance.createOrUpdatePage({
-          siteId: SITE_ID,
-          content: text,
-          title,
-          isPost: true,
-          slug,
-          published: true,
-          applications: ['xlog'],
-          externalUrl: `https://${SITE_ID}.xlog.app/posts/${slug}`,
-          pageId,
-          tags: 'tags' in data ? data.tags.toString() : undefined,
-          publishedAt: data.created,
-        })
-      }
-      const postHandler = () =>
-        post()
-          .then(() => {
-            const unidata = getUniData()
+        message.loading('准备发布到 xLog，等待钱包响应...')
+        let postCallOnce = false
+        let pageId = data.meta?.xLog?.pageId
 
-            message.success('xLog 发布成功')
-            ;(pageId ? Promise.resolve(pageId) : this.fetchPageId(data)).then(
-              (pageId) => {
-                if (!pageId) {
-                  message.error('无法获取 xLog pageId 任务终止')
-                  return
-                }
+        const post = async () => {
+          if (postCallOnce) return Promise.resolve()
+          const { text, title } = data
+          const slug = 'slug' in data ? data.slug : `note-${data.nid}`
+          postCallOnce = true
 
-                // update meta for pageId
-                this.updateModel(data, {
-                  pageId,
-                })
+          if (!pageId) pageId = await this.fetchPageId(data)
+          message.loading('正在发布到 xLog...')
+          return instance.createOrUpdatePage({
+            siteId: SITE_ID,
+            content: text,
+            title,
+            isPost: true,
+            slug,
+            published: true,
+            applications: ['xlog'],
+            externalUrl: `https://${SITE_ID}.xlog.app/posts/${slug}`,
+            pageId,
+            tags: 'tags' in data ? data.tags.toString() : undefined,
+            publishedAt: data.created,
+          })
+        }
+        const postHandler = () =>
+          post()
+            .then(() => {
+              const unidata = getUniData()
 
-                // update meta for ipfs
-                unidata.notes
-                  .get({
-                    source: 'Crossbell Note',
-                    identity: SITE_ID,
-                    platform: 'Crossbell',
-                    filter: {
-                      id: pageId,
-                    },
+              message.success('xLog 发布成功')
+              showConfetti()
+              ;(pageId ? Promise.resolve(pageId) : this.fetchPageId(data)).then(
+                (pageId) => {
+                  if (!pageId) {
+                    message.error('无法获取 xLog pageId 任务终止')
+                    return
+                  }
+
+                  // update meta for pageId
+                  this.updateModel(data, {
+                    pageId,
                   })
-                  .then((note$) => {
-                    if (!note$) return
-                    const { list } = note$
-                    const note = list[0]
-                    if (!note) return
-                    const { metadata, related_urls } = note
-                    const minifyMetadata = {
-                      ...metadata,
-                    }
 
-                    delete minifyMetadata.raw
-
-                    console.debug(note)
-                    this.updateModel(data, {
-                      pageId,
-                      related_urls,
-                      metadata: minifyMetadata,
-                      // @copy from xlog
-                      // https://github.com/Innei/xLog/blob/33a3f2306467fd067e85dbd75a7a08ab584fd3f7/src/components/site/PostMeta.tsx#L25
-                      cid: toCid(related_urls?.[0] || ''),
+                  // update meta for ipfs
+                  unidata.notes
+                    .get({
+                      source: 'Crossbell Note',
+                      identity: SITE_ID,
+                      platform: 'Crossbell',
+                      filter: {
+                        id: pageId,
+                      },
                     })
-                  })
-              },
-            )
-            resolve(null)
-          })
-          .catch(() => {
-            message.error('xLog 发布失败')
-            resolve(null)
-          })
-          .finally(() => {
+                    .then((note$) => {
+                      if (!note$) return
+                      const { list } = note$
+                      const note = list[0]
+                      if (!note) return
+                      const { metadata, related_urls } = note
+                      const minifyMetadata = {
+                        ...metadata,
+                      }
+
+                      delete minifyMetadata.raw
+
+                      console.debug(note)
+                      this.updateModel(data, {
+                        pageId,
+                        related_urls,
+                        metadata: minifyMetadata,
+                        // @copy from xlog
+                        // https://github.com/Innei/xLog/blob/33a3f2306467fd067e85dbd75a7a08ab584fd3f7/src/components/site/PostMeta.tsx#L25
+                        cid: toCid(related_urls?.[0] || ''),
+                      })
+                    })
+                },
+              )
+              resolve(null)
+            })
+            .catch(() => {
+              message.error('xLog 发布失败')
+              resolve(null)
+            })
+            .finally(() => {
+              dispose1()
+              dispose2()
+            })
+        let isShow = false
+        const dispose1 = useAccountState.subscribe((state) => {
+          if (state.wallet?.address && isShow) {
+            postHandler()
+          }
+        })
+
+        const dispose2 = useConnectModal.subscribe((state) => {
+          if (state.isActive) isShow = true
+          if (
+            !state.isActive &&
+            isShow &&
+            !useAccountState.getState().wallet?.address
+          ) {
             dispose1()
             dispose2()
-          })
-      let isShow = false
-      const dispose1 = useAccountState.subscribe((state) => {
-        if (state.wallet?.address && isShow) {
+
+            resolve(null)
+          }
+        })
+
+        if (!account || !account.address) {
+          instance.show()
+        } else {
           postHandler()
         }
-      })
-
-      const dispose2 = useConnectModal.subscribe((state) => {
-        if (state.isActive) isShow = true
-        if (
-          !state.isActive &&
-          isShow &&
-          !useAccountState.getState().wallet?.address
-        ) {
-          dispose1()
-          dispose2()
-
-          resolve(null)
-        }
-      })
-
-      if (!account || !account.address) {
-        instance.show()
-      } else {
-        postHandler()
       }
     })
   }

@@ -14,6 +14,8 @@ import {
 import type { PropType } from 'vue'
 import { defineComponent, ref } from 'vue'
 
+import { showConfetti } from '~/utils/confetti'
+
 import type { UserModel } from '../../models/user'
 import { getToken, removeToken } from '../../utils'
 import { RESTManager } from '../../utils/rest'
@@ -317,7 +319,10 @@ const Step3 = defineComponent({
           round
           onClick={() => {
             localStorage.setItem('to-setting', 'true')
-            location.reload()
+            showConfetti()
+            setTimeout(() => {
+              location.reload()
+            }, 200)
           }}
         >
           LINK START
