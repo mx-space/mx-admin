@@ -8,7 +8,7 @@ import { bus } from 'utils/event-bus'
 import { BrowserNotification } from 'utils/notification'
 
 import { configs } from '../configs'
-import type { NotificationTypes } from './types';
+import type { NotificationTypes } from './types'
 import { EventTypes } from './types'
 
 const Notification = {
@@ -180,7 +180,12 @@ export class SocketClient {
         const sitename = payload.name
 
         const handler = () => {
-          router.push({ name: 'friends' })
+          router.push({
+            name: 'friends',
+            query: {
+              state: 1,
+            },
+          })
           notice.destroy()
         }
         const notice = Notification.success({
