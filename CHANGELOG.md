@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## [3.28.3](https://github.com/mx-space/mx-admin/compare/v3.28.2...v3.28.3) (2023-04-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ansi_up to v5.2.1 ([#726](https://github.com/mx-space/mx-admin/issues/726)) ([771ed22](https://github.com/mx-space/mx-admin/commit/771ed220e03ca2f4232e0db0f07f04cab5447bad))
+* **deps:** update dependency monaco-editor to v0.37.0 ([#727](https://github.com/mx-space/mx-admin/issues/727)) ([a760f2a](https://github.com/mx-space/mx-admin/commit/a760f2afb81ae300fb5ebdeec12e071155966a5f))
+* get xlog pageId by own slug or nid ([796edc5](https://github.com/mx-space/mx-admin/commit/796edc5705dbd39a74783e007825fdc8dc6e9cd5))
+* openai icon fill color ([a16c6d1](https://github.com/mx-space/mx-admin/commit/a16c6d15037fa7f9df0ec3edf69d20143ba9ed4c))
+* re-use pageId ([40f4922](https://github.com/mx-space/mx-admin/commit/40f4922d081278d72a7e2d962a9b3193f399fc39))
+* restore lockfile ([4625497](https://github.com/mx-space/mx-admin/commit/46254979ee809a0fd0b65f152286aa21f7f9ee38))
+* typo ([#729](https://github.com/mx-space/mx-admin/issues/729)) ([3e9d987](https://github.com/mx-space/mx-admin/commit/3e9d9871af732c34d18340c000fb9a1e5ba1c385))
+* xlog urls should be line feed ([bb1415c](https://github.com/mx-space/mx-admin/commit/bb1415c74743010b0fee481a2cfd225293120e2e))
+
+
+### Features
+
+* improve xlog sync ([#730](https://github.com/mx-space/mx-admin/issues/730)) ([bfa43f3](https://github.com/mx-space/mx-admin/commit/bfa43f357853f2652feadf1f0a48d2cfa09f804e))
+
+
+
 ## [3.28.2](https://github.com/mx-space/mx-admin/compare/v3.28.1...v3.28.2) (2023-04-05)
 
 
