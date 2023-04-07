@@ -66,14 +66,21 @@ export class CrossBellConnector {
         message.loading('准备发布到 xLog，等待钱包响应...')
         let postCallOnce = false
         let pageId = data.meta?.xLog?.pageId
+        const slug = 'slug' in data ? data.slug : `note-${data.nid}`
 
         const post = async () => {
           if (postCallOnce) return Promise.resolve()
           const { text, title } = data
-          const slug = 'slug' in data ? data.slug : `note-${data.nid}`
           postCallOnce = true
 
-          if (!pageId) pageId = await this.fetchPageId(data)
+          // FIXME 如果 xLog 不存在这个 pageId，会报错 metamask rpc error
+          // 如果是在 xLog 删除了这个文章，但是 mx 这边没有同步，会导致这个问题
+          // 这里还是验证一下吧，只针对 note 的场景，post 还是根据记录的 pageId 来，因为 post 的 slug 不是固定的但是 note 的 nid 是固定的。
+          // 如果 post 的 slug 改了，那么就在 xlog 拿不到 pageId 了，这个时候就会出问题（修改文章都是变成新增）
+
+          if (!pageId || this.isNoteModel(data))
+            pageId = await this.fetchPageId(slug)
+
           message.loading('正在发布到 xLog...')
           return instance.createOrUpdatePage({
             siteId: SITE_ID,
@@ -85,7 +92,12 @@ export class CrossBellConnector {
             applications: ['xlog'],
             externalUrl: `https://${SITE_ID}.xlog.app/posts/${slug}`,
             pageId,
-            tags: 'tags' in data ? data.tags.toString() : undefined,
+            tags:
+              'tags' in data
+                ? data.tags.toString()
+                : this.isNoteModel(data)
+                ? 'Note'
+                : '',
             publishedAt: data.created,
           })
         }
@@ -96,7 +108,7 @@ export class CrossBellConnector {
 
               message.success('xLog 发布成功')
               showConfetti()
-              ;(pageId ? Promise.resolve(pageId) : this.fetchPageId(data)).then(
+              ;(pageId ? Promise.resolve(pageId) : this.fetchPageId(slug)).then(
                 (pageId) => {
                   if (!pageId) {
                     message.error('无法获取 xLog pageId 任务终止')
@@ -186,7 +198,7 @@ export class CrossBellConnector {
     return 'nid' in data
   }
 
-  private static async fetchPageId(data: NoteModel | PostModel) {
+  private static async fetchPageId(slug: string) {
     if (!this.SITE_ID) return
     const { characterId, noteId } = await RESTManager.api.fn.xlog.get_page_id
       .get<{
@@ -195,7 +207,7 @@ export class CrossBellConnector {
       }>({
         params: {
           handle: this.SITE_ID,
-          slug: this.isNoteModel(data) ? `note-${data.nid}` : data.slug,
+          slug,
         },
       })
       .catch(() => {
