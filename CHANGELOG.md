@@ -1,5 +1,19 @@
 # CHANGELOG
 
+# [3.29.0](https://github.com/mx-space/mx-admin/compare/v3.28.3...v3.29.0) (2023-04-08)
+
+
+### Bug Fixes
+
+* **event:** nav to `state=1` on apply event ([fda415e](https://github.com/mx-space/mx-admin/commit/fda415e87bc8aa1b359ccfb6ea59ed540af85450))
+
+
+### Features
+
+* add footer for xlog sync ([72415d8](https://github.com/mx-space/mx-admin/commit/72415d8b18944baeccc1ae3a7ff598d15693b95b))
+
+
+
 ## [3.28.3](https://github.com/mx-space/mx-admin/compare/v3.28.2...v3.28.3) (2023-04-07)
 
 
