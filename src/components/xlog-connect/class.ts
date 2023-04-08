@@ -44,6 +44,7 @@ export class CrossBellConnector {
         resolve(null)
         return
       }
+
       dialog.create({
         title: `已连接到 xLog`,
         content: `已连接到 xLog (${this.SITE_ID})，此文章的更新需要同步吗？`,
@@ -81,10 +82,28 @@ export class CrossBellConnector {
           if (!pageId || this.isNoteModel(data))
             pageId = await this.fetchPageId(slug)
 
+          const articleUrl = await RESTManager.api
+            .helper('url-builder')(data.id)
+            .get<{
+              data: string
+            }>()
+            .then(({ data }) => data)
+            .catch(() => '')
+
+          if (!articleUrl) {
+            throw new Error('文章链接生成失败')
+          }
+
+          const contentWithFooter = `${text}
+
+<span style="text-align: right;font-size: 0.8em; float: right">此文由 [Mix Space](https://github.com/mx-space) 同步更新至 xLog
+原始链接为 <${articleUrl}></span>`
+
           message.loading('正在发布到 xLog...')
+
           return instance.createOrUpdatePage({
             siteId: SITE_ID,
-            content: text,
+            content: contentWithFooter,
             title,
             isPost: true,
             slug,
