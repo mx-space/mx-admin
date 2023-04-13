@@ -15,13 +15,14 @@ export class ParseMarkdownYAML {
     const text = parts.pop()
     const parseYAML = load(parts[1])
     const meta: Partial<NonNullable<ParsedModel['meta']>> = {}
-    const { categories, tags, date, updated, created } = parseYAML as any
+    const { categories, tags, date, updated, created, title } = parseYAML as any
 
     if (date || created) meta.date = new Date(date || created).toISOString()
     if (updated) meta.updated = new Date(updated).toISOString()
 
     meta.categories = categories
     meta.tags = tags
+    meta.title = title
 
     Object.keys(meta).forEach((key) => {
       const value = meta[key]
