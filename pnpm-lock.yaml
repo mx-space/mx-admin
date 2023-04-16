@@ -116,11 +116,11 @@ dependencies:
     specifier: 4.3.0
     version: 4.3.0
   monaco-editor:
-    specifier: 0.37.0
-    version: 0.37.0
+    specifier: 0.37.1
+    version: 0.37.1
   monaco-editor-auto-typings:
     specifier: 0.4.4
-    version: 0.4.4(monaco-editor@0.37.0)
+    version: 0.4.4(monaco-editor@0.37.1)
   naive-ui:
     specifier: 2.34.3
     version: 2.34.3(vue@3.2.47)
@@ -7441,16 +7441,16 @@ packages:
       yargs-unparser: 2.0.0
     dev: false
 
-  /monaco-editor-auto-typings@0.4.4(monaco-editor@0.37.0):
+  /monaco-editor-auto-typings@0.4.4(monaco-editor@0.37.1):
     resolution: {integrity: sha512-vs5sPWO0V3pUX5BwEdCqroXNPzLjsVEqHciQ8DCQ+wtPrah3tn1oxwF4gW5cudTvmENGnbsjSrdLbmNRWFgstw==}
     peerDependencies:
       monaco-editor: '*'
     dependencies:
-      monaco-editor: 0.37.0
+      monaco-editor: 0.37.1
     dev: false
 
-  /monaco-editor@0.37.0:
-    resolution: {integrity: sha512-PrvIsrbD/uLQlzYqNnzrZ0yDCK+X3YoLgNx+fFZKvmgkDZxo9kJRvb5YNtCUesG4xjv44jEEKaHKE0demcEleg==}
+  /monaco-editor@0.37.1:
+    resolution: {integrity: sha512-jLXEEYSbqMkT/FuJLBZAVWGuhIb4JNwHE9kPTorAVmsdZ4UzHAfgWxLsVtD7pLRFaOwYPhNG9nUCpmFL1t/dIg==}
     dev: false
 
   /motion@10.15.5:
