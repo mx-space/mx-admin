@@ -155,8 +155,8 @@ dependencies:
     specifier: 1.4.0
     version: 1.4.0
   unidata.js:
-    specifier: 0.7.17
-    version: 0.7.17
+    specifier: 0.7.18
+    version: 0.7.18
   use-crossbell-xlog:
     specifier: 0.0.7
     version: 0.0.7(@babel/core@7.21.4)(@types/node@18.11.18)(ethers@5.7.2)(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.3)
@@ -278,6 +278,17 @@ devDependencies:
     version: 3.5.6
 
 packages:
+
+  /@0no-co/graphql.web@1.0.0(graphql@16.6.0):
+    resolution: {integrity: sha512-JBq2pWyDchE1vVjj/+c4dzZ8stbpew4RrzpZ3vYdn1WJFGHfYg6YIX1fDdMKtSXJJM9FUlsoDOxemr9WMM2p+A==}
+    peerDependencies:
+      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
+    peerDependenciesMeta:
+      graphql:
+        optional: true
+    dependencies:
+      graphql: 16.6.0
+    dev: false
 
   /@ampproject/remapping@2.2.0:
     resolution: {integrity: sha512-qRmjj8nj9qmLTQXXmaR1cck3UXSRMPrbsLJAasZpF+t3riI71BXed5ebIOYwQntykeZuhjsdweEc9BxH5Jc26w==}
@@ -3533,6 +3544,10 @@ packages:
   /@types/lodash@4.14.191:
     resolution: {integrity: sha512-BdZ5BCCvho3EIXw6wUCXHe7rS53AIDPLE+JzwgT+OsJk53oBfbSmZZ7CX4VaRoN78N+TJpFi9QPlfIVNmJYWxQ==}
 
+  /@types/lodash@4.14.192:
+    resolution: {integrity: sha512-km+Vyn3BYm5ytMO13k9KTp27O75rbQ0NFw+U//g+PX7VZyjCioXaRFisqSIJRECljcTv73G3i6BpglNGHgUQ5A==}
+    dev: false
+
   /@types/lru-cache@5.1.1:
     resolution: {integrity: sha512-ssE3Vlrys7sdIzs5LOxCzTVMsU7i9oa/IaW92wF32JFb3CVczqOkru2xspuKczHEbG3nvmPY7IFqVmGGHdNbYw==}
     dev: false
@@ -3800,6 +3815,15 @@ packages:
     dependencies:
       graphql: 16.6.0
       wonka: 6.3.1
+    dev: false
+
+  /@urql/core@4.0.3(graphql@16.6.0):
+    resolution: {integrity: sha512-13figZkXYD8QHTCY/MTWnzbK958I6Owx6sOm1+tZo5aR9HEnOKFVI0hJZZkzW/JIdiGnXW//YyTrp4ce+LWtbg==}
+    dependencies:
+      '@0no-co/graphql.web': 1.0.0(graphql@16.6.0)
+      wonka: 6.3.1
+    transitivePeerDependencies:
+      - graphql
     dev: false
 
   /@vicons/antd@0.12.0:
@@ -4783,8 +4807,8 @@ packages:
       - debug
     dev: false
 
-  /axios@1.3.4:
-    resolution: {integrity: sha512-toYm+Bsyl6VC5wSkfkbbNB6ROv7KY93PEBBL6xyDczaIHasAiv4wPqQ/c4RjoQzipxRD2W5g21cOqQulZ7rHwQ==}
+  /axios@1.3.5:
+    resolution: {integrity: sha512-glL/PvG/E+xCWwV8S6nCHcrfg1exGx7vxyUIivIA1iL7BIh6bePylCfVHwp6k13ao7SATxB6imau2kqY+I67kw==}
     dependencies:
       follow-redirects: 1.15.2
       form-data: 4.0.0
@@ -9216,11 +9240,31 @@ packages:
   /unidata.js@0.7.17:
     resolution: {integrity: sha512-GCGx3H3z9tpasu1ScPI7I1sCtLuTu9PLmXLq95VXnBHF1Cn6QN0Kvwg9rltUJLXFwsK69S34ag9SLFHlZGcwdA==}
     dependencies:
-      '@types/lodash': 4.14.191
+      '@types/lodash': 4.14.192
       '@urql/core': 3.2.2(graphql@16.6.0)
-      axios: 1.3.4
+      axios: 1.3.5
       axios-retry: 3.4.0
       crossbell.js: 0.17.4
+      ethers: 5.7.2
+      graphql: 16.6.0
+      lodash: 4.17.21
+      lodash-es: 4.17.21
+      mime: 3.0.0
+    transitivePeerDependencies:
+      - bufferutil
+      - debug
+      - supports-color
+      - utf-8-validate
+    dev: false
+
+  /unidata.js@0.7.18:
+    resolution: {integrity: sha512-MPwYVkRdJApMSs+xY9umfJk5e0EVvPCCjYEytduvhrUoH73rHLImNNBdlXiMzvDhUp3CqHKyzLMdmIEwL/LJ/Q==}
+    dependencies:
+      '@types/lodash': 4.14.192
+      '@urql/core': 4.0.3(graphql@16.6.0)
+      axios: 1.3.5
+      axios-retry: 3.4.0
+      crossbell.js: 0.19.7
       ethers: 5.7.2
       graphql: 16.6.0
       lodash: 4.17.21
@@ -9345,7 +9389,7 @@ packages:
       '@crossbell/contract': 0.0.58(ethers@5.7.2)(react-dom@18.2.0)(react@18.2.0)(wagmi@0.12.8)
       '@tanstack/react-query': 4.28.0(react-dom@18.2.0)(react@18.2.0)
       crossbell.js: 0.19.7
-      unidata.js: 0.7.17
+      unidata.js: 0.7.18
       wagmi: 0.12.8(@babel/core@7.21.4)(@types/node@18.11.18)(ethers@5.7.2)(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.3)
     transitivePeerDependencies:
       - '@babel/core'
