@@ -119,8 +119,8 @@ dependencies:
     specifier: 0.37.0
     version: 0.37.0
   monaco-editor-auto-typings:
-    specifier: 0.4.3
-    version: 0.4.3(monaco-editor@0.37.0)
+    specifier: 0.4.4
+    version: 0.4.4(monaco-editor@0.37.0)
   naive-ui:
     specifier: 2.34.3
     version: 2.34.3(vue@3.2.47)
@@ -7441,8 +7441,8 @@ packages:
       yargs-unparser: 2.0.0
     dev: false
 
-  /monaco-editor-auto-typings@0.4.3(monaco-editor@0.37.0):
-    resolution: {integrity: sha512-7lpiWHkg8eX2DRJGApaFq1wGn95Ute3Xv4PLz36qFyTytzz86irjxwMl00JnOOGX/R0eUbfuudbEtkQh2VK9Gg==}
+  /monaco-editor-auto-typings@0.4.4(monaco-editor@0.37.0):
+    resolution: {integrity: sha512-vs5sPWO0V3pUX5BwEdCqroXNPzLjsVEqHciQ8DCQ+wtPrah3tn1oxwF4gW5cudTvmENGnbsjSrdLbmNRWFgstw==}
     peerDependencies:
       monaco-editor: '*'
     dependencies:

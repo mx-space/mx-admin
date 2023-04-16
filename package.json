@@ -54,7 +54,7 @@
     "markdown-escape": "2.0.0",
     "marked": "4.3.0",
     "monaco-editor": "0.37.0",
-    "monaco-editor-auto-typings": "0.4.3",
+    "monaco-editor-auto-typings": "0.4.4",
     "naive-ui": "2.34.3",
     "octokit": "2.0.14",
     "openai": "3.2.1",
