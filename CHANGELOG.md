@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## [3.29.2](https://github.com/mx-space/mx-admin/compare/v3.29.1...v3.29.2) (2023-04-17)
+
+
+### Bug Fixes
+
+* add tags for cm ([8225d2e](https://github.com/mx-space/mx-admin/commit/8225d2e3097b364aa68b783124b3c8c72f6c5752))
+* **deps:** update dependency monaco-editor to v0.37.1 ([#731](https://github.com/mx-space/mx-admin/issues/731)) ([895ad45](https://github.com/mx-space/mx-admin/commit/895ad450e39eb084eaf866850ed65e59b2fc10be))
+* **deps:** update dependency monaco-editor-auto-typings to v0.4.4 ([#732](https://github.com/mx-space/mx-admin/issues/732)) ([dc24c22](https://github.com/mx-space/mx-admin/commit/dc24c22e13dd2e0aa6d8827247c2ad800c8c6c11))
+* **deps:** update dependency pinia to v2.0.34 ([#734](https://github.com/mx-space/mx-admin/issues/734)) ([769395e](https://github.com/mx-space/mx-admin/commit/769395eb6f41c60e5f9bb0581ae8dd6e3b47d536))
+* **deps:** update dependency unidata.js to v0.7.18 ([#733](https://github.com/mx-space/mx-admin/issues/733)) ([d663b5d](https://github.com/mx-space/mx-admin/commit/d663b5d24e2e0fc367e0a2db16314b3754396e0e))
+
+
+### Features
+
+* **cm-editor:** add mono font for code ([2556cf4](https://github.com/mx-space/mx-admin/commit/2556cf46bc243c9223b77bf4453114127efdcfb2))
+
+
+
 ## [3.29.1](https://github.com/mx-space/mx-admin/compare/v3.29.0...v3.29.1) (2023-04-15)
 
 
