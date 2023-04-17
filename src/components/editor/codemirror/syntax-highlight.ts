@@ -4,6 +4,13 @@ import { EditorView } from '@codemirror/view'
 import { tags } from '@lezer/highlight'
 
 const monoSpaceTags = [
+  tags.bracket,
+  tags.angleBracket,
+  tags.squareBracket,
+  tags.paren,
+  tags.brace,
+  tags.float,
+  tags.monospace,
   tags.keyword,
   tags.character,
   tags.propertyName,
@@ -18,7 +25,7 @@ const monoSpaceTags = [
   tags.namespace,
   tags.comment,
   tags.bool,
-  /*@__PURE__*/ tags.special(tags.variableName),
+  /* @__PURE__ */ tags.special(tags.variableName),
   tags.className,
   tags.number,
   tags.changed,
@@ -26,7 +33,7 @@ const monoSpaceTags = [
   tags.operatorKeyword,
   tags.escape,
   tags.regexp,
-  /*@__PURE__*/ tags.special(tags.string),
+  /* @__PURE__ */ tags.special(tags.string),
 ]
 
 export const syntaxHighlightingStyle = HighlightStyle.define([
