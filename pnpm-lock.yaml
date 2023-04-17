@@ -241,8 +241,8 @@ devDependencies:
     specifier: 6.0.1
     version: 6.0.1(postcss@8.4.21)
   postcss-preset-env:
-    specifier: 8.3.1
-    version: 8.3.1(postcss@8.4.21)
+    specifier: 8.3.2
+    version: 8.3.2(postcss@8.4.21)
   prettier:
     specifier: 2.8.7
     version: 2.8.7
@@ -1469,8 +1469,8 @@ packages:
       postcss-value-parser: 4.2.0
     dev: true
 
-  /@csstools/postcss-gradients-interpolation-method@3.0.3(postcss@8.4.21):
-    resolution: {integrity: sha512-0i6HQ8V3jcGEEhhGPAQdMemPjXTOct9qDYLIzjsgKHhrHVwhjwBVcUV70658vJJmrJJvVXgZx2qc4S6okKZJpg==}
+  /@csstools/postcss-gradients-interpolation-method@3.0.4(postcss@8.4.21):
+    resolution: {integrity: sha512-GgKoY7OlvL65UPigEdlrvMAUCR5kOQCjtue2/36TPrBNoRS6KM2KOqmjIVsxEwYYwK+L28pdnM8r10m03hhZxA==}
     engines: {node: ^14 || ^16 || >=18}
     peerDependencies:
       postcss: ^8.4
@@ -8133,8 +8133,8 @@ packages:
       postcss-value-parser: 4.2.0
     dev: true
 
-  /postcss-preset-env@8.3.1(postcss@8.4.21):
-    resolution: {integrity: sha512-k3Y8BXbVLBAufrla3CNmQJhMS1iRuT9LFlysYvzs1rU5E78+ShX2u0EUL6KpMi0pDJO3wZcuVYSR8cgukfoRtg==}
+  /postcss-preset-env@8.3.2(postcss@8.4.21):
+    resolution: {integrity: sha512-VSAOsfxTXzO/gX5QljC8x8hN3ABbD9iqqLgqHqohBdNI5FhJptwpl96kpu+kYvvzK7BWwaHYou0IeYrp+NqmcQ==}
     engines: {node: ^14 || ^16 || >=18}
     peerDependencies:
       postcss: ^8.4
@@ -8143,7 +8143,7 @@ packages:
       '@csstools/postcss-color-function': 2.2.1(postcss@8.4.21)
       '@csstools/postcss-color-mix-function': 1.0.1(postcss@8.4.21)
       '@csstools/postcss-font-format-keywords': 2.0.2(postcss@8.4.21)
-      '@csstools/postcss-gradients-interpolation-method': 3.0.3(postcss@8.4.21)
+      '@csstools/postcss-gradients-interpolation-method': 3.0.4(postcss@8.4.21)
       '@csstools/postcss-hwb-function': 2.2.1(postcss@8.4.21)
       '@csstools/postcss-ic-unit': 2.0.2(postcss@8.4.21)
       '@csstools/postcss-is-pseudo-class': 3.2.0(postcss@8.4.21)
