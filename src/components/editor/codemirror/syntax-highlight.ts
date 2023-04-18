@@ -4,6 +4,21 @@ import { EditorView } from '@codemirror/view'
 import { tags } from '@lezer/highlight'
 
 const monospaceFonts = `"OperatorMonoSSmLig Nerd Font","Cascadia Code PL","FantasqueSansMono Nerd Font","operator mono","Fira code Retina","Fira code","Consolas", Monaco, "Hannotate SC", monospace, -apple-system`
+const sansFonts = 'var(--sans-font)'
+const markdownTags = [
+  tags.heading1,
+  tags.heading2,
+  tags.heading3,
+  tags.heading4,
+  tags.heading5,
+  tags.heading6,
+  tags.strong,
+  tags.emphasis,
+  tags.deleted,
+  tags.content,
+  tags.url,
+  tags.link,
+]
 export const syntaxHighlightingStyle = HighlightStyle.define([
   {
     tag: tags.heading1,
@@ -38,23 +53,22 @@ export const syntaxHighlightingStyle = HighlightStyle.define([
   { tag: tags.strong, fontWeight: 'bold' },
   { tag: tags.emphasis, fontStyle: 'italic' },
   { tag: tags.deleted, textDecoration: 'line-through' },
-  { tag: tags.content, fontFamily: 'var(--sans-font)' },
   {
     tag: tags.url,
     fontWeight: 'bold',
     textDecoration: 'underline',
-    fontFamily: 'var(--sans-font)',
   },
   {
     tag: tags.link,
     textDecoration: 'underline',
     fontWeight: '500',
-    fontFamily: 'var(--sans-font)',
   },
   {
     tag: tags.processingInstruction,
     fontFamily: monospaceFonts,
   },
+
+  ...markdownTags.map((tag) => ({ tag, fontFamily: sansFonts })),
 ])
 
 export const syntaxTheme: Extension = [
