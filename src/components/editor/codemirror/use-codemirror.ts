@@ -23,12 +23,6 @@ import { codemirrorReconfigureExtension } from './extension'
 import { syntaxTheme } from './syntax-highlight'
 import { useCodeMirrorAutoToggleTheme } from './ui'
 
-export const customTheme = EditorView.theme({
-  '&': {
-    height: '100%',
-  },
-})
-
 interface Props {
   initialDoc: string
   onChange?: (state: EditorState) => void

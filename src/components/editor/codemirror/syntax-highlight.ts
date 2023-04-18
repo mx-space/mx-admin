@@ -3,39 +3,7 @@ import type { Extension } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
 import { tags } from '@lezer/highlight'
 
-const monoSpaceTags = [
-  tags.bracket,
-  tags.angleBracket,
-  tags.squareBracket,
-  tags.paren,
-  tags.brace,
-  tags.float,
-  tags.monospace,
-  tags.keyword,
-  tags.character,
-  tags.propertyName,
-  tags.macroName,
-  tags.function(tags.variableName),
-  tags.labelName,
-  tags.definition(tags.name),
-  tags.typeName,
-  tags.annotation,
-  tags.modifier,
-  tags.self,
-  tags.namespace,
-  tags.comment,
-  tags.bool,
-  /* @__PURE__ */ tags.special(tags.variableName),
-  tags.className,
-  tags.number,
-  tags.changed,
-  tags.operator,
-  tags.operatorKeyword,
-  tags.escape,
-  tags.regexp,
-  /* @__PURE__ */ tags.special(tags.string),
-]
-
+const monospaceFonts = `"OperatorMonoSSmLig Nerd Font","Cascadia Code PL","FantasqueSansMono Nerd Font","operator mono","Fira code Retina","Fira code","Consolas", Monaco, "Hannotate SC", monospace, -apple-system`
 export const syntaxHighlightingStyle = HighlightStyle.define([
   {
     tag: tags.heading1,
@@ -70,13 +38,30 @@ export const syntaxHighlightingStyle = HighlightStyle.define([
   { tag: tags.strong, fontWeight: 'bold' },
   { tag: tags.emphasis, fontStyle: 'italic' },
   { tag: tags.deleted, textDecoration: 'line-through' },
-  ...monoSpaceTags.map((tag) => ({
-    tag,
-    fontFamily: `"OperatorMonoSSmLig Nerd Font","Cascadia Code PL","FantasqueSansMono Nerd Font","operator mono","Fira code Retina","Fira code","Consolas", Monaco, "Hannotate SC", monospace, -apple-system`,
-  })),
+  { tag: tags.content, fontFamily: 'var(--sans-font)' },
+  {
+    tag: tags.url,
+    fontWeight: 'bold',
+    textDecoration: 'underline',
+    fontFamily: 'var(--sans-font)',
+  },
+  {
+    tag: tags.link,
+    textDecoration: 'underline',
+    fontWeight: '500',
+    fontFamily: 'var(--sans-font)',
+  },
+  {
+    tag: tags.processingInstruction,
+    fontFamily: monospaceFonts,
+  },
 ])
 
 export const syntaxTheme: Extension = [
-  EditorView.theme({}),
+  EditorView.theme({
+    '.cm-scroller': {
+      fontFamily: monospaceFonts,
+    },
+  }),
   syntaxHighlighting(syntaxHighlightingStyle),
 ]
