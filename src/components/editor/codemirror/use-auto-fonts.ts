@@ -35,11 +35,10 @@ export const useCodeMirrorConfigureFonts = (
 
       const fontStyles = HighlightStyle.define([
         {
-          tag: tags.processingInstruction,
+          tag: [tags.processingInstruction, tags.monospace],
           fontFamily: monospaceFonts,
         },
-
-        ...markdownTags.map((tag) => ({ tag, fontFamily: sansFonts })),
+        { tag: markdownTags, fontFamily: sansFonts },
       ])
 
       editorView.value.dispatch({
