@@ -21,7 +21,8 @@ import {
 import { useEditorConfig } from '../universal/use-editor-setting'
 import { codemirrorReconfigureExtension } from './extension'
 import { syntaxTheme } from './syntax-highlight'
-import { useCodeMirrorAutoToggleTheme } from './ui'
+import { useCodeMirrorConfigureFonts } from './use-auto-fonts'
+import { useCodeMirrorAutoToggleTheme } from './use-auto-theme'
 
 interface Props {
   initialDoc: string
@@ -141,6 +142,7 @@ export const useCodeMirror = <T extends Element>(
   })
 
   useCodeMirrorAutoToggleTheme(editorView)
+  useCodeMirrorConfigureFonts(editorView)
 
   onBeforeUnmount(() => {
     editorView.value?.destroy()
