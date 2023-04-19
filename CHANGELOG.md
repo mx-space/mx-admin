@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## [3.29.3](https://github.com/mx-space/mx-admin/compare/v3.29.2...v3.29.3) (2023-04-19)
+
+
+### Bug Fixes
+
+* **cm:** markdown tag style ([e7498d7](https://github.com/mx-space/mx-admin/commit/e7498d78331d74d7a52d72567c90dab81e84c780))
+* codemirror code font ([4ad67fa](https://github.com/mx-space/mx-admin/commit/4ad67fac11f304143f9f07f473d88876bc228930))
+* missing monospace for cm ([548ee04](https://github.com/mx-space/mx-admin/commit/548ee045850cb4ff7c622480d637b92a2eb5cad3))
+
+
+### Features
+
+* support codemirror auto fonts ([d0acaf0](https://github.com/mx-space/mx-admin/commit/d0acaf0a410934b890c16cadc284fe3421127e7a))
+
+
+
 ## [3.29.2](https://github.com/mx-space/mx-admin/compare/v3.29.1...v3.29.2) (2023-04-17)
 
 
