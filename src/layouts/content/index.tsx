@@ -46,6 +46,9 @@ export const ContentLayout = defineComponent({
     description: {
       type: [String, Object] as PropType<string | JSX.Element>,
     },
+    headerClass: {
+      type: [String] as PropType<string>,
+    },
   },
   setup(props, ctx) {
     const { slots } = ctx
@@ -150,7 +153,10 @@ export const ContentLayout = defineComponent({
 
     return () => (
       <>
-        <NLayoutContent class={styles['sticky-header']} embedded>
+        <NLayoutContent
+          class={[styles['sticky-header'], props.headerClass]}
+          embedded
+        >
           <header class={styles['header']}>
             <div class={'flex flex-col'}>
               <h1 class={styles['title']}>{pageTitle.value}</h1>

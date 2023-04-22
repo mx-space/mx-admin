@@ -19,6 +19,8 @@ import { useRoute, useRouter } from 'vue-router'
 
 import { Icon } from '@vicons/utils'
 
+import { HeaderPreviewButton } from '~/components/special-button/preview'
+
 type PageReactiveType = WriteBaseType & {
   subtitle: string
   slug: string
@@ -117,6 +119,8 @@ const PageWriteView = defineComponent(() => {
               data.meta = { ...rest }
             }}
           />
+
+          <HeaderPreviewButton getData={() => ({ ...data })} />
 
           <HeaderActionButton
             icon={<TelegramPlaneIcon />}
