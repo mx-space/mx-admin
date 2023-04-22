@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.29.5](https://github.com/mx-space/mx-admin/compare/v3.29.4...v3.29.5) (2023-04-22)
+
+
+### Bug Fixes
+
+* preview url ([8856372](https://github.com/mx-space/mx-admin/commit/8856372b5dd4ac88189ff4b47d464f921e8b8abc))
+
+
+
 ## [3.29.4](https://github.com/mx-space/mx-admin/compare/v3.29.3...v3.29.4) (2023-04-22)
 
 
