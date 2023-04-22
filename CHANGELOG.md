@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.29.4](https://github.com/mx-space/mx-admin/compare/v3.29.3...v3.29.4) (2023-04-22)
+
+
+### Features
+
+* support preview in editor ([3aeaef8](https://github.com/mx-space/mx-admin/commit/3aeaef899067c26d0404b9754cc12a21d33bfe4c))
+
+
+
 ## [3.29.3](https://github.com/mx-space/mx-admin/compare/v3.29.2...v3.29.3) (2023-04-19)
 
 
