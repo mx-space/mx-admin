@@ -1,3 +1,5 @@
+import { RESTManager } from '~/utils'
+
 import { HeaderActionButton } from '../button/rounded-button'
 import { MagnifyingGlass } from '../icons'
 
@@ -17,11 +19,19 @@ export const HeaderPreviewButton = defineComponent({
       }
     })
 
-    const handlePreview = () => {
+    const handlePreview = async () => {
       const { getData } = props
       const data = getData()
       const { id } = data
-      const webUrl = 'http://localhost:2323'
+
+      const { webUrl } = await RESTManager.api.options.url
+        .get<any>()
+        .then((data) => data.data)
+      const url = new URL('/preview', webUrl)
+
+      if (url.hostname !== location.hostname) {
+        message.error('预览地址与当前地址不一致，无法提供预览')
+      }
 
       const storageKey = `mx-preview-${id ?? 'new'}`
 
@@ -32,7 +42,7 @@ export const HeaderPreviewButton = defineComponent({
           id: `preview-${id ?? 'new'}`,
         }),
       )
-      const url = new URL('/preview', webUrl)
+
       url.searchParams.set('storageKey', storageKey)
       window.open(url.toString())
 
