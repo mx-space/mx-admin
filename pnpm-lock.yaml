@@ -20,8 +20,8 @@ dependencies:
     specifier: 6.6.0
     version: 6.6.0
   '@codemirror/language-data':
-    specifier: 6.2.1
-    version: 6.2.1(@codemirror/state@6.2.0)(@codemirror/view@6.9.5)(@lezer/common@1.0.2)
+    specifier: 6.3.0
+    version: 6.3.0(@codemirror/state@6.2.0)(@codemirror/view@6.9.6)(@lezer/common@1.0.2)
   '@codemirror/state':
     specifier: 6.2.0
     version: 6.2.0
@@ -29,8 +29,8 @@ dependencies:
     specifier: 6.1.2
     version: 6.1.2
   '@codemirror/view':
-    specifier: 6.9.5
-    version: 6.9.5
+    specifier: 6.9.6
+    version: 6.9.6
   '@ddietr/codemirror-themes':
     specifier: 1.4.1
     version: 1.4.1
@@ -155,11 +155,11 @@ dependencies:
     specifier: 1.4.0
     version: 1.4.0
   unidata.js:
-    specifier: 0.7.18
-    version: 0.7.18
+    specifier: 0.7.19
+    version: 0.7.19
   use-crossbell-xlog:
     specifier: 0.0.7
-    version: 0.0.7(@babel/core@7.21.4)(@types/node@18.15.11)(ethers@5.7.2)(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)
+    version: 0.0.7(@babel/core@7.21.4)(@types/node@18.15.13)(ethers@5.7.2)(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)
   validator:
     specifier: 13.9.0
     version: 13.9.0
@@ -260,7 +260,7 @@ devDependencies:
     version: 0.15.3(@vueuse/core@10.0.2)(rollup@3.20.6)
   vite:
     specifier: 4.2.2
-    version: 4.2.2(@types/node@18.15.11)
+    version: 4.2.2(@types/node@18.15.13)
   vite-plugin-checker:
     specifier: 0.5.6
     version: 0.5.6(eslint@8.38.0)(typescript@5.0.4)(vite@4.2.2)
@@ -851,7 +851,7 @@ packages:
       - '@vue/composition-api'
     dev: false
 
-  /@codemirror/autocomplete@6.5.1(@codemirror/language@6.6.0)(@codemirror/state@6.2.0)(@codemirror/view@6.9.5)(@lezer/common@1.0.2):
+  /@codemirror/autocomplete@6.5.1(@codemirror/language@6.6.0)(@codemirror/state@6.2.0)(@codemirror/view@6.9.6)(@lezer/common@1.0.2):
     resolution: {integrity: sha512-/Sv9yJmqyILbZ26U4LBHnAtbikuVxWUp+rQ8BXuRGtxZfbfKOY/WPbsUtvSP2h0ZUZMlkxV/hqbKRFzowlA6xw==}
     peerDependencies:
       '@codemirror/language': ^6.0.0
@@ -861,7 +861,7 @@ packages:
     dependencies:
       '@codemirror/language': 6.6.0
       '@codemirror/state': 6.2.0
-      '@codemirror/view': 6.9.5
+      '@codemirror/view': 6.9.6
       '@lezer/common': 1.0.2
     dev: false
 
@@ -870,7 +870,7 @@ packages:
     dependencies:
       '@codemirror/language': 6.6.0
       '@codemirror/state': 6.2.0
-      '@codemirror/view': 6.9.5
+      '@codemirror/view': 6.9.6
       '@lezer/common': 1.0.2
     dev: false
 
@@ -878,7 +878,7 @@ packages:
     resolution: {integrity: sha512-vTjoHjzJmLrrMFmf/tojwp+O0P+R9mgWtjjaKDNDoY58PzOPg7ldMEBqIzABBc+/2mYPD85SG7O5byfBxc83eA==}
     dependencies:
       '@codemirror/lang-html': 6.4.3
-      '@codemirror/lang-javascript': 6.1.6
+      '@codemirror/lang-javascript': 6.1.7
       '@codemirror/language': 6.6.0
       '@lezer/common': 1.0.2
       '@lezer/highlight': 1.1.4
@@ -891,10 +891,10 @@ packages:
       '@lezer/cpp': 1.1.0
     dev: false
 
-  /@codemirror/lang-css@6.1.1(@codemirror/view@6.9.5)(@lezer/common@1.0.2):
+  /@codemirror/lang-css@6.1.1(@codemirror/view@6.9.6)(@lezer/common@1.0.2):
     resolution: {integrity: sha512-P6jdNEHyRcqqDgbvHYyC9Wxkek0rnG3a9aVSRi4a7WrjPbQtBTaOmvYpXmm13zZMAatO4Oqpac+0QZs7sy+LnQ==}
     dependencies:
-      '@codemirror/autocomplete': 6.5.1(@codemirror/language@6.6.0)(@codemirror/state@6.2.0)(@codemirror/view@6.9.5)(@lezer/common@1.0.2)
+      '@codemirror/autocomplete': 6.5.1(@codemirror/language@6.6.0)(@codemirror/state@6.2.0)(@codemirror/view@6.9.6)(@lezer/common@1.0.2)
       '@codemirror/language': 6.6.0
       '@codemirror/state': 6.2.0
       '@lezer/css': 1.1.1
@@ -906,12 +906,12 @@ packages:
   /@codemirror/lang-html@6.4.3:
     resolution: {integrity: sha512-VKzQXEC8nL69Jg2hvAFPBwOdZNvL8tMFOrdFwWpU+wc6a6KEkndJ/19R5xSaglNX6v2bttm8uIEFYxdQDcIZVQ==}
     dependencies:
-      '@codemirror/autocomplete': 6.5.1(@codemirror/language@6.6.0)(@codemirror/state@6.2.0)(@codemirror/view@6.9.5)(@lezer/common@1.0.2)
-      '@codemirror/lang-css': 6.1.1(@codemirror/view@6.9.5)(@lezer/common@1.0.2)
+      '@codemirror/autocomplete': 6.5.1(@codemirror/language@6.6.0)(@codemirror/state@6.2.0)(@codemirror/view@6.9.6)(@lezer/common@1.0.2)
+      '@codemirror/lang-css': 6.1.1(@codemirror/view@6.9.6)(@lezer/common@1.0.2)
       '@codemirror/lang-javascript': 6.1.6
       '@codemirror/language': 6.6.0
       '@codemirror/state': 6.2.0
-      '@codemirror/view': 6.9.5
+      '@codemirror/view': 6.9.6
       '@lezer/common': 1.0.2
       '@lezer/css': 1.1.1
       '@lezer/html': 1.3.4
@@ -927,11 +927,23 @@ packages:
   /@codemirror/lang-javascript@6.1.6:
     resolution: {integrity: sha512-TTK28z+vJQY9GAefLTDDptI2LMqMfAiuTpt8s9SsNwocjVQ1v9yTzfReMf1hYhspQCdhfa7fdKnQJ78mKe/bHQ==}
     dependencies:
-      '@codemirror/autocomplete': 6.5.1(@codemirror/language@6.6.0)(@codemirror/state@6.2.0)(@codemirror/view@6.9.5)(@lezer/common@1.0.2)
+      '@codemirror/autocomplete': 6.5.1(@codemirror/language@6.6.0)(@codemirror/state@6.2.0)(@codemirror/view@6.9.6)(@lezer/common@1.0.2)
       '@codemirror/language': 6.6.0
       '@codemirror/lint': 6.2.1
       '@codemirror/state': 6.2.0
-      '@codemirror/view': 6.9.5
+      '@codemirror/view': 6.9.6
+      '@lezer/common': 1.0.2
+      '@lezer/javascript': 1.4.2
+    dev: false
+
+  /@codemirror/lang-javascript@6.1.7:
+    resolution: {integrity: sha512-KXKqxlZ4W6t5I7i2ScmITUD3f/F5Cllk3kj0De9P9mFeYVfhOVOWuDLgYiLpk357u7Xh4dhqjJAnsNPPoTLghQ==}
+    dependencies:
+      '@codemirror/autocomplete': 6.5.1(@codemirror/language@6.6.0)(@codemirror/state@6.2.0)(@codemirror/view@6.9.6)(@lezer/common@1.0.2)
+      '@codemirror/language': 6.6.0
+      '@codemirror/lint': 6.2.1
+      '@codemirror/state': 6.2.0
+      '@codemirror/view': 6.9.6
       '@lezer/common': 1.0.2
       '@lezer/javascript': 1.4.2
     dev: false
@@ -949,7 +961,7 @@ packages:
       '@codemirror/lang-html': 6.4.3
       '@codemirror/language': 6.6.0
       '@codemirror/state': 6.2.0
-      '@codemirror/view': 6.9.5
+      '@codemirror/view': 6.9.6
       '@lezer/common': 1.0.2
       '@lezer/markdown': 1.0.2
     dev: false
@@ -964,10 +976,10 @@ packages:
       '@lezer/php': 1.0.1
     dev: false
 
-  /@codemirror/lang-python@6.1.2(@codemirror/state@6.2.0)(@codemirror/view@6.9.5)(@lezer/common@1.0.2):
+  /@codemirror/lang-python@6.1.2(@codemirror/state@6.2.0)(@codemirror/view@6.9.6)(@lezer/common@1.0.2):
     resolution: {integrity: sha512-nbQfifLBZstpt6Oo4XxA2LOzlSp4b/7Bc5cmodG1R+Cs5PLLCTUvsMNWDnziiCfTOG/SW1rVzXq/GbIr6WXlcw==}
     dependencies:
-      '@codemirror/autocomplete': 6.5.1(@codemirror/language@6.6.0)(@codemirror/state@6.2.0)(@codemirror/view@6.9.5)(@lezer/common@1.0.2)
+      '@codemirror/autocomplete': 6.5.1(@codemirror/language@6.6.0)(@codemirror/state@6.2.0)(@codemirror/view@6.9.6)(@lezer/common@1.0.2)
       '@codemirror/language': 6.6.0
       '@lezer/python': 1.1.4
     transitivePeerDependencies:
@@ -983,10 +995,22 @@ packages:
       '@lezer/rust': 1.0.0
     dev: false
 
-  /@codemirror/lang-sql@6.4.1(@codemirror/view@6.9.5)(@lezer/common@1.0.2):
+  /@codemirror/lang-sass@6.0.1(@codemirror/view@6.9.6):
+    resolution: {integrity: sha512-USy9zqtdLYxSuqq0s4peMoQi+BDzyOyO7chUzli+X2xVCjmBhc3CsWQ4kkDU0NYtCHHFQRkcFO8770eaOwZqfw==}
+    dependencies:
+      '@codemirror/lang-css': 6.1.1(@codemirror/view@6.9.6)(@lezer/common@1.0.2)
+      '@codemirror/language': 6.6.0
+      '@codemirror/state': 6.2.0
+      '@lezer/common': 1.0.2
+      '@lezer/sass': 1.0.1
+    transitivePeerDependencies:
+      - '@codemirror/view'
+    dev: false
+
+  /@codemirror/lang-sql@6.4.1(@codemirror/view@6.9.6)(@lezer/common@1.0.2):
     resolution: {integrity: sha512-PFB56L+A0WGY35uRya+Trt5g19V9k2V9X3c55xoFW4RgiATr/yLqWsbbnEsdxuMn5tLpuikp7Kmj9smRsqBXAg==}
     dependencies:
-      '@codemirror/autocomplete': 6.5.1(@codemirror/language@6.6.0)(@codemirror/state@6.2.0)(@codemirror/view@6.9.5)(@lezer/common@1.0.2)
+      '@codemirror/autocomplete': 6.5.1(@codemirror/language@6.6.0)(@codemirror/state@6.2.0)(@codemirror/view@6.9.6)(@lezer/common@1.0.2)
       '@codemirror/language': 6.6.0
       '@codemirror/state': 6.2.0
       '@lezer/highlight': 1.1.4
@@ -1000,7 +1024,7 @@ packages:
     resolution: {integrity: sha512-GIfc/MemCFKUdNSYGTFZDN8XsD2z0DUY7DgrK34on0dzdZ/CawZbi+SADYfVzWoPPdxngHzLhqlR5pSOqyPCvA==}
     dependencies:
       '@codemirror/lang-html': 6.4.3
-      '@codemirror/lang-javascript': 6.1.6
+      '@codemirror/lang-javascript': 6.1.7
       '@codemirror/language': 6.6.0
       '@lezer/common': 1.0.2
       '@lezer/highlight': 1.1.4
@@ -1015,10 +1039,10 @@ packages:
       '@lezer/lr': 1.3.3
     dev: false
 
-  /@codemirror/lang-xml@6.0.2(@codemirror/view@6.9.5):
+  /@codemirror/lang-xml@6.0.2(@codemirror/view@6.9.6):
     resolution: {integrity: sha512-JQYZjHL2LAfpiZI2/qZ/qzDuSqmGKMwyApYmEUUCTxLM4MWS7sATUEfIguZQr9Zjx/7gcdnewb039smF6nC2zw==}
     dependencies:
-      '@codemirror/autocomplete': 6.5.1(@codemirror/language@6.6.0)(@codemirror/state@6.2.0)(@codemirror/view@6.9.5)(@lezer/common@1.0.2)
+      '@codemirror/autocomplete': 6.5.1(@codemirror/language@6.6.0)(@codemirror/state@6.2.0)(@codemirror/view@6.9.6)(@lezer/common@1.0.2)
       '@codemirror/language': 6.6.0
       '@codemirror/state': 6.2.0
       '@lezer/common': 1.0.2
@@ -1027,24 +1051,25 @@ packages:
       - '@codemirror/view'
     dev: false
 
-  /@codemirror/language-data@6.2.1(@codemirror/state@6.2.0)(@codemirror/view@6.9.5)(@lezer/common@1.0.2):
-    resolution: {integrity: sha512-cZADpA4FN2TWYdqhI1Q7CQcqBfRomMFFNC428dKT2WLbe/EFQ/FPTYlFTFbZDBLbmiXhVtLJOkobXRZVyCunuw==}
+  /@codemirror/language-data@6.3.0(@codemirror/state@6.2.0)(@codemirror/view@6.9.6)(@lezer/common@1.0.2):
+    resolution: {integrity: sha512-D9tOZS38mK59jDs1Flqe8GgCdUAYI339SqBdwHJZwxgyXHsBc8RIhAlz2oXWGpvZeP/kVHy9LVfoBFgO02mx7w==}
     dependencies:
       '@codemirror/lang-angular': 0.1.0
       '@codemirror/lang-cpp': 6.0.2
-      '@codemirror/lang-css': 6.1.1(@codemirror/view@6.9.5)(@lezer/common@1.0.2)
+      '@codemirror/lang-css': 6.1.1(@codemirror/view@6.9.6)(@lezer/common@1.0.2)
       '@codemirror/lang-html': 6.4.3
       '@codemirror/lang-java': 6.0.1
-      '@codemirror/lang-javascript': 6.1.6
+      '@codemirror/lang-javascript': 6.1.7
       '@codemirror/lang-json': 6.0.1
       '@codemirror/lang-markdown': 6.1.1
       '@codemirror/lang-php': 6.0.1
-      '@codemirror/lang-python': 6.1.2(@codemirror/state@6.2.0)(@codemirror/view@6.9.5)(@lezer/common@1.0.2)
+      '@codemirror/lang-python': 6.1.2(@codemirror/state@6.2.0)(@codemirror/view@6.9.6)(@lezer/common@1.0.2)
       '@codemirror/lang-rust': 6.0.1
-      '@codemirror/lang-sql': 6.4.1(@codemirror/view@6.9.5)(@lezer/common@1.0.2)
+      '@codemirror/lang-sass': 6.0.1(@codemirror/view@6.9.6)
+      '@codemirror/lang-sql': 6.4.1(@codemirror/view@6.9.6)(@lezer/common@1.0.2)
       '@codemirror/lang-vue': 0.1.1
       '@codemirror/lang-wast': 6.0.1
-      '@codemirror/lang-xml': 6.0.2(@codemirror/view@6.9.5)
+      '@codemirror/lang-xml': 6.0.2(@codemirror/view@6.9.6)
       '@codemirror/language': 6.6.0
       '@codemirror/legacy-modes': 6.3.2
     transitivePeerDependencies:
@@ -1057,7 +1082,7 @@ packages:
     resolution: {integrity: sha512-cwUd6lzt3MfNYOobdjf14ZkLbJcnv4WtndYaoBkbor/vF+rCNguMPK0IRtvZJG4dsWiaWPcK8x1VijhvSxnstg==}
     dependencies:
       '@codemirror/state': 6.2.0
-      '@codemirror/view': 6.9.5
+      '@codemirror/view': 6.9.6
       '@lezer/common': 1.0.2
       '@lezer/highlight': 1.1.4
       '@lezer/lr': 1.3.3
@@ -1074,7 +1099,7 @@ packages:
     resolution: {integrity: sha512-y1muai5U/uUPAGRyHMx9mHuHLypPcHWxzlZGknp/U5Mdb5Ol8Q5ZLp67UqyTbNFJJ3unVxZ8iX3g1fMN79S1JQ==}
     dependencies:
       '@codemirror/state': 6.2.0
-      '@codemirror/view': 6.9.5
+      '@codemirror/view': 6.9.6
       crelt: 1.0.5
     dev: false
 
@@ -1087,12 +1112,12 @@ packages:
     dependencies:
       '@codemirror/language': 6.6.0
       '@codemirror/state': 6.2.0
-      '@codemirror/view': 6.9.5
+      '@codemirror/view': 6.9.6
       '@lezer/highlight': 1.1.4
     dev: false
 
-  /@codemirror/view@6.9.5:
-    resolution: {integrity: sha512-IZwGdkn8PDyMkGms7bCMpFuTCg6+6eCZNgLOe9xQL4RYvMw1yYLviH+qoAqsNoYGpDt4HhHoW9v3FmalobFoKw==}
+  /@codemirror/view@6.9.6:
+    resolution: {integrity: sha512-g68PxS3RkHpxfYS6DTWCy1jeA5/oHzmdWjMVPkOzqQyxpElHEcPncUd4EeMVSa4okt0sS3hNXVaRnJqO/7MeJw==}
     dependencies:
       '@codemirror/state': 6.2.0
       style-mod: 4.0.3
@@ -1161,7 +1186,7 @@ packages:
       react-google-recaptcha: 2.1.0(react@18.2.0)
       rxjs: 7.8.0
       ts-essentials: 9.3.1(typescript@5.0.4)
-      wagmi: 0.12.10(@babel/core@7.21.4)(@types/node@18.15.11)(ethers@5.7.2)(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)
+      wagmi: 0.12.10(@babel/core@7.21.4)(@types/node@18.15.13)(ethers@5.7.2)(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)
       zustand: 4.3.7(immer@9.0.21)(react@18.2.0)
     transitivePeerDependencies:
       - '@types/react'
@@ -1185,7 +1210,7 @@ packages:
       crossbell.js: 0.19.8
       ethers: 5.7.2
       react: 18.2.0
-      wagmi: 0.12.10(@babel/core@7.21.4)(@types/node@18.15.11)(ethers@5.7.2)(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)
+      wagmi: 0.12.10(@babel/core@7.21.4)(@types/node@18.15.13)(ethers@5.7.2)(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)
     transitivePeerDependencies:
       - bufferutil
       - react-dom
@@ -1206,7 +1231,7 @@ packages:
       ethers: 5.7.2
       lodash.compact: 3.0.1
       lru-cache: 8.0.4
-      wagmi: 0.12.10(@babel/core@7.21.4)(@types/node@18.15.11)(ethers@5.7.2)(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)
+      wagmi: 0.12.10(@babel/core@7.21.4)(@types/node@18.15.13)(ethers@5.7.2)(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)
     transitivePeerDependencies:
       - bufferutil
       - react
@@ -1629,7 +1654,7 @@ packages:
     dependencies:
       '@codemirror/language': 6.6.0
       '@codemirror/state': 6.2.0
-      '@codemirror/view': 6.9.5
+      '@codemirror/view': 6.9.6
       '@lezer/highlight': 1.1.4
     dev: false
 
@@ -2555,6 +2580,13 @@ packages:
       '@lezer/lr': 1.3.3
     dev: false
 
+  /@lezer/sass@1.0.1:
+    resolution: {integrity: sha512-S/aYAzABzMqWLfKKqV89pCWME4yjZYC6xzD02l44wbmb0sHxmN9/8aE4GULrKFzFaGazHdXcGEbPZ4zzB6yqwQ==}
+    dependencies:
+      '@lezer/highlight': 1.1.4
+      '@lezer/lr': 1.3.3
+    dev: false
+
   /@lezer/xml@1.0.1:
     resolution: {integrity: sha512-jMDXrV953sDAUEMI25VNrI9dz94Ai96FfeglytFINhhwQ867HKlCE2jt3AwZTCT7M528WxdDWv/Ty8e9wizwmQ==}
     dependencies:
@@ -3423,7 +3455,7 @@ packages:
   /@types/bn.js@5.1.1:
     resolution: {integrity: sha512-qNrYbZqMx0uJAfKnKclPh+dTwK33KfLHYqtyODwd5HnXOjnkhc4qgn3BrK6RWyGZm5+sIFE7Q7Vz6QQtJB7w7g==}
     dependencies:
-      '@types/node': 18.11.18
+      '@types/node': 18.15.13
     dev: false
 
   /@types/btoa-lite@1.0.0:
@@ -3471,7 +3503,7 @@ packages:
   /@types/jsonwebtoken@9.0.1:
     resolution: {integrity: sha512-c5ltxazpWabia/4UzhIoaDcIza4KViOQhdbjRlfcIGVnsE3c3brkz9Z+F/EeJIECOQP7W7US2hNE930cWWkPiw==}
     dependencies:
-      '@types/node': 18.11.18
+      '@types/node': 18.15.13
     dev: false
 
   /@types/katex@0.14.0:
@@ -3514,12 +3546,8 @@ packages:
     resolution: {integrity: sha512-DssMqTV9UnnoxDWu959sDLZzfvqCF0qDNRjaWeYSui9xkFe61kKo4l1TWNTQONpuXEm+gLMRvdlzvNHBamzmEw==}
     dev: false
 
-  /@types/node@18.11.18:
-    resolution: {integrity: sha512-DHQpWGjyQKSHj3ebjFI/wRKcqQcdR+MoFBygntYOZytCqNfkd2ZC4ARDJ2DQqhjH5p85Nnd3jhUJIXrszFX/JA==}
-    dev: false
-
-  /@types/node@18.15.11:
-    resolution: {integrity: sha512-E5Kwq2n4SbMzQOn6wnmBjuK9ouqlURrcZDVfbo9ftDDTFt3nk7ZKK4GMOzoYgnpQJKcxwQw+lGaBvvlMo0qN/Q==}
+  /@types/node@18.15.13:
+    resolution: {integrity: sha512-N+0kuo9KgrUQ1Sn/ifDXsvg0TTleP7rIy4zOBGECxAljqvqfqpTfzx0Q1NUedOixRMBfe2Whhb056a42cWs26Q==}
 
   /@types/parse-author@2.0.1:
     resolution: {integrity: sha512-2RNXvvDY+7ITl/Q3znDpW9DxyAckKgLCXpoiBHN9BeLH1aV7z/W657P2+PK3wVUgGWXtc99ZQy3LkJTGlxLsvA==}
@@ -3531,7 +3559,7 @@ packages:
   /@types/pbkdf2@3.1.0:
     resolution: {integrity: sha512-Cf63Rv7jCQ0LaL8tNXmEyqTHuIJxRdlS5vMh1mj5voN4+QFhVZnlZruezqpWYDiJ8UTzhP0VmeLXCmBk66YrMQ==}
     dependencies:
-      '@types/node': 18.11.18
+      '@types/node': 18.15.13
     dev: false
 
   /@types/prop-types@15.7.5:
@@ -3563,7 +3591,7 @@ packages:
   /@types/secp256k1@4.0.3:
     resolution: {integrity: sha512-Da66lEIFeIz9ltsdMZcpQvmrmmoqrfju8pm1BH8WbYjZSwUgCwXLb9C+9XYogwBITnbsSaMdVPb2ekf7TV+03w==}
     dependencies:
-      '@types/node': 18.11.18
+      '@types/node': 18.15.13
     dev: false
 
   /@types/semver@7.3.13:
@@ -3767,8 +3795,8 @@ packages:
       wonka: 6.3.1
     dev: false
 
-  /@urql/core@4.0.4(graphql@16.6.0):
-    resolution: {integrity: sha512-r1rB/VMVpCnfnMTTzCAs+HY+UqOHUgpZ+GimLtU4DCTP3C78DK+m4qr36M7KKleggrKgcpcC1TE8eFEVcKzfSQ==}
+  /@urql/core@4.0.6(graphql@16.6.0):
+    resolution: {integrity: sha512-RxlX5nxWZsvS1lPCvOdgdYbIVVfih/DrjPzGZ0ThP1GuVycaxw5t0O7XEXXYHICeXNKj95HJBxW0o/37zg+z6Q==}
     dependencies:
       '@0no-co/graphql.web': 1.0.0(graphql@16.6.0)
       wonka: 6.3.1
@@ -3823,7 +3851,7 @@ packages:
       '@babel/core': 7.20.12
       '@babel/plugin-transform-typescript': 7.21.3(@babel/core@7.20.12)
       '@vue/babel-plugin-jsx': 1.1.1(@babel/core@7.20.12)
-      vite: 4.2.2(@types/node@18.15.11)
+      vite: 4.2.2(@types/node@18.15.13)
       vue: 3.2.47
     transitivePeerDependencies:
       - supports-color
@@ -3836,7 +3864,7 @@ packages:
       vite: ^4.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 4.2.2(@types/node@18.15.11)
+      vite: 4.2.2(@types/node@18.15.13)
       vue: 3.2.47
     dev: true
 
@@ -3975,7 +4003,7 @@ packages:
       typescript: 5.0.4
     dev: false
 
-  /@wagmi/connectors@0.3.12(@babel/core@7.21.4)(@types/node@18.15.11)(@wagmi/core@0.10.9)(ethers@5.7.2)(react@18.2.0)(typescript@5.0.4):
+  /@wagmi/connectors@0.3.12(@babel/core@7.21.4)(@types/node@18.15.13)(@wagmi/core@0.10.9)(ethers@5.7.2)(react@18.2.0)(typescript@5.0.4):
     resolution: {integrity: sha512-Ui8wyAMI3V8pnDlmTVSug7S53sTSNkgFuGrxFoKxQrTQJIC+AvD7CbeiYKcbFxrIrv9c/sTK5ySL4IBe+KjFUQ==}
     peerDependencies:
       '@wagmi/core': '>=0.9.x'
@@ -3991,8 +4019,8 @@ packages:
       '@ledgerhq/connect-kit-loader': 1.0.2
       '@safe-global/safe-apps-provider': 0.15.2
       '@safe-global/safe-apps-sdk': 7.10.1
-      '@wagmi/core': 0.10.9(@babel/core@7.21.4)(@types/node@18.15.11)(ethers@5.7.2)(react@18.2.0)(typescript@5.0.4)
-      '@walletconnect/ethereum-provider': 2.6.2(@types/node@18.15.11)(@web3modal/standalone@2.3.0)(typescript@5.0.4)
+      '@wagmi/core': 0.10.9(@babel/core@7.21.4)(@types/node@18.15.13)(ethers@5.7.2)(react@18.2.0)(typescript@5.0.4)
+      '@walletconnect/ethereum-provider': 2.6.2(@types/node@18.15.13)(@web3modal/standalone@2.3.0)(typescript@5.0.4)
       '@walletconnect/legacy-provider': 2.0.0
       '@web3modal/standalone': 2.3.0(react@18.2.0)
       abitype: 0.3.0(typescript@5.0.4)
@@ -4015,7 +4043,7 @@ packages:
       - zod
     dev: false
 
-  /@wagmi/core@0.10.9(@babel/core@7.21.4)(@types/node@18.15.11)(ethers@5.7.2)(react@18.2.0)(typescript@5.0.4):
+  /@wagmi/core@0.10.9(@babel/core@7.21.4)(@types/node@18.15.13)(ethers@5.7.2)(react@18.2.0)(typescript@5.0.4):
     resolution: {integrity: sha512-/t7gcF6BvWiIBYdZ6RFiq/5cdMj+ljCTFlMgOEojl1BCe0OsbhrTKzbgTrJ6ol82vJI5uwcOAqEPD5ObN09oVg==}
     peerDependencies:
       ethers: '>=5.5.1 <6'
@@ -4025,7 +4053,7 @@ packages:
         optional: true
     dependencies:
       '@wagmi/chains': 0.2.17(typescript@5.0.4)
-      '@wagmi/connectors': 0.3.12(@babel/core@7.21.4)(@types/node@18.15.11)(@wagmi/core@0.10.9)(ethers@5.7.2)(react@18.2.0)(typescript@5.0.4)
+      '@wagmi/connectors': 0.3.12(@babel/core@7.21.4)(@types/node@18.15.13)(@wagmi/core@0.10.9)(ethers@5.7.2)(react@18.2.0)(typescript@5.0.4)
       abitype: 0.3.0(typescript@5.0.4)
       ethers: 5.7.2
       eventemitter3: 4.0.7
@@ -4048,10 +4076,10 @@ packages:
       - zod
     dev: false
 
-  /@walletconnect/core@2.6.2(@types/node@18.15.11)(typescript@5.0.4):
+  /@walletconnect/core@2.6.2(@types/node@18.15.13)(typescript@5.0.4):
     resolution: {integrity: sha512-uTla1Dyhr9ye1SbyubyxpUlW7r4oVf47EgIMEntbmMK6+xFpeiF7w5hNebIwp9g/dW81QQklwp3c0slwkTahdg==}
     dependencies:
-      '@walletconnect/heartbeat': 1.2.0(@types/node@18.15.11)(typescript@5.0.4)
+      '@walletconnect/heartbeat': 1.2.0(@types/node@18.15.13)(typescript@5.0.4)
       '@walletconnect/jsonrpc-provider': 1.0.12
       '@walletconnect/jsonrpc-utils': 1.0.7
       '@walletconnect/jsonrpc-ws-connection': 1.0.11
@@ -4061,8 +4089,8 @@ packages:
       '@walletconnect/relay-auth': 1.0.4
       '@walletconnect/safe-json': 1.0.2
       '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.6.2(@types/node@18.15.11)(typescript@5.0.4)
-      '@walletconnect/utils': 2.6.2(@types/node@18.15.11)(typescript@5.0.4)
+      '@walletconnect/types': 2.6.2(@types/node@18.15.13)(typescript@5.0.4)
+      '@walletconnect/utils': 2.6.2(@types/node@18.15.13)(typescript@5.0.4)
       events: 3.3.0
       lodash.isequal: 4.5.0
       pino: 7.11.0
@@ -4103,7 +4131,7 @@ packages:
       tslib: 1.14.1
     dev: false
 
-  /@walletconnect/ethereum-provider@2.6.2(@types/node@18.15.11)(@web3modal/standalone@2.3.0)(typescript@5.0.4):
+  /@walletconnect/ethereum-provider@2.6.2(@types/node@18.15.13)(@web3modal/standalone@2.3.0)(typescript@5.0.4):
     resolution: {integrity: sha512-IFYxvl+cHDPR+bJiocEF/EfqEB5eNxeQOxb8mKtA4vzFGck2H7ft+k1ObMwrBlC387NjzsD3Uyr0dT7qYaSWCg==}
     peerDependencies:
       '@web3modal/standalone': '>=2'
@@ -4115,10 +4143,10 @@ packages:
       '@walletconnect/jsonrpc-provider': 1.0.12
       '@walletconnect/jsonrpc-types': 1.0.2
       '@walletconnect/jsonrpc-utils': 1.0.7
-      '@walletconnect/sign-client': 2.6.2(@types/node@18.15.11)(typescript@5.0.4)
-      '@walletconnect/types': 2.6.2(@types/node@18.15.11)(typescript@5.0.4)
-      '@walletconnect/universal-provider': 2.6.2(@types/node@18.15.11)(typescript@5.0.4)
-      '@walletconnect/utils': 2.6.2(@types/node@18.15.11)(typescript@5.0.4)
+      '@walletconnect/sign-client': 2.6.2(@types/node@18.15.13)(typescript@5.0.4)
+      '@walletconnect/types': 2.6.2(@types/node@18.15.13)(typescript@5.0.4)
+      '@walletconnect/universal-provider': 2.6.2(@types/node@18.15.13)(typescript@5.0.4)
+      '@walletconnect/utils': 2.6.2(@types/node@18.15.13)(typescript@5.0.4)
       '@web3modal/standalone': 2.3.0(react@18.2.0)
       events: 3.3.0
     transitivePeerDependencies:
@@ -4141,14 +4169,14 @@ packages:
       tslib: 1.14.1
     dev: false
 
-  /@walletconnect/heartbeat@1.2.0(@types/node@18.15.11)(typescript@5.0.4):
+  /@walletconnect/heartbeat@1.2.0(@types/node@18.15.13)(typescript@5.0.4):
     resolution: {integrity: sha512-0vbzTa/ARrpmMmOD+bQMxPvFYKtOLQZObgZakrYr0aODiMOO71CmPVNV2eAqXnw9rMmcP+z91OybLeIFlwTjjA==}
     dependencies:
       '@walletconnect/events': 1.0.1
       '@walletconnect/time': 1.0.2
       chai: 4.3.7
       mocha: 10.2.0
-      ts-node: 10.9.1(@types/node@18.15.11)(typescript@5.0.4)
+      ts-node: 10.9.1(@types/node@18.15.13)(typescript@5.0.4)
       tslib: 1.14.1
     transitivePeerDependencies:
       - '@swc/core'
@@ -4324,17 +4352,17 @@ packages:
       tslib: 1.14.1
     dev: false
 
-  /@walletconnect/sign-client@2.6.2(@types/node@18.15.11)(typescript@5.0.4):
+  /@walletconnect/sign-client@2.6.2(@types/node@18.15.13)(typescript@5.0.4):
     resolution: {integrity: sha512-2/yXliVVRn27i4rCuIumBB361ZQtKCgAwm6OmPW8P2wJpmJ03K0FuLzuYbYy/WvweuFklQ92cQlg3V8Ez5M+vA==}
     dependencies:
-      '@walletconnect/core': 2.6.2(@types/node@18.15.11)(typescript@5.0.4)
+      '@walletconnect/core': 2.6.2(@types/node@18.15.13)(typescript@5.0.4)
       '@walletconnect/events': 1.0.1
       '@walletconnect/heartbeat': 1.2.1
       '@walletconnect/jsonrpc-utils': 1.0.7
       '@walletconnect/logger': 2.0.1
       '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.6.2(@types/node@18.15.11)(typescript@5.0.4)
-      '@walletconnect/utils': 2.6.2(@types/node@18.15.11)(typescript@5.0.4)
+      '@walletconnect/types': 2.6.2(@types/node@18.15.13)(typescript@5.0.4)
+      '@walletconnect/utils': 2.6.2(@types/node@18.15.13)(typescript@5.0.4)
       events: 3.3.0
       pino: 7.11.0
     transitivePeerDependencies:
@@ -4354,11 +4382,11 @@ packages:
       tslib: 1.14.1
     dev: false
 
-  /@walletconnect/types@2.6.2(@types/node@18.15.11)(typescript@5.0.4):
+  /@walletconnect/types@2.6.2(@types/node@18.15.13)(typescript@5.0.4):
     resolution: {integrity: sha512-eP9xfNVdoQrIfqJSlHqijf0l/Rw/XTO2SeFVlgA5UFHpMhhAo/kzuL+xC2iOkoGKEus4fM3lCuIw+aCZCwZA3g==}
     dependencies:
       '@walletconnect/events': 1.0.1
-      '@walletconnect/heartbeat': 1.2.0(@types/node@18.15.11)(typescript@5.0.4)
+      '@walletconnect/heartbeat': 1.2.0(@types/node@18.15.13)(typescript@5.0.4)
       '@walletconnect/jsonrpc-types': 1.0.2
       '@walletconnect/keyvaluestorage': 1.0.2
       '@walletconnect/logger': 2.0.1
@@ -4372,7 +4400,7 @@ packages:
       - typescript
     dev: false
 
-  /@walletconnect/universal-provider@2.6.2(@types/node@18.15.11)(typescript@5.0.4):
+  /@walletconnect/universal-provider@2.6.2(@types/node@18.15.13)(typescript@5.0.4):
     resolution: {integrity: sha512-CT7xFYGhGYYdo1rMCGnCuAueUYSVirqs6Tk9/ZoK/wf3vBNefTBxStW0Twgr+Fr5mgeOh4k4NWjPJIwfGTc/Fg==}
     dependencies:
       '@walletconnect/jsonrpc-http-connection': 1.0.6
@@ -4380,9 +4408,9 @@ packages:
       '@walletconnect/jsonrpc-types': 1.0.2
       '@walletconnect/jsonrpc-utils': 1.0.7
       '@walletconnect/logger': 2.0.1
-      '@walletconnect/sign-client': 2.6.2(@types/node@18.15.11)(typescript@5.0.4)
-      '@walletconnect/types': 2.6.2(@types/node@18.15.11)(typescript@5.0.4)
-      '@walletconnect/utils': 2.6.2(@types/node@18.15.11)(typescript@5.0.4)
+      '@walletconnect/sign-client': 2.6.2(@types/node@18.15.13)(typescript@5.0.4)
+      '@walletconnect/types': 2.6.2(@types/node@18.15.13)(typescript@5.0.4)
+      '@walletconnect/utils': 2.6.2(@types/node@18.15.13)(typescript@5.0.4)
       eip1193-provider: 1.0.1
       events: 3.3.0
       pino: 7.11.0
@@ -4399,7 +4427,7 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@walletconnect/utils@2.6.2(@types/node@18.15.11)(typescript@5.0.4):
+  /@walletconnect/utils@2.6.2(@types/node@18.15.13)(typescript@5.0.4):
     resolution: {integrity: sha512-G0gtWQd5PhT7Z3h9zy5H6bG8t9likb5+hP2ZuBbt/vTu8ONPEsTcH1Ior2lUjuYLQ9ufK3LMZM85pO+wWLRVaw==}
     dependencies:
       '@stablelib/chacha20poly1305': 1.0.1
@@ -4411,7 +4439,7 @@ packages:
       '@walletconnect/relay-api': 1.0.9
       '@walletconnect/safe-json': 1.0.2
       '@walletconnect/time': 1.0.2
-      '@walletconnect/types': 2.6.2(@types/node@18.15.11)(typescript@5.0.4)
+      '@walletconnect/types': 2.6.2(@types/node@18.15.13)(typescript@5.0.4)
       '@walletconnect/window-getters': 1.0.1
       '@walletconnect/window-metadata': 1.0.1
       detect-browser: 5.3.0
@@ -4779,6 +4807,16 @@ packages:
 
   /axios@1.3.5:
     resolution: {integrity: sha512-glL/PvG/E+xCWwV8S6nCHcrfg1exGx7vxyUIivIA1iL7BIh6bePylCfVHwp6k13ao7SATxB6imau2kqY+I67kw==}
+    dependencies:
+      follow-redirects: 1.15.2
+      form-data: 4.0.0
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+    dev: false
+
+  /axios@1.3.6:
+    resolution: {integrity: sha512-PEcdkk7JcdPiMDkvM4K6ZBRYq9keuVJsToxm2zQIM70Qqo2WHTdJZMXcG9X+RmRp2VPNUQC8W1RAGbgt6b1yMg==}
     dependencies:
       follow-redirects: 1.15.2
       form-data: 4.0.0
@@ -9087,7 +9125,7 @@ packages:
     resolution: {integrity: sha512-k43M7uCG1AkTyxgnmI5MPwKoUvS/bRvLvUb7+Pgpdlmok8AoqmUaZxUUw8zKM5B1lqZrt41GjYgnvAi0fppqgQ==}
     dev: false
 
-  /ts-node@10.9.1(@types/node@18.15.11)(typescript@5.0.4):
+  /ts-node@10.9.1(@types/node@18.15.13)(typescript@5.0.4):
     resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
     hasBin: true
     peerDependencies:
@@ -9106,7 +9144,7 @@ packages:
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.3
-      '@types/node': 18.15.11
+      '@types/node': 18.15.13
       acorn: 8.8.2
       acorn-walk: 8.2.0
       arg: 4.1.3
@@ -9264,12 +9302,12 @@ packages:
       - utf-8-validate
     dev: false
 
-  /unidata.js@0.7.18:
-    resolution: {integrity: sha512-MPwYVkRdJApMSs+xY9umfJk5e0EVvPCCjYEytduvhrUoH73rHLImNNBdlXiMzvDhUp3CqHKyzLMdmIEwL/LJ/Q==}
+  /unidata.js@0.7.19:
+    resolution: {integrity: sha512-k5x/thLREIoju2SrMATPDENNfuDqEk/hR9ohTdvJMTaTfDZqvw7O5Ri5PgdEN41o0UL+5WRYIdH3M3zy3k5R9Q==}
     dependencies:
       '@types/lodash': 4.14.194
-      '@urql/core': 4.0.4(graphql@16.6.0)
-      axios: 1.3.5
+      '@urql/core': 4.0.6(graphql@16.6.0)
+      axios: 1.3.6
       axios-retry: 3.4.0
       crossbell.js: 0.19.8
       ethers: 5.7.2
@@ -9389,15 +9427,15 @@ packages:
       react: 18.2.0
     dev: false
 
-  /use-crossbell-xlog@0.0.7(@babel/core@7.21.4)(@types/node@18.15.11)(ethers@5.7.2)(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4):
+  /use-crossbell-xlog@0.0.7(@babel/core@7.21.4)(@types/node@18.15.13)(ethers@5.7.2)(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4):
     resolution: {integrity: sha512-PtCFYtCr63qMs20+XrjCVa5RrtGkl4VxftLSD0wKS6r1lCG3P3phHUCJMDcdzmja59OVqsooxqA2ROliNsVcgQ==}
     dependencies:
       '@crossbell/connect-kit': 0.0.58(@tanstack/react-query@4.29.3)(ethers@5.7.2)(react-dom@18.2.0)(typescript@5.0.4)(wagmi@0.12.10)
       '@crossbell/contract': 0.0.58(ethers@5.7.2)(react-dom@18.2.0)(react@18.2.0)(wagmi@0.12.10)
       '@tanstack/react-query': 4.29.3(react-dom@18.2.0)(react@18.2.0)
       crossbell.js: 0.19.8
-      unidata.js: 0.7.18
-      wagmi: 0.12.10(@babel/core@7.21.4)(@types/node@18.15.11)(ethers@5.7.2)(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)
+      unidata.js: 0.7.19
+      wagmi: 0.12.10(@babel/core@7.21.4)(@types/node@18.15.13)(ethers@5.7.2)(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4)
     transitivePeerDependencies:
       - '@babel/core'
       - '@react-native-async-storage/async-storage'
@@ -9580,7 +9618,7 @@ packages:
       strip-ansi: 6.0.1
       tiny-invariant: 1.3.1
       typescript: 5.0.4
-      vite: 4.2.2(@types/node@18.15.11)
+      vite: 4.2.2(@types/node@18.15.13)
       vscode-languageclient: 7.0.0
       vscode-languageserver: 7.0.0
       vscode-languageserver-textdocument: 1.0.8
@@ -9592,7 +9630,7 @@ packages:
     peerDependencies:
       vite: ^2 || ^3 || ^4
     dependencies:
-      vite: 4.2.2(@types/node@18.15.11)
+      vite: 4.2.2(@types/node@18.15.13)
     dev: true
 
   /vite-plugin-windicss@1.8.10(vite@4.2.2):
@@ -9603,7 +9641,7 @@ packages:
       '@windicss/plugin-utils': 1.8.10
       debug: 4.3.4(supports-color@8.1.1)
       kolorist: 1.6.0
-      vite: 4.2.2(@types/node@18.15.11)
+      vite: 4.2.2(@types/node@18.15.13)
       windicss: 3.5.6
     transitivePeerDependencies:
       - supports-color
@@ -9620,13 +9658,13 @@ packages:
       debug: 4.3.4(supports-color@8.1.1)
       globrex: 0.1.2
       tsconfck: 2.1.1(typescript@5.0.4)
-      vite: 4.2.2(@types/node@18.15.11)
+      vite: 4.2.2(@types/node@18.15.13)
     transitivePeerDependencies:
       - supports-color
       - typescript
     dev: true
 
-  /vite@4.2.2(@types/node@18.15.11):
+  /vite@4.2.2(@types/node@18.15.13):
     resolution: {integrity: sha512-PcNtT5HeDxb3QaSqFYkEum8f5sCVe0R3WK20qxgIvNBZPXU/Obxs/+ubBMeE7nLWeCo2LDzv+8hRYSlcaSehig==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
@@ -9651,7 +9689,7 @@ packages:
       terser:
         optional: true
     dependencies:
-      '@types/node': 18.15.11
+      '@types/node': 18.15.13
       esbuild: 0.17.17
       postcss: 8.4.22
       resolve: 1.22.2
@@ -9818,7 +9856,7 @@ packages:
     resolution: {integrity: sha512-f+fciywl1SJEniZHD6H+kUO8gOnwIr7f4ijKA6+ZvJFjeGi1r4PDLl53Ayud9O/rk64RqgoQine0feoeOU0kXg==}
     dev: false
 
-  /wagmi@0.12.10(@babel/core@7.21.4)(@types/node@18.15.11)(ethers@5.7.2)(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4):
+  /wagmi@0.12.10(@babel/core@7.21.4)(@types/node@18.15.13)(ethers@5.7.2)(react-dom@18.2.0)(react@18.2.0)(typescript@5.0.4):
     resolution: {integrity: sha512-ELgM4Rt6Vnb5HgX8p9vmyXLz/TaxixfJ6qVyLchNJE6cR3dBD74wywtble2s5GsVWJFWeaUauEMVCXPLA+4hSw==}
     peerDependencies:
       ethers: '>=5.5.1 <6'
@@ -9831,7 +9869,7 @@ packages:
       '@tanstack/query-sync-storage-persister': 4.29.1
       '@tanstack/react-query': 4.29.3(react-dom@18.2.0)(react@18.2.0)
       '@tanstack/react-query-persist-client': 4.29.3(@tanstack/react-query@4.29.3)
-      '@wagmi/core': 0.10.9(@babel/core@7.21.4)(@types/node@18.15.11)(ethers@5.7.2)(react@18.2.0)(typescript@5.0.4)
+      '@wagmi/core': 0.10.9(@babel/core@7.21.4)(@types/node@18.15.13)(ethers@5.7.2)(react@18.2.0)(typescript@5.0.4)
       abitype: 0.7.1(typescript@5.0.4)
       ethers: 5.7.2
       react: 18.2.0
