@@ -106,6 +106,7 @@ const PageWriteView = defineComponent(() => {
 
   return () => (
     <ContentLayout
+      headerClass="pt-1"
       actionsElement={
         <>
           <ParseContentButton

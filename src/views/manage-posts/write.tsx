@@ -1,12 +1,7 @@
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { TextBaseDrawer } from 'components/drawer/text-base-drawer'
 import { EditorToggleWrapper } from 'components/editor/universal/toggle'
-import {
-  MagnifyingGlass,
-  OpenAI,
-  SlidersHIcon,
-  TelegramPlaneIcon,
-} from 'components/icons'
+import { OpenAI, SlidersHIcon, TelegramPlaneIcon } from 'components/icons'
 import { MaterialInput } from 'components/input/material-input'
 import { UnderlineInput } from 'components/input/underline-input'
 import { ParseContentButton } from 'components/special-button/parse-content'
@@ -196,7 +191,7 @@ const PostWriteView = defineComponent(() => {
   return () => (
     <ContentLayout
       title={id.value ? '修改文章' : '撰写新文章'}
-      headerClass="pt-0"
+      headerClass="pt-1"
       actionsElement={
         <>
           <ParseContentButton
