@@ -47,7 +47,7 @@
     "date-fns": "2.29.3",
     "ejs": "3.1.9",
     "event-source-polyfill": "1.0.31",
-    "js-cookie": "3.0.1",
+    "js-cookie": "3.0.4",
     "js-yaml": "4.1.0",
     "json5": "2.2.3",
     "lodash-es": "4.17.21",

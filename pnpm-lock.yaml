@@ -98,8 +98,8 @@ dependencies:
     specifier: 1.0.31
     version: 1.0.31
   js-cookie:
-    specifier: 3.0.1
-    version: 3.0.1
+    specifier: 3.0.4
+    version: 3.0.4
   js-yaml:
     specifier: 4.1.0
     version: 4.1.0
@@ -7022,9 +7022,9 @@ packages:
     hasBin: true
     dev: false
 
-  /js-cookie@3.0.1:
-    resolution: {integrity: sha512-+0rgsUXZu4ncpPxRL+lNEptWMOWl9etvPHc/koSRp6MPwpRYAhmk0dUG00J4bxVV3r9uUzfo24wW0knS07SKSw==}
-    engines: {node: '>=12'}
+  /js-cookie@3.0.4:
+    resolution: {integrity: sha512-tlu5VGqPFMP5eBefnmszCFZkPXG2n527NRN9XdNtN6FZ5n/0e98TdDm8BOz290OIIsxtXb9XTJjfqE6gVhOHQw==}
+    engines: {node: '>=14', npm: '>=9.5.0'}
     dev: false
 
   /js-sdsl@4.4.0:
