@@ -60,7 +60,7 @@
     "openai": "3.2.1",
     "os-browserify": "0.3.0",
     "path-browserify": "1.0.1",
-    "pinia": "2.0.34",
+    "pinia": "2.0.35",
     "qier-progress": "1.0.4",
     "qs": "6.11.1",
     "reflect-metadata": "0.1.13",
