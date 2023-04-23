@@ -71,8 +71,8 @@ dependencies:
     specifier: 0.1.4
     version: 0.1.4(vue@3.2.47)
   '@vueuse/core':
-    specifier: 10.0.2
-    version: 10.0.2(vue@3.2.47)
+    specifier: 10.1.0
+    version: 10.1.0(vue@3.2.47)
   ansi_up:
     specifier: 5.2.1
     version: 5.2.1
@@ -257,7 +257,7 @@ devDependencies:
     version: 5.0.4
   unplugin-auto-import:
     specifier: 0.15.3
-    version: 0.15.3(@vueuse/core@10.0.2)(rollup@3.20.6)
+    version: 0.15.3(@vueuse/core@10.1.0)(rollup@3.20.6)
   vite:
     specifier: 4.2.2
     version: 4.2.2(@types/node@18.15.13)
@@ -289,14 +289,6 @@ packages:
     dependencies:
       graphql: 16.6.0
     dev: false
-
-  /@ampproject/remapping@2.2.0:
-    resolution: {integrity: sha512-qRmjj8nj9qmLTQXXmaR1cck3UXSRMPrbsLJAasZpF+t3riI71BXed5ebIOYwQntykeZuhjsdweEc9BxH5Jc26w==}
-    engines: {node: '>=6.0.0'}
-    dependencies:
-      '@jridgewell/gen-mapping': 0.1.1
-      '@jridgewell/trace-mapping': 0.3.18
-    dev: true
 
   /@ampproject/remapping@2.2.1:
     resolution: {integrity: sha512-lFMjJTrFL3j7L9yBxwYfCq2k6qqwHyzuUl/XBnif78PWTJYyL/dfowQHWE3sp6U6ZzqWiiIZnpTMO96zhkjwtg==}
@@ -487,7 +479,7 @@ packages:
     resolution: {integrity: sha512-XsMfHovsUYHFMdrIHkZphTN/2Hzzi78R08NuHfDBehym2VsPDL6Zn/JAD/JQdnRvbSsbQc4mVaU1m6JgtTEElg==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@ampproject/remapping': 2.2.0
+      '@ampproject/remapping': 2.2.1
       '@babel/code-frame': 7.21.4
       '@babel/generator': 7.21.4
       '@babel/helper-compilation-targets': 7.21.4(@babel/core@7.20.12)
@@ -843,7 +835,7 @@ packages:
     peerDependencies:
       vue: ^3.2.33
     dependencies:
-      '@vueuse/core': 10.0.2(vue@3.2.47)
+      '@vueuse/core': 10.1.0(vue@3.2.47)
       match-sorter: 6.3.1
       tiny-invariant: 1.2.0
       vue: 3.2.47
@@ -2408,14 +2400,6 @@ packages:
       - supports-color
     dev: true
 
-  /@jridgewell/gen-mapping@0.1.1:
-    resolution: {integrity: sha512-sQXCasFk+U8lWYEe66WxRDOE9PjVz4vSM51fTu3Hw+ClTpUSQb718772vH3pyS5pShp6lvQM7SxgIDXXXmOX7w==}
-    engines: {node: '>=6.0.0'}
-    dependencies:
-      '@jridgewell/set-array': 1.1.2
-      '@jridgewell/sourcemap-codec': 1.4.15
-    dev: true
-
   /@jridgewell/gen-mapping@0.3.3:
     resolution: {integrity: sha512-HLhSWOLRi875zjjMG/r+Nv0oCW8umGb0BgEhyX3dDX3egwZtB8PqLnjz3yedt8R5StBrzcg4aBpnh8UA9D1BoQ==}
     engines: {node: '>=6.0.0'}
@@ -3970,22 +3954,22 @@ packages:
   /@vue/shared@3.2.47:
     resolution: {integrity: sha512-BHGyyGN3Q97EZx0taMQ+OLNuZcW3d37ZEVmEAyeoA9ERdGvm9Irc/0Fua8SNyOtV1w6BS4q25wbMzJujO9HIfQ==}
 
-  /@vueuse/core@10.0.2(vue@3.2.47):
-    resolution: {integrity: sha512-/UGc2cXbxbeIFLDSJyHUjI9QZ4CJJkhiJe9TbKNPSofcWmYhhUgJ+7iw9njXTKu/Xc3Z6UeXVR9fosW1+cyrnQ==}
+  /@vueuse/core@10.1.0(vue@3.2.47):
+    resolution: {integrity: sha512-3Znoa5m5RO+z4/C9w6DRaKTR3wCVJvD5rav8HTDGsr+7rOZRHtcgFJ8NcCs0ZvIpmev2kExTa311ns5j2RbzDQ==}
     dependencies:
       '@types/web-bluetooth': 0.0.16
-      '@vueuse/metadata': 10.0.2
-      '@vueuse/shared': 10.0.2(vue@3.2.47)
+      '@vueuse/metadata': 10.1.0
+      '@vueuse/shared': 10.1.0(vue@3.2.47)
       vue-demi: 0.14.0(vue@3.2.47)
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
 
-  /@vueuse/metadata@10.0.2:
-    resolution: {integrity: sha512-APSjlABrV+Q74c+FR0kFETvcN9W2pAaT3XF3WwqWUuk4srmVxv7DY4WshZxK2KYk1+MVY0Fus6J1Hk/JXVm6Aw==}
+  /@vueuse/metadata@10.1.0:
+    resolution: {integrity: sha512-cM28HjDEw5FIrPE9rgSPFZvQ0ZYnOLAOr8hl1XM6tFl80U3WAR5ROdnAqiYybniwP5gt9MKKAJAqd/ab2aHkqg==}
 
-  /@vueuse/shared@10.0.2(vue@3.2.47):
-    resolution: {integrity: sha512-7W2l6qZaFvla3zAeEVo8hNHkNRKCezJa3JjZAKv3K4KsevXobHhVNr+RHaOVNK/6ETpFmtqiK+0pMIADbHjjag==}
+  /@vueuse/shared@10.1.0(vue@3.2.47):
+    resolution: {integrity: sha512-2X52ogu12i9DkKOQ01yeb/BKg9UO87RNnpm5sXkQvyORlbq8ONS5l39MYkjkeVWWjdT0teJru7a2S41dmHmqjQ==}
     dependencies:
       vue-demi: 0.14.0(vue@3.2.47)
     transitivePeerDependencies:
@@ -9347,7 +9331,7 @@ packages:
     engines: {node: '>= 10.0.0'}
     dev: true
 
-  /unplugin-auto-import@0.15.3(@vueuse/core@10.0.2)(rollup@3.20.6):
+  /unplugin-auto-import@0.15.3(@vueuse/core@10.1.0)(rollup@3.20.6):
     resolution: {integrity: sha512-RLT8SqbPn4bT7yBshZId0uPSofKWnwr66RyDaxWaFb/+f7OTDOWAsVNz+hOQLBWSjvbekr2xZY9ccS8TDHJbCQ==}
     engines: {node: '>=14'}
     peerDependencies:
@@ -9361,7 +9345,7 @@ packages:
     dependencies:
       '@antfu/utils': 0.7.2
       '@rollup/pluginutils': 5.0.2(rollup@3.20.6)
-      '@vueuse/core': 10.0.2(vue@3.2.47)
+      '@vueuse/core': 10.1.0(vue@3.2.47)
       local-pkg: 0.4.3
       magic-string: 0.30.0
       minimatch: 9.0.0
