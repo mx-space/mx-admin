@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## [3.29.6](https://github.com/mx-space/mx-admin/compare/v3.29.5...v3.29.6) (2023-04-24)
+
+
+### Bug Fixes
+
+* **comment:** omit `children` key ([11e73e4](https://github.com/mx-space/mx-admin/commit/11e73e473531ea057f19c8d143f9fc4e1097b315))
+* **deps:** update dependency @vueuse/core to v10.1.0 ([#751](https://github.com/mx-space/mx-admin/issues/751)) ([ff0f2d9](https://github.com/mx-space/mx-admin/commit/ff0f2d930a8ba82069973f1cdb5b79f8a7cf1571))
+* **deps:** update dependency js-cookie to v3.0.4 ([#750](https://github.com/mx-space/mx-admin/issues/750)) ([998435b](https://github.com/mx-space/mx-admin/commit/998435bf14287e75b9a934b78d00f47d45b5b2de))
+* **deps:** update dependency pinia to v2.0.35 ([#749](https://github.com/mx-space/mx-admin/issues/749)) ([1168500](https://github.com/mx-space/mx-admin/commit/11685001c3e371b43bba126a58b635c59a583481))
+* update codemirror deps ([18515ff](https://github.com/mx-space/mx-admin/commit/18515ffde3b892d6f6fcbdb4294ccd24f83bff31))
+* update header style for edit ([33b3c2c](https://github.com/mx-space/mx-admin/commit/33b3c2c8eaa11a1b37845a6f903ec2ea776d73eb))
+
+
+
 ## [3.29.5](https://github.com/mx-space/mx-admin/compare/v3.29.4...v3.29.5) (2023-04-22)
 
 
