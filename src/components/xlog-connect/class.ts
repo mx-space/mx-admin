@@ -1,26 +1,29 @@
+import { createContract } from 'crossbell.js'
 import type { NoteModel } from 'models/note'
 import type { PostModel } from 'models/post'
-import {
-  getUniData,
-  toCid,
-  useAccountState,
-  useConnectModal,
-} from 'use-crossbell-xlog'
-import type { CrossBellInstance } from 'use-crossbell-xlog'
+import Unidata from 'unidata.js'
 import { RESTManager } from 'utils'
 
 import { showConfetti } from '~/utils/confetti'
 
-export const instanceRef = ref<CrossBellInstance>()
+const unidata = new Unidata()
+
+const IPFS_GATEWAY = 'https://ipfs.4everland.xyz/ipfs/'
+
+const toCid = (url: string) => {
+  return url
+    ?.replaceAll(IPFS_GATEWAY, '')
+    .replaceAll('https://gateway.ipfs.io/ipfs/', '')
+    .replaceAll('https://ipfs.io/ipfs/', '')
+    .replaceAll('https://cf-ipfs.com/ipfs/', '')
+    .replaceAll('https://ipfs.4everland.xyz/ipfs/', '')
+    .replaceAll('https://rss3.mypinata.cloud/ipfs/', '')
+}
 
 export class CrossBellConnector {
   static SITE_ID = ''
   static setSiteId(siteId: string) {
     this.SITE_ID = siteId
-  }
-  static getInstance(): CrossBellInstance | undefined {
-    // if (!('ethereum' in window)) return
-    return instanceRef.value
   }
 
   static createOrUpdate(data: NoteModel | PostModel) {
@@ -34,13 +37,11 @@ export class CrossBellConnector {
     }
 
     return new Promise((resolve) => {
-      if (!this.SITE_ID) {
+      if (!('ethereum' in window)) {
         resolve(null)
         return
       }
-
-      const instance = this.getInstance()
-      if (!instance) {
+      if (!this.SITE_ID) {
         resolve(null)
         return
       }
@@ -58,13 +59,20 @@ export class CrossBellConnector {
         positiveText: '嗯！',
       })
 
-      const connectToXLog = () => {
+      const connectToXLog = async () => {
         const SITE_ID = this.SITE_ID
 
-        const { state } = instance
-        const { account } = state
+        const metamask = window.ethereum as any
+        const contract = createContract(metamask)
 
         message.loading('准备发布到 xLog，等待钱包响应...')
+        await contract.walletClient.requestAddresses()
+
+        if (!contract.account.address) {
+          console.error('no address')
+          return
+        }
+
         let postCallOnce = false
         let pageId = data.meta?.xLog?.pageId
         const slug = 'slug' in data ? data.slug : `note-${data.nid}`
@@ -101,7 +109,7 @@ export class CrossBellConnector {
 
           message.loading('正在发布到 xLog...')
 
-          return instance.createOrUpdatePage({
+          const input = {
             siteId: SITE_ID,
             content: contentWithFooter,
             title,
@@ -118,97 +126,113 @@ export class CrossBellConnector {
                 ? 'Note'
                 : '',
             publishedAt: data.created,
-          })
-        }
-        const postHandler = () =>
-          post()
-            .then(() => {
-              const unidata = getUniData()
+          }
 
-              message.success('xLog 发布成功')
-              showConfetti()
-              ;(pageId ? Promise.resolve(pageId) : this.fetchPageId(slug)).then(
-                (pageId) => {
-                  if (!pageId) {
-                    message.error('无法获取 xLog pageId 任务终止')
-                    return
-                  }
-
-                  // update meta for pageId
-                  this.updateModel(data, {
-                    pageId,
-                  })
-
-                  // update meta for ipfs
-                  unidata.notes
-                    .get({
-                      source: 'Crossbell Note',
-                      identity: SITE_ID,
-                      platform: 'Crossbell',
-                      filter: {
-                        id: pageId,
-                      },
-                    })
-                    .then((note$) => {
-                      if (!note$) return
-                      const { list } = note$
-                      const note = list[0]
-                      if (!note) return
-                      const { metadata, related_urls } = note
-                      const minifyMetadata = {
-                        ...metadata,
-                      }
-
-                      delete minifyMetadata.raw
-
-                      console.debug(note)
-                      this.updateModel(data, {
-                        pageId,
-                        related_urls,
-                        metadata: minifyMetadata,
-                        // @copy from xlog
-                        // https://github.com/Innei/xLog/blob/33a3f2306467fd067e85dbd75a7a08ab584fd3f7/src/components/site/PostMeta.tsx#L25
-                        cid: toCid(related_urls?.[0] || ''),
-                      })
-                    })
+          return unidata.notes.set(
+            {
+              source: 'Crossbell Note',
+              identity: input.siteId,
+              platform: 'Crossbell',
+              action: input.pageId ? 'update' : 'add',
+            },
+            {
+              ...(input.externalUrl && { related_urls: [input.externalUrl] }),
+              ...(input.pageId && { id: input.pageId }),
+              ...(input.title && { title: input.title }),
+              ...(input.content && {
+                body: {
+                  content: input.content,
+                  mime_type: 'text/markdown',
                 },
-              )
-              resolve(null)
-            })
-            .catch(() => {
-              message.error('xLog 发布失败')
-              resolve(null)
-            })
-            .finally(() => {
-              dispose1()
-              dispose2()
-            })
-        let isShow = false
-        const dispose1 = useAccountState.subscribe((state) => {
-          if (state.wallet?.address && isShow) {
-            postHandler()
-          }
-        })
-
-        const dispose2 = useConnectModal.subscribe((state) => {
-          if (state.isActive) isShow = true
-          if (
-            !state.isActive &&
-            isShow &&
-            !useAccountState.getState().wallet?.address
-          ) {
-            dispose1()
-            dispose2()
-
-            resolve(null)
-          }
-        })
-
-        if (!account || !account.address) {
-          instance.show()
-        } else {
-          postHandler()
+              }),
+              ...(input.publishedAt && {
+                date_published: input.publishedAt,
+              }),
+              // ...(input.excerpt && {
+              //   summary: {
+              //     content: input.excerpt,
+              //     mime_type: 'text/markdown',
+              //   },
+              // }),
+              tags: [
+                input.isPost ? 'post' : 'page',
+                ...(input.tags
+                  ?.split(',')
+                  .map((tag) => tag.trim())
+                  .filter((tag) => tag) || []),
+              ],
+              applications: [
+                'xlog',
+                ...(input.applications?.filter((app) => app !== 'xlog') || []),
+              ],
+              ...(input.slug && {
+                attributes: [
+                  {
+                    trait_type: 'xlog_slug',
+                    value: input.slug,
+                  },
+                ],
+              }),
+            },
+          )
         }
+
+        await post()
+          .then(() => {
+            message.success('xLog 发布成功')
+            showConfetti()
+            ;(pageId ? Promise.resolve(pageId) : this.fetchPageId(slug)).then(
+              (pageId) => {
+                if (!pageId) {
+                  message.error('无法获取 xLog pageId 任务终止')
+                  return
+                }
+
+                // update meta for pageId
+                this.updateModel(data, {
+                  pageId,
+                })
+
+                // update meta for ipfs
+                unidata.notes
+                  .get({
+                    source: 'Crossbell Note',
+                    identity: SITE_ID,
+                    platform: 'Crossbell',
+                    filter: {
+                      id: pageId,
+                    },
+                  })
+                  .then((note$) => {
+                    if (!note$) return
+                    const { list } = note$
+                    const note = list[0]
+                    if (!note) return
+                    const { metadata, related_urls } = note
+                    const minifyMetadata = {
+                      ...metadata,
+                    }
+
+                    delete minifyMetadata.raw
+
+                    console.debug(note)
+                    this.updateModel(data, {
+                      pageId,
+                      related_urls,
+                      metadata: minifyMetadata,
+                      // @copy from xlog
+                      // https://github.com/Innei/xLog/blob/33a3f2306467fd067e85dbd75a7a08ab584fd3f7/src/components/site/PostMeta.tsx#L25
+                      cid: toCid(related_urls?.[0] || ''),
+                    })
+                  })
+              },
+            )
+            resolve(null)
+          })
+          .catch(() => {
+            message.error('xLog 发布失败')
+            resolve(null)
+          })
       }
     })
   }
