@@ -220,8 +220,8 @@ devDependencies:
     specifier: 13.7.15
     version: 13.7.15
   '@vitejs/plugin-vue':
-    specifier: 4.1.0
-    version: 4.1.0(vite@4.3.3)(vue@3.2.47)
+    specifier: 4.2.1
+    version: 4.2.1(vite@4.3.3)(vue@3.2.47)
   '@vitejs/plugin-vue-jsx':
     specifier: 3.0.1
     version: 3.0.1(vite@4.3.3)(vue@3.2.47)
@@ -3841,8 +3841,8 @@ packages:
       - supports-color
     dev: true
 
-  /@vitejs/plugin-vue@4.1.0(vite@4.3.3)(vue@3.2.47):
-    resolution: {integrity: sha512-++9JOAFdcXI3lyer9UKUV4rfoQ3T1RN8yDqoCLar86s0xQct5yblxAE+yWgRnU5/0FOlVCpTZpYSBV/bGWrSrQ==}
+  /@vitejs/plugin-vue@4.2.1(vite@4.3.3)(vue@3.2.47):
+    resolution: {integrity: sha512-ZTZjzo7bmxTRTkb8GSTwkPOYDIP7pwuyV+RV53c9PYUouwcbkIZIvWvNWlX2b1dYZqtOv7D6iUAnJLVNGcLrSw==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       vite: ^4.0.0
