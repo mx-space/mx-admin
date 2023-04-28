@@ -170,8 +170,8 @@ dependencies:
     specifier: 3.2.47
     version: 3.2.47
   vue-react-wrapper:
-    specifier: 0.3.0
-    version: 0.3.0(vue@3.2.47)
+    specifier: 0.3.1
+    version: 0.3.1(vue@3.2.47)
   vue-router:
     specifier: 4.1.6
     version: 4.1.6(vue@3.2.47)
@@ -454,7 +454,7 @@ packages:
   /@antv/util@2.0.17:
     resolution: {integrity: sha512-o6I9hi5CIUvLGDhth0RxNSFDRwXeywmt6ExR4+RmVAzIi48ps6HUy+svxOCayvrPBN37uE6TAc2KDofRo0nK9Q==}
     dependencies:
-      csstype: 3.1.1
+      csstype: 3.1.2
       tslib: 2.5.0
     dev: false
 
@@ -3139,35 +3139,6 @@ packages:
       react: 18.2.0
     dev: false
 
-  /@reach/observe-rect@1.2.0:
-    resolution: {integrity: sha512-Ba7HmkFgfQxZqqaeIWWkNK0rEhpxVQHIoVyW1YDSkGsGIXzcaW4deC8B0pZrNSSyLTdIk7y+5olKt5+g0GmFIQ==}
-    dev: false
-
-  /@reach/portal@0.16.2(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-9ur/yxNkuVYTIjAcfi46LdKUvH0uYZPfEp4usWcpt6PIp+WDF57F/5deMe/uGi/B/nfDweQu8VVwuMVrCb97JQ==}
-    peerDependencies:
-      react: ^16.8.0 || 17.x
-      react-dom: ^16.8.0 || 17.x
-    dependencies:
-      '@reach/utils': 0.16.0(react-dom@18.2.0)(react@18.2.0)
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      tiny-warning: 1.0.3
-      tslib: 2.5.0
-    dev: false
-
-  /@reach/utils@0.16.0(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-PCggBet3qaQmwFNcmQ/GqHSefadAFyNCUekq9RrWoaU9hh/S4iaFgf2MBMdM47eQj5i/Bk0Mm07cP/XPFlkN+Q==}
-    peerDependencies:
-      react: ^16.8.0 || 17.x
-      react-dom: ^16.8.0 || 17.x
-    dependencies:
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      tiny-warning: 1.0.3
-      tslib: 2.5.0
-    dev: false
-
   /@rollup/pluginutils@5.0.2(rollup@3.20.6):
     resolution: {integrity: sha512-pTd9rIsP92h+B6wWwFbW8RkZv4hiR/xKsqre4SIuAOaOEQRxi0lqLke9k2/7WegC85GgUs9pjmOjCUi3In4vwA==}
     engines: {node: '>=14.0.0'}
@@ -3565,7 +3536,7 @@ packages:
     dependencies:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.3
-      csstype: 3.1.1
+      csstype: 3.1.2
     dev: false
 
   /@types/scheduler@0.16.3:
@@ -3769,15 +3740,6 @@ packages:
       '@typescript-eslint/types': 5.59.0
       eslint-visitor-keys: 3.4.0
     dev: true
-
-  /@urql/core@3.2.2(graphql@16.6.0):
-    resolution: {integrity: sha512-i046Cz8cZ4xIzGMTyHZrbdgzcFMcKD7+yhCAH5FwWBRjcKrc+RjEOuR9X5AMuBvr8c6IAaE92xAqa4wmlGfWTQ==}
-    peerDependencies:
-      graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-    dependencies:
-      graphql: 16.6.0
-      wonka: 6.3.1
-    dev: false
 
   /@urql/core@4.0.6(graphql@16.6.0):
     resolution: {integrity: sha512-RxlX5nxWZsvS1lPCvOdgdYbIVVfih/DrjPzGZ0ThP1GuVycaxw5t0O7XEXXYHICeXNKj95HJBxW0o/37zg+z6Q==}
@@ -5191,10 +5153,6 @@ packages:
       delayed-stream: 1.0.0
     dev: false
 
-  /command-score@0.1.2:
-    resolution: {integrity: sha512-VtDvQpIJBvBatnONUsPzXYFVKQQAhuf3XTNOAsdBxCNO/QCtUUd8LSgjn0GVarBkCad6aJCZfXgrjYbl/KRr7w==}
-    dev: false
-
   /commander@2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
     dev: false
@@ -5290,22 +5248,6 @@ packages:
       shebang-command: 2.0.0
       which: 2.0.2
     dev: true
-
-  /crossbell.js@0.17.4:
-    resolution: {integrity: sha512-EjWdepj48neDr+Zjhgtpxf9ednrdhdhShz7I+aweAAE6hUrliGos/JYPkD/2dMrA0HvKpyZyxJahQ9+LvWFc1Q==}
-    dependencies:
-      '@crossbell/ipfs-fetch': 0.0.15
-      async-retry: 1.3.3
-      ethers: 5.7.2
-      fetch-undici: 3.0.1
-      p-limit: 3.1.0
-      ts-mixer: 6.0.3
-      web3-providers-ws: 1.9.0
-    transitivePeerDependencies:
-      - bufferutil
-      - supports-color
-      - utf-8-validate
-    dev: false
 
   /crossbell.js@0.19.8:
     resolution: {integrity: sha512-4x52UGfiTIs65JjHku0k+R4JrlB6JVRGDqgMW43DqDVQlJz2F8BVvxG7n3kKb5hZbXXQCMh41CMWc7bfiTn+3g==}
@@ -5414,10 +5356,6 @@ packages:
 
   /csstype@3.0.9:
     resolution: {integrity: sha512-rpw6JPxK6Rfg1zLOYCSwle2GFOOsnjmDYDaBwEcwoOg4qlsIVCN789VkBZDJAGi4T07gI4YSutR43t9Zz4Lzuw==}
-    dev: false
-
-  /csstype@3.1.1:
-    resolution: {integrity: sha512-DJR/VvkAvSZW9bTouZue2sSxDwdTN92uHjqeKVm+0dAqdfNykRzQ95tay8aXMBAAPpUiq4Qcug2L7neoRh2Egw==}
     dev: false
 
   /csstype@3.1.2:
@@ -6304,10 +6242,6 @@ packages:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
     dev: true
 
-  /fast-equals@2.0.4:
-    resolution: {integrity: sha512-caj/ZmjHljPrZtbzJ3kfH5ia/k4mTJe/qSiXAGzxZWRZgsgDV0cvNaQULqUX8t0/JVlzzEdYOwCN5DmzTxoD4w==}
-    dev: false
-
   /fast-glob@3.2.12:
     resolution: {integrity: sha512-DVj4CQIYYow0BlaelwK1pHl5n5cRSJfM60UA0zK891sVInoPri2Ekj7+e1CT3/3qxXenpI+nBBmQAcJPJgaj4w==}
     engines: {node: '>=8.6.0'}
@@ -7145,21 +7079,6 @@ packages:
     dependencies:
       jwa: 1.4.1
       safe-buffer: 5.2.1
-    dev: false
-
-  /kbar@0.1.0-beta.34(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-WUzGt/9Dq4a1RKLA7g9xuBOz3Hk/PB3zXFMKaolPBVZjDwn/Pc4+1jcdiVg1H1HB9nuPJwF2fuospl/Czm/Bmw==}
-    peerDependencies:
-      react: ^16.0.0 || ^17.0.0
-      react-dom: ^16.0.0 || ^17.0.0
-    dependencies:
-      '@reach/portal': 0.16.2(react-dom@18.2.0)(react@18.2.0)
-      command-score: 0.1.2
-      fast-equals: 2.0.4
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      react-virtual: 2.10.4(react@18.2.0)
-      tiny-invariant: 1.3.1
     dev: false
 
   /keccak@3.0.3:
@@ -8525,15 +8444,6 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /react-virtual@2.10.4(react@18.2.0):
-    resolution: {integrity: sha512-Ir6+oPQZTVHfa6+JL9M7cvMILstFZH/H3jqeYeKI4MSUX+rIruVwFC6nGVXw9wqAw8L0Kg2KvfXxI85OvYQdpQ==}
-    peerDependencies:
-      react: ^16.6.3 || ^17.0.0
-    dependencies:
-      '@reach/observe-rect': 1.2.0
-      react: 18.2.0
-    dev: false
-
   /react@18.2.0:
     resolution: {integrity: sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==}
     engines: {node: '>=0.10.0'}
@@ -9078,10 +8988,7 @@ packages:
 
   /tiny-invariant@1.3.1:
     resolution: {integrity: sha512-AD5ih2NlSssTCwsMznbvwMZpJ1cbhkGd2uueNxzv2jDlEeZdU04JQfRnggJQ8DrcVBGjAsCKwFBbDlVNtEMlzw==}
-
-  /tiny-warning@1.0.3:
-    resolution: {integrity: sha512-lBN9zLN/oAf68o3zNXYrdCt1kP8WsiGW8Oo2ka41b2IM5JL/S1CTyX1rW0mb/zSuJun0ZUrDxx4sqvYS2FWzPA==}
-    dev: false
+    dev: true
 
   /to-fast-properties@2.0.0:
     resolution: {integrity: sha512-/OaKK0xYrs3DmxRYqL/yDc+FxFUVYhDlXMhRmv3z915w2HF1tnN1omB354j8VUGO/hbRzyD6Y3sA7v7GS/ceog==}
@@ -9272,26 +9179,6 @@ packages:
     engines: {node: '>=12.18'}
     dependencies:
       busboy: 1.6.0
-    dev: false
-
-  /unidata.js@0.7.17:
-    resolution: {integrity: sha512-GCGx3H3z9tpasu1ScPI7I1sCtLuTu9PLmXLq95VXnBHF1Cn6QN0Kvwg9rltUJLXFwsK69S34ag9SLFHlZGcwdA==}
-    dependencies:
-      '@types/lodash': 4.14.194
-      '@urql/core': 3.2.2(graphql@16.6.0)
-      axios: 1.3.6
-      axios-retry: 3.4.0
-      crossbell.js: 0.17.4
-      ethers: 5.7.2
-      graphql: 16.6.0
-      lodash: 4.17.21
-      lodash-es: 4.17.21
-      mime: 3.0.0
-    transitivePeerDependencies:
-      - bufferutil
-      - debug
-      - supports-color
-      - utf-8-validate
     dev: false
 
   /unidata.js@0.7.20:
@@ -9769,8 +9656,8 @@ packages:
       - supports-color
     dev: true
 
-  /vue-react-wrapper@0.3.0(vue@3.2.47):
-    resolution: {integrity: sha512-UbYNZdf7wWcbVGb+waN6DvIU1pqchj6Z4uowPFiVyK5wtaZHGlvhk4CSKM401YWP2lkQv7yn3Wo8NqJvC1uBWA==}
+  /vue-react-wrapper@0.3.1(vue@3.2.47):
+    resolution: {integrity: sha512-kvG3A+fua1GkSiwO24Dp/i67KTz1yTH55HjxVmfnKtVA91sWoAlx2MZ728ooV4PKDt7LCapyPdJesoylPmHkUg==}
     engines: {pnpm: '>=7'}
     peerDependencies:
       vue: ^3
@@ -9779,32 +9666,7 @@ packages:
       '@types/react': link:src/react-types/react
       '@types/react-dom': 18.0.3
       '@types/scheduler': 0.16.3
-      csstype: 3.1.1
-      kbar: 0.1.0-beta.34(react-dom@18.2.0)(react@18.2.0)
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      unidata.js: 0.7.17
-      vue: 3.2.47
-      vue-react-wrapper: 0.3.0-alpha.2(vue@3.2.47)
-    transitivePeerDependencies:
-      - bufferutil
-      - debug
-      - supports-color
-      - utf-8-validate
-    dev: false
-
-  /vue-react-wrapper@0.3.0-alpha.2(vue@3.2.47):
-    resolution: {integrity: sha512-jpSsfmhtrBAHZAN0Fth3lU9r+dNWQ/8nlW/45LXRE7+xmyWgJK5fvp4hJ258t+wpeHZXa50lGYZvEaZHGM34Hg==}
-    engines: {pnpm: '>=7'}
-    peerDependencies:
-      vue: ^3
-    dependencies:
-      '@types/prop-types': 15.7.5
-      '@types/react': link:src/react-types/react
-      '@types/react-dom': 18.0.3
-      '@types/scheduler': 0.16.3
-      csstype: 3.1.1
-      kbar: 0.1.0-beta.34(react-dom@18.2.0)(react@18.2.0)
+      csstype: 3.1.2
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
       vue: 3.2.47
