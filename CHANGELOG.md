@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## [3.29.7](https://github.com/mx-space/mx-admin/compare/v3.29.6...v3.29.7) (2023-04-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @codemirror/view to v6.10.0 ([#739](https://github.com/mx-space/mx-admin/issues/739)) ([691e52b](https://github.com/mx-space/mx-admin/commit/691e52b2bfd0ed7f0ac88dde43200058620a1c2e))
+* **deps:** update dependency js-cookie to v3.0.5 ([#753](https://github.com/mx-space/mx-admin/issues/753)) ([67dc608](https://github.com/mx-space/mx-admin/commit/67dc60840ddd3c7c5a1ca8d7e194503c583d1b6d))
+* **deps:** update dependency unidata.js to v0.7.20 ([#748](https://github.com/mx-space/mx-admin/issues/748)) ([49de229](https://github.com/mx-space/mx-admin/commit/49de2299c9e8e405fc52a3df39bd41e5879567e8))
+* memoed web url ([f48859f](https://github.com/mx-space/mx-admin/commit/f48859fe9278e7f20e30d9720c5dcb27f9091653))
+
+
+
 ## [3.29.6](https://github.com/mx-space/mx-admin/compare/v3.29.5...v3.29.6) (2023-04-24)
 
 
