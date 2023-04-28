@@ -18,15 +18,18 @@ export const HeaderPreviewButton = defineComponent({
         localStorage.removeItem(previewKey)
       }
     })
+    let webUrl = ''
 
     const handlePreview = async () => {
       const { getData } = props
       const data = getData()
       const { id } = data
-
-      const { webUrl } = await RESTManager.api.options.url
-        .get<any>()
-        .then((data) => data.data)
+      if (!webUrl) {
+        const res = await RESTManager.api.options.url
+          .get<any>()
+          .then((data) => data.data)
+        webUrl = res.webUrl
+      }
       const url = new URL('/preview', webUrl)
 
       if (url.hostname !== location.hostname) {
