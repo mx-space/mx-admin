@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## [3.29.8](https://github.com/mx-space/mx-admin/compare/v3.29.7...v3.29.8) (2023-04-29)
+
+
+### Bug Fixes
+
+* **snippet:** use session to store data ([b21275d](https://github.com/mx-space/mx-admin/commit/b21275d3a650b8b6d1f6e8c4e6c8fa9e71d3aa32))
+* vite alias ([0af9ed4](https://github.com/mx-space/mx-admin/commit/0af9ed4ea7fb30d2af28fafa25b4a050ee76850d))
+
+
+### Features
+
+* support post cover ([f3001fa](https://github.com/mx-space/mx-admin/commit/f3001fa7d350a6f8e3ba3ad945d1da900e4c1760))
+
+
+
 ## [3.29.7](https://github.com/mx-space/mx-admin/compare/v3.29.6...v3.29.7) (2023-04-28)
 
 
