@@ -41,6 +41,8 @@ export const Tab2ForEdit = defineComponent({
     const data = useStorage<SnippetModel>(
       editId.value ? `snippet-${editId.value}` : 'snippet',
       new SnippetModel(),
+
+      editId.value ? localStorage : sessionStorage,
     )
 
     const typeToValueMap = reactive<Record<SnippetType, string>>(
