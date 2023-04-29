@@ -41,13 +41,22 @@ export default ({ mode }) => {
         enableBuild: true,
       }),
       htmlPlugin(env),
+      // nodePolyfills({
+      //   // To exclude specific polyfills, add them to this list.
+      //   exclude: [
+      //     'fs', // Excludes the polyfill for `fs` and `node:fs`.
+      //   ],
+      //   // Whether to polyfill `node:` protocol imports.
+      //   protocolImports: true,
+      // }),
     ],
 
     resolve: {
       alias: {
-        path: require.resolve('path-browserify'),
-        os: require.resolve('os-browserify'),
+        path: 'path-browserify',
+        os: 'os-browserify',
         'node-fetch': 'isomorphic-fetch',
+        buffer: 'buffer',
       },
     },
 

@@ -1,7 +1,5 @@
 import { RESTManager } from 'utils'
 
-import { CrossBellConnector } from './class'
-
 export const CrossBellConnectorIndirector = defineComponent({
   setup() {
     const siteId = ref('')
@@ -10,9 +8,13 @@ export const CrossBellConnectorIndirector = defineComponent({
       .get<{
         data: { xLogSiteId: string }
       }>()
-      .then(({ data }) => {
+      .then(async ({ data }) => {
         const { xLogSiteId } = data
         siteId.value = xLogSiteId
+
+        const CrossBellConnector = await import('./class').then(
+          (mo) => mo.CrossBellConnector,
+        )
 
         CrossBellConnector.setSiteId(xLogSiteId)
       })
