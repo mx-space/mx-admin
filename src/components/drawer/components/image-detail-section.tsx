@@ -1,3 +1,4 @@
+import { uniqBy } from 'lodash-es'
 import type { Image as ImageModel } from 'models/base'
 import {
   NButton,
@@ -28,6 +29,10 @@ export const ImageDetailSection = defineComponent({
       type: String,
       required: true,
     },
+    extraImages: {
+      type: Array as PropType<string[]>,
+      required: false,
+    },
   },
   setup(props) {
     const loading = ref(false)
@@ -40,20 +45,47 @@ export const ImageDetailSection = defineComponent({
       return map
     })
 
-    const images = computed<ImageModel[]>(() =>
-      props.text
-        ? pickImagesFromMarkdown(props.text).map((src) => {
-            const existImageInfo = originImageMap.value.get(src)
-            return {
+    const images = computed<ImageModel[]>(() => {
+      const basedImages: ImageModel[] = props.text
+        ? uniqBy(
+            pickImagesFromMarkdown(props.text)
+              .map((src) => {
+                const existImageInfo = originImageMap.value.get(src)
+                return {
+                  src,
+                  height: existImageInfo?.height,
+                  width: existImageInfo?.width,
+                  type: existImageInfo?.type,
+                  accent: existImageInfo?.accent,
+                } as any
+              })
+              .concat(props.images),
+            'src',
+          )
+        : props.images
+      const srcSet = new Set<string>()
+
+      for (const image of basedImages) {
+        image.src && srcSet.add(image.src)
+      }
+      const nextImages = basedImages.concat()
+      if (props.extraImages) {
+        // 需要过滤存在的图片
+        props.extraImages.forEach((src) => {
+          if (!srcSet.has(src)) {
+            nextImages.push({
               src,
-              height: existImageInfo?.height,
-              width: existImageInfo?.width,
-              type: existImageInfo?.type,
-              accent: existImageInfo?.accent,
-            } as any
-          })
-        : props.images,
-    )
+              height: 0,
+              width: 0,
+              type: '',
+              accent: '',
+            })
+          }
+        })
+      }
+
+      return nextImages
+    })
     const handleCorrectImage = async () => {
       loading.value = true
 
