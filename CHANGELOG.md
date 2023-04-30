@@ -1,5 +1,19 @@
 # CHANGELOG
 
+# [3.30.0](https://github.com/mx-space/mx-admin/compare/v3.29.8...v3.30.0) (2023-04-30)
+
+
+### Bug Fixes
+
+* update text color in dark mode ([33079f0](https://github.com/mx-space/mx-admin/commit/33079f02e115b59f2c17d13f664c8481e477dbe5))
+
+
+### Features
+
+* support page reorder dnd ([17a9101](https://github.com/mx-space/mx-admin/commit/17a9101bc093bd977b6a51e1145106b28923fa5c))
+
+
+
 ## [3.29.8](https://github.com/mx-space/mx-admin/compare/v3.29.7...v3.29.8) (2023-04-29)
 
 
