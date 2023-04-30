@@ -152,7 +152,7 @@ const PageWriteView = defineComponent(() => {
         }}
       ></MaterialInput>
 
-      <div class={'text-gray-700 pt-3'}>
+      <div class={'text-gray-700 dark:text-gray-300 pt-3'}>
         <UnderlineInput
           value={data.subtitle}
           onChange={(e) => void (data.subtitle = e)}
