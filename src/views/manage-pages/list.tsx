@@ -1,123 +1,78 @@
 import { AddIcon } from 'components/icons'
 import { TableTitleLink } from 'components/link/title-link'
-import { DeleteConfirmButton } from 'components/special-button/delete-confirm'
-import { Table } from 'components/table'
-import { RelativeTime } from 'components/time/relative-time'
-import { useDataTableFetch } from 'hooks/use-table'
 import type { PageModel, PageResponse } from 'models/page'
-import { NButton, NPopconfirm, NSpace, useMessage } from 'naive-ui'
-import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
-import { defineComponent, onMounted, reactive, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import {
+  NButton,
+  NCard,
+  NPopconfirm,
+  NSpace,
+  NText,
+  useMessage,
+} from 'naive-ui'
+import Sortable, { Swap } from 'sortablejs'
+import type { PropType } from 'vue'
+import { defineComponent, onMounted } from 'vue'
+
+import { RelativeTime } from '~/components/time/relative-time'
 
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
 
-export const ManagePageListView = defineComponent({
-  name: 'PageList',
-  setup() {
-    const { checkedRowKeys, data, pager, sortProps, fetchDataFn } =
-      useDataTableFetch(
-        (data, pager) =>
-          async (page = route.query.page || 1, size = 20) => {
-            const response = await RESTManager.api.pages.get<PageResponse>({
-              params: {
-                page,
-                size,
-                select: 'title subtitle _id id created modified slug',
-                ...(sortProps.sortBy
-                  ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
-                  : {}),
-              },
-            })
-            data.value = response.data
-          },
-      )
+Sortable.mount(new Swap())
 
-    const message = useMessage()
-
-    const route = useRoute()
-    const fetchData = fetchDataFn
-    watch(
-      () => route.query.page,
-      async (n) => {
-        // @ts-expect-error
-        await fetchData(n)
-      },
-    )
-
-    onMounted(async () => {
-      await fetchData()
-    })
-
-    const DataTable = defineComponent({
-      setup() {
-        const columns = reactive<TableColumns<PageModel>>([
-          {
-            type: 'selection',
-            options: ['none', 'all'],
-          },
-          {
-            title: '标题',
-            sortOrder: false,
-            sorter: 'default',
-            key: 'title',
-            width: 300,
-            render(row) {
+const PostItem = defineComponent({
+  name: 'PostItem',
+  props: {
+    data: {
+      type: Object as PropType<PageModel>,
+      required: true,
+    },
+    onDelete: {
+      type: Function as PropType<(id: string) => void>,
+      required: true,
+    },
+  },
+  setup(props) {
+    return () => {
+      const row = props.data
+      return (
+        <NCard size="small">
+          {{
+            header() {
               return (
                 <TableTitleLink
                   inPageTo={`/pages/edit?id=${row.id}`}
                   title={row.title}
                   externalLinkTo={`/${row.slug}`}
                   id={row.id}
-                ></TableTitleLink>
+                />
               )
             },
-          },
-          {
-            title: '副标题',
-            key: 'subtitle',
-          },
-          {
-            title: '路径',
-            key: 'slug',
-            render(row) {
-              return `/${row.slug}`
-            },
-          },
-          {
-            title: '创建于',
-            key: 'created',
-            sortOrder: 'descend',
-            sorter: 'default',
-            render(row) {
+            ['header-extra']: function () {
               return <RelativeTime time={row.created} />
             },
-          },
-          {
-            title: '修改于',
-            key: 'modified',
-            sorter: 'default',
-            sortOrder: false,
-            render(row) {
-              return <RelativeTime time={row.modified} />
-            },
-          },
-          {
-            title: '操作',
-            fixed: 'right',
-            key: 'id',
-            render(row) {
+
+            default() {
               return (
-                <NSpace>
+                <NText depth={1} class={'min-h-[1rem]'}>
+                  {row.subtitle}
+                </NText>
+              )
+            },
+            footer() {
+              return <NText depth={3}>{`/${row.slug}`}</NText>
+            },
+            action() {
+              return (
+                <NSpace justify="end">
                   <NPopconfirm
                     positiveText={'取消'}
                     negativeText="删除"
                     onNegativeClick={async () => {
                       await RESTManager.api.pages(row.id).delete()
                       message.success('删除成功')
-                      await fetchData(pager.value.currentPage)
+                      props.onDelete(row.id)
                     }}
                   >
                     {{
@@ -128,34 +83,89 @@ export const ManagePageListView = defineComponent({
                       ),
 
                       default: () => (
-                        <span class="max-w-48">确定要删除 {row.title} ?</span>
+                        <span class="max-w-48">
+                          确定要删除「{row.title}」？
+                        </span>
                       ),
                     }}
                   </NPopconfirm>
                 </NSpace>
               )
             },
-          },
-        ])
+          }}
+        </NCard>
+      )
+    }
+  },
+})
 
-        return () => (
-          <Table
-            noPagination
-            columns={columns}
-            data={data}
-            onFetchData={fetchData}
-            pager={pager}
-            onUpdateCheckedRowKeys={(keys) => {
-              checkedRowKeys.value = keys
-            }}
-            onUpdateSorter={async (props) => {
-              sortProps.sortBy = props.sortBy
-              sortProps.sortOrder = props.sortOrder
-            }}
-          ></Table>
-        )
-      },
+const reorder = (data: any[], oldIndex: number, newIndex: number) => {
+  const result = Array.from(data)
+  const [removed] = result.splice(oldIndex, 1)
+  result.splice(newIndex, 0, removed)
+  return result
+}
+export const ManagePageListView = defineComponent({
+  name: 'PageList',
+  setup() {
+    const data = ref<PageModel[]>([])
+    onMounted(async () => {
+      const response = await RESTManager.api.pages.get<PageResponse>({
+        params: {
+          page: 1,
+          size: 20,
+          select: 'title subtitle _id id created modified slug',
+        },
+      })
+      data.value = response.data
     })
+
+    const message = useMessage()
+
+    const wrapperRef = ref<HTMLDivElement>()
+    let sortable: Sortable | null = null
+    watchOnce(
+      () => data.value,
+      () => {
+        if (data.value.length === 0) return
+
+        requestAnimationFrame(() => {
+          if (!wrapperRef.value) return
+          sortable = new Sortable(wrapperRef.value, {
+            animation: 150,
+
+            onEnd(evt) {
+              if (
+                typeof evt.oldIndex === 'undefined' ||
+                typeof evt.newIndex === 'undefined'
+              )
+                return
+              if (evt.oldIndex === evt.newIndex) return
+
+              const reorderData = reorder(
+                data.value,
+                evt.oldIndex,
+                evt.newIndex,
+              )
+              data.value = reorderData
+
+              RESTManager.api.pages.reorder
+                .patch({
+                  data: {
+                    seq: [...reorderData]
+                      .reverse()
+                      .map((item, idx) => ({ id: item.id, order: idx + 1 })),
+                  },
+                })
+                .then(() => {
+                  message.success('排序成功')
+                })
+            },
+          })
+        })
+      },
+    )
+    onBeforeUnmount(() => sortable?.destroy())
 
     return () => {
       return (
@@ -163,30 +173,29 @@ export const ManagePageListView = defineComponent({
           {{
             actions: () => (
               <>
-                <DeleteConfirmButton
-                  checkedRowKeys={checkedRowKeys.value}
-                  onDelete={async () => {
-                    const status = await Promise.allSettled(
-                      checkedRowKeys.value.map((id) =>
-                        RESTManager.api.pages(id as string).delete(),
-                      ),
-                    )
-
-                    for (const s of status) {
-                      if (s.status === 'rejected') {
-                        message.success(`删除失败，${s.reason.message}`)
-                      }
-                    }
-
-                    checkedRowKeys.value.length = 0
-                    fetchData()
-                  }}
-                />
-
                 <HeaderActionButton to={'/pages/edit'} icon={<AddIcon />} />
               </>
             ),
-            default: () => <DataTable />,
+            default: () => (
+              <div
+                class={
+                  'gap-4 grid phone:grid-cols-1 md:grid-cols-2 xl:grid-cols-4 children:flex children:flex-1'
+                }
+                ref={wrapperRef}
+              >
+                {data.value.map((item) => (
+                  <PostItem
+                    data={item}
+                    key={item.id}
+                    onDelete={(id) => {
+                      data.value = data.value
+                        .filter((item) => item.id !== id)
+                        .concat()
+                    }}
+                  />
+                ))}
+              </div>
+            ),
           }}
         </ContentLayout>
       )

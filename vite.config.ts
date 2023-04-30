@@ -73,7 +73,11 @@ export default ({ mode }) => {
       },
     },
     optimizeDeps: {
-      exclude: ['@huacnlee/autocorrect', '@dqbd/tiktoken'],
+      exclude: [
+        '@huacnlee/autocorrect',
+        '@dqbd/tiktoken',
+        '@codemirror/language-data',
+      ],
     },
 
     define: {
