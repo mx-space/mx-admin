@@ -105,7 +105,7 @@ export class CrossBellConnector {
           const contentWithFooter = `${text}
 
 <span style="text-align: right;font-size: 0.8em; float: right">此文由 [Mix Space](https://github.com/mx-space) 同步更新至 xLog
-原始链接为 <${articleUrl}></span>`
+原始链接为 <${articleUrl}></span><br ><br >`
 
           message.loading('正在发布到 xLog...')
 
