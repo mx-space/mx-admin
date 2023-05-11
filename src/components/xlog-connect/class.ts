@@ -1,4 +1,4 @@
-import { createContract } from 'crossbell.js'
+import { Indexer, createContract } from 'crossbell.js'
 import type { NoteModel } from 'models/note'
 import type { PostModel } from 'models/post'
 import Unidata from 'unidata.js'
@@ -244,13 +244,21 @@ export class CrossBellConnector {
 
   private static async fetchPageId(slug: string) {
     if (!this.SITE_ID) return
-    const { characterId, noteId } = await RESTManager.api.fn.xlog.get_page_id
+    const indexer = new Indexer()
+    const result = await indexer.character.getByHandle(this.SITE_ID)
+    if (!result) {
+      message.error('无法获取 xLog characterId 任务终止')
+      return
+    }
+    const characterId = result.characterId
+
+    const { noteId } = await RESTManager.api.fn.xlog.get_page_id
       .get<{
         noteId: string
         characterId: string
       }>({
         params: {
-          handle: this.SITE_ID,
+          characterId: result.characterId,
           slug,
         },
       })
