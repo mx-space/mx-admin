@@ -229,7 +229,8 @@ export class CrossBellConnector {
             )
             resolve(null)
           })
-          .catch(() => {
+          .catch((err) => {
+            console.error(err)
             message.error('xLog 发布失败')
             resolve(null)
           })
