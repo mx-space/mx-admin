@@ -123,7 +123,7 @@ export const Sidebar = defineComponent({
           <div class={styles['sidebar']}>
             <div
               class={
-                'flex-shrink-0 relative font-medium text-center text-2xl h-20'
+                'relative h-20 flex-shrink-0 text-center text-2xl font-medium'
               }
             >
               <button
@@ -149,7 +149,6 @@ export const Sidebar = defineComponent({
                   return (
                     <div
                       class={[
-                        'py-2',
                         route.value.fullPath === item.fullPath ||
                         route.value.fullPath.startsWith(item.fullPath)
                           ? styles['active']
@@ -160,7 +159,7 @@ export const Sidebar = defineComponent({
                       data-path={item.fullPath}
                     >
                       <MenuItem
-                        className={!isPhone ? 'py-2' : ''}
+                        className={!isPhone ? 'py-4' : 'py-6'}
                         title={item.title}
                         onClick={() =>
                           item.subItems?.length
@@ -271,7 +270,7 @@ const MenuItem = defineComponent({
       >
         <span
           class={[
-            'flex justify-center items-center basis-12 transition-all duration-300 ease-in-out',
+            'flex basis-12 items-center justify-center transition-all duration-300 ease-in-out',
             props.collapse ? 'basis-[var(--w)]' : '',
           ]}
         >
@@ -304,10 +303,10 @@ const LogoutAvatarButton = defineComponent({
           onClick={handleLogout}
           role="button"
         >
-          <Avatar src={avatar} size={35} class="absolute inset-0 z-1" />
+          <Avatar src={avatar} size={35} class="z-1 absolute inset-0" />
           <div
             class={[
-              'absolute z-2 inset-0 flex items-center justify-center bg-dark-200 bg-opacity-80 rounded-full hover:opacity-50 opacity-0 transition-opacity',
+              'z-2 bg-dark-200 absolute inset-0 flex items-center justify-center rounded-full bg-opacity-80 opacity-0 transition-opacity hover:opacity-50',
               'text-xl',
             ]}
           >
