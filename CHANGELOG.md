@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.30.2](https://github.com/mx-space/mx-admin/compare/v3.30.1...v3.30.2) (2023-05-17)
+
+
+### Bug Fixes
+
+* sidebar menu item clickable area ([d084d10](https://github.com/mx-space/mx-admin/commit/d084d107f29c78eb60a341f5f6e5c0f9817b783a))
+
+
+
 ## [3.30.1](https://github.com/mx-space/mx-admin/compare/v3.30.0...v3.30.1) (2023-05-11)
 
 
