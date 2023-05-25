@@ -16,12 +16,16 @@ export default defineComponent({
     const handleOk = () => {
       const url = new URL(location.href)
       const { apiUrl, gatewayUrl, persist } = apiRecord
-      apiUrl && url.searchParams.set('__api', apiUrl)
-      gatewayUrl && url.searchParams.set('__gateway', gatewayUrl)
+
+      const fullApiUrl = transformFullUrl(apiUrl)
+      const fullGatewayUrl = transformFullUrl(gatewayUrl)
+
+      fullApiUrl && url.searchParams.set('__api', fullApiUrl)
+      fullGatewayUrl && url.searchParams.set('__gateway', fullGatewayUrl)
 
       if (persist) {
-        apiUrl && localStorage.setItem('__api', apiUrl)
-        gatewayUrl && localStorage.setItem('__gateway', gatewayUrl)
+        fullApiUrl && localStorage.setItem('__api', fullApiUrl)
+        fullGatewayUrl && localStorage.setItem('__gateway', fullGatewayUrl)
       }
 
       url.pathname = '/'
@@ -59,8 +63,8 @@ export default defineComponent({
     )
 
     return () => (
-      <div class={'relative h-screen w-full flex items-center justify-center'}>
-        <NCard title="设置 API" class="modal-card sm m-auto form-card">
+      <div class={'relative flex h-screen w-full items-center justify-center'}>
+        <NCard title="设置 API" class="modal-card sm form-card m-auto">
           <NForm onSubmit={handleOk}>
             <NFormItem label="API 地址">
               <NSelect
@@ -104,7 +108,7 @@ export default defineComponent({
               ></NSwitch>
             </NFormItem>
 
-            <div class="text-center space-x-2">
+            <div class="space-x-2 text-center">
               <NButton onClick={handleLocalDev} round>
                 本地调试
               </NButton>
@@ -121,3 +125,14 @@ export default defineComponent({
     )
   },
 })
+
+const transformFullUrl = (url: string) => {
+  if (!url) return ''
+
+  if (url.startsWith('http')) return url
+  else {
+    const protocol =
+      ['localhost', '127.0.0.1'].indexOf(url) > -1 ? 'http' : 'https'
+    return `${protocol}://${url}`
+  }
+}
