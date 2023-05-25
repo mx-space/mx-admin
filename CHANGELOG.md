@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## [3.30.3](https://github.com/mx-space/mx-admin/compare/v3.30.2...v3.30.3) (2023-05-25)
+
+
+### Bug Fixes
+
+* **deps:** update all non-major dependencies ([#762](https://github.com/mx-space/mx-admin/issues/762)) ([d3a5930](https://github.com/mx-space/mx-admin/commit/d3a59308d431d2a1b594155e32636cc9004d1c8f))
+* **deps:** update all non-major dependencies ([#763](https://github.com/mx-space/mx-admin/issues/763)) ([9eb6188](https://github.com/mx-space/mx-admin/commit/9eb6188c3eadbb66f3e8f9f1c9e0054dfd6aff5b))
+
+
+
 ## [3.30.2](https://github.com/mx-space/mx-admin/compare/v3.30.1...v3.30.2) (2023-05-17)
 
 
