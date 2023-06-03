@@ -23,9 +23,7 @@ import {
 } from 'naive-ui'
 import { JSONParseReturnOriginal } from 'utils/json'
 import type { PropType } from 'vue'
-
 import type { Image } from '@mx-space/api-client'
-
 import { ImageDetailSection } from './components/image-detail-section'
 import { JSONEditor } from './components/json-editor'
 
@@ -277,9 +275,17 @@ const ImageCoverItem = defineComponent({
 
       props.onChange(value)
     }
+    const show = ref(false)
     return () => (
       <NFormItem label="文章缩略图" labelAlign="left">
-        <NPopover placement="left">
+        <NPopover
+          placement="left"
+          show={show.value}
+          onUpdateShow={(newValue) => {
+            if (newValue && !props.value) return
+            show.value = newValue
+          }}
+        >
           {{
             trigger() {
               return props.images.length > 0 ? (
