@@ -1,6 +1,7 @@
 import { createContract, Indexer } from 'crossbell.js'
 import Unidata from 'unidata.js'
 import { RESTManager } from 'utils'
+import type { Contract } from 'crossbell.js'
 import type { NoteModel } from 'models/note'
 import type { PostModel } from 'models/post'
 
@@ -8,22 +9,30 @@ import { showConfetti } from '~/utils/confetti'
 
 const unidata = new Unidata()
 
-const IPFS_GATEWAY = 'https://ipfs.4everland.xyz/ipfs/'
-
-const toCid = (url: string) => {
-  return url
-    ?.replaceAll(IPFS_GATEWAY, '')
-    .replaceAll('https://gateway.ipfs.io/ipfs/', '')
-    .replaceAll('https://ipfs.io/ipfs/', '')
-    .replaceAll('https://cf-ipfs.com/ipfs/', '')
-    .replaceAll('https://ipfs.4everland.xyz/ipfs/', '')
-    .replaceAll('https://rss3.mypinata.cloud/ipfs/', '')
-}
+const crossbellGQLEndpoint = 'https://indexer.crossbell.io/v1/graphql'
 
 export class CrossBellConnector {
   static SITE_ID = ''
   static setSiteId(siteId: string) {
     this.SITE_ID = siteId
+  }
+
+  private static contract: Contract<any> | null = null
+  private static async prepare() {
+    if (this.contract) {
+      return this.contract
+    }
+
+    const metamask = window.ethereum as any
+    const contract = createContract(metamask)
+
+    await contract.walletClient.requestAddresses()
+
+    if (!contract.account.address) {
+      throw new Error('未连接到 metamask')
+    }
+    this.contract = contract
+    return contract
   }
 
   static createOrUpdate(data: NoteModel | PostModel) {
@@ -53,25 +62,16 @@ export class CrossBellConnector {
           resolve(null)
         },
         onPositiveClick() {
-          connectToXLog()
+          syncToCrossbell()
         },
         negativeText: '不需要',
         positiveText: '嗯！',
       })
 
-      const connectToXLog = async () => {
+      const syncToCrossbell = async () => {
         const SITE_ID = this.SITE_ID
 
-        const metamask = window.ethereum as any
-        const contract = createContract(metamask)
-
-        message.loading('准备发布到 xLog，等待钱包响应...')
-        await contract.walletClient.requestAddresses()
-
-        if (!contract.account.address) {
-          console.error('no address')
-          return
-        }
+        await this.prepare()
 
         let postCallOnce = false
         let pageId = data.meta?.xLog?.pageId
@@ -88,7 +88,7 @@ export class CrossBellConnector {
           // 如果 post 的 slug 改了，那么就在 xlog 拿不到 pageId 了，这个时候就会出问题（修改文章都是变成新增）
 
           if (!pageId || this.isNoteModel(data))
-            pageId = await this.fetchPageId(slug)
+            pageId = await this.getCrossbellNotePageIdBySlug(slug)
 
           const articleUrl = await RESTManager.api
             .helper('url-builder')(data.id)
@@ -123,7 +123,7 @@ export class CrossBellConnector {
               'tags' in data
                 ? data.tags.toString()
                 : this.isNoteModel(data)
-                ? 'Note'
+                ? '生活笔记'
                 : '',
             publishedAt: data.created,
           }
@@ -177,63 +177,77 @@ export class CrossBellConnector {
           )
         }
 
-        await post()
-          .then(() => {
-            message.success('xLog 发布成功')
-            showConfetti()
-            ;(pageId ? Promise.resolve(pageId) : this.fetchPageId(slug)).then(
-              (pageId) => {
-                if (!pageId) {
-                  message.error('无法获取 xLog pageId 任务终止')
-                  return
-                }
+        await post().catch((err) => {
+          console.error(err)
+          message.error('xLog 发布失败')
 
-                // update meta for pageId
-                this.updateModel(data, {
-                  pageId,
-                })
+          throw err
+        })
 
-                // update meta for ipfs
-                unidata.notes
-                  .get({
-                    source: 'Crossbell Note',
-                    identity: SITE_ID,
-                    platform: 'Crossbell',
-                    filter: {
-                      id: pageId,
-                    },
-                  })
-                  .then((note$) => {
-                    if (!note$) return
-                    const { list } = note$
-                    const note = list[0]
-                    if (!note) return
-                    const { metadata, related_urls } = note
-                    const minifyMetadata = {
-                      ...metadata,
-                    }
+        message.success('xLog 发布成功')
+        showConfetti()
 
-                    delete minifyMetadata.raw
+        let nextPageId = pageId
+        if (!nextPageId) {
+          nextPageId = await this.getCrossbellNotePageIdBySlug(slug)
+        }
 
-                    console.debug(note)
-                    this.updateModel(data, {
-                      pageId,
-                      related_urls,
-                      metadata: minifyMetadata,
-                      // @copy from xlog
-                      // https://github.com/Innei/xLog/blob/33a3f2306467fd067e85dbd75a7a08ab584fd3f7/src/components/site/PostMeta.tsx#L25
-                      cid: toCid(related_urls?.[0] || ''),
-                    })
-                  })
-              },
-            )
-            resolve(null)
-          })
-          .catch((err) => {
-            console.error(err)
-            message.error('xLog 发布失败')
-            resolve(null)
-          })
+        if (!nextPageId) {
+          message.error('无法获取 Crossbell Note pageId 任务终止')
+          return
+        }
+        // update meta for pageId
+        await this.updateModel(data, {
+          pageId: nextPageId,
+        })
+
+        const cressbellNoteData = await this.getCrossbellNoteData(
+          nextPageId.split('-')[1],
+        )
+        if (!cressbellNoteData) {
+          message.error('无法获取 Crossbell Note 任务终止')
+          return
+        }
+        const {
+          metadata,
+          uri,
+          blockNumber,
+          owner,
+          transactionHash,
+          updatedTransactionHash,
+        } = cressbellNoteData
+
+        // "metadata": {
+        //   "network": "Crossbell",
+        //   "proof": "52055-184",
+        //   "blockNumber": 31902501,
+        //   "owner": "0x0cc14dd429303aee55bfb56529b81d2a300362ed",
+        //   "transactions": [
+        //     "0x2906e8b6a321a4f53ab07d58b3227398022e55c0c18b52201edfc1a68f942956",
+        //     "0xbb572893c077f488172a52edc67cab0b485713d8a21312052a1a1cb4f74c8675"
+        //   ]
+        // }
+        console.debug(cressbellNoteData)
+        await this.updateModel(data, {
+          pageId: nextPageId,
+          related_urls: [...metadata.content.external_urls],
+          metadata: {
+            network: 'Crossbell',
+            proof: nextPageId,
+            blockNumber,
+            owner,
+            transactions: [
+              transactionHash,
+              ...(updatedTransactionHash &&
+              updatedTransactionHash !== transactionHash
+                ? [updatedTransactionHash]
+                : []),
+            ],
+          },
+          cid: uri.split('ipfs://')[1],
+        })
+
+        resolve(null)
       }
     })
   }
@@ -242,37 +256,6 @@ export class CrossBellConnector {
     return 'nid' in data
   }
 
-  private static async fetchPageId(slug: string) {
-    if (!this.SITE_ID) return
-    const indexer = new Indexer()
-    const result = await indexer.character.getByHandle(this.SITE_ID)
-    if (!result) {
-      message.error('无法获取 xLog characterId 任务终止')
-      return
-    }
-
-    const characterId = result.characterId
-
-    const { noteId } = await RESTManager.api.fn.xlog.get_page_id
-      .get<{
-        noteId: string
-        characterId: string
-      }>({
-        params: {
-          characterId: result.characterId,
-          slug,
-        },
-      })
-      .catch(() => {
-        return {
-          noteId: '',
-          characterId: '',
-        }
-      })
-
-    if (!characterId || !noteId) return
-    return `${characterId}-${noteId}`
-  }
   private static async updateModel(
     data: NoteModel | PostModel,
 
@@ -315,5 +298,153 @@ export class CrossBellConnector {
         data: patchedData,
       })
     }
+  }
+
+  private static indexer = new Indexer()
+
+  private static async getCharacterId() {
+    const indexer = this.indexer
+    const result = await indexer.character.getByHandle(this.SITE_ID)
+
+    if (!result) {
+      return ''
+    }
+
+    return result.characterId
+  }
+  private static async getCrossbellNoteData(noteId: string) {
+    await this.prepare()
+    const characterId = await this.getCharacterId()
+    if (!characterId) return
+    return fetch(crossbellGQLEndpoint, {
+      body: JSON.stringify({
+        operationName: 'getNote',
+        query: `query getNote {
+          note(
+            where: {
+              note_characterId_noteId_unique: {
+                characterId: ${characterId},
+                noteId: ${noteId},
+              },
+            },
+          ) {
+            characterId
+            noteId
+            uri
+            metadata {
+              uri
+              content
+            }
+            owner
+            createdAt
+            updatedAt
+            publishedAt
+            transactionHash
+            blockNumber
+            updatedTransactionHash
+            updatedBlockNumber
+          }
+        }`,
+        variables: {},
+      }),
+      headers: {
+        'content-type': 'application/json',
+      },
+      method: 'POST',
+      mode: 'cors',
+      credentials: 'omit',
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        return data.data?.note as {
+          blockNumber: number
+          characterId: string
+          createdAt: string
+          metadata: {
+            content: {
+              external_urls: string[]
+              type: string
+            }
+            uri: string
+          }
+          noteId: string
+          owner: string
+          publishedAt: string
+          transactionHash: string
+          updatedAt: string
+          updatedBlockNumber: number
+          updatedTransactionHash: string
+          uri: string
+        }
+      })
+  }
+
+  private static async getCrossbellNotePageIdBySlug(slug?: string) {
+    await this.prepare()
+    const characterId = await this.getCharacterId()
+    if (!characterId) return
+    return fetch(crossbellGQLEndpoint, {
+      body: JSON.stringify({
+        operationName: 'getNotes',
+        query: `query getNotes {
+          notes(
+            where: {
+              characterId: {
+                equals: ${characterId},
+              },
+              deleted: {
+                equals: false,
+              },
+              metadata: {
+                AND: [
+                  {
+                    content: {
+                      path: ["sources"],
+                      array_contains: ["xlog"]
+                    },
+                  },
+                  {
+                    OR: [
+                      {
+                        content: {
+                          path: ["attributes"],
+                          array_contains: [{
+                            trait_type: "xlog_slug",
+                            value: "${slug}",
+                          }]
+                        }
+                      },
+                      {
+                        content: {
+                          path: ["title"],
+                          equals: "${decodeURIComponent(slug!)}"
+                        },
+                      }
+                    ]
+                  }
+                ]
+              },
+            },
+            orderBy: [{ createdAt: desc }],
+            take: 1,
+          ) {
+            characterId
+            noteId
+          }
+        }`,
+      }),
+      headers: {
+        'content-type': 'application/json',
+      },
+      method: 'POST',
+      mode: 'cors',
+      credentials: 'omit',
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const note = data.data.notes[0]
+        if (!note) return
+        return `${note.characterId}-${note.noteId}`
+      })
   }
 }

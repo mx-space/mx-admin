@@ -21,14 +21,12 @@ import {
 import { IpInfoPopover } from 'components/ip-info'
 import { useShorthand } from 'components/shorthand'
 import { checkUpdateFromGitHub } from 'external/api/github-check-update'
-import { SentenceType, fetchHitokoto } from 'external/api/hitokoto'
-import type { ShiJuData } from 'external/api/jinrishici'
+import { fetchHitokoto, SentenceType } from 'external/api/hitokoto'
 import { getJinRiShiCiOne } from 'external/api/jinrishici'
 import { usePortalElement } from 'hooks/use-portal-element'
 import { useStoreRef } from 'hooks/use-store-ref'
 import { ContentLayout } from 'layouts/content'
 import { pick } from 'lodash-es'
-import type { Stat } from 'models/stat'
 import {
   NButton,
   NCard,
@@ -49,7 +47,7 @@ import {
 import { RouteName } from 'router/name'
 import { AppStore } from 'stores/app'
 import { UserStore } from 'stores/user'
-import { RESTManager, parseDate } from 'utils'
+import { parseDate, RESTManager } from 'utils'
 import {
   computed,
   defineComponent,
@@ -58,11 +56,13 @@ import {
   ref,
 } from 'vue'
 import { useRouter } from 'vue-router'
+import type { ShiJuData } from 'external/api/jinrishici'
+import type { Stat } from 'models/stat'
+import type { CardProps } from './card'
 
 import { Icon } from '@vicons/utils'
 
 import PKG from '../../../package.json'
-import type { CardProps } from './card'
 import { Card } from './card'
 import { UpdatePanel } from './update-panel'
 
@@ -135,8 +135,8 @@ export const DashBoardView = defineComponent({
     const router = useRouter()
     const UserLoginStat = defineComponent(() => () => (
       <>
-        <NH3 class="text-opacity-80 font-light">登录记录</NH3>
-        <p class="-mt-2 mb-3 relative text-gray-500">
+        <NH3 class="font-light text-opacity-80">登录记录</NH3>
+        <p class="relative -mt-2 mb-3 text-gray-500">
           <span>
             上次登录 IP:{' '}
             {userStore.user.value?.lastLoginIp ? (
@@ -436,9 +436,9 @@ export const DashBoardView = defineComponent({
       return () => (
         <>
           <NSpace vertical>
-            <NH3 class="text-opacity-80 font-light">数据统计</NH3>
+            <NH3 class="font-light text-opacity-80">数据统计</NH3>
 
-            <p class="-mt-4 mb-3 relative text-gray-500 flex items-center">
+            <p class="relative -mt-4 mb-3 flex items-center text-gray-500">
               <span>数据更新于：</span>
               <time>
                 {' '}
@@ -473,7 +473,7 @@ export const DashBoardView = defineComponent({
         <NH1 class="font-light">欢迎回来</NH1>
         <NGrid xGap={12} cols={'1 900:2'}>
           <NGi>
-            <NH3 class="text-opacity-80 font-light !mt-[10px] !mb-[10px]">
+            <NH3 class="!mb-[10px] !mt-[10px] font-light text-opacity-80">
               一言
             </NH3>
             <NP>
@@ -481,11 +481,11 @@ export const DashBoardView = defineComponent({
                 {hitokoto.value ? (
                   <>
                     <NText class="leading-normal">{hitokoto.value}</NText>
-                    <div class="space-x-2 flex items-center">
+                    <div class="flex items-center space-x-2">
                       <NButton
                         text
                         onClick={refreshHitokoto}
-                        class="ml-0 phone:float-right"
+                        class="phone:float-right ml-0"
                       >
                         <Icon>
                           <RefreshIcon />
@@ -513,7 +513,7 @@ export const DashBoardView = defineComponent({
             </NP>
           </NGi>
           <NGi>
-            <NH3 class="text-opacity-80 font-light !mt-[10px] !mb-[10px]">
+            <NH3 class="!mb-[10px] !mt-[10px] font-light text-opacity-80">
               今日诗句
             </NH3>
             <NP>
@@ -529,7 +529,7 @@ export const DashBoardView = defineComponent({
                     }
                     return (
                       <NCard
-                        class="text-center box-border max-w-[65vw] max-h-[60vh] overflow-auto"
+                        class="box-border max-h-[60vh] max-w-[65vw] overflow-auto text-center"
                         bordered={false}
                       >
                         <NElement>
