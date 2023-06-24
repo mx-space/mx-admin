@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## [3.30.4](https://github.com/mx-space/mx-admin/compare/v3.30.3...v3.30.4) (2023-06-24)
+
+
+### Bug Fixes
+
+* **deps:** update all non-major dependencies ([#766](https://github.com/mx-space/mx-admin/issues/766)) ([4e03cd3](https://github.com/mx-space/mx-admin/commit/4e03cd3bacdfa1fcf00de785d5996635a0b04557))
+* **deps:** update all non-major dependencies ([#767](https://github.com/mx-space/mx-admin/issues/767)) ([56bd200](https://github.com/mx-space/mx-admin/commit/56bd200296d817274ef1ff227ab9b8f866b2af00))
+* image fetch dim ([a44b902](https://github.com/mx-space/mx-admin/commit/a44b902245058396d72cfd65ef255f5609782ab9))
+* preview cover image should show ([507c0ef](https://github.com/mx-space/mx-admin/commit/507c0ef9fc07779ea8f18928db6ed5003af9a84b))
+
+
+
 ## [3.30.3](https://github.com/mx-space/mx-admin/compare/v3.30.2...v3.30.3) (2023-05-25)
 
 
