@@ -1,8 +1,8 @@
-import { Indexer, createContract } from 'crossbell.js'
-import type { NoteModel } from 'models/note'
-import type { PostModel } from 'models/post'
+import { createContract, Indexer } from 'crossbell.js'
 import Unidata from 'unidata.js'
 import { RESTManager } from 'utils'
+import type { NoteModel } from 'models/note'
+import type { PostModel } from 'models/post'
 
 import { showConfetti } from '~/utils/confetti'
 
@@ -78,7 +78,7 @@ export class CrossBellConnector {
         const slug = 'slug' in data ? data.slug : `note-${data.nid}`
 
         const post = async () => {
-          if (postCallOnce) return Promise.resolve()
+          if (postCallOnce) return
           const { text, title } = data
           postCallOnce = true
 
@@ -250,6 +250,7 @@ export class CrossBellConnector {
       message.error('无法获取 xLog characterId 任务终止')
       return
     }
+
     const characterId = result.characterId
 
     const { noteId } = await RESTManager.api.fn.xlog.get_page_id
