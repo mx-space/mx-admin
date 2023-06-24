@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.30.5](https://github.com/mx-space/mx-admin/compare/v3.30.4...v3.30.5) (2023-06-24)
+
+
+### Bug Fixes
+
+* crossbell connect ([67a37b4](https://github.com/mx-space/mx-admin/commit/67a37b40f3128d2461dadad191c5b5c6858482ac))
+
+
+
 ## [3.30.4](https://github.com/mx-space/mx-admin/compare/v3.30.3...v3.30.4) (2023-06-24)
 
 
