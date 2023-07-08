@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.30.6](https://github.com/mx-space/mx-admin/compare/v3.30.5...v3.30.6) (2023-07-08)
+
+
+### Features
+
+* add vite-vue-devtool ([398a240](https://github.com/mx-space/mx-admin/commit/398a2409ea42bbdb23afcbd68e2f926adf211796))
+
+
+
 ## [3.30.5](https://github.com/mx-space/mx-admin/compare/v3.30.4...v3.30.5) (2023-06-24)
 
 
