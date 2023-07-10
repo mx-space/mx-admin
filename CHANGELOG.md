@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.30.7](https://github.com/mx-space/mx-admin/compare/v3.30.6...v3.30.7) (2023-07-10)
+
+
+### Features
+
+* split analyze table ([01773e5](https://github.com/mx-space/mx-admin/commit/01773e50a9aeb2211a410ba119723121df562459))
+
+
+
 ## [3.30.6](https://github.com/mx-space/mx-admin/compare/v3.30.5...v3.30.6) (2023-07-08)
 
 
