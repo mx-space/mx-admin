@@ -50,14 +50,16 @@ self.MonacoEnvironment = {
 
 // cjs webpack compatibility
 // @ts-ignore
-window.module = {}
-window.module.exports = {}
 window.global = window
-window.os = {
-  homedir() {
-    return ''
-  },
+// @ts-ignore
+window.process = {
+  env: {},
 }
+// @ts-ignore
+window.module = {
+  exports: {},
+}
+
 declare global {
   interface JSON {
     safeParse: typeof JSON.parse

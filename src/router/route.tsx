@@ -34,7 +34,6 @@ import $RouterView from 'layouts/router-view'
 import { SidebarLayout } from 'layouts/sidebar'
 import { DashBoardView } from 'views/dashboard'
 import type { RouteRecordRaw } from 'vue-router'
-
 import SetupLayout from '../layouts/setup-view.vue'
 import LoginView from '../views/login/index.vue'
 import { RouteName } from './name'
@@ -100,7 +99,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     path: '/notes',
     name: RouteName.Note,
     meta: {
-      title: '点滴',
+      title: '手记',
       icon: <BookIcon />,
     },
     redirect: '/notes/view',

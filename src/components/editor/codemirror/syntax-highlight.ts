@@ -3,6 +3,8 @@ import type { Extension } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
 import { tags } from '@lezer/highlight'
 
+import { monospaceFonts } from './use-auto-fonts'
+
 export const syntaxHighlightingStyle = HighlightStyle.define([
   {
     tag: tags.heading1,
@@ -37,9 +39,23 @@ export const syntaxHighlightingStyle = HighlightStyle.define([
   { tag: tags.strong, fontWeight: 'bold' },
   { tag: tags.emphasis, fontStyle: 'italic' },
   { tag: tags.deleted, textDecoration: 'line-through' },
+  {
+    tag: tags.url,
+    fontWeight: 'bold',
+    textDecoration: 'underline',
+  },
+  {
+    tag: tags.link,
+    textDecoration: 'underline',
+    fontWeight: '500',
+  },
 ])
 
 export const syntaxTheme: Extension = [
-  EditorView.theme({}),
+  EditorView.theme({
+    '.cm-scroller': {
+      fontFamily: monospaceFonts,
+    },
+  }),
   syntaxHighlighting(syntaxHighlightingStyle),
 ]

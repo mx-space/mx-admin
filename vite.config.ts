@@ -1,16 +1,18 @@
 import { visualizer } from 'rollup-plugin-visualizer'
 import AutoImport from 'unplugin-auto-import/vite'
-import type { PluginOption } from 'vite'
 import { defineConfig, loadEnv } from 'vite'
 import Checker from 'vite-plugin-checker'
+import VueDevTools from 'vite-plugin-vue-devtools'
 import wasm from 'vite-plugin-wasm'
-import WindiCSS from 'vite-plugin-windicss'
 import tsconfigPaths from 'vite-tsconfig-paths'
+import type { PluginOption } from 'vite'
 
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 
 import PKG from './package.json'
+
+import WindiCSS from 'vite-plugin-windicss'
 
 // dns.setDefaultResultOrder('verbatim')
 export default ({ mode }) => {
@@ -20,6 +22,7 @@ export default ({ mode }) => {
 
   return defineConfig({
     plugins: [
+      VueDevTools(),
       wasm(),
       vueJsx(),
       WindiCSS(),
@@ -41,13 +44,22 @@ export default ({ mode }) => {
         enableBuild: true,
       }),
       htmlPlugin(env),
+      // nodePolyfills({
+      //   // To exclude specific polyfills, add them to this list.
+      //   exclude: [
+      //     'fs', // Excludes the polyfill for `fs` and `node:fs`.
+      //   ],
+      //   // Whether to polyfill `node:` protocol imports.
+      //   protocolImports: true,
+      // }),
     ],
 
     resolve: {
       alias: {
-        path: require.resolve('path-browserify'),
-        os: require.resolve('os-browserify'),
+        path: 'path-browserify',
+        os: 'os-browserify',
         'node-fetch': 'isomorphic-fetch',
+        buffer: 'buffer',
       },
     },
 
@@ -64,7 +76,11 @@ export default ({ mode }) => {
       },
     },
     optimizeDeps: {
-      exclude: ['@huacnlee/autocorrect', '@dqbd/tiktoken'],
+      exclude: [
+        '@huacnlee/autocorrect',
+        '@dqbd/tiktoken',
+        '@codemirror/language-data',
+      ],
     },
 
     define: {

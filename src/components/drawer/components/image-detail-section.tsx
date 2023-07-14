@@ -1,4 +1,4 @@
-import type { Image as ImageModel } from 'models/base'
+import { uniqBy } from 'lodash-es'
 import {
   NButton,
   NButtonGroup,
@@ -12,6 +12,7 @@ import {
 } from 'naive-ui'
 import { getDominantColor } from 'utils/image'
 import { pickImagesFromMarkdown } from 'utils/markdown'
+import type { Image as ImageModel } from 'models/base'
 import type { PropType } from 'vue'
 
 export const ImageDetailSection = defineComponent({
@@ -28,6 +29,10 @@ export const ImageDetailSection = defineComponent({
       type: String,
       required: true,
     },
+    extraImages: {
+      type: Array as PropType<string[]>,
+      required: false,
+    },
   },
   setup(props) {
     const loading = ref(false)
@@ -40,67 +45,103 @@ export const ImageDetailSection = defineComponent({
       return map
     })
 
-    const images = computed<ImageModel[]>(() =>
-      props.text
-        ? pickImagesFromMarkdown(props.text).map((src) => {
-            const existImageInfo = originImageMap.value.get(src)
-            return {
+    const images = computed<ImageModel[]>(() => {
+      const basedImages: ImageModel[] = props.text
+        ? uniqBy(
+            pickImagesFromMarkdown(props.text)
+              .map((src) => {
+                const existImageInfo = originImageMap.value.get(src)
+                return {
+                  src,
+                  height: existImageInfo?.height,
+                  width: existImageInfo?.width,
+                  type: existImageInfo?.type,
+                  accent: existImageInfo?.accent,
+                } as any
+              })
+              .concat(props.images),
+            'src',
+          )
+        : props.images
+      const srcSet = new Set<string>()
+
+      for (const image of basedImages) {
+        image.src && srcSet.add(image.src)
+      }
+      const nextImages = basedImages.concat()
+      if (props.extraImages) {
+        // 需要过滤存在的图片
+        props.extraImages.forEach((src) => {
+          if (!srcSet.has(src)) {
+            nextImages.push({
               src,
-              height: existImageInfo?.height,
-              width: existImageInfo?.width,
-              type: existImageInfo?.type,
-              accent: existImageInfo?.accent,
-            } as any
-          })
-        : props.images,
-    )
-    const handleCorrectImage = async () => {
+              height: 0,
+              width: 0,
+              type: '',
+              accent: '',
+            })
+          }
+        })
+      }
+
+      return nextImages
+    })
+    const handleCorrectImageDimensions = async () => {
       loading.value = true
 
-      try {
-        const imagesDetail = await Promise.all(
-          images.value.map((item, i) => {
-            return new Promise<ImageModel>((resolve, reject) => {
-              const $image = new Image()
-              $image.src = item.src
-              $image.crossOrigin = 'Anonymous'
-              $image.onload = () => {
-                resolve({
-                  width: $image.naturalWidth,
-                  height: $image.naturalHeight,
-                  src: item.src,
-                  type: $image.src.split('.').pop() || '',
-                  accent: getDominantColor($image),
-                })
-              }
-              $image.onerror = (err) => {
-                reject(err)
-              }
-            })
-          }),
-        )
+      const fetchImageTasks = await Promise.allSettled(
+        images.value.map((item) => {
+          return new Promise<ImageModel>((resolve, reject) => {
+            const $image = new Image()
+            $image.src = item.src
+            $image.crossOrigin = 'Anonymous'
+            $image.onload = () => {
+              resolve({
+                width: $image.naturalWidth,
+                height: $image.naturalHeight,
+                src: item.src,
+                type: $image.src.split('.').pop() || '',
+                accent: getDominantColor($image),
+              })
+            }
+            $image.onerror = (err) => {
+              reject({
+                err,
+                src: item.src,
+              })
+            }
+          })
+        }),
+      )
 
-        loading.value = false
+      loading.value = false
 
-        props.onChange(imagesDetail)
-      } catch (err) {
-        console.error(err)
-      } finally {
-        loading.value = false
-      }
+      const nextImageDimensions = [] as ImageModel[]
+      fetchImageTasks.map((task) => {
+        if (task.status === 'fulfilled') nextImageDimensions.push(task.value)
+        else {
+          message.warning(
+            `获取图片信息失败：${task.reason.src}: ${task.reason.err}`,
+          )
+        }
+      })
+
+      props.onChange(nextImageDimensions)
+
+      loading.value = false
     }
 
     return () => (
-      <div class="relative w-full flex flex-col flex-grow">
-        <div class="flex justify-between space-x-2 items-center">
-          <div class="flex-grow flex-shrink inline-block">
+      <div class="relative flex w-full flex-grow flex-col">
+        <div class="flex items-center justify-between space-x-2">
+          <div class="inline-block flex-shrink flex-grow">
             调整 Markdown 中包含的图片信息
           </div>
           <NButton
             loading={loading.value}
             class="self-end"
             round
-            onClick={handleCorrectImage}
+            onClick={handleCorrectImageDimensions}
           >
             自动修正
           </NButton>
@@ -113,7 +154,7 @@ export const ImageDetailSection = defineComponent({
                 key={image.src}
                 // @ts-expect-error
                 title={
-                  <span class="w-full flex flex-shrink break-all">
+                  <span class="flex w-full flex-shrink break-all">
                     {image.src}
                   </span>
                 }
@@ -166,7 +207,7 @@ export const ImageDetailSection = defineComponent({
                   </NFormItem>
 
                   <NFormItem label="操作">
-                    <div class="flex justify-end w-full">
+                    <div class="flex w-full justify-end">
                       <NButtonGroup>
                         <NButton
                           round

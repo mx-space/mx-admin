@@ -64,7 +64,7 @@ router.beforeEach(async (to) => {
               mo.socket.initIO()
             })
           })
-          .catch((err) => {
+          .catch(() => {
             console.log('登陆失败')
             location.reload()
           })

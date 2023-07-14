@@ -46,6 +46,8 @@ import { useRoute, useRouter } from 'vue-router'
 import type { PaginateResult } from '@mx-space/api-client'
 import { Icon } from '@vicons/utils'
 
+import { HeaderPreviewButton } from '~/components/special-button/preview'
+
 const CrossBellConnectorIndirector = defineAsyncComponent({
   loader: () =>
     import('components/xlog-connect').then(
@@ -246,6 +248,7 @@ const NoteWriteView = defineComponent(() => {
   return () => (
     <ContentLayout
       title={'记录生活点滴'}
+      headerClass="pt-1"
       actionsElement={
         <>
           <ParseContentButton
@@ -260,6 +263,12 @@ const NoteWriteView = defineComponent(() => {
             }}
           />
 
+          <HeaderPreviewButton
+            getData={() => ({
+              ...data,
+              nid: (data as any).nid || Math.floor(Math.random() * 1000),
+            })}
+          />
           <HeaderActionButton
             icon={<TelegramPlaneIcon />}
             onClick={handleSubmit}

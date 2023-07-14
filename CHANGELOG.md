@@ -1,5 +1,185 @@
 # CHANGELOG
 
+## [3.30.7](https://github.com/mx-space/mx-admin/compare/v3.30.6...v3.30.7) (2023-07-10)
+
+
+### Features
+
+* split analyze table ([01773e5](https://github.com/mx-space/mx-admin/commit/01773e50a9aeb2211a410ba119723121df562459))
+
+
+
+## [3.30.6](https://github.com/mx-space/mx-admin/compare/v3.30.5...v3.30.6) (2023-07-08)
+
+
+### Features
+
+* add vite-vue-devtool ([398a240](https://github.com/mx-space/mx-admin/commit/398a2409ea42bbdb23afcbd68e2f926adf211796))
+
+
+
+## [3.30.5](https://github.com/mx-space/mx-admin/compare/v3.30.4...v3.30.5) (2023-06-24)
+
+
+### Bug Fixes
+
+* crossbell connect ([67a37b4](https://github.com/mx-space/mx-admin/commit/67a37b40f3128d2461dadad191c5b5c6858482ac))
+
+
+
+## [3.30.4](https://github.com/mx-space/mx-admin/compare/v3.30.3...v3.30.4) (2023-06-24)
+
+
+### Bug Fixes
+
+* **deps:** update all non-major dependencies ([#766](https://github.com/mx-space/mx-admin/issues/766)) ([4e03cd3](https://github.com/mx-space/mx-admin/commit/4e03cd3bacdfa1fcf00de785d5996635a0b04557))
+* **deps:** update all non-major dependencies ([#767](https://github.com/mx-space/mx-admin/issues/767)) ([56bd200](https://github.com/mx-space/mx-admin/commit/56bd200296d817274ef1ff227ab9b8f866b2af00))
+* image fetch dim ([a44b902](https://github.com/mx-space/mx-admin/commit/a44b902245058396d72cfd65ef255f5609782ab9))
+* preview cover image should show ([507c0ef](https://github.com/mx-space/mx-admin/commit/507c0ef9fc07779ea8f18928db6ed5003af9a84b))
+
+
+
+## [3.30.3](https://github.com/mx-space/mx-admin/compare/v3.30.2...v3.30.3) (2023-05-25)
+
+
+### Bug Fixes
+
+* **deps:** update all non-major dependencies ([#762](https://github.com/mx-space/mx-admin/issues/762)) ([d3a5930](https://github.com/mx-space/mx-admin/commit/d3a59308d431d2a1b594155e32636cc9004d1c8f))
+* **deps:** update all non-major dependencies ([#763](https://github.com/mx-space/mx-admin/issues/763)) ([9eb6188](https://github.com/mx-space/mx-admin/commit/9eb6188c3eadbb66f3e8f9f1c9e0054dfd6aff5b))
+
+
+
+## [3.30.2](https://github.com/mx-space/mx-admin/compare/v3.30.1...v3.30.2) (2023-05-17)
+
+
+### Bug Fixes
+
+* sidebar menu item clickable area ([d084d10](https://github.com/mx-space/mx-admin/commit/d084d107f29c78eb60a341f5f6e5c0f9817b783a))
+
+
+
+## [3.30.1](https://github.com/mx-space/mx-admin/compare/v3.30.0...v3.30.1) (2023-05-11)
+
+
+### Bug Fixes
+
+* **deps:** update all non-major dependencies ([#760](https://github.com/mx-space/mx-admin/issues/760)) ([f19a698](https://github.com/mx-space/mx-admin/commit/f19a698454eb5903450d17085997c676bdbdf36e))
+* xlog publish ([7fc708c](https://github.com/mx-space/mx-admin/commit/7fc708c88091d4d781300453c29c53f47b30bfbc))
+* xlog text add new line of end ([a3f7920](https://github.com/mx-space/mx-admin/commit/a3f7920f5065c0687466de62f298e4c61cc67447))
+
+
+
+# [3.30.0](https://github.com/mx-space/mx-admin/compare/v3.29.8...v3.30.0) (2023-04-30)
+
+
+### Bug Fixes
+
+* update text color in dark mode ([33079f0](https://github.com/mx-space/mx-admin/commit/33079f02e115b59f2c17d13f664c8481e477dbe5))
+
+
+### Features
+
+* support page reorder dnd ([17a9101](https://github.com/mx-space/mx-admin/commit/17a9101bc093bd977b6a51e1145106b28923fa5c))
+
+
+
+## [3.29.8](https://github.com/mx-space/mx-admin/compare/v3.29.7...v3.29.8) (2023-04-29)
+
+
+### Bug Fixes
+
+* **snippet:** use session to store data ([b21275d](https://github.com/mx-space/mx-admin/commit/b21275d3a650b8b6d1f6e8c4e6c8fa9e71d3aa32))
+* vite alias ([0af9ed4](https://github.com/mx-space/mx-admin/commit/0af9ed4ea7fb30d2af28fafa25b4a050ee76850d))
+
+
+### Features
+
+* support post cover ([f3001fa](https://github.com/mx-space/mx-admin/commit/f3001fa7d350a6f8e3ba3ad945d1da900e4c1760))
+
+
+
+## [3.29.7](https://github.com/mx-space/mx-admin/compare/v3.29.6...v3.29.7) (2023-04-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @codemirror/view to v6.10.0 ([#739](https://github.com/mx-space/mx-admin/issues/739)) ([691e52b](https://github.com/mx-space/mx-admin/commit/691e52b2bfd0ed7f0ac88dde43200058620a1c2e))
+* **deps:** update dependency js-cookie to v3.0.5 ([#753](https://github.com/mx-space/mx-admin/issues/753)) ([67dc608](https://github.com/mx-space/mx-admin/commit/67dc60840ddd3c7c5a1ca8d7e194503c583d1b6d))
+* **deps:** update dependency unidata.js to v0.7.20 ([#748](https://github.com/mx-space/mx-admin/issues/748)) ([49de229](https://github.com/mx-space/mx-admin/commit/49de2299c9e8e405fc52a3df39bd41e5879567e8))
+* memoed web url ([f48859f](https://github.com/mx-space/mx-admin/commit/f48859fe9278e7f20e30d9720c5dcb27f9091653))
+
+
+
+## [3.29.6](https://github.com/mx-space/mx-admin/compare/v3.29.5...v3.29.6) (2023-04-24)
+
+
+### Bug Fixes
+
+* **comment:** omit `children` key ([11e73e4](https://github.com/mx-space/mx-admin/commit/11e73e473531ea057f19c8d143f9fc4e1097b315))
+* **deps:** update dependency @vueuse/core to v10.1.0 ([#751](https://github.com/mx-space/mx-admin/issues/751)) ([ff0f2d9](https://github.com/mx-space/mx-admin/commit/ff0f2d930a8ba82069973f1cdb5b79f8a7cf1571))
+* **deps:** update dependency js-cookie to v3.0.4 ([#750](https://github.com/mx-space/mx-admin/issues/750)) ([998435b](https://github.com/mx-space/mx-admin/commit/998435bf14287e75b9a934b78d00f47d45b5b2de))
+* **deps:** update dependency pinia to v2.0.35 ([#749](https://github.com/mx-space/mx-admin/issues/749)) ([1168500](https://github.com/mx-space/mx-admin/commit/11685001c3e371b43bba126a58b635c59a583481))
+* update codemirror deps ([18515ff](https://github.com/mx-space/mx-admin/commit/18515ffde3b892d6f6fcbdb4294ccd24f83bff31))
+* update header style for edit ([33b3c2c](https://github.com/mx-space/mx-admin/commit/33b3c2c8eaa11a1b37845a6f903ec2ea776d73eb))
+
+
+
+## [3.29.5](https://github.com/mx-space/mx-admin/compare/v3.29.4...v3.29.5) (2023-04-22)
+
+
+### Bug Fixes
+
+* preview url ([8856372](https://github.com/mx-space/mx-admin/commit/8856372b5dd4ac88189ff4b47d464f921e8b8abc))
+
+
+
+## [3.29.4](https://github.com/mx-space/mx-admin/compare/v3.29.3...v3.29.4) (2023-04-22)
+
+
+### Features
+
+* support preview in editor ([3aeaef8](https://github.com/mx-space/mx-admin/commit/3aeaef899067c26d0404b9754cc12a21d33bfe4c))
+
+
+
+## [3.29.3](https://github.com/mx-space/mx-admin/compare/v3.29.2...v3.29.3) (2023-04-19)
+
+
+### Bug Fixes
+
+* **cm:** markdown tag style ([e7498d7](https://github.com/mx-space/mx-admin/commit/e7498d78331d74d7a52d72567c90dab81e84c780))
+* codemirror code font ([4ad67fa](https://github.com/mx-space/mx-admin/commit/4ad67fac11f304143f9f07f473d88876bc228930))
+* missing monospace for cm ([548ee04](https://github.com/mx-space/mx-admin/commit/548ee045850cb4ff7c622480d637b92a2eb5cad3))
+
+
+### Features
+
+* support codemirror auto fonts ([d0acaf0](https://github.com/mx-space/mx-admin/commit/d0acaf0a410934b890c16cadc284fe3421127e7a))
+
+
+
+## [3.29.2](https://github.com/mx-space/mx-admin/compare/v3.29.1...v3.29.2) (2023-04-17)
+
+
+### Bug Fixes
+
+* add tags for cm ([8225d2e](https://github.com/mx-space/mx-admin/commit/8225d2e3097b364aa68b783124b3c8c72f6c5752))
+* **deps:** update dependency monaco-editor to v0.37.1 ([#731](https://github.com/mx-space/mx-admin/issues/731)) ([895ad45](https://github.com/mx-space/mx-admin/commit/895ad450e39eb084eaf866850ed65e59b2fc10be))
+* **deps:** update dependency monaco-editor-auto-typings to v0.4.4 ([#732](https://github.com/mx-space/mx-admin/issues/732)) ([dc24c22](https://github.com/mx-space/mx-admin/commit/dc24c22e13dd2e0aa6d8827247c2ad800c8c6c11))
+* **deps:** update dependency pinia to v2.0.34 ([#734](https://github.com/mx-space/mx-admin/issues/734)) ([769395e](https://github.com/mx-space/mx-admin/commit/769395eb6f41c60e5f9bb0581ae8dd6e3b47d536))
+* **deps:** update dependency unidata.js to v0.7.18 ([#733](https://github.com/mx-space/mx-admin/issues/733)) ([d663b5d](https://github.com/mx-space/mx-admin/commit/d663b5d24e2e0fc367e0a2db16314b3754396e0e))
+
+
+### Features
+
+* **cm-editor:** add mono font for code ([2556cf4](https://github.com/mx-space/mx-admin/commit/2556cf46bc243c9223b77bf4453114127efdcfb2))
+
+
+
+## [3.29.1](https://github.com/mx-space/mx-admin/compare/v3.29.0...v3.29.1) (2023-04-15)
+
+
+
 # [3.29.0](https://github.com/mx-space/mx-admin/compare/v3.28.3...v3.29.0) (2023-04-08)
 
 

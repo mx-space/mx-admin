@@ -1,4 +1,5 @@
-import { ComputedGetter, InjectionKey, ref } from 'vue'
+import type { ComputedGetter, InjectionKey } from 'vue'
+import { ref } from 'vue'
 
 type TSidebarCollapseStatus =
   | 'collapsed'
@@ -26,10 +27,7 @@ const useSidebarStatusImpl = (collapseValueRef: ComputedGetter<boolean>) => {
     },
   )
 
-  let isTransitioning = false
-
   const onTransitionEnd = () => {
-    isTransitioning = false
     statusRef.value = collapseComputedRef.value ? 'collapsed' : 'expanded'
   }
 
@@ -55,10 +53,4 @@ export const useSidebarStatusInjection = (
     onTransitionEnd,
     statusRef,
   }
-}
-
-export const useSidebarStatus = () => {
-  return inject(injectionKey, {
-    status: 'expanded',
-  })
 }

@@ -6,11 +6,16 @@ import { Table } from 'components/table'
 import { useDataTableFetch } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
 import { isEmpty } from 'lodash-es'
-import type { UA } from 'models/analyze'
-import type { Pager } from 'models/base'
-import { NButton, NEllipsis, NP, NSkeleton, NSpace } from 'naive-ui'
-import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
-import { RESTManager, parseDate } from 'utils'
+import {
+  NButton,
+  NEllipsis,
+  NP,
+  NSkeleton,
+  NSpace,
+  NTabPane,
+  NTabs,
+} from 'naive-ui'
+import { parseDate, RESTManager } from 'utils'
 import {
   defineComponent,
   onBeforeMount,
@@ -20,11 +25,14 @@ import {
   watch,
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import type { UA } from 'models/analyze'
+import type { Pager } from 'models/base'
+import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 
 import { Chart } from '@antv/g2/esm'
 
 const SectionTitle = defineComponent((_, { slots }) => () => (
-  <div class="font-semibold text-gray-400 my-[12px] ">{slots.default?.()}</div>
+  <div class="my-[12px] font-semibold text-gray-400 ">{slots.default?.()}</div>
 ))
 export default defineComponent({
   setup() {
@@ -103,7 +111,7 @@ export default defineComponent({
                 key: 'path',
                 render({ path }) {
                   return (
-                    <NEllipsis class="truncate max-w-[150px]">
+                    <NEllipsis class="max-w-[150px] truncate">
                       {path ?? ''}
                     </NEllipsis>
                   )
@@ -115,7 +123,7 @@ export default defineComponent({
                 title: '浏览器',
                 render({ ua }) {
                   return (
-                    <NEllipsis class="truncate max-w-[200px]">
+                    <NEllipsis class="max-w-[200px] truncate">
                       {ua.browser
                         ? Object.values(ua.browser).filter(Boolean).join(' ')
                         : 'N/A'}
@@ -129,7 +137,7 @@ export default defineComponent({
                 title: 'OS',
                 render({ ua }) {
                   return (
-                    <NEllipsis class="truncate max-w-[150px]">
+                    <NEllipsis class="max-w-[150px] truncate">
                       {ua.os
                         ? Object.values(ua.os).filter(Boolean).join(' ')
                         : 'N/A'}
@@ -327,7 +335,7 @@ export default defineComponent({
       }
 
       return () => (
-        <div class="grid grid-cols-2 phone:grid-cols-1 gap-4">
+        <div class="phone:grid-cols-1 grid grid-cols-2 gap-4">
           <div>
             <SectionTitle>今日请求走势</SectionTitle>
             <div ref={dayChart}></div>
@@ -412,37 +420,43 @@ export default defineComponent({
           </SectionTitle>
         </NP>
 
-        {!todayIp.value ? (
-          <NSkeleton animated class="my-2 h-[200px]"></NSkeleton>
-        ) : (
-          <NP>
-            <SectionTitle>
-              <span>今天 - 所有请求的 IP {todayIp.value.length} 个</span>
-            </SectionTitle>
+        <NTabs>
+          <NTabPane name={'IP 记录'}>
+            {!todayIp.value ? (
+              <NSkeleton animated class="my-2 h-[200px]"></NSkeleton>
+            ) : (
+              <NP>
+                <SectionTitle>
+                  <span>今天 - 所有请求的 IP {todayIp.value.length} 个</span>
+                </SectionTitle>
 
-            <NSpace>
-              {todayIp.value.map((ip) => (
-                <IpInfoPopover
-                  ip={ip}
-                  key={ip}
-                  triggerEl={
-                    <NButton
-                      size="tiny"
-                      class="!flex !py-[15px]"
-                      round
-                      type="primary"
-                      ghost
-                    >
-                      {ip}
-                    </NButton>
-                  }
-                ></IpInfoPopover>
-              ))}
-            </NSpace>
-          </NP>
-        )}
+                <NSpace>
+                  {todayIp.value.map((ip) => (
+                    <IpInfoPopover
+                      ip={ip}
+                      key={ip}
+                      triggerEl={
+                        <NButton
+                          size="tiny"
+                          class="!flex !py-[15px]"
+                          round
+                          type="primary"
+                          ghost
+                        >
+                          {ip}
+                        </NButton>
+                      }
+                    ></IpInfoPopover>
+                  ))}
+                </NSpace>
+              </NP>
+            )}
+          </NTabPane>
 
-        <DataTable />
+          <NTabPane name={'访问路径'}>
+            <DataTable />
+          </NTabPane>
+        </NTabs>
       </ContentLayout>
     )
   },

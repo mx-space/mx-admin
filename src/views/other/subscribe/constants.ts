@@ -7,7 +7,7 @@ import {
 
 const bit2TextMap = new Map([
   [SubscribePostCreateBit, '博文'],
-  [SubscribeNoteCreateBit, '点滴'],
+  [SubscribeNoteCreateBit, '手记'],
   [SubscribeRecentCreateBit, '速记'],
   [SubscribeSayCreateBit, '说说'],
 ])

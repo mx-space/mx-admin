@@ -1,26 +1,38 @@
+import { createContract, Indexer } from 'crossbell.js'
+import Unidata from 'unidata.js'
+import { RESTManager } from 'utils'
+import type { Contract } from 'crossbell.js'
 import type { NoteModel } from 'models/note'
 import type { PostModel } from 'models/post'
-import {
-  getUniData,
-  toCid,
-  useAccountState,
-  useConnectModal,
-} from 'use-crossbell-xlog'
-import type { CrossBellInstance } from 'use-crossbell-xlog'
-import { RESTManager } from 'utils'
 
 import { showConfetti } from '~/utils/confetti'
 
-export const instanceRef = ref<CrossBellInstance>()
+const unidata = new Unidata()
+
+const crossbellGQLEndpoint = 'https://indexer.crossbell.io/v1/graphql'
 
 export class CrossBellConnector {
   static SITE_ID = ''
   static setSiteId(siteId: string) {
     this.SITE_ID = siteId
   }
-  static getInstance(): CrossBellInstance | undefined {
-    // if (!('ethereum' in window)) return
-    return instanceRef.value
+
+  private static contract: Contract<any> | null = null
+  private static async prepare() {
+    if (this.contract) {
+      return this.contract
+    }
+
+    const metamask = window.ethereum as any
+    const contract = createContract(metamask)
+
+    await contract.walletClient.requestAddresses()
+
+    if (!contract.account.address) {
+      throw new Error('未连接到 metamask')
+    }
+    this.contract = contract
+    return contract
   }
 
   static createOrUpdate(data: NoteModel | PostModel) {
@@ -34,13 +46,11 @@ export class CrossBellConnector {
     }
 
     return new Promise((resolve) => {
-      if (!this.SITE_ID) {
+      if (!('ethereum' in window)) {
         resolve(null)
         return
       }
-
-      const instance = this.getInstance()
-      if (!instance) {
+      if (!this.SITE_ID) {
         resolve(null)
         return
       }
@@ -52,25 +62,23 @@ export class CrossBellConnector {
           resolve(null)
         },
         onPositiveClick() {
-          connectToXLog()
+          syncToCrossbell()
         },
         negativeText: '不需要',
         positiveText: '嗯！',
       })
 
-      const connectToXLog = () => {
+      const syncToCrossbell = async () => {
         const SITE_ID = this.SITE_ID
 
-        const { state } = instance
-        const { account } = state
+        await this.prepare()
 
-        message.loading('准备发布到 xLog，等待钱包响应...')
         let postCallOnce = false
         let pageId = data.meta?.xLog?.pageId
         const slug = 'slug' in data ? data.slug : `note-${data.nid}`
 
         const post = async () => {
-          if (postCallOnce) return Promise.resolve()
+          if (postCallOnce) return
           const { text, title } = data
           postCallOnce = true
 
@@ -80,7 +88,7 @@ export class CrossBellConnector {
           // 如果 post 的 slug 改了，那么就在 xlog 拿不到 pageId 了，这个时候就会出问题（修改文章都是变成新增）
 
           if (!pageId || this.isNoteModel(data))
-            pageId = await this.fetchPageId(slug)
+            pageId = await this.getCrossbellNotePageIdBySlug(slug)
 
           const articleUrl = await RESTManager.api
             .helper('url-builder')(data.id)
@@ -97,11 +105,11 @@ export class CrossBellConnector {
           const contentWithFooter = `${text}
 
 <span style="text-align: right;font-size: 0.8em; float: right">此文由 [Mix Space](https://github.com/mx-space) 同步更新至 xLog
-原始链接为 <${articleUrl}></span>`
+原始链接为 <${articleUrl}></span><br ><br >`
 
           message.loading('正在发布到 xLog...')
 
-          return instance.createOrUpdatePage({
+          const input = {
             siteId: SITE_ID,
             content: contentWithFooter,
             title,
@@ -115,100 +123,131 @@ export class CrossBellConnector {
               'tags' in data
                 ? data.tags.toString()
                 : this.isNoteModel(data)
-                ? 'Note'
+                ? '生活笔记'
                 : '',
             publishedAt: data.created,
-          })
-        }
-        const postHandler = () =>
-          post()
-            .then(() => {
-              const unidata = getUniData()
+          }
 
-              message.success('xLog 发布成功')
-              showConfetti()
-              ;(pageId ? Promise.resolve(pageId) : this.fetchPageId(slug)).then(
-                (pageId) => {
-                  if (!pageId) {
-                    message.error('无法获取 xLog pageId 任务终止')
-                    return
-                  }
-
-                  // update meta for pageId
-                  this.updateModel(data, {
-                    pageId,
-                  })
-
-                  // update meta for ipfs
-                  unidata.notes
-                    .get({
-                      source: 'Crossbell Note',
-                      identity: SITE_ID,
-                      platform: 'Crossbell',
-                      filter: {
-                        id: pageId,
-                      },
-                    })
-                    .then((note$) => {
-                      if (!note$) return
-                      const { list } = note$
-                      const note = list[0]
-                      if (!note) return
-                      const { metadata, related_urls } = note
-                      const minifyMetadata = {
-                        ...metadata,
-                      }
-
-                      delete minifyMetadata.raw
-
-                      console.debug(note)
-                      this.updateModel(data, {
-                        pageId,
-                        related_urls,
-                        metadata: minifyMetadata,
-                        // @copy from xlog
-                        // https://github.com/Innei/xLog/blob/33a3f2306467fd067e85dbd75a7a08ab584fd3f7/src/components/site/PostMeta.tsx#L25
-                        cid: toCid(related_urls?.[0] || ''),
-                      })
-                    })
+          return unidata.notes.set(
+            {
+              source: 'Crossbell Note',
+              identity: input.siteId,
+              platform: 'Crossbell',
+              action: input.pageId ? 'update' : 'add',
+            },
+            {
+              ...(input.externalUrl && { related_urls: [input.externalUrl] }),
+              ...(input.pageId && { id: input.pageId }),
+              ...(input.title && { title: input.title }),
+              ...(input.content && {
+                body: {
+                  content: input.content,
+                  mime_type: 'text/markdown',
                 },
-              )
-              resolve(null)
-            })
-            .catch(() => {
-              message.error('xLog 发布失败')
-              resolve(null)
-            })
-            .finally(() => {
-              dispose1()
-              dispose2()
-            })
-        let isShow = false
-        const dispose1 = useAccountState.subscribe((state) => {
-          if (state.wallet?.address && isShow) {
-            postHandler()
-          }
-        })
-
-        const dispose2 = useConnectModal.subscribe((state) => {
-          if (state.isActive) isShow = true
-          if (
-            !state.isActive &&
-            isShow &&
-            !useAccountState.getState().wallet?.address
-          ) {
-            dispose1()
-            dispose2()
-
-            resolve(null)
-          }
-        })
-
-        if (!account || !account.address) {
-          instance.show()
-        } else {
-          postHandler()
+              }),
+              ...(input.publishedAt && {
+                date_published: input.publishedAt,
+              }),
+              // ...(input.excerpt && {
+              //   summary: {
+              //     content: input.excerpt,
+              //     mime_type: 'text/markdown',
+              //   },
+              // }),
+              tags: [
+                input.isPost ? 'post' : 'page',
+                ...(input.tags
+                  ?.split(',')
+                  .map((tag) => tag.trim())
+                  .filter((tag) => tag) || []),
+              ],
+              applications: [
+                'xlog',
+                ...(input.applications?.filter((app) => app !== 'xlog') || []),
+              ],
+              ...(input.slug && {
+                attributes: [
+                  {
+                    trait_type: 'xlog_slug',
+                    value: input.slug,
+                  },
+                ],
+              }),
+            },
+          )
         }
+
+        await post().catch((err) => {
+          console.error(err)
+          message.error('xLog 发布失败')
+
+          throw err
+        })
+
+        message.success('xLog 发布成功')
+        showConfetti()
+
+        let nextPageId = pageId
+        if (!nextPageId) {
+          nextPageId = await this.getCrossbellNotePageIdBySlug(slug)
+        }
+
+        if (!nextPageId) {
+          message.error('无法获取 Crossbell Note pageId 任务终止')
+          return
+        }
+        // update meta for pageId
+        await this.updateModel(data, {
+          pageId: nextPageId,
+        })
+
+        const cressbellNoteData = await this.getCrossbellNoteData(
+          nextPageId.split('-')[1],
+        )
+        if (!cressbellNoteData) {
+          message.error('无法获取 Crossbell Note 任务终止')
+          return
+        }
+        const {
+          metadata,
+          uri,
+          blockNumber,
+          owner,
+          transactionHash,
+          updatedTransactionHash,
+        } = cressbellNoteData
+
+        // "metadata": {
+        //   "network": "Crossbell",
+        //   "proof": "52055-184",
+        //   "blockNumber": 31902501,
+        //   "owner": "0x0cc14dd429303aee55bfb56529b81d2a300362ed",
+        //   "transactions": [
+        //     "0x2906e8b6a321a4f53ab07d58b3227398022e55c0c18b52201edfc1a68f942956",
+        //     "0xbb572893c077f488172a52edc67cab0b485713d8a21312052a1a1cb4f74c8675"
+        //   ]
+        // }
+        console.debug(cressbellNoteData)
+        await this.updateModel(data, {
+          pageId: nextPageId,
+          related_urls: [...metadata.content.external_urls],
+          metadata: {
+            network: 'Crossbell',
+            proof: nextPageId,
+            blockNumber,
+            owner,
+            transactions: [
+              transactionHash,
+              ...(updatedTransactionHash &&
+              updatedTransactionHash !== transactionHash
+                ? [updatedTransactionHash]
+                : []),
+            ],
+          },
+          cid: uri.split('ipfs://')[1],
+        })
+
+        resolve(null)
       }
     })
   }
@@ -217,28 +256,6 @@ export class CrossBellConnector {
     return 'nid' in data
   }
 
-  private static async fetchPageId(slug: string) {
-    if (!this.SITE_ID) return
-    const { characterId, noteId } = await RESTManager.api.fn.xlog.get_page_id
-      .get<{
-        noteId: string
-        characterId: string
-      }>({
-        params: {
-          handle: this.SITE_ID,
-          slug,
-        },
-      })
-      .catch(() => {
-        return {
-          noteId: '',
-          characterId: '',
-        }
-      })
-
-    if (!characterId || !noteId) return
-    return `${characterId}-${noteId}`
-  }
   private static async updateModel(
     data: NoteModel | PostModel,
 
@@ -281,5 +298,153 @@ export class CrossBellConnector {
         data: patchedData,
       })
     }
+  }
+
+  private static indexer = new Indexer()
+
+  private static async getCharacterId() {
+    const indexer = this.indexer
+    const result = await indexer.character.getByHandle(this.SITE_ID)
+
+    if (!result) {
+      return ''
+    }
+
+    return result.characterId
+  }
+  private static async getCrossbellNoteData(noteId: string) {
+    await this.prepare()
+    const characterId = await this.getCharacterId()
+    if (!characterId) return
+    return fetch(crossbellGQLEndpoint, {
+      body: JSON.stringify({
+        operationName: 'getNote',
+        query: `query getNote {
+          note(
+            where: {
+              note_characterId_noteId_unique: {
+                characterId: ${characterId},
+                noteId: ${noteId},
+              },
+            },
+          ) {
+            characterId
+            noteId
+            uri
+            metadata {
+              uri
+              content
+            }
+            owner
+            createdAt
+            updatedAt
+            publishedAt
+            transactionHash
+            blockNumber
+            updatedTransactionHash
+            updatedBlockNumber
+          }
+        }`,
+        variables: {},
+      }),
+      headers: {
+        'content-type': 'application/json',
+      },
+      method: 'POST',
+      mode: 'cors',
+      credentials: 'omit',
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        return data.data?.note as {
+          blockNumber: number
+          characterId: string
+          createdAt: string
+          metadata: {
+            content: {
+              external_urls: string[]
+              type: string
+            }
+            uri: string
+          }
+          noteId: string
+          owner: string
+          publishedAt: string
+          transactionHash: string
+          updatedAt: string
+          updatedBlockNumber: number
+          updatedTransactionHash: string
+          uri: string
+        }
+      })
+  }
+
+  private static async getCrossbellNotePageIdBySlug(slug?: string) {
+    await this.prepare()
+    const characterId = await this.getCharacterId()
+    if (!characterId) return
+    return fetch(crossbellGQLEndpoint, {
+      body: JSON.stringify({
+        operationName: 'getNotes',
+        query: `query getNotes {
+          notes(
+            where: {
+              characterId: {
+                equals: ${characterId},
+              },
+              deleted: {
+                equals: false,
+              },
+              metadata: {
+                AND: [
+                  {
+                    content: {
+                      path: ["sources"],
+                      array_contains: ["xlog"]
+                    },
+                  },
+                  {
+                    OR: [
+                      {
+                        content: {
+                          path: ["attributes"],
+                          array_contains: [{
+                            trait_type: "xlog_slug",
+                            value: "${slug}",
+                          }]
+                        }
+                      },
+                      {
+                        content: {
+                          path: ["title"],
+                          equals: "${decodeURIComponent(slug!)}"
+                        },
+                      }
+                    ]
+                  }
+                ]
+              },
+            },
+            orderBy: [{ createdAt: desc }],
+            take: 1,
+          ) {
+            characterId
+            noteId
+          }
+        }`,
+      }),
+      headers: {
+        'content-type': 'application/json',
+      },
+      method: 'POST',
+      mode: 'cors',
+      credentials: 'omit',
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const note = data.data.notes[0]
+        if (!note) return
+        return `${note.characterId}-${note.noteId}`
+      })
   }
 }

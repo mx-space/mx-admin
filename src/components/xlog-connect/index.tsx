@@ -1,8 +1,4 @@
-import { App } from 'use-crossbell-xlog'
 import { RESTManager } from 'utils'
-import { createReactWrapper } from 'vue-react-wrapper'
-
-import { CrossBellConnector, instanceRef } from './class'
 
 export const CrossBellConnectorIndirector = defineComponent({
   setup() {
@@ -12,21 +8,17 @@ export const CrossBellConnectorIndirector = defineComponent({
       .get<{
         data: { xLogSiteId: string }
       }>()
-      .then(({ data }) => {
+      .then(async ({ data }) => {
         const { xLogSiteId } = data
         siteId.value = xLogSiteId
+
+        const CrossBellConnector = await import('./class').then(
+          (mo) => mo.CrossBellConnector,
+        )
 
         CrossBellConnector.setSiteId(xLogSiteId)
       })
 
-    const VueApp = createReactWrapper(App)
-
-    const reactRef = () => instanceRef
-
-    onUnmounted(() => {
-      instanceRef.value = undefined
-    })
-
-    return () => (siteId.value ? <VueApp reactRef={reactRef} /> : null)
+    return () => null
   },
 })

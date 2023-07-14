@@ -73,7 +73,10 @@ const ManageComment = defineComponent(() => {
               },
             },
           )
-          data.value = response.data
+          data.value = response.data.map(($) => {
+            Reflect.deleteProperty($, 'children')
+            return $
+          })
           pager.value = response.pagination
         },
     )

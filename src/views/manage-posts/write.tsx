@@ -34,6 +34,8 @@ import { useRoute, useRouter } from 'vue-router'
 
 import { Icon } from '@vicons/utils'
 
+import { HeaderPreviewButton } from '~/components/special-button/preview'
+
 import { AISummaryDialog } from './components/ask-ai'
 import { useMemoPostList } from './hooks/use-memo-post-list'
 
@@ -189,6 +191,7 @@ const PostWriteView = defineComponent(() => {
   return () => (
     <ContentLayout
       title={id.value ? '修改文章' : '撰写新文章'}
+      headerClass="pt-1"
       actionsElement={
         <>
           <ParseContentButton
@@ -202,6 +205,8 @@ const PostWriteView = defineComponent(() => {
               data.meta = { ...rest }
             }}
           />
+
+          <HeaderPreviewButton getData={() => ({ ...data })} />
           <HeaderActionButton
             icon={<TelegramPlaneIcon />}
             onClick={handleSubmit}
