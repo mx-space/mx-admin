@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## [3.30.9](https://github.com/mx-space/mx-admin/compare/v3.30.8...v3.30.9) (2023-07-18)
+
+
+### Bug Fixes
+
+* rollback cm6 deps ([efc0df7](https://github.com/mx-space/mx-admin/commit/efc0df711eae9bc6e6999e4f4da34349114e3ea5))
+* upgrade cm6 ([542ecef](https://github.com/mx-space/mx-admin/commit/542eceff3ab2a05f3eaa91dc33bea8c19e1b47ba))
+
+
+
 ## [3.30.8](https://github.com/mx-space/mx-admin/compare/v3.30.7...v3.30.8) (2023-07-18)
 
 
