@@ -7,7 +7,8 @@ export class ParseMarkdownYAML {
   parse(str: string) {
     const raw = str
 
-    const parts = /-{3,}\n(.*?)-{3,}\n*(.*)$/gms.exec(raw)
+    // 增加对windows CRLF的兼容
+    const parts = /-{3,}\r?\n(.*?)-{3,}\r?\n*(.*)$/gms.exec(raw)
     if (!parts) {
       return { text: raw }
     }
