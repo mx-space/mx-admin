@@ -1,6 +1,6 @@
 {
   "name": "mx-admin",
-  "version": "3.30.7",
+  "version": "3.30.8",
   "bump": {
     "before": [
       "git pull --rebase"
