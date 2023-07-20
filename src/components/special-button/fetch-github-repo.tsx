@@ -21,7 +21,7 @@ export const FetchGithubRepoButton = defineComponent({
     const dialog = useDialog()
     const handleParseFromGithub = () => {
       const instance = dialog.create({
-        title: '从 Github 解析',
+        title: '从 GitHub 解析',
         content: () => {
           const Comp = defineComponent({
             setup() {

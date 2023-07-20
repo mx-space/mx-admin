@@ -162,7 +162,7 @@ export default defineComponent(() => {
 
   return () => (
     <ContentLayout>
-      <NH3>从 MarkDown 导入数据</NH3>
+      <NH3>从 Markdown 导入数据</NH3>
       <NForm
         labelAlign="right"
         labelPlacement="left"
