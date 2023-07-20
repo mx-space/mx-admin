@@ -2,7 +2,6 @@ import { HeaderActionButton } from 'components/button/rounded-button'
 import { AddIcon, FunctionIcon, LockIcon } from 'components/icons'
 import { tableRowStyle } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
-import { useMountAndUnmount } from 'hooks/use-react'
 import { useLayout } from 'layouts/content'
 import {
   NButton,
@@ -14,18 +13,20 @@ import {
   NPopconfirm,
   NSpace,
 } from 'naive-ui'
-import type { MenuMixedOption } from 'naive-ui/es/menu/src/interface'
 import { RESTManager } from 'utils'
 import { getToken } from 'utils/auth'
 import { useRoute, useRouter } from 'vue-router'
+import type { MenuMixedOption } from 'naive-ui/es/menu/src/interface'
+import type { SnippetModel } from '../../../models/snippet'
+import type { SnippetGroup } from '../interfaces/snippet-group'
 
 import { Icon } from '@vicons/utils'
 
+import { useMountAndUnmount } from '~/hooks/use-lifecycle'
+
 import { SnippetType } from '../../../models/snippet'
-import type { SnippetModel } from '../../../models/snippet'
 import { ImportSnippetButton } from '../components/import-snippets-button'
 import { UpdateDependencyButton } from '../components/update-deps-button'
-import type { SnippetGroup } from '../interfaces/snippet-group'
 
 const useFetchReferenceNames = () => {
   const referenceNames = ref<SnippetGroup[]>([])
@@ -211,7 +212,7 @@ export const Tab1ForList = defineComponent({
                           )}
                         </NButton>
                         {isPrivate && (
-                          <Icon class={'items-center flex'}>
+                          <Icon class={'flex items-center'}>
                             <LockIcon />
                           </Icon>
                         )}
@@ -344,7 +345,7 @@ const colums = [
             {row.enable === false ? <del>{name}</del> : <span>{name}</span>}
           </NButton>
           {isPrivate && (
-            <Icon class={'items-center flex'}>
+            <Icon class={'flex items-center'}>
               <LockIcon />
             </Icon>
           )}

@@ -1,7 +1,6 @@
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { CheckCircleOutlinedIcon } from 'components/icons'
 import { KVEditor } from 'components/kv-editor'
-import { useMountAndUnmount } from 'hooks/use-react'
 import { dump, load } from 'js-yaml'
 import JSON5 from 'json5'
 import { useLayout } from 'layouts/content'
@@ -23,11 +22,13 @@ import { useRoute, useRouter } from 'vue-router'
 
 import { useStorage } from '@vueuse/core'
 
+import { useMountAndUnmount } from '~/hooks/use-lifecycle'
+
 import {
+  defaultServerlessFunction,
   SnippetModel,
   SnippetType,
   SnippetTypeToLanguage,
-  defaultServerlessFunction,
 } from '../../../models/snippet'
 import { CodeEditorForSnippet } from '../components/code-editor'
 import { InstallDependencyButton } from '../components/install-dep-button'
@@ -329,7 +330,7 @@ export const Tab2ForEdit = defineComponent({
               <>
                 <NFormItem label="启用" labelPlacement={'left'}>
                   <NSwitch
-                    class={'w-full flex justify-end'}
+                    class={'flex w-full justify-end'}
                     value={data.value.enable}
                     onUpdateValue={(value) => {
                       data.value.enable = value
@@ -379,7 +380,7 @@ export const Tab2ForEdit = defineComponent({
             <NFormItem label="公开" labelPlacement="left">
               <NSwitch
                 disabled={isBuiltFunction.value}
-                class={'w-full flex justify-end'}
+                class={'flex w-full justify-end'}
                 value={!data.value.private}
                 onUpdateValue={(val) => void (data.value.private = !val)}
               ></NSwitch>

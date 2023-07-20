@@ -1,10 +1,11 @@
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { CheckIcon, TrashIcon } from 'components/icons'
-import { useMountAndUnmount } from 'hooks/use-react'
 import { useLayout } from 'layouts/content'
 import { TwoColGridLayout } from 'layouts/two-col'
 import { NForm, NFormItem, NGi, NSelect, useDialog } from 'naive-ui'
 import { RESTManager } from 'utils'
+
+import { useMountAndUnmount } from '~/hooks/use-lifecycle'
 
 import { CodeEditorForTemplateEditing } from '../code-editor'
 import { EJSRender } from '../ejs-render'

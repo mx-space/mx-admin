@@ -1,9 +1,10 @@
 import { Xterm } from 'components/xterm'
-import { useMountAndUnmount } from 'hooks/use-react'
 import { socket } from 'socket'
 import { EventTypes } from 'socket/types'
 import { bus } from 'utils/event-bus'
 import type { Terminal } from 'xterm'
+
+import { useMountAndUnmount } from '~/hooks/use-lifecycle'
 
 export const RealtimeLogPipeline = defineComponent({
   setup() {

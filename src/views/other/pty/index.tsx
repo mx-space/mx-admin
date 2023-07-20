@@ -3,7 +3,6 @@ import { RefreshIcon, StatusIcon } from 'components/icons'
 import { IpInfoPopover } from 'components/ip-info'
 import { Xterm } from 'components/xterm'
 import { GATEWAY_URL } from 'constants/env'
-import { useMountAndUnmount } from 'hooks/use-react'
 import { ContentLayout } from 'layouts/content'
 import { merge } from 'lodash-es'
 import {
@@ -18,10 +17,12 @@ import {
 } from 'naive-ui'
 import Io from 'socket.io-client'
 import { EventTypes } from 'socket/types'
-import { RESTManager, getToken, parseDate } from 'utils'
+import { getToken, parseDate, RESTManager } from 'utils'
 import { bus } from 'utils/event-bus'
 import type { PropType } from 'vue'
 import type { IDisposable, Terminal } from 'xterm'
+
+import { useMountAndUnmount } from '~/hooks/use-lifecycle'
 
 export default defineComponent({
   name: 'PtyView',
@@ -218,7 +219,7 @@ const PasswordConfirmDialog = defineComponent({
     // FUCK VUE ALWAYS ANY
     const inputRef = ref()
     return () => (
-      <NForm onSubmit={submit} class="space-y-6 mt-6">
+      <NForm onSubmit={submit} class="mt-6 space-y-6">
         <NInput
           ref={inputRef}
           showPasswordOn="mousedown"
@@ -269,7 +270,10 @@ const ConnectionStatus = defineComponent(() => {
               </div>
               <div>
                 {item.endTime
-                  ? `结束于 ${parseDate(item.endTime, 'yyyy 年 M 月 d 日 HH:mm:ss')}`
+                  ? `结束于 ${parseDate(
+                      item.endTime,
+                      'yyyy 年 M 月 d 日 HH:mm:ss',
+                    )}`
                   : '没有结束'}
               </div>
               <div>

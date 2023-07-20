@@ -4,10 +4,8 @@
  */
 // TODO: 全屏预览
 import { FullscreenExitOutlined, SettingsIcon } from 'components/icons'
-import { useMountAndUnmount } from 'hooks/use-react'
 import { useLayout } from 'layouts/content'
 import { throttle } from 'lodash-es'
-import type { editor } from 'monaco-editor'
 import {
   NCard,
   NElement,
@@ -20,8 +18,11 @@ import {
   NText,
 } from 'naive-ui'
 import { defineComponent, ref, watch } from 'vue'
+import type { editor } from 'monaco-editor'
 
 import { Icon } from '@vicons/utils'
+
+import { useMountAndUnmount } from '~/hooks/use-lifecycle'
 
 import { Editor, EditorStorageKeys } from './constants'
 import styles from './editor.module.css'
