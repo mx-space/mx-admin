@@ -96,8 +96,8 @@ dependencies:
     specifier: 0.14.0
     version: 0.14.0
   crossbell.js:
-    specifier: 1.0.0-beta.1
-    version: 1.0.0-beta.1(typescript@5.1.6)
+    specifier: npm:crossbell@1.5.0
+    version: /crossbell@1.5.0(typescript@5.1.6)
   date-fns:
     specifier: 2.30.0
     version: 2.30.0
@@ -3729,15 +3729,15 @@ packages:
       which: 2.0.2
     dev: true
 
-  /crossbell.js@1.0.0-beta.1(typescript@5.1.6):
-    resolution: {integrity: sha512-awlBiTZars8DswS5n4KBH6U9KljvmZtna8v6ROC9UO44Z0oshTkyxclvckhOtUGYFWpXtqOX3wwHeOrb2kwpFw==}
+  /crossbell@1.4.2(typescript@5.1.6):
+    resolution: {integrity: sha512-6wS6X3r3zWjQOL1v2dMJ8hIfzCl1hQ5AoVV6nFGngKuk+LPoZeZjrrD7KTRueFqwE9F6oJmg7S6vHJNYu3STqQ==}
     engines: {node: '>=16.14.0'}
     dependencies:
       '@crossbell/ipfs-fetch': 0.0.19
       async-retry: 1.3.3
       eip1193-types: 0.2.1
       p-limit: 3.1.0
-      viem: 0.3.50(typescript@5.1.6)
+      viem: 1.3.0(typescript@5.1.6)
     transitivePeerDependencies:
       - bufferutil
       - typescript
@@ -3745,8 +3745,8 @@ packages:
       - zod
     dev: false
 
-  /crossbell@1.4.2(typescript@5.1.6):
-    resolution: {integrity: sha512-6wS6X3r3zWjQOL1v2dMJ8hIfzCl1hQ5AoVV6nFGngKuk+LPoZeZjrrD7KTRueFqwE9F6oJmg7S6vHJNYu3STqQ==}
+  /crossbell@1.5.0(typescript@5.1.6):
+    resolution: {integrity: sha512-ZS4VWnZFB6G61WvGvT1wtesyF7cyhGFK+pPlNRBgQEY+e2EOpv8fCCmYVcafUHs9rZI8kdCt43lBfP79+zVnTg==}
     engines: {node: '>=16.14.0'}
     dependencies:
       '@crossbell/ipfs-fetch': 0.0.19
