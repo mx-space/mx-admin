@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## [3.30.10](https://github.com/mx-space/mx-admin/compare/v3.30.9...v3.30.10) (2023-07-22)
+
+
+### Bug Fixes
+
+* remove some unsafe lib ([f5beee5](https://github.com/mx-space/mx-admin/commit/f5beee578ecd4055eb3a28cfd99a21ea00da12df))
+* update crossbell ([1ed9b3b](https://github.com/mx-space/mx-admin/commit/1ed9b3b9f5f111b5565c14cafb08fa2fede5af6d))
+
+
+
 ## [3.30.9](https://github.com/mx-space/mx-admin/compare/v3.30.8...v3.30.9) (2023-07-18)
 
 
