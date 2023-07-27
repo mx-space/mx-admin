@@ -1,5 +1,15 @@
 # CHANGELOG
 
+# [3.31.0](https://github.com/mx-space/mx-admin/compare/v3.30.10...v3.31.0) (2023-07-27)
+
+
+### Features
+
+* post message for preview page ([9058be6](https://github.com/mx-space/mx-admin/commit/9058be6454e1f582cf6896f873604bf535955917))
+* post message for preview page ([e7f231f](https://github.com/mx-space/mx-admin/commit/e7f231f51d19b8a6fd004df0531fe0dfcc5c829d))
+
+
+
 ## [3.30.10](https://github.com/mx-space/mx-admin/compare/v3.30.9...v3.30.10) (2023-07-22)
 
 
