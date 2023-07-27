@@ -20,6 +20,10 @@ export const HeaderPreviewButton = defineComponent({
     })
     let webUrl = ''
 
+    let isInPreview = false
+    let previewWindowOrigin = ''
+    let previewWindow = null as null | Window
+
     const handlePreview = async () => {
       const { getData } = props
       const data = getData()
@@ -30,10 +34,12 @@ export const HeaderPreviewButton = defineComponent({
           .then((data) => data.data)
         webUrl = res.webUrl
       }
-      const url = new URL('/preview', webUrl)
 
-      if (url.hostname !== location.hostname) {
-        message.error('预览地址与当前地址不一致，无法提供预览')
+      let url: URL
+      if (import.meta.env.DEV) {
+        url = new URL('/preview', 'http://localhost:2323')
+      } else {
+        url = new URL('/preview', webUrl)
       }
 
       const storageKey = `mx-preview-${id ?? 'new'}`
@@ -47,10 +53,46 @@ export const HeaderPreviewButton = defineComponent({
       )
 
       url.searchParams.set('storageKey', storageKey)
-      window.open(url.toString())
+      url.searchParams.set('origin', location.origin)
+
+      const finalUrl = url.toString()
+
+      const forkWindow = window.open(finalUrl)
+      if (!forkWindow) {
+        message.error('打开预览失败')
+        return
+      }
 
       previewKey = storageKey
+      isInPreview = true
+      previewWindowOrigin = url.origin
+      previewWindow = forkWindow
     }
+
+    onMounted(() => {
+      const handler = (e: MessageEvent<any>): void => {
+        if (!isInPreview) return
+        if (e.origin !== previewWindowOrigin) return
+        // console.log('ready', e.origin)
+        if (!previewWindow) return
+        const data = props.getData()
+        previewWindow.postMessage(
+          JSON.stringify({
+            type: 'preview',
+            data: {
+              ...data,
+              id: `preview-${data.id ?? 'new'}`,
+            },
+          }),
+          previewWindowOrigin,
+        )
+      }
+      window.addEventListener('message', handler)
+
+      onBeforeUnmount(() => {
+        window.removeEventListener('message', handler)
+      })
+    })
 
     return () => (
       <HeaderActionButton
