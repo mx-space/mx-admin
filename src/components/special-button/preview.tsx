@@ -1,3 +1,6 @@
+import { debounce } from 'lodash-es'
+
+import { EmitKeyMap } from '~/constants/keys'
 import { RESTManager } from '~/utils'
 
 import { HeaderActionButton } from '../button/rounded-button'
@@ -91,6 +94,32 @@ export const HeaderPreviewButton = defineComponent({
 
       onBeforeUnmount(() => {
         window.removeEventListener('message', handler)
+      })
+    })
+
+    onMounted(() => {
+      const handler = debounce(() => {
+        if (!isInPreview) return
+        if (!previewWindowOrigin) return
+        if (!previewWindow) return
+
+        const data = props.getData()
+
+        previewWindow.postMessage(
+          JSON.stringify({
+            type: 'preview',
+            data: {
+              ...data,
+              id: `preview-${data.id ?? 'new'}`,
+            },
+          }),
+          previewWindowOrigin,
+        )
+      }, 100)
+      window.addEventListener(EmitKeyMap.EditDataUpdate, handler)
+
+      onBeforeUnmount(() => {
+        window.removeEventListener(EmitKeyMap.EditDataUpdate, handler)
       })
     })
 

@@ -13,8 +13,6 @@ import { useAutoSave, useAutoSaveInEditor } from 'hooks/use-auto-save'
 import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
 import { ContentLayout } from 'layouts/content'
 import { isString } from 'lodash-es'
-import type { Coordinate, NoteModel, NoteMusicRecord } from 'models/note'
-import type { TopicModel } from 'models/topic'
 import {
   NButton,
   NButtonGroup,
@@ -28,7 +26,6 @@ import {
   useMessage,
 } from 'naive-ui'
 import { RouteName } from 'router/name'
-import type { WriteBaseType } from 'shared/types/base'
 import { RESTManager } from 'utils/rest'
 import { getDayOfYear } from 'utils/time'
 import {
@@ -42,11 +39,15 @@ import {
   watch,
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-
 import type { PaginateResult } from '@mx-space/api-client'
+import type { Coordinate, NoteModel, NoteMusicRecord } from 'models/note'
+import type { TopicModel } from 'models/topic'
+import type { WriteBaseType } from 'shared/types/base'
+
 import { Icon } from '@vicons/utils'
 
 import { HeaderPreviewButton } from '~/components/special-button/preview'
+import { EmitKeyMap } from '~/constants/keys'
 
 const CrossBellConnectorIndirector = defineAsyncComponent({
   loader: () =>
@@ -245,6 +246,17 @@ const NoteWriteView = defineComponent(() => {
   }
   const { fetchTopic, topics } = useNoteTopic()
 
+  const getData = () => ({
+    ...data,
+    nid: (data as any).nid || Math.floor(Math.random() * 1000 + 10000),
+  })
+  watch(
+    () => data,
+    () => {
+      window.dispatchEvent(new CustomEvent(EmitKeyMap.EditDataUpdate))
+    },
+    { deep: true },
+  )
   return () => (
     <ContentLayout
       title={'记录生活点滴'}
@@ -263,12 +275,7 @@ const NoteWriteView = defineComponent(() => {
             }}
           />
 
-          <HeaderPreviewButton
-            getData={() => ({
-              ...data,
-              nid: (data as any).nid || Math.floor(Math.random() * 1000),
-            })}
-          />
+          <HeaderPreviewButton getData={getData} />
           <HeaderActionButton
             icon={<TelegramPlaneIcon />}
             onClick={handleSubmit}
@@ -291,7 +298,7 @@ const NoteWriteView = defineComponent(() => {
     >
       <CrossBellConnectorIndirector />
       <MaterialInput
-        class="mt-3 relative z-10"
+        class="relative z-10 mt-3"
         label={defaultTitle.value}
         value={data.title}
         onChange={(e) => {
@@ -299,7 +306,7 @@ const NoteWriteView = defineComponent(() => {
         }}
       ></MaterialInput>
 
-      <div class={'text-gray-500 py-3'}>
+      <div class={'py-3 text-gray-500'}>
         <label>{`${WEB_URL}/notes/${nid.value ?? ''}`}</label>
       </div>
 

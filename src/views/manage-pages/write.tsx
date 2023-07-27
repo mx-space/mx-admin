@@ -9,17 +9,18 @@ import { WEB_URL } from 'constants/env'
 import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
 import { ContentLayout } from 'layouts/content'
 import { isString } from 'lodash-es'
-import type { PageModel } from 'models/page'
 import { NFormItem, NInputNumber, useMessage } from 'naive-ui'
 import { RouteName } from 'router/name'
-import type { WriteBaseType } from 'shared/types/base'
 import { RESTManager } from 'utils/rest'
 import { computed, defineComponent, onMounted, reactive, ref, toRaw } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import type { PageModel } from 'models/page'
+import type { WriteBaseType } from 'shared/types/base'
 
 import { Icon } from '@vicons/utils'
 
 import { HeaderPreviewButton } from '~/components/special-button/preview'
+import { EmitKeyMap } from '~/constants/keys'
 
 type PageReactiveType = WriteBaseType & {
   subtitle: string
@@ -103,6 +104,13 @@ const PageWriteView = defineComponent(() => {
 
     router.push({ name: RouteName.ListPage, hash: '|publish' })
   }
+  watch(
+    () => data,
+    () => {
+      window.dispatchEvent(new CustomEvent(EmitKeyMap.EditDataUpdate))
+    },
+    { deep: true },
+  )
 
   return () => (
     <ContentLayout
@@ -144,7 +152,7 @@ const PageWriteView = defineComponent(() => {
       }
     >
       <MaterialInput
-        class="mt-3 relative z-10"
+        class="relative z-10 mt-3"
         label={'与你有个好心情~'}
         value={data.title}
         onChange={(e) => {
@@ -152,13 +160,13 @@ const PageWriteView = defineComponent(() => {
         }}
       ></MaterialInput>
 
-      <div class={'text-gray-700 dark:text-gray-300 pt-3'}>
+      <div class={'pt-3 text-gray-700 dark:text-gray-300'}>
         <UnderlineInput
           value={data.subtitle}
           onChange={(e) => void (data.subtitle = e)}
         ></UnderlineInput>
       </div>
-      <div class={'text-gray-500 py-3'}>
+      <div class={'py-3 text-gray-500'}>
         <label>{`${WEB_URL}/`}</label>
         <UnderlineInput
           value={data.slug}

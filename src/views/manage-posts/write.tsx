@@ -10,8 +10,6 @@ import { WEB_URL } from 'constants/env'
 import { useStoreRef } from 'hooks/use-store-ref'
 import { ContentLayout } from 'layouts/content'
 import { isString } from 'lodash-es'
-import type { CategoryModel, TagModel } from 'models/category'
-import type { PostModel } from 'models/post'
 import {
   NButton,
   NDynamicTags,
@@ -24,17 +22,20 @@ import {
   useDialog,
   useMessage,
 } from 'naive-ui'
-import type { SelectMixedOption } from 'naive-ui/lib/select/src/interface'
 import { RouteName } from 'router/name'
-import type { WriteBaseType } from 'shared/types/base'
 import { CategoryStore } from 'stores/category'
 import { RESTManager } from 'utils/rest'
 import { computed, defineComponent, onMounted, reactive, ref, toRaw } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import type { CategoryModel, TagModel } from 'models/category'
+import type { PostModel } from 'models/post'
+import type { SelectMixedOption } from 'naive-ui/lib/select/src/interface'
+import type { WriteBaseType } from 'shared/types/base'
 
 import { Icon } from '@vicons/utils'
 
 import { HeaderPreviewButton } from '~/components/special-button/preview'
+import { EmitKeyMap } from '~/constants/keys'
 
 import { AISummaryDialog } from './components/ask-ai'
 import { useMemoPostList } from './hooks/use-memo-post-list'
@@ -188,6 +189,14 @@ const PostWriteView = defineComponent(() => {
     })
   }
 
+  watch(
+    () => data,
+    () => {
+      window.dispatchEvent(new CustomEvent(EmitKeyMap.EditDataUpdate))
+    },
+    { deep: true },
+  )
+
   return () => (
     <ContentLayout
       title={id.value ? '修改文章' : '撰写新文章'}
@@ -224,7 +233,7 @@ const PostWriteView = defineComponent(() => {
       }
     >
       <MaterialInput
-        class="mt-3 relative z-10"
+        class="relative z-10 mt-3"
         label="想想取个什么标题好呢~"
         value={data.title}
         onChange={(e) => {
@@ -232,7 +241,7 @@ const PostWriteView = defineComponent(() => {
         }}
       ></MaterialInput>
 
-      <div class={'text-gray-500 py-3'}>
+      <div class={'py-3 text-gray-500'}>
         <label class="prefix">{`${WEB_URL}/${category.value.slug}/`}</label>
 
         <UnderlineInput
