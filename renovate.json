@@ -2,7 +2,6 @@
   "extends": ["config:base", "schedule:weekly"],
   "labels": ["dependencies"],
   "rangeStrategy": "bump",
-  "node": false,
   "packageRules": [
     {
       "depTypeList": ["peerDependencies"],
