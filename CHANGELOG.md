@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.32.1](https://github.com/mx-space/mx-admin/compare/v3.32.0...v3.32.1) (2023-08-10)
+
+
+### Bug Fixes
+
+* remove webshell entry ([3e56743](https://github.com/mx-space/mx-admin/commit/3e567433c751624a5e361c995587a932ddf4d4e5))
+
+
+
 # [3.32.0](https://github.com/mx-space/mx-admin/compare/v3.31.1...v3.32.0) (2023-08-10)
 
 
