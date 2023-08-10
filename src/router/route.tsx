@@ -26,7 +26,6 @@ import {
   SymbolIcon,
   TachometerAltIcon,
   TemplateIcon,
-  TerminalIcon,
   TopicIcon,
   UndoAltIcon,
   UserFriendsIcon,
@@ -388,15 +387,6 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           icon: <LogIcon />,
         },
         component: () => import('../views/other/log-view'),
-      },
-      {
-        path: 'pty',
-        name: RouteName.Pty,
-        meta: {
-          title: '终端',
-          icon: <TerminalIcon />,
-        },
-        component: () => import('../views/other/pty'),
       },
     ],
   },
