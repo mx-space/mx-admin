@@ -1,9 +1,7 @@
 import CheckCircleOutlined from '@vicons/antd/CheckCircleOutlined'
+import QuestionCircleOutlined from '@vicons/antd/es/QuestionCircleOutlined'
 import Lock from '@vicons/antd/LockFilled'
 import Snippet from '@vicons/antd/SnippetsFilled'
-import QuestionCircleOutlined from '@vicons/antd/es/QuestionCircleOutlined'
-import Pen from '@vicons/fa/Pen'
-import SlackHash from '@vicons/fa/SlackHash'
 import Book from '@vicons/fa/es/Book'
 import Bookmark from '@vicons/fa/es/Bookmark'
 import ChartLine from '@vicons/fa/es/ChartLine'
@@ -24,6 +22,8 @@ import TelegramPlane from '@vicons/fa/es/TelegramPlane'
 import ThumbsUp from '@vicons/fa/es/ThumbsUp'
 import UndoAlt from '@vicons/fa/es/UndoAlt'
 import UserFriends from '@vicons/fa/es/UserFriends'
+import Pen from '@vicons/fa/Pen'
+import SlackHash from '@vicons/fa/SlackHash'
 import Add12Filled from '@vicons/fluent/es/Add12Filled'
 import Delete16Regular from '@vicons/fluent/es/Delete16Regular'
 import EmojiAdd24Regular from '@vicons/fluent/es/EmojiAdd24Regular'
@@ -483,3 +483,17 @@ export function MagnifyingGlass() {
     </svg>
   )
 }
+
+export const MidHammer = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1em"
+    height="1em"
+    viewBox="0 0 24 24"
+  >
+    <path
+      fill="currentColor"
+      d="M2 19.63L13.43 8.2l-.71-.7l1.42-1.43L12 3.89c1.2-1.19 3.09-1.19 4.27 0l3.6 3.61l-1.42 1.41h2.84l.71.71l-3.55 3.59l-.71-.71V9.62l-1.47 1.42l-.71-.71L4.13 21.76L2 19.63Z"
+    ></path>
+  </svg>
+)

@@ -18,6 +18,7 @@ import {
   FunctionIcon,
   LogIcon,
   MarkdownIcon,
+  MidHammer,
   PencilAltIcon,
   PencilIcon,
   PuzzlePieceIcon,
@@ -34,6 +35,7 @@ import $RouterView from 'layouts/router-view'
 import { SidebarLayout } from 'layouts/sidebar'
 import { DashBoardView } from 'views/dashboard'
 import type { RouteRecordRaw } from 'vue-router'
+
 import SetupLayout from '../layouts/setup-view.vue'
 import LoginView from '../views/login/index.vue'
 import { RouteName } from './name'
@@ -303,13 +305,11 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     },
     component: () => import('../views/setting'),
   },
+
   {
-    path: '/other',
+    path: '/extra-features',
     name: RouteName.Other,
-    meta: {
-      title: '其他',
-      icon: <EllipsisHIcon />,
-    },
+    meta: { title: '附加功能', icon: <EllipsisHIcon /> },
     component: $RouterView,
     children: [
       {
@@ -331,15 +331,6 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         component: () => import('../views/assets/template'),
       },
       {
-        path: 'backup',
-        name: RouteName.Backup,
-        meta: {
-          title: '备份',
-          icon: <UndoAltIcon />,
-        },
-        component: () => import('../views/other/backup'),
-      },
-      {
         path: 'markdown',
         name: RouteName.Markdown,
         meta: {
@@ -358,6 +349,18 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         },
         component: () => import('../views/other/subscribe'),
       },
+    ],
+  },
+  {
+    name: RouteName.Maintain,
+    path: '/maintain',
+    component: $RouterView,
+    redirect: '/maintain/log',
+    meta: {
+      title: '维护',
+      icon: <MidHammer />,
+    },
+    children: [
       {
         path: 'cron',
         name: RouteName.Cron,
@@ -367,6 +370,16 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         },
         component: () => import('../views/other/cron'),
       },
+      {
+        path: 'backup',
+        name: RouteName.Backup,
+        meta: {
+          title: '备份',
+          icon: <UndoAltIcon />,
+        },
+        component: () => import('../views/other/backup'),
+      },
+
       {
         path: 'log',
         name: RouteName.Log,
@@ -397,7 +410,6 @@ export const routes: RouteRecordRaw[] = [
     redirect: '/dashboard',
     children: [...routeForMenu],
   },
-
   {
     path: '/',
     component: SetupLayout,

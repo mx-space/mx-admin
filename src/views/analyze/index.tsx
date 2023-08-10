@@ -1,21 +1,8 @@
-import { HeaderActionButton } from 'components/button/rounded-button'
-import { RefreshOutlineIcon, TrashIcon } from 'components/icons'
 import { IpInfoPopover } from 'components/ip-info'
-import { DeleteConfirmButton } from 'components/special-button/delete-confirm'
-import { Table } from 'components/table'
-import { useDataTableFetch } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
 import { isEmpty } from 'lodash-es'
-import {
-  NButton,
-  NEllipsis,
-  NP,
-  NSkeleton,
-  NSpace,
-  NTabPane,
-  NTabs,
-} from 'naive-ui'
-import { parseDate, RESTManager } from 'utils'
+import { NButton, NP, NSkeleton, NSpace, NTabPane, NTabs } from 'naive-ui'
+import { RESTManager } from 'utils'
 import {
   defineComponent,
   onBeforeMount,
@@ -24,39 +11,20 @@ import {
   toRaw,
   watch,
 } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import type { UA } from 'models/analyze'
-import type { Pager } from 'models/base'
-import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
+import { useRoute } from 'vue-router'
+import type { IPAggregate, Month, Path, Today, Total, Week } from './types'
 
 import { Chart } from '@antv/g2/esm'
+
+import { AnalyzeDataTable } from './components/analyze-data-table'
+import { GuestActivity } from './components/guest-activity'
 
 const SectionTitle = defineComponent((_, { slots }) => () => (
   <div class="my-[12px] font-semibold text-gray-400 ">{slots.default?.()}</div>
 ))
 export default defineComponent({
   setup() {
-    const { data, pager, fetchDataFn } = useDataTableFetch(
-      (data, pager) =>
-        async (page = route.query.page || 1, size = 30) => {
-          const response = (await RESTManager.api.analyze.get({
-            params: {
-              page,
-              size,
-            },
-          })) as {
-            data: UA.Root[]
-            pagination: Pager
-          }
-
-          data.value = response.data
-          pager.value = response.pagination
-        },
-    )
-
     const route = useRoute()
-    const router = useRouter()
-    const fetchData = fetchDataFn
     watch(
       () => route.query.page,
       async (n) => {
@@ -64,111 +32,6 @@ export default defineComponent({
         await fetchData(n)
       },
     )
-
-    onBeforeMount(() => {
-      fetchData()
-    })
-
-    const DataTable = () => {
-      return (
-        <Table
-          data={data}
-          onFetchData={fetchData}
-          pager={pager}
-          columns={
-            [
-              {
-                title: '时间',
-                key: 'timestamp',
-                width: 150,
-                render({ timestamp }) {
-                  return parseDate(timestamp, 'M-d HH:mm:ss')
-                },
-              },
-              {
-                title: 'IP',
-                key: 'ip',
-                width: 100,
-                render({ ip }) {
-                  if (!ip) {
-                    return null
-                  }
-                  return (
-                    <IpInfoPopover
-                      ip={ip}
-                      triggerEl={
-                        <NButton text size="tiny" type="primary">
-                          {ip}
-                        </NButton>
-                      }
-                    ></IpInfoPopover>
-                  )
-                },
-              },
-
-              {
-                title: '请求路径',
-                key: 'path',
-                render({ path }) {
-                  return (
-                    <NEllipsis class="max-w-[150px] truncate">
-                      {path ?? ''}
-                    </NEllipsis>
-                  )
-                },
-              },
-
-              {
-                key: 'ua',
-                title: '浏览器',
-                render({ ua }) {
-                  return (
-                    <NEllipsis class="max-w-[200px] truncate">
-                      {ua.browser
-                        ? Object.values(ua.browser).filter(Boolean).join(' ')
-                        : 'N/A'}
-                    </NEllipsis>
-                  )
-                },
-              },
-
-              {
-                key: 'ua',
-                title: 'OS',
-                render({ ua }) {
-                  return (
-                    <NEllipsis class="max-w-[150px] truncate">
-                      {ua.os
-                        ? Object.values(ua.os).filter(Boolean).join(' ')
-                        : 'N/A'}
-                    </NEllipsis>
-                  )
-                },
-              },
-
-              {
-                key: 'ua',
-                title: 'User Agent',
-                render({ ua }) {
-                  return (
-                    <NEllipsis lineClamp={2}>
-                      {{
-                        default() {
-                          return ua.ua ?? ''
-                        },
-                        tooltip() {
-                          return <div class="max-w-[500px]">{ua.ua ?? ''}</div>
-                        },
-                      }}
-                    </NEllipsis>
-                  )
-                },
-              },
-            ] as TableColumns<UA.Root>
-          }
-        ></Table>
-      )
-    }
 
     // graph
     const count = ref({} as Total)
@@ -367,50 +230,9 @@ export default defineComponent({
         </div>
       )
     })
-    // end
 
     return () => (
-      <ContentLayout
-        actionsElement={
-          <>
-            <HeaderActionButton
-              icon={<RefreshOutlineIcon />}
-              variant="success"
-              name="刷新数据"
-              onClick={() => {
-                if (+route.query.page! === 1) {
-                  fetchData()
-                } else {
-                  router.replace({
-                    path: route.path,
-                    query: { ...route.query, page: 1 },
-                  })
-                }
-              }}
-            ></HeaderActionButton>
-            <DeleteConfirmButton
-              onDelete={async () => {
-                await RESTManager.api.analyze.delete()
-
-                if (parseInt(route.query.page as string) === 1) {
-                  fetchData()
-                } else {
-                  router.replace({
-                    path: route.path,
-                    query: {
-                      page: 1,
-                    },
-                  })
-                }
-              }}
-              customSuccessMessage="已清空"
-              message="你确定要清空数据表？"
-              customButtonTip="清空表"
-              customIcon={<TrashIcon />}
-            />
-          </>
-        }
-      >
+      <ContentLayout>
         <Graph />
         <NP>
           <SectionTitle>
@@ -454,51 +276,14 @@ export default defineComponent({
           </NTabPane>
 
           <NTabPane name={'访问路径'}>
-            <DataTable />
+            <AnalyzeDataTable />
+          </NTabPane>
+
+          <NTabPane name="访客活动">
+            <GuestActivity />
           </NTabPane>
         </NTabs>
       </ContentLayout>
     )
   },
 })
-interface IPAggregate {
-  today: Today[]
-  weeks: Week[]
-  months: Month[]
-  paths: Path[]
-  total: Total
-  todayIps: string[]
-}
-
-interface Month {
-  date: string
-  key: Key
-  value: number
-}
-
-enum Key {
-  IP = 'ip',
-  PV = 'pv',
-}
-
-interface Path {
-  count: number
-  path: string
-}
-
-interface Today {
-  hour: string
-  key: Key
-  value: number
-}
-
-interface Total {
-  callTime: number
-  uv: number
-}
-
-interface Week {
-  day: string
-  key: Key
-  value: number
-}

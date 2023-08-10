@@ -28,7 +28,6 @@ export enum RouteName {
   System = 'setting-system',
   Security = 'setting-security',
   Reset = 'reset',
-  Other = 'other',
   Backup = 'backup',
   Markdown = 'markdown',
   Subscribe = 'subscribe',
@@ -43,4 +42,7 @@ export enum RouteName {
 
   AssetTemplate = 'asset-template',
   Pty = 'pty',
+
+  Maintain = 'maintain',
+  Other = 'other',
 }
