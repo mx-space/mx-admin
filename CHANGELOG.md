@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [3.31.1](https://github.com/mx-space/mx-admin/compare/v3.31.0...v3.31.1) (2023-08-10)
+
+
+
 # [3.31.0](https://github.com/mx-space/mx-admin/compare/v3.30.10...v3.31.0) (2023-07-27)
 
 
