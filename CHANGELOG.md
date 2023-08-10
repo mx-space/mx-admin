@@ -1,5 +1,14 @@
 # CHANGELOG
 
+# [3.32.0](https://github.com/mx-space/mx-admin/compare/v3.31.1...v3.32.0) (2023-08-10)
+
+
+### Features
+
+* activity tab ([42f2bcb](https://github.com/mx-space/mx-admin/commit/42f2bcb53d3ad720f3dfa6f02e03703457cf2087))
+
+
+
 ## [3.31.1](https://github.com/mx-space/mx-admin/compare/v3.31.0...v3.31.1) (2023-08-10)
 
 
