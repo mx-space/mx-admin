@@ -71,7 +71,7 @@
     "umi-request": "1.4.0",
     "unidata.js": "0.8.0",
     "validator": "13.11.0",
-    "vite-plugin-windicss": "1.9.0",
+    "vite-plugin-windicss": "1.9.1",
     "vue": "3.3.4",
     "vue-router": "4.2.4",
     "xss": "1.0.14",
