@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## [3.32.2](https://github.com/mx-space/mx-admin/compare/v3.32.1...v3.32.2) (2023-08-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency crossbell.js to v1.6.1 ([#775](https://github.com/mx-space/mx-admin/issues/775)) ([bcdb844](https://github.com/mx-space/mx-admin/commit/bcdb844a557abe7dc7c1c767d183e10c51cb1565))
+* **deps:** update dependency vite-plugin-windicss to v1.9.1 ([#776](https://github.com/mx-space/mx-admin/issues/776)) ([d11b3df](https://github.com/mx-space/mx-admin/commit/d11b3dfd754bf03cb040375a10f7ceff79e06f39))
+
+
+
 ## [3.32.1](https://github.com/mx-space/mx-admin/compare/v3.32.0...v3.32.1) (2023-08-10)
 
 
