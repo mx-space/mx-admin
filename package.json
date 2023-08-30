@@ -92,7 +92,7 @@
     "@types/sortablejs": "1.15.1",
     "@types/validator": "13.9.0",
     "@vitejs/plugin-vue": "4.2.3",
-    "@vitejs/plugin-vue-jsx": "3.0.1",
+    "@vitejs/plugin-vue-jsx": "3.0.2",
     "@vue/compiler-sfc": "3.3.4",
     "cors": "2.8.5",
     "eslint": "^8.46.0",
