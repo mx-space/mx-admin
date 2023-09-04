@@ -221,8 +221,8 @@ devDependencies:
     specifier: 5.0.1
     version: 5.0.1
   '@types/qs':
-    specifier: 6.9.7
-    version: 6.9.7
+    specifier: 6.9.8
+    version: 6.9.8
   '@types/sortablejs':
     specifier: 1.15.1
     version: 1.15.1
@@ -2839,8 +2839,8 @@ packages:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==}
     dev: true
 
-  /@types/qs@6.9.7:
-    resolution: {integrity: sha512-FGa1F62FT09qcrueBA6qYTrJPVDzah9a+493+o2PCXsesWHIn27G98TsSMs3WPNbZIEj4+VJf6saSFpvD+3Zsw==}
+  /@types/qs@6.9.8:
+    resolution: {integrity: sha512-u95svzDlTysU5xecFNTgfFG5RUWu1A9P0VzgpcIiGZA9iraHOdSzcxMxQ55DyeRaGCSxQi7LxXDI4rzq/MYfdg==}
     dev: true
 
   /@types/semver@7.5.0:
