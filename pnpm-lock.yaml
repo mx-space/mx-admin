@@ -224,8 +224,8 @@ devDependencies:
     specifier: 6.9.7
     version: 6.9.7
   '@types/sortablejs':
-    specifier: 1.15.1
-    version: 1.15.1
+    specifier: 1.15.2
+    version: 1.15.2
   '@types/validator':
     specifier: 13.9.0
     version: 13.9.0
@@ -2847,8 +2847,8 @@ packages:
     resolution: {integrity: sha512-G8hZ6XJiHnuhQKR7ZmysCeJWE08o8T0AXtk5darsCaTVsYZhhgUrq53jizaR2FvsoeCwJhlmwTjkXBY5Pn/ZHw==}
     dev: true
 
-  /@types/sortablejs@1.15.1:
-    resolution: {integrity: sha512-g/JwBNToh6oCTAwNS8UGVmjO7NLDKsejVhvE4x1eWiPTC3uCuNsa/TD4ssvX3du+MLiM+SHPNDuijp8y76JzLQ==}
+  /@types/sortablejs@1.15.2:
+    resolution: {integrity: sha512-mOIv/EnPMzAZAVbuh9uGjOZ1BBdimP9Y6IPGntsvQJtko5yapSDKB7GwB3AOlF5N3bkpk4sBwQRpS3aEkiUbaA==}
     dev: true
 
   /@types/validator@13.9.0:

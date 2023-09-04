@@ -89,7 +89,7 @@
     "@types/markdown-escape": "1.1.0",
     "@types/marked": "5.0.1",
     "@types/qs": "6.9.7",
-    "@types/sortablejs": "1.15.1",
+    "@types/sortablejs": "1.15.2",
     "@types/validator": "13.9.0",
     "@vitejs/plugin-vue": "4.2.3",
     "@vitejs/plugin-vue-jsx": "3.0.2",
