@@ -26,7 +26,7 @@
     "@codemirror/theme-one-dark": "6.1.2",
     "@codemirror/view": "6.15.2",
     "@ddietr/codemirror-themes": "1.4.2",
-    "@huacnlee/autocorrect": "2.8.4",
+    "@huacnlee/autocorrect": "2.8.5",
     "@lezer/highlight": "^1.1.6",
     "@mx-space/api-client": "1.5.1",
     "@types/canvas-confetti": "1.6.1",
