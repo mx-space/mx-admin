@@ -96,8 +96,8 @@ dependencies:
     specifier: 0.14.0
     version: 0.14.0
   crossbell.js:
-    specifier: npm:crossbell@1.6.1
-    version: /crossbell@1.6.1(typescript@5.2.2)
+    specifier: npm:crossbell@1.6.4
+    version: /crossbell@1.6.4(typescript@5.2.2)
   date-fns:
     specifier: 2.30.0
     version: 2.30.0
@@ -2653,10 +2653,6 @@ packages:
       rollup: 3.29.0
     dev: true
 
-  /@scure/base@1.1.1:
-    resolution: {integrity: sha512-ZxOhsSyxYwLJj3pLZCefNitxsj093tb2vq90mp2txoYeBqbcjDjqFhyM8eUjq/uFm6zJ+mUuqxlS2FkuSY1MTA==}
-    dev: false
-
   /@scure/base@1.1.3:
     resolution: {integrity: sha512-/+SgoRjLq7Xlf0CWuLHq2LUZeL/w65kfzAPG5NH9pcmBhs+nunQTn4gvdwgMTIXnt9b2C/1SeL2XiysZEyIC9Q==}
     dev: false
@@ -2665,8 +2661,8 @@ packages:
     resolution: {integrity: sha512-bcKpo1oj54hGholplGLpqPHRbIsnbixFtc06nwuNM5/dwSXOq/AAYoIBRsBmnZJSdfeNW5rnff7NTAz3ZCqR9Q==}
     dependencies:
       '@noble/curves': 1.0.0
-      '@noble/hashes': 1.3.0
-      '@scure/base': 1.1.1
+      '@noble/hashes': 1.3.2
+      '@scure/base': 1.1.3
     dev: false
 
   /@scure/bip32@1.3.2:
@@ -2680,8 +2676,8 @@ packages:
   /@scure/bip39@1.2.0:
     resolution: {integrity: sha512-SX/uKq52cuxm4YFXWFaVByaSHJh2w3BnokVSeUJVCv6K7WulT9u2BuNRBhuFl8vAuYnzx9bEu9WgpcNYTrYieg==}
     dependencies:
-      '@noble/hashes': 1.3.0
-      '@scure/base': 1.1.1
+      '@noble/hashes': 1.3.2
+      '@scure/base': 1.1.3
     dev: false
 
   /@scure/bip39@1.2.1:
@@ -3162,7 +3158,7 @@ packages:
       '@types/web-bluetooth': 0.0.17
       '@vueuse/metadata': 10.2.1
       '@vueuse/shared': 10.2.1(vue@3.3.4)
-      vue-demi: 0.14.5(vue@3.3.4)
+      vue-demi: 0.14.6(vue@3.3.4)
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
@@ -3239,7 +3235,7 @@ packages:
   /@vueuse/shared@10.2.1(vue@3.3.4):
     resolution: {integrity: sha512-QWHq2bSuGptkcxx4f4M/fBYC3Y8d3M2UYyLsyzoPgEoVzJURQ0oJeWXu79OiLlBb8gTKkqe4mO85T/sf39mmiw==}
     dependencies:
-      vue-demi: 0.14.5(vue@3.3.4)
+      vue-demi: 0.14.6(vue@3.3.4)
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
@@ -3962,8 +3958,8 @@ packages:
       - zod
     dev: false
 
-  /crossbell@1.6.1(typescript@5.2.2):
-    resolution: {integrity: sha512-vpuQKcfA4gU7uyWrAU4TdCNAGAJgxemrLt2gzO+WEEBJv5r6M9fvkqBJjDoQy/gtXM7ThPCdMGFWzPW7WRetnw==}
+  /crossbell@1.6.4(typescript@5.2.2):
+    resolution: {integrity: sha512-6wjWaPW0HqePxKNjaC/YEcknHe5Kx4Icbtoo2p5LQd6c9ggXMpyGSXGnFqvWcU7vxdmcbEfdwYuzFeEPS3jXCA==}
     engines: {node: '>=16.14.0'}
     dependencies:
       '@crossbell/ipfs-fetch': 0.0.19
