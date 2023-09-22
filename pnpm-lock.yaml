@@ -275,8 +275,8 @@ devDependencies:
     specifier: 0.6.2
     version: 0.6.2(eslint@8.46.0)(typescript@5.2.2)(vite@4.4.9)
   vite-plugin-vue-devtools:
-    specifier: 0.5.0
-    version: 0.5.0(@types/node@18.17.14)(pug@3.0.2)(rollup@3.29.1)(sortablejs@1.15.0)(vite@4.4.9)(vue@3.3.4)
+    specifier: 0.5.1
+    version: 0.5.1(@types/node@18.17.14)(pug@3.0.2)(rollup@3.29.1)(sortablejs@1.15.0)(vite@4.4.9)(vue@3.3.4)
   vite-plugin-wasm:
     specifier: 3.2.2
     version: 3.2.2(vite@4.4.9)
@@ -420,7 +420,6 @@ packages:
 
   /@antfu/utils@0.7.6:
     resolution: {integrity: sha512-pvFiLP2BeOKA/ZOS6jxx4XhKzdVLHDhGlFEaZ2flWWYf2xOqVniqpk38I04DFRyz+L0ASggl7SkItTc+ZLju4w==}
-    dev: false
 
   /@antv/adjust@0.2.5:
     resolution: {integrity: sha512-MfWZOkD9CqXRES6MBGRNe27Q577a72EIwyMnE29wIlPliFvJfWwsrONddpGU7lilMpVKecS3WAzOoip3RfPTRQ==}
@@ -435,14 +434,14 @@ packages:
       '@antv/color-util': 2.0.6
       '@antv/scale': 0.3.18
       '@antv/util': 2.0.17
-      tslib: 2.6.1
+      tslib: 2.6.2
     dev: false
 
   /@antv/color-util@2.0.6:
     resolution: {integrity: sha512-KnPEaAH+XNJMjax9U35W67nzPI+QQ2x27pYlzmSIWrbj4/k8PGrARXfzDTjwoozHJY8qG62Z+Ww6Alhu2FctXQ==}
     dependencies:
       '@antv/util': 2.0.17
-      tslib: 2.6.1
+      tslib: 2.6.2
     dev: false
 
   /@antv/component@0.8.35:
@@ -456,7 +455,7 @@ packages:
       '@antv/scale': 0.3.18
       '@antv/util': 2.0.17
       fecha: 4.2.3
-      tslib: 2.6.1
+      tslib: 2.6.2
     dev: false
 
   /@antv/coord@0.3.1:
@@ -464,13 +463,13 @@ packages:
     dependencies:
       '@antv/matrix-util': 3.1.0-beta.3
       '@antv/util': 2.0.17
-      tslib: 2.6.1
+      tslib: 2.6.2
     dev: false
 
   /@antv/dom-util@2.0.4:
     resolution: {integrity: sha512-2shXUl504fKwt82T3GkuT4Uoc6p9qjCKnJ8gXGLSW4T1W37dqf9AV28aCfoVPHp2BUXpSsB+PAJX2rG/jLHsLQ==}
     dependencies:
-      tslib: 2.6.1
+      tslib: 2.6.2
     dev: false
 
   /@antv/event-emitter@0.1.3:
@@ -490,7 +489,7 @@ packages:
       d3-interpolate: 3.0.1
       d3-timer: 1.0.10
       detect-browser: 5.3.0
-      tslib: 2.6.1
+      tslib: 2.6.2
     dev: false
 
   /@antv/g-canvas@0.5.14:
@@ -502,7 +501,7 @@ packages:
       '@antv/path-util': 2.0.15
       '@antv/util': 2.0.17
       gl-matrix: 3.4.3
-      tslib: 2.6.1
+      tslib: 2.6.2
     dev: false
 
   /@antv/g-math@0.1.9:
@@ -519,7 +518,7 @@ packages:
       '@antv/g-math': 0.1.9
       '@antv/util': 2.0.17
       detect-browser: 5.3.0
-      tslib: 2.6.1
+      tslib: 2.6.2
     dev: false
 
   /@antv/g2@4.2.10:
@@ -555,7 +554,7 @@ packages:
     dependencies:
       '@antv/util': 2.0.17
       gl-matrix: 3.4.3
-      tslib: 2.6.1
+      tslib: 2.6.2
     dev: false
 
   /@antv/path-util@2.0.15:
@@ -563,7 +562,7 @@ packages:
     dependencies:
       '@antv/matrix-util': 3.0.4
       '@antv/util': 2.0.17
-      tslib: 2.6.1
+      tslib: 2.6.2
     dev: false
 
   /@antv/scale@0.3.18:
@@ -571,14 +570,14 @@ packages:
     dependencies:
       '@antv/util': 2.0.17
       fecha: 4.2.3
-      tslib: 2.6.1
+      tslib: 2.6.2
     dev: false
 
   /@antv/util@2.0.17:
     resolution: {integrity: sha512-o6I9hi5CIUvLGDhth0RxNSFDRwXeywmt6ExR4+RmVAzIi48ps6HUy+svxOCayvrPBN37uE6TAc2KDofRo0nK9Q==}
     dependencies:
       csstype: 3.1.2
-      tslib: 2.6.1
+      tslib: 2.6.2
     dev: false
 
   /@babel/code-frame@7.22.13:
@@ -898,7 +897,7 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       '@babel/code-frame': 7.22.5
-      '@babel/parser': 7.22.7
+      '@babel/parser': 7.22.16
       '@babel/types': 7.22.5
     dev: true
 
@@ -914,24 +913,6 @@ packages:
       '@babel/helper-split-export-declaration': 7.22.6
       '@babel/parser': 7.22.16
       '@babel/types': 7.22.15
-      debug: 4.3.4
-      globals: 11.12.0
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
-  /@babel/traverse@7.22.8:
-    resolution: {integrity: sha512-y6LPR+wpM2I3qJrsheCTwhIinzkETbplIgPBbwvqPKc+uljeA5gP+3nP8irdYt1mjQaDnlIcG+dw8OjAco4GXw==}
-    engines: {node: '>=6.9.0'}
-    dependencies:
-      '@babel/code-frame': 7.22.5
-      '@babel/generator': 7.22.9
-      '@babel/helper-environment-visitor': 7.22.5
-      '@babel/helper-function-name': 7.22.5
-      '@babel/helper-hoist-variables': 7.22.5
-      '@babel/helper-split-export-declaration': 7.22.6
-      '@babel/parser': 7.22.7
-      '@babel/types': 7.22.5
       debug: 4.3.4
       globals: 11.12.0
     transitivePeerDependencies:
@@ -2092,8 +2073,8 @@ packages:
     dependencies:
       '@babel/core': 7.22.15
       '@babel/generator': 7.22.9
-      '@babel/parser': 7.22.7
-      '@babel/traverse': 7.22.8
+      '@babel/parser': 7.22.16
+      '@babel/traverse': 7.22.15
       '@babel/types': 7.22.5
       '@vue/compiler-sfc': 3.3.4
       prettier: 3.0.3
@@ -3257,8 +3238,8 @@ packages:
       '@types/node': ^18.6.3
       pug: ^3.0.2
     dependencies:
-      '@babel/parser': 7.22.7
-      '@babel/traverse': 7.22.8
+      '@babel/parser': 7.22.16
+      '@babel/traverse': 7.22.15
       '@types/node': 18.17.14
       pug: 3.0.2
       resolve: 1.22.4
@@ -5551,7 +5532,6 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       '@jridgewell/sourcemap-codec': 1.4.15
-    dev: false
 
   /map-obj@4.3.0:
     resolution: {integrity: sha512-hdN1wVrZbb29eBGiGjJbeP8JbKjq1urkHJ/LIP/NY48MZ1QVXUsQBV1G1zvYFHn1XE06cwjBsOI2K3Ulnj1YXQ==}
@@ -7117,10 +7097,6 @@ packages:
     resolution: {integrity: sha512-7At1WUettjcSRHXCyYtTselblcHl9PJFFVKiCAy/bY97+BPZXSQ2wbq0P9s8tK2G7dFQfNnlJnPAiArVBVBsfA==}
     dev: false
 
-  /tslib@2.6.1:
-    resolution: {integrity: sha512-t0hLfiEKfMUoqhG+U1oid7Pva4bbDPHYfJNiB7BiIjRkj1pyC++4N3huJfqY6aRH6VTB0rvtzQwjM4K6qpfOig==}
-    dev: false
-
   /tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
 
@@ -7480,7 +7456,7 @@ packages:
     peerDependencies:
       vite: ^3.1.0 || ^4.0.0
     dependencies:
-      '@antfu/utils': 0.7.5
+      '@antfu/utils': 0.7.6
       '@rollup/pluginutils': 5.0.2(rollup@3.29.1)
       debug: 4.3.4
       fs-extra: 11.1.1
@@ -7493,8 +7469,8 @@ packages:
       - supports-color
     dev: true
 
-  /vite-plugin-vue-devtools@0.5.0(@types/node@18.17.14)(pug@3.0.2)(rollup@3.29.1)(sortablejs@1.15.0)(vite@4.4.9)(vue@3.3.4):
-    resolution: {integrity: sha512-LClwcrlbGyTHmq9aVbjatvH+PENQJkdyX/qbZP7kF8xgFb3LPntEHCKphDW+oXS3e7ExKEOZXIgtrjE3Quop+A==}
+  /vite-plugin-vue-devtools@0.5.1(@types/node@18.17.14)(pug@3.0.2)(rollup@3.29.1)(sortablejs@1.15.0)(vite@4.4.9)(vue@3.3.4):
+    resolution: {integrity: sha512-z6wzaRxvmQVF1A8iNPIrCrpgJWbFC8bQpCG18yTSHFzRYTkFrqTZ37JjrKysPP0EvLitI1PYru0Odqt2ICfCbQ==}
     engines: {node: '>=v14'}
     peerDependencies:
       vite: ^3.1.0 || ^4.0.0-0
@@ -7552,7 +7528,7 @@ packages:
       '@vue/compiler-dom': 3.3.4
       esno: 0.16.3
       kolorist: 1.8.0
-      magic-string: 0.30.1
+      magic-string: 0.30.3
       shell-quote: 1.8.1
       vite: 4.4.9(@types/node@18.17.14)
     transitivePeerDependencies:
