@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.32.4](https://github.com/mx-space/mx-admin/compare/v3.32.3...v3.32.4) (2023-09-24)
+
+
+### Bug Fixes
+
+* codemirror error ([c3f6da1](https://github.com/mx-space/mx-admin/commit/c3f6da156c49d94b98314ee6227512cf31eb46c6))
+
+
+
 ## [3.32.3](https://github.com/mx-space/mx-admin/compare/v3.32.2...v3.32.3) (2023-09-24)
 
 
