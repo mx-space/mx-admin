@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## [3.32.3](https://github.com/mx-space/mx-admin/compare/v3.32.2...v3.32.3) (2023-09-24)
+
+
+### Bug Fixes
+
+* **deps:** update codemirror ([#788](https://github.com/mx-space/mx-admin/issues/788)) ([8724da7](https://github.com/mx-space/mx-admin/commit/8724da73ca4c64ae4eb26e95c83a9bf8a2472b7f))
+* **deps:** update dependency @huacnlee/autocorrect to v2.8.5 ([#789](https://github.com/mx-space/mx-admin/issues/789)) ([3afde1c](https://github.com/mx-space/mx-admin/commit/3afde1c1c4dfd79f92a7e616c6e7302a0944d188))
+* **deps:** update dependency crossbell.js to v1.6.4 ([#790](https://github.com/mx-space/mx-admin/issues/790)) ([5ab7f2e](https://github.com/mx-space/mx-admin/commit/5ab7f2eafb926f3aa721178ffb11e5c663ad9e81))
+* **deps:** update dependency marked to v7.0.5 ([#793](https://github.com/mx-space/mx-admin/issues/793)) ([c1aacc5](https://github.com/mx-space/mx-admin/commit/c1aacc55813aab1af827b431ff719ed55a7dccae))
+
+
+
 ## [3.32.2](https://github.com/mx-space/mx-admin/compare/v3.32.1...v3.32.2) (2023-08-22)
 
 
