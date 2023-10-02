@@ -180,8 +180,8 @@ dependencies:
     specifier: 3.3.4
     version: 3.3.4
   vue-router:
-    specifier: 4.2.4
-    version: 4.2.4(vue@3.3.4)
+    specifier: 4.2.5
+    version: 4.2.5(vue@3.3.4)
   xss:
     specifier: 1.0.14
     version: 1.0.14
@@ -2482,7 +2482,7 @@ packages:
   /@types/jsonwebtoken@9.0.3:
     resolution: {integrity: sha512-b0jGiOgHtZ2jqdPgPnP6WLCXZk1T8p06A/vPGzUvxpFGgKMbjXJDjC5m52ErqBnIuWZFgGoIJyRdeG5AyreJjA==}
     dependencies:
-      '@types/node': 20.6.4
+      '@types/node': 20.8.0
     dev: false
 
   /@types/katex@0.14.0:
@@ -2511,10 +2511,6 @@ packages:
 
   /@types/node@18.18.1:
     resolution: {integrity: sha512-3G42sxmm0fF2+Vtb9TJQpnjmP+uKlWvFa8KoEGquh4gqRmoUG/N0ufuhikw6HEsdG2G2oIKhog1GCTfz9v5NdQ==}
-
-  /@types/node@20.6.4:
-    resolution: {integrity: sha512-nU6d9MPY0NBUMiE/nXd2IIoC4OLvsLpwAjheoAeuzgvDZA1Cb10QYg+91AF6zQiKWRN5i1m07x6sMe0niBznoQ==}
-    dev: false
 
   /@types/node@20.8.0:
     resolution: {integrity: sha512-LzcWltT83s1bthcvjBmiBvGJiiUe84NWRHkw+ZV6Fr41z2FbIzvc815dk2nQ3RAKMuN2fkenM/z3Xv2QzEpYxQ==}
@@ -7185,7 +7181,7 @@ packages:
       vite-hot-client: 0.2.2(vite@4.4.9)
       vite-plugin-inspect: 0.7.38(rollup@3.29.4)(vite@4.4.9)
       vite-plugin-vue-inspector: 3.7.1(vite@4.4.9)
-      vue-router: 4.2.4(vue@3.3.4)
+      vue-router: 4.2.5(vue@3.3.4)
       vuedraggable: 4.1.0(vue@3.3.4)
       xterm: 5.3.0
       xterm-addon-fit: 0.7.0(xterm@5.3.0)
@@ -7392,8 +7388,8 @@ packages:
       - supports-color
     dev: true
 
-  /vue-router@4.2.4(vue@3.3.4):
-    resolution: {integrity: sha512-9PISkmaCO02OzPVOMq2w82ilty6+xJmQrarYZDkjZBfl4RvYAlt4PKnEX21oW4KTtWfa9OuO/b3qk1Od3AEdCQ==}
+  /vue-router@4.2.5(vue@3.3.4):
+    resolution: {integrity: sha512-DIUpKcyg4+PTQKfFPX88UWhlagBEBEfJ5A8XDXRJLUnZOvcpMF8o/dnL90vpVkGaPbjvXazV/rC1qBKrZlFugw==}
     peerDependencies:
       vue: ^3.2.0
     dependencies:
