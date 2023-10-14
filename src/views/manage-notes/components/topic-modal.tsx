@@ -1,7 +1,5 @@
 import { UploadIcon } from 'components/icons'
 import { UploadWrapper } from 'components/upload'
-import type { TopicModel } from 'models/topic'
-import type { FormInst } from 'naive-ui'
 import {
   NButton,
   NCard,
@@ -12,6 +10,8 @@ import {
   NModal,
 } from 'naive-ui'
 import { RESTManager } from 'utils/rest'
+import type { TopicModel } from 'models/topic'
+import type { FormInst } from 'naive-ui'
 import type { PropType } from 'vue'
 
 export const TopicEditModal = defineComponent({
@@ -104,7 +104,7 @@ export const TopicEditModal = defineComponent({
         >
           <NCard
             role="dialog"
-            title={'新建话题'}
+            title={props.id ? '编辑话题' : '新建话题'}
             closable
             onClose={handleClose}
             class="modal-card sm"
