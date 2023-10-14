@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## [3.32.5](https://github.com/mx-space/mx-admin/compare/v3.32.4...v3.32.5) (2023-10-14)
+
+
+### Bug Fixes
+
+* **deps:** update codemirror ([#799](https://github.com/mx-space/mx-admin/issues/799)) ([9d6eb19](https://github.com/mx-space/mx-admin/commit/9d6eb19bb5f974ebe5c0c7aca7e63d88956d77f7))
+* **deps:** update dependency crossbell.js to v1.8.1 ([#800](https://github.com/mx-space/mx-admin/issues/800)) ([5b9d837](https://github.com/mx-space/mx-admin/commit/5b9d8379b7276d183864edf0dd58687804ba2e2e))
+* **deps:** update dependency vue-router to v4.2.5 ([#797](https://github.com/mx-space/mx-admin/issues/797)) ([aa15c0d](https://github.com/mx-space/mx-admin/commit/aa15c0d6573805c399ff5981297ca4f1a1a9238c))
+* edit topic title ([b36d73d](https://github.com/mx-space/mx-admin/commit/b36d73dd5529f1bcb49c41c88a6a40bde8f83112))
+
+
+
 ## [3.32.4](https://github.com/mx-space/mx-admin/compare/v3.32.3...v3.32.4) (2023-09-24)
 
 
