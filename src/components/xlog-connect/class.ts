@@ -201,10 +201,10 @@ export class CrossBellConnector {
           pageId: nextPageId,
         })
 
-        const cressbellNoteData = await this.getCrossbellNoteData(
+        const crossbellNoteData = await this.getCrossbellNoteData(
           nextPageId.split('-')[1],
         )
-        if (!cressbellNoteData) {
+        if (!crossbellNoteData) {
           message.error('无法获取 Crossbell Note 任务终止')
           return
         }
@@ -215,7 +215,7 @@ export class CrossBellConnector {
           owner,
           transactionHash,
           updatedTransactionHash,
-        } = cressbellNoteData
+        } = crossbellNoteData
 
         // "metadata": {
         //   "network": "Crossbell",
@@ -227,7 +227,7 @@ export class CrossBellConnector {
         //     "0xbb572893c077f488172a52edc67cab0b485713d8a21312052a1a1cb4f74c8675"
         //   ]
         // }
-        console.debug(cressbellNoteData)
+        console.debug(crossbellNoteData)
         await this.updateModel(data, {
           pageId: nextPageId,
           related_urls: [...metadata.content.external_urls],
