@@ -90,7 +90,7 @@
     "@types/marked": "5.0.2",
     "@types/qs": "6.9.8",
     "@types/sortablejs": "1.15.3",
-    "@types/validator": "13.11.2",
+    "@types/validator": "13.11.5",
     "@vitejs/plugin-vue": "4.4.0",
     "@vitejs/plugin-vue-jsx": "3.0.2",
     "@vue/compiler-sfc": "3.3.4",
