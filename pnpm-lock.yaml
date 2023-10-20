@@ -209,8 +209,8 @@ devDependencies:
     specifier: 1.0.2
     version: 1.0.2
   '@types/js-yaml':
-    specifier: 4.0.6
-    version: 4.0.6
+    specifier: 4.0.8
+    version: 4.0.8
   '@types/lodash-es':
     specifier: 4.17.9
     version: 4.17.9
@@ -2467,8 +2467,8 @@ packages:
     resolution: {integrity: sha512-qE5zrFd73BRs5oSjVys6g/5GboqOMbzLRTUFPAhfULvvvbRAOXw9m4Wk+p1BtoZm4JgW7TljGGfVabBqvi3eig==}
     dev: true
 
-  /@types/js-yaml@4.0.6:
-    resolution: {integrity: sha512-ACTuifTSIIbyksx2HTon3aFtCKWcID7/h3XEmRpDYdMCXxPbl+m9GteOJeaAkiAta/NJaSFuA7ahZ0NkwajDSw==}
+  /@types/js-yaml@4.0.8:
+    resolution: {integrity: sha512-m6jnPk1VhlYRiLFm3f8X9Uep761f+CK8mHyS65LutH2OhmBF0BeMEjHgg05usH8PLZMWWc/BUR9RPmkvpWnyRA==}
     dev: true
 
   /@types/json-schema@7.0.13:
