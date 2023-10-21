@@ -11,7 +11,6 @@ import {
   toRaw,
   watch,
 } from 'vue'
-import { useRoute } from 'vue-router'
 import type { IPAggregate, Month, Path, Today, Total, Week } from './types'
 
 import { Chart } from '@antv/g2/esm'
@@ -24,15 +23,6 @@ const SectionTitle = defineComponent((_, { slots }) => () => (
 ))
 export default defineComponent({
   setup() {
-    const route = useRoute()
-    watch(
-      () => route.query.page,
-      async (n) => {
-        // @ts-expect-error
-        await fetchData(n)
-      },
-    )
-
     // graph
     const count = ref({} as Total)
     const todayIp = ref<string[]>()

@@ -64,6 +64,13 @@ export const AnalyzeDataTable = defineComponent({
         setHeaderButtons(null)
       })
     })
+    watch(
+      () => route.query.page,
+      async (n) => {
+        await fetchData(n ? +n : 1)
+      },
+    )
+
     const {
       data,
       pager,
