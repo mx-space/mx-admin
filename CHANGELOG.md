@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## [3.32.6](https://github.com/mx-space/mx-admin/compare/v3.32.5...v3.32.6) (2023-10-21)
+
+
+### Bug Fixes
+
+* analyze table paginator ([44d3141](https://github.com/mx-space/mx-admin/commit/44d3141e68af9a142a1f42542d611abe7e3127bf))
+* **deps:** update dependency crossbell.js to v1.9.0 ([#807](https://github.com/mx-space/mx-admin/issues/807)) ([3807a80](https://github.com/mx-space/mx-admin/commit/3807a80a67513996bf43b0fe46cb720174b53743))
+* **deps:** update dependency pinia to v2.1.7 ([#808](https://github.com/mx-space/mx-admin/issues/808)) ([1f1e28e](https://github.com/mx-space/mx-admin/commit/1f1e28e19051313dfb66099c9091c7b62e1e6428))
+* typo ([ce53f69](https://github.com/mx-space/mx-admin/commit/ce53f6949fa9f4b255d2df2458a0c67938d6194a))
+
+
+
 ## [3.32.5](https://github.com/mx-space/mx-admin/compare/v3.32.4...v3.32.5) (2023-10-14)
 
 
