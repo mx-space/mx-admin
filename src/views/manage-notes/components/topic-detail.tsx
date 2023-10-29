@@ -1,10 +1,15 @@
-import { PlusIcon, SearchIcon, TrashIcon } from 'components/icons'
+import {
+  PencilAltIcon,
+  PlusIcon,
+  SearchIcon,
+  TrashIcon,
+} from 'components/icons'
 import { IframePreviewButton } from 'components/special-button/iframe-preview'
 import { UploadWrapper } from 'components/upload'
-import type { TopicModel } from 'models/topic'
 import {
   NAvatar,
   NButton,
+  NButtonGroup,
   NCard,
   NEmpty,
   NList,
@@ -20,9 +25,11 @@ import {
 import { RESTManager } from 'utils'
 import { buildMarkdownRenderUrl } from 'utils/endpoint'
 import { textToBigCharOrWord } from 'utils/word'
+import { useRouter } from 'vue-router'
+import type { NoteModel, Pager, PaginateResult } from '@mx-space/api-client'
+import type { TopicModel } from 'models/topic'
 import type { PropType } from 'vue'
 
-import type { NoteModel, Pager, PaginateResult } from '@mx-space/api-client'
 import { Icon as NIcon } from '@vicons/utils'
 
 import { useMemoNoteList } from '../hooks/use-memo-note-list'
@@ -82,6 +89,8 @@ export const TopicDetail = defineComponent({
         notes.value.splice(index, 1)
       }
     }
+
+    const router = useRouter()
 
     return () => (
       <>
@@ -176,7 +185,7 @@ export const TopicDetail = defineComponent({
                   },
                   description() {
                     return (
-                      <p class={'opacity-90 clamp-2 break-all'}>
+                      <p class={'clamp-2 break-all opacity-90'}>
                         {topic.value?.introduce}
                       </p>
                     )
@@ -190,7 +199,7 @@ export const TopicDetail = defineComponent({
                 <NSkeleton animated class="mt-2 h-[350px]"></NSkeleton>
               ) : (
                 <div class={'mt-4'}>
-                  <p class="flex justify-between items-center">
+                  <p class="flex items-center justify-between">
                     <strong>包含的文章：</strong>
                     <AddNoteToThisTopicButton
                       topicId={topic.value.id!}
@@ -200,7 +209,7 @@ export const TopicDetail = defineComponent({
                     />
                   </p>
                   {notes.value.length === 0 && (
-                    <div class={'h-[300px] flex items-center justify-center'}>
+                    <div class={'flex h-[300px] items-center justify-center'}>
                       <NEmpty description="这里还没有任何内容"></NEmpty>
                     </div>
                   )}
@@ -210,7 +219,7 @@ export const TopicDetail = defineComponent({
                         {{
                           default() {
                             return (
-                              <p class="space-x-2 flex items-center">
+                              <p class="flex items-center space-x-2">
                                 <span>{note.title}</span>
                                 <IframePreviewButton
                                   path={buildMarkdownRenderUrl(note.id)}
@@ -220,26 +229,45 @@ export const TopicDetail = defineComponent({
                           },
                           suffix() {
                             return (
-                              <NPopconfirm
-                                onPositiveClick={() =>
-                                  handleRemoveTopicFromThisNote(note.id)
-                                }
-                              >
-                                {{
-                                  trigger() {
-                                    return (
-                                      <NButton circle tertiary type="error">
-                                        <NIcon>
-                                          <TrashIcon />
-                                        </NIcon>
-                                      </NButton>
-                                    )
-                                  },
-                                  default() {
-                                    return `是否移除此话题「${topic.value?.name}」？`
-                                  },
-                                }}
-                              </NPopconfirm>
+                              <NButtonGroup>
+                                <NButton
+                                  circle
+                                  tertiary
+                                  type="primary"
+                                  onClick={() => {
+                                    router.push({
+                                      path: `/notes/edit`,
+                                      query: {
+                                        id: note.id,
+                                      },
+                                    })
+                                  }}
+                                >
+                                  <NIcon>
+                                    <PencilAltIcon />
+                                  </NIcon>
+                                </NButton>
+                                <NPopconfirm
+                                  onPositiveClick={() =>
+                                    handleRemoveTopicFromThisNote(note.id)
+                                  }
+                                >
+                                  {{
+                                    trigger() {
+                                      return (
+                                        <NButton circle tertiary type="error">
+                                          <NIcon>
+                                            <TrashIcon />
+                                          </NIcon>
+                                        </NButton>
+                                      )
+                                    },
+                                    default() {
+                                      return `是否移除此话题「${topic.value?.name}」？`
+                                    },
+                                  }}
+                                </NPopconfirm>
+                              </NButtonGroup>
                             )
                           },
                         }}
@@ -264,7 +292,7 @@ export const TopicDetail = defineComponent({
             </NCard>
           ) : (
             <NCard class={'modal-card md'} role="dialog" title="专栏信息获取中">
-              <div class={'flex relative gap-2 '}>
+              <div class={'relative flex gap-2 '}>
                 <NSkeleton animated circle width={60}></NSkeleton>
                 <div class={'flex-grow'}>
                   <NSkeleton
