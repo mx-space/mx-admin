@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.32.7](https://github.com/mx-space/mx-admin/compare/v3.32.6...v3.32.7) (2023-10-29)
+
+
+### Features
+
+* **topic-detail:** support nav to note edit ([162463c](https://github.com/mx-space/mx-admin/commit/162463c9ca6f41fe6f6638fb1b76f4e9d3b2892d))
+
+
+
 ## [3.32.6](https://github.com/mx-space/mx-admin/compare/v3.32.5...v3.32.6) (2023-10-21)
 
 
