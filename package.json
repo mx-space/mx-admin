@@ -86,7 +86,7 @@
     "@types/event-source-polyfill": "1.0.2",
     "@types/js-yaml": "4.0.8",
     "@types/lodash-es": "4.17.9",
-    "@types/markdown-escape": "1.1.1",
+    "@types/markdown-escape": "1.1.2",
     "@types/marked": "5.0.2",
     "@types/qs": "6.9.8",
     "@types/sortablejs": "1.15.3",
