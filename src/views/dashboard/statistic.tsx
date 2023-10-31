@@ -12,7 +12,11 @@ export const Statistic = defineComponent({
             <NSkeleton style={{ height: '1.8rem', width: '3rem' }}></NSkeleton>
           </NSpace>
         ) : (
-          <NStatistic label={props.label} value={props.value}></NStatistic>
+          <NStatistic
+            label={props.label}
+            value={Intl.NumberFormat('en-us').format(props.value)}
+            tabularNums
+          ></NStatistic>
         )}
       </Fragment>
     )

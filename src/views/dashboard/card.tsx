@@ -42,12 +42,7 @@ export const Card = defineComponent({
           <NThing>
             {{
               header() {
-                return (
-                  <Statistic
-                    label={props.label}
-                    value={props.value}
-                  ></Statistic>
-                )
+                return <Statistic label={props.label} value={props.value} />
               },
               ['header-extra']: function () {
                 return (

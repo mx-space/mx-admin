@@ -11,10 +11,13 @@ import {
   FileIcon,
   GamesIcon,
   GuestIcon,
+  HeartIcon,
   LinkIcon,
+  NotebookMinimalistic,
   NoteIcon,
   OnlinePredictionFilledIcon,
   PencilIcon,
+  PhAlignLeft,
   RedisIcon,
   RefreshIcon,
 } from 'components/icons'
@@ -85,6 +88,34 @@ export const DashBoardView = defineComponent({
       stat.value = counts
       statTime.value = new Date()
     }
+
+    const siteWordCount = ref(0)
+    const readAndLikeCounts = ref({
+      totalLikes: 0,
+      totalReads: 0,
+    })
+    const fetchSiteWordCount = async () => {
+      return await RESTManager.api.aggregate.count_site_words.get<{
+        data: { length: number }
+      }>()
+    }
+
+    const fetchReadAndLikeCounts = async () => {
+      return await RESTManager.api.aggregate.count_read_and_like.get<{
+        totalLikes: number
+        totalReads: number
+      }>()
+    }
+
+    onMounted(async () => {
+      const [c, rl] = await Promise.all([
+        fetchSiteWordCount(),
+        fetchReadAndLikeCounts(),
+      ])
+      siteWordCount.value = c.data.length
+
+      readAndLikeCounts.value = rl
+    })
 
     const refreshHitokoto = () => {
       fetchHitokoto([
@@ -380,11 +411,7 @@ export const DashBoardView = defineComponent({
 
       {
         label: 'API 总调用次数',
-        value:
-          // @ts-expect-error
-          stat.value.callTime !== 'N/A'
-            ? Intl.NumberFormat('en-us').format(stat.value.callTime)
-            : 'N/A',
+        value: stat.value.callTime,
         icon: <ActivityIcon />,
         actions: [
           {
@@ -413,6 +440,22 @@ export const DashBoardView = defineComponent({
             },
           },
         ],
+      },
+      {
+        label: '全站字符数',
+        value: siteWordCount.value,
+        icon: <PhAlignLeft />,
+      },
+
+      {
+        label: '总阅读量',
+        value: readAndLikeCounts.value.totalReads,
+        icon: <NotebookMinimalistic />,
+      },
+      {
+        label: '总点赞数',
+        value: readAndLikeCounts.value.totalLikes,
+        icon: <HeartIcon />,
       },
 
       {
@@ -566,6 +609,7 @@ export const DashBoardView = defineComponent({
     )
   },
 })
+
 const AppIF = defineComponent({
   setup() {
     const { app } = useStoreRef(AppStore)
