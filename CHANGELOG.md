@@ -1,5 +1,19 @@
 # CHANGELOG
 
+# [3.33.0](https://github.com/mx-space/mx-admin/compare/v3.32.7...v3.33.0) (2023-10-31)
+
+
+### Bug Fixes
+
+* number format type error ([c1db1d8](https://github.com/mx-space/mx-admin/commit/c1db1d8f26bad04aa9a61a1be85a673a01ef55fb))
+
+
+### Features
+
+* dashboard count ([9a1c9b7](https://github.com/mx-space/mx-admin/commit/9a1c9b7837d94704e88e6855a1f00461f4f98649))
+
+
+
 ## [3.32.7](https://github.com/mx-space/mx-admin/compare/v3.32.6...v3.32.7) (2023-10-29)
 
 
