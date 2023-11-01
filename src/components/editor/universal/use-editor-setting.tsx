@@ -1,5 +1,5 @@
 import { useStorageObject } from 'hooks/use-storage'
-import { NFormItem, NH5, NInput, NInputNumber, NP, NSwitch } from 'naive-ui'
+import { NFormItem, NH5, NInput, NInputNumber, NSwitch } from 'naive-ui'
 
 import { GeneralSettingDto } from './editor-config'
 import { ResetIconButton } from './reset-icon-button'
@@ -22,7 +22,7 @@ export const useEditorConfig = () => {
   const GeneralSetting = defineComponent(() => {
     return () => (
       <Fragment>
-        <NH5 class="!flex items-center !mt-0">
+        <NH5 class="!mt-0 !flex items-center">
           通用设置
           <ResetIconButton resetFn={resetGeneralSetting} />
         </NH5>
@@ -37,9 +37,6 @@ export const useEditorConfig = () => {
             onUpdateValue={(e) => void (generalSetting.fontSize = e ?? 14)}
             value={generalSetting.fontSize}
           />
-        </NFormItem>
-        <NFormItem label="注意: " labelAlign="right">
-          <NP>以上设定暂时不适于 Monaco Editor</NP>
         </NFormItem>
 
         <NFormItem label="自动纠正标点">

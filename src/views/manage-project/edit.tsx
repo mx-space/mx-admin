@@ -1,17 +1,18 @@
 import { HeaderActionButton } from 'components/button/rounded-button'
-import { EditorToggleWrapper } from 'components/editor/universal/toggle'
 import { SendIcon } from 'components/icons'
 import { FetchGithubRepoButton } from 'components/special-button/fetch-github-repo'
-import type { IGithubRepo } from 'external/api/github-repo'
 import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
 import { ContentLayout } from 'layouts/content'
 import { isString, transform } from 'lodash-es'
-import type { ProjectModel } from 'models/project'
 import { NDynamicTags, NForm, NFormItem, NInput } from 'naive-ui'
 import { RouteName } from 'router/name'
 import { RESTManager } from 'utils'
 import { computed, defineComponent, onMounted, reactive, toRaw } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import type { IGithubRepo } from 'external/api/github-repo'
+import type { ProjectModel } from 'models/project'
+
+import { Editor } from '~/components/editor/universal'
 
 type ProjectReactiveType = {
   name: string
@@ -211,9 +212,9 @@ const EditProjectView = defineComponent({
 
           <NFormItem label="正文" required>
             <div class="w-full">
-              <EditorToggleWrapper
+              <Editor
                 unSaveConfirm={false}
-                class="min-h-80 w-full h-[calc(100vh-40rem)]"
+                class="min-h-80 h-[calc(100vh-40rem)] w-full"
                 loading={!!(id.value && !project.id)}
                 onChange={(v) => {
                   project.text = v

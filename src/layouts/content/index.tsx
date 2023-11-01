@@ -2,7 +2,6 @@
 
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { NLayoutContent } from 'naive-ui'
-import type { PropType, VNode } from 'vue'
 import {
   computed,
   defineComponent,
@@ -12,6 +11,7 @@ import {
   ref,
 } from 'vue'
 import { useRouter } from 'vue-router'
+import type { PropType, VNode } from 'vue'
 
 import styles from './index.module.css'
 
@@ -75,7 +75,7 @@ export const ContentLayout = defineComponent({
         const index = footerExtraButtonEl.value.findIndex(
           (E) => E.displayName$ === name,
         )
-        if (index && index !== -1) {
+        if (index !== -1) {
           footerExtraButtonEl.value.splice(index, 1)
         }
       },
@@ -138,16 +138,18 @@ export const ContentLayout = defineComponent({
     })
     const Footer = defineComponent({
       setup() {
-        return () => (
-          <footer class={styles['buttons']}>
-            {footerExtraButtonEl.value
-              ? footerExtraButtonEl.value.map((E: any) => (
-                  <E key={E.displayName} />
-                ))
-              : null}
-            {props.footerButtonElement ? <A$fel /> : slots.buttons?.()}
-          </footer>
-        )
+        return () => {
+          return (
+            <footer class={styles['buttons']}>
+              {footerExtraButtonEl.value
+                ? footerExtraButtonEl.value.map((E) => (
+                    <E key={E.displayName$} />
+                  ))
+                : null}
+              {props.footerButtonElement ? <A$fel /> : slots.buttons?.()}
+            </footer>
+          )
+        }
       },
     })
 

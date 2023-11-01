@@ -1,6 +1,5 @@
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { TextBaseDrawer } from 'components/drawer/text-base-drawer'
-import { EditorToggleWrapper } from 'components/editor/universal/toggle'
 import { SlidersHIcon, TelegramPlaneIcon } from 'components/icons'
 import { MaterialInput } from 'components/input/material-input'
 import { GetLocationButton } from 'components/location/get-location-button'
@@ -46,6 +45,7 @@ import type { WriteBaseType } from 'shared/types/base'
 
 import { Icon } from '@vicons/utils'
 
+import { Editor } from '~/components/editor/universal'
 import { HeaderPreviewButton } from '~/components/special-button/preview'
 import { EmitKeyMap } from '~/constants/keys'
 
@@ -310,7 +310,8 @@ const NoteWriteView = defineComponent(() => {
         <label>{`${WEB_URL}/notes/${nid.value ?? ''}`}</label>
       </div>
 
-      <EditorToggleWrapper
+      <Editor
+        key={data.id}
         loading={loading.value}
         onChange={(v) => {
           data.text = v

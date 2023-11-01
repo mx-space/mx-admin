@@ -4,7 +4,6 @@ export const EditorStorageKeys = {
 } as const
 
 export enum Editor {
-  monaco = 'monaco',
   codemirror = 'codemirror',
 
   plain = 'plain',

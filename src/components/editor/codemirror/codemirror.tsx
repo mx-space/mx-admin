@@ -1,8 +1,8 @@
+/* eslint-disable vue/no-setup-props-destructure */
 import { useSaveConfirm } from 'hooks/use-save-confirm'
-import type { PropType } from 'vue'
 import { defineComponent } from 'vue'
-
 import type { EditorState } from '@codemirror/state'
+import type { PropType } from 'vue'
 
 import styles from '../universal/editor.module.css'
 import { editorBaseProps } from '../universal/props'
@@ -23,7 +23,7 @@ export const CodemirrorEditor = defineComponent({
       type: String,
     },
   },
-  setup(props) {
+  setup(props, { expose }) {
     const [refContainer, editorView] = useCodeMirror({
       initialDoc: props.text,
       onChange: (state) => {
@@ -32,14 +32,9 @@ export const CodemirrorEditor = defineComponent({
       },
     })
 
-    let memoInitialValue: string = toRaw(props.text)
-
     watch(
       () => props.text,
       (n) => {
-        if (!memoInitialValue && n) {
-          memoInitialValue = n
-        }
         const editor = editorView.value
 
         if (editor && n != editor.state.doc.toString()) {
@@ -50,9 +45,22 @@ export const CodemirrorEditor = defineComponent({
       },
     )
 
+    expose({
+      setValue: (value: string) => {
+        const editor = editorView.value
+        if (editor) {
+          editor.dispatch({
+            changes: { from: 0, to: editor.state.doc.length, insert: value },
+          })
+        }
+      },
+    })
+
+    const memoedText = props.text
+
     useSaveConfirm(
       props.unSaveConfirm,
-      () => memoInitialValue === editorView.value?.state.doc.toString(),
+      () => memoedText === editorView.value?.state.doc.toString(),
     )
 
     return () => (
