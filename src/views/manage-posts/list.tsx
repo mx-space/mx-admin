@@ -6,10 +6,6 @@ import { EditColumn } from 'components/table/edit-column'
 import { RelativeTime } from 'components/time/relative-time'
 import { useStoreRef } from 'hooks/use-store-ref'
 import { useDataTableFetch } from 'hooks/use-table'
-import type {
-  CategoryWithChildrenModel,
-  PickedPostModelInCategoryChildren,
-} from 'models/category'
 import {
   NButton,
   NIcon,
@@ -18,22 +14,26 @@ import {
   NSpace,
   useMessage,
 } from 'naive-ui'
+import { CategoryStore } from 'stores/category'
+import { parseDate } from 'utils'
+import { computed, defineComponent, onMounted, reactive, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import type {
+  CategoryWithChildrenModel,
+  PickedPostModelInCategoryChildren,
+} from 'models/category'
 import type {
   FilterOption,
   FilterState,
   TableColumns,
 } from 'naive-ui/lib/data-table/src/interface'
-import { CategoryStore } from 'stores/category'
-import { parseDate } from 'utils'
 import type { ComputedRef } from 'vue'
-import { computed, defineComponent, onMounted, reactive, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import type { PostModel, PostResponse } from '../../models/post'
 
 import { Icon } from '@vicons/utils'
 
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
-import type { PostModel, PostResponse } from '../../models/post'
 import { RESTManager } from '../../utils/rest'
 
 export const ManagePostListView = defineComponent({
@@ -96,20 +96,17 @@ export const ManagePostListView = defineComponent({
           },
           {
             title: '标题',
-            sortOrder: false,
-            sorter: 'default',
             key: 'title',
-            width: 200,
-            ellipsis: true,
+            width: 280,
             render(row) {
               return (
-                <div class={'flex items-center space-x-2'}>
+                <div class={'flex flex-grow items-center space-x-2'}>
                   {row.pin && (
                     <NPopover>
                       {{
                         trigger() {
                           return (
-                            <NIcon class={'text-orange-400'}>
+                            <NIcon class={'flex-shrink-0 text-orange-400'}>
                               <PhPushPin />
                             </NIcon>
                           )
@@ -126,13 +123,15 @@ export const ManagePostListView = defineComponent({
                       }}
                     </NPopover>
                   )}
-                  <TableTitleLink
-                    id={row.id}
-                    title={row.title}
-                    inPageTo={`/posts/edit?id=${row.id}`}
-                    externalLinkTo={`/posts/${row.category.slug}/${row.slug}`}
-                    xLog={row.meta?.xLog}
-                  />
+                  <div class={'w-0 flex-grow'}>
+                    <TableTitleLink
+                      id={row.id}
+                      title={row.title}
+                      inPageTo={`/posts/edit?id=${row.id}`}
+                      externalLinkTo={`/posts/${row.category.slug}/${row.slug}`}
+                      xLog={row.meta?.xLog}
+                    />
+                  </div>
                 </div>
               )
             },
@@ -142,7 +141,7 @@ export const ManagePostListView = defineComponent({
             sortOrder: false,
             sorter: 'default',
             key: 'category',
-            width: 80,
+            width: 100,
             ellipsis: true,
             // @ts-expect-error
             filterOptions: categoryFilterOptions,
