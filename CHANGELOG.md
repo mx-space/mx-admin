@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.33.1](https://github.com/mx-space/mx-admin/compare/v3.33.0...v3.33.1) (2023-11-01)
+
+
+### Bug Fixes
+
+* post table title render ([29a851e](https://github.com/mx-space/mx-admin/commit/29a851e2ae18938b7b66759fcff258c5647c2d6b))
+
+
+
 # [3.33.0](https://github.com/mx-space/mx-admin/compare/v3.32.7...v3.33.0) (2023-10-31)
 
 
