@@ -14,7 +14,6 @@ import { useStoreRef } from 'hooks/use-store-ref'
 import { useDataTableFetch } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
 import markdownEscape from 'markdown-escape'
-import type { CommentModel, CommentsResponse } from 'models/comment'
 import { CommentState } from 'models/comment'
 import {
   NAvatar,
@@ -33,13 +32,14 @@ import {
   useDialog,
   useMessage,
 } from 'naive-ui'
-import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { RouteName } from 'router/name'
 import { UIStore } from 'stores/ui'
 import { RESTManager } from 'utils/rest'
 import { relativeTimeFromNow } from 'utils/time'
 import { defineComponent, nextTick, reactive, ref, unref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import type { CommentModel, CommentsResponse } from 'models/comment'
+import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 
 import { Icon } from '@vicons/utils'
 
@@ -256,7 +256,7 @@ const ManageComment = defineComponent(() => {
               <CommentMarkdownRender text={row.text} />
             </p>
             {row.parent && (
-              <blockquote class="border-l-[3px] border-solid border-primary-default pl-[12px] my-2 ml-4">
+              <blockquote class="border-primary-default my-2 ml-4 border-l-[3px] border-solid pl-[12px]">
                 <NSpace size={2} align="center">
                   <NText depth="2">
                     {row.parent.author}&nbsp;在&nbsp;
@@ -331,6 +331,13 @@ const ManageComment = defineComponent(() => {
 
   const { viewport } = useStoreRef(UIStore)
 
+  const handleKeyDown = (e: KeyboardEvent) => {
+    // cmd + enter to onSubmit
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+      onReplySubmit()
+      e.preventDefault()
+    }
+  }
   return () => (
     <ContentLayout
       actionsElement={
@@ -446,7 +453,7 @@ const ManageComment = defineComponent(() => {
                   embedded
                   bordered
                   class={
-                    'h-[100px] overflow-auto !p-2 !px-4 cursor-default !text-gray-500'
+                    'h-[100px] cursor-default overflow-auto !p-2 !px-4 !text-gray-500'
                   }
                   contentStyle={{ padding: '0' }}
                 >
@@ -461,6 +468,7 @@ const ManageComment = defineComponent(() => {
                   type="textarea"
                   onInput={(e) => (replyText.value = e)}
                   autosize={{ minRows: 4, maxRows: 10 }}
+                  onKeydown={handleKeyDown}
                 ></NInput>
               </NFormItemRow>
 
