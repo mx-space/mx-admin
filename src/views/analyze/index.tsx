@@ -1,7 +1,16 @@
 import { IpInfoPopover } from 'components/ip-info'
 import { ContentLayout } from 'layouts/content'
 import { isEmpty } from 'lodash-es'
-import { NButton, NP, NSkeleton, NSpace, NTabPane, NTabs } from 'naive-ui'
+import {
+  NButton,
+  NDataTable,
+  NP,
+  NSkeleton,
+  NSpace,
+  NTabPane,
+  NTabs,
+  useDialog,
+} from 'naive-ui'
 import { RESTManager } from 'utils'
 import {
   defineComponent,
@@ -221,6 +230,8 @@ export default defineComponent({
       )
     })
 
+    const modal = useDialog()
+
     return () => (
       <ContentLayout>
         <Graph />
@@ -242,25 +253,73 @@ export default defineComponent({
                   <span>今天 - 所有请求的 IP {todayIp.value.length} 个</span>
                 </SectionTitle>
 
-                <NSpace>
-                  {todayIp.value.map((ip) => (
-                    <IpInfoPopover
-                      ip={ip}
-                      key={ip}
-                      triggerEl={
-                        <NButton
-                          size="tiny"
-                          class="!flex !py-[15px]"
-                          round
-                          type="primary"
-                          ghost
-                        >
-                          {ip}
-                        </NButton>
-                      }
-                    ></IpInfoPopover>
-                  ))}
-                </NSpace>
+                <div>
+                  <NSpace>
+                    {todayIp.value.slice(0, 100).map((ip) => (
+                      <IpInfoPopover
+                        ip={ip}
+                        key={ip}
+                        triggerEl={
+                          <NButton
+                            size="tiny"
+                            class="!flex !py-[15px]"
+                            round
+                            type="primary"
+                            ghost
+                          >
+                            {ip}
+                          </NButton>
+                        }
+                      ></IpInfoPopover>
+                    ))}
+                  </NSpace>
+                  {todayIp.value.length > 100 && (
+                    <div class={'mt-6 flex justify-center'}>
+                      <NButton
+                        round
+                        onClick={() => {
+                          modal.create({
+                            title: '今天所有请求的 IP',
+                            content: () => (
+                              <NDataTable
+                                virtualScroll
+                                maxHeight={300}
+                                data={todayIp.value?.map((i) => ({ ip: i }))}
+                                columns={[
+                                  {
+                                    title: 'IP',
+                                    key: 'ip',
+                                    render(rowData) {
+                                      const ip = rowData.ip
+                                      return (
+                                        <IpInfoPopover
+                                          ip={ip}
+                                          triggerEl={
+                                            <NButton
+                                              size="tiny"
+                                              class="!flex !py-[15px]"
+                                              round
+                                              type="primary"
+                                              ghost
+                                            >
+                                              {ip}
+                                            </NButton>
+                                          }
+                                        ></IpInfoPopover>
+                                      )
+                                    },
+                                  },
+                                ]}
+                              ></NDataTable>
+                            ),
+                          })
+                        }}
+                      >
+                        查看更多
+                      </NButton>
+                    </div>
+                  )}
+                </div>
               </NP>
             )}
           </NTabPane>
