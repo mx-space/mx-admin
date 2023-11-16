@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.33.4](https://github.com/mx-space/mx-admin/compare/v3.33.3...v3.33.4) (2023-11-16)
+
+
+### Features
+
+* attach token from query ([791b63c](https://github.com/mx-space/mx-admin/commit/791b63cb707a2579c51531d7e294a8f961cc3cc6))
+
+
+
 ## [3.33.3](https://github.com/mx-space/mx-admin/compare/v3.33.2...v3.33.3) (2023-11-02)
 
 
