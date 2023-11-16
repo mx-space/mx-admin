@@ -1,5 +1,7 @@
 import Cookies from 'js-cookie'
 
+import { router } from '~/router'
+
 export const TokenKey = 'mx-token'
 
 /**
@@ -21,4 +23,24 @@ export function setToken(token: string) {
 
 export function removeToken() {
   return Cookies.remove(TokenKey)
+}
+
+export const attachTokenFromQuery = () => {
+  const token = new URLSearchParams(window.location.search).get('token')
+  if (token) {
+    setToken(token)
+    router.isReady().then(() => {
+      const parsedUrl = new URL(window.location.href)
+      parsedUrl.searchParams.delete('token')
+      const query = {} as any
+      for (const [key, value] of parsedUrl.searchParams.entries()) {
+        query[key] = value
+      }
+
+      router.replace({
+        path: parsedUrl.pathname,
+        query,
+      })
+    })
+  }
 }
