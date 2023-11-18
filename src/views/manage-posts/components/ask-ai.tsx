@@ -6,7 +6,7 @@ import {
   NPopover,
   useMessage,
 } from 'naive-ui'
-import { Configuration, OpenAIApi } from 'openai'
+import { OpenAI } from 'openai'
 
 export const AISummaryDialog = defineComponent({
   props: {
@@ -28,16 +28,15 @@ CONCISE SUMMARY:`)
     const message = useMessage()
     const isLoading = ref(false)
     const handleAskAI = async () => {
-      const config = new Configuration({
+      const ai = new OpenAI({
         apiKey: token.value,
       })
-      const ai = new OpenAIApi(config)
 
       const finalPrompt = promptRef.value.replace('{text}', props.article)
       const messageIns = message.loading('AI 正在生成摘要...')
       isLoading.value = true
-      const response = await ai
-        .createChatCompletion({
+      const response = await ai.chat.completions
+        .create({
           messages: [
             {
               content: finalPrompt,
@@ -57,7 +56,7 @@ CONCISE SUMMARY:`)
         })
 
       if (!response) return
-      const summary = response.data.choices[0].message?.content as string
+      const summary = response.choices[0].message?.content as string
       if (!summary) {
         messageIns.destroy()
         message.error('AI 生成摘要失败')

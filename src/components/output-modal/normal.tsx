@@ -1,5 +1,5 @@
 // transform asni to html output
-import { default as AnsiUp } from 'ansi_up'
+import { AnsiUp } from 'ansi_up'
 import { EventSourcePolyfill } from 'event-source-polyfill'
 import { NCard, NModal } from 'naive-ui'
 import { getToken } from 'utils'
@@ -80,7 +80,7 @@ export const ShellOutputNormal = defineComponent({
           <div class="h-full w-full">
             <div
               ref={$output}
-              class={'font-mono break-all h-[75vh] overflow-auto'}
+              class={'h-[75vh] overflow-auto break-all font-mono'}
               style={{
                 whiteSpace: 'break-spaces',
               }}
