@@ -11,12 +11,12 @@ import {
   NSteps,
   useMessage,
 } from 'naive-ui'
-import type { PropType } from 'vue'
 import { defineComponent, ref } from 'vue'
+import type { PropType } from 'vue'
+import type { UserModel } from '../../models/user'
 
 import { showConfetti } from '~/utils/confetti'
 
-import type { UserModel } from '../../models/user'
 import { getToken, removeToken } from '../../utils'
 import { RESTManager } from '../../utils/rest'
 import styles from './index.module.css'
@@ -39,27 +39,39 @@ export default defineComponent({
 
     const step = ref(0)
 
+    const getStatus = (tab: number) =>
+      step.value > tab ? 'finish' : step.value < tab ? 'wait' : 'process'
     return () => (
       <div class={styles.full}>
-        <NCard title="初始化" class="modal-card sm m-auto form-card">
-          <NSteps size="small" current={step.value}>
+        <NCard title="初始化" class="modal-card sm form-card m-auto">
+          <NSteps
+            onUpdateCurrent={(next) => {
+              if (next < step.value) {
+                step.value = next
+              }
+            }}
+            size="small"
+            current={step.value}
+          >
             <NStep
               status={step.value > 0 ? 'finish' : 'process'}
+              title="(๑•̀ㅂ•́)و✧"
+              description="让我们开始吧"
+            ></NStep>
+
+            <NStep
+              status={getStatus(1)}
               title="站点设置"
               description="先设置一下站点相关配置吧"
             ></NStep>
 
             <NStep
-              status={
-                step.value > 1 ? 'finish' : step.value < 1 ? 'wait' : 'process'
-              }
+              status={getStatus(2)}
               title="主人信息"
               description="请告诉你的名字"
             ></NStep>
             <NStep
-              status={
-                step.value > 2 ? 'finish' : step.value < 2 ? 'wait' : 'process'
-              }
+              status={getStatus(3)}
               title="(๑•̀ㅂ•́)و✧"
               description="一切就绪了"
             ></NStep>
@@ -67,11 +79,11 @@ export default defineComponent({
 
           <div class="mt-[3.5rem]">
             {JSON.stringify(defaultConfigs) === '{}' ? (
-              <div class="text-center py-4">
+              <div class="py-4 text-center">
                 <NSpin />
               </div>
             ) : (
-              h([Step1, Step2, Step3][step.value], {
+              h([Step0, Step1, Step2, Step3][step.value], {
                 onNext() {
                   step.value++
                 },
@@ -90,6 +102,55 @@ const stepFormProps = {
     required: true,
   },
 } as const
+
+const Step0 = defineComponent({
+  props: stepFormProps,
+
+  setup(props) {
+    // @copy src/views/other/backup.tsx
+    const handleUploadAndRestore = async () => {
+      const $file = document.createElement('input')
+      $file.type = 'file'
+      $file.style.cssText = `position: absolute; opacity: 0; z-index: -9999;top: 0; left: 0`
+      $file.accept = '.zip'
+      document.body.append($file)
+      $file.click()
+      $file.onchange = () => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const file = $file.files![0]
+        const formData = new FormData()
+        formData.append('file', file)
+        RESTManager.api.init.restore
+          .post({
+            data: formData,
+            timeout: 1 << 30,
+          })
+          .then(() => {
+            message.success('恢复成功，页面将会重载')
+            setTimeout(() => {
+              location.reload()
+            }, 1000)
+          })
+      }
+    }
+    return () => (
+      <div class="flex justify-center space-x-4 text-center">
+        <NButton type="default" round onClick={handleUploadAndRestore}>
+          还原备份
+        </NButton>
+        <NButton
+          type="primary"
+          round
+          onClick={() => {
+            props.onNext()
+          }}
+        >
+          开始
+        </NButton>
+      </div>
+    )
+  },
+})
 
 const Step1 = defineComponent({
   props: stepFormProps,
