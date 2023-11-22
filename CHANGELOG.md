@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.33.5](https://github.com/mx-space/mx-admin/compare/v3.33.4...v3.33.5) (2023-11-22)
+
+
+### Bug Fixes
+
+* add tab for restore when init ([02b7004](https://github.com/mx-space/mx-admin/commit/02b70040b10a30a417ac0aaa556bb06fa437ae07))
+
+
+
 ## [3.33.4](https://github.com/mx-space/mx-admin/compare/v3.33.3...v3.33.4) (2023-11-16)
 
 
