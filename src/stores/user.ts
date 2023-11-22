@@ -1,9 +1,19 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-
 import type { UserModel } from '../models/user'
+
 import { getToken, setToken } from '../utils/auth'
 import { RESTManager } from '../utils/rest'
+
+let tokenIsUpstream = false
+
+export const setTokenIsUpstream = (isUpstream: boolean) => {
+  tokenIsUpstream = isUpstream
+}
+
+export const getTokenIsUpstream = () => {
+  return tokenIsUpstream
+}
 
 export const useUserStore = defineStore('user', () => {
   const user = ref<UserModel | null>(null)

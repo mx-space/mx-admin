@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie'
 
 import { router } from '~/router'
+import { setTokenIsUpstream } from '~/stores/user'
 
 export const TokenKey = 'mx-token'
 
@@ -29,6 +30,8 @@ export const attachTokenFromQuery = () => {
   const token = new URLSearchParams(window.location.search).get('token')
   if (token) {
     setToken(token)
+    setTokenIsUpstream(true)
+
     router.isReady().then(() => {
       const parsedUrl = new URL(window.location.href)
       parsedUrl.searchParams.delete('token')

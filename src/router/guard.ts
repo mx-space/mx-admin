@@ -3,6 +3,8 @@ import QProgress from 'qier-progress'
 import { removeToken, setToken } from 'utils/auth'
 import { checkIsInit } from 'utils/is-init'
 
+import { getTokenIsUpstream } from '~/stores/user'
+
 import { configs } from '../configs'
 import { RESTManager } from '../utils/rest'
 import { router } from './router'
@@ -12,6 +14,7 @@ const title = configs.title
 
 let loginWithTokenOnce = false
 let lastCheckedLogAt = 0
+
 router.beforeEach(async (to) => {
   if (to.path === '/setup-api') {
     return
@@ -50,7 +53,7 @@ router.beforeEach(async (to) => {
       return `/login?from=${encodeURI(to.fullPath)}`
     } else {
       // login with token only
-      if (loginWithTokenOnce) {
+      if (loginWithTokenOnce || getTokenIsUpstream()) {
         return
       } else {
         await RESTManager.api.master.login
