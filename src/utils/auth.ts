@@ -35,6 +35,10 @@ export const attachTokenFromQuery = () => {
     router.isReady().then(() => {
       const parsedUrl = new URL(window.location.href)
       parsedUrl.searchParams.delete('token')
+
+      // Vue router 在 hash 模式无法解决这个问题
+      history.replaceState({}, '', parsedUrl.href)
+
       const query = {} as any
       for (const [key, value] of parsedUrl.searchParams.entries()) {
         query[key] = value
