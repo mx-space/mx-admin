@@ -17,7 +17,7 @@ export class CrossBellConnector {
     this.SITE_ID = siteId
   }
 
-  private static contract: Contract<any> | null = null
+  private static contract: Contract | null = null
   private static async prepare() {
     if (this.contract) {
       return this.contract
@@ -123,8 +123,8 @@ export class CrossBellConnector {
               'tags' in data
                 ? data.tags.toString()
                 : this.isNoteModel(data)
-                ? '生活笔记'
-                : '',
+                  ? '生活笔记'
+                  : '',
             publishedAt: data.created,
           }
 
