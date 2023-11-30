@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.33.7](https://github.com/mx-space/mx-admin/compare/v3.33.6...v3.33.7) (2023-11-30)
+
+
+### Bug Fixes
+
+* type error ([607d62b](https://github.com/mx-space/mx-admin/commit/607d62bc032c8253ad52e4dfd08cb4a55692d392))
+
+
+
 ## [3.33.6](https://github.com/mx-space/mx-admin/compare/v3.33.5...v3.33.6) (2023-11-22)
 
 
