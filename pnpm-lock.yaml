@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@bytebase/vue-kbar>@vueuse/core': ^10.5.0
+  '@bytebase/vue-kbar>@vueuse/core': ^10.6.1
 
 dependencies:
   '@antv/g2':
