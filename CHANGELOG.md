@@ -1,5 +1,15 @@
 # CHANGELOG
 
+# [3.34.0](https://github.com/mx-space/mx-admin/compare/v3.33.7...v3.34.0) (2023-12-02)
+
+
+### Bug Fixes
+
+* config form style with spacer ([9fe8442](https://github.com/mx-space/mx-admin/commit/9fe84426fce1a044d45960bfc979a5d022888746))
+* **deps:** update dependency canvas-confetti to v1.9.2 ([#828](https://github.com/mx-space/mx-admin/issues/828)) ([66acd4b](https://github.com/mx-space/mx-admin/commit/66acd4b9760e9025c14d48e0111f7eaa8075b4e0))
+
+
+
 ## [3.33.7](https://github.com/mx-space/mx-admin/compare/v3.33.6...v3.33.7) (2023-11-30)
 
 
