@@ -28,7 +28,7 @@ const NFormBaseProps = {
 }
 
 export const JSONSchemaFormInjectKey: InjectionKey<{
-  schema: ComputedRef<any>
+  schema: KV
   definitions: ComputedRef<Map<string, any>>
   getKey: (key: string) => string
 }> = Symbol('JSONSchemaFormInject')
@@ -133,7 +133,7 @@ export const ConfigForm = defineComponent({
             <NSpace vertical>
               {schema.ps.map((text) => {
                 return (
-                  <NText class="ml-4 mt-8 text-xs inline-block" depth={3}>
+                  <NText class="ml-4 mt-8 inline-block text-xs" depth={3}>
                     {text}
                   </NText>
                 )
@@ -260,6 +260,7 @@ const ScheamFormItem = defineComponent({
         case 'url':
         case 'string': {
           const { type } = options
+
           return (
             <NInput
               inputProps={{
@@ -328,7 +329,7 @@ const ScheamFormItem = defineComponent({
         <>
           <NFormItem label={title}>
             {description ? (
-              <NSpace vertical>
+              <NSpace class={'w-full'} vertical>
                 {renderComponent()}
 
                 <NText class="text-xs" depth={3}>
@@ -343,7 +344,7 @@ const ScheamFormItem = defineComponent({
       )
 
       if (options.halfGrid && gridCols.value === 2) {
-        return <div class={'w-1/2 inline-block'}>{base}</div>
+        return <div class={'inline-block w-1/2'}>{base}</div>
       }
 
       return base
