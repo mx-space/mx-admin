@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## [3.34.1](https://github.com/mx-space/mx-admin/compare/v3.34.0...v3.34.1) (2023-12-03)
+
+
+### Bug Fixes
+
+* backup action icon ([55f4297](https://github.com/mx-space/mx-admin/commit/55f4297015e7461bb75c2298c160b261b9b12fe9))
+
+
+### Features
+
+* json highlight ([d809700](https://github.com/mx-space/mx-admin/commit/d809700495dc78458db984c17e4d5e8fb9d078c4))
+
+
+
 # [3.34.0](https://github.com/mx-space/mx-admin/compare/v3.33.7...v3.34.0) (2023-12-02)
 
 
