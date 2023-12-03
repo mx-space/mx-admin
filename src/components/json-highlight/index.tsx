@@ -1,3 +1,10 @@
+import hljs from 'highlight.js/lib/core'
+import json from 'highlight.js/lib/languages/json'
+
+import 'highlight.js/styles/atom-one-dark.css'
+
+hljs.registerLanguage('json', json)
+
 export const JSONHighlight = defineComponent({
   props: {
     code: {
@@ -8,22 +15,32 @@ export const JSONHighlight = defineComponent({
   setup(props) {
     const $ref = ref<HTMLElement>()
 
+    const highlight = () => {
+      const result = hljs.highlight('json', props.code)
+      if (!$ref.value) return
+
+      $ref.value.innerHTML = result.value
+    }
+    onMounted(() => {
+      highlight()
+    })
     watch(
       () => props.code,
-      (code) => {
-        import('monaco-editor').then((mo) => {
-          mo.editor.colorize(code, 'json', { tabSize: 2 }).then(($dom) => {
-            $ref.value!.innerHTML = $dom
-          })
-        })
-      },
-      {
-        immediate: true,
+      () => {
+        highlight()
       },
     )
 
     return () => {
-      return <pre ref={$ref}></pre>
+      return (
+        <pre
+          class={'bg-dark-800 rounded-xl p-4'}
+          style={{
+            color: '#bbb',
+          }}
+          ref={$ref}
+        ></pre>
+      )
     }
   },
 })

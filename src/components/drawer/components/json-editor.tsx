@@ -35,12 +35,12 @@ export const JSONEditor = defineComponent({
     return () => {
       const { Snip } = editor
       return (
-        <div class="max-w-[80vw] w-[1024px] max-h-[70vh] h-[500px] flex flex-col gap-2">
+        <div class="flex h-[500px] max-h-[70vh] w-[1024px] max-w-[80vw] flex-col gap-2">
           <div ref={htmlRef} class="flex-shrink-0 flex-grow">
             <Snip />
           </div>
 
-          <div class="text-right flex-shrink-0">
+          <div class="flex-shrink-0 text-right">
             <NButton round type="primary" onClick={handleFinish}>
               提交
             </NButton>
