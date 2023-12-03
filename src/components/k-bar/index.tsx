@@ -55,7 +55,7 @@ export const KBarWrapper = defineComponent({
     })
 
     return () => (
-      <KBarProvider actions={actions.value}>
+      <KBarProvider  actions={actions.value}>
         <KBarPortal>
           <KBarPositioner class="backdrop-filter backdrop-blur-sm z-99 bg-gray-300 dark:bg-black dark:bg-opacity-25 bg-opacity-80">
             <KBarAnimator class="bg-white shadow-lg rounded-lg w-[650px] max-w-[80vw] overflow-hidden divide-y">

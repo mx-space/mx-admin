@@ -1,11 +1,15 @@
 import { HeaderActionButton } from 'components/button/rounded-button'
-import { RedoRoundIcon, TrashSharpIcon, UndoRoundIcon } from 'components/icons'
+import {
+  DatabaseBackupIcon,
+  TrashSharpIcon,
+  UploadIcon,
+} from 'components/icons'
 import { DeleteConfirmButton } from 'components/special-button/delete-confirm'
 import { Table } from 'components/table'
 import { useDataTableFetch } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
 import { NButton, NPopconfirm, NSpace } from 'naive-ui'
-import { RESTManager, responseBlobToFile } from 'utils'
+import { responseBlobToFile, RESTManager } from 'utils'
 import { defineComponent, onBeforeMount } from 'vue'
 
 export default defineComponent(() => {
@@ -110,13 +114,13 @@ export default defineComponent(() => {
       actionsElement={
         <>
           <HeaderActionButton
-            icon={<UndoRoundIcon />}
+            icon={<DatabaseBackupIcon />}
             name="立即备份"
             variant="primary"
             onClick={handleBackup}
           ></HeaderActionButton>
           <HeaderActionButton
-            icon={<RedoRoundIcon />}
+            icon={<UploadIcon />}
             onClick={handleUploadAndRestore}
             name="上传恢复"
             variant="info"
