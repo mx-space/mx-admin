@@ -266,8 +266,8 @@ devDependencies:
     specifier: 5.3.2
     version: 5.3.2
   unplugin-auto-import:
-    specifier: 0.17.1
-    version: 0.17.1(@vueuse/core@10.6.1)(rollup@4.6.1)
+    specifier: 0.17.2
+    version: 0.17.2(@vueuse/core@10.6.1)(rollup@4.6.1)
   vite:
     specifier: 5.0.4
     version: 5.0.4(@types/node@18.19.1)
@@ -2550,7 +2550,7 @@ packages:
   /@types/node-fetch@2.6.9:
     resolution: {integrity: sha512-bQVlnMLFJ2d35DkPNjEPmd9ueO/rh5EiaZt2bhqiSarPjZIuIV6bPQVqcrEyvNo+AfTrRGVazle1tl597w3gfA==}
     dependencies:
-      '@types/node': 18.19.1
+      '@types/node': 20.10.2
       form-data: 4.0.0
     dev: false
 
@@ -7012,8 +7012,8 @@ packages:
     engines: {node: '>= 10.0.0'}
     dev: true
 
-  /unplugin-auto-import@0.17.1(@vueuse/core@10.6.1)(rollup@4.6.1):
-    resolution: {integrity: sha512-QvdJKtFK0COSuRXzVnwjG3ir870zVhdMg6O8GKG3UO/O5W4fmJm5h71QvzI7Gp8Sx0qfCvC3f+2v0Vm489fnqQ==}
+  /unplugin-auto-import@0.17.2(@vueuse/core@10.6.1)(rollup@4.6.1):
+    resolution: {integrity: sha512-Eu/xWI6SH4jTWXvzOfXQWAxRtiz/gMObm7wXtgMj7wBjHQKLgHTmHd4R4oha87KYGah1aKMqiqDeAxiPmfSoTg==}
     engines: {node: '>=14'}
     peerDependencies:
       '@nuxt/kit': ^3.2.2
