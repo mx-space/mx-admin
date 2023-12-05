@@ -6,6 +6,7 @@ import { RESTManager } from '~/utils'
 import { HeaderActionButton } from '../button/rounded-button'
 import { MagnifyingGlass } from '../icons'
 
+const PREVIEW_HASH = 'f26b3d5a02c88b22ebb6a164fd23c5df'
 export const HeaderPreviewButton = defineComponent({
   props: {
     getData: {
@@ -57,6 +58,7 @@ export const HeaderPreviewButton = defineComponent({
 
       url.searchParams.set('storageKey', storageKey)
       url.searchParams.set('origin', location.origin)
+      url.searchParams.set('key', PREVIEW_HASH)
 
       const finalUrl = url.toString()
 
@@ -76,20 +78,44 @@ export const HeaderPreviewButton = defineComponent({
       const handler = (e: MessageEvent<any>): void => {
         if (!isInPreview) return
         if (e.origin !== previewWindowOrigin) return
-        // console.log('ready', e.origin)
-        if (!previewWindow) return
-        const data = props.getData()
-        previewWindow.postMessage(
-          JSON.stringify({
-            type: 'preview',
-            data: {
-              ...data,
-              id: `preview-${data.id ?? 'new'}`,
-            },
-          }),
-          previewWindowOrigin,
-        )
+
+        if (e.data !== 'ok') return
+
+        console.debug('ready', e.origin)
+        const sendEvent = () => {
+          if (!previewWindow) return
+          const data = props.getData()
+
+          console.debug('send to origin', previewWindowOrigin)
+          previewWindow.postMessage(
+            JSON.stringify({
+              type: 'preview',
+              key: PREVIEW_HASH,
+              data: {
+                ...data,
+                id: `preview-${data.id ?? 'new'}`,
+              },
+            }),
+            previewWindowOrigin,
+          )
+
+          previewWindow.postMessage(
+            JSON.stringify({
+              type: 'preview',
+              key: PREVIEW_HASH,
+              data: {
+                ...data,
+                id: `preview-${data.id ?? 'new'}`,
+              },
+            }),
+            previewWindowOrigin,
+          )
+        }
+        sendEvent()
+
+        window.pr = previewWindow
       }
+
       window.addEventListener('message', handler)
 
       onBeforeUnmount(() => {
@@ -108,6 +134,7 @@ export const HeaderPreviewButton = defineComponent({
         previewWindow.postMessage(
           JSON.stringify({
             type: 'preview',
+            key: PREVIEW_HASH,
             data: {
               ...data,
               id: `preview-${data.id ?? 'new'}`,
