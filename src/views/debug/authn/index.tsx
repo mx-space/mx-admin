@@ -33,6 +33,9 @@ export default defineComponent({
               }
 
               try {
+                Object.assign(attResp, {
+                  name: `test-1${(Math.random() * 100) | 0}`,
+                })
                 const verificationResp =
                   await RESTManager.api.auth.authn.register.verify.post<any>({
                     data: attResp,
