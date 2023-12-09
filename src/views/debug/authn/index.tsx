@@ -1,0 +1,90 @@
+import { NButton } from 'naive-ui'
+import type {
+  AuthenticationResponseJSON,
+  RegistrationResponseJSON,
+} from '@simplewebauthn/typescript-types'
+
+import { startAuthentication, startRegistration } from '@simplewebauthn/browser'
+
+import { RESTManager } from '~/utils'
+
+export default defineComponent({
+  setup() {
+    return () => {
+      return (
+        <>
+          <NButton
+            onClick={async () => {
+              const registrationOptions =
+                await RESTManager.api.auth.authn.register.post<any>()
+              let attResp: RegistrationResponseJSON
+              try {
+                // Pass the options to the authenticator and wait for a response
+                attResp = await startRegistration(registrationOptions)
+              } catch (error: any) {
+                // Some basic error handling
+                if (error.name === 'InvalidStateError') {
+                  message.error(
+                    'Error: Authenticator was probably already registered by user',
+                  )
+                } else {
+                  message.error(error.message)
+                }
+              }
+
+              try {
+                const verificationResp =
+                  await RESTManager.api.auth.authn.register.verify.post<any>({
+                    data: attResp,
+                  })
+                if (verificationResp.verified) {
+                  message.success('Successfully registered authenticator')
+                } else {
+                  message.error('Error: Could not verify authenticator')
+                }
+              } catch {
+                message.error('Error: Could not verify authenticator')
+              }
+            }}
+          >
+            Register
+          </NButton>
+
+          <NButton
+            onClick={async () => {
+              const registrationOptions =
+                await RESTManager.api.auth.authn.authentication.post<any>()
+              let attResp: AuthenticationResponseJSON
+              try {
+                // Pass the options to the authenticator and wait for a response
+                attResp = await startAuthentication(registrationOptions)
+              } catch (error: any) {
+                // Some basic error handling
+
+                message.error(error.message)
+              }
+
+              try {
+                const verificationResp =
+                  await RESTManager.api.auth.authn.authentication.verify.post<any>(
+                    {
+                      data: attResp,
+                    },
+                  )
+                if (verificationResp.verified) {
+                  message.success('Successfully registered authenticator')
+                } else {
+                  message.error('Error: Could not verify authenticator')
+                }
+              } catch (err: any) {
+                message.error(err.message)
+              }
+            }}
+          >
+            Authenticator
+          </NButton>
+        </>
+      )
+    }
+  },
+})

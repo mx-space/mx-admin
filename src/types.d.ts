@@ -19,7 +19,9 @@ declare global {
     [K: string]: any
   }
 
-  export const message: MessageApi
+  export const message: Omit<MessageApi, 'error'> & {
+    error: (content: ContentType, options?: MessageOptions) => never
+  }
   export const dialog: ReturnType<typeof useDialog>
   export const notification: ReturnType<typeof useNotification>
 

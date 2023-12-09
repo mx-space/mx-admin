@@ -29,6 +29,7 @@
     "@huacnlee/autocorrect": "2.8.5",
     "@lezer/highlight": "^1.2.0",
     "@mx-space/api-client": "1.6.2",
+    "@simplewebauthn/browser": "8.3.4",
     "@types/canvas-confetti": "1.6.4",
     "@vicons/antd": "0.12.0",
     "@vicons/fa": "0.12.0",

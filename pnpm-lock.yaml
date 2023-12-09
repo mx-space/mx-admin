@@ -47,6 +47,9 @@ dependencies:
   '@mx-space/api-client':
     specifier: 1.6.2
     version: 1.6.2
+  '@simplewebauthn/browser':
+    specifier: 8.3.4
+    version: 8.3.4
   '@types/canvas-confetti':
     specifier: 1.6.4
     version: 1.6.4
@@ -2479,6 +2482,16 @@ packages:
     dependencies:
       '@noble/hashes': 1.3.2
       '@scure/base': 1.1.3
+    dev: false
+
+  /@simplewebauthn/browser@8.3.4:
+    resolution: {integrity: sha512-rO0hZ0ESD28bZl6Qe8k7RUuYvDLbsS6oPezkMMTtZ5vC80U07j4qBELKBzojDD6BsdL3dIJ9SExVp8E7pqQ5fA==}
+    dependencies:
+      '@simplewebauthn/typescript-types': 8.3.4
+    dev: false
+
+  /@simplewebauthn/typescript-types@8.3.4:
+    resolution: {integrity: sha512-38xtca0OqfRVNloKBrFB5LEM6PN5vzFbJG6rAutPVrtGHFYxPdiV3btYWq0eAZAZmP+dqFPYJxJWeJrGfmYHng==}
     dev: false
 
   /@socket.io/component-emitter@3.1.0:
