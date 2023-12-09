@@ -70,6 +70,7 @@
     "reflect-metadata": "0.1.13",
     "socket.io-client": "4.7.2",
     "sortablejs": "1.15.1",
+    "swrv": "1.0.4",
     "umi-request": "1.4.0",
     "unidata.js": "0.8.0",
     "validator": "13.11.0",

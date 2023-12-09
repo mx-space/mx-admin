@@ -3,7 +3,6 @@ import { PlusIcon as Plus } from 'components/icons'
 import { IpInfoPopover } from 'components/ip-info'
 import { RelativeTime } from 'components/time/relative-time'
 import { useStoreRef } from 'hooks/use-store-ref'
-import type { TokenModel } from 'models/token'
 import {
   NButton,
   NButtonGroup,
@@ -27,9 +26,12 @@ import {
 } from 'naive-ui'
 import { RouteName } from 'router/name'
 import { UIStore } from 'stores/ui'
-import { RESTManager, parseDate, removeToken } from 'utils'
+import useSWRV from 'swrv'
+import { parseDate, removeToken, RESTManager } from 'utils'
 import { defineComponent, onBeforeMount, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import type { AuthnModel } from '~/models/authn'
+import type { TokenModel } from 'models/token'
 
 import { Icon } from '@vicons/utils'
 
@@ -177,6 +179,10 @@ export const TabSecurity = defineComponent(() => {
         <NCollapseItem name="token" title="API Token">
           <ApiToken />
         </NCollapseItem>
+
+        <NCollapseItem name="passkey" title="Passkey">
+          <Passkey />
+        </NCollapseItem>
       </NCollapse>
     </Fragment>
   )
@@ -192,7 +198,7 @@ const ApiToken = defineComponent(() => {
   })
   const dataModel = reactive(defaultModel())
   const fetchToken = async () => {
-    const { data } = (await RESTManager.api.auth.token.get()) as any
+    const { data } = (await RESTManager.api.passkey.items.get()) as any
     tokens.value = data
   }
 
@@ -244,7 +250,7 @@ const ApiToken = defineComponent(() => {
         show={newTokenDialogShow.value}
         onUpdateShow={(e) => void (newTokenDialogShow.value = e)}
       >
-        <NCard bordered={false} title="创建 Token" class="max-w-full w-[500px]">
+        <NCard bordered={false} title="创建 Token" class="w-[500px] max-w-full">
           <NForm>
             <NFormItem label="名称" required>
               <NInput
@@ -446,5 +452,86 @@ const ResetPass = defineComponent(() => {
         </NButton>
       </div>
     </NForm>
+  )
+})
+
+const Passkey = defineComponent(() => {
+  const uiStore = useStoreRef(UIStore)
+  const { data: passkeys } = useSWRV('passkey-table', () => {
+    return RESTManager.api.passkey.items.get<AuthnModel[]>()
+  })
+
+  watchEffect(() => {
+    console.log(passkeys.value)
+  })
+  const onDeleteToken = (id: string) => {}
+  return () => (
+    <NLayoutContent class="!overflow-visible">
+      {/* <NButton
+        class="absolute right-0 top-[-3rem]"
+        round
+        type="primary"
+        onClick={() => {
+          newTokenDialogShow.value = true
+        }}
+      >
+        <Icon>
+          <Plus />
+        </Icon>
+        <span class="ml-2">新增</span>
+      </NButton> */}
+      <NDataTable
+        scrollX={Math.max(
+          800,
+          uiStore.contentWidth.value - uiStore.contentInsetWidth.value,
+        )}
+        remote
+        bordered={false}
+        data={passkeys.value}
+        columns={[
+          { key: 'name', title: '名称' },
+
+          {
+            title: '创建时间',
+            key: 'created',
+            render({ created }) {
+              return <RelativeTime time={created} />
+            },
+          },
+
+          {
+            title: '操作',
+            key: 'id',
+            render({ id, name }) {
+              return (
+                <NSpace>
+                  <NPopconfirm
+                    positiveText={'取消'}
+                    negativeText="删除"
+                    onNegativeClick={() => {
+                      onDeleteToken(id)
+                    }}
+                  >
+                    {{
+                      trigger: () => (
+                        <NButton text type="error">
+                          删除
+                        </NButton>
+                      ),
+
+                      default: () => (
+                        <span class="max-w-48">
+                          确定要删除 Passkey "{name}"?
+                        </span>
+                      ),
+                    }}
+                  </NPopconfirm>
+                </NSpace>
+              )
+            },
+          },
+        ]}
+      ></NDataTable>
+    </NLayoutContent>
   )
 })

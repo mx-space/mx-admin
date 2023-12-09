@@ -16,7 +16,7 @@ export default defineComponent({
           <NButton
             onClick={async () => {
               const registrationOptions =
-                await RESTManager.api.auth.authn.register.post<any>()
+                await RESTManager.api.passkey.register.post<any>()
               let attResp: RegistrationResponseJSON
               try {
                 // Pass the options to the authenticator and wait for a response
@@ -37,7 +37,7 @@ export default defineComponent({
                   name: `test-1${(Math.random() * 100) | 0}`,
                 })
                 const verificationResp =
-                  await RESTManager.api.auth.authn.register.verify.post<any>({
+                  await RESTManager.api.passkey.register.verify.post<any>({
                     data: attResp,
                   })
                 if (verificationResp.verified) {
@@ -56,7 +56,7 @@ export default defineComponent({
           <NButton
             onClick={async () => {
               const registrationOptions =
-                await RESTManager.api.auth.authn.authentication.post<any>()
+                await RESTManager.api.passkey.authentication.post<any>()
               let attResp: AuthenticationResponseJSON
               try {
                 // Pass the options to the authenticator and wait for a response
@@ -69,7 +69,7 @@ export default defineComponent({
 
               try {
                 const verificationResp =
-                  await RESTManager.api.auth.authn.authentication.verify.post<any>(
+                  await RESTManager.api.passkey.authentication.verify.post<any>(
                     {
                       data: attResp,
                     },
