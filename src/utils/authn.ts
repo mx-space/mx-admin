@@ -44,7 +44,7 @@ class AuthnUtilsStatic {
     }
   }
 
-  async validate(test: boolean) {
+  async validate(test?: boolean) {
     const registrationOptions =
       await RESTManager.api.passkey.authentication.post<any>()
     let attResp: AuthenticationResponseJSON
@@ -62,14 +62,18 @@ class AuthnUtilsStatic {
     }
     try {
       const verificationResp =
-        await RESTManager.api.passkey.authentication.verify.post<any>({
+        await RESTManager.api.passkey.authentication.verify.post<{
+          verified: boolean
+          token?: string
+        }>({
           data: attResp,
         })
       if (verificationResp.verified) {
-        message.success('Successfully registered authenticator')
+        message.success('Successfully authentication by passkey')
       } else {
         message.error('Error: Could not verify authenticator')
       }
+      return verificationResp
     } catch (err: any) {
       message.error(err.message)
     }

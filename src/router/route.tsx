@@ -35,8 +35,14 @@ import { SidebarLayout } from 'layouts/sidebar'
 import { DashBoardView } from 'views/dashboard'
 import type { RouteRecordRaw } from 'vue-router'
 
+import { ManagePostListView } from '~/views/manage-posts/list'
+
 import SetupLayout from '../layouts/setup-view.vue'
-import LoginView from '../views/login/index.vue'
+import CommentPage from '../views/comments/index'
+import LoginView from '../views/login'
+import { ManageNoteListView } from '../views/manage-notes/list'
+import ManageNoteWrite from '../views/manage-notes/write'
+import ManagePostsWrite from '../views/manage-posts/write'
 import { RouteName } from './name'
 
 export const routeForMenu: Array<RouteRecordRaw> = [
@@ -67,10 +73,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           icon: <EyeIcon />,
           query: { page: 1 },
         },
-        component: () =>
-          import('../views/manage-posts/list').then(
-            (m) => m.ManagePostListView,
-          ),
+        component: ManagePostListView,
       },
 
       {
@@ -81,7 +84,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           icon: <PencilAltIcon />,
         },
         props: true,
-        component: () => import('../views/manage-posts/write'),
+        component: ManagePostsWrite,
       },
 
       {
@@ -114,10 +117,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           query: { page: 1 },
           icon: <EyeIcon />,
         },
-        component: () =>
-          import('../views/manage-notes/list').then(
-            (m) => m.ManageNoteListView,
-          ),
+        component: ManageNoteListView,
       },
       {
         path: 'edit',
@@ -126,7 +126,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           title: '撰写',
           icon: <PencilAltIcon />,
         },
-        component: () => import('../views/manage-notes/write'),
+        component: ManageNoteWrite,
       },
 
       {
@@ -148,7 +148,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
       query: { page: 1, state: 0 },
       icon: <CommentIcon />,
     },
-    component: () => import('../views/comments/index'),
+    component: CommentPage,
   },
   {
     path: '/pages',
