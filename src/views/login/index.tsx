@@ -1,10 +1,11 @@
-import { useMessage } from 'naive-ui'
+import { NButton, useMessage } from 'naive-ui'
 import useSWRV from 'swrv'
 import { defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { UserModel } from '../../models/user'
 
 import ParallaxButton from '~/components/button/parallax-button.vue'
+import { PassKeyOutlineIcon } from '~/components/icons'
 import { AuthnUtils } from '~/utils/authn'
 
 import Avatar from '../../components/avatar/index.vue'
@@ -53,24 +54,27 @@ export const LoginView = defineComponent({
 
     let triggerAuthnOnce = false
 
+    const passkeyAuth = () => {
+      AuthnUtils.validate().then((res) => {
+        if (!res) {
+          message.error('验证失败')
+        }
+        const token = res.token!
+        updateToken(token)
+
+        router.push(
+          route.query.from
+            ? decodeURI(route.query.from as string)
+            : '/dashboard',
+        )
+        toast.success('欢迎回来')
+      })
+    }
     watchEffect(() => {
       if (triggerAuthnOnce) return
       if (settings.value?.password === false) {
         triggerAuthnOnce = true
-        AuthnUtils.validate().then((res) => {
-          if (!res) {
-            message.error('验证失败，请刷新页面重试')
-          }
-          const token = res.token!
-          updateToken(token)
-
-          router.push(
-            route.query.from
-              ? decodeURI(route.query.from as string)
-              : '/dashboard',
-          )
-          toast.success('欢迎回来')
-        })
+        passkeyAuth()
       }
     })
 
@@ -135,6 +139,25 @@ export const LoginView = defineComponent({
                     type="password"
                   />
                 </div>
+
+                {settings.value?.passkey && (
+                  <div
+                    class={'-mt-4 mb-4 flex w-full justify-center space-x-4'}
+                  >
+                    <NButton
+                      color="#ACA8BF70"
+                      circle
+                      textColor="#fff"
+                      type="info"
+                      onClick={() => {
+                        passkeyAuth()
+                      }}
+                    >
+                      <PassKeyOutlineIcon />
+                    </NButton>
+                  </div>
+                )}
+
                 <ParallaxButton
                   title="登录"
                   class="p-button-raised p-button-rounded"
