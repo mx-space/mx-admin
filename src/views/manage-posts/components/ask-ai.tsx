@@ -93,7 +93,7 @@ CONCISE SUMMARY:`)
                       autocapitalize: 'off',
                       autocomplete: 'new-password',
                     }}
-                    showPasswordToggle
+                    showPasswordOn="click"
                     type="password"
                     value={token.value}
                     onUpdateValue={(val) => {

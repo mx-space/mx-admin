@@ -1,5 +1,5 @@
 import { If } from 'components/directives/if'
-import { PlusIcon as Plus } from 'components/icons'
+import { CheckIcon, PlusIcon as Plus } from 'components/icons'
 import { IpInfoPopover } from 'components/ip-info'
 import { RelativeTime } from 'components/time/relative-time'
 import { useStoreRef } from 'hooks/use-store-ref'
@@ -23,6 +23,7 @@ import {
   NPopconfirm,
   NSpace,
   NSwitch,
+  NText,
 } from 'naive-ui'
 import { RouteName } from 'router/name'
 import { UIStore } from 'stores/ui'
@@ -32,8 +33,11 @@ import { defineComponent, onBeforeMount, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import type { AuthnModel } from '~/models/authn'
 import type { TokenModel } from 'models/token'
+import type { DialogReactive } from 'naive-ui'
 
 import { Icon } from '@vicons/utils'
+
+import { AuthnUtils } from '~/utils/authn'
 
 import { autosizeableProps } from './system'
 
@@ -457,29 +461,136 @@ const ResetPass = defineComponent(() => {
 
 const Passkey = defineComponent(() => {
   const uiStore = useStoreRef(UIStore)
-  const { data: passkeys } = useSWRV('passkey-table', () => {
-    return RESTManager.api.passkey.items.get<AuthnModel[]>()
-  })
+  const { data: passkeys, mutate: refetchTable } = useSWRV(
+    'passkey-table',
+    () => {
+      return RESTManager.api.passkey.items.get<AuthnModel[]>()
+    },
+  )
 
-  watchEffect(() => {
-    console.log(passkeys.value)
-  })
-  const onDeleteToken = (id: string) => {}
+  const onDeleteToken = (id: string) => {
+    RESTManager.api.passkey
+      .items(id)
+      .delete<{}>()
+      .then(() => {
+        refetchTable()
+      })
+  }
+
+  const NewModalContent = defineComponent(
+    (props: { dialog: DialogReactive }) => {
+      const name = ref('')
+      const handleCreate = (e: Event) => {
+        e.preventDefault()
+        e.stopPropagation()
+        AuthnUtils.createPassKey(name.value).then(() => {
+          refetchTable()
+          props.dialog.destroy()
+        })
+      }
+      return () => (
+        <NForm onSubmit={handleCreate}>
+          <NFormItem label="名称" required>
+            <NInput
+              value={name.value}
+              onUpdateValue={(e) => {
+                name.value = e
+              }}
+            />
+          </NFormItem>
+          <div class={'flex justify-end'}>
+            <NButton
+              disabled={name.value.length === 0}
+              type="primary"
+              onClick={handleCreate}
+              round
+              size="small"
+            >
+              创建
+            </NButton>
+          </div>
+        </NForm>
+      )
+    },
+  )
+
+  const { data: setting, mutate: refetchSetting } = useSWRV(
+    'current-disable-status',
+    async () => {
+      const { data } = await RESTManager.api.options('authSecurity').get<{
+        data: { disablePasswordLogin: boolean }
+      }>()
+      return data
+    },
+  )
+
+  const updateSetting = (value: boolean) => {
+    RESTManager.api
+      .options('authSecurity')
+      .patch({
+        data: {
+          disablePasswordLogin: value,
+        },
+      })
+      .then(() => {
+        refetchSetting()
+      })
+  }
+
+  // @ts-ignore
+  NewModalContent.props = ['dialog']
+
   return () => (
-    <NLayoutContent class="!overflow-visible">
-      {/* <NButton
-        class="absolute right-0 top-[-3rem]"
-        round
-        type="primary"
-        onClick={() => {
-          newTokenDialogShow.value = true
-        }}
-      >
-        <Icon>
-          <Plus />
-        </Icon>
-        <span class="ml-2">新增</span>
-      </NButton> */}
+    <NLayoutContent embedded class="!overflow-visible">
+      <NButtonGroup class="absolute right-0 top-[-3rem]">
+        <NButton
+          type="tertiary"
+          onClick={() => {
+            AuthnUtils.validate(true)
+          }}
+          round
+        >
+          <Icon>
+            <CheckIcon />
+          </Icon>
+          <span class="ml-2">验证</span>
+        </NButton>
+        <NButton
+          round
+          type="primary"
+          onClick={() => {
+            const $dialog = dialog.create({
+              title: '创建 Passkey',
+              content: () => <NewModalContent dialog={$dialog} />,
+            })
+          }}
+        >
+          <Icon>
+            <Plus />
+          </Icon>
+          <span class="ml-2">新增</span>
+        </NButton>
+      </NButtonGroup>
+
+      <NForm class={'mt-4'} labelAlign="left" labelPlacement="left">
+        <NFormItem label="禁止密码登入">
+          <NSwitch
+            value={setting.value?.disablePasswordLogin}
+            onUpdateValue={(v) => {
+              if (!passkeys.value?.length) {
+                message.error('至少需要一个 Passkey 才能开启这个功能')
+              }
+              updateSetting(v)
+            }}
+          />
+        </NFormItem>
+        {/* FUCK you windicss */}
+        <div style={{ marginTop: '-1.5rem' }}>
+          <NText class="text-xs" depth={3}>
+            <span>禁用密码登录需要至少开启 Clerk 或者 PassKey 登录的一项</span>
+          </NText>
+        </div>
+      </NForm>
       <NDataTable
         scrollX={Math.max(
           800,

@@ -113,6 +113,13 @@ export const ConfigForm = defineComponent({
                 return null
               }
 
+              const uiOptions = schema?.['ui:options'] || {}
+
+              switch (uiOptions?.type) {
+                case 'hidden':
+                  return null
+              }
+
               return (
                 <NCollapseItem
                   title={schema.title}
@@ -271,7 +278,7 @@ const ScheamFormItem = defineComponent({
                 innerValue.value = val
               }}
               type={type || 'text'}
-              showPasswordToggle
+              showPasswordOn="click"
               autosize={
                 type == 'textarea'
                   ? {
@@ -333,7 +340,7 @@ const ScheamFormItem = defineComponent({
                 {renderComponent()}
 
                 <NText class="text-xs" depth={3}>
-                  <span innerHTML={marked.parse(description)} />
+                  <span innerHTML={marked.parse(description) as string} />
                 </NText>
               </NSpace>
             ) : (
