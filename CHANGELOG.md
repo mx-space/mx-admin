@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## [3.35.1](https://github.com/mx-space/mx-admin/compare/v3.35.0...v3.35.1) (2023-12-10)
+
+
+### Bug Fixes
+
+* login update token logic ([e3904cf](https://github.com/mx-space/mx-admin/commit/e3904cfe956aacd29a9bbea446ecfc5e2b4addbe))
+
+
+### Features
+
+* add passkey login ([121c913](https://github.com/mx-space/mx-admin/commit/121c913b21a2fedc1927806675f3ab7f1f526180))
+
+
+
 # [3.35.0](https://github.com/mx-space/mx-admin/compare/v3.34.2...v3.35.0) (2023-12-10)
 
 
