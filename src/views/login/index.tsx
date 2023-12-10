@@ -6,6 +6,7 @@ import type { UserModel } from '../../models/user'
 
 import ParallaxButton from '~/components/button/parallax-button.vue'
 import { PassKeyOutlineIcon } from '~/components/icons'
+import { SESSION_WITH_LOGIN } from '~/constants/keys'
 import { AuthnUtils } from '~/utils/authn'
 
 import Avatar from '../../components/avatar/index.vue'
@@ -45,6 +46,15 @@ export const LoginView = defineComponent({
       })
     })
 
+    const postSuccessfulLogin = (token: string) => {
+      updateToken(token)
+      router.push(
+        route.query.from ? decodeURI(route.query.from as string) : '/dashboard',
+      )
+      sessionStorage.setItem(SESSION_WITH_LOGIN, '1')
+      toast.success('欢迎回来')
+    }
+
     const { data: settings } = useSWRV('allow-password', async () => {
       return RESTManager.api.user('allow-login').get<{
         password: boolean
@@ -60,14 +70,8 @@ export const LoginView = defineComponent({
           message.error('验证失败')
         }
         const token = res.token!
-        updateToken(token)
 
-        router.push(
-          route.query.from
-            ? decodeURI(route.query.from as string)
-            : '/dashboard',
-        )
-        toast.success('欢迎回来')
+        postSuccessfulLogin(token)
       })
     }
     watchEffect(() => {
@@ -98,14 +102,10 @@ export const LoginView = defineComponent({
             password: password.value,
           },
         })
-        updateToken(res.token)
 
-        router.push(
-          route.query.from
-            ? decodeURI(route.query.from as string)
-            : '/dashboard',
-        )
-        toast.success('欢迎回来')
+        if (res.token) {
+          postSuccessfulLogin(res.token)
+        }
       } catch (e) {
         toast.error('登录失败')
       }
@@ -116,7 +116,6 @@ export const LoginView = defineComponent({
         typeof settings.value === 'undefined' ||
         settings.value?.password === true
 
-      const loginWithPassKey = settings.value?.passkey
       return (
         <div class={styles['r']}>
           <div class="wrapper">

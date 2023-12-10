@@ -3,6 +3,7 @@ import QProgress from 'qier-progress'
 import { removeToken, setToken } from 'utils/auth'
 import { checkIsInit } from 'utils/is-init'
 
+import { SESSION_WITH_LOGIN } from '~/constants/keys'
 import { getTokenIsUpstream } from '~/stores/user'
 
 import { configs } from '../configs'
@@ -52,6 +53,8 @@ router.beforeEach(async (to) => {
     if (!ok) {
       return `/login?from=${encodeURI(to.fullPath)}`
     } else {
+      const sessionWithLogin = sessionStorage.getItem(SESSION_WITH_LOGIN)
+      if (sessionWithLogin) return
       // login with token only
       if (loginWithTokenOnce || getTokenIsUpstream()) {
         return
