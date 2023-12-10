@@ -1,5 +1,14 @@
 # CHANGELOG
 
+# [3.35.0](https://github.com/mx-space/mx-admin/compare/v3.34.2...v3.35.0) (2023-12-10)
+
+
+### Features
+
+* login with passkey ([#833](https://github.com/mx-space/mx-admin/issues/833)) ([dc662e0](https://github.com/mx-space/mx-admin/commit/dc662e05293a216781d6a22bacd89e40f64395d7))
+
+
+
 ## [3.34.2](https://github.com/mx-space/mx-admin/compare/v3.34.1...v3.34.2) (2023-12-05)
 
 
