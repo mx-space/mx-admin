@@ -25,7 +25,6 @@ module.exports = {
     },
   ],
   rules: {
-    'vue/html-self-closing': 'off',
     '@typescript-eslint/ban-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-unused-vars':
@@ -36,5 +35,6 @@ module.exports = {
     'vue/no-mutating-props': 'off',
     '@typescript-eslint/no-namespace': 'off',
     '@typescript-eslint/no-non-null-assertion': 0,
+    'vue/html-self-closing': 'error',
   },
 }
