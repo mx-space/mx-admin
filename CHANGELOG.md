@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.35.2](https://github.com/mx-space/mx-admin/compare/v3.35.1...v3.35.2) (2023-12-11)
+
+
+### Bug Fixes
+
+* vue proxy track loop ([8e793b9](https://github.com/mx-space/mx-admin/commit/8e793b9299b16bb67005f3a24844a44a6a6dfba5))
+
+
+
 ## [3.35.1](https://github.com/mx-space/mx-admin/compare/v3.35.0...v3.35.1) (2023-12-10)
 
 
