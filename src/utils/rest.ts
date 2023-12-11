@@ -108,14 +108,18 @@ function buildRoute(manager: RESTManagerStatic): IRequestHandler {
                   ? camelcaseKeys(res, { deep: true })
                   : res
 
+                const nextTransform = Array.isArray(transform) ? [] : {}
+
+                Object.assign(nextTransform, transform)
+
                 if (!('data' in transform))
-                  Object.defineProperty(transform, 'data', {
+                  Object.defineProperty(nextTransform, 'data', {
                     get() {
                       return transform.data ?? transform
                     },
                   })
 
-                return transform
+                return nextTransform
               })()
             : res
         }
