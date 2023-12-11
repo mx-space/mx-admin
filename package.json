@@ -101,7 +101,7 @@
     "postcss": "8.4.32",
     "postcss-nested": "6.0.1",
     "postcss-preset-env": "9.3.0",
-    "prettier": "3.1.0",
+    "prettier": "3.1.1",
     "rollup": "^4.6.1",
     "rollup-plugin-visualizer": "5.9.3",
     "typescript": "5.3.2",
