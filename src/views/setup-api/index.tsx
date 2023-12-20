@@ -7,10 +7,14 @@ const storeGatewayUrlKey = 'mx-admin:setup-api:gateway'
 export default defineComponent({
   setup() {
     const apiRecord = reactive({
-      apiUrl: localStorage.getItem('__api') || '',
-      gatewayUrl: localStorage.getItem('__gateway') || '',
+      apiUrl:
+        localStorage.getItem('__api') ||
+        `${location.protocol}//${location.host}/api/v2`,
+      gatewayUrl:
+        localStorage.getItem('__gateway') ||
+        `${location.protocol}//${location.host}`,
 
-      persist: false,
+      persist: true,
     })
 
     const handleOk = () => {
@@ -28,8 +32,6 @@ export default defineComponent({
         fullGatewayUrl && localStorage.setItem('__gateway', fullGatewayUrl)
       }
 
-      url.pathname = '/'
-
       if (!__DEV__) {
         url.hash = ''
       }
@@ -43,12 +45,24 @@ export default defineComponent({
         JSON.stringify([...new Set(historyApiUrl.concat(gatewayUrl))]),
       )
 
+      if (__DEV__) {
+        url.pathname = '/'
+      } else {
+        url.pathname = location.pathname
+        url.hash = ''
+      }
+
       location.href = url.toString()
     }
     const handleReset = () => {
       localStorage.removeItem('__api')
       localStorage.removeItem('__gateway')
-      location.href = '/'
+      if (__DEV__) {
+        location.href = '/'
+      } else {
+        location.href = location.pathname
+        location.hash = ''
+      }
     }
     const handleLocalDev = () => {
       apiRecord.apiUrl = 'http://localhost:2333'
