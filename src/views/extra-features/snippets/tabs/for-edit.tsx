@@ -29,7 +29,7 @@ import {
   SnippetModel,
   SnippetType,
   SnippetTypeToLanguage,
-} from '../../../models/snippet'
+} from '../../../../models/snippet'
 import { CodeEditorForSnippet } from '../components/code-editor'
 import { InstallDependencyButton } from '../components/install-dep-button'
 

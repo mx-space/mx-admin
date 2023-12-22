@@ -318,7 +318,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           title: '配置与云函数',
           icon: <FunctionIcon />,
         },
-        component: () => import('../views/snippets'),
+        component: () => import('../views/extra-features/snippets'),
       },
       {
         path: 'assets/template',
@@ -327,7 +327,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           title: '模板编辑',
           icon: <TemplateIcon />,
         },
-        component: () => import('../views/assets/template'),
+        component: () => import('../views/extra-features/assets/template'),
       },
       {
         path: 'markdown',
@@ -337,7 +337,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
 
           icon: <MarkdownIcon />,
         },
-        component: () => import('../views/other/markdown-helper'),
+        component: () => import('../views/extra-features/markdown-helper'),
       },
       {
         path: 'subscribe',
@@ -346,13 +346,13 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           title: '订阅',
           icon: <SubscribeIcon />,
         },
-        component: () => import('../views/other/subscribe'),
+        component: () => import('../views/extra-features/subscribe'),
       },
     ],
   },
   {
     name: RouteName.Maintain,
-    path: '/maintain',
+    path: '/maintenance',
     component: $RouterView,
     redirect: '/maintain/log',
     meta: {
@@ -367,7 +367,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           title: '任务',
           icon: <ClockIcon />,
         },
-        component: () => import('../views/other/cron'),
+        component: () => import('../views/maintenance/cron'),
       },
       {
         path: 'backup',
@@ -376,7 +376,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           title: '备份',
           icon: <UndoAltIcon />,
         },
-        component: () => import('../views/other/backup'),
+        component: () => import('../views/maintenance/backup'),
       },
 
       {
@@ -386,7 +386,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           title: '日志',
           icon: <LogIcon />,
         },
-        component: () => import('../views/other/log-view'),
+        component: () => import('../views/maintenance/log-view'),
       },
     ],
   },
