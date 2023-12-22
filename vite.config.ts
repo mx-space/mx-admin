@@ -2,7 +2,6 @@ import { visualizer } from 'rollup-plugin-visualizer'
 import AutoImport from 'unplugin-auto-import/vite'
 import { defineConfig, loadEnv } from 'vite'
 import Checker from 'vite-plugin-checker'
-import VueDevTools from 'vite-plugin-vue-devtools'
 import wasm from 'vite-plugin-wasm'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import type { PluginOption } from 'vite'
@@ -22,13 +21,13 @@ export default ({ mode }) => {
 
   return defineConfig({
     plugins: [
-      VueDevTools(),
+      // VueDevTools(),
       wasm(),
-      vueJsx(),
       WindiCSS(),
       vue({
         reactivityTransform: true,
       }),
+      vueJsx(),
       tsconfigPaths(),
       visualizer({ open: process.env.CI ? false : true }),
 
@@ -93,9 +92,9 @@ export default ({ mode }) => {
       port: 9528,
     },
     esbuild: {
-      jsxFactory: 'h',
-      jsxInject: 'import {h,Fragment} from "vue"',
-      jsxFragment: 'Fragment',
+      jsxFactory: '__h',
+      jsxInject: 'import {h as __h,Fragment as __Fragment} from "vue"',
+      jsxFragment: '__Fragment',
     },
   })
 }
