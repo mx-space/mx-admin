@@ -136,7 +136,7 @@ export const ManageNoteListView = defineComponent({
                 <EditColumn
                   initialValue={data.value[index].mood ?? ''}
                   onSubmit={async (v) => {
-                    await RESTManager.api.notes(row.id).put({
+                    await RESTManager.api.notes(row.id).patch({
                       data: {
                         mood: v,
                       },
@@ -159,7 +159,7 @@ export const ManageNoteListView = defineComponent({
                 <EditColumn
                   initialValue={data.value[index].weather ?? ''}
                   onSubmit={async (v) => {
-                    await RESTManager.api.notes(row.id).put({
+                    await RESTManager.api.notes(row.id).patch({
                       data: {
                         weather: v,
                       },
