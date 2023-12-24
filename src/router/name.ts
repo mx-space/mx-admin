@@ -39,6 +39,7 @@ export enum RouteName {
   Setup = 'setup',
   ListShortHand = 'shorthand',
   Snippet = 'snippet',
+  Webhook = 'webhook',
 
   AssetTemplate = 'asset-template',
   Pty = 'pty',

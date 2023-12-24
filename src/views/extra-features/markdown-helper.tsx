@@ -13,11 +13,11 @@ import {
   NUpload,
   useMessage,
 } from 'naive-ui'
-import type { FileInfo } from 'naive-ui/lib/upload/src/interface'
-import { RESTManager, responseBlobToFile } from 'utils'
-import type { ParsedModel } from 'utils/markdown-parser';
+import { responseBlobToFile, RESTManager } from 'utils'
 import { ParseMarkdownYAML } from 'utils/markdown-parser'
 import { defineComponent, ref, watch } from 'vue'
+import type { FileInfo } from 'naive-ui/lib/upload/src/interface'
+import type { ParsedModel } from 'utils/markdown-parser'
 
 enum ImportType {
   Post = 'post',
@@ -86,10 +86,7 @@ export default defineComponent(() => {
             message.error(`只能解析 markdown 文件，但是得到了 ${file.type}`)
 
             reject(
-              `File must be markdown. got type: ${ 
-                file.type 
-                }, got ext: ${ 
-                ext}`,
+              `File must be markdown. got type: ${file.type}, got ext: ${ext}`,
             )
             return
           }
@@ -244,7 +241,7 @@ export default defineComponent(() => {
             onUpdateValue={(e) => void (filenameSlug.value = e)}
           ></NSwitch>
         </NFormItem>
-        <div class="text-right w-full">
+        <div class="w-full text-right">
           <NButton type="primary" onClick={handleExportMarkdown}>
             导出
           </NButton>

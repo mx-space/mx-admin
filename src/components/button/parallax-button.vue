@@ -16,8 +16,8 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useStoreRef } from 'hooks/use-store-ref'
 import { UIStore } from 'stores/ui'
-import type { PropType } from 'vue'
 import { defineComponent, onMounted, ref } from 'vue'
+import type { PropType } from 'vue'
 
 export default defineComponent({
   props: {
@@ -111,7 +111,9 @@ export default defineComponent({
     will-change: transform;
     transform: translateY(var(--ty, 0)) rotateX(var(--rx, 0))
       rotateY(var(--ry, 0)) translateZ(var(--tz, -12px));
-    transition: box-shadow 500ms ease, transform 200ms ease;
+    transition:
+      box-shadow 500ms ease,
+      transform 200ms ease;
   }
   &.warning::before {
     background: linear-gradient(135deg, #e67e22, #f1c40f);

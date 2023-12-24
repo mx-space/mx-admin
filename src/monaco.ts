@@ -18,6 +18,7 @@ self.MonacoEnvironment = {
     if (label === 'typescript' || label === 'javascript') {
       return new tsWorker()
     }
+
     return new editorWorker()
   },
 }

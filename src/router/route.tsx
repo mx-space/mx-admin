@@ -29,6 +29,7 @@ import {
   TopicIcon,
   UndoAltIcon,
   UserFriendsIcon,
+  WebhookIcon,
 } from 'components/icons'
 import $RouterView from 'layouts/router-view'
 import { SidebarLayout } from 'layouts/sidebar'
@@ -320,6 +321,26 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         },
         component: () => import('../views/extra-features/snippets'),
       },
+
+      {
+        path: 'subscribe',
+        name: RouteName.Subscribe,
+        meta: {
+          title: '订阅',
+          icon: <SubscribeIcon />,
+        },
+        component: () => import('../views/extra-features/subscribe'),
+      },
+      {
+        path: 'webhooks',
+        name: RouteName.Webhook,
+        meta: {
+          title: 'Webhooks',
+          icon: <WebhookIcon />,
+        },
+        component: () => import('../views/extra-features/webhook'),
+      },
+
       {
         path: 'assets/template',
         name: RouteName.AssetTemplate,
@@ -338,15 +359,6 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           icon: <MarkdownIcon />,
         },
         component: () => import('../views/extra-features/markdown-helper'),
-      },
-      {
-        path: 'subscribe',
-        name: RouteName.Subscribe,
-        meta: {
-          title: '订阅',
-          icon: <SubscribeIcon />,
-        },
-        component: () => import('../views/extra-features/subscribe'),
       },
     ],
   },

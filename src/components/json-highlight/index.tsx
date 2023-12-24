@@ -34,7 +34,7 @@ export const JSONHighlight = defineComponent({
     return () => {
       return (
         <pre
-          class={'bg-dark-800 rounded-xl p-4'}
+          class={'bg-dark-800 overflow-auto rounded-xl p-4'}
           style={{
             color: '#bbb',
           }}
