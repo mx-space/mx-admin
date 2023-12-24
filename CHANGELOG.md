@@ -1,5 +1,20 @@
 # CHANGELOG
 
+# [3.36.0](https://github.com/mx-space/mx-admin/compare/v3.35.3...v3.36.0) (2023-12-24)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @codemirror/view to v6.22.3 ([#838](https://github.com/mx-space/mx-admin/issues/838)) ([ecdef52](https://github.com/mx-space/mx-admin/commit/ecdef52bf0a8ef5dacabdd5131a1c2d7ea5ca8d6))
+
+
+### Features
+
+* event tag ([c39bb60](https://github.com/mx-space/mx-admin/commit/c39bb6045ad266dd36e3acf7a22fddd881ba2d50))
+* webhook panel ([#842](https://github.com/mx-space/mx-admin/issues/842)) ([3fda218](https://github.com/mx-space/mx-admin/commit/3fda2182a34da2ba988dd2c949b4a280ef692a68))
+
+
+
 ## [3.35.3](https://github.com/mx-space/mx-admin/compare/v3.35.2...v3.35.3) (2023-12-24)
 
 
