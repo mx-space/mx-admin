@@ -106,7 +106,7 @@
     "rollup-plugin-visualizer": "5.11.0",
     "typescript": "5.3.3",
     "unplugin-auto-import": "0.17.2",
-    "vite": "5.0.7",
+    "vite": "5.0.10",
     "vite-plugin-checker": "0.6.2",
     "vite-plugin-vue-devtools": "0.5.1",
     "vite-plugin-wasm": "3.2.2",
