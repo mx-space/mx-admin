@@ -13,6 +13,7 @@ import {
   NPopconfirm,
   NSpace,
   NSwitch,
+  NTag,
   NThing,
   useDialog,
 } from 'naive-ui'
@@ -83,14 +84,17 @@ export default defineComponent({
                   {{
                     default() {
                       return (
-                        <NThing
-                          title={item.payloadUrl}
-                          description={
-                            item.events.slice(0, 3).join(', ') +
-                            (item.events.length > 3 ? '...' : '')
-                          }
-                        >
+                        <NThing title={item.payloadUrl}>
                           {{
+                            description() {
+                              return item.events.map((event) => {
+                                return (
+                                  <NTag size="small" type="success" round>
+                                    {event}
+                                  </NTag>
+                                )
+                              })
+                            },
                             avatar() {
                               return (
                                 <div
@@ -109,36 +113,38 @@ export default defineComponent({
                     },
                     suffix() {
                       return (
-                        <NButtonGroup>
-                          <NButton
-                            round
-                            onClick={() => {
-                              presetEditableModal(item)
-                            }}
-                          >
-                            编辑
-                          </NButton>
-                          <NPopconfirm
-                            positiveText={'取消'}
-                            negativeText="删除"
-                            onNegativeClick={async () => {
-                              await RESTManager.api.webhooks(item.id).delete()
-                              mutate()
-                            }}
-                          >
-                            {{
-                              trigger: () => (
-                                <NButton round type="error" ghost>
-                                  移除
-                                </NButton>
-                              ),
+                        <div onClick={(e) => e.stopPropagation()}>
+                          <NButtonGroup>
+                            <NButton
+                              round
+                              onClick={() => {
+                                presetEditableModal(item)
+                              }}
+                            >
+                              编辑
+                            </NButton>
+                            <NPopconfirm
+                              positiveText={'取消'}
+                              negativeText="删除"
+                              onNegativeClick={async () => {
+                                await RESTManager.api.webhooks(item.id).delete()
+                                mutate()
+                              }}
+                            >
+                              {{
+                                trigger: () => (
+                                  <NButton round type="error" ghost>
+                                    移除
+                                  </NButton>
+                                ),
 
-                              default: () => (
-                                <span class="max-w-48">确定要删除 ?</span>
-                              ),
-                            }}
-                          </NPopconfirm>
-                        </NButtonGroup>
+                                default: () => (
+                                  <span class="max-w-48">确定要删除 ?</span>
+                                ),
+                              }}
+                            </NPopconfirm>
+                          </NButtonGroup>
+                        </div>
                       )
                     },
                   }}
