@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## [3.35.3](https://github.com/mx-space/mx-admin/compare/v3.35.2...v3.35.3) (2023-12-24)
+
+
+### Bug Fixes
+
+* broken pnpm lock file ([2eb8e25](https://github.com/mx-space/mx-admin/commit/2eb8e25471375fe4a076e7d2449cc2b791ce3283))
+* **deps:** update dependency @antv/g2 to ^4.2.10 ([#831](https://github.com/mx-space/mx-admin/issues/831)) ([39e549e](https://github.com/mx-space/mx-admin/commit/39e549e1ca51e7b7b47882aa42a841b78721f000))
+* patch the node data for mood ([c684c9b](https://github.com/mx-space/mx-admin/commit/c684c9b75a87317ec0160eab04cd53b6ef3dc0cf))
+* setup-api api default and redirect ([1ec3497](https://github.com/mx-space/mx-admin/commit/1ec349728d40da8900471fbc959a0a5452f9d0a0))
+
+
+
 ## [3.35.2](https://github.com/mx-space/mx-admin/compare/v3.35.1...v3.35.2) (2023-12-11)
 
 
