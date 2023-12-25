@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash-es'
 import {
   NButton,
   NButtonGroup,
@@ -177,7 +178,7 @@ export const EditWebhookForm = defineComponent({
 
     const isEdit = props.formData !== undefined
     const reactiveFormData = ref<WebhookModel>(
-      props.formData ??
+      cloneDeep(props.formData) ??
         ({
           events: [],
           enabled: true,
@@ -197,10 +198,12 @@ export const EditWebhookForm = defineComponent({
           },
         })
       } else {
+        const data = { ...reactiveFormData.value }
+        if (!data.secret) {
+          Reflect.deleteProperty(data, 'secret')
+        }
         await RESTManager.api.webhooks(props.formData.id).patch({
-          data: {
-            ...reactiveFormData.value,
-          },
+          data,
         })
       }
       destroyAll()
@@ -351,6 +354,7 @@ const WebHookDispatches = defineComponent({
             <div class={'flex flex-col gap-4'}>
               <NButton
                 class={'absolute right-4 top-4'}
+                type="primary"
                 onClick={() => {
                   RESTManager.api.webhooks
                     .redispatch(item.id)
