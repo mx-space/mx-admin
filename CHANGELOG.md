@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## [3.36.1](https://github.com/mx-space/mx-admin/compare/v3.36.0...v3.36.1) (2023-12-28)
+
+
+### Bug Fixes
+
+* remove empty secret ([ee0c9e6](https://github.com/mx-space/mx-admin/commit/ee0c9e6d286e46958d4724bd9c197814e294ad1c))
+* tag space ([28e650b](https://github.com/mx-space/mx-admin/commit/28e650b74b533e3ae52aba806b35547316b7c667))
+
+
+
 # [3.36.0](https://github.com/mx-space/mx-admin/compare/v3.35.3...v3.36.0) (2023-12-24)
 
 
