@@ -88,13 +88,17 @@ export default defineComponent({
                         <NThing title={item.payloadUrl}>
                           {{
                             description() {
-                              return item.events.map((event) => {
-                                return (
-                                  <NTag size="small" type="success" round>
-                                    {event}
-                                  </NTag>
-                                )
-                              })
+                              return (
+                                <div class={'space-x-2'}>
+                                  {item.events.map((event) => {
+                                    return (
+                                      <NTag size="small" type="success" round>
+                                        {event}
+                                      </NTag>
+                                    )
+                                  })}
+                                </div>
+                              )
                             },
                             avatar() {
                               return (
