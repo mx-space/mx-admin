@@ -1,7 +1,7 @@
 import { visualizer } from 'rollup-plugin-visualizer'
 import AutoImport from 'unplugin-auto-import/vite'
 import { defineConfig, loadEnv } from 'vite'
-import Checker from 'vite-plugin-checker'
+import { checker } from 'vite-plugin-checker'
 import wasm from 'vite-plugin-wasm'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import type { PluginOption } from 'vite'
@@ -9,24 +9,24 @@ import type { PluginOption } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 
+import { setupLibraryExternal } from './library-external'
 import PKG from './package.json'
 
 import WindiCSS from 'vite-plugin-windicss'
 
-// dns.setDefaultResultOrder('verbatim')
 export default ({ mode }) => {
   const env = loadEnv(mode, process.cwd())
   const { VITE_APP_PUBLIC_URL } = env
   const isDev = mode === 'development'
+
+  const base = !isDev ? VITE_APP_PUBLIC_URL || '' : ''
 
   return defineConfig({
     plugins: [
       // VueDevTools(),
       wasm(),
       WindiCSS(),
-      vue({
-        reactivityTransform: true,
-      }),
+      vue(),
       vueJsx(),
       tsconfigPaths(),
       visualizer({ open: process.env.CI ? false : true }),
@@ -39,18 +39,11 @@ export default ({ mode }) => {
         dts: './src/auto-import.d.ts',
         imports: ['vue', 'pinia', '@vueuse/core'],
       }),
-      Checker({
+      checker({
         enableBuild: true,
       }),
       htmlPlugin(env),
-      // nodePolyfills({
-      //   // To exclude specific polyfills, add them to this list.
-      //   exclude: [
-      //     'fs', // Excludes the polyfill for `fs` and `node:fs`.
-      //   ],
-      //   // Whether to polyfill `node:` protocol imports.
-      //   protocolImports: true,
-      // }),
+      ...setupLibraryExternal(!isDev, base),
     ],
 
     resolve: {
@@ -65,7 +58,8 @@ export default ({ mode }) => {
     build: {
       chunkSizeWarningLimit: 2500,
       target: 'esnext',
-
+      emptyOutDir: true,
+      outDir: 'dist',
       // sourcemap: true,
       rollupOptions: {
         output: {
@@ -85,7 +79,7 @@ export default ({ mode }) => {
     define: {
       __DEV__: isDev,
     },
-    base: !isDev ? VITE_APP_PUBLIC_URL || '' : '',
+    base,
 
     server: {
       // https: true,
