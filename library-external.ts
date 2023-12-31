@@ -1,7 +1,5 @@
 import randomstring from 'randomstring'
 import { viteExternalsPlugin as ViteExternals } from 'vite-plugin-externals'
-import { createHtmlPlugin as VitePluginHtml } from 'vite-plugin-html'
-import { viteStaticCopy as ViteStaticCopy } from 'vite-plugin-static-copy'
 import type { HtmlTagDescriptor } from 'vite'
 import type { Target } from 'vite-plugin-static-copy'
 
@@ -87,17 +85,15 @@ export const setupLibraryExternal = (
       '@vueuse/router': 'VueUse',
       'vue-demi': 'VueDemi',
     }),
-    ViteStaticCopy({
-      targets: staticTargets,
-    }),
-    VitePluginHtml({
-      minify: false,
-      inject: {
-        tags: injectTags,
-        // data: {
-        //   entry,
-        // },
-      },
-    }),
+    // ViteStaticCopy({
+    //   targets: staticTargets,
+    // }),
+    // VitePluginHtml({
+    //   minify: false,
+    //   inject: {
+    //     tags: injectTags,
+      
+    //   },
+    // }),
   ]
 }

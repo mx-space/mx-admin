@@ -244,6 +244,12 @@ devDependencies:
   '@vue/compiler-sfc':
     specifier: 3.4.3
     version: 3.4.3
+  '@vueuse/components':
+    specifier: 10.7.1
+    version: 10.7.1(vue@3.4.3)
+  '@vueuse/shared':
+    specifier: 10.7.1
+    version: 10.7.1(vue@3.4.3)
   cors:
     specifier: 2.8.5
     version: 2.8.5
@@ -3066,6 +3072,17 @@ packages:
 
   /@vue/shared@3.4.3:
     resolution: {integrity: sha512-rIwlkkP1n4uKrRzivAKPZIEkHiuwY5mmhMJ2nZKCBLz8lTUlE73rQh4n1OnnMurXt1vcUNyH4ZPfdh8QweTjpQ==}
+
+  /@vueuse/components@10.7.1(vue@3.4.3):
+    resolution: {integrity: sha512-bAS5ff1uNhNSeIYL7R3qeR0DP5u+Lutb0mFiTZTMhcicjhBfGiDbahHqoOAr9M/wfpYKNluP1U107y2fUTw4yw==}
+    dependencies:
+      '@vueuse/core': 10.7.1(vue@3.4.3)
+      '@vueuse/shared': 10.7.1(vue@3.4.3)
+      vue-demi: 0.14.6(vue@3.4.3)
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+      - vue
+    dev: true
 
   /@vueuse/core@10.6.1(vue@3.4.3):
     resolution: {integrity: sha512-Pc26IJbqgC9VG1u6VY/xrXXfxD33hnvxBnKrLlA2LJlyHII+BSrRoTPJgGYq7qZOu61itITFUnm6QbacwZ4H8Q==}
