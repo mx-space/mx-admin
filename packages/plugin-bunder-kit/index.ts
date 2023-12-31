@@ -23,7 +23,6 @@ export function VitePluginBundlerKit(manifest: any): Plugin {
               'vue-router',
               '@vueuse/core',
               '@vueuse/components',
-              '@vueuse/router',
             ],
             output: {
               globals: {
@@ -31,7 +30,6 @@ export function VitePluginBundlerKit(manifest: any): Plugin {
                 'vue-router': 'VueRouter',
                 '@vueuse/core': 'VueUse',
                 '@vueuse/components': 'VueUse',
-                '@vueuse/router': 'VueUse',
               },
               extend: true,
             },

@@ -1,5 +1,7 @@
 import randomstring from 'randomstring'
 import { viteExternalsPlugin as ViteExternals } from 'vite-plugin-externals'
+import { createHtmlPlugin } from 'vite-plugin-html'
+import { viteStaticCopy } from 'vite-plugin-static-copy'
 import type { HtmlTagDescriptor } from 'vite'
 import type { Target } from 'vite-plugin-static-copy'
 
@@ -55,11 +57,6 @@ export const setupLibraryExternal = (
       dest: './assets/vueuse',
       rename: `vueuse.components.iife.${staticSuffix}.js`,
     },
-    {
-      src: './node_modules/@vueuse/router/index.iife.min.js',
-      dest: './assets/vueuse',
-      rename: `vueuse.router.iife.${staticSuffix}.js`,
-    },
   ]
 
   const injectTags = staticTargets
@@ -68,7 +65,9 @@ export const setupLibraryExternal = (
         injectTo: 'head',
         tag: 'script',
         attrs: {
-          src: `${isProduction ? baseUrl : '/'}${target.dest}/${target.rename}`,
+          src: isProduction
+            ? `${baseUrl}${target.dest}/${target.rename}`
+            : target.src,
           type: 'text/javascript',
         },
       }
@@ -82,18 +81,18 @@ export const setupLibraryExternal = (
 
       '@vueuse/core': 'VueUse',
       '@vueuse/components': 'VueUse',
-      '@vueuse/router': 'VueUse',
+
       'vue-demi': 'VueDemi',
     }),
-    // ViteStaticCopy({
-    //   targets: staticTargets,
-    // }),
-    // VitePluginHtml({
-    //   minify: false,
-    //   inject: {
-    //     tags: injectTags,
-      
-    //   },
-    // }),
+    isProduction &&
+      viteStaticCopy({
+        targets: staticTargets,
+      }),
+    createHtmlPlugin({
+      minify: false,
+      inject: {
+        tags: injectTags,
+      },
+    }),
   ]
 }

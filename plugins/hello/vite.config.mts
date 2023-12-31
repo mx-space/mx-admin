@@ -1,3 +1,5 @@
+import externalGlobals from 'rollup-plugin-external-globals'
+import { defineConfig } from 'vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import type { Plugin } from 'vite'
 
@@ -18,7 +20,7 @@ function VitePluginBundlerKit(manifest: any): Plugin {
           lib: {
             entry: 'src/index.ts',
             name: manifest.metadata.name,
-            formats: ['iife'],
+            formats: ['esm'],
             fileName: () => 'main.js',
           },
           rollupOptions: {
@@ -27,7 +29,6 @@ function VitePluginBundlerKit(manifest: any): Plugin {
               'vue-router',
               '@vueuse/core',
               '@vueuse/components',
-              '@vueuse/router',
             ],
             output: {
               globals: {
@@ -35,7 +36,6 @@ function VitePluginBundlerKit(manifest: any): Plugin {
                 'vue-router': 'VueRouter',
                 '@vueuse/core': 'VueUse',
                 '@vueuse/components': 'VueUse',
-                '@vueuse/router': 'VueUse',
               },
               extend: true,
             },
@@ -46,7 +46,8 @@ function VitePluginBundlerKit(manifest: any): Plugin {
   }
 }
 
-export default {
+// eslint-disable-next-line import/no-default-export
+export default defineConfig({
   plugins: [
     vue(),
     vueJsx(),
@@ -56,5 +57,18 @@ export default {
         name: 'hello',
       },
     }),
+    // replaceImportsToGlobal({
+    //   include: 'src/**/*.tsx', // 根据需要调整
+    //   // ... 其他选项
+    // }),
   ],
-}
+  build: {
+    rollupOptions: {
+      plugins: [
+        externalGlobals({
+          vue: 'Vue',
+        }),
+      ],
+    },
+  },
+})

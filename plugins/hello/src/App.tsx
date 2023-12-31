@@ -1,13 +1,15 @@
 import { defineComponent } from 'vue'
 
+export const Component = defineComponent({
+  setup() {
+    return () => <div>Hello</div>
+  },
+})
+
 export const register = () => {
   return {
     name: 'hello',
 
-    component: defineComponent({
-      setup() {
-        return () => <div>Hello</div>
-      },
-    }),
+    component: Component,
   }
 }

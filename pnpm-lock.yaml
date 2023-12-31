@@ -188,6 +188,9 @@ dependencies:
   vue:
     specifier: 3.4.3
     version: 3.4.3(typescript@5.3.3)
+  vue-demi:
+    specifier: '*'
+    version: 0.14.6(vue@3.4.3)
   vue-router:
     specifier: 4.2.5
     version: 4.2.5(vue@3.4.3)
@@ -274,6 +277,9 @@ devDependencies:
   rollup:
     specifier: ^4.9.2
     version: 4.9.2
+  rollup-plugin-external-globals:
+    specifier: 0.9.1
+    version: 0.9.1(rollup@4.9.2)
   rollup-plugin-visualizer:
     specifier: 5.12.0
     version: 5.12.0(rollup@4.9.2)
@@ -5222,6 +5228,12 @@ packages:
     resolution: {integrity: sha512-+lP4/6lKUBfQjZ2pdxThZvLUAafmZb8OAxFb8XXtiQmS35INgr85hdOGoEs124ez1FCnZJt6jau/T+alh58QFQ==}
     dev: true
 
+  /is-reference@3.0.2:
+    resolution: {integrity: sha512-v3rht/LgVcsdZa3O2Nqs+NMowLOxeOm7Ay9+/ARQ2F+qEoANRcqrjAZKGN0v8ymUetZGgkp26LTnGT7H0Qo9Pg==}
+    dependencies:
+      '@types/estree': 1.0.5
+    dev: true
+
   /is-regex@1.1.4:
     resolution: {integrity: sha512-kvRdxDsxZjhzUX07ZnLydzS1TU/TJlTUHHY4YLL87e37oUA49DfkLqgy+VjFocowy29cKvcSiu+kIv728jTTVg==}
     engines: {node: '>= 0.4'}
@@ -6825,6 +6837,18 @@ packages:
     hasBin: true
     dependencies:
       glob: 7.2.3
+    dev: true
+
+  /rollup-plugin-external-globals@0.9.1(rollup@4.9.2):
+    resolution: {integrity: sha512-A5bxaS1ZxswieycelVGdEjvV2FqA24IGY1ya17ZpshLoncDjyWR508hzUWOtGYIjr1t5PRu/zVRXmu1KBlJxlw==}
+    peerDependencies:
+      rollup: ^2.25.0 || ^3.3.0 || ^4.1.4
+    dependencies:
+      '@rollup/pluginutils': 5.1.0(rollup@4.9.2)
+      estree-walker: 3.0.3
+      is-reference: 3.0.2
+      magic-string: 0.30.5
+      rollup: 4.9.2
     dev: true
 
   /rollup-plugin-visualizer@5.12.0(rollup@4.9.2):
