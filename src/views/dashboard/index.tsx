@@ -71,6 +71,7 @@ import { UpdatePanel } from './update-panel'
 
 export const DashBoardView = defineComponent({
   name: 'DashboardView',
+
   setup() {
     const stat = ref(
       new Proxy(

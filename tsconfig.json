@@ -18,7 +18,8 @@
     "skipDefaultLibCheck": true,
     "lib": [
       "esnext",
-      "dom"
+      "dom",
+      "dom.iterable"
     ],
     "types": [],
     "paths": {
