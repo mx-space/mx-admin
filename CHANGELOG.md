@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.36.2](https://github.com/mx-space/mx-admin/compare/v3.36.1...v3.36.2) (2024-01-08)
+
+
+### Bug Fixes
+
+* attach token in hash mode ([601f9de](https://github.com/mx-space/mx-admin/commit/601f9de171c92e773a3bccfd70e3073d8f5f6e73))
+
+
+
 ## [3.36.1](https://github.com/mx-space/mx-admin/compare/v3.36.0...v3.36.1) (2023-12-28)
 
 
