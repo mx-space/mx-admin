@@ -117,7 +117,7 @@ export class CrossBellConnector {
             slug,
             published: true,
             applications: ['xlog'],
-            externalUrl: `https://${SITE_ID}.xlog.app/posts/${slug}`,
+            externalUrl: `https://${SITE_ID}.xlog.app/${slug}`,
             pageId,
             tags:
               'tags' in data
