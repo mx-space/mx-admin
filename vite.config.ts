@@ -1,7 +1,7 @@
 import { visualizer } from 'rollup-plugin-visualizer'
 import AutoImport from 'unplugin-auto-import/vite'
 import { defineConfig, loadEnv } from 'vite'
-import Checker from 'vite-plugin-checker'
+import { checker } from 'vite-plugin-checker'
 import wasm from 'vite-plugin-wasm'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import type { PluginOption } from 'vite'
@@ -24,9 +24,7 @@ export default ({ mode }) => {
       // VueDevTools(),
       wasm(),
       WindiCSS(),
-      vue({
-        reactivityTransform: true,
-      }),
+      vue({}),
       vueJsx(),
       tsconfigPaths(),
       visualizer({ open: process.env.CI ? false : true }),
@@ -39,7 +37,7 @@ export default ({ mode }) => {
         dts: './src/auto-import.d.ts',
         imports: ['vue', 'pinia', '@vueuse/core'],
       }),
-      Checker({
+      checker({
         enableBuild: true,
       }),
       htmlPlugin(env),

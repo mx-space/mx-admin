@@ -1,7 +1,7 @@
 import { useSaveConfirm } from 'hooks/use-save-confirm'
 import { NInput } from 'naive-ui'
-import type { PropType } from 'vue'
 import { defineComponent, ref, toRaw, watch } from 'vue'
+import type { HTMLAttributes, PropType } from 'vue'
 
 import { editorBaseProps } from '../universal/props'
 import { useEditorConfig } from '../universal/use-editor-setting'
@@ -10,7 +10,7 @@ export const PlainEditor = defineComponent({
   props: {
     ...editorBaseProps,
     wrapperProps: {
-      type: Object as PropType<JSX.IntrinsicElements['div']>,
+      type: Object as PropType<HTMLAttributes>,
       required: false,
     },
   },

@@ -27,7 +27,7 @@ export default defineComponent({
         tabValue.value = n as any
       },
     )
-    const headerActionsEl = ref<null | JSX.Element>(null)
+    const headerActionsEl = ref<null | VNode>(null)
     return () => (
       <ContentLayout actionsElement={headerActionsEl.value}>
         <NTabs

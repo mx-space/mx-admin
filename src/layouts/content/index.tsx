@@ -33,18 +33,18 @@ export const useLayout = () =>
 export const ContentLayout = defineComponent({
   props: {
     actionsElement: {
-      type: Object as PropType<JSX.Element | null>,
+      type: Object as PropType<VNode | null>,
       required: false,
     },
     footerButtonElement: {
-      type: Object as PropType<JSX.Element | null>,
+      type: Object as PropType<VNode | null>,
       required: false,
     },
     title: {
       type: String,
     },
     description: {
-      type: [String, Object] as PropType<string | JSX.Element>,
+      type: [String, Object] as PropType<string | VNode>,
     },
     headerClass: {
       type: [String] as PropType<string>,

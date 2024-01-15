@@ -14,6 +14,7 @@
     "baseUrl": "./src",
     "allowJs": true,
     "skipLibCheck": true,
+    "jsxImportSource": "vue",
     "noEmit": true,
     "skipDefaultLibCheck": true,
     "lib": [
