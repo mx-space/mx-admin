@@ -206,8 +206,8 @@ dependencies:
 
 devDependencies:
   '@innei/eslint-config-vue-ts':
-    specifier: 0.12.0
-    version: 0.12.0(typescript@5.3.3)
+    specifier: 0.12.1
+    version: 0.12.1(typescript@5.3.3)
   '@innei/prettier':
     specifier: 0.12.0
     version: 0.12.0(@vue/compiler-sfc@3.4.15)
@@ -1941,15 +1941,15 @@ packages:
       - supports-color
     dev: true
 
-  /@innei/eslint-config-vue-ts@0.12.0(typescript@5.3.3):
-    resolution: {integrity: sha512-4R3i+esz6egVn3xK9mOt+vTvy0RCFgGIVXfA5GOfzOlDukvlgFOzpa+vVSzRu8gJmQiTWYXVburQAeTC+kKLUg==}
+  /@innei/eslint-config-vue-ts@0.12.1(typescript@5.3.3):
+    resolution: {integrity: sha512-3LLcWvRL9cLq11LzVzN5D9Siie8THHswkZcCZQCT1ZQmiIa1auLI4vis/uVYJCKSVn7o2+0btleK/zgaEMIT2A==}
     peerDependencies:
       typescript: '>=4'
     dependencies:
       '@innei/eslint-config-ts': 0.12.1(typescript@5.3.3)
       eslint: 8.56.0
       eslint-plugin-react: 7.33.2(eslint@8.56.0)
-      eslint-plugin-vue: 9.18.1(eslint@8.56.0)
+      eslint-plugin-vue: 9.19.2(eslint@8.56.0)
       typescript: 5.3.3
     transitivePeerDependencies:
       - eslint-import-resolver-typescript
@@ -4350,8 +4350,8 @@ packages:
       eslint-rule-composer: 0.3.0
     dev: true
 
-  /eslint-plugin-vue@9.18.1(eslint@8.56.0):
-    resolution: {integrity: sha512-7hZFlrEgg9NIzuVik2I9xSnJA5RsmOfueYgsUGUokEDLJ1LHtxO0Pl4duje1BriZ/jDWb+44tcIlC3yi0tdlZg==}
+  /eslint-plugin-vue@9.19.2(eslint@8.56.0):
+    resolution: {integrity: sha512-CPDqTOG2K4Ni2o4J5wixkLVNwgctKXFu6oBpVJlpNq7f38lh9I80pRTouZSJ2MAebPJlINU/KTFSXyQfBUlymA==}
     engines: {node: ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: ^6.2.0 || ^7.0.0 || ^8.0.0
