@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## [3.36.3](https://github.com/mx-space/mx-admin/compare/v3.36.2...v3.36.3) (2024-01-30)
+
+
+### Bug Fixes
+
+* allow openai in browser ([68183c7](https://github.com/mx-space/mx-admin/commit/68183c70251329e7fd73cb11f1e0d44d5d1c77a7))
+* upgrade vue to 3.4 ([4baeaeb](https://github.com/mx-space/mx-admin/commit/4baeaebdb2781ce89854d2a2a35114bfda8f0c87))
+* xlog externalUrl ([c56c2bb](https://github.com/mx-space/mx-admin/commit/c56c2bb0adee6220ba068ea14b1a464b6dc07c50))
+
+
+
 ## [3.36.2](https://github.com/mx-space/mx-admin/compare/v3.36.1...v3.36.2) (2024-01-08)
 
 
