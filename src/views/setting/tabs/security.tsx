@@ -69,14 +69,7 @@ export const TabSecurity = defineComponent(() => {
     }
   }
   const handleKickAll = async () => {
-    await Promise.all(
-      session.value.map((currentItem) => {
-        if (currentItem.current) {
-          return
-        }
-        return handleKick(false, currentItem.id)
-      }),
-    )
+    await RESTManager.api.user.session.all.delete<{}>({})
 
     await fetchSession()
   }
