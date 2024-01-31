@@ -1,5 +1,14 @@
 # CHANGELOG
 
+# [3.37.0](https://github.com/mx-space/mx-admin/compare/v3.36.3...v3.37.0) (2024-01-31)
+
+
+### Bug Fixes
+
+* kick session all ([b39bee2](https://github.com/mx-space/mx-admin/commit/b39bee2dd983124ac7ef45fb50a7aa3c4727c99d))
+
+
+
 ## [3.36.3](https://github.com/mx-space/mx-admin/compare/v3.36.2...v3.36.3) (2024-01-30)
 
 
