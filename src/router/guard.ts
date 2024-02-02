@@ -53,6 +53,10 @@ router.beforeEach(async (to) => {
     if (!ok) {
       return `/login?from=${encodeURI(to.fullPath)}`
     } else {
+      import('socket').then((mo) => {
+        mo.socket.initIO()
+      })
+
       const sessionWithLogin = sessionStorage.getItem(SESSION_WITH_LOGIN)
       if (sessionWithLogin) return
       // login with token only

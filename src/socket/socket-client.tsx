@@ -6,9 +6,9 @@ import io from 'socket.io-client'
 import { getToken } from 'utils/auth'
 import { bus } from 'utils/event-bus'
 import { BrowserNotification } from 'utils/notification'
+import type { NotificationTypes } from './types'
 
 import { configs } from '../configs'
-import type { NotificationTypes } from './types'
 import { EventTypes } from './types'
 
 const Notification = {
@@ -45,6 +45,7 @@ export class SocketClient {
     }
     this.destory()
     const token = getToken()
+
     if (!token) {
       return
     }
