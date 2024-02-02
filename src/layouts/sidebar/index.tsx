@@ -28,8 +28,8 @@ export const SidebarLayout = defineComponent({
     const isInApiDebugMode =
       localStorage.getItem('__api') ||
       localStorage.getItem('__gateway') ||
-      sessionStorage.get('__api') ||
-      sessionStorage.get('__gateway') ||
+      sessionStorage.getItem('__api') ||
+      sessionStorage.getItem('__gateway') ||
       window.injectData.PAGE_PROXY
 
     const collapse = ui.sidebarCollapse
