@@ -10,9 +10,10 @@ import { RouteName } from 'router/name'
 import { AppStore } from 'stores/app'
 import { UIStore } from 'stores/ui'
 import { RESTManager } from 'utils'
-import type { PropType } from 'vue'
 import { computed, defineComponent, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import type { PropType } from 'vue'
+import type { MenuModel } from '../../utils/build-menus'
 
 import { Icon } from '@vicons/utils'
 import { onClickOutside } from '@vueuse/core'
@@ -20,7 +21,6 @@ import { onClickOutside } from '@vueuse/core'
 import { configs } from '../../configs'
 import { useStoreRef } from '../../hooks/use-store-ref'
 import { UserStore } from '../../stores/user'
-import type { MenuModel } from '../../utils/build-menus'
 import { buildMenuModel, buildMenus } from '../../utils/build-menus'
 import { Avatar } from '../avatar'
 import { useSidebarStatusInjection } from './hooks'
@@ -53,16 +53,21 @@ export const Sidebar = defineComponent({
       menus.value = buildMenus(router.getRoutes())
     })
 
-    watchEffect(() => {
-      const version = app.app.value?.version
-      if (version === 'dev') {
-        const route = router
-          .getRoutes()
-          .find((item) => item.path === '/debug') as any
+    watch(
+      () => app.app.value?.version,
+      () => {
+        const version = app.app.value?.version
+        if (!version) return
 
-        menus.value.unshift(buildMenuModel(route, false, ''))
-      }
-    })
+        if (version === 'dev' || window.injectData.PAGE_PROXY) {
+          const route = router
+            .getRoutes()
+            .find((item) => item.path === '/debug') as any
+
+          menus.value.unshift(buildMenuModel(route, false, ''))
+        }
+      },
+    )
 
     const indexRef = ref(0)
 

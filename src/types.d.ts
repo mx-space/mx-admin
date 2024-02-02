@@ -14,6 +14,8 @@ declare global {
       TITLE: null | string
 
       INIT: null | boolean
+
+      PAGE_PROXY: boolean
     }
 
     [K: string]: any

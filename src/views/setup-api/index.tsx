@@ -1,6 +1,8 @@
 import { NButton, NCard, NForm, NFormItem, NSelect, NSwitch } from 'naive-ui'
 import { defineComponent } from 'vue'
 
+import { router } from '~/router'
+
 const storeApiUrlKey = 'mx-admin:setup-api:url'
 const storeGatewayUrlKey = 'mx-admin:setup-api:gateway'
 
@@ -18,22 +20,17 @@ export default defineComponent({
     })
 
     const handleOk = () => {
-      const url = new URL(location.href)
       const { apiUrl, gatewayUrl, persist } = apiRecord
 
       const fullApiUrl = transformFullUrl(apiUrl)
       const fullGatewayUrl = transformFullUrl(gatewayUrl)
 
-      fullApiUrl && url.searchParams.set('__api', fullApiUrl)
-      fullGatewayUrl && url.searchParams.set('__gateway', fullGatewayUrl)
-
       if (persist) {
         fullApiUrl && localStorage.setItem('__api', fullApiUrl)
         fullGatewayUrl && localStorage.setItem('__gateway', fullGatewayUrl)
-      }
-
-      if (!__DEV__) {
-        url.hash = ''
+      } else {
+        fullApiUrl && sessionStorage.set('__api', fullApiUrl)
+        fullGatewayUrl && sessionStorage.set('__gateway', fullGatewayUrl)
       }
 
       localStorage.setItem(
@@ -45,24 +42,18 @@ export default defineComponent({
         JSON.stringify([...new Set(historyApiUrl.concat(gatewayUrl))]),
       )
 
-      if (__DEV__) {
-        url.pathname = '/'
-      } else {
-        url.pathname = location.pathname
-        url.hash = ''
-      }
-
-      location.href = url.toString()
+      // location.href = url.toString()
+      router.push('/dashboard').then(() => location.reload())
     }
     const handleReset = () => {
       localStorage.removeItem('__api')
       localStorage.removeItem('__gateway')
-      if (__DEV__) {
-        location.href = '/'
-      } else {
-        location.href = location.pathname
-        location.hash = ''
-      }
+
+      sessionStorage.removeItem('__api')
+      sessionStorage.removeItem('__gateway')
+
+      location.href = location.pathname
+      location.hash = ''
     }
     const handleLocalDev = () => {
       apiRecord.apiUrl = 'http://localhost:2333'

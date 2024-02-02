@@ -3,9 +3,9 @@ import { GATEWAY_URL } from 'constants/env'
 import $RouterView from 'layouts/router-view'
 import { NLayoutContent } from 'naive-ui'
 import { RESTManager } from 'utils'
-import type { CSSProperties } from 'vue'
 import { computed, defineComponent, watchEffect } from 'vue'
 import { RouterLink } from 'vue-router'
+import type { CSSProperties } from 'vue'
 
 import { Sidebar } from '../../components/sidebar'
 import { useStoreRef } from '../../hooks/use-store-ref'
@@ -28,8 +28,9 @@ export const SidebarLayout = defineComponent({
     const isInApiDebugMode =
       localStorage.getItem('__api') ||
       localStorage.getItem('__gateway') ||
-      new URLSearchParams(location.search).get('__api') ||
-      new URLSearchParams(location.search).get('__gateway')
+      sessionStorage.get('__api') ||
+      sessionStorage.get('__gateway') ||
+      window.injectData.PAGE_PROXY
 
     const collapse = ui.sidebarCollapse
     const isLaptop = computed(
@@ -49,7 +50,10 @@ export const SidebarLayout = defineComponent({
               <div class={styles['root']}>
                 {isInApiDebugMode && (
                   <div
-                    class="h-[40px] fixed top-0 left-0 right-0 bg-dark-800 z-2 text-gray-400 flex items-center transition-all duration-500 whitespace-pre"
+                    class={[
+                      'bg-dark-800 z-2 fixed left-0 right-0 top-0 flex h-[40px] items-center whitespace-pre text-gray-400 transition-all duration-500',
+                      window.injectData.PAGE_PROXY && 'bg-red-900',
+                    ]}
                     style={{
                       paddingLeft: !collapse.value ? '270px' : '80px',
                     }}
@@ -57,6 +61,8 @@ export const SidebarLayout = defineComponent({
                     You are in customizing the API endpoint mode, please check:{' '}
                     <RouterLink to={'/setup-api'}>setup-api</RouterLink>.
                     Endpoint: {RESTManager.endpoint}, Gateway: {GATEWAY_URL}
+                    {window.injectData.PAGE_PROXY &&
+                      ', Dashboard is in local dev mode'}
                   </div>
                 )}
                 <Sidebar
