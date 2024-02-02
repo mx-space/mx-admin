@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## [3.37.1](https://github.com/mx-space/mx-admin/compare/v3.37.0...v3.37.1) (2024-02-02)
+
+
+### Bug Fixes
+
+* log view ([78515b2](https://github.com/mx-space/mx-admin/commit/78515b252075f16316e0d661c6cbc0291cf1518f))
+* socket connection ([cbb459b](https://github.com/mx-space/mx-admin/commit/cbb459b6c689641a489cee5e9fccabb73d576944))
+
+
+### Features
+
+* Update dependencies and add PAGE_PROXY flag ([b68696c](https://github.com/mx-space/mx-admin/commit/b68696c742802b4f90376a2a68ea9bdae2787a82))
+
+
+
 # [3.37.0](https://github.com/mx-space/mx-admin/compare/v3.36.3...v3.37.0) (2024-01-31)
 
 
