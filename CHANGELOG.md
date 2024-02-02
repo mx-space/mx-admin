@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.37.3](https://github.com/mx-space/mx-admin/compare/v3.37.2...v3.37.3) (2024-02-02)
+
+
+### Bug Fixes
+
+* api error ([c53a4ad](https://github.com/mx-space/mx-admin/commit/c53a4adb9cc93ec93381ba4f2bf7ed089b471f28))
+
+
+
 ## [3.37.2](https://github.com/mx-space/mx-admin/compare/v3.37.1...v3.37.2) (2024-02-02)
 
 
