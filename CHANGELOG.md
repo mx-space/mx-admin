@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.37.4](https://github.com/mx-space/mx-admin/compare/v3.37.3...v3.37.4) (2024-02-03)
+
+
+### Features
+
+* add file type ([5906f64](https://github.com/mx-space/mx-admin/commit/5906f6479a3013c8ecfdfec4fdde29160c3f79b4))
+
+
+
 ## [3.37.3](https://github.com/mx-space/mx-admin/compare/v3.37.2...v3.37.3) (2024-02-02)
 
 
