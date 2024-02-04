@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.37.6](https://github.com/mx-space/mx-admin/compare/v3.37.5...v3.37.6) (2024-02-04)
+
+
+### Bug Fixes
+
+* broken lockfile ([11fedb0](https://github.com/mx-space/mx-admin/commit/11fedb044ec2c257d31ce959149529b215e981fe))
+
+
+
 ## [3.37.5](https://github.com/mx-space/mx-admin/compare/v3.37.4...v3.37.5) (2024-02-04)
 
 
