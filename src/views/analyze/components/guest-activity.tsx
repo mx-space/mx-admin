@@ -1,4 +1,5 @@
 import { NButton } from 'naive-ui'
+import { useRoute } from 'vue-router'
 import type { PaginateResult } from '@mx-space/api-client'
 
 import { IpInfoPopover } from '~/components/ip-info'
@@ -23,18 +24,26 @@ const ActivityType2Copy = ['点赞']
 export const GuestActivity = defineComponent({
   setup() {
     const { data, pager, fetchDataFn } = useDataTableFetch(
-      (list, pager) => async (page, size) =>
+      (list, pager) => async (page, size) => {
         RESTManager.api.activity
           .get<PaginateResult<ActivityItem>>({ params: { page, size } })
           .then((res) => {
             list.value = res.data
             pager.value = res.pagination
-          }),
+          })
+      },
     )
 
     onBeforeMount(() => {
       fetchDataFn()
     })
+    const route = useRoute()
+    watch(
+      () => route.query.page,
+      async (n) => {
+        await fetchDataFn(n ? +n : 1)
+      },
+    )
 
     return () => {
       return (
