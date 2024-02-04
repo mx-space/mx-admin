@@ -310,7 +310,7 @@ export const ManagePostListView = defineComponent({
                           })
                           Object.defineProperty(i, 'category', {
                             get() {
-                              return i
+                              return cur
                             },
 
                             enumerable: false,
