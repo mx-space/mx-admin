@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.37.5](https://github.com/mx-space/mx-admin/compare/v3.37.4...v3.37.5) (2024-02-04)
+
+
+### Bug Fixes
+
+* **act:** listen route change and fetch data ([9662368](https://github.com/mx-space/mx-admin/commit/9662368b13a3f03a45d7095cb9742ecc99136468))
+
+
+
 ## [3.37.4](https://github.com/mx-space/mx-admin/compare/v3.37.3...v3.37.4) (2024-02-03)
 
 
