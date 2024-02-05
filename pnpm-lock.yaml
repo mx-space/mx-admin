@@ -99,8 +99,8 @@ dependencies:
     specifier: 0.14.1
     version: 0.14.1
   crossbell.js:
-    specifier: npm:crossbell@1.9.0
-    version: /crossbell@1.9.0(typescript@5.3.3)
+    specifier: npm:crossbell@1.11.3
+    version: /crossbell@1.11.3(typescript@5.3.3)
   date-fns:
     specifier: 3.3.1
     version: 3.3.1
@@ -313,6 +313,10 @@ packages:
     resolution: {integrity: sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==}
     engines: {node: '>=0.10.0'}
     dev: true
+
+  /@adraffy/ens-normalize@1.10.0:
+    resolution: {integrity: sha512-nA9XHtlAkYfJxY7bce8DcN7eKxWWCWkU+1GR9d+U6MbNpfwQp8TI7vqOsBsMcHoT4mBu2kypKoSKnghEzOOq5Q==}
+    dev: false
 
   /@adraffy/ens-normalize@1.9.0:
     resolution: {integrity: sha512-iowxq3U30sghZotgl4s/oJRci6WPBfNO5YYgk2cIOMCHr3LeGPcsZjCEr+33Q4N+oV3OABDAtA+pyvWjbvBifQ==}
@@ -1235,6 +1239,10 @@ packages:
 
   /@crossbell/ipfs-fetch@0.0.19:
     resolution: {integrity: sha512-0Yf9+MMTSD+JJkFbNaK/s+kl3CXhr4oq2yj3K0dvheB+e8uykcpM7yomxHie/sr0ushw3G7Ppf5NXYkfH0eiSw==}
+    dev: false
+
+  /@crossbell/ipfs-fetch@0.0.21:
+    resolution: {integrity: sha512-wPNLptEPy64/7WMz7bhS5QVYfjproCr3ACgeQoJzmNKvH2FNDlF6FjMB9XNwV0spAczGb/SueNzW8p6BBLXHnw==}
     dev: false
 
   /@css-render/plugin-bem@0.15.12(css-render@0.15.12):
@@ -2541,7 +2549,7 @@ packages:
     resolution: {integrity: sha512-bcKpo1oj54hGholplGLpqPHRbIsnbixFtc06nwuNM5/dwSXOq/AAYoIBRsBmnZJSdfeNW5rnff7NTAz3ZCqR9Q==}
     dependencies:
       '@noble/curves': 1.0.0
-      '@noble/hashes': 1.3.0
+      '@noble/hashes': 1.3.2
       '@scure/base': 1.1.3
     dev: false
 
@@ -2556,7 +2564,7 @@ packages:
   /@scure/bip39@1.2.0:
     resolution: {integrity: sha512-SX/uKq52cuxm4YFXWFaVByaSHJh2w3BnokVSeUJVCv6K7WulT9u2BuNRBhuFl8vAuYnzx9bEu9WgpcNYTrYieg==}
     dependencies:
-      '@noble/hashes': 1.3.0
+      '@noble/hashes': 1.3.2
       '@scure/base': 1.1.3
     dev: false
 
@@ -3074,6 +3082,20 @@ packages:
       typescript: '>=5.0.4'
       zod: ^3 >=3.19.1
     peerDependenciesMeta:
+      zod:
+        optional: true
+    dependencies:
+      typescript: 5.3.3
+    dev: false
+
+  /abitype@1.0.0(typescript@5.3.3):
+    resolution: {integrity: sha512-NMeMah//6bJ56H5XRj8QCV4AwuW6hB6zqz2LnhhLdcWVQOsXki6/Pn3APeqxCma62nXIcmZWdu1DlHWS74umVQ==}
+    peerDependencies:
+      typescript: '>=5.0.4'
+      zod: ^3 >=3.22.0
+    peerDependenciesMeta:
+      typescript:
+        optional: true
       zod:
         optional: true
     dependencies:
@@ -3651,6 +3673,24 @@ packages:
       shebang-command: 2.0.0
       which: 2.0.2
     dev: true
+
+  /crossbell@1.11.3(typescript@5.3.3):
+    resolution: {integrity: sha512-furQxkEvV0AjmaMmVHulzm3crKFb4asv/X0tBYay+4Tu2jYRsm9vLAsqUhw8xQ2zwzMxRsHMcDvWOVwQ5vdE/w==}
+    engines: {node: '>=16.14.0'}
+    dependencies:
+      '@crossbell/ipfs-fetch': 0.0.21
+      async-cache-dedupe: 2.0.0
+      async-retry: 1.3.3
+      eip1193-types: 0.2.1
+      exponential-backoff: 3.1.1
+      p-limit: 3.1.0
+      viem: 2.7.3(typescript@5.3.3)
+    transitivePeerDependencies:
+      - bufferutil
+      - typescript
+      - utf-8-validate
+      - zod
+    dev: false
 
   /crossbell@1.9.0(typescript@5.3.3):
     resolution: {integrity: sha512-3iSEiLq/QUL3c9atMxuRGwwopp337hVtDsW5Nwdgx7Pc97Hb/tZQvWpy34GOr8NZPqchqjx7eAM2uWEjyDEotA==}
@@ -6841,6 +6881,29 @@ packages:
       '@scure/bip32': 1.3.2
       '@scure/bip39': 1.2.1
       abitype: 0.10.0(typescript@5.3.3)
+      isows: 1.0.3(ws@8.13.0)
+      typescript: 5.3.3
+      ws: 8.13.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+      - zod
+    dev: false
+
+  /viem@2.7.3(typescript@5.3.3):
+    resolution: {integrity: sha512-+eoi3ZLXX7csB8/mbluIS+d3rUvtDwg3+Iu2hT+plJAdENdin5fW+SCyWOegJCm2yDKSo5xnUDBHMa1TCYk+dQ==}
+    peerDependencies:
+      typescript: '>=5.0.4'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+    dependencies:
+      '@adraffy/ens-normalize': 1.10.0
+      '@noble/curves': 1.2.0
+      '@noble/hashes': 1.3.2
+      '@scure/bip32': 1.3.2
+      '@scure/bip39': 1.2.1
+      abitype: 1.0.0(typescript@5.3.3)
       isows: 1.0.3(ws@8.13.0)
       typescript: 5.3.3
       ws: 8.13.0
