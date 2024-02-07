@@ -359,6 +359,7 @@ export const Tab2ForEdit = defineComponent({
 
                 <NFormItem label="Secret">
                   <KVEditor
+                    key={data.value.id}
                     plainKeyInput
                     onChange={(kv) => {
                       data.value.secret = kv
