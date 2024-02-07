@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.37.7](https://github.com/mx-space/mx-admin/compare/v3.37.6...v3.37.7) (2024-02-07)
+
+
+### Bug Fixes
+
+*  category getter in ManagePostListView ([ca24fce](https://github.com/mx-space/mx-admin/commit/ca24fce7ed09031c27ac80f062127aa8e8c139c0))
+
+
+
 ## [3.37.6](https://github.com/mx-space/mx-admin/compare/v3.37.5...v3.37.6) (2024-02-04)
 
 
