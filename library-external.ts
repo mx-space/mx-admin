@@ -1,9 +1,8 @@
-import randomstring from 'randomstring'
 import { viteExternalsPlugin as ViteExternals } from 'vite-plugin-externals'
 import { createHtmlPlugin } from 'vite-plugin-html'
-import { viteStaticCopy } from 'vite-plugin-static-copy'
 import type { HtmlTagDescriptor } from 'vite'
-import type { Target } from 'vite-plugin-static-copy'
+
+import { dependencies } from './package.json'
 
 /**
  * It copies the external libraries to the `assets` folder, and injects the script tags into the HTML
@@ -16,46 +15,38 @@ export const setupLibraryExternal = (
   isProduction: boolean,
   baseUrl: string,
 ) => {
-  const staticSuffix = randomstring.generate({
-    length: 8,
-    charset: 'hex',
-  })
+  
+  const cdnUrl = 'https://unpkg.com/'
 
-  const staticTargets: Target[] = [
+  const staticTargets: { dev: string; prod: string }[] = [
     {
-      src: `./node_modules/vue/dist/vue.global${
+      dev: `./node_modules/vue/dist/vue.global${
         isProduction ? '.prod' : ''
       }.js`,
-      dest: './assets/vue',
-      rename: `vue.global.${staticSuffix}.js`,
+      prod: `${cdnUrl}vue@${dependencies.vue}/dist/vue.global.prod.js`,
     },
     {
-      src: `./node_modules/vue-router/dist/vue-router.global${
+      dev: `./node_modules/vue-router/dist/vue-router.global${
         isProduction ? '.prod' : ''
       }.js`,
-      dest: './assets/vue-router',
-      rename: `vue-router.global.${staticSuffix}.js`,
+      prod: `${cdnUrl}vue-router@${dependencies['vue-router']}/dist/vue-router.global.prod.js`,
     },
 
     {
-      src: `./node_modules/vue-demi/lib/index.iife.js`,
-      dest: './assets/vue-demi',
-      rename: `vue-demi.${staticSuffix}.js`,
+      dev: `./node_modules/vue-demi/lib/index.iife.js`,
+      prod: `${cdnUrl}vue-demi@0.14.6/lib/index.iife.js`,
     },
     {
-      src: './node_modules/@vueuse/shared/index.iife.min.js',
-      dest: './assets/vueuse',
-      rename: `vueuse.shared.iife.${staticSuffix}.js`,
+      dev: './node_modules/@vueuse/shared/index.iife.min.js',
+      prod: `${cdnUrl}@vueuse/shared@${dependencies['@vueuse/shared']}/index.iife.min.js`,
     },
     {
-      src: './node_modules/@vueuse/core/index.iife.min.js',
-      dest: './assets/vueuse',
-      rename: `vueuse.core.iife.${staticSuffix}.js`,
+      dev: './node_modules/@vueuse/core/index.iife.min.js',
+      prod: `${cdnUrl}@vueuse/core@${dependencies['@vueuse/core']}/index.iife.min.js`,
     },
     {
-      src: './node_modules/@vueuse/components/index.iife.min.js',
-      dest: './assets/vueuse',
-      rename: `vueuse.components.iife.${staticSuffix}.js`,
+      dev: './node_modules/@vueuse/components/index.iife.min.js',
+      prod: `${cdnUrl}@vueuse/components@${dependencies['@vueuse/components']}/index.iife.min.js`,
     },
   ]
 
@@ -65,9 +56,7 @@ export const setupLibraryExternal = (
         injectTo: 'head',
         tag: 'script',
         attrs: {
-          src: isProduction
-            ? `${baseUrl}${target.dest}/${target.rename}`
-            : target.src,
+          src: isProduction ? target.prod : target.dev,
           type: 'text/javascript',
         },
       }
@@ -84,10 +73,7 @@ export const setupLibraryExternal = (
 
       'vue-demi': 'VueDemi',
     }),
-    isProduction &&
-      viteStaticCopy({
-        targets: staticTargets,
-      }),
+
     createHtmlPlugin({
       minify: false,
       inject: {

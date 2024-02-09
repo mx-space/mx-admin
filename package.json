@@ -111,6 +111,8 @@
         "unplugin-auto-import": "0.17.3",
         "vite": "5.0.10",
         "vite-plugin-checker": "0.6.2",
+        "vite-plugin-externals": "0.6.2",
+        "vite-plugin-html": "3.2.2",
         "vite-plugin-mkcert": "1.17.3",
         "vite-plugin-vue-devtools": "0.5.1",
         "vite-plugin-wasm": "3.3.0",

@@ -57,16 +57,16 @@ export default defineConfig({
         name: 'hello',
       },
     }),
-    // replaceImportsToGlobal({
-    //   include: 'src/**/*.tsx', // 根据需要调整
-    //   // ... 其他选项
-    // }),
+   
   ],
   build: {
     rollupOptions: {
       plugins: [
         externalGlobals({
           vue: 'Vue',
+          'vue-router': 'VueRouter',
+          '@vueuse/core': 'VueUse',
+          '@vueuse/components': 'VueUse',
         }),
       ],
     },
