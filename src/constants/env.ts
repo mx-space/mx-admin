@@ -11,7 +11,7 @@ export const bgUrl =
 
 export const API_URL = (() => {
   const url =
-    parseUrlencode(new URLSearchParams(location.search).get('__api')) ||
+    sessionStorage.getItem('__api') ||
     localStorage.getItem('__api') ||
     window.injectData.BASE_API ||
     (import.meta.env.VITE_APP_BASE_API as string) ||
@@ -21,12 +21,8 @@ export const API_URL = (() => {
 })()
 
 export const GATEWAY_URL =
-  parseUrlencode(new URLSearchParams(location.search).get('__gateway')) ||
+  sessionStorage.getItem('__gateway') ||
   localStorage.getItem('__gateway') ||
   window.injectData.GATEWAY ||
   import.meta.env.VITE_APP_GATEWAY ||
   ''
-
-function parseUrlencode(url: string | null) {
-  return url ? decodeURIComponent(url) : null
-}

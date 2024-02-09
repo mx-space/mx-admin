@@ -41,7 +41,7 @@ export const LogListView = defineComponent({
         >
           <NCard
             title="查看日志"
-            class="modal-card !w-[100rem] !bg-dark-400 !text-white !all:text-white "
+            class="modal-card !bg-dark-400 !all:text-white !w-[100rem] !text-white"
             bordered={false}
             closable
             onClose={() => {
@@ -80,7 +80,7 @@ export const LogListView = defineComponent({
                           return (
                             <div class="flex flex-col">
                               <span>{item.filename}</span>
-                              <span class="text-gray-400 dark:text-gray-600 text-sm grid grid-cols-[5rem,auto]">
+                              <span class="grid grid-cols-[5rem,auto] text-sm text-gray-400 dark:text-gray-600">
                                 <span>{item.size}</span>
 
                                 <span>类型：{item.type}</span>
@@ -165,14 +165,14 @@ const LogDisplay = defineComponent({
       }, 1000)
     })
     return () => (
-      <div class="h-[600px] max-h-[70vh] overflow-auto relative">
+      <div class="relative flex h-[600px] max-h-[70vh] overflow-auto">
         {wait.value ? (
-          <div class="w-full flex items-center justify-center h-full">
+          <div class="flex h-full w-full items-center justify-center">
             <NSpin show strokeWidth={14}></NSpin>
           </div>
         ) : (
           <Xterm
-            class="h-full w-full max-h-full"
+            class="w-full flex-grow"
             onReady={(term) => {
               term.write(props.data)
             }}

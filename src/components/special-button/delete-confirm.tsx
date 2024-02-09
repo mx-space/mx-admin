@@ -21,7 +21,7 @@ export const DeleteConfirmButton = defineComponent({
     message: { type: String },
 
     customIcon: {
-      type: Object as PropType<JSX.Element>,
+      type: Object as PropType<VNode>,
     },
 
     showSuccessMessage: {
@@ -58,8 +58,8 @@ export const DeleteConfirmButton = defineComponent({
       const size = !checkedRowKeys
         ? 0
         : Array.isArray(checkedRowKeys)
-        ? checkedRowKeys.length
-        : checkedRowKeys.size
+          ? checkedRowKeys.length
+          : checkedRowKeys.size
       const disabled = !checkedRowKeys ? false : size === 0
       return (
         <HeaderActionButton

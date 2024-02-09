@@ -5,7 +5,7 @@ type TRouteRecordNormalized = Omit<RouteRecordNormalized, 'meta'> & {
   meta?: {
     query?: KV
     params?: KV
-    icon: JSX.Element
+    icon: VNode
     title?: string
     hide?: boolean
     [key: string]: any

@@ -1,5 +1,98 @@
 # CHANGELOG
 
+## [3.37.7](https://github.com/mx-space/mx-admin/compare/v3.37.6...v3.37.7) (2024-02-07)
+
+
+### Bug Fixes
+
+*  category getter in ManagePostListView ([ca24fce](https://github.com/mx-space/mx-admin/commit/ca24fce7ed09031c27ac80f062127aa8e8c139c0))
+
+
+
+## [3.37.6](https://github.com/mx-space/mx-admin/compare/v3.37.5...v3.37.6) (2024-02-04)
+
+
+### Bug Fixes
+
+* broken lockfile ([11fedb0](https://github.com/mx-space/mx-admin/commit/11fedb044ec2c257d31ce959149529b215e981fe))
+
+
+
+## [3.37.5](https://github.com/mx-space/mx-admin/compare/v3.37.4...v3.37.5) (2024-02-04)
+
+
+### Bug Fixes
+
+* **act:** listen route change and fetch data ([9662368](https://github.com/mx-space/mx-admin/commit/9662368b13a3f03a45d7095cb9742ecc99136468))
+
+
+
+## [3.37.4](https://github.com/mx-space/mx-admin/compare/v3.37.3...v3.37.4) (2024-02-03)
+
+
+### Features
+
+* add file type ([5906f64](https://github.com/mx-space/mx-admin/commit/5906f6479a3013c8ecfdfec4fdde29160c3f79b4))
+
+
+
+## [3.37.3](https://github.com/mx-space/mx-admin/compare/v3.37.2...v3.37.3) (2024-02-02)
+
+
+### Bug Fixes
+
+* api error ([c53a4ad](https://github.com/mx-space/mx-admin/commit/c53a4adb9cc93ec93381ba4f2bf7ed089b471f28))
+
+
+
+## [3.37.2](https://github.com/mx-space/mx-admin/compare/v3.37.1...v3.37.2) (2024-02-02)
+
+
+
+## [3.37.1](https://github.com/mx-space/mx-admin/compare/v3.37.0...v3.37.1) (2024-02-02)
+
+
+### Bug Fixes
+
+* log view ([78515b2](https://github.com/mx-space/mx-admin/commit/78515b252075f16316e0d661c6cbc0291cf1518f))
+* socket connection ([cbb459b](https://github.com/mx-space/mx-admin/commit/cbb459b6c689641a489cee5e9fccabb73d576944))
+
+
+### Features
+
+* Update dependencies and add PAGE_PROXY flag ([b68696c](https://github.com/mx-space/mx-admin/commit/b68696c742802b4f90376a2a68ea9bdae2787a82))
+
+
+
+# [3.37.0](https://github.com/mx-space/mx-admin/compare/v3.36.3...v3.37.0) (2024-01-31)
+
+
+### Bug Fixes
+
+* kick session all ([b39bee2](https://github.com/mx-space/mx-admin/commit/b39bee2dd983124ac7ef45fb50a7aa3c4727c99d))
+
+
+
+## [3.36.3](https://github.com/mx-space/mx-admin/compare/v3.36.2...v3.36.3) (2024-01-30)
+
+
+### Bug Fixes
+
+* allow openai in browser ([68183c7](https://github.com/mx-space/mx-admin/commit/68183c70251329e7fd73cb11f1e0d44d5d1c77a7))
+* upgrade vue to 3.4 ([4baeaeb](https://github.com/mx-space/mx-admin/commit/4baeaebdb2781ce89854d2a2a35114bfda8f0c87))
+* xlog externalUrl ([c56c2bb](https://github.com/mx-space/mx-admin/commit/c56c2bb0adee6220ba068ea14b1a464b6dc07c50))
+
+
+
+## [3.36.2](https://github.com/mx-space/mx-admin/compare/v3.36.1...v3.36.2) (2024-01-08)
+
+
+### Bug Fixes
+
+* attach token in hash mode ([601f9de](https://github.com/mx-space/mx-admin/commit/601f9de171c92e773a3bccfd70e3073d8f5f6e73))
+
+
+
 ## [3.36.1](https://github.com/mx-space/mx-admin/compare/v3.36.0...v3.36.1) (2023-12-28)
 
 

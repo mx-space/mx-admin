@@ -25,7 +25,6 @@ export function setToken(token: string) {
 export function removeToken() {
   return Cookies.remove(TokenKey)
 }
-
 export const attachTokenFromQuery = () => {
   const token = new URLSearchParams(window.location.search).get('token')
   if (token) {
@@ -49,5 +48,29 @@ export const attachTokenFromQuery = () => {
         query,
       })
     })
+  } else {
+    // hash mode
+
+    const hash = window.location.hash.slice(1)
+
+    const parsedUrl = new URL(hash, window.location.origin)
+    const token = parsedUrl.searchParams.get('token')
+    if (token) {
+      setToken(token)
+      setTokenIsUpstream(true)
+      parsedUrl.searchParams.delete('token')
+
+      router.isReady().then(() => {
+        const query = {} as any
+        for (const [key, value] of parsedUrl.searchParams.entries()) {
+          query[key] = value
+        }
+
+        router.replace({
+          path: parsedUrl.pathname,
+          query,
+        })
+      })
+    }
   }
 }

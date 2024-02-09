@@ -30,6 +30,7 @@ CONCISE SUMMARY:`)
     const handleAskAI = async () => {
       const ai = new OpenAI({
         apiKey: token.value,
+        dangerouslyAllowBrowser: true,
       })
 
       const finalPrompt = promptRef.value.replace('{text}', props.article)

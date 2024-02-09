@@ -2,6 +2,8 @@ import { visualizer } from 'rollup-plugin-visualizer'
 import AutoImport from 'unplugin-auto-import/vite'
 import { defineConfig, loadEnv } from 'vite'
 import { checker } from 'vite-plugin-checker'
+
+import mkcert from 'vite-plugin-mkcert'
 import wasm from 'vite-plugin-wasm'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import type { PluginOption } from 'vite'
@@ -23,7 +25,7 @@ export default ({ mode }) => {
 
   return defineConfig({
     plugins: [
-      // VueDevTools(),
+      mkcert(),
       wasm(),
       WindiCSS(),
       vue(),
@@ -83,6 +85,7 @@ export default ({ mode }) => {
 
     server: {
       // https: true,
+      https: {},
       port: 9528,
     },
     esbuild: {

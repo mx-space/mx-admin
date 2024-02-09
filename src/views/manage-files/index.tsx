@@ -2,7 +2,6 @@ import { HeaderActionButton } from 'components/button/rounded-button'
 import { ArchiveIcon, UploadIcon } from 'components/icons'
 import { Table } from 'components/table'
 import { ContentLayout } from 'layouts/content'
-import type { UploadFileInfo } from 'naive-ui'
 import {
   NButton,
   NButtonGroup,
@@ -18,8 +17,9 @@ import {
   NUpload,
   NUploadDragger,
 } from 'naive-ui'
-import { RESTManager, getToken } from 'utils'
+import { getToken, RESTManager } from 'utils'
 import { defineComponent } from 'vue'
+import type { UploadFileInfo } from 'naive-ui'
 
 type FileType = 'file' | 'icon' | 'photo' | 'avatar'
 
@@ -110,6 +110,7 @@ export default defineComponent({
         >
           <NTabPane tab={'图标'} name={'icon'}></NTabPane>
           <NTabPane tab={'头像'} name={'avatar'}></NTabPane>
+          <NTabPane tab={'文件'} name={'file'}></NTabPane>
         </NTabs>
         <Table
           loading={loading.value}
@@ -210,7 +211,7 @@ export default defineComponent({
             }}
           >
             <NUpload
-              class={'flex flex-col items-center w-full'}
+              class={'flex w-full flex-col items-center'}
               headers={{
                 authorization: getToken() || '',
               }}
@@ -233,7 +234,7 @@ export default defineComponent({
             >
               <NUploadDragger
                 class={
-                  'flex flex-col items-center justify-center w-full m-auto py-28'
+                  'm-auto flex w-full flex-col items-center justify-center py-28'
                 }
               >
                 <NIcon size="48" depth="3">

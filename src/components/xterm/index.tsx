@@ -1,5 +1,4 @@
 import { useStoreRef } from 'hooks/use-store-ref'
-import { NSpin } from 'naive-ui'
 import { UIStore } from 'stores/ui'
 import { Material, MaterialDark } from 'xterm-theme'
 import type { PropType } from 'vue'
@@ -51,7 +50,6 @@ export const Xterm = defineComponent({
     const termRef = ref<HTMLElement>()
     const { onlyToggleNaiveUIDark, isDark } = useStoreRef(UIStore)
 
-    const loading = ref(true)
     if (props.darkMode) {
       useMountAndUnmount(() => {
         onlyToggleNaiveUIDark(true)
@@ -104,7 +102,6 @@ export const Xterm = defineComponent({
 
       observer.observe(termRef.value!)
 
-      loading.value = false
       props.onReady?.(term)
 
       return () => {
@@ -116,13 +113,11 @@ export const Xterm = defineComponent({
       props.onDestory?.()
     })
     return () => (
-      <NSpin show={loading.value}>
-        <div
-          id="xterm"
-          class={['max-h-[70vh] !bg-transparent', props.class]}
-          ref={termRef}
-        ></div>
-      </NSpin>
+      <div
+        id="xterm"
+        class={['max-h-[70vh] !bg-transparent', props.class]}
+        ref={termRef}
+      ></div>
     )
   },
 })

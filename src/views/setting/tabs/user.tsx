@@ -5,7 +5,6 @@ import { RelativeTime } from 'components/time/relative-time'
 import { UploadWrapper } from 'components/upload'
 import { socialKeyMap } from 'constants/social'
 import { cloneDeep, isEmpty } from 'lodash-es'
-import type { UserModel } from 'models/user'
 import {
   NButton,
   NForm,
@@ -17,8 +16,9 @@ import {
   NUploadDragger,
   useMessage,
 } from 'naive-ui'
-import { RESTManager, deepDiff } from 'utils'
+import { deepDiff, RESTManager } from 'utils'
 import { computed, defineComponent, onMounted, ref } from 'vue'
+import type { UserModel } from 'models/user'
 
 import styles from './user.module.css'
 
@@ -62,7 +62,7 @@ export const TabUser = defineComponent(() => {
         yGap={20}
       >
         <NGi>
-          <NForm class="flex flex-col justify-center items-center ">
+          <NForm class="flex flex-col items-center justify-center ">
             <NFormItem>
               <div class={styles['avatar']}>
                 <UploadWrapper
@@ -92,7 +92,7 @@ export const TabUser = defineComponent(() => {
             </NFormItem>
 
             <NFormItem label="上次登录时间" class="!mt-4">
-              <div class="text-center w-full">
+              <div class="w-full text-center">
                 <NText>
                   {data.value.lastLoginTime ? (
                     <RelativeTime
@@ -106,7 +106,7 @@ export const TabUser = defineComponent(() => {
             </NFormItem>
 
             <NFormItem label="上次登录地址">
-              <div class="text-center w-full">
+              <div class="w-full text-center">
                 {data.value.lastLoginIp ? (
                   <IpInfoPopover
                     trigger={'hover'}
@@ -195,15 +195,16 @@ export const TabUser = defineComponent(() => {
             </NFormItem>
 
             <NFormItem label="社交平台 ID 录入">
-                <KVEditor
-                  options={Object.keys(socialKeyMap).map((key) => {
-                    return { label: key, value: socialKeyMap[key] }
-                  })}
-                  onChange={(newValue) => {
-                    data.value.socialIds = newValue
-                  }}
-                  value={data.value.socialIds || {}}
-                ></KVEditor>
+              <KVEditor
+                key={data.value.id}
+                options={Object.keys(socialKeyMap).map((key) => {
+                  return { label: key, value: socialKeyMap[key] }
+                })}
+                onChange={(newValue) => {
+                  data.value.socialIds = newValue
+                }}
+                value={data.value.socialIds || {}}
+              ></KVEditor>
             </NFormItem>
           </NForm>
         </NGi>

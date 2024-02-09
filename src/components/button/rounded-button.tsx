@@ -1,8 +1,8 @@
 import { NButton, NPopover } from 'naive-ui'
-import type { PropType} from 'vue';
 import { defineComponent } from 'vue'
-import type { RouteLocationRaw} from 'vue-router';
 import { RouterLink } from 'vue-router'
+import type { ButtonHTMLAttributes, PropType } from 'vue'
+import type { RouteLocationRaw } from 'vue-router'
 
 import { Icon } from '@vicons/utils'
 
@@ -19,9 +19,7 @@ export const baseButtonProps = {
     type: String,
   },
   onClick: {
-    type: Function as any as PropType<
-      JSX.IntrinsicElements['button']['onClick'] | undefined
-    >,
+    type: Function as any as PropType<ButtonHTMLAttributes['onClick']>,
   },
   disabled: {
     type: Boolean,
@@ -56,7 +54,7 @@ export const HeaderActionButton = defineComponent({
       type: String,
     },
     icon: {
-      type: Object as PropType<JSX.Element>,
+      type: Object as PropType<VNode>,
       required: true,
     },
   },

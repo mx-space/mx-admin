@@ -2,11 +2,11 @@ import { Table } from 'components/table'
 import { RelativeTime } from 'components/time/relative-time'
 import { useDataTableFetch } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
-import type { SubscribeResponse } from 'models/subscribe'
 import { NButton, NPopconfirm, NSpace, NSwitch, NTag } from 'naive-ui'
-import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
 import { RESTManager } from 'utils'
 import { useRoute } from 'vue-router'
+import type { SubscribeResponse } from 'models/subscribe'
+import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
 
 import { SubscribeBit2TextMap } from './constants'
 
@@ -162,7 +162,7 @@ export const SubscribeBit = defineComponent({
     },
   },
   render() {
-    const tagElements = [] as JSX.Element[]
+    const tagElements = [] as VNode[]
 
     for (const [bit, text] of SubscribeBit2TextMap.entries()) {
       bit & this.bit && tagElements.push(<NTag round>{text}</NTag>)

@@ -14,6 +14,7 @@ import {
 import { RouteName } from 'router/name'
 import { defineComponent, onMounted } from 'vue'
 import { RouterView, useRouter } from 'vue-router'
+import type { VNode } from 'vue'
 
 import { useUIStore } from './stores/ui'
 import { useUserStore } from './stores/user'
@@ -52,7 +53,7 @@ const Root = defineComponent({
         }
       })
     })
-    const $portalElement = ref<JSX.Element | null>(null)
+    const $portalElement = ref<VNode | null>(null)
 
     provide(PortalInjectKey, {
       setElement(el) {

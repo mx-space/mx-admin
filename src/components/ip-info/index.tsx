@@ -1,8 +1,8 @@
-import type { PopoverTrigger } from 'naive-ui'
 import { NPopover } from 'naive-ui'
 import { RESTManager } from 'utils'
-import type { PropType } from 'vue'
 import { defineComponent, ref } from 'vue'
+import type { PopoverTrigger } from 'naive-ui'
+import type { PropType } from 'vue'
 
 const ipLocationCacheMap = new Map<string, IP>()
 
@@ -13,7 +13,7 @@ export const IpInfoPopover = defineComponent({
       required: true,
     },
     triggerEl: {
-      type: [Object, Function] as PropType<(() => JSX.Element) | JSX.Element>,
+      type: [Object, Function] as PropType<(() => VNode) | VNode>,
       required: true,
     },
     trigger: {

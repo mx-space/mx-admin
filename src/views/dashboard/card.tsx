@@ -21,7 +21,7 @@ export const Card = defineComponent({
   props: {
     label: String,
     value: [Number, String],
-    icon: Function as PropType<() => JSX.Element>,
+    icon: Function as PropType<() => VNode>,
     actions: {
       type: Array as PropType<
         {

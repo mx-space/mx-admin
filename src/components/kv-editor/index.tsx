@@ -27,36 +27,32 @@ export const KVEditor = defineComponent({
     const KVArray = ref<{ key: string; value: string }[]>([])
 
     const keySet = ref(new Set<string>())
-
-    const cleaner = watch(
-      () => props.value,
-      (newValue) => {
-        if (!isEmpty(newValue)) {
-          const arr = Object.entries(newValue).map(([k, v]) => {
-            keySet.value.add(k)
-            return {
-              key: k,
-              value: v.toString(),
-            }
-          })
-          KVArray.value = arr
-          cleaner()
-        }
-      },
-      { deep: true },
-    )
-
+    onMounted(() => {
+      if (!isEmpty(props.value)) {
+        const arr = Object.entries(props.value).map(([k, v]) => {
+          keySet.value.add(k)
+          return {
+            key: k,
+            value: v.toString(),
+          }
+        })
+        KVArray.value = arr
+      }
+    })
     watch(
       () => KVArray.value,
       (newValue) => {
-        const record = newValue.reduce((acc, cur) => {
-          // filter empty key value
-          if (cur.key === '' && cur.value === '') {
+        const record = newValue.reduce(
+          (acc, cur) => {
+            // filter empty key value
+            if (cur.key === '' && cur.value === '') {
+              return acc
+            }
+            acc[cur.key] = cur.value.toString()
             return acc
-          }
-          acc[cur.key] = cur.value.toString()
-          return acc
-        }, {} as { [key: string]: string })
+          },
+          {} as { [key: string]: string },
+        )
         props.onChange(record)
       },
       { deep: true },
@@ -89,9 +85,12 @@ export const KVEditor = defineComponent({
         }}
       >
         {{
-          default(rowProps: { index: number; value: typeof KVArray.value[0] }) {
+          default(rowProps: {
+            index: number
+            value: (typeof KVArray.value)[0]
+          }) {
             return (
-              <div class="flex items-center w-full">
+              <div class="flex w-full items-center">
                 {props.plainKeyInput ? (
                   <NInput
                     class="mr-4"
