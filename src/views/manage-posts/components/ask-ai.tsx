@@ -21,6 +21,7 @@ export const AISummaryDialog = defineComponent({
   },
   setup(props) {
     const token = useStorage('openai-token', '')
+    const base_url = useStorage('openai-base-url', 'https://api.openai.com/v1/')
 
     const promptRef = ref(`Summarize this in Chinese language:
 "{text}"
@@ -30,6 +31,7 @@ CONCISE SUMMARY:`)
     const handleAskAI = async () => {
       const ai = new OpenAI({
         apiKey: token.value,
+        baseURL: base_url.value,
         dangerouslyAllowBrowser: true,
       })
 
@@ -105,6 +107,31 @@ CONCISE SUMMARY:`)
               },
               default() {
                 return 'OpenAI Token 用于调用 OpenAI API，Token 只会保存在本地'
+              },
+            }}
+          </NPopover>
+        </NFormItem>
+
+        <NFormItem label="OpenAI Base URL">
+          <NPopover>
+            {{
+              trigger() {
+                return (
+                  <NInput
+                    inputProps={{
+                      name: 'openai-base_url',
+                      autocapitalize: 'off',
+                    }}
+                    showPasswordOn="click"
+                    value={base_url.value}
+                    onUpdateValue={(val) => {
+                      base_url.value = val
+                    }}
+                  ></NInput>
+                )
+              },
+              default() {
+                return 'OpenAI Base URL 用于调用 OpenAI API，默认为 https://api.openai.com/v1/'
               },
             }}
           </NPopover>
