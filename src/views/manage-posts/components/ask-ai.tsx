@@ -1,12 +1,9 @@
-import {
-  NButton,
-  NForm,
-  NFormItem,
-  NInput,
-  NPopover,
-  useMessage,
-} from 'naive-ui'
-import { OpenAI } from 'openai'
+import { NButton, NForm, NFormItem, NInput, NPopover, useMessage } from 'naive-ui';
+import { OpenAI } from 'openai';
+
+
+
+
 
 export const AISummaryDialog = defineComponent({
   props: {
@@ -46,7 +43,7 @@ CONCISE SUMMARY:`)
               role: 'user',
             },
           ],
-          model: 'gpt-3.5-turbo',
+          model: 'gpt-3.5-turbo-0125',
           max_tokens: 300,
           stream: false,
         })
