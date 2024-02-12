@@ -1,9 +1,12 @@
-import { NButton, NForm, NFormItem, NInput, NPopover, useMessage } from 'naive-ui';
-import { OpenAI } from 'openai';
-
-
-
-
+import {
+  NButton,
+  NForm,
+  NFormItem,
+  NInput,
+  NPopover,
+  useMessage,
+} from 'naive-ui'
+import { OpenAI } from 'openai'
 
 export const AISummaryDialog = defineComponent({
   props: {
@@ -20,9 +23,13 @@ export const AISummaryDialog = defineComponent({
     const token = useStorage('openai-token', '')
     const base_url = useStorage('openai-base-url', 'https://api.openai.com/v1/')
 
-    const promptRef = ref(`Summarize this in Chinese language:
+    const prompt = useStorage(
+      'openai-prompt',
+      `Summarize this in Chinese language:
 "{text}"
-CONCISE SUMMARY:`)
+CONCISE SUMMARY:`,
+    )
+    const model = useStorage('openai-model', 'gpt-3.5-turbo')
     const message = useMessage()
     const isLoading = ref(false)
     const handleAskAI = async () => {
@@ -32,7 +39,7 @@ CONCISE SUMMARY:`)
         dangerouslyAllowBrowser: true,
       })
 
-      const finalPrompt = promptRef.value.replace('{text}', props.article)
+      const finalPrompt = prompt.value.replace('{text}', props.article)
       const messageIns = message.loading('AI 正在生成摘要...')
       isLoading.value = true
       const response = await ai.chat.completions
@@ -43,7 +50,7 @@ CONCISE SUMMARY:`)
               role: 'user',
             },
           ],
-          model: 'gpt-3.5-turbo-0125',
+          model: model.value,
           max_tokens: 300,
           stream: false,
         })
@@ -77,8 +84,10 @@ CONCISE SUMMARY:`)
               minRows: 4,
             }}
             type="textarea"
-            value={promptRef.value}
-            onUpdateValue={(val) => void (promptRef.value = val)}
+            value={prompt.value}
+            onUpdateValue={(val) => {
+              prompt.value = val
+            }}
           ></NInput>
         </NFormItem>
 
@@ -129,6 +138,31 @@ CONCISE SUMMARY:`)
               },
               default() {
                 return 'OpenAI Base URL 用于调用 OpenAI API，默认为 https://api.openai.com/v1/'
+              },
+            }}
+          </NPopover>
+        </NFormItem>
+
+        <NFormItem label="OpenAI Model">
+          <NPopover>
+            {{
+              trigger() {
+                return (
+                  <NInput
+                    inputProps={{
+                      name: 'openai-model',
+                      autocapitalize: 'off',
+                    }}
+                    showPasswordOn="click"
+                    value={model.value}
+                    onUpdateValue={(val) => {
+                      model.value = val
+                    }}
+                  ></NInput>
+                )
+              },
+              default() {
+                return 'OpenAI Model 用于调用 OpenAI API，默认为 gpt-3.5-turbo'
               },
             }}
           </NPopover>
