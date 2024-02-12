@@ -1,5 +1,15 @@
 # CHANGELOG
 
+# [3.38.0](https://github.com/mx-space/mx-admin/compare/v3.37.7...v3.38.0) (2024-02-12)
+
+
+### Features
+
+* support custom openai base url ([#863](https://github.com/mx-space/mx-admin/issues/863)) ([dfde89e](https://github.com/mx-space/mx-admin/commit/dfde89e4acf5ea6f579b32cbd1c5ef51f10e82c7))
+* support reading duartion ([fba9dc4](https://github.com/mx-space/mx-admin/commit/fba9dc4932e27cfcdf4af12cab6665f29252ec16))
+
+
+
 ## [3.37.7](https://github.com/mx-space/mx-admin/compare/v3.37.6...v3.37.7) (2024-02-07)
 
 
