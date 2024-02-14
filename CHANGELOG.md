@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.38.1](https://github.com/mx-space/mx-admin/compare/v3.38.0...v3.38.1) (2024-02-14)
+
+
+### Features
+
+* make AI summary persistent and customizable ([#868](https://github.com/mx-space/mx-admin/issues/868)) ([ac2b841](https://github.com/mx-space/mx-admin/commit/ac2b84140d0cb23e383d6aab0c15439b385565fb))
+
+
+
 # [3.38.0](https://github.com/mx-space/mx-admin/compare/v3.37.7...v3.38.0) (2024-02-12)
 
 
