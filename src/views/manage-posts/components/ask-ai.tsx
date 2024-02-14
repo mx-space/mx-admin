@@ -4,6 +4,8 @@ import {
   NFormItem,
   NInput,
   NPopover,
+  NSelect,
+  NSpace,
   useMessage,
 } from 'naive-ui'
 import { OpenAI } from 'openai'
@@ -30,6 +32,22 @@ export const AISummaryDialog = defineComponent({
 CONCISE SUMMARY:`,
     )
     const model = useStorage('openai-model', 'gpt-3.5-turbo')
+    const default_models = [
+      {
+        label: 'GPT 3.5 Turbo',
+        value: 'gpt-3.5-turbo',
+      },
+      {
+        label: 'GPT 3.5 Turbo 16k',
+        value: 'gpt-3.5-turbo-16k',
+      },
+      {
+        label: 'GPT 4 Turbo',
+        value: 'gpt-4-turbo-preview',
+      },
+    ]
+    const isOtherModel = ref(false)
+    isOtherModel.value = !default_models.some((m) => m.value === model.value)
     const message = useMessage()
     const isLoading = ref(false)
     const handleAskAI = async () => {
@@ -148,17 +166,32 @@ CONCISE SUMMARY:`,
             {{
               trigger() {
                 return (
-                  <NInput
-                    inputProps={{
-                      name: 'openai-model',
-                      autocapitalize: 'off',
-                    }}
-                    showPasswordOn="click"
-                    value={model.value}
-                    onUpdateValue={(val) => {
-                      model.value = val
-                    }}
-                  ></NInput>
+                  <NSpace vertical class={'w-full'}>
+                    <NSelect
+                      filterable
+                      options={[
+                        ...default_models,
+                        {
+                          label: '其他',
+                          value: '',
+                        },
+                      ]}
+                      value={!isOtherModel.value ? model.value : ''}
+                      onUpdateValue={(val) => {
+                        isOtherModel.value = val === ''
+                        model.value = val
+                      }}
+                    ></NSelect>
+                    <NInput
+                      value={model.value}
+                      disabled={!isOtherModel.value}
+                      class={!isOtherModel.value ? 'hidden' : ''}
+                      placeholder="自定义 Model 名称"
+                      onUpdateValue={(val) => {
+                        model.value = val
+                      }}
+                    ></NInput>
+                  </NSpace>
                 )
               },
               default() {
