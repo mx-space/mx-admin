@@ -177,6 +177,7 @@ CONCISE SUMMARY:`,
                         },
                       ]}
                       value={!isOtherModel.value ? model.value : ''}
+                      defaultValue={'gpt-3.5-turbo'}
                       onUpdateValue={(val) => {
                         isOtherModel.value = val === ''
                         model.value = val
