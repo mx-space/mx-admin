@@ -4,6 +4,8 @@ import {
   NFormItem,
   NInput,
   NPopover,
+  NSelect,
+  NSpace,
   useMessage,
 } from 'naive-ui'
 import { OpenAI } from 'openai'
@@ -23,9 +25,29 @@ export const AISummaryDialog = defineComponent({
     const token = useStorage('openai-token', '')
     const base_url = useStorage('openai-base-url', 'https://api.openai.com/v1/')
 
-    const promptRef = ref(`Summarize this in Chinese language:
+    const prompt = useStorage(
+      'openai-prompt',
+      `Summarize this in Chinese language:
 "{text}"
-CONCISE SUMMARY:`)
+CONCISE SUMMARY:`,
+    )
+    const model = useStorage('openai-model', 'gpt-3.5-turbo')
+    const default_models = [
+      {
+        label: 'GPT 3.5 Turbo',
+        value: 'gpt-3.5-turbo',
+      },
+      {
+        label: 'GPT 3.5 Turbo 16k',
+        value: 'gpt-3.5-turbo-16k',
+      },
+      {
+        label: 'GPT 4 Turbo',
+        value: 'gpt-4-turbo-preview',
+      },
+    ]
+    const isOtherModel = ref(false)
+    isOtherModel.value = !default_models.some((m) => m.value === model.value)
     const message = useMessage()
     const isLoading = ref(false)
     const handleAskAI = async () => {
@@ -35,7 +57,7 @@ CONCISE SUMMARY:`)
         dangerouslyAllowBrowser: true,
       })
 
-      const finalPrompt = promptRef.value.replace('{text}', props.article)
+      const finalPrompt = prompt.value.replace('{text}', props.article)
       const messageIns = message.loading('AI 正在生成摘要...')
       isLoading.value = true
       const response = await ai.chat.completions
@@ -46,7 +68,7 @@ CONCISE SUMMARY:`)
               role: 'user',
             },
           ],
-          model: 'gpt-3.5-turbo',
+          model: model.value,
           max_tokens: 300,
           stream: false,
         })
@@ -80,8 +102,10 @@ CONCISE SUMMARY:`)
               minRows: 4,
             }}
             type="textarea"
-            value={promptRef.value}
-            onUpdateValue={(val) => void (promptRef.value = val)}
+            value={prompt.value}
+            onUpdateValue={(val) => {
+              prompt.value = val
+            }}
           ></NInput>
         </NFormItem>
 
@@ -132,6 +156,47 @@ CONCISE SUMMARY:`)
               },
               default() {
                 return 'OpenAI Base URL 用于调用 OpenAI API，默认为 https://api.openai.com/v1/'
+              },
+            }}
+          </NPopover>
+        </NFormItem>
+
+        <NFormItem label="OpenAI Model">
+          <NPopover>
+            {{
+              trigger() {
+                return (
+                  <NSpace vertical class={'w-full'}>
+                    <NSelect
+                      filterable
+                      options={[
+                        ...default_models,
+                        {
+                          label: '其他',
+                          value: '',
+                        },
+                      ]}
+                      value={!isOtherModel.value ? model.value : ''}
+                      defaultValue={'gpt-3.5-turbo'}
+                      onUpdateValue={(val) => {
+                        isOtherModel.value = val === ''
+                        model.value = val
+                      }}
+                    ></NSelect>
+                    <NInput
+                      value={model.value}
+                      disabled={!isOtherModel.value}
+                      class={!isOtherModel.value ? 'hidden' : ''}
+                      placeholder="自定义 Model 名称"
+                      onUpdateValue={(val) => {
+                        model.value = val
+                      }}
+                    ></NInput>
+                  </NSpace>
+                )
+              },
+              default() {
+                return 'OpenAI Model 用于调用 OpenAI API，默认为 gpt-3.5-turbo'
               },
             }}
           </NPopover>
