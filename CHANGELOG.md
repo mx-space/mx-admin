@@ -1,5 +1,16 @@
 # CHANGELOG
 
+# [3.39.0](https://github.com/mx-space/mx-admin/compare/v3.38.1...v3.39.0) (2024-02-15)
+
+
+### Bug Fixes
+
+* **deps:** update codemirror ([#860](https://github.com/mx-space/mx-admin/issues/860)) ([e0cd931](https://github.com/mx-space/mx-admin/commit/e0cd931e73e0ff1fe33a04af858c2e51a3fb2231))
+* **deps:** update dependency crossbell.js to v1.11.3 ([#861](https://github.com/mx-space/mx-admin/issues/861)) ([89974f2](https://github.com/mx-space/mx-admin/commit/89974f20d6341ced8793da08980a176f79acb71a))
+* persistent notification closure within the same version ([#869](https://github.com/mx-space/mx-admin/issues/869)) ([6b7567f](https://github.com/mx-space/mx-admin/commit/6b7567fd9b4d9ee6d4a94595d506ecabb375f41c))
+
+
+
 ## [3.38.1](https://github.com/mx-space/mx-admin/compare/v3.38.0...v3.38.1) (2024-02-14)
 
 
