@@ -1,5 +1,5 @@
 .sticky-header {
-  @apply sticky left-0 right-0 z-20 p-12 pb-6 top-[-2.5rem] bg-transparent;
+  @apply sticky left-0 right-0 top-[-2.5rem] z-20 bg-transparent p-12 pb-6;
 
   &::before {
     @apply absolute inset-0 content-[''];
@@ -19,7 +19,7 @@
   display: flex;
   justify-content: space-between;
 
-  @apply select-none relative z-10;
+  @apply relative z-10 select-none;
 
   & .title {
     @apply flex items-center;
@@ -59,9 +59,14 @@
     margin-top: 0.5em;
     background: #fff;
     border-radius: 66%;
-    transition: transform 0.3s, background 0.3s, color 0.3s;
+    transition:
+      transform 0.3s,
+      background 0.3s,
+      color 0.3s;
     animation: show 0.5s both;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1), 0 5px 20px rgba(0, 0, 0, 0.2);
+    box-shadow:
+      0 0 10px rgba(0, 0, 0, 0.1),
+      0 5px 20px rgba(0, 0, 0, 0.2);
     &:not(:first-child) {
       margin-top: 0.8rem;
     }
@@ -69,7 +74,7 @@
 
   @screen phone {
     & {
-      @apply flex-row items-center justify-center right-[1.5rem] bottom-[1.5rem];
+      @apply bottom-[1.5rem] right-[1.5rem] flex-row items-center justify-center;
     }
 
     & button {
@@ -79,11 +84,11 @@
 }
 
 .header-actions {
-  @apply right-0 mr-12 phone:mr-0 top-0 bottom-0 flex items-center relative;
+  @apply phone:mr-0 relative bottom-0 right-0 top-0 mr-12 flex items-center;
 
   & > button,
   & > a {
-    @apply h-12 w-12 flex items-center justify-center shadow-2xl;
+    @apply flex h-12 w-12 items-center justify-center shadow-2xl;
   }
 
   a > button {

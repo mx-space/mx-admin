@@ -22,8 +22,8 @@ export const CodeEditorForTemplateEditing = defineComponent({
     })
 
     return () => (
-      <div class={'h-full w-full relative'}>
-        <div ref={editorRef} class={'h-full w-full relative'} />
+      <div class={'relative h-full w-full'}>
+        <div ref={editorRef} class={'relative h-full w-full'} />
         {!obj.loaded.value && (
           <CenterSpin description="Monaco 体积较大耐心等待加载完成..." />
         )}

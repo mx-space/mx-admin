@@ -1,7 +1,6 @@
 import { isURL } from 'class-validator'
 import { JSONHighlight } from 'components/json-highlight'
 import { isObject, isUndefined } from 'lodash-es'
-import type { SelectOption } from 'naive-ui'
 import {
   NButton,
   NCollapse,
@@ -22,8 +21,10 @@ import {
   NTooltip,
 } from 'naive-ui'
 import { JSONParseReturnOriginal } from 'utils/json'
-import type { PropType } from 'vue'
 import type { Image } from '@mx-space/api-client'
+import type { SelectOption } from 'naive-ui'
+import type { PropType } from 'vue'
+
 import { ImageDetailSection } from './components/image-detail-section'
 import { JSONEditor } from './components/json-editor'
 

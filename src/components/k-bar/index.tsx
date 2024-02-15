@@ -1,14 +1,14 @@
 import { useRouter } from 'vue-router'
-
 import type { Action } from '@bytebase/vue-kbar'
+
 import {
+  createAction,
   KBarAnimator,
   KBarPortal,
   KBarPositioner,
   KBarProvider,
   KBarResults,
   KBarSearch,
-  createAction,
   useKBarMatches,
 } from '@bytebase/vue-kbar'
 
@@ -55,11 +55,11 @@ export const KBarWrapper = defineComponent({
     })
 
     return () => (
-      <KBarProvider  actions={actions.value}>
+      <KBarProvider actions={actions.value}>
         <KBarPortal>
-          <KBarPositioner class="backdrop-filter backdrop-blur-sm z-99 bg-gray-300 dark:bg-black dark:bg-opacity-25 bg-opacity-80">
-            <KBarAnimator class="bg-white shadow-lg rounded-lg w-[650px] max-w-[80vw] overflow-hidden divide-y">
-              <KBarSearch class="px-3 py-4 text-lg w-full box-border outline-none border-none" />
+          <KBarPositioner class="z-99 bg-gray-300 bg-opacity-80 backdrop-blur-sm backdrop-filter dark:bg-black dark:bg-opacity-25">
+            <KBarAnimator class="w-[650px] max-w-[80vw] divide-y overflow-hidden rounded-lg bg-white shadow-lg">
+              <KBarSearch class="box-border w-full border-none px-3 py-4 text-lg outline-none" />
 
               <SearchResult />
             </KBarAnimator>
@@ -90,7 +90,7 @@ const SearchResult = defineComponent({
               return [
                 <div
                   class={[
-                    'flex flex-col px-3 py-2 h-[50px] box-border select-none cursor-pointer',
+                    'box-border flex h-[50px] cursor-pointer select-none flex-col px-3 py-2',
                     active && 'bg-gray-200 bg-opacity-50',
                   ]}
                 >

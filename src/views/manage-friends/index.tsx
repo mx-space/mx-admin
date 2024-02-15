@@ -5,7 +5,6 @@ import { RelativeTime } from 'components/time/relative-time'
 import { useDataTableFetch } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
 import omit from 'lodash-es/omit'
-import type { LinkModel, LinkResponse, LinkStateCount } from 'models/link'
 import { LinkState, LinkStateNameMap, LinkType } from 'models/link'
 import {
   NBadge,
@@ -28,6 +27,7 @@ import { RouteName } from 'router/name'
 import { RESTManager } from 'utils'
 import { defineComponent, onBeforeMount, ref, toRaw, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import type { LinkModel, LinkResponse, LinkStateCount } from 'models/link'
 
 import { Avatar } from './components/avatar'
 import { LinkAuditModal } from './components/reason-modal'

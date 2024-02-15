@@ -9,7 +9,6 @@ import {
 } from 'components/icons'
 import { useShorthand } from 'components/shorthand'
 import { RelativeTime } from 'components/time/relative-time'
-import type { RecentlyModel } from 'models/recently'
 import {
   NButton,
   NPopconfirm,
@@ -18,6 +17,7 @@ import {
   NTimelineItem,
 } from 'naive-ui'
 import { defineComponent, onMounted } from 'vue'
+import type { RecentlyModel } from 'models/recently'
 
 import { Icon } from '@vicons/utils'
 
@@ -92,7 +92,7 @@ export default defineComponent({
                               ),
 
                               default: () => (
-                                <span class={'break-all max-w-48'}>
+                                <span class={'max-w-48 break-all'}>
                                   确定要删除 {item.content} ?
                                 </span>
                               ),

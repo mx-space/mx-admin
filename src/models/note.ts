@@ -10,10 +10,10 @@ export interface NoteModel {
   text: string
   mood?: string
   weather?: string
-  hasMemory?: boolean
+  bookmark?: boolean
   created: string
   modified: string
-  secret?: Date
+  publicAt?: Date
   password?: string | null
   nid: number
   music?: NoteMusicRecord[]

@@ -49,9 +49,7 @@
     "textOptions"
   ],
   "title": "设置",
-  "ps": [
-    "* 敏感字段不显示，后端默认不返回敏感字段，显示为空"
-  ],
+  "ps": ["* 敏感字段不显示，后端默认不返回敏感字段，显示为空"],
   "definitions": {
     "SeoDto": {
       "properties": {

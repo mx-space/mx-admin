@@ -61,7 +61,7 @@ export default defineComponent({
           </NGi>
           <NGi span="18">
             <pre
-              class="overflow-auto max-h-[calc(100vh-10rem)] !bg-none !bg-transparent"
+              class="max-h-[calc(100vh-10rem)] overflow-auto !bg-transparent !bg-none"
               ref={previewRef}
             >
               {errorMsg.value}

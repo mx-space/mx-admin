@@ -3,7 +3,6 @@ import { CodeHighlight } from 'components/code-highlight'
 import { ExternalLinkIcon, ImportIcon } from 'components/icons'
 import { CenterSpin } from 'components/spin'
 import { GitHubSnippetRepo } from 'external/api/github-mx-snippets'
-import type { SnippetModel } from 'models/snippet'
 import { SnippetType } from 'models/snippet'
 import {
   NButton,
@@ -18,6 +17,7 @@ import {
 } from 'naive-ui'
 import { basename, extname } from 'path-browserify'
 import { RESTManager } from 'utils'
+import type { SnippetModel } from 'models/snippet'
 import type { PropType } from 'vue'
 
 import { InstallDepsXterm } from './install-dep-xterm'
@@ -129,7 +129,7 @@ export const ImportSnippetButton = defineComponent({
                 ) : (
                   <div class="flex flex-wrap space-x-2">
                     {list.value.map(({ name: name_, url }) => (
-                      <div class="flex items-center ml-4" key="name">
+                      <div class="ml-4 flex items-center" key="name">
                         <NButton
                           text
                           onClick={() => {
@@ -142,7 +142,7 @@ export const ImportSnippetButton = defineComponent({
                           {name_}
                         </NButton>
                         <a href={url} target="_blank" rel="noopener noreferrer">
-                          <ExternalLinkIcon class="!h-4 !w-4 ml-2" />
+                          <ExternalLinkIcon class="ml-2 !h-4 !w-4" />
                         </a>
                       </div>
                     ))}
@@ -313,7 +313,7 @@ const ProcessView = defineComponent({
         <div>
           <p>获取： {name}</p>
           {loading.value ? (
-            <div class="h-24 relative">
+            <div class="relative h-24">
               <CenterSpin description="需要从 GitHub 获取，建议连接代理后操作。" />
             </div>
           ) : (
@@ -354,7 +354,7 @@ const ProcessView = defineComponent({
                               <NCard
                                 bordered={false}
                                 title={name}
-                                class="max-w-[40vw] max-h-[50vh] overflow-auto"
+                                class="max-h-[50vh] max-w-[40vw] overflow-auto"
                               >
                                 <CodeHighlight
                                   code={raw}

@@ -66,7 +66,7 @@ button {
 
 @layer components {
   .modal-card {
-    @apply !max-w-[90vw] !w-[60rem];
+    @apply !w-[60rem] !max-w-[90vw];
 
     &.sm {
       @apply !w-[40rem];
@@ -107,5 +107,5 @@ button {
 }
 
 .p0 .n-upload-dragger {
-  @apply p-0 flex;
+  @apply flex p-0;
 }

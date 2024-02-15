@@ -2,7 +2,6 @@ import { AddIcon, MenuDownIcon } from 'components/icons'
 import { DeleteConfirmButton } from 'components/special-button/delete-confirm'
 import { RelativeTime } from 'components/time/relative-time'
 import { useDataTableFetch } from 'hooks/use-table'
-import type { ProjectModel, ProjectResponse } from 'models/project'
 import {
   NAvatar,
   NButton,
@@ -24,6 +23,7 @@ import { RouteName } from 'router/name'
 import { parseDate } from 'utils'
 import { defineComponent, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import type { ProjectModel, ProjectResponse } from 'models/project'
 
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
@@ -156,7 +156,7 @@ const ManageProjectView = defineComponent({
                                       footer() {
                                         return (
                                           <NElement>
-                                            <NSpace class="pl-[3.6rem] text-[var(--clear-color-pressed)] text-sm">
+                                            <NSpace class="pl-[3.6rem] text-sm text-[var(--clear-color-pressed)]">
                                               <span>
                                                 创建于 {parseDate(item.created)}
                                               </span>

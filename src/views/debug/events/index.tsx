@@ -118,7 +118,7 @@ export default defineComponent({
             </div>
           </NGi>
           <NGi span="24">
-            <div class="h-[calc(100vh-20rem)] relative">
+            <div class="relative h-[calc(100vh-20rem)]">
               <div ref={editorRef} class="h-full"></div>
             </div>
           </NGi>

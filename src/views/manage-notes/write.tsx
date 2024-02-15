@@ -62,8 +62,8 @@ type NoteReactiveType = {
   mood: string
   weather: string
   password: string | null
-  secret: Date | null
-  hasMemory: boolean
+  publicAt: Date | null
+  bookmark: boolean
   music: NoteMusicRecord[]
   location: null | string
   coordinates: null | Coordinate
@@ -112,11 +112,11 @@ const NoteWriteView = defineComponent(() => {
     text: '',
     title: '',
     hide: false,
-    hasMemory: false,
+    bookmark: false,
     mood: '',
     music: [],
     password: null,
-    secret: null,
+    publicAt: null,
     weather: '',
     location: '',
     coordinates: null,
@@ -202,9 +202,9 @@ const NoteWriteView = defineComponent(() => {
             : defaultTitle.value,
         password:
           data.password && data.password.length > 0 ? data.password : null,
-        secret: data.secret
+        publicAt: data.publicAt
           ? (() => {
-              const date = new Date(data.secret)
+              const date = new Date(data.publicAt)
               if (+date - +new Date() <= 0) {
                 return null
               } else {
@@ -442,9 +442,9 @@ const NoteWriteView = defineComponent(() => {
             isDateDisabled={(ts: number) => +new Date(ts) - +new Date() < 0}
             placeholder="选择时间"
             clearable
-            value={data.secret ? +new Date(data.secret) : undefined}
+            value={data.publicAt ? +new Date(data.publicAt) : undefined}
             onUpdateValue={(e) => {
-              data.secret = e ? new Date(e) : null
+              data.publicAt = e ? new Date(e) : null
             }}
           >
             {{
@@ -457,7 +457,7 @@ const NoteWriteView = defineComponent(() => {
                       type="default"
                       size="small"
                       onClick={() => {
-                        data.secret = add(date, { days: 1 })
+                        data.publicAt = add(date, { days: 1 })
                       }}
                     >
                       一天后
@@ -467,7 +467,7 @@ const NoteWriteView = defineComponent(() => {
                       type="default"
                       size="small"
                       onClick={() => {
-                        data.secret = add(date, { weeks: 1 })
+                        data.publicAt = add(date, { weeks: 1 })
                       }}
                     >
                       一周后
@@ -477,7 +477,7 @@ const NoteWriteView = defineComponent(() => {
                       type="default"
                       size="small"
                       onClick={() => {
-                        data.secret = add(date, { days: 14 })
+                        data.publicAt = add(date, { days: 14 })
                       }}
                     >
                       半个月后
@@ -487,7 +487,7 @@ const NoteWriteView = defineComponent(() => {
                       type="default"
                       size="small"
                       onClick={() => {
-                        data.secret = add(date, { months: 1 })
+                        data.publicAt = add(date, { months: 1 })
                       }}
                     >
                       一个月后
@@ -512,8 +512,8 @@ const NoteWriteView = defineComponent(() => {
           labelPlacement="left"
         >
           <NSwitch
-            value={data.hasMemory}
-            onUpdateValue={(e) => void (data.hasMemory = e)}
+            value={data.bookmark}
+            onUpdateValue={(e) => void (data.bookmark = e)}
           ></NSwitch>
         </NFormItem>
 

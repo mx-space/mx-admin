@@ -12,8 +12,8 @@ import {
   NSpace,
   NText,
 } from 'naive-ui'
-import type { PropType} from 'vue';
 import { defineComponent, ref } from 'vue'
+import type { PropType } from 'vue'
 
 import { Icon } from '@vicons/utils'
 
@@ -84,7 +84,7 @@ export const ParseContentButton = defineComponent({
             {{
               header() {
                 return (
-                  <div class="space-x-4 relative flex items-center">
+                  <div class="relative flex items-center space-x-4">
                     <NText>解析 Markdown</NText>
                     <NPopover trigger="hover" placement="right">
                       {{

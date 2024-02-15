@@ -1,9 +1,9 @@
 import { useDefineMyThemes } from 'components/editor/monaco/use-define-theme'
 import { CenterSpin } from 'components/spin'
-import type { IKeyboardEvent, editor } from 'monaco-editor'
 import { AutoTypings, LocalStorageCache } from 'monaco-editor-auto-typings'
-import type { AutoTypingsCore } from 'monaco-editor-auto-typings/lib/AutoTypingsCore'
 import { UIStore } from 'stores/ui'
+import type { editor, IKeyboardEvent } from 'monaco-editor'
+import type { AutoTypingsCore } from 'monaco-editor-auto-typings/lib/AutoTypingsCore'
 import type { Ref } from 'vue'
 
 import { useSaveConfirm } from './use-save-confirm'

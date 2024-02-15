@@ -39,7 +39,7 @@ export const CodeEditorForSnippet = defineComponent({
     )
 
     return () => (
-      <div class={'h-full w-full relative'}>
+      <div class={'relative h-full w-full'}>
         <FunctionCodeEditor
           ref={editorRef}
           value={value}

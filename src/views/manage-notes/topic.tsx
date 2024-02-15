@@ -2,7 +2,6 @@ import { HeaderActionButton } from 'components/button/rounded-button'
 import { PlusIcon, TrashIcon } from 'components/icons'
 import { useDataTableFetch } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
-import type { TopicModel } from 'models/topic'
 import {
   NAvatar,
   NButton,
@@ -16,8 +15,9 @@ import {
 import { RESTManager } from 'utils'
 import { textToBigCharOrWord } from 'utils/word'
 import { useRoute, useRouter } from 'vue-router'
-
 import type { PaginateResult } from '@mx-space/api-client'
+import type { TopicModel } from 'models/topic'
+
 import { Icon } from '@vicons/utils'
 
 import { TopicDetail } from './components/topic-detail'

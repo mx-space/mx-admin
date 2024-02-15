@@ -14,9 +14,7 @@ export function getDominantColor(imageObject: HTMLImageElement) {
   // get pixel color
   const i = ctx.getImageData(0, 0, 1, 1).data
 
-  return (
-    `#${((1 << 24) + (i[0] << 16) + (i[1] << 8) + i[2]).toString(16).slice(1)}`
-  )
+  return `#${((1 << 24) + (i[0] << 16) + (i[1] << 8) + i[2]).toString(16).slice(1)}`
 }
 
 // @see: https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb

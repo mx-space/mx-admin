@@ -11,13 +11,13 @@ import { Table } from 'components/table'
 import { EditColumn } from 'components/table/edit-column'
 import { RelativeTime } from 'components/time/relative-time'
 import { useDataTableFetch } from 'hooks/use-table'
-import type { Pager } from 'models/base'
-import type { NoteModel } from 'models/note'
 import { NButton, NEllipsis, NPopconfirm, NSpace, useMessage } from 'naive-ui'
-import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { formatNumber } from 'utils/number'
 import { defineComponent, onMounted, reactive, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import type { Pager } from 'models/base'
+import type { NoteModel } from 'models/note'
+import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 
 import { Icon } from '@vicons/utils'
 
@@ -41,7 +41,7 @@ export const ManageNoteListView = defineComponent({
                 page,
                 size,
                 select:
-                  'title _id nid id created modified mood weather hide secret hasMemory coordinates location count meta',
+                  'title _id nid id created modified mood weather hide publicAt bookmark coordinates location count meta',
                 ...(sortProps.sortBy
                   ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
                   : {}),
@@ -89,13 +89,13 @@ export const ManageNoteListView = defineComponent({
 
             filter: true,
             filterOptions: [
-              { label: '回忆项', value: 'hasMemory' },
+              { label: '回忆项', value: 'bookmark' },
               { label: '隐藏项', value: 'hide' },
             ],
 
             render(row) {
               const isSecret =
-                row.secret && +new Date(row.secret) - +new Date() > 0
+                row.publicAt && +new Date(row.publicAt) - +new Date() > 0
               return (
                 <TableTitleLink
                   inPageTo={`/notes/edit?id=${row.id}`}
@@ -114,7 +114,7 @@ export const ManageNoteListView = defineComponent({
                               <EyeHideIcon />
                             </Icon>
                           ) : null}
-                          {row.hasMemory ? (
+                          {row.bookmark ? (
                             <Icon color="#e74c3c">
                               <BookmarkIcon />
                             </Icon>
@@ -182,7 +182,7 @@ export const ManageNoteListView = defineComponent({
                 return null
               } else {
                 return (
-                  <NEllipsis class="truncate max-w-[200px]">
+                  <NEllipsis class="max-w-[200px] truncate">
                     {{
                       tooltip() {
                         return (

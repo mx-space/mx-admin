@@ -1,9 +1,9 @@
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { UpgradeIcon } from 'components/icons'
 import { getNpmPKGLatest } from 'external/api/npm'
-import type { NpmPKGInfo } from 'external/types/npm-pkg'
 import { NButton, NCard, NDataTable, NModal } from 'naive-ui'
 import { RESTManager } from 'utils'
+import type { NpmPKGInfo } from 'external/types/npm-pkg'
 
 import { InstallDepsXterm } from './install-dep-xterm'
 

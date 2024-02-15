@@ -19,7 +19,7 @@ export const ResetIconButton = defineComponent({
               <NButton text class="ml-2" onClick={() => props.resetFn()}>
                 <Icon
                   size="20"
-                  class="opacity-40 hover:opacity-100 transition-opacity duration-500"
+                  class="opacity-40 transition-opacity duration-500 hover:opacity-100"
                 >
                   <RefreshCircle />
                 </Icon>

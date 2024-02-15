@@ -1,8 +1,8 @@
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { GithubIcon } from 'components/icons'
-import type { IGithubRepo } from 'external/api/github-repo'
 import { getRepoDetail, getRepoReadme } from 'external/api/github-repo'
 import { NButton, NInput, useDialog } from 'naive-ui'
+import type { IGithubRepo } from 'external/api/github-repo'
 import type { PropType } from 'vue'
 
 export const FetchGithubRepoButton = defineComponent({
@@ -67,7 +67,7 @@ export const FetchGithubRepoButton = defineComponent({
                     placeholder="在此输入项目地址"
                     onUpdateValue={(val) => void (url.value = val)}
                   ></NInput>
-                  <div class="flex space-x-4 justify-end">
+                  <div class="flex justify-end space-x-4">
                     <NButton
                       type="primary"
                       round

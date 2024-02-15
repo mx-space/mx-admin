@@ -7,7 +7,7 @@ export const ArticlePreview = defineComponent({
   },
   setup(props) {
     return () => (
-      <iframe src={props.url} class="max-w-full w-[60ch] h-[60vh]"></iframe>
+      <iframe src={props.url} class="h-[60vh] w-[60ch] max-w-full"></iframe>
     )
   },
 })

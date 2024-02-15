@@ -1,10 +1,9 @@
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { CommentIcon, SendIcon } from 'components/icons'
-import { SentenceType, fetchHitokoto } from 'external/api/hitokoto'
+import { fetchHitokoto, SentenceType } from 'external/api/hitokoto'
 import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
 import { ContentLayout } from 'layouts/content'
 import { isString, transform } from 'lodash-es'
-import type { SayModel } from 'models/say'
 import { NForm, NFormItem, NInput, useDialog } from 'naive-ui'
 import { RouteName } from 'router/name'
 import { RESTManager } from 'utils'
@@ -18,6 +17,7 @@ import {
   toRaw,
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import type { SayModel } from 'models/say'
 
 type SayReactiveType = {
   text: string
@@ -108,8 +108,8 @@ const EditSay = defineComponent({
                   typeof v == 'undefined'
                     ? null
                     : typeof v == 'string' && v.length == 0
-                    ? ''
-                    : v),
+                      ? ''
+                      : v),
                 res
               ),
             ),

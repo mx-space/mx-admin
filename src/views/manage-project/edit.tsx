@@ -75,8 +75,8 @@ const EditProjectView = defineComponent({
                   typeof i == 'undefined'
                     ? null
                     : typeof i == 'string' && i.length == 0
-                    ? ''
-                    : i),
+                      ? ''
+                      : i),
                 res
               ),
             ),
@@ -214,7 +214,7 @@ const EditProjectView = defineComponent({
             <div class="w-full">
               <Editor
                 unSaveConfirm={false}
-                class="min-h-80 h-[calc(100vh-40rem)] w-full"
+                class="h-[calc(100vh-40rem)] min-h-80 w-full"
                 loading={!!(id.value && !project.id)}
                 onChange={(v) => {
                   project.text = v

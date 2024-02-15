@@ -8,7 +8,7 @@ export const UrlComponent = defineComponent({
   },
   setup(props) {
     return () => (
-      <div class="flex space-x-2 items-center">
+      <div class="flex items-center space-x-2">
         <a target="_blank" href={props.url} rel="noreferrer">
           {props.url}
         </a>
@@ -18,7 +18,7 @@ export const UrlComponent = defineComponent({
             <NPopover>
               {{
                 trigger() {
-                  return <div class="h-2 w-2 bg-red-400 rounded-full"></div>
+                  return <div class="h-2 w-2 rounded-full bg-red-400"></div>
                 },
                 default() {
                   return props.errorMessage
@@ -26,7 +26,7 @@ export const UrlComponent = defineComponent({
               }}
             </NPopover>
           ) : (
-            <div class="h-2 w-2 bg-green-300 rounded-full"></div>
+            <div class="h-2 w-2 rounded-full bg-green-300"></div>
           ))}
       </div>
     )

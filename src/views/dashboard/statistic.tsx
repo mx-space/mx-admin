@@ -22,8 +22,8 @@ export const Statistic = defineComponent({
                 typeof value === 'string'
                   ? value
                   : typeof value === 'undefined'
-                  ? ''
-                  : Intl.NumberFormat('en-us').format(value)
+                    ? ''
+                    : Intl.NumberFormat('en-us').format(value)
               }
               tabularNums
             ></NStatistic>

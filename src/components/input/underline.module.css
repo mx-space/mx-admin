@@ -12,7 +12,7 @@
   > input {
     box-sizing: border-box;
 
-    @apply bg-transparent w-full;
+    @apply w-full bg-transparent;
     outline: 0;
     display: inline-block;
     border-bottom: 1px solid currentColor;

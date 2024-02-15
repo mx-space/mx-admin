@@ -3,8 +3,6 @@ import { AddIcon } from 'components/icons'
 import { tableRowStyle } from 'components/table'
 import { useStoreRef } from 'hooks/use-store-ref'
 import { ContentLayout } from 'layouts/content'
-import type { TagModel } from 'models/category'
-import type { PostModel } from 'models/post'
 import {
   NBadge,
   NButton,
@@ -22,9 +20,11 @@ import {
 } from 'naive-ui'
 import { CategoryStore } from 'stores/category'
 import { RESTManager } from 'utils/rest'
-import type { Ref } from 'vue'
 import { defineComponent, onMounted, reactive, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
+import type { TagModel } from 'models/category'
+import type { PostModel } from 'models/post'
+import type { Ref } from 'vue'
 
 export const CategoryView = defineComponent((props) => {
   const categoryStore = useStoreRef(CategoryStore)
@@ -187,7 +187,7 @@ export const CategoryView = defineComponent((props) => {
           return (
             <NBadge value={tag.count} key={tag.name}>
               <NTag
-                class="border-gray-200 border"
+                class="border border-gray-200"
                 round
                 type="success"
                 checkable

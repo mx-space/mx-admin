@@ -1,6 +1,5 @@
-import type { Ref } from 'vue'
-
 import type { PaginateResult } from '@mx-space/api-client'
+import type { Ref } from 'vue'
 
 export const createMemoDataListFetchHook = <
   T extends { id: string },

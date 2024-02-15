@@ -1,6 +1,5 @@
 import { AddIcon } from 'components/icons'
 import { TableTitleLink } from 'components/link/title-link'
-import type { PageModel, PageResponse } from 'models/page'
 import {
   NButton,
   NCard,
@@ -10,8 +9,9 @@ import {
   useMessage,
 } from 'naive-ui'
 import Sortable, { Swap } from 'sortablejs'
-import type { PropType } from 'vue'
 import { defineComponent, onMounted } from 'vue'
+import type { PageModel, PageResponse } from 'models/page'
+import type { PropType } from 'vue'
 
 import { RelativeTime } from '~/components/time/relative-time'
 
@@ -179,7 +179,7 @@ export const ManagePageListView = defineComponent({
             default: () => (
               <div
                 class={
-                  'gap-4 grid phone:grid-cols-1 md:grid-cols-2 xl:grid-cols-4 children:flex children:flex-1'
+                  'phone:grid-cols-1 children:flex children:flex-1 grid gap-4 md:grid-cols-2 xl:grid-cols-4'
                 }
                 ref={wrapperRef}
               >

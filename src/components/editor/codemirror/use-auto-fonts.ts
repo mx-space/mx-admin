@@ -1,5 +1,6 @@
-import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
 import type { EditorView } from '@codemirror/view'
+
+import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
 import { tags } from '@lezer/highlight'
 
 import { useEditorConfig } from '../universal/use-editor-setting'

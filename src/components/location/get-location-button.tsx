@@ -1,9 +1,9 @@
 import { LocationIcon } from 'components/icons'
-import type { Amap, Regeocode } from 'models/amap'
 import { NButton, useMessage } from 'naive-ui'
 import { RESTManager } from 'utils/rest'
-import type { PropType } from 'vue'
 import { defineComponent, ref } from 'vue'
+import type { Amap, Regeocode } from 'models/amap'
+import type { PropType } from 'vue'
 
 import { Icon } from '@vicons/utils'
 

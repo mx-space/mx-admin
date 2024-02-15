@@ -1,5 +1,5 @@
-import type { ComputedGetter, InjectionKey } from 'vue'
 import { ref } from 'vue'
+import type { ComputedGetter, InjectionKey } from 'vue'
 
 type TSidebarCollapseStatus =
   | 'collapsed'

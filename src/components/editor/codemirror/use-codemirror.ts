@@ -1,5 +1,5 @@
-import type { Ref } from 'vue'
 import { onMounted, ref } from 'vue'
+import type { Ref } from 'vue'
 
 import {
   defaultKeymap,

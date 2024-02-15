@@ -1,6 +1,6 @@
 import { NUpload } from 'naive-ui'
+import { getToken, RESTManager } from 'utils'
 import type { OnError, OnFinish } from 'naive-ui/es/upload/src/interface'
-import { RESTManager, getToken } from 'utils'
 import type { PropType } from 'vue'
 
 export const UploadWrapper = defineComponent({

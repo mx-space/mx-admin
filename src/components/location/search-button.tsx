@@ -1,6 +1,5 @@
 import { SearchIcon } from 'components/icons'
 import { debounce } from 'lodash-es'
-import type { AMapSearch } from 'models/amap'
 import {
   NAutoComplete,
   NButton,
@@ -10,10 +9,11 @@ import {
   NModal,
   NSpace,
 } from 'naive-ui'
-import type { AutoCompleteOption } from 'naive-ui/lib/auto-complete/src/interface'
 import { RESTManager } from 'utils/rest'
-import type { PropType } from 'vue'
 import { defineComponent, ref, watch } from 'vue'
+import type { AMapSearch } from 'models/amap'
+import type { AutoCompleteOption } from 'naive-ui/lib/auto-complete/src/interface'
+import type { PropType } from 'vue'
 
 import { Icon } from '@vicons/utils'
 

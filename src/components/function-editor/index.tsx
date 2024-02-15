@@ -68,8 +68,6 @@ export const FunctionCodeEditor = defineComponent({
           RESTManager.api.fn.types.get<any>().then((data) => {
             const libSource = data
 
-     
-
             monaco.languages.typescript.typescriptDefaults.addExtraLib(
               libSource,
               libUri,
@@ -90,7 +88,7 @@ export const FunctionCodeEditor = defineComponent({
             libUri: string
           }
           const { libSource, libUri } = namespace
- 
+
           const uri = monaco.Uri.parse(libUri)
           if (monaco.editor.getModel(uri)) {
             return
@@ -143,7 +141,7 @@ export const FunctionCodeEditor = defineComponent({
 
     return () => {
       return (
-        <div class="h-full relative w-full">
+        <div class="relative h-full w-full">
           <div class="relative h-full w-full" ref={editorElRef}></div>
           {h($editor.Snip)}
         </div>

@@ -53,10 +53,10 @@ export default defineComponent({
 
 <style lang="postcss">
 .avatar {
-  @apply bg-gray$-default inline-block rounded-full relative overflow-hidden select-none;
+  @apply bg-gray$-default relative inline-block select-none overflow-hidden rounded-full;
 }
 .avatar img {
-  @apply rounded-full h-full max-w-full;
+  @apply h-full max-w-full rounded-full;
 
   animation: scale 0.5s ease-out;
 }

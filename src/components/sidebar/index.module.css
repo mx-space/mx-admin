@@ -9,7 +9,7 @@
   --duration: var(--sidebar-transition-duration);
 
   & .item-title {
-    @apply transition-all max-w-[var(--w)] truncate;
+    @apply max-w-[var(--w)] truncate transition-all;
 
     transition-duration: var(--duration);
   }
@@ -40,7 +40,7 @@
 .root.collapsed,
 .root.collapsing {
   & .item-title {
-    @apply overflow-hidden max-w-0 opacity-0;
+    @apply max-w-0 overflow-hidden opacity-0;
   }
 
   & .sidebar .items {
@@ -74,11 +74,11 @@
 }
 
 .header-title {
-  @apply py-6 transition-all duration-[var(--duration)] truncate max-w-[var(--w)] overflow-clip;
+  @apply max-w-[var(--w)] overflow-clip truncate py-6 transition-all duration-[var(--duration)];
 }
 
 .collapse-button {
-  @apply absolute right-8 top-0 bottom-0 text-base;
+  @apply absolute bottom-0 right-8 top-0 text-base;
 
   transition: right 0.5s;
 
@@ -90,9 +90,11 @@
 }
 
 .toggle-color-btn {
-  @apply absolute left-8 top-0 bottom-0 flex items-center text-base;
+  @apply absolute bottom-0 left-8 top-0 flex items-center text-base;
 
-  transition: left 0.5s, opacity 0.5s;
+  transition:
+    left 0.5s,
+    opacity 0.5s;
 }
 
 .root.collapse {
@@ -100,7 +102,7 @@
     @apply absolute left-0 right-0 m-auto;
 
     & .collapse-icon {
-      @apply transform rotate-180;
+      @apply rotate-180 transform;
     }
   }
 
@@ -109,7 +111,7 @@
   }
 
   & .collapse-button {
-    @apply relative py-6 w-full flex items-center justify-center;
+    @apply relative flex w-full items-center justify-center py-6;
   }
 }
 
@@ -120,7 +122,7 @@
 
     @apply flex flex-col;
     @apply bg-gray-100;
-    @apply fixed left-0 top-0 overflow-hidden z-10 text-white;
+    @apply fixed left-0 top-0 z-10 overflow-hidden text-white;
 
     height: 100vh;
     height: -webkit-fill-available;
@@ -187,9 +189,9 @@
 }
 
 .sidebar-footer {
-  @apply w-[var(--w)] flex items-center justify-center my-4 transition-all duration-[var(--duration)] h-20 flex-shrink-0;
+  @apply my-4 flex h-20 w-[var(--w)] flex-shrink-0 items-center justify-center transition-all duration-[var(--duration)];
 }
 
 .sidebar-username {
-  @apply pl-12 transition-all duration-[var(--duration)] truncate max-w-[var(--w)];
+  @apply max-w-[var(--w)] truncate pl-12 transition-all duration-[var(--duration)];
 }

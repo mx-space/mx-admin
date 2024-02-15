@@ -1,6 +1,7 @@
+import type { Extension } from '@codemirror/state'
+
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown'
 import { languages } from '@codemirror/language-data'
-import type { Extension } from '@codemirror/state'
 import { Compartment } from '@codemirror/state'
 
 const extensionMap = {

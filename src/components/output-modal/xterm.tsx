@@ -88,7 +88,7 @@ export const ShellOutputXterm = defineComponent({
         <NCard class={'modal-card md min-h-[100px]'} title="Output">
           <div class="h-full w-full">
             {wait.value ? (
-              <div class="w-full flex items-center justify-center h-full">
+              <div class="flex h-full w-full items-center justify-center">
                 <NSpin show strokeWidth={14} />
               </div>
             ) : (

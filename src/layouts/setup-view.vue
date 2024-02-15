@@ -34,8 +34,8 @@ export default defineComponent({
 
 <style scoped lang="postcss">
 .bg {
-  @apply fixed top-0 left-0 right-0 bottom-0;
-  @apply bg-cover bg-center bg-no-repeat -m-4 bg-gray-600 ease-linear transition-opacity duration-700;
+  @apply fixed bottom-0 left-0 right-0 top-0;
+  @apply -m-4 bg-gray-600 bg-cover bg-center bg-no-repeat transition-opacity duration-700 ease-linear;
 
   filter: blur(5px);
 }
