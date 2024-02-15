@@ -616,6 +616,10 @@ const AppIF = defineComponent({
     const { app } = useStoreRef(AppStore)
     const notice = useNotification()
     const versionMap = ref({} as { admin: string; system: string })
+    const closedTips = useStorage('closed-tips', {
+      dashboard: null as string | null,
+      system: null as string | null,
+    })
 
     const portal = usePortalElement()
     const handleUpdate = () => {
@@ -631,7 +635,10 @@ const AppIF = defineComponent({
 
       const { dashboard, system } = await checkUpdateFromGitHub()
 
-      if (dashboard !== PKG.version) {
+      if (
+        dashboard !== PKG.version &&
+        closedTips.value.dashboard !== dashboard
+      ) {
         const $notice = notice.info({
           title: '[管理中台] 有新版本啦！',
           content: () => (
@@ -651,6 +658,9 @@ const AppIF = defineComponent({
             </div>
           ),
           closable: true,
+          onClose: () => {
+            closedTips.value.dashboard = dashboard
+          },
         })
       }
 
@@ -676,13 +686,17 @@ const AppIF = defineComponent({
       if (
         app.value?.version &&
         app.value.version !== 'dev' &&
-        versionMap.value.system
+        versionMap.value.system &&
+        closedTips.value.system !== versionMap.value.system
       ) {
         if (versionMap.value.system !== app.value.version) {
           notice.info({
             title: '[系统] 有新版本啦！',
             content: `当前版本：${app.value.version}，最新版本：${versionMap.value.system}`,
             closable: true,
+            onClose: () => {
+              closedTips.value.system = versionMap.value.system
+            },
           })
         }
       }
