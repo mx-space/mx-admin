@@ -1,5 +1,14 @@
 # CHANGELOG
 
+# [4.0.0](https://github.com/mx-space/mx-admin/compare/v3.39.1...v4.0.0) (2024-02-16)
+
+
+### Bug Fixes
+
+* markdown highlight, fuck codemirror ([e02985e](https://github.com/mx-space/mx-admin/commit/e02985eee43219aed194d7a124487e4aea62f61e))
+
+
+
 ## [3.39.1](https://github.com/mx-space/mx-admin/compare/v3.39.0...v3.39.1) (2024-02-16)
 
 
