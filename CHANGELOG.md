@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [3.39.1](https://github.com/mx-space/mx-admin/compare/v3.39.0...v3.39.1) (2024-02-16)
+
+
+### Bug Fixes
+
+* read duration data model ([c20d3f7](https://github.com/mx-space/mx-admin/commit/c20d3f7dccbe95566ffd5e95d5b49a43f6ca4c39))
+
+
+
 # [3.39.0](https://github.com/mx-space/mx-admin/compare/v3.38.1...v3.39.0) (2024-02-15)
 
 
