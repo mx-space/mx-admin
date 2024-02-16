@@ -1,7 +1,6 @@
 # MX Space Admin Vue 3 v2
 
-
-嘿，这是一个为 MX Space Server 打造的后台管理。使用 Vue 3 + Naive UI 编写。添加了许多有趣的小玩意。一起来玩吗？
+嘿，这是一个为 Mix Space Server 打造的后台管理。使用 Vue 3 + Naive UI 编写。添加了许多有趣的小玩意。一起来玩吗？
 
 嘿！现在可以使用共享面板了，立即前往：<https://mx.shizuri.net>
 
@@ -37,3 +36,12 @@ pnpm build
 ![0213223417](https://fastly.jsdelivr.net/gh/Innei/fancy@master/2022/0213223417.png)
 
 ![0213223458](https://fastly.jsdelivr.net/gh/Innei/fancy@master/2022/0213223458.png)
+
+## Version
+
+- v4.0 for Mix Space Server v5.0
+
+## License
+
+MIT. © 2021-present Mix Space & Innei
+ 
