@@ -1,11 +1,29 @@
 {
-  "extends": ["config:base", "schedule:weekly"],
-  "labels": ["dependencies"],
+  "extends": [
+    "config:base",
+    "schedule:weekly"
+  ],
+  "labels": [
+    "dependencies"
+  ],
   "rangeStrategy": "bump",
   "packageRules": [
     {
-      "depTypeList": ["peerDependencies"],
+      "depTypeList": [
+        "peerDependencies"
+      ],
       "enabled": false
     }
+  ],
+  "ignoreDeps": [
+    "@codemirror/commands",
+    "@codemirror/lang-markdown",
+    "@codemirror/language",
+    "@codemirror/language-data",
+    "@codemirror/state",
+    "@codemirror/theme-one-dark",
+    "@codemirror/view",
+    "@ddietr/codemirror-themes",
+    "@lezer/highlight"
   ]
 }
