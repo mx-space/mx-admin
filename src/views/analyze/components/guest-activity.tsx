@@ -161,7 +161,7 @@ const LikeTableColumns: TableColumns<{
   created: string
   payload: any
   type: number
-  ref?: any
+  ref?: NoteModel | PostModel
 }> = [
   {
     title: '类型',
@@ -174,6 +174,7 @@ const LikeTableColumns: TableColumns<{
     title: '引用',
     key: 'payload.ref',
     render: (row) => {
+      if (!row.ref) return '已删除的内容'
       return (
         <NButton
           text
@@ -202,9 +203,14 @@ const LikeTableColumns: TableColumns<{
 
 const ReadDurationTableColumns: TableColumns<ActivityReadDurationType> = [
   {
-    title: '类型',
-    key: 'type',
-    render: () => <span>阅读记录</span>,
+    title: '标识符',
+    key: 'displayName',
+    render: (row) => (
+      <span>{row.payload.displayName || row.payload.identity}</span>
+    ),
+    ellipsis: {
+      tooltip: true,
+    },
     width: 120,
   },
   {
@@ -257,6 +263,16 @@ const ReadDurationTableColumns: TableColumns<ActivityReadDurationType> = [
     render: (row) => <RelativeTime time={new Date(row.payload.connectedAt)} />,
   },
   {
+    title: '加入时间',
+    key: 'payload.joinedAt',
+    render: (row) =>
+      !row.payload.joinedAt ? (
+        '未记录'
+      ) : (
+        <RelativeTime time={new Date(row.payload.joinedAt)} />
+      ),
+  },
+  {
     title: '更新时间',
     key: 'payload.updatedAt',
     render: (row) => <RelativeTime time={new Date(row.payload.updatedAt)} />,
@@ -282,4 +298,7 @@ interface RoomPayload {
   position: number
   roomName: string
   ip: string
+  joinedAt?: number
+  displayName?: string
+  identity: string
 }
