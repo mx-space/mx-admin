@@ -8,6 +8,7 @@ import type {
   PostModel,
   RecentlyModel,
 } from '@mx-space/api-client'
+import type { ActivityReadDurationType } from '~/models/activity'
 import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
 
 import { IpInfoPopover } from '~/components/ip-info'
@@ -263,7 +264,7 @@ const ReadDurationTableColumns: TableColumns<ActivityReadDurationType> = [
     render: (row) => <RelativeTime time={new Date(row.payload.connectedAt)} />,
   },
   {
-    title: '加入时间',
+    title: '开始阅读时间',
     key: 'payload.joinedAt',
     render: (row) =>
       !row.payload.joinedAt ? (
@@ -283,22 +284,3 @@ const ReadDurationTableColumns: TableColumns<ActivityReadDurationType> = [
   },
   ...baseColumns,
 ]
-
-interface ActivityReadDurationType {
-  id: string
-  type: number
-  payload: RoomPayload
-  created: string
-  refId: string
-}
-interface RoomPayload {
-  connectedAt: number
-  operationTime: number
-  updatedAt: number
-  position: number
-  roomName: string
-  ip: string
-  joinedAt?: number
-  displayName?: string
-  identity: string
-}

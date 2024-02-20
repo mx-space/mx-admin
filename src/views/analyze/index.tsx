@@ -26,6 +26,7 @@ import { Chart } from '@antv/g2/esm'
 
 import { AnalyzeDataTable } from './components/analyze-data-table'
 import { GuestActivity } from './components/guest-activity'
+import { ReadingRank } from './components/reading-rank'
 
 const SectionTitle = defineComponent((_, { slots }) => () => (
   <div class="my-[12px] font-semibold text-gray-400 ">{slots.default?.()}</div>
@@ -330,6 +331,10 @@ export default defineComponent({
 
           <NTabPane name="访客活动">
             <GuestActivity />
+          </NTabPane>
+
+          <NTabPane name="阅读排名">
+            <ReadingRank />
           </NTabPane>
         </NTabs>
       </ContentLayout>
