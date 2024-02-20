@@ -1,5 +1,14 @@
 # CHANGELOG
 
+# [4.1.0](https://github.com/mx-space/mx-admin/compare/v4.0.0...v4.1.0) (2024-02-20)
+
+
+### Features
+
+* reading rank panel ([0db59ae](https://github.com/mx-space/mx-admin/commit/0db59aee78893040b2aaf1992199dcfc77dabe05))
+
+
+
 # [4.0.0](https://github.com/mx-space/mx-admin/compare/v3.39.1...v4.0.0) (2024-02-16)
 
 
