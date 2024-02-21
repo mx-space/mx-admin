@@ -22,6 +22,12 @@ router.beforeEach(async (to) => {
   }
 
   if (!API_URL || !GATEWAY_URL) {
+    console.log(
+      'missing api url or gateway url',
+      API_URL,
+      GATEWAY_URL,
+      ', redirect to /setup-api',
+    )
     return '/setup-api'
   }
 
