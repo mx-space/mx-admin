@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [4.1.1](https://github.com/mx-space/mx-admin/compare/v4.1.0...v4.1.1) (2024-02-21)
+
+
+### Bug Fixes
+
+* api url transformer ([fe89cdf](https://github.com/mx-space/mx-admin/commit/fe89cdf70a4797d88465f9a4c00ed4eeebc4219f))
+
+
+
 # [4.1.0](https://github.com/mx-space/mx-admin/compare/v4.0.0...v4.1.0) (2024-02-20)
 
 
