@@ -9,8 +9,8 @@ overrides:
 
 dependencies:
   '@antv/g2':
-    specifier: ^4.2.10
-    version: 4.2.10
+    specifier: ^4.2.11
+    version: 4.2.11
   '@bytebase/vue-kbar':
     specifier: 0.1.8
     version: 0.1.8(vue@3.4.19)
@@ -433,8 +433,8 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@antv/g2@4.2.10:
-    resolution: {integrity: sha512-/ZlJ/DFJBCvtEQgE6roxdd6sBml0fZ8ZVfzG+HdjGpA7/ceURb8XkxUcqa0E8NV+e4sFijnaAhBCdUm2whiuyA==}
+  /@antv/g2@4.2.11:
+    resolution: {integrity: sha512-QiqxLLYDWkv9c4oTcXscs6NMxBuWZ1JCarHPZ27J43IN2BV+qUKw8yce0A8CBR8fCILEFqQAfS00Szqpye036Q==}
     dependencies:
       '@antv/adjust': 0.2.5
       '@antv/attr': 0.3.5
