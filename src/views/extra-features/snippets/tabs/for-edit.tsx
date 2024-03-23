@@ -342,7 +342,7 @@ export const Tab2ForEdit = defineComponent({
                 <NFormItem label="请求方式">
                   <NSelect
                     disabled={isBuiltFunction.value}
-                    options={['GET', 'POST', 'PUT', 'DELETE', 'PATCH'].map(
+                    options={['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'ALL'].map(
                       (v) => {
                         return {
                           label: v,
