@@ -1,5 +1,19 @@
 # CHANGELOG
 
+# [4.2.0](https://github.com/mx-space/mx-admin/compare/v4.1.1...v4.2.0) (2024-03-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency qs to v6.12.0 ([#874](https://github.com/mx-space/mx-admin/issues/874)) ([5959c90](https://github.com/mx-space/mx-admin/commit/5959c9022a89a584cf698324db6f9e8517ebe397))
+
+
+### Features
+
+* add ALL method for fn ([102baba](https://github.com/mx-space/mx-admin/commit/102baba612bee3126e7f4e2501c3e17b60ab4b84))
+
+
+
 ## [4.1.1](https://github.com/mx-space/mx-admin/compare/v4.1.0...v4.1.1) (2024-02-21)
 
 
