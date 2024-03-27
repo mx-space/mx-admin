@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [4.2.1](https://github.com/mx-space/mx-admin/compare/v4.2.0...v4.2.1) (2024-03-27)
+
+
+### Bug Fixes
+
+* comment ref ([590c172](https://github.com/mx-space/mx-admin/commit/590c1722789b6ba882f8d8aa3f71c0034891cb45))
+
+
+
 # [4.2.0](https://github.com/mx-space/mx-admin/compare/v4.1.1...v4.2.0) (2024-03-23)
 
 
