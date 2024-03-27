@@ -1,8 +1,6 @@
 import { NButton, NCard, NForm, NFormItem, NSelect, NSwitch } from 'naive-ui'
 import { defineComponent } from 'vue'
 
-import { router } from '~/router'
-
 const storeApiUrlKey = 'mx-admin:setup-api:url'
 const storeGatewayUrlKey = 'mx-admin:setup-api:gateway'
 
@@ -41,9 +39,10 @@ export default defineComponent({
         storeGatewayUrlKey,
         JSON.stringify([...new Set(historyApiUrl.concat(gatewayUrl))]),
       )
-
-      // location.href = url.toString()
-      router.push('/dashboard').then(() => location.reload())
+      const url = new URL(location.href)
+      url.hash = '#/dashboard'
+      location.href = url.toString()
+      location.reload()
     }
     const handleReset = () => {
       localStorage.removeItem('__api')

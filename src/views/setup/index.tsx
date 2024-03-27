@@ -16,6 +16,7 @@ import type { PropType } from 'vue'
 import type { UserModel } from '../../models/user'
 
 import { showConfetti } from '~/utils/confetti'
+import { checkIsInit } from '~/utils/is-init'
 
 import { getToken, removeToken } from '../../utils'
 import { RESTManager } from '../../utils/rest'
@@ -24,7 +25,8 @@ import styles from './index.module.css'
 const useDefaultConfigs = () => inject<any>('configs')
 export default defineComponent({
   setup() {
-    onBeforeMount(() => {
+    onBeforeMount(async () => {
+      await checkIsInit()
       if (getToken()) {
         removeToken()
       }
