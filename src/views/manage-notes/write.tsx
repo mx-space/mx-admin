@@ -16,7 +16,6 @@ import {
   NButton,
   NButtonGroup,
   NDatePicker,
-  NDynamicTags,
   NFormItem,
   NInput,
   NSelect,
@@ -39,7 +38,7 @@ import {
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { PaginateResult } from '@mx-space/api-client'
-import type { Coordinate, NoteModel, NoteMusicRecord } from 'models/note'
+import type { Coordinate, NoteModel } from 'models/note'
 import type { TopicModel } from 'models/topic'
 import type { WriteBaseType } from 'shared/types/base'
 
@@ -64,7 +63,7 @@ type NoteReactiveType = {
   password: string | null
   publicAt: Date | null
   bookmark: boolean
-  music: NoteMusicRecord[]
+
   location: null | string
   coordinates: null | Coordinate
   topicId: string | null | undefined
@@ -114,7 +113,7 @@ const NoteWriteView = defineComponent(() => {
     hide: false,
     bookmark: false,
     mood: '',
-    music: [],
+
     password: null,
     publicAt: null,
     weather: '',
@@ -212,7 +211,6 @@ const NoteWriteView = defineComponent(() => {
               }
             })()
           : null,
-        music: data.music,
       }
     }
 
@@ -516,35 +514,6 @@ const NoteWriteView = defineComponent(() => {
             onUpdateValue={(e) => void (data.bookmark = e)}
           ></NSwitch>
         </NFormItem>
-
-        <NFormItem label="音乐 (网易云 ID)">
-          <NDynamicTags
-            inputProps={{
-              // @ts-expect-error
-              class: 'max-w-40',
-              inputProps: {
-                class: 'max-w-40',
-              },
-            }}
-            value={data.music.map((i) => i.id)}
-            onUpdateValue={(value: string[]) => {
-              const musics = [] as typeof data.music
-              const idSet = new Set<string>()
-              for (const id of value) {
-                const currentId = pickNeteaseIdFromUrl(id) ?? id
-                if (idSet.has(currentId)) {
-                  continue
-                }
-                idSet.add(currentId)
-                musics.push({
-                  type: 'netease',
-                  id: pickNeteaseIdFromUrl(id) ?? id,
-                })
-              }
-              data.music = musics
-            }}
-          ></NDynamicTags>
-        </NFormItem>
       </TextBaseDrawer>
 
       {/* Drawer END */}
@@ -553,11 +522,3 @@ const NoteWriteView = defineComponent(() => {
 })
 
 export default NoteWriteView
-
-function pickNeteaseIdFromUrl(url: string) {
-  const match = url.match(/^https?:\/\/music\.163\.com\/song\?id=(\d+)/)
-  if (match) {
-    return match[1]
-  }
-  return null
-}

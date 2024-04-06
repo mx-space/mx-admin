@@ -16,17 +16,12 @@ export interface NoteModel {
   publicAt?: Date
   password?: string | null
   nid: number
-  music?: NoteMusicRecord[]
+
   location?: string
 
   coordinates?: Coordinate
 
   meta?: any
-}
-
-export interface NoteMusicRecord {
-  type: string
-  id: string
 }
 
 export interface Coordinate {
