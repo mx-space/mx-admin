@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [4.2.3](https://github.com/mx-space/mx-admin/compare/v4.2.2...v4.2.3) (2024-04-11)
+
+
+### Features
+
+* make reading duration more easier to read ([#893](https://github.com/mx-space/mx-admin/issues/893)) ([d10a4a0](https://github.com/mx-space/mx-admin/commit/d10a4a0cc0580a974b3042ab5e0a20b707728173))
+
+
+
 ## [4.2.2](https://github.com/mx-space/mx-admin/compare/v4.2.1...v4.2.2) (2024-04-06)
 
 
