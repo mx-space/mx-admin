@@ -250,11 +250,21 @@ const ReadDurationTableColumns: TableColumns<ActivityReadDurationType> = [
     key: 'payload.duration',
     width: 150,
     render: (row) => {
-      return (
-        <span>
-          {(row.payload.operationTime - row.payload.connectedAt) / 1000} 秒
-        </span>
-      )
+      const totalSeconds = (row.payload.operationTime - row.payload.connectedAt) / 1000;
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = Math.floor(totalSeconds % 60);
+
+      let timeString = '';
+      if (hours > 0) {
+        timeString += `${hours}小时 `;
+      }
+      if (hours > 0 || minutes > 0) {
+        timeString += `${minutes}分钟 `;
+      }
+      timeString += `${seconds}秒`;
+
+      return <span>{timeString}</span>
     },
   },
 
