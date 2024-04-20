@@ -77,7 +77,6 @@ export default ({ mode }) => {
       exclude: [
         '@huacnlee/autocorrect',
         '@dqbd/tiktoken',
-        '@codemirror/language-data',
       ],
     },
 

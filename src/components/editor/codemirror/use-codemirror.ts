@@ -9,6 +9,7 @@ import {
 } from '@codemirror/commands'
 import { markdownKeymap } from '@codemirror/lang-markdown'
 import { bracketMatching, indentOnInput } from '@codemirror/language'
+import { search, searchKeymap } from '@codemirror/search'
 import { EditorState } from '@codemirror/state'
 import {
   EditorView,
@@ -109,6 +110,7 @@ export const useCodeMirror = <T extends Element>(
           ...defaultKeymap,
           ...historyKeymap,
           ...markdownKeymap,
+          ...searchKeymap,
           indentWithTab,
         ]),
 
@@ -119,6 +121,9 @@ export const useCodeMirror = <T extends Element>(
         bracketMatching(),
         highlightActiveLine(),
         EditorState.tabSize.of(2),
+        search({
+          top: true,
+        }),
 
         syntaxTheme,
 
