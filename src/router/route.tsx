@@ -32,10 +32,10 @@ import {
   WebhookIcon,
 } from 'components/icons'
 import $RouterView from 'layouts/router-view'
-import { SidebarLayout } from 'layouts/sidebar'
 import { DashBoardView } from 'views/dashboard'
 import type { RouteRecordRaw } from 'vue-router'
 
+import { AppLayout } from '~/layouts/app-layout'
 import { ManagePostListView } from '~/views/manage-posts/list'
 
 import SetupLayout from '../layouts/setup-view.vue'
@@ -407,7 +407,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
 export const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    component: SidebarLayout,
+    component: AppLayout,
     name: RouteName.Home,
     redirect: '/dashboard',
     children: [...routeForMenu],
@@ -458,7 +458,7 @@ export const routes: RouteRecordRaw[] = [
   },
   {
     path: '/debug',
-    component: SidebarLayout,
+    component: AppLayout,
     meta: {
       title: '调试',
       icon: <DebugIcon />,

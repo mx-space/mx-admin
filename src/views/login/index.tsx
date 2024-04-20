@@ -31,6 +31,7 @@ export const LoginView = defineComponent({
       if (!isInit) {
         return router.replace('/setup')
       }
+      await userStore.fetchUser()
     })
 
     onMounted(() => {

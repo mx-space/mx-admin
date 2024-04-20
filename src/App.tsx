@@ -23,8 +23,6 @@ const Root = defineComponent({
   name: 'RootView',
 
   setup() {
-    const { fetchUser } = useUserStore()
-    const router = useRouter()
     onMounted(() => {
       const message = useMessage()
       const _error = message.error
@@ -39,19 +37,6 @@ const Root = defineComponent({
       window.message = message
       window.notification = useNotification()
       window.dialog = useDialog()
-
-      fetchUser().then(() => {
-        const toSetting = localStorage.getItem('to-setting')
-        if (toSetting === 'true') {
-          router.push({
-            name: RouteName.Setting,
-            params: {
-              type: 'user',
-            },
-          })
-          localStorage.removeItem('to-setting')
-        }
-      })
     })
     const $portalElement = ref<VNode | null>(null)
 

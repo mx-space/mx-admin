@@ -11,15 +11,15 @@ export const checkIsInit = async (): Promise<boolean> => {
         await RESTManager.api.init
           .get<{ isInit: boolean }>({
             errorHandler(e) {
-              if (e?.response.status == 404) {
+              if (e?.response.status == 404 || e?.response.status === 403) {
                 return { isInit: true }
               }
+
               throw e
             },
           })
           .then((res) => {
             if (typeof res !== 'object' || (res && !('isInit' in res))) {
-              console.log('err sss')
               router.push('/setup-api')
               message.error('api error')
             }

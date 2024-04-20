@@ -35,9 +35,9 @@ router.beforeEach(async (to) => {
   // guard for setup route
 
   if (to.path === '/setup') {
-    if (__DEV__) {
-      return
-    }
+    // if (__DEV__) {
+    //   return
+    // }
     const isInit = await checkIsInit()
     console.log('[isInit]', isInit)
     if (isInit) {
