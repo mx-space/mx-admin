@@ -128,15 +128,21 @@ export default defineComponent(() => {
     fileList.value = []
   }
 
-  const includeYAMLHeader = ref(true)
-  const titleBigTitle = ref(false)
-  const filenameSlug = ref(false)
+  const exportConfig = reactive({
+    includeYAMLHeader: true,
+    titleBigTitle: false,
+    filenameSlug: false,
+    withMetaJson: true,
+  })
   async function handleExportMarkdown() {
+    const { includeYAMLHeader, filenameSlug, withMetaJson, titleBigTitle } =
+      exportConfig
     const data = await RESTManager.api.markdown.export.get({
       params: {
-        slug: filenameSlug.value,
-        yaml: includeYAMLHeader.value,
-        show_title: titleBigTitle.value,
+        slug: filenameSlug,
+        yaml: includeYAMLHeader,
+        show_title: titleBigTitle,
+        with_meta_json: withMetaJson,
       },
       responseType: 'blob',
     })
@@ -225,22 +231,30 @@ export default defineComponent(() => {
       >
         <NFormItem label="是否包括 yaml header">
           <NSwitch
-            value={includeYAMLHeader.value}
-            onUpdateValue={(e) => void (includeYAMLHeader.value = e)}
+            value={exportConfig.includeYAMLHeader}
+            onUpdateValue={(e) => void (exportConfig.includeYAMLHeader = e)}
           ></NSwitch>
         </NFormItem>
         <NFormItem label="是否在第一行显示文章标题">
           <NSwitch
-            value={titleBigTitle.value}
-            onUpdateValue={(e) => void (titleBigTitle.value = e)}
+            value={exportConfig.titleBigTitle}
+            onUpdateValue={(e) => void (exportConfig.titleBigTitle = e)}
           ></NSwitch>
         </NFormItem>
         <NFormItem label="根据 slug 生成文件名">
           <NSwitch
-            value={filenameSlug.value}
-            onUpdateValue={(e) => void (filenameSlug.value = e)}
+            value={exportConfig.filenameSlug}
+            onUpdateValue={(e) => void (exportConfig.filenameSlug = e)}
           ></NSwitch>
         </NFormItem>
+
+        <NFormItem label="导出元数据 JSON">
+          <NSwitch
+            value={exportConfig.withMetaJson}
+            onUpdateValue={(e) => void (exportConfig.withMetaJson = e)}
+          ></NSwitch>
+        </NFormItem>
+
         <div class="w-full text-right">
           <NButton type="primary" onClick={handleExportMarkdown}>
             导出
