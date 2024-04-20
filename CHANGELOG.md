@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## [4.2.5](https://github.com/mx-space/mx-admin/compare/v4.2.4...v4.2.5) (2024-04-20)
+
+
+### Features
+
+* cm search ([4d335f0](https://github.com/mx-space/mx-admin/commit/4d335f0137ab32ec173b9d62ca33462484b28a57))
+* markdown export ([fca4349](https://github.com/mx-space/mx-admin/commit/fca43490f760428411340004e237f75a7aad380b))
+
+
+
 ## [4.2.4](https://github.com/mx-space/mx-admin/compare/v4.2.3...v4.2.4) (2024-04-20)
 
 
