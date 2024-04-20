@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [4.2.4](https://github.com/mx-space/mx-admin/compare/v4.2.3...v4.2.4) (2024-04-20)
+
+
+### Bug Fixes
+
+* setup ([70a0240](https://github.com/mx-space/mx-admin/commit/70a0240c0e5c6e9d0961e2e1892dccab72918c8f))
+
+
+
 ## [4.2.3](https://github.com/mx-space/mx-admin/compare/v4.2.2...v4.2.3) (2024-04-11)
 
 
