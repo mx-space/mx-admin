@@ -19,8 +19,8 @@ import Io from 'socket.io-client'
 import { EventTypes } from 'socket/types'
 import { getToken, parseDate, RESTManager } from 'utils'
 import { bus } from 'utils/event-bus'
+import type { IDisposable, Terminal } from '@xterm/xterm'
 import type { PropType } from 'vue'
-import type { IDisposable, Terminal } from 'xterm'
 
 import { useMountAndUnmount } from '~/hooks/use-lifecycle'
 

@@ -3,7 +3,7 @@ import { Xterm } from 'components/xterm'
 import { EventSourcePolyfill } from 'event-source-polyfill'
 import { NCard, NModal, NSpin } from 'naive-ui'
 import { getToken } from 'utils'
-import type { Terminal } from 'xterm'
+import type { Terminal } from '@xterm/xterm'
 
 export const ShellOutputXterm = defineComponent({
   setup(_, { expose }) {

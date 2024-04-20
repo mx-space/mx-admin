@@ -1,12 +1,12 @@
 import { useStoreRef } from 'hooks/use-store-ref'
 import { UIStore } from 'stores/ui'
 import { Material, MaterialDark } from 'xterm-theme'
+import type { ITerminalOptions, Terminal } from '@xterm/xterm'
 import type { PropType } from 'vue'
-import type { ITerminalOptions, Terminal } from 'xterm'
 
 import { useMountAndUnmount } from '~/hooks/use-lifecycle'
 
-import 'xterm/css/xterm.css'
+import '@xterm/xterm/css/xterm.css'
 
 const xtermThemeDark = { ...MaterialDark, background: 'rgba(0,0,0,0)' }
 const xtermThemeLight = { ...Material, background: 'rgba(0,0,0,0)' }
@@ -60,8 +60,8 @@ export const Xterm = defineComponent({
     }
     useMountAndUnmount(async () => {
       const [{ Terminal }, { FitAddon }] = await Promise.all([
-        import('xterm'),
-        import('xterm-addon-fit'),
+        import('@xterm/xterm'),
+        import('@xterm/addon-fit'),
       ])
 
       const themes = {
