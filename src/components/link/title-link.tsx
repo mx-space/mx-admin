@@ -70,7 +70,7 @@ export const TableTitleLink = defineComponent({
         {slots.default?.()}
         {fullExternalLinkTo.value && (
           <NButton
-            text
+            quaternary
             tag="a"
             class="cursor-[alias]"
             // @ts-expect-error

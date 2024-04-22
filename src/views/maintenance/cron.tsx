@@ -91,7 +91,7 @@ export default defineComponent({
                       {{
                         trigger() {
                           return (
-                            <NButton size="tiny" text type="success">
+                            <NButton size="tiny" quaternary type="success">
                               执行
                             </NButton>
                           )

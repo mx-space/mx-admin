@@ -84,7 +84,7 @@ export const TabSecurity = defineComponent(() => {
               return (
                 <NButton
                   size="small"
-                  text
+                  quaternary
                   type="error"
                   disabled={
                     session.value.length == 1 && session.value[0].current
@@ -147,7 +147,7 @@ export const TabSecurity = defineComponent(() => {
                         <IpInfoPopover
                           ip={ip!}
                           triggerEl={
-                            <NButton text size="tiny" type="primary">
+                            <NButton quaternary size="tiny" type="primary">
                               {ip}
                             </NButton>
                           }
@@ -348,7 +348,7 @@ const ApiToken = defineComponent(() => {
                   >
                     {{
                       trigger: () => (
-                        <NButton text type="error">
+                        <NButton quaternary type="error">
                           删除
                         </NButton>
                       ),
@@ -443,7 +443,7 @@ const ResetPass = defineComponent(() => {
           type="password"
         />
       </NFormItem>
-      <div class="w-full text-right">
+      <div class="quaternary-right w-full">
         <NButton onClick={reset} type="primary" round>
           保存
         </NButton>
@@ -618,7 +618,7 @@ const Passkey = defineComponent(() => {
                   >
                     {{
                       trigger: () => (
-                        <NButton text type="error">
+                        <NButton quaternary type="error">
                           删除
                         </NButton>
                       ),

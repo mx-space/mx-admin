@@ -139,7 +139,7 @@ export const CategoryView = defineComponent((props) => {
                 <NSpace size={12}>
                   <NButton
                     size="tiny"
-                    text
+                    quaternary
                     type="primary"
                     onClick={(e) => {
                       editCategoryState.value = {
@@ -164,7 +164,7 @@ export const CategoryView = defineComponent((props) => {
                   >
                     {{
                       trigger: () => (
-                        <NButton text type="error" size="tiny">
+                        <NButton quaternary type="error" size="tiny">
                           移除
                         </NButton>
                       ),
@@ -218,7 +218,7 @@ export const CategoryView = defineComponent((props) => {
               render(row) {
                 return (
                   <RouterLink to={`/posts/edit?id=${row.id}`}>
-                    <NButton type="primary" text>
+                    <NButton type="primary" quaternary>
                       {row.title}
                     </NButton>
                   </RouterLink>
@@ -338,4 +338,8 @@ const EditCategoryDialog = defineComponent<{
   )
 })
 
-EditCategoryDialog.props = ['initialState', 'onSubmit', 'show'] as const
+;(EditCategoryDialog as any).props = [
+  'initialState',
+  'onSubmit',
+  'show',
+] as const

@@ -265,7 +265,7 @@ const ConnectionStatus = defineComponent(() => {
                 <IpInfoPopover
                   trigger="hover"
                   ip={item.ip}
-                  triggerEl={<NButton text>{item.ip}</NButton>}
+                  triggerEl={<NButton quaternary>{item.ip}</NButton>}
                 ></IpInfoPopover>
               </div>
               <div>

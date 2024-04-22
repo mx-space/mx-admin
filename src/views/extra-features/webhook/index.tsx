@@ -427,7 +427,7 @@ const WebHookDispatches = defineComponent({
                   </span>
                   <NButton
                     onClick={() => handleDetailModal(item)}
-                    text
+                    quaternary
                     type="primary"
                     class={'justify-self-end'}
                     style={{

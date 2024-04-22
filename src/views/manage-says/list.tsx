@@ -83,7 +83,7 @@ const ManageSayListView = defineComponent({
               return (
                 <NSpace wrap={false}>
                   <RouterLink to={`/says/edit?id=${row.id}`}>
-                    <NButton text type="primary" size="tiny">
+                    <NButton quaternary type="primary" size="tiny">
                       编辑
                     </NButton>
                   </RouterLink>
@@ -98,7 +98,7 @@ const ManageSayListView = defineComponent({
                   >
                     {{
                       trigger: () => (
-                        <NButton text type="error" size="tiny">
+                        <NButton quaternary type="error" size="tiny">
                           移除
                         </NButton>
                       ),

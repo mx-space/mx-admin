@@ -107,7 +107,7 @@ export const ReadingRank = defineComponent({
                 render: (row: { ref: { id: string; title: string } }) => {
                   return (
                     <NButton
-                      text
+                      quaternary
                       type="primary"
                       size="tiny"
                       onClick={() => {

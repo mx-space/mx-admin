@@ -527,7 +527,7 @@ export const DashBoardView = defineComponent({
                     <NText class="leading-normal">{hitokoto.value}</NText>
                     <div class="flex items-center space-x-2">
                       <NButton
-                        text
+                        quaternary
                         onClick={refreshHitokoto}
                         class="phone:float-right ml-0"
                       >
@@ -537,7 +537,7 @@ export const DashBoardView = defineComponent({
                       </NButton>
 
                       <NButton
-                        text
+                        quaternary
                         onClick={() => {
                           navigator.clipboard.writeText(hitokoto.value)
                           message.success('已复制')

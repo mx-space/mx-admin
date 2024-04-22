@@ -178,7 +178,7 @@ const LikeTableColumns: TableColumns<{
       if (!row.ref) return '已删除的内容'
       return (
         <NButton
-          text
+          quaternary
           type="primary"
           size="tiny"
           onClick={() => {
@@ -224,7 +224,7 @@ const ReadDurationTableColumns: TableColumns<ActivityReadDurationType> = [
 
       return (
         <NButton
-          text
+          quaternary
           type="primary"
           size="tiny"
           onClick={() => {
@@ -250,19 +250,20 @@ const ReadDurationTableColumns: TableColumns<ActivityReadDurationType> = [
     key: 'payload.duration',
     width: 150,
     render: (row) => {
-      const totalSeconds = (row.payload.operationTime - row.payload.connectedAt) / 1000;
-      const hours = Math.floor(totalSeconds / 3600);
-      const minutes = Math.floor((totalSeconds % 3600) / 60);
-      const seconds = Math.floor(totalSeconds % 60);
+      const totalSeconds =
+        (row.payload.operationTime - row.payload.connectedAt) / 1000
+      const hours = Math.floor(totalSeconds / 3600)
+      const minutes = Math.floor((totalSeconds % 3600) / 60)
+      const seconds = Math.floor(totalSeconds % 60)
 
-      let timeString = '';
+      let timeString = ''
       if (hours > 0) {
-        timeString += `${hours}小时 `;
+        timeString += `${hours}小时 `
       }
       if (hours > 0 || minutes > 0) {
-        timeString += `${minutes}分钟 `;
+        timeString += `${minutes}分钟 `
       }
-      timeString += `${seconds}秒`;
+      timeString += `${seconds}秒`
 
       return <span>{timeString}</span>
     },

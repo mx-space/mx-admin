@@ -124,7 +124,7 @@ export const AnalyzeDataTable = defineComponent({
                   <IpInfoPopover
                     ip={ip}
                     triggerEl={
-                      <NButton text size="tiny" type="primary">
+                      <NButton quaternary size="tiny" type="primary">
                         {ip}
                       </NButton>
                     }

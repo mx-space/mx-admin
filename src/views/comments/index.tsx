@@ -270,7 +270,7 @@ const ManageComment = defineComponent(() => {
             <div class="space-x-3">
               {tabValue.value !== CommentType.Marked && (
                 <NButton
-                  text
+                  quaternary
                   size="tiny"
                   type="success"
                   onClick={() => changeState(row.id, 1)}
@@ -280,7 +280,7 @@ const ManageComment = defineComponent(() => {
               )}
               {tabValue.value !== CommentType.Trash && (
                 <NButton
-                  text
+                  quaternary
                   size="tiny"
                   type="warning"
                   onClick={() => changeState(row.id, 2)}
@@ -290,7 +290,7 @@ const ManageComment = defineComponent(() => {
               )}
               {tabValue.value !== CommentType.Trash && (
                 <NButton
-                  text
+                  quaternary
                   size="tiny"
                   type="info"
                   onClick={(e) => {
@@ -497,7 +497,7 @@ const ManageComment = defineComponent(() => {
                           <NSpace align="center" class={'!justify-between'}>
                             {KAOMOJI_LIST.map((kaomoji) => (
                               <NButton
-                                text
+                                quaternary
                                 key={kaomoji}
                                 type="primary"
                                 onClick={() => {

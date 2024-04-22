@@ -165,7 +165,7 @@ export const UpdateDependencyButton = defineComponent({
                     render(row) {
                       return (
                         <NButton
-                          text
+                          quaternary
                           type="info"
                           onClick={() => {
                             fetchLastestNPMPackageInfo(row.package).then(

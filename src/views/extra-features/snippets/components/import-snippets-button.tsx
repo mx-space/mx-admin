@@ -131,7 +131,7 @@ export const ImportSnippetButton = defineComponent({
                     {list.value.map(({ name: name_, url }) => (
                       <div class="ml-4 flex items-center" key="name">
                         <NButton
-                          text
+                          quaternary
                           onClick={() => {
                             name.value = name_
                             nextTick(() => {
@@ -331,7 +331,7 @@ const ProcessView = defineComponent({
                           trigger() {
                             return (
                               <NButton
-                                text
+                                quaternary
                                 onClick={() => {
                                   htmlUrl && window.open(htmlUrl)
                                 }}

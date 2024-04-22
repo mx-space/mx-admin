@@ -19,7 +19,7 @@ export const IframePreviewButton = defineComponent({
           trigger() {
             return (
               <NButton
-                text
+                quaternary
                 type="primary"
                 tag="a"
                 // @ts-ignore

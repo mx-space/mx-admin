@@ -187,7 +187,7 @@ export const Tab1ForList = defineComponent({
                         )}
                         <NButton
                           tag="a"
-                          text
+                          quaternary
                           // @ts-ignore
                           href={`${
                             RESTManager.endpoint +
@@ -259,7 +259,7 @@ export const Tab1ForList = defineComponent({
                     return (
                       <NSpace>
                         <NButton
-                          text
+                          quaternary
                           size="tiny"
                           type="primary"
                           onClick={() => {
@@ -284,7 +284,7 @@ export const Tab1ForList = defineComponent({
                         >
                           {{
                             trigger: () => (
-                              <NButton text type="error" size="tiny">
+                              <NButton quaternary type="error" size="tiny">
                                 {deleteText}
                               </NButton>
                             ),
@@ -329,7 +329,7 @@ const colums = [
           )}
           <NButton
             tag="a"
-            text
+            quaternary
             // @ts-ignore
             href={`${
               RESTManager.endpoint +
@@ -383,7 +383,7 @@ const colums = [
       return (
         <NSpace>
           <NButton
-            text
+            quaternary
             size="tiny"
             type="primary"
             onClick={() => {

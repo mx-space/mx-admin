@@ -318,7 +318,7 @@ export default defineComponent({
                     {row.state == LinkState.Audit && (
                       <>
                         <NButton
-                          text
+                          quaternary
                           size="tiny"
                           type="success"
                           onClick={async () => {
@@ -335,7 +335,7 @@ export default defineComponent({
                         </NButton>
 
                         <NButton
-                          text
+                          quaternary
                           size="tiny"
                           type="info"
                           onClick={async () => {
@@ -377,7 +377,7 @@ export default defineComponent({
                       </>
                     )}
                     <NButton
-                      text
+                      quaternary
                       size="tiny"
                       type="info"
                       onClick={(_) => {

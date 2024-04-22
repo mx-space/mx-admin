@@ -77,7 +77,7 @@ const PostItem = defineComponent({
                   >
                     {{
                       trigger: () => (
-                        <NButton text type="error" size="tiny">
+                        <NButton quaternary type="error" size="tiny">
                           移除
                         </NButton>
                       ),

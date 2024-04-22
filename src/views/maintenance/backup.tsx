@@ -165,7 +165,7 @@ export default defineComponent(() => {
               return (
                 <NSpace inline>
                   <NButton
-                    text
+                    quaternary
                     size="tiny"
                     type="primary"
                     onClick={() => void handleDownload(filename)}
@@ -182,7 +182,7 @@ export default defineComponent(() => {
                   >
                     {{
                       trigger: () => (
-                        <NButton text size="tiny" type="warning">
+                        <NButton quaternary size="tiny" type="warning">
                           回退
                         </NButton>
                       ),
@@ -200,7 +200,7 @@ export default defineComponent(() => {
                   >
                     {{
                       trigger: () => (
-                        <NButton text size="tiny" type="error">
+                        <NButton quaternary size="tiny" type="error">
                           移除
                         </NButton>
                       ),

@@ -390,7 +390,7 @@ const PostWriteView = defineComponent(() => {
                     {{
                       trigger() {
                         return (
-                          <NButton text onClick={handleAskAI}>
+                          <NButton quaternary onClick={handleAskAI}>
                             <OpenAI />
                           </NButton>
                         )

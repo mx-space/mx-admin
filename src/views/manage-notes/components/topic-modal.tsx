@@ -192,7 +192,7 @@ export const TopicEditModal = defineComponent({
                             return e.file
                           }}
                         >
-                          <NButton text>
+                          <NButton quaternary>
                             <NIcon>
                               <UploadIcon />
                             </NIcon>
