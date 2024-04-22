@@ -2,6 +2,8 @@ import { MagnifyIcon } from 'components/icons'
 import { ArticlePreview } from 'components/preview'
 import { NButton, NPopover } from 'naive-ui'
 
+import { Icon } from '@vicons/utils'
+
 export const IframePreviewButton = defineComponent({
   props: {
     path: {
@@ -19,7 +21,7 @@ export const IframePreviewButton = defineComponent({
           trigger() {
             return (
               <NButton
-                quaternary
+                text
                 type="primary"
                 tag="a"
                 // @ts-ignore
@@ -30,7 +32,9 @@ export const IframePreviewButton = defineComponent({
                   e.stopPropagation()
                 }}
               >
-                <MagnifyIcon />
+                <Icon>
+                  <MagnifyIcon />
+                </Icon>
               </NButton>
             )
           },

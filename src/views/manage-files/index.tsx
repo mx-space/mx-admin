@@ -178,12 +178,7 @@ export default defineComponent({
                       {{
                         trigger() {
                           return (
-                            <NButton
-                              quaternary
-                              type="error"
-                              tertiary
-                              size="tiny"
-                            >
+                            <NButton quaternary type="error" size="tiny">
                               删除
                             </NButton>
                           )
