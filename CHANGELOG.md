@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [4.2.7](https://github.com/mx-space/mx-admin/compare/v4.2.6...v4.2.7) (2024-04-22)
+
+
+### Bug Fixes
+
+* table style ([4dd3b7a](https://github.com/mx-space/mx-admin/commit/4dd3b7a9d28664607e7200647808d66fbbe125c2))
+
+
+
 ## [4.2.6](https://github.com/mx-space/mx-admin/compare/v4.2.5...v4.2.6) (2024-04-22)
 
 
