@@ -35,5 +35,4 @@ export const Avatar = defineComponent<{ avatar: string; name: string }>(
     )
   },
 )
-
-Avatar.props = ['avatar', 'name']
+;(Avatar as any).props = ['avatar', 'name']
