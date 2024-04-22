@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## [4.2.6](https://github.com/mx-space/mx-admin/compare/v4.2.5...v4.2.6) (2024-04-22)
+
+
+### Bug Fixes
+
+* file update type, closes [#896](https://github.com/mx-space/mx-admin/issues/896) ([3335d36](https://github.com/mx-space/mx-admin/commit/3335d36b1e851cf71cfbb88d42f8270f2e6b8b8f))
+* typing ([25947b5](https://github.com/mx-space/mx-admin/commit/25947b5acb8850558ef3f1725a876cf7b4467564))
+
+
+
 ## [4.2.5](https://github.com/mx-space/mx-admin/compare/v4.2.4...v4.2.5) (2024-04-20)
 
 
