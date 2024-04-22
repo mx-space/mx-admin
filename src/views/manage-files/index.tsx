@@ -57,14 +57,18 @@ export default defineComponent({
       file: UploadFileInfo
       fileList: UploadFileInfo[]
     }) => {
-      if (type.value === 'icon') {
+      if (
+        type.value === 'icon' ||
+        type.value === 'avatar' ||
+        type.value === 'photo'
+      ) {
         if (data.file.file?.type.startsWith('image')) {
           return true
         }
         message.error('只能上传图片文件，请重新上传')
       }
 
-      return false
+      return true
     }
 
     const handleFinish = ({
@@ -174,7 +178,12 @@ export default defineComponent({
                       {{
                         trigger() {
                           return (
-                            <NButton text type="error" tertiary size="tiny">
+                            <NButton
+                              quaternary
+                              type="error"
+                              tertiary
+                              size="tiny"
+                            >
                               删除
                             </NButton>
                           )
