@@ -1,4 +1,4 @@
-import { ExternalLinkIcon } from 'components/icons'
+import { ExternalLinkIcon, OpenAI } from 'components/icons'
 import { IframePreviewButton } from 'components/special-button/iframe-preview'
 import { WEB_URL } from 'constants/env'
 import { useStoreRef } from 'hooks/use-store-ref'
@@ -6,9 +6,11 @@ import { NButton, NEllipsis, NPopover } from 'naive-ui'
 import { UIStore } from 'stores/ui'
 import { buildMarkdownRenderUrl } from 'utils/endpoint'
 import { defineComponent } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 
 import { Icon } from '@vicons/utils'
+
+import { RouteName } from '~/router/name'
 
 export const TableTitleLink = defineComponent({
   props: {
@@ -59,6 +61,7 @@ export const TableTitleLink = defineComponent({
 
     const path = buildMarkdownRenderUrl(props.id!, props.withToken)
 
+    const router = useRouter()
     return () => (
       <RouterLink
         to={props.inPageTo}
@@ -114,6 +117,19 @@ export const TableTitleLink = defineComponent({
             }}
           </NPopover>
         )}
+
+        {/* AI Summary */}
+
+        <RouterLink
+          to={{
+            name: RouteName.AiSummary,
+            query: { refId: props.id },
+          }}
+        >
+          <Icon>
+            <OpenAI />
+          </Icon>
+        </RouterLink>
       </RouterLink>
     )
   },

@@ -44,6 +44,9 @@ export enum RouteName {
   AssetTemplate = 'asset-template',
   Pty = 'pty',
 
+  Ai = 'ai',
+  AiSummary = 'ai-summary',
+
   Maintain = 'maintain',
   Other = 'other',
 }

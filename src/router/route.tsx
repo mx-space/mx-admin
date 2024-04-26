@@ -19,6 +19,7 @@ import {
   LogIcon,
   MarkdownIcon,
   MidHammer,
+  OpenAI,
   PencilAltIcon,
   PencilIcon,
   PuzzlePieceIcon,
@@ -273,7 +274,28 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     },
     component: () => import('../views/manage-friends'),
   },
+  {
+    path: '/ai',
 
+    name: RouteName.Ai,
+    meta: {
+      title: 'AI',
+      icon: <OpenAI />,
+    },
+
+    redirect: '/ai/summary',
+    children: [
+      {
+        path: 'summary',
+        name: RouteName.AiSummary,
+        meta: {
+          title: '摘要',
+          icon: <OpenAI />,
+        },
+        component: () => import('../views/ai/summary'),
+      },
+    ],
+  },
   {
     path: '/analyze',
     name: RouteName.Analyze,
