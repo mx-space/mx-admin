@@ -1,5 +1,20 @@
 # CHANGELOG
 
+# [4.3.0](https://github.com/mx-space/mx-admin/compare/v4.2.8...v4.3.0) (2024-04-26)
+
+
+### Bug Fixes
+
+* downgrade eslint v8 ([bd7e190](https://github.com/mx-space/mx-admin/commit/bd7e19084a010256e4f6153099e088f10cddcc05))
+
+
+### Features
+
+* ai summary ([d2da40e](https://github.com/mx-space/mx-admin/commit/d2da40e26312607923b3684ef7f98cc87c1ea0a0))
+* ai view ([014102f](https://github.com/mx-space/mx-admin/commit/014102f846446c5fd3b61c6ec6e1eea578f3e1ce))
+
+
+
 ## [4.2.8](https://github.com/mx-space/mx-admin/compare/v4.2.7...v4.2.8) (2024-04-26)
 
 
