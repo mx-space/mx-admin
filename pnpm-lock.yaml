@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@antv/g2':
-        specifier: ^4.2.10
-        version: 4.2.10
+        specifier: ^4.2.11
+        version: 4.2.11
       '@bytebase/vue-kbar':
         specifier: 0.1.8
         version: 0.1.8(vue@3.4.21(typescript@5.4.4))
@@ -362,8 +362,8 @@ packages:
   '@antv/g-svg@0.5.7':
     resolution: {integrity: sha512-jUbWoPgr4YNsOat2Y/rGAouNQYGpw4R0cvlN0YafwOyacFFYy2zC8RslNd6KkPhhR3XHNSqJOuCYZj/YmLUwYw==}
 
-  '@antv/g2@4.2.10':
-    resolution: {integrity: sha512-/ZlJ/DFJBCvtEQgE6roxdd6sBml0fZ8ZVfzG+HdjGpA7/ceURb8XkxUcqa0E8NV+e4sFijnaAhBCdUm2whiuyA==}
+  '@antv/g2@4.2.11':
+    resolution: {integrity: sha512-QiqxLLYDWkv9c4oTcXscs6NMxBuWZ1JCarHPZ27J43IN2BV+qUKw8yce0A8CBR8fCILEFqQAfS00Szqpye036Q==}
 
   '@antv/matrix-util@3.0.4':
     resolution: {integrity: sha512-BAPyu6dUliHcQ7fm9hZSGKqkwcjEDVLVAstlHULLvcMZvANHeLXgHEgV7JqcAV/GIhIz8aZChIlzM1ZboiXpYQ==}
@@ -4253,7 +4253,7 @@ snapshots:
       detect-browser: 5.3.0
       tslib: 2.6.2
 
-  '@antv/g2@4.2.10':
+  '@antv/g2@4.2.11':
     dependencies:
       '@antv/adjust': 0.2.5
       '@antv/attr': 0.3.5
