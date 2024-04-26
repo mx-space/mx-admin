@@ -100,7 +100,7 @@ export const ImageDetailSection = defineComponent({
 
               video.src = item.src
 
-              video.addEventListener('loadedmetadata', function () {
+              video.addEventListener('loadedmetadata', () => {
                 resolve({
                   height: video.videoHeight,
                   type: ext,
