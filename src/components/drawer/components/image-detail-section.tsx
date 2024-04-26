@@ -11,7 +11,7 @@ import {
   NInputNumber,
 } from 'naive-ui'
 import { getDominantColor } from 'utils/image'
-import { pickImagesFromMarkdown } from 'utils/markdown'
+import { isVideoExt, pickImagesFromMarkdown } from 'utils/markdown'
 import type { Image as ImageModel } from 'models/base'
 import type { PropType } from 'vue'
 
@@ -92,23 +92,49 @@ export const ImageDetailSection = defineComponent({
       const fetchImageTasks = await Promise.allSettled(
         images.value.map((item) => {
           return new Promise<ImageModel>((resolve, reject) => {
-            const $image = new Image()
-            $image.src = item.src
-            $image.crossOrigin = 'Anonymous'
-            $image.onload = () => {
-              resolve({
-                width: $image.naturalWidth,
-                height: $image.naturalHeight,
-                src: item.src,
-                type: $image.src.split('.').pop() || '',
-                accent: getDominantColor($image),
+            const ext = item.src.split('.').pop()!
+            const isVideo = isVideoExt(ext)
+
+            if (isVideo) {
+              const video = document.createElement('video')
+
+              video.src = item.src
+
+              video.addEventListener('loadedmetadata', function () {
+                resolve({
+                  height: video.videoHeight,
+                  type: ext,
+                  src: item.src,
+                  width: video.videoWidth,
+                  accent: '#fff',
+                })
               })
-            }
-            $image.onerror = (err) => {
-              reject({
-                err,
-                src: item.src,
+
+              video.addEventListener('error', (e) => {
+                reject({
+                  err: e,
+                  src: item.src,
+                })
               })
+            } else {
+              const $image = new Image()
+              $image.src = item.src
+              $image.crossOrigin = 'Anonymous'
+              $image.onload = () => {
+                resolve({
+                  width: $image.naturalWidth,
+                  height: $image.naturalHeight,
+                  src: item.src,
+                  type: ext,
+                  accent: getDominantColor($image),
+                })
+              }
+              $image.onerror = (err) => {
+                reject({
+                  err,
+                  src: item.src,
+                })
+              }
             }
           })
         }),
