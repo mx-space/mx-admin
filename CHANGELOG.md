@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [4.2.8](https://github.com/mx-space/mx-admin/compare/v4.2.7...v4.2.8) (2024-04-26)
+
+
+### Features
+
+* support get video dim ([b57b40e](https://github.com/mx-space/mx-admin/commit/b57b40ea83d81cdbb295a873ed40e2a50fdd4be3))
+
+
+
 ## [4.2.7](https://github.com/mx-space/mx-admin/compare/v4.2.6...v4.2.7) (2024-04-22)
 
 
