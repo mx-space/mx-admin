@@ -1,9 +1,10 @@
-import camelcaseKeys from 'camelcase-keys'
 import { API_URL } from 'constants/env'
 import { isPlainObject } from 'lodash-es'
 import { extend } from 'umi-request'
 import { uuid } from 'utils'
 import type { RequestMethod, RequestOptionsInit } from 'umi-request'
+
+import { simpleCamelcaseKeys } from '@mx-space/api-client'
 
 import { router } from '../router/router'
 import { getToken } from './auth'
@@ -105,7 +106,7 @@ function buildRoute(manager: RESTManagerStatic): IRequestHandler {
           return Array.isArray(res) || isPlainObject(res)
             ? (() => {
                 const transform = shouldTransformData
-                  ? camelcaseKeys(res, { deep: true })
+                  ? simpleCamelcaseKeys(res)
                   : res
 
                 const nextTransform = Array.isArray(transform) ? [] : {}
