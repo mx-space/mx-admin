@@ -211,8 +211,8 @@ importers:
         specifier: 0.13.0
         version: 0.13.0(typescript@5.4.4)
       '@innei/prettier':
-        specifier: 0.13.0
-        version: 0.13.0(@vue/compiler-sfc@3.4.21)
+        specifier: 0.13.1
+        version: 0.13.1(@vue/compiler-sfc@3.4.21)
       '@types/ejs':
         specifier: 3.1.5
         version: 3.1.5
@@ -1099,8 +1099,8 @@ packages:
     peerDependencies:
       typescript: '>=4'
 
-  '@innei/prettier@0.13.0':
-    resolution: {integrity: sha512-G2l4uaODrUyp7mab/6z9No7J+1XAfU4GStjFsn7C8yuRxADGBwzsqOWzIzzyH5i2xAaDSbUMRVuiDrFGemkbTA==}
+  '@innei/prettier@0.13.1':
+    resolution: {integrity: sha512-N2VDVvrtJmaXztL69nAphQJR4JGZQlWzcNIswRQGML7pSfG9LHYPoEFiH/nf1o5nFft6GNKc/1EiCfgtIR1Vsw==}
 
   '@jridgewell/gen-mapping@0.3.3':
     resolution: {integrity: sha512-HLhSWOLRi875zjjMG/r+Nv0oCW8umGb0BgEhyX3dDX3egwZtB8PqLnjz3yedt8R5StBrzcg4aBpnh8UA9D1BoQ==}
@@ -4396,15 +4396,15 @@ snapshots:
   '@babel/helper-function-name@7.23.0':
     dependencies:
       '@babel/template': 7.23.9
-      '@babel/types': 7.23.9
+      '@babel/types': 7.24.0
 
   '@babel/helper-hoist-variables@7.22.5':
     dependencies:
-      '@babel/types': 7.23.9
+      '@babel/types': 7.24.0
 
   '@babel/helper-member-expression-to-functions@7.23.0':
     dependencies:
-      '@babel/types': 7.23.9
+      '@babel/types': 7.24.0
 
   '@babel/helper-module-imports@7.22.15':
     dependencies:
@@ -4430,7 +4430,7 @@ snapshots:
 
   '@babel/helper-optimise-call-expression@7.22.5':
     dependencies:
-      '@babel/types': 7.23.9
+      '@babel/types': 7.24.0
 
   '@babel/helper-plugin-utils@7.22.5': {}
 
@@ -4443,15 +4443,15 @@ snapshots:
 
   '@babel/helper-simple-access@7.22.5':
     dependencies:
-      '@babel/types': 7.23.9
+      '@babel/types': 7.24.0
 
   '@babel/helper-skip-transparent-expression-wrappers@7.22.5':
     dependencies:
-      '@babel/types': 7.23.9
+      '@babel/types': 7.24.0
 
   '@babel/helper-split-export-declaration@7.22.6':
     dependencies:
-      '@babel/types': 7.23.9
+      '@babel/types': 7.24.0
 
   '@babel/helper-string-parser@7.23.4': {}
 
@@ -5206,7 +5206,7 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  '@innei/prettier@0.13.0(@vue/compiler-sfc@3.4.21)':
+  '@innei/prettier@0.13.1(@vue/compiler-sfc@3.4.21)':
     dependencies:
       '@ianvs/prettier-plugin-sort-imports': 4.2.1(@vue/compiler-sfc@3.4.21)(prettier@3.2.5)
       prettier: 3.2.5
