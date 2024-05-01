@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [4.3.1](https://github.com/mx-space/mx-admin/compare/v4.3.0...v4.3.1) (2024-05-01)
+
+
+### Bug Fixes
+
+* add ai summary pagination component ([557d287](https://github.com/mx-space/mx-admin/commit/557d287ef5e1ac7da489aef34ef6fea37e601135))
+
+
+
 # [4.3.0](https://github.com/mx-space/mx-admin/compare/v4.2.8...v4.3.0) (2024-04-26)
 
 
