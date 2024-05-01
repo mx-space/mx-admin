@@ -8,6 +8,8 @@ import {
   NInput,
   NList,
   NListItem,
+  NPagination,
+  NSpace,
   useDialog,
 } from 'naive-ui'
 import useSWRV from 'swrv'
@@ -37,41 +39,65 @@ export default defineComponent({
 
 const Summaries = defineComponent({
   setup() {
-    const { data, mutate } = useSWRV('/api/ai/summaries', async () => {
-      return await RESTManager.api.ai.summaries.get<
-        PaginateResult<AISummaryModel> & {
-          articles: Record<
-            string,
-            {
-              title: string
-              type: CollectionRefTypes
-              id: string
-            }
-          >
-        }
-      >()
-    })
+    const pageRef = ref(1)
+    const { data, mutate } = useSWRV(
+      '/api/ai/summaries',
+      async () => {
+        return await RESTManager.api.ai.summaries.get<
+          PaginateResult<AISummaryModel> & {
+            articles: Record<
+              string,
+              {
+                title: string
+                type: CollectionRefTypes
+                id: string
+              }
+            >
+          }
+        >({
+          params: {
+            page: pageRef.value,
+          },
+        })
+      },
+      {
+        revalidateOnFocus: false,
+      },
+    )
     return () => {
       if (data.value?.data.length === 0) {
         return <NEmpty />
       }
 
       return (
-        <List
-          summaries={data.value?.data || []}
-          getArticle={(id) => {
-            const article = data.value?.articles[id]
-            if (!article) throw new Error('article not found')
+        <>
+          <List
+            summaries={data.value?.data || []}
+            getArticle={(id) => {
+              const article = data.value?.articles[id]
+              if (!article) throw new Error('article not found')
 
-            return {
-              type: article.type,
-              document: {
-                title: article.title,
-              },
-            }
-          }}
-          mutate={mutate}
-        />
+              return {
+                type: article.type,
+                document: {
+                  title: article.title,
+                },
+              }
+            }}
+            mutate={mutate}
+          />
+          <NSpace class={'mt-6'} justify="end">
+            <NPagination
+              page={data.value?.pagination.currentPage}
+              pageCount={data.value?.pagination.totalPage}
+              onUpdatePage={(page) => {
+                pageRef.value = page
+
+                mutate()
+              }}
+            />
+          </NSpace>
+        </>
       )
     }
   },
@@ -176,9 +202,10 @@ const SummaryRefIdContent = defineComponent({
     })
 
     return () => {
-      if (data.value?.summaries.length === 0) {
+      if (!data.value || data.value.summaries.length === 0) {
         return <NEmpty />
       }
+
       return (
         <List
           summaries={data.value?.summaries || []}

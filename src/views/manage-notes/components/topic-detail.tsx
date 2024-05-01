@@ -284,7 +284,7 @@ export const TopicDetail = defineComponent({
                         }}
                         page={notePagination.value.currentPage}
                         pageCount={notePagination.value.totalPage}
-                      ></NPagination>
+                      />
                     )}
                   </div>
                 </div>
