@@ -48,8 +48,8 @@ importers:
         specifier: ^1.2.0
         version: 1.2.0
       '@mx-space/api-client':
-        specifier: 1.12.0
-        version: 1.12.0
+        specifier: 1.12.1
+        version: 1.12.1
       '@simplewebauthn/browser':
         specifier: 9.0.1
         version: 9.0.1
@@ -1176,8 +1176,8 @@ packages:
   '@lezer/xml@1.0.4':
     resolution: {integrity: sha512-WmXKb5eX8+rRfZYSNRR5TPee/ZoDgBdVS/rj1VCJGDKa5gNldIctQYibCoFVyNhvZsyL/8nHbZJZPM4gnXN2Vw==}
 
-  '@mx-space/api-client@1.12.0':
-    resolution: {integrity: sha512-hfE0Fci+dIurbQiEVQIq/2PPPuL9y8WvjM9efknL8ekm0KvinwgyskS297vejWUe/GewaVo9/9Ns7eH0uSHjCw==}
+  '@mx-space/api-client@1.12.1':
+    resolution: {integrity: sha512-tRc+9MWKaOEYZBqCn4JrKs3WN2z++3Cas3y2aienYCMT6rB+B80gL+RUXjoZ6AkrzKkhA4Cd6oWw364ZdXoyAA==}
 
   '@noble/curves@1.0.0':
     resolution: {integrity: sha512-2upgEu0iLiDVDZkNLeFV2+ht0BAVgQnEmCk6JsOch9Rp8xfkMCbvbAZlA2pBHQc73dbl+vFOXfqkf4uemdn0bw==}
@@ -5319,7 +5319,7 @@ snapshots:
       '@lezer/highlight': 1.2.0
       '@lezer/lr': 1.4.0
 
-  '@mx-space/api-client@1.12.0': {}
+  '@mx-space/api-client@1.12.1': {}
 
   '@noble/curves@1.0.0':
     dependencies:
