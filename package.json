@@ -50,7 +50,7 @@
     "class-validator": "0.14.1",
     "crossbell.js": "npm:crossbell@1.11.3",
     "date-fns": "3.6.0",
-    "ejs": "3.1.9",
+    "ejs": "3.1.10",
     "event-source-polyfill": "1.0.31",
     "highlight.js": "11.9.0",
     "js-cookie": "3.0.5",
