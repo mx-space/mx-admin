@@ -2,6 +2,7 @@ import { PortalInjectKey } from 'hooks/use-portal-element'
 import {
   darkTheme,
   dateZhCN,
+  lightTheme,
   NConfigProvider,
   NDialogProvider,
   NMessageProvider,
@@ -16,6 +17,7 @@ import { defineComponent, onMounted } from 'vue'
 import { RouterView, useRouter } from 'vue-router'
 import type { VNode } from 'vue'
 
+import { ThemeColorConfig } from '../theme.config'
 import { useUIStore } from './stores/ui'
 import { useUserStore } from './stores/user'
 
@@ -69,7 +71,10 @@ const App = defineComponent({
         <NConfigProvider
           locale={zhCN}
           dateLocale={dateZhCN}
-          theme={naiveUIDark ? darkTheme : isDark ? darkTheme : null}
+          themeOverrides={{
+            common: ThemeColorConfig,
+          }}
+          theme={naiveUIDark ? darkTheme : isDark ? darkTheme : lightTheme}
         >
           <NNotificationProvider>
             <NMessageProvider>

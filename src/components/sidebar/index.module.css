@@ -136,7 +136,7 @@
 
   & .active,
   & .expand {
-    background: #50b694;
+    background: theme(colors.primary.default);
     border-radius: 24px 0 0 24px;
   }
 
@@ -153,7 +153,7 @@
   }
 
   & .item:hover {
-    background: #5eaa91;
+    background: theme(colors.primary.shallow);
     border-radius: 24px 0 0 24px;
   }
 
@@ -162,7 +162,11 @@
   }
 
   & .sidebar {
-    background: linear-gradient(to bottom, rgb(42, 148, 125), #75ad9b);
+    background: linear-gradient(
+      to bottom,
+      theme(colors.primary.default),
+      theme(colors.primary.shallow)
+    );
   }
 
   & .menu {

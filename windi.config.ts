@@ -1,6 +1,8 @@
 import { defineConfig } from 'windicss/helpers'
 import lineClamp from 'windicss/plugin/line-clamp'
 
+import { ThemeColorConfig } from './theme.config'
+
 export default defineConfig({
   content: ['./src/**/*.html', './src/**/*.vue', './src/**/*.tsx'],
   darkMode: 'class',
@@ -33,9 +35,9 @@ export default defineConfig({
       },
       colors: {
         primary: {
-          default: '#18A058FF',
-          deep: '#0C7A43FF',
-          shallow: '#36AD6AFF',
+          default: ThemeColorConfig.primaryColor,
+          deep: ThemeColorConfig.primaryColorPressed,
+          shallow: ThemeColorConfig.primaryColorHover,
         },
         gray$: {
           default: '#ddd',

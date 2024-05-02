@@ -125,6 +125,7 @@ export const TableTitleLink = defineComponent({
             name: RouteName.AiSummary,
             query: { refId: props.id },
           }}
+          class={'flex items-center'}
         >
           <Icon>
             <OpenAI />
