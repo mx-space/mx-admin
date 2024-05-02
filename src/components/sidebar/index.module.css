@@ -100,6 +100,7 @@
 .root.collapse {
   & .collapse-button {
     @apply absolute left-0 right-0 m-auto;
+    @apply flex w-full items-center justify-center py-6;
 
     & .collapse-icon {
       @apply rotate-180 transform;
@@ -108,10 +109,6 @@
 
   & .toggle-color-btn {
     @apply -left-10 opacity-0;
-  }
-
-  & .collapse-button {
-    @apply relative flex w-full items-center justify-center py-6;
   }
 }
 
