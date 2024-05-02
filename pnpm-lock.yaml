@@ -205,8 +205,8 @@ importers:
         version: 1.1.0
     devDependencies:
       '@innei/eslint-config-vue-ts':
-        specifier: 0.13.0
-        version: 0.13.0(typescript@5.4.5)
+        specifier: 0.13.1
+        version: 0.13.1(typescript@5.4.5)
       '@innei/prettier':
         specifier: 0.13.1
         version: 0.13.1(@vue/compiler-sfc@3.4.21)
@@ -1091,8 +1091,8 @@ packages:
     peerDependencies:
       typescript: '>=4'
 
-  '@innei/eslint-config-vue-ts@0.13.0':
-    resolution: {integrity: sha512-yTMQrwbro+R9o53j/5Vf/9+e77j75qSshVQt04Vv4u2wrL+XQbe42n/nXJgzZs25w+67MVQC5OBLZVhXjgRByQ==}
+  '@innei/eslint-config-vue-ts@0.13.1':
+    resolution: {integrity: sha512-6c4YzwKpRwkPebL3zx3gs17P5ku0rnLalX1jAvzWT3oUoCkUYFdWJupNyu7iOh0YC+79zrpl28W0/1QXxXILNg==}
     peerDependencies:
       typescript: '>=4'
 
@@ -2344,11 +2344,11 @@ packages:
       '@typescript-eslint/eslint-plugin':
         optional: true
 
-  eslint-plugin-vue@9.23.0:
-    resolution: {integrity: sha512-Bqd/b7hGYGrlV+wP/g77tjyFmp81lh5TMw0be9093X02SyelxRRfCI6/IsGq/J7Um0YwB9s0Ry0wlFyjPdmtUw==}
+  eslint-plugin-vue@9.24.1:
+    resolution: {integrity: sha512-wk3SuwmS1pZdcuJlokGYEi/buDOwD6KltvhIZyOnpJ/378dcQ4zchu9PAMbbLAaydCz1iYc5AozszcOOgZIIOg==}
     engines: {node: ^14.17.0 || >=16.0.0}
     peerDependencies:
-      eslint: ^6.2.0 || ^7.0.0 || ^8.0.0
+      eslint: ^6.2.0 || ^7.0.0 || ^8.0.0 || ^9.0.0
 
   eslint-rule-composer@0.3.0:
     resolution: {integrity: sha512-bt+Sh8CtDmn2OajxvNO+BX7Wn4CIWMpTRm3MaiKPCQcnnlm0CS2mhui6QaoeQugs+3Kj2ESKEEGJUdVafwhiCg==}
@@ -5160,12 +5160,12 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  '@innei/eslint-config-vue-ts@0.13.0(typescript@5.4.5)':
+  '@innei/eslint-config-vue-ts@0.13.1(typescript@5.4.5)':
     dependencies:
       '@innei/eslint-config-ts': 0.13.1(typescript@5.4.5)
       eslint: 8.57.0
       eslint-plugin-react: 7.34.1(eslint@8.57.0)
-      eslint-plugin-vue: 9.23.0(eslint@8.57.0)
+      eslint-plugin-vue: 9.24.1(eslint@8.57.0)
       typescript: 5.4.5
     transitivePeerDependencies:
       - eslint-import-resolver-typescript
@@ -6687,10 +6687,11 @@ snapshots:
     optionalDependencies:
       '@typescript-eslint/eslint-plugin': 7.6.0(@typescript-eslint/parser@7.7.1(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0)(typescript@5.4.5)
 
-  eslint-plugin-vue@9.23.0(eslint@8.57.0):
+  eslint-plugin-vue@9.24.1(eslint@8.57.0):
     dependencies:
       '@eslint-community/eslint-utils': 4.4.0(eslint@8.57.0)
       eslint: 8.57.0
+      globals: 13.24.0
       natural-compare: 1.4.0
       nth-check: 2.1.1
       postcss-selector-parser: 6.0.16
