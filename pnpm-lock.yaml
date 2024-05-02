@@ -165,8 +165,8 @@ importers:
         specifier: 1.0.4
         version: 1.0.4
       qs:
-        specifier: 6.12.0
-        version: 6.12.0
+        specifier: 6.12.1
+        version: 6.12.1
       reflect-metadata:
         specifier: 0.2.2
         version: 0.2.2
@@ -226,8 +226,8 @@ importers:
         specifier: 1.1.3
         version: 1.1.3
       '@types/qs':
-        specifier: 6.9.14
-        version: 6.9.14
+        specifier: 6.9.15
+        version: 6.9.15
       '@types/sortablejs':
         specifier: 1.15.8
         version: 1.15.8
@@ -1501,8 +1501,8 @@ packages:
   '@types/parse-json@4.0.2':
     resolution: {integrity: sha512-dISoDXWWQwUquiKsyZ4Ng+HX2KsPL7LyHKHQwgGFEA3IaKac4Obd+h2a/a6waisAoepJlBcx9paWqjA8/HVjCw==}
 
-  '@types/qs@6.9.14':
-    resolution: {integrity: sha512-5khscbd3SwWMhFqylJBLQ0zIu7c1K6Vz0uBIt915BI3zV0q1nfjRQD3RqSBcPaO6PHEF4ov/t9y89fSiyThlPA==}
+  '@types/qs@6.9.15':
+    resolution: {integrity: sha512-uXHQKES6DQKKCLh441Xv/dwxOq1TVS3JPUMlEqoEglvlhR6Mxnlew/Xq/LRVHpLyk7iK3zODe1qYHIMltO7XGg==}
 
   '@types/semver@7.5.8':
     resolution: {integrity: sha512-I8EUhyrgfLrcTkzV3TSsGyl1tSuPrEDzr0yd5m90UgNxQkyDXULk3b6MlQqTCpZpNtWe1K0hzclnZkTcLBe2UQ==}
@@ -2584,10 +2584,6 @@ packages:
   has-property-descriptors@1.0.2:
     resolution: {integrity: sha512-55JNKuIW+vq4Ke1BjOTjM2YctQIvCT7GFzHwmfZPGo5wnrgkid0YQtnAleFSqumZm4az3n2BS+erby5ipJdgrg==}
 
-  has-proto@1.0.1:
-    resolution: {integrity: sha512-7qE+iP+O+bgF9clE5+UoBFzE65mlBiVj3tKCrlNQ0Ogwm0BjpT/gK4SlLYDMybDh5I3TCTKnPPa0oMG7JDYrhg==}
-    engines: {node: '>= 0.4'}
-
   has-proto@1.0.3:
     resolution: {integrity: sha512-SJ1amZAJUiZS+PhsVLf5tGydlaVB8EdFpaSO4gmiUKUOxk8qzn5AIy4ZeJUmh22znIdk/uMAUT2pl3FxzVUH+Q==}
     engines: {node: '>= 0.4'}
@@ -2598,10 +2594,6 @@ packages:
 
   has-tostringtag@1.0.2:
     resolution: {integrity: sha512-NqADB8VjPFLM2V0VvHUewwwsw0ZWBaIdgo+ieHtK3hasLz4qeCRjYcqfB6AQrBggRKppKF8L52/VqdVsO47Dlw==}
-    engines: {node: '>= 0.4'}
-
-  hasown@2.0.1:
-    resolution: {integrity: sha512-1/th4MHjnwncwXsIW6QMzlvYL9kG5e/CpVvLRZe4XPa8TOUNbCELqmvhDmnkNsAjwaG4+I8gJJL0JBvTTLO9qA==}
     engines: {node: '>= 0.4'}
 
   hasown@2.0.2:
@@ -3461,8 +3453,8 @@ packages:
     resolution: {integrity: sha512-gCxgoM2wxW7GCo/iEpOlaunVo2cf+/AJfG6wtYIbYz18GXtUhFjgZjX2s+otWh/P8ppVgGULASkWtXfZQEd2FQ==}
     engines: {node: '>=6.0.0'}
 
-  qs@6.12.0:
-    resolution: {integrity: sha512-trVZiI6RMOkO476zLGaBIzszOdFPnCCXHPG9kn0yuS1uz6xdVxPfZdB3vUig9pxPFDM9BRAgz/YUIVQ1/vuiUg==}
+  qs@6.12.1:
+    resolution: {integrity: sha512-zWmv4RSuB9r2mYQw3zxQuHWeU+42aKi1wWig/j4ele4ygELZ7PEO6MM7rim9oAQH2A5MWfsAVf/jPvTPgCbvUQ==}
     engines: {node: '>=0.6'}
 
   queue-microtask@1.2.3:
@@ -5656,7 +5648,7 @@ snapshots:
 
   '@types/parse-json@4.0.2': {}
 
-  '@types/qs@6.9.14': {}
+  '@types/qs@6.9.15': {}
 
   '@types/semver@7.5.8': {}
 
@@ -6898,9 +6890,9 @@ snapshots:
     dependencies:
       es-errors: 1.3.0
       function-bind: 1.1.2
-      has-proto: 1.0.1
+      has-proto: 1.0.3
       has-symbols: 1.0.3
-      hasown: 2.0.1
+      hasown: 2.0.2
 
   get-symbol-description@1.0.2:
     dependencies:
@@ -6968,8 +6960,6 @@ snapshots:
     dependencies:
       es-define-property: 1.0.0
 
-  has-proto@1.0.1: {}
-
   has-proto@1.0.3: {}
 
   has-symbols@1.0.3: {}
@@ -6977,10 +6967,6 @@ snapshots:
   has-tostringtag@1.0.2:
     dependencies:
       has-symbols: 1.0.3
-
-  hasown@2.0.1:
-    dependencies:
-      function-bind: 1.1.2
 
   hasown@2.0.2:
     dependencies:
@@ -7843,7 +7829,7 @@ snapshots:
 
   qier-progress@1.0.4: {}
 
-  qs@6.12.0:
+  qs@6.12.1:
     dependencies:
       side-channel: 1.0.6
 
@@ -8178,7 +8164,7 @@ snapshots:
   umi-request@1.4.0:
     dependencies:
       isomorphic-fetch: 2.2.1
-      qs: 6.12.0
+      qs: 6.12.1
 
   unbox-primitive@1.0.2:
     dependencies:
