@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## [4.3.2](https://github.com/mx-space/mx-admin/compare/v4.3.1...v4.3.2) (2024-05-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @antv/g2 to ^4.2.11 ([#883](https://github.com/mx-space/mx-admin/issues/883)) ([d7e370d](https://github.com/mx-space/mx-admin/commit/d7e370de2868a6a215e3ca3be478405f716e5a36))
+* **deps:** update dependency @mx-space/api-client to v1.12.1 ([#887](https://github.com/mx-space/mx-admin/issues/887)) ([2b8a9d4](https://github.com/mx-space/mx-admin/commit/2b8a9d4d90138b97da09241f499cb60dfb3d9496))
+* **deps:** update dependency ejs to v3.1.10 [security] ([#898](https://github.com/mx-space/mx-admin/issues/898)) ([df4808b](https://github.com/mx-space/mx-admin/commit/df4808b5827b0076b2bdfee17e5ccadb9e77088a))
+* **deps:** update dependency qs to v6.12.1 ([#885](https://github.com/mx-space/mx-admin/issues/885)) ([fec6b07](https://github.com/mx-space/mx-admin/commit/fec6b078964aff605a25e6a0b9ff4a14014cf12c))
+
+
+### Features
+
+* update theme ([76fb1dc](https://github.com/mx-space/mx-admin/commit/76fb1dcc779b8d6134d5a0ea3aba764035440e04))
+* uwu ([223eb6f](https://github.com/mx-space/mx-admin/commit/223eb6fbe64c947e26f32affa823e6cf1f70e54f))
+
+
+
 ## [4.3.1](https://github.com/mx-space/mx-admin/compare/v4.3.0...v4.3.1) (2024-05-01)
 
 
