@@ -158,6 +158,7 @@ const SummaryRefIdContent = defineComponent({
                           .post<AISummaryModel | null>({
                             data: {
                               refId,
+                              lang,
                             },
                           })
                           .then((res) => {
@@ -172,7 +173,7 @@ const SummaryRefIdContent = defineComponent({
                       <NInput
                         type="text"
                         inputProps={{ name: 'lang' }}
-                        defaultValue={'zh-CN'}
+                        defaultValue={'zh'}
                         placeholder="目标语言"
                       />
 
