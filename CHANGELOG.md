@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [4.3.3](https://github.com/mx-space/mx-admin/compare/v4.3.2...v4.3.3) (2024-05-03)
+
+
+### Bug Fixes
+
+* generate ai summary modal ([270044b](https://github.com/mx-space/mx-admin/commit/270044b602242aeb378d6c5b468a77a70335d2bf))
+
+
+
 ## [4.3.2](https://github.com/mx-space/mx-admin/compare/v4.3.1...v4.3.2) (2024-05-02)
 
 
