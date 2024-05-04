@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { GATEWAY_URL } from 'constants/env'
+import { GATEWAY_URL } from 'node:constants/env'
 import { NButton, NSpace } from 'naive-ui'
 import { router } from 'router'
 import io from 'socket.io-client'
 import { getToken } from 'utils/auth'
 import { bus } from 'utils/event-bus'
 import { BrowserNotification } from 'utils/notification'
-import type { NotificationTypes } from './types'
 
 import { configs } from '../configs'
 import { EventTypes } from './types'
+import type { NotificationTypes } from './types'
 
 const Notification = {
   get warning() {
@@ -151,13 +151,13 @@ export class SocketClient {
           if (!no) {
             return
           }
-          no.onclick = () => {
+          no.addEventListener('click', () => {
             if (document.hasFocus()) {
               handler()
             } else {
               window.open(router.resolve({ name: 'comment' }).href)
             }
-          }
+          })
         })
         break
       }
@@ -209,14 +209,14 @@ export class SocketClient {
               return
             }
 
-            n.onclick = () => {
+            n.addEventListener('click', () => {
               if (document.hasFocus()) {
                 handler()
               } else {
                 // TODO
                 window.open('/')
               }
-            }
+            })
           })
         break
       }

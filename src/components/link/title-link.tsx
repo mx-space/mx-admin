@@ -1,6 +1,6 @@
+import { WEB_URL } from 'node:constants/env'
 import { ExternalLinkIcon, OpenAIIcon } from 'components/icons'
 import { IframePreviewButton } from 'components/special-button/iframe-preview'
-import { WEB_URL } from 'constants/env'
 import { useStoreRef } from 'hooks/use-store-ref'
 import { NButton, NEllipsis, NPopover } from 'naive-ui'
 import { UIStore } from 'stores/ui'

@@ -32,17 +32,17 @@ export const useStorageObject = <U extends object>(
         if (__DEV__) {
           console.log(err)
           console.log(
-            'wrong property key: ',
+            'wrong property key:',
             err.map((e) => e.property).toString(),
           )
           fixWrongPropertyData &&
-            console.log('after fix wrong property: ', parsed)
+            console.log('after fix wrong property:', parsed)
         }
         return fixWrongPropertyData ? parsed : null
       }
       return parsed
-    } catch (e) {
-      console.log(e)
+    } catch (error) {
+      console.log(error)
 
       return null
     }

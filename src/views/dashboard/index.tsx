@@ -13,8 +13,8 @@ import {
   GuestIcon,
   HeartIcon,
   LinkIcon,
-  NotebookMinimalistic,
   NoteIcon,
+  NotebookMinimalistic,
   OnlinePredictionFilledIcon,
   PencilIcon,
   PhAlignLeft,
@@ -24,7 +24,7 @@ import {
 import { IpInfoPopover } from 'components/ip-info'
 import { useShorthand } from 'components/shorthand'
 import { checkUpdateFromGitHub } from 'external/api/github-check-update'
-import { fetchHitokoto, SentenceType } from 'external/api/hitokoto'
+import { SentenceType, fetchHitokoto } from 'external/api/hitokoto'
 import { getJinRiShiCiOne } from 'external/api/jinrishici'
 import { usePortalElement } from 'hooks/use-portal-element'
 import { useStoreRef } from 'hooks/use-store-ref'
@@ -50,7 +50,7 @@ import {
 import { RouteName } from 'router/name'
 import { AppStore } from 'stores/app'
 import { UserStore } from 'stores/user'
-import { parseDate, RESTManager } from 'utils'
+import { RESTManager, parseDate } from 'utils'
 import {
   computed,
   defineComponent,
@@ -59,15 +59,15 @@ import {
   ref,
 } from 'vue'
 import { useRouter } from 'vue-router'
-import type { ShiJuData } from 'external/api/jinrishici'
-import type { Stat } from 'models/stat'
-import type { CardProps } from './card'
 
 import { Icon } from '@vicons/utils'
 
 import PKG from '../../../package.json'
 import { Card } from './card'
 import { UpdatePanel } from './update-panel'
+import type { CardProps } from './card'
+import type { Stat } from 'models/stat'
+import type { ShiJuData } from 'external/api/jinrishici'
 
 export const DashBoardView = defineComponent({
   name: 'DashboardView',
@@ -127,7 +127,7 @@ export const DashBoardView = defineComponent({
       ]).then((data) => {
         const postfix = Object.values(
           pick(data, ['from', 'from_who', 'creator']),
-        ).filter(Boolean)[0]
+        ).find(Boolean)
         if (!data.hitokoto) {
           hitokoto.value = '没有获取到句子信息'
         } else {
@@ -687,18 +687,17 @@ const AppIF = defineComponent({
         app.value?.version &&
         app.value.version !== 'dev' &&
         versionMap.value.system &&
-        closedTips.value.system !== versionMap.value.system
+        closedTips.value.system !== versionMap.value.system &&
+        versionMap.value.system !== app.value.version
       ) {
-        if (versionMap.value.system !== app.value.version) {
-          notice.info({
-            title: '[系统] 有新版本啦！',
-            content: `当前版本：${app.value.version}，最新版本：${versionMap.value.system}`,
-            closable: true,
-            onClose: () => {
-              closedTips.value.system = versionMap.value.system
-            },
-          })
-        }
+        notice.info({
+          title: '[系统] 有新版本啦！',
+          content: `当前版本：${app.value.version}，最新版本：${versionMap.value.system}`,
+          closable: true,
+          onClose: () => {
+            closedTips.value.system = versionMap.value.system
+          },
+        })
       }
     })
 

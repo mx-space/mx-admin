@@ -26,9 +26,7 @@ export class EventBus {
       this.observers[event] = [handler]
       return disposer
     }
-    const isExist = queue.some((func) => {
-      return func === handler
-    })
+    const isExist = queue.includes(handler)
     if (!isExist) {
       this.observers[event].push(handler)
     }
@@ -55,9 +53,7 @@ export class EventBus {
     }
 
     if (handler) {
-      const index = queue.findIndex((func) => {
-        return func === handler
-      })
+      const index = queue.indexOf(handler)
       if (index !== -1) {
         queue.splice(index, 1)
       }

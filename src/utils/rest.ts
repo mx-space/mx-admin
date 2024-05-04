@@ -1,13 +1,13 @@
-import { API_URL } from 'constants/env'
+import { API_URL } from 'node:constants/env'
 import { isPlainObject } from 'lodash-es'
 import { extend } from 'umi-request'
 import { uuid } from 'utils'
-import type { RequestMethod, RequestOptionsInit } from 'umi-request'
 
 import { simpleCamelcaseKeys } from '@mx-space/api-client'
 
 import { router } from '../router/router'
 import { getToken } from './auth'
+import type { RequestMethod, RequestOptionsInit } from 'umi-request'
 
 class RESTManagerStatic {
   private _$$instance: RequestMethod = null!
@@ -45,9 +45,9 @@ class RESTManagerStatic {
             } else {
               Message.error(message)
             }
-          } catch (e) {
+          } catch (error_) {
             // Message.error('出错了，请查看控制台')
-            console.log(e)
+            console.log(error_)
           }
 
           if (error?.response?.status === 401) {
@@ -154,11 +154,11 @@ RESTManager.instance.interceptors.request.use((url, options) => {
 
   let modifiedUrl = url
   if (options.method?.toUpperCase() === 'GET') {
-    modifiedUrl = `${url}?t=${+new Date()}`
+    modifiedUrl = `${url}?t=${Date.now()}`
   }
   if (options.headers) {
     if (token) {
-      options.headers['Authorization'] = token
+      options.headers.Authorization = token
     }
 
     options.headers['x-uuid'] = _uuid
@@ -175,15 +175,15 @@ RESTManager.instance.interceptors.request.use((url, options) => {
 interface IRequestHandler<T = RequestOptionsInit> {
   (id?: string): IRequestHandler
   // @ts-ignore
-  get<P = unknown>(options?: T): Promise<P>
+  get: <P = unknown>(options?: T) => Promise<P>
   // @ts-ignore
-  post<P = unknown>(options?: T): Promise<P>
+  post: <P = unknown>(options?: T) => Promise<P>
   // @ts-ignore
-  patch<P = unknown>(options?: T): Promise<P>
+  patch: <P = unknown>(options?: T) => Promise<P>
   // @ts-ignore
-  delete<P = unknown>(options?: T): Promise<P>
+  delete: <P = unknown>(options?: T) => Promise<P>
   // @ts-ignore
-  put<P = unknown>(options?: T): Promise<P>
+  put: <P = unknown>(options?: T) => Promise<P>
   [key: string]: IRequestHandler
 }
 export type Method = 'get' | 'delete' | 'post' | 'put' | 'patch'

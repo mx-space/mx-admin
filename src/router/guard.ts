@@ -1,4 +1,4 @@
-import { API_URL, GATEWAY_URL } from 'constants/env'
+import { API_URL, GATEWAY_URL } from 'node:constants/env'
 import QProgress from 'qier-progress'
 import { removeToken, setToken } from 'utils/auth'
 import { checkIsInit } from 'utils/is-init'
@@ -48,7 +48,7 @@ router.beforeEach(async (to) => {
   if (to.meta.isPublic || to.fullPath.startsWith('/dev')) {
     return
   } else {
-    const now = +new Date()
+    const now = Date.now()
     if (now - lastCheckedLogAt < 1000 * 60 * 5) {
       return
     }

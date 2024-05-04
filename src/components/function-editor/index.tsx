@@ -1,9 +1,9 @@
 import { useAsyncLoadMonaco } from 'hooks/use-async-monaco'
 import { RESTManager } from 'utils'
-import type { PropType, Ref } from 'vue'
 
 import * as typeDefines from './libs/lib.declare'
 import { NodeDeclare } from './libs/node.declare'
+import type { PropType, Ref } from 'vue'
 
 export const FunctionCodeEditor = defineComponent({
   props: {

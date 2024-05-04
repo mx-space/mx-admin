@@ -9,10 +9,9 @@ import { RouteName } from 'router/name'
 import { RESTManager } from 'utils'
 import { computed, defineComponent, onMounted, reactive, toRaw } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { Editor } from '~/components/editor/universal'
 import type { IGithubRepo } from 'external/api/github-repo'
 import type { ProjectModel } from 'models/project'
-
-import { Editor } from '~/components/editor/universal'
 
 type ProjectReactiveType = {
   name: string
@@ -82,10 +81,10 @@ const EditProjectView = defineComponent({
             ),
             text: project.text.trim(),
           }
-        } catch (e) {
-          message.error(e as any)
+        } catch (error) {
+          message.error(error as any)
 
-          throw e
+          throw error
         }
       }
       if (id.value) {
@@ -116,7 +115,7 @@ const EditProjectView = defineComponent({
       const { html_url, homepage, description } = data
 
       const pickImagesFromMarkdown = (text: string) => {
-        const reg = /(?<=!\[.*\]\()(.+)(?=\))/g
+        const reg = /(?<=!\[.*]\()(.+)(?=\))/g
         const images = [] as string[]
         for (const r of text.matchAll(reg)) {
           images.push(r[0])

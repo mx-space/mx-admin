@@ -12,8 +12,6 @@ import {
   useMessage,
 } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
-import type { PropType } from 'vue'
-import type { UserModel } from '../../models/user'
 
 import { showConfetti } from '~/utils/confetti'
 import { checkIsInit } from '~/utils/is-init'
@@ -21,6 +19,8 @@ import { checkIsInit } from '~/utils/is-init'
 import { getToken, removeToken } from '../../utils'
 import { RESTManager } from '../../utils/rest'
 import styles from './index.module.css'
+import type { UserModel } from '../../models/user'
+import type { PropType } from 'vue'
 
 const useDefaultConfigs = () => inject<any>('configs')
 export default defineComponent({
@@ -117,7 +117,7 @@ const Step0 = defineComponent({
       $file.accept = '.zip'
       document.body.append($file)
       $file.click()
-      $file.onchange = () => {
+      $file.addEventListener('change', () => {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const file = $file.files![0]
         const formData = new FormData()
@@ -133,7 +133,7 @@ const Step0 = defineComponent({
               location.reload()
             }, 1000)
           })
-      }
+      })
     }
     return () => (
       <div class="flex justify-center space-x-4 text-center">

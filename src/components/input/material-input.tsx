@@ -29,7 +29,7 @@ export const MaterialInput = defineComponent({
     })
 
     return () => (
-      <div class={[styles['root'], styles['group']]}>
+      <div class={[styles.root, styles.group]}>
         <input
           required
           ref={inputRef}
@@ -37,7 +37,7 @@ export const MaterialInput = defineComponent({
           value={props.value}
           onInput={(e) => props.onChange((e.target as any).value)}
         />
-        <span class={styles['bar']}></span>
+        <span class={styles.bar}></span>
         <label>{props.label}</label>
       </div>
     )

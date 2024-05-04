@@ -135,8 +135,7 @@ const transformFullUrl = (url: string) => {
 
   if (url.startsWith('http')) return url
   else {
-    const protocol =
-      ['localhost', '127.0.0.1'].indexOf(url) > -1 ? 'http' : 'https'
+    const protocol = ['localhost', '127.0.0.1'].includes(url) ? 'http' : 'https'
     return `${protocol}://${url}`
   }
 }

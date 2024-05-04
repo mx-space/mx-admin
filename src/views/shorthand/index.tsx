@@ -17,7 +17,6 @@ import {
   NTimelineItem,
 } from 'naive-ui'
 import { defineComponent, onMounted } from 'vue'
-import type { RecentlyModel } from 'models/recently'
 
 import { Icon } from '@vicons/utils'
 
@@ -25,6 +24,7 @@ import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
 import styles from './index.module.css'
+import type { RecentlyModel } from 'models/recently'
 
 export default defineComponent({
   setup() {

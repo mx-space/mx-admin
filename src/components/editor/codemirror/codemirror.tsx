@@ -64,7 +64,7 @@ export const CodemirrorEditor = defineComponent({
     )
 
     return () => (
-      <div class={[styles['editor'], props.className]} ref={refContainer} />
+      <div class={[styles.editor, props.className]} ref={refContainer} />
     )
   },
 })

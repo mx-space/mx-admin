@@ -1,7 +1,7 @@
 export const JSONSafeParse: typeof JSON.parse = (...rest) => {
   try {
     return JSON.parse(...rest)
-  } catch (e) {
+  } catch {
     return null
   }
 }
@@ -9,7 +9,7 @@ export const JSONSafeParse: typeof JSON.parse = (...rest) => {
 export const JSONParseReturnOriginal: typeof JSON.parse = (...rest) => {
   try {
     return JSON.parse(...rest)
-  } catch (e) {
+  } catch {
     return rest[0]
   }
 }

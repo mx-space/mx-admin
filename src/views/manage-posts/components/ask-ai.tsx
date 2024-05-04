@@ -72,9 +72,9 @@ CONCISE SUMMARY:`,
           max_tokens: 300,
           stream: false,
         })
-        .catch((err) => {
+        .catch((error) => {
           messageIns.destroy()
-          message.error(`AI 生成摘要失败： ${err.message}`)
+          message.error(`AI 生成摘要失败： ${error.message}`)
         })
         .finally(() => {
           isLoading.value = false

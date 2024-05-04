@@ -1,11 +1,10 @@
+import { startAuthentication, startRegistration } from '@simplewebauthn/browser'
+
+import { RESTManager } from './rest'
 import type {
   AuthenticationResponseJSON,
   RegistrationResponseJSON,
 } from '@simplewebauthn/typescript-types'
-
-import { startAuthentication, startRegistration } from '@simplewebauthn/browser'
-
-import { RESTManager } from './rest'
 
 class AuthnUtilsStatic {
   async createPassKey(name: string) {
@@ -74,8 +73,8 @@ class AuthnUtilsStatic {
         message.error('Error: Could not verify authenticator')
       }
       return verificationResp
-    } catch (err: any) {
-      message.error(err.message)
+    } catch (error: any) {
+      message.error(error.message)
     }
   }
 }

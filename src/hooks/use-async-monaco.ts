@@ -2,12 +2,11 @@ import { useDefineMyThemes } from 'components/editor/monaco/use-define-theme'
 import { CenterSpin } from 'components/spin'
 import { AutoTypings, LocalStorageCache } from 'monaco-editor-auto-typings'
 import { UIStore } from 'stores/ui'
-import type { editor, IKeyboardEvent } from 'monaco-editor'
-import type { AutoTypingsCore } from 'monaco-editor-auto-typings/lib/AutoTypingsCore'
-import type { Ref } from 'vue'
-
 import { useSaveConfirm } from './use-save-confirm'
 import { useStoreRef } from './use-store-ref'
+import type { IKeyboardEvent, editor } from 'monaco-editor'
+import type { AutoTypingsCore } from 'monaco-editor-auto-typings/lib/AutoTypingsCore'
+import type { Ref } from 'vue'
 
 export const usePropsValueToRef = <T extends { value: string }>(props: T) => {
   const value = ref(props.value)

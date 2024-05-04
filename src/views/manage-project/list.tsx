@@ -23,11 +23,11 @@ import { RouteName } from 'router/name'
 import { parseDate } from 'utils'
 import { defineComponent, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import type { ProjectModel, ProjectResponse } from 'models/project'
 
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
+import type { ProjectModel, ProjectResponse } from 'models/project'
 
 const ManageProjectView = defineComponent({
   setup() {

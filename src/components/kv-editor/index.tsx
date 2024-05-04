@@ -75,7 +75,7 @@ export const KVEditor = defineComponent({
         onUpdateValue={(e: any[]) => {
           KVArray.value = (() => {
             // FIXME: naive ui will gave a  null value on insert pos
-            const nullIdx = e.findIndex((i) => i === null)
+            const nullIdx = e.indexOf(null)
             if (nullIdx !== -1) {
               e.splice(nullIdx, 1, { key: '', value: '' })
             }

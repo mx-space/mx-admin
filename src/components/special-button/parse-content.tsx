@@ -13,9 +13,8 @@ import {
   NText,
 } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
-import type { PropType } from 'vue'
-
 import { Icon } from '@vicons/utils'
+import type { PropType } from 'vue'
 
 export const ParseContentButton = defineComponent({
   props: {

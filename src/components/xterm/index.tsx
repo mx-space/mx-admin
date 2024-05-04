@@ -1,10 +1,9 @@
 import { useStoreRef } from 'hooks/use-store-ref'
 import { UIStore } from 'stores/ui'
 import { Material, MaterialDark } from 'xterm-theme'
+import { useMountAndUnmount } from '~/hooks/use-lifecycle'
 import type { ITerminalOptions, Terminal } from '@xterm/xterm'
 import type { PropType } from 'vue'
-
-import { useMountAndUnmount } from '~/hooks/use-lifecycle'
 
 import '@xterm/xterm/css/xterm.css'
 

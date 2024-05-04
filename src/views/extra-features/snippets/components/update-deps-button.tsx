@@ -3,9 +3,8 @@ import { UpgradeIcon } from 'components/icons'
 import { getNpmPKGLatest } from 'external/api/npm'
 import { NButton, NCard, NDataTable, NModal } from 'naive-ui'
 import { RESTManager } from 'utils'
-import type { NpmPKGInfo } from 'external/types/npm-pkg'
-
 import { InstallDepsXterm } from './install-dep-xterm'
+import type { NpmPKGInfo } from 'external/types/npm-pkg'
 
 const useFetchDependencyGraph = () => {
   const dependencyGraph = ref<{ dependencies: Record<string, string> }>({

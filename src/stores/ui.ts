@@ -32,7 +32,7 @@ export const useUIStore = defineStore('ui', () => {
 
   onMounted(() => {
     const resizeHandler = debounce(updateViewport, 500, { trailing: true })
-    window.onresize = resizeHandler
+    window.addEventListener('resize', resizeHandler)
     updateViewport()
   })
   const updateViewport = () => {
@@ -68,7 +68,7 @@ export const useUIStore = defineStore('ui', () => {
       viewport.value.w -
       sidebarWidth.value +
       (sidebarCollapse.value
-        ? parseInt(
+        ? Number.parseInt(
             getComputedStyle(document.documentElement).getPropertyValue(
               '--sidebar-collapse-width',
             ),
@@ -79,7 +79,7 @@ export const useUIStore = defineStore('ui', () => {
   const contentInsetWidth = computed(
     () =>
       contentWidth.value -
-      parseInt(getComputedStyle(document.documentElement).fontSize) * 6,
+      Number.parseInt(getComputedStyle(document.documentElement).fontSize) * 6,
   )
 
   watch(

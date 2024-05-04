@@ -1,3 +1,5 @@
+import { WEB_URL } from 'node:constants/env'
+import { MOOD_SET, WEATHER_SET } from 'node:constants/note'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { TextBaseDrawer } from 'components/drawer/text-base-drawer'
 import { SlidersHIcon, TelegramPlaneIcon } from 'components/icons'
@@ -5,8 +7,6 @@ import { MaterialInput } from 'components/input/material-input'
 import { GetLocationButton } from 'components/location/get-location-button'
 import { SearchLocationButton } from 'components/location/search-button'
 import { ParseContentButton } from 'components/special-button/parse-content'
-import { WEB_URL } from 'constants/env'
-import { MOOD_SET, WEATHER_SET } from 'constants/note'
 import { add } from 'date-fns'
 import { useAutoSave, useAutoSaveInEditor } from 'hooks/use-auto-save'
 import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
@@ -37,17 +37,15 @@ import {
   watch,
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { PaginateResult } from '@mx-space/api-client'
-import type { Coordinate, NoteModel } from 'models/note'
-import type { TopicModel } from 'models/topic'
-import type { WriteBaseType } from 'shared/types/base'
-
 import { Icon } from '@vicons/utils'
-
 import { AiHelperButton } from '~/components/ai/ai-helper'
 import { Editor } from '~/components/editor/universal'
 import { HeaderPreviewButton } from '~/components/special-button/preview'
 import { EmitKeyMap } from '~/constants/keys'
+import type { PaginateResult } from '@mx-space/api-client'
+import type { Coordinate, NoteModel } from 'models/note'
+import type { TopicModel } from 'models/topic'
+import type { WriteBaseType } from 'shared/types/base'
 
 const CrossBellConnectorIndirector = defineAsyncComponent({
   loader: () =>
@@ -205,7 +203,7 @@ const NoteWriteView = defineComponent(() => {
         publicAt: data.publicAt
           ? (() => {
               const date = new Date(data.publicAt)
-              if (+date - +new Date() <= 0) {
+              if (+date - Date.now() <= 0) {
                 return null
               } else {
                 return date
@@ -446,7 +444,7 @@ const NoteWriteView = defineComponent(() => {
         <NFormItem label="公开时间" labelAlign="right" labelPlacement="left">
           <NDatePicker
             type="datetime"
-            isDateDisabled={(ts: number) => +new Date(ts) - +new Date() < 0}
+            isDateDisabled={(ts: number) => +new Date(ts) - Date.now() < 0}
             placeholder="选择时间"
             clearable
             value={data.publicAt ? +new Date(data.publicAt) : undefined}

@@ -120,7 +120,7 @@ export const ImageDetailSection = defineComponent({
               const $image = new Image()
               $image.src = item.src
               $image.crossOrigin = 'Anonymous'
-              $image.onload = () => {
+              $image.addEventListener('load', () => {
                 resolve({
                   width: $image.naturalWidth,
                   height: $image.naturalHeight,
@@ -128,7 +128,7 @@ export const ImageDetailSection = defineComponent({
                   type: ext,
                   accent: getDominantColor($image),
                 })
-              }
+              })
               $image.onerror = (err) => {
                 reject({
                   err,

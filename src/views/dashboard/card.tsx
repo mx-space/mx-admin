@@ -1,9 +1,9 @@
 import { NBadge, NButton, NCard, NSpace, NThing } from 'naive-ui'
-import type { PropType, VNode } from 'vue'
 
 import { Icon } from '@vicons/utils'
 
 import { Statistic } from './statistic'
+import type { PropType, VNode } from 'vue'
 
 export interface CardProps {
   label: string

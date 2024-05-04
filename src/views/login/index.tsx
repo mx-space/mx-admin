@@ -2,7 +2,6 @@ import { NButton, useMessage } from 'naive-ui'
 import useSWRV from 'swrv'
 import { defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { UserModel } from '../../models/user'
 
 import ParallaxButton from '~/components/button/parallax-button.vue'
 import { PassKeyOutlineIcon } from '~/components/icons'
@@ -14,6 +13,7 @@ import { useUserStore } from '../../stores/user'
 import { checkIsInit } from '../../utils/is-init'
 import { RESTManager } from '../../utils/rest'
 import styles from './index.module.css'
+import type { UserModel } from '../../models/user'
 
 export const LoginView = defineComponent({
   setup() {
@@ -38,9 +38,9 @@ export const LoginView = defineComponent({
       if (!inputRef.value) return
       inputRef.value.focus()
 
-      document.onkeydown = (e) => {
+      document.addEventListener('keydown', (e) => {
         inputRef.value.focus()
-      }
+      })
 
       onBeforeUnmount(() => {
         document.onkeydown = null
@@ -107,7 +107,7 @@ export const LoginView = defineComponent({
         if (res.token) {
           postSuccessfulLogin(res.token)
         }
-      } catch (e) {
+      } catch {
         toast.error('登录失败')
       }
     }
@@ -118,7 +118,7 @@ export const LoginView = defineComponent({
         settings.value?.password === true
 
       return (
-        <div class={styles['r']}>
+        <div class={styles.r}>
           <div class="wrapper">
             <Avatar src={user.value?.avatar} size={80} />
 

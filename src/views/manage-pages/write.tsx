@@ -1,10 +1,10 @@
+import { WEB_URL } from 'node:constants/env'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { TextBaseDrawer } from 'components/drawer/text-base-drawer'
 import { SlidersHIcon, TelegramPlaneIcon } from 'components/icons'
 import { MaterialInput } from 'components/input/material-input'
 import { UnderlineInput } from 'components/input/underline-input'
 import { ParseContentButton } from 'components/special-button/parse-content'
-import { WEB_URL } from 'constants/env'
 import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
 import { ContentLayout } from 'layouts/content'
 import { isString } from 'lodash-es'
@@ -13,14 +13,13 @@ import { RouteName } from 'router/name'
 import { RESTManager } from 'utils/rest'
 import { computed, defineComponent, onMounted, reactive, ref, toRaw } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { PageModel } from 'models/page'
-import type { WriteBaseType } from 'shared/types/base'
-
 import { Icon } from '@vicons/utils'
 
 import { Editor } from '~/components/editor/universal'
 import { HeaderPreviewButton } from '~/components/special-button/preview'
 import { EmitKeyMap } from '~/constants/keys'
+import type { WriteBaseType } from 'shared/types/base'
+import type { PageModel } from 'models/page'
 
 type PageReactiveType = WriteBaseType & {
   subtitle: string
@@ -78,10 +77,10 @@ const PageWriteView = defineComponent(() => {
           title: data.title.trim(),
           slug: data.slug.trim(),
         }
-      } catch (e) {
-        message.error(e as any)
+      } catch (error) {
+        message.error(error as any)
 
-        throw e
+        throw error
       }
     }
     if (id.value) {

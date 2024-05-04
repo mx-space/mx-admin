@@ -11,9 +11,8 @@ import {
   ref,
 } from 'vue'
 import { useRouter } from 'vue-router'
-import type { PropType, VNode } from 'vue'
-
 import styles from './index.module.css'
+import type { PropType, VNode } from 'vue'
 
 const ProvideKey = Symbol('inject')
 
@@ -108,7 +107,7 @@ export const ContentLayout = defineComponent({
     )
 
     const pageTitle = computed(
-      () => props.title ?? route.value.value.matched.slice(-1)[0].meta.title,
+      () => props.title ?? route.value.value.matched.at(-1).meta.title,
     )
 
     const descriptionElement = computed(() => {
@@ -140,7 +139,7 @@ export const ContentLayout = defineComponent({
       setup() {
         return () => {
           return (
-            <footer class={styles['buttons']}>
+            <footer class={styles.buttons}>
               {footerExtraButtonEl.value
                 ? footerExtraButtonEl.value.map((E) => (
                     <E key={E.displayName$} />
@@ -159,9 +158,9 @@ export const ContentLayout = defineComponent({
           class={[styles['sticky-header'], props.headerClass]}
           embedded
         >
-          <header class={styles['header']}>
+          <header class={styles.header}>
             <div class={'flex flex-col'}>
-              <h1 class={styles['title']}>{pageTitle.value}</h1>
+              <h1 class={styles.title}>{pageTitle.value}</h1>
               {descriptionElement.value && (
                 <h2 class={'opacity-80'}>{descriptionElement.value}</h2>
               )}
@@ -169,7 +168,7 @@ export const ContentLayout = defineComponent({
             <HeaderActionComponent />
           </header>
         </NLayoutContent>
-        <main class={styles['main']}>{slots.default?.()}</main>
+        <main class={styles.main}>{slots.default?.()}</main>
         <Footer />
       </>
     )

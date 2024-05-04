@@ -1,3 +1,5 @@
+import { WEB_URL } from 'node:constants/env'
+import { KAOMOJI_LIST } from 'node:constants/kaomoji'
 import { HeaderActionButton } from 'components/button/rounded-button'
 import {
   CheckmarkSharpIcon,
@@ -8,8 +10,6 @@ import {
 } from 'components/icons'
 import { IpInfoPopover } from 'components/ip-info'
 import { Table } from 'components/table'
-import { WEB_URL } from 'constants/env'
-import { KAOMOJI_LIST } from 'constants/kaomoji'
 import { useStoreRef } from 'hooks/use-store-ref'
 import { useDataTableFetch } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
@@ -38,12 +38,10 @@ import { RESTManager } from 'utils/rest'
 import { relativeTimeFromNow } from 'utils/time'
 import { defineComponent, nextTick, reactive, ref, unref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { Icon } from '@vicons/utils'
+import { CommentMarkdownRender } from './markdown-render'
 import type { CommentModel, CommentsResponse } from 'models/comment'
 import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
-
-import { Icon } from '@vicons/utils'
-
-import { CommentMarkdownRender } from './markdown-render'
 
 enum CommentType {
   Pending,
@@ -513,9 +511,9 @@ const ManageComment = defineComponent(() => {
                                     const end = $ta.selectionEnd as number
                                     const escapeKaomoji =
                                       markdownEscape(kaomoji)
-                                    $ta.value = `${$ta.value.substring(
+                                    $ta.value = `${$ta.value.slice(
                                       0,
-                                      start,
+                                      Math.max(0, start),
                                     )} ${escapeKaomoji} ${$ta.value.substring(
                                       end,
                                       $ta.value.length,

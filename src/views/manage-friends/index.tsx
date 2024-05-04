@@ -27,11 +27,11 @@ import { RouteName } from 'router/name'
 import { RESTManager } from 'utils'
 import { defineComponent, onBeforeMount, ref, toRaw, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { LinkModel, LinkResponse, LinkStateCount } from 'models/link'
 
 import { Avatar } from './components/avatar'
 import { LinkAuditModal } from './components/reason-modal'
 import { UrlComponent } from './url-components'
+import type { LinkModel, LinkResponse, LinkStateCount } from 'models/link'
 
 export default defineComponent({
   setup() {
@@ -158,8 +158,8 @@ export default defineComponent({
           return { ...acc, [k.toLowerCase()]: v }
         }, {})
         message.success('检查完成')
-      } catch (err) {
-        console.error(err)
+      } catch (error) {
+        console.error(error)
       } finally {
         requestAnimationFrame(() => {
           l.destroy()

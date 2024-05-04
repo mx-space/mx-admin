@@ -1,5 +1,5 @@
 <script lang="ts">
-import { bgUrl } from 'constants/env'
+import { bgUrl } from 'node:constants/env'
 
 export default defineComponent({
   setup() {
@@ -8,9 +8,9 @@ export default defineComponent({
     onMounted(() => {
       const $$ = new Image()
       $$.src = bgUrl
-      $$.onload = (e) => {
+      $$.addEventListener('load', (e) => {
         loaded.value = true
-      }
+      })
     })
 
     return {

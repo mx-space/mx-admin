@@ -1,25 +1,23 @@
 import { PortalInjectKey } from 'hooks/use-portal-element'
 import {
-  darkTheme,
-  dateZhCN,
-  lightTheme,
   NConfigProvider,
   NDialogProvider,
   NMessageProvider,
   NNotificationProvider,
+  darkTheme,
+  dateZhCN,
+  lightTheme,
   useDialog,
   useMessage,
   useNotification,
   zhCN,
 } from 'naive-ui'
-import { RouteName } from 'router/name'
 import { defineComponent, onMounted } from 'vue'
-import { RouterView, useRouter } from 'vue-router'
-import type { VNode } from 'vue'
+import { RouterView } from 'vue-router'
 
 import { ThemeColorConfig } from '../theme.config'
 import { useUIStore } from './stores/ui'
-import { useUserStore } from './stores/user'
+import type { VNode } from 'vue'
 
 const Root = defineComponent({
   name: 'RootView',

@@ -1,9 +1,9 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import type { UserModel } from '../models/user'
 
 import { getToken, setToken } from '../utils/auth'
 import { RESTManager } from '../utils/rest'
+import type { UserModel } from '../models/user'
 
 let tokenIsUpstream = false
 
@@ -32,8 +32,8 @@ export const useUserStore = defineStore('user', () => {
       try {
         const $user = await RESTManager.api.master.get<UserModel>()
         user.value = $user
-      } catch (e: any) {
-        if (e.data?.message == '没有完成初始化！') {
+      } catch (error: any) {
+        if (error.data?.message == '没有完成初始化！') {
           router.replace('/setup')
         }
       }

@@ -1,10 +1,3 @@
-<template>
-  <div class="avatar" :style="{ height: `${size}px`, width: `${size}px` }">
-    <img :src="src" alt="" :style="{ display: loaded ? '' : 'none' }" />
-    <div class="sr-only">一个头像</div>
-  </div>
-</template>
-
 <script lang="ts">
 import { defineComponent, onMounted, ref, watch } from 'vue'
 
@@ -29,9 +22,9 @@ export default defineComponent({
       const $$ = new Image()
       $$.src = props.src
 
-      $$.onload = (e) => {
+      $$.addEventListener('load', (e) => {
         loaded.value = true
-      }
+      })
     }
     onMounted(() => {
       preloadImage()
@@ -50,6 +43,13 @@ export default defineComponent({
   },
 })
 </script>
+
+<template>
+  <div class="avatar" :style="{ height: `${size}px`, width: `${size}px` }">
+    <img :src="src" alt="" :style="{ display: loaded ? '' : 'none' }" />
+    <div class="sr-only">一个头像</div>
+  </div>
+</template>
 
 <style lang="postcss">
 .avatar {

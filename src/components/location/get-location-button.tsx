@@ -2,10 +2,9 @@ import { LocationIcon } from 'components/icons'
 import { NButton, useMessage } from 'naive-ui'
 import { RESTManager } from 'utils/rest'
 import { defineComponent, ref } from 'vue'
+import { Icon } from '@vicons/utils'
 import type { Amap, Regeocode } from 'models/amap'
 import type { PropType } from 'vue'
-
-import { Icon } from '@vicons/utils'
 
 export const GetLocationButton = defineComponent({
   props: {
@@ -54,10 +53,10 @@ export const GetLocationButton = defineComponent({
             })
 
           props.onChange(res.regeocode, coo)
-        } catch (e: any) {
-          console.error(e)
+        } catch (error: any) {
+          console.error(error)
 
-          if (e.code == 2) {
+          if (error.code == 2) {
             message.error('获取定位失败，连接超时')
           } else {
             message.error('定位权限未打开')

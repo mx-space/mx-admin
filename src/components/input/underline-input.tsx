@@ -10,7 +10,7 @@ export const UnderlineInput = defineComponent({
       <div
         class={[
           props.autoShrink ? 'min-w-[2rem]' : 'min-w-[120px]',
-          styles['root'],
+          styles.root,
         ]}
       >
         <input

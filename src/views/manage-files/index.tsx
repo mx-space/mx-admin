@@ -17,7 +17,7 @@ import {
   NUpload,
   NUploadDragger,
 } from 'naive-ui'
-import { getToken, RESTManager } from 'utils'
+import { RESTManager, getToken } from 'utils'
 import { defineComponent } from 'vue'
 import type { UploadFileInfo } from 'naive-ui'
 

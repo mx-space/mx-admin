@@ -44,7 +44,7 @@ export const useAutoSave = (
       title,
     } as SaveDto)
 
-    console.log('saved data: ', storage)
+    console.log('saved data:', storage)
   }
 
   function disposer() {
@@ -81,7 +81,7 @@ export const useAutoSaveInEditor = <T extends { text: string; title: string }>(
   const check = async () => {
     const prevSaved = getPrevSaved()
 
-    console.log('prev saved: ', prevSaved)
+    console.log('prev saved:', prevSaved)
 
     if (
       (prevSaved.text || prevSaved.title) &&

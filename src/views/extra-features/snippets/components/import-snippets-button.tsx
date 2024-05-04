@@ -17,10 +17,9 @@ import {
 } from 'naive-ui'
 import { basename, extname } from 'path-browserify'
 import { RESTManager } from 'utils'
+import { InstallDepsXterm } from './install-dep-xterm'
 import type { SnippetModel } from 'models/snippet'
 import type { PropType } from 'vue'
-
-import { InstallDepsXterm } from './install-dep-xterm'
 
 type SnippetList = {
   name: string

@@ -6,12 +6,12 @@ import { useDataTableFetch } from 'hooks/use-table'
 import { NButton, NPopconfirm, NSpace, useDialog, useMessage } from 'naive-ui'
 import { defineComponent, onMounted, reactive, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
-import type { SayResponse } from 'models/say'
-import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
+import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
+import type { SayResponse } from 'models/say'
 
 const ManageSayListView = defineComponent({
   name: 'SayList',

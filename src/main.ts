@@ -48,7 +48,7 @@ declare global {
 JSON.safeParse = (...rest) => {
   try {
     return JSON.parse(...rest)
-  } catch (error) {
+  } catch {
     return null
   }
 }

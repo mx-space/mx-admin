@@ -3,6 +3,7 @@ import { NDataTable } from 'naive-ui'
 import { UIStore } from 'stores/ui'
 import { defineComponent, reactive, ref, watch } from 'vue'
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
+import styles from './index.module.css'
 import type { Pager } from 'models/base'
 import type dataTableProps from 'naive-ui/lib/data-table/src/DataTable'
 import type {
@@ -12,8 +13,6 @@ import type {
 } from 'naive-ui/lib/data-table/src/interface'
 import type { PropType, Ref } from 'vue'
 import type { LocationQueryValue } from 'vue-router'
-
-import styles from './index.module.css'
 
 export const tableRowStyle = styles['table-row']
 

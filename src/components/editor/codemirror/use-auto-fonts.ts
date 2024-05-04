@@ -1,10 +1,9 @@
-import type { EditorView } from '@codemirror/view'
-
 import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
 import { tags } from '@lezer/highlight'
 
 import { useEditorConfig } from '../universal/use-editor-setting'
 import { codemirrorReconfigureExtensionMap } from './extension'
+import type { EditorView } from '@codemirror/view'
 
 export const monospaceFonts = `"OperatorMonoSSmLig Nerd Font","Cascadia Code PL","FantasqueSansMono Nerd Font","operator mono","Fira code Retina","Fira code","Consolas", Monaco, "Hannotate SC", monospace, -apple-system`
 

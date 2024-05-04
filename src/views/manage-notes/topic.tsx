@@ -15,13 +15,13 @@ import {
 import { RESTManager } from 'utils'
 import { textToBigCharOrWord } from 'utils/word'
 import { useRoute, useRouter } from 'vue-router'
-import type { PaginateResult } from '@mx-space/api-client'
-import type { TopicModel } from 'models/topic'
 
 import { Icon } from '@vicons/utils'
 
 import { TopicDetail } from './components/topic-detail'
 import { TopicEditModal } from './components/topic-modal'
+import type { TopicModel } from 'models/topic'
+import type { PaginateResult } from '@mx-space/api-client'
 
 export default defineComponent({
   setup() {
@@ -45,7 +45,10 @@ export default defineComponent({
       pager: pagination,
     } = useDataTableFetch<TopicModel>(
       (topics, pagination) =>
-        async (page = parseInt(route.query.page as any) || 1, size = 20) => {
+        async (
+          page = Number.parseInt(route.query.page as any) || 1,
+          size = 20,
+        ) => {
           const res = await RESTManager.api.topics.get<
             PaginateResult<TopicModel>
           >({

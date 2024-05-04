@@ -2,6 +2,7 @@ import { add } from 'date-fns'
 import { NButton, NDataTable, NDatePicker, NSpace } from 'naive-ui'
 import useSWRV from 'swrv'
 import { defineComponent, ref } from 'vue'
+import { RESTManager } from '~/utils'
 import type {
   NoteModel,
   PageModel,
@@ -9,11 +10,9 @@ import type {
   RecentlyModel,
 } from '@mx-space/api-client'
 
-import { RESTManager } from '~/utils'
-
 export const ReadingRank = defineComponent({
   setup() {
-    const dateRange = ref([+add(new Date(), { days: -7 }), +new Date()] as [
+    const dateRange = ref([+add(new Date(), { days: -7 }), Date.now()] as [
       number,
       number,
     ])

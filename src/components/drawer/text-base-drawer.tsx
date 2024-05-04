@@ -21,12 +21,11 @@ import {
   NTooltip,
 } from 'naive-ui'
 import { JSONParseReturnOriginal } from 'utils/json'
+import { ImageDetailSection } from './components/image-detail-section'
+import { JSONEditor } from './components/json-editor'
 import type { Image } from '@mx-space/api-client'
 import type { SelectOption } from 'naive-ui'
 import type { PropType } from 'vue'
-
-import { ImageDetailSection } from './components/image-detail-section'
-import { JSONEditor } from './components/json-editor'
 
 type ItemType = 'date-picker'
 export const TextBaseDrawer = defineComponent({
@@ -237,8 +236,8 @@ export const TextBaseDrawer = defineComponent({
                 props.data.meta = parsed
 
                 showJSONEditorModal.value = false
-              } catch (er: any) {
-                message.error(er.message)
+              } catch (error: any) {
+                message.error(error.message)
               }
             }}
           />

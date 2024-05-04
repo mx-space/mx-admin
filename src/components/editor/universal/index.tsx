@@ -12,14 +12,13 @@ import { Icon } from '@vicons/utils'
 
 import { useMountAndUnmount } from '~/hooks/use-lifecycle'
 
+import { CodemirrorEditor } from '../codemirror/codemirror'
 import { editorBaseProps } from './props'
 
 import './index.css'
 
-import type { EditorRef } from './types'
-
-import { CodemirrorEditor } from '../codemirror/codemirror'
 import { useEditorConfig } from './use-editor-setting'
+import type { EditorRef } from './types'
 
 export const Editor = defineComponent({
   name: 'EditorX',

@@ -13,7 +13,7 @@ import {
   NUpload,
   useMessage,
 } from 'naive-ui'
-import { responseBlobToFile, RESTManager } from 'utils'
+import { RESTManager, responseBlobToFile } from 'utils'
 import { ParseMarkdownYAML } from 'utils/markdown-parser'
 import { defineComponent, ref, watch } from 'vue'
 import type { FileInfo } from 'naive-ui/lib/upload/src/interface'
@@ -91,10 +91,10 @@ export default defineComponent(() => {
             return
           }
           const reader = new FileReader()
-          reader.onload = (e) => {
+          reader.addEventListener('load', (e) => {
             // console.log(e.target?.result)
             resolve((e.target?.result as string) || '')
-          }
+          })
           reader.readAsText(file)
         }),
       )

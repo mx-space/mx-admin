@@ -1,10 +1,10 @@
+import { WEB_URL } from 'node:constants/env'
 import {
   LogoutIcon,
   MoonIcon,
   SidebarCloseIcon,
   SunIcon,
 } from 'components/icons'
-import { WEB_URL } from 'constants/env'
 import { NIcon, NLayoutContent } from 'naive-ui'
 import { RouteName } from 'router/name'
 import { AppStore } from 'stores/app'
@@ -12,8 +12,6 @@ import { UIStore } from 'stores/ui'
 import { RESTManager } from 'utils'
 import { computed, defineComponent, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import type { PropType } from 'vue'
-import type { MenuModel } from '../../utils/build-menus'
 
 import { Icon } from '@vicons/utils'
 import { onClickOutside } from '@vueuse/core'
@@ -25,6 +23,8 @@ import { buildMenuModel, buildMenus } from '../../utils/build-menus'
 import { Avatar } from '../avatar'
 import { useSidebarStatusInjection } from './hooks'
 import styles from './index.module.css'
+import type { MenuModel } from '../../utils/build-menus'
+import type { PropType } from 'vue'
 
 export const Sidebar = defineComponent({
   name: 'SideBar',
@@ -114,8 +114,8 @@ export const Sidebar = defineComponent({
       return (
         <div
           class={[
-            styles['root'],
-            props.collapse ? styles['collapse'] : null,
+            styles.root,
+            props.collapse ? styles.collapse : null,
 
             styles[statusRef.value],
           ]}
@@ -125,7 +125,7 @@ export const Sidebar = defineComponent({
           onTransitionend={onTransitionEnd}
           ref={sidebarRef}
         >
-          <div class={styles['sidebar']}>
+          <div class={styles.sidebar}>
             <div
               class={
                 'relative h-20 flex-shrink-0 text-center text-2xl font-medium'
@@ -158,18 +158,18 @@ export const Sidebar = defineComponent({
               </button>
             </div>
 
-            <NLayoutContent class={styles['menu']} nativeScrollbar={false}>
-              <div class={styles['items']}>
+            <NLayoutContent class={styles.menu} nativeScrollbar={false}>
+              <div class={styles.items}>
                 {menus.value.map((item, index) => {
                   return (
                     <div
                       class={[
                         route.value.fullPath === item.fullPath ||
                         route.value.fullPath.startsWith(item.fullPath)
-                          ? styles['active']
+                          ? styles.active
                           : '',
 
-                        styles['item'],
+                        styles.item,
                       ]}
                       data-path={item.fullPath}
                     >
@@ -195,7 +195,7 @@ export const Sidebar = defineComponent({
                           class={[
                             'overflow-hidden',
                             item.subItems.length ? styles['has-child'] : '',
-                            indexRef.value === index ? styles['expand'] : '',
+                            indexRef.value === index ? styles.expand : '',
                           ]}
                           style={{
                             maxHeight:
@@ -213,9 +213,9 @@ export const Sidebar = defineComponent({
                                   route.value.fullPath.startsWith(
                                     child.fullPath,
                                   )
-                                    ? styles['active']
+                                    ? styles.active
                                     : '',
-                                  styles['item'],
+                                  styles.item,
                                 ]}
                               >
                                 <MenuItem

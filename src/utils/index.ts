@@ -37,10 +37,8 @@ export const shallowDiff = <T extends KV>(
           diff[key] = insideObject
         }
       })
-    } else {
-      if (newObject[key] !== origin[key]) {
-        diff[key] = newObject[key]
-      }
+    } else if (newObject[key] !== origin[key]) {
+      diff[key] = newObject[key]
     }
   }
 
@@ -72,15 +70,15 @@ export function responseBlobToFile(response: any, filename: string): void {
   const link = document.createElement('a')
   link.href = url
   link.setAttribute('download', filename)
-  document.body.appendChild(link)
+  document.body.append(link)
   link.click()
 }
 
 export function toPascalCase(string: string) {
   return `${string}`
-    .replace(new RegExp(/[-_]+/, 'g'), ' ')
-    .replace(new RegExp(/[^\w\s]/, 'g'), '')
-    .replace(
+    .replaceAll(new RegExp(/[_-]+/, 'g'), ' ')
+    .replaceAll(new RegExp(/[^\s\w]/, 'g'), '')
+    .replaceAll(
       new RegExp(/\s+(.)(\w*)/, 'g'),
       ($1, $2, $3) => `${$2.toUpperCase() + $3.toLowerCase()}`,
     )
@@ -88,7 +86,7 @@ export function toPascalCase(string: string) {
 }
 
 export function uuid() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replaceAll(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0,
       v = c == 'x' ? r : (r & 0x3) | 0x8
     return v.toString(16)

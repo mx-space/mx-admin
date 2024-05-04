@@ -1,11 +1,10 @@
-import { createContract, Indexer } from 'crossbell.js'
+import { Indexer, createContract } from 'crossbell.js'
 import Unidata from 'unidata.js'
 import { RESTManager } from 'utils'
+import { showConfetti } from '~/utils/confetti'
 import type { Contract } from 'crossbell.js'
 import type { NoteModel } from 'models/note'
 import type { PostModel } from 'models/post'
-
-import { showConfetti } from '~/utils/confetti'
 
 const unidata = new Unidata()
 
@@ -177,11 +176,11 @@ export class CrossBellConnector {
           )
         }
 
-        await post().catch((err) => {
-          console.error(err)
+        await post().catch((error) => {
+          console.error(error)
           message.error('xLog 发布失败')
 
-          throw err
+          throw error
         })
 
         message.success('xLog 发布成功')

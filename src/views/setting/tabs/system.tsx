@@ -5,7 +5,7 @@ import { useStoreRef } from 'hooks/use-store-ref'
 import { useLayout } from 'layouts/content'
 import { camelCase, cloneDeep, isEmpty, merge } from 'lodash-es'
 import { UIStore } from 'stores/ui'
-import { deepDiff, RESTManager } from 'utils'
+import { RESTManager, deepDiff } from 'utils'
 import {
   defineComponent,
   onBeforeUnmount,

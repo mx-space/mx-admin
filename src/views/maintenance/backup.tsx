@@ -9,7 +9,7 @@ import { Table } from 'components/table'
 import { useDataTableFetch } from 'hooks/use-table'
 import { ContentLayout } from 'layouts/content'
 import { NButton, NPopconfirm, NSpace } from 'naive-ui'
-import { responseBlobToFile, RESTManager } from 'utils'
+import { RESTManager, responseBlobToFile } from 'utils'
 import { defineComponent, onBeforeMount } from 'vue'
 
 export default defineComponent(() => {
@@ -46,7 +46,7 @@ export default defineComponent(() => {
     $file.accept = '.zip'
     document.body.append($file)
     $file.click()
-    $file.onchange = () => {
+    $file.addEventListener('change', () => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const file = $file.files![0]
       const formData = new FormData()
@@ -62,7 +62,7 @@ export default defineComponent(() => {
             location.reload()
           }, 1000)
         })
-    }
+    })
   }
   const handleDelete = async (filename: string | string[]) => {
     let files = ''

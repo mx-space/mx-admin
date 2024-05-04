@@ -27,8 +27,8 @@ export const checkIsInit = async (): Promise<boolean> => {
           })
       ).isInit === true
     )
-  } catch (e) {
-    console.error(e)
+  } catch (error) {
+    console.error(error)
     return false
   }
 }

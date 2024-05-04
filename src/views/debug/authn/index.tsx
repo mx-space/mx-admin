@@ -1,12 +1,12 @@
 import { NButton } from 'naive-ui'
-import type {
-  AuthenticationResponseJSON,
-  RegistrationResponseJSON,
-} from '@simplewebauthn/typescript-types'
 
 import { startAuthentication, startRegistration } from '@simplewebauthn/browser'
 
 import { RESTManager } from '~/utils'
+import type {
+  AuthenticationResponseJSON,
+  RegistrationResponseJSON,
+} from '@simplewebauthn/typescript-types'
 
 export default defineComponent({
   setup() {
@@ -79,8 +79,8 @@ export default defineComponent({
                 } else {
                   message.error('Error: Could not verify authenticator')
                 }
-              } catch (err: any) {
-                message.error(err.message)
+              } catch (error: any) {
+                message.error(error.message)
               }
             }}
           >

@@ -34,7 +34,6 @@ import {
 } from 'components/icons'
 import $RouterView from 'layouts/router-view'
 import { DashBoardView } from 'views/dashboard'
-import type { RouteRecordRaw } from 'vue-router'
 
 import { AppLayout } from '~/layouts/app-layout'
 import { ManagePostListView } from '~/views/manage-posts/list'
@@ -46,6 +45,7 @@ import { ManageNoteListView } from '../views/manage-notes/list'
 import ManageNoteWrite from '../views/manage-notes/write'
 import ManagePostsWrite from '../views/manage-posts/write'
 import { RouteName } from './name'
+import type { RouteRecordRaw } from 'vue-router'
 
 export const routeForMenu: Array<RouteRecordRaw> = [
   {
@@ -471,7 +471,7 @@ export const routes: RouteRecordRaw[] = [
           ([path, comp]) => ({
             path: path
               .split('/')
-              .slice(-1)[0]
+              .at(-1)
               .replace(/\.[jt]sx$/, ''),
             component: comp,
           }),

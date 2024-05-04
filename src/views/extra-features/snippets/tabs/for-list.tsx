@@ -16,9 +16,6 @@ import {
 import { RESTManager } from 'utils'
 import { getToken } from 'utils/auth'
 import { useRoute, useRouter } from 'vue-router'
-import type { MenuMixedOption } from 'naive-ui/es/menu/src/interface'
-import type { SnippetModel } from '../../../../models/snippet'
-import type { SnippetGroup } from '../interfaces/snippet-group'
 
 import { Icon } from '@vicons/utils'
 
@@ -27,6 +24,9 @@ import { useMountAndUnmount } from '~/hooks/use-lifecycle'
 import { SnippetType } from '../../../../models/snippet'
 import { ImportSnippetButton } from '../components/import-snippets-button'
 import { UpdateDependencyButton } from '../components/update-deps-button'
+import type { SnippetGroup } from '../interfaces/snippet-group'
+import type { SnippetModel } from '../../../../models/snippet'
+import type { MenuMixedOption } from 'naive-ui/es/menu/src/interface'
 
 const useFetchReferenceNames = () => {
   const referenceNames = ref<SnippetGroup[]>([])

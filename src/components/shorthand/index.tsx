@@ -46,8 +46,8 @@ export const useShorthand = () => {
                         dialog.destroy()
                         resolve(res)
                       })
-                      .catch((err) => {
-                        reject(err)
+                      .catch((error) => {
+                        reject(error)
                       })
                   }}
                 >

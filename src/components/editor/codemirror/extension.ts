@@ -1,9 +1,7 @@
-import type { Extension } from '@codemirror/state'
-
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown'
 import { languages } from '@codemirror/language-data'
 import { Compartment } from '@codemirror/state'
-import { oneDark } from '@codemirror/theme-one-dark'
+import type { Extension } from '@codemirror/state'
 
 const extensionMap = {
   theme: new Compartment(),

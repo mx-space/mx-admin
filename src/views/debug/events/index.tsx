@@ -12,11 +12,11 @@ const generateFakeData = (type: string) => {
     case 'objectId':
       return ((m = Math, d = Date, h = 16, s = (s) => m.floor(s).toString(h)) =>
         s(d.now() / 1000) +
-        ' '.repeat(h).replace(/./g, () => s(m.random() * h)))()
+        ' '.repeat(h).replaceAll(/./g, () => s(m.random() * h)))()
     case 'now':
       return new Date().toISOString()
     case 'randomtext':
-      return btoa(Math.random().toString()).substring(10, 5)
+      return btoa(Math.random().toString()).slice(5, 10)
     case 'randomnumber':
       return Math.floor(Math.random() * 10000)
     default:
@@ -63,7 +63,7 @@ export default defineComponent({
     const handleSend = async () => {
       const replaceText =
         payload.value[event.value]?.replace(
-          /(\{\{(.*?)\}\})/g,
+          /({{(.*?)}})/g,
           // @ts-ignore
           (match, p1, p2) => {
             return generateFakeData(p2)

@@ -1,10 +1,9 @@
-import type { Extension } from '@codemirror/state'
-
 import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
 import { EditorView } from '@codemirror/view'
 import { tags } from '@lezer/highlight'
 
 import { monospaceFonts } from './use-auto-fonts'
+import type { Extension } from '@codemirror/state'
 
 export const syntaxHighlightingStyle = HighlightStyle.define([
   {

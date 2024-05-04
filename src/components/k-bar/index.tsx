@@ -1,16 +1,15 @@
 import { useRouter } from 'vue-router'
-import type { Action } from '@bytebase/vue-kbar'
-
 import {
-  createAction,
   KBarAnimator,
   KBarPortal,
   KBarPositioner,
   KBarProvider,
   KBarResults,
   KBarSearch,
+  createAction,
   useKBarMatches,
 } from '@bytebase/vue-kbar'
+import type { Action } from '@bytebase/vue-kbar'
 
 export const KBarWrapper = defineComponent({
   setup(props, { slots }) {

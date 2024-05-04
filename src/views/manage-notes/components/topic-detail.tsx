@@ -26,13 +26,11 @@ import { RESTManager } from 'utils'
 import { buildMarkdownRenderUrl } from 'utils/endpoint'
 import { textToBigCharOrWord } from 'utils/word'
 import { useRouter } from 'vue-router'
+import { Icon as NIcon } from '@vicons/utils'
+import { useMemoNoteList } from '../hooks/use-memo-note-list'
 import type { NoteModel, Pager, PaginateResult } from '@mx-space/api-client'
 import type { TopicModel } from 'models/topic'
 import type { PropType } from 'vue'
-
-import { Icon as NIcon } from '@vicons/utils'
-
-import { useMemoNoteList } from '../hooks/use-memo-note-list'
 
 export const TopicDetail = defineComponent({
   props: {
@@ -157,7 +155,7 @@ export const TopicDetail = defineComponent({
                               (e.event?.target as XMLHttpRequest).responseText,
                             )
                             message.warning(res.message)
-                          } catch (err) {}
+                          } catch {}
                           return e.file
                         }}
                       >

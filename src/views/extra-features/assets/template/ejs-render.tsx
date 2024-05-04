@@ -22,10 +22,10 @@ export const EJSRender = defineComponent({
       async () => {
         html.value = await render(props.template, props.data, {
           async: true,
-        }).catch((err) => {
-          props.onError?.(err)
+        }).catch((error) => {
+          props.onError?.(error)
 
-          console.error(err)
+          console.error(error)
 
           return html.value
         })

@@ -1,6 +1,14 @@
 import { NButton, NTabPane, NTabs } from 'naive-ui'
 import { defineComponent, onBeforeMount, ref, shallowRef, watch } from 'vue'
 import { useRoute } from 'vue-router'
+
+import { IpInfoPopover } from '~/components/ip-info'
+import { Table } from '~/components/table'
+import { RelativeTime } from '~/components/time/relative-time'
+import { useDataTableFetch } from '~/hooks/use-table'
+import { RESTManager } from '~/utils'
+import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
+import type { ActivityReadDurationType } from '~/models/activity'
 import type {
   NoteModel,
   PageModel,
@@ -8,14 +16,6 @@ import type {
   PostModel,
   RecentlyModel,
 } from '@mx-space/api-client'
-import type { ActivityReadDurationType } from '~/models/activity'
-import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
-
-import { IpInfoPopover } from '~/components/ip-info'
-import { Table } from '~/components/table'
-import { RelativeTime } from '~/components/time/relative-time'
-import { useDataTableFetch } from '~/hooks/use-table'
-import { RESTManager } from '~/utils'
 
 interface ActivityItem {
   id: string

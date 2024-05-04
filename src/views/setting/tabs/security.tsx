@@ -28,18 +28,15 @@ import {
 import { RouteName } from 'router/name'
 import { UIStore } from 'stores/ui'
 import useSWRV from 'swrv'
-import { parseDate, removeToken, RESTManager } from 'utils'
+import { RESTManager, parseDate, removeToken } from 'utils'
 import { defineComponent, onBeforeMount, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { Icon } from '@vicons/utils'
+import { AuthnUtils } from '~/utils/authn'
+import { autosizeableProps } from './system'
 import type { AuthnModel } from '~/models/authn'
 import type { TokenModel } from 'models/token'
 import type { DialogReactive } from 'naive-ui'
-
-import { Icon } from '@vicons/utils'
-
-import { AuthnUtils } from '~/utils/authn'
-
-import { autosizeableProps } from './system'
 
 type Session = {
   id: string

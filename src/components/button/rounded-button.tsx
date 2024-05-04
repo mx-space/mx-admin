@@ -1,10 +1,9 @@
 import { NButton, NPopover } from 'naive-ui'
 import { defineComponent } from 'vue'
 import { RouterLink } from 'vue-router'
+import { Icon } from '@vicons/utils'
 import type { ButtonHTMLAttributes, PropType } from 'vue'
 import type { RouteLocationRaw } from 'vue-router'
-
-import { Icon } from '@vicons/utils'
 
 export type ButtonType = PropType<
   'primary' | 'info' | 'success' | 'warning' | 'error'
