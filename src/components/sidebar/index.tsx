@@ -143,7 +143,7 @@ export const Sidebar = defineComponent({
                     class={
                       'absolute left-1/2 top-1/2 h-[50px] -translate-x-1/2 -translate-y-1/2 transform'
                     }
-                    src="https://cdn.jsdelivr.net/gh/mx-space/.github@main/uwu.png"
+                    src="/uwu.png"
                   />
                 )}
                 <span class={'sr-only'}>{title}</span>

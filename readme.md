@@ -17,25 +17,13 @@ pnpm build
 
 ## Preview
 
-![0620150948](https://fastly.jsdelivr.net/gh/Innei/fancy@master/2021/0620150948.png)
+![CleanShot 2024-05-04 at 11  18 54@2x](https://github.com/mx-space/mx-admin/assets/41265413/6522e6ba-73dc-4214-9999-ad8d88272c2e)
+![CleanShot 2024-05-04 at 11  19 15@2x](https://github.com/mx-space/mx-admin/assets/41265413/44f05e84-c9ed-4e54-b6ed-432a42fb163b)
+![CleanShot 2024-05-04 at 11  19 35@2x](https://github.com/mx-space/mx-admin/assets/41265413/df54ed83-dad0-4bea-a156-320f21108c90)
+![CleanShot 2024-05-04 at 11  20 40@2x](https://github.com/mx-space/mx-admin/assets/41265413/57670e28-5898-4ff9-9fd2-9fda5fb9c21b)
+![CleanShot 2024-05-04 at 11  20 56@2x](https://github.com/mx-space/mx-admin/assets/41265413/5042c5ef-388c-4fa8-bed4-b7758e285875)
+![CleanShot 2024-05-04 at 11  22 13@2x](https://github.com/mx-space/mx-admin/assets/41265413/d1f9d840-5458-4950-997f-638b51fcbeb7)
 
-![0620150710](https://fastly.jsdelivr.net/gh/Innei/fancy@master/2021/0620150710.png)
-
-![0620150726](https://fastly.jsdelivr.net/gh/Innei/fancy@master/2021/0620150726.png)
-
-![0620150817](https://fastly.jsdelivr.net/gh/Innei/fancy@master/2021/0620150817.png)
-
-![0620150835](https://fastly.jsdelivr.net/gh/Innei/fancy@master/2021/0620150835.png)
-
-![0620150847](https://fastly.jsdelivr.net/gh/Innei/fancy@master/2021/0620150847.png)
-
-![0620150917](https://fastly.jsdelivr.net/gh/Innei/fancy@master/2021/0620150917.png)
-
-![0213223518](https://fastly.jsdelivr.net/gh/Innei/fancy@master/2022/0213223518.png)
-
-![0213223417](https://fastly.jsdelivr.net/gh/Innei/fancy@master/2022/0213223417.png)
-
-![0213223458](https://fastly.jsdelivr.net/gh/Innei/fancy@master/2022/0213223458.png)
 
 ## Version
 
