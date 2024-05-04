@@ -1,5 +1,14 @@
 # CHANGELOG
 
+# [4.4.0](https://github.com/mx-space/mx-admin/compare/v4.3.4...v4.4.0) (2024-05-04)
+
+
+### Features
+
+* ai helper ([c31cc75](https://github.com/mx-space/mx-admin/commit/c31cc759b78b9f326032f1809a1ea008000ff2ae))
+
+
+
 ## [4.3.4](https://github.com/mx-space/mx-admin/compare/v4.3.3...v4.3.4) (2024-05-04)
 
 
