@@ -44,6 +44,7 @@ import type { WriteBaseType } from 'shared/types/base'
 
 import { Icon } from '@vicons/utils'
 
+import { AiHelperButton } from '~/components/ai/ai-helper'
 import { Editor } from '~/components/editor/universal'
 import { HeaderPreviewButton } from '~/components/special-button/preview'
 import { EmitKeyMap } from '~/constants/keys'
@@ -295,14 +296,22 @@ const NoteWriteView = defineComponent(() => {
       }
     >
       <CrossBellConnectorIndirector />
-      <MaterialInput
-        class="relative z-10 mt-3"
-        label={defaultTitle.value}
-        value={data.title}
-        onChange={(e) => {
-          data.title = e
-        }}
-      ></MaterialInput>
+      <div class={'relative'}>
+        <MaterialInput
+          class="relative z-10 mt-3"
+          label={defaultTitle.value}
+          value={data.title}
+          onChange={(e) => {
+            data.title = e
+          }}
+        ></MaterialInput>
+
+        {data.text.length > 0 && (
+          <div class={'absolute bottom-0 right-0 top-0 z-10 flex items-center'}>
+            <AiHelperButton reactiveData={data} />
+          </div>
+        )}
+      </div>
 
       <div class={'py-3 text-gray-500'}>
         <label>{`${WEB_URL}/notes/${nid.value ?? ''}`}</label>

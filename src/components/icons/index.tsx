@@ -424,7 +424,7 @@ export function MaterialSymbolsThumbDownOutline() {
   )
 }
 
-export function OpenAI() {
+export function OpenAIIcon() {
   return (
     <svg
       role="img"

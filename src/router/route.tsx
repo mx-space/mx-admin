@@ -19,7 +19,7 @@ import {
   LogIcon,
   MarkdownIcon,
   MidHammer,
-  OpenAI,
+  OpenAIIcon,
   PencilAltIcon,
   PencilIcon,
   PuzzlePieceIcon,
@@ -280,7 +280,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     name: RouteName.Ai,
     meta: {
       title: 'AI',
-      icon: <OpenAI />,
+      icon: <OpenAIIcon />,
     },
 
     redirect: '/ai/summary',
@@ -290,7 +290,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         name: RouteName.AiSummary,
         meta: {
           title: '摘要',
-          icon: <OpenAI />,
+          icon: <OpenAIIcon />,
         },
         component: () => import('../views/ai/summary'),
       },

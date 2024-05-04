@@ -9,6 +9,7 @@ import {
   NFormItem,
   NInput,
   NInputNumber,
+  NSelect,
   NSpace,
   NSwitch,
   NText,
@@ -266,30 +267,47 @@ const ScheamFormItem = defineComponent({
       switch (props.type) {
         case 'url':
         case 'string': {
-          const { type } = options
+          const { type: uiType } = options
 
-          return (
-            <NInput
-              inputProps={{
-                id: uuid(),
-              }}
-              value={innerValue.value}
-              onUpdateValue={(val) => {
-                innerValue.value = val
-              }}
-              type={type || 'text'}
-              showPasswordOn="click"
-              autosize={
-                type == 'textarea'
-                  ? {
-                      maxRows: 5,
-                      minRows: 3,
-                    }
-                  : undefined
+          switch (uiType) {
+            case 'select':
+              const { values } = options as {
+                values: { label: string; value: string }[]
               }
-              clearable
-            ></NInput>
-          )
+              return (
+                <NSelect
+                  value={innerValue.value}
+                  onUpdateValue={(val) => {
+                    innerValue.value = val
+                  }}
+                  options={values}
+                  filterable
+                ></NSelect>
+              )
+            default:
+              return (
+                <NInput
+                  inputProps={{
+                    id: uuid(),
+                  }}
+                  value={innerValue.value}
+                  onUpdateValue={(val) => {
+                    innerValue.value = val
+                  }}
+                  type={uiType || 'text'}
+                  showPasswordOn="click"
+                  autosize={
+                    uiType == 'textarea'
+                      ? {
+                          maxRows: 5,
+                          minRows: 3,
+                        }
+                      : undefined
+                  }
+                  clearable
+                ></NInput>
+              )
+          }
         }
         case 'array': {
           return (

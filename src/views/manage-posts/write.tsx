@@ -1,6 +1,6 @@
 import { HeaderActionButton } from 'components/button/rounded-button'
 import { TextBaseDrawer } from 'components/drawer/text-base-drawer'
-import { OpenAI, SlidersHIcon, TelegramPlaneIcon } from 'components/icons'
+import { SlidersHIcon, TelegramPlaneIcon } from 'components/icons'
 import { MaterialInput } from 'components/input/material-input'
 import { UnderlineInput } from 'components/input/underline-input'
 import { ParseContentButton } from 'components/special-button/parse-content'
@@ -10,15 +10,12 @@ import { useStoreRef } from 'hooks/use-store-ref'
 import { ContentLayout } from 'layouts/content'
 import { isString } from 'lodash-es'
 import {
-  NButton,
   NDynamicTags,
   NFormItem,
   NInput,
   NInputNumber,
-  NPopover,
   NSelect,
   NSwitch,
-  useDialog,
   useMessage,
 } from 'naive-ui'
 import { RouteName } from 'router/name'
@@ -33,11 +30,11 @@ import type { WriteBaseType } from 'shared/types/base'
 
 import { Icon } from '@vicons/utils'
 
+import { AiHelperButton } from '~/components/ai/ai-helper'
 import { Editor } from '~/components/editor/universal'
 import { HeaderPreviewButton } from '~/components/special-button/preview'
 import { EmitKeyMap } from '~/constants/keys'
 
-import { AISummaryDialog } from './components/ask-ai'
 import { useMemoPostList } from './hooks/use-memo-post-list'
 
 type PostReactiveType = WriteBaseType & {
@@ -173,21 +170,6 @@ const PostWriteView = defineComponent(() => {
   onBeforeUnmount(() => {
     postListState.refresh()
   })
-  const dialog = useDialog()
-  const handleAskAI = () => {
-    const $dialog = dialog.create({
-      title: 'OpenAI article summary',
-      content: () => (
-        <AISummaryDialog
-          article={data.text}
-          onSuccess={(summary) => {
-            data.summary = summary
-            $dialog.destroy()
-          }}
-        />
-      ),
-    })
-  }
 
   watch(
     () => data,
@@ -241,7 +223,7 @@ const PostWriteView = defineComponent(() => {
         }}
       ></MaterialInput>
 
-      <div class={'py-3 text-gray-500'}>
+      <div class={'flex items-center py-3 text-gray-500'}>
         <label class="prefix">{`${WEB_URL}/${category.value.slug}/`}</label>
 
         <UnderlineInput
@@ -251,6 +233,10 @@ const PostWriteView = defineComponent(() => {
             data.slug = e
           }}
         />
+
+        {(!data.title || !data.slug) && data.text.length > 0 && (
+          <AiHelperButton reactiveData={data} />
+        )}
       </div>
 
       <CrossBellConnectorIndirector />
@@ -382,28 +368,7 @@ const PostWriteView = defineComponent(() => {
             placeholder="文章摘要"
             value={data.summary}
             onInput={(e) => void (data.summary = e)}
-          >
-            {{
-              suffix() {
-                return (
-                  <NPopover>
-                    {{
-                      trigger() {
-                        return (
-                          <NButton quaternary onClick={handleAskAI}>
-                            <OpenAI />
-                          </NButton>
-                        )
-                      },
-                      default() {
-                        return 'Ask AI'
-                      },
-                    }}
-                  </NPopover>
-                )
-              },
-            }}
-          </NInput>
+          ></NInput>
         </NFormItem>
 
         <NFormItem label="版权注明" labelAlign="right" labelPlacement="left">

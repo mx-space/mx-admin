@@ -1,4 +1,4 @@
-import { ExternalLinkIcon, OpenAI } from 'components/icons'
+import { ExternalLinkIcon, OpenAIIcon } from 'components/icons'
 import { IframePreviewButton } from 'components/special-button/iframe-preview'
 import { WEB_URL } from 'constants/env'
 import { useStoreRef } from 'hooks/use-store-ref'
@@ -128,7 +128,7 @@ export const TableTitleLink = defineComponent({
           class={'flex items-center'}
         >
           <Icon>
-            <OpenAI />
+            <OpenAIIcon />
           </Icon>
         </RouterLink>
       </RouterLink>

@@ -153,8 +153,7 @@ const SummaryRefIdContent = defineComponent({
                         }
 
                         loadingRef.value = true
-                        RESTManager.api
-                          .ai('generate-summary')
+                        RESTManager.api.ai.summaries.generate
                           .post<AISummaryModel | null>({
                             data: {
                               refId,
