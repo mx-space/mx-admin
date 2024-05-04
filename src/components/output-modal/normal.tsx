@@ -2,7 +2,7 @@
 import { AnsiUp } from 'ansi_up'
 import { EventSourcePolyfill } from 'event-source-polyfill'
 import { NCard, NModal } from 'naive-ui'
-import { getToken } from 'utils'
+import { getToken } from '~/utils'
 
 const ansi_up = new AnsiUp()
 export const ShellOutputNormal = defineComponent({

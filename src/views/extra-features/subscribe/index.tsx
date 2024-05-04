@@ -1,12 +1,12 @@
-import { Table } from 'components/table'
-import { RelativeTime } from 'components/time/relative-time'
-import { useDataTableFetch } from 'hooks/use-table'
-import { ContentLayout } from 'layouts/content'
+import { Table } from '~/components/table'
+import { RelativeTime } from '~/components/time/relative-time'
+import { useDataTableFetch } from '~/hooks/use-table'
+import { ContentLayout } from '~/layouts/content'
 import { NButton, NPopconfirm, NSpace, NSwitch, NTag } from 'naive-ui'
-import { RESTManager } from 'utils'
+import { RESTManager } from '~/utils'
 import { useRoute } from 'vue-router'
 import { SubscribeBit2TextMap } from './constants'
-import type { SubscribeResponse } from 'models/subscribe'
+import type { SubscribeResponse } from '~/models/subscribe'
 import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
 
 export default defineComponent({

@@ -1,6 +1,6 @@
-import { RESTManager } from 'utils'
+import { RESTManager } from '~/utils'
 import { createMemoDataListFetchHook } from '../../../hooks/use-memo-fetch-data-list'
-import type { Category, PostModel } from 'models/post'
+import type { Category, PostModel } from '~/models/post'
 
 export const useMemoPostList = createMemoDataListFetchHook<
   {

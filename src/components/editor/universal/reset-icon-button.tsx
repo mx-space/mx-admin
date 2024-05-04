@@ -1,4 +1,4 @@
-import { RefreshCircle } from 'components/icons'
+import { RefreshCircle } from '~/components/icons'
 import { NButton, NPopover } from 'naive-ui'
 
 import { Icon } from '@vicons/utils'

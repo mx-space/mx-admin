@@ -1,5 +1,5 @@
 /** @deprecated since v6.3.0 - use constants property exposed by the relevant module instead. */
-declare module 'constants' {
+declare module '~/constants' {
   import { constants as osConstants, SignalConstants } from 'os'
   import { constants as cryptoConstants } from 'crypto'
   import { constants as fsConstants } from 'fs'

@@ -3,9 +3,9 @@ import {
   PlusIcon,
   SearchIcon,
   TrashIcon,
-} from 'components/icons'
-import { IframePreviewButton } from 'components/special-button/iframe-preview'
-import { UploadWrapper } from 'components/upload'
+} from '~/components/icons'
+import { IframePreviewButton } from '~/components/special-button/iframe-preview'
+import { UploadWrapper } from '~/components/upload'
 import {
   NAvatar,
   NButton,
@@ -22,14 +22,14 @@ import {
   NThing,
   NUploadDragger,
 } from 'naive-ui'
-import { RESTManager } from 'utils'
-import { buildMarkdownRenderUrl } from 'utils/endpoint'
-import { textToBigCharOrWord } from 'utils/word'
+import { RESTManager } from '~/utils'
+import { buildMarkdownRenderUrl } from '~/utils/endpoint'
+import { textToBigCharOrWord } from '~/utils/word'
 import { useRouter } from 'vue-router'
 import { Icon as NIcon } from '@vicons/utils'
 import { useMemoNoteList } from '../hooks/use-memo-note-list'
 import type { NoteModel, Pager, PaginateResult } from '@mx-space/api-client'
-import type { TopicModel } from 'models/topic'
+import type { TopicModel } from '~/models/topic'
 import type { PropType } from 'vue'
 
 export const TopicDetail = defineComponent({

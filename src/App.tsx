@@ -1,4 +1,4 @@
-import { PortalInjectKey } from 'hooks/use-portal-element'
+import { PortalInjectKey } from '~/hooks/use-portal-element'
 import {
   NConfigProvider,
   NDialogProvider,

@@ -1,5 +1,5 @@
-import { IpInfoPopover } from 'components/ip-info'
-import { ContentLayout } from 'layouts/content'
+import { IpInfoPopover } from '~/components/ip-info'
+import { ContentLayout } from '~/layouts/content'
 import { isEmpty } from 'lodash-es'
 import {
   NButton,
@@ -11,7 +11,7 @@ import {
   NTabs,
   useDialog,
 } from 'naive-ui'
-import { RESTManager } from 'utils'
+import { RESTManager } from '~/utils'
 import {
   defineComponent,
   onBeforeMount,

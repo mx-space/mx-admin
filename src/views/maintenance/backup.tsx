@@ -1,15 +1,15 @@
-import { HeaderActionButton } from 'components/button/rounded-button'
+import { HeaderActionButton } from '~/components/button/rounded-button'
 import {
   DatabaseBackupIcon,
   TrashSharpIcon,
   UploadIcon,
-} from 'components/icons'
-import { DeleteConfirmButton } from 'components/special-button/delete-confirm'
-import { Table } from 'components/table'
-import { useDataTableFetch } from 'hooks/use-table'
-import { ContentLayout } from 'layouts/content'
+} from '~/components/icons'
+import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
+import { Table } from '~/components/table'
+import { useDataTableFetch } from '~/hooks/use-table'
+import { ContentLayout } from '~/layouts/content'
 import { NButton, NPopconfirm, NSpace } from 'naive-ui'
-import { RESTManager, responseBlobToFile } from 'utils'
+import { RESTManager, responseBlobToFile } from '~/utils'
 import { defineComponent, onBeforeMount } from 'vue'
 
 export default defineComponent(() => {

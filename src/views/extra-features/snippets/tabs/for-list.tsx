@@ -1,8 +1,8 @@
-import { HeaderActionButton } from 'components/button/rounded-button'
-import { AddIcon, FunctionIcon, LockIcon } from 'components/icons'
-import { tableRowStyle } from 'components/table'
-import { RelativeTime } from 'components/time/relative-time'
-import { useLayout } from 'layouts/content'
+import { HeaderActionButton } from '~/components/button/rounded-button'
+import { AddIcon, FunctionIcon, LockIcon } from '~/components/icons'
+import { tableRowStyle } from '~/components/table'
+import { RelativeTime } from '~/components/time/relative-time'
+import { useLayout } from '~/layouts/content'
 import {
   NButton,
   NDataTable,
@@ -13,8 +13,8 @@ import {
   NPopconfirm,
   NSpace,
 } from 'naive-ui'
-import { RESTManager } from 'utils'
-import { getToken } from 'utils/auth'
+import { RESTManager } from '~/utils'
+import { getToken } from '~/utils/auth'
 import { useRoute, useRouter } from 'vue-router'
 
 import { Icon } from '@vicons/utils'

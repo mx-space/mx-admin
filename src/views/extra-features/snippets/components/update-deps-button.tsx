@@ -1,10 +1,10 @@
-import { HeaderActionButton } from 'components/button/rounded-button'
-import { UpgradeIcon } from 'components/icons'
-import { getNpmPKGLatest } from 'external/api/npm'
+import { HeaderActionButton } from '~/components/button/rounded-button'
+import { UpgradeIcon } from '~/components/icons'
+import { getNpmPKGLatest } from '~/external/api/npm'
 import { NButton, NCard, NDataTable, NModal } from 'naive-ui'
-import { RESTManager } from 'utils'
+import { RESTManager } from '~/utils'
 import { InstallDepsXterm } from './install-dep-xterm'
-import type { NpmPKGInfo } from 'external/types/npm-pkg'
+import type { NpmPKGInfo } from '~/external/types/npm-pkg'
 
 const useFetchDependencyGraph = () => {
   const dependencyGraph = ref<{ dependencies: Record<string, string> }>({

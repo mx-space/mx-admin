@@ -20,15 +20,15 @@ import {
   PhAlignLeft,
   RedisIcon,
   RefreshIcon,
-} from 'components/icons'
-import { IpInfoPopover } from 'components/ip-info'
-import { useShorthand } from 'components/shorthand'
-import { checkUpdateFromGitHub } from 'external/api/github-check-update'
-import { SentenceType, fetchHitokoto } from 'external/api/hitokoto'
-import { getJinRiShiCiOne } from 'external/api/jinrishici'
-import { usePortalElement } from 'hooks/use-portal-element'
-import { useStoreRef } from 'hooks/use-store-ref'
-import { ContentLayout } from 'layouts/content'
+} from '~/components/icons'
+import { IpInfoPopover } from '~/components/ip-info'
+import { useShorthand } from '~/components/shorthand'
+import { checkUpdateFromGitHub } from '~/external/api/github-check-update'
+import { SentenceType, fetchHitokoto } from '~/external/api/hitokoto'
+import { getJinRiShiCiOne } from '~/external/api/jinrishici'
+import { usePortalElement } from '~/hooks/use-portal-element'
+import { useStoreRef } from '~/hooks/use-store-ref'
+import { ContentLayout } from '~/layouts/content'
 import { pick } from 'lodash-es'
 import {
   NButton,
@@ -47,10 +47,10 @@ import {
   useMessage,
   useNotification,
 } from 'naive-ui'
-import { RouteName } from 'router/name'
-import { AppStore } from 'stores/app'
-import { UserStore } from 'stores/user'
-import { RESTManager, parseDate } from 'utils'
+import { RouteName } from '~/router/name'
+import { AppStore } from '~/stores/app'
+import { UserStore } from '~/stores/user'
+import { RESTManager, parseDate } from '~/utils'
 import {
   computed,
   defineComponent,
@@ -66,8 +66,8 @@ import PKG from '../../../package.json'
 import { Card } from './card'
 import { UpdatePanel } from './update-panel'
 import type { CardProps } from './card'
-import type { Stat } from 'models/stat'
-import type { ShiJuData } from 'external/api/jinrishici'
+import type { Stat } from '~/models/stat'
+import type { ShiJuData } from '~/external/api/jinrishici'
 
 export const DashBoardView = defineComponent({
   name: 'DashboardView',

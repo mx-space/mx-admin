@@ -1,7 +1,7 @@
-import { HeaderActionButton } from 'components/button/rounded-button'
-import { ArchiveIcon, UploadIcon } from 'components/icons'
-import { Table } from 'components/table'
-import { ContentLayout } from 'layouts/content'
+import { HeaderActionButton } from '~/components/button/rounded-button'
+import { ArchiveIcon, UploadIcon } from '~/components/icons'
+import { Table } from '~/components/table'
+import { ContentLayout } from '~/layouts/content'
 import {
   NButton,
   NButtonGroup,
@@ -17,7 +17,7 @@ import {
   NUpload,
   NUploadDragger,
 } from 'naive-ui'
-import { RESTManager, getToken } from 'utils'
+import { RESTManager, getToken } from '~/utils'
 import { defineComponent } from 'vue'
 import type { UploadFileInfo } from 'naive-ui'
 

@@ -1,4 +1,4 @@
-import { useSaveConfirm } from 'hooks/use-save-confirm'
+import { useSaveConfirm } from '~/hooks/use-save-confirm'
 import { NInput } from 'naive-ui'
 import { defineComponent, ref, toRaw, watch } from 'vue'
 

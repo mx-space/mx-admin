@@ -1,6 +1,6 @@
 import qs from 'qs'
 import { reactive, ref } from 'vue'
-import type { Pager } from 'models/base'
+import type { Pager } from '~/models/base'
 import type { Ref } from 'vue'
 import type { LocationQueryValue } from 'vue-router'
 

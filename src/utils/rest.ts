@@ -1,7 +1,7 @@
-import { API_URL } from 'node:constants/env'
+import { API_URL } from '~/constants/env'
 import { isPlainObject } from 'lodash-es'
 import { extend } from 'umi-request'
-import { uuid } from 'utils'
+import { uuid } from '~/utils'
 
 import { simpleCamelcaseKeys } from '@mx-space/api-client'
 

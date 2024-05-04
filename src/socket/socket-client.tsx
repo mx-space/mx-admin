@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { GATEWAY_URL } from 'node:constants/env'
+import { GATEWAY_URL } from '~/constants/env'
 import { NButton, NSpace } from 'naive-ui'
-import { router } from 'router'
+import { router } from '~/router'
 import io from 'socket.io-client'
-import { getToken } from 'utils/auth'
-import { bus } from 'utils/event-bus'
-import { BrowserNotification } from 'utils/notification'
+import { getToken } from '~/utils/auth'
+import { bus } from '~/utils/event-bus'
+import { BrowserNotification } from '~/utils/notification'
 
 import { configs } from '../configs'
 import { EventTypes } from './types'

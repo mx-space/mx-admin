@@ -1,5 +1,5 @@
 import { NPopover } from 'naive-ui'
-import { RESTManager } from 'utils'
+import { RESTManager } from '~/utils'
 import { defineComponent, ref } from 'vue'
 import type { PopoverTrigger } from 'naive-ui'
 import type { PropType } from 'vue'

@@ -31,9 +31,9 @@ import {
   UndoAltIcon,
   UserFriendsIcon,
   WebhookIcon,
-} from 'components/icons'
-import $RouterView from 'layouts/router-view'
-import { DashBoardView } from 'views/dashboard'
+} from '~/components/icons'
+import $RouterView from '~/layouts/router-view'
+import { DashBoardView } from '~/views/dashboard'
 
 import { AppLayout } from '~/layouts/app-layout'
 import { ManagePostListView } from '~/views/manage-posts/list'

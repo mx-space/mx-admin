@@ -1,9 +1,9 @@
-import { IpInfoPopover } from 'components/ip-info'
-import { Table } from 'components/table'
-import { useDataTableFetch } from 'hooks/use-table'
-import { useLayout } from 'layouts/content'
+import { IpInfoPopover } from '~/components/ip-info'
+import { Table } from '~/components/table'
+import { useDataTableFetch } from '~/hooks/use-table'
+import { useLayout } from '~/layouts/content'
 import { NButton, NEllipsis } from 'naive-ui'
-import { RESTManager, parseDate } from 'utils'
+import { RESTManager, parseDate } from '~/utils'
 import { defineComponent, onBeforeMount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -12,8 +12,8 @@ import { RefreshOutlineIcon, TrashIcon } from '~/components/icons'
 import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
 import { router } from '~/router'
 import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
-import type { Pager } from 'models/base'
-import type { UA } from 'models/analyze'
+import type { Pager } from '~/models/base'
+import type { UA } from '~/models/analyze'
 
 export const AnalyzeDataTable = defineComponent({
   setup() {

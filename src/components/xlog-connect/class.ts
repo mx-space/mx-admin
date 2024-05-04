@@ -1,10 +1,10 @@
 import { Indexer, createContract } from 'crossbell.js'
 import Unidata from 'unidata.js'
-import { RESTManager } from 'utils'
+import { RESTManager } from '~/utils'
 import { showConfetti } from '~/utils/confetti'
 import type { Contract } from 'crossbell.js'
-import type { NoteModel } from 'models/note'
-import type { PostModel } from 'models/post'
+import type { NoteModel } from '~/models/note'
+import type { PostModel } from '~/models/post'
 
 const unidata = new Unidata()
 

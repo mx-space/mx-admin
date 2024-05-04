@@ -1,5 +1,5 @@
-import { UploadIcon } from 'components/icons'
-import { UploadWrapper } from 'components/upload'
+import { UploadIcon } from '~/components/icons'
+import { UploadWrapper } from '~/components/upload'
 import {
   NButton,
   NCard,
@@ -9,8 +9,8 @@ import {
   NInput,
   NModal,
 } from 'naive-ui'
-import { RESTManager } from 'utils/rest'
-import type { TopicModel } from 'models/topic'
+import { RESTManager } from '~/utils/rest'
+import type { TopicModel } from '~/models/topic'
 import type { FormInst } from 'naive-ui'
 import type { PropType } from 'vue'
 

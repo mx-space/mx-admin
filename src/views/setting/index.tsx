@@ -1,4 +1,4 @@
-import { ContentLayout } from 'layouts/content'
+import { ContentLayout } from '~/layouts/content'
 import { NTabPane, NTabs } from 'naive-ui'
 import { defineComponent, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'

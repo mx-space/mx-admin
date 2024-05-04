@@ -1,9 +1,9 @@
-import { socialKeyMap } from 'node:constants/social'
-import Avatar from 'components/avatar'
-import { IpInfoPopover } from 'components/ip-info'
-import { KVEditor } from 'components/kv-editor'
-import { RelativeTime } from 'components/time/relative-time'
-import { UploadWrapper } from 'components/upload'
+import { socialKeyMap } from '~/constants/social'
+import Avatar from '~/components/avatar'
+import { IpInfoPopover } from '~/components/ip-info'
+import { KVEditor } from '~/components/kv-editor'
+import { RelativeTime } from '~/components/time/relative-time'
+import { UploadWrapper } from '~/components/upload'
 import { cloneDeep, isEmpty } from 'lodash-es'
 import {
   NButton,
@@ -16,10 +16,10 @@ import {
   NUploadDragger,
   useMessage,
 } from 'naive-ui'
-import { RESTManager, deepDiff } from 'utils'
+import { RESTManager, deepDiff } from '~/utils'
 import { computed, defineComponent, onMounted, ref } from 'vue'
 import styles from './user.module.css'
-import type { UserModel } from 'models/user'
+import type { UserModel } from '~/models/user'
 
 export const TabUser = defineComponent(() => {
   const data = ref({} as UserModel)

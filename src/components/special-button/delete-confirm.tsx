@@ -1,5 +1,5 @@
-import { HeaderActionButton } from 'components/button/rounded-button'
-import { DeleteIcon } from 'components/icons'
+import { HeaderActionButton } from '~/components/button/rounded-button'
+import { DeleteIcon } from '~/components/icons'
 import { useDialog, useMessage } from 'naive-ui'
 import type { PropType, Ref } from 'vue'
 

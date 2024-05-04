@@ -1,8 +1,8 @@
-import { AddIcon } from 'components/icons'
-import { DeleteConfirmButton } from 'components/special-button/delete-confirm'
-import { Table } from 'components/table'
-import { RelativeTime } from 'components/time/relative-time'
-import { useDataTableFetch } from 'hooks/use-table'
+import { AddIcon } from '~/components/icons'
+import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
+import { Table } from '~/components/table'
+import { RelativeTime } from '~/components/time/relative-time'
+import { useDataTableFetch } from '~/hooks/use-table'
 import { NButton, NPopconfirm, NSpace, useDialog, useMessage } from 'naive-ui'
 import { defineComponent, onMounted, reactive, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
@@ -11,7 +11,7 @@ import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
 import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
-import type { SayResponse } from 'models/say'
+import type { SayResponse } from '~/models/say'
 
 const ManageSayListView = defineComponent({
   name: 'SayList',

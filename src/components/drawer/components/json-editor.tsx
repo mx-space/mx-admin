@@ -1,4 +1,4 @@
-import { useAsyncLoadMonaco } from 'hooks/use-async-monaco'
+import { useAsyncLoadMonaco } from '~/hooks/use-async-monaco'
 import { NButton } from 'naive-ui'
 import type { PropType } from 'vue'
 

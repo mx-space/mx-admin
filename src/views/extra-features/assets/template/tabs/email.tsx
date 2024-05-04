@@ -1,9 +1,9 @@
-import { HeaderActionButton } from 'components/button/rounded-button'
-import { CheckIcon, TrashIcon } from 'components/icons'
-import { useLayout } from 'layouts/content'
-import { TwoColGridLayout } from 'layouts/two-col'
+import { HeaderActionButton } from '~/components/button/rounded-button'
+import { CheckIcon, TrashIcon } from '~/components/icons'
+import { useLayout } from '~/layouts/content'
+import { TwoColGridLayout } from '~/layouts/two-col'
 import { NForm, NFormItem, NGi, NSelect, useDialog } from 'naive-ui'
-import { RESTManager } from 'utils'
+import { RESTManager } from '~/utils'
 
 import { useMountAndUnmount } from '~/hooks/use-lifecycle'
 

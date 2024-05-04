@@ -1,11 +1,11 @@
-import { HeaderActionButton } from 'components/button/rounded-button'
-import { CheckIcon, PlusIcon as Plus } from 'components/icons'
-import { Table } from 'components/table'
-import { RelativeTime } from 'components/time/relative-time'
-import { useDataTableFetch } from 'hooks/use-table'
-import { ContentLayout } from 'layouts/content'
+import { HeaderActionButton } from '~/components/button/rounded-button'
+import { CheckIcon, PlusIcon as Plus } from '~/components/icons'
+import { Table } from '~/components/table'
+import { RelativeTime } from '~/components/time/relative-time'
+import { useDataTableFetch } from '~/hooks/use-table'
+import { ContentLayout } from '~/layouts/content'
 import omit from 'lodash-es/omit'
-import { LinkState, LinkStateNameMap, LinkType } from 'models/link'
+import { LinkState, LinkStateNameMap, LinkType } from '~/models/link'
 import {
   NBadge,
   NButton,
@@ -23,15 +23,15 @@ import {
   useDialog,
   useMessage,
 } from 'naive-ui'
-import { RouteName } from 'router/name'
-import { RESTManager } from 'utils'
+import { RouteName } from '~/router/name'
+import { RESTManager } from '~/utils'
 import { defineComponent, onBeforeMount, ref, toRaw, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import { Avatar } from './components/avatar'
 import { LinkAuditModal } from './components/reason-modal'
 import { UrlComponent } from './url-components'
-import type { LinkModel, LinkResponse, LinkStateCount } from 'models/link'
+import type { LinkModel, LinkResponse, LinkStateCount } from '~/models/link'
 
 export default defineComponent({
   setup() {

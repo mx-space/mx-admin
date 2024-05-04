@@ -1,9 +1,9 @@
-import { GATEWAY_URL } from 'node:constants/env'
-import { HeaderActionButton } from 'components/button/rounded-button'
-import { RefreshIcon, StatusIcon } from 'components/icons'
-import { IpInfoPopover } from 'components/ip-info'
-import { Xterm } from 'components/xterm'
-import { ContentLayout } from 'layouts/content'
+import { GATEWAY_URL } from '~/constants/env'
+import { HeaderActionButton } from '~/components/button/rounded-button'
+import { RefreshIcon, StatusIcon } from '~/components/icons'
+import { IpInfoPopover } from '~/components/ip-info'
+import { Xterm } from '~/components/xterm'
+import { ContentLayout } from '~/layouts/content'
 import { merge } from 'lodash-es'
 import {
   NButton,
@@ -16,9 +16,9 @@ import {
   useMessage,
 } from 'naive-ui'
 import Io from 'socket.io-client'
-import { EventTypes } from 'socket/types'
-import { RESTManager, getToken, parseDate } from 'utils'
-import { bus } from 'utils/event-bus'
+import { EventTypes } from '~/socket/types'
+import { RESTManager, getToken, parseDate } from '~/utils'
+import { bus } from '~/utils/event-bus'
 import { useMountAndUnmount } from '~/hooks/use-lifecycle'
 import type { IDisposable, Terminal } from '@xterm/xterm'
 import type { PropType } from 'vue'

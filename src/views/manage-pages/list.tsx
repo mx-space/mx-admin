@@ -1,5 +1,5 @@
-import { AddIcon } from 'components/icons'
-import { TableTitleLink } from 'components/link/title-link'
+import { AddIcon } from '~/components/icons'
+import { TableTitleLink } from '~/components/link/title-link'
 import {
   NButton,
   NCard,
@@ -17,7 +17,7 @@ import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
 import type { PropType } from 'vue'
-import type { PageModel, PageResponse } from 'models/page'
+import type { PageModel, PageResponse } from '~/models/page'
 
 Sortable.mount(new Swap())
 

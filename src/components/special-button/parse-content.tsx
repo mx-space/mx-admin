@@ -1,6 +1,6 @@
-import { HeaderActionButton } from 'components/button/rounded-button'
-import { PlainEditor } from 'components/editor/plain/plain'
-import { QuestionCircleIcon, SlackHashIcon } from 'components/icons'
+import { HeaderActionButton } from '~/components/button/rounded-button'
+import { PlainEditor } from '~/components/editor/plain/plain'
+import { QuestionCircleIcon, SlackHashIcon } from '~/components/icons'
 import { load } from 'js-yaml'
 import {
   NButton,

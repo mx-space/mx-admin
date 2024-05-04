@@ -1,15 +1,15 @@
-import { WEB_URL } from 'node:constants/env'
+import { WEB_URL } from '~/constants/env'
 import {
   LogoutIcon,
   MoonIcon,
   SidebarCloseIcon,
   SunIcon,
-} from 'components/icons'
+} from '~/components/icons'
 import { NIcon, NLayoutContent } from 'naive-ui'
-import { RouteName } from 'router/name'
-import { AppStore } from 'stores/app'
-import { UIStore } from 'stores/ui'
-import { RESTManager } from 'utils'
+import { RouteName } from '~/router/name'
+import { AppStore } from '~/stores/app'
+import { UIStore } from '~/stores/ui'
+import { RESTManager } from '~/utils'
 import { computed, defineComponent, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 

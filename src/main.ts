@@ -1,8 +1,8 @@
 import './monaco'
 import 'reflect-metadata'
 
-import { piniaStore } from 'stores'
-import { bus } from 'utils/event-bus'
+import { piniaStore } from '~/stores'
+import { bus } from '~/utils/event-bus'
 
 import 'virtual:windi.css'
 

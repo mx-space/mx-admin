@@ -3,8 +3,8 @@
  *
  */
 
-import { SettingsIcon } from 'components/icons'
-import { useLayout } from 'layouts/content'
+import { SettingsIcon } from '~/components/icons'
+import { useLayout } from '~/layouts/content'
 import { NCard, NElement, NForm, NModal } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 

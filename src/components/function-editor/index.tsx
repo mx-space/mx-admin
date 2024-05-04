@@ -1,5 +1,5 @@
-import { useAsyncLoadMonaco } from 'hooks/use-async-monaco'
-import { RESTManager } from 'utils'
+import { useAsyncLoadMonaco } from '~/hooks/use-async-monaco'
+import { RESTManager } from '~/utils'
 
 import * as typeDefines from './libs/lib.declare'
 import { NodeDeclare } from './libs/node.declare'

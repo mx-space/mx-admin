@@ -1,4 +1,4 @@
-import { LinkState, LinkStateNameMap } from 'models/link'
+import { LinkState, LinkStateNameMap } from '~/models/link'
 import { NButton, NForm, NFormItem, NInput, NSelect } from 'naive-ui'
 import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
 import type { PropType } from 'vue'

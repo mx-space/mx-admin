@@ -1,5 +1,5 @@
 <script lang="ts">
-import { bgUrl } from 'node:constants/env'
+import { bgUrl } from '~/constants/env'
 
 export default defineComponent({
   setup() {

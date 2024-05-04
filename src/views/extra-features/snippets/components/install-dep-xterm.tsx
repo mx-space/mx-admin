@@ -1,5 +1,5 @@
-import { ShellOutputXterm } from 'components/output-modal/xterm'
-import { RESTManager } from 'utils'
+import { ShellOutputXterm } from '~/components/output-modal/xterm'
+import { RESTManager } from '~/utils'
 
 export const InstallDepsXterm = defineComponent({
   setup(_, { expose }) {

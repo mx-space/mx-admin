@@ -1,11 +1,11 @@
-import { AddIcon, BookIcon, PhPushPin, ThumbsUpIcon } from 'components/icons'
-import { TableTitleLink } from 'components/link/title-link'
-import { DeleteConfirmButton } from 'components/special-button/delete-confirm'
-import { Table } from 'components/table'
-import { EditColumn } from 'components/table/edit-column'
-import { RelativeTime } from 'components/time/relative-time'
-import { useStoreRef } from 'hooks/use-store-ref'
-import { useDataTableFetch } from 'hooks/use-table'
+import { AddIcon, BookIcon, PhPushPin, ThumbsUpIcon } from '~/components/icons'
+import { TableTitleLink } from '~/components/link/title-link'
+import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
+import { Table } from '~/components/table'
+import { EditColumn } from '~/components/table/edit-column'
+import { RelativeTime } from '~/components/time/relative-time'
+import { useStoreRef } from '~/hooks/use-store-ref'
+import { useDataTableFetch } from '~/hooks/use-table'
 import {
   NButton,
   NIcon,
@@ -14,8 +14,8 @@ import {
   NSpace,
   useMessage,
 } from 'naive-ui'
-import { CategoryStore } from 'stores/category'
-import { parseDate } from 'utils'
+import { CategoryStore } from '~/stores/category'
+import { parseDate } from '~/utils'
 import { computed, defineComponent, onMounted, reactive, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { Icon } from '@vicons/utils'
@@ -25,7 +25,7 @@ import { RESTManager } from '../../utils/rest'
 import type {
   CategoryWithChildrenModel,
   PickedPostModelInCategoryChildren,
-} from 'models/category'
+} from '~/models/category'
 import type {
   FilterOption,
   FilterState,

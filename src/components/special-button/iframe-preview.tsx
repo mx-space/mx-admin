@@ -1,5 +1,5 @@
-import { MagnifyIcon } from 'components/icons'
-import { ArticlePreview } from 'components/preview'
+import { MagnifyIcon } from '~/components/icons'
+import { ArticlePreview } from '~/components/preview'
 import { NButton, NPopover } from 'naive-ui'
 
 import { Icon } from '@vicons/utils'

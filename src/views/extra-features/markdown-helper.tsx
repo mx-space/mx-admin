@@ -1,4 +1,4 @@
-import { ContentLayout } from 'layouts/content'
+import { ContentLayout } from '~/layouts/content'
 import { debounce } from 'lodash-es'
 import {
   NButton,
@@ -13,11 +13,11 @@ import {
   NUpload,
   useMessage,
 } from 'naive-ui'
-import { RESTManager, responseBlobToFile } from 'utils'
-import { ParseMarkdownYAML } from 'utils/markdown-parser'
+import { RESTManager, responseBlobToFile } from '~/utils'
+import { ParseMarkdownYAML } from '~/utils/markdown-parser'
 import { defineComponent, ref, watch } from 'vue'
 import type { FileInfo } from 'naive-ui/lib/upload/src/interface'
-import type { ParsedModel } from 'utils/markdown-parser'
+import type { ParsedModel } from '~/utils/markdown-parser'
 
 enum ImportType {
   Post = 'post',

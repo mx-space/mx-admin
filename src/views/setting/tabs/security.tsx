@@ -1,8 +1,8 @@
-import { If } from 'components/directives/if'
-import { CheckIcon, PlusIcon as Plus } from 'components/icons'
-import { IpInfoPopover } from 'components/ip-info'
-import { RelativeTime } from 'components/time/relative-time'
-import { useStoreRef } from 'hooks/use-store-ref'
+import { If } from '~/components/directives/if'
+import { CheckIcon, PlusIcon as Plus } from '~/components/icons'
+import { IpInfoPopover } from '~/components/ip-info'
+import { RelativeTime } from '~/components/time/relative-time'
+import { useStoreRef } from '~/hooks/use-store-ref'
 import {
   NButton,
   NButtonGroup,
@@ -25,17 +25,17 @@ import {
   NSwitch,
   NText,
 } from 'naive-ui'
-import { RouteName } from 'router/name'
-import { UIStore } from 'stores/ui'
+import { RouteName } from '~/router/name'
+import { UIStore } from '~/stores/ui'
 import useSWRV from 'swrv'
-import { RESTManager, parseDate, removeToken } from 'utils'
+import { RESTManager, parseDate, removeToken } from '~/utils'
 import { defineComponent, onBeforeMount, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { Icon } from '@vicons/utils'
 import { AuthnUtils } from '~/utils/authn'
 import { autosizeableProps } from './system'
 import type { AuthnModel } from '~/models/authn'
-import type { TokenModel } from 'models/token'
+import type { TokenModel } from '~/models/token'
 import type { DialogReactive } from 'naive-ui'
 
 type Session = {

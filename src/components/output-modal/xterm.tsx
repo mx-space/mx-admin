@@ -1,8 +1,8 @@
 // 展示 Shell 输出的 xterm
-import { Xterm } from 'components/xterm'
+import { Xterm } from '~/components/xterm'
 import { EventSourcePolyfill } from 'event-source-polyfill'
 import { NCard, NModal, NSpin } from 'naive-ui'
-import { getToken } from 'utils'
+import { getToken } from '~/utils'
 import type { Terminal } from '@xterm/xterm'
 
 export const ShellOutputXterm = defineComponent({

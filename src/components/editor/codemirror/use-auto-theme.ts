@@ -1,5 +1,5 @@
-import { useStoreRef } from 'hooks/use-store-ref'
-import { UIStore } from 'stores/ui'
+import { useStoreRef } from '~/hooks/use-store-ref'
+import { UIStore } from '~/stores/ui'
 
 import { oneDark } from '@codemirror/theme-one-dark'
 import { githubLight } from '@ddietr/codemirror-themes/theme/github-light'

@@ -1,9 +1,9 @@
-import { HeaderActionButton } from 'components/button/rounded-button'
-import { CodeHighlight } from 'components/code-highlight'
-import { ExternalLinkIcon, ImportIcon } from 'components/icons'
-import { CenterSpin } from 'components/spin'
-import { GitHubSnippetRepo } from 'external/api/github-mx-snippets'
-import { SnippetType } from 'models/snippet'
+import { HeaderActionButton } from '~/components/button/rounded-button'
+import { CodeHighlight } from '~/components/code-highlight'
+import { ExternalLinkIcon, ImportIcon } from '~/components/icons'
+import { CenterSpin } from '~/components/spin'
+import { GitHubSnippetRepo } from '~/external/api/github-mx-snippets'
+import { SnippetType } from '~/models/snippet'
 import {
   NButton,
   NCard,
@@ -16,9 +16,9 @@ import {
   useDialog,
 } from 'naive-ui'
 import { basename, extname } from 'path-browserify'
-import { RESTManager } from 'utils'
+import { RESTManager } from '~/utils'
 import { InstallDepsXterm } from './install-dep-xterm'
-import type { SnippetModel } from 'models/snippet'
+import type { SnippetModel } from '~/models/snippet'
 import type { PropType } from 'vue'
 
 type SnippetList = {

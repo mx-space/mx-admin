@@ -1,16 +1,16 @@
-import { WEB_URL } from 'node:constants/env'
-import { MOOD_SET, WEATHER_SET } from 'node:constants/note'
-import { HeaderActionButton } from 'components/button/rounded-button'
-import { TextBaseDrawer } from 'components/drawer/text-base-drawer'
-import { SlidersHIcon, TelegramPlaneIcon } from 'components/icons'
-import { MaterialInput } from 'components/input/material-input'
-import { GetLocationButton } from 'components/location/get-location-button'
-import { SearchLocationButton } from 'components/location/search-button'
-import { ParseContentButton } from 'components/special-button/parse-content'
+import { WEB_URL } from '~/constants/env'
+import { MOOD_SET, WEATHER_SET } from '~/constants/note'
+import { HeaderActionButton } from '~/components/button/rounded-button'
+import { TextBaseDrawer } from '~/components/drawer/text-base-drawer'
+import { SlidersHIcon, TelegramPlaneIcon } from '~/components/icons'
+import { MaterialInput } from '~/components/input/material-input'
+import { GetLocationButton } from '~/components/location/get-location-button'
+import { SearchLocationButton } from '~/components/location/search-button'
+import { ParseContentButton } from '~/components/special-button/parse-content'
 import { add } from 'date-fns'
-import { useAutoSave, useAutoSaveInEditor } from 'hooks/use-auto-save'
-import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
-import { ContentLayout } from 'layouts/content'
+import { useAutoSave, useAutoSaveInEditor } from '~/hooks/use-auto-save'
+import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
+import { ContentLayout } from '~/layouts/content'
 import { isString } from 'lodash-es'
 import {
   NButton,
@@ -23,9 +23,9 @@ import {
   NSwitch,
   useMessage,
 } from 'naive-ui'
-import { RouteName } from 'router/name'
-import { RESTManager } from 'utils/rest'
-import { getDayOfYear } from 'utils/time'
+import { RouteName } from '~/router/name'
+import { RESTManager } from '~/utils/rest'
+import { getDayOfYear } from '~/utils/time'
 import {
   computed,
   defineComponent,
@@ -43,13 +43,13 @@ import { Editor } from '~/components/editor/universal'
 import { HeaderPreviewButton } from '~/components/special-button/preview'
 import { EmitKeyMap } from '~/constants/keys'
 import type { PaginateResult } from '@mx-space/api-client'
-import type { Coordinate, NoteModel } from 'models/note'
-import type { TopicModel } from 'models/topic'
+import type { Coordinate, NoteModel } from '~/models/note'
+import type { TopicModel } from '~/models/topic'
 import type { WriteBaseType } from 'shared/types/base'
 
 const CrossBellConnectorIndirector = defineAsyncComponent({
   loader: () =>
-    import('components/xlog-connect').then(
+    import('~/components/xlog-connect').then(
       (mo) => mo.CrossBellConnectorIndirector,
     ),
   suspensible: true,
@@ -213,7 +213,9 @@ const NoteWriteView = defineComponent(() => {
       }
     }
 
-    const { CrossBellConnector } = await import('components/xlog-connect/class')
+    const { CrossBellConnector } = await import(
+      '~/components/xlog-connect/class'
+    )
 
     if (id.value) {
       // update

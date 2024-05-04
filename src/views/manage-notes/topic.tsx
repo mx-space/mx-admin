@@ -1,7 +1,7 @@
-import { HeaderActionButton } from 'components/button/rounded-button'
-import { PlusIcon, TrashIcon } from 'components/icons'
-import { useDataTableFetch } from 'hooks/use-table'
-import { ContentLayout } from 'layouts/content'
+import { HeaderActionButton } from '~/components/button/rounded-button'
+import { PlusIcon, TrashIcon } from '~/components/icons'
+import { useDataTableFetch } from '~/hooks/use-table'
+import { ContentLayout } from '~/layouts/content'
 import {
   NAvatar,
   NButton,
@@ -12,15 +12,15 @@ import {
   NPopconfirm,
   NThing,
 } from 'naive-ui'
-import { RESTManager } from 'utils'
-import { textToBigCharOrWord } from 'utils/word'
+import { RESTManager } from '~/utils'
+import { textToBigCharOrWord } from '~/utils/word'
 import { useRoute, useRouter } from 'vue-router'
 
 import { Icon } from '@vicons/utils'
 
 import { TopicDetail } from './components/topic-detail'
 import { TopicEditModal } from './components/topic-modal'
-import type { TopicModel } from 'models/topic'
+import type { TopicModel } from '~/models/topic'
 import type { PaginateResult } from '@mx-space/api-client'
 
 export default defineComponent({

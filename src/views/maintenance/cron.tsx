@@ -1,9 +1,9 @@
-import { Table } from 'components/table'
+import { Table } from '~/components/table'
 import { format } from 'date-fns'
-import { useDataTableFetch } from 'hooks/use-table'
-import { ContentLayout } from 'layouts/content'
+import { useDataTableFetch } from '~/hooks/use-table'
+import { ContentLayout } from '~/layouts/content'
 import { NButton, NPopconfirm, NSpace } from 'naive-ui'
-import { RESTManager, toPascalCase } from 'utils'
+import { RESTManager, toPascalCase } from '~/utils'
 
 export default defineComponent({
   setup() {

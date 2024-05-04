@@ -1,12 +1,12 @@
-import { HeaderActionButton } from 'components/button/rounded-button'
-import { CommentIcon, SendIcon } from 'components/icons'
-import { SentenceType, fetchHitokoto } from 'external/api/hitokoto'
-import { useParsePayloadIntoData } from 'hooks/use-parse-payload'
-import { ContentLayout } from 'layouts/content'
+import { HeaderActionButton } from '~/components/button/rounded-button'
+import { CommentIcon, SendIcon } from '~/components/icons'
+import { SentenceType, fetchHitokoto } from '~/external/api/hitokoto'
+import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
+import { ContentLayout } from '~/layouts/content'
 import { isString, transform } from 'lodash-es'
 import { NForm, NFormItem, NInput, useDialog } from 'naive-ui'
-import { RouteName } from 'router/name'
-import { RESTManager } from 'utils'
+import { RouteName } from '~/router/name'
+import { RESTManager } from '~/utils'
 import {
   computed,
   defineComponent,
@@ -17,7 +17,7 @@ import {
   toRaw,
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { SayModel } from 'models/say'
+import type { SayModel } from '~/models/say'
 
 type SayReactiveType = {
   text: string

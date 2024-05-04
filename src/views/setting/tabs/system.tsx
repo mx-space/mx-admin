@@ -1,11 +1,11 @@
-import { HeaderActionButton } from 'components/button/rounded-button'
-import { ConfigForm } from 'components/config-form'
-import { CheckCircleOutlinedIcon } from 'components/icons'
-import { useStoreRef } from 'hooks/use-store-ref'
-import { useLayout } from 'layouts/content'
+import { HeaderActionButton } from '~/components/button/rounded-button'
+import { ConfigForm } from '~/components/config-form'
+import { CheckCircleOutlinedIcon } from '~/components/icons'
+import { useStoreRef } from '~/hooks/use-store-ref'
+import { useLayout } from '~/layouts/content'
 import { camelCase, cloneDeep, isEmpty, merge } from 'lodash-es'
-import { UIStore } from 'stores/ui'
-import { RESTManager, deepDiff } from 'utils'
+import { UIStore } from '~/stores/ui'
+import { RESTManager, deepDiff } from '~/utils'
 import {
   defineComponent,
   onBeforeUnmount,

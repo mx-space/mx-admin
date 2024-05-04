@@ -1,4 +1,4 @@
-import { useStorageObject } from 'hooks/use-storage'
+import { useStorageObject } from '~/hooks/use-storage'
 import { NFormItem, NH5, NInput, NInputNumber, NSwitch } from 'naive-ui'
 
 import { GeneralSettingDto } from './editor-config'

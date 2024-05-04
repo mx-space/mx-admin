@@ -1,4 +1,4 @@
-import { useStoreRef } from 'hooks/use-store-ref'
+import { useStoreRef } from '~/hooks/use-store-ref'
 import { get, set } from 'lodash-es'
 import { marked } from 'marked'
 import {
@@ -14,8 +14,8 @@ import {
   NSwitch,
   NText,
 } from 'naive-ui'
-import { UIStore } from 'stores/ui'
-import { uuid } from 'utils'
+import { UIStore } from '~/stores/ui'
+import { uuid } from '~/utils'
 import type { ComputedRef, InjectionKey, PropType, Ref } from 'vue'
 
 const NFormPrefixCls = 'mt-6'

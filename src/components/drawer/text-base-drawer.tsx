@@ -1,5 +1,5 @@
 import { isURL } from 'class-validator'
-import { JSONHighlight } from 'components/json-highlight'
+import { JSONHighlight } from '~/components/json-highlight'
 import { isObject, isUndefined } from 'lodash-es'
 import {
   NButton,
@@ -20,7 +20,7 @@ import {
   NSwitch,
   NTooltip,
 } from 'naive-ui'
-import { JSONParseReturnOriginal } from 'utils/json'
+import { JSONParseReturnOriginal } from '~/utils/json'
 import { ImageDetailSection } from './components/image-detail-section'
 import { JSONEditor } from './components/json-editor'
 import type { Image } from '@mx-space/api-client'

@@ -1,7 +1,7 @@
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { useStoreRef } from 'hooks/use-store-ref'
-import { UIStore } from 'stores/ui'
+import { useStoreRef } from '~/hooks/use-store-ref'
+import { UIStore } from '~/stores/ui'
 import { defineComponent, onMounted, ref } from 'vue'
 import type { PropType } from 'vue'
 

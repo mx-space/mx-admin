@@ -1,4 +1,4 @@
-import { RESTManager } from 'utils'
+import { RESTManager } from '~/utils'
 
 export const CrossBellConnectorIndirector = defineComponent({
   setup() {

@@ -1,5 +1,5 @@
-import { createMemoDataListFetchHook } from 'hooks/use-memo-fetch-data-list'
-import { RESTManager } from 'utils'
+import { createMemoDataListFetchHook } from '~/hooks/use-memo-fetch-data-list'
+import { RESTManager } from '~/utils'
 import type { NoteModel, PaginateResult } from '@mx-space/api-client'
 
 export const useMemoNoteList = createMemoDataListFetchHook<

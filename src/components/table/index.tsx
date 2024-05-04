@@ -1,10 +1,10 @@
-import { useStoreRef } from 'hooks/use-store-ref'
+import { useStoreRef } from '~/hooks/use-store-ref'
 import { NDataTable } from 'naive-ui'
-import { UIStore } from 'stores/ui'
+import { UIStore } from '~/stores/ui'
 import { defineComponent, reactive, ref, watch } from 'vue'
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import styles from './index.module.css'
-import type { Pager } from 'models/base'
+import type { Pager } from '~/models/base'
 import type dataTableProps from 'naive-ui/lib/data-table/src/DataTable'
 import type {
   RowKey,

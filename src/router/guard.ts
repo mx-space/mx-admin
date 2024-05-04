@@ -1,7 +1,7 @@
-import { API_URL, GATEWAY_URL } from 'node:constants/env'
+import { API_URL, GATEWAY_URL } from '~/constants/env'
 import QProgress from 'qier-progress'
-import { removeToken, setToken } from 'utils/auth'
-import { checkIsInit } from 'utils/is-init'
+import { removeToken, setToken } from '~/utils/auth'
+import { checkIsInit } from '~/utils/is-init'
 
 import { SESSION_WITH_LOGIN } from '~/constants/keys'
 import { getTokenIsUpstream } from '~/stores/user'
@@ -59,7 +59,7 @@ router.beforeEach(async (to) => {
     if (!ok) {
       return `/login?from=${encodeURI(to.fullPath)}`
     } else {
-      import('socket').then((mo) => {
+      import('~/socket').then((mo) => {
         mo.socket.initIO()
       })
 
@@ -76,7 +76,7 @@ router.beforeEach(async (to) => {
             removeToken()
             setToken(res.token)
 
-            import('socket').then((mo) => {
+            import('~/socket').then((mo) => {
               mo.socket.initIO()
             })
           })

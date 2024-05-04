@@ -1,7 +1,7 @@
-import { AddIcon, MenuDownIcon } from 'components/icons'
-import { DeleteConfirmButton } from 'components/special-button/delete-confirm'
-import { RelativeTime } from 'components/time/relative-time'
-import { useDataTableFetch } from 'hooks/use-table'
+import { AddIcon, MenuDownIcon } from '~/components/icons'
+import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
+import { RelativeTime } from '~/components/time/relative-time'
+import { useDataTableFetch } from '~/hooks/use-table'
 import {
   NAvatar,
   NButton,
@@ -18,16 +18,16 @@ import {
   NThing,
   useMessage,
 } from 'naive-ui'
-import { router } from 'router'
-import { RouteName } from 'router/name'
-import { parseDate } from 'utils'
+import { router } from '~/router'
+import { RouteName } from '~/router/name'
+import { parseDate } from '~/utils'
 import { defineComponent, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
-import type { ProjectModel, ProjectResponse } from 'models/project'
+import type { ProjectModel, ProjectResponse } from '~/models/project'
 
 const ManageProjectView = defineComponent({
   setup() {

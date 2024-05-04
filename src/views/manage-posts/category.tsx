@@ -1,8 +1,8 @@
-import { HeaderActionButton } from 'components/button/rounded-button'
-import { AddIcon } from 'components/icons'
-import { tableRowStyle } from 'components/table'
-import { useStoreRef } from 'hooks/use-store-ref'
-import { ContentLayout } from 'layouts/content'
+import { HeaderActionButton } from '~/components/button/rounded-button'
+import { AddIcon } from '~/components/icons'
+import { tableRowStyle } from '~/components/table'
+import { useStoreRef } from '~/hooks/use-store-ref'
+import { ContentLayout } from '~/layouts/content'
 import {
   NBadge,
   NButton,
@@ -18,12 +18,12 @@ import {
   NTag,
   useMessage,
 } from 'naive-ui'
-import { CategoryStore } from 'stores/category'
-import { RESTManager } from 'utils/rest'
+import { CategoryStore } from '~/stores/category'
+import { RESTManager } from '~/utils/rest'
 import { defineComponent, onMounted, reactive, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
-import type { TagModel } from 'models/category'
-import type { PostModel } from 'models/post'
+import type { TagModel } from '~/models/category'
+import type { PostModel } from '~/models/post'
 import type { Ref } from 'vue'
 
 export const CategoryView = defineComponent((props) => {

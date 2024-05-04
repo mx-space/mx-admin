@@ -6,9 +6,9 @@ import {
   MaterialSymbolsThumbDownOutline,
   MaterialSymbolsThumbUpOutline,
   PenIcon,
-} from 'components/icons'
-import { useShorthand } from 'components/shorthand'
-import { RelativeTime } from 'components/time/relative-time'
+} from '~/components/icons'
+import { useShorthand } from '~/components/shorthand'
+import { RelativeTime } from '~/components/time/relative-time'
 import {
   NButton,
   NPopconfirm,
@@ -24,7 +24,7 @@ import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
 import styles from './index.module.css'
-import type { RecentlyModel } from 'models/recently'
+import type { RecentlyModel } from '~/models/recently'
 
 export default defineComponent({
   setup() {

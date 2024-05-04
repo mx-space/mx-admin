@@ -11,7 +11,7 @@
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
     "noImplicitAny": false,
-    "baseUrl": "./src",
+    "baseUrl": "./",
     "allowJs": true,
     "skipLibCheck": true,
     "jsxImportSource": "vue",
@@ -25,10 +25,10 @@
     "types": [],
     "paths": {
       "~": [
-        "."
+        "./src"
       ],
       "~/*": [
-        "./*"
+        "./src/*"
       ]
     }
   },

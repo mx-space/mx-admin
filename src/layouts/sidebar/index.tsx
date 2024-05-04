@@ -1,8 +1,8 @@
-import { GATEWAY_URL } from 'node:constants/env'
-import { KBarWrapper } from 'components/k-bar'
-import $RouterView from 'layouts/router-view'
+import { GATEWAY_URL } from '~/constants/env'
+import { KBarWrapper } from '~/components/k-bar'
+import $RouterView from '~/layouts/router-view'
 import { NLayoutContent } from 'naive-ui'
-import { RESTManager } from 'utils'
+import { RESTManager } from '~/utils'
 import { computed, defineComponent, watchEffect } from 'vue'
 import { RouterLink } from 'vue-router'
 

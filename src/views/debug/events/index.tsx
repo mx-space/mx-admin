@@ -1,9 +1,12 @@
-import { useAsyncLoadMonaco, usePropsValueToRef } from 'hooks/use-async-monaco'
-import { ContentLayout } from 'layouts/content'
-import { TwoColGridLayout } from 'layouts/two-col'
+import {
+  useAsyncLoadMonaco,
+  usePropsValueToRef,
+} from '~/hooks/use-async-monaco'
+import { ContentLayout } from '~/layouts/content'
+import { TwoColGridLayout } from '~/layouts/two-col'
 import { NButton, NForm, NFormItem, NGi, NSelect } from 'naive-ui'
-import { EventTypes } from 'socket/types'
-import { RESTManager } from 'utils'
+import { EventTypes } from '~/socket/types'
+import { RESTManager } from '~/utils'
 
 import { useLocalStorage } from '@vueuse/core'
 

@@ -1,4 +1,4 @@
-import { Xterm } from 'components/xterm'
+import { Xterm } from '~/components/xterm'
 import {
   NButton,
   NCard,
@@ -8,7 +8,7 @@ import {
   NSelect,
   NSpin,
 } from 'naive-ui'
-import { RESTManager } from 'utils'
+import { RESTManager } from '~/utils'
 
 export const LogListView = defineComponent({
   setup() {
