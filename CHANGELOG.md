@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [4.3.4](https://github.com/mx-space/mx-admin/compare/v4.3.3...v4.3.4) (2024-05-04)
+
+
+
 ## [4.3.3](https://github.com/mx-space/mx-admin/compare/v4.3.2...v4.3.3) (2024-05-03)
 
 
