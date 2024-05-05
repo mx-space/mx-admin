@@ -2,14 +2,6 @@
  * 最近 & 速记
  */
 import {
-  AddIcon,
-  MaterialSymbolsThumbDownOutline,
-  MaterialSymbolsThumbUpOutline,
-  PenIcon,
-} from '~/components/icons'
-import { useShorthand } from '~/components/shorthand'
-import { RelativeTime } from '~/components/time/relative-time'
-import {
   NButton,
   NPopconfirm,
   NSpace,
@@ -17,14 +9,23 @@ import {
   NTimelineItem,
 } from 'naive-ui'
 import { defineComponent, onMounted } from 'vue'
+import type { RecentlyModel } from '~/models/recently'
 
 import { Icon } from '@vicons/utils'
+
+import {
+  AddIcon,
+  MaterialSymbolsThumbDownOutline,
+  MaterialSymbolsThumbUpOutline,
+  PenIcon,
+} from '~/components/icons'
+import { useShorthand } from '~/components/shorthand'
+import { RelativeTime } from '~/components/time/relative-time'
 
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
 import styles from './index.module.css'
-import type { RecentlyModel } from '~/models/recently'
 
 export default defineComponent({
   setup() {
@@ -59,7 +60,7 @@ export default defineComponent({
         <NTimeline>
           {data.value.map((item) => {
             return (
-              <NTimelineItem type="success" key={item.id}>
+              <NTimelineItem type="primary" key={item.id}>
                 {{
                   icon() {
                     return (

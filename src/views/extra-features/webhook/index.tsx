@@ -19,6 +19,9 @@ import {
   useDialog,
 } from 'naive-ui'
 import useSWRV from 'swrv'
+import type { PaginateResult } from '@mx-space/api-client'
+import type { WebhookEventModel, WebhookModel } from '~/models/wehbook'
+import type { PropType } from 'vue'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { PlusIcon } from '~/components/icons'
@@ -26,9 +29,6 @@ import { JSONHighlight } from '~/components/json-highlight'
 import { ContentLayout } from '~/layouts/content'
 import { EventScope } from '~/models/wehbook'
 import { RESTManager } from '~/utils'
-import type { PropType } from 'vue'
-import type { WebhookEventModel, WebhookModel } from '~/models/wehbook'
-import type { PaginateResult } from '@mx-space/api-client'
 
 const LIST_SWRV_KEY = 'webhook.list'
 
@@ -92,7 +92,7 @@ export default defineComponent({
                                 <div class={'space-x-2'}>
                                   {item.events.map((event) => {
                                     return (
-                                      <NTag size="small" type="success" round>
+                                      <NTag size="small" type="primary" round>
                                         {event}
                                       </NTag>
                                     )

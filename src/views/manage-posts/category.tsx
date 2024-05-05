@@ -1,8 +1,3 @@
-import { HeaderActionButton } from '~/components/button/rounded-button'
-import { AddIcon } from '~/components/icons'
-import { tableRowStyle } from '~/components/table'
-import { useStoreRef } from '~/hooks/use-store-ref'
-import { ContentLayout } from '~/layouts/content'
 import {
   NBadge,
   NButton,
@@ -18,13 +13,19 @@ import {
   NTag,
   useMessage,
 } from 'naive-ui'
-import { CategoryStore } from '~/stores/category'
-import { RESTManager } from '~/utils/rest'
 import { defineComponent, onMounted, reactive, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import type { TagModel } from '~/models/category'
 import type { PostModel } from '~/models/post'
 import type { Ref } from 'vue'
+
+import { HeaderActionButton } from '~/components/button/rounded-button'
+import { AddIcon } from '~/components/icons'
+import { tableRowStyle } from '~/components/table'
+import { useStoreRef } from '~/hooks/use-store-ref'
+import { ContentLayout } from '~/layouts/content'
+import { CategoryStore } from '~/stores/category'
+import { RESTManager } from '~/utils/rest'
 
 export const CategoryView = defineComponent((props) => {
   const categoryStore = useStoreRef(CategoryStore)
@@ -189,7 +190,7 @@ export const CategoryView = defineComponent((props) => {
               <NTag
                 class="border border-gray-200"
                 round
-                type="success"
+                type="primary"
                 checkable
                 bordered
                 checked={checkedTag.value == tag.name}
@@ -322,7 +323,7 @@ const EditCategoryDialog = defineComponent<{
 
               <div class="text-center">
                 <NSpace size={12} align="center" inline>
-                  <NButton type="success" onClick={onSubmit} round>
+                  <NButton type="primary" onClick={onSubmit} round>
                     确定
                   </NButton>
                   <NButton onClick={() => (props.show.value = false)} round>

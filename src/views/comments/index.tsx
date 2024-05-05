@@ -1,20 +1,4 @@
-import { WEB_URL } from '~/constants/env'
-import { KAOMOJI_LIST } from '~/constants/kaomoji'
-import { HeaderActionButton } from '~/components/button/rounded-button'
-import {
-  CheckmarkSharpIcon,
-  CloseSharpIcon,
-  EmojiAddIcon,
-  TrashIcon as Trash,
-  UserAnonymouse,
-} from '~/components/icons'
-import { IpInfoPopover } from '~/components/ip-info'
-import { Table } from '~/components/table'
-import { useStoreRef } from '~/hooks/use-store-ref'
-import { useDataTableFetch } from '~/hooks/use-table'
-import { ContentLayout } from '~/layouts/content'
 import markdownEscape from 'markdown-escape'
-import { CommentState } from '~/models/comment'
 import {
   NAvatar,
   NButton,
@@ -32,16 +16,35 @@ import {
   useDialog,
   useMessage,
 } from 'naive-ui'
+import { defineComponent, nextTick, reactive, ref, unref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import type { CommentModel, CommentsResponse } from '~/models/comment'
+import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
+
+import { Icon } from '@vicons/utils'
+
+import { HeaderActionButton } from '~/components/button/rounded-button'
+import {
+  CheckmarkSharpIcon,
+  CloseSharpIcon,
+  EmojiAddIcon,
+  TrashIcon as Trash,
+  UserAnonymouse,
+} from '~/components/icons'
+import { IpInfoPopover } from '~/components/ip-info'
+import { Table } from '~/components/table'
+import { WEB_URL } from '~/constants/env'
+import { KAOMOJI_LIST } from '~/constants/kaomoji'
+import { useStoreRef } from '~/hooks/use-store-ref'
+import { useDataTableFetch } from '~/hooks/use-table'
+import { ContentLayout } from '~/layouts/content'
+import { CommentState } from '~/models/comment'
 import { RouteName } from '~/router/name'
 import { UIStore } from '~/stores/ui'
 import { RESTManager } from '~/utils/rest'
 import { relativeTimeFromNow } from '~/utils/time'
-import { defineComponent, nextTick, reactive, ref, unref, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { Icon } from '@vicons/utils'
+
 import { CommentMarkdownRender } from './markdown-render'
-import type { CommentModel, CommentsResponse } from '~/models/comment'
-import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 
 enum CommentType {
   Pending,
@@ -270,7 +273,7 @@ const ManageComment = defineComponent(() => {
                 <NButton
                   quaternary
                   size="tiny"
-                  type="success"
+                  type="primary"
                   onClick={() => changeState(row.id, 1)}
                 >
                   已读
@@ -541,7 +544,7 @@ const ManageComment = defineComponent(() => {
                 </NPopover>
                 <NSpace size={12} align="center" inline>
                   <NButton
-                    type="success"
+                    type="primary"
                     onClick={onReplySubmit}
                     round
                     loading={requestLoading.value}
