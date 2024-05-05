@@ -1,9 +1,9 @@
 import { NBadge, NButton, NCard, NSpace, NThing } from 'naive-ui'
+import type { PropType, VNode } from 'vue'
 
 import { Icon } from '@vicons/utils'
 
 import { Statistic } from './statistic'
-import type { PropType, VNode } from 'vue'
 
 export interface CardProps {
   label: string
@@ -67,7 +67,7 @@ export const Card = defineComponent({
                             {i.name}
                           </NButton>
                         ) : (
-                          <NButton quaternary onClick={i.onClick}>
+                          <NButton text onClick={i.onClick}>
                             {i.name}
                           </NButton>
                         )
