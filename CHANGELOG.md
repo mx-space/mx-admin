@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [4.4.2](https://github.com/mx-space/mx-admin/compare/v4.4.1...v4.4.2) (2024-05-05)
+
+
+### Bug Fixes
+
+* naive ui button ([19f5d67](https://github.com/mx-space/mx-admin/commit/19f5d670028e2dbe34ba8d43e7759de08e1f27f0))
+
+
+
 ## [4.4.1](https://github.com/mx-space/mx-admin/compare/v4.4.0...v4.4.1) (2024-05-05)
 
 
