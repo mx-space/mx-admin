@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [4.4.1](https://github.com/mx-space/mx-admin/compare/v4.4.0...v4.4.1) (2024-05-05)
+
+
+### Bug Fixes
+
+* asset path in page proxy ([612980c](https://github.com/mx-space/mx-admin/commit/612980cd8aaebfd7aac5cd950e04574a901eb8e8))
+
+
+
 # [4.4.0](https://github.com/mx-space/mx-admin/compare/v4.3.4...v4.4.0) (2024-05-04)
 
 
