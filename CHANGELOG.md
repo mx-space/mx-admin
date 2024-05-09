@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## [4.4.3](https://github.com/mx-space/mx-admin/compare/v4.4.2...v4.4.3) (2024-05-09)
+
+
+### Bug Fixes
+
+* align center ([351a556](https://github.com/mx-space/mx-admin/commit/351a556c86d008fa2a979a46884b1edae634eb66))
+* kaomoji button type ([fe257c3](https://github.com/mx-space/mx-admin/commit/fe257c3bc566f251a24bc647db6ea0e7bb0f5493))
+
+
+
 ## [4.4.2](https://github.com/mx-space/mx-admin/compare/v4.4.1...v4.4.2) (2024-05-05)
 
 
