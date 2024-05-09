@@ -498,7 +498,7 @@ const ManageComment = defineComponent(() => {
                           <NSpace align="center" class={'!justify-between'}>
                             {KAOMOJI_LIST.map((kaomoji) => (
                               <NButton
-                                quaternary
+                                text
                                 key={kaomoji}
                                 type="primary"
                                 onClick={() => {
