@@ -1,34 +1,3 @@
-import {
-  ActivityIcon,
-  AddLinkFilledIcon,
-  BubbleChartFilledIcon,
-  ChatbubblesSharpIcon,
-  CodeIcon,
-  CommentIcon,
-  CommentsIcon,
-  CopyIcon,
-  ExtensionIcon,
-  FileIcon,
-  GamesIcon,
-  GuestIcon,
-  HeartIcon,
-  LinkIcon,
-  NoteIcon,
-  NotebookMinimalistic,
-  OnlinePredictionFilledIcon,
-  PencilIcon,
-  PhAlignLeft,
-  RedisIcon,
-  RefreshIcon,
-} from '~/components/icons'
-import { IpInfoPopover } from '~/components/ip-info'
-import { useShorthand } from '~/components/shorthand'
-import { checkUpdateFromGitHub } from '~/external/api/github-check-update'
-import { SentenceType, fetchHitokoto } from '~/external/api/hitokoto'
-import { getJinRiShiCiOne } from '~/external/api/jinrishici'
-import { usePortalElement } from '~/hooks/use-portal-element'
-import { useStoreRef } from '~/hooks/use-store-ref'
-import { ContentLayout } from '~/layouts/content'
 import { pick } from 'lodash-es'
 import {
   NButton,
@@ -47,10 +16,6 @@ import {
   useMessage,
   useNotification,
 } from 'naive-ui'
-import { RouteName } from '~/router/name'
-import { AppStore } from '~/stores/app'
-import { UserStore } from '~/stores/user'
-import { RESTManager, parseDate } from '~/utils'
 import {
   computed,
   defineComponent,
@@ -59,15 +24,51 @@ import {
   ref,
 } from 'vue'
 import { useRouter } from 'vue-router'
+import type { ShiJuData } from '~/external/api/jinrishici'
+import type { Stat } from '~/models/stat'
+import type { CardProps } from './card'
 
 import { Icon } from '@vicons/utils'
+
+import {
+  ActivityIcon,
+  AddLinkFilledIcon,
+  BubbleChartFilledIcon,
+  ChatbubblesSharpIcon,
+  CodeIcon,
+  CommentIcon,
+  CommentsIcon,
+  CopyIcon,
+  ExtensionIcon,
+  FileIcon,
+  GamesIcon,
+  GuestIcon,
+  HeartIcon,
+  LinkIcon,
+  NotebookMinimalistic,
+  NoteIcon,
+  OnlinePredictionFilledIcon,
+  PencilIcon,
+  PhAlignLeft,
+  RedisIcon,
+  RefreshIcon,
+} from '~/components/icons'
+import { IpInfoPopover } from '~/components/ip-info'
+import { useShorthand } from '~/components/shorthand'
+import { checkUpdateFromGitHub } from '~/external/api/github-check-update'
+import { fetchHitokoto, SentenceType } from '~/external/api/hitokoto'
+import { getJinRiShiCiOne } from '~/external/api/jinrishici'
+import { usePortalElement } from '~/hooks/use-portal-element'
+import { useStoreRef } from '~/hooks/use-store-ref'
+import { ContentLayout } from '~/layouts/content'
+import { RouteName } from '~/router/name'
+import { AppStore } from '~/stores/app'
+import { UserStore } from '~/stores/user'
+import { parseDate, RESTManager } from '~/utils'
 
 import PKG from '../../../package.json'
 import { Card } from './card'
 import { UpdatePanel } from './update-panel'
-import type { CardProps } from './card'
-import type { Stat } from '~/models/stat'
-import type { ShiJuData } from '~/external/api/jinrishici'
 
 export const DashBoardView = defineComponent({
   name: 'DashboardView',
@@ -491,7 +492,7 @@ export const DashBoardView = defineComponent({
                   : 'N/A'}
               </time>
 
-              <NButton text onClick={fetchStat} class="ml-4 text-black">
+              <NButton text onClick={fetchStat} class="ml-4">
                 <Icon>
                   <RefreshIcon />
                 </Icon>
@@ -527,7 +528,7 @@ export const DashBoardView = defineComponent({
                     <NText class="leading-normal">{hitokoto.value}</NText>
                     <div class="flex items-center space-x-2">
                       <NButton
-                        quaternary
+                        text
                         onClick={refreshHitokoto}
                         class="phone:float-right ml-0"
                       >
@@ -537,7 +538,7 @@ export const DashBoardView = defineComponent({
                       </NButton>
 
                       <NButton
-                        quaternary
+                        text
                         onClick={() => {
                           navigator.clipboard.writeText(hitokoto.value)
                           message.success('已复制')
