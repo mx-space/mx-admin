@@ -1,16 +1,17 @@
-import { WEB_URL } from '~/constants/env'
-import { ExternalLinkIcon, OpenAIIcon } from '~/components/icons'
-import { IframePreviewButton } from '~/components/special-button/iframe-preview'
-import { useStoreRef } from '~/hooks/use-store-ref'
 import { NButton, NEllipsis, NPopover } from 'naive-ui'
-import { UIStore } from '~/stores/ui'
-import { buildMarkdownRenderUrl } from '~/utils/endpoint'
 import { defineComponent } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 
 import { Icon } from '@vicons/utils'
 
+import { ExternalLinkIcon, OpenAIIcon } from '~/components/icons'
+import { IframePreviewButton } from '~/components/special-button/iframe-preview'
+import { WEB_URL } from '~/constants/env'
+import { useStoreRef } from '~/hooks/use-store-ref'
 import { RouteName } from '~/router/name'
+import { UIStore } from '~/stores/ui'
+import { getToken } from '~/utils'
+import { buildMarkdownRenderUrl } from '~/utils/endpoint'
 
 export const TableTitleLink = defineComponent({
   props: {
@@ -77,7 +78,10 @@ export const TableTitleLink = defineComponent({
             tag="a"
             class="cursor-[alias]"
             // @ts-expect-error
-            href={fullExternalLinkTo.value}
+            href={
+              fullExternalLinkTo.value +
+              (props.withToken ? `?token=${getToken()}` : '')
+            }
             target="_blank"
             type="primary"
             onClick={(e) => e.stopPropagation()}
