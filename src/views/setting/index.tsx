@@ -1,7 +1,8 @@
-import { ContentLayout } from '~/layouts/content'
 import { NTabPane, NTabs } from 'naive-ui'
 import { defineComponent, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+
+import { ContentLayout } from '~/layouts/content'
 
 import { TabSecurity } from './tabs/security'
 import { TabSystem } from './tabs/system'
@@ -33,6 +34,7 @@ export default defineComponent({
         <NTabs
           value={tabValue.value}
           onUpdateValue={(e) => {
+            // @ts-expect-error
             router.replace({ ...route, params: { ...route.params, type: e } })
           }}
         >

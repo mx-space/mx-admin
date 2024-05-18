@@ -1,10 +1,11 @@
-import { startAuthentication, startRegistration } from '@simplewebauthn/browser'
-
-import { RESTManager } from './rest'
 import type {
   AuthenticationResponseJSON,
   RegistrationResponseJSON,
-} from '@simplewebauthn/typescript-types'
+} from '@simplewebauthn/types'
+
+import { startAuthentication, startRegistration } from '@simplewebauthn/browser'
+
+import { RESTManager } from './rest'
 
 class AuthnUtilsStatic {
   async createPassKey(name: string) {

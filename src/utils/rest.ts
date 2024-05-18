@@ -1,13 +1,14 @@
-import { API_URL } from '~/constants/env'
 import { isPlainObject } from 'lodash-es'
 import { extend } from 'umi-request'
-import { uuid } from '~/utils'
+import type { RequestMethod, RequestOptionsInit } from 'umi-request'
 
 import { simpleCamelcaseKeys } from '@mx-space/api-client'
 
+import { API_URL } from '~/constants/env'
+import { uuid } from '~/utils'
+
 import { router } from '../router/router'
 import { getToken } from './auth'
-import type { RequestMethod, RequestOptionsInit } from 'umi-request'
 
 class RESTManagerStatic {
   private _$$instance: RequestMethod = null!
@@ -158,7 +159,7 @@ RESTManager.instance.interceptors.request.use((url, options) => {
   }
   if (options.headers) {
     if (token) {
-      options.headers.Authorization = token
+      options.headers['Authorization'] = token
     }
 
     options.headers['x-uuid'] = _uuid

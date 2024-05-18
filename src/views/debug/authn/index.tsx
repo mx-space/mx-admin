@@ -1,12 +1,12 @@
 import { NButton } from 'naive-ui'
+import type {
+  AuthenticationResponseJSON,
+  RegistrationResponseJSON,
+} from '@simplewebauthn/types'
 
 import { startAuthentication, startRegistration } from '@simplewebauthn/browser'
 
 import { RESTManager } from '~/utils'
-import type {
-  AuthenticationResponseJSON,
-  RegistrationResponseJSON,
-} from '@simplewebauthn/typescript-types'
 
 export default defineComponent({
   setup() {

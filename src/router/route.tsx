@@ -2,6 +2,8 @@
  * 路由在此定义
  * @author Innei <https://innei.ren>
  */
+import type { RouteRecordRaw } from 'vue-router'
+
 import {
   BookIcon,
   ChartLineIcon,
@@ -32,10 +34,9 @@ import {
   UserFriendsIcon,
   WebhookIcon,
 } from '~/components/icons'
+import { AppLayout } from '~/layouts/app-layout'
 import $RouterView from '~/layouts/router-view'
 import { DashBoardView } from '~/views/dashboard'
-
-import { AppLayout } from '~/layouts/app-layout'
 import { ManagePostListView } from '~/views/manage-posts/list'
 
 import SetupLayout from '../layouts/setup-view.vue'
@@ -45,7 +46,6 @@ import { ManageNoteListView } from '../views/manage-notes/list'
 import ManageNoteWrite from '../views/manage-notes/write'
 import ManagePostsWrite from '../views/manage-posts/write'
 import { RouteName } from './name'
-import type { RouteRecordRaw } from 'vue-router'
 
 export const routeForMenu: Array<RouteRecordRaw> = [
   {
@@ -469,10 +469,11 @@ export const routes: RouteRecordRaw[] = [
     children: __DEV__
       ? Object.entries(import.meta.glob('../views/dev/**/*.tsx')).map(
           ([path, comp]) => ({
-            path: path
-              .split('/')
-              .at(-1)
-              .replace(/\.[jt]sx$/, ''),
+            path:
+              path
+                .split('/')
+                .at(-1)
+                ?.replace(/\.[jt]sx$/, '') || '',
             component: comp,
           }),
         )

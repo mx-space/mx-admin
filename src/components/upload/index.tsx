@@ -1,12 +1,13 @@
-import { NUpload } from 'naive-ui'
-import { RESTManager, getToken } from '~/utils'
-import type { OnError, OnFinish } from 'naive-ui/es/upload/src/interface'
+import { NUpload, UploadOnFinish } from 'naive-ui'
+import { OnError } from 'naive-ui/es/upload/src/interface'
 import type { PropType } from 'vue'
+
+import { getToken, RESTManager } from '~/utils'
 
 export const UploadWrapper = defineComponent({
   props: {
     onFinish: {
-      type: Function as PropType<OnFinish>,
+      type: Function as PropType<UploadOnFinish>,
     },
     onError: {
       type: Function as PropType<OnError>,

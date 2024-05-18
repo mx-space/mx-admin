@@ -60,7 +60,7 @@ export default defineComponent({
         <NTimeline>
           {data.value.map((item) => {
             return (
-              <NTimelineItem type="primary" key={item.id}>
+              <NTimelineItem type="default" key={item.id}>
                 {{
                   icon() {
                     return (

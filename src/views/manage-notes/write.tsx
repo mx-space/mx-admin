@@ -1,16 +1,4 @@
-import { WEB_URL } from '~/constants/env'
-import { MOOD_SET, WEATHER_SET } from '~/constants/note'
-import { HeaderActionButton } from '~/components/button/rounded-button'
-import { TextBaseDrawer } from '~/components/drawer/text-base-drawer'
-import { SlidersHIcon, TelegramPlaneIcon } from '~/components/icons'
-import { MaterialInput } from '~/components/input/material-input'
-import { GetLocationButton } from '~/components/location/get-location-button'
-import { SearchLocationButton } from '~/components/location/search-button'
-import { ParseContentButton } from '~/components/special-button/parse-content'
 import { add } from 'date-fns'
-import { useAutoSave, useAutoSaveInEditor } from '~/hooks/use-auto-save'
-import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
-import { ContentLayout } from '~/layouts/content'
 import { isString } from 'lodash-es'
 import {
   NButton,
@@ -23,9 +11,6 @@ import {
   NSwitch,
   useMessage,
 } from 'naive-ui'
-import { RouteName } from '~/router/name'
-import { RESTManager } from '~/utils/rest'
-import { getDayOfYear } from '~/utils/time'
 import {
   computed,
   defineComponent,
@@ -37,15 +22,32 @@ import {
   watch,
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { Icon } from '@vicons/utils'
-import { AiHelperButton } from '~/components/ai/ai-helper'
-import { Editor } from '~/components/editor/universal'
-import { HeaderPreviewButton } from '~/components/special-button/preview'
-import { EmitKeyMap } from '~/constants/keys'
 import type { PaginateResult } from '@mx-space/api-client'
 import type { Coordinate, NoteModel } from '~/models/note'
 import type { TopicModel } from '~/models/topic'
-import type { WriteBaseType } from 'shared/types/base'
+import type { WriteBaseType } from '~/shared/types/base'
+
+import { Icon } from '@vicons/utils'
+
+import { AiHelperButton } from '~/components/ai/ai-helper'
+import { HeaderActionButton } from '~/components/button/rounded-button'
+import { TextBaseDrawer } from '~/components/drawer/text-base-drawer'
+import { Editor } from '~/components/editor/universal'
+import { SlidersHIcon, TelegramPlaneIcon } from '~/components/icons'
+import { MaterialInput } from '~/components/input/material-input'
+import { GetLocationButton } from '~/components/location/get-location-button'
+import { SearchLocationButton } from '~/components/location/search-button'
+import { ParseContentButton } from '~/components/special-button/parse-content'
+import { HeaderPreviewButton } from '~/components/special-button/preview'
+import { WEB_URL } from '~/constants/env'
+import { EmitKeyMap } from '~/constants/keys'
+import { MOOD_SET, WEATHER_SET } from '~/constants/note'
+import { useAutoSave, useAutoSaveInEditor } from '~/hooks/use-auto-save'
+import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
+import { ContentLayout } from '~/layouts/content'
+import { RouteName } from '~/router/name'
+import { RESTManager } from '~/utils/rest'
+import { getDayOfYear } from '~/utils/time'
 
 const CrossBellConnectorIndirector = defineAsyncComponent({
   loader: () =>

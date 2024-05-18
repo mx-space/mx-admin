@@ -11,8 +11,9 @@ import {
   ref,
 } from 'vue'
 import { useRouter } from 'vue-router'
-import styles from './index.module.css'
 import type { PropType, VNode } from 'vue'
+
+import styles from './index.module.css'
 
 const ProvideKey = Symbol('inject')
 
@@ -107,7 +108,7 @@ export const ContentLayout = defineComponent({
     )
 
     const pageTitle = computed(
-      () => props.title ?? route.value.value.matched.at(-1).meta.title,
+      () => props.title ?? route.value.value.matched.at(-1)?.meta.title,
     )
 
     const descriptionElement = computed(() => {
