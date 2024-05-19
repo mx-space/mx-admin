@@ -1,4 +1,4 @@
-import { useStoreRef } from '~/hooks/use-store-ref'
+import { O } from 'crossbell.js/dist/index-LKLW_17H'
 import { get, set } from 'lodash-es'
 import { marked } from 'marked'
 import {
@@ -14,9 +14,12 @@ import {
   NSwitch,
   NText,
 } from 'naive-ui'
+import { isVNode } from 'vue'
+import type { ComputedRef, InjectionKey, PropType, Ref, VNode } from 'vue'
+
+import { useStoreRef } from '~/hooks/use-store-ref'
 import { UIStore } from '~/stores/ui'
 import { uuid } from '~/utils'
-import type { ComputedRef, InjectionKey, PropType, Ref } from 'vue'
 
 const NFormPrefixCls = 'mt-6'
 const NFormBaseProps = {
@@ -53,9 +56,15 @@ export const ConfigForm = defineComponent({
       required: false,
       default: (key: string) => key,
     },
+
+    extendConfigView: {
+      type: Object as PropType<{
+        [key: string]: VNode
+      }>,
+    },
   },
 
-  setup(props) {
+  setup(props, { slots }) {
     const formData = ref(props.initialValue)
 
     watchEffect(
@@ -131,7 +140,10 @@ export const ConfigForm = defineComponent({
                       dataKey={props.getKey(key)}
                       formData={formData}
                       schema={schema}
+                      property={key}
                     />
+                    {props.extendConfigView?.[key]}
+                    {slots[key]?.()}
                   </NForm>
                 </NCollapseItem>
               )
@@ -168,16 +180,20 @@ const SchemaSection = defineComponent({
       type: String as PropType<string>,
       required: true,
     },
+    property: {
+      type: String as PropType<string>,
+    },
   },
   setup(props) {
     const { definitions, getKey } = inject(JSONSchemaFormInjectKey, {} as any)
 
     return () => {
-      const { schema, formData, dataKey: key } = props
+      const { schema, formData, dataKey: key, property } = props
 
       if (!schema) {
         return null
       }
+
       return (
         <>
           {Object.keys(schema.properties).map((property) => {
@@ -193,6 +209,7 @@ const SchemaSection = defineComponent({
                   dataKey={`${getKey(key)}.${property}`}
                   formData={formData}
                   schema={nestSchmea}
+                  property={property}
                 />
               )
             }

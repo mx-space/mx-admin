@@ -35,9 +35,9 @@ export default defineConfig({
       },
       colors: {
         primary: {
-          default: ThemeColorConfig.primaryColor,
-          deep: ThemeColorConfig.primaryColorPressed,
-          shallow: ThemeColorConfig.primaryColorHover,
+          default: 'var(--color-primary)',
+          deep: 'var(--color-primary-deep)',
+          shallow: 'var(--color-primary-shallow)',
         },
         gray$: {
           default: '#ddd',

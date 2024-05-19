@@ -1,11 +1,6 @@
-import { HeaderActionButton } from '~/components/button/rounded-button'
-import { ConfigForm } from '~/components/config-form'
-import { CheckCircleOutlinedIcon } from '~/components/icons'
-import { useStoreRef } from '~/hooks/use-store-ref'
-import { useLayout } from '~/layouts/content'
 import { camelCase, cloneDeep, isEmpty, merge } from 'lodash-es'
-import { UIStore } from '~/stores/ui'
-import { RESTManager, deepDiff } from '~/utils'
+import { NButton, NColorPicker, NFormItem, useThemeVars } from 'naive-ui'
+import { ThemeColorConfig } from 'theme.config'
 import {
   defineComponent,
   onBeforeUnmount,
@@ -15,6 +10,15 @@ import {
   toRaw,
   watch,
 } from 'vue'
+
+import { HeaderActionButton } from '~/components/button/rounded-button'
+import { ConfigForm } from '~/components/config-form'
+import { CheckCircleOutlinedIcon } from '~/components/icons'
+import { useStoreRef } from '~/hooks/use-store-ref'
+import { useLayout } from '~/layouts/content'
+import { UIStore } from '~/stores/ui'
+import { deepDiff, RESTManager } from '~/utils'
+import { colorRef, defineColors } from '~/utils/color'
 
 const NFormPrefixCls = 'mt-6'
 const NFormBaseProps = {
@@ -153,8 +157,56 @@ export const TabSystem = defineComponent(() => {
               .replace('Dto', '')
           }}
           schema={schema.value}
-        />
+        >
+          {{
+            AdminExtraDto() {
+              return (
+                <>
+                  <NFormItem label={'主题色'}>
+                    <AppColorSetter />
+                  </NFormItem>
+                </>
+              )
+            },
+          }}
+        </ConfigForm>
       )}
     </Fragment>
   )
+})
+
+const AppColorSetter = defineComponent({
+  setup() {
+    const vars = useThemeVars()
+
+    const $style = document.createElement('style')
+    $style.innerHTML = `* { transition: none !important; }`
+
+    return () => (
+      <div class={'flex items-center gap-2'}>
+        <NColorPicker
+          class={'w-36'}
+          value={vars.value.primaryColor}
+          onUpdateValue={(value) => {
+            document.head.appendChild($style)
+
+            Object.assign(colorRef.value, defineColors(value))
+            setTimeout(() => {
+              document.head.removeChild($style)
+            })
+          }}
+        ></NColorPicker>
+
+        <NButton
+          size="small"
+          ghost
+          onClick={() => {
+            Object.assign(colorRef.value, ThemeColorConfig)
+          }}
+        >
+          <span>重置</span>
+        </NButton>
+      </div>
+    )
+  },
 })
