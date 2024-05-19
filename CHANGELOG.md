@@ -1,5 +1,14 @@
 # CHANGELOG
 
+# [4.5.0](https://github.com/mx-space/mx-admin/compare/v4.4.4...v4.5.0) (2024-05-19)
+
+
+### Bug Fixes
+
+* custom app color ([e6e7f7b](https://github.com/mx-space/mx-admin/commit/e6e7f7b14eb2682b85ef7bb607f6ec2707e2c649))
+
+
+
 ## [4.4.4](https://github.com/mx-space/mx-admin/compare/v4.4.3...v4.4.4) (2024-05-19)
 
 
