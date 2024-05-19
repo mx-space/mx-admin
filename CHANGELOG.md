@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## [4.4.4](https://github.com/mx-space/mx-admin/compare/v4.4.3...v4.4.4) (2024-05-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency canvas-confetti to v1.9.3 ([#904](https://github.com/mx-space/mx-admin/issues/904)) ([16639b1](https://github.com/mx-space/mx-admin/commit/16639b10f36b98fabaeb8800714d4a6aae81bf3f))
+* **deps:** update dependency crossbell.js to v1.11.9 ([#891](https://github.com/mx-space/mx-admin/issues/891)) ([07368b9](https://github.com/mx-space/mx-admin/commit/07368b9cec4c911310d94911dbda033e4b80b2c2))
+* refresh button color ([c7ca0cc](https://github.com/mx-space/mx-admin/commit/c7ca0ccc0e359c57928232db41d58f60fb39fe94))
+
+
+### Features
+
+* title link with token query ([752cf94](https://github.com/mx-space/mx-admin/commit/752cf94c0051eecd10c2dcc7fde8a46c5652ceb9))
+
+
+
 ## [4.4.3](https://github.com/mx-space/mx-admin/compare/v4.4.2...v4.4.3) (2024-05-09)
 
 
