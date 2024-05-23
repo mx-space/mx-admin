@@ -24,6 +24,7 @@ import { Editor } from '~/components/editor/universal'
 import { SlidersHIcon, TelegramPlaneIcon } from '~/components/icons'
 import { MaterialInput } from '~/components/input/material-input'
 import { UnderlineInput } from '~/components/input/underline-input'
+import { CopyTextButton } from '~/components/special-button/copy-text-button'
 import { ParseContentButton } from '~/components/special-button/parse-content'
 import { HeaderPreviewButton } from '~/components/special-button/preview'
 import { CrossBellConnectorIndirector } from '~/components/xlog-connect'
@@ -226,7 +227,7 @@ const PostWriteView = defineComponent(() => {
       ></MaterialInput>
 
       <div class={'flex items-center py-3 text-gray-500'}>
-        <label class="prefix">{`${WEB_URL}/${category.value.slug}/`}</label>
+        <label class="prefix">{`${WEB_URL}/posts/${category.value.slug}/`}</label>
 
         <UnderlineInput
           class="ml-2"
@@ -238,6 +239,11 @@ const PostWriteView = defineComponent(() => {
 
         {(!data.title || !data.slug) && data.text.length > 0 && (
           <AiHelperButton reactiveData={data} />
+        )}
+        {!!data.slug && (
+          <CopyTextButton
+            text={`${WEB_URL}/posts/${category.value.slug}/${data.slug}`}
+          />
         )}
       </div>
 

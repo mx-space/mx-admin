@@ -37,6 +37,7 @@ import { SlidersHIcon, TelegramPlaneIcon } from '~/components/icons'
 import { MaterialInput } from '~/components/input/material-input'
 import { GetLocationButton } from '~/components/location/get-location-button'
 import { SearchLocationButton } from '~/components/location/search-button'
+import { CopyTextButton } from '~/components/special-button/copy-text-button'
 import { ParseContentButton } from '~/components/special-button/parse-content'
 import { HeaderPreviewButton } from '~/components/special-button/preview'
 import { WEB_URL } from '~/constants/env'
@@ -317,6 +318,9 @@ const NoteWriteView = defineComponent(() => {
 
       <div class={'py-3 text-gray-500'}>
         <label>{`${WEB_URL}/notes/${nid.value ?? ''}`}</label>
+        {nid.value && (
+          <CopyTextButton text={`${WEB_URL}/notes/${nid.value ?? ''}`} />
+        )}
       </div>
 
       <Editor
