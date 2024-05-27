@@ -103,13 +103,21 @@ export default defineComponent(() => {
 
       strList.push(res as string)
     }
-    const parsedList_ = parseMarkdown(strList)
-    message.success('解析完成，结果查看 console 哦')
-    parsedList.value = parsedList_.map((v, index) => ({
-      ...v,
-      filename: fileList.value[index].file?.name ?? '',
-    }))
-    console.log(toRaw(parsedList))
+    try {
+      const parsedList_ = parseMarkdown(strList)
+      message.success('解析完成，结果查看 console 哦')
+      parsedList.value = parsedList_.map((v, index) => ({
+        ...v,
+        filename: fileList.value[index].file?.name ?? '',
+      }))
+      //
+      console.log(toRaw(parsedList))
+    } catch (e: any) {
+      console.error(e.err)
+      message.error(
+        `文件${fileList.value[e.idx].name ?? ''}解析失败，具体信息查看 console`,
+      )
+    }
   }
 
   async function handleUpload(e: MouseEvent) {
@@ -178,7 +186,7 @@ export default defineComponent(() => {
             options={types}
             value={importType.value}
             onUpdateValue={(e) => void (importType.value = e)}
-          ></NSelect>
+          />
         </NFormItem>
         <NFormItem label="准备好了吗.">
           <NSpace vertical>
@@ -234,26 +242,26 @@ export default defineComponent(() => {
           <NSwitch
             value={exportConfig.includeYAMLHeader}
             onUpdateValue={(e) => void (exportConfig.includeYAMLHeader = e)}
-          ></NSwitch>
+          />
         </NFormItem>
         <NFormItem label="是否在第一行显示文章标题">
           <NSwitch
             value={exportConfig.titleBigTitle}
             onUpdateValue={(e) => void (exportConfig.titleBigTitle = e)}
-          ></NSwitch>
+          />
         </NFormItem>
         <NFormItem label="根据 slug 生成文件名">
           <NSwitch
             value={exportConfig.filenameSlug}
             onUpdateValue={(e) => void (exportConfig.filenameSlug = e)}
-          ></NSwitch>
+          />
         </NFormItem>
 
         <NFormItem label="导出元数据 JSON">
           <NSwitch
             value={exportConfig.withMetaJson}
             onUpdateValue={(e) => void (exportConfig.withMetaJson = e)}
-          ></NSwitch>
+          />
         </NFormItem>
 
         <div class="w-full text-right">

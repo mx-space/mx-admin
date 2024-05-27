@@ -2,7 +2,9 @@ import { load } from 'js-yaml'
 
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 export class ParseMarkdownYAML {
-  constructor(private strList: string[]) {}
+  constructor(private strList: string[]) {
+    this.strList = strList
+  }
 
   parse(str: string) {
     const raw = str
@@ -36,8 +38,15 @@ export class ParseMarkdownYAML {
   start() {
     const files = this.strList
     const contents = [] as ParsedModel[]
-    for (const file of files) {
-      contents.push(this.parse(file))
+    for (const [idx, file] of files.entries()) {
+      try {
+        contents.push(this.parse(file))
+      } catch (err) {
+        throw {
+          idx,
+          err,
+        }
+      }
     }
     return contents
   }
