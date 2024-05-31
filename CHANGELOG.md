@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## [4.5.1](https://github.com/mx-space/mx-admin/compare/v4.5.0...v4.5.1) (2024-05-31)
+
+
+### Bug Fixes
+
+* add yaml parse err message ([#911](https://github.com/mx-space/mx-admin/issues/911)) ([7022b67](https://github.com/mx-space/mx-admin/commit/7022b67a1a8565dd71b565e71f3f1e369303f2db))
+* monaco style ([5a5c3d1](https://github.com/mx-space/mx-admin/commit/5a5c3d1a4762b9ba06ba3db5c77015b02c2d5b12))
+
+
+### Features
+
+* add copy link button ([0444628](https://github.com/mx-space/mx-admin/commit/0444628af1cf158dfb51238cec671663501d1abc))
+
+
+
 # [4.5.0](https://github.com/mx-space/mx-admin/compare/v4.4.4...v4.5.0) (2024-05-19)
 
 
