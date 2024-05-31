@@ -109,3 +109,12 @@ button {
 .p0 .n-upload-dragger {
   @apply flex p-0;
 }
+
+/*  monaco */
+.monaco-editor {
+  @apply !border-0 !outline-none;
+
+  & .sticky-widget {
+    background-color: var(--n-color) !important;
+  }
+}

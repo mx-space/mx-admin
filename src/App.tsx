@@ -4,6 +4,7 @@ import {
   lightTheme,
   NConfigProvider,
   NDialogProvider,
+  NElement,
   NMessageProvider,
   NNotificationProvider,
   useDialog,
@@ -81,7 +82,9 @@ const App = defineComponent({
             <NMessageProvider>
               <NDialogProvider>
                 <AccentColorInjector />
-                <Root />
+                <NElement>
+                  <Root />
+                </NElement>
               </NDialogProvider>
             </NMessageProvider>
           </NNotificationProvider>
