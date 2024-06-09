@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [4.5.2](https://github.com/mx-space/mx-admin/compare/v4.5.1...v4.5.2) (2024-06-09)
+
+
+### Features
+
+* split preview ([b64c807](https://github.com/mx-space/mx-admin/commit/b64c80791c262d33a13e66056af8f1e9668bd974))
+
+
+
 ## [4.5.1](https://github.com/mx-space/mx-admin/compare/v4.5.0...v4.5.1) (2024-05-31)
 
 
