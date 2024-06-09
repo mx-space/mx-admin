@@ -26,7 +26,10 @@ import { MaterialInput } from '~/components/input/material-input'
 import { UnderlineInput } from '~/components/input/underline-input'
 import { CopyTextButton } from '~/components/special-button/copy-text-button'
 import { ParseContentButton } from '~/components/special-button/parse-content'
-import { HeaderPreviewButton } from '~/components/special-button/preview'
+import {
+  HeaderPreviewButton,
+  PreviewSplitter,
+} from '~/components/special-button/preview'
 import { CrossBellConnectorIndirector } from '~/components/xlog-connect'
 import { WEB_URL } from '~/constants/env'
 import { EmitKeyMap } from '~/constants/keys'
@@ -174,14 +177,6 @@ const PostWriteView = defineComponent(() => {
     postListState.refresh()
   })
 
-  watch(
-    () => data,
-    () => {
-      window.dispatchEvent(new CustomEvent(EmitKeyMap.EditDataUpdate))
-    },
-    { deep: true },
-  )
-
   return () => (
     <ContentLayout
       title={id.value ? '修改文章' : '撰写新文章'}
@@ -200,7 +195,7 @@ const PostWriteView = defineComponent(() => {
             }}
           />
 
-          <HeaderPreviewButton getData={() => ({ ...data })} />
+          <HeaderPreviewButton iframe data={data} />
           <HeaderActionButton
             icon={<TelegramPlaneIcon />}
             onClick={handleSubmit}
@@ -248,14 +243,16 @@ const PostWriteView = defineComponent(() => {
       </div>
 
       <CrossBellConnectorIndirector />
-      <Editor
-        key={data.id}
-        loading={!!(id.value && typeof data.id == 'undefined')}
-        onChange={(v) => {
-          data.text = v
-        }}
-        text={data.text}
-      />
+      <PreviewSplitter>
+        <Editor
+          key={data.id}
+          loading={!!(id.value && typeof data.id == 'undefined')}
+          onChange={(v) => {
+            data.text = v
+          }}
+          text={data.text}
+        />
+      </PreviewSplitter>
 
       {/* Drawer  */}
       <TextBaseDrawer

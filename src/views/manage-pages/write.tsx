@@ -14,7 +14,10 @@ import { SlidersHIcon, TelegramPlaneIcon } from '~/components/icons'
 import { MaterialInput } from '~/components/input/material-input'
 import { UnderlineInput } from '~/components/input/underline-input'
 import { ParseContentButton } from '~/components/special-button/parse-content'
-import { HeaderPreviewButton } from '~/components/special-button/preview'
+import {
+  HeaderPreviewButton,
+  PreviewSplitter,
+} from '~/components/special-button/preview'
 import { WEB_URL } from '~/constants/env'
 import { EmitKeyMap } from '~/constants/keys'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
@@ -104,13 +107,6 @@ const PageWriteView = defineComponent(() => {
 
     router.push({ name: RouteName.ListPage, hash: '|publish' })
   }
-  watch(
-    () => data,
-    () => {
-      window.dispatchEvent(new CustomEvent(EmitKeyMap.EditDataUpdate))
-    },
-    { deep: true },
-  )
 
   return () => (
     <ContentLayout
@@ -129,7 +125,7 @@ const PageWriteView = defineComponent(() => {
             }}
           />
 
-          <HeaderPreviewButton getData={() => ({ ...data })} />
+          <HeaderPreviewButton iframe data={data} />
 
           <HeaderActionButton
             icon={<TelegramPlaneIcon />}
@@ -173,15 +169,16 @@ const PageWriteView = defineComponent(() => {
           onChange={(e) => void (data.slug = e)}
         ></UnderlineInput>
       </div>
-
-      <Editor
-        key={data.id}
-        loading={!!(id.value && typeof data.id == 'undefined')}
-        onChange={(v) => {
-          data.text = v
-        }}
-        text={data.text}
-      />
+      <PreviewSplitter>
+        <Editor
+          key={data.id}
+          loading={!!(id.value && typeof data.id == 'undefined')}
+          onChange={(v) => {
+            data.text = v
+          }}
+          text={data.text}
+        />
+      </PreviewSplitter>
 
       {/* Drawer  */}
 

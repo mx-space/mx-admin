@@ -8,6 +8,7 @@ import {
   NInput,
   NSelect,
   NSpace,
+  NSplit,
   NSwitch,
   useMessage,
 } from 'naive-ui'
@@ -23,6 +24,7 @@ import {
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { PaginateResult } from '@mx-space/api-client'
+import type { PreviewButtonExposed } from '~/components/special-button/preview'
 import type { Coordinate, NoteModel } from '~/models/note'
 import type { TopicModel } from '~/models/topic'
 import type { WriteBaseType } from '~/shared/types/base'
@@ -33,13 +35,17 @@ import { AiHelperButton } from '~/components/ai/ai-helper'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { TextBaseDrawer } from '~/components/drawer/text-base-drawer'
 import { Editor } from '~/components/editor/universal'
-import { SlidersHIcon, TelegramPlaneIcon } from '~/components/icons'
+import { HeartIcon, SlidersHIcon, TelegramPlaneIcon } from '~/components/icons'
 import { MaterialInput } from '~/components/input/material-input'
 import { GetLocationButton } from '~/components/location/get-location-button'
 import { SearchLocationButton } from '~/components/location/search-button'
 import { CopyTextButton } from '~/components/special-button/copy-text-button'
 import { ParseContentButton } from '~/components/special-button/parse-content'
-import { HeaderPreviewButton } from '~/components/special-button/preview'
+import {
+  HeaderPreviewButton,
+  PreviewIframe,
+  PreviewSplitter,
+} from '~/components/special-button/preview'
 import { WEB_URL } from '~/constants/env'
 import { EmitKeyMap } from '~/constants/keys'
 import { MOOD_SET, WEATHER_SET } from '~/constants/note'
@@ -124,6 +130,7 @@ const NoteWriteView = defineComponent(() => {
     allowComment: true,
 
     id: undefined,
+    nid: undefined,
     topicId: undefined,
     images: [],
     meta: undefined,
@@ -248,17 +255,6 @@ const NoteWriteView = defineComponent(() => {
   }
   const { fetchTopic, topics } = useNoteTopic()
 
-  const getData = () => ({
-    ...data,
-    nid: (data as any).nid || Math.floor(Math.random() * 1000 + 10000),
-  })
-  watch(
-    () => data,
-    () => {
-      window.dispatchEvent(new CustomEvent(EmitKeyMap.EditDataUpdate))
-    },
-    { deep: true },
-  )
   return () => (
     <ContentLayout
       title={'记录生活点滴'}
@@ -277,7 +273,7 @@ const NoteWriteView = defineComponent(() => {
             }}
           />
 
-          <HeaderPreviewButton getData={getData} />
+          <HeaderPreviewButton data={data} iframe />
           <HeaderActionButton
             icon={<TelegramPlaneIcon />}
             onClick={handleSubmit}
@@ -323,14 +319,16 @@ const NoteWriteView = defineComponent(() => {
         )}
       </div>
 
-      <Editor
-        key={data.id}
-        loading={loading.value}
-        onChange={(v) => {
-          data.text = v
-        }}
-        text={data.text}
-      />
+      <PreviewSplitter>
+        <Editor
+          key={data.id}
+          loading={loading.value}
+          onChange={(v) => {
+            data.text = v
+          }}
+          text={data.text}
+        />
+      </PreviewSplitter>
 
       {/* Drawer  */}
       <TextBaseDrawer

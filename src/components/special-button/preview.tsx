@@ -1,21 +1,35 @@
 import { debounce } from 'lodash-es'
+import { NSplit } from 'naive-ui'
 
-import { EmitKeyMap } from '~/constants/keys'
+import { useUIStore } from '~/stores/ui'
 import { RESTManager } from '~/utils'
 
 import { HeaderActionButton } from '../button/rounded-button'
 import { MagnifyingGlass } from '../icons'
 
-const PREVIEW_HASH = 'f26b3d5a02c88b22ebb6a164fd23c5df'
+export type PreviewButtonExposed = {
+  getWindow: () => Window | null
+}
+
+const iframeRef = ref<HTMLIFrameElement | null>(null)
+const wrapperRef = ref<HTMLDivElement | null>(null)
+
 export const HeaderPreviewButton = defineComponent({
   props: {
-    getData: {
-      type: Function as PropType<() => any>,
+    data: {
+      type: Object as PropType<any>,
       required: true,
     },
+
+    iframe: {
+      type: Boolean,
+      default: false,
+    },
   },
-  setup(props) {
+  expose: ['getWindow'],
+  setup(props, { expose }) {
     let previewKey = ''
+    const PREVIEW_HASH = Math.random().toString(36).substring(2)
 
     onBeforeUnmount(() => {
       if (previewKey) {
@@ -28,9 +42,15 @@ export const HeaderPreviewButton = defineComponent({
     let previewWindowOrigin = ''
     let previewWindow = null as null | Window
 
+    expose({
+      getWindow: () => previewWindow,
+    })
+
+    const uiStore = useUIStore()
+
     const handlePreview = async () => {
-      const { getData } = props
-      const data = getData()
+      const { data } = props
+
       const { id } = data
       if (!webUrl) {
         const res = await RESTManager.api.options.url
@@ -62,7 +82,23 @@ export const HeaderPreviewButton = defineComponent({
 
       const finalUrl = url.toString()
 
-      const forkWindow = window.open(finalUrl)
+      let forkWindow: Window | null = null
+      if (props.iframe && !uiStore.viewport.mobile && !iframeRef.value) {
+        const iframe = document.createElement('iframe')
+        iframe.src = finalUrl
+
+        iframeRef.value = iframe
+        const $wrapper = wrapperRef.value
+        iframe.style.width = '100%'
+        iframe.style.height = '100%'
+        if ($wrapper) $wrapper.appendChild(iframe)
+
+        forkWindow = iframe.contentWindow
+      } else {
+        forkWindow = window.open(finalUrl)
+
+        iframeRef.value = null
+      }
       if (!forkWindow) {
         message.error('打开预览失败')
         return
@@ -74,6 +110,13 @@ export const HeaderPreviewButton = defineComponent({
       previewWindow = forkWindow
     }
 
+    onUnmounted(() => {
+      if (iframeRef.value) {
+        iframeRef.value.remove()
+        iframeRef.value = null
+      }
+    })
+
     onMounted(() => {
       const handler = (e: MessageEvent<any>): void => {
         if (!isInPreview) return
@@ -82,9 +125,10 @@ export const HeaderPreviewButton = defineComponent({
         if (e.data !== 'ok') return
 
         console.debug('ready', e.origin)
+
         const sendEvent = () => {
           if (!previewWindow) return
-          const data = props.getData()
+          const { data } = props
 
           console.debug('send to origin', previewWindowOrigin)
           previewWindow.postMessage(
@@ -93,6 +137,7 @@ export const HeaderPreviewButton = defineComponent({
               key: PREVIEW_HASH,
               data: {
                 ...data,
+
                 id: `preview-${data.id ?? 'new'}`,
               },
             }),
@@ -113,7 +158,7 @@ export const HeaderPreviewButton = defineComponent({
         }
         sendEvent()
 
-        window.pr = previewWindow
+        // window.pr = previewWindow
       }
 
       window.addEventListener('message', handler)
@@ -122,33 +167,27 @@ export const HeaderPreviewButton = defineComponent({
         window.removeEventListener('message', handler)
       })
     })
+    const handler = debounce(() => {
+      if (!isInPreview) return
+      if (!previewWindowOrigin) return
+      if (!previewWindow) return
 
-    onMounted(() => {
-      const handler = debounce(() => {
-        if (!isInPreview) return
-        if (!previewWindowOrigin) return
-        if (!previewWindow) return
+      const { data } = props
 
-        const data = props.getData()
+      previewWindow.postMessage(
+        JSON.stringify({
+          type: 'preview',
+          key: PREVIEW_HASH,
+          data: {
+            ...data,
+            id: `preview-${data.id ?? 'new'}`,
+          },
+        }),
+        previewWindowOrigin,
+      )
+    }, 100)
 
-        previewWindow.postMessage(
-          JSON.stringify({
-            type: 'preview',
-            key: PREVIEW_HASH,
-            data: {
-              ...data,
-              id: `preview-${data.id ?? 'new'}`,
-            },
-          }),
-          previewWindowOrigin,
-        )
-      }, 100)
-      window.addEventListener(EmitKeyMap.EditDataUpdate, handler)
-
-      onBeforeUnmount(() => {
-        window.removeEventListener(EmitKeyMap.EditDataUpdate, handler)
-      })
-    })
+    watch(() => props.data, handler, { deep: true })
 
     return () => (
       <HeaderActionButton
@@ -156,5 +195,55 @@ export const HeaderPreviewButton = defineComponent({
         onClick={handlePreview}
       ></HeaderActionButton>
     )
+  },
+})
+
+const PreviewIframe = defineComponent({
+  setup() {
+    onUnmounted(() => {
+      wrapperRef.value = null
+    })
+
+    return () => {
+      return <div class={'h-full w-full'} ref={wrapperRef}></div>
+    }
+  },
+})
+
+export const PreviewSplitter = defineComponent({
+  setup(_, { slots }) {
+    const size = ref(1)
+    const uiStore = useUIStore()
+    watchEffect(() => {
+      if (iframeRef.value) {
+        size.value = 0.5
+        uiStore.sidebarCollapse = true
+      } else {
+        size.value = 1
+      }
+    })
+    return () => {
+      return (
+        <NSplit
+          min="500px"
+          size={size.value}
+          onUpdateSize={(s) => {
+            size.value = s
+          }}
+          disabled={!iframeRef.value}
+          direction="horizontal"
+          class={'relative h-full w-full'}
+        >
+          {{
+            1() {
+              return slots.default?.()
+            },
+            2() {
+              return <PreviewIframe />
+            },
+          }}
+        </NSplit>
+      )
+    }
   },
 })
