@@ -42,8 +42,8 @@ importers:
         specifier: 1.4.2
         version: 1.4.2
       '@huacnlee/autocorrect':
-        specifier: 2.9.1
-        version: 2.9.1
+        specifier: 2.11.1
+        version: 2.11.1
       '@lezer/highlight':
         specifier: ^1.2.0
         version: 1.2.0
@@ -1134,8 +1134,8 @@ packages:
     resolution: {integrity: sha512-niBqk8iwv96+yuTwjM6bWg8ovzAPF9qkICsGtcoa5/dmqcEMfdwNAX7+/OHcJHc7wj7XqPxH98oAHytFYlw6Sw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@huacnlee/autocorrect@2.9.1':
-    resolution: {integrity: sha512-goFjb7BCvmWiirj7zSon3dscj1wiqkvIk0LmChPxBHfzOiXpeFqpCjQdMKqpRcmvY5hBdwvSJ2kvwDBmKe20BQ==}
+  '@huacnlee/autocorrect@2.11.1':
+    resolution: {integrity: sha512-dl5rEvGqZf+JdfNHalL9neSOSwduF9cI4XD79PVTqmHIysZY1Zi7CBi3ISEpLMEfostU12yqbDzhSc0wufBFQw==}
 
   '@humanwhocodes/config-array@0.13.0':
     resolution: {integrity: sha512-DZLEEqFWQFiyK6h5YIeynKx7JlvCYWL0cImfSRXZ9l4Sg2efkFGTuFf6vzXjK1cq6IYkU+Eg/JizXw+TD2vRNw==}
@@ -4877,7 +4877,7 @@ snapshots:
   '@eslint/js@9.3.0':
     optional: true
 
-  '@huacnlee/autocorrect@2.9.1': {}
+  '@huacnlee/autocorrect@2.11.1': {}
 
   '@humanwhocodes/config-array@0.13.0':
     dependencies:

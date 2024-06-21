@@ -39,7 +39,7 @@
     "@codemirror/theme-one-dark": "6.1.2",
     "@codemirror/view": "6.22.3",
     "@ddietr/codemirror-themes": "1.4.2",
-    "@huacnlee/autocorrect": "2.9.1",
+    "@huacnlee/autocorrect": "2.11.1",
     "@lezer/highlight": "^1.2.0",
     "@mx-space/api-client": "1.13.1",
     "@simplewebauthn/browser": "10.0.0",
