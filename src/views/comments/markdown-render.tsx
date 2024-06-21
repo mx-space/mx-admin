@@ -3,7 +3,7 @@ import xss from 'xss'
 
 marked.use({
   renderer: {
-    html(text: string) {
+    html({ text }) {
       return xss(text)
     },
   },

@@ -43,11 +43,9 @@ import { CopyTextButton } from '~/components/special-button/copy-text-button'
 import { ParseContentButton } from '~/components/special-button/parse-content'
 import {
   HeaderPreviewButton,
-  PreviewIframe,
   PreviewSplitter,
 } from '~/components/special-button/preview'
 import { WEB_URL } from '~/constants/env'
-import { EmitKeyMap } from '~/constants/keys'
 import { MOOD_SET, WEATHER_SET } from '~/constants/note'
 import { useAutoSave, useAutoSaveInEditor } from '~/hooks/use-auto-save'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
