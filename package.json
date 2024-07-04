@@ -91,7 +91,7 @@
     "validator": "13.12.0",
     "vite-plugin-windicss": "1.9.3",
     "vue": "3.4.31",
-    "vue-router": "4.3.3",
+    "vue-router": "4.4.0",
     "xss": "1.0.15",
     "xterm-theme": "1.1.0"
   },
