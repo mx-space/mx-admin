@@ -80,7 +80,7 @@
     "path-browserify": "1.0.1",
     "pinia": "2.1.7",
     "qier-progress": "1.0.4",
-    "qs": "6.12.1",
+    "qs": "6.12.3",
     "reflect-metadata": "0.2.2",
     "socket.io-client": "4.7.5",
     "sortablejs": "1.15.2",
