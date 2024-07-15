@@ -165,8 +165,8 @@ importers:
         specifier: 1.0.4
         version: 1.0.4
       qs:
-        specifier: 6.12.1
-        version: 6.12.1
+        specifier: 6.12.3
+        version: 6.12.3
       reflect-metadata:
         specifier: 0.2.2
         version: 0.2.2
@@ -3185,8 +3185,8 @@ packages:
     resolution: {integrity: sha512-gCxgoM2wxW7GCo/iEpOlaunVo2cf+/AJfG6wtYIbYz18GXtUhFjgZjX2s+otWh/P8ppVgGULASkWtXfZQEd2FQ==}
     engines: {node: '>=6.0.0'}
 
-  qs@6.12.1:
-    resolution: {integrity: sha512-zWmv4RSuB9r2mYQw3zxQuHWeU+42aKi1wWig/j4ele4ygELZ7PEO6MM7rim9oAQH2A5MWfsAVf/jPvTPgCbvUQ==}
+  qs@6.12.3:
+    resolution: {integrity: sha512-AWJm14H1vVaO/iNZ4/hO+HyaTehuy9nRqVdkTqlJt0HWvBiBIEXFmb4C0DGeYo3Xes9rrEW+TxHsaigCbN5ICQ==}
     engines: {node: '>=0.6'}
 
   queue-microtask@1.2.3:
@@ -7057,7 +7057,7 @@ snapshots:
 
   qier-progress@1.0.4: {}
 
-  qs@6.12.1:
+  qs@6.12.3:
     dependencies:
       side-channel: 1.0.6
 
@@ -7293,7 +7293,7 @@ snapshots:
   umi-request@1.4.0:
     dependencies:
       isomorphic-fetch: 2.2.1
-      qs: 6.12.1
+      qs: 6.12.3
 
   undici-types@5.26.5: {}
 
