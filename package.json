@@ -112,7 +112,7 @@
     "@vue/compiler-sfc": "3.4.31",
     "cors": "2.8.5",
     "lint-staged": "15.2.7",
-    "postcss": "8.4.38",
+    "postcss": "8.4.39",
     "postcss-nested": "6.0.1",
     "postcss-preset-env": "9.5.14",
     "prettier": "3.3.3",
