@@ -111,7 +111,7 @@
     "@vitejs/plugin-vue-jsx": "4.0.0",
     "@vue/compiler-sfc": "3.4.35",
     "cors": "2.8.5",
-    "lint-staged": "15.2.7",
+    "lint-staged": "15.2.8",
     "postcss": "8.4.40",
     "postcss-nested": "6.2.0",
     "postcss-preset-env": "9.6.0",
