@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## [4.5.3](https://github.com/mx-space/mx-admin/compare/v4.5.2...v4.5.3) (2024-08-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency marked to v13.0.2 ([#925](https://github.com/mx-space/mx-admin/issues/925)) ([8a56db0](https://github.com/mx-space/mx-admin/commit/8a56db0a7112dbadb52dd6c08de7db1e9c5e0b95))
+* **deps:** update dependency marked to v13.0.3 ([#935](https://github.com/mx-space/mx-admin/issues/935)) ([b5065a5](https://github.com/mx-space/mx-admin/commit/b5065a597f246ae37ad1a889e920408fcf4017ca))
+* **deps:** update dependency openai to v4.53.1 ([#927](https://github.com/mx-space/mx-admin/issues/927)) ([4675155](https://github.com/mx-space/mx-admin/commit/46751551674b8b69b94926322a31895f0a0452c1))
+* **deps:** update dependency qs to v6.12.3 ([#928](https://github.com/mx-space/mx-admin/issues/928)) ([ccfec76](https://github.com/mx-space/mx-admin/commit/ccfec76e2b7abe64d8aa26ef983521b484fdb10b))
+* **deps:** update dependency vue-router to v4.4.0 ([#920](https://github.com/mx-space/mx-admin/issues/920)) ([6bcfff9](https://github.com/mx-space/mx-admin/commit/6bcfff9c2d5cdd2023cfc91273682be655cad016))
+
+
+
 ## [4.5.2](https://github.com/mx-space/mx-admin/compare/v4.5.1...v4.5.2) (2024-06-09)
 
 
