@@ -211,8 +211,8 @@ importers:
         specifier: 1.8.3
         version: 1.8.3
       '@innei/prettier':
-        specifier: 0.14.0
-        version: 0.14.0(@vue/compiler-sfc@3.4.35)
+        specifier: 0.15.0
+        version: 0.15.0(@vue/compiler-sfc@3.4.35)
       '@types/ejs':
         specifier: 3.1.5
         version: 3.1.5
@@ -1082,8 +1082,8 @@ packages:
       '@vue/compiler-sfc':
         optional: true
 
-  '@innei/prettier@0.14.0':
-    resolution: {integrity: sha512-zPV5lOgTt6CGakuzeJ5ZqvOBYM/YrAa3QI7Pbk1b1hXuOh7UvbpsAZ0h/XW5eP8AZHOGdwQtQIbkXFZQg08iRQ==}
+  '@innei/prettier@0.15.0':
+    resolution: {integrity: sha512-5U/NrXsISLSXt3ibqHX3cRfSKcJFmteeEcWXE31oxuT4+n2+aiUjIpc6NL7aeZi09paP8L5uc7Zlj2WCP9S4ig==}
 
   '@jridgewell/gen-mapping@0.3.5':
     resolution: {integrity: sha512-IzL8ZoEDIBRWEzlCcRhOaCupYyN5gdIK+Q6fbFdPDg6HqX6jpkItn7DFIpW9LQzXG6Df9sA7+OKnq0qlz/GaQg==}
@@ -3844,7 +3844,7 @@ snapshots:
       '@babel/helper-split-export-declaration': 7.24.7
       '@babel/parser': 7.24.8
       '@babel/types': 7.24.9
-      debug: 4.3.5
+      debug: 4.3.6
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
@@ -4499,7 +4499,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@innei/prettier@0.14.0(@vue/compiler-sfc@3.4.35)':
+  '@innei/prettier@0.15.0(@vue/compiler-sfc@3.4.35)':
     dependencies:
       '@ianvs/prettier-plugin-sort-imports': 4.3.1(@vue/compiler-sfc@3.4.35)(prettier@3.3.3)
       prettier: 3.3.3
