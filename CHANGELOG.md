@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [4.6.1](https://github.com/mx-space/mx-admin/compare/v4.6.0...v4.6.1) (2024-08-16)
+
+
+### Bug Fixes
+
+* token api fetcher ([bfd75e8](https://github.com/mx-space/mx-admin/commit/bfd75e82f17037d37746b35f6a2155393dd88424))
+
+
+
 # [4.6.0](https://github.com/mx-space/mx-admin/compare/v4.5.3...v4.6.0) (2024-08-16)
 
 
