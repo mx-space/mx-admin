@@ -1,8 +1,3 @@
-import { If } from '~/components/directives/if'
-import { CheckIcon, PlusIcon as Plus } from '~/components/icons'
-import { IpInfoPopover } from '~/components/ip-info'
-import { RelativeTime } from '~/components/time/relative-time'
-import { useStoreRef } from '~/hooks/use-store-ref'
 import {
   NButton,
   NButtonGroup,
@@ -25,18 +20,26 @@ import {
   NSwitch,
   NText,
 } from 'naive-ui'
-import { RouteName } from '~/router/name'
-import { UIStore } from '~/stores/ui'
 import useSWRV from 'swrv'
-import { RESTManager, parseDate, removeToken } from '~/utils'
 import { defineComponent, onBeforeMount, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { Icon } from '@vicons/utils'
-import { AuthnUtils } from '~/utils/authn'
-import { autosizeableProps } from './system'
 import type { AuthnModel } from '~/models/authn'
 import type { TokenModel } from '~/models/token'
 import type { DialogReactive } from 'naive-ui'
+
+import { Icon } from '@vicons/utils'
+
+import { If } from '~/components/directives/if'
+import { CheckIcon, PlusIcon as Plus } from '~/components/icons'
+import { IpInfoPopover } from '~/components/ip-info'
+import { RelativeTime } from '~/components/time/relative-time'
+import { useStoreRef } from '~/hooks/use-store-ref'
+import { RouteName } from '~/router/name'
+import { UIStore } from '~/stores/ui'
+import { parseDate, removeToken, RESTManager } from '~/utils'
+import { AuthnUtils } from '~/utils/authn'
+
+import { autosizeableProps } from './system'
 
 type Session = {
   id: string
@@ -192,7 +195,8 @@ const ApiToken = defineComponent(() => {
   })
   const dataModel = reactive(defaultModel())
   const fetchToken = async () => {
-    const { data } = (await RESTManager.api.passkey.items.get()) as any
+    const { data } = (await RESTManager.api.auth.token.get()) as any
+
     tokens.value = data
   }
 
@@ -313,7 +317,7 @@ const ApiToken = defineComponent(() => {
             key: 'token',
             title: 'Token',
             render({ token }) {
-              return token ?? '*'.repeat(40)
+              return '*'.repeat(40)
             },
           },
           {
@@ -345,7 +349,7 @@ const ApiToken = defineComponent(() => {
                   >
                     {{
                       trigger: () => (
-                        <NButton quaternary type="error">
+                        <NButton text type="error">
                           删除
                         </NButton>
                       ),
@@ -574,9 +578,8 @@ const Passkey = defineComponent(() => {
             }}
           />
         </NFormItem>
-        {/* FUCK you windicss */}
-        <div style={{ marginTop: '-1.5rem' }}>
-          <NText class="text-xs" depth={3}>
+        <div class={'-mt-8 mb-4'}>
+          <NText class="mb-2 text-xs" depth={3}>
             <span>禁用密码登录需要至少开启 Clerk 或者 PassKey 登录的一项</span>
           </NText>
         </div>
@@ -615,7 +618,7 @@ const Passkey = defineComponent(() => {
                   >
                     {{
                       trigger: () => (
-                        <NButton quaternary type="error">
+                        <NButton text type="error">
                           删除
                         </NButton>
                       ),
