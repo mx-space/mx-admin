@@ -56,6 +56,7 @@
     "@xterm/addon-fit": "0.10.0",
     "@xterm/xterm": "5.5.0",
     "ansi_up": "6.0.2",
+    "blurhash": "2.0.5",
     "buffer": "6.0.3",
     "canvas-confetti": "1.9.3",
     "class-transformer": "0.5.1",
@@ -127,5 +128,6 @@
     "vite-plugin-wasm": "3.3.0",
     "vite-tsconfig-paths": "4.3.2",
     "windicss": "3.5.6"
-  }
+  },
+  "packageManager": "pnpm@9.7.1"
 }

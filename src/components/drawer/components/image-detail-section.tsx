@@ -1,3 +1,4 @@
+import { decode } from 'blurhash'
 import { uniqBy } from 'lodash-es'
 import {
   NButton,
@@ -10,10 +11,11 @@ import {
   NInput,
   NInputNumber,
 } from 'naive-ui'
-import { getDominantColor } from '~/utils/image'
-import { isVideoExt, pickImagesFromMarkdown } from '~/utils/markdown'
 import type { Image as ImageModel } from '~/models/base'
 import type { PropType } from 'vue'
+
+import { getBlurHash, getDominantColor } from '~/utils/image'
+import { isVideoExt, pickImagesFromMarkdown } from '~/utils/markdown'
 
 export const ImageDetailSection = defineComponent({
   props: {
@@ -57,6 +59,7 @@ export const ImageDetailSection = defineComponent({
                   width: existImageInfo?.width,
                   type: existImageInfo?.type,
                   accent: existImageInfo?.accent,
+                  blurHash: existImageInfo?.blurHash,
                 } as any
               })
               .concat(props.images),
@@ -127,6 +130,7 @@ export const ImageDetailSection = defineComponent({
                   src: item.src,
                   type: ext,
                   accent: getDominantColor($image),
+                  blurHash: getBlurHash($image),
                 })
               })
               $image.onerror = (err) => {
@@ -232,6 +236,14 @@ export const ImageDetailSection = defineComponent({
                     ></NColorPicker>
                   </NFormItem>
 
+                  <NFormItem label="Blur Preview">
+                    <div>
+                      {image.blurHash && (
+                        <BlurHashPreview hash={image.blurHash} />
+                      )}
+                    </div>
+                  </NFormItem>
+
                   <NFormItem label="操作">
                     <div class="flex w-full justify-end">
                       <NButtonGroup>
@@ -264,6 +276,36 @@ export const ImageDetailSection = defineComponent({
           })}
         </NCollapse>
       </div>
+    )
+  },
+})
+
+const BlurHashPreview = defineComponent({
+  props: {
+    hash: {
+      type: String,
+      required: true,
+    },
+  },
+  setup(props) {
+    const canvasRef = ref<HTMLCanvasElement | null>(null)
+
+    onMounted(() => {
+      const canvas = canvasRef.value!
+      const ctx = canvas.getContext('2d')!
+      const pixels = decode(props.hash, 32, 32)
+      const imageData = ctx.createImageData(32, 32)
+      imageData.data.set(pixels)
+      ctx.putImageData(imageData, 0, 0)
+    })
+
+    return () => (
+      <canvas
+        ref={canvasRef}
+        class="bg-cover bg-center"
+        height={32}
+        width={32}
+      ></canvas>
     )
   },
 })

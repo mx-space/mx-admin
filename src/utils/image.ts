@@ -1,9 +1,10 @@
 // @see https://stackoverflow.com/questions/2541481/get-average-color-of-image-via-javascript
-// @ts-nocheck
+
+import { encode } from 'blurhash'
 
 export function getDominantColor(imageObject: HTMLImageElement) {
   const canvas = document.createElement('canvas'),
-    ctx = canvas.getContext('2d')
+    ctx = canvas.getContext('2d')!
 
   canvas.width = 1
   canvas.height = 1
@@ -25,4 +26,21 @@ export function rgbToHex(red: number, green: number, blue: number) {
 
 export function rgbObjectToHex(rgb: { r: number; g: number; b: number }) {
   return rgbToHex(rgb.r, rgb.g, rgb.b)
+}
+
+export function getBlurHash(imageObject: HTMLImageElement) {
+  const canvas = document.createElement('canvas'),
+    ctx = canvas.getContext('2d')!
+
+  canvas.width = imageObject.naturalWidth
+  canvas.height = imageObject.naturalHeight
+
+  ctx.drawImage(imageObject, 0, 0)
+
+  const imageData = ctx.getImageData(0, 0, 32, 32)
+  const pixels = new Uint8ClampedArray(imageData.data)
+  const componentX = 4
+  const componentY = 4
+
+  return encode(pixels, 32, 32, componentX, componentY)
 }

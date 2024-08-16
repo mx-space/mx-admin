@@ -12,6 +12,7 @@ export interface Image {
   type: string
   accent?: string
   src: string
+  blurHash?: string
 }
 
 export class BaseModel {
