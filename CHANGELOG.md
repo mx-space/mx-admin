@@ -1,5 +1,14 @@
 # CHANGELOG
 
+# [4.6.0](https://github.com/mx-space/mx-admin/compare/v4.5.3...v4.6.0) (2024-08-16)
+
+
+### Features
+
+* add blur hash ([8fbfa66](https://github.com/mx-space/mx-admin/commit/8fbfa6655befa0efae83d3fd3e8cc9a32f1e6910))
+
+
+
 ## [4.5.3](https://github.com/mx-space/mx-admin/compare/v4.5.2...v4.5.3) (2024-08-06)
 
 
