@@ -247,8 +247,8 @@ importers:
         specifier: 5.1.1
         version: 5.1.1(vite@5.3.5(@types/node@18.19.41))(vue@3.4.35(typescript@5.5.4))
       '@vitejs/plugin-vue-jsx':
-        specifier: 4.0.0
-        version: 4.0.0(vite@5.3.5(@types/node@18.19.41))(vue@3.4.35(typescript@5.5.4))
+        specifier: 4.0.1
+        version: 4.0.1(vite@5.3.5(@types/node@18.19.41))(vue@3.4.35(typescript@5.5.4))
       '@vue/compiler-sfc':
         specifier: 3.4.35
         version: 3.4.35
@@ -1546,8 +1546,8 @@ packages:
     peerDependencies:
       vue: ^3.0.6
 
-  '@vitejs/plugin-vue-jsx@4.0.0':
-    resolution: {integrity: sha512-A+6wL2AdQhDsLsDnY+2v4rRDI1HLJGIMc97a8FURO9tqKsH5QvjWrzsa5DH3NlZsM742W2wODl2fF+bfcTWtXw==}
+  '@vitejs/plugin-vue-jsx@4.0.1':
+    resolution: {integrity: sha512-7mg9HFGnFHMEwCdB6AY83cVK4A6sCqnrjFYF4WIlebYAQVVJ/sC/CiTruVdrRlhrFoeZ8rlMxY9wYpPTIRhhAg==}
     engines: {node: ^18.0.0 || >=20.0.0}
     peerDependencies:
       vite: ^5.0.0
@@ -3672,7 +3672,7 @@ snapshots:
       '@babel/traverse': 7.24.8
       '@babel/types': 7.24.9
       convert-source-map: 2.0.0
-      debug: 4.3.5
+      debug: 4.3.6
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
@@ -3850,7 +3850,7 @@ snapshots:
       '@babel/helper-split-export-declaration': 7.24.7
       '@babel/parser': 7.24.8
       '@babel/types': 7.24.9
-      debug: 4.3.5
+      debug: 4.3.6
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
@@ -5035,7 +5035,7 @@ snapshots:
       '@xicons/utils': 0.1.4
       vue: 3.4.35(typescript@5.5.4)
 
-  '@vitejs/plugin-vue-jsx@4.0.0(vite@5.3.5(@types/node@18.19.41))(vue@3.4.35(typescript@5.5.4))':
+  '@vitejs/plugin-vue-jsx@4.0.1(vite@5.3.5(@types/node@18.19.41))(vue@3.4.35(typescript@5.5.4))':
     dependencies:
       '@babel/core': 7.24.9
       '@babel/plugin-transform-typescript': 7.24.8(@babel/core@7.24.9)
@@ -5173,7 +5173,7 @@ snapshots:
 
   '@windicss/config@1.9.3':
     dependencies:
-      debug: 4.3.5
+      debug: 4.3.6
       jiti: 1.21.6
       windicss: 3.5.6
     transitivePeerDependencies:
@@ -5183,7 +5183,7 @@ snapshots:
     dependencies:
       '@antfu/utils': 0.7.10
       '@windicss/config': 1.9.3
-      debug: 4.3.5
+      debug: 4.3.6
       fast-glob: 3.3.2
       magic-string: 0.30.10
       micromatch: 4.0.7

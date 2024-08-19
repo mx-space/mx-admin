@@ -109,7 +109,7 @@
     "@types/tinycolor2": "1.4.6",
     "@types/validator": "13.12.0",
     "@vitejs/plugin-vue": "5.1.1",
-    "@vitejs/plugin-vue-jsx": "4.0.0",
+    "@vitejs/plugin-vue-jsx": "4.0.1",
     "@vue/compiler-sfc": "3.4.35",
     "cors": "2.8.5",
     "lint-staged": "15.2.8",
