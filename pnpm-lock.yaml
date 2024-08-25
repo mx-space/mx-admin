@@ -214,8 +214,8 @@ importers:
         specifier: 1.8.3
         version: 1.8.3
       '@innei/prettier':
-        specifier: 0.14.2
-        version: 0.14.2(@vue/compiler-sfc@3.4.38)
+        specifier: 0.15.0
+        version: 0.15.0(@vue/compiler-sfc@3.4.38)
       '@types/ejs':
         specifier: 3.1.5
         version: 3.1.5
@@ -1085,8 +1085,8 @@ packages:
       '@vue/compiler-sfc':
         optional: true
 
-  '@innei/prettier@0.14.2':
-    resolution: {integrity: sha512-jIVwn+1VJBV1hmuVN9ztY9YRDZC42uaoCbgeHtWMuaVmtyXexmQ28hbosLNO0Qf5OgeKGouQx248Ary09oqVew==}
+  '@innei/prettier@0.15.0':
+    resolution: {integrity: sha512-5U/NrXsISLSXt3ibqHX3cRfSKcJFmteeEcWXE31oxuT4+n2+aiUjIpc6NL7aeZi09paP8L5uc7Zlj2WCP9S4ig==}
 
   '@jridgewell/gen-mapping@0.3.5':
     resolution: {integrity: sha512-IzL8ZoEDIBRWEzlCcRhOaCupYyN5gdIK+Q6fbFdPDg6HqX6jpkItn7DFIpW9LQzXG6Df9sA7+OKnq0qlz/GaQg==}
@@ -4527,7 +4527,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@innei/prettier@0.14.2(@vue/compiler-sfc@3.4.38)':
+  '@innei/prettier@0.15.0(@vue/compiler-sfc@3.4.38)':
     dependencies:
       '@ianvs/prettier-plugin-sort-imports': 4.3.1(@vue/compiler-sfc@3.4.38)(prettier@3.3.3)
       prettier: 3.3.3
