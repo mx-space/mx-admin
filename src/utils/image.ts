@@ -44,3 +44,17 @@ export function getBlurHash(imageObject: HTMLImageElement) {
 
   return encode(pixels, 32, 32, componentX, componentY)
 }
+
+const getImageData = (image: HTMLImageElement) => {
+  const canvas = document.createElement('canvas')
+  canvas.width = image.width
+  canvas.height = image.height
+  const context = canvas.getContext('2d')!
+  context.drawImage(image, 0, 0)
+  return context.getImageData(0, 0, image.width, image.height)
+}
+
+export const encodeImageToBlurhash = (image: HTMLImageElement) => {
+  const imageData = getImageData(image)
+  return encode(imageData.data, imageData.width, imageData.height, 4, 4)
+}

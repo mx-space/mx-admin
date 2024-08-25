@@ -14,7 +14,7 @@ import {
 import type { Image as ImageModel } from '~/models/base'
 import type { PropType } from 'vue'
 
-import { getBlurHash, getDominantColor } from '~/utils/image'
+import { encodeImageToBlurhash, getDominantColor } from '~/utils/image'
 import { isVideoExt, pickImagesFromMarkdown } from '~/utils/markdown'
 
 export const ImageDetailSection = defineComponent({
@@ -130,7 +130,7 @@ export const ImageDetailSection = defineComponent({
                   src: item.src,
                   type: ext,
                   accent: getDominantColor($image),
-                  blurHash: getBlurHash($image),
+                  blurHash: encodeImageToBlurhash($image),
                 })
               })
               $image.onerror = (err) => {
