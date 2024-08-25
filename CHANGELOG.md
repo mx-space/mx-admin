@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [4.6.2](https://github.com/mx-space/mx-admin/compare/v4.6.1...v4.6.2) (2024-08-25)
+
+
+### Bug Fixes
+
+* image blurhash logic ([bf54dd4](https://github.com/mx-space/mx-admin/commit/bf54dd4c4727292071a27e9da04d8ec227f66ec9))
+
+
+
 ## [4.6.1](https://github.com/mx-space/mx-admin/compare/v4.6.0...v4.6.1) (2024-08-16)
 
 
