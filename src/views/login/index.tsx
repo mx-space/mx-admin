@@ -2,10 +2,12 @@ import { NButton, useMessage } from 'naive-ui'
 import useSWRV from 'swrv'
 import { defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import type { UserModel } from '../../models/user'
 
 import ParallaxButton from '~/components/button/parallax-button.vue'
-import { PassKeyOutlineIcon } from '~/components/icons'
+import { GithubIcon, PassKeyOutlineIcon } from '~/components/icons'
 import { SESSION_WITH_LOGIN } from '~/constants/keys'
+import { signIn } from '~/utils/authjs'
 import { AuthnUtils } from '~/utils/authn'
 
 import Avatar from '../../components/avatar/index.vue'
@@ -13,7 +15,6 @@ import { useUserStore } from '../../stores/user'
 import { checkIsInit } from '../../utils/is-init'
 import { RESTManager } from '../../utils/rest'
 import styles from './index.module.css'
-import type { UserModel } from '../../models/user'
 
 export const LoginView = defineComponent({
   setup() {
@@ -60,6 +61,9 @@ export const LoginView = defineComponent({
       return RESTManager.api.user('allow-login').get<{
         password: boolean
         passkey: boolean
+
+        // oauth
+        github?: boolean
       }>()
     })
 
@@ -140,24 +144,45 @@ export const LoginView = defineComponent({
                   />
                 </div>
 
-                {settings.value?.passkey && (
-                  <div
-                    class={'-mt-4 mb-4 flex w-full justify-center space-x-4'}
-                  >
-                    <NButton
-                      color="#ACA8BF70"
-                      circle
-                      textColor="#fff"
-                      type="info"
-                      onClick={() => {
-                        passkeyAuth()
-                      }}
+                <div class={'flex items-center gap-4'}>
+                  {settings.value?.passkey && (
+                    <div
+                      class={'-mt-4 mb-4 flex w-full justify-center space-x-4'}
                     >
-                      <PassKeyOutlineIcon />
-                    </NButton>
-                  </div>
-                )}
+                      <NButton
+                        color="#ACA8BF70"
+                        circle
+                        textColor="#fff"
+                        type="info"
+                        onClick={() => {
+                          passkeyAuth()
+                        }}
+                      >
+                        <PassKeyOutlineIcon />
+                      </NButton>
+                    </div>
+                  )}
 
+                  {settings.value?.github && (
+                    <div
+                      class={'-mt-4 mb-4 flex w-full justify-center space-x-4'}
+                    >
+                      <NButton
+                        color="#ACA8BF70"
+                        circle
+                        textColor="#fff"
+                        type="info"
+                        onClick={() => {
+                          signIn('github', {
+                            callbackUrl: `${window.location.origin}${window.location.pathname}#${route.query.to || ''}`,
+                          })
+                        }}
+                      >
+                        <GithubIcon />
+                      </NButton>
+                    </div>
+                  )}
+                </div>
                 <ParallaxButton
                   title="登录"
                   class="p-button-raised p-button-rounded"

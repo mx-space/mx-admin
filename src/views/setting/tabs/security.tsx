@@ -37,6 +37,7 @@ import { useStoreRef } from '~/hooks/use-store-ref'
 import { RouteName } from '~/router/name'
 import { UIStore } from '~/stores/ui'
 import { parseDate, removeToken, RESTManager } from '~/utils'
+import { signOut } from '~/utils/authjs'
 import { AuthnUtils } from '~/utils/authn'
 
 import { autosizeableProps } from './system'
@@ -62,6 +63,7 @@ export const TabSecurity = defineComponent(() => {
       await RESTManager.api.user.logout.post<{}>({})
 
       removeToken()
+      await signOut()
       window.location.reload()
     } else {
       await RESTManager.api.user.session(id).delete<{}>({})
@@ -175,10 +177,6 @@ export const TabSecurity = defineComponent(() => {
 
         <NCollapseItem name="token" title="API Token">
           <ApiToken />
-        </NCollapseItem>
-
-        <NCollapseItem name="passkey" title="Passkey">
-          <Passkey />
         </NCollapseItem>
       </NCollapse>
     </Fragment>
@@ -450,192 +448,5 @@ const ResetPass = defineComponent(() => {
         </NButton>
       </div>
     </NForm>
-  )
-})
-
-const Passkey = defineComponent(() => {
-  const uiStore = useStoreRef(UIStore)
-  const { data: passkeys, mutate: refetchTable } = useSWRV(
-    'passkey-table',
-    () => {
-      return RESTManager.api.passkey.items.get<AuthnModel[]>()
-    },
-  )
-
-  const onDeleteToken = (id: string) => {
-    RESTManager.api.passkey
-      .items(id)
-      .delete<{}>()
-      .then(() => {
-        refetchTable()
-      })
-  }
-
-  const NewModalContent = defineComponent(
-    (props: { dialog: DialogReactive }) => {
-      const name = ref('')
-      const handleCreate = (e: Event) => {
-        e.preventDefault()
-        e.stopPropagation()
-        AuthnUtils.createPassKey(name.value).then(() => {
-          refetchTable()
-          props.dialog.destroy()
-        })
-      }
-      return () => (
-        <NForm onSubmit={handleCreate}>
-          <NFormItem label="名称" required>
-            <NInput
-              value={name.value}
-              onUpdateValue={(e) => {
-                name.value = e
-              }}
-            />
-          </NFormItem>
-          <div class={'flex justify-end'}>
-            <NButton
-              disabled={name.value.length === 0}
-              type="primary"
-              onClick={handleCreate}
-              round
-              size="small"
-            >
-              创建
-            </NButton>
-          </div>
-        </NForm>
-      )
-    },
-  )
-
-  const { data: setting, mutate: refetchSetting } = useSWRV(
-    'current-disable-status',
-    async () => {
-      const { data } = await RESTManager.api.options('authSecurity').get<{
-        data: { disablePasswordLogin: boolean }
-      }>()
-      return data
-    },
-  )
-
-  const updateSetting = (value: boolean) => {
-    RESTManager.api
-      .options('authSecurity')
-      .patch({
-        data: {
-          disablePasswordLogin: value,
-        },
-      })
-      .then(() => {
-        refetchSetting()
-      })
-  }
-
-  // @ts-ignore
-  NewModalContent.props = ['dialog']
-
-  return () => (
-    <NLayoutContent embedded class="!overflow-visible">
-      <NButtonGroup class="absolute right-0 top-[-3rem]">
-        <NButton
-          type="tertiary"
-          onClick={() => {
-            AuthnUtils.validate(true)
-          }}
-          round
-        >
-          <Icon>
-            <CheckIcon />
-          </Icon>
-          <span class="ml-2">验证</span>
-        </NButton>
-        <NButton
-          round
-          type="primary"
-          onClick={() => {
-            const $dialog = dialog.create({
-              title: '创建 Passkey',
-              content: () => <NewModalContent dialog={$dialog} />,
-            })
-          }}
-        >
-          <Icon>
-            <Plus />
-          </Icon>
-          <span class="ml-2">新增</span>
-        </NButton>
-      </NButtonGroup>
-
-      <NForm class={'mt-4'} labelAlign="left" labelPlacement="left">
-        <NFormItem label="禁止密码登入">
-          <NSwitch
-            value={setting.value?.disablePasswordLogin}
-            onUpdateValue={(v) => {
-              if (!passkeys.value?.length) {
-                message.error('至少需要一个 Passkey 才能开启这个功能')
-              }
-              updateSetting(v)
-            }}
-          />
-        </NFormItem>
-        <div class={'-mt-8 mb-4'}>
-          <NText class="mb-2 text-xs" depth={3}>
-            <span>禁用密码登录需要至少开启 Clerk 或者 PassKey 登录的一项</span>
-          </NText>
-        </div>
-      </NForm>
-      <NDataTable
-        scrollX={Math.max(
-          800,
-          uiStore.contentWidth.value - uiStore.contentInsetWidth.value,
-        )}
-        remote
-        bordered={false}
-        data={passkeys.value}
-        columns={[
-          { key: 'name', title: '名称' },
-
-          {
-            title: '创建时间',
-            key: 'created',
-            render({ created }) {
-              return <RelativeTime time={created} />
-            },
-          },
-
-          {
-            title: '操作',
-            key: 'id',
-            render({ id, name }) {
-              return (
-                <NSpace>
-                  <NPopconfirm
-                    positiveText={'取消'}
-                    negativeText="删除"
-                    onNegativeClick={() => {
-                      onDeleteToken(id)
-                    }}
-                  >
-                    {{
-                      trigger: () => (
-                        <NButton text type="error">
-                          删除
-                        </NButton>
-                      ),
-
-                      default: () => (
-                        <span class="max-w-48">
-                          确定要删除 Passkey "{name}"?
-                        </span>
-                      ),
-                    }}
-                  </NPopconfirm>
-                </NSpace>
-              )
-            },
-          },
-        ]}
-      ></NDataTable>
-    </NLayoutContent>
   )
 })

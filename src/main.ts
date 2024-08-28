@@ -13,7 +13,14 @@ import App from './App'
 import './index.css'
 
 import { router } from './router'
-import { attachTokenFromQuery } from './utils'
+import { attachTokenFromQuery, RESTManager } from './utils'
+import { authConfigManager, getCsrfToken } from './utils/authjs'
+
+authConfigManager.setConfig({
+  basePath: '/auth',
+  baseUrl: RESTManager.endpoint,
+  credentials: 'include',
+})
 
 attachTokenFromQuery()
 

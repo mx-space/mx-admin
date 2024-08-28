@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 
 import { ContentLayout } from '~/layouts/content'
 
+import { TabAuth } from './tabs/auth'
 import { TabSecurity } from './tabs/security'
 import { TabSystem } from './tabs/system'
 import { TabUser } from './tabs/user'
@@ -12,6 +13,7 @@ enum SettingTab {
   User = 'user',
   System = 'system',
   Security = 'security',
+  Auth = 'auth',
 }
 export default defineComponent({
   setup() {
@@ -48,6 +50,9 @@ export default defineComponent({
 
           <NTabPane tab="安全" name={SettingTab.Security}>
             <TabSecurity />
+          </NTabPane>
+          <NTabPane tab="登入方式" name={SettingTab.Auth}>
+            <TabAuth />
           </NTabPane>
         </NTabs>
       </ContentLayout>
