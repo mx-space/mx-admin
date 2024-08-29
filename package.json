@@ -109,7 +109,7 @@
     "@types/sortablejs": "1.15.8",
     "@types/tinycolor2": "1.4.6",
     "@types/validator": "13.12.0",
-    "@vitejs/plugin-vue": "5.1.2",
+    "@vitejs/plugin-vue": "5.1.3",
     "@vitejs/plugin-vue-jsx": "4.0.1",
     "@vue/compiler-sfc": "3.4.38",
     "cors": "2.8.5",
