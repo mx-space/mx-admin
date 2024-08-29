@@ -17,7 +17,7 @@ import { WEB_URL } from '~/constants/env'
 import { RouteName } from '~/router/name'
 import { AppStore } from '~/stores/app'
 import { UIStore } from '~/stores/ui'
-import { RESTManager } from '~/utils'
+import { removeToken, RESTManager } from '~/utils'
 import { signOut } from '~/utils/authjs'
 
 import { configs } from '../../configs'
@@ -307,6 +307,7 @@ const LogoutAvatarButton = defineComponent({
     const handleLogout = async (e: MouseEvent) => {
       e.stopPropagation()
       await RESTManager.api.user.logout.post({})
+      removeToken()
       await signOut()
       router.push({
         name: RouteName.Login,
