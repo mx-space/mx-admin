@@ -24,6 +24,7 @@ import {
   OpenAIIcon,
   PencilAltIcon,
   PencilIcon,
+  PhUsersThreeBold,
   PuzzlePieceIcon,
   SubscribeIcon,
   SymbolIcon,
@@ -185,6 +186,15 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         component: () => import('../views/manage-pages/write'),
       },
     ],
+  },
+  {
+    path: '/readers',
+    name: RouteName.Reader,
+    meta: {
+      title: '读者',
+      icon: <PhUsersThreeBold />,
+    },
+    component: () => import('../views/reader'),
   },
   {
     path: '/files',

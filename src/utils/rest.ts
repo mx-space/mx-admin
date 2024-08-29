@@ -24,6 +24,7 @@ class RESTManagerStatic {
     this._$$instance = extend({
       prefix: this.endpoint,
       timeout: 10000,
+      credentials: 'include',
       errorHandler: async (error) => {
         const Message = window.message
         if (error.request && !error.response) {
