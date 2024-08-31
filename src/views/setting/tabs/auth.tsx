@@ -20,6 +20,7 @@ import { useRoute, useRouter } from 'vue-router'
 import type { AuthnModel } from '~/models/authn'
 import type { DialogReactive } from 'naive-ui'
 import type { FormInst } from 'naive-ui/lib'
+import type { FlatOauthData, OauthData } from './providers/oauth'
 
 import { Icon } from '@vicons/utils'
 
@@ -31,6 +32,13 @@ import { RESTManager } from '~/utils'
 import { signIn } from '~/utils/authjs'
 import { getSession } from '~/utils/authjs/session'
 import { AuthnUtils } from '~/utils/authn'
+
+import {
+  flattenOauthData,
+  useInjectOauthData,
+  useProvideOauthData,
+} from './providers/oauth'
+import { GitHubProvider } from './sections/oauth'
 
 export const TabAuth = defineComponent({
   setup() {
@@ -234,18 +242,20 @@ const Passkey = defineComponent(() => {
 })
 
 const Oauth = defineComponent(() => {
-  const formRef = ref<null | FormInst>(null)
-  const rules = {
-    clientId: [{ required: true, message: 'Client Id 不能为空' }],
-    secret: [{ required: true, message: 'Client Secret 不能为空' }],
-  }
-  const formValueRef = ref({
-    clientId: '',
-    secret: '',
-  })
-
   const route = useRoute()
   const router = useRouter()
+
+  const oauthDataRef = ref({} as FlatOauthData)
+  onMounted(async () => {
+    const data = await RESTManager.api.options('oauth').get<{
+      data: OauthData
+    }>()
+
+    oauthDataRef.value = flattenOauthData(data.data)
+  })
+
+  useProvideOauthData()(oauthDataRef)
+
   onMounted(async () => {
     const validate = route.query.validate
 
@@ -268,102 +278,11 @@ const Oauth = defineComponent(() => {
     }
   })
 
-  const handleValidate = async () => {
-    await signIn('github', { callbackUrl: `${location.href}?validate=true` })
-  }
-
-  const handleSave = async () => {
-    await formRef.value?.validate()
-
-    const type = 'github'
-    RESTManager.api.options('oauth').patch({
-      data: {
-        providers: [
-          {
-            type,
-            enabled: true,
-          },
-        ],
-        secrets: {
-          [type]: {
-            clientSecret: formValueRef.value.secret,
-          },
-        },
-        public: {
-          [type]: {
-            clientId: formValueRef.value.clientId,
-          },
-        },
-      },
-    })
-  }
   return () => (
     <NLayoutContent embedded class="mt-12 !overflow-visible">
       <NH2 class={'mb-0'}>OAuth</NH2>
       <div class={'mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3'}>
-        <NCard title={'GitHub'}>
-          {{
-            default() {
-              return (
-                <NForm model={formValueRef.value} ref={formRef} rules={rules}>
-                  <NFormItem label="Client Id" path="clientId" required>
-                    <NInput
-                      value={formValueRef.value.clientId}
-                      onUpdateValue={(v) => {
-                        formValueRef.value.clientId = v
-                      }}
-                    />
-                  </NFormItem>
-
-                  <NFormItem label="Client Secret" required path="secret">
-                    <NInput
-                      showPasswordToggle
-                      type="password"
-                      value={formValueRef.value.secret}
-                      onUpdateValue={(v) => {
-                        formValueRef.value.secret = v
-                      }}
-                    />
-                  </NFormItem>
-
-                  <NP class={'text-sm'}>
-                    请在 GitHub Developer Settings 中创建 OAuth App
-                    <br /> Callback URL 填写{' '}
-                    <NButton
-                      onClick={() => {
-                        navigator.clipboard.writeText(
-                          `${RESTManager.endpoint}/auth/callback/github`,
-                        )
-                        message.success('已复制到剪贴板')
-                      }}
-                      text
-                    >
-                      {RESTManager.endpoint}/auth/callback/github
-                    </NButton>
-                  </NP>
-                </NForm>
-              )
-            },
-            action() {
-              return (
-                <div class={'flex justify-between'}>
-                  <label class={'flex items-center gap-2'}>
-                    启用
-                    <NSwitch />
-                  </label>
-                  <NButtonGroup>
-                    <NButton onClick={handleValidate} type="tertiary" round>
-                      验证
-                    </NButton>
-                    <NButton onClick={handleSave} type="primary" round>
-                      保存
-                    </NButton>
-                  </NButtonGroup>
-                </div>
-              )
-            },
-          }}
-        </NCard>
+        <GitHubProvider />
       </div>
     </NLayoutContent>
   )
