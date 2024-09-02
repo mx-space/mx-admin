@@ -1,5 +1,14 @@
 # CHANGELOG
 
+# [4.7.0](https://github.com/mx-space/mx-admin/compare/v4.6.2...v4.7.0) (2024-09-02)
+
+
+### Features
+
+* authjs integrate ([#951](https://github.com/mx-space/mx-admin/issues/951)) ([b75cbff](https://github.com/mx-space/mx-admin/commit/b75cbff6f51e784558bfb0ca390475fa81015f79))
+
+
+
 ## [4.6.2](https://github.com/mx-space/mx-admin/compare/v4.6.1...v4.6.2) (2024-08-25)
 
 
