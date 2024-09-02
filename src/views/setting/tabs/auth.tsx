@@ -181,7 +181,7 @@ const Passkey = defineComponent(() => {
         </NFormItem>
         <div class={'-mt-8 mb-4'}>
           <NText class="mb-2 text-xs" depth={3}>
-            <span>禁用密码登录需要至少开启 Clerk 或者 PassKey 登录的一项</span>
+            <span>禁用密码登录需要至少开启 Oauth 或者 PassKey 登录的一项</span>
           </NText>
         </div>
       </NForm>

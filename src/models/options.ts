@@ -81,13 +81,6 @@ export module MxServerOptions {
     emailSubscribe: boolean
   }
 
-  export interface ClerkOptionsOption {
-    enable: boolean
-    adminUserId: string
-    pemKey: string
-    secretKey: string
-  }
-
   export interface ThirdPartyServiceIntegrationOption {
     xLogSiteId: string
   }
