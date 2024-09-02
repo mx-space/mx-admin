@@ -85,7 +85,7 @@
     "qs": "6.13.0",
     "reflect-metadata": "0.2.2",
     "socket.io-client": "4.7.5",
-    "sortablejs": "1.15.2",
+    "sortablejs": "1.15.3",
     "swrv": "1.0.4",
     "tinycolor2": "1.6.0",
     "umi-request": "1.4.0",
