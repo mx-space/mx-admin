@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [4.7.2](https://github.com/mx-space/mx-admin/compare/v4.7.1...v4.7.2) (2024-09-03)
+
+
+
 ## [4.7.1](https://github.com/mx-space/mx-admin/compare/v4.7.0...v4.7.1) (2024-09-02)
 
 
