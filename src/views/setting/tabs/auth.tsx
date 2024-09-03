@@ -38,7 +38,7 @@ import {
   useInjectOauthData,
   useProvideOauthData,
 } from './providers/oauth'
-import { GitHubProvider } from './sections/oauth'
+import { GitHubProvider, GoogleProvider } from './sections/oauth'
 
 export const TabAuth = defineComponent({
   setup() {
@@ -283,6 +283,7 @@ const Oauth = defineComponent(() => {
       <NH2 class={'mb-0'}>OAuth</NH2>
       <div class={'mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3'}>
         <GitHubProvider />
+        <GoogleProvider />
       </div>
     </NLayoutContent>
   )
