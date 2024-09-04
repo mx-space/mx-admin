@@ -88,7 +88,7 @@ const ProviderIcon = defineComponent({
         default:
           return (
             <img
-              class="size-4"
+              class="h-4 w-4"
               src={`https://authjs.dev/img/providers/${props.provider}.svg`}
             />
           )
