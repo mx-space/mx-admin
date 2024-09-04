@@ -84,8 +84,14 @@ const ProviderIcon = defineComponent({
               <GithubIcon />
             </span>
           )
+
         default:
-          return null
+          return (
+            <img
+              class="size-4"
+              src={`https://authjs.dev/img/providers/${props.provider}.svg`}
+            />
+          )
       }
     }
   },

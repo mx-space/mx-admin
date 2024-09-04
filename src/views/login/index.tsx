@@ -2,6 +2,7 @@ import { NButton, useMessage } from 'naive-ui'
 import useSWRV from 'swrv'
 import { defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import type { BuiltInProviderType } from '@auth/core/providers'
 import type { UserModel } from '../../models/user'
 
 import ParallaxButton from '~/components/button/parallax-button.vue'
@@ -58,13 +59,12 @@ export const LoginView = defineComponent({
     }
 
     const { data: settings } = useSWRV('allow-password', async () => {
-      return RESTManager.api.user('allow-login').get<{
-        password: boolean
-        passkey: boolean
-
-        // oauth
-        github?: boolean
-      }>()
+      return RESTManager.api.user('allow-login').get<
+        {
+          password: boolean
+          passkey: boolean
+        } & Record<BuiltInProviderType, boolean>
+      >()
     })
 
     let triggerAuthnOnce = false
@@ -179,6 +179,27 @@ export const LoginView = defineComponent({
                         }}
                       >
                         <GithubIcon />
+                      </NButton>
+                    </div>
+                  )}
+                  {settings.value?.google && (
+                    <div
+                      class={'-mt-4 mb-4 flex w-full justify-center space-x-4'}
+                    >
+                      <NButton
+                        color="#ACA8BF70"
+                        circle
+                        type="info"
+                        onClick={() => {
+                          signIn('google', {
+                            callbackUrl: `${window.location.origin}${window.location.pathname}#${route.query.to || ''}`,
+                          })
+                        }}
+                      >
+                        <img
+                          class="h-4 w-4 grayscale filter"
+                          src={`https://authjs.dev/img/providers/${'google'}.svg`}
+                        />
                       </NButton>
                     </div>
                   )}
