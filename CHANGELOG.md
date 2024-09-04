@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## [4.7.3](https://github.com/mx-space/mx-admin/compare/v4.7.2...v4.7.3) (2024-09-04)
+
+
+### Bug Fixes
+
+* reader avatar style ([834909c](https://github.com/mx-space/mx-admin/commit/834909cdebc995279b28110a7557e80cdf92eeb3))
+
+
+### Features
+
+* google oauth ([9287b48](https://github.com/mx-space/mx-admin/commit/9287b48e1358e340484dfab88b209fa55bdc4c1a))
+
+
+
 ## [4.7.2](https://github.com/mx-space/mx-admin/compare/v4.7.1...v4.7.2) (2024-09-03)
 
 
