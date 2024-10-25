@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [4.7.4](https://github.com/mx-space/mx-admin/compare/v4.7.3...v4.7.4) (2024-10-25)
+
+
+### Features
+
+* add site like count ([c76ac96](https://github.com/mx-space/mx-admin/commit/c76ac966b756d3020c4b1f51c0a88a6af30a2f9a))
+
+
+
 ## [4.7.3](https://github.com/mx-space/mx-admin/compare/v4.7.2...v4.7.3) (2024-09-04)
 
 
