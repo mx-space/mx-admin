@@ -111,7 +111,7 @@ export const DashBoardView = defineComponent({
     }
 
     const fetchSiteLikeCount = async () => {
-      return await RESTManager.api('like_this').get()
+      return await RESTManager.api('like_this').get<number>()
     }
 
     onMounted(async () => {
