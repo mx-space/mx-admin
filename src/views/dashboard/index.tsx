@@ -95,6 +95,7 @@ export const DashBoardView = defineComponent({
     const readAndLikeCounts = ref({
       totalLikes: 0,
       totalReads: 0,
+      siteLikeCount: 0,
     })
     const fetchSiteWordCount = async () => {
       return await RESTManager.api.aggregate.count_site_words.get<{
@@ -109,14 +110,23 @@ export const DashBoardView = defineComponent({
       }>()
     }
 
+    const fetchSiteLikeCount = async () => {
+      return await RESTManager.api('like_this').get()
+    }
+
     onMounted(async () => {
-      const [c, rl] = await Promise.all([
+      const [c, rl, sl] = await Promise.all([
         fetchSiteWordCount(),
         fetchReadAndLikeCounts(),
+        fetchSiteLikeCount(),
       ])
       siteWordCount.value = c.data.length
 
-      readAndLikeCounts.value = rl
+      readAndLikeCounts.value = {
+        totalLikes: rl.totalLikes,
+        totalReads: rl.totalReads,
+        siteLikeCount: sl,
+      }
     })
 
     const refreshHitokoto = () => {
@@ -455,8 +465,13 @@ export const DashBoardView = defineComponent({
         icon: <NotebookMinimalistic />,
       },
       {
-        label: '总点赞数',
+        label: '文章总点赞数',
         value: readAndLikeCounts.value.totalLikes,
+        icon: <HeartIcon />,
+      },
+      {
+        label: '站点总点赞数',
+        value: readAndLikeCounts.value.siteLikeCount,
         icon: <HeartIcon />,
       },
 
