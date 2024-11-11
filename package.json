@@ -99,7 +99,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "@innei/prettier": "0.14.2",
+    "@innei/prettier": "0.15.0",
     "@types/ejs": "3.1.5",
     "@types/event-source-polyfill": "1.0.5",
     "@types/js-yaml": "4.0.9",
