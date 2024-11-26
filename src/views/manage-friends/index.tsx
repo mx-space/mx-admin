@@ -1,4 +1,4 @@
-import omit from 'lodash-es/omit'
+import { omit } from 'es-toolkit/compat'
 import {
   NBadge,
   NButton,
