@@ -1,5 +1,14 @@
 # CHANGELOG
 
+# [4.8.0](https://github.com/mx-space/mx-admin/compare/v4.7.4...v4.8.0) (2024-11-26)
+
+
+### Bug Fixes
+
+* typing ([907b7f7](https://github.com/mx-space/mx-admin/commit/907b7f72fdaf91aec263e9cbde72fd354422e6d4))
+
+
+
 ## [4.7.4](https://github.com/mx-space/mx-admin/compare/v4.7.3...v4.7.4) (2024-10-25)
 
 
