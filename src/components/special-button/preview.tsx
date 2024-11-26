@@ -1,4 +1,4 @@
-import { debounce } from 'lodash-es'
+import { debounce } from 'es-toolkit/compat'
 import { NSplit } from 'naive-ui'
 
 import { useUIStore } from '~/stores/ui'

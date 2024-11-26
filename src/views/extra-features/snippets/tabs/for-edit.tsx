@@ -1,11 +1,6 @@
-import { HeaderActionButton } from '~/components/button/rounded-button'
-import { CheckCircleOutlinedIcon } from '~/components/icons'
-import { KVEditor } from '~/components/kv-editor'
+import { omit } from 'es-toolkit/compat'
 import { dump, load } from 'js-yaml'
 import JSON5 from 'json5'
-import { useLayout } from '~/layouts/content'
-import { TwoColGridLayout } from '~/layouts/two-col'
-import { omit } from 'lodash-es'
 import {
   NForm,
   NFormItem,
@@ -17,18 +12,23 @@ import {
   NSwitch,
   useMessage,
 } from 'naive-ui'
-import { RESTManager } from '~/utils'
 import { useRoute, useRouter } from 'vue-router'
 
 import { useStorage } from '@vueuse/core'
 
+import { HeaderActionButton } from '~/components/button/rounded-button'
+import { CheckCircleOutlinedIcon } from '~/components/icons'
+import { KVEditor } from '~/components/kv-editor'
 import { useMountAndUnmount } from '~/hooks/use-lifecycle'
+import { useLayout } from '~/layouts/content'
+import { TwoColGridLayout } from '~/layouts/two-col'
+import { RESTManager } from '~/utils'
 
 import {
+  defaultServerlessFunction,
   SnippetModel,
   SnippetType,
   SnippetTypeToLanguage,
-  defaultServerlessFunction,
 } from '../../../../models/snippet'
 import { CodeEditorForSnippet } from '../components/code-editor'
 import { InstallDependencyButton } from '../components/install-dep-button'

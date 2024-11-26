@@ -6,7 +6,7 @@
  * @FilePath: /admin-next/src/stores/ui.ts
  * Mark: Coding with Love
  */
-import { debounce } from 'lodash-es'
+import { debounce } from 'es-toolkit/compat'
 import { computed, onMounted, ref, watch } from 'vue'
 
 import { useDark, useToggle } from '@vueuse/core'

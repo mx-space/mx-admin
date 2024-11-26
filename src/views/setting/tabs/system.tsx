@@ -1,4 +1,4 @@
-import { camelCase, cloneDeep, isEmpty, merge } from 'lodash-es'
+import { camelCase, cloneDeep, isEmpty, merge } from 'es-toolkit/compat'
 import { NButton, NColorPicker, NFormItem, useThemeVars } from 'naive-ui'
 import { ThemeColorConfig } from 'theme.config'
 import {

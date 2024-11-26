@@ -119,6 +119,9 @@ importers:
       ejs:
         specifier: 3.1.10
         version: 3.1.10
+      es-toolkit:
+        specifier: 1.27.0
+        version: 1.27.0
       event-source-polyfill:
         specifier: 1.0.31
         version: 1.0.31
@@ -134,9 +137,9 @@ importers:
       json5:
         specifier: 2.2.3
         version: 2.2.3
-      lodash-es:
-        specifier: 4.17.21
-        version: 4.17.21
+      lodash.transform:
+        specifier: 4.6.0
+        version: 4.6.0
       markdown-escape:
         specifier: 2.0.0
         version: 2.0.0
@@ -228,9 +231,6 @@ importers:
       '@types/js-yaml':
         specifier: 4.0.9
         version: 4.0.9
-      '@types/lodash-es':
-        specifier: 4.17.12
-        version: 4.17.12
       '@types/markdown-escape':
         specifier: 1.1.3
         version: 1.1.3
@@ -2482,6 +2482,9 @@ packages:
     resolution: {integrity: sha512-Zf5H2Kxt2xjTvbJvP2ZWLEICxA6j+hAmMzIlypy4xcBg1vKVnx89Wy0GbS+kf5cwCVFFzdCFh2XSCFNULS6csw==}
     engines: {node: '>= 0.4'}
 
+  es-toolkit@1.27.0:
+    resolution: {integrity: sha512-ETSFA+ZJArcuSCpzD2TjAy6UHpx4E4uqFsoDg9F/nTLogrLmVVZQ+zNxco5h7cWnA1nNak07IXsLcaSMih+ZPQ==}
+
   esbuild@0.21.5:
     resolution: {integrity: sha512-mg3OPMV4hXywwpoDxu3Qda5xCKQi+vCTZq8S9J/EpkhB2HzKXq4SNFZE3+NK93JYxc8VMSep+lOUSC/RVKaBqw==}
     engines: {node: '>=12'}
@@ -2855,6 +2858,9 @@ packages:
 
   lodash-es@4.17.21:
     resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
+
+  lodash.transform@4.6.0:
+    resolution: {integrity: sha512-LO37ZnhmBVx0GvOU/caQuipEh4GN82TcWv3yHlebGDgOxbxiwwzW5Pcx2AcvpIv2WmvmSMoC492yQFNhy/l/UQ==}
 
   lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
@@ -6532,6 +6538,8 @@ snapshots:
 
   es-errors@1.3.0: {}
 
+  es-toolkit@1.27.0: {}
+
   esbuild@0.21.5:
     optionalDependencies:
       '@esbuild/aix-ppc64': 0.21.5
@@ -6880,6 +6888,8 @@ snapshots:
       pkg-types: 1.1.3
 
   lodash-es@4.17.21: {}
+
+  lodash.transform@4.6.0: {}
 
   lodash@4.17.21: {}
 

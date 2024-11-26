@@ -1,4 +1,4 @@
-import { isPlainObject } from 'lodash-es'
+import { isPlainObject } from 'es-toolkit/compat'
 import { extend } from 'umi-request'
 import type { RequestMethod, RequestOptionsInit } from 'umi-request'
 

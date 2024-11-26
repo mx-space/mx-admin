@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash-es'
+import { cloneDeep } from 'es-toolkit/compat'
 import {
   NButton,
   NButtonGroup,

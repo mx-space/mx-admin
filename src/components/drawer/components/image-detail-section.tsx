@@ -1,5 +1,5 @@
 import { decode } from 'blurhash'
-import { uniqBy } from 'lodash-es'
+import { uniqBy } from 'es-toolkit/compat'
 import {
   NButton,
   NButtonGroup,

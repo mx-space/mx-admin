@@ -1,4 +1,4 @@
-import { isString } from 'lodash-es'
+import { isString } from 'es-toolkit/compat'
 import { NFormItem, NInputNumber, useMessage } from 'naive-ui'
 import { computed, defineComponent, onMounted, reactive, ref, toRaw } from 'vue'
 import { useRoute, useRouter } from 'vue-router'

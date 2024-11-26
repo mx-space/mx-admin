@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash-es'
+import { isEmpty } from 'es-toolkit/compat'
 import { NDynamicInput, NInput, NSelect } from 'naive-ui'
 import type { SelectMixedOption } from 'naive-ui/lib/select/src/interface'
 import type { PropType } from 'vue'

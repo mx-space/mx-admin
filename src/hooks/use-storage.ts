@@ -1,6 +1,6 @@
 import { instanceToPlain, plainToInstance } from 'class-transformer'
 import { validateSync } from 'class-validator'
-import { throttle } from 'lodash-es'
+import { throttle } from 'es-toolkit/compat'
 import { reactive, watch } from 'vue'
 
 const key2reactive = new Map<string, any>()

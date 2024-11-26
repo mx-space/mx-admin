@@ -1,6 +1,4 @@
-import { IpInfoPopover } from '~/components/ip-info'
-import { ContentLayout } from '~/layouts/content'
-import { isEmpty } from 'lodash-es'
+import { isEmpty } from 'es-toolkit/compat'
 import {
   NButton,
   NDataTable,
@@ -11,7 +9,6 @@ import {
   NTabs,
   useDialog,
 } from 'naive-ui'
-import { RESTManager } from '~/utils'
 import {
   defineComponent,
   onBeforeMount,
@@ -20,16 +17,20 @@ import {
   toRaw,
   watch,
 } from 'vue'
+import type { IPAggregate, Month, Path, Today, Total, Week } from './types'
 
 import { Chart } from '@antv/g2/esm'
+
+import { IpInfoPopover } from '~/components/ip-info'
+import { ContentLayout } from '~/layouts/content'
+import { RESTManager } from '~/utils'
 
 import { AnalyzeDataTable } from './components/analyze-data-table'
 import { GuestActivity } from './components/guest-activity'
 import { ReadingRank } from './components/reading-rank'
-import type { IPAggregate, Month, Path, Today, Total, Week } from './types'
 
 const SectionTitle = defineComponent((_, { slots }) => () => (
-  <div class="my-[12px] font-semibold text-gray-400 ">{slots.default?.()}</div>
+  <div class="my-[12px] font-semibold text-gray-400">{slots.default?.()}</div>
 ))
 export default defineComponent({
   setup() {

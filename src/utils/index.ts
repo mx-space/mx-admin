@@ -1,4 +1,5 @@
-import { isEqual, isObject, transform } from 'lodash-es'
+import { isEqual, isObject } from 'es-toolkit/compat'
+import transform from 'lodash.transform'
 import { toRaw } from 'vue'
 
 export * from './auth'

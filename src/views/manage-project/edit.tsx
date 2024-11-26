@@ -1,17 +1,19 @@
+import { isString } from 'es-toolkit/compat'
+import transform from 'lodash.transform'
+import { NDynamicTags, NForm, NFormItem, NInput } from 'naive-ui'
+import { computed, defineComponent, onMounted, reactive, toRaw } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import type { IGithubRepo } from '~/external/api/github-repo'
+import type { ProjectModel } from '~/models/project'
+
 import { HeaderActionButton } from '~/components/button/rounded-button'
+import { Editor } from '~/components/editor/universal'
 import { SendIcon } from '~/components/icons'
 import { FetchGithubRepoButton } from '~/components/special-button/fetch-github-repo'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
 import { ContentLayout } from '~/layouts/content'
-import { isString, transform } from 'lodash-es'
-import { NDynamicTags, NForm, NFormItem, NInput } from 'naive-ui'
 import { RouteName } from '~/router/name'
 import { RESTManager } from '~/utils'
-import { computed, defineComponent, onMounted, reactive, toRaw } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { Editor } from '~/components/editor/universal'
-import type { IGithubRepo } from '~/external/api/github-repo'
-import type { ProjectModel } from '~/models/project'
 
 type ProjectReactiveType = {
   name: string

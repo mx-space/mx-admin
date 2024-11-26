@@ -1,5 +1,5 @@
 import { add } from 'date-fns'
-import { isString } from 'lodash-es'
+import { isString } from 'es-toolkit/compat'
 import {
   NButton,
   NButtonGroup,
