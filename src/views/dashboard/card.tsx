@@ -34,7 +34,7 @@ export const Card = defineComponent({
       default: () => [],
     },
   },
-  // @ts-expect-error
+
   setup(props: CardProps) {
     return () => (
       <>

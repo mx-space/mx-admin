@@ -2,13 +2,13 @@ import { NButton, useMessage } from 'naive-ui'
 import useSWRV from 'swrv'
 import { defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { BuiltInProviderType } from '@auth/core/providers'
+import type { AuthSocialProviders } from '~/utils/authjs/auth'
 import type { UserModel } from '../../models/user'
 
 import ParallaxButton from '~/components/button/parallax-button.vue'
 import { GithubIcon, PassKeyOutlineIcon } from '~/components/icons'
 import { SESSION_WITH_LOGIN } from '~/constants/keys'
-import { signIn } from '~/utils/authjs'
+import { authClient } from '~/utils/authjs/auth'
 import { AuthnUtils } from '~/utils/authn'
 
 import Avatar from '../../components/avatar/index.vue'
@@ -63,7 +63,7 @@ export const LoginView = defineComponent({
         {
           password: boolean
           passkey: boolean
-        } & Record<BuiltInProviderType, boolean>
+        } & Record<AuthSocialProviders, boolean>
       >()
     })
 
@@ -173,8 +173,9 @@ export const LoginView = defineComponent({
                         textColor="#fff"
                         type="info"
                         onClick={() => {
-                          signIn('github', {
-                            callbackUrl: `${window.location.origin}${window.location.pathname}#${route.query.to || ''}`,
+                          authClient.signIn.social({
+                            provider: 'github',
+                            callbackURL: `${window.location.origin}${window.location.pathname}#${route.query.to || ''}`,
                           })
                         }}
                       >
@@ -191,8 +192,9 @@ export const LoginView = defineComponent({
                         circle
                         type="info"
                         onClick={() => {
-                          signIn('google', {
-                            callbackUrl: `${window.location.origin}${window.location.pathname}#${route.query.to || ''}`,
+                          authClient.signIn.social({
+                            provider: 'google',
+                            callbackURL: `${window.location.origin}${window.location.pathname}#${route.query.to || ''}`,
                           })
                         }}
                       >

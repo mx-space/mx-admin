@@ -1,4 +1,3 @@
-import { O } from 'crossbell.js/dist/index-LKLW_17H'
 import { get, set } from 'lodash-es'
 import { marked } from 'marked'
 import {

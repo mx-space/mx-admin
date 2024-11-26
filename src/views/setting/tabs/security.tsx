@@ -37,7 +37,7 @@ import { useStoreRef } from '~/hooks/use-store-ref'
 import { RouteName } from '~/router/name'
 import { UIStore } from '~/stores/ui'
 import { parseDate, removeToken, RESTManager } from '~/utils'
-import { signOut } from '~/utils/authjs'
+import { authClient } from '~/utils/authjs/auth'
 import { AuthnUtils } from '~/utils/authn'
 
 import { autosizeableProps } from './system'
@@ -63,7 +63,7 @@ export const TabSecurity = defineComponent(() => {
       await RESTManager.api.user.logout.post<{}>({})
 
       removeToken()
-      await signOut()
+      await authClient.signOut()
       window.location.reload()
     } else {
       await RESTManager.api.user.session(id).delete<{}>({})

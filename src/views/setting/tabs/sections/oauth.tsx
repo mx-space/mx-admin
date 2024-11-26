@@ -8,16 +8,16 @@ import {
   NP,
   NSwitch,
 } from 'naive-ui'
-import type { BuiltInProviderType } from '@auth/core/providers'
+import type { AuthSocialProviders } from '~/utils/authjs/auth'
 import type { FormInst } from 'naive-ui/lib'
 
 import { RESTManager } from '~/utils'
-import { signIn } from '~/utils/authjs'
+import { authClient } from '~/utils/authjs/auth'
 
 import { useInjectOauthData } from '../providers/oauth'
 
 export const createProvideSectionComponent = (
-  type: BuiltInProviderType,
+  type: AuthSocialProviders,
   options: {
     name: string
   },
@@ -25,8 +25,9 @@ export const createProvideSectionComponent = (
   defineComponent({
     setup() {
       const handleValidate = async () => {
-        await signIn(type, {
-          callbackUrl: `${location.href}?validate=true`,
+        await authClient.signIn.social({
+          provider: type,
+          callbackURL: `${location.href}?validate=true`,
         })
       }
 

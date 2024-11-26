@@ -1,14 +1,12 @@
 import {
   NButton,
   NButtonGroup,
-  NCard,
   NDataTable,
   NForm,
   NFormItem,
   NH2,
   NInput,
   NLayoutContent,
-  NP,
   NPopconfirm,
   NSpace,
   NSwitch,
@@ -19,7 +17,6 @@ import { defineComponent, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { AuthnModel } from '~/models/authn'
 import type { DialogReactive } from 'naive-ui'
-import type { FormInst } from 'naive-ui/lib'
 import type { FlatOauthData, OauthData } from './providers/oauth'
 
 import { Icon } from '@vicons/utils'
@@ -29,15 +26,10 @@ import { RelativeTime } from '~/components/time/relative-time'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { UIStore } from '~/stores/ui'
 import { RESTManager } from '~/utils'
-import { signIn } from '~/utils/authjs'
 import { getSession } from '~/utils/authjs/session'
 import { AuthnUtils } from '~/utils/authn'
 
-import {
-  flattenOauthData,
-  useInjectOauthData,
-  useProvideOauthData,
-} from './providers/oauth'
+import { flattenOauthData, useProvideOauthData } from './providers/oauth'
 import { GitHubProvider, GoogleProvider } from './sections/oauth'
 
 export const TabAuth = defineComponent({
@@ -262,6 +254,7 @@ const Oauth = defineComponent(() => {
     router.replace({ query: { ...route.query, validate: '' } })
     if (validate) {
       const session = await getSession()
+
       if (session) {
         message.success('验证成功')
 

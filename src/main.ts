@@ -14,13 +14,6 @@ import './index.css'
 
 import { router } from './router'
 import { attachTokenFromQuery, RESTManager } from './utils'
-import { authConfigManager, getCsrfToken } from './utils/authjs'
-
-authConfigManager.setConfig({
-  basePath: '/auth',
-  baseUrl: RESTManager.endpoint,
-  credentials: 'include',
-})
 
 attachTokenFromQuery()
 

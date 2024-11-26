@@ -22,7 +22,7 @@ export default ({ mode }) => {
 
   return defineConfig({
     plugins: [
-      mkcert(),
+      // mkcert(),
       wasm(),
       WindiCSS(),
       vue({}),
@@ -74,10 +74,7 @@ export default ({ mode }) => {
       },
     },
     optimizeDeps: {
-      exclude: [
-        '@huacnlee/autocorrect',
-        '@dqbd/tiktoken',
-      ],
+      exclude: ['@huacnlee/autocorrect', '@dqbd/tiktoken'],
     },
 
     define: {
@@ -85,10 +82,10 @@ export default ({ mode }) => {
     },
     base: !isDev ? VITE_APP_PUBLIC_URL || '' : '',
 
-    server: {
-      https: true,
-      port: 9528,
-    },
+    // server: {
+    //   https: true,
+    //   port: 9528,
+    // },
     esbuild: {
       jsxFactory: '__h',
       jsxInject: 'import {h as __h,Fragment as __Fragment} from "vue"',
