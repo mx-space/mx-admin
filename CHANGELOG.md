@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## [4.8.1](https://github.com/mx-space/mx-admin/compare/v4.8.0...v4.8.1) (2024-11-26)
+
+
+### Bug Fixes
+
+* typing ([03fa6df](https://github.com/mx-space/mx-admin/commit/03fa6dfd5fa95fbc34b41bbbb4d8076b55055899))
+* vite config ([ac44646](https://github.com/mx-space/mx-admin/commit/ac446463ff6db257ef17fe4d42201d6a2072d801))
+
+
+
 # [4.8.0](https://github.com/mx-space/mx-admin/compare/v4.7.4...v4.8.0) (2024-11-26)
 
 
