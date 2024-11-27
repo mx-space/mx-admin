@@ -82,10 +82,10 @@ export default ({ mode }) => {
     },
     base: !isDev ? VITE_APP_PUBLIC_URL || '' : '',
 
-    // server: {
-    //   https: true,
-    //   port: 9528,
-    // },
+    server: {
+      // https: true,
+      port: 9528,
+    },
     esbuild: {
       jsxFactory: '__h',
       jsxInject: 'import {h as __h,Fragment as __Fragment} from "vue"',
