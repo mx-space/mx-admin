@@ -74,7 +74,7 @@
     "lodash.transform": "4.6.0",
     "markdown-escape": "2.0.0",
     "marked": "13.0.3",
-    "monaco-editor": "0.50.0",
+    "monaco-editor": "0.52.2",
     "monaco-editor-auto-typings": "0.4.5",
     "naive-ui": "2.40.2",
     "octokit": "4.0.2",

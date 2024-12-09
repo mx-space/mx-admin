@@ -147,11 +147,11 @@ importers:
         specifier: 13.0.3
         version: 13.0.3
       monaco-editor:
-        specifier: 0.50.0
-        version: 0.50.0
+        specifier: 0.52.2
+        version: 0.52.2
       monaco-editor-auto-typings:
         specifier: 0.4.5
-        version: 0.4.5(monaco-editor@0.50.0)
+        version: 0.4.5(monaco-editor@0.52.2)
       naive-ui:
         specifier: 2.40.2
         version: 2.40.2(vue@3.5.13(typescript@5.7.2))
@@ -2855,8 +2855,8 @@ packages:
     peerDependencies:
       monaco-editor: '*'
 
-  monaco-editor@0.50.0:
-    resolution: {integrity: sha512-8CclLCmrRRh+sul7C08BmPBP3P8wVWfBHomsTcndxg5NRCEPfu/mc2AGU8k37ajjDVXcXFc12ORAMUkmk+lkFA==}
+  monaco-editor@0.52.2:
+    resolution: {integrity: sha512-GEQWEZmfkOGLdd3XK8ryrfWz3AIP8YymVXiPHEdewrUq7mh0qrKrfHLNCXcbB6sTnMLnOZ3ztSiKcciFUkIJwQ==}
 
   ms@2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
@@ -6730,11 +6730,11 @@ snapshots:
     dependencies:
       obliterator: 2.0.4
 
-  monaco-editor-auto-typings@0.4.5(monaco-editor@0.50.0):
+  monaco-editor-auto-typings@0.4.5(monaco-editor@0.52.2):
     dependencies:
-      monaco-editor: 0.50.0
+      monaco-editor: 0.52.2
 
-  monaco-editor@0.50.0: {}
+  monaco-editor@0.52.2: {}
 
   ms@2.1.2: {}
 
