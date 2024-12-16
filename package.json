@@ -116,7 +116,7 @@
     "lint-staged": "15.2.10",
     "postcss": "8.4.49",
     "postcss-nested": "7.0.2",
-    "postcss-preset-env": "10.1.1",
+    "postcss-preset-env": "10.1.2",
     "prettier": "3.4.1",
     "rollup": "^4.27.4",
     "rollup-plugin-visualizer": "5.12.0",
