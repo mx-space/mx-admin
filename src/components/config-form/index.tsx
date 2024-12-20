@@ -346,6 +346,7 @@ const ScheamFormItem = defineComponent({
           )
         }
 
+        case 'number':
         case 'integer': {
           return (
             <NInputNumber
