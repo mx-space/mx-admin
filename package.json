@@ -123,7 +123,7 @@
     "simple-git-hooks": "2.11.1",
     "typescript": "5.7.2",
     "unplugin-auto-import": "0.18.5",
-    "vite": "6.0.1",
+    "vite": "6.0.5",
     "vite-plugin-checker": "0.8.0",
     "vite-plugin-mkcert": "1.17.6",
     "vite-plugin-wasm": "3.3.0",
