@@ -10,11 +10,16 @@ import {
   NFormItem,
   NInput,
   NInputNumber,
+  NSwitch,
 } from 'naive-ui'
 import type { Image as ImageModel } from '~/models/base'
 import type { PropType } from 'vue'
 
-import { encodeImageToBlurhash, getDominantColor } from '~/utils/image'
+import {
+  encodeImageToBlurhash,
+  encodeImageToBlurhashWebgl,
+  getDominantColor,
+} from '~/utils/image'
 import { isVideoExt, pickImagesFromMarkdown } from '~/utils/markdown'
 
 export const ImageDetailSection = defineComponent({
@@ -38,6 +43,8 @@ export const ImageDetailSection = defineComponent({
   },
   setup(props) {
     const loading = ref(false)
+
+    const useWebglFlag = ref(false)
 
     const originImageMap = computed(() => {
       const map = new Map<string, ImageModel>()
@@ -130,7 +137,9 @@ export const ImageDetailSection = defineComponent({
                   src: item.src,
                   type: ext,
                   accent: getDominantColor($image),
-                  blurHash: encodeImageToBlurhash($image),
+                  blurHash: useWebglFlag
+                    ? encodeImageToBlurhashWebgl($image)
+                    : encodeImageToBlurhash($image),
                 })
               })
               $image.onerror = (err) => {
@@ -151,7 +160,7 @@ export const ImageDetailSection = defineComponent({
         if (task.status === 'fulfilled') nextImageDimensions.push(task.value)
         else {
           message.warning(
-            `获取图片信息失败：${task.reason.src}: ${task.reason.err}`,
+            ` 获取图片信息失败：${task.reason.src}: ${task.reason.err}`,
           )
         }
       })
@@ -176,7 +185,16 @@ export const ImageDetailSection = defineComponent({
             自动修正
           </NButton>
         </div>
-
+        <div class="mt-2 flex">
+          <NSwitch
+            value={useWebglFlag.value}
+            onUpdateValue={(e) => void (useWebglFlag.value = e)}
+          />
+          <div class="ml-2">
+            {' '}
+            使用 Webgl 加速图片处理（实验性，调用 GPU 计算）
+          </div>
+        </div>
         <NCollapse accordion class="mt-4">
           {images.value.map((image: ImageModel, index: number) => {
             return (
@@ -233,7 +251,7 @@ export const ImageDetailSection = defineComponent({
                         }
                         props.images[index].accent = n
                       }}
-                    ></NColorPicker>
+                    />
                   </NFormItem>
 
                   <NFormItem label="Blur Preview">
@@ -305,7 +323,7 @@ const BlurHashPreview = defineComponent({
         class="bg-cover bg-center"
         height={32}
         width={32}
-      ></canvas>
+      />
     )
   },
 })
