@@ -1,5 +1,20 @@
 # CHANGELOG
 
+# [4.9.0](https://github.com/mx-space/mx-admin/compare/v4.8.1...v4.9.0) (2025-01-08)
+
+
+### Bug Fixes
+
+* config form number type ([3c5214e](https://github.com/mx-space/mx-admin/commit/3c5214e6a5a7326aec552bf8cbcb6c22d1272a34))
+
+
+### Features
+
+* Add WebGL-based image processing (encodeImageToBlurhashWebgl) for better performance ([#983](https://github.com/mx-space/mx-admin/issues/983)) ([650b91b](https://github.com/mx-space/mx-admin/commit/650b91bd30972afc5dac7abc58163a7c0223b6c8))
+* replace NSwitch with NCheckbox for WebGL flag in ImageDetailSection ([47fab29](https://github.com/mx-space/mx-admin/commit/47fab29f6bd4b99e5a25cca91d63b0d028327f63))
+
+
+
 ## [4.8.1](https://github.com/mx-space/mx-admin/compare/v4.8.0...v4.8.1) (2024-11-26)
 
 
