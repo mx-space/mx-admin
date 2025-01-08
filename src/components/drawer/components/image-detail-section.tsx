@@ -3,6 +3,7 @@ import { uniqBy } from 'es-toolkit/compat'
 import {
   NButton,
   NButtonGroup,
+  NCheckbox,
   NCollapse,
   NCollapseItem,
   NColorPicker,
@@ -44,7 +45,7 @@ export const ImageDetailSection = defineComponent({
   setup(props) {
     const loading = ref(false)
 
-    const useWebglFlag = ref(false)
+    const useWebglFlag = useStorage('useWebglFlag', false)
 
     const originImageMap = computed(() => {
       const map = new Map<string, ImageModel>()
@@ -185,15 +186,15 @@ export const ImageDetailSection = defineComponent({
             自动修正
           </NButton>
         </div>
-        <div class="mt-2 flex">
-          <NSwitch
-            value={useWebglFlag.value}
-            onUpdateValue={(e) => void (useWebglFlag.value = e)}
+        <div class="mt-2 flex items-center gap-1 pl-1 text-sm">
+          <NCheckbox
+            size="small"
+            checked={useWebglFlag.value}
+            onUpdateChecked={(e) => void (useWebglFlag.value = e)}
           />
-          <div class="ml-2">
-            {' '}
+          <label for="useWebglFlag" class="ml-2">
             使用 Webgl 加速图片处理（实验性，调用 GPU 计算）
-          </div>
+          </label>
         </div>
         <NCollapse accordion class="mt-4">
           {images.value.map((image: ImageModel, index: number) => {
