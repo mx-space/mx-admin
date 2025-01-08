@@ -1,4 +1,5 @@
 import { onMounted, ref } from 'vue'
+import type { Ref } from 'vue'
 
 import {
   defaultKeymap,
@@ -23,7 +24,6 @@ import { codemirrorReconfigureExtension } from './extension'
 import { syntaxTheme } from './syntax-highlight'
 import { useCodeMirrorConfigureFonts } from './use-auto-fonts'
 import { useCodeMirrorAutoToggleTheme } from './use-auto-theme'
-import type { Ref } from 'vue'
 
 interface Props {
   initialDoc: string
