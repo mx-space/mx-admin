@@ -202,7 +202,7 @@ importers:
         version: 13.12.0
       vite-plugin-windicss:
         specifier: 1.9.4
-        version: 1.9.4(vite@6.0.7(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1))
+        version: 1.9.4(vite@6.0.9(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1))
       vue:
         specifier: 3.5.13
         version: 3.5.13(typescript@5.7.2)
@@ -248,10 +248,10 @@ importers:
         version: 13.12.2
       '@vitejs/plugin-vue':
         specifier: 5.2.1
-        version: 5.2.1(vite@6.0.7(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1))(vue@3.5.13(typescript@5.7.2))
+        version: 5.2.1(vite@6.0.9(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1))(vue@3.5.13(typescript@5.7.2))
       '@vitejs/plugin-vue-jsx':
         specifier: 4.1.1
-        version: 4.1.1(vite@6.0.7(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1))(vue@3.5.13(typescript@5.7.2))
+        version: 4.1.1(vite@6.0.9(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1))(vue@3.5.13(typescript@5.7.2))
       '@vue/compiler-sfc':
         specifier: 3.5.13
         version: 3.5.13
@@ -289,20 +289,20 @@ importers:
         specifier: 19.0.0
         version: 19.0.0(@vueuse/core@12.3.0(typescript@5.7.2))(rollup@4.30.1)
       vite:
-        specifier: 6.0.7
-        version: 6.0.7(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1)
+        specifier: 6.0.9
+        version: 6.0.9(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1)
       vite-plugin-checker:
         specifier: 0.8.0
-        version: 0.8.0(@biomejs/biome@1.9.4)(typescript@5.7.2)(vite@6.0.7(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1))
+        version: 0.8.0(@biomejs/biome@1.9.4)(typescript@5.7.2)(vite@6.0.9(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1))
       vite-plugin-mkcert:
         specifier: 1.17.6
-        version: 1.17.6(vite@6.0.7(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1))
+        version: 1.17.6(vite@6.0.9(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1))
       vite-plugin-wasm:
         specifier: 3.4.1
-        version: 3.4.1(vite@6.0.7(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1))
+        version: 3.4.1(vite@6.0.9(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1))
       vite-tsconfig-paths:
         specifier: 5.1.4
-        version: 5.1.4(typescript@5.7.2)(vite@6.0.7(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1))
+        version: 5.1.4(typescript@5.7.2)(vite@6.0.9(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1))
       windicss:
         specifier: 3.5.6
         version: 3.5.6
@@ -3388,8 +3388,8 @@ packages:
       vite:
         optional: true
 
-  vite@6.0.7:
-    resolution: {integrity: sha512-RDt8r/7qx9940f8FcOIAH9PTViRrghKaK2K1jY3RaAURrEUbm9Du1mJ72G+jlhtG3WwodnfzY8ORQZbBavZEAQ==}
+  vite@6.0.9:
+    resolution: {integrity: sha512-MSgUxHcaXLtnBPktkbUSoQUANApKYuxZ6DrbVENlIorbhL2dZydTLaZ01tjUoE3szeFzlFk9ANOKk0xurh4MKA==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
     peerDependencies:
@@ -5193,19 +5193,19 @@ snapshots:
       '@xicons/utils': 0.1.4
       vue: 3.5.13(typescript@5.7.2)
 
-  '@vitejs/plugin-vue-jsx@4.1.1(vite@6.0.7(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1))(vue@3.5.13(typescript@5.7.2))':
+  '@vitejs/plugin-vue-jsx@4.1.1(vite@6.0.9(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1))(vue@3.5.13(typescript@5.7.2))':
     dependencies:
       '@babel/core': 7.26.0
       '@babel/plugin-transform-typescript': 7.25.9(@babel/core@7.26.0)
       '@vue/babel-plugin-jsx': 1.2.5(@babel/core@7.26.0)
-      vite: 6.0.7(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1)
+      vite: 6.0.9(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1)
       vue: 3.5.13(typescript@5.7.2)
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-vue@5.2.1(vite@6.0.7(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1))(vue@3.5.13(typescript@5.7.2))':
+  '@vitejs/plugin-vue@5.2.1(vite@6.0.9(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1))(vue@3.5.13(typescript@5.7.2))':
     dependencies:
-      vite: 6.0.7(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1)
+      vite: 6.0.9(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1)
       vue: 3.5.13(typescript@5.7.2)
 
   '@vue/babel-helper-vue-transform-on@1.2.5': {}
@@ -6977,7 +6977,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  vite-plugin-checker@0.8.0(@biomejs/biome@1.9.4)(typescript@5.7.2)(vite@6.0.7(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1)):
+  vite-plugin-checker@0.8.0(@biomejs/biome@1.9.4)(typescript@5.7.2)(vite@6.0.9(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1)):
     dependencies:
       '@babel/code-frame': 7.26.2
       ansi-escapes: 4.3.2
@@ -6989,7 +6989,7 @@ snapshots:
       npm-run-path: 4.0.1
       strip-ansi: 6.0.1
       tiny-invariant: 1.3.3
-      vite: 6.0.7(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1)
+      vite: 6.0.9(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1)
       vscode-languageclient: 7.0.0
       vscode-languageserver: 7.0.0
       vscode-languageserver-textdocument: 1.0.12
@@ -6998,42 +6998,42 @@ snapshots:
       '@biomejs/biome': 1.9.4
       typescript: 5.7.2
 
-  vite-plugin-mkcert@1.17.6(vite@6.0.7(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1)):
+  vite-plugin-mkcert@1.17.6(vite@6.0.9(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1)):
     dependencies:
       '@octokit/rest': 20.1.1
       axios: 1.7.5(debug@4.4.0)
       debug: 4.4.0
       picocolors: 1.1.1
-      vite: 6.0.7(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1)
+      vite: 6.0.9(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1)
     transitivePeerDependencies:
       - supports-color
 
-  vite-plugin-wasm@3.4.1(vite@6.0.7(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1)):
+  vite-plugin-wasm@3.4.1(vite@6.0.9(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1)):
     dependencies:
-      vite: 6.0.7(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1)
+      vite: 6.0.9(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1)
 
-  vite-plugin-windicss@1.9.4(vite@6.0.7(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1)):
+  vite-plugin-windicss@1.9.4(vite@6.0.9(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1)):
     dependencies:
       '@windicss/plugin-utils': 1.9.4
       debug: 4.4.0
       kolorist: 1.8.0
-      vite: 6.0.7(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1)
+      vite: 6.0.9(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1)
       windicss: 3.5.6
     transitivePeerDependencies:
       - supports-color
 
-  vite-tsconfig-paths@5.1.4(typescript@5.7.2)(vite@6.0.7(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1)):
+  vite-tsconfig-paths@5.1.4(typescript@5.7.2)(vite@6.0.9(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1)):
     dependencies:
       debug: 4.4.0
       globrex: 0.1.2
       tsconfck: 3.1.4(typescript@5.7.2)
     optionalDependencies:
-      vite: 6.0.7(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1)
+      vite: 6.0.9(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1)
     transitivePeerDependencies:
       - supports-color
       - typescript
 
-  vite@6.0.7(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1):
+  vite@6.0.9(@types/node@18.19.70)(jiti@1.21.7)(yaml@2.6.1):
     dependencies:
       esbuild: 0.24.2
       postcss: 8.4.49
