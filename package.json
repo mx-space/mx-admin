@@ -56,7 +56,7 @@
     "@xterm/addon-fit": "0.10.0",
     "@xterm/xterm": "5.5.0",
     "ansi_up": "6.0.2",
-    "better-auth": "1.1.10",
+    "better-auth": "1.1.15",
     "blurhash": "2.0.5",
     "buffer": "6.0.3",
     "canvas-confetti": "1.9.3",
