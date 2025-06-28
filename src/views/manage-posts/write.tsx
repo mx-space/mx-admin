@@ -239,9 +239,10 @@ const PostWriteView = defineComponent(() => {
     >
       <MaterialInput
         class="relative z-10 mt-3"
+        label="标题"
         placeholder="输入标题"
         value={data.title}
-        onInput={(e) => {
+        onChange={(e) => {
           data.title = e
         }}
       />
@@ -287,17 +288,16 @@ const PostWriteView = defineComponent(() => {
         }}
         data={data}
       >
-        <NFormItem label="分类" required path="category">
+        <NFormItem label="分类" required path="categoryId">
           <NSelect
             placeholder="请选择"
-            options={categoryStore.selectOptions}
-            value={data.category}
+            options={categoryStore.data.value?.map(i => ({ label: i.name, value: i.id })) || []}
+            value={data.categoryId}
             onUpdateValue={(v) => {
-              data.category = v
+              data.categoryId = v
             }}
           />
         </NFormItem>
-
         <NFormItem label="标签" path="tags">
           <NDynamicTags
             value={data.tags}
@@ -316,16 +316,15 @@ const PostWriteView = defineComponent(() => {
                     const selectRef = ref()
                     onMounted(async () => {
                       loading.value = true
-                      // HACK auto focus
                       if (selectRef.value) {
                         selectRef.value.$el.querySelector('input').focus()
                       }
-                      const { data } = await RESTManager.api.categories.get<{
+                      const { data: tagData } = await RESTManager.api.categories.get<{
                         data: TagModel[]
                       }>({
                         params: { type: 'Tag' },
                       })
-                      tagsRef.value = data.map((i) => ({
+                      tagsRef.value = tagData.map((i) => ({
                         label: `${i.name} (${i.count})`,
                         value: i.name,
                         key: i.name,
@@ -343,12 +342,14 @@ const PostWriteView = defineComponent(() => {
                           const newTag = {
                             label: label,
                             value: label,
+                            key: label,
                           }
                           tagsRef.value.push(newTag)
                           data.tags.push(label)
                           nextTick(() => {
                             selectRef.value.focus()
                           })
+                          return newTag
                         }}
                         value={data.tags}
                         onUpdateValue={(v) => {
@@ -358,7 +359,6 @@ const PostWriteView = defineComponent(() => {
                     )
                   },
                 })
-
                 return <Component />
               },
             }}
@@ -368,20 +368,17 @@ const PostWriteView = defineComponent(() => {
           <NSelect
             maxTagCount={3}
             multiple
-            options={relatedRef.value}
-            loading={isFetchingNext}
-            remote
+            options={postListState.datalist.value.map(i => ({ label: i.title, value: i.id }))}
+            loading={postListState.loading.value}
             filterable
             placeholder="搜索标题"
-            onSearch={handleSearch}
-            value={data.relatedIds}
+            value={data.relatedId}
             onUpdateValue={(val) => {
-              data.relatedIds = val
+              data.relatedId = val
             }}
             onScroll={handleFetchNext}
           />
         </NFormItem>
-
         <NFormItem label="摘要">
           <NInput
             type="textarea"
@@ -391,17 +388,15 @@ const PostWriteView = defineComponent(() => {
             autosize={{
               minRows: 3,
             }}
-            onInput={(e) => void (data.summary = e)}
+            onUpdateValue={(v) => void (data.summary = v)}
           />
         </NFormItem>
-
         <NFormItem label="版权注明" labelAlign="right" labelPlacement="left">
           <NSwitch
             value={data.copyright}
             onUpdateValue={(e) => void (data.copyright = e)}
           />
         </NFormItem>
-
         <NFormItem label="置顶" labelAlign="right" labelPlacement="left">
           <NSwitch
             value={!!data.pin}
@@ -415,7 +410,6 @@ const PostWriteView = defineComponent(() => {
             }}
           />
         </NFormItem>
-
         <NFormItem label="置顶顺序" labelAlign="right" labelPlacement="left">
           <NInputNumber
             disabled={!data.pin}
