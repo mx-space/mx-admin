@@ -383,7 +383,7 @@ export const ManagePostListView = defineComponent({
               sortProps.sortBy = props.sortBy
               sortProps.sortOrder = props.sortOrder
             }}
-          />
+          ></Table>
         )
       },
     })
@@ -459,7 +459,6 @@ export const ManagePostListView = defineComponent({
                     }
                   }}
                 />
-
                 <HeaderActionButton to={'/posts/edit'} icon={<AddIcon />} />
               </>
             ),

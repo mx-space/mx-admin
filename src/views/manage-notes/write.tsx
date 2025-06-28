@@ -127,7 +127,7 @@ const NoteWriteView = defineComponent(() => {
     location: '',
     coordinates: null,
     allowComment: true,
-    isPublished: true, // 默认为已发布
+    isPublished: true,
 
     id: undefined,
     nid: undefined,
@@ -283,7 +283,6 @@ const NoteWriteView = defineComponent(() => {
                 message.warning('请先保存笔记')
                 return
               }
-              
               const newStatus = !data.isPublished
               try {
                 await RESTManager.api.notes(data.id)('publish').patch({
@@ -297,7 +296,6 @@ const NoteWriteView = defineComponent(() => {
             }}
             name={data.isPublished ? "设为草稿" : "立即发布"}
           />
-          
           <HeaderActionButton
             icon={<TelegramPlaneIcon />}
             onClick={handleSubmit}
@@ -552,7 +550,6 @@ const NoteWriteView = defineComponent(() => {
             onUpdateValue={(e) => void (data.bookmark = e)}
           ></NSwitch>
         </NFormItem>
-
         <NFormItem label="发布状态" labelAlign="right" labelPlacement="left">
           <NSwitch
             value={data.isPublished}
