@@ -24,6 +24,7 @@ export interface PostModel {
   pinOrder?: number
   related?: Pick<PostModel, 'id' | 'title'>[]
   meta?: any
+  isPublished?: boolean
 }
 
 export interface Category {

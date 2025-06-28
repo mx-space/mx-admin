@@ -21,7 +21,7 @@ import { AiHelperButton } from '~/components/ai/ai-helper'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { TextBaseDrawer } from '~/components/drawer/text-base-drawer'
 import { Editor } from '~/components/editor/universal'
-import { SlidersHIcon, TelegramPlaneIcon } from '~/components/icons'
+import { SlidersHIcon, TelegramPlaneIcon, EyeIcon, EyeOffIcon } from '~/components/icons'
 import { MaterialInput } from '~/components/input/material-input'
 import { UnderlineInput } from '~/components/input/underline-input'
 import { CopyTextButton } from '~/components/special-button/copy-text-button'
@@ -50,6 +50,7 @@ type PostReactiveType = WriteBaseType & {
   pinOrder: number
   pin: boolean
   relatedId: string[]
+  isPublished: boolean
 }
 
 const PostWriteView = defineComponent(() => {
@@ -78,6 +79,7 @@ const PostWriteView = defineComponent(() => {
     pinOrder: 1,
     relatedId: [],
     created: undefined,
+    isPublished: true,
   })
 
   const parsePayloadIntoReactiveData = (payload: PostModel) => {
@@ -197,14 +199,37 @@ const PostWriteView = defineComponent(() => {
 
           <HeaderPreviewButton iframe data={data} />
           <HeaderActionButton
+            icon={data.isPublished ? <EyeOffIcon /> : <EyeIcon />}
+            variant={data.isPublished ? "warning" : "success"}
+            onClick={async () => {
+              if (!data.id) {
+                message.warning('请先保存文章')
+                return
+              }
+              
+              const newStatus = !data.isPublished
+              try {
+                await RESTManager.api.posts(data.id)('publish').patch({
+                  data: { isPublished: newStatus },
+                })
+                data.isPublished = newStatus
+                message.success(newStatus ? '文章已发布' : '文章已设为草稿')
+              } catch (_error) {
+                message.error('状态切换失败')
+              }
+            }}
+            name={data.isPublished ? '设为草稿' : '立即发布'}
+          />
+
+          <HeaderActionButton
             icon={<TelegramPlaneIcon />}
             onClick={handleSubmit}
-          ></HeaderActionButton>
+          />
         </>
       }
       footerButtonElement={
         <>
-          <button onClick={handleOpenDrawer}>
+          <button onClick={handleOpenDrawer} title="打开设置">
             <Icon>
               <SlidersHIcon />
             </Icon>
@@ -214,12 +239,12 @@ const PostWriteView = defineComponent(() => {
     >
       <MaterialInput
         class="relative z-10 mt-3"
-        label="想想取个什么标题好呢~"
+        placeholder="输入标题"
         value={data.title}
-        onChange={(e) => {
+        onInput={(e) => {
           data.title = e
         }}
-      ></MaterialInput>
+      />
 
       <div class={'flex items-center py-3 text-gray-500'}>
         <label class="prefix">{`${WEB_URL}/posts/${category.value.slug}/`}</label>
@@ -265,21 +290,15 @@ const PostWriteView = defineComponent(() => {
         <NFormItem label="分类" required path="category">
           <NSelect
             placeholder="请选择"
-            value={category.value.id}
-            onUpdateValue={(e) => {
-              data.categoryId = e
+            options={categoryStore.selectOptions}
+            value={data.category}
+            onUpdateValue={(v) => {
+              data.category = v
             }}
-            options={
-              categoryStore.data.value?.map((i) => ({
-                label: i.name,
-                value: i.id,
-                key: i.id,
-              })) || []
-            }
-          ></NSelect>
+          />
         </NFormItem>
 
-        <NFormItem label="标签">
+        <NFormItem label="标签" path="tags">
           <NDynamicTags
             value={data.tags}
             onUpdateValue={(e) => {
@@ -291,7 +310,7 @@ const PostWriteView = defineComponent(() => {
               input({ submit }) {
                 const Component = defineComponent({
                   setup() {
-                    const tags = ref([] as SelectMixedOption[])
+                    const tagsRef = ref([] as SelectMixedOption[])
                     const loading = ref(false)
                     const value = ref('')
                     const selectRef = ref()
@@ -306,7 +325,7 @@ const PostWriteView = defineComponent(() => {
                       }>({
                         params: { type: 'Tag' },
                       })
-                      tags.value = data.map((i) => ({
+                      tagsRef.value = data.map((i) => ({
                         label: `${i.name} (${i.count})`,
                         value: i.name,
                         key: i.name,
@@ -316,18 +335,26 @@ const PostWriteView = defineComponent(() => {
                     return () => (
                       <NSelect
                         ref={selectRef}
-                        size={'small'}
-                        value={value.value}
-                        clearable
-                        loading={loading.value}
                         filterable
                         tag
-                        options={tags.value}
-                        onUpdateValue={(e) => {
-                          void (value.value = e)
-                          submit(e)
+                        placeholder="输入，然后按回车创建"
+                        options={tagsRef.value}
+                        onCreate={(label) => {
+                          const newTag = {
+                            label: label,
+                            value: label,
+                          }
+                          tagsRef.value.push(newTag)
+                          data.tags.push(label)
+                          nextTick(() => {
+                            selectRef.value.focus()
+                          })
                         }}
-                      ></NSelect>
+                        value={data.tags}
+                        onUpdateValue={(v) => {
+                          data.tags = v
+                        }}
+                      />
                     )
                   },
                 })
@@ -337,50 +364,42 @@ const PostWriteView = defineComponent(() => {
             }}
           </NDynamicTags>
         </NFormItem>
-
         <NFormItem label="关联阅读">
           <NSelect
             maxTagCount={3}
-            filterable
-            clearable
-            loading={postListState.loading.value}
             multiple
-            onClear={() => {
-              postListState.refresh()
+            options={relatedRef.value}
+            loading={isFetchingNext}
+            remote
+            filterable
+            placeholder="搜索标题"
+            onSearch={handleSearch}
+            value={data.relatedIds}
+            onUpdateValue={(val) => {
+              data.relatedIds = val
             }}
-            value={data.relatedId}
-            onUpdateValue={(values) => {
-              data.relatedId = values
-            }}
-            resetMenuOnOptionsChange={false}
-            options={postListState.datalist.value.map((item) => ({
-              label: item.title,
-              value: item.id,
-              key: item.id,
-              disabled: item.id == data.id,
-            }))}
             onScroll={handleFetchNext}
-          ></NSelect>
+          />
         </NFormItem>
 
         <NFormItem label="摘要">
           <NInput
             type="textarea"
-            autosize={{
-              minRows: 2,
-              maxRows: 4,
-            }}
-            placeholder="文章摘要"
+            placeholder="请输入摘要"
             value={data.summary}
+            rows={3}
+            autosize={{
+              minRows: 3,
+            }}
             onInput={(e) => void (data.summary = e)}
-          ></NInput>
+          />
         </NFormItem>
 
         <NFormItem label="版权注明" labelAlign="right" labelPlacement="left">
           <NSwitch
             value={data.copyright}
             onUpdateValue={(e) => void (data.copyright = e)}
-          ></NSwitch>
+          />
         </NFormItem>
 
         <NFormItem label="置顶" labelAlign="right" labelPlacement="left">
@@ -388,12 +407,13 @@ const PostWriteView = defineComponent(() => {
             value={!!data.pin}
             onUpdateValue={(e) => {
               data.pin = e
-
               if (!e) {
-                data.pinOrder = 1
+                data.pinOrder = 0
+              } else {
+                data.pinOrder = data.pinOrder || 1
               }
             }}
-          ></NSwitch>
+          />
         </NFormItem>
 
         <NFormItem label="置顶顺序" labelAlign="right" labelPlacement="left">
@@ -401,7 +421,18 @@ const PostWriteView = defineComponent(() => {
             disabled={!data.pin}
             value={data.pinOrder}
             onUpdateValue={(e) => void (data.pinOrder = e || 1)}
-          ></NInputNumber>
+          />
+        </NFormItem>
+        <NFormItem label="发布状态" labelAlign="right" labelPlacement="left">
+          <NSwitch
+            value={data.isPublished}
+            onUpdateValue={(e) => void (data.isPublished = e)}
+          >
+            {{
+              checked: () => '已发布',
+              unchecked: () => '草稿'
+            }}
+          </NSwitch>
         </NFormItem>
       </TextBaseDrawer>
     </ContentLayout>

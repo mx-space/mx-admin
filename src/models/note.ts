@@ -22,6 +22,7 @@ export interface NoteModel {
   coordinates?: Coordinate
 
   meta?: any
+  isPublished?: boolean
 }
 
 export interface Coordinate {
