@@ -35,13 +35,19 @@ export class CrossBellConnector {
   }
 
   static createOrUpdate(data: NoteModel | PostModel) {
-    // 跳过隐藏的笔记
-    const passedFields = ['hide', 'password', 'secret']
+    // 跳过未发布的笔记
+    const passedFields = ['password', 'secret']
     for (const field of passedFields) {
       if (field in data && data[field]) {
         message.info(`跳过隐藏笔记，命中字段：${field}`)
         return Promise.resolve()
       }
+    }
+    
+    // 跳过未发布的内容
+    if ('isPublished' in data && data.isPublished === false) {
+      message.info('跳过未发布内容')
+      return Promise.resolve()
     }
 
     return new Promise((resolve) => {

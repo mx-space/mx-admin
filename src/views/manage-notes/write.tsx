@@ -63,7 +63,6 @@ const CrossBellConnectorIndirector = defineAsyncComponent({
 })
 
 type NoteReactiveType = {
-  hide: boolean
   mood: string
   weather: string
   password: string | null
@@ -117,7 +116,6 @@ const NoteWriteView = defineComponent(() => {
   const resetReactive: () => NoteReactiveType = () => ({
     text: '',
     title: '',
-    hide: false,
     bookmark: false,
     mood: '',
 
@@ -531,13 +529,6 @@ const NoteWriteView = defineComponent(() => {
               },
             }}
           </NDatePicker>
-        </NFormItem>
-
-        <NFormItem label="隐藏" labelAlign="right" labelPlacement="left">
-          <NSwitch
-            value={data.hide}
-            onUpdateValue={(e) => void (data.hide = e)}
-          ></NSwitch>
         </NFormItem>
 
         <NFormItem

@@ -43,7 +43,7 @@ export const ManageNoteListView = defineComponent({
                 page,
                 size,
                 select:
-                  'title _id nid id created modified mood weather hide publicAt bookmark coordinates location count meta isPublished',
+                  'title _id nid id created modified mood weather publicAt bookmark coordinates location count meta isPublished',
                 ...(sortProps.sortBy
                   ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
                   : {}),
@@ -92,26 +92,27 @@ export const ManageNoteListView = defineComponent({
             filter: true,
             filterOptions: [
               { label: '回忆项', value: 'bookmark' },
-              { label: '隐藏项', value: 'hide' },
+              { label: '草稿项', value: 'unpublished' },
             ],
 
             render(row) {
               const isSecret =
                 row.publicAt && +new Date(row.publicAt) - Date.now() > 0
+              const isUnpublished = !row.isPublished
               return (
                 <TableTitleLink
                   inPageTo={`/notes/edit?id=${row.id}`}
                   title={row.title}
                   externalLinkTo={`/notes/${row.nid}`}
                   id={row.id}
-                  withToken={row.hide || isSecret}
+                  withToken={isUnpublished || isSecret}
                   xLog={row.meta?.xLog}
                 >
                   {{
                     default() {
                       return (
                         <>
-                          {row.hide || isSecret ? (
+                          {isUnpublished || isSecret ? (
                             <Icon color="#34495e">
                               <EyeHideIcon />
                             </Icon>
