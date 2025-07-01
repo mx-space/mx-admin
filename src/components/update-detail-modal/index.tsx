@@ -1,6 +1,8 @@
 import { NButton, NModal, NModalProvider, NSpin, NTag } from 'naive-ui'
 import { defineComponent, ref, watchEffect } from 'vue'
+import { marked } from 'marked'
 import { getReleaseDetails } from '../../external/api/github-check-update'
+import './markdown-styles.css'
 
 interface ReleaseDetails {
   name: string
@@ -59,18 +61,37 @@ export const UpdateDetailModal = defineComponent({
       return new Date(dateString).toLocaleString('zh-CN')
     }
 
-    const formatMarkdown = (markdown: string) => {
+    // 简单的 HTML 清理函数，移除潜在的危险标签和属性
+    const sanitizeHtml = (html: string): string => {
+      // 允许的标签和属性
+      const allowedTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'br', 'strong', 'b', 'em', 'i', 'u', 'code', 'pre', 'blockquote', 'ul', 'ol', 'li', 'a', 'hr', 'table', 'thead', 'tbody', 'tr', 'th', 'td']
+      const allowedAttributes = ['href', 'title', 'target', 'rel']
+      
+      // 移除 script 标签和 javascript: 协议
+      return html
+        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+        .replace(/javascript:/gi, '')
+        .replace(/on\w+\s*=/gi, '') // 移除事件处理器
+    }
+
+    const formatMarkdown = (markdown: string): string => {
       if (!markdown) return ''
       
-      // 简单的 markdown 转换，可以根据需要扩展
-      return markdown
-        .replace(/### (.*)/g, '<h3 style="margin: 16px 0 8px 0; font-weight: bold;">$1</h3>')
-        .replace(/## (.*)/g, '<h2 style="margin: 20px 0 12px 0; font-weight: bold; font-size: 1.2em;">$1</h2>')
-        .replace(/# (.*)/g, '<h1 style="margin: 24px 0 16px 0; font-weight: bold; font-size: 1.4em;">$1</h1>')
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\*(.*?)\*/g, '<em>$1</em>')
-        .replace(/`(.*?)`/g, '<code style="background: rgba(175, 184, 193, 0.2); padding: 2px 4px; border-radius: 3px; font-family: monospace;">$1</code>')
-        .replace(/\n/g, '<br>')
+      try {
+        // 使用 marked 库进行专业的 markdown 渲染
+        const result = marked.parse(markdown, {
+          breaks: true, // 支持换行符转换为 <br>
+          gfm: true,    // 支持 GitHub Flavored Markdown
+        })
+        
+        // 确保返回字符串并进行安全清理
+        const htmlString = typeof result === 'string' ? result : markdown.replace(/\n/g, '<br>')
+        return sanitizeHtml(htmlString)
+      } catch (error) {
+        console.error('Markdown 渲染失败:', error)
+        // 降级到简单的文本显示
+        return markdown.replace(/\n/g, '<br>')
+      }
     }
 
     return () => (
@@ -107,7 +128,7 @@ export const UpdateDetailModal = defineComponent({
                 <div class="mt-4">
                   <h4 class="font-medium mb-2">更新内容：</h4>
                   <div 
-                    class="prose prose-sm max-w-none p-3 bg-gray-50 rounded-md dark:bg-gray-800"
+                    class="prose prose-sm max-w-none p-4 bg-gray-50 rounded-lg dark:bg-gray-800 markdown-content leading-relaxed"
                     innerHTML={formatMarkdown(releaseDetails.value.body)}
                   />
                 </div>
