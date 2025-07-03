@@ -1,6 +1,5 @@
 export interface NoteModel {
   id: string
-  hide: boolean
   allowComment: boolean
   count: {
     read: number
@@ -22,6 +21,7 @@ export interface NoteModel {
   coordinates?: Coordinate
 
   meta?: any
+  isPublished?: boolean
 }
 
 export interface Coordinate {

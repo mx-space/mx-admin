@@ -2,6 +2,8 @@ import {
   BookIcon,
   BookmarkIcon,
   EyeHideIcon,
+  EyeIcon,
+  EyeOffIcon,
   HeartIcon,
   PlusIcon,
 } from '~/components/icons'
@@ -41,7 +43,7 @@ export const ManageNoteListView = defineComponent({
                 page,
                 size,
                 select:
-                  'title _id nid id created modified mood weather hide publicAt bookmark coordinates location count meta',
+                  'title _id nid id created modified mood weather publicAt bookmark coordinates location count meta isPublished',
                 ...(sortProps.sortBy
                   ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
                   : {}),
@@ -90,26 +92,27 @@ export const ManageNoteListView = defineComponent({
             filter: true,
             filterOptions: [
               { label: '回忆项', value: 'bookmark' },
-              { label: '隐藏项', value: 'hide' },
+              { label: '草稿项', value: 'unpublished' },
             ],
 
             render(row) {
               const isSecret =
                 row.publicAt && +new Date(row.publicAt) - Date.now() > 0
+              const isUnpublished = !row.isPublished
               return (
                 <TableTitleLink
                   inPageTo={`/notes/edit?id=${row.id}`}
                   title={row.title}
                   externalLinkTo={`/notes/${row.nid}`}
                   id={row.id}
-                  withToken={row.hide || isSecret}
+                  withToken={isUnpublished || isSecret}
                   xLog={row.meta?.xLog}
                 >
                   {{
                     default() {
                       return (
                         <>
-                          {row.hide || isSecret ? (
+                          {isUnpublished || isSecret ? (
                             <Icon color="#34495e">
                               <EyeHideIcon />
                             </Icon>
@@ -256,6 +259,46 @@ export const ManageNoteListView = defineComponent({
             },
           },
           {
+            title: '状态',
+            key: 'isPublished',
+            width: 120,
+            render(row) {
+              return (
+                <NSpace size={4} align="center">
+                  <div class={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs ${
+                    row.isPublished 
+                      ? 'bg-green-100 text-green-800' 
+                      : 'bg-yellow-100 text-yellow-800'
+                  }`}>
+                    <Icon size={12}>
+                      {row.isPublished ? <EyeIcon /> : <EyeOffIcon />}
+                    </Icon>
+                    {row.isPublished ? '已发布' : '草稿'}
+                  </div>
+                  <NButton
+                    size="tiny"
+                    quaternary
+                    type={row.isPublished ? "warning" : "primary"}
+                    onClick={async () => {
+                      const newStatus = !row.isPublished
+                      try {
+                        await RESTManager.api.notes(row.id)('publish').patch({
+                          data: { isPublished: newStatus }
+                        })
+                        row.isPublished = newStatus
+                        message.success(newStatus ? '已发布' : '已设为草稿')
+                      } catch (_error) {
+                        message.error('操作失败')
+                      }
+                    }}
+                  >
+                    {row.isPublished ? '取消发布' : '发布'}
+                  </NButton>
+                </NSpace>
+              )
+            }
+          },
+          {
             title: '操作',
             key: 'id',
             width: 100,
@@ -318,7 +361,7 @@ export const ManageNoteListView = defineComponent({
               sortProps.sortBy = props.sortBy
               sortProps.sortOrder = props.sortOrder
             }}
-          ></Table>
+          />
         )
       },
     })
@@ -346,6 +389,52 @@ export const ManageNoteListView = defineComponent({
 
                     checkedRowKeys.value.length = 0
                     fetchData()
+                  }}
+                />
+
+                <HeaderActionButton
+                  name="批量发布"
+                  disabled={checkedRowKeys.value.length === 0}
+                  icon={<EyeIcon />}
+                  variant="success"
+                  onClick={async () => {
+                    try {
+                      await Promise.all(
+                        checkedRowKeys.value.map(id => 
+                          RESTManager.api.notes(id as string)('publish').patch({
+                            data: { isPublished: true }
+                          })
+                        )
+                      )
+                      message.success('批量发布成功')
+                      fetchData() // 重新获取数据
+                      checkedRowKeys.value = []
+                    } catch (_error) {
+                      message.error('批量发布失败')
+                    }
+                  }}
+                />
+
+                <HeaderActionButton
+                  name="批量设为草稿"
+                  disabled={checkedRowKeys.value.length === 0}
+                  icon={<EyeOffIcon />}
+                  variant="warning"
+                  onClick={async () => {
+                    try {
+                      await Promise.all(
+                        checkedRowKeys.value.map(id => 
+                          RESTManager.api.notes(id as string)('publish').patch({
+                            data: { isPublished: false }
+                          })
+                        )
+                      )
+                      message.success('批量设置草稿成功')
+                      fetchData() // 重新获取数据
+                      checkedRowKeys.value = []
+                    } catch (_error) {
+                      message.error('批量设置草稿失败')
+                    }
                   }}
                 />
                 <HeaderActionButton to={'/notes/edit'} icon={<PlusIcon />} />

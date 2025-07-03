@@ -8,13 +8,14 @@
     "changelog": true
   },
   "scripts": {
-    "prepare": "pnpm exec simple-git-hooks",
-    "prebuild": "rm -rf dist",
     "dev": "NODE_ENV=development vite --mode development --open --host",
     "build": "NODE_ENV=production vite build --mode production",
     "preview": "vite preview --port 2323",
     "lint": "biome lint --apply src/**/*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json} --no-errors-on-unmatched",
-    "format": "prettier --write --loglevel warn \"src/**/*.{js,json,tsx,ts,css,scss,vue,html,md}\""
+    "lint:fix": "biome lint --write .",
+    "prepare": "husky install",
+    "release": "sh ./release.sh",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm exec lint-staged"

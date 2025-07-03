@@ -9,6 +9,7 @@ import Cogs from '@vicons/fa/es/Cogs'
 import Comment from '@vicons/fa/es/Comment'
 import Comments from '@vicons/fa/es/Comments'
 import EllipsisH from '@vicons/fa/es/EllipsisH'
+import EyeOffIcon from '@vicons/fa/es/EyeDropper'
 import Eye from '@vicons/fa/es/Eye'
 import File from '@vicons/fa/es/File'
 import Flask from '@vicons/fa/es/Flask'
@@ -120,6 +121,7 @@ export { Heart as HeartIcon }
 export { EyeHide20Filled as EyeHideIcon }
 export { RefreshCircle }
 export { AddIcon as PlusIcon }
+export { EyeOffIcon as EyeOffIcon }
 
 export const AddIcon = Add12Filled
 
