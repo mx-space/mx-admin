@@ -1,0 +1,156 @@
+/* Markdown 内容样式优化 */
+.markdown-content {
+  color: var(--text-color);
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.markdown-content h1 {
+  font-size: 1.5em;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 0.3em;
+}
+
+.markdown-content h2 {
+  font-size: 1.3em;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.2em;
+}
+
+.markdown-content h3 {
+  font-size: 1.1em;
+}
+
+.markdown-content p {
+  margin-bottom: 1em;
+  line-height: 1.6;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  margin: 1em 0;
+  padding-left: 1.5em;
+}
+
+.markdown-content li {
+  margin-bottom: 0.5em;
+  line-height: 1.6;
+}
+
+.markdown-content code {
+  background-color: rgba(175, 184, 193, 0.2);
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.85em;
+}
+
+.markdown-content pre {
+  background-color: #f6f8fa;
+  border-radius: 6px;
+  padding: 1em;
+  overflow-x: auto;
+  margin: 1em 0;
+}
+
+.markdown-content pre code {
+  background-color: transparent;
+  padding: 0;
+  border-radius: 0;
+  font-size: 0.9em;
+}
+
+.markdown-content blockquote {
+  border-left: 4px solid #ddd;
+  padding-left: 1em;
+  margin: 1em 0;
+  color: #666;
+  font-style: italic;
+}
+
+.markdown-content a {
+  color: #0969da;
+  text-decoration: none;
+}
+
+.markdown-content a:hover {
+  text-decoration: underline;
+}
+
+.markdown-content strong {
+  font-weight: 600;
+}
+
+.markdown-content em {
+  font-style: italic;
+}
+
+.markdown-content hr {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 2em 0;
+}
+
+.markdown-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+}
+
+.markdown-content th,
+.markdown-content td {
+  border: 1px solid #ddd;
+  padding: 0.5em;
+  text-align: left;
+}
+
+.markdown-content th {
+  background-color: #f6f8fa;
+  font-weight: 600;
+}
+
+/* 暗色主题适配 */
+.dark .markdown-content h1,
+.dark .markdown-content h2 {
+  border-bottom-color: #374151;
+}
+
+.dark .markdown-content pre {
+  background-color: #374151;
+}
+
+.dark .markdown-content blockquote {
+  border-left-color: #6b7280;
+  color: #9ca3af;
+}
+
+.dark .markdown-content a {
+  color: #60a5fa;
+}
+
+.dark .markdown-content th {
+  background-color: #374151;
+}
+
+.dark .markdown-content th,
+.dark .markdown-content td {
+  border-color: #4b5563;
+}
+
+.dark .markdown-content hr {
+  border-top-color: #374151;
+}
+
+.dark .markdown-content code {
+  background-color: rgba(156, 163, 175, 0.2);
+}

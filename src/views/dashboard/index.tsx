@@ -21,7 +21,9 @@ import {
   defineComponent,
   onBeforeMount,
   onBeforeUnmount,
+  onMounted,
   ref,
+  watchEffect,
 } from 'vue'
 import { useRouter } from 'vue-router'
 import type { ShiJuData } from '~/external/api/jinrishici'
@@ -55,6 +57,7 @@ import {
 } from '~/components/icons'
 import { IpInfoPopover } from '~/components/ip-info'
 import { useShorthand } from '~/components/shorthand'
+import { useUpdateDetailModal } from '~/components/update-detail-modal'
 import { checkUpdateFromGitHub } from '~/external/api/github-check-update'
 import { fetchHitokoto, SentenceType } from '~/external/api/hitokoto'
 import { getJinRiShiCiOne } from '~/external/api/jinrishici'
@@ -637,6 +640,8 @@ const AppIF = defineComponent({
       system: null as string | null,
     })
 
+    const { openModal: openUpdateModal, Modal: UpdateDetailModal } = useUpdateDetailModal()
+
     const portal = usePortalElement()
     const handleUpdate = () => {
       portal(<UpdatePanel />)
@@ -660,9 +665,22 @@ const AppIF = defineComponent({
           content: () => (
             <div>
               <p>{`当前版本：${PKG.version}，最新版本：${dashboard}`}</p>
-              <div class={'text-right'}>
+              <div class={'text-right space-x-2'}>
                 <NButton
-                  round
+                  size="small"
+                  onClick={() => {
+                    openUpdateModal({
+                      version: dashboard,
+                      repo: 'mx-admin',
+                      title: '[管理中台] 更新详情',
+                    })
+                  }}
+                >
+                  查看详情
+                </NButton>
+                <NButton
+                  type="primary"
+                  size="small"
                   onClick={() => {
                     handleUpdate()
                     $notice.destroy()
@@ -708,7 +726,25 @@ const AppIF = defineComponent({
       ) {
         notice.info({
           title: '[系统] 有新版本啦！',
-          content: `当前版本：${app.value.version}，最新版本：${versionMap.value.system}`,
+          content: () => (
+            <div>
+              <p>{`当前版本：${app.value?.version || 'N/A'}，最新版本：${versionMap.value.system}`}</p>
+              <div class={'text-right space-x-2'}>
+                <NButton
+                  size="small"
+                  onClick={() => {
+                    openUpdateModal({
+                      version: versionMap.value.system,
+                      repo: 'mx-server',
+                      title: '[系统] 更新详情',
+                    })
+                  }}
+                >
+                  查看详情
+                </NButton>
+              </div>
+            </div>
+          ),
           closable: true,
           onClose: () => {
             closedTips.value.system = versionMap.value.system
@@ -718,26 +754,29 @@ const AppIF = defineComponent({
     })
 
     return () => (
-      <NElement tag="footer" class="mt-12">
-        <NP
-          class="text-center"
-          style={{ color: 'var(--text-color-3)' }}
-          depth="1"
-        >
-          <div class={'inline-flex items-center'}>
-            面板版本: {__DEV__ ? 'dev mode' : window.version || 'N/A'}
-            <NButton text onClick={handleUpdate} size="small" class={'ml-4'}>
-              <NIcon size={12}>
-                <RefreshIcon />
-              </NIcon>
-            </NButton>
-          </div>
-          <br />
-          系统版本：{app.value?.version || 'N/A'}
-          <br />
-          页面来源：{window.pageSource || ''}
-        </NP>
-      </NElement>
+      <>
+        <NElement tag="footer" class="mt-12">
+          <NP
+            class="text-center"
+            style={{ color: 'var(--text-color-3)' }}
+            depth="1"
+          >
+            <div class={'inline-flex items-center'}>
+              面板版本: {__DEV__ ? 'dev mode' : window.version || 'N/A'}
+              <NButton text onClick={handleUpdate} size="small" class={'ml-4'}>
+                <NIcon size={12}>
+                  <RefreshIcon />
+                </NIcon>
+              </NButton>
+            </div>
+            <br />
+            系统版本：{app.value?.version || 'N/A'}
+            <br />
+            页面来源：{window.pageSource || ''}
+          </NP>
+        </NElement>
+        <UpdateDetailModal />
+      </>
     )
   },
 })
