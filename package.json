@@ -13,9 +13,8 @@
     "preview": "vite preview --port 2323",
     "lint": "biome lint --apply src/**/*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json} --no-errors-on-unmatched",
     "lint:fix": "biome lint --write .",
-    "prepare": "husky install",
     "release": "sh ./release.sh",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepare": "pnpm exec simple-git-hooks"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm exec lint-staged"
@@ -131,5 +130,5 @@
     "vite-tsconfig-paths": "5.1.4",
     "windicss": "3.5.6"
   },
-  "packageManager": "pnpm@9.14.2"
+  "packageManager": "pnpm@10.12.4+sha512.5ea8b0deed94ed68691c9bad4c955492705c5eeb8a87ef86bc62c74a26b037b08ff9570f108b2e4dbd1dd1a9186fea925e527f141c648e85af45631074680184"
 }
