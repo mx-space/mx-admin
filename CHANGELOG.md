@@ -1,5 +1,15 @@
 # CHANGELOG
 
+# [4.10.0](https://github.com/mx-space/mx-admin/compare/v4.9.0...v4.10.0) (2025-07-10)
+
+
+### Features
+
+* 添加发布状态管理功能 ([#994](https://github.com/mx-space/mx-admin/issues/994)) ([9176a99](https://github.com/mx-space/mx-admin/commit/9176a99867531e6b4c1845ba6f162f326afc6922))
+* 添加更新详情弹窗 ([#996](https://github.com/mx-space/mx-admin/issues/996)) ([bf31e88](https://github.com/mx-space/mx-admin/commit/bf31e88bdd6696871b0b1e4264dfd88058205f0c))
+
+
+
 # [4.9.0](https://github.com/mx-space/mx-admin/compare/v4.8.1...v4.9.0) (2025-01-08)
 
 
