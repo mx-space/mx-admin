@@ -8,7 +8,6 @@ import {
   NInput,
   NSelect,
   NSpace,
-  NSplit,
   NSwitch,
   useMessage,
 } from 'naive-ui'
@@ -24,7 +23,6 @@ import {
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { PaginateResult } from '@mx-space/api-client'
-import type { PreviewButtonExposed } from '~/components/special-button/preview'
 import type { Coordinate, NoteModel } from '~/models/note'
 import type { TopicModel } from '~/models/topic'
 import type { WriteBaseType } from '~/shared/types/base'
@@ -35,7 +33,7 @@ import { AiHelperButton } from '~/components/ai/ai-helper'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { TextBaseDrawer } from '~/components/drawer/text-base-drawer'
 import { Editor } from '~/components/editor/universal'
-import { HeartIcon, SlidersHIcon, TelegramPlaneIcon, EyeIcon, EyeOffIcon } from '~/components/icons'
+import { SlidersHIcon, TelegramPlaneIcon } from '~/components/icons'
 import { MaterialInput } from '~/components/input/material-input'
 import { GetLocationButton } from '~/components/location/get-location-button'
 import { SearchLocationButton } from '~/components/location/search-button'
@@ -272,28 +270,7 @@ const NoteWriteView = defineComponent(() => {
           />
 
           <HeaderPreviewButton data={data} iframe />
-          
-          <HeaderActionButton
-            icon={data.isPublished ? <EyeOffIcon /> : <EyeIcon />}
-            variant={data.isPublished ? "warning" : "success"}
-            onClick={async () => {
-              if (!data.id) {
-                message.warning('请先保存笔记')
-                return
-              }
-              const newStatus = !data.isPublished
-              try {
-                await RESTManager.api.notes(data.id)('publish').patch({
-                  data: { isPublished: newStatus }
-                })
-                data.isPublished = newStatus
-                message.success(newStatus ? '笔记已发布' : '笔记已设为草稿')
-              } catch (error) {
-                message.error('状态切换失败')
-              }
-            }}
-            name={data.isPublished ? "设为草稿" : "立即发布"}
-          />
+
           <HeaderActionButton
             icon={<TelegramPlaneIcon />}
             onClick={handleSubmit}
@@ -548,7 +525,7 @@ const NoteWriteView = defineComponent(() => {
           >
             {{
               checked: () => '已发布',
-              unchecked: () => '草稿'
+              unchecked: () => '草稿',
             }}
           </NSwitch>
         </NFormItem>

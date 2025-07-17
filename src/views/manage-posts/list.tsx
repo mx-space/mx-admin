@@ -1,11 +1,3 @@
-import { AddIcon, BookIcon, PhPushPin, ThumbsUpIcon, EyeIcon, EyeOffIcon } from '~/components/icons'
-import { TableTitleLink } from '~/components/link/title-link'
-import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
-import { Table } from '~/components/table'
-import { EditColumn } from '~/components/table/edit-column'
-import { RelativeTime } from '~/components/time/relative-time'
-import { useStoreRef } from '~/hooks/use-store-ref'
-import { useDataTableFetch } from '~/hooks/use-table'
 import {
   NButton,
   NIcon,
@@ -14,14 +6,8 @@ import {
   NSpace,
   useMessage,
 } from 'naive-ui'
-import { CategoryStore } from '~/stores/category'
-import { parseDate } from '~/utils'
 import { computed, defineComponent, onMounted, reactive, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { Icon } from '@vicons/utils'
-import { HeaderActionButton } from '../../components/button/rounded-button'
-import { ContentLayout } from '../../layouts/content'
-import { RESTManager } from '../../utils/rest'
 import type {
   CategoryWithChildrenModel,
   PickedPostModelInCategoryChildren,
@@ -33,6 +19,31 @@ import type {
 } from 'naive-ui/lib/data-table/src/interface'
 import type { ComputedRef } from 'vue'
 import type { PostModel, PostResponse } from '../../models/post'
+
+import { Icon } from '@vicons/utils'
+
+import {
+  AddIcon,
+  BookIcon,
+  EyeIcon,
+  EyeOffIcon,
+  PhPushPin,
+  ThumbsUpIcon,
+} from '~/components/icons'
+import { TableTitleLink } from '~/components/link/title-link'
+import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
+import { StatusToggle } from '~/components/status-toggle'
+import { Table } from '~/components/table'
+import { EditColumn } from '~/components/table/edit-column'
+import { RelativeTime } from '~/components/time/relative-time'
+import { useStoreRef } from '~/hooks/use-store-ref'
+import { useDataTableFetch } from '~/hooks/use-table'
+import { CategoryStore } from '~/stores/category'
+import { parseDate } from '~/utils'
+
+import { HeaderActionButton } from '../../components/button/rounded-button'
+import { ContentLayout } from '../../layouts/content'
+import { RESTManager } from '../../utils/rest'
 
 export const ManagePostListView = defineComponent({
   name: 'PostList',
@@ -238,39 +249,24 @@ export const ManagePostListView = defineComponent({
             width: 120,
             render(row) {
               return (
-                <NSpace size={4} align="center">
-                  <div class={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs ${
-                    row.isPublished 
-                      ? 'bg-green-100 text-green-800' 
-                      : 'bg-yellow-100 text-yellow-800'
-                  }`}>
-                    <Icon size={12}>
-                      {row.isPublished ? <EyeIcon /> : <EyeOffIcon />}
-                    </Icon>
-                    {row.isPublished ? '已发布' : '草稿'}
-                  </div>
-                  <NButton
-                    size="tiny"
-                    quaternary
-                    type={row.isPublished ? "warning" : "primary"}
-                    onClick={async () => {
-                      const newStatus = !row.isPublished
-                      try {
-                        await RESTManager.api.posts(row.id)('publish').patch({
-                          data: { isPublished: newStatus }
+                <StatusToggle
+                  isPublished={row.isPublished ?? false}
+                  onToggle={async (newStatus) => {
+                    try {
+                      await RESTManager.api
+                        .posts(row.id)('publish')
+                        .patch({
+                          data: { isPublished: newStatus },
                         })
-                        row.isPublished = newStatus
-                        message.success(newStatus ? '已发布' : '已设为草稿')
-                      } catch (_error) {
-                        message.error('操作失败')
-                      }
-                    }}
-                  >
-                    {row.isPublished ? '取消发布' : '发布'}
-                  </NButton>
-                </NSpace>
+                      row.isPublished = newStatus
+                      message.success(newStatus ? '已发布' : '已设为草稿')
+                    } catch (_error) {
+                      message.error('操作失败')
+                    }
+                  }}
+                />
               )
-            }
+            },
           },
           {
             title: '操作',
@@ -422,11 +418,13 @@ export const ManagePostListView = defineComponent({
                   onClick={async () => {
                     try {
                       await Promise.all(
-                        checkedRowKeys.value.map(id => 
-                          RESTManager.api.posts(id as string)('publish').patch({
-                            data: { isPublished: true }
-                          })
-                        )
+                        checkedRowKeys.value.map((id) =>
+                          RESTManager.api
+                            .posts(id as string)('publish')
+                            .patch({
+                              data: { isPublished: true },
+                            }),
+                        ),
                       )
                       message.success('批量发布成功')
                       fetchData() // 重新获取数据
@@ -445,11 +443,13 @@ export const ManagePostListView = defineComponent({
                   onClick={async () => {
                     try {
                       await Promise.all(
-                        checkedRowKeys.value.map(id => 
-                          RESTManager.api.posts(id as string)('publish').patch({
-                            data: { isPublished: false }
-                          })
-                        )
+                        checkedRowKeys.value.map((id) =>
+                          RESTManager.api
+                            .posts(id as string)('publish')
+                            .patch({
+                              data: { isPublished: false },
+                            }),
+                        ),
                       )
                       message.success('批量设置草稿成功')
                       fetchData() // 重新获取数据

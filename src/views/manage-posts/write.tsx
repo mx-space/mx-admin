@@ -21,12 +21,7 @@ import { AiHelperButton } from '~/components/ai/ai-helper'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { TextBaseDrawer } from '~/components/drawer/text-base-drawer'
 import { Editor } from '~/components/editor/universal'
-import {
-  EyeIcon,
-  EyeOffIcon,
-  SlidersHIcon,
-  TelegramPlaneIcon,
-} from '~/components/icons'
+import { SlidersHIcon, TelegramPlaneIcon } from '~/components/icons'
 import { MaterialInput } from '~/components/input/material-input'
 import { UnderlineInput } from '~/components/input/underline-input'
 import { CopyTextButton } from '~/components/special-button/copy-text-button'
@@ -37,7 +32,6 @@ import {
 } from '~/components/special-button/preview'
 import { CrossBellConnectorIndirector } from '~/components/xlog-connect'
 import { WEB_URL } from '~/constants/env'
-import { EmitKeyMap } from '~/constants/keys'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { ContentLayout } from '~/layouts/content'
 import { RouteName } from '~/router/name'
@@ -203,30 +197,6 @@ const PostWriteView = defineComponent(() => {
           />
 
           <HeaderPreviewButton iframe data={data} />
-          <HeaderActionButton
-            icon={data.isPublished ? <EyeOffIcon /> : <EyeIcon />}
-            variant={data.isPublished ? 'warning' : 'success'}
-            onClick={async () => {
-              if (!data.id) {
-                message.warning('请先保存文章')
-                return
-              }
-
-              const newStatus = !data.isPublished
-              try {
-                await RESTManager.api
-                  .posts(data.id)('publish')
-                  .patch({
-                    data: { isPublished: newStatus },
-                  })
-                data.isPublished = newStatus
-                message.success(newStatus ? '文章已发布' : '文章已设为草稿')
-              } catch (_error) {
-                message.error('状态切换失败')
-              }
-            }}
-            name={data.isPublished ? '设为草稿' : '立即发布'}
-          />
 
           <HeaderActionButton
             icon={<TelegramPlaneIcon />}
@@ -347,26 +317,16 @@ const PostWriteView = defineComponent(() => {
                     return () => (
                       <NSelect
                         ref={selectRef}
+                        size={'small'}
+                        value={value.value}
+                        clearable
+                        loading={loading.value}
                         filterable
                         tag
-                        placeholder="输入，然后按回车创建"
                         options={tagsRef.value}
-                        onCreate={(label) => {
-                          const newTag = {
-                            label: label,
-                            value: label,
-                            key: label,
-                          }
-                          tagsRef.value.push(newTag)
-                          data.tags.push(label)
-                          nextTick(() => {
-                            selectRef.value.focus()
-                          })
-                          return newTag
-                        }}
-                        value={data.tags}
-                        onUpdateValue={(v) => {
-                          data.tags = v
+                        onUpdateValue={(e) => {
+                          void (value.value = e)
+                          submit(e)
                         }}
                       />
                     )
