@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [4.10.2](https://github.com/mx-space/mx-admin/compare/v4.10.1...v4.10.2) (2025-07-17)
+
+
+### Reverts
+
+* post write ([c7f7e5e](https://github.com/mx-space/mx-admin/commit/c7f7e5ec650f60ed7ea79d240554fdc3cc5d4452))
+
+
+
 ## [4.10.1](https://github.com/mx-space/mx-admin/compare/v4.10.0...v4.10.1) (2025-07-10)
 
 
