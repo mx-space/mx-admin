@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [4.10.3](https://github.com/mx-space/mx-admin/compare/v4.10.2...v4.10.3) (2025-07-17)
+
+
+### Features
+
+* enhance note and post management with status toggle component ([7f4c8b9](https://github.com/mx-space/mx-admin/commit/7f4c8b94600b2572dc71a65f72b481461e52e614))
+
+
+
 ## [4.10.2](https://github.com/mx-space/mx-admin/compare/v4.10.1...v4.10.2) (2025-07-17)
 
 
