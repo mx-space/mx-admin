@@ -21,7 +21,12 @@ import { AiHelperButton } from '~/components/ai/ai-helper'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { TextBaseDrawer } from '~/components/drawer/text-base-drawer'
 import { Editor } from '~/components/editor/universal'
-import { SlidersHIcon, TelegramPlaneIcon, EyeIcon, EyeOffIcon } from '~/components/icons'
+import {
+  EyeIcon,
+  EyeOffIcon,
+  SlidersHIcon,
+  TelegramPlaneIcon,
+} from '~/components/icons'
 import { MaterialInput } from '~/components/input/material-input'
 import { UnderlineInput } from '~/components/input/underline-input'
 import { CopyTextButton } from '~/components/special-button/copy-text-button'
@@ -200,18 +205,20 @@ const PostWriteView = defineComponent(() => {
           <HeaderPreviewButton iframe data={data} />
           <HeaderActionButton
             icon={data.isPublished ? <EyeOffIcon /> : <EyeIcon />}
-            variant={data.isPublished ? "warning" : "success"}
+            variant={data.isPublished ? 'warning' : 'success'}
             onClick={async () => {
               if (!data.id) {
                 message.warning('请先保存文章')
                 return
               }
-              
+
               const newStatus = !data.isPublished
               try {
-                await RESTManager.api.posts(data.id)('publish').patch({
-                  data: { isPublished: newStatus },
-                })
+                await RESTManager.api
+                  .posts(data.id)('publish')
+                  .patch({
+                    data: { isPublished: newStatus },
+                  })
                 data.isPublished = newStatus
                 message.success(newStatus ? '文章已发布' : '文章已设为草稿')
               } catch (_error) {
@@ -291,7 +298,12 @@ const PostWriteView = defineComponent(() => {
         <NFormItem label="分类" required path="categoryId">
           <NSelect
             placeholder="请选择"
-            options={categoryStore.data.value?.map(i => ({ label: i.name, value: i.id })) || []}
+            options={
+              categoryStore.data.value?.map((i) => ({
+                label: i.name,
+                value: i.id,
+              })) || []
+            }
             value={data.categoryId}
             onUpdateValue={(v) => {
               data.categoryId = v
@@ -319,11 +331,12 @@ const PostWriteView = defineComponent(() => {
                       if (selectRef.value) {
                         selectRef.value.$el.querySelector('input').focus()
                       }
-                      const { data: tagData } = await RESTManager.api.categories.get<{
-                        data: TagModel[]
-                      }>({
-                        params: { type: 'Tag' },
-                      })
+                      const { data: tagData } =
+                        await RESTManager.api.categories.get<{
+                          data: TagModel[]
+                        }>({
+                          params: { type: 'Tag' },
+                        })
                       tagsRef.value = tagData.map((i) => ({
                         label: `${i.name} (${i.count})`,
                         value: i.name,
@@ -368,7 +381,10 @@ const PostWriteView = defineComponent(() => {
           <NSelect
             maxTagCount={3}
             multiple
-            options={postListState.datalist.value.map(i => ({ label: i.title, value: i.id }))}
+            options={postListState.datalist.value.map((i) => ({
+              label: i.title,
+              value: i.id,
+            }))}
             loading={postListState.loading.value}
             filterable
             placeholder="搜索标题"
@@ -424,7 +440,7 @@ const PostWriteView = defineComponent(() => {
           >
             {{
               checked: () => '已发布',
-              unchecked: () => '草稿'
+              unchecked: () => '草稿',
             }}
           </NSwitch>
         </NFormItem>
