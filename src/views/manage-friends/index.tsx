@@ -32,10 +32,14 @@ import { RESTManager } from '~/utils'
 
 import { Avatar } from './components/avatar'
 import { LinkAuditModal } from './components/reason-modal'
+import { YamlImport } from './components/yaml-import'
 import { UrlComponent } from './url-components'
+import { ImportIcon } from '~/components/icons'
 
 export default defineComponent({
   setup() {
+    // 批量导入模态框
+    const importModalShow = ref(false)
     const route = useRoute()
     const router = useRouter()
 
@@ -76,6 +80,13 @@ export default defineComponent({
     })
     const editDialogShow = ref(false)
     const editDialogData = ref(resetEditData())
+    
+    // 处理批量导入成功事件
+    const handleImportSuccess = async () => {
+      await fetchDataFn()
+      await fetchStat()
+      importModalShow.value = false
+    }
 
     watch(
       () => route.query.state,
@@ -181,6 +192,13 @@ export default defineComponent({
                 editDialogData.value = resetEditData()
                 editDialogShow.value = true
               }}
+            ></HeaderActionButton>
+
+            <HeaderActionButton
+              icon={<ImportIcon />}
+              variant="warning"
+              onClick={() => importModalShow.value = true}
+              name="批量导入"
             ></HeaderActionButton>
 
             <HeaderActionButton
@@ -422,6 +440,25 @@ export default defineComponent({
         ></Table>
 
         {/* Modal */}
+
+
+        {/* 批量导入模态框 */}
+        <NModal
+          transformOrigin="center"
+          show={importModalShow.value}
+          onUpdateShow={(e) => void (importModalShow.value = e)}
+          style="width: 700px;max-width: 90vw"
+        >
+          <NCard
+            title="批量导入友链"
+            headerStyle={{ textAlign: 'center' }}
+            bordered={false}
+            closable
+            onClose={() => importModalShow.value = false}
+          >
+            <YamlImport onImportSuccess={handleImportSuccess} />
+          </NCard>
+        </NModal>
 
         <NModal
           transformOrigin="center"
