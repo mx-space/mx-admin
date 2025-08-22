@@ -204,6 +204,7 @@ const ApiToken = defineComponent(() => {
   const newTokenDialogShow = ref(false)
   const tokenDisplayDialogShow = ref(false)
   const createdTokenInfo = ref<TokenModel | null>(null)
+  const visibleTokens = ref<Set<string>>(new Set())
   
   const newToken = async () => {
     try {
@@ -255,6 +256,53 @@ const ApiToken = defineComponent(() => {
       tokens.value.splice(index, 1)
     }
   }
+
+  const toggleTokenVisibility = async (tokenData: TokenModel) => {
+    const tokenId = tokenData.id
+    if (visibleTokens.value.has(tokenId)) {
+      // 隐藏token
+      visibleTokens.value.delete(tokenId)
+    } else {
+      // 显示token，需要从后端获取完整信息
+      try {
+        const response = await RESTManager.api.auth.token.get<TokenModel>({ params: { id: tokenId } })
+        // 更新tokens数组中的token信息
+        const index = tokens.value.findIndex((i) => i.id === tokenId)
+        if (index !== -1) {
+          tokens.value[index].token = response.token
+        }
+        visibleTokens.value.add(tokenId)
+      } catch (error) {
+        console.error('获取Token详情失败:', error)
+        alert('获取Token详情失败，请重试')
+      }
+    }
+  }
+
+  const copyToken = async (token: string) => {
+    try {
+      await navigator.clipboard.writeText(token)
+      message.success('Token 已复制到剪贴板')
+    } catch (error) {
+      // Safari 兼容性处理：使用传统的复制方法
+      const textArea = document.createElement('textarea')
+      textArea.value = token
+      textArea.style.position = 'fixed'
+      textArea.style.left = '-9999px'
+      document.body.appendChild(textArea)
+      textArea.focus()
+      textArea.select()
+      try {
+        document.execCommand('copy')
+        message.success('Token 已复制到剪贴板')
+      } catch (fallbackError) {
+        console.warn('复制失败:', fallbackError)
+        alert('复制失败，请手动复制Token')
+      }
+      document.body.removeChild(textArea)
+    }
+  }
+
   const uiStore = useStoreRef(UIStore)
   return () => (
     <NLayoutContent class="!overflow-visible">
@@ -325,7 +373,7 @@ const ApiToken = defineComponent(() => {
         >
           <div class="space-y-4">
             <div>
-              <NText depth={3} class="text-sm">请妥善保存以下信息，Token 只会显示一次：</NText>
+              <NText depth={3} class="text-sm">Token 创建成功，请妥善保存以下信息：</NText>
             </div>
             
             <div class="space-y-3">
@@ -336,8 +384,8 @@ const ApiToken = defineComponent(() => {
               
               <div>
                 <NText strong>Token：</NText>
-                <div class="mt-2 p-3 bg-gray-50 rounded border flex items-center gap-2">
-                  <NText code class="flex-1 break-all">{createdTokenInfo.value?.token}</NText>
+                <div class="mt-2 p-3 bg-gray-50 dark:bg-gray-800 rounded border flex items-center gap-2">
+                  <NText code class="flex-1 break-all text-gray-900 dark:text-gray-100">{createdTokenInfo.value?.token}</NText>
                   <NButton 
                     size="small" 
                     type="primary" 
@@ -382,7 +430,7 @@ const ApiToken = defineComponent(() => {
             
             <div class="pt-2">
               <NText depth={3} class="text-sm">
-                ⚠️ 请立即保存此 Token，关闭弹窗后将无法再次查看完整内容。
+                💡 建议将此 Token 保存在安全的地方，避免泄露给他人。
               </NText>
             </div>
           </div>
@@ -392,7 +440,7 @@ const ApiToken = defineComponent(() => {
               type="primary" 
               onClick={() => void (tokenDisplayDialogShow.value = false)}
             >
-              我已保存
+              确定
             </NButton>
           </div>
         </NCard>
@@ -424,8 +472,26 @@ const ApiToken = defineComponent(() => {
           {
             key: 'token',
             title: 'Token',
-            render({ token }) {
-              return '*'.repeat(40)
+            render(row) {
+              const { token, id } = row
+              const isVisible = visibleTokens.value.has(id)
+              
+              if (isVisible && token && token !== '*'.repeat(40)) {
+                // 显示真实token，可点击复制
+                return (
+                  <NButton
+                    text
+                    type="primary"
+                    onClick={() => copyToken(token)}
+                    class="font-mono text-left max-w-[200px] truncate"
+                  >
+                    {token}
+                  </NButton>
+                )
+              } else {
+                // 显示星号
+                return '*'.repeat(40)
+              }
             },
           },
           {
@@ -445,9 +511,19 @@ const ApiToken = defineComponent(() => {
           {
             title: '操作',
             key: 'id',
-            render({ id, name }) {
+            render(row) {
+              const { id, name } = row
+              const isVisible = visibleTokens.value.has(id)
+              
               return (
                 <NSpace>
+                  <NButton 
+                    text 
+                    type="primary"
+                    onClick={() => toggleTokenVisibility(row)}
+                  >
+                    {isVisible ? '隐藏' : '查看'}
+                  </NButton>
                   <NPopconfirm
                     positiveText={'取消'}
                     negativeText="删除"
