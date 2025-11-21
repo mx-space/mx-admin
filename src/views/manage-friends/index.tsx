@@ -16,12 +16,19 @@ import {
   useDialog,
   useMessage,
 } from 'naive-ui'
-import { defineComponent, onBeforeMount, ref, toRaw, watch } from 'vue'
+import {
+  defineComponent,
+  Fragment,
+  onBeforeMount,
+  ref,
+  toRaw,
+  watch,
+} from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { LinkModel, LinkResponse, LinkStateCount } from '~/models/link'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
-import { CheckIcon, PlusIcon as Plus } from '~/components/icons'
+import { CheckIcon, PlusIcon as Plus, RefreshCircle } from '~/components/icons'
 import { Table } from '~/components/table'
 import { RelativeTime } from '~/components/time/relative-time'
 import { useDataTableFetch } from '~/hooks/use-table'
@@ -168,6 +175,25 @@ export default defineComponent({
       }
     }
 
+    const handleMigrateAvatars = async () => {
+      const l = message.loading('迁移中', { duration: 20e4 })
+
+      try {
+        await RESTManager.api.links.avatar.migrate.post({
+          timeout: 20e4,
+        })
+        message.success('迁移完成')
+        await fetchDataFn()
+      } catch (error) {
+        console.error(error)
+        message.error('迁移失败')
+      } finally {
+        requestAnimationFrame(() => {
+          l.destroy()
+        })
+      }
+    }
+
     const modal = useDialog()
 
     return () => (
@@ -181,14 +207,21 @@ export default defineComponent({
                 editDialogData.value = resetEditData()
                 editDialogShow.value = true
               }}
-            ></HeaderActionButton>
+            />
 
             <HeaderActionButton
               icon={<CheckIcon />}
               variant="info"
               onClick={handleCheck}
               name="检查友链可用性"
-            ></HeaderActionButton>
+            />
+
+            <HeaderActionButton
+              icon={<RefreshCircle />}
+              variant="info"
+              onClick={handleMigrateAvatars}
+              name="迁移头像"
+            />
           </Fragment>
         }
       >
@@ -202,7 +235,7 @@ export default defineComponent({
             router.replace({ name: RouteName.Friend, query: { state: e } })
           }}
         >
-          <NTabPane name={LinkState.Pass} tab="朋友们"></NTabPane>
+          <NTabPane name={LinkState.Pass} tab="朋友们" />
           <NTabPane
             name={LinkState.Audit}
             tab={() => (
@@ -210,7 +243,7 @@ export default defineComponent({
                 <NText>待审核</NText>
               </NBadge>
             )}
-          ></NTabPane>
+          />
 
           <NTabPane
             name={LinkState.Outdate}
@@ -219,7 +252,7 @@ export default defineComponent({
                 <NText>过时的</NText>
               </NBadge>
             )}
-          ></NTabPane>
+          />
           <NTabPane
             name={LinkState.Reject}
             tab={() => (
@@ -227,7 +260,7 @@ export default defineComponent({
                 <NText>已拒绝</NText>
               </NBadge>
             )}
-          ></NTabPane>
+          />
           <NTabPane
             name={LinkState.Banned}
             tab={() => (
@@ -235,7 +268,7 @@ export default defineComponent({
                 <NText>封禁的</NText>
               </NBadge>
             )}
-          ></NTabPane>
+          />
         </NTabs>
 
         <Table
@@ -419,7 +452,7 @@ export default defineComponent({
           ]}
           onFetchData={fetchDataFn}
           pager={pager}
-        ></Table>
+        />
 
         {/* Modal */}
 
@@ -443,7 +476,7 @@ export default defineComponent({
                   autofocus
                   value={editDialogData.value.name}
                   onInput={(e) => void (editDialogData.value.name = e)}
-                ></NInput>
+                />
               </NFormItem>
 
               <NFormItem label="头像">
@@ -451,7 +484,7 @@ export default defineComponent({
                   autofocus
                   value={editDialogData.value.avatar}
                   onInput={(e) => void (editDialogData.value.avatar = e)}
-                ></NInput>
+                />
               </NFormItem>
 
               <NFormItem label="网址" required>
@@ -459,7 +492,7 @@ export default defineComponent({
                   autofocus
                   value={editDialogData.value.url}
                   onInput={(e) => void (editDialogData.value.url = e)}
-                ></NInput>
+                />
               </NFormItem>
 
               <NFormItem label="描述">
@@ -467,7 +500,7 @@ export default defineComponent({
                   autofocus
                   value={editDialogData.value.description}
                   onInput={(e) => void (editDialogData.value.description = e)}
-                ></NInput>
+                />
               </NFormItem>
 
               <NFormItem label="类型">
@@ -481,7 +514,7 @@ export default defineComponent({
                   onUpdateValue={(e) =>
                     void (editDialogData.value.type = e | 0)
                   }
-                ></NSelect>
+                />
               </NFormItem>
               {editDialogData.value.id && (
                 <NFormItem label="状态">
@@ -495,7 +528,7 @@ export default defineComponent({
                     onUpdateValue={(e) =>
                       void (editDialogData.value.state = e | 0)
                     }
-                  ></NSelect>
+                  />
                 </NFormItem>
               )}
             </NForm>
