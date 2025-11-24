@@ -1,5 +1,15 @@
 # CHANGELOG
 
+# [4.11.0](https://github.com/mx-space/mx-admin/compare/v4.10.3...v4.11.0) (2025-11-24)
+
+
+### Features
+
+* **link:** add button to convert approved friend-link avatars to inline ([#1004](https://github.com/mx-space/mx-admin/issues/1004)) ([e7cd6cf](https://github.com/mx-space/mx-admin/commit/e7cd6cf34e096c61d7ab5df23dee82e769813b00))
+* 优化token创建以及查看逻辑并修复Safari后台创建token后不显示token内容 ([#1000](https://github.com/mx-space/mx-admin/issues/1000)) ([4aa1e65](https://github.com/mx-space/mx-admin/commit/4aa1e653b0447133c3a800ac412ed5ca2565e4cd))
+
+
+
 ## [4.10.3](https://github.com/mx-space/mx-admin/compare/v4.10.2...v4.10.3) (2025-07-17)
 
 
