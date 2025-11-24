@@ -202,31 +202,49 @@ const ApiToken = defineComponent(() => {
     fetchToken()
   })
   const newTokenDialogShow = ref(false)
+  const tokenDisplayDialogShow = ref(false)
+  const createdTokenInfo = ref<TokenModel | null>(null)
+  const visibleTokens = ref<Set<string>>(new Set())
+  
   const newToken = async () => {
-    const payload = {
-      name: dataModel.name,
-      expired: dataModel.expired
-        ? dataModel.expiredTime.toISOString()
-        : undefined,
-    }
+    try {
+      const payload = {
+        name: dataModel.name,
+        expired: dataModel.expired
+          ? dataModel.expiredTime.toISOString()
+          : undefined,
+      }
 
-    const response = (await RESTManager.api.auth.token.post({
-      data: payload,
-    })) as TokenModel
+      const response = (await RESTManager.api.auth.token.post({
+        data: payload,
+      })) as TokenModel
 
-    await navigator.clipboard.writeText(response.token)
+      // 尝试复制到剪贴板，但不阻塞后续流程
+      try {
+        await navigator.clipboard.writeText(response.token)
+      } catch (clipboardError) {
+        // Safari 或其他浏览器可能不支持或需要权限
+        console.warn('复制到剪贴板失败:', clipboardError)
+      }
 
-    newTokenDialogShow.value = false
-    const n = defaultModel()
-    for (const key in n) {
-      dataModel[key] = n[key]
-    }
-    message.success(`生成成功，Token 已复制，${response.token}`)
-    await fetchToken()
-    // Backend bug.
-    const index = tokens.value.findIndex((i) => i.name === payload.name)
-    if (index !== -1) {
-      tokens.value[index].token = response.token
+      newTokenDialogShow.value = false
+      const n = defaultModel()
+      for (const key in n) {
+        dataModel[key] = n[key]
+      }
+      
+      // 显示token详情弹窗
+      createdTokenInfo.value = response
+      tokenDisplayDialogShow.value = true
+      
+      await fetchToken()
+      // Backend bug.
+      const index = tokens.value.findIndex((i) => i.name === payload.name)
+      if (index !== -1) {
+        tokens.value[index].token = response.token
+      }
+    } catch (error) {
+      alert('创建 Token 失败，请重试')
     }
   }
 
@@ -238,6 +256,53 @@ const ApiToken = defineComponent(() => {
       tokens.value.splice(index, 1)
     }
   }
+
+  const toggleTokenVisibility = async (tokenData: TokenModel) => {
+    const tokenId = tokenData.id
+    if (visibleTokens.value.has(tokenId)) {
+      // 隐藏token
+      visibleTokens.value.delete(tokenId)
+    } else {
+      // 显示token，需要从后端获取完整信息
+      try {
+        const response = await RESTManager.api.auth.token.get<TokenModel>({ params: { id: tokenId } })
+        // 更新tokens数组中的token信息
+        const index = tokens.value.findIndex((i) => i.id === tokenId)
+        if (index !== -1) {
+          tokens.value[index].token = response.token
+        }
+        visibleTokens.value.add(tokenId)
+      } catch (error) {
+        console.error('获取Token详情失败:', error)
+        alert('获取Token详情失败，请重试')
+      }
+    }
+  }
+
+  const copyToken = async (token: string) => {
+    try {
+      await navigator.clipboard.writeText(token)
+      message.success('Token 已复制到剪贴板')
+    } catch (error) {
+      // Safari 兼容性处理：使用传统的复制方法
+      const textArea = document.createElement('textarea')
+      textArea.value = token
+      textArea.style.position = 'fixed'
+      textArea.style.left = '-9999px'
+      document.body.appendChild(textArea)
+      textArea.focus()
+      textArea.select()
+      try {
+        document.execCommand('copy')
+        message.success('Token 已复制到剪贴板')
+      } catch (fallbackError) {
+        console.warn('复制失败:', fallbackError)
+        alert('复制失败，请手动复制Token')
+      }
+      document.body.removeChild(textArea)
+    }
+  }
+
   const uiStore = useStoreRef(UIStore)
   return () => (
     <NLayoutContent class="!overflow-visible">
@@ -281,10 +346,103 @@ const ApiToken = defineComponent(() => {
             >
               取消
             </NButton>
-            <NButton round type="primary" onClick={newToken}>
+            <NButton 
+              round 
+              type="primary" 
+              disabled={!dataModel.name.trim()}
+              onClick={newToken}
+            >
               确定
             </NButton>
           </NSpace>
+        </NCard>
+      </NModal>
+
+      {/* Token 显示弹窗 */}
+      <NModal
+        transformOrigin="center"
+        show={tokenDisplayDialogShow.value}
+        onUpdateShow={(e) => void (tokenDisplayDialogShow.value = e)}
+      >
+        <NCard 
+          bordered={false} 
+          title="Token 创建成功" 
+          class="w-[600px] max-w-full"
+          closable
+          onClose={() => void (tokenDisplayDialogShow.value = false)}
+        >
+          <div class="space-y-4">
+            <div>
+              <NText depth={3} class="text-sm">Token 创建成功，请妥善保存以下信息：</NText>
+            </div>
+            
+            <div class="space-y-3">
+              <div>
+                <NText strong>Token 名称：</NText>
+                <NText>{createdTokenInfo.value?.name}</NText>
+              </div>
+              
+              <div>
+                <NText strong>Token：</NText>
+                <div class="mt-2 p-3 bg-gray-50 dark:bg-gray-800 rounded border flex items-center gap-2">
+                  <NText code class="flex-1 break-all text-gray-900 dark:text-gray-100">{createdTokenInfo.value?.token}</NText>
+                  <NButton 
+                    size="small" 
+                    type="primary" 
+                    onClick={async () => {
+                      if (createdTokenInfo.value?.token) {
+                        try {
+                          await navigator.clipboard.writeText(createdTokenInfo.value.token)
+                          message.success('Token 已复制到剪贴板')
+                        } catch (error) {
+                          // Safari 兼容性处理：使用传统的复制方法
+                          const textArea = document.createElement('textarea')
+                          textArea.value = createdTokenInfo.value.token
+                          textArea.style.position = 'fixed'
+                          textArea.style.left = '-9999px'
+                          document.body.appendChild(textArea)
+                          textArea.focus()
+                          textArea.select()
+                          try {
+                            document.execCommand('copy')
+                            message.success('Token 已复制到剪贴板')
+                          } catch (fallbackError) {
+                            console.warn('复制失败:', fallbackError)
+                            alert('复制失败，请手动复制Token')
+                          }
+                          document.body.removeChild(textArea)
+                        }
+                      }
+                    }}
+                  >
+                    复制
+                  </NButton>
+                </div>
+              </div>
+              
+              {createdTokenInfo.value?.expired && (
+                <div>
+                  <NText strong>过期时间：</NText>
+                  <NText>{createdTokenInfo.value.expired ? parseDate(createdTokenInfo.value.expired, 'yyyy 年 M 月 d 日 HH:mm:ss') : '永不过期'}</NText>
+                </div>
+              )}
+            </div>
+            
+            <div class="pt-2">
+              <NText depth={3} class="text-sm">
+                💡 建议将此 Token 保存在安全的地方，避免泄露给他人。
+              </NText>
+            </div>
+          </div>
+          
+          <div class="flex justify-end mt-6">
+            <NButton 
+              type="primary" 
+              onClick={() => void (tokenDisplayDialogShow.value = false)}
+            >
+              确定
+            </NButton>
+          </div>
         </NCard>
       </NModal>
 
@@ -314,8 +472,26 @@ const ApiToken = defineComponent(() => {
           {
             key: 'token',
             title: 'Token',
-            render({ token }) {
-              return '*'.repeat(40)
+            render(row) {
+              const { token, id } = row
+              const isVisible = visibleTokens.value.has(id)
+              
+              if (isVisible && token && token !== '*'.repeat(40)) {
+                // 显示真实token，可点击复制
+                return (
+                  <NButton
+                    text
+                    type="primary"
+                    onClick={() => copyToken(token)}
+                    class="font-mono text-left max-w-[200px] truncate"
+                  >
+                    {token}
+                  </NButton>
+                )
+              } else {
+                // 显示星号
+                return '*'.repeat(40)
+              }
             },
           },
           {
@@ -335,9 +511,19 @@ const ApiToken = defineComponent(() => {
           {
             title: '操作',
             key: 'id',
-            render({ id, name }) {
+            render(row) {
+              const { id, name } = row
+              const isVisible = visibleTokens.value.has(id)
+              
               return (
                 <NSpace>
+                  <NButton 
+                    text 
+                    type="primary"
+                    onClick={() => toggleTokenVisibility(row)}
+                  >
+                    {isVisible ? '隐藏' : '查看'}
+                  </NButton>
                   <NPopconfirm
                     positiveText={'取消'}
                     negativeText="删除"
