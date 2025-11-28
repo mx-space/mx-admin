@@ -25,4 +25,40 @@
   & .cm-gutter {
     @apply !min-w-[3rem];
   }
+
+  .cm-uploading-widget {
+    display: inline-block;
+    font-size: 0.9em;
+    padding: 0 4px;
+    user-select: none;
+  }
+
+  .cm-upload-shimmer {
+    display: inline-block;
+    background: linear-gradient(
+      90deg,
+      #666 0%,
+      #666 40%,
+      #3b82f6 50%,
+      #666 60%,
+      #666 100%
+    );
+    background-size: 200% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 2s linear infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: 100% 0;
+    }
+    50% {
+      background-position: 0% 0;
+    }
+    100% {
+      background-position: 100% 0;
+    }
+  }
 }
