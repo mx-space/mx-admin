@@ -86,7 +86,9 @@ export const useCodeMirror = <T extends Element>(
           })
         })
         .catch(() => {
-          console.log('not support wasm')
+          console.info(
+            'Editor wasm formatter is not supported by this browser.',
+          )
         })
     }
   }
@@ -109,7 +111,7 @@ export const useCodeMirror = <T extends Element>(
         const decorations = state.field(uploadStateField)
         let foundFrom: number | null = null
 
-        decorations.between(0, state.doc.length, (from, to, value) => {
+        decorations.between(0, state.doc.length, (from, _to, value) => {
           if (value.spec.id === uploadId) {
             foundFrom = from
             return false // find the decoration by the id set before
@@ -125,10 +127,9 @@ export const useCodeMirror = <T extends Element>(
             },
             effects: removeUpload.of({ id: uploadId }),
           })
-          message.success('自动上传图片成功~')
         }
       })
-      .catch((err) => {
+      .catch((_err) => {
         view.dispatch({
           effects: removeUpload.of({ id: uploadId }),
         })

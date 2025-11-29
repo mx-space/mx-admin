@@ -3,6 +3,7 @@ import { defineComponent } from 'vue'
 import type { EditorState } from '@codemirror/state'
 import type { PropType } from 'vue'
 
+import { useImageUpload } from '~/hooks/use-image-upload'
 import { useSaveConfirm } from '~/hooks/use-save-confirm'
 
 import styles from '../universal/editor.module.css'
@@ -10,51 +11,7 @@ import { editorBaseProps } from '../universal/props'
 
 import './codemirror.css'
 
-import { getToken, RESTManager } from '~/utils'
-
 import { useCodeMirror } from './use-codemirror'
-
-const handleUploadImage = async (file: File): Promise<string> => {
-  if (!file) {
-    throw new Error('No file provided.')
-  }
-
-  try {
-    const formData = new FormData()
-    formData.append('file', file, file.name)
-
-    // use fetch api instead of RESTManager (umi-request)
-    // https://github.com/umijs/umi-request/issues/168
-    const token = getToken()
-    const response = await fetch(
-      `${RESTManager.endpoint}/files/upload?type=file`,
-      {
-        method: 'POST',
-        body: formData,
-        headers: {
-          Authorization: token || '',
-        },
-      },
-    )
-
-    if (!response.ok) {
-      throw new Error(`Upload failed: ${response.statusText}`)
-    }
-
-    const result = await response.json()
-    const imageUrl = result.url
-
-    if (!imageUrl) {
-      throw new Error('Upload failed: invalid url.')
-    }
-
-    return imageUrl
-  } catch (error) {
-    console.error('Auto upload image failed:', error)
-    message.error('图片上传失败，请稍候重新尝试~')
-    throw error
-  }
-}
 
 export const CodemirrorEditor = defineComponent({
   name: 'CodemirrorEditor',
@@ -69,13 +26,15 @@ export const CodemirrorEditor = defineComponent({
     },
   },
   setup(props, { expose }) {
+    const { upload } = useImageUpload()
+
     const [refContainer, editorView] = useCodeMirror({
       initialDoc: props.text,
       onChange: (state) => {
         props.onChange(state.doc.toString())
         props.onStateChange?.(state)
       },
-      onUploadImage: handleUploadImage,
+      onUploadImage: upload,
     })
 
     watch(
