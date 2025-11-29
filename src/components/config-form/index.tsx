@@ -13,7 +13,6 @@ import {
   NSwitch,
   NText,
 } from 'naive-ui'
-import { isVNode } from 'vue'
 import type { ComputedRef, InjectionKey, PropType, Ref, VNode } from 'vue'
 
 import { useStoreRef } from '~/hooks/use-store-ref'
@@ -187,7 +186,7 @@ const SchemaSection = defineComponent({
     const { definitions, getKey } = inject(JSONSchemaFormInjectKey, {} as any)
 
     return () => {
-      const { schema, formData, dataKey: key, property } = props
+      const { schema, formData, dataKey: key } = props
 
       if (!schema) {
         return null
@@ -197,6 +196,33 @@ const SchemaSection = defineComponent({
         <>
           {Object.keys(schema.properties).map((property) => {
             const current = schema.properties[property]
+
+            // Check conditional visibility
+            const uiOptions = current?.['ui:options'] || {}
+            if (uiOptions.dependsOn) {
+              const dependsOn = Array.isArray(uiOptions.dependsOn)
+                ? uiOptions.dependsOn
+                : [uiOptions.dependsOn]
+
+              // Check all conditions (AND logic)
+              const allConditionsMet = dependsOn.every((condition) => {
+                const { field, value: expectedValue } = condition
+                const actualValue = get(
+                  formData.value,
+                  `${getKey(key)}.${field}`,
+                )
+
+                if (Array.isArray(expectedValue)) {
+                  return expectedValue.includes(actualValue)
+                } else {
+                  return actualValue === expectedValue
+                }
+              })
+
+              if (!allConditionsMet) {
+                return null
+              }
+            }
 
             if (current.$ref) {
               const nestSchmea = definitions.value.get(
@@ -286,7 +312,7 @@ const ScheamFormItem = defineComponent({
           const { type: uiType } = options
 
           switch (uiType) {
-            case 'select':
+            case 'select': {
               const { values } = options as {
                 values: { label: string; value: string }[]
               }
@@ -298,8 +324,9 @@ const ScheamFormItem = defineComponent({
                   }}
                   options={values}
                   filterable
-                ></NSelect>
+                />
               )
+            }
             default:
               return (
                 <NInput
@@ -321,7 +348,7 @@ const ScheamFormItem = defineComponent({
                       : undefined
                   }
                   clearable
-                ></NInput>
+                />
               )
           }
         }
@@ -332,7 +359,7 @@ const ScheamFormItem = defineComponent({
               onUpdateValue={(val) => {
                 innerValue.value = val
               }}
-            ></NDynamicTags>
+            />
           )
         }
         case 'boolean': {
@@ -342,7 +369,7 @@ const ScheamFormItem = defineComponent({
               onUpdateValue={(val) => {
                 innerValue.value = val
               }}
-            ></NSwitch>
+            />
           )
         }
 

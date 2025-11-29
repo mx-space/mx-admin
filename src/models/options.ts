@@ -96,4 +96,19 @@ export module MxServerOptions {
     enableSummary: boolean
     enableAutoGenerateSummary: boolean
   }
+
+  export interface ImageUploadOption {
+    provider: 'none' | 'self' | 's3' | 'custom'
+    s3Endpoint: string
+    s3SecretId: string
+    s3SecretKey: string
+    s3Bucket: string
+    s3Region: string
+    s3PathPrefix: string
+    customEndpoint: string
+    customMethod: 'POST' | 'PUT'
+    customFileFieldName: string
+    customHeaders: string
+    customResponseUrlPath: string
+  }
 }

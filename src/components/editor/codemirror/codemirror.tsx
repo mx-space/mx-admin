@@ -1,8 +1,10 @@
 /* eslint-disable vue/no-setup-props-destructure */
-import { useSaveConfirm } from '~/hooks/use-save-confirm'
 import { defineComponent } from 'vue'
 import type { EditorState } from '@codemirror/state'
 import type { PropType } from 'vue'
+
+import { useImageUpload } from '~/hooks/use-image-upload'
+import { useSaveConfirm } from '~/hooks/use-save-confirm'
 
 import styles from '../universal/editor.module.css'
 import { editorBaseProps } from '../universal/props'
@@ -24,12 +26,15 @@ export const CodemirrorEditor = defineComponent({
     },
   },
   setup(props, { expose }) {
+    const { upload } = useImageUpload()
+
     const [refContainer, editorView] = useCodeMirror({
       initialDoc: props.text,
       onChange: (state) => {
         props.onChange(state.doc.toString())
         props.onStateChange?.(state)
       },
+      onUploadImage: upload,
     })
 
     watch(
