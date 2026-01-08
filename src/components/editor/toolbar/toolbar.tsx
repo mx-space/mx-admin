@@ -1,8 +1,9 @@
 import { NPopover } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import type { EditorView } from '@codemirror/view'
-import type { PropType } from 'vue'
+import type { Component, PropType } from 'vue'
 
+import { redo, undo } from '@codemirror/commands'
 import Bold from '@vicons/fa/Bold'
 import Code from '@vicons/fa/Code'
 import FileCode from '@vicons/fa/FileCode'
@@ -24,7 +25,7 @@ import { EmojiPicker } from './emoji-picker'
 import { commands } from './markdown-commands'
 
 interface ToolbarButton {
-  icon: any
+  icon: Component
   title: string
   shortcut: string
   action: () => void
@@ -41,6 +42,7 @@ export const MarkdownToolbar = defineComponent({
   },
   setup(props) {
     const emojiPickerVisible = ref(false)
+    const emojiButtonRef = ref<HTMLElement>()
 
     const executeCommand = (commandFn: (view: EditorView) => boolean) => {
       if (props.editorView) {
@@ -144,7 +146,10 @@ export const MarkdownToolbar = defineComponent({
         title: '撤销',
         shortcut: 'Ctrl+Z',
         action: () => {
-          props.editorView?.focus()
+          if (props.editorView) {
+            props.editorView.focus()
+            undo(props.editorView)
+          }
         },
       },
       {
@@ -152,7 +157,10 @@ export const MarkdownToolbar = defineComponent({
         title: '重做',
         shortcut: 'Ctrl+Y',
         action: () => {
-          props.editorView?.focus()
+          if (props.editorView) {
+            props.editorView.focus()
+            redo(props.editorView)
+          }
         },
       },
     ]
@@ -162,6 +170,10 @@ export const MarkdownToolbar = defineComponent({
         button: {
           type: Object as PropType<ToolbarButton>,
           required: true,
+        },
+        isEmojiButton: {
+          type: Boolean,
+          default: false,
         },
       },
       setup(buttonProps) {
@@ -175,10 +187,13 @@ export const MarkdownToolbar = defineComponent({
             {{
               trigger: () => (
                 <button
+                  ref={buttonProps.isEmojiButton ? emojiButtonRef : undefined}
                   onClick={buttonProps.button.action}
                   class="toolbar-button inline-flex cursor-pointer items-center justify-center border-none bg-transparent outline-none"
+                  aria-label={buttonProps.button.title}
                 >
                   <Icon size={15}>
+                    {/* @ts-ignore */}
                     <buttonProps.button.icon />
                   </Icon>
                 </button>
@@ -201,26 +216,41 @@ export const MarkdownToolbar = defineComponent({
 
     return () => (
       <div class="markdown-toolbar flex items-center gap-2 py-2 pl-2 pr-4">
-        {buttons.map((button, index) => [
-          <ToolbarButtonComponent key={`btn-${index}`} button={button} />,
-          button.divider && (
-            <span
-              key={`div-${index}`}
-              class="inline-block h-4 w-px bg-gray-300 opacity-50 dark:bg-gray-600"
-            />
-          ),
-        ])}
+        {buttons.flatMap((button, index) => {
+          const elements = [
+            <ToolbarButtonComponent
+              key={`btn-${index}`}
+              button={button}
+              isEmojiButton={index === 0}
+            />,
+          ]
 
-        {/* 表情选择器 */}
+          if (button.divider) {
+            elements.push(
+              <span
+                key={`div-${index}`}
+                class="inline-block h-4 w-px bg-gray-300 opacity-50 dark:bg-gray-600"
+              />,
+            )
+          }
+
+          return elements
+        })}
+
         <NPopover
           show={emojiPickerVisible.value}
           onUpdateShow={(val) => (emojiPickerVisible.value = val)}
           trigger="manual"
           placement="bottom-start"
+          x-placement="bottom-start"
+          to={emojiButtonRef.value}
           style={{ padding: 0 }}
+          onClickoutside={() => (emojiPickerVisible.value = false)}
         >
           {{
-            trigger: () => <span style={{ display: 'none' }} />,
+            trigger: () => (
+              <span ref={emojiButtonRef} style={{ position: 'absolute' }} />
+            ),
             default: () => <EmojiPicker onSelect={handleEmojiSelect} />,
           }}
         </NPopover>

@@ -1,3 +1,4 @@
+import type { ChangeSpec } from '@codemirror/state'
 import type { EditorView } from '@codemirror/view'
 
 function wrapSelection(
@@ -31,26 +32,45 @@ function insertAtLineStart(
   toggle: boolean = true,
 ): boolean {
   const { state } = view
-  const { from } = state.selection.main
-  const line = state.doc.lineAt(from)
-  const lineText = line.text
+  const { from, to } = state.selection.main
+  const firstLine = state.doc.lineAt(from)
+  const lastLine = state.doc.lineAt(to)
 
-  if (toggle && lineText.startsWith(prefix)) {
-    view.dispatch({
-      changes: {
-        from: line.from,
-        to: line.from + prefix.length,
-        insert: '',
-      },
-    })
+  if (firstLine.number === lastLine.number || from === to) {
+    const lineText = firstLine.text
+
+    if (toggle && lineText.startsWith(prefix)) {
+      view.dispatch({
+        changes: {
+          from: firstLine.from,
+          to: firstLine.from + prefix.length,
+          insert: '',
+        },
+      })
+    } else {
+      view.dispatch({
+        changes: {
+          from: firstLine.from,
+          to: firstLine.from,
+          insert: prefix,
+        },
+      })
+    }
   } else {
-    view.dispatch({
-      changes: {
+    const indent = ' '.repeat(prefix.length)
+    const changes: ChangeSpec[] = []
+
+    for (let i = firstLine.number; i <= lastLine.number; i++) {
+      const line = state.doc.line(i)
+      const linePrefix = i === firstLine.number ? prefix : indent
+      changes.push({
         from: line.from,
         to: line.from,
-        insert: prefix,
-      },
-    })
+        insert: linePrefix,
+      })
+    }
+
+    view.dispatch({ changes })
   }
 
   view.focus()
@@ -92,11 +112,23 @@ export const commands = {
     const { from, to } = state.selection.main
     const selectedText = state.sliceDoc(from, to)
 
-    const template = selectedText
-      ? `\n\`\`\`\n${selectedText}\n\`\`\`\n`
-      : `\n\`\`\`javascript\n// 代码\n\`\`\`\n`
+    if (selectedText) {
+      const insert = `\`\`\`\n${selectedText}\n\`\`\``
 
-    return insertBlock(view, template, selectedText ? -5 : -18)
+      view.dispatch({
+        changes: { from, to, insert },
+        selection: {
+          anchor: from + 4,
+          head: from + 4,
+        },
+      })
+    } else {
+      const template = `\n\`\`\`javascript\n// 代码\n\`\`\`\n`
+      return insertBlock(view, template, -18)
+    }
+
+    view.focus()
+    return true
   },
 
   link: (view: EditorView) => {
@@ -163,7 +195,31 @@ export const commands = {
   },
 
   taskList: (view: EditorView) => insertAtLineStart(view, '- [ ] '),
-  quote: (view: EditorView) => insertAtLineStart(view, '> '),
+  quote: (view: EditorView) => {
+    const { state } = view
+    const { from, to } = state.selection.main
+    const firstLine = state.doc.lineAt(from)
+    const lastLine = state.doc.lineAt(to)
+
+    if (firstLine.number !== lastLine.number && from !== to) {
+      const changes: ChangeSpec[] = []
+
+      for (let i = firstLine.number; i <= lastLine.number; i++) {
+        const line = state.doc.line(i)
+        changes.push({
+          from: line.from,
+          to: line.from,
+          insert: '> ',
+        })
+      }
+
+      view.dispatch({ changes })
+      view.focus()
+      return true
+    }
+
+    return insertAtLineStart(view, '> ')
+  },
   horizontalRule: (view: EditorView) => insertBlock(view, '\n---\n', 0),
   emoji: (view: EditorView, emoji: string) => {
     const { state } = view
