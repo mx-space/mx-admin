@@ -1,4 +1,4 @@
-import { NButton, NButtonGroup, NDivider, NPopover } from 'naive-ui'
+import { NPopover } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import type { EditorView } from '@codemirror/view'
 import type { PropType } from 'vue'
@@ -166,24 +166,31 @@ export const MarkdownToolbar = defineComponent({
       },
       setup(buttonProps) {
         return () => (
-          <NPopover trigger="hover" placement="bottom" delay={500}>
+          <NPopover
+            trigger="hover"
+            placement="bottom"
+            delay={400}
+            showArrow={false}
+          >
             {{
               trigger: () => (
-                <NButton
-                  text
-                  size="small"
+                <button
                   onClick={buttonProps.button.action}
-                  class="toolbar-button"
+                  class="toolbar-button inline-flex cursor-pointer items-center justify-center border-none bg-transparent outline-none"
                 >
-                  <Icon size={16}>
+                  <Icon size={15}>
                     <buttonProps.button.icon />
                   </Icon>
-                </NButton>
+                </button>
               ),
               default: () => (
-                <div class="flex flex-col gap-1 text-xs">
-                  <div class="font-medium">{buttonProps.button.title}</div>
-                  <div class="text-gray-400">{buttonProps.button.shortcut}</div>
+                <div class="px-2 py-1.5">
+                  <div class="whitespace-nowrap text-xs">
+                    {buttonProps.button.title}
+                    <span class="ml-2 opacity-50">
+                      {buttonProps.button.shortcut}
+                    </span>
+                  </div>
                 </div>
               ),
             }}
@@ -193,19 +200,16 @@ export const MarkdownToolbar = defineComponent({
     })
 
     return () => (
-      <div class="markdown-toolbar flex items-center gap-1 border-b border-gray-200 bg-white px-3 py-2 dark:border-gray-700 dark:bg-gray-800">
-        <NButtonGroup size="small">
-          {buttons.map((button, index) => [
-            <ToolbarButtonComponent key={`btn-${index}`} button={button} />,
-            button.divider && (
-              <NDivider
-                key={`div-${index}`}
-                vertical
-                class="!mx-1 !my-1 !h-4 !border-gray-300 dark:!border-gray-600"
-              />
-            ),
-          ])}
-        </NButtonGroup>
+      <div class="markdown-toolbar flex items-center gap-2 py-2 pl-2 pr-4">
+        {buttons.map((button, index) => [
+          <ToolbarButtonComponent key={`btn-${index}`} button={button} />,
+          button.divider && (
+            <span
+              key={`div-${index}`}
+              class="inline-block h-4 w-px bg-gray-300 opacity-50 dark:bg-gray-600"
+            />
+          ),
+        ])}
 
         {/* 表情选择器 */}
         <NPopover
@@ -223,15 +227,24 @@ export const MarkdownToolbar = defineComponent({
 
         <style>
           {`
+          .markdown-toolbar {
+            background: transparent;
+          }
           .markdown-toolbar .toolbar-button {
-            padding: 4px 8px;
-            transition: all 0.2s;
+            padding: 6px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            opacity: 0.6;
           }
           .markdown-toolbar .toolbar-button:hover {
-            background-color: rgba(0, 0, 0, 0.05);
+            opacity: 1;
+            background-color: rgba(0, 0, 0, 0.04);
           }
           .dark .markdown-toolbar .toolbar-button:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.08);
+          }
+          .markdown-toolbar .toolbar-button:active {
+            transform: scale(0.95);
           }
           `}
         </style>
