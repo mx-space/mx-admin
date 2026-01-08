@@ -19,6 +19,7 @@ import {
   lineNumbers,
 } from '@codemirror/view'
 
+import { createToolbarKeymapExtension } from '../toolbar'
 import { useEditorConfig } from '../universal/use-editor-setting'
 import { codemirrorReconfigureExtension } from './extension'
 import { syntaxTheme } from './syntax-highlight'
@@ -80,7 +81,7 @@ export const useCodeMirror = <T extends Element>(
           })
         })
         .catch(() => {
-          console.log('not support wasm')
+          // not support wasm
         })
     }
   }
@@ -106,6 +107,7 @@ export const useCodeMirror = <T extends Element>(
             },
           },
         ]),
+        createToolbarKeymapExtension(),
         keymap.of([
           ...defaultKeymap,
           ...historyKeymap,
