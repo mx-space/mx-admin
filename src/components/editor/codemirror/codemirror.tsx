@@ -3,8 +3,10 @@ import { defineComponent } from 'vue'
 import type { EditorState } from '@codemirror/state'
 import type { PropType } from 'vue'
 
+
 import { useImageUpload } from '~/hooks/use-image-upload'
 import { useSaveConfirm } from '~/hooks/use-save-confirm'
+import { MarkdownToolbar } from '../toolbar'
 
 import styles from '../universal/editor.module.css'
 import { editorBaseProps } from '../universal/props'
@@ -69,7 +71,13 @@ export const CodemirrorEditor = defineComponent({
     )
 
     return () => (
-      <div class={[styles.editor, props.className]} ref={refContainer} />
+      <div class="flex h-full flex-col">
+        <MarkdownToolbar editorView={editorView.value} />
+        <div
+          class={[styles.editor, props.className, 'flex-1']}
+          ref={refContainer}
+        />
+      </div>
     )
   },
 })
