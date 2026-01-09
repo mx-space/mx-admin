@@ -1,7 +1,3 @@
-import { HeaderActionButton } from '~/components/button/rounded-button'
-import { ArchiveIcon, UploadIcon } from '~/components/icons'
-import { Table } from '~/components/table'
-import { ContentLayout } from '~/layouts/content'
 import {
   NButton,
   NButtonGroup,
@@ -17,9 +13,14 @@ import {
   NUpload,
   NUploadDragger,
 } from 'naive-ui'
-import { RESTManager, getToken } from '~/utils'
 import { defineComponent } from 'vue'
 import type { UploadFileInfo } from 'naive-ui'
+
+import { HeaderActionButton } from '~/components/button/rounded-button'
+import { ArchiveIcon, UploadIcon } from '~/components/icons'
+import { Table } from '~/components/table'
+import { ContentLayout } from '~/layouts/content'
+import { getToken, RESTManager } from '~/utils'
 
 type FileType = 'file' | 'icon' | 'photo' | 'avatar'
 
@@ -62,10 +63,34 @@ export default defineComponent({
         type.value === 'avatar' ||
         type.value === 'photo'
       ) {
-        if (data.file.file?.type.startsWith('image')) {
-          return true
+        if (!data.file.file?.type.startsWith('image')) {
+          message.error('只能上传图片文件哦~')
+          return false
         }
-        message.error('只能上传图片文件，请重新上传')
+
+        if (type.value === 'photo') {
+          let maxSizeMB = 10
+          try {
+            const config = await RESTManager.api
+              .options('imageBedOptions')
+              .get<any>()
+            if (config?.data?.maxSizeMB) {
+              maxSizeMB = config.data.maxSizeMB
+            }
+          } catch (_error) {
+            console.warn('Failed to fetch image bed config, using default 10MB')
+          }
+
+          const fileSize = data.file.file?.size || 0
+          const maxSize = maxSizeMB * 1024 * 1024
+          if (fileSize > maxSize) {
+            const sizeMB = (fileSize / 1024 / 1024).toFixed(2)
+            message.error(`图片大小 ${sizeMB}MB 超过限制 ${maxSizeMB}MB`)
+            return false
+          }
+        }
+
+        return true
       }
 
       return true
@@ -102,7 +127,7 @@ export default defineComponent({
                 modalShow.value = true
               }}
               icon={<UploadIcon />}
-            ></HeaderActionButton>
+            />
           </>
         }
       >
@@ -112,9 +137,10 @@ export default defineComponent({
             type.value = val
           }}
         >
-          <NTabPane tab={'图标'} name={'icon'}></NTabPane>
-          <NTabPane tab={'头像'} name={'avatar'}></NTabPane>
-          <NTabPane tab={'文件'} name={'file'}></NTabPane>
+          <NTabPane tab={'图标'} name={'icon'} />
+          <NTabPane tab={'头像'} name={'avatar'} />
+          <NTabPane tab={'图片'} name={'photo'} />
+          <NTabPane tab={'文件'} name={'file'} />
         </NTabs>
         <Table
           loading={loading.value}
@@ -138,7 +164,7 @@ export default defineComponent({
                     {{
                       trigger() {
                         return (
-                          <a href={row.url} target="_blank">
+                          <a href={row.url} target="_blank" rel="noreferrer">
                             {row.url}
                           </a>
                         )
