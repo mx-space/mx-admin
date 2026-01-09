@@ -8,7 +8,7 @@ import {
   NSwitch,
   useMessage,
 } from 'naive-ui'
-import { computed, defineComponent, onMounted, reactive, ref, toRaw } from 'vue'
+import { computed, defineComponent, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { CategoryModel, TagModel } from '~/models/category'
 import type { PostModel } from '~/models/post'
@@ -32,6 +32,8 @@ import {
 } from '~/components/special-button/preview'
 import { CrossBellConnectorIndirector } from '~/components/xlog-connect'
 import { WEB_URL } from '~/constants/env'
+import { useAutoSave, useAutoSaveInEditor } from '~/hooks/use-auto-save'
+import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { ContentLayout } from '~/layouts/content'
 import { RouteName } from '~/router/name'
@@ -81,20 +83,35 @@ const PostWriteView = defineComponent(() => {
     isPublished: true,
   })
 
-  const parsePayloadIntoReactiveData = (payload: PostModel) => {
-    const raw = toRaw(data)
-    const keys = Object.keys(raw)
-    for (const k in payload) {
-      if (keys.includes(k)) {
-        data[k] = payload[k]
-      }
-    }
-  }
-
   const postListState = useMemoPostList()
 
   const data = reactive<PostReactiveType>(resetReactive())
+
+  const parsePayloadIntoReactiveData = useParsePayloadIntoData(data)
   const id = computed(() => route.query.id)
+
+  const loading = computed(() => !!(id.value && typeof data.id === 'undefined'))
+  const autoSaveHook = useAutoSave(`post-${id.value || 'new'}`, 3000, () => ({
+    text: data.text,
+    title: data.title,
+  }))
+
+  const autoSaveInEditor = useAutoSaveInEditor(data, autoSaveHook)
+
+  const disposer = watch(
+    () => loading.value,
+    (loading) => {
+      if (loading) {
+        return
+      }
+
+      autoSaveInEditor.enable()
+      requestAnimationFrame(() => {
+        disposer()
+      })
+    },
+    { immediate: true },
+  )
 
   // const currentSelectCategoryId = ref('')
   const category = computed(
@@ -154,7 +171,8 @@ const PostWriteView = defineComponent(() => {
       await CrossBellConnector.createOrUpdate(response)
     }
 
-    router.push({ name: RouteName.ViewPost, hash: '|publish' })
+    await router.push({ name: RouteName.ViewPost, hash: '|publish' })
+    autoSaveInEditor.clearSaved()
   }
   const handleOpenDrawer = () => {
     drawerShow.value = true
@@ -249,7 +267,7 @@ const PostWriteView = defineComponent(() => {
       <PreviewSplitter>
         <Editor
           key={data.id}
-          loading={!!(id.value && typeof data.id == 'undefined')}
+          loading={loading.value}
           onChange={(v) => {
             data.text = v
           }}
