@@ -234,6 +234,26 @@ export const commands = {
     return true
   },
 
+  image: (view: EditorView, alt: string, url: string) => {
+    const { state } = view
+    const { from } = state.selection.main
+    const line = state.doc.lineAt(from)
+
+    const insertPos = line.to
+    const needsNewline = line.text.length > 0
+    const insert = `${needsNewline ? '\n' : ''}![${alt}](${url})`
+
+    view.dispatch({
+      changes: { from: insertPos, to: insertPos, insert },
+      selection: {
+        anchor: insertPos + insert.length,
+      },
+    })
+
+    view.focus()
+    return true
+  },
+
   // managed by historyKeymap
   undo: (_view: EditorView) => {
     return true

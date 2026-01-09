@@ -22,6 +22,7 @@ import {
 import { createToolbarKeymapExtension } from '../toolbar'
 import { useEditorConfig } from '../universal/use-editor-setting'
 import { codemirrorReconfigureExtension } from './extension'
+import { createPasteImageExtension } from './paste-image-extension'
 import { syntaxTheme } from './syntax-highlight'
 import { useCodeMirrorConfigureFonts } from './use-auto-fonts'
 import { useCodeMirrorAutoToggleTheme } from './use-auto-theme'
@@ -130,6 +131,8 @@ export const useCodeMirror = <T extends Element>(
         syntaxTheme,
 
         ...codemirrorReconfigureExtension,
+
+        createPasteImageExtension(),
 
         EditorView.lineWrapping,
         EditorView.updateListener.of((update) => {

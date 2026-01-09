@@ -2,12 +2,14 @@ import { NPopover } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import type { EditorView } from '@codemirror/view'
 import type { Component, PropType } from 'vue'
+import type { ImageUploadResult } from './image-upload-modal'
 
 import { redo, undo } from '@codemirror/commands'
 import Bold from '@vicons/fa/Bold'
 import Code from '@vicons/fa/Code'
 import FileCode from '@vicons/fa/FileCode'
 import Heading from '@vicons/fa/Heading'
+import Image from '@vicons/fa/Image'
 import Italic from '@vicons/fa/Italic'
 import Link from '@vicons/fa/Link'
 import ListOl from '@vicons/fa/ListOl'
@@ -22,6 +24,7 @@ import UndoAlt from '@vicons/fa/UndoAlt'
 import { Icon } from '@vicons/utils'
 
 import { EmojiPicker } from './emoji-picker'
+import { ImageUploadModal } from './image-upload-modal'
 import { commands } from './markdown-commands'
 
 interface ToolbarButton {
@@ -43,6 +46,7 @@ export const MarkdownToolbar = defineComponent({
   setup(props) {
     const emojiPickerVisible = ref(false)
     const emojiButtonRef = ref<HTMLElement>()
+    const imageUploadVisible = ref(false)
 
     const executeCommand = (commandFn: (view: EditorView) => boolean) => {
       if (props.editorView) {
@@ -55,6 +59,13 @@ export const MarkdownToolbar = defineComponent({
         commands.emoji(props.editorView, emoji)
       }
       emojiPickerVisible.value = false
+    }
+
+    const handleImageUpload = (result: ImageUploadResult) => {
+      if (props.editorView) {
+        commands.image(props.editorView, result.alt, result.url)
+      }
+      imageUploadVisible.value = false
     }
 
     const buttons: ToolbarButton[] = [
@@ -95,6 +106,14 @@ export const MarkdownToolbar = defineComponent({
         title: '链接',
         shortcut: 'Ctrl+K',
         action: () => executeCommand(commands.link),
+      },
+      {
+        icon: Image,
+        title: '图片',
+        shortcut: 'Ctrl+Shift+I',
+        action: () => {
+          imageUploadVisible.value = true
+        },
         divider: true,
       },
       {
@@ -254,6 +273,12 @@ export const MarkdownToolbar = defineComponent({
             default: () => <EmojiPicker onSelect={handleEmojiSelect} />,
           }}
         </NPopover>
+
+        <ImageUploadModal
+          show={imageUploadVisible.value}
+          onClose={() => (imageUploadVisible.value = false)}
+          onConfirm={handleImageUpload}
+        />
 
         <style>
           {`
