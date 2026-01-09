@@ -35,13 +35,26 @@ export module MxServerOptions {
     recordIpLocation: boolean
   }
 
-  export interface BackupOptionsOption {
-    enable: boolean
+  export interface S3OptionsOption {
     endpoint: string
-    secretId: string
-    secretKey: string
+    accessKeyId: string
+    secretAccessKey: string
     bucket: string
     region: string
+    customDomain: string
+    pathStyleAccess: boolean
+  }
+
+  export interface BackupOptionsOption {
+    enable: boolean
+    path: string
+  }
+
+  export interface ImageBedOptionsOption {
+    enable: boolean
+    path: string
+    allowedFormats: string
+    maxSizeMB: number
   }
 
   export interface BaiduSearchOptionsOption {
