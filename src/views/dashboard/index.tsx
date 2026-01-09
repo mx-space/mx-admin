@@ -68,6 +68,7 @@ import { RouteName } from '~/router/name'
 import { AppStore } from '~/stores/app'
 import { UserStore } from '~/stores/user'
 import { parseDate, RESTManager } from '~/utils'
+import { isNewerVersion } from '~/utils/version'
 
 import PKG from '../../../package.json'
 import { Card } from './card'
@@ -190,12 +191,12 @@ export const DashBoardView = defineComponent({
                 trigger="hover"
                 triggerEl={<span>{userStore.user.value?.lastLoginIp}</span>}
                 ip={userStore.user.value?.lastLoginIp}
-              ></IpInfoPopover>
+              />
             ) : (
               'N/A'
             )}
           </span>
-          <div class="pt-[.5rem]"></div>
+          <div class="pt-[.5rem]" />
           <span>
             上次登录时间:{' '}
             {userStore.user.value?.lastLoginTime ? (
@@ -211,7 +212,7 @@ export const DashBoardView = defineComponent({
           </span>
         </p>
 
-        <div class="pb-4"></div>
+        <div class="pb-4" />
       </>
     ))
 
@@ -640,7 +641,8 @@ const AppIF = defineComponent({
       system: null as string | null,
     })
 
-    const { openModal: openUpdateModal, Modal: UpdateDetailModal } = useUpdateDetailModal()
+    const { openModal: openUpdateModal, Modal: UpdateDetailModal } =
+      useUpdateDetailModal()
 
     const portal = usePortalElement()
     const handleUpdate = () => {
@@ -657,7 +659,7 @@ const AppIF = defineComponent({
       const { dashboard, system } = await checkUpdateFromGitHub()
 
       if (
-        dashboard !== PKG.version &&
+        isNewerVersion(PKG.version, dashboard) &&
         closedTips.value.dashboard !== dashboard
       ) {
         const $notice = notice.info({
@@ -665,7 +667,7 @@ const AppIF = defineComponent({
           content: () => (
             <div>
               <p>{`当前版本：${PKG.version}，最新版本：${dashboard}`}</p>
-              <div class={'text-right space-x-2'}>
+              <div class={'space-x-2 text-right'}>
                 <NButton
                   size="small"
                   onClick={() => {
@@ -722,14 +724,14 @@ const AppIF = defineComponent({
         app.value.version !== 'dev' &&
         versionMap.value.system &&
         closedTips.value.system !== versionMap.value.system &&
-        versionMap.value.system !== app.value.version
+        isNewerVersion(app.value.version, versionMap.value.system)
       ) {
         notice.info({
           title: '[系统] 有新版本啦！',
           content: () => (
             <div>
               <p>{`当前版本：${app.value?.version || 'N/A'}，最新版本：${versionMap.value.system}`}</p>
-              <div class={'text-right space-x-2'}>
+              <div class={'space-x-2 text-right'}>
                 <NButton
                   size="small"
                   onClick={() => {
