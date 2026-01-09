@@ -43,7 +43,7 @@ export const TabSystem = defineComponent(() => {
         disabled={true}
         onClick={save}
         icon={<CheckCircleOutlinedIcon />}
-      ></HeaderActionButton>,
+      />,
     )
   })
 
@@ -85,7 +85,7 @@ export const TabSystem = defineComponent(() => {
           disabled={!canSave}
           icon={<CheckCircleOutlinedIcon />}
           onClick={save}
-        ></HeaderActionButton>,
+        />,
       )
     },
   )
@@ -117,8 +117,10 @@ export const TabSystem = defineComponent(() => {
   }
 
   const fetchConfig = async () => {
-    let response = (await RESTManager.api.options.get()) as any
-    response = merge(schema.value.default, response) as any
+    let response = (await RESTManager.api.options.get({
+      transform: false,
+    })) as any
+    response = merge(cloneDeep(schema.value.default), response) as any
 
     originConfigs = cloneDeep(response)
 
@@ -144,7 +146,7 @@ export const TabSystem = defineComponent(() => {
   )
   return () => (
     <Fragment>
-      <div class="pt-4"></div>
+      <div class="pt-4" />
 
       {schema.value && (
         <ConfigForm
@@ -195,7 +197,7 @@ const AppColorSetter = defineComponent({
               document.head.removeChild($style)
             })
           }}
-        ></NColorPicker>
+        />
 
         <NButton
           size="small"
