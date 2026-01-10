@@ -59,7 +59,6 @@ function showDragOverlay(container: HTMLElement) {
   `
   document.head.appendChild(style)
 
-  container.style.position = 'relative'
   container.appendChild(dragOverlay)
 }
 
