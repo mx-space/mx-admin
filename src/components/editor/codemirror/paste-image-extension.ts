@@ -107,6 +107,8 @@ async function uploadImage(file: File): Promise<{
         type: 'photo',
       },
       data: formData,
+      timeout: 60000,
+      getResponse: false,
     })
 
     window.message.success(
