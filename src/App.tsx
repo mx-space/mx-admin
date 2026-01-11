@@ -19,7 +19,6 @@ import type { VNode } from 'vue'
 
 import { PortalInjectKey } from '~/hooks/use-portal-element'
 
-import { ThemeColorConfig } from '../theme.config'
 import { useUIStore } from './stores/ui'
 import { colorRef } from './utils/color'
 

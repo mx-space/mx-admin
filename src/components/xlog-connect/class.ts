@@ -1,10 +1,11 @@
-import { Indexer, createContract } from 'crossbell.js'
+import { createContract, Indexer } from 'crossbell.js'
 import Unidata from 'unidata.js'
-import { RESTManager } from '~/utils'
-import { showConfetti } from '~/utils/confetti'
-import type { Contract } from 'crossbell.js'
 import type { NoteModel } from '~/models/note'
 import type { PostModel } from '~/models/post'
+import type { Contract } from 'crossbell.js'
+
+import { RESTManager } from '~/utils'
+import { showConfetti } from '~/utils/confetti'
 
 const unidata = new Unidata()
 
@@ -43,7 +44,7 @@ export class CrossBellConnector {
         return Promise.resolve()
       }
     }
-    
+
     // 跳过未发布的内容
     if ('isPublished' in data && data.isPublished === false) {
       message.info('跳过未发布内容')

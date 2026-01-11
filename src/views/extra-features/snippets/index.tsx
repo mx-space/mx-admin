@@ -1,6 +1,7 @@
-import { ContentLayout } from '~/layouts/content'
 import { NTabPane, NTabs } from 'naive-ui'
 import { useRoute, useRouter } from 'vue-router'
+
+import { ContentLayout } from '~/layouts/content'
 
 import { Tab2ForEdit } from './tabs/for-edit'
 import { Tab1ForList } from './tabs/for-list'

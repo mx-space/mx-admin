@@ -75,18 +75,16 @@ export const TabUser = defineComponent(() => {
                         (event?.target as XMLHttpRequest).responseText,
                       )
                       data.value.avatar = res.url
-                    } catch {}
+                    } catch {
+                      // noop
+                    }
                     return file
                   }}
                 >
                   <NUploadDragger
                     class={'border-0 bg-transparent hover:border-0'}
                   >
-                    <Avatar
-                      class="flex"
-                      src={data.value.avatar}
-                      size={200}
-                    ></Avatar>
+                    <Avatar class="flex" src={data.value.avatar} size={200} />
                   </NUploadDragger>
                 </UploadWrapper>
               </div>
@@ -96,9 +94,7 @@ export const TabUser = defineComponent(() => {
               <div class="w-full text-center">
                 <NText>
                   {data.value.lastLoginTime ? (
-                    <RelativeTime
-                      time={data.value.lastLoginTime}
-                    ></RelativeTime>
+                    <RelativeTime time={data.value.lastLoginTime} />
                   ) : (
                     'N/A'
                   )}
@@ -117,7 +113,7 @@ export const TabUser = defineComponent(() => {
                         {data.value.lastLoginIp}
                       </NText>
                     }
-                  ></IpInfoPopover>
+                  />
                 ) : (
                   'N/A'
                 )}
@@ -205,7 +201,7 @@ export const TabUser = defineComponent(() => {
                   data.value.socialIds = newValue
                 }}
                 value={data.value.socialIds || {}}
-              ></KVEditor>
+              />
             </NFormItem>
           </NForm>
         </NGi>

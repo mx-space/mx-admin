@@ -107,7 +107,7 @@ export default defineComponent({
               },
             },
           ]}
-        ></Table>
+        />
       </ContentLayout>
     )
   },

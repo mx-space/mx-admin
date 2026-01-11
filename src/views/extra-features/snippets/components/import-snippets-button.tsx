@@ -1,9 +1,3 @@
-import { HeaderActionButton } from '~/components/button/rounded-button'
-import { CodeHighlight } from '~/components/code-highlight'
-import { ExternalLinkIcon, ImportIcon } from '~/components/icons'
-import { CenterSpin } from '~/components/spin'
-import { GitHubSnippetRepo } from '~/external/api/github-mx-snippets'
-import { SnippetType } from '~/models/snippet'
 import {
   NButton,
   NCard,
@@ -16,10 +10,18 @@ import {
   useDialog,
 } from 'naive-ui'
 import { basename, extname } from 'path-browserify'
-import { RESTManager } from '~/utils'
-import { InstallDepsXterm } from './install-dep-xterm'
 import type { SnippetModel } from '~/models/snippet'
 import type { PropType } from 'vue'
+
+import { HeaderActionButton } from '~/components/button/rounded-button'
+import { CodeHighlight } from '~/components/code-highlight'
+import { ExternalLinkIcon, ImportIcon } from '~/components/icons'
+import { CenterSpin } from '~/components/spin'
+import { GitHubSnippetRepo } from '~/external/api/github-mx-snippets'
+import { SnippetType } from '~/models/snippet'
+import { RESTManager } from '~/utils'
+
+import { InstallDepsXterm } from './install-dep-xterm'
 
 type SnippetList = {
   name: string
@@ -103,7 +105,7 @@ export const ImportSnippetButton = defineComponent({
           }}
           icon={<ImportIcon />}
           name="下载扩展包"
-        ></HeaderActionButton>
+        />
         <NModal
           show={show.value}
           onUpdateShow={(state) => {
@@ -119,7 +121,7 @@ export const ImportSnippetButton = defineComponent({
                   onUpdateValue={(str) => {
                     name.value = str
                   }}
-                ></NInput>
+                />
               </NFormItem>
 
               <NFormItem label="可获取的">
@@ -216,7 +218,6 @@ const ProcessView = defineComponent({
                         const text = await fetch(download_url).then((res) =>
                           res.text(),
                         )
-                        console.log(`// ${file.name}\n${text}`)
 
                         functions.value.push({
                           name: file.name,
@@ -256,8 +257,6 @@ const ProcessView = defineComponent({
               res.text(),
             )
             const parsedPKG = JSON.parse(pkgContent)
-            console.log('// package.json')
-            console.log(parsedPKG)
             dependencies.value = Object.entries(
               parsedPKG.dependencies || {},
             ).map(([key, version]) => {

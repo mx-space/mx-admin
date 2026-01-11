@@ -89,11 +89,48 @@ export module MxServerOptions {
     disablePasswordLogin: boolean
   }
 
+  export enum AIProviderType {
+    OpenAI = 'openai',
+    OpenAICompatible = 'openai-compatible',
+    Anthropic = 'anthropic',
+  }
+
+  export interface AIProviderConfig {
+    id: string
+    name: string
+    type: AIProviderType
+    apiKey: string
+    endpoint?: string
+    defaultModel: string
+    enabled: boolean
+  }
+
+  export interface AIModelAssignment {
+    providerId?: string
+    model?: string
+  }
+
   export interface AIOption {
-    openAiKey: string
-    openAiEndpoint: string
-    openAiPreferredModel: string
+    providers: AIProviderConfig[]
+    summaryModel?: AIModelAssignment
+    writerModel?: AIModelAssignment
+    commentReviewModel?: AIModelAssignment
     enableSummary: boolean
     enableAutoGenerateSummary: boolean
+    aiSummaryTargetLanguage: string
+  }
+
+  export interface ModelInfo {
+    id: string
+    name: string
+    created?: number
+  }
+
+  export interface ProviderModelsResponse {
+    providerId: string
+    providerName: string
+    providerType: AIProviderType
+    models: ModelInfo[]
+    error?: string
   }
 }

@@ -37,7 +37,7 @@ export const MaterialInput = defineComponent({
           value={props.value}
           onInput={(e) => props.onChange((e.target as any).value)}
         />
-        <span class={styles.bar}></span>
+        <span class={styles.bar} />
         <label>{props.label}</label>
       </div>
     )

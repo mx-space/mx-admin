@@ -1,7 +1,9 @@
-import { NButton, NModal, NModalProvider, NSpin, NTag } from 'naive-ui'
-import { defineComponent, ref, watchEffect } from 'vue'
 import { marked } from 'marked'
+import { NButton, NModal, NSpin, NTag } from 'naive-ui'
+import { defineComponent, ref, watchEffect } from 'vue'
+
 import { getReleaseDetails } from '../../external/api/github-check-update'
+
 import './markdown-styles.css'
 
 interface ReleaseDetails {
@@ -29,7 +31,7 @@ export const UpdateDetailModal = defineComponent({
 
     const fetchReleaseDetails = async () => {
       if (!props.version) return
-      
+
       loading.value = true
       try {
         const details = await getReleaseDetails(props.repo, props.version)
@@ -64,9 +66,37 @@ export const UpdateDetailModal = defineComponent({
     // 简单的 HTML 清理函数，移除潜在的危险标签和属性
     const sanitizeHtml = (html: string): string => {
       // 允许的标签和属性
-      const allowedTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'br', 'strong', 'b', 'em', 'i', 'u', 'code', 'pre', 'blockquote', 'ul', 'ol', 'li', 'a', 'hr', 'table', 'thead', 'tbody', 'tr', 'th', 'td']
-      const allowedAttributes = ['href', 'title', 'target', 'rel']
-      
+      const _allowedTags = [
+        'h1',
+        'h2',
+        'h3',
+        'h4',
+        'h5',
+        'h6',
+        'p',
+        'br',
+        'strong',
+        'b',
+        'em',
+        'i',
+        'u',
+        'code',
+        'pre',
+        'blockquote',
+        'ul',
+        'ol',
+        'li',
+        'a',
+        'hr',
+        'table',
+        'thead',
+        'tbody',
+        'tr',
+        'th',
+        'td',
+      ]
+      const _allowedAttributes = ['href', 'title', 'target', 'rel']
+
       // 移除 script 标签和 javascript: 协议
       return html
         .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
@@ -76,16 +106,17 @@ export const UpdateDetailModal = defineComponent({
 
     const formatMarkdown = (markdown: string): string => {
       if (!markdown) return ''
-      
+
       try {
         // 使用 marked 库进行专业的 markdown 渲染
         const result = marked.parse(markdown, {
           breaks: true, // 支持换行符转换为 <br>
-          gfm: true,    // 支持 GitHub Flavored Markdown
+          gfm: true, // 支持 GitHub Flavored Markdown
         })
-        
+
         // 确保返回字符串并进行安全清理
-        const htmlString = typeof result === 'string' ? result : markdown.replace(/\n/g, '<br>')
+        const htmlString =
+          typeof result === 'string' ? result : markdown.replace(/\n/g, '<br>')
         return sanitizeHtml(htmlString)
       } catch (error) {
         console.error('Markdown 渲染失败:', error)
@@ -109,7 +140,7 @@ export const UpdateDetailModal = defineComponent({
             <div class="space-y-4">
               <div class="flex items-center justify-between">
                 <div>
-                  <h3 class="text-lg font-semibold mb-2">
+                  <h3 class="mb-2 text-lg font-semibold">
                     {releaseDetails.value.name || releaseDetails.value.tag_name}
                   </h3>
                   <div class="flex items-center gap-2">
@@ -123,21 +154,19 @@ export const UpdateDetailModal = defineComponent({
                   在 GitHub 查看
                 </NButton>
               </div>
-              
+
               {releaseDetails.value.body && (
                 <div class="mt-4">
-                  <h4 class="font-medium mb-2">更新内容：</h4>
-                  <div 
-                    class="prose prose-sm max-w-none p-4 bg-gray-50 rounded-lg dark:bg-gray-800 markdown-content leading-relaxed"
+                  <h4 class="mb-2 font-medium">更新内容：</h4>
+                  <div
+                    class="prose prose-sm markdown-content max-w-none rounded-lg bg-gray-50 p-4 leading-relaxed dark:bg-gray-800"
                     innerHTML={formatMarkdown(releaseDetails.value.body)}
                   />
                 </div>
               )}
             </div>
           ) : !loading.value ? (
-            <div class="text-center py-8 text-gray-500">
-              无法获取更新详情
-            </div>
+            <div class="py-8 text-center text-gray-500">无法获取更新详情</div>
           ) : null}
         </NSpin>
       </NModal>
@@ -169,7 +198,7 @@ export const useUpdateDetailModal = () => {
   const Modal = () => (
     <UpdateDetailModal
       show={showModal.value}
-      onUpdate:show={(val: boolean) => showModal.value = val}
+      onUpdate:show={(val: boolean) => (showModal.value = val)}
       version={version.value}
       repo={repo.value}
       title={title.value}

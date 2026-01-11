@@ -1,6 +1,3 @@
-import { HeaderActionButton } from '~/components/button/rounded-button'
-import { PlainEditor } from '~/components/editor/plain/plain'
-import { QuestionCircleIcon, SlackHashIcon } from '~/components/icons'
 import { load } from 'js-yaml'
 import {
   NButton,
@@ -13,8 +10,13 @@ import {
   NText,
 } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
-import { Icon } from '@vicons/utils'
 import type { PropType } from 'vue'
+
+import { Icon } from '@vicons/utils'
+
+import { HeaderActionButton } from '~/components/button/rounded-button'
+import { PlainEditor } from '~/components/editor/plain/plain'
+import { QuestionCircleIcon, SlackHashIcon } from '~/components/icons'
 
 export const ParseContentButton = defineComponent({
   props: {
@@ -68,7 +70,7 @@ export const ParseContentButton = defineComponent({
           icon={<SlackHashIcon />}
           variant="info"
           onClick={() => (parseContentDialogShow.value = true)}
-        ></HeaderActionButton>
+        />
 
         <NModal
           transformOrigin="center"
@@ -106,14 +108,14 @@ permalink: posts/visualize-list-scroll-restoration
 
 
 虚拟列表是为了提高页面性能而出现的。`}
-                              ></NCode>
+                              />
                             </div>
                           )
                         },
                         trigger() {
                           return (
                             <Icon>
-                              <QuestionCircleIcon></QuestionCircleIcon>
+                              <QuestionCircleIcon />
                             </Icon>
                           )
                         },

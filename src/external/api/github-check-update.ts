@@ -20,13 +20,16 @@ export const checkUpdateFromGitHub = async () => {
   }
 }
 
-export const getReleaseDetails = async (repo: 'mx-server' | 'mx-admin', tagName: string) => {
+export const getReleaseDetails = async (
+  repo: 'mx-server' | 'mx-admin',
+  tagName: string,
+) => {
   const { data } = await octokit.rest.repos.getReleaseByTag({
     owner: 'mx-space',
     repo,
     tag: `v${tagName}`,
   })
-  
+
   return {
     name: data.name,
     body: data.body,

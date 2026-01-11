@@ -1,18 +1,19 @@
 import { useRouter } from 'vue-router'
+import type { Action } from '@bytebase/vue-kbar'
+
 import {
+  createAction,
   KBarAnimator,
   KBarPortal,
   KBarPositioner,
   KBarProvider,
   KBarResults,
   KBarSearch,
-  createAction,
   useKBarMatches,
 } from '@bytebase/vue-kbar'
-import type { Action } from '@bytebase/vue-kbar'
 
 export const KBarWrapper = defineComponent({
-  setup(props, { slots }) {
+  setup(_props, { slots }) {
     const router = useRouter()
 
     const actions = ref([] as Action[])
@@ -82,7 +83,7 @@ const SearchResult = defineComponent({
         items={matches.value.results}
       >
         {{
-          item({ item, index, active }) {
+          item({ item, index: _index, active: _active }) {
             if (typeof item === 'string') {
               return <div class="p-2">{item}</div>
             } else {

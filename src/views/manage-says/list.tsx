@@ -1,21 +1,22 @@
+import { NButton, NPopconfirm, NSpace, useDialog, useMessage } from 'naive-ui'
+import { defineComponent, onMounted, reactive, watch } from 'vue'
+import { RouterLink, useRoute } from 'vue-router'
+import type { SayResponse } from '~/models/say'
+import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
+
 import { AddIcon } from '~/components/icons'
 import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
 import { Table } from '~/components/table'
 import { RelativeTime } from '~/components/time/relative-time'
 import { useDataTableFetch } from '~/hooks/use-table'
-import { NButton, NPopconfirm, NSpace, useDialog, useMessage } from 'naive-ui'
-import { defineComponent, onMounted, reactive, watch } from 'vue'
-import { RouterLink, useRoute } from 'vue-router'
 
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
-import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
-import type { SayResponse } from '~/models/say'
 
 const ManageSayListView = defineComponent({
   name: 'SayList',
-  setup(props, ctx) {
+  setup(_props, _ctx) {
     const { checkedRowKeys, data, pager, loading, fetchDataFn } =
       useDataTableFetch(
         (data, pager) =>
@@ -33,7 +34,7 @@ const ManageSayListView = defineComponent({
       )
 
     const message = useMessage()
-    const dialog = useDialog()
+    const _dialog = useDialog()
 
     const route = useRoute()
     const fetchData = fetchDataFn
@@ -124,7 +125,7 @@ const ManageSayListView = defineComponent({
             onUpdateCheckedRowKeys={(keys) => {
               checkedRowKeys.value = keys
             }}
-          ></Table>
+          />
         )
       },
     })

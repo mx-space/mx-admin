@@ -1,10 +1,10 @@
-import { API_URL, GATEWAY_URL } from '~/constants/env'
 import QProgress from 'qier-progress'
-import { removeToken, setToken } from '~/utils/auth'
-import { checkIsInit } from '~/utils/is-init'
 
+import { API_URL, GATEWAY_URL } from '~/constants/env'
 import { SESSION_WITH_LOGIN } from '~/constants/keys'
 import { getTokenIsUpstream } from '~/stores/user'
+import { removeToken, setToken } from '~/utils/auth'
+import { checkIsInit } from '~/utils/is-init'
 
 import { configs } from '../configs'
 import { RESTManager } from '../utils/rest'
@@ -22,7 +22,7 @@ router.beforeEach(async (to) => {
   }
 
   if (!API_URL || !GATEWAY_URL) {
-    console.log(
+    console.error(
       'missing api url or gateway url',
       API_URL,
       GATEWAY_URL,
@@ -39,7 +39,7 @@ router.beforeEach(async (to) => {
     //   return
     // }
     const isInit = await checkIsInit()
-    console.log('[isInit]', isInit)
+    // console.log('[isInit]', isInit)
     if (isInit) {
       return '/'
     }
@@ -81,7 +81,7 @@ router.beforeEach(async (to) => {
             })
           })
           .catch(() => {
-            console.log('登陆失败')
+            console.error('登陆失败')
             location.reload()
           })
       }

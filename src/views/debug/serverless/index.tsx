@@ -1,13 +1,14 @@
+import { NGi, useMessage } from 'naive-ui'
+
+import { useLocalStorage } from '@vueuse/core'
+
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { FunctionCodeEditor } from '~/components/function-editor'
 import { CheckCircleOutlinedIcon } from '~/components/icons'
 import { ContentLayout } from '~/layouts/content'
 import { TwoColGridLayout } from '~/layouts/two-col'
 import { defaultServerlessFunction } from '~/models/snippet'
-import { NGi, useMessage } from 'naive-ui'
 import { RESTManager } from '~/utils'
-
-import { useLocalStorage } from '@vueuse/core'
 
 export default defineComponent({
   setup() {
@@ -40,16 +41,18 @@ export default defineComponent({
               previewRef.value!.innerHTML = JSON.stringify(res, null, 2)
             })
         })
-      } catch {}
+      } catch {
+        // noop
+      }
     }
     return () => (
       <ContentLayout
         actionsElement={
           <>
             <HeaderActionButton
-              icon={<CheckCircleOutlinedIcon></CheckCircleOutlinedIcon>}
+              icon={<CheckCircleOutlinedIcon />}
               onClick={runTest}
-            ></HeaderActionButton>
+            />
           </>
         }
       >

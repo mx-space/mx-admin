@@ -52,7 +52,7 @@ export const useSaveConfirm = (
       return
     }
 
-    const confirm = new Promise<boolean>((r, j) => {
+    const confirm = new Promise<boolean>((r, _j) => {
       dialog.warning({
         title: message,
         negativeText: '嗯',

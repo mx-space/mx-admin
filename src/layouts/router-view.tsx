@@ -1,5 +1,5 @@
 import { NSpin } from 'naive-ui'
-import { Suspense, defineComponent } from 'vue'
+import { defineComponent, Suspense } from 'vue'
 import { RouterView } from 'vue-router'
 import type { VNode } from 'vue'
 import type { RouteLocation } from 'vue-router'

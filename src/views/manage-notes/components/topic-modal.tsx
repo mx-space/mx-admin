@@ -1,5 +1,3 @@
-import { UploadIcon } from '~/components/icons'
-import { UploadWrapper } from '~/components/upload'
 import {
   NButton,
   NCard,
@@ -9,10 +7,13 @@ import {
   NInput,
   NModal,
 } from 'naive-ui'
-import { RESTManager } from '~/utils/rest'
 import type { TopicModel } from '~/models/topic'
 import type { FormInst } from 'naive-ui'
 import type { PropType } from 'vue'
+
+import { UploadIcon } from '~/components/icons'
+import { UploadWrapper } from '~/components/upload'
+import { RESTManager } from '~/utils/rest'
 
 export const TopicEditModal = defineComponent({
   props: {
@@ -130,7 +131,7 @@ export const TopicEditModal = defineComponent({
                   onUpdateValue={(val) => {
                     topic.name = val
                   }}
-                ></NInput>
+                />
               </NFormItem>
 
               <NFormItem
@@ -147,7 +148,7 @@ export const TopicEditModal = defineComponent({
                   onUpdateValue={(val) => {
                     topic.slug = val
                   }}
-                ></NInput>
+                />
               </NFormItem>
 
               <NFormItem
@@ -165,7 +166,7 @@ export const TopicEditModal = defineComponent({
                   onUpdateValue={(val) => {
                     topic.introduce = val
                   }}
-                ></NInput>
+                />
               </NFormItem>
 
               <NFormItem label="图标">
@@ -222,7 +223,7 @@ export const TopicEditModal = defineComponent({
                   onUpdateValue={(val) => {
                     topic.description = val
                   }}
-                ></NInput>
+                />
               </NFormItem>
 
               <div class={'flex justify-end gap-2'}>

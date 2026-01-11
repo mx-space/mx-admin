@@ -10,10 +10,8 @@ export const Statistic = defineComponent({
         <Fragment>
           {props.value === 'N/A' ? (
             <NSpace vertical align="center" class="min-h-[4rem]">
-              <NSkeleton style={{ height: '.8rem', width: '5rem' }}></NSkeleton>
-              <NSkeleton
-                style={{ height: '1.8rem', width: '3rem' }}
-              ></NSkeleton>
+              <NSkeleton style={{ height: '.8rem', width: '5rem' }} />
+              <NSkeleton style={{ height: '1.8rem', width: '3rem' }} />
             </NSpace>
           ) : (
             <NStatistic
@@ -26,7 +24,7 @@ export const Statistic = defineComponent({
                     : Intl.NumberFormat('en-us').format(value)
               }
               tabularNums
-            ></NStatistic>
+            />
           )}
         </Fragment>
       )

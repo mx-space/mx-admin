@@ -150,10 +150,12 @@ const ManageComment = defineComponent(() => {
           id.map((i) => {
             return RESTManager.api
               .comments(i)
-              .delete({ errorHandler: (err) => void 0 })
+              .delete({ errorHandler: (_err) => void 0 })
           }),
         )
-      } catch {}
+      } catch {
+        // noop
+      }
     } else {
       await RESTManager.api.comments(id).delete()
     }
@@ -166,7 +168,7 @@ const ManageComment = defineComponent(() => {
       key: 'avatar',
       width: 60,
       render(row) {
-        return <NAvatar circle src={row.avatar as any}></NAvatar>
+        return <NAvatar circle src={row.avatar as any} />
       },
     },
     {
@@ -190,7 +192,11 @@ const ManageComment = defineComponent(() => {
                 {row.author}
               </a>
             </div>
-            <a href={(`mailto:${row.mail}` as any) || ''} target="_blank">
+            <a
+              href={(`mailto:${row.mail}` as any) || ''}
+              target="_blank"
+              rel="noreferrer"
+            >
               {row.mail as any}
             </a>
 
@@ -232,7 +238,7 @@ const ManageComment = defineComponent(() => {
               <span>{relativeTimeFromNow(row.created)}</span>
               <span>于</span>
               {row.ref.title && (
-                <a href={link} target="_blank">
+                <a href={link} target="_blank" rel="noreferrer">
                   {row.ref.title}
                 </a>
               )}
@@ -294,7 +300,7 @@ const ManageComment = defineComponent(() => {
                   quaternary
                   size="tiny"
                   type="info"
-                  onClick={(e) => {
+                  onClick={(_e) => {
                     replyComment.value = row
                     replyDialogShow.value = true
                   }}
@@ -353,7 +359,7 @@ const ManageComment = defineComponent(() => {
                 changeState(checkedRowKeys.value, CommentState.Read)
                 checkedRowKeys.value.length = 0
               }}
-            ></HeaderActionButton>
+            />
           )}
 
           {tabValue.value !== CommentType.Trash && (
@@ -366,7 +372,7 @@ const ManageComment = defineComponent(() => {
                 changeState(checkedRowKeys.value, CommentState.Junk)
                 checkedRowKeys.value.length = 0
               }}
-            ></HeaderActionButton>
+            />
           )}
           <HeaderActionButton
             name="删除"
@@ -385,7 +391,7 @@ const ManageComment = defineComponent(() => {
                 },
               })
             }}
-          ></HeaderActionButton>
+          />
         </Fragment>
       }
     >
@@ -401,15 +407,15 @@ const ManageComment = defineComponent(() => {
         }}
       >
         <NTabPane name={CommentType.Pending} tab="未读">
-          <div class=""></div>
+          <div class="" />
         </NTabPane>
 
         <NTabPane name={CommentType.Marked} tab="已读">
-          <div class=""></div>
+          <div class="" />
         </NTabPane>
 
         <NTabPane name={CommentType.Trash} tab="垃圾">
-          <div class=""></div>
+          <div class="" />
         </NTabPane>
       </NTabs>
 
@@ -470,7 +476,7 @@ const ManageComment = defineComponent(() => {
                   onInput={(e) => (replyText.value = e)}
                   autosize={{ minRows: 4, maxRows: 10 }}
                   onKeydown={handleKeyDown}
-                ></NInput>
+                />
               </NFormItemRow>
 
               <div class="flex justify-between">

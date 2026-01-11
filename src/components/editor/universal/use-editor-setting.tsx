@@ -1,5 +1,6 @@
-import { useStorageObject } from '~/hooks/use-storage'
 import { NFormItem, NH5, NInput, NInputNumber, NSwitch } from 'naive-ui'
+
+import { useStorageObject } from '~/hooks/use-storage'
 
 import { GeneralSettingDto } from './editor-config'
 import { ResetIconButton } from './reset-icon-button'

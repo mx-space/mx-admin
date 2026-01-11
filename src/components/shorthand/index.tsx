@@ -1,7 +1,8 @@
 import { NButton, NInput, NSpace, useDialog } from 'naive-ui'
-import { RESTManager } from '~/utils'
 import { ref } from 'vue'
 import type { RecentlyModel } from '~/models/recently'
+
+import { RESTManager } from '~/utils'
 
 export const useShorthand = () => {
   const modal = useDialog()

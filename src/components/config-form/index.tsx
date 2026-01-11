@@ -13,7 +13,6 @@ import {
   NSwitch,
   NText,
 } from 'naive-ui'
-import { isVNode } from 'vue'
 import type { ComputedRef, InjectionKey, PropType, Ref, VNode } from 'vue'
 
 import { useStoreRef } from '~/hooks/use-store-ref'
@@ -129,20 +128,30 @@ export const ConfigForm = defineComponent({
                   return null
               }
 
+              // If a slot is provided for this key, render only the slot (custom component)
+              const hasSlot = !!slots[key]
+
               return (
                 <NCollapseItem
                   title={schema.title}
                   data-schema={JSON.stringify(schema)}
                 >
                   <NForm {...formProps}>
-                    <SchemaSection
-                      dataKey={props.getKey(key)}
-                      formData={formData}
-                      schema={schema}
-                      property={key}
-                    />
-                    {props.extendConfigView?.[key]}
-                    {slots[key]?.()}
+                    {hasSlot ? (
+                      // Custom component from slot replaces auto-generated form
+                      slots[key]?.()
+                    ) : (
+                      // Auto-generated form from schema
+                      <>
+                        <SchemaSection
+                          dataKey={props.getKey(key)}
+                          formData={formData}
+                          schema={schema}
+                          property={key}
+                        />
+                        {props.extendConfigView?.[key]}
+                      </>
+                    )}
                   </NForm>
                 </NCollapseItem>
               )
@@ -187,7 +196,7 @@ const SchemaSection = defineComponent({
     const { definitions, getKey } = inject(JSONSchemaFormInjectKey, {} as any)
 
     return () => {
-      const { schema, formData, dataKey: key, property } = props
+      const { schema, formData, dataKey: key, property: _property } = props
 
       if (!schema) {
         return null
@@ -286,7 +295,7 @@ const ScheamFormItem = defineComponent({
           const { type: uiType } = options
 
           switch (uiType) {
-            case 'select':
+            case 'select': {
               const { values } = options as {
                 values: { label: string; value: string }[]
               }
@@ -298,8 +307,9 @@ const ScheamFormItem = defineComponent({
                   }}
                   options={values}
                   filterable
-                ></NSelect>
+                />
               )
+            }
             default:
               return (
                 <NInput
@@ -321,7 +331,7 @@ const ScheamFormItem = defineComponent({
                       : undefined
                   }
                   clearable
-                ></NInput>
+                />
               )
           }
         }
@@ -332,7 +342,7 @@ const ScheamFormItem = defineComponent({
               onUpdateValue={(val) => {
                 innerValue.value = val
               }}
-            ></NDynamicTags>
+            />
           )
         }
         case 'boolean': {
@@ -342,7 +352,7 @@ const ScheamFormItem = defineComponent({
               onUpdateValue={(val) => {
                 innerValue.value = val
               }}
-            ></NSwitch>
+            />
           )
         }
 

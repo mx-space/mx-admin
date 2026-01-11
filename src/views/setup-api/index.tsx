@@ -109,7 +109,7 @@ export default defineComponent({
                 onUpdateValue={(v) => {
                   apiRecord.persist = v
                 }}
-              ></NSwitch>
+              />
             </NFormItem>
 
             <div class="space-x-2 text-center">

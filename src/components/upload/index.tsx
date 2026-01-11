@@ -1,5 +1,6 @@
-import { NUpload, UploadOnFinish } from 'naive-ui'
-import { OnError } from 'naive-ui/es/upload/src/interface'
+import { NUpload } from 'naive-ui'
+import type { UploadOnFinish } from 'naive-ui'
+import type { OnError } from 'naive-ui/es/upload/src/interface'
 import type { PropType } from 'vue'
 
 import { getToken, RESTManager } from '~/utils'
@@ -38,7 +39,7 @@ export const UploadWrapper = defineComponent({
           }
           onFinish={onFinish}
           {...Object.fromEntries(
-            Object.entries(rest).filter(([k, v]) => typeof v !== 'undefined'),
+            Object.entries(rest).filter(([_k, v]) => typeof v !== 'undefined'),
           )}
         >
           {slots.default?.()}

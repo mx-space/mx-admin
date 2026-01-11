@@ -8,7 +8,7 @@ export const getRepoDetail = (owner: string, repo: string) => {
 export const getRepoReadme = (owner: string, repo: string) => {
   return fetch(`${endpoint}repos/${owner}/${repo}/readme`)
     .then((res) => res.json() as Promise<IGithubReadme>)
-    .catch((error) => {
+    .catch((_error) => {
       return null
     })
     .then((res) => {

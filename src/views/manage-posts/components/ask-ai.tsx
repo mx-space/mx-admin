@@ -106,7 +106,7 @@ CONCISE SUMMARY:`,
             onUpdateValue={(val) => {
               prompt.value = val
             }}
-          ></NInput>
+          />
         </NFormItem>
 
         <NFormItem label="OpenAI Token">
@@ -126,7 +126,7 @@ CONCISE SUMMARY:`,
                     onUpdateValue={(val) => {
                       token.value = val
                     }}
-                  ></NInput>
+                  />
                 )
               },
               default() {
@@ -151,7 +151,7 @@ CONCISE SUMMARY:`,
                     onUpdateValue={(val) => {
                       base_url.value = val
                     }}
-                  ></NInput>
+                  />
                 )
               },
               default() {
@@ -182,7 +182,7 @@ CONCISE SUMMARY:`,
                         isOtherModel.value = val === ''
                         model.value = val
                       }}
-                    ></NSelect>
+                    />
                     <NInput
                       value={model.value}
                       disabled={!isOtherModel.value}
@@ -191,7 +191,7 @@ CONCISE SUMMARY:`,
                       onUpdateValue={(val) => {
                         model.value = val
                       }}
-                    ></NInput>
+                    />
                   </NSpace>
                 )
               },

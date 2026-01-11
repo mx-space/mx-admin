@@ -27,7 +27,7 @@ import { ContentLayout } from '~/layouts/content'
 import { CategoryStore } from '~/stores/category'
 import { RESTManager } from '~/utils/rest'
 
-export const CategoryView = defineComponent((props) => {
+export const CategoryView = defineComponent((_props) => {
   const categoryStore = useStoreRef(CategoryStore)
 
   const tags = reactive<TagModel[]>([])
@@ -77,7 +77,7 @@ export const CategoryView = defineComponent((props) => {
               showDialog.value = true
               editCategoryState.value = resetState()
             }}
-          ></HeaderActionButton>
+          />
         </>
       }
     >
@@ -142,7 +142,7 @@ export const CategoryView = defineComponent((props) => {
                     size="tiny"
                     quaternary
                     type="primary"
-                    onClick={(e) => {
+                    onClick={(_e) => {
                       editCategoryState.value = {
                         name: row.name,
                         slug: row.slug,
@@ -308,7 +308,7 @@ const EditCategoryDialog = defineComponent<{
                     state.name = e
                   }}
                   value={state.name}
-                ></NInput>
+                />
               </NFormItemRow>
 
               <NFormItemRow path="slug" label="路径">
@@ -318,7 +318,7 @@ const EditCategoryDialog = defineComponent<{
                     state.slug = e
                   }}
                   value={state.slug}
-                ></NInput>
+                />
               </NFormItemRow>
 
               <div class="text-center">
@@ -338,7 +338,6 @@ const EditCategoryDialog = defineComponent<{
     </NModal>
   )
 })
-
 ;(EditCategoryDialog as any).props = [
   'initialState',
   'onSubmit',

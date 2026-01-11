@@ -134,6 +134,7 @@ const NoteWriteView = defineComponent(() => {
   })
 
   const parsePayloadIntoReactiveData = (payload: NoteModel) =>
+    // biome-ignore lint/correctness/useHookAtTopLevel: <explanation>
     useParsePayloadIntoData(data)(payload)
   const data = reactive<NoteReactiveType>(resetReactive())
   const nid = ref<number>()
@@ -274,7 +275,7 @@ const NoteWriteView = defineComponent(() => {
           <HeaderActionButton
             icon={<TelegramPlaneIcon />}
             onClick={handleSubmit}
-          ></HeaderActionButton>
+          />
         </>
       }
       footerButtonElement={
@@ -301,7 +302,7 @@ const NoteWriteView = defineComponent(() => {
           onChange={(e) => {
             data.title = e
           }}
-        ></MaterialInput>
+        />
 
         {data.text.length > 0 && (
           <div class={'absolute bottom-0 right-0 top-0 z-10 flex items-center'}>
@@ -344,7 +345,7 @@ const NoteWriteView = defineComponent(() => {
             tag
             options={MOOD_SET.map((i) => ({ label: i, value: i }))}
             onUpdateValue={(e) => void (data.mood = e)}
-          ></NSelect>
+          />
         </NFormItem>
         <NFormItem label="天气" required>
           <NSelect
@@ -354,7 +355,7 @@ const NoteWriteView = defineComponent(() => {
             tag
             options={WEATHER_SET.map((i) => ({ label: i, value: i }))}
             onUpdateValue={(e) => void (data.weather = e)}
-          ></NSelect>
+          />
         </NFormItem>
 
         <NFormItem label="专栏">
@@ -371,7 +372,7 @@ const NoteWriteView = defineComponent(() => {
             onFocus={() => {
               fetchTopic()
             }}
-          ></NSelect>
+          />
         </NFormItem>
 
         <NFormItem label="获取当前地址" labelPlacement="left">
@@ -442,7 +443,7 @@ const NoteWriteView = defineComponent(() => {
                 autocomplete: 'new-password',
               }}
               onInput={(e) => void (data.password = e)}
-            ></NInput>
+            />
           </NFormItem>
         )}
         <NFormItem label="公开时间" labelAlign="right" labelPlacement="left">
@@ -516,7 +517,7 @@ const NoteWriteView = defineComponent(() => {
           <NSwitch
             value={data.bookmark}
             onUpdateValue={(e) => void (data.bookmark = e)}
-          ></NSwitch>
+          />
         </NFormItem>
         <NFormItem label="发布状态" labelAlign="right" labelPlacement="left">
           <NSwitch

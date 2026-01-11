@@ -2,13 +2,14 @@ import { add } from 'date-fns'
 import { NButton, NDataTable, NDatePicker, NSpace } from 'naive-ui'
 import useSWRV from 'swrv'
 import { defineComponent, ref } from 'vue'
-import { RESTManager } from '~/utils'
 import type {
   NoteModel,
   PageModel,
   PostModel,
   RecentlyModel,
 } from '@mx-space/api-client'
+
+import { RESTManager } from '~/utils'
 
 export const ReadingRank = defineComponent({
   setup() {

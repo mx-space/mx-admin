@@ -16,10 +16,12 @@ const octokit = new Octokit(
     : {},
 )
 
-octokit.hook.error('request', async (error, options) => {
+octokit.hook.error('request', async (error, _options) => {
   try {
     message.error(error.message)
-  } catch {}
+  } catch {
+    // noop
+  }
   throw error
 })
 

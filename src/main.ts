@@ -13,7 +13,7 @@ import App from './App'
 import './index.css'
 
 import { router } from './router'
-import { attachTokenFromQuery, RESTManager } from './utils'
+import { attachTokenFromQuery } from './utils'
 
 attachTokenFromQuery()
 

@@ -34,8 +34,8 @@ export const EJSRender = defineComponent({
     )
 
     return () => (
-      <div class="h-full overflow-auto  bg-white">
-        <div innerHTML={html.value}></div>
+      <div class="h-full overflow-auto bg-white">
+        <div innerHTML={html.value} />
       </div>
     )
   },

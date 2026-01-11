@@ -1,9 +1,10 @@
-import { useStoreRef } from '~/hooks/use-store-ref'
 import { NInput, NSelect, useMessage } from 'naive-ui'
-import { CategoryStore } from '~/stores/category'
 import { defineComponent, ref, watch } from 'vue'
 import type { SelectMixedOption } from 'naive-ui/lib/select/src/interface'
 import type { PropType } from 'vue'
+
+import { useStoreRef } from '~/hooks/use-store-ref'
+import { CategoryStore } from '~/stores/category'
 
 export const EditColumn = defineComponent({
   props: {
@@ -63,7 +64,7 @@ export const EditColumn = defineComponent({
       props.onSubmit(value.value)
       isEdit.value = false
     }
-    const categoryStore = useStoreRef(CategoryStore)
+    const _categoryStore = useStoreRef(CategoryStore)
     return () => (
       <>
         {isEdit.value ? (
@@ -90,7 +91,7 @@ export const EditColumn = defineComponent({
                       onInput={(e) => {
                         value.value = e
                       }}
-                    ></NInput>
+                    />
                   )
                 }
                 case 'select': {
@@ -107,7 +108,7 @@ export const EditColumn = defineComponent({
                         isEdit.value = false
                       }}
                       options={props.options}
-                    ></NSelect>
+                    />
                   )
                 }
               }

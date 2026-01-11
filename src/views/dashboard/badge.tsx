@@ -1,7 +1,7 @@
 import { NBadge } from 'naive-ui'
 import { defineComponent } from 'vue'
 
-const Badge = defineComponent({
+const _Badge = defineComponent({
   props: { processing: Boolean, value: [String, Number] },
   setup(props, ctx) {
     return () => (

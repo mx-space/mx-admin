@@ -1,8 +1,6 @@
 import { defineConfig } from 'windicss/helpers'
 import lineClamp from 'windicss/plugin/line-clamp'
 
-import { ThemeColorConfig } from './theme.config'
-
 export default defineConfig({
   content: ['./src/**/*.html', './src/**/*.vue', './src/**/*.tsx'],
   darkMode: 'class',

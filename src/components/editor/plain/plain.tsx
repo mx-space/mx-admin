@@ -1,10 +1,11 @@
-import { useSaveConfirm } from '~/hooks/use-save-confirm'
 import { NInput } from 'naive-ui'
 import { defineComponent, ref, toRaw, watch } from 'vue'
+import type { HTMLAttributes, PropType } from 'vue'
+
+import { useSaveConfirm } from '~/hooks/use-save-confirm'
 
 import { editorBaseProps } from '../universal/props'
 import { useEditorConfig } from '../universal/use-editor-setting'
-import type { HTMLAttributes, PropType } from 'vue'
 
 export const PlainEditor = defineComponent({
   props: {
@@ -43,7 +44,7 @@ export const PlainEditor = defineComponent({
             props.onChange(newValue)
           })
           .catch(() => {
-            console.log('not support wasm')
+            // noop
           })
       }
     }
@@ -56,7 +57,7 @@ export const PlainEditor = defineComponent({
           onInput={(e) => void props.onChange(e)}
           value={props.text}
           class="h-full"
-        ></NInput>
+        />
       </div>
     )
   },

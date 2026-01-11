@@ -2,6 +2,7 @@ import tinycolor from 'tinycolor2'
 
 import { ThemeColorConfig } from '~/../theme.config'
 
+// biome-ignore lint/correctness/useHookAtTopLevel: <explanation>
 export const colorRef = useStorage('mx-admin-color', ThemeColorConfig)
 
 interface Colors {

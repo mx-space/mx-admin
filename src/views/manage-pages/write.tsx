@@ -19,7 +19,6 @@ import {
   PreviewSplitter,
 } from '~/components/special-button/preview'
 import { WEB_URL } from '~/constants/env'
-import { EmitKeyMap } from '~/constants/keys'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
 import { ContentLayout } from '~/layouts/content'
 import { RouteName } from '~/router/name'
@@ -48,6 +47,7 @@ const PageWriteView = defineComponent(() => {
   })
 
   const parsePayloadIntoReactiveData = (payload: PageModel) =>
+    // biome-ignore lint/correctness/useHookAtTopLevel: <explanation>
     useParsePayloadIntoData(data)(payload)
   const data = reactive<PageReactiveType>(resetReactive())
   const id = computed(() => route.query.id)
@@ -130,7 +130,7 @@ const PageWriteView = defineComponent(() => {
           <HeaderActionButton
             icon={<TelegramPlaneIcon />}
             onClick={handleSubmit}
-          ></HeaderActionButton>
+          />
         </>
       }
       footerButtonElement={
@@ -154,20 +154,20 @@ const PageWriteView = defineComponent(() => {
         onChange={(e) => {
           data.title = e
         }}
-      ></MaterialInput>
+      />
 
       <div class={'pt-3 text-gray-700 dark:text-gray-300'}>
         <UnderlineInput
           value={data.subtitle}
           onChange={(e) => void (data.subtitle = e)}
-        ></UnderlineInput>
+        />
       </div>
       <div class={'py-3 text-gray-500'}>
         <label>{`${WEB_URL}/`}</label>
         <UnderlineInput
           value={data.slug}
           onChange={(e) => void (data.slug = e)}
-        ></UnderlineInput>
+        />
       </div>
       <PreviewSplitter>
         <Editor
@@ -195,7 +195,7 @@ const PageWriteView = defineComponent(() => {
             placeholder=""
             value={data.order}
             onUpdateValue={(e) => void (data.order = e ?? 0)}
-          ></NInputNumber>
+          />
         </NFormItem>
       </TextBaseDrawer>
 

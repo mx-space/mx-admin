@@ -1,8 +1,5 @@
 {
-  "cSpell.words": [
-    "hitokoto",
-    "vditor"
-  ],
+  "cSpell.words": ["hitokoto", "vditor"],
   // Note that `javascript.preferences.autoImportFileExcludePatterns` can be specified for JavaScript too.
   "typescript.preferences.autoImportFileExcludePatterns": [
     "**/node_modules/@types/node",

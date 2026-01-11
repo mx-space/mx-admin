@@ -99,7 +99,7 @@ export const KVEditor = defineComponent({
                     onUpdateValue={(key) => {
                       rowProps.value.key = key
                     }}
-                  ></NInput>
+                  />
                 ) : (
                   <NSelect
                     class="mr-4"
@@ -114,14 +114,14 @@ export const KVEditor = defineComponent({
                       ...option,
                       disabled: keySet.value.has(option.value as string),
                     }))}
-                  ></NSelect>
+                  />
                 )}
                 <NInput
                   value={rowProps.value.value.toString()}
                   onUpdateValue={(id) => {
                     rowProps.value.value = id
                   }}
-                ></NInput>
+                />
               </div>
             )
           },

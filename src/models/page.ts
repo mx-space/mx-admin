@@ -1,9 +1,9 @@
 import type { Pager } from './base'
 
 export enum EnumPageType {
-  'md' = 'md',
-  'html' = 'html',
-  'frame' = 'frame',
+  md = 'md',
+  html = 'html',
+  frame = 'frame',
 }
 export interface PageModel {
   created: string

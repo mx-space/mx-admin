@@ -12,7 +12,6 @@ export function showConfetti() {
     gravity: 1.5,
     colors: ['#6AD991', '#F6C549', '#E65040', '#5B89F7', '#9688F2'],
   }
-
   ;(function frame() {
     confetti({
       ...config,

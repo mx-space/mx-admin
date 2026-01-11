@@ -34,7 +34,7 @@ class RESTManagerStatic {
 
         if (error.response) {
           if (import.meta.env.DEV) {
-            console.log(error.response)
+            console.debug(error.response)
             console.dir(error.response)
           }
           try {
@@ -49,7 +49,7 @@ class RESTManagerStatic {
             }
           } catch (error_) {
             // Message.error('出错了，请查看控制台')
-            console.log(error_)
+            console.error(error_)
           }
 
           if (error?.response?.status === 401) {
@@ -74,7 +74,9 @@ class RESTManagerStatic {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
-const noop = () => {}
+const noop = () => {
+  // noop
+}
 const methods = ['get', 'post', 'delete', 'patch', 'put']
 const reflectors = [
   'toString',
@@ -94,7 +96,7 @@ declare module 'umi-request' {
 function buildRoute(manager: RESTManagerStatic): IRequestHandler {
   const route = ['']
   const handler: any = {
-    get(target: any, name: Method) {
+    get(_target: any, name: Method) {
       if (reflectors.includes(name)) return () => route.join('/')
       if (methods.includes(name)) {
         // @ts-ignore
@@ -131,7 +133,7 @@ function buildRoute(manager: RESTManagerStatic): IRequestHandler {
       return new Proxy(noop, handler)
     },
     // @ts-ignore
-    apply(target: any, _, args) {
+    apply(_target: any, _, args) {
       route.push(...args.filter((x: string) => x != null)) // eslint-disable-line eqeqeq
       return new Proxy(noop, handler)
     },

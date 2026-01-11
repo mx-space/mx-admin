@@ -175,12 +175,12 @@ export default defineComponent({
               icon={<StatusIcon />}
               name="连接状态"
               onClick={openConnectionStatus}
-            ></HeaderActionButton>
+            />
             <HeaderActionButton
               icon={<RefreshIcon />}
               name="重新连接"
               onClick={reconnection}
-            ></HeaderActionButton>
+            />
           </>
         }
       >
@@ -266,7 +266,7 @@ const ConnectionStatus = defineComponent(() => {
                   trigger="hover"
                   ip={item.ip}
                   triggerEl={<NButton quaternary>{item.ip}</NButton>}
-                ></IpInfoPopover>
+                />
               </div>
               <div>
                 {item.endTime

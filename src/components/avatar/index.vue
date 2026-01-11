@@ -22,7 +22,7 @@ export default defineComponent({
       const $$ = new Image()
       $$.src = props.src
 
-      $$.addEventListener('load', (e) => {
+      $$.addEventListener('load', (_e) => {
         loaded.value = true
       })
     }

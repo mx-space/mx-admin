@@ -379,7 +379,7 @@ export const ManagePostListView = defineComponent({
               sortProps.sortBy = props.sortBy
               sortProps.sortOrder = props.sortOrder
             }}
-          ></Table>
+          />
         )
       },
     })

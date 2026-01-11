@@ -11,7 +11,6 @@ import {
   NFormItem,
   NInput,
   NInputNumber,
-  NSwitch,
 } from 'naive-ui'
 import type { Image as ImageModel } from '~/models/base'
 import type { PropType } from 'vue'

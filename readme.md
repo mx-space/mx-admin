@@ -4,7 +4,6 @@
 
 嘿！现在可以使用共享面板了，立即前往：<https://22333322.xyz/#/setup-api>
 
-
 ```
 git clone --single-branch -b master https://github.com/mx-space/mx-admin.git
 ```
@@ -25,7 +24,6 @@ pnpm build
 ![CleanShot 2024-05-04 at 11  20 56@2x](https://github.com/mx-space/mx-admin/assets/41265413/5042c5ef-388c-4fa8-bed4-b7758e285875)
 ![CleanShot 2024-05-04 at 11  22 13@2x](https://github.com/mx-space/mx-admin/assets/41265413/d1f9d840-5458-4950-997f-638b51fcbeb7)
 
-
 ## Version
 
 - v4.0 for Mix Space Server v5.0
@@ -33,4 +31,3 @@ pnpm build
 ## License
 
 MIT. © 2021-present Mix Space & Innei
- 

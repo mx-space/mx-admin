@@ -8,7 +8,7 @@ export default defineComponent({
     onMounted(() => {
       const $$ = new Image()
       $$.src = bgUrl
-      $$.addEventListener('load', (e) => {
+      $$.addEventListener('load', (_e) => {
         loaded.value = true
       })
     })

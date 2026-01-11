@@ -21,10 +21,9 @@ export const Avatar = defineComponent<{ avatar: string; name: string }>(
               src={props.avatar as string}
               round
               onError={(e) => {
-                console.log(FallbackAvatar)
                 ;(e.target as HTMLImageElement).src = FallbackAvatar
               }}
-            ></NAvatar>
+            />
           ) : (
             <NAvatar round>{props.name.charAt(0)}</NAvatar>
           )

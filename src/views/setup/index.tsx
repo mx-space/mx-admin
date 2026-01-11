@@ -12,6 +12,8 @@ import {
   useMessage,
 } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
+import type { PropType } from 'vue'
+import type { UserModel } from '../../models/user'
 
 import { showConfetti } from '~/utils/confetti'
 import { checkIsInit } from '~/utils/is-init'
@@ -19,8 +21,6 @@ import { checkIsInit } from '~/utils/is-init'
 import { getToken, removeToken } from '../../utils'
 import { RESTManager } from '../../utils/rest'
 import styles from './index.module.css'
-import type { UserModel } from '../../models/user'
-import type { PropType } from 'vue'
 
 const useDefaultConfigs = () => inject<any>('configs')
 export default defineComponent({
@@ -59,24 +59,24 @@ export default defineComponent({
               status={step.value > 0 ? 'finish' : 'process'}
               title="(๑•̀ㅂ•́)و✧"
               description="让我们开始吧"
-            ></NStep>
+            />
 
             <NStep
               status={getStatus(1)}
               title="站点设置"
               description="先设置一下站点相关配置吧"
-            ></NStep>
+            />
 
             <NStep
               status={getStatus(2)}
               title="主人信息"
               description="请告诉你的名字"
-            ></NStep>
+            />
             <NStep
               status={getStatus(3)}
               title="(๑•̀ㅂ•́)و✧"
               description="一切就绪了"
-            ></NStep>
+            />
           </NSteps>
 
           <div class="mt-[3.5rem]">
@@ -195,48 +195,42 @@ const Step1 = defineComponent({
           <NInput
             value={title.value}
             onUpdateValue={(e) => void (title.value = e)}
-          ></NInput>
+          />
         </NFormItem>
 
         <NFormItem label="站点描述" required>
           <NInput
             value={description.value}
             onUpdateValue={(e) => void (description.value = e)}
-          ></NInput>
+          />
         </NFormItem>
         <NFormItem label="关键字">
           <NDynamicTags
             value={keywords.value}
             onUpdateValue={(e) => void (keywords.value = e)}
-          ></NDynamicTags>
+          />
         </NFormItem>
 
         <NFormItem label="前端地址">
-          <NInput
-            value={url.webUrl}
-            onInput={(e) => void (url.webUrl = e)}
-          ></NInput>
+          <NInput value={url.webUrl} onInput={(e) => void (url.webUrl = e)} />
         </NFormItem>
 
         <NFormItem label="API 地址">
           <NInput
             value={url.serverUrl}
             onInput={(e) => void (url.serverUrl = e)}
-          ></NInput>
+          />
         </NFormItem>
 
         <NFormItem label="后台地址">
           <NInput
             value={url.adminUrl}
             onInput={(e) => void (url.adminUrl = e)}
-          ></NInput>
+          />
         </NFormItem>
 
         <NFormItem label="Gateway 地址">
-          <NInput
-            value={url.wsUrl}
-            onInput={(e) => void (url.wsUrl = e)}
-          ></NInput>
+          <NInput value={url.wsUrl} onInput={(e) => void (url.wsUrl = e)} />
         </NFormItem>
         <NSpace justify="end">
           <NButton

@@ -20,17 +20,14 @@ import {
   NSwitch,
   NText,
 } from 'naive-ui'
-import useSWRV from 'swrv'
 import { defineComponent, onBeforeMount, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import type { AuthnModel } from '~/models/authn'
 import type { TokenModel } from '~/models/token'
-import type { DialogReactive } from 'naive-ui'
 
 import { Icon } from '@vicons/utils'
 
 import { If } from '~/components/directives/if'
-import { CheckIcon, PlusIcon as Plus } from '~/components/icons'
+import { PlusIcon as Plus } from '~/components/icons'
 import { IpInfoPopover } from '~/components/ip-info'
 import { RelativeTime } from '~/components/time/relative-time'
 import { useStoreRef } from '~/hooks/use-store-ref'
@@ -38,7 +35,6 @@ import { RouteName } from '~/router/name'
 import { UIStore } from '~/stores/ui'
 import { parseDate, removeToken, RESTManager } from '~/utils'
 import { authClient } from '~/utils/authjs/auth'
-import { AuthnUtils } from '~/utils/authn'
 
 import { autosizeableProps } from './system'
 
@@ -50,10 +46,10 @@ type Session = {
   current?: boolean
 }
 export const TabSecurity = defineComponent(() => {
-  const session = ref<Session[]>([])
+  const sessions = ref<Session[]>([])
   const fetchSession = async () => {
     const res = await RESTManager.api.user.session.get<{ data: Session[] }>({})
-    session.value = [...res.data]
+    sessions.value = res.data || []
   }
   onMounted(() => {
     fetchSession()
@@ -67,7 +63,7 @@ export const TabSecurity = defineComponent(() => {
       window.location.reload()
     } else {
       await RESTManager.api.user.session(id).delete<{}>({})
-      session.value = session.value.filter((item) => item.id !== id)
+      sessions.value = sessions.value.filter((item) => item.id !== id)
     }
   }
   const handleKickAll = async () => {
@@ -89,7 +85,7 @@ export const TabSecurity = defineComponent(() => {
                   quaternary
                   type="error"
                   disabled={
-                    session.value.length == 1 && session.value[0].current
+                    sessions.value.length == 1 && sessions.value[0].current
                   }
                 >
                   踢掉全部
@@ -104,7 +100,7 @@ export const TabSecurity = defineComponent(() => {
       </NH3>
 
       <NList bordered>
-        {session.value.map(({ id, ua, ip, date, current }) => (
+        {sessions.value.map(({ id, ua, ip, date, current }) => (
           <NListItem key={id}>
             {{
               prefix() {
@@ -153,7 +149,7 @@ export const TabSecurity = defineComponent(() => {
                               {ip}
                             </NButton>
                           }
-                        ></IpInfoPopover>
+                        />
                       </NP>
                     </If>
 
@@ -169,7 +165,7 @@ export const TabSecurity = defineComponent(() => {
         ))}
       </NList>
 
-      <div class="pt-4"></div>
+      <div class="pt-4" />
       <NCollapse defaultExpandedNames={['']} displayDirective="show">
         <NCollapseItem name="reset" title="修改密码">
           <ResetPass />
@@ -205,7 +201,7 @@ const ApiToken = defineComponent(() => {
   const tokenDisplayDialogShow = ref(false)
   const createdTokenInfo = ref<TokenModel | null>(null)
   const visibleTokens = ref<Set<string>>(new Set())
-  
+
   const newToken = async () => {
     try {
       const payload = {
@@ -232,18 +228,18 @@ const ApiToken = defineComponent(() => {
       for (const key in n) {
         dataModel[key] = n[key]
       }
-      
+
       // 显示token详情弹窗
       createdTokenInfo.value = response
       tokenDisplayDialogShow.value = true
-      
+
       await fetchToken()
       // Backend bug.
       const index = tokens.value.findIndex((i) => i.name === payload.name)
       if (index !== -1) {
         tokens.value[index].token = response.token
       }
-    } catch (error) {
+    } catch (_error) {
       alert('创建 Token 失败，请重试')
     }
   }
@@ -265,7 +261,9 @@ const ApiToken = defineComponent(() => {
     } else {
       // 显示token，需要从后端获取完整信息
       try {
-        const response = await RESTManager.api.auth.token.get<TokenModel>({ params: { id: tokenId } })
+        const response = await RESTManager.api.auth.token.get<TokenModel>({
+          params: { id: tokenId },
+        })
         // 更新tokens数组中的token信息
         const index = tokens.value.findIndex((i) => i.id === tokenId)
         if (index !== -1) {
@@ -283,7 +281,7 @@ const ApiToken = defineComponent(() => {
     try {
       await navigator.clipboard.writeText(token)
       message.success('Token 已复制到剪贴板')
-    } catch (error) {
+    } catch (_error) {
       // Safari 兼容性处理：使用传统的复制方法
       const textArea = document.createElement('textarea')
       textArea.value = token
@@ -317,14 +315,14 @@ const ApiToken = defineComponent(() => {
               <NInput
                 value={dataModel.name}
                 onInput={(e) => void (dataModel.name = e)}
-              ></NInput>
+              />
             </NFormItem>
 
             <NFormItem label="是否过期">
               <NSwitch
                 value={dataModel.expired}
                 onUpdateValue={(e) => void (dataModel.expired = e)}
-              ></NSwitch>
+              />
             </NFormItem>
 
             <NFormItem label="过期时间">
@@ -336,7 +334,7 @@ const ApiToken = defineComponent(() => {
                 onUpdateValue={(e) =>
                   void (dataModel.expiredTime = new Date(e))
                 }
-              ></NDatePicker>
+              />
             </NFormItem>
           </NForm>
           <NSpace>
@@ -346,9 +344,9 @@ const ApiToken = defineComponent(() => {
             >
               取消
             </NButton>
-            <NButton 
-              round 
-              type="primary" 
+            <NButton
+              round
+              type="primary"
               disabled={!dataModel.name.trim()}
               onClick={newToken}
             >
@@ -364,37 +362,46 @@ const ApiToken = defineComponent(() => {
         show={tokenDisplayDialogShow.value}
         onUpdateShow={(e) => void (tokenDisplayDialogShow.value = e)}
       >
-        <NCard 
-          bordered={false} 
-          title="Token 创建成功" 
+        <NCard
+          bordered={false}
+          title="Token 创建成功"
           class="w-[600px] max-w-full"
           closable
           onClose={() => void (tokenDisplayDialogShow.value = false)}
         >
           <div class="space-y-4">
             <div>
-              <NText depth={3} class="text-sm">Token 创建成功，请妥善保存以下信息：</NText>
+              <NText depth={3} class="text-sm">
+                Token 创建成功，请妥善保存以下信息：
+              </NText>
             </div>
-            
+
             <div class="space-y-3">
               <div>
                 <NText strong>Token 名称：</NText>
                 <NText>{createdTokenInfo.value?.name}</NText>
               </div>
-              
+
               <div>
                 <NText strong>Token：</NText>
-                <div class="mt-2 p-3 bg-gray-50 dark:bg-gray-800 rounded border flex items-center gap-2">
-                  <NText code class="flex-1 break-all text-gray-900 dark:text-gray-100">{createdTokenInfo.value?.token}</NText>
-                  <NButton 
-                    size="small" 
-                    type="primary" 
+                <div class="mt-2 flex items-center gap-2 rounded border bg-gray-50 p-3 dark:bg-gray-800">
+                  <NText
+                    code
+                    class="flex-1 break-all text-gray-900 dark:text-gray-100"
+                  >
+                    {createdTokenInfo.value?.token}
+                  </NText>
+                  <NButton
+                    size="small"
+                    type="primary"
                     onClick={async () => {
                       if (createdTokenInfo.value?.token) {
                         try {
-                          await navigator.clipboard.writeText(createdTokenInfo.value.token)
+                          await navigator.clipboard.writeText(
+                            createdTokenInfo.value.token,
+                          )
                           message.success('Token 已复制到剪贴板')
-                        } catch (error) {
+                        } catch (_error) {
                           // Safari 兼容性处理：使用传统的复制方法
                           const textArea = document.createElement('textarea')
                           textArea.value = createdTokenInfo.value.token
@@ -419,25 +426,32 @@ const ApiToken = defineComponent(() => {
                   </NButton>
                 </div>
               </div>
-              
+
               {createdTokenInfo.value?.expired && (
                 <div>
                   <NText strong>过期时间：</NText>
-                  <NText>{createdTokenInfo.value.expired ? parseDate(createdTokenInfo.value.expired, 'yyyy 年 M 月 d 日 HH:mm:ss') : '永不过期'}</NText>
+                  <NText>
+                    {createdTokenInfo.value.expired
+                      ? parseDate(
+                          createdTokenInfo.value.expired,
+                          'yyyy 年 M 月 d 日 HH:mm:ss',
+                        )
+                      : '永不过期'}
+                  </NText>
                 </div>
               )}
             </div>
-            
+
             <div class="pt-2">
               <NText depth={3} class="text-sm">
                 💡 建议将此 Token 保存在安全的地方，避免泄露给他人。
               </NText>
             </div>
           </div>
-          
-          <div class="flex justify-end mt-6">
-            <NButton 
-              type="primary" 
+
+          <div class="mt-6 flex justify-end">
+            <NButton
+              type="primary"
               onClick={() => void (tokenDisplayDialogShow.value = false)}
             >
               确定
@@ -475,7 +489,7 @@ const ApiToken = defineComponent(() => {
             render(row) {
               const { token, id } = row
               const isVisible = visibleTokens.value.has(id)
-              
+
               if (isVisible && token && token !== '*'.repeat(40)) {
                 // 显示真实token，可点击复制
                 return (
@@ -483,7 +497,7 @@ const ApiToken = defineComponent(() => {
                     text
                     type="primary"
                     onClick={() => copyToken(token)}
-                    class="font-mono text-left max-w-[200px] truncate"
+                    class="max-w-[200px] truncate text-left font-mono"
                   >
                     {token}
                   </NButton>
@@ -514,11 +528,11 @@ const ApiToken = defineComponent(() => {
             render(row) {
               const { id, name } = row
               const isVisible = visibleTokens.value.has(id)
-              
+
               return (
                 <NSpace>
-                  <NButton 
-                    text 
+                  <NButton
+                    text
                     type="primary"
                     onClick={() => toggleTokenVisibility(row)}
                   >
@@ -548,7 +562,7 @@ const ApiToken = defineComponent(() => {
             },
           },
         ]}
-      ></NDataTable>
+      />
     </NLayoutContent>
   )
 })
@@ -575,14 +589,12 @@ const ResetPass = defineComponent(() => {
         removeToken()
         router.push({ name: RouteName.Login })
       } else {
-        console.log(err)
+        // noop
       }
     })
   }
 
-  function validatePasswordSame(rule, value) {
-    console.log(rule)
-
+  function validatePasswordSame(_rule, value) {
     return value === resetPassword.password
   }
 

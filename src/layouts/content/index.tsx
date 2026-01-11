@@ -24,11 +24,15 @@ interface Injectable {
 }
 export const useLayout = () =>
   inject<Injectable>(ProvideKey, {
-    addFloatButton(el: VNode) {
+    addFloatButton(_el: VNode) {
       return Symbol()
     },
-    removeFloatButton(name: symbol) {},
-    setHeaderButtons(el: VNode | null) {},
+    removeFloatButton(_name: symbol) {
+      // noop
+    },
+    setHeaderButtons(_el: VNode | null) {
+      // noop
+    },
   })
 export const ContentLayout = defineComponent({
   props: {

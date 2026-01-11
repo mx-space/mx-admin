@@ -39,7 +39,7 @@ export const JSONHighlight = defineComponent({
             color: '#bbb',
           }}
           ref={$ref}
-        ></pre>
+        />
       )
     }
   },

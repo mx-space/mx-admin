@@ -123,7 +123,7 @@ export const Tab2ForEdit = defineComponent({
 
     watch(
       () => [data.value.type, data.value.schema],
-      ([type, schema]) => {
+      ([type, _schema]) => {
         if (type === SnippetType.JSON) {
           if (!data.value.schema) {
             import('monaco-editor').then((monaco) => {
@@ -246,7 +246,7 @@ export const Tab2ForEdit = defineComponent({
             variant="success"
             onClick={() => handleUpdateOrCreate()}
             icon={<CheckCircleOutlinedIcon />}
-          ></HeaderActionButton>
+          />
         </>,
       )
 
@@ -280,7 +280,7 @@ export const Tab2ForEdit = defineComponent({
                 onUpdateValue={(e) => void (data.value.name = e)}
                 value={data.value.name}
                 disabled={isBuiltFunction.value}
-              ></NInput>
+              />
             </NFormItem>
 
             <NFormItem label="引用" required>
@@ -289,7 +289,7 @@ export const Tab2ForEdit = defineComponent({
                 onUpdateValue={(e) => void (data.value.reference = e)}
                 defaultValue={'root'}
                 disabled={isBuiltFunction.value}
-              ></NInput>
+              />
             </NFormItem>
 
             {!isFunctionType.value && (
@@ -297,7 +297,7 @@ export const Tab2ForEdit = defineComponent({
                 <NInput
                   value={data.value.metatype}
                   onUpdateValue={(e) => void (data.value.metatype = e)}
-                ></NInput>
+                />
               </NFormItem>
             )}
 
@@ -320,7 +320,7 @@ export const Tab2ForEdit = defineComponent({
                           }
                         })}
                         disabled={!!(editId.value && isFunctionType.value)}
-                      ></NSelect>
+                      />
                     )
                   },
                 }}
@@ -359,7 +359,7 @@ export const Tab2ForEdit = defineComponent({
                     onUpdateValue={(value) => {
                       data.value.method = value
                     }}
-                  ></NSelect>
+                  />
                 </NFormItem>
 
                 <NFormItem label="Secret">
@@ -380,7 +380,7 @@ export const Tab2ForEdit = defineComponent({
                 <NInput
                   value={data.value.schema}
                   onUpdateValue={(e) => void (data.value.schema = e)}
-                ></NInput>
+                />
               </NFormItem>
             )}
             <NFormItem label="公开" labelPlacement="left">
@@ -389,7 +389,7 @@ export const Tab2ForEdit = defineComponent({
                 class={'flex w-full justify-end'}
                 value={!data.value.private}
                 onUpdateValue={(val) => void (data.value.private = !val)}
-              ></NSwitch>
+              />
             </NFormItem>
             <NFormItem label="备注">
               <NInput
@@ -398,7 +398,7 @@ export const Tab2ForEdit = defineComponent({
                 onUpdateValue={(val) => void (data.value.comment = val)}
                 type="textarea"
                 rows={4}
-              ></NInput>
+              />
             </NFormItem>
           </NForm>
         </NGi>

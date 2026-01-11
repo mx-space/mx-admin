@@ -1,7 +1,3 @@
-import { AddIcon, MenuDownIcon } from '~/components/icons'
-import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
-import { RelativeTime } from '~/components/time/relative-time'
-import { useDataTableFetch } from '~/hooks/use-table'
 import {
   NAvatar,
   NButton,
@@ -18,34 +14,43 @@ import {
   NThing,
   useMessage,
 } from 'naive-ui'
+import { defineComponent, onMounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import type { ProjectModel, ProjectResponse } from '~/models/project'
+
+import { AddIcon, MenuDownIcon } from '~/components/icons'
+import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
+import { RelativeTime } from '~/components/time/relative-time'
+import { useDataTableFetch } from '~/hooks/use-table'
 import { router } from '~/router'
 import { RouteName } from '~/router/name'
 import { parseDate } from '~/utils'
-import { defineComponent, onMounted, watch } from 'vue'
-import { useRoute } from 'vue-router'
 
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
-import type { ProjectModel, ProjectResponse } from '~/models/project'
 
 const ManageProjectView = defineComponent({
   setup() {
-    const { data, pager, sortProps, fetchDataFn, loading } =
-      useDataTableFetch<ProjectModel>(
-        (data, pager) =>
-          async (page = route.query.page || 1, size = 30) => {
-            const response =
-              await RESTManager.api.projects.get<ProjectResponse>({
-                params: {
-                  page,
-                  size,
-                },
-              })
-            data.value = response.data
-            pager.value = response.pagination
-          },
-      )
+    const {
+      data,
+      pager,
+      sortProps: _sortProps,
+      fetchDataFn,
+      loading,
+    } = useDataTableFetch<ProjectModel>(
+      (data, pager) =>
+        async (page = route.query.page || 1, size = 30) => {
+          const response = await RESTManager.api.projects.get<ProjectResponse>({
+            params: {
+              page,
+              size,
+            },
+          })
+          data.value = response.data
+          pager.value = response.pagination
+        },
+    )
 
     const checkedRowKeys = reactive(new Set<string>())
 
@@ -103,7 +108,7 @@ const ManageProjectView = defineComponent({
                             onUpdatePage={(page) => {
                               fetchData(page)
                             }}
-                          ></NPagination>
+                          />
                         </div>
                       )
                     },
@@ -124,7 +129,7 @@ const ManageProjectView = defineComponent({
                                         checkedRowKeys.delete(item.id)
                                       }
                                     }}
-                                  ></NCheckbox>
+                                  />
                                 )
                               },
 
@@ -233,7 +238,7 @@ const ManageProjectView = defineComponent({
                                             circle
                                             src={item.avatar}
                                             size="large"
-                                          ></NAvatar>
+                                          />
                                         ) : (
                                           <NAvatar
                                             circle

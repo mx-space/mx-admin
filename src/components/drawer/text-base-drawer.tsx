@@ -165,7 +165,7 @@ export const TextBaseDrawer = defineComponent({
               value={props.data.meta?.cover}
             />
 
-            <NFormItem label="图片设定" labelAlign="left"></NFormItem>
+            <NFormItem label="图片设定" labelAlign="left" />
             <NFormItem>
               <ImageDetailSection
                 text={props.data.text}
@@ -194,7 +194,7 @@ export const TextBaseDrawer = defineComponent({
               onUpdateValue={(value: any[]) => {
                 keyValuePairs.value = value
               }}
-            ></NDynamicInput>
+            />
 
             {props.data.meta && (
               <NCollapse accordion class="mt-4">
@@ -325,14 +325,14 @@ const ImageCoverItem = defineComponent({
                       },
                     )
                   }
-                ></NSelect>
+                />
               ) : (
                 <NInput
                   value={props.value}
                   status={isValidated.value ? undefined : 'error'}
                   onUpdateValue={validateAndCallback}
                   placeholder={'https?://...'}
-                ></NInput>
+                />
               )
             },
             default() {

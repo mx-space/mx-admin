@@ -1,9 +1,9 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import type { UserModel } from '../models/user'
 
 import { getToken, setToken } from '../utils/auth'
 import { RESTManager } from '../utils/rest'
-import type { UserModel } from '../models/user'
 
 let tokenIsUpstream = false
 

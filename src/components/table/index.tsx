@@ -1,9 +1,6 @@
-import { useStoreRef } from '~/hooks/use-store-ref'
 import { NDataTable } from 'naive-ui'
-import { UIStore } from '~/stores/ui'
 import { defineComponent, reactive, ref, watch } from 'vue'
 import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
-import styles from './index.module.css'
 import type { Pager } from '~/models/base'
 import type dataTableProps from 'naive-ui/lib/data-table/src/DataTable'
 import type {
@@ -13,6 +10,11 @@ import type {
 } from 'naive-ui/lib/data-table/src/interface'
 import type { PropType, Ref } from 'vue'
 import type { LocationQueryValue } from 'vue-router'
+
+import { useStoreRef } from '~/hooks/use-store-ref'
+import { UIStore } from '~/stores/ui'
+
+import styles from './index.module.css'
 
 export const tableRowStyle = styles['table-row']
 
@@ -85,13 +87,13 @@ export const Table = defineComponent({
     // HACK
     const clean = watch(
       () => props.data.value,
-      (n) => {
+      (_n) => {
         loading.value = false
         clean()
       },
     )
 
-    onBeforeRouteUpdate((to, from, next) => {
+    onBeforeRouteUpdate((_to, _from, next) => {
       loading.value = true
       next()
       loading.value = false
@@ -182,7 +184,7 @@ export const Table = defineComponent({
           }}
           columns={columns}
           {...nTableProps}
-        ></NDataTable>
+        />
       )
     }
   },

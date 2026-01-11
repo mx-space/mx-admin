@@ -145,7 +145,7 @@ export default defineComponent({
 
       const watcher = watch(
         () => graphData,
-        (n, old) => {
+        (_n, _old) => {
           if (!isEmpty(toRaw(graphData.value))) {
             renderAllChart()
 
@@ -202,31 +202,23 @@ export default defineComponent({
         <div class="phone:grid-cols-1 grid grid-cols-2 gap-4">
           <div>
             <SectionTitle>今日请求走势</SectionTitle>
-            <div ref={dayChart}></div>
-            {isEmpty(graphData.value) && (
-              <NSkeleton animated height={250}></NSkeleton>
-            )}
+            <div ref={dayChart} />
+            {isEmpty(graphData.value) && <NSkeleton animated height={250} />}
           </div>
           <div>
             <SectionTitle>本周请求走势</SectionTitle>
-            <div ref={weekChart}></div>
-            {isEmpty(graphData.value) && (
-              <NSkeleton animated height={250}></NSkeleton>
-            )}
+            <div ref={weekChart} />
+            {isEmpty(graphData.value) && <NSkeleton animated height={250} />}
           </div>
           <div>
             <SectionTitle>本月请求走势</SectionTitle>
-            <div ref={monthChart}></div>
-            {isEmpty(graphData.value) && (
-              <NSkeleton animated height={250}></NSkeleton>
-            )}
+            <div ref={monthChart} />
+            {isEmpty(graphData.value) && <NSkeleton animated height={250} />}
           </div>
           <div>
             <SectionTitle>最近 7 天请求路径 Top 10</SectionTitle>
-            <div ref={pieChart}></div>
-            {isEmpty(graphData.value) && (
-              <NSkeleton animated height={250}></NSkeleton>
-            )}
+            <div ref={pieChart} />
+            {isEmpty(graphData.value) && <NSkeleton animated height={250} />}
           </div>
         </div>
       )
@@ -248,7 +240,7 @@ export default defineComponent({
         <NTabs>
           <NTabPane name={'IP 记录'}>
             {!todayIp.value ? (
-              <NSkeleton animated class="my-2 h-[200px]"></NSkeleton>
+              <NSkeleton animated class="my-2 h-[200px]" />
             ) : (
               <NP>
                 <SectionTitle>
@@ -272,7 +264,7 @@ export default defineComponent({
                             {ip}
                           </NButton>
                         }
-                      ></IpInfoPopover>
+                      />
                     ))}
                   </NSpace>
                   {todayIp.value.length > 100 && (
@@ -307,12 +299,12 @@ export default defineComponent({
                                               {ip}
                                             </NButton>
                                           }
-                                        ></IpInfoPopover>
+                                        />
                                       )
                                     },
                                   },
                                 ]}
-                              ></NDataTable>
+                              />
                             ),
                           })
                         }}

@@ -3,22 +3,23 @@
  *
  */
 
-import { SettingsIcon } from '~/components/icons'
-import { useLayout } from '~/layouts/content'
 import { NCard, NElement, NForm, NModal } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 
 import { Icon } from '@vicons/utils'
 
+import { SettingsIcon } from '~/components/icons'
 import { useMountAndUnmount } from '~/hooks/use-lifecycle'
+import { useLayout } from '~/layouts/content'
 
 import { CodemirrorEditor } from '../codemirror/codemirror'
 import { editorBaseProps } from './props'
 
 import './index.css'
 
-import { useEditorConfig } from './use-editor-setting'
 import type { EditorRef } from './types'
+
+import { useEditorConfig } from './use-editor-setting'
 
 export const Editor = defineComponent({
   name: 'EditorX',

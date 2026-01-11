@@ -1,8 +1,9 @@
 import { NPopover } from 'naive-ui'
-import { RESTManager } from '~/utils'
 import { defineComponent, ref } from 'vue'
 import type { PopoverTrigger } from 'naive-ui'
 import type { PropType } from 'vue'
+
+import { RESTManager } from '~/utils'
 
 const ipLocationCacheMap = new Map<string, IP>()
 
@@ -79,7 +80,7 @@ export const IpInfoPopover = defineComponent({
               : props.triggerEl
           },
           default() {
-            return <div innerHTML={ipInfoText.value}></div>
+            return <div innerHTML={ipInfoText.value} />
           },
         }}
       </NPopover>

@@ -1,11 +1,11 @@
+import { NForm, NFormItem, NGi, NSelect, useDialog } from 'naive-ui'
+
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { CheckIcon, TrashIcon } from '~/components/icons'
+import { useMountAndUnmount } from '~/hooks/use-lifecycle'
 import { useLayout } from '~/layouts/content'
 import { TwoColGridLayout } from '~/layouts/two-col'
-import { NForm, NFormItem, NGi, NSelect, useDialog } from 'naive-ui'
 import { RESTManager } from '~/utils'
-
-import { useMountAndUnmount } from '~/hooks/use-lifecycle'
 
 import { CodeEditorForTemplateEditing } from '../code-editor'
 import { EJSRender } from '../ejs-render'
@@ -136,10 +136,10 @@ export const EmailTab = defineComponent({
                   value: NewsletterMailType.Newsletter,
                 },
               ]}
-            ></NSelect>
+            />
           </NFormItem>
         </NForm>
-        <div class="pb-4"></div>
+        <div class="pb-4" />
         <TwoColGridLayout>
           <NGi
             span={18}
@@ -154,11 +154,11 @@ export const EmailTab = defineComponent({
               value={templateString.value}
             />
           </NGi>
-          <NGi span={18} class="relative h-[calc(100vh-15rem)] ">
+          <NGi span={18} class="relative h-[calc(100vh-15rem)]">
             <EJSRender
               data={renderProps.value}
               template={modifiedTemplate.value}
-              onError={(err) => {
+              onError={(_err) => {
                 isTemplateError.value = true
               }}
             />

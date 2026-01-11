@@ -99,7 +99,6 @@ export default defineComponent(() => {
           reader.readAsText(file)
         }),
       )
-      console.log(res)
 
       strList.push(res as string)
     }
@@ -110,8 +109,6 @@ export default defineComponent(() => {
         ...v,
         filename: fileList.value[index].file?.name ?? '',
       }))
-      //
-      console.log(toRaw(parsedList))
     } catch (e: any) {
       console.error(e.err)
       message.error(

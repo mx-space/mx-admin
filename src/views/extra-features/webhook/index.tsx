@@ -109,7 +109,7 @@ export default defineComponent({
                                       ? 'bg-green-500'
                                       : 'bg-gray-500',
                                   ]}
-                                ></div>
+                                />
                               )
                             },
                           }}
@@ -222,7 +222,7 @@ export const EditWebhookForm = defineComponent({
               onUpdateValue={(value) => {
                 reactiveFormData.value.payloadUrl = value
               }}
-            ></NInput>
+            />
           </NFormItem>
 
           <NFormItem required label="Secret">
@@ -233,7 +233,7 @@ export const EditWebhookForm = defineComponent({
               onUpdateValue={(value) => {
                 reactiveFormData.value.secret = value
               }}
-            ></NInput>
+            />
           </NFormItem>
 
           <NFormItem required label="Events">
@@ -316,7 +316,7 @@ export const EditWebhookForm = defineComponent({
                 reactiveFormData.value.enabled = value
               }}
               value={reactiveFormData.value.enabled}
-            ></NSwitch>
+            />
           </NFormItem>
           <div class={'flex justify-end'}>
             <NButton onClick={handleSubmit} type="primary" round>
@@ -380,17 +380,17 @@ const WebHookDispatches = defineComponent({
               <JSONHighlight
                 code={reintentJsonStringify(item.headers)}
                 class={'p-4'}
-              ></JSONHighlight>
+              />
               <p>Payload:</p>
               <JSONHighlight
                 code={reintentJsonStringify(item.payload)}
                 class={'p-4'}
-              ></JSONHighlight>
+              />
               <p>Response:</p>
               <JSONHighlight
                 code={reintentJsonStringify(item.response)}
                 class={'p-4'}
-              ></JSONHighlight>
+              />
             </div>
           </div>
         ),
@@ -409,7 +409,7 @@ const WebHookDispatches = defineComponent({
                       'h-2 w-2 rounded-full',
                       item.success ? 'bg-green-500' : 'bg-red-500',
                     ]}
-                  ></div>
+                  />
                   <div class={'w-[30px]'}>{item.status}</div>
                   <span
                     style={{

@@ -190,12 +190,12 @@ export const DashBoardView = defineComponent({
                 trigger="hover"
                 triggerEl={<span>{userStore.user.value?.lastLoginIp}</span>}
                 ip={userStore.user.value?.lastLoginIp}
-              ></IpInfoPopover>
+              />
             ) : (
               'N/A'
             )}
           </span>
-          <div class="pt-[.5rem]"></div>
+          <div class="pt-[.5rem]" />
           <span>
             上次登录时间:{' '}
             {userStore.user.value?.lastLoginTime ? (
@@ -211,7 +211,7 @@ export const DashBoardView = defineComponent({
           </span>
         </p>
 
-        <div class="pb-4"></div>
+        <div class="pb-4" />
       </>
     ))
 
@@ -290,7 +290,10 @@ export const DashBoardView = defineComponent({
           {
             name: '管理',
             onClick() {
-              router.push({ name: RouteName.ListShortHand, query: { page: 1 } })
+              router.push({
+                name: RouteName.ListShortHand,
+                query: { page: 1 },
+              })
             },
           },
         ],
@@ -640,7 +643,8 @@ const AppIF = defineComponent({
       system: null as string | null,
     })
 
-    const { openModal: openUpdateModal, Modal: UpdateDetailModal } = useUpdateDetailModal()
+    const { openModal: openUpdateModal, Modal: UpdateDetailModal } =
+      useUpdateDetailModal()
 
     const portal = usePortalElement()
     const handleUpdate = () => {
@@ -665,7 +669,7 @@ const AppIF = defineComponent({
           content: () => (
             <div>
               <p>{`当前版本：${PKG.version}，最新版本：${dashboard}`}</p>
-              <div class={'text-right space-x-2'}>
+              <div class={'space-x-2 text-right'}>
                 <NButton
                   size="small"
                   onClick={() => {
@@ -729,7 +733,7 @@ const AppIF = defineComponent({
           content: () => (
             <div>
               <p>{`当前版本：${app.value?.version || 'N/A'}，最新版本：${versionMap.value.system}`}</p>
-              <div class={'text-right space-x-2'}>
+              <div class={'space-x-2 text-right'}>
                 <NButton
                   size="small"
                   onClick={() => {

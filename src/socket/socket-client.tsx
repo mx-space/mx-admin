@@ -1,15 +1,16 @@
+import { NButton, NSpace } from 'naive-ui'
+import io from 'socket.io-client'
+import type { NotificationTypes } from './types'
+
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { GATEWAY_URL } from '~/constants/env'
-import { NButton, NSpace } from 'naive-ui'
 import { router } from '~/router'
-import io from 'socket.io-client'
 import { getToken } from '~/utils/auth'
 import { bus } from '~/utils/event-bus'
 import { BrowserNotification } from '~/utils/notification'
 
 import { configs } from '../configs'
 import { EventTypes } from './types'
-import type { NotificationTypes } from './types'
 
 const Notification = {
   get warning() {
@@ -123,7 +124,7 @@ export class SocketClient {
         break
       }
       case EventTypes.AUTH_FAILED: {
-        console.log('等待登录中...')
+        console.debug('等待登录中...')
         this.socket.close()
         break
       }
@@ -222,7 +223,7 @@ export class SocketClient {
       }
       default: {
         if (__DEV__) {
-          console.log(type, payload, code)
+          console.debug(type, payload, code)
         }
       }
     }

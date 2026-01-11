@@ -40,7 +40,7 @@ export const LoginView = defineComponent({
       if (!inputRef.value) return
       inputRef.value.focus()
 
-      document.addEventListener('keydown', (e) => {
+      document.addEventListener('keydown', (_e) => {
         inputRef.value.focus()
       })
 

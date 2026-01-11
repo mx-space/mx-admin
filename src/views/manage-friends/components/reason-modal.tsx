@@ -1,7 +1,8 @@
-import { LinkState, LinkStateNameMap } from '~/models/link'
 import { NButton, NForm, NFormItem, NInput, NSelect } from 'naive-ui'
 import type { SelectMixedOption } from 'naive-ui/es/select/src/interface'
 import type { PropType } from 'vue'
+
+import { LinkState, LinkStateNameMap } from '~/models/link'
 
 export const LinkAuditModal = defineComponent({
   props: {
@@ -47,7 +48,7 @@ export const LinkAuditModal = defineComponent({
               maxRows: 4,
               minRows: 2,
             }}
-          ></NInput>
+          />
         </NFormItem>
 
         <div class={'flex justify-end'}>

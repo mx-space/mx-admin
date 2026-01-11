@@ -18,7 +18,7 @@ export const UrlComponent = defineComponent({
             <NPopover>
               {{
                 trigger() {
-                  return <div class="h-2 w-2 rounded-full bg-red-400"></div>
+                  return <div class="h-2 w-2 rounded-full bg-red-400" />
                 },
                 default() {
                   return props.errorMessage
@@ -26,7 +26,7 @@ export const UrlComponent = defineComponent({
               }}
             </NPopover>
           ) : (
-            <div class="h-2 w-2 rounded-full bg-green-300"></div>
+            <div class="h-2 w-2 rounded-full bg-green-300" />
           ))}
       </div>
     )

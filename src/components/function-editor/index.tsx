@@ -1,9 +1,10 @@
+import type { PropType, Ref } from 'vue'
+
 import { useAsyncLoadMonaco } from '~/hooks/use-async-monaco'
 import { RESTManager } from '~/utils'
 
 import * as typeDefines from './libs/lib.declare'
 import { NodeDeclare } from './libs/node.declare'
-import type { PropType, Ref } from 'vue'
 
 export const FunctionCodeEditor = defineComponent({
   props: {
@@ -126,7 +127,7 @@ export const FunctionCodeEditor = defineComponent({
 
     const cleaner = watch(
       () => $editor.loaded.value,
-      (loaded) => {
+      (_loaded) => {
         cleaner()
         import('monaco-editor').then((monaco) => {
           $editor.editor.addCommand(
@@ -142,7 +143,7 @@ export const FunctionCodeEditor = defineComponent({
     return () => {
       return (
         <div class="relative h-full w-full">
-          <div class="relative h-full w-full" ref={editorElRef}></div>
+          <div class="relative h-full w-full" ref={editorElRef} />
           {h($editor.Snip)}
         </div>
       )

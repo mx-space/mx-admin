@@ -69,7 +69,7 @@ export const LogListView = defineComponent({
                       { label: 'PM2', value: 'pm2' },
                       { label: '系统记录', value: 'native' },
                     ]}
-                  ></NSelect>
+                  />
                 )
               },
               default() {
@@ -169,7 +169,7 @@ const LogDisplay = defineComponent({
       <div class="relative flex h-[600px] max-h-[70vh] overflow-auto">
         {wait.value ? (
           <div class="flex h-full w-full items-center justify-center">
-            <NSpin show strokeWidth={14}></NSpin>
+            <NSpin show strokeWidth={14} />
           </div>
         ) : (
           <Xterm
@@ -177,7 +177,7 @@ const LogDisplay = defineComponent({
             onReady={(term) => {
               term.write(props.data)
             }}
-          ></Xterm>
+          />
         )}
       </div>
     )

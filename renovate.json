@@ -1,17 +1,10 @@
 {
-  "extends": [
-    "config:base",
-    "schedule:weekly"
-  ],
-  "labels": [
-    "dependencies"
-  ],
+  "extends": ["config:base", "schedule:weekly"],
+  "labels": ["dependencies"],
   "rangeStrategy": "bump",
   "packageRules": [
     {
-      "depTypeList": [
-        "peerDependencies"
-      ],
+      "depTypeList": ["peerDependencies"],
       "enabled": false
     }
   ],

@@ -1,4 +1,4 @@
-import { RESTManager, getToken } from '~/utils'
+import { getToken, RESTManager } from '~/utils'
 
 export const buildMarkdownRenderUrl = (id: string, withToken?: boolean) => {
   const endpoint = RESTManager.endpoint

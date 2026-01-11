@@ -1,7 +1,3 @@
-import { HeaderActionButton } from '~/components/button/rounded-button'
-import { ArchiveIcon, UploadIcon } from '~/components/icons'
-import { Table } from '~/components/table'
-import { ContentLayout } from '~/layouts/content'
 import {
   NButton,
   NButtonGroup,
@@ -17,9 +13,14 @@ import {
   NUpload,
   NUploadDragger,
 } from 'naive-ui'
-import { RESTManager, getToken } from '~/utils'
 import { defineComponent } from 'vue'
 import type { UploadFileInfo } from 'naive-ui'
+
+import { HeaderActionButton } from '~/components/button/rounded-button'
+import { ArchiveIcon, UploadIcon } from '~/components/icons'
+import { Table } from '~/components/table'
+import { ContentLayout } from '~/layouts/content'
+import { getToken, RESTManager } from '~/utils'
 
 type FileType = 'file' | 'icon' | 'photo' | 'avatar'
 
@@ -102,7 +103,7 @@ export default defineComponent({
                 modalShow.value = true
               }}
               icon={<UploadIcon />}
-            ></HeaderActionButton>
+            />
           </>
         }
       >
@@ -112,9 +113,9 @@ export default defineComponent({
             type.value = val
           }}
         >
-          <NTabPane tab={'图标'} name={'icon'}></NTabPane>
-          <NTabPane tab={'头像'} name={'avatar'}></NTabPane>
-          <NTabPane tab={'文件'} name={'file'}></NTabPane>
+          <NTabPane tab={'图标'} name={'icon'} />
+          <NTabPane tab={'头像'} name={'avatar'} />
+          <NTabPane tab={'文件'} name={'file'} />
         </NTabs>
         <Table
           loading={loading.value}
@@ -138,7 +139,7 @@ export default defineComponent({
                     {{
                       trigger() {
                         return (
-                          <a href={row.url} target="_blank">
+                          <a href={row.url} target="_blank" rel="noreferrer">
                             {row.url}
                           </a>
                         )

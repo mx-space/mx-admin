@@ -228,7 +228,7 @@ const Passkey = defineComponent(() => {
             },
           },
         ]}
-      ></NDataTable>
+      />
     </NLayoutContent>
   )
 })
@@ -263,7 +263,7 @@ const Oauth = defineComponent(() => {
           positiveText: '是',
           negativeText: '否',
 
-          onPositiveClick(e) {
+          onPositiveClick(_e) {
             RESTManager.api.auth('as-owner').patch()
           },
         })

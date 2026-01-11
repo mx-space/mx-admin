@@ -1,8 +1,3 @@
-import { HeaderActionButton } from '~/components/button/rounded-button'
-import { AddIcon, FunctionIcon, LockIcon } from '~/components/icons'
-import { tableRowStyle } from '~/components/table'
-import { RelativeTime } from '~/components/time/relative-time'
-import { useLayout } from '~/layouts/content'
 import {
   NButton,
   NDataTable,
@@ -13,20 +8,25 @@ import {
   NPopconfirm,
   NSpace,
 } from 'naive-ui'
-import { RESTManager } from '~/utils'
-import { getToken } from '~/utils/auth'
 import { useRoute, useRouter } from 'vue-router'
+import type { MenuMixedOption } from 'naive-ui/es/menu/src/interface'
+import type { SnippetModel } from '../../../../models/snippet'
+import type { SnippetGroup } from '../interfaces/snippet-group'
 
 import { Icon } from '@vicons/utils'
 
+import { HeaderActionButton } from '~/components/button/rounded-button'
+import { AddIcon, FunctionIcon, LockIcon } from '~/components/icons'
+import { tableRowStyle } from '~/components/table'
+import { RelativeTime } from '~/components/time/relative-time'
 import { useMountAndUnmount } from '~/hooks/use-lifecycle'
+import { useLayout } from '~/layouts/content'
+import { RESTManager } from '~/utils'
+import { getToken } from '~/utils/auth'
 
 import { SnippetType } from '../../../../models/snippet'
 import { ImportSnippetButton } from '../components/import-snippets-button'
 import { UpdateDependencyButton } from '../components/update-deps-button'
-import type { SnippetGroup } from '../interfaces/snippet-group'
-import type { SnippetModel } from '../../../../models/snippet'
-import type { MenuMixedOption } from 'naive-ui/es/menu/src/interface'
 
 const useFetchReferenceNames = () => {
   const referenceNames = ref<SnippetGroup[]>([])
@@ -69,7 +69,7 @@ export const Tab1ForList = defineComponent({
               })
             }}
             icon={<AddIcon />}
-          ></HeaderActionButton>
+          />
 
           <ImportSnippetButton onFinish={fetchReferenceNames} />
           <UpdateDependencyButton />
@@ -163,7 +163,7 @@ export const Tab1ForList = defineComponent({
               options={menuOptions.value}
               value={selectValue.value}
               onUpdateValue={onSelect}
-            ></NMenu>
+            />
           </NLayoutSider>
           <NLayoutContent>
             <NDataTable
@@ -309,7 +309,7 @@ export const Tab1ForList = defineComponent({
   },
 })
 
-const colums = [
+const _colums = [
   {
     type: 'selection',
     options: ['none', 'all'],
@@ -379,7 +379,7 @@ const colums = [
     title: '操作',
     key: 'id',
     fixed: 'right',
-    render(row) {
+    render(_row) {
       return (
         <NSpace>
           <NButton

@@ -1,3 +1,6 @@
+import { NButton, NPopconfirm, NSpace } from 'naive-ui'
+import { defineComponent, onBeforeMount } from 'vue'
+
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import {
   DatabaseBackupIcon,
@@ -8,9 +11,7 @@ import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
 import { Table } from '~/components/table'
 import { useDataTableFetch } from '~/hooks/use-table'
 import { ContentLayout } from '~/layouts/content'
-import { NButton, NPopconfirm, NSpace } from 'naive-ui'
-import { RESTManager, responseBlobToFile } from '~/utils'
-import { defineComponent, onBeforeMount } from 'vue'
+import { responseBlobToFile, RESTManager } from '~/utils'
 
 export default defineComponent(() => {
   const { checkedRowKeys, data, fetchDataFn, loading } = useDataTableFetch<{
@@ -118,13 +119,13 @@ export default defineComponent(() => {
             name="立即备份"
             variant="primary"
             onClick={handleBackup}
-          ></HeaderActionButton>
+          />
           <HeaderActionButton
             icon={<UploadIcon />}
             onClick={handleUploadAndRestore}
             name="上传恢复"
             variant="info"
-          ></HeaderActionButton>
+          />
           <DeleteConfirmButton
             checkedRowKeys={checkedRowKeys.value}
             onDelete={async () => {
@@ -214,7 +215,7 @@ export default defineComponent(() => {
           },
         ]}
         noPagination
-      ></Table>
+      />
     </ContentLayout>
   )
 })

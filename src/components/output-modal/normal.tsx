@@ -2,6 +2,7 @@
 import { AnsiUp } from 'ansi_up'
 import { EventSourcePolyfill } from 'event-source-polyfill'
 import { NCard, NModal } from 'naive-ui'
+
 import { getToken } from '~/utils'
 
 const ansi_up = new AnsiUp()
@@ -85,7 +86,7 @@ export const ShellOutputNormal = defineComponent({
                 whiteSpace: 'break-spaces',
               }}
               v-html={ansi_up.ansi_to_html(shellOutput.value)}
-            ></div>
+            />
           </div>
         </NCard>
       </NModal>

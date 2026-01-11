@@ -1,6 +1,7 @@
+import { NButton, NCard, NForm, NFormItem, NInput, NModal } from 'naive-ui'
+
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { DownloadOutlined } from '~/components/icons'
-import { NButton, NCard, NForm, NFormItem, NInput, NModal } from 'naive-ui'
 
 import { InstallDepsXterm } from './install-dep-xterm'
 

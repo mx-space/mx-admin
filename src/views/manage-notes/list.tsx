@@ -323,7 +323,7 @@ export const ManageNoteListView = defineComponent({
         return () => (
           <Table
             nTableProps={{
-              async onUpdateFilters(filter: { title: string[] }, column) {
+              async onUpdateFilters(filter: { title: string[] }, _column) {
                 const { title } = filter
                 if (!title || title.length === 0) {
                   await fetchData()

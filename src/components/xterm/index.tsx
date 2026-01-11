@@ -1,9 +1,10 @@
-import { useStoreRef } from '~/hooks/use-store-ref'
-import { UIStore } from '~/stores/ui'
 import { Material, MaterialDark } from 'xterm-theme'
-import { useMountAndUnmount } from '~/hooks/use-lifecycle'
 import type { ITerminalOptions, Terminal } from '@xterm/xterm'
 import type { PropType } from 'vue'
+
+import { useMountAndUnmount } from '~/hooks/use-lifecycle'
+import { useStoreRef } from '~/hooks/use-store-ref'
+import { UIStore } from '~/stores/ui'
 
 import '@xterm/xterm/css/xterm.css'
 
@@ -50,6 +51,7 @@ export const Xterm = defineComponent({
     const { onlyToggleNaiveUIDark, isDark } = useStoreRef(UIStore)
 
     if (props.darkMode) {
+      // biome-ignore lint/correctness/useHookAtTopLevel: <explanation>
       useMountAndUnmount(() => {
         onlyToggleNaiveUIDark(true)
         return () => {
@@ -89,7 +91,9 @@ export const Xterm = defineComponent({
       const observer = new ResizeObserver(() => {
         try {
           fitAddon.fit()
-        } catch {}
+        } catch {
+          // noop
+        }
 
         if (props.onResize) {
           props.onResize({
@@ -116,7 +120,7 @@ export const Xterm = defineComponent({
         id="xterm"
         class={['max-h-[70vh] !bg-transparent', props.class]}
         ref={termRef}
-      ></div>
+      />
     )
   },
 })

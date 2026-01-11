@@ -1,5 +1,3 @@
-import { AddIcon } from '~/components/icons'
-import { TableTitleLink } from '~/components/link/title-link'
 import {
   NButton,
   NCard,
@@ -10,14 +8,16 @@ import {
 } from 'naive-ui'
 import Sortable, { Swap } from 'sortablejs'
 import { defineComponent, onMounted } from 'vue'
+import type { PageModel, PageResponse } from '~/models/page'
+import type { PropType } from 'vue'
 
+import { AddIcon } from '~/components/icons'
+import { TableTitleLink } from '~/components/link/title-link'
 import { RelativeTime } from '~/components/time/relative-time'
 
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { ContentLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
-import type { PropType } from 'vue'
-import type { PageModel, PageResponse } from '~/models/page'
 
 Sortable.mount(new Swap())
 

@@ -190,10 +190,7 @@ export const HeaderPreviewButton = defineComponent({
     watch(() => props.data, handler, { deep: true })
 
     return () => (
-      <HeaderActionButton
-        icon={<MagnifyingGlass />}
-        onClick={handlePreview}
-      ></HeaderActionButton>
+      <HeaderActionButton icon={<MagnifyingGlass />} onClick={handlePreview} />
     )
   },
 })
@@ -205,7 +202,7 @@ const PreviewIframe = defineComponent({
     })
 
     return () => {
-      return <div class={'h-full w-full'} ref={wrapperRef}></div>
+      return <div class={'h-full w-full'} ref={wrapperRef} />
     }
   },
 })

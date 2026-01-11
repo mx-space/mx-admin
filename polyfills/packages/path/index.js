@@ -3,7 +3,7 @@
 function assertPath(path) {
   if (typeof path !== 'string') {
     throw new TypeError(
-      'Path must be a string. Received ' + JSON.stringify(path),
+      `Path must be a string. Received ${JSON.stringify(path)}`,
     )
   }
 }
@@ -57,7 +57,7 @@ function normalizeStringPosix(path, allowAboveRoot) {
           lastSegmentLength = 2
         }
       } else {
-        if (res.length > 0) res += '/' + path.slice(lastSlash + 1, i)
+        if (res.length > 0) res += `/${path.slice(lastSlash + 1, i)}`
         else res = path.slice(lastSlash + 1, i)
         lastSegmentLength = i - lastSlash - 1
       }
@@ -106,7 +106,7 @@ var posix = {
         continue
       }
 
-      resolvedPath = path + '/' + resolvedPath
+      resolvedPath = `${path}/${resolvedPath}`
       resolvedAbsolute = path.charCodeAt(0) === 47 /*/*/
     }
 
@@ -117,7 +117,7 @@ var posix = {
     resolvedPath = normalizeStringPosix(resolvedPath, !resolvedAbsolute)
 
     if (resolvedAbsolute) {
-      if (resolvedPath.length > 0) return '/' + resolvedPath
+      if (resolvedPath.length > 0) return `/${resolvedPath}`
       else return '/'
     } else if (resolvedPath.length > 0) {
       return resolvedPath
@@ -140,7 +140,7 @@ var posix = {
     if (path.length === 0 && !isAbsolute) path = '.'
     if (path.length > 0 && trailingSeparator) path += '/'
 
-    if (isAbsolute) return '/' + path
+    if (isAbsolute) return `/${path}`
     return path
   },
 
@@ -157,7 +157,7 @@ var posix = {
       assertPath(arg)
       if (arg.length > 0) {
         if (joined === undefined) joined = arg
-        else joined += '/' + arg
+        else joined += `/${arg}`
       }
     }
     if (joined === undefined) return '.'
@@ -401,8 +401,7 @@ var posix = {
   format: function format(pathObject) {
     if (pathObject === null || typeof pathObject !== 'object') {
       throw new TypeError(
-        'The "pathObject" argument must be of type Object. Received type ' +
-          typeof pathObject,
+        `The "pathObject" argument must be of type Object. Received type ${typeof pathObject}`,
       )
     }
     return _format('/', pathObject)

@@ -11,7 +11,7 @@
     "dev": "NODE_ENV=development vite --mode development --open --host",
     "build": "NODE_ENV=production vite build --mode production",
     "preview": "vite preview --port 2323",
-    "lint": "biome lint --apply src/**/*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json} --no-errors-on-unmatched",
+    "lint": "biome lint --write src/**/*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json} --no-errors-on-unmatched",
     "lint:fix": "biome lint --write .",
     "release": "sh ./release.sh",
     "prepare": "pnpm exec simple-git-hooks"
@@ -24,7 +24,7 @@
       "prettier --ignore-path ./.gitignore --write "
     ],
     "*.{js,ts,cjs,mjs,jsx,tsx,json}": [
-      "biome lint --apply --no-errors-on-unmatched"
+      "biome lint --write --no-errors-on-unmatched"
     ]
   },
   "dependencies": {

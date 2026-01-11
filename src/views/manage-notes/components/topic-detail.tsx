@@ -158,7 +158,9 @@ export const TopicDetail = defineComponent({
                               (e.event?.target as XMLHttpRequest).responseText,
                             )
                             message.warning(res.message)
-                          } catch {}
+                          } catch {
+                            // noop
+                          }
                           return e.file
                         }}
                       >
@@ -197,7 +199,7 @@ export const TopicDetail = defineComponent({
                 }}
               </NThing>
               {loadingNotes.value && notes.value.length == 0 ? (
-                <NSkeleton animated class="mt-2 h-[350px]"></NSkeleton>
+                <NSkeleton animated class="mt-2 h-[350px]" />
               ) : (
                 <div class={'mt-4'}>
                   <p class="flex items-center justify-between">
@@ -211,7 +213,7 @@ export const TopicDetail = defineComponent({
                   </p>
                   {notes.value.length === 0 && (
                     <div class={'flex h-[300px] items-center justify-center'}>
-                      <NEmpty description="这里还没有任何内容"></NEmpty>
+                      <NEmpty description="这里还没有任何内容" />
                     </div>
                   )}
                   <NList bordered class={'mt-2'}>
@@ -293,19 +295,14 @@ export const TopicDetail = defineComponent({
             </NCard>
           ) : (
             <NCard class={'modal-card md'} role="dialog" title="专栏信息获取中">
-              <div class={'relative flex gap-2 '}>
-                <NSkeleton animated circle width={60}></NSkeleton>
+              <div class={'relative flex gap-2'}>
+                <NSkeleton animated circle width={60} />
                 <div class={'flex-grow'}>
-                  <NSkeleton
-                    animated
-                    text
-                    repeat={3}
-                    class="flex-grow"
-                  ></NSkeleton>
+                  <NSkeleton animated text repeat={3} class="flex-grow" />
                 </div>
               </div>
 
-              <NSkeleton animated repeat={2} class="mt-2" text></NSkeleton>
+              <NSkeleton animated repeat={2} class="mt-2" text />
             </NCard>
           )}
         </NModal>
@@ -428,7 +425,7 @@ const AddNoteToThisTopicButton = defineComponent({
                       key: note.id,
                     }))}
                     onScroll={handleFetchNext}
-                  ></NSelect>
+                  />
                 )
               },
             }}

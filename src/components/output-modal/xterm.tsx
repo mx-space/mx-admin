@@ -1,9 +1,10 @@
-// 展示 Shell 输出的 xterm
-import { Xterm } from '~/components/xterm'
 import { EventSourcePolyfill } from 'event-source-polyfill'
 import { NCard, NModal, NSpin } from 'naive-ui'
-import { getToken } from '~/utils'
 import type { Terminal } from '@xterm/xterm'
+
+// 展示 Shell 输出的 xterm
+import { Xterm } from '~/components/xterm'
+import { getToken } from '~/utils'
 
 export const ShellOutputXterm = defineComponent({
   setup(_, { expose }) {
@@ -46,8 +47,6 @@ export const ShellOutputXterm = defineComponent({
           xtermData.value.push(e.data)
         }
         event.onerror = (e: any) => {
-          console.log(e.eventPhase)
-
           event.close()
           if (e?.data) {
             message.error(e.data)
@@ -102,7 +101,7 @@ export const ShellOutputXterm = defineComponent({
                   xtermData.value.length = 0
                   XtermRef.value = xterm
                 }}
-              ></Xterm>
+              />
             )}
           </div>
         </NCard>

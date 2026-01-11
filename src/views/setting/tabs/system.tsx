@@ -20,6 +20,8 @@ import { UIStore } from '~/stores/ui'
 import { deepDiff, RESTManager } from '~/utils'
 import { colorRef, defineColors } from '~/utils/color'
 
+import { AIConfigSection } from './sections/ai-config'
+
 const NFormPrefixCls = 'mt-6'
 const NFormBaseProps = {
   class: NFormPrefixCls,
@@ -43,7 +45,7 @@ export const TabSystem = defineComponent(() => {
         disabled={true}
         onClick={save}
         icon={<CheckCircleOutlinedIcon />}
-      ></HeaderActionButton>,
+      />,
     )
   })
 
@@ -61,7 +63,7 @@ export const TabSystem = defineComponent(() => {
   })
 
   let originConfigs: any = {}
-  const configs = reactive({})
+  const configs = reactive<Record<string, any>>({})
   const diff = ref({} as any)
 
   watch(
@@ -85,7 +87,7 @@ export const TabSystem = defineComponent(() => {
           disabled={!canSave}
           icon={<CheckCircleOutlinedIcon />}
           onClick={save}
-        ></HeaderActionButton>,
+        />,
       )
     },
   )
@@ -144,7 +146,7 @@ export const TabSystem = defineComponent(() => {
   )
   return () => (
     <Fragment>
-      <div class="pt-4"></div>
+      <div class="pt-4" />
 
       {schema.value && (
         <ConfigForm
@@ -157,19 +159,24 @@ export const TabSystem = defineComponent(() => {
               .replace('Dto', '')
           }}
           schema={schema.value}
-        >
-          {{
-            AdminExtraDto() {
-              return (
-                <>
-                  <NFormItem label={'主题色'}>
-                    <AppColorSetter />
-                  </NFormItem>
-                </>
-              )
-            },
+          v-slots={{
+            AdminExtraDto: () => (
+              <>
+                <NFormItem label={'主题色'}>
+                  <AppColorSetter />
+                </NFormItem>
+              </>
+            ),
+            AIDto: () => (
+              <AIConfigSection
+                value={configs.ai || {}}
+                onUpdate={(value: any) => {
+                  configs.ai = value
+                }}
+              />
+            ),
           }}
-        </ConfigForm>
+        />
       )}
     </Fragment>
   )
@@ -195,7 +202,7 @@ const AppColorSetter = defineComponent({
               document.head.removeChild($style)
             })
           }}
-        ></NColorPicker>
+        />
 
         <NButton
           size="small"

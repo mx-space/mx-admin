@@ -81,6 +81,7 @@ const EditSay = defineComponent({
     }
 
     const parsePayloadIntoReactiveData = (payload: SayModel) =>
+      // biome-ignore lint/correctness/useHookAtTopLevel: <explanation>
       useParsePayloadIntoData(data)(payload)
     const data = reactive<SayReactiveType>(resetReactive())
     const id = computed(() => route.query.id)
@@ -153,22 +154,22 @@ const EditSay = defineComponent({
                 name="更新"
                 variant="info"
                 onClick={handleSubmit}
-                icon={<SendIcon></SendIcon>}
-              ></HeaderActionButton>
+                icon={<SendIcon />}
+              />
             ) : (
               <>
                 <HeaderActionButton
                   name="发布一言"
                   variant={'info'}
                   onClick={handlePostHitokoto}
-                  icon={<CommentIcon></CommentIcon>}
-                ></HeaderActionButton>
+                  icon={<CommentIcon />}
+                />
                 <HeaderActionButton
                   name="发布自己说的"
                   variant={'primary'}
                   onClick={handleSubmit}
-                  icon={<SendIcon></SendIcon>}
-                ></HeaderActionButton>
+                  icon={<SendIcon />}
+                />
               </>
             )}
           </Fragment>
@@ -188,7 +189,7 @@ const EditSay = defineComponent({
               placeholder={placeholder.value.text}
               value={data.text}
               onInput={(e) => void (data.text = e)}
-            ></NInput>
+            />
           </NFormItem>
           <NFormItem
             label="作者"
@@ -199,7 +200,7 @@ const EditSay = defineComponent({
               placeholder={placeholder.value.author}
               value={data.author}
               onInput={(e) => void (data.author = e)}
-            ></NInput>
+            />
           </NFormItem>
           <NFormItem
             label="来源"
@@ -210,7 +211,7 @@ const EditSay = defineComponent({
               placeholder={placeholder.value.source}
               value={data.source}
               onInput={(e) => void (data.source = e)}
-            ></NInput>
+            />
           </NFormItem>
         </NForm>
       </ContentLayout>

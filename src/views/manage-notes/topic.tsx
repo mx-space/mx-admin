@@ -1,7 +1,3 @@
-import { HeaderActionButton } from '~/components/button/rounded-button'
-import { PlusIcon, TrashIcon } from '~/components/icons'
-import { useDataTableFetch } from '~/hooks/use-table'
-import { ContentLayout } from '~/layouts/content'
 import {
   NAvatar,
   NButton,
@@ -12,16 +8,21 @@ import {
   NPopconfirm,
   NThing,
 } from 'naive-ui'
-import { RESTManager } from '~/utils'
-import { textToBigCharOrWord } from '~/utils/word'
 import { useRoute, useRouter } from 'vue-router'
+import type { PaginateResult } from '@mx-space/api-client'
+import type { TopicModel } from '~/models/topic'
 
 import { Icon } from '@vicons/utils'
 
+import { HeaderActionButton } from '~/components/button/rounded-button'
+import { PlusIcon, TrashIcon } from '~/components/icons'
+import { useDataTableFetch } from '~/hooks/use-table'
+import { ContentLayout } from '~/layouts/content'
+import { RESTManager } from '~/utils'
+import { textToBigCharOrWord } from '~/utils/word'
+
 import { TopicDetail } from './components/topic-detail'
 import { TopicEditModal } from './components/topic-modal'
-import type { TopicModel } from '~/models/topic'
-import type { PaginateResult } from '@mx-space/api-client'
 
 export default defineComponent({
   setup() {
@@ -134,7 +135,7 @@ export default defineComponent({
                   icon={<PlusIcon />}
                   onClick={handleAddTopic}
                   variant="success"
-                ></HeaderActionButton>
+                />
               </>
             )
           },
@@ -225,7 +226,7 @@ export default defineComponent({
                       pageCount={pagination.totalPage}
                       pageSize={pagination.size}
                       showQuickJumper
-                    ></NPagination>
+                    />
                   </div>
                 )}
 

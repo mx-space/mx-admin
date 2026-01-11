@@ -47,6 +47,7 @@ const EditProjectView = defineComponent({
     })
 
     const parsePayloadIntoReactiveData = (payload: ProjectModel) =>
+      // biome-ignore lint/correctness/useHookAtTopLevel: <explanation>
       useParsePayloadIntoData(project)(payload)
     const project = reactive<ProjectReactiveType>(resetReactive())
     const id = computed(() => route.query.id)
@@ -149,7 +150,7 @@ const EditProjectView = defineComponent({
               variant="primary"
               onClick={handleSubmit}
               icon={<SendIcon />}
-            ></HeaderActionButton>
+            />
           </Fragment>
         }
       >
@@ -160,7 +161,7 @@ const EditProjectView = defineComponent({
               placeholder=""
               value={project.name}
               onInput={(e) => void (project.name = e)}
-            ></NInput>
+            />
           </NFormItem>
 
           <NFormItem label="文档地址">
@@ -168,7 +169,7 @@ const EditProjectView = defineComponent({
               placeholder=""
               value={project.docUrl}
               onInput={(e) => void (project.docUrl = e)}
-            ></NInput>
+            />
           </NFormItem>
 
           <NFormItem label="预览地址">
@@ -176,7 +177,7 @@ const EditProjectView = defineComponent({
               placeholder=""
               value={project.previewUrl}
               onInput={(e) => void (project.previewUrl = e)}
-            ></NInput>
+            />
           </NFormItem>
 
           <NFormItem label="项目地址">
@@ -184,7 +185,7 @@ const EditProjectView = defineComponent({
               placeholder=""
               value={project.projectUrl}
               onInput={(e) => void (project.projectUrl = e)}
-            ></NInput>
+            />
           </NFormItem>
 
           <NFormItem label="项目描述" required>
@@ -192,7 +193,7 @@ const EditProjectView = defineComponent({
               placeholder=""
               value={project.description}
               onInput={(e) => void (project.description = e)}
-            ></NInput>
+            />
           </NFormItem>
 
           <NFormItem label="项目图标">
@@ -200,7 +201,7 @@ const EditProjectView = defineComponent({
               placeholder=""
               value={project.avatar}
               onInput={(e) => void (project.avatar = e)}
-            ></NInput>
+            />
           </NFormItem>
 
           <NFormItem label="预览图片">
@@ -208,7 +209,7 @@ const EditProjectView = defineComponent({
               round
               value={project.images}
               onUpdateValue={(e) => void (project.images = e)}
-            ></NDynamicTags>
+            />
           </NFormItem>
 
           <NFormItem label="正文" required>
