@@ -39,7 +39,7 @@ export default defineComponent({
           loading.value = false
         })
     })
-    const { create } = useShorthand()
+    const { create, edit } = useShorthand()
     return () => (
       <ContentLayout
         actionsElement={
@@ -58,7 +58,7 @@ export default defineComponent({
         }
       >
         <NTimeline>
-          {data.value.map((item) => {
+          {data.value.map((item, index) => {
             return (
               <NTimelineItem type="default" key={item.id}>
                 {{
@@ -75,6 +75,20 @@ export default defineComponent({
                         <span>{item.content}</span>
 
                         <div class="action">
+                          <NButton
+                            quaternary
+                            type="info"
+                            size="tiny"
+                            onClick={() => {
+                              edit(item).then((res) => {
+                                if (res) {
+                                  data.value[index] = res
+                                }
+                              })
+                            }}
+                          >
+                            编辑
+                          </NButton>
                           <NPopconfirm
                             placement="left"
                             positiveText="取消"
@@ -107,6 +121,14 @@ export default defineComponent({
                     return (
                       <NSpace inline size={5}>
                         <RelativeTime time={item.created} />
+                        {item.modified && (
+                          <>
+                            <span class="text-gray-400">·</span>
+                            <span class="text-gray-400">
+                              修改于 <RelativeTime time={item.modified} />
+                            </span>
+                          </>
+                        )}
                         <NSpace inline size={1} align="center">
                           <MaterialSymbolsThumbUpOutline /> {item.up}
                           <span class={'mx-2'}>/</span>
