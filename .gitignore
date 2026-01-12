@@ -6,6 +6,7 @@ dist-ssr
 bundle-analyze
 stats.html
 .env.development
+.idea
 
 /src/views/dev
 g.d.ts
