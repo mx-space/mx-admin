@@ -68,6 +68,7 @@ import { RouteName } from '~/router/name'
 import { AppStore } from '~/stores/app'
 import { UserStore } from '~/stores/user'
 import { parseDate, RESTManager } from '~/utils'
+import { isNewerVersion } from '~/utils/version'
 
 import PKG from '../../../package.json'
 import { Card } from './card'
@@ -661,7 +662,7 @@ const AppIF = defineComponent({
       const { dashboard, system } = await checkUpdateFromGitHub()
 
       if (
-        dashboard !== PKG.version &&
+        isNewerVersion(PKG.version, dashboard) &&
         closedTips.value.dashboard !== dashboard
       ) {
         const $notice = notice.info({
@@ -726,7 +727,7 @@ const AppIF = defineComponent({
         app.value.version !== 'dev' &&
         versionMap.value.system &&
         closedTips.value.system !== versionMap.value.system &&
-        versionMap.value.system !== app.value.version
+        isNewerVersion(app.value.version, versionMap.value.system)
       ) {
         notice.info({
           title: '[系统] 有新版本啦！',

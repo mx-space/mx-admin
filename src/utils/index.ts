@@ -6,6 +6,7 @@ export * from './auth'
 export * from './build-menus'
 export * from './rest'
 export * from './time'
+export * from './version'
 
 /**
  * diff 两层，Object 浅层比较，引用不一致返回整个不一样的 Object
