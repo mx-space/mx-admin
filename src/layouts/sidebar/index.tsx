@@ -22,7 +22,18 @@ export const SidebarLayout = defineComponent({
     const { meta, b } = useMagicKeys()
     watchEffect(() => {
       if (meta.value && b.value) {
-        collapse.value = !collapse.value
+        // is the focus in the input box?
+        const activeElement = document.activeElement
+        const isInEditor =
+          activeElement?.tagName === 'TEXTAREA' ||
+          activeElement?.tagName === 'INPUT' ||
+          activeElement?.getAttribute('contenteditable') === 'true' ||
+          activeElement?.closest('.monaco-editor') ||
+          activeElement?.closest('[role="textbox"]')
+
+        if (!isInEditor) {
+          collapse.value = !collapse.value
+        }
       }
     })
 
