@@ -150,8 +150,8 @@ importers:
         specifier: 0.50.0
         version: 0.50.0
       monaco-editor-auto-typings:
-        specifier: 0.4.5
-        version: 0.4.5(monaco-editor@0.50.0)
+        specifier: 0.4.6
+        version: 0.4.6(monaco-editor@0.50.0)
       naive-ui:
         specifier: 2.41.0
         version: 2.41.0(vue@3.5.13(typescript@5.7.2))
@@ -2583,8 +2583,8 @@ packages:
   mnemonist@0.39.8:
     resolution: {integrity: sha512-vyWo2K3fjrUw8YeeZ1zF0fy6Mu59RHokURlld8ymdUPjMlD9EC9ov1/YPqTgqRvUN9nTr3Gqfz29LYAmu0PHPQ==}
 
-  monaco-editor-auto-typings@0.4.5:
-    resolution: {integrity: sha512-J1iVXKKhcBRc8t3jhHl2l9WYhnnPBXFOSuRCIpiC7d2aEOX9ZhWuIAWcCtTtvAN4944lfi0lhjuTi4iebe8VDg==}
+  monaco-editor-auto-typings@0.4.6:
+    resolution: {integrity: sha512-yN6yP2oQJkpyZtUyi5qT9AjZLILrTZWOFny7Km2yNiPMPqOWq/znkTS4b5Yk1sHumSaLJUw5m1EPKiopRqtEpA==}
     peerDependencies:
       monaco-editor: '*'
 
@@ -6189,7 +6189,7 @@ snapshots:
     dependencies:
       obliterator: 2.0.4
 
-  monaco-editor-auto-typings@0.4.5(monaco-editor@0.50.0):
+  monaco-editor-auto-typings@0.4.6(monaco-editor@0.50.0):
     dependencies:
       monaco-editor: 0.50.0
 
