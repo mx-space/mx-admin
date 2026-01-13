@@ -10,6 +10,7 @@ export const useShorthand = () => {
 
   return {
     create() {
+      quickHandText.value = ''
       return new Promise<RecentlyModel | null>((resolve, reject) => {
         const dialog = modal.create({
           title: '速记',
@@ -57,11 +58,76 @@ export const useShorthand = () => {
                 <NButton
                   round
                   onClick={() => {
+                    quickHandText.value = ''
                     void dialog.destroy()
                     resolve(null)
                   }}
                 >
                   不想记了
+                </NButton>
+              </NSpace>
+            )
+          },
+        })
+      })
+    },
+
+    edit(item: RecentlyModel) {
+      quickHandText.value = item.content
+      return new Promise<RecentlyModel | null>((resolve, reject) => {
+        const dialog = modal.create({
+          title: '编辑速记',
+          type: 'info',
+
+          content() {
+            return (
+              <NInput
+                resizable={false}
+                type="textarea"
+                onUpdateValue={(e) => {
+                  quickHandText.value = e
+                }}
+                value={quickHandText.value}
+                class="h-[300px] max-h-[80vh]"
+              />
+            )
+          },
+          action() {
+            return (
+              <NSpace>
+                <NButton
+                  round
+                  type="primary"
+                  onClick={() => {
+                    RESTManager.api
+                      .recently(item.id)
+                      .put<RecentlyModel>({
+                        data: {
+                          content: quickHandText.value,
+                        },
+                      })
+                      .then((res) => {
+                        quickHandText.value = ''
+                        message.success('修改成功')
+                        dialog.destroy()
+                        resolve(res)
+                      })
+                      .catch((error) => {
+                        reject(error)
+                      })
+                  }}
+                >
+                  我改好啦
+                </NButton>
+                <NButton
+                  round
+                  onClick={() => {
+                    quickHandText.value = ''
+                    void dialog.destroy()
+                    resolve(null)
+                  }}
+                >
+                  取消
                 </NButton>
               </NSpace>
             )

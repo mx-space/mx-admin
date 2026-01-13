@@ -69,7 +69,7 @@ export const CodemirrorEditor = defineComponent({
       <div class="flex h-full flex-col">
         <MarkdownToolbar editorView={editorView.value} />
         <div
-          class={[styles.editor, props.className, 'flex-1']}
+          class={[styles.editor, props.className, 'flex-1 overflow-auto']}
           ref={refContainer}
         />
       </div>
