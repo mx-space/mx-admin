@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## [4.12.1](https://github.com/mx-space/admin-vue3/compare/v4.12.0...v4.12.1) (2026-01-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency js-yaml to v4.1.1 [security] ([#1003](https://github.com/mx-space/admin-vue3/issues/1003)) ([c056466](https://github.com/mx-space/admin-vue3/commit/c056466902a25f3b6183e8b79f28399cea591882))
+* **deps:** update dependency monaco-editor-auto-typings to v0.4.6 ([#977](https://github.com/mx-space/admin-vue3/issues/977)) ([a8dd0f2](https://github.com/mx-space/admin-vue3/commit/a8dd0f22bc52ef764ad102ab1fba3ee01b99a5c5))
+* **deps:** update dependency pinia to v2.3.1 ([#992](https://github.com/mx-space/admin-vue3/issues/992)) ([4eb23ae](https://github.com/mx-space/admin-vue3/commit/4eb23ae39adfe6556f9ba1005e43593e6ff11055))
+* **deps:** update dependency qs to v6.14.1 [security] ([#1007](https://github.com/mx-space/admin-vue3/issues/1007)) ([721ad0f](https://github.com/mx-space/admin-vue3/commit/721ad0ff287cd251794c2fe2b05e9d5a798756a8))
+* **deps:** update dependency validator to v13.15.22 [security] ([#1002](https://github.com/mx-space/admin-vue3/issues/1002)) ([4103015](https://github.com/mx-space/admin-vue3/commit/4103015a0e60ff4c3c13317197fa99ccd042f8cd))
+* **sidebar:** prevent unintended collapse behavior ([#1011](https://github.com/mx-space/admin-vue3/issues/1011)) ([8f78f3d](https://github.com/mx-space/admin-vue3/commit/8f78f3d40bf75e3e80a2bd8ab85c5fc710e5db15))
+* **version:** improve version comparison logic ([#1010](https://github.com/mx-space/admin-vue3/issues/1010)) ([a4f5119](https://github.com/mx-space/admin-vue3/commit/a4f5119b779335a8cb058e8450672969f6f5c9ec))
+
+
+### Features
+
+* **shorthand:** 速记支持编辑和显示修改时间 ([#1012](https://github.com/mx-space/admin-vue3/issues/1012)) ([9fb375e](https://github.com/mx-space/admin-vue3/commit/9fb375ecb1c18a603c83a49e29a2a3dd5c003630))
+
+
+
 # [4.12.0](https://github.com/mx-space/admin-vue3/compare/v4.11.0...v4.12.0) (2026-01-12)
 
 
