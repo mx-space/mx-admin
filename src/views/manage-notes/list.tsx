@@ -1,3 +1,12 @@
+import {
+  Book as BookIcon,
+  Bookmark as BookmarkIcon,
+  EyeOff as EyeHideIcon,
+  Eye as EyeIcon,
+  EyeOff as EyeOffIcon,
+  Heart as HeartIcon,
+  Plus as PlusIcon,
+} from 'lucide-vue-next'
 import { NButton, NEllipsis, NPopconfirm, NSpace, useMessage } from 'naive-ui'
 import { defineComponent, onMounted, reactive, watch } from 'vue'
 import { useRoute } from 'vue-router'
@@ -7,15 +16,6 @@ import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 
 import { Icon } from '@vicons/utils'
 
-import {
-  BookIcon,
-  BookmarkIcon,
-  EyeHideIcon,
-  EyeIcon,
-  EyeOffIcon,
-  HeartIcon,
-  PlusIcon,
-} from '~/components/icons'
 import { TableTitleLink } from '~/components/link/title-link'
 import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
 import { StatusToggle } from '~/components/status-toggle'

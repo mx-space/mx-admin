@@ -1,3 +1,4 @@
+import { Plus } from 'lucide-vue-next'
 import {
   NButton,
   NButtonGroup,
@@ -27,7 +28,6 @@ import type { TokenModel } from '~/models/token'
 import { Icon } from '@vicons/utils'
 
 import { If } from '~/components/directives/if'
-import { PlusIcon as Plus } from '~/components/icons'
 import { IpInfoPopover } from '~/components/ip-info'
 import { RelativeTime } from '~/components/time/relative-time'
 import { useStoreRef } from '~/hooks/use-store-ref'

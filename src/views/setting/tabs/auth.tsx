@@ -1,3 +1,4 @@
+import { Check as CheckIcon, Plus } from 'lucide-vue-next'
 import {
   NButton,
   NButtonGroup,
@@ -21,7 +22,6 @@ import type { FlatOauthData, OauthData } from './providers/oauth'
 
 import { Icon } from '@vicons/utils'
 
-import { CheckIcon, PlusIcon as Plus } from '~/components/icons'
 import { RelativeTime } from '~/components/time/relative-time'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { UIStore } from '~/stores/ui'

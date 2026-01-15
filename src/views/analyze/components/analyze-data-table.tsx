@@ -1,3 +1,7 @@
+import {
+  RefreshCw as RefreshOutlineIcon,
+  Trash as TrashIcon,
+} from 'lucide-vue-next'
 import { NButton, NEllipsis } from 'naive-ui'
 import { defineComponent, onBeforeMount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
@@ -6,7 +10,6 @@ import type { Pager } from '~/models/base'
 import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
-import { RefreshOutlineIcon, TrashIcon } from '~/components/icons'
 import { IpInfoPopover } from '~/components/ip-info'
 import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
 import { Table } from '~/components/table'

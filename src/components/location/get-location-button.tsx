@@ -1,3 +1,4 @@
+import { MapPin as LocationIcon } from 'lucide-vue-next'
 import { NButton, useMessage } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import type { Amap, Regeocode } from '~/models/amap'
@@ -5,7 +6,6 @@ import type { PropType } from 'vue'
 
 import { Icon } from '@vicons/utils'
 
-import { LocationIcon } from '~/components/icons'
 import { RESTManager } from '~/utils/rest'
 
 export const GetLocationButton = defineComponent({

@@ -2,6 +2,12 @@
  * 最近 & 速记
  */
 import {
+  Plus as AddIcon,
+  ThumbsDown as MaterialSymbolsThumbDownOutline,
+  ThumbsUp as MaterialSymbolsThumbUpOutline,
+  Pen as PenIcon,
+} from 'lucide-vue-next'
+import {
   NButton,
   NPopconfirm,
   NSpace,
@@ -13,12 +19,6 @@ import type { RecentlyModel } from '~/models/recently'
 
 import { Icon } from '@vicons/utils'
 
-import {
-  AddIcon,
-  MaterialSymbolsThumbDownOutline,
-  MaterialSymbolsThumbUpOutline,
-  PenIcon,
-} from '~/components/icons'
 import { useShorthand } from '~/components/shorthand'
 import { RelativeTime } from '~/components/time/relative-time'
 

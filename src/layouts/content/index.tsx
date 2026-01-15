@@ -1,181 +1,51 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-
-/* eslint-disable @typescript-eslint/no-empty-function */
-import { NLayoutContent } from 'naive-ui'
-import {
-  computed,
-  defineComponent,
-  inject,
-  onBeforeUnmount,
-  provide,
-  ref,
-} from 'vue'
+import { computed, defineComponent } from 'vue'
 import { useRouter } from 'vue-router'
 import type { PropType, VNode } from 'vue'
 
-import styles from './index.module.css'
-
-const ProvideKey = Symbol('inject')
-
-interface Injectable {
-  addFloatButton: (vnode: VNode) => symbol
-  removeFloatButton: (name: symbol) => void
-  setHeaderButtons: (vnode: VNode | null) => void
-}
-export const useLayout = () =>
-  inject<Injectable>(ProvideKey, {
-    addFloatButton(_el: VNode) {
-      return Symbol()
-    },
-    removeFloatButton(_name: symbol) {
-      // noop
-    },
-    setHeaderButtons(_el: VNode | null) {
-      // noop
-    },
-  })
 export const ContentLayout = defineComponent({
+  name: 'ContentLayout',
   props: {
-    actionsElement: {
-      type: Object as PropType<VNode | null>,
-      required: false,
-    },
-    footerButtonElement: {
-      type: Object as PropType<VNode | null>,
-      required: false,
-    },
     title: {
       type: String,
     },
-    description: {
-      type: [String, Object] as PropType<string | VNode>,
+    actionsElement: {
+      type: Object as PropType<VNode | null>,
     },
-    headerClass: {
-      type: [String] as PropType<string>,
+    hideHeader: {
+      type: Boolean,
+      default: false,
     },
   },
-  setup(props, ctx) {
-    const { slots } = ctx
+  setup(props, { slots }) {
     const router = useRouter()
-    const route = computed(() => router.currentRoute)
-    const A$ael = () => props.actionsElement ?? null
-    const A$fel = () => props.footerButtonElement ?? null
-    const footerExtraButtonEl = ref<
-      null | ((() => VNode) & { displayName$: symbol })[]
-    >(null)
-    provide<Injectable>(ProvideKey, {
-      addFloatButton(el: VNode | (() => VNode)) {
-        footerExtraButtonEl.value ??= []
-        const E: any = typeof el === 'function' ? el : () => el
-        E.displayName$ = E.name ? Symbol(E.name) : Symbol('fab')
-        footerExtraButtonEl.value.push(E)
-
-        return E.displayName$
-      },
-      removeFloatButton(name: symbol) {
-        if (!footerExtraButtonEl.value) {
-          return
-        }
-        const index = footerExtraButtonEl.value.findIndex(
-          (E) => E.displayName$ === name,
-        )
-        if (index !== -1) {
-          footerExtraButtonEl.value.splice(index, 1)
-        }
-      },
-
-      setHeaderButtons(el: VNode | null) {
-        if (!el) {
-          SettingHeaderEl.value = null
-          return
-        }
-        SettingHeaderEl.value = () => el
-      },
-    })
-
-    onBeforeUnmount(() => {
-      footerExtraButtonEl.value = null
-    })
-
-    const breadcrumbText = computed(() =>
-      route.value.value.matched.reduce(
-        (t, cur) =>
-          t +
-          (cur.meta.title
-            ? // t 不为空，补一个 分隔符
-              t.length > 0
-              ? ` · ${cur.meta.title}`
-              : cur.meta.title
-            : ''),
-        '',
-      ),
-    )
+    const route = computed(() => router.currentRoute.value)
 
     const pageTitle = computed(
-      () => props.title ?? route.value.value.matched.at(-1)?.meta.title,
+      () => props.title ?? (route.value.meta?.title as string) ?? '',
     )
-
-    const descriptionElement = computed(() => {
-      if (!props.description && breadcrumbText.value === pageTitle.value) {
-        return null
-      }
-
-      return props.description ?? breadcrumbText.value
-    })
-
-    const SettingHeaderEl = ref<(() => VNode) | null>()
-    // 抽出动态组件，防止整个子代组件全部重渲染
-    const HeaderActionComponent = defineComponent({
-      setup() {
-        return () => (
-          <div class={[styles['header-actions'], 'space-x-4']}>
-            {SettingHeaderEl.value ? (
-              <SettingHeaderEl.value />
-            ) : props.actionsElement ? (
-              <A$ael />
-            ) : (
-              slots.actions?.()
-            )}
-          </div>
-        )
-      },
-    })
-    const Footer = defineComponent({
-      setup() {
-        return () => {
-          return (
-            <footer class={styles.buttons}>
-              {footerExtraButtonEl.value
-                ? footerExtraButtonEl.value.map((E) => (
-                    <E key={E.displayName$} />
-                  ))
-                : null}
-              {props.footerButtonElement ? <A$fel /> : slots.buttons?.()}
-            </footer>
-          )
-        }
-      },
-    })
 
     return () => (
-      <>
-        <NLayoutContent
-          class={[styles['sticky-header'], props.headerClass]}
-          embedded
-        >
-          <header class={styles.header}>
-            <div class={'flex flex-col'}>
-              <h1 class={styles.title}>{pageTitle.value}</h1>
-              {descriptionElement.value && (
-                <h2 class={'opacity-80'}>{descriptionElement.value}</h2>
-              )}
+      <div class="min-h-full bg-[var(--content-bg)]">
+        {!props.hideHeader && (
+          <header class="sticky top-0 z-10 flex h-12 items-center justify-between border-b border-[var(--sidebar-border)] bg-[var(--content-bg)] px-5">
+            <h1 class="text-[14px] font-medium text-[var(--sidebar-text-active)]">
+              {pageTitle.value}
+            </h1>
+            <div class="flex items-center gap-2">
+              {props.actionsElement ?? slots.actions?.()}
             </div>
-            <HeaderActionComponent />
           </header>
-        </NLayoutContent>
-        <main class={styles.main}>{slots.default?.()}</main>
-        <Footer />
-      </>
+        )}
+
+        {/* Content */}
+        <main class="p-5">{slots.default?.()}</main>
+      </div>
     )
   },
+})
+
+export const useLayout = () => ({
+  addFloatButton: () => Symbol(),
+  removeFloatButton: () => {},
+  setHeaderButtons: () => {},
 })

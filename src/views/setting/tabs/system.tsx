@@ -1,4 +1,5 @@
 import { camelCase, cloneDeep, isEmpty, merge } from 'es-toolkit/compat'
+import { CircleCheck as CheckCircleOutlinedIcon } from 'lucide-vue-next'
 import { NButton, NColorPicker, NFormItem, useThemeVars } from 'naive-ui'
 import { ThemeColorConfig } from 'theme.config'
 import {
@@ -13,7 +14,6 @@ import {
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { ConfigForm } from '~/components/config-form'
-import { CheckCircleOutlinedIcon } from '~/components/icons'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { useLayout } from '~/layouts/content'
 import { UIStore } from '~/stores/ui'

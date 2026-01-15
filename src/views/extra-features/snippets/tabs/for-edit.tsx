@@ -1,6 +1,7 @@
 import { omit } from 'es-toolkit/compat'
 import { dump, load } from 'js-yaml'
 import JSON5 from 'json5'
+import { CircleCheck as CheckCircleOutlinedIcon } from 'lucide-vue-next'
 import {
   NForm,
   NFormItem,
@@ -17,7 +18,6 @@ import { useRoute, useRouter } from 'vue-router'
 import { useStorage } from '@vueuse/core'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
-import { CheckCircleOutlinedIcon } from '~/components/icons'
 import { KVEditor } from '~/components/kv-editor'
 import { useMountAndUnmount } from '~/hooks/use-lifecycle'
 import { useLayout } from '~/layouts/content'

@@ -1,25 +1,26 @@
+import {
+  Bold,
+  Code,
+  FileCode,
+  Heading,
+  Italic,
+  Link,
+  List,
+  ListOrdered,
+  ListTodo,
+  Minus,
+  Quote,
+  Redo2,
+  Smile,
+  Strikethrough,
+  Undo2,
+} from 'lucide-vue-next'
 import { NPopover } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import type { EditorView } from '@codemirror/view'
 import type { Component, PropType } from 'vue'
 
 import { redo, undo } from '@codemirror/commands'
-import Bold from '@vicons/fa/Bold'
-import Code from '@vicons/fa/Code'
-import FileCode from '@vicons/fa/FileCode'
-import Heading from '@vicons/fa/Heading'
-import Italic from '@vicons/fa/Italic'
-import Link from '@vicons/fa/Link'
-import ListOl from '@vicons/fa/ListOl'
-import ListUl from '@vicons/fa/ListUl'
-import Minus from '@vicons/fa/Minus'
-import QuoteRight from '@vicons/fa/QuoteRight'
-import RedoAlt from '@vicons/fa/RedoAlt'
-import Smile from '@vicons/fa/Smile'
-import Strikethrough from '@vicons/fa/Strikethrough'
-import Tasks from '@vicons/fa/Tasks'
-import UndoAlt from '@vicons/fa/UndoAlt'
-import { Icon } from '@vicons/utils'
 
 import { EmojiPicker } from './emoji-picker'
 import { commands } from './markdown-commands'
@@ -98,26 +99,26 @@ export const MarkdownToolbar = defineComponent({
         divider: true,
       },
       {
-        icon: ListUl,
+        icon: List,
         title: '无序列表',
         shortcut: 'Ctrl+L',
         action: () => executeCommand(commands.bulletList),
       },
       {
-        icon: ListOl,
+        icon: ListOrdered,
         title: '有序列表',
         shortcut: 'Ctrl+O',
         action: () => executeCommand(commands.orderedList),
       },
       {
-        icon: Tasks,
+        icon: ListTodo,
         title: '任务列表',
         shortcut: 'Ctrl+J',
         action: () => executeCommand(commands.taskList),
         divider: true,
       },
       {
-        icon: QuoteRight,
+        icon: Quote,
         title: '引用',
         shortcut: 'Ctrl+;',
         action: () => executeCommand(commands.quote),
@@ -142,7 +143,7 @@ export const MarkdownToolbar = defineComponent({
         divider: true,
       },
       {
-        icon: UndoAlt,
+        icon: Undo2,
         title: '撤销',
         shortcut: 'Ctrl+Z',
         action: () => {
@@ -153,7 +154,7 @@ export const MarkdownToolbar = defineComponent({
         },
       },
       {
-        icon: RedoAlt,
+        icon: Redo2,
         title: '重做',
         shortcut: 'Ctrl+Y',
         action: () => {
@@ -192,10 +193,8 @@ export const MarkdownToolbar = defineComponent({
                   class="toolbar-button inline-flex cursor-pointer items-center justify-center border-none bg-transparent outline-none"
                   aria-label={buttonProps.button.title}
                 >
-                  <Icon size={15}>
-                    {/* @ts-ignore */}
-                    <buttonProps.button.icon />
-                  </Icon>
+                  {/* @ts-ignore */}
+                  <buttonProps.button.icon size={15} />
                 </button>
               ),
               default: () => (

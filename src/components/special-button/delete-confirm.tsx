@@ -1,8 +1,8 @@
+import { Trash2 as DeleteIcon } from 'lucide-vue-next'
 import { useDialog, useMessage } from 'naive-ui'
 import type { PropType, Ref } from 'vue'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
-import { DeleteIcon } from '~/components/icons'
 
 type AccpetType = string[] | Set<string>
 

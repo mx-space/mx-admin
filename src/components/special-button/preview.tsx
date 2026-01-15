@@ -1,11 +1,11 @@
 import { debounce } from 'es-toolkit/compat'
+import { Search as MagnifyingGlass } from 'lucide-vue-next'
 import { NSplit } from 'naive-ui'
 
 import { useUIStore } from '~/stores/ui'
 import { RESTManager } from '~/utils'
 
 import { HeaderActionButton } from '../button/rounded-button'
-import { MagnifyingGlass } from '../icons'
 
 export type PreviewButtonExposed = {
   getWindow: () => Window | null

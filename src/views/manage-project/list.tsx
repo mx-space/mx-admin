@@ -1,3 +1,4 @@
+import { Plus as AddIcon, ChevronDown as MenuDownIcon } from 'lucide-vue-next'
 import {
   NAvatar,
   NButton,
@@ -18,7 +19,6 @@ import { defineComponent, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import type { ProjectModel, ProjectResponse } from '~/models/project'
 
-import { AddIcon, MenuDownIcon } from '~/components/icons'
 import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
 import { RelativeTime } from '~/components/time/relative-time'
 import { useDataTableFetch } from '~/hooks/use-table'

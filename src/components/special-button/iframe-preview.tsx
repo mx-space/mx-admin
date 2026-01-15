@@ -1,8 +1,8 @@
+import { Search as MagnifyIcon } from 'lucide-vue-next'
 import { NButton, NPopover } from 'naive-ui'
 
 import { Icon } from '@vicons/utils'
 
-import { MagnifyIcon } from '~/components/icons'
 import { ArticlePreview } from '~/components/preview'
 
 export const IframePreviewButton = defineComponent({

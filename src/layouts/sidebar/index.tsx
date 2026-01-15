@@ -59,24 +59,32 @@ export const SidebarLayout = defineComponent({
         {{
           default() {
             return (
-              <div class={styles.root}>
+              <div
+                class={[styles.root, collapse.value ? 'collapsed' : 'expanded']}
+              >
                 {isInApiDebugMode && (
                   <div
                     class={[
-                      'bg-dark-800 z-2 fixed left-0 right-0 top-0 flex h-[40px] items-center whitespace-pre text-gray-400 transition-all duration-500',
-                      window.injectData.PAGE_PROXY && 'bg-red-900',
+                      'fixed left-0 right-0 top-0 z-20 flex h-10 items-center whitespace-pre px-4 text-sm',
+                      'border-b border-[var(--sidebar-border)] bg-[var(--sidebar-bg)] text-[var(--sidebar-text)]',
+                      window.injectData.PAGE_PROXY && 'bg-red-900/20',
                     ]}
                     style={{
-                      paddingLeft: !collapse.value ? '270px' : '80px',
+                      paddingLeft: !collapse.value ? '236px' : '72px',
                     }}
                   >
-                    You are in customizing the API endpoint mode, please check:{' '}
-                    <RouterLink to={'/setup-api'}>setup-api</RouterLink>.
-                    Endpoint: {RESTManager.endpoint}, Gateway: {GATEWAY_URL}
-                    {window.injectData.PAGE_PROXY &&
-                      ', Dashboard is in local dev mode'}
+                    API endpoint mode:{' '}
+                    <RouterLink
+                      to="/setup-api"
+                      class="mx-2 text-blue-400 hover:underline"
+                    >
+                      setup-api
+                    </RouterLink>
+                    | Endpoint: {RESTManager.endpoint} | Gateway: {GATEWAY_URL}
+                    {window.injectData.PAGE_PROXY && ' | Local dev mode'}
                   </div>
                 )}
+
                 <Sidebar
                   collapse={collapse.value}
                   width={sidebarWidth.value}
@@ -92,11 +100,11 @@ export const SidebarLayout = defineComponent({
                   style={
                     {
                       left: !collapse.value
-                        ? `${sidebarWidth.value}px`
-                        : '50px',
+                        ? 'var(--sidebar-width)'
+                        : 'var(--sidebar-collapse-width)',
                       pointerEvents:
                         isLaptop.value && !collapse.value ? 'none' : 'auto',
-                      top: isInApiDebugMode && '40px',
+                      top: isInApiDebugMode ? '40px' : '0',
                     } as CSSProperties
                   }
                 >

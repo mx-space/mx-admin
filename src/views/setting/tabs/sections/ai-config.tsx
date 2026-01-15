@@ -1,3 +1,4 @@
+import { CircleCheck as CheckCircleOutlinedIcon } from 'lucide-vue-next'
 import {
   NButton,
   NCard,
@@ -13,7 +14,6 @@ import { computed, defineComponent, onMounted, ref, watch } from 'vue'
 import type { PropType } from 'vue'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
-import { CheckCircleOutlinedIcon } from '~/components/icons'
 import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
 import { RESTManager } from '~/utils'
 

@@ -1,10 +1,10 @@
+import { Plus as AddIcon } from 'lucide-vue-next'
 import { NButton, NPopconfirm, NSpace, useDialog, useMessage } from 'naive-ui'
 import { defineComponent, onMounted, reactive, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import type { SayResponse } from '~/models/say'
 import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 
-import { AddIcon } from '~/components/icons'
 import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
 import { Table } from '~/components/table'
 import { RelativeTime } from '~/components/time/relative-time'

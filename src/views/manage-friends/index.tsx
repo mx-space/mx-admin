@@ -1,5 +1,10 @@
 import { omit } from 'es-toolkit/compat'
 import {
+  Check as CheckIcon,
+  Plus,
+  RefreshCcw as RefreshCircle,
+} from 'lucide-vue-next'
+import {
   NBadge,
   NButton,
   NCard,
@@ -28,7 +33,6 @@ import { useRoute, useRouter } from 'vue-router'
 import type { LinkModel, LinkResponse, LinkStateCount } from '~/models/link'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
-import { CheckIcon, PlusIcon as Plus, RefreshCircle } from '~/components/icons'
 import { Table } from '~/components/table'
 import { RelativeTime } from '~/components/time/relative-time'
 import { useDataTableFetch } from '~/hooks/use-table'

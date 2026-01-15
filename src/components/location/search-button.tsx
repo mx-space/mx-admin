@@ -1,4 +1,5 @@
 import { debounce } from 'es-toolkit/compat'
+import { Search as SearchIcon } from 'lucide-vue-next'
 import {
   NAutoComplete,
   NButton,
@@ -15,7 +16,6 @@ import type { PropType } from 'vue'
 
 import { Icon } from '@vicons/utils'
 
-import { SearchIcon } from '~/components/icons'
 import { RESTManager } from '~/utils/rest'
 
 export const SearchLocationButton = defineComponent({

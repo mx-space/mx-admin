@@ -1,3 +1,4 @@
+import { Plus as PlusIcon, Trash as TrashIcon } from 'lucide-vue-next'
 import {
   NAvatar,
   NButton,
@@ -15,7 +16,6 @@ import type { TopicModel } from '~/models/topic'
 import { Icon } from '@vicons/utils'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
-import { PlusIcon, TrashIcon } from '~/components/icons'
 import { useDataTableFetch } from '~/hooks/use-table'
 import { ContentLayout } from '~/layouts/content'
 import { RESTManager } from '~/utils'

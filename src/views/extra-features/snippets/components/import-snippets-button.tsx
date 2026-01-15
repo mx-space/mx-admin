@@ -1,4 +1,8 @@
 import {
+  ExternalLink as ExternalLinkIcon,
+  Download as ImportIcon,
+} from 'lucide-vue-next'
+import {
   NButton,
   NCard,
   NForm,
@@ -15,7 +19,6 @@ import type { PropType } from 'vue'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { CodeHighlight } from '~/components/code-highlight'
-import { ExternalLinkIcon, ImportIcon } from '~/components/icons'
 import { CenterSpin } from '~/components/spin'
 import { GitHubSnippetRepo } from '~/external/api/github-mx-snippets'
 import { SnippetType } from '~/models/snippet'

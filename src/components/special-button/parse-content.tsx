@@ -1,5 +1,9 @@
 import { load } from 'js-yaml'
 import {
+  CircleHelp as QuestionCircleIcon,
+  Hash as SlackHashIcon,
+} from 'lucide-vue-next'
+import {
   NButton,
   NCard,
   NCode,
@@ -16,7 +20,6 @@ import { Icon } from '@vicons/utils'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { PlainEditor } from '~/components/editor/plain/plain'
-import { QuestionCircleIcon, SlackHashIcon } from '~/components/icons'
 
 export const ParseContentButton = defineComponent({
   props: {

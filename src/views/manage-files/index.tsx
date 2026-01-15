@@ -1,3 +1,4 @@
+import { Archive as ArchiveIcon, Upload as UploadIcon } from 'lucide-vue-next'
 import {
   NButton,
   NButtonGroup,
@@ -17,7 +18,6 @@ import { defineComponent } from 'vue'
 import type { UploadFileInfo } from 'naive-ui'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
-import { ArchiveIcon, UploadIcon } from '~/components/icons'
 import { Table } from '~/components/table'
 import { ContentLayout } from '~/layouts/content'
 import { getToken, RESTManager } from '~/utils'

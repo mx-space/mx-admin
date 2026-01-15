@@ -1,3 +1,4 @@
+import { Plus as AddIcon } from 'lucide-vue-next'
 import {
   NBadge,
   NButton,
@@ -20,7 +21,6 @@ import type { PostModel } from '~/models/post'
 import type { Ref } from 'vue'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
-import { AddIcon } from '~/components/icons'
 import { tableRowStyle } from '~/components/table'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { ContentLayout } from '~/layouts/content'

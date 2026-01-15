@@ -1,3 +1,4 @@
+import { Upload as UploadIcon } from 'lucide-vue-next'
 import {
   NButton,
   NCard,
@@ -11,7 +12,6 @@ import type { TopicModel } from '~/models/topic'
 import type { FormInst } from 'naive-ui'
 import type { PropType } from 'vue'
 
-import { UploadIcon } from '~/components/icons'
 import { UploadWrapper } from '~/components/upload'
 import { RESTManager } from '~/utils/rest'
 

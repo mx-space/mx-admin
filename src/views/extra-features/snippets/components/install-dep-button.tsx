@@ -1,7 +1,7 @@
+import { Download as DownloadOutlined } from 'lucide-vue-next'
 import { NButton, NCard, NForm, NFormItem, NInput, NModal } from 'naive-ui'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
-import { DownloadOutlined } from '~/components/icons'
 
 import { InstallDepsXterm } from './install-dep-xterm'
 

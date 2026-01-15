@@ -1,12 +1,12 @@
+import {
+  Database as DatabaseBackupIcon,
+  Trash2 as TrashSharpIcon,
+  Upload as UploadIcon,
+} from 'lucide-vue-next'
 import { NButton, NPopconfirm, NSpace } from 'naive-ui'
 import { defineComponent, onBeforeMount } from 'vue'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
-import {
-  DatabaseBackupIcon,
-  TrashSharpIcon,
-  UploadIcon,
-} from '~/components/icons'
 import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
 import { Table } from '~/components/table'
 import { useDataTableFetch } from '~/hooks/use-table'

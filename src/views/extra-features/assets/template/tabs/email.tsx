@@ -1,7 +1,7 @@
+import { Check as CheckIcon, Trash as TrashIcon } from 'lucide-vue-next'
 import { NForm, NFormItem, NGi, NSelect, useDialog } from 'naive-ui'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
-import { CheckIcon, TrashIcon } from '~/components/icons'
 import { useMountAndUnmount } from '~/hooks/use-lifecycle'
 import { useLayout } from '~/layouts/content'
 import { TwoColGridLayout } from '~/layouts/two-col'

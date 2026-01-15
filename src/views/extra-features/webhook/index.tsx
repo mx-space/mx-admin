@@ -1,4 +1,5 @@
 import { cloneDeep } from 'es-toolkit/compat'
+import { Plus as PlusIcon } from 'lucide-vue-next'
 import {
   NButton,
   NButtonGroup,
@@ -24,7 +25,6 @@ import type { WebhookEventModel, WebhookModel } from '~/models/wehbook'
 import type { PropType } from 'vue'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
-import { PlusIcon } from '~/components/icons'
 import { JSONHighlight } from '~/components/json-highlight'
 import { ContentLayout } from '~/layouts/content'
 import { EventScope } from '~/models/wehbook'

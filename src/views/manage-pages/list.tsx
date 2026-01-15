@@ -1,3 +1,4 @@
+import { Plus as AddIcon } from 'lucide-vue-next'
 import {
   NButton,
   NCard,
@@ -11,7 +12,6 @@ import { defineComponent, onMounted } from 'vue'
 import type { PageModel, PageResponse } from '~/models/page'
 import type { PropType } from 'vue'
 
-import { AddIcon } from '~/components/icons'
 import { TableTitleLink } from '~/components/link/title-link'
 import { RelativeTime } from '~/components/time/relative-time'
 

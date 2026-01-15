@@ -1,4 +1,12 @@
 import {
+  Plus as AddIcon,
+  Book as BookIcon,
+  Eye as EyeIcon,
+  EyeOff as EyeOffIcon,
+  Pin as PhPushPin,
+  ThumbsUp as ThumbsUpIcon,
+} from 'lucide-vue-next'
+import {
   NButton,
   NIcon,
   NPopconfirm,
@@ -22,14 +30,6 @@ import type { PostModel, PostResponse } from '../../models/post'
 
 import { Icon } from '@vicons/utils'
 
-import {
-  AddIcon,
-  BookIcon,
-  EyeIcon,
-  EyeOffIcon,
-  PhPushPin,
-  ThumbsUpIcon,
-} from '~/components/icons'
 import { TableTitleLink } from '~/components/link/title-link'
 import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
 import { StatusToggle } from '~/components/status-toggle'

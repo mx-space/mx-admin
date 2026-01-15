@@ -1,5 +1,6 @@
 import { isString } from 'es-toolkit/compat'
 import transform from 'lodash.transform'
+import { MessageSquare as CommentIcon, Send as SendIcon } from 'lucide-vue-next'
 import { NForm, NFormItem, NInput, useDialog } from 'naive-ui'
 import {
   computed,
@@ -14,7 +15,6 @@ import { useRoute, useRouter } from 'vue-router'
 import type { SayModel } from '~/models/say'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
-import { CommentIcon, SendIcon } from '~/components/icons'
 import { fetchHitokoto, SentenceType } from '~/external/api/hitokoto'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
 import { ContentLayout } from '~/layouts/content'

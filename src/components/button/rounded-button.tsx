@@ -1,10 +1,8 @@
-import { NButton, NPopover } from 'naive-ui'
+import { NButton } from 'naive-ui'
 import { defineComponent } from 'vue'
 import { RouterLink } from 'vue-router'
-import type { ButtonHTMLAttributes, PropType } from 'vue'
+import type { ButtonHTMLAttributes, PropType, VNode } from 'vue'
 import type { RouteLocationRaw } from 'vue-router'
-
-import { Icon } from '@vicons/utils'
 
 export type ButtonType = PropType<
   'primary' | 'info' | 'success' | 'warning' | 'error'
@@ -25,6 +23,7 @@ export const baseButtonProps = {
     type: Boolean,
   },
 }
+
 export const RoundedButton = defineComponent({
   props: baseButtonProps,
   setup(props, { slots }) {
@@ -59,39 +58,30 @@ export const HeaderActionButton = defineComponent({
     },
   },
   setup(props) {
-    const Inner = () => (
-      <RoundedButton
-        variant={props.variant}
-        class="shadow"
+    const Button = () => (
+      <button
         onClick={props.onClick}
         disabled={props.disabled}
-        color={props.color}
+        title={props.name}
+        class={[
+          'inline-flex h-8 w-8 items-center justify-center rounded-md',
+          'text-[var(--sidebar-text)] transition-colors',
+          'hover:bg-[var(--sidebar-hover-bg)] hover:text-[var(--sidebar-text-active)]',
+          'disabled:pointer-events-none disabled:opacity-40',
+          '[&>svg]:h-[18px] [&>svg]:w-[18px]',
+        ]}
       >
-        <Icon size="16">{props.icon}</Icon>
-      </RoundedButton>
+        {props.icon}
+      </button>
     )
-    const WrapInfo = () =>
-      props.name ? (
-        <NPopover trigger="hover" placement="bottom">
-          {{
-            trigger() {
-              return <Inner />
-            },
-            default() {
-              return props.name
-            },
-          }}
-        </NPopover>
-      ) : (
-        <Inner />
-      )
+
     return () =>
       props.to ? (
-        <RouterLink to={props.to}>
-          <WrapInfo />
+        <RouterLink to={props.to} class="inline-flex">
+          <Button />
         </RouterLink>
       ) : (
-        <WrapInfo />
+        <Button />
       )
   },
 })

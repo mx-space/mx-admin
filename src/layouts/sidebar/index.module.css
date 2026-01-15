@@ -1,14 +1,31 @@
 .root {
-  .content {
-    left: var(--w);
+  @apply min-h-screen;
+  background: var(--content-bg, #0a0a0a);
 
-    @apply transition-all duration-500;
+  .content {
+    left: var(--sidebar-width);
+    transition: left var(--sidebar-transition-duration) ease;
+    background: var(--content-bg, #0a0a0a);
+
     @apply fixed inset-0 overflow-hidden;
+  }
+
+  &:global(.collapsed) .content,
+  &:global(.collapsing) .content {
+    left: var(--sidebar-collapse-width);
   }
 
   @screen phone {
     .content {
       left: var(--sidebar-collapse-width) !important;
     }
+  }
+}
+
+:global(html:not(.dark)) .root {
+  background: var(--content-bg, #fafafa);
+
+  .content {
+    background: var(--content-bg, #fafafa);
   }
 }

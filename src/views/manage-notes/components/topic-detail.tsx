@@ -1,4 +1,10 @@
 import {
+  Pencil as PencilAltIcon,
+  Plus as PlusIcon,
+  Search as SearchIcon,
+  Trash as TrashIcon,
+} from 'lucide-vue-next'
+import {
   NAvatar,
   NButton,
   NButtonGroup,
@@ -21,12 +27,6 @@ import type { PropType } from 'vue'
 
 import { Icon as NIcon } from '@vicons/utils'
 
-import {
-  PencilAltIcon,
-  PlusIcon,
-  SearchIcon,
-  TrashIcon,
-} from '~/components/icons'
 import { IframePreviewButton } from '~/components/special-button/iframe-preview'
 import { UploadWrapper } from '~/components/upload'
 import { RESTManager } from '~/utils'

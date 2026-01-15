@@ -72,6 +72,7 @@
     "js-yaml": "4.1.1",
     "json5": "2.2.3",
     "lodash.transform": "4.6.0",
+    "lucide-vue-next": "0.562.0",
     "markdown-escape": "2.0.0",
     "marked": "13.0.3",
     "monaco-editor": "0.50.0",

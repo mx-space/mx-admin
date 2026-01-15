@@ -1,8 +1,7 @@
+import { Eye as EyeIcon, EyeOff as EyeOffIcon } from 'lucide-vue-next'
 import { defineComponent } from 'vue'
 
 import { Icon } from '@vicons/utils'
-
-import { EyeIcon, EyeOffIcon } from '~/components/icons'
 
 interface StatusToggleProps {
   isPublished: boolean

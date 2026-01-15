@@ -1,5 +1,9 @@
 import { isString } from 'es-toolkit/compat'
 import {
+  SlidersHorizontal as SlidersHIcon,
+  Send as TelegramPlaneIcon,
+} from 'lucide-vue-next'
+import {
   NDynamicTags,
   NFormItem,
   NInput,
@@ -21,7 +25,6 @@ import { AiHelperButton } from '~/components/ai/ai-helper'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { TextBaseDrawer } from '~/components/drawer/text-base-drawer'
 import { Editor } from '~/components/editor/universal'
-import { SlidersHIcon, TelegramPlaneIcon } from '~/components/icons'
 import { MaterialInput } from '~/components/input/material-input'
 import { UnderlineInput } from '~/components/input/underline-input'
 import { CopyTextButton } from '~/components/special-button/copy-text-button'

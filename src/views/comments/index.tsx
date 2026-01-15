@@ -1,3 +1,9 @@
+import {
+  Check as CheckmarkSharpIcon,
+  X as CloseSharpIcon,
+  SmilePlus as EmojiAddIcon,
+  Trash,
+} from 'lucide-vue-next'
 import markdownEscape from 'markdown-escape'
 import {
   NAvatar,
@@ -24,13 +30,6 @@ import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { Icon } from '@vicons/utils'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
-import {
-  CheckmarkSharpIcon,
-  CloseSharpIcon,
-  EmojiAddIcon,
-  TrashIcon as Trash,
-  UserAnonymouse,
-} from '~/components/icons'
 import { IpInfoPopover } from '~/components/ip-info'
 import { Table } from '~/components/table'
 import { WEB_URL } from '~/constants/env'
@@ -45,6 +44,17 @@ import { RESTManager } from '~/utils/rest'
 import { relativeTimeFromNow } from '~/utils/time'
 
 import { CommentMarkdownRender } from './markdown-render'
+
+const UserAnonymouse = () => (
+  <svg width="1em" height="1em" viewBox="0 0 20 20">
+    <path
+      fill="currentColor"
+      d="M15 2H5L4 8h12zM0 10s2 1 10 1s10-1 10-1l-4-2H4zm8 4h4v1H8z"
+    />
+    <circle cx="6" cy="15" r="3" fill="currentColor" />
+    <circle cx="14" cy="15" r="3" fill="currentColor" />
+  </svg>
+)
 
 enum CommentType {
   Pending,

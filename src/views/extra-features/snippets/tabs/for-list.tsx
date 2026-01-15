@@ -1,4 +1,9 @@
 import {
+  Plus as AddIcon,
+  FunctionSquare as FunctionIcon,
+  Lock as LockIcon,
+} from 'lucide-vue-next'
+import {
   NButton,
   NDataTable,
   NLayout,
@@ -16,7 +21,6 @@ import type { SnippetGroup } from '../interfaces/snippet-group'
 import { Icon } from '@vicons/utils'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
-import { AddIcon, FunctionIcon, LockIcon } from '~/components/icons'
 import { tableRowStyle } from '~/components/table'
 import { RelativeTime } from '~/components/time/relative-time'
 import { useMountAndUnmount } from '~/hooks/use-lifecycle'

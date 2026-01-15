@@ -1,4 +1,5 @@
 import { format } from 'date-fns'
+import { Plus as AddIcon, Trash as TrashIcon } from 'lucide-vue-next'
 import {
   NButton,
   NButtonGroup,
@@ -18,7 +19,6 @@ import type { CollectionRefTypes, PaginateResult } from '@mx-space/api-client'
 import type { AISummaryModel } from '~/models/ai'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
-import { AddIcon, TrashIcon } from '~/components/icons'
 import { ContentLayout, useLayout } from '~/layouts/content'
 import { RESTManager } from '~/utils'
 

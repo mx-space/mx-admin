@@ -3,12 +3,12 @@
  *
  */
 
+import { Settings as SettingsIcon } from 'lucide-vue-next'
 import { NCard, NElement, NForm, NModal } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 
 import { Icon } from '@vicons/utils'
 
-import { SettingsIcon } from '~/components/icons'
 import { useMountAndUnmount } from '~/hooks/use-lifecycle'
 import { useLayout } from '~/layouts/content'
 

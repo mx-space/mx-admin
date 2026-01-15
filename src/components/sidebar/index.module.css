@@ -1,198 +1,254 @@
 :global(:root) {
-  --sidebar-width: 250px;
-  --sidebar-collapse-width: 50px;
-  --sidebar-transition-duration: 0.5s;
+  --sidebar-width: 220px;
+  --sidebar-collapse-width: 56px;
+  --sidebar-transition-duration: 0.2s;
+  --sidebar-bg: #141414;
+  --sidebar-border: #262626;
+  --sidebar-text: #a3a3a3;
+  --sidebar-text-active: #fafafa;
+  --sidebar-hover-bg: #1f1f1f;
+  --sidebar-active-bg: #262626;
+  --sidebar-active-indicator: #3b82f6;
+  --content-bg: #0a0a0a;
+}
+
+:global(html:not(.dark)) {
+  --sidebar-bg: #fafafa;
+  --sidebar-border: #e5e5e5;
+  --sidebar-text: #525252;
+  --sidebar-text-active: #171717;
+  --sidebar-hover-bg: #f5f5f5;
+  --sidebar-active-bg: #e5e5e5;
+  --content-bg: #ffffff;
 }
 
 .root {
   --w: var(--sidebar-width);
   --duration: var(--sidebar-transition-duration);
-
-  & .item-title {
-    @apply max-w-[var(--w)] truncate transition-all;
-
-    transition-duration: var(--duration);
-  }
 }
 
 .root.collapse {
   --w: var(--sidebar-collapse-width);
 }
 
-.root.collapse {
-  & .has-child {
-    @apply pl-0;
-  }
+/* Sidebar 主容器 */
+.root .sidebar {
+  z-index: 99;
+  width: var(--w);
+  height: 100vh;
+  height: -webkit-fill-available;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
+  transition: width var(--duration) ease;
 
-  & .sidebar {
-    & .item {
-      @apply pl-0;
-    }
+  @apply fixed left-0 top-0 flex flex-col overflow-hidden;
+}
 
-    & .active,
-    & .expand,
-    & .item:hover {
-      border-radius: 0 !important;
-    }
+/* Header 区域 */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+  min-height: 48px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--sidebar-border);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+
+  & img {
+    height: 24px;
+    flex-shrink: 0;
   }
 }
 
-.root.collapsed,
-.root.collapsing {
-  & .item-title {
-    @apply max-w-0 overflow-hidden opacity-0;
-  }
+.root.collapse .logo {
+  display: none;
+}
 
-  & .sidebar .items {
-    @apply px-0;
-  }
+/* Header 按钮组 */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
 
-  & .header-title,
-  & .sidebar-username {
-    @apply max-w-0 opacity-0;
+.header-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  color: var(--sidebar-text);
+  transition: all 0.15s;
+
+  &:hover {
+    background: var(--sidebar-hover-bg);
+    color: var(--sidebar-text-active);
   }
 }
 
-.root.collapsed {
-  & .header-title,
-  & .sidebar-username {
-    @apply hidden;
+.root.collapse .header {
+  justify-content: center;
+  padding: 0;
+}
+
+.root.collapse .header-actions {
+  width: 100%;
+  justify-content: center;
+}
+
+.root.collapse .header-btn:first-child {
+  display: none;
+}
+
+/* 菜单区域 */
+.menu {
+  @apply flex-1 overflow-y-auto overflow-x-hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--sidebar-border) transparent;
+}
+
+.items {
+  @apply flex flex-col gap-0.5 p-2;
+  transition: padding var(--duration) ease;
+}
+
+.root.collapsed .items,
+.root.collapsing .items {
+  @apply px-1;
+}
+
+/* 菜单项 */
+.item {
+  position: relative;
+}
+
+.item > button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  color: var(--sidebar-text);
+  transition: all 0.15s;
+
+  &:hover {
+    background: var(--sidebar-hover-bg);
+    color: var(--sidebar-text-active);
   }
 }
 
-.root.expanding {
-  & .sidebar-username {
-    @apply delay-50;
-  }
+.item.active > button {
+  background: var(--sidebar-active-bg);
+  color: var(--sidebar-text-active);
 }
 
-.root.expanded,
-.root.expanding {
-  & .header-title {
-    @apply opacity-100;
-  }
+.item.active > button::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 16px;
+  border-radius: 2px;
+  background: var(--sidebar-active-indicator);
 }
 
-.header-title {
-  @apply max-w-[var(--w)] overflow-clip truncate py-6 transition-all duration-[var(--duration)];
+/* 图标容器 */
+.item > button > span:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
 }
 
-.collapse-button {
-  @apply absolute bottom-0 right-8 top-0 text-base;
-
-  transition: right 0.5s;
-
-  & .collapse-icon {
-    @apply transition-transform;
-
-    transition-duration: var(--duration);
-  }
-}
-
-.toggle-color-btn {
-  @apply absolute bottom-0 left-8 top-0 flex items-center text-base;
-
+/* 标题文字 */
+.item-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   transition:
-    left 0.5s,
-    opacity 0.5s;
+    opacity var(--duration),
+    width var(--duration);
 }
 
-.root.collapse {
-  & .collapse-button {
-    @apply absolute left-0 right-0 m-auto;
-    @apply flex w-full items-center justify-center py-6;
-
-    & .collapse-icon {
-      @apply rotate-180 transform;
-    }
-  }
-
-  & .toggle-color-btn {
-    @apply -left-10 opacity-0;
-  }
+.root.collapsed .item-title,
+.root.collapsing .item-title {
+  width: 0;
+  opacity: 0;
 }
 
-.root {
-  & .sidebar {
-    width: var(--w);
-    transition: width 0.5s;
-
-    @apply flex flex-col;
-    @apply bg-gray-100;
-    @apply fixed left-0 top-0 z-10 overflow-hidden text-white;
-
-    height: 100vh;
-    height: -webkit-fill-available;
-  }
-
-  & .items {
-    transition: padding var(--duration);
-
-    @apply pl-4;
-  }
-
-  & .active,
-  & .expand {
-    background: theme(colors.primary.default);
-    border-radius: 24px 0 0 24px;
-  }
-
-  & .item {
-    transition: all var(--duration);
-
-    @apply pl-4;
-
-    @screen phone {
-      & {
-        @apply pl-0;
-      }
-    }
-  }
-
-  & .item:hover {
-    background: theme(colors.primary.shallow);
-    border-radius: 24px 0 0 24px;
-  }
-
-  & .has-child {
-    transition: max-height 0.5s;
-  }
-
-  & .sidebar {
-    background: linear-gradient(
-      to bottom,
-      theme(colors.primary.default),
-      theme(colors.primary.shallow)
-    );
-  }
-
-  & .menu {
-    @apply flex-grow;
-
-    @apply bg-transparent text-white;
-
-    @screen phone {
-      & {
-        @apply overflow-auto;
-      }
-    }
-  }
+/* 子菜单 */
+.has-child {
+  @apply overflow-hidden;
+  transition: max-height 0.3s ease;
 }
 
-:global(html.dark) {
-  & .root {
-    & .sidebar {
-      @apply bg-gray-700;
-
-      filter: brightness(0.8);
-    }
-  }
+.has-child .item > button {
+  @apply pl-8;
 }
 
+.root.collapse .has-child .item > button {
+  @apply pl-2;
+}
+
+/* Footer 区域 */
 .sidebar-footer {
-  @apply my-4 flex h-20 w-[var(--w)] flex-shrink-0 items-center justify-center transition-all duration-[var(--duration)];
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-top: 1px solid var(--sidebar-border);
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover {
+    background: var(--sidebar-hover-bg);
+  }
 }
 
 .sidebar-username {
-  @apply max-w-[var(--w)] truncate pl-12 transition-all duration-[var(--duration)];
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  color: var(--sidebar-text);
+  transition: opacity var(--duration);
+}
+
+.root.collapsed .sidebar-username,
+.root.collapsing .sidebar-username {
+  display: none;
+}
+
+.root.collapsed .sidebar-footer,
+.root.collapsing .sidebar-footer {
+  justify-content: center;
+  padding: 12px 0;
+}
+
+/* 响应式 - 移动端 */
+@screen phone {
+  .item > button {
+    @apply py-2.5;
+  }
+
+  .items {
+    @apply px-1;
+  }
 }

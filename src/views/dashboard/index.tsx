@@ -1,5 +1,27 @@
 import { pick } from 'es-toolkit/compat'
 import {
+  Activity as ActivityIcon,
+  Link as AddLinkFilledIcon,
+  ChartScatter as BubbleChartFilledIcon,
+  MessageCircle as ChatbubblesSharpIcon,
+  Code as CodeIcon,
+  MessageSquare as CommentIcon,
+  MessagesSquare as CommentsIcon,
+  Copy as CopyIcon,
+  Puzzle as ExtensionIcon,
+  File as FileIcon,
+  Gamepad2 as GamesIcon,
+  UserRound as GuestIcon,
+  Heart as HeartIcon,
+  Link as LinkIcon,
+  BookOpen as NotebookMinimalistic,
+  StickyNote as NoteIcon,
+  Radio as OnlinePredictionFilledIcon,
+  Pencil as PencilIcon,
+  AlignLeft as PhAlignLeft,
+  RefreshCw as RefreshIcon,
+} from 'lucide-vue-next'
+import {
   NButton,
   NCard,
   NElement,
@@ -32,29 +54,6 @@ import type { CardProps } from './card'
 
 import { Icon } from '@vicons/utils'
 
-import {
-  ActivityIcon,
-  AddLinkFilledIcon,
-  BubbleChartFilledIcon,
-  ChatbubblesSharpIcon,
-  CodeIcon,
-  CommentIcon,
-  CommentsIcon,
-  CopyIcon,
-  ExtensionIcon,
-  FileIcon,
-  GamesIcon,
-  GuestIcon,
-  HeartIcon,
-  LinkIcon,
-  NotebookMinimalistic,
-  NoteIcon,
-  OnlinePredictionFilledIcon,
-  PencilIcon,
-  PhAlignLeft,
-  RedisIcon,
-  RefreshIcon,
-} from '~/components/icons'
 import { IpInfoPopover } from '~/components/ip-info'
 import { useShorthand } from '~/components/shorthand'
 import { useUpdateDetailModal } from '~/components/update-detail-modal'
@@ -73,6 +72,15 @@ import { isNewerVersion } from '~/utils/version'
 import PKG from '../../../package.json'
 import { Card } from './card'
 import { UpdatePanel } from './update-panel'
+
+const RedisIcon = () => (
+  <svg width="1em" height="1em" viewBox="0 0 24 24">
+    <path
+      fill="currentColor"
+      d="m10.5 2.661l.54.997l-1.797.644l2.409.218l.748 1.246l.467-1.121l2.077-.208l-1.61-.613l.426-1.017l-1.578.519zm6.905 2.077L13.76 6.182l3.292 1.298l.353-.146l3.293-1.298zm-10.51.312a2.97 1.153 0 0 0-2.97 1.152a2.97 1.153 0 0 0 2.97 1.153a2.97 1.153 0 0 0 2.97-1.153a2.97 1.153 0 0 0-2.97-1.152zM24 6.805s-8.983 4.278-10.395 4.953c-1.226.561-1.901.561-3.261.094C8.318 11.022 0 7.241 0 7.241v1.038c0 .24.332.499.966.8c1.277.613 8.34 3.677 9.45 4.206c1.112.53 1.9.54 3.313-.197c1.412-.738 8.049-3.905 9.326-4.57c.654-.342.945-.602.945-.84zm-10.042.602L8.39 8.26l3.884 1.61zM24 10.637s-8.983 4.279-10.395 4.954c-1.226.56-1.901.56-3.261.093C8.318 14.854 0 11.074 0 11.074v1.038c0 .238.332.498.966.8c1.277.612 8.34 3.676 9.45 4.205c1.112.53 1.9.54 3.313-.197c1.412-.737 8.049-3.905 9.326-4.57c.654-.332.945-.602.945-.84zm0 3.842l-10.395 4.954c-1.226.56-1.901.56-3.261.094C8.318 18.696 0 14.916 0 14.916v1.038c0 .239.332.499.966.8c1.277.613 8.34 3.676 9.45 4.206c1.112.53 1.9.54 3.313-.198c1.412-.737 8.049-3.904 9.326-4.569c.654-.343.945-.613.945-.841z"
+    />
+  </svg>
+)
 
 export const DashBoardView = defineComponent({
   name: 'DashboardView',
@@ -536,7 +544,7 @@ export const DashBoardView = defineComponent({
       )
     })
     return () => (
-      <ContentLayout>
+      <ContentLayout hideHeader>
         <NH1 class="font-light">欢迎回来</NH1>
         <NGrid xGap={12} cols={'1 900:2'}>
           <NGi>

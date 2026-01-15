@@ -1,10 +1,10 @@
+import { CircleCheck as CheckCircleOutlinedIcon } from 'lucide-vue-next'
 import { NGi, useMessage } from 'naive-ui'
 
 import { useLocalStorage } from '@vueuse/core'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { FunctionCodeEditor } from '~/components/function-editor'
-import { CheckCircleOutlinedIcon } from '~/components/icons'
 import { ContentLayout } from '~/layouts/content'
 import { TwoColGridLayout } from '~/layouts/two-col'
 import { defaultServerlessFunction } from '~/models/snippet'

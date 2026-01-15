@@ -1,18 +1,12 @@
-import { NIcon, NLayoutContent } from 'naive-ui'
+import { LogOut, Moon, PanelLeftClose, Sun } from 'lucide-vue-next'
+import { NLayoutContent } from 'naive-ui'
 import { computed, defineComponent, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import type { PropType } from 'vue'
 import type { MenuModel } from '../../utils/build-menus'
 
-import { Icon } from '@vicons/utils'
 import { onClickOutside } from '@vueuse/core'
 
-import {
-  LogoutIcon,
-  MoonIcon,
-  SidebarCloseIcon,
-  SunIcon,
-} from '~/components/icons'
 import { WEB_URL } from '~/constants/env'
 import { RouteName } from '~/router/name'
 import { AppStore } from '~/stores/app'
@@ -113,71 +107,64 @@ export const Sidebar = defineComponent({
     )
 
     return () => {
-      const isPhone = uiStore.viewport.value.mobile
       return (
         <div
           class={[
             styles.root,
             props.collapse ? styles.collapse : null,
-
             styles[statusRef.value],
           ]}
-          style={{
-            width: !props.collapse && props.width ? `${props.width}px` : '',
-          }}
           onTransitionend={onTransitionEnd}
           ref={sidebarRef}
         >
           <div class={styles.sidebar}>
-            <div
-              class={
-                'relative h-20 flex-shrink-0 text-center text-2xl font-medium'
-              }
-            >
-              <button
-                class={styles['toggle-color-btn']}
-                onClick={() => void toggleDark()}
-              >
-                {!isDark.value ? <SunIcon /> : <MoonIcon />}
-              </button>
-              <h1 class={styles['header-title']}>
-                {statusRef.value === 'expanded' && (
-                  <img
-                    class={
-                      'absolute left-1/2 top-1/2 h-[50px] -translate-x-1/2 -translate-y-1/2 transform'
-                    }
-                    src={uwu}
+            {/* Header */}
+            <div class={styles.header}>
+              {/* Logo */}
+              <div class={styles.logo}>
+                {!props.collapse && <img src={uwu} alt={title} />}
+              </div>
+
+              {/* Header Actions */}
+              <div class={styles['header-actions']}>
+                <button
+                  class={styles['header-btn']}
+                  onClick={() => void toggleDark()}
+                  title={isDark.value ? '切换亮色' : '切换暗色'}
+                >
+                  {isDark.value ? <Moon size={16} /> : <Sun size={16} />}
+                </button>
+                <button
+                  class={styles['header-btn']}
+                  onClick={() => props.onCollapseChange(!props.collapse)}
+                  title={props.collapse ? '展开' : '收起'}
+                >
+                  <PanelLeftClose
+                    size={16}
+                    class={[
+                      'transition-transform duration-200',
+                      props.collapse && 'rotate-180',
+                    ]}
                   />
-                )}
-                <span class={'sr-only'}>{title}</span>
-              </h1>
-              <button
-                class={styles['collapse-button']}
-                onClick={() => {
-                  props.onCollapseChange(!props.collapse)
-                }}
-              >
-                <SidebarCloseIcon class={styles['collapse-icon']} />
-              </button>
+                </button>
+              </div>
             </div>
 
+            {/* Menu */}
             <NLayoutContent class={styles.menu} nativeScrollbar={false}>
-              <div class={styles.items}>
+              <nav class={styles.items}>
                 {menus.value.map((item, index) => {
+                  const isActive =
+                    route.value.fullPath === item.fullPath ||
+                    route.value.fullPath.startsWith(item.fullPath)
+
                   return (
                     <div
-                      class={[
-                        route.value.fullPath === item.fullPath ||
-                        route.value.fullPath.startsWith(item.fullPath)
-                          ? styles.active
-                          : '',
-
-                        styles.item,
-                      ]}
+                      key={item.fullPath}
+                      class={[styles.item, isActive && styles.active]}
                       data-path={item.fullPath}
                     >
                       <MenuItem
-                        className={!isPhone ? 'py-4' : 'py-6'}
                         title={item.title}
                         onClick={() =>
                           item.subItems?.length
@@ -187,71 +174,63 @@ export const Sidebar = defineComponent({
                         collapse={props.collapse}
                       >
                         {{
-                          icon() {
-                            return item.icon
-                          },
+                          icon: () => item.icon,
                         }}
                       </MenuItem>
 
-                      {item.subItems && (
-                        <ul
+                      {item.subItems && item.subItems.length > 0 && (
+                        <div
                           class={[
-                            'overflow-hidden',
-                            item.subItems.length ? styles['has-child'] : '',
-                            indexRef.value === index ? styles.expand : '',
+                            styles['has-child'],
+                            indexRef.value === index && styles.expand,
                           ]}
                           style={{
                             maxHeight:
                               indexRef.value === index
-                                ? `${item.subItems.length * 3.5}rem`
+                                ? `${item.subItems.length * 2.5}rem`
                                 : '0',
                           }}
                         >
                           {item.subItems.map((child) => {
+                            const isChildActive =
+                              route.value.fullPath === child.fullPath ||
+                              route.value.fullPath.startsWith(child.fullPath)
+
                             return (
-                              <li
+                              <div
                                 key={child.path}
                                 class={[
-                                  route.value.fullPath === child.fullPath ||
-                                  route.value.fullPath.startsWith(
-                                    child.fullPath,
-                                  )
-                                    ? styles.active
-                                    : '',
                                   styles.item,
+                                  isChildActive && styles.active,
                                 ]}
                               >
                                 <MenuItem
                                   collapse={props.collapse}
                                   title={child.title}
                                   onClick={() => handleRoute(child)}
-                                  className={'py-4'}
                                 >
                                   {{
-                                    icon() {
-                                      return child.icon
-                                    },
+                                    icon: () => child.icon,
                                   }}
                                 </MenuItem>
-                              </li>
+                              </div>
                             )
                           })}
-                        </ul>
+                        </div>
                       )}
                     </div>
                   )
                 })}
-              </div>
+              </nav>
             </NLayoutContent>
 
+            {/* Footer */}
             <button
               class={styles['sidebar-footer']}
-              onClick={() => {
-                window.open(WEB_URL)
-              }}
+              onClick={() => window.open(WEB_URL)}
+              title="访问网站"
             >
               <LogoutAvatarButton />
-
               <span class={styles['sidebar-username']}>{user.value?.name}</span>
             </button>
           </div>
@@ -275,24 +254,13 @@ const MenuItem = defineComponent({
       type: Boolean,
       required: true,
     },
-    className: {
-      type: String,
-    },
   },
 
   setup(props, { slots }) {
     return () => (
-      <button
-        onClick={props.onClick}
-        class={['flex w-full items-center py-4', props.className]}
-      >
-        <span
-          class={[
-            'flex basis-12 items-center justify-center transition-all duration-300 ease-in-out',
-            props.collapse ? 'basis-[var(--w)]' : '',
-          ]}
-        >
-          <Icon>{slots.icon!()}</Icon>
+      <button onClick={props.onClick}>
+        <span class="flex items-center justify-center [&>svg]:h-[18px] [&>svg]:w-[18px]">
+          {slots.icon!()}
         </span>
         <span class={styles['item-title']}>{props.title}</span>
       </button>
@@ -304,6 +272,7 @@ const LogoutAvatarButton = defineComponent({
   setup() {
     const { user } = useStoreRef(UserStore)
     const router = useRouter()
+
     const handleLogout = async (e: MouseEvent) => {
       e.stopPropagation()
       await RESTManager.api.user.logout.post({})
@@ -319,20 +288,14 @@ const LogoutAvatarButton = defineComponent({
 
       return (
         <div
-          class={'relative h-[35px] w-[35px]'}
+          class="group relative h-8 w-8 flex-shrink-0"
           onClick={handleLogout}
           role="button"
+          title="退出登录"
         >
-          <Avatar src={avatar} size={35} class="z-1 absolute inset-0" />
-          <div
-            class={[
-              'z-2 bg-dark-200 absolute inset-0 flex items-center justify-center rounded-full bg-opacity-80 opacity-0 transition-opacity hover:opacity-50',
-              'text-xl',
-            ]}
-          >
-            <NIcon>
-              <LogoutIcon />
-            </NIcon>
+          <Avatar src={avatar} size={32} class="rounded-full" />
+          <div class="absolute inset-0 flex items-center justify-center rounded-full bg-black/60 opacity-0 transition-opacity group-hover:opacity-100">
+            <LogOut size={14} color="#fff" />
           </div>
         </div>
       )
