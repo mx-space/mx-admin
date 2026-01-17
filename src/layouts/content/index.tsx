@@ -93,6 +93,9 @@ export const ContentLayout = defineComponent({
       () => props.headerClass ?? layout.headerClass.value,
     )
 
+    const headerSubtitle = computed(() => layout.headerSubtitle.value)
+    const hasContentPadding = computed(() => layout.contentPadding.value)
+
     return () => (
       <div class="flex h-full flex-col bg-[var(--content-bg)]">
         {!shouldHideHeader.value && (
@@ -116,6 +119,12 @@ export const ContentLayout = defineComponent({
               <h1 class="text-lg font-semibold text-[var(--sidebar-text-active)]">
                 {pageTitle.value}
               </h1>
+              {/* Header 副标题/元信息 */}
+              {headerSubtitle.value && (
+                <div class="ml-2 border-l border-neutral-200 pl-3 dark:border-neutral-700">
+                  {headerSubtitle.value}
+                </div>
+              )}
             </div>
             <div class="flex items-center gap-1.5">
               {headerActions.value ?? slots.actions?.()}
@@ -127,7 +136,7 @@ export const ContentLayout = defineComponent({
         <NLayoutContent
           nativeScrollbar={false}
           class="flex-1 !bg-transparent"
-          contentClass="px-8 pb-8"
+          contentClass={hasContentPadding.value ? 'px-8 pb-8' : 'pr-2'}
         >
           {slots.default?.()}
         </NLayoutContent>

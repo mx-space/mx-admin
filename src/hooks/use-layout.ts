@@ -55,6 +55,16 @@ export const useLayout = () => {
       layout.headerClass.value = cls
     },
 
+    /** 设置 header 副标题/元信息（如 slug 编辑器） */
+    setHeaderSubtitle: (el: VNode | null) => {
+      layout.headerSubtitle.value = el
+    },
+
+    /** 设置内容区域是否有 padding（沉浸式编辑时设为 false） */
+    setContentPadding: (hasPadding: boolean) => {
+      layout.contentPadding.value = hasPadding
+    },
+
     /** 添加浮动按钮，返回用于删除的 key */
     addFloatButton: (button: VNode): symbol => {
       return layout.addFloatButton(button)

@@ -4,22 +4,27 @@ import {
   Send as TelegramPlaneIcon,
 } from 'lucide-vue-next'
 import { NFormItem, NInputNumber, useMessage } from 'naive-ui'
-import { computed, defineComponent, onMounted, reactive, ref, toRaw } from 'vue'
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  reactive,
+  ref,
+  toRaw,
+  watch,
+} from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { PageModel } from '~/models/page'
 import type { WriteBaseType } from '~/shared/types/base'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { TextBaseDrawer } from '~/components/drawer/text-base-drawer'
-import { Editor } from '~/components/editor/universal'
-import { MaterialInput } from '~/components/input/material-input'
-import { UnderlineInput } from '~/components/input/underline-input'
+import { WriteEditor } from '~/components/editor/write-editor'
+import { SlugInput } from '~/components/editor/write-editor/slug-input'
 import { ParseContentButton } from '~/components/special-button/parse-content'
-import {
-  HeaderPreviewButton,
-  PreviewSplitter,
-} from '~/components/special-button/preview'
+import { HeaderPreviewButton } from '~/components/special-button/preview'
 import { WEB_URL } from '~/constants/env'
+import { useAutoSave, useAutoSaveInEditor } from '~/hooks/use-auto-save'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
 import { useLayout } from '~/layouts/content'
 import { RouteName } from '~/router/name'
@@ -33,6 +38,11 @@ type PageReactiveType = WriteBaseType & {
 
 const PageWriteView = defineComponent(() => {
   const route = useRoute()
+  const { setTitle, setHeaderClass, setActions, setContentPadding } =
+    useLayout()
+
+  // 启用沉浸式编辑模式
+  setContentPadding(false)
 
   const resetReactive: () => PageReactiveType = () => ({
     text: '',
@@ -51,6 +61,30 @@ const PageWriteView = defineComponent(() => {
     useParsePayloadIntoData(data)(payload)
   const data = reactive<PageReactiveType>(resetReactive())
   const id = computed(() => route.query.id)
+
+  const loading = computed(() => !!(id.value && typeof data.id === 'undefined'))
+
+  const autoSaveHook = useAutoSave(`page-${id.value || 'new'}`, 3000, () => ({
+    text: data.text,
+    title: data.title,
+  }))
+
+  const autoSaveInEditor = useAutoSaveInEditor(data, autoSaveHook)
+
+  const disposer = watch(
+    () => loading.value,
+    (loading) => {
+      if (loading) {
+        return
+      }
+
+      autoSaveInEditor.enable()
+      requestAnimationFrame(() => {
+        disposer()
+      })
+    },
+    { immediate: true },
+  )
 
   onMounted(async () => {
     const $id = id.value
@@ -106,11 +140,12 @@ const PageWriteView = defineComponent(() => {
     }
 
     router.push({ name: RouteName.ListPage, hash: '|publish' })
+    autoSaveInEditor.clearSaved()
   }
 
-  const { setHeaderClass, setActions } = useLayout()
-
+  // 设置 layout 状态
   setHeaderClass('pt-1')
+  setTitle(id.value ? '修改页面' : '新建页面')
   setActions(
     <>
       <ParseContentButton
@@ -146,41 +181,48 @@ const PageWriteView = defineComponent(() => {
 
   return () => (
     <>
-      <MaterialInput
-        class="relative z-10 mt-3"
-        label={'与你有个好心情~'}
-        value={data.title}
-        onChange={(e) => {
-          data.title = e
+      <WriteEditor
+        key={data.id}
+        loading={loading.value}
+        title={data.title}
+        onTitleChange={(v) => {
+          data.title = v
         }}
+        titlePlaceholder="输入标题..."
+        text={data.text}
+        onChange={(v) => {
+          data.text = v
+        }}
+        subtitleSlot={() => (
+          <div class="space-y-2">
+            {/* Slug 输入 */}
+            <SlugInput
+              prefix={`${WEB_URL}/`}
+              value={data.slug}
+              onChange={(v) => {
+                data.slug = v
+              }}
+              placeholder="slug"
+            />
+            {/* 副标题输入 */}
+            <input
+              class={[
+                'w-full bg-transparent outline-none',
+                'text-sm text-neutral-600 dark:text-neutral-400',
+                'border-none px-1 py-0.5',
+                'placeholder:text-neutral-400 dark:placeholder:text-neutral-500',
+              ]}
+              placeholder="输入副标题..."
+              value={data.subtitle}
+              onInput={(e) => {
+                data.subtitle = (e.target as HTMLInputElement).value
+              }}
+            />
+          </div>
+        )}
       />
 
-      <div class={'pt-3 text-neutral-700 dark:text-neutral-300'}>
-        <UnderlineInput
-          value={data.subtitle}
-          onChange={(e) => void (data.subtitle = e)}
-        />
-      </div>
-      <div class={'py-3 text-neutral-500'}>
-        <label>{`${WEB_URL}/`}</label>
-        <UnderlineInput
-          value={data.slug}
-          onChange={(e) => void (data.slug = e)}
-        />
-      </div>
-      <PreviewSplitter>
-        <Editor
-          key={data.id}
-          loading={!!(id.value && typeof data.id == 'undefined')}
-          onChange={(v) => {
-            data.text = v
-          }}
-          text={data.text}
-        />
-      </PreviewSplitter>
-
       {/* Drawer  */}
-
       <TextBaseDrawer
         disabledItem={['date-picker']}
         onUpdateShow={(s) => {

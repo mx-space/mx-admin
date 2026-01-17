@@ -34,16 +34,11 @@ import type { WriteBaseType } from '~/shared/types/base'
 import { AiHelperButton } from '~/components/ai/ai-helper'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { TextBaseDrawer } from '~/components/drawer/text-base-drawer'
-import { Editor } from '~/components/editor/universal'
-import { MaterialInput } from '~/components/input/material-input'
+import { WriteEditor } from '~/components/editor/write-editor'
 import { GetLocationButton } from '~/components/location/get-location-button'
 import { SearchLocationButton } from '~/components/location/search-button'
-import { CopyTextButton } from '~/components/special-button/copy-text-button'
 import { ParseContentButton } from '~/components/special-button/parse-content'
-import {
-  HeaderPreviewButton,
-  PreviewSplitter,
-} from '~/components/special-button/preview'
+import { HeaderPreviewButton } from '~/components/special-button/preview'
 import { WEB_URL } from '~/constants/env'
 import { MOOD_SET, WEATHER_SET } from '~/constants/note'
 import { useAutoSave, useAutoSaveInEditor } from '~/hooks/use-auto-save'
@@ -236,8 +231,11 @@ const NoteWriteView = defineComponent(() => {
   }
   const { fetchTopic, topics } = useNoteTopic()
 
-  const { setTitle, setHeaderClass, setActions } = useLayout()
+  const { setTitle, setHeaderClass, setActions, setContentPadding } =
+    useLayout()
 
+  // 启用沉浸式编辑模式
+  setContentPadding(false)
   setTitle('记录生活点滴')
   setHeaderClass('pt-1')
   setActions(
@@ -275,40 +273,26 @@ const NoteWriteView = defineComponent(() => {
 
   return () => (
     <>
-      <div class={'relative'}>
-        <MaterialInput
-          class="relative z-10 mt-3"
-          label={defaultTitle.value}
-          value={data.title}
-          onChange={(e) => {
-            data.title = e
-          }}
-        />
-
-        {data.text.length > 0 && (
-          <div class={'absolute bottom-0 right-0 top-0 z-10 flex items-center'}>
-            <AiHelperButton reactiveData={data} />
+      <WriteEditor
+        key={data.id}
+        loading={loading.value}
+        title={data.title}
+        onTitleChange={(v) => {
+          data.title = v
+        }}
+        titlePlaceholder={defaultTitle.value}
+        text={data.text}
+        onChange={(v) => {
+          data.text = v
+        }}
+        subtitleSlot={() => (
+          <div class="flex items-center gap-2 text-sm text-neutral-500">
+            <span>{`${WEB_URL}/notes/${nid.value ?? ''}`}</span>
+            {/* AI Helper 按钮 */}
+            {data.text.length > 0 && <AiHelperButton reactiveData={data} />}
           </div>
         )}
-      </div>
-
-      <div class={'py-3 text-neutral-500'}>
-        <label>{`${WEB_URL}/notes/${nid.value ?? ''}`}</label>
-        {nid.value && (
-          <CopyTextButton text={`${WEB_URL}/notes/${nid.value ?? ''}`} />
-        )}
-      </div>
-
-      <PreviewSplitter>
-        <Editor
-          key={data.id}
-          loading={loading.value}
-          onChange={(v) => {
-            data.text = v
-          }}
-          text={data.text}
-        />
-      </PreviewSplitter>
+      />
 
       {/* Drawer  */}
       <TextBaseDrawer

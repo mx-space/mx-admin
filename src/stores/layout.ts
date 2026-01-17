@@ -12,6 +12,10 @@ export const useLayoutStore = defineStore('layout', () => {
   const hideHeader = ref(false)
   // 自定义 header class
   const headerClass = ref<string | null>(null)
+  // Header 副标题/元信息（如 slug 编辑器）
+  const headerSubtitle = shallowRef<VNode | null>(null)
+  // 内容区域是否需要 padding（沉浸式编辑时为 false）
+  const contentPadding = ref(true)
   // 浮动按钮列表
   const floatButtons = shallowReactive<Map<symbol, VNode>>(new Map())
 
@@ -34,6 +38,8 @@ export const useLayoutStore = defineStore('layout', () => {
     pageTitle.value = null
     hideHeader.value = false
     headerClass.value = null
+    headerSubtitle.value = null
+    contentPadding.value = true
     floatButtons.clear()
   }
 
@@ -43,6 +49,8 @@ export const useLayoutStore = defineStore('layout', () => {
     pageTitle,
     hideHeader,
     headerClass,
+    headerSubtitle,
+    contentPadding,
     floatButtons,
     addFloatButton,
     removeFloatButton,

@@ -1,0 +1,55 @@
+.write-editor-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.write-editor-scroll-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.write-editor-header {
+  flex-shrink: 0;
+  padding: 1.5rem 2rem 0.5rem;
+}
+
+.write-editor-subtitle {
+  margin-top: 0.5rem;
+  padding-left: 0.5rem;
+}
+
+.write-editor-content {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 让 CodeMirror 编辑器占满剩余空间 */
+.write-editor-content > div {
+  flex: 1;
+  min-height: 0;
+}
+
+/* CodeMirror 编辑器区域左右 padding */
+.write-editor-content :deep(.cm-editor) {
+  height: 100%;
+}
+
+.write-editor-content :deep(.cm-scroller) {
+  padding: 0 2rem 2rem;
+}
+
+/* 确保编辑器内容有足够的左边距与 Title 对齐 */
+.write-editor-content :deep(.cm-content) {
+  padding-left: 0.5rem;
+}
+
+/* 行号区域样式调整 */
+.write-editor-content :deep(.cm-gutters) {
+  padding-left: 1rem;
+}

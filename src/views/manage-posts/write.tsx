@@ -22,15 +22,10 @@ import type { SelectMixedOption } from 'naive-ui/lib/select/src/interface'
 import { AiHelperButton } from '~/components/ai/ai-helper'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { TextBaseDrawer } from '~/components/drawer/text-base-drawer'
-import { Editor } from '~/components/editor/universal'
-import { MaterialInput } from '~/components/input/material-input'
-import { UnderlineInput } from '~/components/input/underline-input'
-import { CopyTextButton } from '~/components/special-button/copy-text-button'
+import { WriteEditor } from '~/components/editor/write-editor'
+import { SlugInput } from '~/components/editor/write-editor/slug-input'
 import { ParseContentButton } from '~/components/special-button/parse-content'
-import {
-  HeaderPreviewButton,
-  PreviewSplitter,
-} from '~/components/special-button/preview'
+import { HeaderPreviewButton } from '~/components/special-button/preview'
 import { WEB_URL } from '~/constants/env'
 import { useAutoSave, useAutoSaveInEditor } from '~/hooks/use-auto-save'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
@@ -56,7 +51,11 @@ type PostReactiveType = WriteBaseType & {
 
 const PostWriteView = defineComponent(() => {
   const route = useRoute()
-  const { setTitle, setHeaderClass, setActions } = useLayout()
+  const { setTitle, setHeaderClass, setActions, setContentPadding } =
+    useLayout()
+
+  // 启用沉浸式编辑模式（无 padding）
+  setContentPadding(false)
 
   const categoryStore = useStoreRef(CategoryStore)
   onMounted(async () => {
@@ -195,6 +194,7 @@ const PostWriteView = defineComponent(() => {
   setHeaderClass('pt-1')
   watchEffect(() => {
     setTitle(id.value ? '修改文章' : '撰写新文章')
+
     setActions(
       <>
         <ParseContentButton
@@ -229,47 +229,34 @@ const PostWriteView = defineComponent(() => {
 
   return () => (
     <>
-      <MaterialInput
-        class="relative z-10 mt-3"
-        label="标题"
-        placeholder="输入标题"
-        value={data.title}
-        onChange={(e) => {
-          data.title = e
+      <WriteEditor
+        key={data.id}
+        loading={loading.value}
+        title={data.title}
+        onTitleChange={(v) => {
+          data.title = v
         }}
+        titlePlaceholder="输入标题..."
+        text={data.text}
+        onChange={(v) => {
+          data.text = v
+        }}
+        subtitleSlot={() => (
+          <SlugInput
+            prefix={`${WEB_URL}/posts/${category.value.slug}/`}
+            value={data.slug}
+            onChange={(v) => {
+              data.slug = v
+            }}
+            placeholder="slug"
+          >
+            {/* AI Helper 按钮 */}
+            {(!data.title || !data.slug) && data.text.length > 0 && (
+              <AiHelperButton reactiveData={data} />
+            )}
+          </SlugInput>
+        )}
       />
-
-      <div class={'flex items-center py-3 text-neutral-500'}>
-        <label class="prefix">{`${WEB_URL}/posts/${category.value.slug}/`}</label>
-
-        <UnderlineInput
-          class="ml-2"
-          value={data.slug}
-          onChange={(e) => {
-            data.slug = e
-          }}
-        />
-
-        {(!data.title || !data.slug) && data.text.length > 0 && (
-          <AiHelperButton reactiveData={data} />
-        )}
-        {!!data.slug && (
-          <CopyTextButton
-            text={`${WEB_URL}/posts/${category.value.slug}/${data.slug}`}
-          />
-        )}
-      </div>
-
-      <PreviewSplitter>
-        <Editor
-          key={data.id}
-          loading={loading.value}
-          onChange={(v) => {
-            data.text = v
-          }}
-          text={data.text}
-        />
-      </PreviewSplitter>
 
       {/* Drawer  */}
       <TextBaseDrawer

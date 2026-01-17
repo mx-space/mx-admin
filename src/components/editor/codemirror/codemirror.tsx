@@ -5,7 +5,8 @@ import type { PropType } from 'vue'
 
 import { useSaveConfirm } from '~/hooks/use-save-confirm'
 
-import { MarkdownToolbar } from '../toolbar'
+import { FloatingToolbar } from '../toolbar/floating-toolbar'
+import { useSelectionPosition } from '../toolbar/use-selection-position'
 import styles from '../universal/editor.module.css'
 import { editorBaseProps } from '../universal/props'
 
@@ -65,12 +66,20 @@ export const CodemirrorEditor = defineComponent({
       () => memoedText === editorView.value?.state.doc.toString(),
     )
 
+    // 浮动工具栏选区位置追踪
+    const { position, hasSelection } = useSelectionPosition(editorView)
+
     return () => (
-      <div class="flex h-full flex-col">
-        <MarkdownToolbar editorView={editorView.value} />
+      <div class="relative flex h-full flex-col">
         <div
           class={[styles.editor, props.className, 'flex-1 overflow-auto']}
           ref={refContainer}
+        />
+        {/* 浮动工具栏 */}
+        <FloatingToolbar
+          editorView={editorView.value}
+          visible={hasSelection.value}
+          position={position.value}
         />
       </div>
     )
