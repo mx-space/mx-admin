@@ -52,24 +52,24 @@ export const useSaveConfirm = (
       return
     }
 
-    const confirm = new Promise<boolean>((r, _j) => {
+    const shouldLeave = await new Promise<boolean>((resolve) => {
       dialog.warning({
         title: message,
         negativeText: '取消',
         positiveText: '确认',
         onNegativeClick() {
-          r(true)
+          resolve(false) // 取消离开
         },
         onPositiveClick() {
-          r(false)
+          resolve(true) // 确认离开
         },
       })
     })
 
-    const res = await Promise.resolve(confirm)
-
-    if (res) {
+    if (shouldLeave) {
       next()
+    } else {
+      next(false)
     }
   })
 }
