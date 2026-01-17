@@ -40,6 +40,10 @@ export const RelativeTime = defineComponent({
       type: Boolean,
       default: true,
     },
+    class: {
+      type: String,
+      default: '',
+    },
   },
   setup(props) {
     return () =>
@@ -48,7 +52,7 @@ export const RelativeTime = defineComponent({
           {{
             trigger() {
               return (
-                <span>
+                <span class={props.class}>
                   <_RelativeTime time={props.time} />
                 </span>
               )
@@ -61,7 +65,9 @@ export const RelativeTime = defineComponent({
           }}
         </NPopover>
       ) : (
-        <_RelativeTime time={props.time} />
+        <span class={props.class}>
+          <_RelativeTime time={props.time} />
+        </span>
       )
   },
 })

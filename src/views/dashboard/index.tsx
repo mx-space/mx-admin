@@ -11,8 +11,8 @@ import {
   UserRound as GuestIcon,
   Heart as HeartIcon,
   Link as LinkIcon,
-  BookOpen as NotebookMinimalistic,
   StickyNote as NoteIcon,
+  BookOpen as NotebookMinimalistic,
   Radio as OnlinePredictionFilledIcon,
   Pencil as PencilIcon,
   AlignLeft as PhAlignLeft,
@@ -38,9 +38,9 @@ import {
   ref,
   watchEffect,
 } from 'vue'
+import type { PropType, VNode } from 'vue'
 import { useRouter } from 'vue-router'
 import type { Stat } from '~/models/stat'
-import type { PropType, VNode } from 'vue'
 
 import { Icon } from '@vicons/utils'
 
@@ -54,7 +54,7 @@ import { useLayout } from '~/layouts/content'
 import { RouteName } from '~/router/name'
 import { AppStore } from '~/stores/app'
 import { UserStore } from '~/stores/user'
-import { parseDate, RESTManager } from '~/utils'
+import { RESTManager, parseDate } from '~/utils'
 import { isNewerVersion } from '~/utils/version'
 
 import PKG from '../../../package.json'
@@ -418,7 +418,7 @@ export const DashBoardView = defineComponent({
               icon={<PencilIcon />}
               actions={[
                 {
-                  name: '记点啥',
+                  name: '新建速记',
                   primary: true,
                   onClick: () => createShortHand(),
                 },
@@ -438,7 +438,7 @@ export const DashBoardView = defineComponent({
               icon={<CommentsIcon />}
               actions={[
                 {
-                  name: '说一句',
+                  name: '发布说说',
                   primary: true,
                   onClick: () => router.push({ name: RouteName.EditSay }),
                 },
@@ -649,7 +649,7 @@ const AppIF = defineComponent({
         closedTips.value.dashboard !== dashboard
       ) {
         const $notice = notice.info({
-          title: '[管理中台] 有新版本啦！',
+          title: '管理后台有新版本可用',
           content: () => (
             <div>
               <p>{`当前版本：${PKG.version}，最新版本：${dashboard}`}</p>
@@ -674,7 +674,7 @@ const AppIF = defineComponent({
                     $notice.destroy()
                   }}
                 >
-                  更更更！
+                  立即更新
                 </NButton>
               </div>
             </div>
@@ -700,7 +700,7 @@ const AppIF = defineComponent({
       if (app.value?.version.startsWith('demo')) {
         notice.info({
           title: 'Demo Mode',
-          content: '当前处于 Demo 模式，部分功能不可用',
+          content: '当前处于演示模式，部分功能可能受到限制',
         })
         return
       }
@@ -713,7 +713,7 @@ const AppIF = defineComponent({
         isNewerVersion(app.value.version, versionMap.value.system)
       ) {
         notice.info({
-          title: '[系统] 有新版本啦！',
+          title: '系统有新版本可用',
           content: () => (
             <div>
               <p>{`当前版本：${app.value?.version || 'N/A'}，最新版本：${versionMap.value.system}`}</p>

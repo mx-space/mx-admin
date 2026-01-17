@@ -12,11 +12,11 @@ import {
   NUpload,
   useMessage,
 } from 'naive-ui'
+import type { UploadFileInfo } from 'naive-ui'
 import { defineComponent, ref, watch } from 'vue'
 import type { ParsedModel } from '~/utils/markdown-parser'
-import type { UploadFileInfo } from 'naive-ui'
 
-import { responseBlobToFile, RESTManager } from '~/utils'
+import { RESTManager, responseBlobToFile } from '~/utils'
 import { ParseMarkdownYAML } from '~/utils/markdown-parser'
 
 enum ImportType {
@@ -76,7 +76,7 @@ export default defineComponent(() => {
             reject('File is empty')
             return
           }
-          // 垃圾 windows , 不识别 mine-type 的处理
+          // Windows 系统不识别 mine-type 的处理
           const ext = file.name.split('.').pop()
 
           if (
@@ -103,7 +103,7 @@ export default defineComponent(() => {
     }
     try {
       const parsedList_ = parseMarkdown(strList)
-      message.success('解析完成，结果查看 console 哦')
+      message.success('解析完成，请在控制台查看结果')
       parsedList.value = parsedList_.map((v, index) => ({
         ...v,
         filename: fileList.value[index].file?.name ?? '',
@@ -120,7 +120,7 @@ export default defineComponent(() => {
     e.stopPropagation()
     e.preventDefault()
     if (!parsedList.value.length) {
-      return message.error('请先解析!!')
+      return message.error('请先解析文件')
     }
     await RESTManager.api.markdown.import.post({
       data: {
@@ -184,7 +184,7 @@ export default defineComponent(() => {
             onUpdateValue={(e) => void (importType.value = e)}
           />
         </NFormItem>
-        <NFormItem label="准备好了吗.">
+        <NFormItem label="操作步骤">
           <NSpace vertical>
             <NUpload
               multiple
@@ -204,25 +204,25 @@ export default defineComponent(() => {
               }}
             >
               <NButtonGroup>
-                <NButton round>先上传</NButton>
+                <NButton round>上传文件</NButton>
                 <NButton
                   onClick={handleParse}
                   disabled={!fileList.value.length}
                 >
-                  再解析
+                  解析文件
                 </NButton>
                 <NButton
                   onClick={handleUpload}
                   round
                   disabled={!parsedList.value.length}
                 >
-                  最后导入
+                  导入数据
                 </NButton>
               </NButtonGroup>
             </NUpload>
 
             <NText depth={2} class="!text-sm">
-              只能上传 markdown 文件
+              仅支持上传 markdown 文件
             </NText>
           </NSpace>
         </NFormItem>

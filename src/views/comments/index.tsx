@@ -22,10 +22,10 @@ import {
   useDialog,
   useMessage,
 } from 'naive-ui'
+import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import { defineComponent, nextTick, reactive, ref, unref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { CommentModel, CommentsResponse } from '~/models/comment'
-import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 
 import { Icon } from '@vicons/utils'
 
@@ -113,7 +113,7 @@ const ManageComment = defineComponent(() => {
       })
       replyDialogShow.value = false
       replyComment.value = null
-      message.success('回复成功啦~')
+      message.success('回复成功')
       replyText.value = ''
       await fetchData()
     } finally {
@@ -150,7 +150,7 @@ const ManageComment = defineComponent(() => {
     } else {
       await RESTManager.api.comments(id).patch({ data: { state } })
     }
-    message.success('操作完成')
+    message.success('操作成功')
     await fetchData()
   }
 
@@ -285,7 +285,7 @@ const ManageComment = defineComponent(() => {
               </blockquote>
             )}
 
-            <div class="space-x-3">
+            <div class="-ml-1.5 space-x-3">
               {tabValue.value !== CommentType.Marked && (
                 <NButton
                   quaternary

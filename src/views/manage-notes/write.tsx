@@ -1,3 +1,4 @@
+import type { PaginateResult } from '@mx-space/api-client'
 import { add } from 'date-fns'
 import { isString } from 'es-toolkit/compat'
 import {
@@ -26,7 +27,6 @@ import {
   watch,
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { PaginateResult } from '@mx-space/api-client'
 import type { Coordinate, NoteModel } from '~/models/note'
 import type { TopicModel } from '~/models/topic'
 import type { WriteBaseType } from '~/shared/types/base'
@@ -86,7 +86,7 @@ const useNoteTopic = () => {
 const NoteWriteView = defineComponent(() => {
   const route = useRoute()
 
-  const defaultTitle = ref('写点什么呢')
+  const defaultTitle = ref('新建日记')
   const id = computed(() => route.query.id)
 
   onBeforeMount(() => {
@@ -236,7 +236,7 @@ const NoteWriteView = defineComponent(() => {
 
   // 启用沉浸式编辑模式
   setContentPadding(false)
-  setTitle('记录生活点滴')
+  setTitle('撰写日记')
   setHeaderClass('pt-1')
   setActions(
     <>

@@ -34,9 +34,7 @@ export const IframePreviewButton = defineComponent({
                   e.stopPropagation()
                 }}
               >
-                <Icon>
-                  <MagnifyIcon />
-                </Icon>
+                <MagnifyIcon size={12} />
               </NButton>
             )
           },

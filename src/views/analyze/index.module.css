@@ -1,6 +1,6 @@
 /* Container */
 .container {
-  @apply mx-auto max-w-6xl px-4 py-6;
+  @apply mx-auto max-w-[1600px] px-6 py-6;
 }
 
 /* Stats Overview Section */
@@ -349,7 +349,7 @@
 }
 
 .rankingBarFill {
-  @apply h-full rounded-full bg-gradient-to-r from-primary to-primary-shallow transition-[width];
+  @apply from-primary to-primary-shallow h-full rounded-full bg-gradient-to-r transition-[width];
   transition-duration: 300ms;
 }
 
@@ -411,7 +411,7 @@
 }
 
 .pathBarFill {
-  @apply h-full rounded-full bg-primary/60;
+  @apply bg-primary/60 h-full rounded-full;
 }
 
 /* Empty State */

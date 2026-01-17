@@ -58,24 +58,24 @@ export default defineComponent({
             <NStep
               status={step.value > 0 ? 'finish' : 'process'}
               title="(๑•̀ㅂ•́)و✧"
-              description="让我们开始吧"
+              description="欢迎进行初始化配置"
             />
 
             <NStep
               status={getStatus(1)}
               title="站点设置"
-              description="先设置一下站点相关配置吧"
+              description="请配置站点基本信息"
             />
 
             <NStep
               status={getStatus(2)}
               title="主人信息"
-              description="请告诉你的名字"
+              description="请创建管理员账户"
             />
             <NStep
               status={getStatus(3)}
               title="(๑•̀ㅂ•́)و✧"
-              description="一切就绪了"
+              description="初始化即将完成"
             />
           </NSteps>
 
@@ -370,7 +370,7 @@ const Step3 = defineComponent({
   setup() {
     return () => (
       <NSpace class="text-center" vertical>
-        <span class="text-base">你已经完成了所有的步骤，干得漂亮。</span>
+        <span class="text-base">所有配置已完成，请继续下一步操作。</span>
         <NButton
           type="primary"
           round

@@ -54,8 +54,8 @@ export const EmailTab = defineComponent({
         onPositiveClick() {
           return
         },
-        negativeText: '嗯',
-        positiveText: '达咩',
+        negativeText: '取消',
+        positiveText: '确认',
       })
     }
     // TODO

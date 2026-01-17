@@ -6,8 +6,6 @@ import { NButton, NEllipsis } from 'naive-ui'
 import { defineComponent } from 'vue'
 import { RouterLink } from 'vue-router'
 
-import { Icon } from '@vicons/utils'
-
 import { IframePreviewButton } from '~/components/special-button/iframe-preview'
 import { WEB_URL } from '~/constants/env'
 import { useStoreRef } from '~/hooks/use-store-ref'
@@ -66,44 +64,40 @@ export const TableTitleLink = defineComponent({
           {props.title}
         </NEllipsis>
         {slots.default?.()}
-        <div class="ml-2">
-          {fullExternalLinkTo.value && (
-            <NButton
-              text
-              tag="a"
-              class="cursor-pointer"
-              // @ts-expect-error
-              href={
-                fullExternalLinkTo.value +
-                (props.withToken ? `?token=${getToken()}` : '')
-              }
-              target="_blank"
-              type="primary"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <Icon>
-                <ExternalLinkIcon />
-              </Icon>
-            </NButton>
-          )}
-        </div>
+        {fullExternalLinkTo.value && (
+          <NButton
+            text
+            tag="a"
+            class="ml-2 flex cursor-pointer items-center"
+            // @ts-expect-error
+            href={
+              fullExternalLinkTo.value +
+              (props.withToken ? `?token=${getToken()}` : '')
+            }
+            target="_blank"
+            type="primary"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ExternalLinkIcon size={12} />
+          </NButton>
+        )}
 
-        <div class="ml-2">
-          {props.id && isPC.value && <IframePreviewButton path={path} />}
-        </div>
+        {props.id && isPC.value && (
+          <div class="ml-2 flex items-center">
+            <IframePreviewButton path={path} />
+          </div>
+        )}
 
         {/* AI Summary */}
-        <div class="ml-2">
-          <RouterLink
-            to={{
-              name: RouteName.AiSummary,
-              query: { refId: props.id },
-            }}
-            class={'flex cursor-pointer items-center'}
-          >
-            <SparklesIcon size={16} />
-          </RouterLink>
-        </div>
+        <RouterLink
+          to={{
+            name: RouteName.AiSummary,
+            query: { refId: props.id },
+          }}
+          class="ml-2 flex cursor-pointer items-center"
+        >
+          <SparklesIcon size={12} />
+        </RouterLink>
       </RouterLink>
     )
   },

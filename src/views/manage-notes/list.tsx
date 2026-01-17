@@ -1,20 +1,23 @@
 import {
   Book as BookIcon,
   Bookmark as BookmarkIcon,
+  ExternalLink,
   EyeOff as EyeHideIcon,
   Eye as EyeIcon,
   EyeOff as EyeOffIcon,
   Heart as HeartIcon,
+  MapPin,
+  Pencil,
   Plus as PlusIcon,
+  Trash2,
 } from 'lucide-vue-next'
 import { NButton, NEllipsis, NPopconfirm, NSpace, useMessage } from 'naive-ui'
-import { defineComponent, onMounted, reactive, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed, defineComponent, onMounted, reactive, watch } from 'vue'
+import { RouterLink, useRoute } from 'vue-router'
 import type { Pager } from '~/models/base'
 import type { NoteModel } from '~/models/note'
 import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
-
-import { Icon } from '@vicons/utils'
+import type { PropType } from 'vue'
 
 import { TableTitleLink } from '~/components/link/title-link'
 import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
@@ -22,12 +25,148 @@ import { StatusToggle } from '~/components/status-toggle'
 import { Table } from '~/components/table'
 import { EditColumn } from '~/components/table/edit-column'
 import { RelativeTime } from '~/components/time/relative-time'
+import { WEB_URL } from '~/constants/env'
+import { useStoreRef } from '~/hooks/use-store-ref'
 import { useDataTableFetch } from '~/hooks/use-table'
+import { UIStore } from '~/stores/ui'
+import { getToken } from '~/utils'
 import { formatNumber } from '~/utils/number'
 
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { useLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
+
+// Mobile card item component
+const NoteItem = defineComponent({
+  name: 'NoteItem',
+  props: {
+    data: {
+      type: Object as PropType<NoteModel>,
+      required: true,
+    },
+    onDelete: {
+      type: Function as PropType<(id: string) => void>,
+      required: true,
+    },
+    onTogglePublish: {
+      type: Function as PropType<(id: string, status: boolean) => Promise<void>>,
+      required: true,
+    },
+  },
+  setup(props) {
+    const row = computed(() => props.data)
+    const isSecret = computed(
+      () => row.value.publicAt && +new Date(row.value.publicAt) - Date.now() > 0,
+    )
+    const isUnpublished = computed(() => !row.value.isPublished)
+
+    return () => (
+      <div class="flex items-center gap-2 px-3 py-2.5 border-b border-neutral-200 dark:border-neutral-800 last:border-b-0 hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition-colors">
+        <div class="flex-1 min-w-0">
+          {/* Title row with badges */}
+          <div class="flex items-center gap-1.5">
+            <span class="shrink-0 text-[11px] font-mono text-neutral-400 dark:text-neutral-500">
+              #{row.value.nid}
+            </span>
+            {(isUnpublished.value || isSecret.value) && (
+              <EyeHideIcon class="w-3 h-3 shrink-0 text-neutral-500" />
+            )}
+            {row.value.bookmark && (
+              <BookmarkIcon class="w-3 h-3 shrink-0 text-red-500" />
+            )}
+            <RouterLink
+              to={`/notes/edit?id=${row.value.id}`}
+              class="text-[13px] font-medium text-neutral-900 dark:text-neutral-100 truncate hover:text-blue-600 dark:hover:text-blue-400"
+            >
+              {row.value.title}
+            </RouterLink>
+          </div>
+
+          {/* Meta row - all in one line with consistent sizing */}
+          <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-1">
+            {row.value.mood && (
+              <span class="text-[11px] text-neutral-500 dark:text-neutral-400">
+                {row.value.mood}
+              </span>
+            )}
+            {row.value.weather && (
+              <span class="text-[11px] text-neutral-500 dark:text-neutral-400">
+                {row.value.weather}
+              </span>
+            )}
+            {row.value.location && (
+              <span class="text-[11px] text-neutral-400 dark:text-neutral-500 flex items-center gap-0.5 truncate max-w-20">
+                <MapPin class="w-2.5 h-2.5 shrink-0" />
+                {row.value.location}
+              </span>
+            )}
+            <span class="text-[11px] text-neutral-400 dark:text-neutral-500 flex items-center gap-0.5">
+              <BookIcon class="w-2.5 h-2.5" />
+              {formatNumber(row.value.count?.read || 0)}
+            </span>
+            <span class="text-[11px] text-neutral-400 dark:text-neutral-500 flex items-center gap-0.5">
+              <HeartIcon class="w-2.5 h-2.5" />
+              {formatNumber(row.value.count?.like || 0)}
+            </span>
+            <span class="text-[11px] text-neutral-400 dark:text-neutral-500">·</span>
+            <RelativeTime
+              time={row.value.created}
+              class="text-[11px] text-neutral-400 dark:text-neutral-500"
+            />
+            <StatusToggle
+              isPublished={row.value.isPublished ?? false}
+              size="small"
+              onToggle={(status) => props.onTogglePublish(row.value.id, status)}
+            />
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div class="shrink-0 flex items-center">
+          <a
+            href={`${WEB_URL}/notes/${row.value.nid}${isUnpublished.value || isSecret.value ? `?token=${getToken()}` : ''}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="在新窗口打开日记"
+          >
+            <NButton quaternary size="tiny" class="!px-1.5">
+              {{
+                icon: () => <ExternalLink class="w-3.5 h-3.5 text-neutral-500" />,
+              }}
+            </NButton>
+          </a>
+
+          <RouterLink to={`/notes/edit?id=${row.value.id}`} aria-label="编辑日记">
+            <NButton quaternary size="tiny" class="!px-1.5">
+              {{
+                icon: () => <Pencil class="w-3.5 h-3.5 text-neutral-500" />,
+              }}
+            </NButton>
+          </RouterLink>
+
+          <NPopconfirm
+            positiveText="取消"
+            negativeText="删除"
+            onNegativeClick={() => props.onDelete(row.value.id)}
+          >
+            {{
+              trigger: () => (
+                <NButton quaternary size="tiny" class="!px-1.5" aria-label="删除日记">
+                  {{
+                    icon: () => <Trash2 class="w-3.5 h-3.5 text-red-500" />,
+                  }}
+                </NButton>
+              ),
+              default: () => (
+                <span class="max-w-48">确定要删除「{row.value.title}」？</span>
+              ),
+            }}
+          </NPopconfirm>
+        </div>
+      </div>
+    )
+  },
+})
 
 export const ManageNoteListView = defineComponent({
   name: 'NoteList',
@@ -57,9 +196,11 @@ export const ManageNoteListView = defineComponent({
       )
 
     const message = useMessage()
-
     const route = useRoute()
     const fetchData = fetchDataFn
+    const ui = useStoreRef(UIStore)
+    const isMobile = computed(() => ui.viewport.value.mobile || ui.viewport.value.pad)
+
     watch(
       () => route.query.page,
       async (n) => {
@@ -72,6 +213,95 @@ export const ManageNoteListView = defineComponent({
       await fetchData()
     })
 
+    const handleDelete = async (id: string) => {
+      await RESTManager.api.notes(id).delete()
+      message.success('删除成功')
+      await fetchData(pager.value.currentPage)
+    }
+
+    const handleTogglePublish = async (id: string, newStatus: boolean) => {
+      try {
+        await RESTManager.api.notes(id)('publish').patch({
+          data: { isPublished: newStatus },
+        })
+        const item = data.value.find((i) => i.id === id)
+        if (item) item.isPublished = newStatus
+        message.success(newStatus ? '已发布' : '已设为草稿')
+      } catch {
+        message.error('操作失败')
+      }
+    }
+
+    // Mobile card list view
+    const CardList = defineComponent({
+      setup() {
+        return () => (
+          <div class="border border-neutral-200 dark:border-neutral-800 rounded-lg overflow-hidden bg-white dark:bg-neutral-900">
+            {loading.value ? (
+              <div class="flex items-center justify-center py-16">
+                <span class="text-sm text-neutral-400">加载中…</span>
+              </div>
+            ) : data.value.length === 0 ? (
+              <div class="flex flex-col items-center justify-center py-16">
+                <p class="text-sm text-neutral-500 dark:text-neutral-400">
+                  暂无日记
+                </p>
+                <RouterLink
+                  to="/notes/edit"
+                  class="mt-4 text-sm text-blue-500 hover:text-blue-600 hover:underline"
+                >
+                  记录第一篇日记
+                </RouterLink>
+              </div>
+            ) : (
+              <div>
+                {data.value.map((item) => (
+                  <NoteItem
+                    key={item.id}
+                    data={item}
+                    onDelete={handleDelete}
+                    onTogglePublish={handleTogglePublish}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* Pagination */}
+            {pager.value.totalPage > 1 && (
+              <div class="flex items-center justify-center gap-4 py-4 border-t border-neutral-200 dark:border-neutral-800">
+                <button
+                  class="px-3 py-1.5 text-sm rounded-md border border-neutral-200 dark:border-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-neutral-50 dark:hover:bg-neutral-800"
+                  disabled={!pager.value.hasPrevPage}
+                  onClick={() => {
+                    if (pager.value.hasPrevPage) {
+                      fetchData(pager.value.currentPage - 1)
+                    }
+                  }}
+                >
+                  上一页
+                </button>
+                <span class="text-sm text-neutral-500 dark:text-neutral-400">
+                  {pager.value.currentPage} / {pager.value.totalPage}
+                </span>
+                <button
+                  class="px-3 py-1.5 text-sm rounded-md border border-neutral-200 dark:border-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-neutral-50 dark:hover:bg-neutral-800"
+                  disabled={!pager.value.hasNextPage}
+                  onClick={() => {
+                    if (pager.value.hasNextPage) {
+                      fetchData(pager.value.currentPage + 1)
+                    }
+                  }}
+                >
+                  下一页
+                </button>
+              </div>
+            )}
+          </div>
+        )
+      },
+    })
+
+    // Desktop table view
     const DataTable = defineComponent({
       setup() {
         const columns = reactive<TableColumns<NoteModel>>([
@@ -117,14 +347,10 @@ export const ManageNoteListView = defineComponent({
                       return (
                         <>
                           {isUnpublished || isSecret ? (
-                            <Icon color="#34495e">
-                              <EyeHideIcon />
-                            </Icon>
+                            <EyeHideIcon class="h-3.5 w-3.5 text-neutral-500" />
                           ) : null}
                           {row.bookmark ? (
-                            <Icon color="#e74c3c">
-                              <BookmarkIcon />
-                            </Icon>
+                            <BookmarkIcon class="h-3.5 w-3.5 text-red-500" />
                           ) : null}
                         </>
                       )
@@ -212,11 +438,7 @@ export const ManageNoteListView = defineComponent({
           },
 
           {
-            title: () => (
-              <Icon>
-                <BookIcon />
-              </Icon>
-            ),
+            title: () => <BookIcon class="h-4 w-4" />,
             key: 'count.read',
             width: 50,
             ellipsis: {
@@ -227,11 +449,7 @@ export const ManageNoteListView = defineComponent({
             },
           },
           {
-            title: () => (
-              <Icon>
-                <HeartIcon />
-              </Icon>
-            ),
+            title: () => <HeartIcon class="h-4 w-4" />,
             width: 50,
             ellipsis: {
               tooltip: true,
@@ -270,19 +488,7 @@ export const ManageNoteListView = defineComponent({
               return (
                 <StatusToggle
                   isPublished={row.isPublished ?? false}
-                  onToggle={async (newStatus) => {
-                    try {
-                      await RESTManager.api
-                        .notes(row.id)('publish')
-                        .patch({
-                          data: { isPublished: newStatus },
-                        })
-                      row.isPublished = newStatus
-                      message.success(newStatus ? '已发布' : '已设为草稿')
-                    } catch (_error) {
-                      message.error('操作失败')
-                    }
-                  }}
+                  onToggle={(newStatus) => handleTogglePublish(row.id, newStatus)}
                 />
               )
             },
@@ -298,11 +504,7 @@ export const ManageNoteListView = defineComponent({
                   <NPopconfirm
                     positiveText={'取消'}
                     negativeText="删除"
-                    onNegativeClick={async () => {
-                      await RESTManager.api.notes(row.id).delete()
-                      message.success('删除成功')
-                      await fetchData(pager.value.currentPage)
-                    }}
+                    onNegativeClick={() => handleDelete(row.id)}
                   >
                     {{
                       trigger: () => (
@@ -434,6 +636,6 @@ export const ManageNoteListView = defineComponent({
       )
     })
 
-    return () => <DataTable />
+    return () => (isMobile.value ? <CardList /> : <DataTable />)
   },
 })

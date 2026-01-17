@@ -44,7 +44,7 @@ export const useShorthand = () => {
                       })
                       .then((res) => {
                         quickHandText.value = ''
-                        message.success('记录成功')
+                        message.success('保存成功')
                         dialog.destroy()
                         resolve(res)
                       })
@@ -53,7 +53,7 @@ export const useShorthand = () => {
                       })
                   }}
                 >
-                  记好了
+                  保存
                 </NButton>
                 <NButton
                   round
@@ -63,7 +63,7 @@ export const useShorthand = () => {
                     resolve(null)
                   }}
                 >
-                  不想记了
+                  取消
                 </NButton>
               </NSpace>
             )
@@ -117,7 +117,7 @@ export const useShorthand = () => {
                       })
                   }}
                 >
-                  我改好啦
+                  保存
                 </NButton>
                 <NButton
                   round

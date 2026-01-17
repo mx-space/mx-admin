@@ -55,8 +55,8 @@ export const useSaveConfirm = (
     const confirm = new Promise<boolean>((r, _j) => {
       dialog.warning({
         title: message,
-        negativeText: '嗯',
-        positiveText: '手抖了啦',
+        negativeText: '取消',
+        positiveText: '确认',
         onNegativeClick() {
           r(true)
         },

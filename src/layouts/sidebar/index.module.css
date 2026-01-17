@@ -31,7 +31,14 @@
   @media (max-width: 768px) {
     .content {
       left: 0 !important;
-      padding-left: 16px !important;
+      /* 移动端全屏，去掉 padding */
+      padding: 0 !important;
+    }
+
+    .container {
+      /* 移动端去掉卡片形式，改为全屏 */
+      border-radius: 0;
+      box-shadow: none;
     }
   }
 }

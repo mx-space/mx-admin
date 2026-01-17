@@ -1,28 +1,26 @@
-import { Plus as AddIcon } from 'lucide-vue-next'
 import {
-  NButton,
-  NCard,
-  NPopconfirm,
-  NSpace,
-  NText,
-  useMessage,
-} from 'naive-ui'
-import Sortable, { Swap } from 'sortablejs'
-import { defineComponent, onMounted } from 'vue'
+  ExternalLink,
+  FileText,
+  GripVertical,
+  Pencil,
+  Plus as AddIcon,
+  Trash2,
+} from 'lucide-vue-next'
+import { NButton, NPopconfirm, useMessage } from 'naive-ui'
+import Sortable from 'sortablejs'
+import { defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
+import { RouterLink } from 'vue-router'
 import type { PageModel, PageResponse } from '~/models/page'
 import type { PropType } from 'vue'
 
-import { TableTitleLink } from '~/components/link/title-link'
 import { RelativeTime } from '~/components/time/relative-time'
 
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { useLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
 
-Sortable.mount(new Swap())
-
-const PostItem = defineComponent({
-  name: 'PostItem',
+const PageItem = defineComponent({
+  name: 'PageItem',
   props: {
     data: {
       type: Object as PropType<PageModel>,
@@ -34,68 +32,111 @@ const PostItem = defineComponent({
     },
   },
   setup(props) {
+    const message = useMessage()
+
     return () => {
       const row = props.data
       return (
-        <NCard size="small">
-          {{
-            header() {
-              return (
-                <TableTitleLink
-                  inPageTo={`/pages/edit?id=${row.id}`}
-                  title={row.title}
-                  externalLinkTo={`/${row.slug}`}
-                  id={row.id}
-                />
-              )
-            },
-            ['header-extra']: function () {
-              return <RelativeTime time={row.created} />
-            },
+        <div class="group flex items-center gap-3 px-4 py-3 border-b border-neutral-200 dark:border-neutral-800 last:border-b-0 hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition-colors">
+          <GripVertical class="drag-handle w-4 h-4 text-neutral-300 dark:text-neutral-600 cursor-grab active:cursor-grabbing shrink-0 hover:text-neutral-500 dark:hover:text-neutral-400" />
 
-            default() {
-              return (
-                <NText depth={1} class={'min-h-[1rem]'}>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-4">
+              <span class="font-medium text-sm text-neutral-900 dark:text-neutral-100 truncate">
+                {row.title}
+              </span>
+            </div>
+            <div class="flex items-center gap-3 mt-0.5">
+              <span class="text-xs text-neutral-500 dark:text-neutral-400">
+                /{row.slug}
+              </span>
+              {row.subtitle && (
+                <span class="text-xs text-neutral-400 dark:text-neutral-500 truncate">
                   {row.subtitle}
-                </NText>
-              )
-            },
-            footer() {
-              return <NText depth={3}>{`/${row.slug}`}</NText>
-            },
-            action() {
-              return (
-                <NSpace justify="end">
-                  <NPopconfirm
-                    positiveText={'取消'}
-                    negativeText="删除"
-                    onNegativeClick={async () => {
-                      await RESTManager.api.pages(row.id).delete()
-                      message.success('删除成功')
-                      props.onDelete(row.id)
-                    }}
-                  >
-                    {{
-                      trigger: () => (
-                        <NButton quaternary type="error" size="tiny">
-                          移除
-                        </NButton>
-                      ),
+                </span>
+              )}
+            </div>
+          </div>
 
-                      default: () => (
-                        <span class="max-w-48">
-                          确定要删除「{row.title}」？
-                        </span>
+          <div class="shrink-0 flex items-center">
+            <RelativeTime
+              time={row.created}
+              class="text-xs text-neutral-400 dark:text-neutral-500 group-hover:hidden"
+            />
+            <div class="hidden group-hover:flex items-center gap-1">
+            <RouterLink to={`/pages/edit?id=${row.id}`}>
+              <NButton quaternary size="tiny" class="!px-2">
+                {{
+                  icon: () => (
+                    <Pencil class="w-3.5 h-3.5 text-neutral-500" />
+                  ),
+                }}
+              </NButton>
+            </RouterLink>
+
+            <a
+              href={`/${row.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <NButton quaternary size="tiny" class="!px-2">
+                {{
+                  icon: () => (
+                    <ExternalLink class="w-3.5 h-3.5 text-neutral-500" />
+                  ),
+                }}
+              </NButton>
+            </a>
+
+            <NPopconfirm
+              positiveText="取消"
+              negativeText="删除"
+              onNegativeClick={async () => {
+                await RESTManager.api.pages(row.id).delete()
+                message.success('删除成功')
+                props.onDelete(row.id)
+              }}
+            >
+              {{
+                trigger: () => (
+                  <NButton quaternary size="tiny" class="!px-2">
+                    {{
+                      icon: () => (
+                        <Trash2 class="w-3.5 h-3.5 text-red-500" />
                       ),
                     }}
-                  </NPopconfirm>
-                </NSpace>
-              )
-            },
-          }}
-        </NCard>
+                  </NButton>
+                ),
+                default: () => (
+                  <span class="max-w-48">确定要删除「{row.title}」？</span>
+                ),
+              }}
+            </NPopconfirm>
+            </div>
+          </div>
+        </div>
       )
     }
+  },
+})
+
+const EmptyState = defineComponent({
+  name: 'EmptyState',
+  setup() {
+    return () => (
+      <div class="flex flex-col items-center justify-center py-16">
+        <FileText class="w-12 h-12 mb-4 text-neutral-300 dark:text-neutral-600" />
+        <p class="text-sm text-neutral-500 dark:text-neutral-400">
+          还没有页面
+        </p>
+        <RouterLink
+          to="/pages/edit"
+          class="mt-4 text-sm text-blue-500 hover:text-blue-600 hover:underline"
+        >
+          创建第一个页面
+        </RouterLink>
+      </div>
+    )
   },
 })
 
@@ -105,25 +146,33 @@ const reorder = (data: any[], oldIndex: number, newIndex: number) => {
   result.splice(newIndex, 0, removed)
   return result
 }
+
 export const ManagePageListView = defineComponent({
   name: 'PageList',
   setup() {
     const data = ref<PageModel[]>([])
+    const loading = ref(true)
+
     onMounted(async () => {
-      const response = await RESTManager.api.pages.get<PageResponse>({
-        params: {
-          page: 1,
-          size: 20,
-          select: 'title subtitle _id id created modified slug',
-        },
-      })
-      data.value = response.data
+      try {
+        const response = await RESTManager.api.pages.get<PageResponse>({
+          params: {
+            page: 1,
+            size: 50,
+            select: 'title subtitle _id id created modified slug',
+          },
+        })
+        data.value = response.data
+      } finally {
+        loading.value = false
+      }
     })
 
     const message = useMessage()
 
     const wrapperRef = ref<HTMLDivElement>()
     let sortable: Sortable | null = null
+
     watchOnce(
       () => data.value,
       () => {
@@ -133,7 +182,9 @@ export const ManagePageListView = defineComponent({
           if (!wrapperRef.value) return
           sortable = new Sortable(wrapperRef.value, {
             animation: 150,
-
+            handle: '.drag-handle',
+            ghostClass: 'opacity-50',
+            chosenClass: '!bg-neutral-100 dark:!bg-neutral-800',
             onEnd(evt) {
               if (
                 typeof evt.oldIndex === 'undefined' ||
@@ -165,27 +216,33 @@ export const ManagePageListView = defineComponent({
         })
       },
     )
+
     onBeforeUnmount(() => sortable?.destroy())
 
     const { setActions } = useLayout()
-    setActions(<HeaderActionButton to={'/pages/edit'} icon={<AddIcon />} />)
+    setActions(<HeaderActionButton to="/pages/edit" icon={<AddIcon />} />)
 
     return () => (
-      <div
-        class={
-          'phone:grid-cols-1 grid gap-4 *:flex *:flex-1 md:grid-cols-2 xl:grid-cols-4'
-        }
-        ref={wrapperRef}
-      >
-        {data.value.map((item) => (
-          <PostItem
-            data={item}
-            key={item.id}
-            onDelete={(id) => {
-              data.value = data.value.filter((item) => item.id !== id).concat()
-            }}
-          />
-        ))}
+      <div class="border border-neutral-200 dark:border-neutral-800 rounded-lg overflow-hidden bg-white dark:bg-neutral-900">
+        {loading.value ? (
+          <div class="flex items-center justify-center py-16">
+            <span class="text-sm text-neutral-400">加载中...</span>
+          </div>
+        ) : data.value.length === 0 ? (
+          <EmptyState />
+        ) : (
+          <div ref={wrapperRef}>
+            {data.value.map((item) => (
+              <PageItem
+                data={item}
+                key={item.id}
+                onDelete={(id) => {
+                  data.value = data.value.filter((i) => i.id !== id)
+                }}
+              />
+            ))}
+          </div>
+        )}
       </div>
     )
   },

@@ -72,8 +72,8 @@ export const DeleteConfirmButton = defineComponent({
               title: '警告',
               content:
                 content ?? `你确定要删除${size > 1 ? '多条' : '这条'}数据？`,
-              positiveText: 'はい',
-              negativeText: '达咩',
+              positiveText: '确认',
+              negativeText: '取消',
               onPositiveClick: async () => {
                 await onDelete(checkedRowKeys)
                 showSuccessMessage &&
