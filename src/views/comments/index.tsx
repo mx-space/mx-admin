@@ -68,7 +68,7 @@ const ManageComment = defineComponent(() => {
   const { setActions } = useLayout()
 
   const tabValue = ref(
-    (+(route.query.state as any) as CommentType) ?? CommentType.Pending,
+    (+(route.query.state as string) as CommentType) || CommentType.Pending,
   )
 
   const { data, checkedRowKeys, fetchDataFn, pager, loading } =

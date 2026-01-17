@@ -1,4 +1,5 @@
 import { onMounted, ref } from 'vue'
+import type { AppInfo } from '~/models/system'
 
 /*
  * @Author: Innei

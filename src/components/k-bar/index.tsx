@@ -83,7 +83,7 @@ const SearchResult = defineComponent({
         items={matches.value.results}
       >
         {{
-          item({ item, index: _index, active: _active }) {
+          item({ item, active }) {
             if (typeof item === 'string') {
               return <div class="p-2">{item}</div>
             } else {
