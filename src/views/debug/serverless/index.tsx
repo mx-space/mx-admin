@@ -5,7 +5,7 @@ import { useLocalStorage } from '@vueuse/core'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { FunctionCodeEditor } from '~/components/function-editor'
-import { ContentLayout } from '~/layouts/content'
+import { useLayout } from '~/layouts/content'
 import { TwoColGridLayout } from '~/layouts/two-col'
 import { defaultServerlessFunction } from '~/models/snippet'
 import { RESTManager } from '~/utils'
@@ -45,33 +45,31 @@ export default defineComponent({
         // noop
       }
     }
+
+    const { setActions } = useLayout()
+    setActions(
+      <HeaderActionButton
+        icon={<CheckCircleOutlinedIcon />}
+        onClick={runTest}
+      />,
+    )
+
     return () => (
-      <ContentLayout
-        actionsElement={
-          <>
-            <HeaderActionButton
-              icon={<CheckCircleOutlinedIcon />}
-              onClick={runTest}
-            />
-          </>
-        }
-      >
-        <TwoColGridLayout>
-          <NGi span="18">
-            <div class="h-[80vh]">
-              <FunctionCodeEditor value={value} onSave={runTest} />
-            </div>
-          </NGi>
-          <NGi span="18">
-            <pre
-              class="max-h-[calc(100vh-10rem)] overflow-auto !bg-transparent !bg-none"
-              ref={previewRef}
-            >
-              {errorMsg.value}
-            </pre>
-          </NGi>
-        </TwoColGridLayout>
-      </ContentLayout>
+      <TwoColGridLayout>
+        <NGi span="18">
+          <div class="h-[80vh]">
+            <FunctionCodeEditor value={value} onSave={runTest} />
+          </div>
+        </NGi>
+        <NGi span="18">
+          <pre
+            class="max-h-[calc(100vh-10rem)] overflow-auto !bg-transparent !bg-none"
+            ref={previewRef}
+          >
+            {errorMsg.value}
+          </pre>
+        </NGi>
+      </TwoColGridLayout>
     )
   },
 })

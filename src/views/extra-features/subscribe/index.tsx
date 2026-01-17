@@ -6,7 +6,6 @@ import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
 import { Table } from '~/components/table'
 import { RelativeTime } from '~/components/time/relative-time'
 import { useDataTableFetch } from '~/hooks/use-table'
-import { ContentLayout } from '~/layouts/content'
 import { RESTManager } from '~/utils'
 
 import { SubscribeBit2TextMap } from './constants'
@@ -139,7 +138,10 @@ export default defineComponent({
       </div>
     ))
     return () => (
-      <ContentLayout description={<DescriptionElement />}>
+      <>
+        <div class="mb-4">
+          <DescriptionElement />
+        </div>
         <Table
           data={data}
           loading={loading.value}
@@ -150,7 +152,7 @@ export default defineComponent({
             checkedRowKeys.value = keys
           }}
         />
-      </ContentLayout>
+      </>
     )
   },
 })

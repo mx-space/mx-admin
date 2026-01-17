@@ -62,7 +62,7 @@ export const Tab1ForList = defineComponent({
     const { referenceNames: references, fetchReferenceNames } =
       useFetchReferenceNames()
     useMountAndUnmount(() => {
-      layout.setHeaderButtons(
+      layout.setActions(
         <>
           <HeaderActionButton
             onClick={() => {
@@ -81,7 +81,7 @@ export const Tab1ForList = defineComponent({
       )
 
       return () => {
-        layout.setHeaderButtons(null)
+        layout.setActions(null)
       }
     })
 

@@ -23,7 +23,7 @@ import {
 } from '~/components/special-button/preview'
 import { WEB_URL } from '~/constants/env'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
-import { ContentLayout } from '~/layouts/content'
+import { useLayout } from '~/layouts/content'
 import { RouteName } from '~/router/name'
 import { RESTManager } from '~/utils/rest'
 
@@ -50,7 +50,6 @@ const PageWriteView = defineComponent(() => {
   })
 
   const parsePayloadIntoReactiveData = (payload: PageModel) =>
-    // biome-ignore lint/correctness/useHookAtTopLevel: <explanation>
     useParsePayloadIntoData(data)(payload)
   const data = reactive<PageReactiveType>(resetReactive())
   const id = computed(() => route.query.id)
@@ -111,45 +110,42 @@ const PageWriteView = defineComponent(() => {
     router.push({ name: RouteName.ListPage, hash: '|publish' })
   }
 
-  return () => (
-    <ContentLayout
-      headerClass="pt-1"
-      actionsElement={
-        <>
-          <ParseContentButton
-            data={data}
-            onHandleYamlParsedMeta={(meta) => {
-              const { title, slug, subtitle, ...rest } = meta
-              data.title = title ?? data.title
-              data.slug = slug ?? data.slug
-              data.subtitle = subtitle ?? data.subtitle
+  const { setHeaderClass, setActions, setFooterActions } = useLayout()
 
-              data.meta = { ...rest }
-            }}
-          />
+  setHeaderClass('pt-1')
+  setActions(
+    <>
+      <ParseContentButton
+        data={data}
+        onHandleYamlParsedMeta={(meta) => {
+          const { title, slug, subtitle, ...rest } = meta
+          data.title = title ?? data.title
+          data.slug = slug ?? data.slug
+          data.subtitle = subtitle ?? data.subtitle
 
-          <HeaderPreviewButton iframe data={data} />
+          data.meta = { ...rest }
+        }}
+      />
 
-          <HeaderActionButton
-            icon={<TelegramPlaneIcon />}
-            onClick={handleSubmit}
-          />
-        </>
-      }
-      footerButtonElement={
-        <>
-          <button
-            onClick={() => {
-              drawerShow.value = true
-            }}
-          >
-            <Icon>
-              <SlidersHIcon />
-            </Icon>
-          </button>
-        </>
-      }
+      <HeaderPreviewButton iframe data={data} />
+
+      <HeaderActionButton icon={<TelegramPlaneIcon />} onClick={handleSubmit} />
+    </>,
+  )
+  setFooterActions(
+    <button
+      onClick={() => {
+        drawerShow.value = true
+      }}
     >
+      <Icon>
+        <SlidersHIcon />
+      </Icon>
+    </button>,
+  )
+
+  return () => (
+    <>
       <MaterialInput
         class="relative z-10 mt-3"
         label={'与你有个好心情~'}
@@ -203,7 +199,7 @@ const PageWriteView = defineComponent(() => {
       </TextBaseDrawer>
 
       {/* Drawer END */}
-    </ContentLayout>
+    </>
   )
 })
 

@@ -23,7 +23,7 @@ import type { Ref } from 'vue'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { tableRowStyle } from '~/components/table'
 import { useStoreRef } from '~/hooks/use-store-ref'
-import { ContentLayout } from '~/layouts/content'
+import { useLayout } from '~/layouts/content'
 import { CategoryStore } from '~/stores/category'
 import { RESTManager } from '~/utils/rest'
 
@@ -66,21 +66,21 @@ export const CategoryView = defineComponent((_props) => {
   const showDialog = ref<boolean | string>(false)
   const resetState = () => ({ name: '', slug: '' })
   const editCategoryState = ref<CategoryState>(resetState())
+
+  const { setActions } = useLayout()
+  setActions(
+    <HeaderActionButton
+      variant="success"
+      icon={<AddIcon />}
+      onClick={() => {
+        showDialog.value = true
+        editCategoryState.value = resetState()
+      }}
+    />,
+  )
+
   return () => (
-    <ContentLayout
-      actionsElement={
-        <>
-          <HeaderActionButton
-            variant="success"
-            icon={<AddIcon />}
-            onClick={() => {
-              showDialog.value = true
-              editCategoryState.value = resetState()
-            }}
-          />
-        </>
-      }
-    >
+    <>
       <NH3 prefix="bar">分类</NH3>
 
       {/* Action */}
@@ -236,7 +236,7 @@ export const CategoryView = defineComponent((_props) => {
           ]}
         />
       )}
-    </ContentLayout>
+    </>
   )
 })
 

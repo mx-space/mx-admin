@@ -26,7 +26,7 @@ import type { PropType } from 'vue'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { JSONHighlight } from '~/components/json-highlight'
-import { ContentLayout } from '~/layouts/content'
+import { useLayout } from '~/layouts/content'
 import { EventScope } from '~/models/wehbook'
 import { RESTManager } from '~/utils'
 
@@ -61,104 +61,102 @@ export default defineComponent({
         class: '!w-[600px] !max-w-[80vw]',
       })
     }
-    return () => (
-      <ContentLayout
-        actionsElement={
-          <HeaderActionButton
-            name="Add Webhook"
-            icon={<PlusIcon />}
-            onClick={() => presetEditableModal()}
-          />
-        }
-      >
-        <NList hoverable clickable>
-          {data.value?.data.map((item) => {
-            return (
-              <div
-                role="button"
-                tabindex={0}
-                onClick={() => {
-                  handleShowDetail(item.id)
-                }}
-              >
-                <NListItem key={item.id}>
-                  {{
-                    default() {
-                      return (
-                        <NThing title={item.payloadUrl}>
-                          {{
-                            description() {
-                              return (
-                                <div class={'space-x-2'}>
-                                  {item.events.map((event) => {
-                                    return (
-                                      <NTag size="small" type="primary" round>
-                                        {event}
-                                      </NTag>
-                                    )
-                                  })}
-                                </div>
-                              )
-                            },
-                            avatar() {
-                              return (
-                                <div
-                                  class={[
-                                    'h-2 w-2 rounded-full',
-                                    item.enabled
-                                      ? 'bg-green-500'
-                                      : 'bg-gray-500',
-                                  ]}
-                                />
-                              )
-                            },
-                          }}
-                        </NThing>
-                      )
-                    },
-                    suffix() {
-                      return (
-                        <div onClick={(e) => e.stopPropagation()}>
-                          <NButtonGroup>
-                            <NButton
-                              round
-                              onClick={() => {
-                                presetEditableModal(item)
-                              }}
-                            >
-                              编辑
-                            </NButton>
-                            <NPopconfirm
-                              positiveText={'取消'}
-                              negativeText="删除"
-                              onNegativeClick={async () => {
-                                await RESTManager.api.webhooks(item.id).delete()
-                                mutate()
-                              }}
-                            >
-                              {{
-                                trigger: () => (
-                                  <NButton round type="error" ghost>
-                                    移除
-                                  </NButton>
-                                ),
 
-                                default: () => (
-                                  <span class="max-w-48">确定要删除 ?</span>
-                                ),
-                              }}
-                            </NPopconfirm>
-                          </NButtonGroup>
-                        </div>
-                      )
-                    },
-                  }}
-                </NListItem>
-              </div>
-            )
-          })}
-        </NList>
-      </ContentLayout>
+    const { setActions } = useLayout()
+    setActions(
+      <HeaderActionButton
+        name="Add Webhook"
+        icon={<PlusIcon />}
+        onClick={() => presetEditableModal()}
+      />,
+    )
+
+    return () => (
+      <NList hoverable clickable>
+        {data.value?.data.map((item) => {
+          return (
+            <div
+              role="button"
+              tabindex={0}
+              onClick={() => {
+                handleShowDetail(item.id)
+              }}
+            >
+              <NListItem key={item.id}>
+                {{
+                  default() {
+                    return (
+                      <NThing title={item.payloadUrl}>
+                        {{
+                          description() {
+                            return (
+                              <div class={'space-x-2'}>
+                                {item.events.map((event) => {
+                                  return (
+                                    <NTag size="small" type="primary" round>
+                                      {event}
+                                    </NTag>
+                                  )
+                                })}
+                              </div>
+                            )
+                          },
+                          avatar() {
+                            return (
+                              <div
+                                class={[
+                                  'h-2 w-2 rounded-full',
+                                  item.enabled ? 'bg-green-500' : 'bg-gray-500',
+                                ]}
+                              />
+                            )
+                          },
+                        }}
+                      </NThing>
+                    )
+                  },
+                  suffix() {
+                    return (
+                      <div onClick={(e) => e.stopPropagation()}>
+                        <NButtonGroup>
+                          <NButton
+                            round
+                            onClick={() => {
+                              presetEditableModal(item)
+                            }}
+                          >
+                            编辑
+                          </NButton>
+                          <NPopconfirm
+                            positiveText={'取消'}
+                            negativeText="删除"
+                            onNegativeClick={async () => {
+                              await RESTManager.api.webhooks(item.id).delete()
+                              mutate()
+                            }}
+                          >
+                            {{
+                              trigger: () => (
+                                <NButton round type="error" ghost>
+                                  移除
+                                </NButton>
+                              ),
+
+                              default: () => (
+                                <span class="max-w-48">确定要删除 ?</span>
+                              ),
+                            }}
+                          </NPopconfirm>
+                        </NButtonGroup>
+                      </div>
+                    )
+                  },
+                }}
+              </NListItem>
+            </div>
+          )
+        })}
+      </NList>
     )
   },
 })

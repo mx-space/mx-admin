@@ -36,7 +36,7 @@ import { WEB_URL } from '~/constants/env'
 import { KAOMOJI_LIST } from '~/constants/kaomoji'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { useDataTableFetch } from '~/hooks/use-table'
-import { ContentLayout } from '~/layouts/content'
+import { useLayout } from '~/layouts/content'
 import { CommentState } from '~/models/comment'
 import { RouteName } from '~/router/name'
 import { UIStore } from '~/stores/ui'
@@ -65,6 +65,7 @@ enum CommentType {
 const ManageComment = defineComponent(() => {
   const route = useRoute()
   const router = useRouter()
+  const { setActions } = useLayout()
 
   const tabValue = ref(
     (+(route.query.state as any) as CommentType) ?? CommentType.Pending,
@@ -273,7 +274,7 @@ const ManageComment = defineComponent(() => {
               <CommentMarkdownRender text={row.text} />
             </p>
             {row.parent && (
-              <blockquote class="border-primary-default my-2 ml-4 border-l-[3px] border-solid pl-[12px]">
+              <blockquote class="border-primary my-2 ml-4 border-l-[3px] border-solid pl-[12px]">
                 <NSpace size={2} align="center">
                   <NText depth="2">
                     {row.parent.author}&nbsp;在&nbsp;
@@ -355,56 +356,60 @@ const ManageComment = defineComponent(() => {
       e.preventDefault()
     }
   }
-  return () => (
-    <ContentLayout
-      actionsElement={
-        <Fragment>
-          {tabValue.value !== CommentType.Marked && (
-            <HeaderActionButton
-              name="已读"
-              disabled={checkedRowKeys.value.length === 0}
-              icon={<CheckmarkSharpIcon />}
-              variant="success"
-              onClick={() => {
-                changeState(checkedRowKeys.value, CommentState.Read)
-                checkedRowKeys.value.length = 0
-              }}
-            />
-          )}
 
-          {tabValue.value !== CommentType.Trash && (
-            <HeaderActionButton
-              name="标记为垃圾"
-              disabled={checkedRowKeys.value.length === 0}
-              icon={<Trash />}
-              variant="warning"
-              onClick={() => {
-                changeState(checkedRowKeys.value, CommentState.Junk)
-                checkedRowKeys.value.length = 0
-              }}
-            />
-          )}
+  // 设置 header actions（响应式更新）
+  watchEffect(() => {
+    setActions(
+      <Fragment>
+        {tabValue.value !== CommentType.Marked && (
           <HeaderActionButton
-            name="删除"
-            icon={<CloseSharpIcon />}
-            variant="error"
+            name="已读"
             disabled={checkedRowKeys.value.length === 0}
+            icon={<CheckmarkSharpIcon />}
+            variant="success"
             onClick={() => {
-              dialog.warning({
-                title: '警告',
-                content: '你确定要删除多条评论？',
-                negativeText: '确定',
-                positiveText: '不确定',
-                onNegativeClick: async () => {
-                  await handleDelete(checkedRowKeys.value)
-                  checkedRowKeys.value.length = 0
-                },
-              })
+              changeState(checkedRowKeys.value, CommentState.Read)
+              checkedRowKeys.value.length = 0
             }}
           />
-        </Fragment>
-      }
-    >
+        )}
+
+        {tabValue.value !== CommentType.Trash && (
+          <HeaderActionButton
+            name="标记为垃圾"
+            disabled={checkedRowKeys.value.length === 0}
+            icon={<Trash />}
+            variant="warning"
+            onClick={() => {
+              changeState(checkedRowKeys.value, CommentState.Junk)
+              checkedRowKeys.value.length = 0
+            }}
+          />
+        )}
+        <HeaderActionButton
+          name="删除"
+          icon={<CloseSharpIcon />}
+          variant="error"
+          disabled={checkedRowKeys.value.length === 0}
+          onClick={() => {
+            dialog.warning({
+              title: '警告',
+              content: '你确定要删除多条评论？',
+              negativeText: '确定',
+              positiveText: '不确定',
+              onNegativeClick: async () => {
+                await handleDelete(checkedRowKeys.value)
+                checkedRowKeys.value.length = 0
+              },
+            })
+          }}
+        />
+      </Fragment>,
+    )
+  })
+
+  return () => (
+    <>
       <NTabs
         size="medium"
         value={tabValue.value}
@@ -582,7 +587,7 @@ const ManageComment = defineComponent(() => {
           </NCard>
         )}
       </NModal>
-    </ContentLayout>
+    </>
   )
 })
 

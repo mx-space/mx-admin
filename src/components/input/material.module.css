@@ -14,7 +14,7 @@
     display: block;
     width: 100%;
     border: none;
-    border-bottom: 1px solid theme(colors.primary.default);
+    border-bottom: 1px solid var(--color-primary);
   }
   input:focus {
     outline: none;
@@ -37,7 +37,7 @@
   /* active state */
   input:focus ~ label,
   input:valid ~ label {
-    @apply text-primary-deep;
+    color: var(--color-primary-deep);
 
     top: -20px;
     font-size: 16px;
@@ -51,7 +51,7 @@
   }
   .bar:before,
   .bar:after {
-    @apply bg-primary-default;
+    background-color: var(--color-primary);
 
     content: '';
     height: 1px;

@@ -2,8 +2,6 @@ import { NTabPane, NTabs } from 'naive-ui'
 import { defineComponent, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-import { ContentLayout } from '~/layouts/content'
-
 import { TabAuth } from './tabs/auth'
 import { TabSecurity } from './tabs/security'
 import { TabSystem } from './tabs/system'
@@ -30,32 +28,30 @@ export default defineComponent({
         tabValue.value = n as any
       },
     )
-    const headerActionsEl = ref<null | VNode>(null)
+
     return () => (
-      <ContentLayout actionsElement={headerActionsEl.value}>
-        <NTabs
-          value={tabValue.value}
-          onUpdateValue={(e) => {
-            // @ts-expect-error
-            router.replace({ ...route, params: { ...route.params, type: e } })
-          }}
-        >
-          <NTabPane tab="用户" name={SettingTab.User}>
-            <TabUser />
-          </NTabPane>
+      <NTabs
+        value={tabValue.value}
+        onUpdateValue={(e) => {
+          // @ts-expect-error
+          router.replace({ ...route, params: { ...route.params, type: e } })
+        }}
+      >
+        <NTabPane tab="用户" name={SettingTab.User}>
+          <TabUser />
+        </NTabPane>
 
-          <NTabPane tab="系统" name={SettingTab.System}>
-            <TabSystem />
-          </NTabPane>
+        <NTabPane tab="系统" name={SettingTab.System}>
+          <TabSystem />
+        </NTabPane>
 
-          <NTabPane tab="安全" name={SettingTab.Security}>
-            <TabSecurity />
-          </NTabPane>
-          <NTabPane tab="登入方式" name={SettingTab.Auth}>
-            <TabAuth />
-          </NTabPane>
-        </NTabs>
-      </ContentLayout>
+        <NTabPane tab="安全" name={SettingTab.Security}>
+          <TabSecurity />
+        </NTabPane>
+        <NTabPane tab="登入方式" name={SettingTab.Auth}>
+          <TabAuth />
+        </NTabPane>
+      </NTabs>
     )
   },
 })

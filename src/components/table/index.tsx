@@ -116,7 +116,6 @@ export const Table = defineComponent({
       } = props
       return (
         <NDataTable
-          // @ts-ignore
           loading={props.loading ?? loading.value}
           remote
           scrollX={Math.max(ui.contentInsetWidth.value, maxWidth)}
@@ -142,7 +141,7 @@ export const Table = defineComponent({
                   },
                 }
           }
-          bordered={false}
+          bordered
           data={data.value}
           rowClassName={() => tableRowStyle}
           checkedRowKeys={checkedRowKeys.value}

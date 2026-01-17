@@ -3,7 +3,6 @@ import { NButton, NPopconfirm, NSpace } from 'naive-ui'
 
 import { Table } from '~/components/table'
 import { useDataTableFetch } from '~/hooks/use-table'
-import { ContentLayout } from '~/layouts/content'
 import { RESTManager, toPascalCase } from '~/utils'
 
 export default defineComponent({
@@ -44,7 +43,7 @@ export default defineComponent({
       }, 1000)
     }
     return () => (
-      <ContentLayout>
+      <>
         <Table
           noPagination
           data={data}
@@ -108,7 +107,7 @@ export default defineComponent({
             },
           ]}
         />
-      </ContentLayout>
+      </>
     )
   },
 })

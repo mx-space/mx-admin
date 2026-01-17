@@ -51,7 +51,6 @@ export const Xterm = defineComponent({
     const { onlyToggleNaiveUIDark, isDark } = useStoreRef(UIStore)
 
     if (props.darkMode) {
-      // biome-ignore lint/correctness/useHookAtTopLevel: <explanation>
       useMountAndUnmount(() => {
         onlyToggleNaiveUIDark(true)
         return () => {

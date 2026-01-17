@@ -2,7 +2,6 @@ import { UserRoundCheck as MingcuteUserStarFill } from 'lucide-vue-next'
 import { NList, NListItem } from 'naive-ui'
 import useSWRV from 'swrv'
 
-import { ContentLayout } from '~/layouts/content'
 import { RESTManager } from '~/utils'
 
 const GithubIcon = () => (
@@ -30,7 +29,7 @@ const ReaderView = defineComponent({
       RESTManager.api.readers.get<{ data: ReaderModel[] }>(),
     )
     return () => (
-      <ContentLayout>
+      <>
         <NList>
           {data.value?.data.map((reader) => (
             <NListItem>
@@ -43,7 +42,7 @@ const ReaderView = defineComponent({
                       }
                     >
                       <img
-                        class={'rounded-full'}
+                        class={'h-full w-full rounded-full object-cover'}
                         src={reader.image}
                         alt={reader.name}
                       />
@@ -70,7 +69,7 @@ const ReaderView = defineComponent({
             </NListItem>
           ))}
         </NList>
-      </ContentLayout>
+      </>
     )
   },
 })

@@ -1,25 +1,28 @@
 :global(:root) {
   --sidebar-width: 220px;
-  --sidebar-collapse-width: 56px;
+  --sidebar-collapse-width: 0px;
   --sidebar-transition-duration: 0.2s;
-  --sidebar-bg: #141414;
   --sidebar-border: #262626;
-  --sidebar-text: #a3a3a3;
+  --sidebar-text: #737373;
   --sidebar-text-active: #fafafa;
-  --sidebar-hover-bg: #1f1f1f;
-  --sidebar-active-bg: #262626;
+  --sidebar-hover-bg: rgba(255, 255, 255, 0.04);
+  --sidebar-active-bg: rgba(255, 255, 255, 0.08);
   --sidebar-active-indicator: #3b82f6;
-  --content-bg: #0a0a0a;
+  --page-bg: #0a0a0a;
+  --content-bg: #161616;
+  --content-container-radius: 12px;
+  --content-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
 :global(html:not(.dark)) {
-  --sidebar-bg: #fafafa;
   --sidebar-border: #e5e5e5;
-  --sidebar-text: #525252;
-  --sidebar-text-active: #171717;
-  --sidebar-hover-bg: #f5f5f5;
-  --sidebar-active-bg: #e5e5e5;
+  --sidebar-text: #6b6b6b;
+  --sidebar-text-active: #1a1a1a;
+  --sidebar-hover-bg: rgba(0, 0, 0, 0.04);
+  --sidebar-active-bg: rgba(0, 0, 0, 0.06);
+  --page-bg: #f5f5f5;
   --content-bg: #ffffff;
+  --content-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.04);
 }
 
 .root {
@@ -27,21 +30,22 @@
   --duration: var(--sidebar-transition-duration);
 }
 
-.root.collapse {
-  --w: var(--sidebar-collapse-width);
-}
-
-/* Sidebar 主容器 */
+/* Sidebar 主容器 - 沉浸式设计，无背景 */
 .root .sidebar {
   z-index: 99;
   width: var(--w);
   height: 100vh;
   height: -webkit-fill-available;
-  background: var(--sidebar-bg);
-  border-right: 1px solid var(--sidebar-border);
-  transition: width var(--duration) ease;
+  background: transparent;
+  transition: transform var(--duration) ease;
+  transform: translateX(0);
 
   @apply fixed left-0 top-0 flex flex-col overflow-hidden;
+}
+
+/* 折叠时整体隐藏 */
+.root.collapse .sidebar {
+  transform: translateX(-100%);
 }
 
 /* Header 区域 */
@@ -52,7 +56,6 @@
   height: 48px;
   min-height: 48px;
   padding: 0 12px;
-  border-bottom: 1px solid var(--sidebar-border);
 }
 
 .logo {
@@ -68,9 +71,6 @@
   }
 }
 
-.root.collapse .logo {
-  display: none;
-}
 
 /* Header 按钮组 */
 .header-actions {
@@ -96,25 +96,19 @@
   }
 }
 
-.root.collapse .header {
-  justify-content: center;
-  padding: 0;
-}
-
-.root.collapse .header-actions {
-  width: 100%;
-  justify-content: center;
-}
-
-.root.collapse .header-btn:first-child {
-  display: none;
-}
 
 /* 菜单区域 */
 .menu {
   @apply flex-1 overflow-y-auto overflow-x-hidden;
   scrollbar-width: thin;
   scrollbar-color: var(--sidebar-border) transparent;
+
+  /* 覆盖 NLayoutContent 的背景色 */
+  background: transparent !important;
+
+  :global(.n-layout-scroll-container) {
+    background: transparent !important;
+  }
 }
 
 .items {
@@ -122,10 +116,6 @@
   transition: padding var(--duration) ease;
 }
 
-.root.collapsed .items,
-.root.collapsing .items {
-  @apply px-1;
-}
 
 /* 菜单项 */
 .item {
@@ -155,18 +145,6 @@
   color: var(--sidebar-text-active);
 }
 
-.item.active > button::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 3px;
-  height: 16px;
-  border-radius: 2px;
-  background: var(--sidebar-active-indicator);
-}
-
 /* 图标容器 */
 .item > button > span:first-child {
   display: flex;
@@ -187,11 +165,6 @@
     width var(--duration);
 }
 
-.root.collapsed .item-title,
-.root.collapsing .item-title {
-  width: 0;
-  opacity: 0;
-}
 
 /* 子菜单 */
 .has-child {
@@ -203,9 +176,6 @@
   @apply pl-8;
 }
 
-.root.collapse .has-child .item > button {
-  @apply pl-2;
-}
 
 /* Footer 区域 */
 .sidebar-footer {
@@ -213,9 +183,10 @@
   align-items: center;
   gap: 12px;
   padding: 12px;
-  border-top: 1px solid var(--sidebar-border);
   cursor: pointer;
   transition: background 0.15s;
+  border-radius: 8px;
+  margin: 8px;
 
   &:hover {
     background: var(--sidebar-hover-bg);
@@ -231,19 +202,9 @@
   transition: opacity var(--duration);
 }
 
-.root.collapsed .sidebar-username,
-.root.collapsing .sidebar-username {
-  display: none;
-}
-
-.root.collapsed .sidebar-footer,
-.root.collapsing .sidebar-footer {
-  justify-content: center;
-  padding: 12px 0;
-}
 
 /* 响应式 - 移动端 */
-@screen phone {
+@media (max-width: 768px) {
   .item > button {
     @apply py-2.5;
   }

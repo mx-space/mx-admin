@@ -11,7 +11,7 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 
 import PKG from './package.json'
 
-import WindiCSS from 'vite-plugin-windicss'
+import UnoCSS from 'unocss/vite'
 
 // dns.setDefaultResultOrder('verbatim')
 export default ({ mode }) => {
@@ -23,7 +23,7 @@ export default ({ mode }) => {
     plugins: [
       // mkcert(),
       wasm(),
-      WindiCSS(),
+      UnoCSS(),
       vue({}),
       vueJsx(),
       tsconfigPaths(),

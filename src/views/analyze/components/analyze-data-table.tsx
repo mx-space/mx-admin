@@ -21,9 +21,9 @@ import { parseDate, RESTManager } from '~/utils'
 export const AnalyzeDataTable = defineComponent({
   setup() {
     const route = useRoute()
-    const { setHeaderButtons } = useLayout()
+    const { setActions } = useLayout()
     onMounted(() => {
-      setHeaderButtons(
+      setActions(
         <>
           <HeaderActionButton
             icon={<RefreshOutlineIcon />}
@@ -64,7 +64,7 @@ export const AnalyzeDataTable = defineComponent({
       )
 
       onBeforeUnmount(() => {
-        setHeaderButtons(null)
+        setActions(null)
       })
     })
     watch(

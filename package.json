@@ -93,7 +93,6 @@
     "umi-request": "1.4.0",
     "unidata.js": "0.8.0",
     "validator": "13.15.22",
-    "vite-plugin-windicss": "1.9.4",
     "vue": "3.5.13",
     "vue-router": "4.5.0",
     "xss": "1.0.15",
@@ -101,6 +100,8 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
+    "@unocss/postcss": "^66.0.0",
+    "unocss": "^66.0.0",
     "@innei/prettier": "0.15.0",
     "@types/ejs": "3.1.5",
     "@types/event-source-polyfill": "1.0.5",
@@ -128,8 +129,7 @@
     "vite-plugin-checker": "0.8.0",
     "vite-plugin-mkcert": "1.17.6",
     "vite-plugin-wasm": "3.4.1",
-    "vite-tsconfig-paths": "5.1.4",
-    "windicss": "3.5.6"
+    "vite-tsconfig-paths": "5.1.4"
   },
   "packageManager": "pnpm@10.12.4+sha512.5ea8b0deed94ed68691c9bad4c955492705c5eeb8a87ef86bc62c74a26b037b08ff9570f108b2e4dbd1dd1a9186fea925e527f141c648e85af45631074680184"
 }

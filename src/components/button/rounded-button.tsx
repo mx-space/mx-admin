@@ -63,12 +63,19 @@ export const HeaderActionButton = defineComponent({
         onClick={props.onClick}
         disabled={props.disabled}
         title={props.name}
+        aria-label={props.name}
         class={[
-          'inline-flex h-8 w-8 items-center justify-center rounded-md',
-          'text-[var(--sidebar-text)] transition-colors',
-          'hover:bg-[var(--sidebar-hover-bg)] hover:text-[var(--sidebar-text-active)]',
+          'inline-flex size-10 items-center justify-center rounded-xl',
+          'text-neutral-600 dark:text-neutral-400',
+          'bg-neutral-100/80 dark:bg-neutral-800/50',
+          'transition-colors duration-150',
+          'hover:bg-neutral-200 hover:text-neutral-900',
+          'dark:hover:bg-neutral-700 dark:hover:text-neutral-100',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2',
+          'dark:focus-visible:ring-neutral-500 dark:focus-visible:ring-offset-neutral-900',
           'disabled:pointer-events-none disabled:opacity-40',
-          '[&>svg]:h-[18px] [&>svg]:w-[18px]',
+          'touch-action-manipulation',
+          '[&>svg]:size-5',
         ]}
       >
         {props.icon}

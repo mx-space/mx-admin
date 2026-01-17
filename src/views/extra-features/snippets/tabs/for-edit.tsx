@@ -239,7 +239,7 @@ export const Tab2ForEdit = defineComponent({
         })
     }
     useMountAndUnmount(() => {
-      layout.setHeaderButtons(
+      layout.setActions(
         <>
           <InstallDependencyButton />
           <HeaderActionButton
@@ -251,7 +251,7 @@ export const Tab2ForEdit = defineComponent({
       )
 
       return () => {
-        layout.setHeaderButtons(null)
+        layout.setActions(null)
       }
     })
 

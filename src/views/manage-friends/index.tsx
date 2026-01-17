@@ -36,7 +36,7 @@ import { HeaderActionButton } from '~/components/button/rounded-button'
 import { Table } from '~/components/table'
 import { RelativeTime } from '~/components/time/relative-time'
 import { useDataTableFetch } from '~/hooks/use-table'
-import { ContentLayout } from '~/layouts/content'
+import { useLayout } from '~/layouts/content'
 import { LinkState, LinkStateNameMap, LinkType } from '~/models/link'
 import { RouteName } from '~/router/name'
 import { RESTManager } from '~/utils'
@@ -200,35 +200,36 @@ export default defineComponent({
 
     const modal = useDialog()
 
+    const { setActions } = useLayout()
+    setActions(
+      <Fragment>
+        <HeaderActionButton
+          icon={<Plus />}
+          variant="primary"
+          onClick={() => {
+            editDialogData.value = resetEditData()
+            editDialogShow.value = true
+          }}
+        />
+
+        <HeaderActionButton
+          icon={<CheckIcon />}
+          variant="info"
+          onClick={handleCheck}
+          name="检查友链可用性"
+        />
+
+        <HeaderActionButton
+          icon={<RefreshCircle />}
+          variant="info"
+          onClick={handleMigrateAvatars}
+          name="迁移头像"
+        />
+      </Fragment>,
+    )
+
     return () => (
-      <ContentLayout
-        actionsElement={
-          <Fragment>
-            <HeaderActionButton
-              icon={<Plus />}
-              variant="primary"
-              onClick={() => {
-                editDialogData.value = resetEditData()
-                editDialogShow.value = true
-              }}
-            />
-
-            <HeaderActionButton
-              icon={<CheckIcon />}
-              variant="info"
-              onClick={handleCheck}
-              name="检查友链可用性"
-            />
-
-            <HeaderActionButton
-              icon={<RefreshCircle />}
-              variant="info"
-              onClick={handleMigrateAvatars}
-              name="迁移头像"
-            />
-          </Fragment>
-        }
-      >
+      <>
         <NTabs
           class="min-h-[30px]"
           size="medium"
@@ -555,7 +556,7 @@ export default defineComponent({
             </div>
           </NCard>
         </NModal>
-      </ContentLayout>
+      </>
     )
   },
 })

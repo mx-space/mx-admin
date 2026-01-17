@@ -6,7 +6,6 @@ import {
   useAsyncLoadMonaco,
   usePropsValueToRef,
 } from '~/hooks/use-async-monaco'
-import { ContentLayout } from '~/layouts/content'
 import { TwoColGridLayout } from '~/layouts/two-col'
 import { EventTypes } from '~/socket/types'
 import { RESTManager } from '~/utils'
@@ -85,7 +84,7 @@ export default defineComponent({
       })
     }
     return () => (
-      <ContentLayout>
+      <>
         <TwoColGridLayout>
           <NGi span="12">
             <NForm>
@@ -127,7 +126,7 @@ export default defineComponent({
             </div>
           </NGi>
         </TwoColGridLayout>
-      </ContentLayout>
+      </>
     )
   },
 })

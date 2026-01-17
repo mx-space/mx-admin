@@ -1,12 +1,11 @@
 import './monaco'
 import 'reflect-metadata'
+import 'virtual:uno.css'
+
+import { createApp } from 'vue'
 
 import { piniaStore } from '~/stores'
 import { bus } from '~/utils/event-bus'
-
-import 'virtual:windi.css'
-
-import { createApp } from 'vue'
 
 import App from './App'
 

@@ -19,7 +19,7 @@ import type { UploadFileInfo } from 'naive-ui'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { Table } from '~/components/table'
-import { ContentLayout } from '~/layouts/content'
+import { useLayout } from '~/layouts/content'
 import { getToken, RESTManager } from '~/utils'
 
 type FileType = 'file' | 'icon' | 'photo' | 'avatar'
@@ -93,20 +93,19 @@ export default defineComponent({
       return file
     }
 
+    const { setActions } = useLayout()
+    setActions(
+      <HeaderActionButton
+        variant="info"
+        onClick={() => {
+          modalShow.value = true
+        }}
+        icon={<UploadIcon />}
+      />,
+    )
+
     return () => (
-      <ContentLayout
-        actionsElement={
-          <>
-            <HeaderActionButton
-              variant="info"
-              onClick={() => {
-                modalShow.value = true
-              }}
-              icon={<UploadIcon />}
-            />
-          </>
-        }
-      >
+      <>
         <NTabs
           value={type.value}
           onUpdateValue={(val) => {
@@ -250,7 +249,7 @@ export default defineComponent({
             </NUpload>
           </NCard>
         </NModal>
-      </ContentLayout>
+      </>
     )
   },
 })

@@ -11,7 +11,7 @@ import { RelativeTime } from '~/components/time/relative-time'
 import { useDataTableFetch } from '~/hooks/use-table'
 
 import { HeaderActionButton } from '../../components/button/rounded-button'
-import { ContentLayout } from '../../layouts/content'
+import { useLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
 
 const ManageSayListView = defineComponent({
@@ -130,40 +130,37 @@ const ManageSayListView = defineComponent({
       },
     })
 
-    return () => {
-      return (
-        <ContentLayout>
-          {{
-            actions: () => (
-              <>
-                <DeleteConfirmButton
-                  checkedRowKeys={checkedRowKeys.value}
-                  onDelete={async () => {
-                    const status = await Promise.allSettled(
-                      checkedRowKeys.value.map((id) =>
-                        RESTManager.api.says(id as string).delete(),
-                      ),
-                    )
+    const { setActions } = useLayout()
 
-                    for (const s of status) {
-                      if (s.status === 'rejected') {
-                        message.success(`删除失败，${s.reason.message}`)
-                      }
-                    }
+    watchEffect(() => {
+      setActions(
+        <>
+          <DeleteConfirmButton
+            checkedRowKeys={checkedRowKeys.value}
+            onDelete={async () => {
+              const status = await Promise.allSettled(
+                checkedRowKeys.value.map((id) =>
+                  RESTManager.api.says(id as string).delete(),
+                ),
+              )
 
-                    checkedRowKeys.value.length = 0
-                    fetchData()
-                  }}
-                />
+              for (const s of status) {
+                if (s.status === 'rejected') {
+                  message.success(`删除失败，${s.reason.message}`)
+                }
+              }
 
-                <HeaderActionButton to={'/says/edit'} icon={<AddIcon />} />
-              </>
-            ),
-            default: () => <DataTable />,
-          }}
-        </ContentLayout>
+              checkedRowKeys.value.length = 0
+              fetchData()
+            }}
+          />
+
+          <HeaderActionButton to={'/says/edit'} icon={<AddIcon />} />
+        </>,
       )
-    }
+    })
+
+    return () => <DataTable />
   },
 })
 

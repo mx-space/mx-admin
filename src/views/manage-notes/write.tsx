@@ -50,7 +50,7 @@ import { WEB_URL } from '~/constants/env'
 import { MOOD_SET, WEATHER_SET } from '~/constants/note'
 import { useAutoSave, useAutoSaveInEditor } from '~/hooks/use-auto-save'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
-import { ContentLayout } from '~/layouts/content'
+import { useLayout } from '~/layouts/content'
 import { RouteName } from '~/router/name'
 import { RESTManager } from '~/utils/rest'
 import { getDayOfYear } from '~/utils/time'
@@ -137,7 +137,6 @@ const NoteWriteView = defineComponent(() => {
   })
 
   const parsePayloadIntoReactiveData = (payload: NoteModel) =>
-    // biome-ignore lint/correctness/useHookAtTopLevel: <explanation>
     useParsePayloadIntoData(data)(payload)
   const data = reactive<NoteReactiveType>(resetReactive())
   const nid = ref<number>()
@@ -255,47 +254,44 @@ const NoteWriteView = defineComponent(() => {
   }
   const { fetchTopic, topics } = useNoteTopic()
 
-  return () => (
-    <ContentLayout
-      title={'记录生活点滴'}
-      headerClass="pt-1"
-      actionsElement={
-        <>
-          <ParseContentButton
-            data={data}
-            onHandleYamlParsedMeta={(meta) => {
-              const { title, mood, weather, ...rest } = meta
-              data.title = title ?? data.title
-              data.mood = mood ?? data.mood
-              data.weather = weather ?? data.weather
+  const { setTitle, setHeaderClass, setActions, setFooterActions } = useLayout()
 
-              data.meta = { ...rest }
-            }}
-          />
+  setTitle('记录生活点滴')
+  setHeaderClass('pt-1')
+  setActions(
+    <>
+      <ParseContentButton
+        data={data}
+        onHandleYamlParsedMeta={(meta) => {
+          const { title, mood, weather, ...rest } = meta
+          data.title = title ?? data.title
+          data.mood = mood ?? data.mood
+          data.weather = weather ?? data.weather
 
-          <HeaderPreviewButton data={data} iframe />
+          data.meta = { ...rest }
+        }}
+      />
 
-          <HeaderActionButton
-            icon={<TelegramPlaneIcon />}
-            onClick={handleSubmit}
-          />
-        </>
-      }
-      footerButtonElement={
-        <>
-          <button
-            onClick={() => {
-              drawerShow.value = true
-            }}
-            title="打开设置"
-          >
-            <Icon>
-              <SlidersHIcon />
-            </Icon>
-          </button>
-        </>
-      }
+      <HeaderPreviewButton data={data} iframe />
+
+      <HeaderActionButton icon={<TelegramPlaneIcon />} onClick={handleSubmit} />
+    </>,
+  )
+  setFooterActions(
+    <button
+      onClick={() => {
+        drawerShow.value = true
+      }}
+      title="打开设置"
     >
+      <Icon>
+        <SlidersHIcon />
+      </Icon>
+    </button>,
+  )
+
+  return () => (
+    <>
       <CrossBellConnectorIndirector />
       <div class={'relative'}>
         <MaterialInput
@@ -536,7 +532,7 @@ const NoteWriteView = defineComponent(() => {
       </TextBaseDrawer>
 
       {/* Drawer END */}
-    </ContentLayout>
+    </>
   )
 })
 

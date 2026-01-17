@@ -24,7 +24,6 @@ export interface ViewportRecord {
 
 export const useUIStore = defineStore('ui', () => {
   const viewport = ref<ViewportRecord>({} as any)
-  const sidebarWidth = ref(250)
   const sidebarCollapse = ref(viewport.value.mobile ? true : false)
 
   const isDark = useDark()
@@ -63,18 +62,19 @@ export const useUIStore = defineStore('ui', () => {
     }
   }
 
-  const contentWidth = computed(
-    () =>
-      viewport.value.w -
-      sidebarWidth.value +
-      (sidebarCollapse.value
-        ? Number.parseInt(
-            getComputedStyle(document.documentElement).getPropertyValue(
-              '--sidebar-collapse-width',
-            ),
-          )
-        : 0),
-  )
+  const contentWidth = computed(() => {
+    if (sidebarCollapse.value) {
+      // 折叠时内容区域占满整个屏幕宽度
+      return viewport.value.w
+    }
+    // 展开时减去 Sidebar 宽度
+    const sidebarWidthValue = Number.parseInt(
+      getComputedStyle(document.documentElement).getPropertyValue(
+        '--sidebar-width',
+      ),
+    )
+    return viewport.value.w - sidebarWidthValue
+  })
 
   const contentInsetWidth = computed(
     () =>
@@ -97,7 +97,6 @@ export const useUIStore = defineStore('ui', () => {
   return {
     viewport,
     contentWidth,
-    sidebarWidth,
     contentInsetWidth,
     sidebarCollapse,
 

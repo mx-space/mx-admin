@@ -16,7 +16,6 @@ import { defineComponent, ref, watch } from 'vue'
 import type { ParsedModel } from '~/utils/markdown-parser'
 import type { UploadFileInfo } from 'naive-ui'
 
-import { ContentLayout } from '~/layouts/content'
 import { responseBlobToFile, RESTManager } from '~/utils'
 import { ParseMarkdownYAML } from '~/utils/markdown-parser'
 
@@ -170,7 +169,7 @@ export default defineComponent(() => {
   )
 
   return () => (
-    <ContentLayout>
+    <>
       <NH3>从 Markdown 导入数据</NH3>
       <NForm
         labelAlign="right"
@@ -267,6 +266,6 @@ export default defineComponent(() => {
           </NButton>
         </div>
       </NForm>
-    </ContentLayout>
+    </>
   )
 })

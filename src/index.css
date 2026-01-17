@@ -10,18 +10,18 @@ html {
     system-ui;
 
   font-family: var(--sans-font);
-
-  @apply dark:bg-gray-900;
+  background: var(--page-bg);
 }
 
 body {
   min-height: 100vh;
+  background: var(--page-bg);
 
   @apply overflow-hidden;
 }
 
 body a {
-  @apply text-primary-default transition-colors;
+  @apply text-primary transition-colors;
   text-decoration: none;
 }
 
@@ -29,9 +29,20 @@ body a:hover {
   @apply text-primary-shallow;
 }
 
+/* 按钮样式重置 - 针对自定义按钮组件 */
 button:focus,
 button {
   outline: unset;
+}
+
+button:where(:not(.n-button):not([class*='n-'])) {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
 }
 
 *::-webkit-scrollbar {
@@ -64,17 +75,15 @@ button {
   @apply !block;
 }
 
-@layer components {
-  .modal-card {
-    @apply !w-[60rem] !max-w-[90vw];
+.modal-card {
+  @apply !w-[60rem] !max-w-[90vw];
 
-    &.sm {
-      @apply !w-[40rem];
-    }
+  &.sm {
+    @apply !w-[40rem];
+  }
 
-    &.xs {
-      @apply !w-[30rem];
-    }
+  &.xs {
+    @apply !w-[30rem];
   }
 }
 
@@ -117,4 +126,13 @@ button {
   & .sticky-widget {
     background-color: var(--n-color) !important;
   }
+}
+
+/* Naive UI Layout 背景覆盖 - 沉浸式 Sidebar */
+.n-layout {
+  background: transparent !important;
+}
+
+.n-layout-scroll-container {
+  background: transparent !important;
 }

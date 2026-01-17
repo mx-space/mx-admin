@@ -1,7 +1,5 @@
 import { NTabPane, NTabs } from 'naive-ui'
 
-import { ContentLayout } from '~/layouts/content'
-
 import { EmailTab } from './tabs/email'
 import { MarkdownTab } from './tabs/markdown'
 
@@ -9,7 +7,7 @@ export default defineComponent({
   setup() {
     const tab = ref('1')
     return () => (
-      <ContentLayout>
+      <>
         <NTabs
           value={tab.value}
           size="medium"
@@ -24,7 +22,7 @@ export default defineComponent({
             <MarkdownTab />
           </NTabPane>
         </NTabs>
-      </ContentLayout>
+      </>
     )
   },
 })

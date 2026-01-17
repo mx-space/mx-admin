@@ -11,7 +11,7 @@ import { HeaderActionButton } from '~/components/button/rounded-button'
 import { Editor } from '~/components/editor/universal'
 import { FetchGithubRepoButton } from '~/components/special-button/fetch-github-repo'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
-import { ContentLayout } from '~/layouts/content'
+import { useLayout } from '~/layouts/content'
 import { RouteName } from '~/router/name'
 import { RESTManager } from '~/utils'
 
@@ -47,7 +47,6 @@ const EditProjectView = defineComponent({
     })
 
     const parsePayloadIntoReactiveData = (payload: ProjectModel) =>
-      // biome-ignore lint/correctness/useHookAtTopLevel: <explanation>
       useParsePayloadIntoData(project)(payload)
     const project = reactive<ProjectReactiveType>(resetReactive())
     const id = computed(() => route.query.id)
@@ -138,95 +137,94 @@ const EditProjectView = defineComponent({
       })
     }
 
+    const { setActions } = useLayout()
+    setActions(
+      <Fragment>
+        <FetchGithubRepoButton
+          onData={handleParseFromGithub}
+          defaultValue={project.projectUrl}
+        />
+        <HeaderActionButton
+          variant="primary"
+          onClick={handleSubmit}
+          icon={<SendIcon />}
+        />
+      </Fragment>,
+    )
+
     return () => (
-      <ContentLayout
-        actionsElement={
-          <Fragment>
-            <FetchGithubRepoButton
-              onData={handleParseFromGithub}
-              defaultValue={project.projectUrl}
-            />
-            <HeaderActionButton
-              variant="primary"
-              onClick={handleSubmit}
-              icon={<SendIcon />}
-            />
-          </Fragment>
-        }
-      >
-        <NForm labelWidth="7rem" labelPlacement="left" labelAlign="left">
-          <NFormItem label="项目名称" required>
-            <NInput
-              autofocus
-              placeholder=""
-              value={project.name}
-              onInput={(e) => void (project.name = e)}
-            />
-          </NFormItem>
+      <NForm labelWidth="7rem" labelPlacement="left" labelAlign="left">
+        <NFormItem label="项目名称" required>
+          <NInput
+            autofocus
+            placeholder=""
+            value={project.name}
+            onInput={(e) => void (project.name = e)}
+          />
+        </NFormItem>
 
-          <NFormItem label="文档地址">
-            <NInput
-              placeholder=""
-              value={project.docUrl}
-              onInput={(e) => void (project.docUrl = e)}
-            />
-          </NFormItem>
+        <NFormItem label="文档地址">
+          <NInput
+            placeholder=""
+            value={project.docUrl}
+            onInput={(e) => void (project.docUrl = e)}
+          />
+        </NFormItem>
 
-          <NFormItem label="预览地址">
-            <NInput
-              placeholder=""
-              value={project.previewUrl}
-              onInput={(e) => void (project.previewUrl = e)}
-            />
-          </NFormItem>
+        <NFormItem label="预览地址">
+          <NInput
+            placeholder=""
+            value={project.previewUrl}
+            onInput={(e) => void (project.previewUrl = e)}
+          />
+        </NFormItem>
 
-          <NFormItem label="项目地址">
-            <NInput
-              placeholder=""
-              value={project.projectUrl}
-              onInput={(e) => void (project.projectUrl = e)}
-            />
-          </NFormItem>
+        <NFormItem label="项目地址">
+          <NInput
+            placeholder=""
+            value={project.projectUrl}
+            onInput={(e) => void (project.projectUrl = e)}
+          />
+        </NFormItem>
 
-          <NFormItem label="项目描述" required>
-            <NInput
-              placeholder=""
-              value={project.description}
-              onInput={(e) => void (project.description = e)}
-            />
-          </NFormItem>
+        <NFormItem label="项目描述" required>
+          <NInput
+            placeholder=""
+            value={project.description}
+            onInput={(e) => void (project.description = e)}
+          />
+        </NFormItem>
 
-          <NFormItem label="项目图标">
-            <NInput
-              placeholder=""
-              value={project.avatar}
-              onInput={(e) => void (project.avatar = e)}
-            />
-          </NFormItem>
+        <NFormItem label="项目图标">
+          <NInput
+            placeholder=""
+            value={project.avatar}
+            onInput={(e) => void (project.avatar = e)}
+          />
+        </NFormItem>
 
-          <NFormItem label="预览图片">
-            <NDynamicTags
-              round
-              value={project.images}
-              onUpdateValue={(e) => void (project.images = e)}
-            />
-          </NFormItem>
+        <NFormItem label="预览图片">
+          <NDynamicTags
+            round
+            value={project.images}
+            onUpdateValue={(e) => void (project.images = e)}
+          />
+        </NFormItem>
 
-          <NFormItem label="正文" required>
-            <div class="w-full">
-              <Editor
-                unSaveConfirm={false}
-                class="h-[calc(100vh-40rem)] min-h-80 w-full"
-                loading={!!(id.value && !project.id)}
-                onChange={(v) => {
-                  project.text = v
-                }}
-                text={project.text}
-              />
-            </div>
-          </NFormItem>
-        </NForm>
-      </ContentLayout>
+        <NFormItem label="正文" required>
+          <div class="w-full">
+            <Editor
+              unSaveConfirm={false}
+              class="h-[calc(100vh-40rem)] min-h-80 w-full"
+              loading={!!(id.value && !project.id)}
+              onChange={(v) => {
+                project.text = v
+              }}
+              text={project.text}
+            />
+          </div>
+        </NFormItem>
+      </NForm>
     )
   },
 })

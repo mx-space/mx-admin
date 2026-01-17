@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-MX Admin (admin-vue3) is the **legacy dashboard** for MX Space, a personal blog management system. Built with Vue 3, Naive UI, and WindiCSS. This project is being replaced by `mx-dashboard` (React-based rewrite).
+MX Admin (admin-vue3) is the **legacy dashboard** for MX Space, a personal blog management system. Built with Vue 3, Naive UI, and Tailwind CSS v4. This project is being replaced by `mx-dashboard` (React-based rewrite).
 
 > **Note**: This is the old version of the dashboard. For new feature development, prefer working on `mx-dashboard` instead.
 
@@ -50,7 +50,7 @@ pnpm format
 
 - **Vue 3** - UI framework with Composition API
 - **Naive UI** - Component library
-- **WindiCSS** - Utility-first CSS framework
+- **Tailwind CSS v4** - Utility-first CSS framework
 - **Pinia** - State management
 - **Vue Router** - Routing
 - **CodeMirror/Monaco** - Code editors
@@ -70,7 +70,7 @@ pnpm format
 
 - Environment variables in `.env` and `.env.production`
 - Vite configuration in `vite.config.mts`
-- WindiCSS configuration in `windi.config.ts`
+- Tailwind CSS configuration in `src/index.css` (@theme block)
 - Theme configuration in `theme.config.ts`
 
 ## Related Projects

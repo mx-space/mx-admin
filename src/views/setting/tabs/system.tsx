@@ -37,7 +37,7 @@ export const autosizeableProps = {
   style: 'min-width: 300px; max-width: 100%',
 } as const
 export const TabSystem = defineComponent(() => {
-  const { setHeaderButtons: setHeaderButton } = useLayout()
+  const { setActions: setHeaderButton } = useLayout()
 
   onMounted(() => {
     setHeaderButton(

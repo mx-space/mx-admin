@@ -16,7 +16,7 @@ import { TableTitleLink } from '~/components/link/title-link'
 import { RelativeTime } from '~/components/time/relative-time'
 
 import { HeaderActionButton } from '../../components/button/rounded-button'
-import { ContentLayout } from '../../layouts/content'
+import { useLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
 
 Sortable.mount(new Swap())
@@ -167,38 +167,26 @@ export const ManagePageListView = defineComponent({
     )
     onBeforeUnmount(() => sortable?.destroy())
 
-    return () => {
-      return (
-        <ContentLayout>
-          {{
-            actions: () => (
-              <>
-                <HeaderActionButton to={'/pages/edit'} icon={<AddIcon />} />
-              </>
-            ),
-            default: () => (
-              <div
-                class={
-                  'phone:grid-cols-1 children:flex children:flex-1 grid gap-4 md:grid-cols-2 xl:grid-cols-4'
-                }
-                ref={wrapperRef}
-              >
-                {data.value.map((item) => (
-                  <PostItem
-                    data={item}
-                    key={item.id}
-                    onDelete={(id) => {
-                      data.value = data.value
-                        .filter((item) => item.id !== id)
-                        .concat()
-                    }}
-                  />
-                ))}
-              </div>
-            ),
-          }}
-        </ContentLayout>
-      )
-    }
+    const { setActions } = useLayout()
+    setActions(<HeaderActionButton to={'/pages/edit'} icon={<AddIcon />} />)
+
+    return () => (
+      <div
+        class={
+          'phone:grid-cols-1 grid gap-4 *:flex *:flex-1 md:grid-cols-2 xl:grid-cols-4'
+        }
+        ref={wrapperRef}
+      >
+        {data.value.map((item) => (
+          <PostItem
+            data={item}
+            key={item.id}
+            onDelete={(id) => {
+              data.value = data.value.filter((item) => item.id !== id).concat()
+            }}
+          />
+        ))}
+      </div>
+    )
   },
 })

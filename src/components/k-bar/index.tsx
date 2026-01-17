@@ -57,7 +57,7 @@ export const KBarWrapper = defineComponent({
     return () => (
       <KBarProvider actions={actions.value}>
         <KBarPortal>
-          <KBarPositioner class="z-99 bg-gray-300 bg-opacity-80 backdrop-blur-sm backdrop-filter dark:bg-black dark:bg-opacity-25">
+          <KBarPositioner class="z-99 bg-gray-300/80 backdrop-blur-sm backdrop-filter dark:bg-black/25">
             <KBarAnimator class="w-[650px] max-w-[80vw] divide-y overflow-hidden rounded-lg bg-white shadow-lg">
               <KBarSearch class="box-border w-full border-none px-3 py-4 text-lg outline-none" />
 
@@ -91,7 +91,7 @@ const SearchResult = defineComponent({
                 <div
                   class={[
                     'box-border flex h-[50px] cursor-pointer select-none flex-col px-3 py-2',
-                    active && 'bg-gray-200 bg-opacity-50',
+                    active && 'bg-gray-200/50',
                   ]}
                 >
                   <div>{item.name}</div>

@@ -1,8 +1,6 @@
 import { NTabPane, NTabs } from 'naive-ui'
 import { useRoute, useRouter } from 'vue-router'
 
-import { ContentLayout } from '~/layouts/content'
-
 import { LogListView } from './tabs/log-list'
 import { RealtimeLogPipeline } from './tabs/realtime-log'
 
@@ -13,7 +11,7 @@ export default defineComponent({
     const router = useRouter()
 
     return () => (
-      <ContentLayout>
+      <>
         <NTabs
           size="medium"
           value={tabIndex.value}
@@ -34,7 +32,7 @@ export default defineComponent({
             <RealtimeLogPipeline />
           </NTabPane>
         </NTabs>
-      </ContentLayout>
+      </>
     )
   },
 })

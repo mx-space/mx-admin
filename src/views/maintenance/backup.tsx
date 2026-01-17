@@ -10,10 +10,11 @@ import { HeaderActionButton } from '~/components/button/rounded-button'
 import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
 import { Table } from '~/components/table'
 import { useDataTableFetch } from '~/hooks/use-table'
-import { ContentLayout } from '~/layouts/content'
+import { useLayout } from '~/layouts/content'
 import { responseBlobToFile, RESTManager } from '~/utils'
 
 export default defineComponent(() => {
+  const { setActions } = useLayout()
   const { checkedRowKeys, data, fetchDataFn, loading } = useDataTableFetch<{
     filename: string
     size: string
@@ -110,112 +111,112 @@ export default defineComponent(() => {
     responseBlobToFile(blob, `${filename}.zip`)
   }
 
+  watchEffect(() => {
+    setActions(
+      <>
+        <HeaderActionButton
+          icon={<DatabaseBackupIcon />}
+          name="立即备份"
+          variant="primary"
+          onClick={handleBackup}
+        />
+        <HeaderActionButton
+          icon={<UploadIcon />}
+          onClick={handleUploadAndRestore}
+          name="上传恢复"
+          variant="info"
+        />
+        <DeleteConfirmButton
+          checkedRowKeys={checkedRowKeys.value}
+          onDelete={async () => {
+            handleDelete(checkedRowKeys.value)
+          }}
+          customIcon={<TrashSharpIcon />}
+          customButtonTip="批量删除"
+        />
+      </>,
+    )
+  })
+
   return () => (
-    <ContentLayout
-      actionsElement={
-        <>
-          <HeaderActionButton
-            icon={<DatabaseBackupIcon />}
-            name="立即备份"
-            variant="primary"
-            onClick={handleBackup}
-          />
-          <HeaderActionButton
-            icon={<UploadIcon />}
-            onClick={handleUploadAndRestore}
-            name="上传恢复"
-            variant="info"
-          />
-          <DeleteConfirmButton
-            checkedRowKeys={checkedRowKeys.value}
-            onDelete={async () => {
-              handleDelete(checkedRowKeys.value)
-            }}
-            customIcon={<TrashSharpIcon />}
-            customButtonTip="批量删除"
-          />
-        </>
-      }
-    >
-      <Table
-        {...{ data, fetchDataFn }}
-        checkedRowKey="filename"
-        loading={loading.value}
-        nTableProps={{
-          maxHeight: 'calc(100vh - 17rem)',
-        }}
-        onUpdateCheckedRowKeys={(keys) => {
-          checkedRowKeys.value = keys
-        }}
-        maxWidth={500}
-        columns={[
-          {
-            type: 'selection',
-            options: ['none', 'all'],
+    <Table
+      {...{ data, fetchDataFn }}
+      checkedRowKey="filename"
+      loading={loading.value}
+      nTableProps={{
+        maxHeight: 'calc(100vh - 17rem)',
+      }}
+      onUpdateCheckedRowKeys={(keys) => {
+        checkedRowKeys.value = keys
+      }}
+      maxWidth={500}
+      columns={[
+        {
+          type: 'selection',
+          options: ['none', 'all'],
+        },
+
+        { title: '日期', key: 'filename', width: 300 },
+        { title: '大小', key: 'size', width: 200 },
+        {
+          title: '操作',
+          fixed: 'right',
+          width: 200,
+          key: 'filename',
+          render(row) {
+            const filename = row.filename
+            return (
+              <NSpace inline>
+                <NButton
+                  quaternary
+                  size="tiny"
+                  type="primary"
+                  onClick={() => void handleDownload(filename)}
+                >
+                  下载
+                </NButton>
+
+                <NPopconfirm
+                  positiveText={'取消'}
+                  negativeText="回退"
+                  onNegativeClick={() => {
+                    handleRollback(filename)
+                  }}
+                >
+                  {{
+                    trigger: () => (
+                      <NButton quaternary size="tiny" type="warning">
+                        回退
+                      </NButton>
+                    ),
+
+                    default: () => <span class="max-w-48">确定要回退？</span>,
+                  }}
+                </NPopconfirm>
+
+                <NPopconfirm
+                  positiveText={'取消'}
+                  negativeText="删除"
+                  onNegativeClick={() => {
+                    handleDelete(filename)
+                  }}
+                >
+                  {{
+                    trigger: () => (
+                      <NButton quaternary size="tiny" type="error">
+                        移除
+                      </NButton>
+                    ),
+
+                    default: () => <span class="max-w-48">确定要删除？</span>,
+                  }}
+                </NPopconfirm>
+              </NSpace>
+            )
           },
-
-          { title: '日期', key: 'filename', width: 300 },
-          { title: '大小', key: 'size', width: 200 },
-          {
-            title: '操作',
-            fixed: 'right',
-            width: 200,
-            key: 'filename',
-            render(row) {
-              const filename = row.filename
-              return (
-                <NSpace inline>
-                  <NButton
-                    quaternary
-                    size="tiny"
-                    type="primary"
-                    onClick={() => void handleDownload(filename)}
-                  >
-                    下载
-                  </NButton>
-
-                  <NPopconfirm
-                    positiveText={'取消'}
-                    negativeText="回退"
-                    onNegativeClick={() => {
-                      handleRollback(filename)
-                    }}
-                  >
-                    {{
-                      trigger: () => (
-                        <NButton quaternary size="tiny" type="warning">
-                          回退
-                        </NButton>
-                      ),
-
-                      default: () => <span class="max-w-48">确定要回退？</span>,
-                    }}
-                  </NPopconfirm>
-
-                  <NPopconfirm
-                    positiveText={'取消'}
-                    negativeText="删除"
-                    onNegativeClick={() => {
-                      handleDelete(filename)
-                    }}
-                  >
-                    {{
-                      trigger: () => (
-                        <NButton quaternary size="tiny" type="error">
-                          移除
-                        </NButton>
-                      ),
-
-                      default: () => <span class="max-w-48">确定要删除？</span>,
-                    }}
-                  </NPopconfirm>
-                </NSpace>
-              )
-            },
-          },
-        ]}
-        noPagination
-      />
-    </ContentLayout>
+        },
+      ]}
+      noPagination
+    />
   )
 })

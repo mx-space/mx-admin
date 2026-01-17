@@ -22,7 +22,6 @@ import type { IPAggregate, Month, Path, Today, Total, Week } from './types'
 import { Chart } from '@antv/g2/esm'
 
 import { IpInfoPopover } from '~/components/ip-info'
-import { ContentLayout } from '~/layouts/content'
 import { RESTManager } from '~/utils'
 
 import { AnalyzeDataTable } from './components/analyze-data-table'
@@ -227,7 +226,7 @@ export default defineComponent({
     const modal = useDialog()
 
     return () => (
-      <ContentLayout>
+      <>
         <Graph />
         <NP>
           <SectionTitle>
@@ -330,7 +329,7 @@ export default defineComponent({
             <ReadingRank />
           </NTabPane>
         </NTabs>
-      </ContentLayout>
+      </>
     )
   },
 })

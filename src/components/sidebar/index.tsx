@@ -30,10 +30,6 @@ export const Sidebar = defineComponent({
       type: Boolean,
       required: true,
     },
-    width: {
-      type: Number,
-      required: true,
-    },
     onCollapseChange: {
       type: Function as PropType<{ (status: boolean): void }>,
       required: true,
@@ -122,7 +118,7 @@ export const Sidebar = defineComponent({
             <div class={styles.header}>
               {/* Logo */}
               <div class={styles.logo}>
-                {!props.collapse && <img src={uwu} alt={title} />}
+                <img src={uwu} alt={title} />
               </div>
 
               {/* Header Actions */}
@@ -151,7 +147,10 @@ export const Sidebar = defineComponent({
             </div>
 
             {/* Menu */}
-            <NLayoutContent class={styles.menu} nativeScrollbar={false}>
+            <NLayoutContent
+              class={[styles.menu, '!bg-transparent']}
+              nativeScrollbar={false}
+            >
               <nav class={styles.items}>
                 {menus.value.map((item, index) => {
                   const isActive =
@@ -187,7 +186,7 @@ export const Sidebar = defineComponent({
                           style={{
                             maxHeight:
                               indexRef.value === index
-                                ? `${item.subItems.length * 2.5}rem`
+                                ? `${item.subItems.length * 2.75}rem`
                                 : '0',
                           }}
                         >

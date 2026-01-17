@@ -1,31 +1,56 @@
 .root {
   @apply min-h-screen;
-  background: var(--content-bg, #0a0a0a);
+  background: var(--page-bg);
 
   .content {
     left: var(--sidebar-width);
     transition: left var(--sidebar-transition-duration) ease;
-    background: var(--content-bg, #0a0a0a);
+    background: transparent;
+    padding: 8px;
+    padding-left: 0;
 
     @apply fixed inset-0 overflow-hidden;
   }
 
-  &:global(.collapsed) .content,
-  &:global(.collapsing) .content {
-    left: var(--sidebar-collapse-width);
+  .container {
+    background: var(--content-bg);
+    border-radius: var(--content-container-radius);
+    height: 100%;
+    overflow: hidden;
+    box-shadow: var(--content-shadow);
+
+    @apply flex flex-col;
   }
 
-  @screen phone {
+  &:global(.collapsed) .content,
+  &:global(.collapsing) .content {
+    left: 0;
+    padding-left: 16px;
+  }
+
+  @media (max-width: 768px) {
     .content {
-      left: var(--sidebar-collapse-width) !important;
+      left: 0 !important;
+      padding-left: 16px !important;
     }
   }
 }
 
-:global(html:not(.dark)) .root {
-  background: var(--content-bg, #fafafa);
+/* 遮罩层 */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 98;
+  animation: fadeIn 0.2s ease;
+}
 
-  .content {
-    background: var(--content-bg, #fafafa);
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
+

@@ -19,7 +19,7 @@ import { IpInfoPopover } from '~/components/ip-info'
 import { Xterm } from '~/components/xterm'
 import { GATEWAY_URL } from '~/constants/env'
 import { useMountAndUnmount } from '~/hooks/use-lifecycle'
-import { ContentLayout } from '~/layouts/content'
+import { useLayout } from '~/layouts/content'
 import { EventTypes } from '~/socket/types'
 import { getToken, parseDate, RESTManager } from '~/utils'
 import { bus } from '~/utils/event-bus'
@@ -36,6 +36,7 @@ const StatusIcon = () => (
 export default defineComponent({
   name: 'PtyView',
   setup() {
+    const { setActions } = useLayout()
     let term: Terminal
 
     const ready = ref(false)
@@ -175,36 +176,35 @@ export default defineComponent({
         content: () => <ConnectionStatus />,
       })
     }
-    return () => (
-      <ContentLayout
-        actionsElement={
-          <>
-            <HeaderActionButton
-              variant="info"
-              icon={<StatusIcon />}
-              name="连接状态"
-              onClick={openConnectionStatus}
-            />
-            <HeaderActionButton
-              icon={<RefreshIcon />}
-              name="重新连接"
-              onClick={reconnection}
-            />
-          </>
-        }
-      >
-        <Xterm
-          class="!max-h-[calc(100vh-10.5rem)]"
-          darkMode
-          terminalOptions={{
-            disableStdin: false,
-          }}
-          onReady={(_term) => {
-            ready.value = true
-            term = _term
-          }}
+    // 设置 header actions
+    setActions(
+      <>
+        <HeaderActionButton
+          variant="info"
+          icon={<StatusIcon />}
+          name="连接状态"
+          onClick={openConnectionStatus}
         />
-      </ContentLayout>
+        <HeaderActionButton
+          icon={<RefreshIcon />}
+          name="重新连接"
+          onClick={reconnection}
+        />
+      </>,
+    )
+
+    return () => (
+      <Xterm
+        class="!max-h-[calc(100vh-10.5rem)]"
+        darkMode
+        terminalOptions={{
+          disableStdin: false,
+        }}
+        onReady={(_term) => {
+          ready.value = true
+          term = _term
+        }}
+      />
     )
   },
 })

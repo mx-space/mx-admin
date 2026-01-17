@@ -19,7 +19,7 @@ import type { CollectionRefTypes, PaginateResult } from '@mx-space/api-client'
 import type { AISummaryModel } from '~/models/ai'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
-import { ContentLayout, useLayout } from '~/layouts/content'
+import { useLayout } from '~/layouts/content'
 import { RESTManager } from '~/utils'
 
 export default defineComponent({
@@ -28,11 +28,7 @@ export default defineComponent({
 
     return () => {
       const refId = route.query.refId as string
-      return (
-        <ContentLayout>
-          {refId ? <SummaryRefIdContent refId={refId} /> : <Summaries />}
-        </ContentLayout>
-      )
+      return refId ? <SummaryRefIdContent refId={refId} /> : <Summaries />
     }
   },
 })
@@ -124,9 +120,9 @@ const SummaryRefIdContent = defineComponent({
     })
     const dialog = useDialog()
 
-    const { setHeaderButtons } = useLayout()
+    const { setActions } = useLayout()
 
-    setHeaderButtons(
+    setActions(
       <HeaderActionButton
         icon={<AddIcon />}
         name="生成摘要"
@@ -198,7 +194,7 @@ const SummaryRefIdContent = defineComponent({
     )
 
     onUnmounted(() => {
-      setHeaderButtons(null)
+      setActions(null)
     })
 
     return () => {

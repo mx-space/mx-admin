@@ -1,11 +1,12 @@
-import { NLayoutContent } from 'naive-ui'
 import { computed, defineComponent, watchEffect } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import type { CSSProperties } from 'vue'
 
 import { KBarWrapper } from '~/components/k-bar'
 import { GATEWAY_URL } from '~/constants/env'
+import { ContentLayout } from '~/layouts/content'
 import $RouterView from '~/layouts/router-view'
+import { LayoutStore } from '~/stores/layout'
 import { RESTManager } from '~/utils'
 
 import { Sidebar } from '../../components/sidebar'
@@ -18,6 +19,16 @@ export const SidebarLayout = defineComponent({
 
   setup() {
     const ui = useStoreRef(UIStore)
+    const route = useRoute()
+    const layoutStore = LayoutStore()
+
+    // 路由变化时重置 layout store 状态
+    watch(
+      () => route.fullPath,
+      () => {
+        layoutStore.reset()
+      },
+    )
 
     const { meta, b } = useMagicKeys()
     watchEffect(() => {
@@ -52,8 +63,6 @@ export const SidebarLayout = defineComponent({
       collapse.value = isLaptop.value ? true : false
     })
 
-    const sidebarWidth = ui.sidebarWidth
-
     return () => (
       <KBarWrapper>
         {{
@@ -65,12 +74,11 @@ export const SidebarLayout = defineComponent({
                 {isInApiDebugMode && (
                   <div
                     class={[
-                      'fixed left-0 right-0 top-0 z-20 flex h-10 items-center whitespace-pre px-4 text-sm',
-                      'border-b border-[var(--sidebar-border)] bg-[var(--sidebar-bg)] text-[var(--sidebar-text)]',
+                      'fixed left-0 right-0 top-0 z-20 flex h-10 items-center whitespace-pre px-4 text-sm text-[var(--sidebar-text)]',
                       window.injectData.PAGE_PROXY && 'bg-red-900/20',
                     ]}
                     style={{
-                      paddingLeft: !collapse.value ? '236px' : '72px',
+                      paddingLeft: !collapse.value ? '236px' : '16px',
                     }}
                   >
                     API endpoint mode:{' '}
@@ -87,29 +95,36 @@ export const SidebarLayout = defineComponent({
 
                 <Sidebar
                   collapse={collapse.value}
-                  width={sidebarWidth.value}
                   onCollapseChange={(s) => {
                     collapse.value = s
                   }}
                 />
 
-                <NLayoutContent
-                  embedded
-                  nativeScrollbar={false}
+                {/* 移动端遮罩层 */}
+                {isLaptop.value && !collapse.value && (
+                  <div
+                    class={styles.overlay}
+                    onClick={() => (collapse.value = true)}
+                  />
+                )}
+
+                <div
                   class={styles.content}
                   style={
                     {
-                      left: !collapse.value
-                        ? 'var(--sidebar-width)'
-                        : 'var(--sidebar-collapse-width)',
+                      left: !collapse.value ? 'var(--sidebar-width)' : '0',
                       pointerEvents:
                         isLaptop.value && !collapse.value ? 'none' : 'auto',
-                      top: isInApiDebugMode ? '40px' : '0',
+                      top: isInApiDebugMode ? '28px' : '0',
                     } as CSSProperties
                   }
                 >
-                  <$RouterView />
-                </NLayoutContent>
+                  <div class={styles.container}>
+                    <ContentLayout>
+                      <$RouterView />
+                    </ContentLayout>
+                  </div>
+                </div>
               </div>
             )
           },

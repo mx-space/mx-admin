@@ -38,7 +38,7 @@ import { WEB_URL } from '~/constants/env'
 import { useAutoSave, useAutoSaveInEditor } from '~/hooks/use-auto-save'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
 import { useStoreRef } from '~/hooks/use-store-ref'
-import { ContentLayout } from '~/layouts/content'
+import { useLayout } from '~/layouts/content'
 import { RouteName } from '~/router/name'
 import { CategoryStore } from '~/stores/category'
 import { RESTManager } from '~/utils/rest'
@@ -59,6 +59,7 @@ type PostReactiveType = WriteBaseType & {
 
 const PostWriteView = defineComponent(() => {
   const route = useRoute()
+  const { setTitle, setHeaderClass, setActions, setFooterActions } = useLayout()
 
   const categoryStore = useStoreRef(CategoryStore)
   onMounted(async () => {
@@ -199,42 +200,43 @@ const PostWriteView = defineComponent(() => {
     postListState.refresh()
   })
 
+  // 设置 layout 状态
+  setHeaderClass('pt-1')
+  watchEffect(() => {
+    setTitle(id.value ? '修改文章' : '撰写新文章')
+    setActions(
+      <>
+        <ParseContentButton
+          data={data}
+          onHandleYamlParsedMeta={(meta) => {
+            // TODO: other meta field attach to data
+            const { title, slug, ...rest } = meta
+            data.title = title ?? data.title
+            data.slug = slug ?? data.slug
+
+            data.meta = { ...rest }
+          }}
+        />
+
+        <HeaderPreviewButton iframe data={data} />
+
+        <HeaderActionButton
+          icon={<TelegramPlaneIcon />}
+          onClick={handleSubmit}
+        />
+      </>,
+    )
+    setFooterActions(
+      <button onClick={handleOpenDrawer} title="打开设置">
+        <Icon>
+          <SlidersHIcon />
+        </Icon>
+      </button>,
+    )
+  })
+
   return () => (
-    <ContentLayout
-      title={id.value ? '修改文章' : '撰写新文章'}
-      headerClass="pt-1"
-      actionsElement={
-        <>
-          <ParseContentButton
-            data={data}
-            onHandleYamlParsedMeta={(meta) => {
-              // TODO: other meta field attach to data
-              const { title, slug, ...rest } = meta
-              data.title = title ?? data.title
-              data.slug = slug ?? data.slug
-
-              data.meta = { ...rest }
-            }}
-          />
-
-          <HeaderPreviewButton iframe data={data} />
-
-          <HeaderActionButton
-            icon={<TelegramPlaneIcon />}
-            onClick={handleSubmit}
-          />
-        </>
-      }
-      footerButtonElement={
-        <>
-          <button onClick={handleOpenDrawer} title="打开设置">
-            <Icon>
-              <SlidersHIcon />
-            </Icon>
-          </button>
-        </>
-      }
-    >
+    <>
       <MaterialInput
         class="relative z-10 mt-3"
         label="标题"
@@ -426,7 +428,7 @@ const PostWriteView = defineComponent(() => {
           </NSwitch>
         </NFormItem>
       </TextBaseDrawer>
-    </ContentLayout>
+    </>
   )
 })
 

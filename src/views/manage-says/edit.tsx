@@ -17,7 +17,7 @@ import type { SayModel } from '~/models/say'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { fetchHitokoto, SentenceType } from '~/external/api/hitokoto'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
-import { ContentLayout } from '~/layouts/content'
+import { useLayout } from '~/layouts/content'
 import { RouteName } from '~/router/name'
 import { RESTManager } from '~/utils'
 
@@ -81,7 +81,6 @@ const EditSay = defineComponent({
     }
 
     const parsePayloadIntoReactiveData = (payload: SayModel) =>
-      // biome-ignore lint/correctness/useHookAtTopLevel: <explanation>
       useParsePayloadIntoData(data)(payload)
     const data = reactive<SayReactiveType>(resetReactive())
     const id = computed(() => route.query.id)
@@ -145,76 +144,78 @@ const EditSay = defineComponent({
       router.push({ name: RouteName.ListSay })
     }
 
-    return () => (
-      <ContentLayout
-        actionsElement={
-          <Fragment>
-            {isString(id) ? (
+    const { setActions } = useLayout()
+
+    watchEffect(() => {
+      setActions(
+        <Fragment>
+          {isString(id.value) ? (
+            <HeaderActionButton
+              name="更新"
+              variant="info"
+              onClick={handleSubmit}
+              icon={<SendIcon />}
+            />
+          ) : (
+            <>
               <HeaderActionButton
-                name="更新"
-                variant="info"
+                name="发布一言"
+                variant={'info'}
+                onClick={handlePostHitokoto}
+                icon={<CommentIcon />}
+              />
+              <HeaderActionButton
+                name="发布自己说的"
+                variant={'primary'}
                 onClick={handleSubmit}
                 icon={<SendIcon />}
               />
-            ) : (
-              <>
-                <HeaderActionButton
-                  name="发布一言"
-                  variant={'info'}
-                  onClick={handlePostHitokoto}
-                  icon={<CommentIcon />}
-                />
-                <HeaderActionButton
-                  name="发布自己说的"
-                  variant={'primary'}
-                  onClick={handleSubmit}
-                  icon={<SendIcon />}
-                />
-              </>
-            )}
-          </Fragment>
-        }
-      >
-        <NForm>
-          <NFormItem
-            label="内容"
-            required
-            labelPlacement="left"
-            labelStyle={{ width: '4rem' }}
-          >
-            <NInput
-              type="textarea"
-              autofocus
-              autosize={{ minRows: 6, maxRows: 8 }}
-              placeholder={placeholder.value.text}
-              value={data.text}
-              onInput={(e) => void (data.text = e)}
-            />
-          </NFormItem>
-          <NFormItem
-            label="作者"
-            labelPlacement="left"
-            labelStyle={{ width: '4rem' }}
-          >
-            <NInput
-              placeholder={placeholder.value.author}
-              value={data.author}
-              onInput={(e) => void (data.author = e)}
-            />
-          </NFormItem>
-          <NFormItem
-            label="来源"
-            labelPlacement="left"
-            labelStyle={{ width: '4rem' }}
-          >
-            <NInput
-              placeholder={placeholder.value.source}
-              value={data.source}
-              onInput={(e) => void (data.source = e)}
-            />
-          </NFormItem>
-        </NForm>
-      </ContentLayout>
+            </>
+          )}
+        </Fragment>,
+      )
+    })
+
+    return () => (
+      <NForm>
+        <NFormItem
+          label="内容"
+          required
+          labelPlacement="left"
+          labelStyle={{ width: '4rem' }}
+        >
+          <NInput
+            type="textarea"
+            autofocus
+            autosize={{ minRows: 6, maxRows: 8 }}
+            placeholder={placeholder.value.text}
+            value={data.text}
+            onInput={(e) => void (data.text = e)}
+          />
+        </NFormItem>
+        <NFormItem
+          label="作者"
+          labelPlacement="left"
+          labelStyle={{ width: '4rem' }}
+        >
+          <NInput
+            placeholder={placeholder.value.author}
+            value={data.author}
+            onInput={(e) => void (data.author = e)}
+          />
+        </NFormItem>
+        <NFormItem
+          label="来源"
+          labelPlacement="left"
+          labelStyle={{ width: '4rem' }}
+        >
+          <NInput
+            placeholder={placeholder.value.source}
+            value={data.source}
+            onInput={(e) => void (data.source = e)}
+          />
+        </NFormItem>
+      </NForm>
     )
   },
 })

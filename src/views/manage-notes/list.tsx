@@ -26,7 +26,7 @@ import { useDataTableFetch } from '~/hooks/use-table'
 import { formatNumber } from '~/utils/number'
 
 import { HeaderActionButton } from '../../components/button/rounded-button'
-import { ContentLayout } from '../../layouts/content'
+import { useLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
 
 export const ManageNoteListView = defineComponent({
@@ -353,88 +353,85 @@ export const ManageNoteListView = defineComponent({
       },
     })
 
-    return () => {
-      return (
-        <ContentLayout>
-          {{
-            actions: () => (
-              <>
-                <DeleteConfirmButton
-                  checkedRowKeys={checkedRowKeys.value}
-                  onDelete={async () => {
-                    const status = await Promise.allSettled(
-                      checkedRowKeys.value.map((id) =>
-                        RESTManager.api.notes(id as string).delete(),
-                      ),
-                    )
+    const { setActions } = useLayout()
 
-                    for (const s of status) {
-                      if (s.status === 'rejected') {
-                        message.success(`删除失败，${s.reason.message}`)
-                      }
-                    }
+    watchEffect(() => {
+      setActions(
+        <>
+          <DeleteConfirmButton
+            checkedRowKeys={checkedRowKeys.value}
+            onDelete={async () => {
+              const status = await Promise.allSettled(
+                checkedRowKeys.value.map((id) =>
+                  RESTManager.api.notes(id as string).delete(),
+                ),
+              )
 
-                    checkedRowKeys.value.length = 0
-                    fetchData()
-                  }}
-                />
+              for (const s of status) {
+                if (s.status === 'rejected') {
+                  message.success(`删除失败，${s.reason.message}`)
+                }
+              }
 
-                <HeaderActionButton
-                  name="批量发布"
-                  disabled={checkedRowKeys.value.length === 0}
-                  icon={<EyeIcon />}
-                  variant="success"
-                  onClick={async () => {
-                    try {
-                      await Promise.all(
-                        checkedRowKeys.value.map((id) =>
-                          RESTManager.api
-                            .notes(id as string)('publish')
-                            .patch({
-                              data: { isPublished: true },
-                            }),
-                        ),
-                      )
-                      message.success('批量发布成功')
-                      fetchData() // 重新获取数据
-                      checkedRowKeys.value = []
-                    } catch (_error) {
-                      message.error('批量发布失败')
-                    }
-                  }}
-                />
+              checkedRowKeys.value.length = 0
+              fetchData()
+            }}
+          />
 
-                <HeaderActionButton
-                  name="批量设为草稿"
-                  disabled={checkedRowKeys.value.length === 0}
-                  icon={<EyeOffIcon />}
-                  variant="warning"
-                  onClick={async () => {
-                    try {
-                      await Promise.all(
-                        checkedRowKeys.value.map((id) =>
-                          RESTManager.api
-                            .notes(id as string)('publish')
-                            .patch({
-                              data: { isPublished: false },
-                            }),
-                        ),
-                      )
-                      message.success('批量设置草稿成功')
-                      fetchData() // 重新获取数据
-                      checkedRowKeys.value = []
-                    } catch (_error) {
-                      message.error('批量设置草稿失败')
-                    }
-                  }}
-                />
-                <HeaderActionButton to={'/notes/edit'} icon={<PlusIcon />} />
-              </>
-            ),
-            default: () => <DataTable />,
-          }}
-        </ContentLayout>
+          <HeaderActionButton
+            name="批量发布"
+            disabled={checkedRowKeys.value.length === 0}
+            icon={<EyeIcon />}
+            variant="success"
+            onClick={async () => {
+              try {
+                await Promise.all(
+                  checkedRowKeys.value.map((id) =>
+                    RESTManager.api
+                      .notes(id as string)('publish')
+                      .patch({
+                        data: { isPublished: true },
+                      }),
+                  ),
+                )
+                message.success('批量发布成功')
+                fetchData() // 重新获取数据
+                checkedRowKeys.value = []
+              } catch (_error) {
+                message.error('批量发布失败')
+              }
+            }}
+          />
+
+          <HeaderActionButton
+            name="批量设为草稿"
+            disabled={checkedRowKeys.value.length === 0}
+            icon={<EyeOffIcon />}
+            variant="warning"
+            onClick={async () => {
+              try {
+                await Promise.all(
+                  checkedRowKeys.value.map((id) =>
+                    RESTManager.api
+                      .notes(id as string)('publish')
+                      .patch({
+                        data: { isPublished: false },
+                      }),
+                  ),
+                )
+                message.success('批量设置草稿成功')
+                fetchData() // 重新获取数据
+                checkedRowKeys.value = []
+              } catch (_error) {
+                message.error('批量设置草稿失败')
+              }
+            }}
+          />
+          <HeaderActionButton to={'/notes/edit'} icon={<PlusIcon />} />
+        </>,
       )
-    }
+    })
+
+    return () => <DataTable />
   },
 })

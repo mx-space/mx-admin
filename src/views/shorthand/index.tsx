@@ -23,12 +23,13 @@ import { useShorthand } from '~/components/shorthand'
 import { RelativeTime } from '~/components/time/relative-time'
 
 import { HeaderActionButton } from '../../components/button/rounded-button'
-import { ContentLayout } from '../../layouts/content'
+import { useLayout } from '../../layouts/content'
 import { RESTManager } from '../../utils/rest'
 import styles from './index.module.css'
 
 export default defineComponent({
   setup() {
+    const { setActions } = useLayout()
     const data = ref([] as RecentlyModel[])
     const loading = ref(true)
     onMounted(async () => {
@@ -40,109 +41,106 @@ export default defineComponent({
         })
     })
     const { create, edit } = useShorthand()
+
+    setActions(
+      <HeaderActionButton
+        onClick={() => {
+          create().then((res) => {
+            if (res) {
+              data.value.unshift(res)
+            }
+          })
+        }}
+        icon={<AddIcon />}
+      />,
+    )
+
     return () => (
-      <ContentLayout
-        actionsElement={
-          <>
-            <HeaderActionButton
-              onClick={() => {
-                create().then((res) => {
-                  if (res) {
-                    data.value.unshift(res)
-                  }
-                })
-              }}
-              icon={<AddIcon />}
-            />
-          </>
-        }
-      >
-        <NTimeline>
-          {data.value.map((item, index) => {
-            return (
-              <NTimelineItem type="default" key={item.id}>
-                {{
-                  icon() {
-                    return (
-                      <Icon>
-                        <PenIcon />
-                      </Icon>
-                    )
-                  },
-                  default() {
-                    return (
-                      <div class={styles['timeline-grid']}>
-                        <span>{item.content}</span>
+      <NTimeline>
+        {data.value.map((item, index) => {
+          return (
+            <NTimelineItem type="default" key={item.id}>
+              {{
+                icon() {
+                  return (
+                    <Icon>
+                      <PenIcon />
+                    </Icon>
+                  )
+                },
+                default() {
+                  return (
+                    <div class={styles['timeline-grid']}>
+                      <span>{item.content}</span>
 
-                        <div class="action">
-                          <NButton
-                            quaternary
-                            type="info"
-                            size="tiny"
-                            onClick={() => {
-                              edit(item).then((res) => {
-                                if (res) {
-                                  data.value[index] = res
-                                }
-                              })
-                            }}
-                          >
-                            编辑
-                          </NButton>
-                          <NPopconfirm
-                            placement="left"
-                            positiveText="取消"
-                            negativeText="删除"
-                            onNegativeClick={async () => {
-                              await RESTManager.api.recently(item.id).delete()
-                              message.success('删除成功')
-                              data.value.splice(data.value.indexOf(item), 1)
-                            }}
-                          >
-                            {{
-                              trigger: () => (
-                                <NButton quaternary type="error" size="tiny">
-                                  移除
-                                </NButton>
-                              ),
+                      <div class="action">
+                        <NButton
+                          quaternary
+                          type="info"
+                          size="tiny"
+                          onClick={() => {
+                            edit(item).then((res) => {
+                              if (res) {
+                                data.value[index] = res
+                              }
+                            })
+                          }}
+                        >
+                          编辑
+                        </NButton>
+                        <NPopconfirm
+                          placement="left"
+                          positiveText="取消"
+                          negativeText="删除"
+                          onNegativeClick={async () => {
+                            await RESTManager.api.recently(item.id).delete()
+                            message.success('删除成功')
+                            data.value.splice(data.value.indexOf(item), 1)
+                          }}
+                        >
+                          {{
+                            trigger: () => (
+                              <NButton quaternary type="error" size="tiny">
+                                移除
+                              </NButton>
+                            ),
 
-                              default: () => (
-                                <span class={'max-w-48 break-all'}>
-                                  确定要删除 {item.content} ?
-                                </span>
-                              ),
-                            }}
-                          </NPopconfirm>
-                        </div>
+                            default: () => (
+                              <span class={'max-w-48 break-all'}>
+                                确定要删除 {item.content} ?
+                              </span>
+                            ),
+                          }}
+                        </NPopconfirm>
                       </div>
-                    )
-                  },
-                  footer() {
-                    return (
-                      <NSpace inline size={5}>
-                        <RelativeTime time={item.created} />
-                        {item.modified && (
-                          <>
-                            <span class="text-gray-400">·</span>
-                            <span class="text-gray-400">
-                              修改于 <RelativeTime time={item.modified} />
-                            </span>
-                          </>
-                        )}
-                        <NSpace inline size={1} align="center">
-                          <MaterialSymbolsThumbUpOutline /> {item.up}
-                          <span class={'mx-2'}>/</span>
-                          <MaterialSymbolsThumbDownOutline /> {item.down}
-                        </NSpace>
+                    </div>
+                  )
+                },
+                footer() {
+                  return (
+                    <NSpace inline size={5}>
+                      <RelativeTime time={item.created} />
+                      {item.modified && (
+                        <>
+                          <span class="text-gray-400">·</span>
+                          <span class="text-gray-400">
+                            修改于 <RelativeTime time={item.modified} />
+                          </span>
+                        </>
+                      )}
+                      <NSpace inline size={1} align="center">
+                        <MaterialSymbolsThumbUpOutline /> {item.up}
+                        <span class={'mx-2'}>/</span>
+                        <MaterialSymbolsThumbDownOutline /> {item.down}
                       </NSpace>
-                    )
-                  },
-                }}
-              </NTimelineItem>
-            )
-          })}
-        </NTimeline>
-      </ContentLayout>
+                    </NSpace>
+                  )
+                },
+              }}
+            </NTimelineItem>
+          )
+        })}
+      </NTimeline>
     )
   },
 })

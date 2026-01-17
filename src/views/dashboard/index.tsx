@@ -62,7 +62,7 @@ import { fetchHitokoto, SentenceType } from '~/external/api/hitokoto'
 import { getJinRiShiCiOne } from '~/external/api/jinrishici'
 import { usePortalElement } from '~/hooks/use-portal-element'
 import { useStoreRef } from '~/hooks/use-store-ref'
-import { ContentLayout } from '~/layouts/content'
+import { useLayout } from '~/layouts/content'
 import { RouteName } from '~/router/name'
 import { AppStore } from '~/stores/app'
 import { UserStore } from '~/stores/user'
@@ -86,6 +86,9 @@ export const DashBoardView = defineComponent({
   name: 'DashboardView',
 
   setup() {
+    const { setHideHeader } = useLayout()
+    setHideHeader(true)
+
     const stat = ref(
       new Proxy(
         {},
@@ -190,7 +193,7 @@ export const DashBoardView = defineComponent({
     const router = useRouter()
     const UserLoginStat = defineComponent(() => () => (
       <>
-        <NH3 class="font-light text-opacity-80">登录记录</NH3>
+        <NH3 class="font-light opacity-80">登录记录</NH3>
         <p class="relative -mt-2 mb-3 text-gray-500">
           <span>
             上次登录 IP:{' '}
@@ -511,7 +514,7 @@ export const DashBoardView = defineComponent({
       return () => (
         <>
           <NSpace vertical>
-            <NH3 class="font-light text-opacity-80">数据统计</NH3>
+            <NH3 class="font-light opacity-80">数据统计</NH3>
 
             <p class="relative -mt-4 mb-3 flex items-center text-gray-500">
               <span>数据更新于：</span>
@@ -544,13 +547,11 @@ export const DashBoardView = defineComponent({
       )
     })
     return () => (
-      <ContentLayout hideHeader>
+      <>
         <NH1 class="font-light">欢迎回来</NH1>
         <NGrid xGap={12} cols={'1 900:2'}>
           <NGi>
-            <NH3 class="!mb-[10px] !mt-[10px] font-light text-opacity-80">
-              一言
-            </NH3>
+            <NH3 class="!mb-[10px] !mt-[10px] font-light opacity-80">一言</NH3>
             <NP>
               <NSpace align="center" class="min-h-[3rem]">
                 {hitokoto.value ? (
@@ -588,7 +589,7 @@ export const DashBoardView = defineComponent({
             </NP>
           </NGi>
           <NGi>
-            <NH3 class="!mb-[10px] !mt-[10px] font-light text-opacity-80">
+            <NH3 class="!mb-[10px] !mt-[10px] font-light opacity-80">
               今日诗句
             </NH3>
             <NP>
@@ -637,7 +638,7 @@ export const DashBoardView = defineComponent({
         <UserLoginStat />
         <DataStat />
         <AppIF />
-      </ContentLayout>
+      </>
     )
   },
 })

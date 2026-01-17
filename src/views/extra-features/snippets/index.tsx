@@ -1,8 +1,6 @@
 import { NTabPane, NTabs } from 'naive-ui'
 import { useRoute, useRouter } from 'vue-router'
 
-import { ContentLayout } from '~/layouts/content'
-
 import { Tab2ForEdit } from './tabs/for-edit'
 import { Tab1ForList } from './tabs/for-list'
 
@@ -14,7 +12,7 @@ export default defineComponent({
     const currentTab = computed(() => route.query.tab || '0')
 
     return () => (
-      <ContentLayout>
+      <>
         <NTabs
           size="medium"
           value={currentTab.value as string}
@@ -34,7 +32,7 @@ export default defineComponent({
             <Tab2ForEdit />
           </NTabPane>
         </NTabs>
-      </ContentLayout>
+      </>
     )
   },
 })

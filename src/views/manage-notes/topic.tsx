@@ -17,7 +17,6 @@ import { Icon } from '@vicons/utils'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { useDataTableFetch } from '~/hooks/use-table'
-import { ContentLayout } from '~/layouts/content'
 import { RESTManager } from '~/utils'
 import { textToBigCharOrWord } from '~/utils/word'
 
@@ -126,7 +125,7 @@ export default defineComponent({
     } = this
 
     return (
-      <ContentLayout>
+      <>
         {{
           actions() {
             return (
@@ -240,7 +239,7 @@ export default defineComponent({
             )
           },
         }}
-      </ContentLayout>
+      </>
     )
   },
 })
