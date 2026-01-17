@@ -71,7 +71,11 @@ pnpm format
 - Environment variables in `.env` and `.env.production`
 - Vite configuration in `vite.config.mts`
 - Tailwind CSS configuration in `src/index.css` (@theme block)
-- Theme configuration in `theme.config.ts`
+- Theme colors in `src/utils/color.ts` (fixed Vercel-style neutral gray)
+
+## Claude Code Rules
+
+- **验证方式**：修改代码后只需运行类型检查（`pnpm tsc --noEmit` 或依赖 IDE 诊断），不要运行 `pnpm build` 构建整个项目
 
 ## Related Projects
 

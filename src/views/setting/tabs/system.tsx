@@ -1,7 +1,5 @@
 import { camelCase, cloneDeep, isEmpty, merge } from 'es-toolkit/compat'
 import { CircleCheck as CheckCircleOutlinedIcon } from 'lucide-vue-next'
-import { NButton, NColorPicker, NFormItem, useThemeVars } from 'naive-ui'
-import { ThemeColorConfig } from 'theme.config'
 import {
   defineComponent,
   onBeforeUnmount,
@@ -18,7 +16,6 @@ import { useStoreRef } from '~/hooks/use-store-ref'
 import { useLayout } from '~/layouts/content'
 import { UIStore } from '~/stores/ui'
 import { deepDiff, RESTManager } from '~/utils'
-import { colorRef, defineColors } from '~/utils/color'
 
 import { AIConfigSection } from './sections/ai-config'
 
@@ -160,13 +157,6 @@ export const TabSystem = defineComponent(() => {
           }}
           schema={schema.value}
           v-slots={{
-            AdminExtraDto: () => (
-              <>
-                <NFormItem label={'主题色'}>
-                  <AppColorSetter />
-                </NFormItem>
-              </>
-            ),
             AIDto: () => (
               <AIConfigSection
                 value={configs.ai || {}}
@@ -180,40 +170,4 @@ export const TabSystem = defineComponent(() => {
       )}
     </Fragment>
   )
-})
-
-const AppColorSetter = defineComponent({
-  setup() {
-    const vars = useThemeVars()
-
-    const $style = document.createElement('style')
-    $style.innerHTML = `* { transition: none !important; }`
-
-    return () => (
-      <div class={'flex items-center gap-2'}>
-        <NColorPicker
-          class={'w-36'}
-          value={vars.value.primaryColor}
-          onUpdateValue={(value) => {
-            document.head.appendChild($style)
-
-            Object.assign(colorRef.value, defineColors(value))
-            setTimeout(() => {
-              document.head.removeChild($style)
-            })
-          }}
-        />
-
-        <NButton
-          size="small"
-          ghost
-          onClick={() => {
-            Object.assign(colorRef.value, ThemeColorConfig)
-          }}
-        >
-          <span>重置</span>
-        </NButton>
-      </div>
-    )
-  },
 })

@@ -2,6 +2,7 @@ import QProgress from 'qier-progress'
 
 import { API_URL, GATEWAY_URL } from '~/constants/env'
 import { SESSION_WITH_LOGIN } from '~/constants/keys'
+import { LayoutStore } from '~/stores/layout'
 import { getTokenIsUpstream } from '~/stores/user'
 import { removeToken, setToken } from '~/utils/auth'
 import { checkIsInit } from '~/utils/is-init'
@@ -92,6 +93,9 @@ router.beforeEach(async (to) => {
 router.afterEach((to, _) => {
   document.title = getPageTitle(to?.meta.title as any)
   progress.finish()
+  // 路由变化后重置 layout store，清除旧 VNode 引用
+  // 注意：必须在 afterEach 中调用，而不是 beforeEach，否则组件还在渲染时 VNode 就被清空会导致错误
+  LayoutStore().reset()
 })
 
 // HACK editor save

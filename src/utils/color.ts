@@ -1,28 +1,17 @@
-import tinycolor from 'tinycolor2'
+// Vercel 风格中性主题 - 固定配置，不可更改
 
-import { ThemeColorConfig } from '~/../theme.config'
+// Light Mode: 深色主色调
+export const lightThemeColors = {
+  primaryColor: '#171717',
+  primaryColorHover: '#404040',
+  primaryColorPressed: '#0a0a0a',
+  primaryColorSuppl: '#525252',
+} as const
 
-export const colorRef = useStorage('mx-admin-color', ThemeColorConfig)
-
-interface Colors {
-  primaryColor: string
-  primaryColorHover: string
-  primaryColorPressed: string
-  primaryColorSuppl: string
-}
-
-export function defineColors(baseColor: string): Colors {
-  const base = tinycolor(baseColor)
-
-  const primaryColor = base.toHexString()
-  const primaryColorHover = base.brighten(10).toHexString()
-  const primaryColorPressed = base.darken(10).toHexString()
-  const primaryColorSuppl = base.darken(15).toHexString()
-
-  return {
-    primaryColor,
-    primaryColorHover,
-    primaryColorPressed,
-    primaryColorSuppl,
-  }
-}
+// Dark Mode: 浅色主色调
+export const darkThemeColors = {
+  primaryColor: '#ededed',
+  primaryColorHover: '#d4d4d4',
+  primaryColorPressed: '#fafafa',
+  primaryColorSuppl: '#a3a3a3',
+} as const

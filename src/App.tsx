@@ -20,7 +20,7 @@ import type { VNode } from 'vue'
 import { PortalInjectKey } from '~/hooks/use-portal-element'
 
 import { useUIStore } from './stores/ui'
-import { colorRef } from './utils/color'
+import { darkThemeColors, lightThemeColors } from './utils/color'
 
 const Root = defineComponent({
   name: 'RootView',
@@ -56,7 +56,7 @@ const Root = defineComponent({
       return (
         <>
           <RouterView />
-          {$portalElement.value}
+          {$portalElement.value ?? <></>}
         </>
       )
     }
@@ -68,14 +68,15 @@ const App = defineComponent({
     const uiStore = useUIStore()
     return () => {
       const { isDark, naiveUIDark } = uiStore
+      const isCurrentDark = naiveUIDark || isDark
       return (
         <NConfigProvider
           locale={zhCN}
           dateLocale={dateZhCN}
           themeOverrides={{
-            common: colorRef.value,
+            common: isCurrentDark ? darkThemeColors : lightThemeColors,
           }}
-          theme={naiveUIDark ? darkTheme : isDark ? darkTheme : lightTheme}
+          theme={isCurrentDark ? darkTheme : lightTheme}
         >
           <NNotificationProvider>
             <NMessageProvider>
@@ -113,7 +114,7 @@ const AccentColorInjector = defineComponent({
       )
     })
 
-    return () => null
+    return () => <></>
   },
 })
 // eslint-disable-next-line import/no-default-export
