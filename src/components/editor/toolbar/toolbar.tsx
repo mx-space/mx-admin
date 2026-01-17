@@ -228,7 +228,7 @@ export const MarkdownToolbar = defineComponent({
             elements.push(
               <span
                 key={`div-${index}`}
-                class="inline-block h-4 w-px bg-gray-300 opacity-50 dark:bg-gray-600"
+                class="inline-block h-4 w-px bg-neutral-300 opacity-50 dark:bg-neutral-600"
               />,
             )
           }

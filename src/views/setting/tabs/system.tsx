@@ -1,5 +1,8 @@
 import { camelCase, cloneDeep, isEmpty, merge } from 'es-toolkit/compat'
-import { CircleCheck as CheckCircleOutlinedIcon } from 'lucide-vue-next'
+import {
+  CircleCheck as CheckCircleOutlinedIcon,
+  Settings as SettingsIcon,
+} from 'lucide-vue-next'
 import {
   defineComponent,
   onBeforeUnmount,
@@ -17,6 +20,7 @@ import { useLayout } from '~/layouts/content'
 import { UIStore } from '~/stores/ui'
 import { deepDiff, RESTManager } from '~/utils'
 
+import styles from '../index.module.css'
 import { AIConfigSection } from './sections/ai-config'
 
 const NFormPrefixCls = 'mt-6'
@@ -33,6 +37,7 @@ export const autosizeableProps = {
   clearable: true,
   style: 'min-width: 300px; max-width: 100%',
 } as const
+
 export const TabSystem = defineComponent(() => {
   const { setActions: setHeaderButton } = useLayout()
 
@@ -70,6 +75,7 @@ export const TabSystem = defineComponent(() => {
     },
     { deep: true },
   )
+
   watch(
     () => diff.value,
     (n) => {
@@ -141,33 +147,48 @@ export const TabSystem = defineComponent(() => {
     },
     { immediate: true },
   )
-  return () => (
-    <Fragment>
-      <div class="pt-4" />
 
-      {schema.value && (
-        <ConfigForm
-          initialValue={configs}
-          getKey={(key) => {
-            return key
-              .split('.')
-              .map((kk) => camelCase(kk))
-              .join('.')
-              .replace('Dto', '')
-          }}
-          schema={schema.value}
-          v-slots={{
-            AIDto: () => (
-              <AIConfigSection
-                value={configs.ai || {}}
-                onUpdate={(value: any) => {
-                  configs.ai = value
-                }}
-              />
-            ),
-          }}
-        />
-      )}
-    </Fragment>
+  return () => (
+    <div class={styles.tabContent}>
+      {/* Header */}
+      <div class={styles.sectionHeader}>
+        <div>
+          <h2 class={styles.sectionTitle}>
+            <SettingsIcon class="mr-2 inline-block size-5" aria-hidden="true" />
+            系统设置
+          </h2>
+          <p class={styles.sectionSubtitle}>
+            配置站点信息、SEO 设置、邮件服务等
+          </p>
+        </div>
+      </div>
+
+      {/* Config Form Container */}
+      <div class={styles.card}>
+        {schema.value && (
+          <ConfigForm
+            initialValue={configs}
+            getKey={(key) => {
+              return key
+                .split('.')
+                .map((kk) => camelCase(kk))
+                .join('.')
+                .replace('Dto', '')
+            }}
+            schema={schema.value}
+            v-slots={{
+              AIDto: () => (
+                <AIConfigSection
+                  value={configs.ai || {}}
+                  onUpdate={(value: any) => {
+                    configs.ai = value
+                  }}
+                />
+              ),
+            }}
+          />
+        )}
+      </div>
+    </div>
   )
 })

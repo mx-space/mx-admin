@@ -310,7 +310,7 @@ const NoteWriteView = defineComponent(() => {
         )}
       </div>
 
-      <div class={'py-3 text-gray-500'}>
+      <div class={'py-3 text-neutral-500'}>
         <label>{`${WEB_URL}/notes/${nid.value ?? ''}`}</label>
         {nid.value && (
           <CopyTextButton text={`${WEB_URL}/notes/${nid.value ?? ''}`} />

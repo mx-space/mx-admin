@@ -1,26 +1,77 @@
 import { format } from 'date-fns'
-import { Plus as AddIcon, Trash as TrashIcon } from 'lucide-vue-next'
+import {
+  Plus as AddIcon,
+  ArrowLeft as ArrowLeftIcon,
+  Calendar as CalendarIcon,
+  ChevronDown as ChevronDownIcon,
+  ChevronRight as ChevronRightIcon,
+  ChevronUp as ChevronUpIcon,
+  FileText as FileTextIcon,
+  Pencil as PencilIcon,
+  Sparkles as SparklesIcon,
+  StickyNote as StickyNoteIcon,
+  Trash2 as TrashIcon,
+} from 'lucide-vue-next'
 import {
   NButton,
-  NButtonGroup,
-  NEmpty,
+  NCollapseTransition,
   NFlex,
-  NIcon,
   NInput,
-  NList,
-  NListItem,
   NPagination,
-  NSpace,
-  useDialog,
+  NPopconfirm,
+  NSkeleton,
+  NTooltip,
 } from 'naive-ui'
 import useSWRV from 'swrv'
-import { RouterLink, useRoute } from 'vue-router'
-import type { CollectionRefTypes, PaginateResult } from '@mx-space/api-client'
+import { Transition } from 'vue'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 import type { AISummaryModel } from '~/models/ai'
+import type { PropType } from 'vue'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { useLayout } from '~/layouts/content'
 import { RESTManager } from '~/utils'
+
+import styles from './summary.module.css'
+
+type ArticleRefType = 'Post' | 'Note' | 'Page' | 'Recently'
+
+interface ArticleInfo {
+  type: ArticleRefType
+  title: string
+  id: string
+}
+
+interface GroupedSummaryData {
+  article: ArticleInfo
+  summaries: AISummaryModel[]
+}
+
+interface GroupedResponse {
+  data: GroupedSummaryData[]
+  pagination: {
+    total: number
+    currentPage: number
+    totalPage: number
+    size: number
+    hasNextPage: boolean
+    hasPrevPage: boolean
+  }
+}
+
+const RefTypeLabels: Record<ArticleRefType, string> = {
+  Post: '文章',
+  Note: '笔记',
+  Page: '页面',
+  Recently: '速记',
+}
+
+const RefTypeIcons: Record<ArticleRefType, typeof FileTextIcon> = {
+  Post: FileTextIcon,
+  Note: StickyNoteIcon,
+  Page: FileTextIcon,
+  Recently: FileTextIcon,
+}
 
 export default defineComponent({
   setup() {
@@ -28,7 +79,11 @@ export default defineComponent({
 
     return () => {
       const refId = route.query.refId as string
-      return refId ? <SummaryRefIdContent refId={refId} /> : <Summaries />
+      return (
+        <div class={styles.container}>
+          {refId ? <SummaryRefIdContent refId={refId} /> : <Summaries />}
+        </div>
+      )
     }
   },
 })
@@ -36,21 +91,10 @@ export default defineComponent({
 const Summaries = defineComponent({
   setup() {
     const pageRef = ref(1)
-    const { data, mutate } = useSWRV(
-      '/api/ai/summaries',
+    const { data, mutate, isValidating } = useSWRV(
+      () => `/api/ai/summaries/grouped?page=${pageRef.value}`,
       async () => {
-        return await RESTManager.api.ai.summaries.get<
-          PaginateResult<AISummaryModel> & {
-            articles: Record<
-              string,
-              {
-                title: string
-                type: CollectionRefTypes
-                id: string
-              }
-            >
-          }
-        >({
+        return await RESTManager.api.ai.summaries.grouped.get<GroupedResponse>({
           params: {
             page: pageRef.value,
           },
@@ -60,42 +104,247 @@ const Summaries = defineComponent({
         revalidateOnFocus: false,
       },
     )
-    return () => {
-      if (data.value?.data.length === 0) {
-        return <NEmpty />
-      }
 
-      return (
-        <>
-          <List
-            summaries={data.value?.data || []}
-            getArticle={(id) => {
-              const article = data.value?.articles[id]
-              if (!article) throw new Error('article not found')
+    const loading = computed(() => isValidating.value && !data.value)
 
-              return {
-                type: article.type,
-                document: {
-                  title: article.title,
-                },
-              }
+    return () => (
+      <Transition name="fade" mode="out-in">
+        {loading.value ? (
+          <LoadingSkeleton key="loading" />
+        ) : !data.value || data.value.data.length === 0 ? (
+          <EmptyState key="empty" />
+        ) : (
+          <div key="content">
+            <div class={styles.list} role="feed" aria-label="AI 摘要列表">
+              {data.value.data.map((group) => (
+                <ArticleGroup
+                  key={group.article.id}
+                  article={group.article}
+                  summaries={group.summaries}
+                  onMutate={mutate}
+                />
+              ))}
+            </div>
+            {data.value.pagination.totalPage > 1 && (
+              <div class={styles.pagination}>
+                <NPagination
+                  page={data.value.pagination.currentPage}
+                  pageCount={data.value.pagination.totalPage}
+                  onUpdatePage={(page) => {
+                    pageRef.value = page
+                    mutate()
+                  }}
+                />
+              </div>
+            )}
+          </div>
+        )}
+      </Transition>
+    )
+  },
+})
+
+const ArticleGroup = defineComponent({
+  props: {
+    article: {
+      type: Object as PropType<ArticleInfo>,
+      required: true,
+    },
+    summaries: {
+      type: Array as PropType<AISummaryModel[]>,
+      required: true,
+    },
+    onMutate: {
+      type: Function as PropType<() => void>,
+      required: true,
+    },
+  },
+  setup(props) {
+    const expanded = ref(true)
+    const RefIcon = RefTypeIcons[props.article.type]
+
+    return () => (
+      <section
+        class={styles.articleGroup}
+        aria-label={`${props.article.title} 的摘要`}
+      >
+        {/* Article Header */}
+        <header class={styles.articleHeader}>
+          <button
+            type="button"
+            class={styles.expandToggle}
+            onClick={() => (expanded.value = !expanded.value)}
+            aria-expanded={expanded.value}
+            aria-label={expanded.value ? '收起' : '展开'}
+          >
+            {expanded.value ? (
+              <ChevronDownIcon class={styles.expandIcon} />
+            ) : (
+              <ChevronRightIcon class={styles.expandIcon} />
+            )}
+          </button>
+
+          <RouterLink
+            to={`/${props.article.type}/edit?id=${props.article.id}`}
+            class={styles.articleHeaderLink}
+          >
+            <RefIcon class={styles.articleTypeIcon} />
+            <h2 class={styles.articleHeaderTitle}>{props.article.title}</h2>
+          </RouterLink>
+
+          <span class={styles.articleTypeBadge}>
+            {RefTypeLabels[props.article.type]}
+          </span>
+
+          <span class={styles.summaryCount}>
+            {props.summaries.length} 条摘要
+          </span>
+
+          <NTooltip trigger="hover" placement="top">
+            {{
+              trigger: () => (
+                <RouterLink
+                  to={`/ai/summary?refId=${props.article.id}`}
+                  class={styles.manageLink}
+                  aria-label="管理此文章的摘要"
+                >
+                  <SparklesIcon class="size-4" />
+                </RouterLink>
+              ),
+              default: () => '管理摘要',
             }}
-            mutate={mutate}
-          />
-          <NSpace class={'mt-6'} justify="end">
-            <NPagination
-              page={data.value?.pagination.currentPage}
-              pageCount={data.value?.pagination.totalPage}
-              onUpdatePage={(page) => {
-                pageRef.value = page
+          </NTooltip>
+        </header>
 
-                mutate()
-              }}
-            />
-          </NSpace>
-        </>
-      )
-    }
+        {/* Summaries List */}
+        <NCollapseTransition show={expanded.value}>
+          <div class={styles.summariesList}>
+            {props.summaries.map((summary) => (
+              <SummaryItem
+                key={summary.id}
+                item={summary}
+                onMutate={props.onMutate}
+              />
+            ))}
+          </div>
+        </NCollapseTransition>
+      </section>
+    )
+  },
+})
+
+const SummaryItem = defineComponent({
+  props: {
+    item: {
+      type: Object as PropType<AISummaryModel>,
+      required: true,
+    },
+    onMutate: {
+      type: Function as PropType<() => void>,
+      required: true,
+    },
+  },
+  setup(props) {
+    const expanded = ref(false)
+    const shouldShowExpand = computed(
+      () =>
+        props.item.summary.length > 150 || props.item.summary.includes('\n'),
+    )
+
+    return () => (
+      <div class={styles.summaryItem}>
+        <div class={styles.summaryItemHeader}>
+          <span class={styles.langBadge}>{props.item.lang.toUpperCase()}</span>
+          <span class={styles.summaryTime}>
+            <CalendarIcon class={styles.timeIcon} />
+            <time datetime={props.item.created}>
+              {format(new Date(props.item.created), 'yyyy-MM-dd HH:mm')}
+            </time>
+          </span>
+        </div>
+
+        <div class={styles.summaryItemContent}>
+          <p
+            class={[
+              styles.summaryText,
+              !expanded.value && shouldShowExpand.value
+                ? styles.summaryTextCollapsed
+                : '',
+            ]}
+          >
+            {props.item.summary}
+          </p>
+          {shouldShowExpand.value && (
+            <button
+              type="button"
+              class={styles.expandButton}
+              onClick={() => (expanded.value = !expanded.value)}
+              aria-expanded={expanded.value}
+            >
+              {expanded.value ? (
+                <>
+                  <ChevronUpIcon class="mr-1 inline size-3" />
+                  收起
+                </>
+              ) : (
+                <>
+                  <ChevronDownIcon class="mr-1 inline size-3" />
+                  展开
+                </>
+              )}
+            </button>
+          )}
+        </div>
+
+        <div class={styles.summaryItemActions}>
+          <NTooltip trigger="hover" placement="top">
+            {{
+              trigger: () => (
+                <button
+                  type="button"
+                  class={styles.actionButton}
+                  onClick={() => showEditDialog(props.item, props.onMutate)}
+                  aria-label="编辑摘要"
+                >
+                  <PencilIcon />
+                </button>
+              ),
+              default: () => '编辑',
+            }}
+          </NTooltip>
+
+          <NPopconfirm
+            placement="left"
+            positiveText="取消"
+            negativeText="删除"
+            onNegativeClick={async () => {
+              await RESTManager.api.ai.summaries(props.item.id).delete()
+              props.onMutate()
+            }}
+          >
+            {{
+              trigger: () => (
+                <NTooltip trigger="hover" placement="top">
+                  {{
+                    trigger: () => (
+                      <button
+                        type="button"
+                        class={[styles.actionButton, styles.deleteButton]}
+                        aria-label="删除摘要"
+                      >
+                        <TrashIcon />
+                      </button>
+                    ),
+                    default: () => '删除',
+                  }}
+                </NTooltip>
+              ),
+              default: () => '确定要删除这条摘要吗？',
+            }}
+          </NPopconfirm>
+        </div>
+      </div>
+    )
   },
 })
 
@@ -108,17 +357,20 @@ const SummaryRefIdContent = defineComponent({
   },
 
   setup(props) {
+    const router = useRouter()
     const refId = props.refId
-    const { data, mutate } = useSWRV(`/api/ai/summary/${refId}`, async () => {
-      return await RESTManager.api.ai.summaries.ref(refId).get<{
-        summaries: AISummaryModel[]
-        article: {
-          type: CollectionRefTypes
-          document: { title: string }
-        }
-      }>()
-    })
-    const dialog = useDialog()
+    const { data, mutate, isValidating } = useSWRV(
+      `/api/ai/summary/${refId}`,
+      async () => {
+        return await RESTManager.api.ai.summaries.ref(refId).get<{
+          summaries: AISummaryModel[]
+          article: {
+            type: ArticleRefType
+            document: { title: string }
+          }
+        }>()
+      },
+    )
 
     const { setActions } = useLayout()
 
@@ -127,67 +379,8 @@ const SummaryRefIdContent = defineComponent({
         icon={<AddIcon />}
         name="生成摘要"
         onClick={() => {
-          const $dialog = dialog.create({
-            title: '生成摘要',
-            content() {
-              const Content = defineComponent({
-                setup() {
-                  const loadingRef = ref(false)
-                  return () => (
-                    <form
-                      onSubmit={(e) => {
-                        e.preventDefault()
-
-                        const $form = e.target as HTMLFormElement
-                        const lang = (
-                          $form.querySelector(
-                            'input[name=lang]',
-                          ) as HTMLInputElement
-                        )?.value
-                        if (!lang) {
-                          return
-                        }
-
-                        loadingRef.value = true
-                        RESTManager.api.ai.summaries.generate
-                          .post<AISummaryModel | null>({
-                            data: {
-                              refId,
-                              lang,
-                            },
-                          })
-                          .then((res) => {
-                            res && data.value?.summaries.push(res)
-                            $dialog.destroy()
-                          })
-                          .finally(() => {
-                            loadingRef.value = false
-                          })
-                      }}
-                    >
-                      <NInput
-                        type="text"
-                        inputProps={{ name: 'lang' }}
-                        defaultValue={'zh'}
-                        placeholder="目标语言"
-                      />
-
-                      <div class={'mt-4 text-right'}>
-                        <NButton
-                          attrType="submit"
-                          loading={loadingRef.value}
-                          round
-                          type="primary"
-                        >
-                          生成
-                        </NButton>
-                      </div>
-                    </form>
-                  )
-                },
-              })
-              return <Content />
-            },
+          showGenerateDialog(refId, (res) => {
+            res && data.value?.summaries.push(res)
           })
         }}
       />,
@@ -197,157 +390,328 @@ const SummaryRefIdContent = defineComponent({
       setActions(null)
     })
 
-    return () => {
-      if (!data.value || data.value.summaries.length === 0) {
-        return <NEmpty />
-      }
+    const loading = computed(() => isValidating.value && !data.value)
 
-      return (
-        <List
-          summaries={data.value?.summaries || []}
-          getArticle={() => data.value!.article}
-          mutate={mutate}
-        />
-      )
-    }
+    return () => (
+      <div>
+        {/* Page Header */}
+        <header class={styles.pageHeader}>
+          <button
+            type="button"
+            class={styles.backButton}
+            onClick={() => router.back()}
+            aria-label="返回"
+          >
+            <ArrowLeftIcon />
+          </button>
+          <h1 class={styles.pageTitle}>
+            {data.value?.article.document.title || '摘要管理'}
+          </h1>
+        </header>
+
+        <Transition name="fade" mode="out-in">
+          {loading.value ? (
+            <LoadingSkeleton key="loading" count={2} />
+          ) : !data.value || data.value.summaries.length === 0 ? (
+            <EmptyState
+              key="empty"
+              title="暂无摘要"
+              description="为这篇文章生成 AI 摘要"
+              showAction
+              onAction={() => {
+                showGenerateDialog(refId, (res) => {
+                  res && data.value?.summaries.push(res)
+                })
+              }}
+            />
+          ) : (
+            <div key="content" class={styles.list}>
+              {data.value.summaries.map((item) => (
+                <SummaryCard key={item.id} item={item} onMutate={mutate} />
+              ))}
+            </div>
+          )}
+        </Transition>
+      </div>
+    )
   },
 })
 
-const List = defineComponent({
+const SummaryCard = defineComponent({
   props: {
-    summaries: {
-      type: Array as PropType<AISummaryModel[]>,
+    item: {
+      type: Object as PropType<AISummaryModel>,
       required: true,
     },
-
-    getArticle: {
-      type: Function as PropType<
-        (id: string) => {
-          type: CollectionRefTypes
-          document: { title: string }
-        }
-      >,
-      required: true,
-    },
-
-    mutate: {
+    onMutate: {
       type: Function as PropType<() => void>,
       required: true,
     },
   },
   setup(props) {
+    const expanded = ref(false)
+    const shouldShowExpand = computed(
+      () =>
+        props.item.summary.length > 200 || props.item.summary.includes('\n'),
+    )
+
     return () => (
-      <NList bordered showDivider>
-        {props.summaries.map((item) => (
-          <NListItem class={'ml-2'} key={item.id}>
-            {{
-              suffix() {
-                return (
-                  <NButtonGroup>
-                    <NButton
-                      onClick={() => {
-                        const $dialog = dialog.create({
-                          title: '修改摘要',
-                          content() {
-                            return (
-                              <form
-                                onSubmit={(e) => {
-                                  e.preventDefault()
+      <article class={styles.card} aria-label="AI 摘要">
+        {/* Header */}
+        <header class={styles.cardHeader}>
+          <span class={styles.langBadge}>{props.item.lang.toUpperCase()}</span>
+        </header>
 
-                                  const $form = e.target as HTMLFormElement
-                                  const summary =
-                                    $form.querySelector('textarea')?.value
-                                  if (!summary) {
-                                    return
-                                  }
-                                  RESTManager.api.ai
-                                    .summaries(item.id)
-                                    .patch({ data: { summary } })
-                                    .then(() => {
-                                      props.mutate()
-                                      $dialog.destroy()
-                                    })
-                                }}
-                              >
-                                <NFlex vertical>
-                                  <NInput
-                                    inputProps={{
-                                      name: 'summary',
-                                    }}
-                                    rows={6}
-                                    type="textarea"
-                                    defaultValue={item.summary}
-                                  />
+        {/* Summary Content */}
+        <div class={styles.summaryContent}>
+          <p
+            class={[
+              styles.summaryText,
+              !expanded.value && shouldShowExpand.value
+                ? styles.summaryTextCollapsed
+                : '',
+            ]}
+          >
+            {props.item.summary}
+          </p>
+          {shouldShowExpand.value && (
+            <button
+              type="button"
+              class={styles.expandButton}
+              onClick={() => (expanded.value = !expanded.value)}
+              aria-expanded={expanded.value}
+            >
+              {expanded.value ? (
+                <>
+                  <ChevronUpIcon class="mr-1 inline size-3" />
+                  收起
+                </>
+              ) : (
+                <>
+                  <ChevronDownIcon class="mr-1 inline size-3" />
+                  展开全部
+                </>
+              )}
+            </button>
+          )}
+        </div>
 
-                                  <div class={'text-right'}>
-                                    <NButton
-                                      type="primary"
-                                      attrType="submit"
-                                      round
-                                    >
-                                      保存
-                                    </NButton>
-                                  </div>
-                                </NFlex>
-                              </form>
-                            )
-                          },
-                        })
-                      }}
-                      round
-                    >
-                      修改
-                    </NButton>
-                    <NButton
-                      onClick={() => {
-                        const $dialog = dialog.create({
-                          title: '确定？',
-                          content: '确定要删除吗？',
-                          type: 'error',
-                          positiveText: '删除',
-                          negativeText: '取消',
-                          onPositiveClick() {
-                            RESTManager.api.ai
-                              .summaries(item.id)
-                              .delete()
-                              .then(() => {
-                                props.mutate()
-                                $dialog.destroy()
-                              })
-                          },
-                        })
-                      }}
-                      round
-                      type="error"
-                    >
-                      <NIcon>
-                        <TrashIcon class={'text-white'} />
-                      </NIcon>
-                    </NButton>
-                  </NButtonGroup>
-                )
-              },
-              default() {
-                const article = props.getArticle(item.refId)
-                return (
-                  <>
-                    <RouterLink to={`/${article.type}/edit?id=${item.refId}`}>
-                      <h2 data-article-id={item.refId}>
-                        {article.document.title}
-                      </h2>
-                    </RouterLink>
-                    <small>
-                      目标语言：{item.lang} /{' '}
-                      {format(new Date(item.created), 'yyyy-MM-dd HH:mm')}
-                    </small>
-                    <p class={'mt-2'}>{item.summary}</p>
-                  </>
-                )
-              },
-            }}
-          </NListItem>
-        ))}
-      </NList>
+        {/* Footer */}
+        <footer class={styles.cardFooter}>
+          <div class={styles.meta}>
+            <span class={styles.metaItem} aria-label="创建时间">
+              <CalendarIcon class={styles.metaIcon} />
+              <time datetime={props.item.created}>
+                {format(new Date(props.item.created), 'yyyy-MM-dd HH:mm')}
+              </time>
+            </span>
+          </div>
+
+          {/* Actions */}
+          <div class={styles.actions} role="group" aria-label="操作">
+            <NTooltip trigger="hover" placement="top">
+              {{
+                trigger: () => (
+                  <button
+                    type="button"
+                    class={styles.actionButton}
+                    onClick={() => showEditDialog(props.item, props.onMutate)}
+                    aria-label="编辑摘要"
+                  >
+                    <PencilIcon />
+                  </button>
+                ),
+                default: () => '编辑',
+              }}
+            </NTooltip>
+
+            <NPopconfirm
+              placement="left"
+              positiveText="取消"
+              negativeText="删除"
+              onNegativeClick={async () => {
+                await RESTManager.api.ai.summaries(props.item.id).delete()
+                props.onMutate()
+              }}
+            >
+              {{
+                trigger: () => (
+                  <NTooltip trigger="hover" placement="top">
+                    {{
+                      trigger: () => (
+                        <button
+                          type="button"
+                          class={[styles.actionButton, styles.deleteButton]}
+                          aria-label="删除摘要"
+                        >
+                          <TrashIcon />
+                        </button>
+                      ),
+                      default: () => '删除',
+                    }}
+                  </NTooltip>
+                ),
+                default: () => '确定要删除这条摘要吗？',
+              }}
+            </NPopconfirm>
+          </div>
+        </footer>
+      </article>
     )
   },
 })
+
+const EmptyState = defineComponent({
+  props: {
+    title: {
+      type: String,
+      default: '暂无 AI 摘要',
+    },
+    description: {
+      type: String,
+      default: '这里会显示所有文章的 AI 生成摘要',
+    },
+    showAction: {
+      type: Boolean,
+      default: false,
+    },
+    onAction: {
+      type: Function as PropType<() => void>,
+    },
+  },
+  setup(props) {
+    return () => (
+      <div class={styles.empty} role="status" aria-label="暂无内容">
+        <div class={styles.emptyIcon} aria-hidden="true">
+          <SparklesIcon />
+        </div>
+        <h3 class={styles.emptyTitle}>{props.title}</h3>
+        <p class={styles.emptyDescription}>{props.description}</p>
+        {props.showAction && props.onAction && (
+          <NButton type="primary" onClick={props.onAction}>
+            <AddIcon class="mr-1.5" />
+            生成摘要
+          </NButton>
+        )}
+      </div>
+    )
+  },
+})
+
+const LoadingSkeleton = defineComponent({
+  props: {
+    count: {
+      type: Number,
+      default: 3,
+    },
+  },
+  setup(props) {
+    return () => (
+      <div class={styles.list} aria-busy="true" aria-label="加载中">
+        {Array.from({ length: props.count }).map((_, i) => (
+          <div key={i} class={styles.skeleton}>
+            <div class={styles.skeletonHeader}>
+              <NSkeleton text style={{ width: '200px' }} />
+              <NSkeleton text style={{ width: '60px' }} />
+            </div>
+            <div class={styles.skeletonContent}>
+              <NSkeleton text repeat={2} />
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+  },
+})
+
+// Helper functions for dialogs
+function showGenerateDialog(
+  refId: string,
+  onSuccess: (res: AISummaryModel | null) => void,
+) {
+  const loadingRef = ref(false)
+  const langRef = ref('zh')
+
+  const $dialog = dialog.create({
+    title: '生成 AI 摘要',
+    content() {
+      return (
+        <NFlex vertical size="large">
+          <div>
+            <label class="mb-2 block text-sm text-neutral-600">目标语言</label>
+            <NInput
+              value={langRef.value}
+              onUpdateValue={(v) => (langRef.value = v)}
+              placeholder="zh, en, ja..."
+            />
+          </div>
+          <div class="text-right">
+            <NButton
+              type="primary"
+              loading={loadingRef.value}
+              onClick={() => {
+                if (!langRef.value) return
+                loadingRef.value = true
+                RESTManager.api.ai.summaries.generate
+                  .post<AISummaryModel | null>({
+                    data: {
+                      refId,
+                      lang: langRef.value,
+                    },
+                  })
+                  .then((res) => {
+                    onSuccess(res)
+                    $dialog.destroy()
+                  })
+                  .finally(() => {
+                    loadingRef.value = false
+                  })
+              }}
+            >
+              <SparklesIcon class="mr-1.5 size-4" />
+              生成
+            </NButton>
+          </div>
+        </NFlex>
+      )
+    },
+  })
+}
+
+function showEditDialog(item: AISummaryModel, onSuccess: () => void) {
+  const summaryRef = ref(item.summary)
+
+  const $dialog = dialog.create({
+    title: '编辑摘要',
+    content() {
+      return (
+        <NFlex vertical size="large">
+          <NInput
+            value={summaryRef.value}
+            onUpdateValue={(v) => (summaryRef.value = v)}
+            type="textarea"
+            rows={6}
+            placeholder="摘要内容"
+          />
+          <div class="text-right">
+            <NButton
+              type="primary"
+              onClick={() => {
+                if (!summaryRef.value) return
+                RESTManager.api.ai
+                  .summaries(item.id)
+                  .patch({ data: { summary: summaryRef.value } })
+                  .then(() => {
+                    onSuccess()
+                    $dialog.destroy()
+                  })
+              }}
+            >
+              保存
+            </NButton>
+          </div>
+        </NFlex>
+      )
+    },
+  })
+}

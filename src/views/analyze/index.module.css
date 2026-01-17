@@ -1,0 +1,489 @@
+/* Container */
+.container {
+  @apply mx-auto max-w-6xl px-4 py-6;
+}
+
+/* Stats Overview Section */
+.statsGrid {
+  @apply mb-8 grid grid-cols-2 gap-4 md:grid-cols-4;
+}
+
+.statCard {
+  @apply relative overflow-hidden rounded-xl border border-neutral-200 bg-white p-5 transition-shadow;
+
+  &:hover {
+    @apply shadow-md;
+  }
+
+  :global(.dark) & {
+    @apply border-neutral-800 bg-neutral-900;
+  }
+}
+
+.statLabel {
+  @apply mb-1 text-sm font-medium text-neutral-500;
+
+  :global(.dark) & {
+    @apply text-neutral-400;
+  }
+}
+
+.statValue {
+  @apply text-2xl font-semibold tabular-nums text-neutral-900;
+
+  :global(.dark) & {
+    @apply text-neutral-100;
+  }
+}
+
+.statIcon {
+  @apply absolute right-4 top-4 size-8 text-neutral-200;
+
+  :global(.dark) & {
+    @apply text-neutral-700;
+  }
+}
+
+/* Charts Section */
+.chartsGrid {
+  @apply mb-8 grid grid-cols-1 gap-6 lg:grid-cols-2;
+}
+
+.chartCard {
+  @apply rounded-xl border border-neutral-200 bg-white p-5 transition-shadow;
+
+  &:hover {
+    @apply shadow-md;
+  }
+
+  :global(.dark) & {
+    @apply border-neutral-800 bg-neutral-900;
+  }
+}
+
+.chartHeader {
+  @apply mb-4 flex items-center justify-between;
+}
+
+.chartTitle {
+  @apply m-0 text-base font-semibold text-neutral-900;
+
+  :global(.dark) & {
+    @apply text-neutral-100;
+  }
+}
+
+.chartSubtitle {
+  @apply text-sm text-neutral-500;
+
+  :global(.dark) & {
+    @apply text-neutral-400;
+  }
+}
+
+.chartContainer {
+  @apply min-h-[250px];
+}
+
+/* Tabs Container */
+.tabsContainer {
+  @apply mt-6;
+}
+
+/* IP List Section */
+.ipSection {
+  @apply py-4;
+}
+
+.ipSectionHeader {
+  @apply mb-4 flex items-center justify-between;
+}
+
+.ipSectionTitle {
+  @apply m-0 text-base font-semibold text-neutral-900;
+
+  :global(.dark) & {
+    @apply text-neutral-100;
+  }
+}
+
+.ipCount {
+  @apply rounded-full bg-neutral-100 px-3 py-1 text-sm font-medium tabular-nums text-neutral-600;
+
+  :global(.dark) & {
+    @apply bg-neutral-800 text-neutral-300;
+  }
+}
+
+.ipGrid {
+  @apply grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5;
+}
+
+.ipCard {
+  @apply flex items-center gap-2 rounded-lg border border-neutral-200 bg-white px-3 py-2.5 text-sm transition-all;
+
+  &:hover {
+    @apply border-primary/30 bg-primary/5 shadow-sm;
+  }
+
+  :global(.dark) & {
+    @apply border-neutral-700 bg-neutral-800;
+
+    &:hover {
+      @apply border-primary/30 bg-primary/10;
+    }
+  }
+}
+
+.ipIcon {
+  @apply size-4 shrink-0 text-neutral-400;
+
+  :global(.dark) & {
+    @apply text-neutral-500;
+  }
+}
+
+.ipAddress {
+  @apply truncate font-mono text-neutral-700;
+
+  :global(.dark) & {
+    @apply text-neutral-200;
+  }
+}
+
+.viewMoreButton {
+  @apply mt-6 flex justify-center;
+}
+
+/* Data Table Card */
+.tableCard {
+  @apply rounded-xl border border-neutral-200 bg-white p-5;
+
+  :global(.dark) & {
+    @apply border-neutral-800 bg-neutral-900;
+  }
+}
+
+.tableHeader {
+  @apply mb-4 flex items-center justify-between;
+}
+
+.tableTitle {
+  @apply m-0 text-base font-semibold text-neutral-900;
+
+  :global(.dark) & {
+    @apply text-neutral-100;
+  }
+}
+
+/* Activity Item */
+.activityList {
+  @apply flex flex-col gap-4;
+}
+
+.activityItem {
+  @apply rounded-xl border border-neutral-200 bg-white p-4 transition-shadow;
+
+  &:hover {
+    @apply shadow-md;
+  }
+
+  :global(.dark) & {
+    @apply border-neutral-800 bg-neutral-900;
+  }
+}
+
+.activityHeader {
+  @apply mb-3 flex items-center justify-between;
+}
+
+.activityType {
+  @apply flex items-center gap-2;
+}
+
+.activityBadge {
+  @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium;
+}
+
+.activityBadgeLike {
+  @apply bg-rose-50 text-rose-600;
+
+  :global(.dark) & {
+    @apply bg-rose-950 text-rose-400;
+  }
+}
+
+.activityBadgeRead {
+  @apply bg-blue-50 text-blue-600;
+
+  :global(.dark) & {
+    @apply bg-blue-950 text-blue-400;
+  }
+}
+
+.activityTime {
+  @apply text-sm text-neutral-500;
+
+  :global(.dark) & {
+    @apply text-neutral-400;
+  }
+}
+
+.activityContent {
+  @apply mb-3;
+}
+
+.activityRef {
+  @apply inline-flex items-center gap-2 rounded-lg bg-neutral-50 px-3 py-2 text-sm no-underline transition-colors;
+
+  &:hover {
+    @apply bg-neutral-100;
+  }
+
+  :global(.dark) & {
+    @apply bg-neutral-800;
+
+    &:hover {
+      @apply bg-neutral-700;
+    }
+  }
+}
+
+.activityRefIcon {
+  @apply size-4 text-neutral-400;
+}
+
+.activityRefTitle {
+  @apply text-neutral-700;
+
+  :global(.dark) & {
+    @apply text-neutral-200;
+  }
+}
+
+.activityMeta {
+  @apply flex flex-wrap items-center gap-4 text-sm text-neutral-500;
+
+  :global(.dark) & {
+    @apply text-neutral-400;
+  }
+}
+
+.activityMetaItem {
+  @apply flex items-center gap-1.5;
+}
+
+.activityMetaIcon {
+  @apply size-4;
+}
+
+/* Reading Duration */
+.durationBar {
+  @apply mt-2 h-1.5 w-full overflow-hidden rounded-full bg-neutral-100;
+
+  :global(.dark) & {
+    @apply bg-neutral-800;
+  }
+}
+
+.durationBarFill {
+  @apply h-full rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 transition-[width];
+  transition-duration: 300ms;
+}
+
+/* Ranking List */
+.rankingList {
+  @apply flex flex-col gap-3;
+}
+
+.rankingItem {
+  @apply flex items-center gap-4 rounded-xl border border-neutral-200 bg-white p-4 transition-shadow;
+
+  &:hover {
+    @apply shadow-md;
+  }
+
+  :global(.dark) & {
+    @apply border-neutral-800 bg-neutral-900;
+  }
+}
+
+.rankingPosition {
+  @apply flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold;
+}
+
+.rankingPositionTop {
+  @apply bg-amber-100 text-amber-700;
+
+  :global(.dark) & {
+    @apply bg-amber-900/50 text-amber-400;
+  }
+}
+
+.rankingPositionNormal {
+  @apply bg-neutral-100 text-neutral-600;
+
+  :global(.dark) & {
+    @apply bg-neutral-800 text-neutral-400;
+  }
+}
+
+.rankingContent {
+  @apply min-w-0 flex-1;
+}
+
+.rankingTitle {
+  @apply mb-1 truncate text-sm font-medium text-neutral-900;
+
+  :global(.dark) & {
+    @apply text-neutral-100;
+  }
+}
+
+.rankingBar {
+  @apply h-1.5 overflow-hidden rounded-full bg-neutral-100;
+
+  :global(.dark) & {
+    @apply bg-neutral-800;
+  }
+}
+
+.rankingBarFill {
+  @apply h-full rounded-full bg-gradient-to-r from-primary to-primary-shallow transition-[width];
+  transition-duration: 300ms;
+}
+
+.rankingCount {
+  @apply shrink-0 text-sm font-semibold tabular-nums text-neutral-700;
+
+  :global(.dark) & {
+    @apply text-neutral-200;
+  }
+}
+
+/* Path Top List */
+.pathList {
+  @apply flex flex-col gap-2;
+}
+
+.pathItem {
+  @apply flex items-center gap-3 rounded-lg px-3 py-2 transition-colors;
+
+  &:hover {
+    @apply bg-neutral-50;
+  }
+
+  :global(.dark) &:hover {
+    @apply bg-neutral-800;
+  }
+}
+
+.pathRank {
+  @apply w-6 shrink-0 text-center text-sm font-medium text-neutral-400;
+
+  :global(.dark) & {
+    @apply text-neutral-500;
+  }
+}
+
+.pathName {
+  @apply min-w-0 flex-1 truncate font-mono text-sm text-neutral-700;
+
+  :global(.dark) & {
+    @apply text-neutral-200;
+  }
+}
+
+.pathCount {
+  @apply shrink-0 text-sm tabular-nums text-neutral-500;
+
+  :global(.dark) & {
+    @apply text-neutral-400;
+  }
+}
+
+.pathBar {
+  @apply h-1 w-20 shrink-0 overflow-hidden rounded-full bg-neutral-100;
+
+  :global(.dark) & {
+    @apply bg-neutral-800;
+  }
+}
+
+.pathBarFill {
+  @apply h-full rounded-full bg-primary/60;
+}
+
+/* Empty State */
+.empty {
+  @apply flex flex-col items-center justify-center py-16 text-center;
+}
+
+.emptyIcon {
+  @apply mb-4 flex size-16 items-center justify-center rounded-full bg-neutral-100 text-neutral-400;
+
+  :global(.dark) & {
+    @apply bg-neutral-800 text-neutral-500;
+  }
+
+  svg {
+    @apply size-8;
+  }
+}
+
+.emptyTitle {
+  @apply m-0 mb-2 text-lg font-medium text-neutral-900;
+
+  :global(.dark) & {
+    @apply text-neutral-100;
+  }
+}
+
+.emptyDescription {
+  @apply m-0 text-sm text-neutral-500;
+
+  :global(.dark) & {
+    @apply text-neutral-400;
+  }
+}
+
+/* Skeleton */
+.skeleton {
+  @apply rounded-xl border border-neutral-200 bg-white p-5;
+
+  :global(.dark) & {
+    @apply border-neutral-800 bg-neutral-900;
+  }
+}
+
+.skeletonHeader {
+  @apply mb-3 flex items-center justify-between;
+}
+
+.skeletonContent {
+  @apply mt-3;
+}
+
+/* Filter Section */
+.filterSection {
+  @apply mb-6 flex flex-wrap items-center gap-4;
+}
+
+.filterLabel {
+  @apply text-sm font-medium text-neutral-700;
+
+  :global(.dark) & {
+    @apply text-neutral-200;
+  }
+}
+
+/* Transitions */
+:global(.fade-enter-active),
+:global(.fade-leave-active) {
+  transition: opacity 200ms ease;
+}
+
+:global(.fade-enter-from),
+:global(.fade-leave-to) {
+  opacity: 0;
+}

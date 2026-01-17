@@ -188,7 +188,7 @@ export const CategoryView = defineComponent((_props) => {
           return (
             <NBadge value={tag.count} key={tag.name}>
               <NTag
-                class="border border-gray-200"
+                class="border border-neutral-200"
                 round
                 type="primary"
                 checkable

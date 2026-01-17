@@ -145,7 +145,7 @@ export const UpdateDetailModal = defineComponent({
                   </h3>
                   <div class="flex items-center gap-2">
                     <NTag type="info">{releaseDetails.value.tag_name}</NTag>
-                    <span class="text-sm text-gray-500">
+                    <span class="text-sm text-neutral-500">
                       发布于 {formatDate(releaseDetails.value.published_at)}
                     </span>
                   </div>
@@ -159,14 +159,16 @@ export const UpdateDetailModal = defineComponent({
                 <div class="mt-4">
                   <h4 class="mb-2 font-medium">更新内容：</h4>
                   <div
-                    class="prose prose-sm markdown-content max-w-none rounded-lg bg-gray-50 p-4 leading-relaxed dark:bg-gray-800"
+                    class="prose prose-sm markdown-content max-w-none rounded-lg bg-neutral-50 p-4 leading-relaxed dark:bg-neutral-800"
                     innerHTML={formatMarkdown(releaseDetails.value.body)}
                   />
                 </div>
               )}
             </div>
           ) : !loading.value ? (
-            <div class="py-8 text-center text-gray-500">无法获取更新详情</div>
+            <div class="py-8 text-center text-neutral-500">
+              无法获取更新详情
+            </div>
           ) : null}
         </NSpin>
       </NModal>

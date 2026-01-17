@@ -81,7 +81,7 @@ export const LogListView = defineComponent({
                           return (
                             <div class="flex flex-col">
                               <span>{item.filename}</span>
-                              <span class="grid grid-cols-[5rem,auto] text-sm text-gray-400 dark:text-gray-600">
+                              <span class="grid grid-cols-[5rem,auto] text-sm text-neutral-400 dark:text-neutral-600">
                                 <span>{item.size}</span>
 
                                 <span>类型：{item.type}</span>

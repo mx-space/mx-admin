@@ -475,7 +475,7 @@ const ManageComment = defineComponent(() => {
                   embedded
                   bordered
                   class={
-                    'h-[100px] cursor-default overflow-auto !p-2 !px-4 !text-gray-500'
+                    'h-[100px] cursor-default overflow-auto !p-2 !px-4 !text-neutral-500'
                   }
                   contentStyle={{ padding: '0' }}
                 >

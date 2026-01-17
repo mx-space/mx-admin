@@ -20,7 +20,11 @@ import type { VNode } from 'vue'
 import { PortalInjectKey } from '~/hooks/use-portal-element'
 
 import { useUIStore } from './stores/ui'
-import { darkThemeColors, lightThemeColors } from './utils/color'
+import {
+  commonThemeVars,
+  darkThemeColors,
+  lightThemeColors,
+} from './utils/color'
 
 const Root = defineComponent({
   name: 'RootView',
@@ -74,7 +78,11 @@ const App = defineComponent({
           locale={zhCN}
           dateLocale={dateZhCN}
           themeOverrides={{
-            common: isCurrentDark ? darkThemeColors : lightThemeColors,
+            common: Object.assign(
+              {},
+              commonThemeVars,
+              isCurrentDark ? darkThemeColors : lightThemeColors,
+            ),
           }}
           theme={isCurrentDark ? darkTheme : lightTheme}
         >

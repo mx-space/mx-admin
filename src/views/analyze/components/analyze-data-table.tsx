@@ -1,8 +1,14 @@
+import { format } from 'date-fns'
 import {
+  Chrome as BrowserIcon,
+  Clock as ClockIcon,
+  Globe as GlobeIcon,
+  Monitor as MonitorIcon,
   RefreshCw as RefreshOutlineIcon,
+  Route as RouteIcon,
   Trash as TrashIcon,
 } from 'lucide-vue-next'
-import { NButton, NEllipsis } from 'naive-ui'
+import { NButton, NEllipsis, NTooltip } from 'naive-ui'
 import { defineComponent, onBeforeMount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import type { UA } from '~/models/analyze'
@@ -16,12 +22,15 @@ import { Table } from '~/components/table'
 import { useDataTableFetch } from '~/hooks/use-table'
 import { useLayout } from '~/layouts/content'
 import { router } from '~/router'
-import { parseDate, RESTManager } from '~/utils'
+import { RESTManager } from '~/utils'
+
+import styles from '../index.module.css'
 
 export const AnalyzeDataTable = defineComponent({
   setup() {
     const route = useRoute()
     const { setActions } = useLayout()
+
     onMounted(() => {
       setActions(
         <>
@@ -67,6 +76,7 @@ export const AnalyzeDataTable = defineComponent({
         setActions(null)
       })
     })
+
     watch(
       () => route.query.page,
       async (n) => {
@@ -100,103 +110,149 @@ export const AnalyzeDataTable = defineComponent({
       fetchData()
     })
 
-    return () => (
-      <Table
-        data={data}
-        onFetchData={fetchData}
-        pager={pager}
-        columns={
-          [
-            {
-              title: '时间',
-              key: 'timestamp',
-              width: 150,
-              render({ timestamp }) {
-                return parseDate(timestamp, 'M-d HH:mm:ss')
-              },
-            },
-            {
-              title: 'IP',
-              key: 'ip',
-              width: 100,
-              render({ ip }) {
-                if (!ip) {
-                  return null
-                }
-                return (
-                  <IpInfoPopover
-                    ip={ip}
-                    triggerEl={
-                      <NButton quaternary size="tiny" type="primary">
-                        {ip}
-                      </NButton>
-                    }
-                  />
-                )
-              },
-            },
-
-            {
-              title: '请求路径',
-              key: 'path',
-              render({ path }) {
-                return (
-                  <NEllipsis class="max-w-[150px] truncate">
+    const columns: TableColumns<UA.Root> = [
+      {
+        title: '时间',
+        key: 'timestamp',
+        width: 160,
+        render({ timestamp }) {
+          return (
+            <div class="flex items-center gap-2 text-neutral-600 dark:text-neutral-300">
+              <ClockIcon class="size-4 shrink-0 text-neutral-400" />
+              <span class="tabular-nums">
+                {format(new Date(timestamp), 'MM-dd HH:mm:ss')}
+              </span>
+            </div>
+          )
+        },
+      },
+      {
+        title: 'IP 地址',
+        key: 'ip',
+        width: 140,
+        render({ ip }) {
+          if (!ip) {
+            return <span class="text-neutral-400">未知</span>
+          }
+          return (
+            <IpInfoPopover
+              ip={ip}
+              triggerEl={
+                <NButton quaternary size="tiny" type="primary">
+                  <div class="flex items-center gap-1.5">
+                    <GlobeIcon class="size-3.5" />
+                    <span class="font-mono">{ip}</span>
+                  </div>
+                </NButton>
+              }
+            />
+          )
+        },
+      },
+      {
+        title: '请求路径',
+        key: 'path',
+        render({ path }) {
+          return (
+            <NTooltip trigger="hover" placement="top">
+              {{
+                trigger: () => (
+                  <div class="flex items-center gap-2">
+                    <RouteIcon class="size-4 shrink-0 text-neutral-400" />
+                    <NEllipsis class="max-w-[200px]">
+                      <span class="font-mono text-neutral-700 dark:text-neutral-200">
+                        {path ?? ''}
+                      </span>
+                    </NEllipsis>
+                  </div>
+                ),
+                default: () => (
+                  <div class="max-w-[400px] break-all font-mono text-xs">
                     {path ?? ''}
-                  </NEllipsis>
-                )
-              },
-            },
+                  </div>
+                ),
+              }}
+            </NTooltip>
+          )
+        },
+      },
+      {
+        key: 'ua',
+        title: '浏览器',
+        width: 180,
+        render({ ua }) {
+          const browserInfo = ua.browser
+            ? Object.values(ua.browser).filter(Boolean).join(' ')
+            : null
+          return (
+            <div class="flex items-center gap-2">
+              <BrowserIcon class="size-4 shrink-0 text-neutral-400" />
+              <NEllipsis class="max-w-[140px]">
+                <span class="text-neutral-700 dark:text-neutral-200">
+                  {browserInfo || 'N/A'}
+                </span>
+              </NEllipsis>
+            </div>
+          )
+        },
+      },
+      {
+        key: 'ua',
+        title: '操作系统',
+        width: 150,
+        render({ ua }) {
+          const osInfo = ua.os
+            ? Object.values(ua.os).filter(Boolean).join(' ')
+            : null
+          return (
+            <div class="flex items-center gap-2">
+              <MonitorIcon class="size-4 shrink-0 text-neutral-400" />
+              <NEllipsis class="max-w-[110px]">
+                <span class="text-neutral-700 dark:text-neutral-200">
+                  {osInfo || 'N/A'}
+                </span>
+              </NEllipsis>
+            </div>
+          )
+        },
+      },
+      {
+        key: 'ua',
+        title: 'User Agent',
+        render({ ua }) {
+          return (
+            <NEllipsis lineClamp={2}>
+              {{
+                default() {
+                  return (
+                    <span class="text-xs text-neutral-500 dark:text-neutral-400">
+                      {ua.ua ?? ''}
+                    </span>
+                  )
+                },
+                tooltip() {
+                  return (
+                    <div class="max-w-[500px] break-all text-xs">
+                      {ua.ua ?? ''}
+                    </div>
+                  )
+                },
+              }}
+            </NEllipsis>
+          )
+        },
+      },
+    ]
 
-            {
-              key: 'ua',
-              title: '浏览器',
-              render({ ua }) {
-                return (
-                  <NEllipsis class="max-w-[200px] truncate">
-                    {ua.browser
-                      ? Object.values(ua.browser).filter(Boolean).join(' ')
-                      : 'N/A'}
-                  </NEllipsis>
-                )
-              },
-            },
-
-            {
-              key: 'ua',
-              title: 'OS',
-              render({ ua }) {
-                return (
-                  <NEllipsis class="max-w-[150px] truncate">
-                    {ua.os
-                      ? Object.values(ua.os).filter(Boolean).join(' ')
-                      : 'N/A'}
-                  </NEllipsis>
-                )
-              },
-            },
-
-            {
-              key: 'ua',
-              title: 'User Agent',
-              render({ ua }) {
-                return (
-                  <NEllipsis lineClamp={2}>
-                    {{
-                      default() {
-                        return ua.ua ?? ''
-                      },
-                      tooltip() {
-                        return <div class="max-w-[500px]">{ua.ua ?? ''}</div>
-                      },
-                    }}
-                  </NEllipsis>
-                )
-              },
-            },
-          ] as TableColumns<UA.Root>
-        }
-      />
+    return () => (
+      <div class={styles.tableCard}>
+        <Table
+          data={data}
+          onFetchData={fetchData}
+          pager={pager}
+          columns={columns}
+        />
+      </div>
     )
   },
 })

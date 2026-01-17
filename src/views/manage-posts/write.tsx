@@ -247,7 +247,7 @@ const PostWriteView = defineComponent(() => {
         }}
       />
 
-      <div class={'flex items-center py-3 text-gray-500'}>
+      <div class={'flex items-center py-3 text-neutral-500'}>
         <label class="prefix">{`${WEB_URL}/posts/${category.value.slug}/`}</label>
 
         <UnderlineInput

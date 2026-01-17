@@ -1,5 +1,13 @@
 import { add } from 'date-fns'
-import { NButton, NDataTable, NDatePicker, NSpace } from 'naive-ui'
+import {
+  BookOpen as BookOpenIcon,
+  Calendar as CalendarIcon,
+  Crown as CrownIcon,
+  ExternalLink as ExternalLinkIcon,
+  Eye as EyeIcon,
+  TrendingUp as TrendingUpIcon,
+} from 'lucide-vue-next'
+import { NButton, NDatePicker, NSkeleton, NSpace } from 'naive-ui'
 import useSWRV from 'swrv'
 import { defineComponent, ref } from 'vue'
 import type {
@@ -11,128 +19,225 @@ import type {
 
 import { RESTManager } from '~/utils'
 
+import styles from '../index.module.css'
+
+interface RankingItem {
+  ref: Partial<PostModel | NoteModel | PageModel | RecentlyModel>
+  refId: string
+  count: number
+}
+
 export const ReadingRank = defineComponent({
   setup() {
     const dateRange = ref([+add(new Date(), { days: -7 }), Date.now()] as [
       number,
       number,
     ])
-    const { data, mutate } = useSWRV('/reading/rank', async () => {
-      return RESTManager.api.activity.reading.rank
-        .get<{
-          data: {
-            ref: Partial<PostModel | NoteModel | PageModel | RecentlyModel>
-            refId: string
-            count: number
-          }[]
-        }>({
-          params: {
-            start: dateRange.value[0],
-            end: dateRange.value[1],
-          },
-        })
-        .then(({ data }) => {
-          return data
-        })
-    })
+
+    const { data, mutate, isValidating } = useSWRV(
+      '/reading/rank',
+      async () => {
+        return RESTManager.api.activity.reading.rank
+          .get<{
+            data: RankingItem[]
+          }>({
+            params: {
+              start: dateRange.value[0],
+              end: dateRange.value[1],
+            },
+          })
+          .then(({ data }) => data)
+      },
+    )
 
     watch(dateRange, () => {
       mutate()
     })
 
-    return () => {
-      return (
-        <>
-          <div class={'mb-6 flex items-center gap-4'}>
-            <span>时间范围</span>
-            <NDatePicker
-              class={'w-[400px]'}
-              type="datetimerange"
-              clearable
-              value={dateRange.value}
-              onUpdateValue={(range) => {
-                dateRange.value = range as [number, number]
-              }}
-            >
-              {{
-                footer: () => {
-                  const date = new Date()
-                  return (
-                    <NSpace>
-                      <NButton
-                        round
-                        type="default"
-                        size="small"
-                        onClick={() => {
-                          const now = new Date()
-                          dateRange.value = [
-                            +add(now, {
-                              days: -1,
-                            }),
-                            +now,
-                          ]
-                        }}
-                      >
-                        一天之内
-                      </NButton>
-                      <NButton
-                        round
-                        type="default"
-                        size="small"
-                        onClick={() => {
-                          dateRange.value = [
-                            +add(date, {
-                              days: -7,
-                            }),
-                            +date,
-                          ]
-                        }}
-                      >
-                        一周之内
-                      </NButton>
-                    </NSpace>
-                  )
-                },
-              }}
-            </NDatePicker>
+    const loading = computed(() => isValidating.value && !data.value)
+    const maxCount = computed(() =>
+      Math.max(...(data.value?.map((item) => item.count) || [1]), 1),
+    )
+
+    return () => (
+      <div class={styles.tableCard}>
+        {/* Filter Section */}
+        <div class={styles.filterSection}>
+          <span class={styles.filterLabel}>
+            <CalendarIcon class="mr-1.5 inline size-4" />
+            时间范围
+          </span>
+          <NDatePicker
+            class="w-[380px]"
+            type="datetimerange"
+            clearable
+            value={dateRange.value}
+            onUpdateValue={(range) => {
+              dateRange.value = range as [number, number]
+            }}
+          >
+            {{
+              footer: () => (
+                <NSpace class="py-2">
+                  <NButton
+                    round
+                    type="default"
+                    size="small"
+                    onClick={() => {
+                      const now = new Date()
+                      dateRange.value = [+add(now, { days: -1 }), +now]
+                    }}
+                  >
+                    最近 24 小时
+                  </NButton>
+                  <NButton
+                    round
+                    type="default"
+                    size="small"
+                    onClick={() => {
+                      const now = new Date()
+                      dateRange.value = [+add(now, { days: -7 }), +now]
+                    }}
+                  >
+                    最近 7 天
+                  </NButton>
+                  <NButton
+                    round
+                    type="default"
+                    size="small"
+                    onClick={() => {
+                      const now = new Date()
+                      dateRange.value = [+add(now, { days: -30 }), +now]
+                    }}
+                  >
+                    最近 30 天
+                  </NButton>
+                </NSpace>
+              ),
+            }}
+          </NDatePicker>
+        </div>
+
+        {/* Ranking List */}
+        {loading.value ? (
+          <div class={styles.rankingList}>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} class={styles.skeleton}>
+                <div class="flex items-center gap-4">
+                  <NSkeleton circle style={{ width: '32px', height: '32px' }} />
+                  <div class="flex-1">
+                    <NSkeleton
+                      text
+                      style={{ width: '200px', marginBottom: '8px' }}
+                    />
+                    <NSkeleton text style={{ width: '100%', height: '6px' }} />
+                  </div>
+                  <NSkeleton text style={{ width: '40px' }} />
+                </div>
+              </div>
+            ))}
           </div>
-          <NDataTable
-            remote
-            class={'min-h-[500px]'}
-            data={data.value}
-            columns={[
-              {
-                key: 'ref',
-                title: '文章标题',
-                render: (row: { ref: { id: string; title: string } }) => {
-                  return (
-                    <NButton
-                      quaternary
-                      type="primary"
-                      size="tiny"
-                      onClick={() => {
-                        RESTManager.api
-                          .helper('url-builder')(row.ref.id)
-                          .get<{ data: string }>()
-                          .then(({ data: url }) => {
-                            window.open(url)
-                          })
-                      }}
-                    >
-                      {row.ref.title}
-                    </NButton>
-                  )
-                },
-              },
-              {
-                key: 'count',
-                title: '阅读次数',
-                width: 100,
-              },
-            ]}
-          />
-        </>
-      )
+        ) : !data.value?.length ? (
+          <div class={styles.empty}>
+            <div class={styles.emptyIcon}>
+              <TrendingUpIcon />
+            </div>
+            <h3 class={styles.emptyTitle}>暂无阅读数据</h3>
+            <p class={styles.emptyDescription}>选定时间范围内没有阅读记录</p>
+          </div>
+        ) : (
+          <div class={styles.rankingList} role="list" aria-label="阅读排名">
+            {data.value.map((item, index) => (
+              <RankingListItem
+                key={item.refId}
+                item={item}
+                position={index + 1}
+                maxCount={maxCount.value}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    )
+  },
+})
+
+const RankingListItem = defineComponent({
+  props: {
+    item: {
+      type: Object as () => RankingItem,
+      required: true,
+    },
+    position: {
+      type: Number,
+      required: true,
+    },
+    maxCount: {
+      type: Number,
+      required: true,
+    },
+  },
+  setup(props) {
+    const isTop3 = computed(() => props.position <= 3)
+    const percentage = computed(() => (props.item.count / props.maxCount) * 100)
+
+    const handleOpenArticle = () => {
+      RESTManager.api
+        .helper('url-builder')(props.item.ref.id)
+        .get<{ data: string }>()
+        .then(({ data: url }) => {
+          window.open(url)
+        })
     }
+
+    return () => (
+      <div class={styles.rankingItem} role="listitem">
+        {/* Position Badge */}
+        <div
+          class={[
+            styles.rankingPosition,
+            isTop3.value
+              ? styles.rankingPositionTop
+              : styles.rankingPositionNormal,
+          ]}
+        >
+          {isTop3.value && props.position === 1 ? (
+            <CrownIcon class="size-4" />
+          ) : (
+            props.position
+          )}
+        </div>
+
+        {/* Content */}
+        <div class={styles.rankingContent}>
+          <button
+            type="button"
+            class={styles.rankingTitle}
+            onClick={handleOpenArticle}
+            aria-label={`查看文章: ${(props.item.ref as any).title}`}
+          >
+            <span class="mr-1.5 inline-flex items-center gap-1">
+              <BookOpenIcon class="size-3.5 text-neutral-400" />
+            </span>
+            {(props.item.ref as any).title}
+            <ExternalLinkIcon class="ml-1 inline size-3 text-neutral-400 opacity-0 transition-opacity group-hover:opacity-100" />
+          </button>
+
+          {/* Progress Bar */}
+          <div class={styles.rankingBar}>
+            <div
+              class={styles.rankingBarFill}
+              style={{ width: `${percentage.value}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Count */}
+        <div class={styles.rankingCount}>
+          <EyeIcon class="mr-1 inline size-4 text-neutral-400" />
+          {props.item.count.toLocaleString()}
+        </div>
+      </div>
+    )
   },
 })

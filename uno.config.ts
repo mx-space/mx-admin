@@ -39,6 +39,7 @@ export default defineConfig({
   },
   rules: [
     // 自定义规则
+    ['rounded-naive', { 'border-radius': 'var(--border-radius)' }],
     [
       /^phone:(.+)$/,
       ([, c], { rawSelector }) => {

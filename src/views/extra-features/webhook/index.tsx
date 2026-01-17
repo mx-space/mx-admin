@@ -106,7 +106,9 @@ export default defineComponent({
                               <div
                                 class={[
                                   'h-2 w-2 rounded-full',
-                                  item.enabled ? 'bg-green-500' : 'bg-gray-500',
+                                  item.enabled
+                                    ? 'bg-green-500'
+                                    : 'bg-neutral-500',
                                 ]}
                               />
                             )

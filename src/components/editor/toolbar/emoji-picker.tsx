@@ -227,12 +227,12 @@ export const EmojiPicker = defineComponent({
     }
 
     return () => (
-      <div class="emoji-picker max-h-96 w-80 rounded-lg bg-white shadow-lg dark:bg-gray-800">
+      <div class="emoji-picker max-h-96 w-80 rounded-lg bg-white shadow-lg dark:bg-neutral-800">
         <NScrollbar style={{ maxHeight: '24rem' }}>
           <div class="p-3">
             {Object.entries(EMOJI_GROUPS).map(([groupName, emojis]) => (
               <div key={groupName} class="mb-4">
-                <div class="mb-2 text-xs font-medium text-gray-500 dark:text-gray-400">
+                <div class="mb-2 text-xs font-medium text-neutral-500 dark:text-neutral-400">
                   {groupName}
                 </div>
                 <div class="grid grid-cols-8 gap-1">
@@ -240,7 +240,7 @@ export const EmojiPicker = defineComponent({
                     <button
                       key={emoji}
                       onClick={() => handleEmojiClick(emoji)}
-                      class="emoji-button flex h-8 w-8 cursor-pointer items-center justify-center rounded text-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
+                      class="emoji-button flex h-8 w-8 cursor-pointer items-center justify-center rounded text-lg transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-700"
                     >
                       {emoji}
                     </button>

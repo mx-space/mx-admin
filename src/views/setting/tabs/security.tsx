@@ -1,23 +1,28 @@
-import { Plus } from 'lucide-vue-next'
+import {
+  Check as CheckIcon,
+  Copy as CopyIcon,
+  Eye as EyeIcon,
+  EyeOff as EyeOffIcon,
+  Globe as GlobeIcon,
+  Key as KeyIcon,
+  Lock as LockIcon,
+  Monitor as MonitorIcon,
+  Plus as PlusIcon,
+  Shield as ShieldIcon,
+  Smartphone as SmartphoneIcon,
+  Trash2 as TrashIcon,
+} from 'lucide-vue-next'
 import {
   NButton,
-  NButtonGroup,
   NCard,
-  NCollapse,
-  NCollapseItem,
   NDataTable,
   NDatePicker,
   NForm,
   NFormItem,
-  NH3,
   NInput,
-  NLayoutContent,
-  NList,
-  NListItem,
   NModal,
-  NP,
   NPopconfirm,
-  NSpace,
+  NSkeleton,
   NSwitch,
   NText,
 } from 'naive-ui'
@@ -25,9 +30,6 @@ import { defineComponent, onBeforeMount, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import type { TokenModel } from '~/models/token'
 
-import { Icon } from '@vicons/utils'
-
-import { If } from '~/components/directives/if'
 import { IpInfoPopover } from '~/components/ip-info'
 import { RelativeTime } from '~/components/time/relative-time'
 import { useStoreRef } from '~/hooks/use-store-ref'
@@ -36,6 +38,7 @@ import { UIStore } from '~/stores/ui'
 import { parseDate, removeToken, RESTManager } from '~/utils'
 import { authClient } from '~/utils/authjs/auth'
 
+import styles from '../index.module.css'
 import { autosizeableProps } from './system'
 
 type Session = {
@@ -45,19 +48,25 @@ type Session = {
   date: string
   current?: boolean
 }
+
 export const TabSecurity = defineComponent(() => {
   const sessions = ref<Session[]>([])
+  const loading = ref(true)
+
   const fetchSession = async () => {
+    loading.value = true
     const res = await RESTManager.api.user.session.get<{ data: Session[] }>({})
     sessions.value = res.data || []
+    loading.value = false
   }
+
   onMounted(() => {
     fetchSession()
   })
+
   const handleKick = async (current: boolean, id?: string) => {
     if (current) {
       await RESTManager.api.user.logout.post<{}>({})
-
       removeToken()
       await authClient.signOut()
       window.location.reload()
@@ -66,121 +75,173 @@ export const TabSecurity = defineComponent(() => {
       sessions.value = sessions.value.filter((item) => item.id !== id)
     }
   }
+
   const handleKickAll = async () => {
     await RESTManager.api.user.session.all.delete<{}>({})
-
     await fetchSession()
   }
-  return () => (
-    <Fragment>
-      <NH3 class={'flex items-center justify-between'}>
-        <span class={'ml-4'}>登录设备</span>
 
-        <NPopconfirm onPositiveClick={handleKickAll}>
-          {{
-            trigger() {
-              return (
+  return () => (
+    <div class={styles.tabContent}>
+      {/* Sessions Section */}
+      <div class={styles.settingsGroup}>
+        <div class={styles.sectionHeader}>
+          <div>
+            <h2 class={styles.sectionTitle}>
+              <MonitorIcon
+                class="mr-2 inline-block size-5"
+                aria-hidden="true"
+              />
+              登录设备
+            </h2>
+            <p class={styles.sectionSubtitle}>管理你的登录会话，保护账户安全</p>
+          </div>
+          <NPopconfirm onPositiveClick={handleKickAll}>
+            {{
+              trigger: () => (
                 <NButton
                   size="small"
-                  quaternary
                   type="error"
+                  ghost
+                  round
                   disabled={
-                    sessions.value.length == 1 && sessions.value[0].current
+                    sessions.value.length === 1 && sessions.value[0]?.current
                   }
                 >
+                  <TrashIcon class="mr-1 size-4" />
                   踢掉全部
                 </NButton>
-              )
-            },
-            default() {
-              return '确定踢掉全部登录设备（除当前会话）？'
-            },
-          }}
-        </NPopconfirm>
-      </NH3>
+              ),
+              default: () => '确定踢掉全部登录设备（除当前会话）？',
+            }}
+          </NPopconfirm>
+        </div>
 
-      <NList bordered>
-        {sessions.value.map(({ id, ua, ip, date, current }) => (
-          <NListItem key={id}>
-            {{
-              prefix() {
-                return (
-                  <div class={'w-20 text-center'}>
-                    {current ? '当前' : null}
-                  </div>
-                )
-              },
-              suffix() {
-                return (
-                  <NButtonGroup>
-                    <NPopconfirm
-                      onPositiveClick={() => handleKick(!!current, id)}
-                    >
-                      {{
-                        trigger() {
-                          return (
-                            <NButton tertiary type="error">
-                              {current ? '注销' : '踢'}
-                            </NButton>
-                          )
-                        },
-                        default() {
-                          return current ? '登出？' : '确定要踢出吗？'
-                        },
-                      }}
-                    </NPopconfirm>
-                  </NButtonGroup>
-                )
-              },
-              default() {
-                return (
-                  <NSpace vertical>
-                    <If condition={!!ua}>
-                      <NP>User Agent: {ua}</NP>
-                    </If>
+        {loading.value ? (
+          <SessionSkeleton />
+        ) : (
+          <div class={styles.sessionList}>
+            {sessions.value.map(({ id, ua, ip, date, current }) => (
+              <div
+                key={id}
+                class={[
+                  styles.sessionItem,
+                  current && styles.sessionItemCurrent,
+                ]}
+              >
+                <div class={styles.sessionHeader}>
+                  <span
+                    class={[
+                      styles.sessionBadge,
+                      current
+                        ? styles.sessionBadgeCurrent
+                        : styles.sessionBadgeOther,
+                    ]}
+                  >
+                    {current ? (
+                      <>
+                        <CheckIcon class="size-3" />
+                        当前设备
+                      </>
+                    ) : (
+                      <>
+                        <SmartphoneIcon class="size-3" />
+                        其他设备
+                      </>
+                    )}
+                  </span>
 
-                    <If condition={!!ip}>
-                      <NP>
-                        IP:{' '}
+                  <NPopconfirm
+                    onPositiveClick={() => handleKick(!!current, id)}
+                  >
+                    {{
+                      trigger: () => (
+                        <NButton
+                          size="small"
+                          type={current ? 'warning' : 'error'}
+                          ghost
+                          round
+                        >
+                          {current ? '注销' : '踢出'}
+                        </NButton>
+                      ),
+                      default: () =>
+                        current ? '确定要注销当前会话？' : '确定要踢出此设备？',
+                    }}
+                  </NPopconfirm>
+                </div>
+
+                <div class={styles.sessionContent}>
+                  {ua && <div class={styles.sessionUA}>{ua}</div>}
+
+                  <div class="mt-3 flex flex-wrap items-center gap-4 text-sm">
+                    {ip && (
+                      <div class={styles.sessionRow}>
+                        <GlobeIcon class="size-4 text-neutral-400" />
                         <IpInfoPopover
-                          ip={ip!}
+                          ip={ip}
                           triggerEl={
                             <NButton quaternary size="tiny" type="primary">
                               {ip}
                             </NButton>
                           }
                         />
-                      </NP>
-                    </If>
+                      </div>
+                    )}
 
-                    <NP>
-                      {current ? '活跃时间' : '登录时间'}:{' '}
+                    <div class={styles.sessionRow}>
+                      <span class={styles.sessionLabel}>
+                        {current ? '活跃时间:' : '登录时间:'}
+                      </span>
                       <RelativeTime time={date} />
-                    </NP>
-                  </NSpace>
-                )
-              },
-            }}
-          </NListItem>
-        ))}
-      </NList>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
-      <div class="pt-4" />
-      <NCollapse defaultExpandedNames={['']} displayDirective="show">
-        <NCollapseItem name="reset" title="修改密码">
-          <ResetPass />
-        </NCollapseItem>
+      {/* Password Reset Section */}
+      <div class={styles.settingsGroup}>
+        <ResetPass />
+      </div>
 
-        <NCollapseItem name="token" title="API Token">
-          <ApiToken />
-        </NCollapseItem>
-      </NCollapse>
-    </Fragment>
+      {/* API Token Section */}
+      <div class={styles.settingsGroup}>
+        <ApiToken />
+      </div>
+    </div>
+  )
+})
+
+const SessionSkeleton = defineComponent(() => {
+  return () => (
+    <div class={styles.sessionList}>
+      {Array.from({ length: 3 }).map((_, i) => (
+        <div key={i} class={styles.sessionItem}>
+          <div class={styles.sessionHeader}>
+            <NSkeleton text style={{ width: '80px', height: '24px' }} />
+            <NSkeleton text style={{ width: '60px', height: '28px' }} />
+          </div>
+          <NSkeleton
+            text
+            style={{ width: '100%', height: '40px', marginTop: '12px' }}
+          />
+          <div class="mt-3 flex gap-4">
+            <NSkeleton text style={{ width: '100px' }} />
+            <NSkeleton text style={{ width: '120px' }} />
+          </div>
+        </div>
+      ))}
+    </div>
   )
 })
 
 const ApiToken = defineComponent(() => {
   const tokens = ref([] as TokenModel[])
+  const loading = ref(true)
 
   const defaultModel = () => ({
     name: '',
@@ -188,15 +249,18 @@ const ApiToken = defineComponent(() => {
     expiredTime: new Date(),
   })
   const dataModel = reactive(defaultModel())
-  const fetchToken = async () => {
-    const { data } = (await RESTManager.api.auth.token.get()) as any
 
+  const fetchToken = async () => {
+    loading.value = true
+    const { data } = (await RESTManager.api.auth.token.get()) as any
     tokens.value = data
+    loading.value = false
   }
 
   onBeforeMount(() => {
     fetchToken()
   })
+
   const newTokenDialogShow = ref(false)
   const tokenDisplayDialogShow = ref(false)
   const createdTokenInfo = ref<TokenModel | null>(null)
@@ -215,12 +279,10 @@ const ApiToken = defineComponent(() => {
         data: payload,
       })) as TokenModel
 
-      // 尝试复制到剪贴板，但不阻塞后续流程
       try {
         await navigator.clipboard.writeText(response.token)
-      } catch (clipboardError) {
-        // Safari 或其他浏览器可能不支持或需要权限
-        console.warn('复制到剪贴板失败:', clipboardError)
+      } catch {
+        console.warn('复制到剪贴板失败')
       }
 
       newTokenDialogShow.value = false
@@ -229,26 +291,24 @@ const ApiToken = defineComponent(() => {
         dataModel[key] = n[key]
       }
 
-      // 显示token详情弹窗
       createdTokenInfo.value = response
       tokenDisplayDialogShow.value = true
 
       await fetchToken()
-      // Backend bug.
       const index = tokens.value.findIndex((i) => i.name === payload.name)
       if (index !== -1) {
         tokens.value[index].token = response.token
       }
-    } catch (_error) {
-      alert('创建 Token 失败，请重试')
+    } catch {
+      message.error('创建 Token 失败，请重试')
     }
   }
 
-  const onDeleteToken = async (id) => {
+  const onDeleteToken = async (id: string) => {
     await RESTManager.api.auth.token.delete({ params: { id } })
     message.success('删除成功')
     const index = tokens.value.findIndex((i) => i.id === id)
-    if (index != -1) {
+    if (index !== -1) {
       tokens.value.splice(index, 1)
     }
   }
@@ -256,15 +316,12 @@ const ApiToken = defineComponent(() => {
   const toggleTokenVisibility = async (tokenData: TokenModel) => {
     const tokenId = tokenData.id
     if (visibleTokens.value.has(tokenId)) {
-      // 隐藏token
       visibleTokens.value.delete(tokenId)
     } else {
-      // 显示token，需要从后端获取完整信息
       try {
         const response = await RESTManager.api.auth.token.get<TokenModel>({
           params: { id: tokenId },
         })
-        // 更新tokens数组中的token信息
         const index = tokens.value.findIndex((i) => i.id === tokenId)
         if (index !== -1) {
           tokens.value[index].token = response.token
@@ -272,7 +329,7 @@ const ApiToken = defineComponent(() => {
         visibleTokens.value.add(tokenId)
       } catch (error) {
         console.error('获取Token详情失败:', error)
-        alert('获取Token详情失败，请重试')
+        message.error('获取Token详情失败，请重试')
       }
     }
   }
@@ -281,8 +338,7 @@ const ApiToken = defineComponent(() => {
     try {
       await navigator.clipboard.writeText(token)
       message.success('Token 已复制到剪贴板')
-    } catch (_error) {
-      // Safari 兼容性处理：使用传统的复制方法
+    } catch {
       const textArea = document.createElement('textarea')
       textArea.value = token
       textArea.style.position = 'fixed'
@@ -293,17 +349,148 @@ const ApiToken = defineComponent(() => {
       try {
         document.execCommand('copy')
         message.success('Token 已复制到剪贴板')
-      } catch (fallbackError) {
-        console.warn('复制失败:', fallbackError)
-        alert('复制失败，请手动复制Token')
+      } catch {
+        message.error('复制失败，请手动复制Token')
       }
       document.body.removeChild(textArea)
     }
   }
 
   const uiStore = useStoreRef(UIStore)
+
   return () => (
-    <NLayoutContent class="!overflow-visible">
+    <>
+      <div class={styles.tokenCard}>
+        <div class={styles.tokenHeader}>
+          <div>
+            <h3 class={styles.tokenTitle}>
+              <KeyIcon class="mr-2 inline-block size-5" aria-hidden="true" />
+              API Token
+            </h3>
+            <p class="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
+              用于 API 调用的访问令牌
+            </p>
+          </div>
+          <NButton
+            type="primary"
+            round
+            onClick={() => {
+              newTokenDialogShow.value = true
+            }}
+          >
+            <PlusIcon class="mr-1 size-4" />
+            新增 Token
+          </NButton>
+        </div>
+
+        {loading.value ? (
+          <NSkeleton text style={{ width: '100%', height: '200px' }} />
+        ) : (
+          <NDataTable
+            scrollX={Math.max(
+              800,
+              uiStore.contentWidth.value - uiStore.contentInsetWidth.value,
+            )}
+            remote
+            bordered={false}
+            data={tokens.value}
+            columns={[
+              { key: 'name', title: '名称' },
+              {
+                key: 'token',
+                title: 'Token',
+                render(row) {
+                  const { token, id } = row
+                  const isVisible = visibleTokens.value.has(id)
+
+                  if (isVisible && token && token !== '*'.repeat(40)) {
+                    return (
+                      <NButton
+                        text
+                        type="primary"
+                        onClick={() => copyToken(token)}
+                        class="max-w-[200px] truncate text-left font-mono"
+                      >
+                        {token}
+                      </NButton>
+                    )
+                  } else {
+                    return (
+                      <span class="font-mono text-neutral-400">
+                        {'•'.repeat(32)}
+                      </span>
+                    )
+                  }
+                },
+              },
+              {
+                title: '创建时间',
+                key: 'created',
+                render({ created }) {
+                  return <RelativeTime time={created} />
+                },
+              },
+              {
+                title: '过期时间',
+                key: 'expired',
+                render({ expired }) {
+                  return expired ? (
+                    parseDate(expired, 'yyyy 年 M 月 d 日 HH:mm:ss')
+                  ) : (
+                    <span class="text-neutral-400">永不过期</span>
+                  )
+                },
+              },
+              {
+                title: '操作',
+                key: 'id',
+                render(row) {
+                  const { id, name } = row
+                  const isVisible = visibleTokens.value.has(id)
+
+                  return (
+                    <div class="flex items-center gap-2">
+                      <NButton
+                        text
+                        type="primary"
+                        onClick={() => toggleTokenVisibility(row)}
+                      >
+                        {isVisible ? (
+                          <EyeOffIcon class="size-4" />
+                        ) : (
+                          <EyeIcon class="size-4" />
+                        )}
+                      </NButton>
+                      <NPopconfirm
+                        positiveText="取消"
+                        negativeText="删除"
+                        onNegativeClick={() => {
+                          onDeleteToken(id)
+                        }}
+                      >
+                        {{
+                          trigger: () => (
+                            <NButton text type="error">
+                              <TrashIcon class="size-4" />
+                            </NButton>
+                          ),
+                          default: () => (
+                            <span class="max-w-48">
+                              确定要删除 Token "{name}"?
+                            </span>
+                          ),
+                        }}
+                      </NPopconfirm>
+                    </div>
+                  )
+                },
+              },
+            ]}
+          />
+        )}
+      </div>
+
+      {/* Create Token Modal */}
       <NModal
         transformOrigin="center"
         show={newTokenDialogShow.value}
@@ -315,6 +502,7 @@ const ApiToken = defineComponent(() => {
               <NInput
                 value={dataModel.name}
                 onInput={(e) => void (dataModel.name = e)}
+                placeholder="为这个 Token 起个名字…"
               />
             </NFormItem>
 
@@ -328,16 +516,16 @@ const ApiToken = defineComponent(() => {
             <NFormItem label="过期时间">
               <NDatePicker
                 disabled={!dataModel.expired}
-                // @ts-expect-error
-                value={dataModel.expiredTime}
+                value={dataModel.expiredTime.getTime()}
                 type="datetime"
                 onUpdateValue={(e) =>
-                  void (dataModel.expiredTime = new Date(e))
+                  void (dataModel.expiredTime = new Date(e!))
                 }
               />
             </NFormItem>
           </NForm>
-          <NSpace>
+
+          <div class="flex justify-end gap-3">
             <NButton
               round
               onClick={() => void (newTokenDialogShow.value = false)}
@@ -352,11 +540,11 @@ const ApiToken = defineComponent(() => {
             >
               确定
             </NButton>
-          </NSpace>
+          </div>
         </NCard>
       </NModal>
 
-      {/* Token 显示弹窗 */}
+      {/* Token Display Modal */}
       <NModal
         transformOrigin="center"
         show={tokenDisplayDialogShow.value}
@@ -370,25 +558,25 @@ const ApiToken = defineComponent(() => {
           onClose={() => void (tokenDisplayDialogShow.value = false)}
         >
           <div class="space-y-4">
-            <div>
-              <NText depth={3} class="text-sm">
-                Token 创建成功，请妥善保存以下信息：
-              </NText>
+            <div class="flex items-center gap-2 rounded-lg bg-green-50 px-4 py-3 text-green-700 dark:bg-green-900/20 dark:text-green-400">
+              <CheckIcon class="size-5" />
+              <span>Token 创建成功，请妥善保存</span>
             </div>
 
             <div class="space-y-3">
-              <div>
-                <NText strong>Token 名称：</NText>
-                <NText>{createdTokenInfo.value?.name}</NText>
+              <div class={styles.infoRow}>
+                <span class={styles.infoLabel}>Token 名称:</span>
+                <span class={styles.infoValue}>
+                  {createdTokenInfo.value?.name}
+                </span>
               </div>
 
               <div>
-                <NText strong>Token：</NText>
-                <div class="mt-2 flex items-center gap-2 rounded border bg-gray-50 p-3 dark:bg-gray-800">
-                  <NText
-                    code
-                    class="flex-1 break-all text-gray-900 dark:text-gray-100"
-                  >
+                <div class="mb-2 text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                  Token:
+                </div>
+                <div class="flex items-center gap-2 rounded-lg border border-neutral-200 bg-neutral-50 p-3 dark:border-neutral-700 dark:bg-neutral-800">
+                  <NText code class="flex-1 break-all text-sm">
                     {createdTokenInfo.value?.token}
                   </NText>
                   <NButton
@@ -396,56 +584,31 @@ const ApiToken = defineComponent(() => {
                     type="primary"
                     onClick={async () => {
                       if (createdTokenInfo.value?.token) {
-                        try {
-                          await navigator.clipboard.writeText(
-                            createdTokenInfo.value.token,
-                          )
-                          message.success('Token 已复制到剪贴板')
-                        } catch (_error) {
-                          // Safari 兼容性处理：使用传统的复制方法
-                          const textArea = document.createElement('textarea')
-                          textArea.value = createdTokenInfo.value.token
-                          textArea.style.position = 'fixed'
-                          textArea.style.left = '-9999px'
-                          document.body.appendChild(textArea)
-                          textArea.focus()
-                          textArea.select()
-                          try {
-                            document.execCommand('copy')
-                            message.success('Token 已复制到剪贴板')
-                          } catch (fallbackError) {
-                            console.warn('复制失败:', fallbackError)
-                            alert('复制失败，请手动复制Token')
-                          }
-                          document.body.removeChild(textArea)
-                        }
+                        await copyToken(createdTokenInfo.value.token)
                       }
                     }}
                   >
-                    复制
+                    <CopyIcon class="size-4" />
                   </NButton>
                 </div>
               </div>
 
               {createdTokenInfo.value?.expired && (
-                <div>
-                  <NText strong>过期时间：</NText>
-                  <NText>
-                    {createdTokenInfo.value.expired
-                      ? parseDate(
-                          createdTokenInfo.value.expired,
-                          'yyyy 年 M 月 d 日 HH:mm:ss',
-                        )
-                      : '永不过期'}
-                  </NText>
+                <div class={styles.infoRow}>
+                  <span class={styles.infoLabel}>过期时间:</span>
+                  <span class={styles.infoValue}>
+                    {parseDate(
+                      createdTokenInfo.value.expired,
+                      'yyyy 年 M 月 d 日 HH:mm:ss',
+                    )}
+                  </span>
                 </div>
               )}
             </div>
 
-            <div class="pt-2">
-              <NText depth={3} class="text-sm">
-                💡 建议将此 Token 保存在安全的地方，避免泄露给他人。
-              </NText>
+            <div class="rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-700 dark:bg-amber-900/20 dark:text-amber-400">
+              请将此 Token 保存在安全的地方，关闭此窗口后将无法再次查看完整
+              Token。
             </div>
           </div>
 
@@ -454,118 +617,15 @@ const ApiToken = defineComponent(() => {
               type="primary"
               onClick={() => void (tokenDisplayDialogShow.value = false)}
             >
-              确定
+              我已保存
             </NButton>
           </div>
         </NCard>
       </NModal>
-
-      <NButton
-        class="absolute right-0 top-[-3rem]"
-        round
-        type="primary"
-        onClick={() => {
-          newTokenDialogShow.value = true
-        }}
-      >
-        <Icon>
-          <Plus />
-        </Icon>
-        <span class="ml-2">新增</span>
-      </NButton>
-      <NDataTable
-        scrollX={Math.max(
-          800,
-          uiStore.contentWidth.value - uiStore.contentInsetWidth.value,
-        )}
-        remote
-        bordered={false}
-        data={tokens.value}
-        columns={[
-          { key: 'name', title: '名称' },
-          {
-            key: 'token',
-            title: 'Token',
-            render(row) {
-              const { token, id } = row
-              const isVisible = visibleTokens.value.has(id)
-
-              if (isVisible && token && token !== '*'.repeat(40)) {
-                // 显示真实token，可点击复制
-                return (
-                  <NButton
-                    text
-                    type="primary"
-                    onClick={() => copyToken(token)}
-                    class="max-w-[200px] truncate text-left font-mono"
-                  >
-                    {token}
-                  </NButton>
-                )
-              } else {
-                // 显示星号
-                return '*'.repeat(40)
-              }
-            },
-          },
-          {
-            title: '创建时间',
-            key: 'created',
-            render({ created }) {
-              return <RelativeTime time={created} />
-            },
-          },
-          {
-            title: '过期时间',
-            key: 'expired',
-            render({ expired }) {
-              return parseDate(expired, 'yyyy 年 M 月 d 日 HH:mm:ss')
-            },
-          },
-          {
-            title: '操作',
-            key: 'id',
-            render(row) {
-              const { id, name } = row
-              const isVisible = visibleTokens.value.has(id)
-
-              return (
-                <NSpace>
-                  <NButton
-                    text
-                    type="primary"
-                    onClick={() => toggleTokenVisibility(row)}
-                  >
-                    {isVisible ? '隐藏' : '查看'}
-                  </NButton>
-                  <NPopconfirm
-                    positiveText={'取消'}
-                    negativeText="删除"
-                    onNegativeClick={() => {
-                      onDeleteToken(id)
-                    }}
-                  >
-                    {{
-                      trigger: () => (
-                        <NButton text type="error">
-                          删除
-                        </NButton>
-                      ),
-
-                      default: () => (
-                        <span class="max-w-48">确定要删除 Token "{name}"?</span>
-                      ),
-                    }}
-                  </NPopconfirm>
-                </NSpace>
-              )
-            },
-          },
-        ]}
-      />
-    </NLayoutContent>
+    </>
   )
 })
+
 const ResetPass = defineComponent(() => {
   const resetPassword = reactive({
     password: '',
@@ -573,78 +633,98 @@ const ResetPass = defineComponent(() => {
   })
   const formRef = ref<typeof NForm>()
   const router = useRouter()
+
   const reset = async () => {
     if (!formRef.value) {
       return
     }
 
-    formRef.value.validate(async (err) => {
+    formRef.value.validate(async (err: any) => {
       if (!err) {
         await RESTManager.api.master.patch({
           data: {
             password: resetPassword.password,
           },
         })
-        message.success('更改成功')
+        message.success('密码修改成功，请重新登录')
         removeToken()
         router.push({ name: RouteName.Login })
-      } else {
-        // noop
       }
     })
   }
 
-  function validatePasswordSame(_rule, value) {
+  function validatePasswordSame(_rule: any, value: string) {
     return value === resetPassword.password
   }
 
   return () => (
-    <NForm
-      class="max-w-[300px]"
-      ref={formRef}
-      model={resetPassword}
-      rules={{
-        password: [
-          {
-            required: true,
-            message: '请输入密码',
-          },
-        ],
-        reenteredPassword: [
-          {
-            required: true,
-            message: '请再次输入密码',
-            trigger: ['input', 'blur'],
-          },
-          {
-            validator: validatePasswordSame,
-            message: '两次密码输入不一致',
-            trigger: ['blur', 'password-input'],
-          },
-        ],
-      }}
-    >
-      <NFormItem label="新密码" required path="password">
-        <NInput
-          {...autosizeableProps}
-          value={resetPassword.password}
-          onInput={(e) => void (resetPassword.password = e)}
-          type="password"
-        />
-      </NFormItem>
-      <NFormItem label="重复密码" required path="reenteredPassword">
-        <NInput
-          {...autosizeableProps}
-          value={resetPassword.reenteredPassword}
-          onInput={(e) => void (resetPassword.reenteredPassword = e)}
-          type="password"
-        />
-      </NFormItem>
-      <div class="quaternary-right w-full">
-        <NButton onClick={reset} type="primary" round>
-          保存
-        </NButton>
+    <div class={styles.passwordSection}>
+      <div class={styles.passwordHeader}>
+        <div class={styles.passwordIcon}>
+          <LockIcon />
+        </div>
+        <div>
+          <h3 class={styles.passwordTitle}>修改密码</h3>
+          <p class="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
+            修改后需要重新登录
+          </p>
+        </div>
       </div>
-    </NForm>
+
+      <NForm
+        ref={formRef}
+        model={resetPassword}
+        rules={{
+          password: [
+            {
+              required: true,
+              message: '请输入密码',
+            },
+          ],
+          reenteredPassword: [
+            {
+              required: true,
+              message: '请再次输入密码',
+              trigger: ['input', 'blur'],
+            },
+            {
+              validator: validatePasswordSame,
+              message: '两次密码输入不一致',
+              trigger: ['blur', 'password-input'],
+            },
+          ],
+        }}
+      >
+        <div class="grid gap-4 md:grid-cols-2">
+          <NFormItem label="新密码" required path="password">
+            <NInput
+              {...autosizeableProps}
+              value={resetPassword.password}
+              onInput={(e) => void (resetPassword.password = e)}
+              type="password"
+              showPasswordOn="click"
+              placeholder="输入新密码"
+            />
+          </NFormItem>
+          <NFormItem label="确认密码" required path="reenteredPassword">
+            <NInput
+              {...autosizeableProps}
+              value={resetPassword.reenteredPassword}
+              onInput={(e) => void (resetPassword.reenteredPassword = e)}
+              type="password"
+              showPasswordOn="click"
+              placeholder="再次输入新密码"
+            />
+          </NFormItem>
+        </div>
+
+        <div class="mt-4 flex justify-end">
+          <NButton onClick={reset} type="primary" round>
+            <ShieldIcon class="mr-1 size-4" />
+            修改密码
+          </NButton>
+        </div>
+      </NForm>
+    </div>
   )
 })

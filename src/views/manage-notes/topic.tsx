@@ -17,6 +17,7 @@ import { Icon } from '@vicons/utils'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { useDataTableFetch } from '~/hooks/use-table'
+import { useLayout } from '~/layouts/content'
 import { RESTManager } from '~/utils'
 import { textToBigCharOrWord } from '~/utils/word'
 
@@ -27,17 +28,6 @@ export default defineComponent({
   setup() {
     const router = useRouter()
     const route = useRoute()
-
-    watch(
-      () => route.query.page,
-      (page) => {
-        if (!page) {
-          fetchTopic(0)
-        } else {
-          fetchTopic(+page)
-        }
-      },
-    )
 
     const {
       fetchDataFn: fetchTopic,
@@ -57,21 +47,33 @@ export default defineComponent({
           })
 
           pagination.value = res.pagination
-
           topics.value = res.data
 
           return res
         },
     )
 
+    watch(
+      () => route.query.page,
+      (page) => {
+        if (!page) {
+          fetchTopic(0)
+        } else {
+          fetchTopic(+page)
+        }
+      },
+    )
+
     onMounted(() => fetchTopic())
 
     const editTopicId = ref('')
     const showTopicModal = ref(false)
+
     const handleAddTopic = () => {
       showTopicModal.value = true
       editTopicId.value = ''
     }
+
     const handleCloseModal = () => {
       showTopicModal.value = false
       editTopicId.value = ''
@@ -81,164 +83,111 @@ export default defineComponent({
       await RESTManager.api.topics(id).delete()
       fetchTopic()
     }
+
     const handleEdit = (id: string) => {
       editTopicId.value = id
       showTopicModal.value = true
     }
-    return {
-      pagination,
-      topics,
-      fetchTopic,
-      handleAddTopic,
-      editTopicId,
-      showTopicModal,
-      handleCloseModal,
-      handleSubmit(topic: TopicModel) {
-        handleCloseModal()
 
-        const index = topics.value.findIndex((item) => item.id === topic.id)
-        if (-~index) {
-          topics.value[index] = topic
-        } else {
-          topics.value.push(topic)
-        }
-      },
-      handleDelete,
-      handleEdit,
-      route,
-      router,
+    const handleSubmit = (topic: TopicModel) => {
+      handleCloseModal()
+
+      const index = topics.value.findIndex((item) => item.id === topic.id)
+      if (-~index) {
+        topics.value[index] = topic
+      } else {
+        topics.value.push(topic)
+      }
     }
-  },
-  render() {
-    const {
-      pagination,
-      topics,
-      router,
-      route,
-      editTopicId,
-      showTopicModal,
-      handleAddTopic,
-      handleCloseModal,
-      handleSubmit,
-      handleEdit,
-      handleDelete,
-    } = this
 
-    return (
+    const { setActions } = useLayout()
+
+    setActions(
+      <HeaderActionButton
+        icon={<PlusIcon />}
+        onClick={handleAddTopic}
+        variant="success"
+      />,
+    )
+
+    return () => (
       <>
-        {{
-          actions() {
-            return (
-              <>
-                <HeaderActionButton
-                  icon={<PlusIcon />}
-                  onClick={handleAddTopic}
-                  variant="success"
-                />
-              </>
-            )
-          },
-          default() {
-            return (
-              <>
-                <NList bordered class={'mb-4'}>
-                  {topics.map((topic) => (
-                    <NListItem key={topic.id}>
+        <NList bordered class="mb-4">
+          {topics.value.map((topic) => (
+            <NListItem key={topic.id}>
+              {{
+                prefix: () => (
+                  <NAvatar
+                    data-src={topic.icon}
+                    class={`mt-2 ${topic.icon && '!bg-transparent'}`}
+                    circle
+                    size={50}
+                    src={topic.icon || undefined}
+                  >
+                    {topic.icon ? undefined : textToBigCharOrWord(topic.name)}
+                  </NAvatar>
+                ),
+                suffix: () => (
+                  <NButtonGroup>
+                    <NButton round onClick={() => handleEdit(topic.id!)}>
+                      编辑
+                    </NButton>
+                    <NPopconfirm
+                      onPositiveClick={() => handleDelete(topic.id!)}
+                    >
                       {{
-                        prefix() {
-                          return (
-                            <NAvatar
-                              data-src={topic.icon}
-                              class={`mt-2 ${topic.icon && '!bg-transparent'}`}
-                              circle
-                              size={50}
-                              src={topic.icon || undefined}
-                            >
-                              {topic.icon
-                                ? undefined
-                                : textToBigCharOrWord(topic.name)}
-                            </NAvatar>
-                          )
-                        },
-                        suffix() {
-                          return (
-                            <NButtonGroup>
-                              <NButton
-                                round
-                                onClick={() => handleEdit(topic.id!)}
-                              >
-                                编辑
-                              </NButton>
-                              <NPopconfirm
-                                onPositiveClick={() => handleDelete(topic.id!)}
-                              >
-                                {{
-                                  default() {
-                                    return `确定删除「${topic.name}」？`
-                                  },
-                                  trigger() {
-                                    return (
-                                      <NButton circle tertiary type="error">
-                                        <Icon>
-                                          <TrashIcon />
-                                        </Icon>
-                                      </NButton>
-                                    )
-                                  },
-                                }}
-                              </NPopconfirm>
-                            </NButtonGroup>
-                          )
-                        },
-                        default() {
-                          return (
-                            <NThing
-                              title={topic.name}
-                              description={topic.introduce}
-                              titleExtra={topic.slug}
-                            >
-                              {{
-                                default() {
-                                  return topic.description
-                                },
-                                footer() {
-                                  return <TopicDetail id={topic.id!} />
-                                },
-                              }}
-                            </NThing>
-                          )
-                        },
+                        default: () => `确定删除「${topic.name}」？`,
+                        trigger: () => (
+                          <NButton circle tertiary type="error">
+                            <Icon>
+                              <TrashIcon />
+                            </Icon>
+                          </NButton>
+                        ),
                       }}
-                    </NListItem>
-                  ))}
-                </NList>
-                {pagination && (
-                  <div class={'flex justify-end'}>
-                    <NPagination
-                      page={pagination.currentPage}
-                      onUpdatePage={(page) => {
-                        router.replace({
-                          query: { ...route.query, page },
-                          params: { ...route.params },
-                        })
-                      }}
-                      pageCount={pagination.totalPage}
-                      pageSize={pagination.size}
-                      showQuickJumper
-                    />
-                  </div>
-                )}
+                    </NPopconfirm>
+                  </NButtonGroup>
+                ),
+                default: () => (
+                  <NThing
+                    title={topic.name}
+                    description={topic.introduce}
+                    titleExtra={topic.slug}
+                  >
+                    {{
+                      default: () => topic.description,
+                      footer: () => <TopicDetail id={topic.id!} />,
+                    }}
+                  </NThing>
+                ),
+              }}
+            </NListItem>
+          ))}
+        </NList>
 
-                <TopicEditModal
-                  onClose={handleCloseModal}
-                  show={Boolean(showTopicModal || editTopicId)}
-                  id={editTopicId}
-                  onSubmit={handleSubmit}
-                />
-              </>
-            )
-          },
-        }}
+        {pagination.value && (
+          <div class="flex justify-end">
+            <NPagination
+              page={pagination.value.currentPage}
+              onUpdatePage={(page) => {
+                router.replace({
+                  query: { ...route.query, page },
+                  params: { ...route.params },
+                })
+              }}
+              pageCount={pagination.value.totalPage}
+              pageSize={pagination.value.size}
+              showQuickJumper
+            />
+          </div>
+        )}
+
+        <TopicEditModal
+          onClose={handleCloseModal}
+          show={Boolean(showTopicModal.value || editTopicId.value)}
+          id={editTopicId.value}
+          onSubmit={handleSubmit}
+        />
       </>
     )
   },
