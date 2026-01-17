@@ -125,7 +125,12 @@
 }
 
 .avatarContainer {
-  @apply relative shrink-0;
+  @apply relative size-32 shrink-0;
+
+  :global(.n-upload),
+  :global(.n-upload-trigger) {
+    @apply size-32 overflow-hidden rounded-full;
+  }
 }
 
 .avatarWrapper {
@@ -697,7 +702,7 @@
 }
 
 .userMetaItem {
-  @apply flex items-center gap-1.5 text-xs text-neutral-500;
+  @apply flex shrink-0 items-center gap-1.5 whitespace-nowrap text-xs text-neutral-500;
 
   :global(.dark) & {
     @apply text-neutral-400;

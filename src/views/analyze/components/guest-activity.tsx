@@ -118,7 +118,7 @@ export const GuestActivity = defineComponent({
 
     return () => {
       return (
-        <div class={styles.tableCard}>
+        <>
           <NTabs
             onUpdateValue={(value) => {
               tabValue.value = value
@@ -140,7 +140,7 @@ export const GuestActivity = defineComponent({
           ) : (
             <ReadDurationList data={data} pager={pager} onFetch={fetchDataFn} />
           )}
-        </div>
+        </>
       )
     }
   },

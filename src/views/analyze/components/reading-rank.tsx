@@ -60,7 +60,7 @@ export const ReadingRank = defineComponent({
     )
 
     return () => (
-      <div class={styles.tableCard}>
+      <>
         {/* Filter Section */}
         <div class={styles.filterSection}>
           <span class={styles.filterLabel}>
@@ -157,7 +157,7 @@ export const ReadingRank = defineComponent({
             ))}
           </div>
         )}
-      </div>
+      </>
     )
   },
 })

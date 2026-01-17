@@ -24,8 +24,6 @@ import { useLayout } from '~/layouts/content'
 import { router } from '~/router'
 import { RESTManager } from '~/utils'
 
-import styles from '../index.module.css'
-
 export const AnalyzeDataTable = defineComponent({
   setup() {
     const route = useRoute()
@@ -114,7 +112,9 @@ export const AnalyzeDataTable = defineComponent({
       {
         title: '时间',
         key: 'timestamp',
-        width: 160,
+        minWidth: 100,
+        maxWidth: 300,
+        resizable: true,
         render({ timestamp }) {
           return (
             <div class="flex items-center gap-2 text-neutral-600 dark:text-neutral-300">
@@ -129,7 +129,9 @@ export const AnalyzeDataTable = defineComponent({
       {
         title: 'IP 地址',
         key: 'ip',
-        width: 140,
+        minWidth: 100,
+        maxWidth: 250,
+        resizable: true,
         render({ ip }) {
           if (!ip) {
             return <span class="text-neutral-400">未知</span>
@@ -152,6 +154,9 @@ export const AnalyzeDataTable = defineComponent({
       {
         title: '请求路径',
         key: 'path',
+        minWidth: 150,
+        maxWidth: 600,
+        resizable: true,
         render({ path }) {
           return (
             <NTooltip trigger="hover" placement="top">
@@ -179,7 +184,9 @@ export const AnalyzeDataTable = defineComponent({
       {
         key: 'ua',
         title: '浏览器',
-        width: 180,
+        minWidth: 120,
+        maxWidth: 300,
+        resizable: true,
         render({ ua }) {
           const browserInfo = ua.browser
             ? Object.values(ua.browser).filter(Boolean).join(' ')
@@ -199,7 +206,9 @@ export const AnalyzeDataTable = defineComponent({
       {
         key: 'ua',
         title: '操作系统',
-        width: 150,
+        minWidth: 100,
+        maxWidth: 250,
+        resizable: true,
         render({ ua }) {
           const osInfo = ua.os
             ? Object.values(ua.os).filter(Boolean).join(' ')
@@ -219,6 +228,9 @@ export const AnalyzeDataTable = defineComponent({
       {
         key: 'ua',
         title: 'User Agent',
+        minWidth: 200,
+        maxWidth: 800,
+        resizable: true,
         render({ ua }) {
           return (
             <NEllipsis lineClamp={2}>
@@ -245,14 +257,12 @@ export const AnalyzeDataTable = defineComponent({
     ]
 
     return () => (
-      <div class={styles.tableCard}>
-        <Table
-          data={data}
-          onFetchData={fetchData}
-          pager={pager}
-          columns={columns}
-        />
-      </div>
+      <Table
+        data={data}
+        onFetchData={fetchData}
+        pager={pager}
+        columns={columns}
+      />
     )
   },
 })
