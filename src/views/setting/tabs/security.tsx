@@ -103,7 +103,6 @@ export const TabSecurity = defineComponent(() => {
                   size="small"
                   type="error"
                   ghost
-                  round
                   disabled={
                     sessions.value.length === 1 && sessions.value[0]?.current
                   }
@@ -160,7 +159,6 @@ export const TabSecurity = defineComponent(() => {
                           size="small"
                           type={current ? 'warning' : 'error'}
                           ghost
-                          round
                         >
                           {current ? '注销' : '踢出'}
                         </NButton>
@@ -373,7 +371,6 @@ const ApiToken = defineComponent(() => {
           </div>
           <NButton
             type="primary"
-            round
             onClick={() => {
               newTokenDialogShow.value = true
             }}
@@ -526,14 +523,10 @@ const ApiToken = defineComponent(() => {
           </NForm>
 
           <div class="flex justify-end gap-3">
-            <NButton
-              round
-              onClick={() => void (newTokenDialogShow.value = false)}
-            >
+            <NButton onClick={() => void (newTokenDialogShow.value = false)}>
               取消
             </NButton>
             <NButton
-              round
               type="primary"
               disabled={!dataModel.name.trim()}
               onClick={newToken}
@@ -719,7 +712,7 @@ const ResetPass = defineComponent(() => {
         </div>
 
         <div class="mt-4 flex justify-end">
-          <NButton onClick={reset} type="primary" round>
+          <NButton onClick={reset} type="primary">
             <ShieldIcon class="mr-1 size-4" />
             修改密码
           </NButton>

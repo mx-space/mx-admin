@@ -101,12 +101,14 @@ export const ManagePostListView = defineComponent({
         const columns = reactive<TableColumns<PostModel>>([
           {
             type: 'selection',
+            fixed: 'left',
             options: ['none', 'all'],
           },
           {
             title: '标题',
             key: 'title',
             width: 280,
+            fixed: 'left',
             render(row) {
               return (
                 <div class={'flex flex-grow items-center space-x-2'}>
@@ -138,7 +140,6 @@ export const ManagePostListView = defineComponent({
                       title={row.title}
                       inPageTo={`/posts/edit?id=${row.id}`}
                       externalLinkTo={`/posts/${row.category.slug}/${row.slug}`}
-                      xLog={row.meta?.xLog}
                     />
                   </div>
                 </div>

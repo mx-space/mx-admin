@@ -1,17 +1,17 @@
 import { visualizer } from 'rollup-plugin-visualizer'
+import UnoCSS from 'unocss/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import { defineConfig, loadEnv } from 'vite'
+import type { PluginOption } from 'vite'
 import { checker } from 'vite-plugin-checker'
+import { VueTracer } from 'vite-plugin-vue-tracer'
 import wasm from 'vite-plugin-wasm'
 import tsconfigPaths from 'vite-tsconfig-paths'
-import type { PluginOption } from 'vite'
 
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 
 import PKG from './package.json'
-
-import UnoCSS from 'unocss/vite'
 
 // dns.setDefaultResultOrder('verbatim')
 export default ({ mode }) => {
@@ -24,6 +24,7 @@ export default ({ mode }) => {
       // mkcert(),
       wasm(),
       UnoCSS(),
+      VueTracer(),
       vue({}),
       vueJsx(),
       tsconfigPaths(),

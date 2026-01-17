@@ -19,8 +19,6 @@ import type { PostModel } from '~/models/post'
 import type { WriteBaseType } from '~/shared/types/base'
 import type { SelectMixedOption } from 'naive-ui/lib/select/src/interface'
 
-import { Icon } from '@vicons/utils'
-
 import { AiHelperButton } from '~/components/ai/ai-helper'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { TextBaseDrawer } from '~/components/drawer/text-base-drawer'
@@ -33,7 +31,6 @@ import {
   HeaderPreviewButton,
   PreviewSplitter,
 } from '~/components/special-button/preview'
-import { CrossBellConnectorIndirector } from '~/components/xlog-connect'
 import { WEB_URL } from '~/constants/env'
 import { useAutoSave, useAutoSaveInEditor } from '~/hooks/use-auto-save'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
@@ -59,7 +56,7 @@ type PostReactiveType = WriteBaseType & {
 
 const PostWriteView = defineComponent(() => {
   const route = useRoute()
-  const { setTitle, setHeaderClass, setActions, setFooterActions } = useLayout()
+  const { setTitle, setHeaderClass, setActions } = useLayout()
 
   const categoryStore = useStoreRef(CategoryStore)
   onMounted(async () => {
@@ -151,28 +148,22 @@ const PostWriteView = defineComponent(() => {
         data.summary && data.summary.trim() != '' ? data.summary.trim() : null,
     }
 
-    const { CrossBellConnector } = await import(
-      '~/components/xlog-connect/class'
-    )
-
     if (id.value) {
       // update
       if (!isString(id.value)) {
         return
       }
       const $id = id.value as string
-      const response = await RESTManager.api.posts($id).put<PostModel>({
+      await RESTManager.api.posts($id).put<PostModel>({
         data: payload,
       })
       message.success('修改成功')
-      await CrossBellConnector.createOrUpdate(response)
     } else {
       // create
-      const response = await RESTManager.api.posts.post<PostModel>({
+      await RESTManager.api.posts.post<PostModel>({
         data: payload,
       })
       message.success('发布成功')
-      await CrossBellConnector.createOrUpdate(response)
     }
 
     await router.push({ name: RouteName.ViewPost, hash: '|publish' })
@@ -221,17 +212,18 @@ const PostWriteView = defineComponent(() => {
         <HeaderPreviewButton iframe data={data} />
 
         <HeaderActionButton
+          icon={<SlidersHIcon />}
+          name="文章设置"
+          onClick={handleOpenDrawer}
+        />
+
+        <HeaderActionButton
           icon={<TelegramPlaneIcon />}
+          name="发布"
+          variant="primary"
           onClick={handleSubmit}
         />
       </>,
-    )
-    setFooterActions(
-      <button onClick={handleOpenDrawer} title="打开设置">
-        <Icon>
-          <SlidersHIcon />
-        </Icon>
-      </button>,
     )
   })
 
@@ -268,7 +260,6 @@ const PostWriteView = defineComponent(() => {
         )}
       </div>
 
-      <CrossBellConnectorIndirector />
       <PreviewSplitter>
         <Editor
           key={data.id}

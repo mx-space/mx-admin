@@ -98,7 +98,6 @@ export const FetchGithubRepoButton = defineComponent({
 
     return () => (
       <HeaderActionButton
-        color="#25292E"
         icon={<GithubIcon />}
         name="从 GitHub 获取"
         onClick={handleParseFromGithub}

@@ -9,8 +9,6 @@ import { useRoute, useRouter } from 'vue-router'
 import type { PageModel } from '~/models/page'
 import type { WriteBaseType } from '~/shared/types/base'
 
-import { Icon } from '@vicons/utils'
-
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { TextBaseDrawer } from '~/components/drawer/text-base-drawer'
 import { Editor } from '~/components/editor/universal'
@@ -110,7 +108,7 @@ const PageWriteView = defineComponent(() => {
     router.push({ name: RouteName.ListPage, hash: '|publish' })
   }
 
-  const { setHeaderClass, setActions, setFooterActions } = useLayout()
+  const { setHeaderClass, setActions } = useLayout()
 
   setHeaderClass('pt-1')
   setActions(
@@ -129,19 +127,21 @@ const PageWriteView = defineComponent(() => {
 
       <HeaderPreviewButton iframe data={data} />
 
-      <HeaderActionButton icon={<TelegramPlaneIcon />} onClick={handleSubmit} />
+      <HeaderActionButton
+        icon={<SlidersHIcon />}
+        name="页面设置"
+        onClick={() => {
+          drawerShow.value = true
+        }}
+      />
+
+      <HeaderActionButton
+        icon={<TelegramPlaneIcon />}
+        name="发布"
+        variant="primary"
+        onClick={handleSubmit}
+      />
     </>,
-  )
-  setFooterActions(
-    <button
-      onClick={() => {
-        drawerShow.value = true
-      }}
-    >
-      <Icon>
-        <SlidersHIcon />
-      </Icon>
-    </button>,
   )
 
   return () => (

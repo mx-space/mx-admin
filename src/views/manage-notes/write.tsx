@@ -31,8 +31,6 @@ import type { Coordinate, NoteModel } from '~/models/note'
 import type { TopicModel } from '~/models/topic'
 import type { WriteBaseType } from '~/shared/types/base'
 
-import { Icon } from '@vicons/utils'
-
 import { AiHelperButton } from '~/components/ai/ai-helper'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { TextBaseDrawer } from '~/components/drawer/text-base-drawer'
@@ -54,14 +52,6 @@ import { useLayout } from '~/layouts/content'
 import { RouteName } from '~/router/name'
 import { RESTManager } from '~/utils/rest'
 import { getDayOfYear } from '~/utils/time'
-
-const CrossBellConnectorIndirector = defineAsyncComponent({
-  loader: () =>
-    import('~/components/xlog-connect').then(
-      (mo) => mo.CrossBellConnectorIndirector,
-    ),
-  suspensible: true,
-})
 
 type NoteReactiveType = {
   mood: string
@@ -222,31 +212,23 @@ const NoteWriteView = defineComponent(() => {
       }
     }
 
-    const { CrossBellConnector } = await import(
-      '~/components/xlog-connect/class'
-    )
-
     if (id.value) {
       // update
       if (!isString(id.value)) {
         return
       }
       const $id = id.value as string
-      const response = await RESTManager.api.notes($id).put<NoteModel>({
+      await RESTManager.api.notes($id).put<NoteModel>({
         data: parseDataToPayload(),
       })
       message.success('修改成功')
-
-      await CrossBellConnector.createOrUpdate(response)
     } else {
       const data = parseDataToPayload()
       // create
-      const response = await RESTManager.api.notes.post<NoteModel>({
+      await RESTManager.api.notes.post<NoteModel>({
         data,
       })
       message.success('发布成功')
-
-      await CrossBellConnector.createOrUpdate(response)
     }
 
     await router.push({ name: RouteName.ViewNote, hash: '|publish' })
@@ -254,7 +236,7 @@ const NoteWriteView = defineComponent(() => {
   }
   const { fetchTopic, topics } = useNoteTopic()
 
-  const { setTitle, setHeaderClass, setActions, setFooterActions } = useLayout()
+  const { setTitle, setHeaderClass, setActions } = useLayout()
 
   setTitle('记录生活点滴')
   setHeaderClass('pt-1')
@@ -274,25 +256,25 @@ const NoteWriteView = defineComponent(() => {
 
       <HeaderPreviewButton data={data} iframe />
 
-      <HeaderActionButton icon={<TelegramPlaneIcon />} onClick={handleSubmit} />
+      <HeaderActionButton
+        icon={<SlidersHIcon />}
+        name="日记设置"
+        onClick={() => {
+          drawerShow.value = true
+        }}
+      />
+
+      <HeaderActionButton
+        icon={<TelegramPlaneIcon />}
+        name="发布"
+        variant="primary"
+        onClick={handleSubmit}
+      />
     </>,
-  )
-  setFooterActions(
-    <button
-      onClick={() => {
-        drawerShow.value = true
-      }}
-      title="打开设置"
-    >
-      <Icon>
-        <SlidersHIcon />
-      </Icon>
-    </button>,
   )
 
   return () => (
     <>
-      <CrossBellConnectorIndirector />
       <div class={'relative'}>
         <MaterialInput
           class="relative z-10 mt-3"

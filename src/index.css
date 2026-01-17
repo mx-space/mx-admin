@@ -136,3 +136,7 @@ button:where(:not(.n-button):not([class*='n-'])) {
 .n-layout-scroll-container {
   background: transparent !important;
 }
+
+.n-data-table-table {
+  @apply rounded-naive;
+}

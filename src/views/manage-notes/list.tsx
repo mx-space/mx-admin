@@ -77,12 +77,14 @@ export const ManageNoteListView = defineComponent({
         const columns = reactive<TableColumns<NoteModel>>([
           {
             type: 'selection',
+            fixed: 'left',
             options: ['none', 'all'],
           },
           {
             title: '序号',
             width: 16 * 4,
             key: 'nid',
+            fixed: 'left',
           },
           {
             title: '标题',
@@ -90,6 +92,7 @@ export const ManageNoteListView = defineComponent({
             sorter: 'default',
             key: 'title',
             width: 280,
+            fixed: 'left',
 
             filter: true,
             filterOptions: [
@@ -108,7 +111,6 @@ export const ManageNoteListView = defineComponent({
                   externalLinkTo={`/notes/${row.nid}`}
                   id={row.id}
                   withToken={isUnpublished || isSecret}
-                  xLog={row.meta?.xLog}
                 >
                   {{
                     default() {

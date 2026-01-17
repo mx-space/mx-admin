@@ -80,11 +80,7 @@
 }
 
 .externalIcon {
-  @apply size-3.5 shrink-0 text-neutral-400 opacity-0 transition-opacity;
-
-  .referenceLink:hover & {
-    @apply opacity-100;
-  }
+  @apply size-3.5 shrink-0 text-neutral-400;
 }
 
 /* Footer */

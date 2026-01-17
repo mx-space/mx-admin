@@ -461,7 +461,7 @@ export const DashBoardView = defineComponent({
                   <span>
                     更新于{' '}
                     {statTime.value
-                      ? parseDate(statTime.value, 'H:mm:ss A')
+                      ? parseDate(statTime.value, 'H:mm:ss a')
                       : '--:--:--'}
                   </span>
                   <NButton text onClick={fetchStat} class="ml-2">

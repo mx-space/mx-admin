@@ -25,6 +25,7 @@ export const IframePreviewButton = defineComponent({
                 text
                 type="primary"
                 tag="a"
+                class="cursor-pointer"
                 // @ts-ignore
                 target="_blank"
                 // @ts-ignore

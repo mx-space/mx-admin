@@ -3,7 +3,7 @@ import {
   Copy as CopyIcon,
   Github as GithubIcon,
 } from 'lucide-vue-next'
-import { NButton, NForm, NFormItem, NInput, NSwitch } from 'naive-ui'
+import { NButton, NCard, NForm, NFormItem, NInput, NSwitch } from 'naive-ui'
 import type { AuthSocialProviders } from '~/utils/authjs/auth'
 import type { FormInst } from 'naive-ui/lib'
 
@@ -113,88 +113,97 @@ export const createProvideSectionComponent = (
       const IconComponent = providerIcons[type] || GithubIcon
 
       return () => (
-        <div class={styles.authProviderCard}>
-          <div class={styles.authProviderHeader}>
-            <div class={styles.authProviderIcon}>
-              <IconComponent />
-            </div>
-            <h3 class={styles.authProviderName}>{options.name}</h3>
-            <div class={styles.authProviderStatus}>
-              {isEnabled.value ? (
-                <span class={styles.authProviderEnabled}>
-                  <CheckIcon class="size-3" />
-                  已启用
-                </span>
-              ) : (
-                <span class={styles.authProviderDisabled}>未启用</span>
-              )}
-            </div>
-          </div>
+        <NCard size="small">
+          {{
+            header: () => (
+              <div class="flex items-center gap-3">
+                <div class={styles.authProviderIcon}>
+                  <IconComponent />
+                </div>
+                <div class="flex-1">
+                  <h3 class={styles.authProviderName}>{options.name}</h3>
+                  <div class={styles.authProviderStatus}>
+                    {isEnabled.value ? (
+                      <span class={styles.authProviderEnabled}>
+                        <CheckIcon class="size-3" />
+                        已启用
+                      </span>
+                    ) : (
+                      <span class={styles.authProviderDisabled}>未启用</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ),
+            default: () => (
+              <>
+                <NForm
+                  model={formValueRef.value}
+                  ref={formRef}
+                  rules={rules}
+                  labelPlacement="left"
+                  labelWidth={100}
+                >
+                  <NFormItem label="Client ID" path="clientId" required>
+                    <NInput
+                      value={formValueRef.value.clientId}
+                      onUpdateValue={(v) => {
+                        formValueRef.value.clientId = v
+                      }}
+                      placeholder="输入 Client ID"
+                    />
+                  </NFormItem>
 
-          <NForm
-            model={formValueRef.value}
-            ref={formRef}
-            rules={rules}
-            labelPlacement="left"
-            labelWidth={100}
-          >
-            <NFormItem label="Client ID" path="clientId" required>
-              <NInput
-                value={formValueRef.value.clientId}
-                onUpdateValue={(v) => {
-                  formValueRef.value.clientId = v
-                }}
-                placeholder="输入 Client ID"
-              />
-            </NFormItem>
+                  <NFormItem label="Client Secret" required path="secret">
+                    <NInput
+                      showPasswordToggle
+                      type="password"
+                      value={formValueRef.value.secret}
+                      onUpdateValue={(v) => {
+                        formValueRef.value.secret = v
+                      }}
+                      placeholder="输入 Client Secret"
+                    />
+                  </NFormItem>
+                </NForm>
 
-            <NFormItem label="Client Secret" required path="secret">
-              <NInput
-                showPasswordToggle
-                type="password"
-                value={formValueRef.value.secret}
-                onUpdateValue={(v) => {
-                  formValueRef.value.secret = v
-                }}
-                placeholder="输入 Client Secret"
-              />
-            </NFormItem>
-          </NForm>
+                <div class="mt-4 rounded-lg bg-neutral-50 p-3 dark:bg-neutral-800">
+                  <div class="mb-1 text-xs text-neutral-500 dark:text-neutral-400">
+                    Callback URL
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="flex-1 truncate font-mono text-sm text-neutral-700 dark:text-neutral-200">
+                      {RESTManager.endpoint}/auth/callback/{type}
+                    </span>
+                    <NButton text type="primary" onClick={copyCallbackUrl}>
+                      <CopyIcon class="size-4" />
+                    </NButton>
+                  </div>
+                </div>
 
-          {/* Callback URL */}
-          <div class={styles.callbackUrl}>
-            <div class={styles.callbackUrlLabel}>Callback URL</div>
-            <div class={styles.callbackUrlValue}>
-              <span class={styles.callbackUrlText}>
-                {RESTManager.endpoint}/auth/callback/{type}
-              </span>
-              <NButton text type="primary" onClick={copyCallbackUrl}>
-                <CopyIcon class="size-4" />
-              </NButton>
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div class="mt-4 flex items-center justify-between">
-            <label class="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-300">
-              启用
-              <NSwitch
-                value={isEnabled.value}
-                onUpdateValue={(v) => {
-                  isEnabled.value = v
-                }}
-              />
-            </label>
-            <div class="flex gap-2">
-              <NButton onClick={handleValidate} tertiary round size="small">
-                验证
-              </NButton>
-              <NButton onClick={handleSave} type="primary" round size="small">
-                保存
-              </NButton>
-            </div>
-          </div>
-        </div>
+                <div class="mt-4 flex items-center justify-between">
+                  <label class="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-300">
+                    启用
+                    <NSwitch
+                      value={isEnabled.value}
+                      onUpdateValue={(v) => {
+                        isEnabled.value = v
+                      }}
+                    />
+                  </label>
+                  <div class="flex gap-2">
+                    <NButton onClick={handleValidate} tertiary size="small">
+                      验证
+                    </NButton>
+                    <NButton onClick={handleSave} type="primary" size="small">
+                      保存
+                    </NButton>
+                  </div>
+                </div>
+              </>
+            ),
+          }}
+        </NCard>
       )
     },
   })
