@@ -41,6 +41,8 @@ export const HistoryPanel = defineComponent({
       queryKey: ['drafts', 'history', props.draftId],
       queryFn: () => draftsApi.getHistory(props.draftId),
       enabled: () => props.show,
+      select: (res: any) =>
+        Array.isArray(res) ? res : Array.isArray(res?.data) ? res.data : [],
     })
 
     // 恢复版本
