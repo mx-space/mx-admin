@@ -178,11 +178,6 @@ html.dark .n-dialog {
   @apply !pt-0;
 }
 
-/* Dialog 按钮间距优化 */
-.n-dialog__action .n-button + .n-button {
-  @apply !ml-3;
-}
-
 /* Light mode Card 阴影 */
 html:not(.dark) .n-modal .n-card {
   @apply !rounded-xl;

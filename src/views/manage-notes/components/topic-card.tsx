@@ -50,13 +50,16 @@ export const TopicListItem = defineComponent({
 
         {/* 内容 */}
         <div class="min-w-0 flex-1">
-          <div class="flex items-center gap-2">
-            <h3 class="truncate text-base font-medium text-neutral-900 dark:text-neutral-100">
+          <div class="flex min-w-0 items-center gap-2">
+            <h3
+              class="shrink-0 truncate text-base font-medium text-neutral-900 dark:text-neutral-100"
+              style={{ maxWidth: '40%' }}
+            >
               {props.topic.name}
             </h3>
-            <span class="flex shrink-0 items-center gap-1 text-sm text-neutral-400">
-              <Hash class="size-3.5" aria-hidden="true" />
-              <span class="font-mono">{props.topic.slug}</span>
+            <span class="flex min-w-0 items-center gap-1 text-sm text-neutral-400">
+              <Hash class="size-3.5 shrink-0" aria-hidden="true" />
+              <span class="truncate font-mono">{props.topic.slug}</span>
             </span>
           </div>
           {props.topic.introduce && (
