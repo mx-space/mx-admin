@@ -1,17 +1,15 @@
-import type { NoteModel, PaginateResult } from '@mx-space/api-client'
+import type { NoteModel } from '@mx-space/api-client'
 
+import { notesApi } from '~/api'
 import { createMemoDataListFetchHook } from '~/hooks/use-memo-fetch-data-list'
-import { RESTManager } from '~/utils'
 
 export const useMemoNoteList = createMemoDataListFetchHook<
   { id: string; title: string; nid: number },
   NoteModel
 >((page) =>
-  RESTManager.api.notes.get<PaginateResult<NoteModel>>({
-    params: {
-      page,
-      size: 50,
-      select: 'nid title _id id',
-    },
+  notesApi.getList({
+    page,
+    size: 50,
+    select: 'nid title _id id',
   }),
 )

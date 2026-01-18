@@ -1,19 +1,20 @@
+import { useQuery } from '@tanstack/vue-query'
 import { KeyRound as PassKeyIcon } from 'lucide-vue-next'
 import { useMessage } from 'naive-ui'
-import useSWRV from 'swrv'
 import { defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { AuthSocialProviders } from '~/utils/authjs/auth'
 import type { UserModel } from '../../models/user'
 
 import { SESSION_WITH_LOGIN } from '~/constants/keys'
+import { queryKeys } from '~/hooks/queries/keys'
 import { authClient } from '~/utils/authjs/auth'
 import { AuthnUtils } from '~/utils/authn'
 
+import { userApi } from '~/api/user'
 import Avatar from '../../components/avatar/index.vue'
 import { useUserStore } from '../../stores/user'
 import { checkIsInit } from '../../utils/is-init'
-import { RESTManager } from '../../utils/rest'
 
 const GithubIcon = () => (
   <svg
@@ -85,13 +86,9 @@ export const LoginView = defineComponent({
       toast.success('欢迎回来')
     }
 
-    const { data: settings } = useSWRV('allow-password', async () => {
-      return RESTManager.api.user('allow-login').get<
-        {
-          password: boolean
-          passkey: boolean
-        } & Record<AuthSocialProviders, boolean>
-      >()
+    const { data: settings } = useQuery({
+      queryKey: queryKeys.user.allowLogin(),
+      queryFn: () => userApi.getAllowLogin(),
     })
 
     let triggerAuthnOnce = false
@@ -131,13 +128,9 @@ export const LoginView = defineComponent({
 
         isLoading.value = true
 
-        const res = await RESTManager.api.master.login.post<{
-          token: string & UserModel
-        }>({
-          data: {
-            username: user.value?.username,
-            password: password.value,
-          },
+        const res = await userApi.login({
+          username: user.value?.username!,
+          password: password.value,
         })
 
         if (res.token) {

@@ -16,7 +16,7 @@ import type { PropType } from 'vue'
 
 import { Icon } from '@vicons/utils'
 
-import { RESTManager } from '~/utils/rest'
+import { systemApi } from '~/api'
 
 export const SearchLocationButton = defineComponent({
   props: {
@@ -42,11 +42,9 @@ export const SearchLocationButton = defineComponent({
     const modalOpen = ref(false)
     const keyword = ref('')
     const searchLocation = async (keyword: string) => {
-      const res = await RESTManager.api
-        .fn('built-in')
-        .geocode_search.get<AMapSearch>({
-          params: { keywords: keyword },
-        })
+      const res = await systemApi.callBuiltInFunction('geocode_search', {
+        keywords: keyword,
+      }) as AMapSearch
       return res
     }
 

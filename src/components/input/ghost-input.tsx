@@ -8,7 +8,7 @@ export const GhostInput = defineComponent({
     ...inputBaseProps,
   },
   emits: ['compositionend', 'compositionstart'],
-  setup(props, { emit }) {
+  setup(props, { emit, expose }) {
     const inputRef = ref<HTMLInputElement>()
 
     onMounted(() => {
@@ -24,6 +24,12 @@ export const GhostInput = defineComponent({
       })
     })
 
+    expose({
+      focus: () => {
+        inputRef.value?.focus()
+      },
+    })
+
     return () => (
       <input
         ref={inputRef}
@@ -36,7 +42,7 @@ export const GhostInput = defineComponent({
           'text-2xl font-semibold',
           'text-neutral-900 dark:text-neutral-100',
           'rounded-lg border border-transparent px-2 py-3',
-          'transition-all duration-200',
+
           'placeholder:text-neutral-400 dark:placeholder:text-neutral-500',
         ]}
       />

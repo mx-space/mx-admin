@@ -30,12 +30,14 @@ import { defineComponent, onBeforeMount, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import type { TokenModel } from '~/models/token'
 
+import { userApi } from '~/api/user'
+import { authApi } from '~/api/auth'
 import { IpInfoPopover } from '~/components/ip-info'
 import { RelativeTime } from '~/components/time/relative-time'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { RouteName } from '~/router/name'
 import { UIStore } from '~/stores/ui'
-import { parseDate, removeToken, RESTManager } from '~/utils'
+import { parseDate, removeToken } from '~/utils'
 import { authClient } from '~/utils/authjs/auth'
 
 import styles from '../index.module.css'
@@ -55,8 +57,12 @@ export const TabSecurity = defineComponent(() => {
 
   const fetchSession = async () => {
     loading.value = true
-    const res = await RESTManager.api.user.session.get<{ data: Session[] }>({})
-    sessions.value = res.data || []
+    const res = await userApi.getSessions()
+    sessions.value =
+      res.data?.map((s) => ({
+        ...s,
+        date: s.lastActiveAt,
+      })) || []
     loading.value = false
   }
 
@@ -66,18 +72,18 @@ export const TabSecurity = defineComponent(() => {
 
   const handleKick = async (current: boolean, id?: string) => {
     if (current) {
-      await RESTManager.api.user.logout.post<{}>({})
+      await userApi.logout()
       removeToken()
       await authClient.signOut()
       window.location.reload()
     } else {
-      await RESTManager.api.user.session(id).delete<{}>({})
+      await userApi.deleteSession(id!)
       sessions.value = sessions.value.filter((item) => item.id !== id)
     }
   }
 
   const handleKickAll = async () => {
-    await RESTManager.api.user.session.all.delete<{}>({})
+    await userApi.deleteAllSessions()
     await fetchSession()
   }
 
@@ -250,7 +256,7 @@ const ApiToken = defineComponent(() => {
 
   const fetchToken = async () => {
     loading.value = true
-    const { data } = (await RESTManager.api.auth.token.get()) as any
+    const { data } = await authApi.getTokens()
     tokens.value = data
     loading.value = false
   }
@@ -273,9 +279,7 @@ const ApiToken = defineComponent(() => {
           : undefined,
       }
 
-      const response = (await RESTManager.api.auth.token.post({
-        data: payload,
-      })) as TokenModel
+      const response = await authApi.createToken(payload)
 
       try {
         await navigator.clipboard.writeText(response.token)
@@ -303,7 +307,7 @@ const ApiToken = defineComponent(() => {
   }
 
   const onDeleteToken = async (id: string) => {
-    await RESTManager.api.auth.token.delete({ params: { id } })
+    await authApi.deleteToken(id)
     message.success('删除成功')
     const index = tokens.value.findIndex((i) => i.id === id)
     if (index !== -1) {
@@ -317,9 +321,7 @@ const ApiToken = defineComponent(() => {
       visibleTokens.value.delete(tokenId)
     } else {
       try {
-        const response = await RESTManager.api.auth.token.get<TokenModel>({
-          params: { id: tokenId },
-        })
+        const response = await authApi.getToken(tokenId)
         const index = tokens.value.findIndex((i) => i.id === tokenId)
         if (index !== -1) {
           tokens.value[index].token = response.token
@@ -634,10 +636,8 @@ const ResetPass = defineComponent(() => {
 
     formRef.value.validate(async (err: any) => {
       if (!err) {
-        await RESTManager.api.master.patch({
-          data: {
-            password: resetPassword.password,
-          },
+        await userApi.updateMaster({
+          password: resetPassword.password,
         })
         message.success('密码修改成功，请重新登录')
         removeToken()

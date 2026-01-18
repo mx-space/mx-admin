@@ -2,16 +2,18 @@
  * Topic List Page
  * 专栏列表页面 - 列表布局
  */
+import { useQueryClient } from '@tanstack/vue-query'
 import { Plus as PlusIcon } from 'lucide-vue-next'
 import { NPagination } from 'naive-ui'
 import { useRoute, useRouter } from 'vue-router'
-import type { PaginateResult } from '@mx-space/api-client'
 import type { TopicModel } from '~/models/topic'
 
+import { topicsApi } from '~/api/topics'
 import { HeaderActionButton } from '~/components/button/rounded-button'
-import { useDataTableFetch } from '~/hooks/use-table'
+import { useDataTable } from '~/hooks/use-data-table'
+import { queryKeys } from '~/hooks/queries/keys'
+import { useDeleteTopicMutation } from '~/hooks/queries/use-topics'
 import { useLayout } from '~/layouts/content'
-import { RESTManager } from '~/utils'
 
 import {
   TopicEmptyState,
@@ -26,45 +28,18 @@ export default defineComponent({
   setup() {
     const router = useRouter()
     const route = useRoute()
+    const queryClient = useQueryClient()
 
     const {
-      fetchDataFn: fetchTopic,
       data: topics,
       pager: pagination,
-      loading,
-    } = useDataTableFetch<TopicModel>(
-      (topics, pagination) =>
-        async (
-          page = Number.parseInt(route.query.page as any) || 1,
-          size = 20,
-        ) => {
-          const res = await RESTManager.api.topics.get<
-            PaginateResult<TopicModel>
-          >({
-            page,
-            size,
-          })
-
-          pagination.value = res.pagination
-          topics.value = res.data
-
-          return res
-        },
-    )
-
-    // 监听路由变化
-    watch(
-      () => route.query.page,
-      (page) => {
-        if (!page) {
-          fetchTopic(1)
-        } else {
-          fetchTopic(+page)
-        }
-      },
-    )
-
-    onMounted(() => fetchTopic())
+      isLoading: loading,
+      refresh,
+    } = useDataTable<TopicModel>({
+      queryKey: (params) => queryKeys.topics.list(),
+      queryFn: (params) => topicsApi.getList({ page: params.page, size: params.size }),
+      pageSize: 20,
+    })
 
     // 编辑状态
     const editTopicId = ref('')
@@ -84,10 +59,14 @@ export default defineComponent({
       editTopicId.value = ''
     }
 
-    const handleDelete = async (id: string) => {
-      await RESTManager.api.topics(id).delete()
-      message.success('删除成功')
-      fetchTopic()
+    // 删除专栏
+    const deleteMutation = useDeleteTopicMutation()
+    const handleDelete = (id: string) => {
+      deleteMutation.mutate(id, {
+        onSuccess: () => {
+          refresh()
+        },
+      })
     }
 
     const handleEdit = (id: string) => {
@@ -102,13 +81,7 @@ export default defineComponent({
 
     const handleSubmit = (topic: TopicModel) => {
       handleCloseModal()
-
-      const index = topics.value.findIndex((item) => item.id === topic.id)
-      if (index !== -1) {
-        topics.value[index] = topic
-      } else {
-        topics.value.unshift(topic)
-      }
+      queryClient.invalidateQueries({ queryKey: queryKeys.topics.all })
     }
 
     const { setActions } = useLayout()

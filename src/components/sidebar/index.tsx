@@ -20,8 +20,9 @@ import { WEB_URL } from '~/constants/env'
 import { RouteName } from '~/router/name'
 import { AppStore } from '~/stores/app'
 import { UIStore } from '~/stores/ui'
-import { removeToken, RESTManager } from '~/utils'
+import { removeToken } from '~/utils'
 import { authClient } from '~/utils/authjs/auth'
+import { userApi } from '~/api'
 
 import { useStoreRef } from '../../hooks/use-store-ref'
 import { UserStore } from '../../stores/user'
@@ -153,7 +154,7 @@ export const Sidebar = defineComponent({
       if (key === 'visit-site') {
         window.open(WEB_URL)
       } else if (key === 'logout') {
-        await RESTManager.api.user.logout.post({})
+        await userApi.logout()
         removeToken()
         await authClient.signOut()
         router.push({ name: RouteName.Login })

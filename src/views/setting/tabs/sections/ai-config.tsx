@@ -13,9 +13,9 @@ import {
 import { computed, defineComponent, onMounted, ref, watch } from 'vue'
 import type { PropType } from 'vue'
 
+import { aiApi } from '~/api/ai'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
-import { RESTManager } from '~/utils'
 
 // Types
 enum AIProviderType {
@@ -511,16 +511,11 @@ export const AIConfigSection = defineComponent({
     const fetchModelsForProvider = async (provider: AIProviderConfig) => {
       loadingProviders.value.add(provider.id)
       try {
-        const response = await RESTManager.api.ai.models.list.post<{
-          models: ModelInfo[]
-          error?: string
-        }>({
-          data: {
-            providerId: provider.id,
-            type: provider.type,
-            apiKey: provider.apiKey || undefined,
-            endpoint: provider.endpoint || undefined,
-          },
+        const response = await aiApi.getModelList({
+          providerId: provider.id,
+          type: provider.type,
+          apiKey: provider.apiKey || undefined,
+          endpoint: provider.endpoint || undefined,
         })
         if (response.models) {
           providerModels.value[provider.id] = response.models
@@ -541,11 +536,10 @@ export const AIConfigSection = defineComponent({
     // Fetch all models for enabled providers
     const fetchAllModels = async () => {
       try {
-        const response =
-          await RESTManager.api.ai.models.get<ProviderModelsResponse[]>()
+        const response = await aiApi.getModels()
         for (const providerData of response) {
           if (providerData.models) {
-            providerModels.value[providerData.providerId] = providerData.models
+            providerModels.value[providerData.provider] = providerData.models
           }
         }
       } catch (error) {
@@ -561,14 +555,12 @@ export const AIConfigSection = defineComponent({
 
       testingProviders.value.add(provider.id)
       try {
-        await RESTManager.api.ai.test.post({
-          data: {
-            providerId: provider.id,
-            type: provider.type,
-            apiKey: provider.apiKey || undefined,
-            endpoint: provider.endpoint || undefined,
-            model: provider.defaultModel || undefined,
-          },
+        await aiApi.testConfig({
+          providerId: provider.id,
+          type: provider.type,
+          apiKey: provider.apiKey || undefined,
+          endpoint: provider.endpoint || undefined,
+          model: provider.defaultModel || undefined,
         })
         message.success('连接可用')
       } catch (error: any) {

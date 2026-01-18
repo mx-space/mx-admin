@@ -48,13 +48,14 @@ import { IpInfoPopover } from '~/components/ip-info'
 import { useShorthand } from '~/components/shorthand'
 import { useUpdateDetailModal } from '~/components/update-detail-modal'
 import { checkUpdateFromGitHub } from '~/external/api/github-check-update'
+import { aggregateApi } from '~/api/aggregate'
 import { usePortalElement } from '~/hooks/use-portal-element'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { useLayout } from '~/layouts/content'
 import { RouteName } from '~/router/name'
 import { AppStore } from '~/stores/app'
 import { UserStore } from '~/stores/user'
-import { parseDate, RESTManager } from '~/utils'
+import { parseDate } from '~/utils'
 import { isNewerVersion } from '~/utils/version'
 
 import PKG from '../../../package.json'
@@ -235,8 +236,8 @@ export const DashBoardView = defineComponent({
     )
     const statTime = ref(null as unknown as Date)
     const fetchStat = async () => {
-      const counts = (await RESTManager.api.aggregate.stat.get()) as any
-      stat.value = counts
+      const counts = await aggregateApi.getStat()
+      stat.value = counts as any
       statTime.value = new Date()
     }
 
@@ -246,35 +247,20 @@ export const DashBoardView = defineComponent({
       totalReads: 0,
       siteLikeCount: 0,
     })
-    const fetchSiteWordCount = async () => {
-      return await RESTManager.api.aggregate.count_site_words.get<{
-        data: { length: number }
-      }>()
-    }
-
-    const fetchReadAndLikeCounts = async () => {
-      return await RESTManager.api.aggregate.count_read_and_like.get<{
-        totalLikes: number
-        totalReads: number
-      }>()
-    }
-
-    const fetchSiteLikeCount = async () => {
-      return await RESTManager.api('like_this').get<number>()
-    }
 
     onMounted(async () => {
-      const [c, rl, sl] = await Promise.all([
-        fetchSiteWordCount(),
-        fetchReadAndLikeCounts(),
-        fetchSiteLikeCount(),
+      const [wordCountRes, readLikeRes, siteLikeCount] = await Promise.all([
+        aggregateApi.countSiteWords(),
+        aggregateApi.countReadAndLike(),
+        aggregateApi.getSiteLikeCount(),
       ])
-      siteWordCount.value = c.data.length
+
+      siteWordCount.value = wordCountRes.data.totalWordCount
 
       readAndLikeCounts.value = {
-        totalLikes: rl.totalLikes,
-        totalReads: rl.totalReads,
-        siteLikeCount: sl,
+        totalLikes: readLikeRes.data.totalLike,
+        totalReads: readLikeRes.data.totalRead,
+        siteLikeCount,
       }
     })
 
@@ -592,7 +578,7 @@ export const DashBoardView = defineComponent({
                 {
                   name: '清除 API 缓存',
                   onClick: () => {
-                    RESTManager.api.clean_catch.get().then(() => {
+                    aggregateApi.cleanCache().then(() => {
                       message.success('清除成功')
                     })
                   },
@@ -600,7 +586,7 @@ export const DashBoardView = defineComponent({
                 {
                   name: '清除数据缓存',
                   onClick: () => {
-                    RESTManager.api.clean_redis.get().then(() => {
+                    aggregateApi.cleanRedis().then(() => {
                       message.success('清除成功')
                     })
                   },

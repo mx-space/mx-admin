@@ -6,7 +6,7 @@
 
 import { Settings as SettingsIcon } from 'lucide-vue-next'
 import { NCard, NElement, NForm, NModal } from 'naive-ui'
-import { computed, defineComponent, onUnmounted, ref } from 'vue'
+import { computed, defineComponent, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import type { PropType, VNode } from 'vue'
 import type { EditorRef } from '../universal/types'
 
@@ -45,6 +45,11 @@ export const WriteEditor = defineComponent({
     // 副标题区域插槽（Slug、Subtitle 等）
     subtitleSlot: {
       type: [Object, Function] as PropType<VNode | (() => VNode)>,
+    },
+    // 自动聚焦目标: 'title' | 'content' | false
+    autoFocus: {
+      type: [String, Boolean] as PropType<'title' | 'content' | false>,
+      default: false,
     },
   },
   expose: ['setValue'],
@@ -106,11 +111,49 @@ export const WriteEditor = defineComponent({
     })
 
     const cmRef = ref<EditorRef>()
+    const titleInputRef = ref<{ focus: () => void }>()
 
     expose({
       setValue: (value: string) => {
         cmRef.value?.setValue(value)
       },
+      focusTitle: () => {
+        titleInputRef.value?.focus()
+      },
+      focusContent: () => {
+        cmRef.value?.focus()
+      },
+    })
+
+    // 处理自动聚焦
+    const handleAutoFocus = () => {
+      if (!props.autoFocus) return
+
+      nextTick(() => {
+        if (props.autoFocus === 'title') {
+          titleInputRef.value?.focus()
+        } else if (props.autoFocus === 'content') {
+          cmRef.value?.focus()
+        }
+      })
+    }
+
+    // 监听 loading 状态变化，在加载完成后执行聚焦
+    watch(
+      () => props.loading,
+      (loading, prevLoading) => {
+        // 从 loading 变为非 loading 时执行聚焦
+        if (prevLoading && !loading) {
+          handleAutoFocus()
+        }
+      },
+    )
+
+    // 如果初始状态就不是 loading，在 mounted 时执行聚焦
+    onMounted(() => {
+      if (!props.loading) {
+        handleAutoFocus()
+      }
     })
 
     // 计算副标题内容
@@ -142,6 +185,7 @@ export const WriteEditor = defineComponent({
             {/* Title 区域 */}
             <div class="write-editor-header">
               <GhostInput
+                ref={titleInputRef}
                 value={props.title}
                 onChange={props.onTitleChange}
                 placeholder={props.titlePlaceholder}

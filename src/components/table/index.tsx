@@ -122,7 +122,7 @@ export const Table = defineComponent({
           pagination={
             noPagination
               ? undefined
-              : pager && {
+              : pager?.value && {
                   page: pager.value.currentPage,
                   pageSize: pager.value.size,
                   pageCount: pager.value.totalPage,

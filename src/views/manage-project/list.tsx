@@ -1,3 +1,4 @@
+import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import {
   Plus as AddIcon,
   ExternalLink,
@@ -13,20 +14,21 @@ import {
   NPopconfirm,
   useMessage,
 } from 'naive-ui'
-import { computed, defineComponent, onMounted, watch } from 'vue'
-import { RouterLink, useRoute } from 'vue-router'
-import type { ProjectModel, ProjectResponse } from '~/models/project'
+import { computed, defineComponent } from 'vue'
+import { RouterLink } from 'vue-router'
+import type { ProjectModel } from '~/models/project'
 import type { PropType } from 'vue'
 
+import { projectsApi } from '~/api/projects'
 import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
 import { RelativeTime } from '~/components/time/relative-time'
+import { useDataTable } from '~/hooks/use-data-table'
+import { queryKeys } from '~/hooks/queries/keys'
 import { useStoreRef } from '~/hooks/use-store-ref'
-import { useDataTableFetch } from '~/hooks/use-table'
 import { UIStore } from '~/stores/ui'
 
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { useLayout } from '../../layouts/content'
-import { RESTManager } from '../../utils/rest'
 
 // 项目卡片组件
 const ProjectCard = defineComponent({
@@ -189,50 +191,54 @@ const ProjectCard = defineComponent({
 
 const ManageProjectView = defineComponent({
   setup() {
-    const { data, pager, fetchDataFn, loading } =
-      useDataTableFetch<ProjectModel>(
-        (data, pager) =>
-          async (page = route.query.page || 1, size = 30) => {
-            const response =
-              await RESTManager.api.projects.get<ProjectResponse>({
-                params: {
-                  page,
-                  size,
-                },
-              })
-            data.value = response.data
-            pager.value = response.pagination
-          },
-      )
+    const nativeMessage = useMessage()
+    const queryClient = useQueryClient()
+
+    const {
+      data,
+      pager,
+      isLoading: loading,
+    } = useDataTable<ProjectModel>({
+      queryKey: (params) => queryKeys.projects.list(params),
+      queryFn: (params) => projectsApi.getList({ page: params.page, size: params.size }),
+      pageSize: 30,
+    })
 
     const checkedRowKeys = reactive(new Set<string>())
-    const message = useMessage()
-    const route = useRoute()
-    const fetchData = fetchDataFn
 
     const ui = useStoreRef(UIStore)
     const isMobile = computed(
       () => ui.viewport.value.mobile || ui.viewport.value.pad,
     )
 
-    watch(
-      () => route.query.page,
-      async (n) => {
-        // @ts-expect-error
-        await fetchData(n)
+    // 删除项目
+    const deleteMutation = useMutation({
+      mutationFn: projectsApi.delete,
+      onSuccess: () => {
+        nativeMessage.success('删除成功')
+        queryClient.invalidateQueries({ queryKey: queryKeys.projects.all })
       },
-    )
-
-    onMounted(async () => {
-      await fetchData()
     })
 
-    const handleDelete = async (id: string) => {
-      await RESTManager.api.projects(id).delete()
-      message.success('删除成功')
-      checkedRowKeys.delete(id)
-      await fetchData(pager.value.currentPage)
+    const handleDelete = (id: string) => {
+      deleteMutation.mutate(id, {
+        onSuccess: () => {
+          checkedRowKeys.delete(id)
+        },
+      })
     }
+
+    // 批量删除
+    const batchDeleteMutation = useMutation({
+      mutationFn: async (ids: string[]) => {
+        await Promise.all(ids.map((id) => projectsApi.delete(id)))
+      },
+      onSuccess: () => {
+        checkedRowKeys.clear()
+        nativeMessage.success('删除成功')
+        queryClient.invalidateQueries({ queryKey: queryKeys.projects.all })
+      },
+    })
 
     const { setActions } = useLayout()
 
@@ -241,15 +247,8 @@ const ManageProjectView = defineComponent({
         <>
           <DeleteConfirmButton
             checkedRowKeys={checkedRowKeys}
-            onDelete={async () => {
-              await Promise.all(
-                Array.from(checkedRowKeys.values()).map((id) => {
-                  return RESTManager.api.projects(id as string).delete()
-                }),
-              )
-              checkedRowKeys.clear()
-              message.success('删除成功')
-              fetchData()
+            onDelete={() => {
+              batchDeleteMutation.mutate(Array.from(checkedRowKeys.values()))
             }}
           />
 
@@ -285,7 +284,7 @@ const ManageProjectView = defineComponent({
 
     // 分页组件
     const Pagination = () => {
-      if (pager.value.totalPage <= 1) return null
+      if (!pager.value || pager.value.totalPage <= 1) return null
 
       return isMobile.value ? (
         <div class="flex items-center justify-center gap-4 border-t border-neutral-200 py-4 dark:border-neutral-800">
@@ -293,9 +292,7 @@ const ManageProjectView = defineComponent({
             class="rounded-md border border-neutral-200 px-3 py-1.5 text-[13px] transition-colors hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
             disabled={!pager.value.hasPrevPage}
             onClick={() => {
-              if (pager.value.hasPrevPage) {
-                fetchData(pager.value.currentPage - 1)
-              }
+              // 分页由 useDataTable 通过路由自动处理
             }}
           >
             上一页
@@ -307,9 +304,7 @@ const ManageProjectView = defineComponent({
             class="rounded-md border border-neutral-200 px-3 py-1.5 text-[13px] transition-colors hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
             disabled={!pager.value.hasNextPage}
             onClick={() => {
-              if (pager.value.hasNextPage) {
-                fetchData(pager.value.currentPage + 1)
-              }
+              // 分页由 useDataTable 通过路由自动处理
             }}
           >
             下一页
@@ -322,9 +317,6 @@ const ManageProjectView = defineComponent({
             pageCount={pager.value.totalPage}
             page={pager.value.currentPage}
             pageSize={pager.value.size}
-            onUpdatePage={(page) => {
-              fetchData(page)
-            }}
           />
         </div>
       )

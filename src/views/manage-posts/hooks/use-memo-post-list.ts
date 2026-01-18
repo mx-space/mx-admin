@@ -1,8 +1,7 @@
 import type { Category, PostModel } from '~/models/post'
 
-import { RESTManager } from '~/utils'
-
-import { createMemoDataListFetchHook } from '../../../hooks/use-memo-fetch-data-list'
+import { postsApi } from '~/api'
+import { createMemoDataListFetchHook } from '~/hooks/use-memo-fetch-data-list'
 
 export const useMemoPostList = createMemoDataListFetchHook<
   {
@@ -13,11 +12,9 @@ export const useMemoPostList = createMemoDataListFetchHook<
   },
   PostModel
 >((page) =>
-  RESTManager.api.posts.get({
-    params: {
-      page,
-      size: 50,
-      select: 'id title nid _id slug category categoryId',
-    },
+  postsApi.getList({
+    page,
+    size: 50,
+    select: 'id title nid _id slug category categoryId',
   }),
 )

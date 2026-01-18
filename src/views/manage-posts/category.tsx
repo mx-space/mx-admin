@@ -1,3 +1,4 @@
+import { useMutation } from '@tanstack/vue-query'
 import {
   Plus as AddIcon,
   FolderOpen,
@@ -17,64 +18,86 @@ import {
   NSkeleton,
   useMessage,
 } from 'naive-ui'
-import { defineComponent, onMounted, reactive, ref, watch } from 'vue'
+import { computed, defineComponent, reactive, ref, watch, watchEffect } from 'vue'
 import { RouterLink } from 'vue-router'
 import type { TagModel } from '~/models/category'
-import type { PostModel } from '~/models/post'
 import type { Ref } from 'vue'
 
+import { categoriesApi } from '~/api/categories'
 import { HeaderActionButton } from '~/components/button/rounded-button'
+import {
+  useTagsQuery,
+  usePostsByTagQuery,
+} from '~/hooks/queries/use-categories'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { useLayout } from '~/layouts/content'
 import { CategoryStore } from '~/stores/category'
-import { RESTManager } from '~/utils/rest'
 
 export const CategoryView = defineComponent((_props) => {
   const categoryStore = useStoreRef(CategoryStore)
+  const nativeMessage = useMessage()
 
-  const tags = reactive<TagModel[]>([])
+  // 获取标签列表
+  const { data: tagsData, isLoading: tagsLoading } = useTagsQuery()
+  const tags = computed(() => tagsData.value?.data ?? [])
+
+  // 选中的标签
+  const checkedTag = ref('')
+
+  // 获取标签关联的文章
+  const { data: tagPostsData, isLoading: tagPostsLoading } = usePostsByTagQuery(checkedTag)
+  const checkedTagPosts = computed(() => tagPostsData.value?.data ?? [])
+
+  // 分类列表加载
   const loading = ref(true)
-  const tagsLoading = ref(true)
   const fetchCategory = categoryStore.fetch
 
-  const message = useMessage()
-  onMounted(async () => {
+  watchEffect(async () => {
     loading.value = true
-    tagsLoading.value = true
     await fetchCategory()
     loading.value = false
-    const { data: $tags } = (await RESTManager.api.categories.get({
-      params: { type: 'tag' },
-    })) as any
-
-    tags.push(...$tags)
-    tagsLoading.value = false
   })
-
-  const checkedTag = ref('')
-  const checkedTagPosts = reactive<PostModel[]>([])
-  const tagPostsLoading = ref(false)
-
-  watch(
-    () => checkedTag.value,
-    async (name) => {
-      if (!name) {
-        checkedTagPosts.length = 0
-        return
-      }
-      tagPostsLoading.value = true
-      const res = (await RESTManager.api
-        .categories(name)
-        .get({ params: { tag: 'true' } })) as any
-      checkedTagPosts.length = 0
-      checkedTagPosts.push(...res.data)
-      tagPostsLoading.value = false
-    },
-  )
 
   const showDialog = ref<boolean | string>(false)
   const resetState = () => ({ name: '', slug: '' })
   const editCategoryState = ref<CategoryState>(resetState())
+
+  // 删除分类 mutation
+  const deleteMutation = useMutation({
+    mutationFn: categoriesApi.delete,
+    onSuccess: async () => {
+      nativeMessage.success('删除成功')
+      await categoryStore.fetch(true)
+    },
+  })
+
+  // 创建分类 mutation
+  const createMutation = useMutation({
+    mutationFn: categoriesApi.create,
+    onSuccess: (payload) => {
+      nativeMessage.success('创建成功')
+      categoryStore.data.value!.push(payload.data)
+      showDialog.value = false
+    },
+  })
+
+  // 更新分类 mutation
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: { name: string; slug: string; type: number } }) =>
+      categoriesApi.update(id, data),
+    onSuccess: (_, { id, data }) => {
+      nativeMessage.success('修改成功')
+      const index = categoryStore.data.value!.findIndex((i) => i.id == id)
+      if (index !== -1) {
+        categoryStore.data.value![index] = {
+          ...categoryStore.data.value![index],
+          name: data.name,
+          slug: data.slug,
+        }
+      }
+      showDialog.value = false
+    },
+  })
 
   const { setActions } = useLayout()
   setActions(
@@ -128,11 +151,7 @@ export const CategoryView = defineComponent((_props) => {
                     showDialog.value = id
                   }
                 }}
-                onDelete={async (id) => {
-                  await RESTManager.api.categories(id).delete()
-                  message.success('删除成功')
-                  await categoryStore.fetch(true)
-                }}
+                onDelete={(id) => deleteMutation.mutate(id)}
               />
             ))}
           </div>
@@ -147,17 +166,17 @@ export const CategoryView = defineComponent((_props) => {
             标签
           </h2>
           <span class="rounded-full bg-neutral-100 px-2 py-0.5 text-xs text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">
-            {tags.length}
+            {tags.value.length}
           </span>
         </div>
 
         {tagsLoading.value ? (
           <TagListSkeleton />
-        ) : tags.length === 0 ? (
+        ) : tags.value.length === 0 ? (
           <TagEmptyState />
         ) : (
           <div class="flex flex-wrap gap-2">
-            {tags.map((tag) => (
+            {tags.value.map((tag) => (
               <TagChip
                 key={tag.name}
                 tag={tag}
@@ -185,11 +204,11 @@ export const CategoryView = defineComponent((_props) => {
                   />
                 ))}
               </div>
-            ) : checkedTagPosts.length === 0 ? (
+            ) : checkedTagPosts.value.length === 0 ? (
               <p class="text-sm text-neutral-500">暂无关联文章</p>
             ) : (
               <div class="overflow-hidden rounded-lg border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
-                {checkedTagPosts.map((post) => (
+                {checkedTagPosts.value.map((post) => (
                   <RouterLink
                     key={post.id}
                     to={`/posts/edit?id=${post.id}`}
@@ -212,35 +231,14 @@ export const CategoryView = defineComponent((_props) => {
       {/* 编辑 Modal */}
       <EditCategoryDialog
         show={showDialog}
-        onSubmit={async (state) => {
+        onSubmit={(state) => {
           const { name, slug } = state
           const id =
             typeof showDialog.value == 'string' ? showDialog.value : null
           if (!id) {
-            const payload = (await RESTManager.api.categories.post({
-              data: {
-                name,
-                slug,
-              },
-            })) as any
-            message.success('创建成功')
-            categoryStore.data.value!.push(payload.data)
+            createMutation.mutate({ name, slug })
           } else {
-            await RESTManager.api.categories(id).put({
-              data: {
-                name,
-                slug,
-                type: 0,
-              },
-            })
-
-            message.success('修改成功')
-
-            const index = categoryStore.data.value!.findIndex((i) => i.id == id)
-            categoryStore.data.value![index] = {
-              ...categoryStore.data.value![index],
-              ...state,
-            }
+            updateMutation.mutate({ id, data: { name, slug, type: 0 } })
           }
         }}
         initialState={editCategoryState.value}

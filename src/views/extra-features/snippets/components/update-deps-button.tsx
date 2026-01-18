@@ -2,9 +2,9 @@ import { ArrowUpCircle as UpgradeIcon } from 'lucide-vue-next'
 import { NButton, NCard, NDataTable, NModal } from 'naive-ui'
 import type { NpmPKGInfo } from '~/external/types/npm-pkg'
 
+import { dependenciesApi } from '~/api'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { getNpmPKGLatest } from '~/external/api/npm'
-import { RESTManager } from '~/utils'
 
 import { InstallDepsXterm } from './install-dep-xterm'
 
@@ -13,9 +13,7 @@ const useFetchDependencyGraph = () => {
     dependencies: {},
   })
   const fetchDependencyGraph = async () => {
-    const data = await RESTManager.api.dependencies.graph.get<any>({
-      transform: false,
-    })
+    const data = await dependenciesApi.getGraph()
 
     dependencyGraph.value = { ...data }
   }

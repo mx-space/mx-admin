@@ -12,7 +12,6 @@ import {
   reactive,
   ref,
   toRaw,
-  watch,
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { PageModel } from '~/models/page'
@@ -29,11 +28,12 @@ import { SlugInput } from '~/components/editor/write-editor/slug-input'
 import { ParseContentButton } from '~/components/special-button/parse-content'
 import { HeaderPreviewButton } from '~/components/special-button/preview'
 import { WEB_URL } from '~/constants/env'
-import { useAutoSave, useAutoSaveInEditor } from '~/hooks/use-auto-save'
+import { useServerDraft } from '~/hooks/use-server-draft'
+import { DraftRefType } from '~/models/draft'
+import { pagesApi, type CreatePageData } from '~/api/pages'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
 import { useLayout } from '~/layouts/content'
 import { RouteName } from '~/router/name'
-import { RESTManager } from '~/utils/rest'
 
 type PageReactiveType = WriteBaseType & {
   subtitle: string
@@ -65,46 +65,140 @@ const PageWriteView = defineComponent(() => {
   const parsePayloadIntoReactiveData = (payload: PageModel) =>
     useParsePayloadIntoData(data)(payload)
   const data = reactive<PageReactiveType>(resetReactive())
-  const id = computed(() => route.query.id)
+  const id = computed(() => route.query.id as string | undefined)
+  const draftIdFromRoute = computed(
+    () => route.query.draftId as string | undefined,
+  )
 
   const loading = computed(() => !!(id.value && typeof data.id === 'undefined'))
 
-  const autoSaveHook = useAutoSave(`page-${id.value || 'new'}`, 3000, () => ({
-    text: data.text,
-    title: data.title,
-  }))
+  const router = useRouter()
 
-  const autoSaveInEditor = useAutoSaveInEditor(data, autoSaveHook)
+  // 服务端草稿 hook
+  const serverDraft = useServerDraft(DraftRefType.Page, {
+    refId: id.value,
+    draftId: draftIdFromRoute.value,
+    interval: 10000,
+    getData: () => ({
+      title: data.title,
+      text: data.text,
+      images: data.images,
+      meta: data.meta,
+      typeSpecificData: {
+        slug: data.slug,
+        subtitle: data.subtitle,
+        order: data.order,
+      },
+    }),
+  })
 
-  const disposer = watch(
-    () => loading.value,
-    (loading) => {
-      if (loading) {
-        return
-      }
-
-      autoSaveInEditor.enable()
-      requestAnimationFrame(() => {
-        disposer()
-      })
-    },
-    { immediate: true },
-  )
+  const draftInitialized = ref(false)
 
   onMounted(async () => {
     const $id = id.value
-    if ($id && typeof $id == 'string') {
-      const payload = (await RESTManager.api.pages($id).get({})) as any
+    const $draftId = draftIdFromRoute.value
 
-      const data = payload.data
-      parsePayloadIntoReactiveData(data as PageModel)
+    // 场景1：通过 draftId 加载草稿
+    if ($draftId) {
+      const draft = await serverDraft.loadDraftById($draftId)
+      if (draft) {
+        data.title = draft.title
+        data.text = draft.text
+        data.images = draft.images || []
+        data.meta = draft.meta
+        if (draft.typeSpecificData) {
+          const specific = draft.typeSpecificData
+          data.slug = specific.slug || ''
+          data.subtitle = specific.subtitle || ''
+          data.order = specific.order ?? 0
+        }
+        serverDraft.syncMemory()
+        serverDraft.startAutoSave()
+        draftInitialized.value = true
+        return
+      }
     }
+
+    // 场景2：编辑已发布页面
+    if ($id && typeof $id == 'string') {
+      const payload = (await pagesApi.getById($id)) as any
+
+      const pageData = payload.data
+      parsePayloadIntoReactiveData(pageData as PageModel)
+
+      // 检查是否有关联的草稿
+      const relatedDraft = await serverDraft.loadDraftByRef(
+        DraftRefType.Page,
+        $id,
+      )
+      if (relatedDraft) {
+        window.dialog.info({
+          title: '检测到未保存的草稿',
+          content: `上次保存时间: ${new Date(relatedDraft.updated).toLocaleString()}`,
+          negativeText: '使用已发布版本',
+          positiveText: '恢复草稿',
+          onNegativeClick() {
+            serverDraft.syncMemory()
+            serverDraft.startAutoSave()
+          },
+          onPositiveClick() {
+            data.title = relatedDraft.title
+            data.text = relatedDraft.text
+            data.images = relatedDraft.images || []
+            data.meta = relatedDraft.meta
+            if (relatedDraft.typeSpecificData) {
+              const specific = relatedDraft.typeSpecificData
+              data.slug = specific.slug || data.slug
+              data.subtitle = specific.subtitle || data.subtitle
+              data.order = specific.order ?? data.order
+            }
+            serverDraft.syncMemory()
+            serverDraft.startAutoSave()
+          },
+        })
+      } else {
+        serverDraft.syncMemory()
+        serverDraft.startAutoSave()
+      }
+
+      draftInitialized.value = true
+      return
+    }
+
+    // 场景3：新建入口
+    const pendingDrafts = await serverDraft.getNewDrafts(DraftRefType.Page)
+    if (pendingDrafts.length > 0) {
+      window.dialog.info({
+        title: '发现未完成的草稿',
+        content: `你有 ${pendingDrafts.length} 个未完成的页面草稿，是否继续编辑？`,
+        negativeText: '创建新草稿',
+        positiveText: '继续编辑',
+        async onNegativeClick() {
+          const newDraft = await serverDraft.createDraft()
+          if (newDraft) {
+            router.replace({ query: { draftId: newDraft.id } })
+          }
+          serverDraft.startAutoSave()
+        },
+        onPositiveClick() {
+          const firstDraft = pendingDrafts[0]
+          router.replace({ query: { draftId: firstDraft.id } })
+        },
+      })
+    } else {
+      const newDraft = await serverDraft.createDraft()
+      if (newDraft) {
+        router.replace({ query: { draftId: newDraft.id } })
+      }
+      serverDraft.startAutoSave()
+    }
+
+    draftInitialized.value = true
   })
 
   const drawerShow = ref(false)
 
   const message = useMessage()
-  const router = useRouter()
 
   const handleSubmit = async () => {
     const parseDataToPayload = (): { [key in keyof PageModel]?: any } => {
@@ -132,20 +226,16 @@ const PageWriteView = defineComponent(() => {
         return
       }
       const $id = id.value as string
-      await RESTManager.api.pages($id).put({
-        data: parseDataToPayload(),
-      })
+      await pagesApi.update($id, parseDataToPayload())
       message.success('修改成功')
     } else {
       // create
-      await RESTManager.api.pages.post({
-        data: parseDataToPayload(),
-      })
+      await pagesApi.create(parseDataToPayload() as CreatePageData)
       message.success('发布成功')
     }
 
     router.push({ name: RouteName.ListPage, hash: '|publish' })
-    autoSaveInEditor.clearSaved()
+    // 草稿保留作为历史记录
   }
 
   // 设置 layout 状态
@@ -189,6 +279,7 @@ const PageWriteView = defineComponent(() => {
       <WriteEditor
         key={data.id}
         loading={loading.value}
+        autoFocus={id.value ? 'content' : 'title'}
         title={data.title}
         onTitleChange={(v) => {
           data.title = v

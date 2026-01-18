@@ -3,11 +3,10 @@ import { RouterLink, useRoute } from 'vue-router'
 import type { CSSProperties } from 'vue'
 
 import { KBarWrapper } from '~/components/k-bar'
-import { GATEWAY_URL } from '~/constants/env'
+import { API_URL, GATEWAY_URL } from '~/constants/env'
 import { ContentLayout } from '~/layouts/content'
 import $RouterView from '~/layouts/router-view'
 import { LayoutStore } from '~/stores/layout'
-import { RESTManager } from '~/utils'
 
 import { Sidebar } from '../../components/sidebar'
 import { useStoreRef } from '../../hooks/use-store-ref'
@@ -88,7 +87,7 @@ export const SidebarLayout = defineComponent({
                     >
                       setup-api
                     </RouterLink>
-                    | Endpoint: {RESTManager.endpoint} | Gateway: {GATEWAY_URL}
+                    | Endpoint: {API_URL} | Gateway: {GATEWAY_URL}
                     {window.injectData.PAGE_PROXY && ' | Local dev mode'}
                   </div>
                 )}

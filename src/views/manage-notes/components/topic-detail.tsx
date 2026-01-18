@@ -2,6 +2,7 @@
  * Topic Detail Drawer
  * 专栏详情抽屉 - 展示专栏信息和关联文章
  */
+import { useMutation } from '@tanstack/vue-query'
 import { ExternalLink, Hash, Pencil, Plus, X } from 'lucide-vue-next'
 import {
   NButton,
@@ -13,13 +14,15 @@ import {
   NUploadDragger,
 } from 'naive-ui'
 import { useRouter } from 'vue-router'
-import type { NoteModel, Pager, PaginateResult } from '@mx-space/api-client'
+import type { Pager } from '@mx-space/api-client'
+import type { NoteModel } from '~/models/note'
 import type { TopicModel } from '~/models/topic'
 import type { PropType } from 'vue'
 
+import { notesApi } from '~/api/notes'
+import { topicsApi } from '~/api/topics'
 import { RelativeTime } from '~/components/time/relative-time'
 import { UploadWrapper } from '~/components/upload'
-import { RESTManager } from '~/utils'
 import { buildMarkdownRenderUrl } from '~/utils/endpoint'
 import { textToBigCharOrWord } from '~/utils/word'
 
@@ -60,7 +63,7 @@ export const TopicDetailDrawer = defineComponent({
     const fetchTopicDetail = async (id: string) => {
       loadingTopic.value = true
       try {
-        const data = await RESTManager.api.topics(id).get<TopicModel>()
+        const data = await topicsApi.getById(id)
         topic.value = data
         await fetchTopicNotes(id)
       } finally {
@@ -71,11 +74,7 @@ export const TopicDetailDrawer = defineComponent({
     const fetchTopicNotes = async (topicId: string, page = 1, size = 10) => {
       loadingNotes.value = true
       try {
-        const { data, pagination } = await RESTManager.api.notes
-          .topics(topicId)
-          .get<PaginateResult<Partial<NoteModel>>>({
-            params: { page, size },
-          })
+        const { data, pagination } = await notesApi.getByTopic(topicId, { page, size })
         notes.value = data as any
         notePagination.value = pagination
       } finally {
@@ -83,23 +82,36 @@ export const TopicDetailDrawer = defineComponent({
       }
     }
 
-    const handleRemoveNoteFromTopic = async (noteId: string) => {
-      await RESTManager.api.notes(noteId).patch({
-        data: { topicId: null },
-      })
-      message.success('已移除文章的专栏引用')
-      const index = notes.value.findIndex((note) => note.id === noteId)
-      if (index !== -1) {
-        notes.value.splice(index, 1)
-      }
+    // 从专栏移除文章
+    const removeNoteMutation = useMutation({
+      mutationFn: (noteId: string) => notesApi.patch(noteId, { topicId: null }),
+      onSuccess: (_, noteId) => {
+        message.success('已移除文章的专栏引用')
+        const index = notes.value.findIndex((note) => note.id === noteId)
+        if (index !== -1) {
+          notes.value.splice(index, 1)
+        }
+      },
+    })
+
+    const handleRemoveNoteFromTopic = (noteId: string) => {
+      removeNoteMutation.mutate(noteId)
     }
 
-    const handleUpdateTopicIcon = async (iconUrl: string) => {
+    // 更新专栏图标
+    const updateIconMutation = useMutation({
+      mutationFn: ({ id, icon }: { id: string; icon: string }) =>
+        topicsApi.patch(id, { icon }),
+      onSuccess: (_, { icon }) => {
+        if (topic.value) {
+          topic.value.icon = icon
+        }
+      },
+    })
+
+    const handleUpdateTopicIcon = (iconUrl: string) => {
       if (!topic.value) return
-      await RESTManager.api.topics(topic.value.id).patch({
-        data: { icon: iconUrl },
-      })
-      topic.value.icon = iconUrl
+      updateIconMutation.mutate({ id: topic.value.id!, icon: iconUrl })
     }
 
     // 当 show 或 topicId 变化时获取数据
@@ -470,9 +482,7 @@ const AddNoteToTopicModal = defineComponent({
       try {
         await Promise.all(
           selectedNoteIds.value.map((noteId) =>
-            RESTManager.api.notes(noteId).patch({
-              data: { topicId: props.topicId },
-            }),
+            notesApi.patch(noteId, { topicId: props.topicId }),
           ),
         )
         message.success('添加成功')

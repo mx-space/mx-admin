@@ -3,12 +3,12 @@ import { NGi, useMessage } from 'naive-ui'
 
 import { useLocalStorage } from '@vueuse/core'
 
+import { debugApi } from '~/api'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { FunctionCodeEditor } from '~/components/function-editor'
 import { useLayout } from '~/layouts/content'
 import { TwoColGridLayout } from '~/layouts/two-col'
 import { defaultServerlessFunction } from '~/models/snippet'
-import { RESTManager } from '~/utils'
 
 export default defineComponent({
   setup() {
@@ -19,14 +19,12 @@ export default defineComponent({
     const errorMsg = ref('')
     const runTest = async () => {
       try {
-        const res = await RESTManager.api.debug.function.post<any>({
-          data: {
-            function: value.value,
-          },
-          errorHandler: (err) => {
-            errorMsg.value = `Error: ${err.data.message}`
-            message.error(err.data.message)
-          },
+        const res = await debugApi.executeFunction({
+          function: value.value,
+        }).catch((err) => {
+          errorMsg.value = `Error: ${err.message || err.data?.message || 'Unknown error'}`
+          message.error(err.message || err.data?.message || 'Unknown error')
+          throw err
         })
 
         import('monaco-editor').then((mo) => {

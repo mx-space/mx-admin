@@ -22,7 +22,6 @@ import {
   reactive,
   ref,
   toRaw,
-  watch,
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { PaginateResult } from '@mx-space/api-client'
@@ -46,11 +45,13 @@ import { ParseContentButton } from '~/components/special-button/parse-content'
 import { HeaderPreviewButton } from '~/components/special-button/preview'
 import { WEB_URL } from '~/constants/env'
 import { MOOD_SET, WEATHER_SET } from '~/constants/note'
-import { useAutoSave, useAutoSaveInEditor } from '~/hooks/use-auto-save'
+import { useServerDraft } from '~/hooks/use-server-draft'
+import { DraftRefType } from '~/models/draft'
+import { notesApi, type CreateNoteData } from '~/api/notes'
+import { topicsApi } from '~/api/topics'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
 import { useLayout } from '~/layouts/content'
 import { RouteName } from '~/router/name'
-import { RESTManager } from '~/utils/rest'
 import { getDayOfYear } from '~/utils/time'
 
 type NoteReactiveType = {
@@ -70,13 +71,9 @@ const useNoteTopic = () => {
   const topics = ref([] as TopicModel[])
 
   const fetchTopic = async () => {
-    const { data } = await RESTManager.api.topics.get<
-      PaginateResult<TopicModel>
-    >({
-      params: {
-        // TODO
-        size: 50,
-      },
+    const { data } = await topicsApi.getList({
+      // TODO
+      size: 50,
     })
 
     topics.value = data
@@ -130,62 +127,174 @@ const NoteWriteView = defineComponent(() => {
     useParsePayloadIntoData(data)(payload)
   const data = reactive<NoteReactiveType>(resetReactive())
   const nid = ref<number>()
+  const draftIdFromRoute = computed(
+    () => route.query.draftId as string | undefined,
+  )
 
   const loading = computed(() => !!(id.value && typeof data.id === 'undefined'))
 
-  const autoSaveHook = useAutoSave(`note-${id.value || 'new'}`, 3000, () => ({
-    text: data.text,
-    title: data.title,
-  }))
+  // 服务端草稿 hook
+  const serverDraft = useServerDraft(DraftRefType.Note, {
+    refId: id.value as string | undefined,
+    draftId: draftIdFromRoute.value,
+    interval: 10000,
+    getData: () => ({
+      title: data.title,
+      text: data.text,
+      images: data.images,
+      meta: data.meta,
+      typeSpecificData: {
+        mood: data.mood,
+        weather: data.weather,
+        password: data.password,
+        publicAt: data.publicAt?.toISOString() || null,
+        bookmark: data.bookmark,
+        location: data.location,
+        coordinates: data.coordinates,
+        topicId: data.topicId,
+        isPublished: data.isPublished,
+      },
+    }),
+  })
 
-  const autoSaveInEditor = useAutoSaveInEditor(data, autoSaveHook)
+  const draftInitialized = ref(false)
 
-  const disposer = watch(
-    () => loading.value,
-    (loading) => {
-      if (loading) {
-        return
-      }
-
-      autoSaveInEditor.enable()
-      requestAnimationFrame(() => {
-        disposer()
-      })
-    },
-    { immediate: true },
-  )
+  const router = useRouter()
 
   onMounted(async () => {
     const $id = id.value
+    const $draftId = draftIdFromRoute.value
+
+    // 场景1：通过 draftId 加载草稿
+    if ($draftId) {
+      const draft = await serverDraft.loadDraftById($draftId)
+      if (draft) {
+        data.title = draft.title
+        data.text = draft.text
+        data.images = draft.images || []
+        data.meta = draft.meta
+        if (draft.typeSpecificData) {
+          const specific = draft.typeSpecificData
+          data.mood = specific.mood || ''
+          data.weather = specific.weather || ''
+          data.password = specific.password || null
+          data.publicAt = specific.publicAt ? new Date(specific.publicAt) : null
+          data.bookmark = specific.bookmark ?? false
+          data.location = specific.location || ''
+          data.coordinates = specific.coordinates || null
+          data.topicId = specific.topicId || null
+          data.isPublished = specific.isPublished ?? true
+        }
+        serverDraft.syncMemory()
+        serverDraft.startAutoSave()
+        draftInitialized.value = true
+        return
+      }
+    }
+
+    // 场景2：编辑已发布手记
     if ($id && typeof $id == 'string') {
-      const payload = (await RESTManager.api.notes($id).get({
-        params: {
-          single: true,
-        },
+      const payload = (await notesApi.getById($id, {
+        single: true,
       })) as any
 
-      const data = payload.data
+      const noteData = payload.data
 
-      if (data.topic) {
-        topics.value.push(data.topic)
+      if (noteData.topic) {
+        topics.value.push(noteData.topic)
       }
 
-      nid.value = data.nid
-      data.secret = data.secret ? new Date(data.secret) : null
+      nid.value = noteData.nid
+      noteData.secret = noteData.secret ? new Date(noteData.secret) : null
 
-      const created = new Date((data as any).created)
+      const created = new Date((noteData as any).created)
       defaultTitle.value = `记录 ${created.getFullYear()} 年第 ${getDayOfYear(
         created,
       )} 天`
 
-      parsePayloadIntoReactiveData(data as NoteModel)
+      parsePayloadIntoReactiveData(noteData as NoteModel)
+
+      // 检查是否有关联的草稿
+      const relatedDraft = await serverDraft.loadDraftByRef(
+        DraftRefType.Note,
+        $id,
+      )
+      if (relatedDraft) {
+        window.dialog.info({
+          title: '检测到未保存的草稿',
+          content: `上次保存时间: ${new Date(relatedDraft.updated).toLocaleString()}`,
+          negativeText: '使用已发布版本',
+          positiveText: '恢复草稿',
+          onNegativeClick() {
+            serverDraft.syncMemory()
+            serverDraft.startAutoSave()
+          },
+          onPositiveClick() {
+            data.title = relatedDraft.title
+            data.text = relatedDraft.text
+            data.images = relatedDraft.images || []
+            data.meta = relatedDraft.meta
+            if (relatedDraft.typeSpecificData) {
+              const specific = relatedDraft.typeSpecificData
+              data.mood = specific.mood || data.mood
+              data.weather = specific.weather || data.weather
+              data.password = specific.password ?? data.password
+              data.publicAt = specific.publicAt
+                ? new Date(specific.publicAt)
+                : data.publicAt
+              data.bookmark = specific.bookmark ?? data.bookmark
+              data.location = specific.location || data.location
+              data.coordinates = specific.coordinates || data.coordinates
+              data.topicId = specific.topicId ?? data.topicId
+              data.isPublished = specific.isPublished ?? data.isPublished
+            }
+            serverDraft.syncMemory()
+            serverDraft.startAutoSave()
+          },
+        })
+      } else {
+        serverDraft.syncMemory()
+        serverDraft.startAutoSave()
+      }
+
+      draftInitialized.value = true
+      return
     }
+
+    // 场景3：新建入口
+    const pendingDrafts = await serverDraft.getNewDrafts(DraftRefType.Note)
+    if (pendingDrafts.length > 0) {
+      window.dialog.info({
+        title: '发现未完成的草稿',
+        content: `你有 ${pendingDrafts.length} 个未完成的手记草稿，是否继续编辑？`,
+        negativeText: '创建新草稿',
+        positiveText: '继续编辑',
+        async onNegativeClick() {
+          const newDraft = await serverDraft.createDraft()
+          if (newDraft) {
+            router.replace({ query: { draftId: newDraft.id } })
+          }
+          serverDraft.startAutoSave()
+        },
+        onPositiveClick() {
+          const firstDraft = pendingDrafts[0]
+          router.replace({ query: { draftId: firstDraft.id } })
+        },
+      })
+    } else {
+      const newDraft = await serverDraft.createDraft()
+      if (newDraft) {
+        router.replace({ query: { draftId: newDraft.id } })
+      }
+      serverDraft.startAutoSave()
+    }
+
+    draftInitialized.value = true
   })
 
   const drawerShow = ref(false)
 
   const message = useMessage()
-  const router = useRouter()
 
   const enablePassword = computed(() => typeof data.password === 'string')
 
@@ -218,21 +327,17 @@ const NoteWriteView = defineComponent(() => {
         return
       }
       const $id = id.value as string
-      await RESTManager.api.notes($id).put<NoteModel>({
-        data: parseDataToPayload(),
-      })
+      await notesApi.update($id, parseDataToPayload())
       message.success('修改成功')
     } else {
       const data = parseDataToPayload()
       // create
-      await RESTManager.api.notes.post<NoteModel>({
-        data,
-      })
+      await notesApi.create(data as CreateNoteData)
       message.success('发布成功')
     }
 
     await router.push({ name: RouteName.ViewNote, hash: '|publish' })
-    autoSaveInEditor.clearSaved()
+    // 草稿保留作为历史记录
   }
   const { fetchTopic, topics } = useNoteTopic()
 
@@ -281,6 +386,7 @@ const NoteWriteView = defineComponent(() => {
       <WriteEditor
         key={data.id}
         loading={loading.value}
+        autoFocus={id.value ? 'content' : 'title'}
         title={data.title}
         onTitleChange={(v) => {
           data.title = v

@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 
-import { router } from '~/router'
+import { router } from '../router/router'
 import { setTokenIsUpstream } from '~/stores/user'
 
 export const TokenKey = 'mx-token'

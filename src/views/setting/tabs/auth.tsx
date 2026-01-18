@@ -1,3 +1,4 @@
+import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import {
   ExternalLink as ExternalLinkIcon,
   Fingerprint as FingerprintIcon,
@@ -17,17 +18,18 @@ import {
   NSkeleton,
   NSwitch,
 } from 'naive-ui'
-import useSWRV from 'swrv'
 import { defineComponent, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { AuthnModel } from '~/models/authn'
 import type { DialogReactive } from 'naive-ui'
 import type { FlatOauthData, OauthData } from './providers/oauth'
 
+import { authApi } from '~/api/auth'
+import { optionsApi } from '~/api/options'
 import { RelativeTime } from '~/components/time/relative-time'
+import { queryKeys } from '~/hooks/queries/keys'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { UIStore } from '~/stores/ui'
-import { RESTManager } from '~/utils'
 import { getSession } from '~/utils/authjs/session'
 import { AuthnUtils } from '~/utils/authn'
 
@@ -48,20 +50,16 @@ export const TabAuth = defineComponent({
 
 const Passkey = defineComponent(() => {
   const uiStore = useStoreRef(UIStore)
-  const { data: passkeys, mutate: refetchTable } = useSWRV(
-    'passkey-table',
-    () => {
-      return RESTManager.api.passkey.items.get<AuthnModel[]>()
-    },
-  )
+  const queryClient = useQueryClient()
+  const { data: passkeys, refetch: refetchTable } = useQuery({
+    queryKey: queryKeys.auth.passkeys(),
+    queryFn: () => authApi.getPasskeys(),
+  })
 
   const onDeleteToken = (id: string) => {
-    RESTManager.api.passkey
-      .items(id)
-      .delete<{}>()
-      .then(() => {
-        refetchTable()
-      })
+    authApi.deletePasskey(id).then(() => {
+      refetchTable()
+    })
   }
 
   const NewModalContent = defineComponent(
@@ -100,23 +98,20 @@ const Passkey = defineComponent(() => {
     },
   )
 
-  const { data: setting, mutate: refetchSetting } = useSWRV(
-    'current-disable-status',
-    async () => {
-      const { data } = await RESTManager.api.options('authSecurity').get<{
-        data: { disablePasswordLogin: boolean }
-      }>()
+  const { data: setting, refetch: refetchSetting } = useQuery({
+    queryKey: queryKeys.options.detail('authSecurity'),
+    queryFn: async () => {
+      const { data } = await optionsApi.get<{
+        disablePasswordLogin: boolean
+      }>('authSecurity')
       return data
     },
-  )
+  })
 
   const updateSetting = (value: boolean) => {
-    RESTManager.api
-      .options('authSecurity')
-      .patch({
-        data: {
-          disablePasswordLogin: value,
-        },
+    optionsApi
+      .patch('authSecurity', {
+        disablePasswordLogin: value,
       })
       .then(() => {
         refetchSetting()
@@ -272,11 +267,9 @@ const Oauth = defineComponent(() => {
 
   const oauthDataRef = ref({} as FlatOauthData)
   onMounted(async () => {
-    const data = await RESTManager.api.options('oauth').get<{
-      data: OauthData
-    }>()
+    const { data } = await optionsApi.get<OauthData>('oauth')
 
-    oauthDataRef.value = flattenOauthData(data.data)
+    oauthDataRef.value = flattenOauthData(data)
   })
 
   useProvideOauthData()(oauthDataRef)
@@ -297,7 +290,7 @@ const Oauth = defineComponent(() => {
           negativeText: '否',
 
           onPositiveClick(_e) {
-            RESTManager.api.auth('as-owner').patch()
+            authApi.authAsOwner()
           },
         })
       }

@@ -4,7 +4,7 @@ import { defineComponent, onMounted, ref, watch } from 'vue'
 
 import { Chart } from '@antv/g2/esm'
 
-import { RESTManager } from '~/utils'
+import { aggregateApi } from '~/api/aggregate'
 
 import { ChartCard } from './ChartCard'
 
@@ -29,10 +29,7 @@ export const TrafficSource = defineComponent({
 
     const fetchData = async () => {
       try {
-        const result =
-          await RESTManager.api.aggregate.stat[
-            'traffic-source'
-          ].get<TrafficData>()
+        const result = await aggregateApi.getTrafficSource()
         data.value = {
           os: Array.isArray(result?.os) ? result.os : [],
           browser: Array.isArray(result?.browser) ? result.browser : [],

@@ -1,3 +1,4 @@
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import {
   ExternalLink,
   FileText,
@@ -6,18 +7,19 @@ import {
   Plus as AddIcon,
   Trash2,
 } from 'lucide-vue-next'
-import { NButton, NPopconfirm, useMessage } from 'naive-ui'
+import { NButton, NPopconfirm } from 'naive-ui'
 import Sortable from 'sortablejs'
-import { defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
+import { defineComponent, onBeforeUnmount, ref, watchEffect } from 'vue'
 import { RouterLink } from 'vue-router'
-import type { PageModel, PageResponse } from '~/models/page'
+import type { PageModel } from '~/models/page'
 import type { PropType } from 'vue'
 
+import { pagesApi } from '~/api/pages'
 import { RelativeTime } from '~/components/time/relative-time'
+import { queryKeys } from '~/hooks/queries/keys'
 
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { useLayout } from '../../layouts/content'
-import { RESTManager } from '../../utils/rest'
 
 const PageItem = defineComponent({
   name: 'PageItem',
@@ -32,8 +34,6 @@ const PageItem = defineComponent({
     },
   },
   setup(props) {
-    const message = useMessage()
-
     return () => {
       const row = props.data
       return (
@@ -91,11 +91,7 @@ const PageItem = defineComponent({
             <NPopconfirm
               positiveText="取消"
               negativeText="删除"
-              onNegativeClick={async () => {
-                await RESTManager.api.pages(row.id).delete()
-                message.success('删除成功')
-                props.onDelete(row.id)
-              }}
+              onNegativeClick={() => props.onDelete(row.id)}
             >
               {{
                 trigger: () => (
@@ -150,25 +146,50 @@ const reorder = (data: any[], oldIndex: number, newIndex: number) => {
 export const ManagePageListView = defineComponent({
   name: 'PageList',
   setup() {
-    const data = ref<PageModel[]>([])
-    const loading = ref(true)
+    const queryClient = useQueryClient()
 
-    onMounted(async () => {
-      try {
-        const response = await RESTManager.api.pages.get<PageResponse>({
-          params: {
-            page: 1,
-            size: 50,
-            select: 'title subtitle _id id created modified slug',
-          },
-        })
-        data.value = response.data
-      } finally {
-        loading.value = false
+    // 获取页面列表
+    const { data: pagesData, isLoading } = useQuery({
+      queryKey: queryKeys.pages.list(),
+      queryFn: () =>
+        pagesApi.getList({
+          page: 1,
+          size: 50,
+          select: 'title subtitle _id id created modified slug',
+        }),
+    })
+
+    const data = ref<PageModel[]>([])
+
+    // 同步 query 数据到本地 ref（用于拖拽排序）
+    watchEffect(() => {
+      if (pagesData.value?.data) {
+        data.value = [...pagesData.value.data]
       }
     })
 
-    const message = useMessage()
+    // 删除 mutation
+    const deleteMutation = useMutation({
+      mutationFn: pagesApi.delete,
+      onSuccess: () => {
+        message.success('删除成功')
+        queryClient.invalidateQueries({ queryKey: queryKeys.pages.all })
+      },
+    })
+
+    // 排序 mutation
+    const reorderMutation = useMutation({
+      mutationFn: pagesApi.reorder,
+      onSuccess: () => {
+        message.success('排序成功')
+      },
+    })
+
+    const handleDelete = (id: string) => {
+      // 乐观更新
+      data.value = data.value.filter((i) => i.id !== id)
+      deleteMutation.mutate(id)
+    }
 
     const wrapperRef = ref<HTMLDivElement>()
     let sortable: Sortable | null = null
@@ -200,17 +221,10 @@ export const ManagePageListView = defineComponent({
               )
               data.value = reorderData
 
-              RESTManager.api.pages.reorder
-                .patch({
-                  data: {
-                    seq: [...reorderData]
-                      .reverse()
-                      .map((item, idx) => ({ id: item.id, order: idx + 1 })),
-                  },
-                })
-                .then(() => {
-                  message.success('排序成功')
-                })
+              const seq = [...reorderData]
+                .reverse()
+                .map((item, idx) => ({ id: item.id, order: idx + 1 }))
+              reorderMutation.mutate(seq)
             },
           })
         })
@@ -224,7 +238,7 @@ export const ManagePageListView = defineComponent({
 
     return () => (
       <div class="border border-neutral-200 dark:border-neutral-800 rounded-lg overflow-hidden bg-white dark:bg-neutral-900">
-        {loading.value ? (
+        {isLoading.value ? (
           <div class="flex items-center justify-center py-16">
             <span class="text-sm text-neutral-400">加载中...</span>
           </div>
@@ -236,9 +250,7 @@ export const ManagePageListView = defineComponent({
               <PageItem
                 data={item}
                 key={item.id}
-                onDelete={(id) => {
-                  data.value = data.value.filter((i) => i.id !== id)
-                }}
+                onDelete={handleDelete}
               />
             ))}
           </div>

@@ -1,3 +1,4 @@
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { omit } from 'es-toolkit/compat'
 import {
   Check as CheckIcon,
@@ -17,28 +18,26 @@ import {
   NTabPane,
   NTabs,
   useDialog,
-  useMessage,
 } from 'naive-ui'
 import {
+  computed,
   defineComponent,
   Fragment,
-  onBeforeMount,
   ref,
-  toRaw,
-  watch,
   watchEffect,
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { LinkModel, LinkResponse, LinkStateCount } from '~/models/link'
+import type { LinkModel, LinkStateCount } from '~/models/link'
 
+import { linksApi } from '~/api/links'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { Table } from '~/components/table'
 import { RelativeTime } from '~/components/time/relative-time'
-import { useDataTableFetch } from '~/hooks/use-table'
+import { useDataTable } from '~/hooks/use-data-table'
+import { queryKeys } from '~/hooks/queries/keys'
 import { useLayout } from '~/layouts/content'
 import { LinkState, LinkStateNameMap, LinkType } from '~/models/link'
 import { RouteName } from '~/router/name'
-import { RESTManager } from '~/utils'
 
 import { Avatar } from './components/avatar'
 import { LinkAuditModal } from './components/reason-modal'
@@ -48,28 +47,28 @@ export default defineComponent({
   setup() {
     const route = useRoute()
     const router = useRouter()
+    const queryClient = useQueryClient()
 
     const tabValue = ref<LinkState>(
       (route.query.state as any) ?? LinkState.Pass,
     )
 
-    const { data, fetchDataFn, pager, loading } = useDataTableFetch<LinkModel>(
-      (data, pager) =>
-        async (page = route.query.page || 1, size = 50) => {
-          const state: LinkState =
-            (route.query.state as any | 0) ?? LinkState.Pass
-          const response = await RESTManager.api.links.get<LinkResponse>({
-            params: {
-              page,
-              size,
-              state: state | 0,
-            },
-          })
-          data.value = response.data
-          pager.value = response.pagination
-        },
-    )
-    const message = useMessage()
+    const {
+      data,
+      pager,
+      isLoading: loading,
+      refresh,
+    } = useDataTable<LinkModel>({
+      queryKey: (params) => queryKeys.links.list({ ...params, state: tabValue.value }),
+      queryFn: (params) =>
+        linksApi.getList({
+          page: params.page,
+          size: params.size,
+          state: tabValue.value,
+        }),
+      pageSize: 50,
+    })
+
     const resetEditData: () => Omit<
       LinkModel,
       'id' | 'created' | 'hide' | 'email'
@@ -87,62 +86,70 @@ export default defineComponent({
     const editDialogShow = ref(false)
     const editDialogData = ref(resetEditData())
 
-    watch(
-      () => route.query.state,
-      async (_) => {
-        await fetchDataFn()
-      },
-    )
-
-    watch(
-      () => route.query.page,
-      async (_) => {
-        await fetchDataFn()
-      },
-      { immediate: true },
-    )
-    const stateCount = ref<LinkStateCount>({} as any)
-
-    const fetchStat = async () => {
-      const state = await RESTManager.api.links.state.get<LinkStateCount>()
-      stateCount.value = state
-    }
-
-    onBeforeMount(() => {
-      fetchStat()
+    // 获取状态计数
+    const { data: stateCountData, refetch: refetchStateCount } = useQuery({
+      queryKey: queryKeys.links.stateCount(),
+      queryFn: linksApi.getStateCount,
     })
-    const onSubmit = async () => {
-      const id = editDialogData.value.id
+    const stateCount = computed(() => stateCountData.value || ({} as LinkStateCount))
 
-      if (id) {
-        const newData = await RESTManager.api.links(id).put<LinkModel>({
-          data: omit<any, keyof LinkModel>(editDialogData.value, [
-            'id',
-            'created',
-            'hide',
-          ]),
-        })
-        const idx = data.value.findIndex((i) => i.id == id)
-
-        if (newData.state != tabValue.value) {
-          data.value.splice(idx, 1)
-          fetchStat()
+    // 创建/更新友链 mutation
+    const saveMutation = useMutation({
+      mutationFn: async (editData: typeof editDialogData.value) => {
+        const id = editData.id
+        if (id) {
+          return await linksApi.update(
+            id,
+            omit<any, keyof LinkModel>(editData, ['id', 'created', 'hide']),
+          )
         } else {
-          // @ts-expect-error
-          data.value[idx] = {
-            ...data.value[idx],
-            ...toRaw(editDialogData.value),
-          }
+          return await linksApi.create(editData as any)
         }
-      } else {
-        const { data: item } = (await RESTManager.api.links.post({
-          data: { ...editDialogData.value },
-        })) as any
-        data.value.unshift(item)
-      }
-      message.success('操作成功')
-      editDialogShow.value = false
-      editDialogData.value = resetEditData()
+      },
+      onSuccess: () => {
+        message.success('操作成功')
+        queryClient.invalidateQueries({ queryKey: queryKeys.links.all })
+        refetchStateCount()
+        editDialogShow.value = false
+        editDialogData.value = resetEditData()
+      },
+    })
+
+    // 删除友链 mutation
+    const deleteMutation = useMutation({
+      mutationFn: linksApi.delete,
+      onSuccess: () => {
+        message.success('删除成功')
+        queryClient.invalidateQueries({ queryKey: queryKeys.links.all })
+        refetchStateCount()
+      },
+    })
+
+    // 审核通过 mutation
+    const auditPassMutation = useMutation({
+      mutationFn: linksApi.auditPass,
+      onSuccess: (_, id) => {
+        const item = data.value.find((i) => i.id === id)
+        message.success(`通过了来自${item?.name || ''}的友链邀请`)
+        queryClient.invalidateQueries({ queryKey: queryKeys.links.all })
+        refetchStateCount()
+      },
+    })
+
+    // 审核并发送理由 mutation
+    const auditWithReasonMutation = useMutation({
+      mutationFn: ({ id, state, reason }: { id: string; state: number; reason: string }) =>
+        linksApi.auditWithReason(id, state, reason),
+      onSuccess: (_, { id }) => {
+        const item = data.value.find((i) => i.id === id)
+        message.success(`已发送友链结果给「${item?.name || ''}」`)
+        queryClient.invalidateQueries({ queryKey: queryKeys.links.all })
+        refetchStateCount()
+      },
+    })
+
+    const onSubmit = () => {
+      saveMutation.mutate(editDialogData.value)
     }
 
     const health = ref<
@@ -155,17 +162,16 @@ export default defineComponent({
         }
       >
     >()
+
     const handleCheck = async () => {
       const l = message.loading('检查中', { duration: 20e4 })
 
       try {
-        const data = await RESTManager.api.links.health.get<any>({
-          timeout: 20e4,
-        })
+        const result = await linksApi.checkHealth({ timeout: 20e4 })
 
         // HACK manual lowercase key
         // @see: https://github.com/sindresorhus/camelcase-keys/issues/85
-        health.value = Object.entries(data).reduce((acc, [k, v]) => {
+        health.value = Object.entries(result).reduce((acc, [k, v]) => {
           return { ...acc, [k.toLowerCase()]: v }
         }, {})
         message.success('检查完成')
@@ -182,11 +188,9 @@ export default defineComponent({
       const l = message.loading('迁移中', { duration: 20e4 })
 
       try {
-        await RESTManager.api.links.avatar.migrate.post({
-          timeout: 20e4,
-        })
+        await linksApi.migrateAvatars({ timeout: 20e4 })
         message.success('迁移完成')
-        await fetchDataFn()
+        queryClient.invalidateQueries({ queryKey: queryKeys.links.all })
       } catch (error) {
         console.error(error)
         message.error('迁移失败')
@@ -398,15 +402,7 @@ export default defineComponent({
                             quaternary
                             size="tiny"
                             type="primary"
-                            onClick={async () => {
-                              await RESTManager.api.links.audit(row.id).patch()
-                              message.success(`通过了来自${row.name}的友链邀请`)
-                              const idx = data.value.findIndex(
-                                (i) => i.id == row.id,
-                              )
-                              data.value.splice(idx, 1)
-                              stateCount.value.audit--
-                            }}
+                            onClick={() => auditPassMutation.mutate(row.id)}
                           >
                             通过
                           </NButton>
@@ -415,7 +411,7 @@ export default defineComponent({
                             quaternary
                             size="tiny"
                             type="info"
-                            onClick={async () => {
+                            onClick={() => {
                               modal.create({
                                 title: '发送友链结果',
                                 closeOnEsc: true,
@@ -423,25 +419,15 @@ export default defineComponent({
                                 content: () => {
                                   return (
                                     <LinkAuditModal
-                                      onCallback={async (state, reason) => {
-                                        await RESTManager.api.links.audit
-                                          .reason(row.id)
-                                          .post({
-                                            data: {
-                                              state,
-                                              reason,
+                                      onCallback={(state, reason) => {
+                                        auditWithReasonMutation.mutate(
+                                          { id: row.id, state, reason },
+                                          {
+                                            onSuccess: () => {
+                                              modal.destroyAll()
                                             },
-                                          })
-                                        message.success(
-                                          `已发送友链结果给「${row.name}」`,
+                                          },
                                         )
-                                        const idx = data.value.findIndex(
-                                          (i) => i.id == row.id,
-                                        )
-                                        data.value.splice(idx, 1)
-                                        stateCount.value.audit--
-
-                                        modal.destroyAll()
                                       }}
                                     />
                                   )
@@ -457,7 +443,7 @@ export default defineComponent({
                         quaternary
                         size="tiny"
                         type="info"
-                        onClick={(_) => {
+                        onClick={() => {
                           editDialogShow.value = true
                           editDialogData.value = { ...row }
                         }}
@@ -467,13 +453,7 @@ export default defineComponent({
                       <NPopconfirm
                         positiveText={'取消'}
                         negativeText="删除"
-                        onNegativeClick={async () => {
-                          await RESTManager.api.links(row.id).delete()
-                          message.success('删除成功')
-                          await fetchDataFn(pager.value.currentPage)
-                          row.state == LinkState.Audit &&
-                            stateCount.value.audit--
-                        }}
+                        onNegativeClick={() => deleteMutation.mutate(row.id)}
                       >
                         {{
                           trigger: () => (
@@ -494,8 +474,8 @@ export default defineComponent({
                 },
               },
             ]}
-            onFetchData={fetchDataFn}
-            pager={pager}
+            onFetchData={refresh}
+            pager={pager as any}
           />
         </section>
 

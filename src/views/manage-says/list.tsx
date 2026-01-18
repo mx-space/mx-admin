@@ -2,15 +2,17 @@
  * Say List Page
  * 一言列表页面 - 引用风格列表 + 模态框编辑
  */
+import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import { Plus as AddIcon } from 'lucide-vue-next'
 import { NPagination } from 'naive-ui'
 import { useRoute, useRouter } from 'vue-router'
-import type { SayModel, SayResponse } from '~/models/say'
+import type { SayModel } from '~/models/say'
 
+import { saysApi } from '~/api/says'
 import { HeaderActionButton } from '~/components/button/rounded-button'
-import { useDataTableFetch } from '~/hooks/use-table'
+import { useDataTable } from '~/hooks/use-data-table'
+import { queryKeys } from '~/hooks/queries/keys'
 import { useLayout } from '~/layouts/content'
-import { RESTManager } from '~/utils/rest'
 
 import {
   SayEditModal,
@@ -29,35 +31,25 @@ const ManageSayListView = defineComponent({
   setup() {
     const route = useRoute()
     const router = useRouter()
+    const queryClient = useQueryClient()
 
-    const { data, pager, loading, fetchDataFn } =
-      useDataTableFetch<SayWithMeta>(
-        (data, pager) =>
-          async (page = route.query.page || 1, size = 20) => {
-            const response = await RESTManager.api.says.get<SayResponse>({
-              params: {
-                page,
-                size,
-                select: 'text _id id created modified author source',
-              },
-            })
-            data.value = response.data as SayWithMeta[]
-            pager.value = response.pagination
-          },
-      )
+    const { data, pager, isLoading } = useDataTable<SayWithMeta>({
+      queryKey: (params) => queryKeys.says.list(params),
+      queryFn: (params) =>
+        saysApi.getList({
+          page: params.page,
+          size: params.size,
+        }) as Promise<any>,
+      pageSize: 20,
+    })
 
-    const fetchData = fetchDataFn
-
-    watch(
-      () => route.query.page,
-      async (n) => {
-        // @ts-expect-error
-        await fetchData(n)
+    // 删除 mutation
+    const deleteMutation = useMutation({
+      mutationFn: saysApi.delete,
+      onSuccess: () => {
+        message.success('删除成功')
+        queryClient.invalidateQueries({ queryKey: queryKeys.says.all })
       },
-    )
-
-    onMounted(async () => {
-      await fetchData()
     })
 
     // 模态框状态
@@ -79,27 +71,14 @@ const ManageSayListView = defineComponent({
       editingSay.value = null
     }
 
-    const handleSuccess = (result: SayWithMeta) => {
-      if (editingSay.value) {
-        // 编辑：更新列表中的项
-        const index = data.value.findIndex((s) => s.id === result.id)
-        if (index !== -1) {
-          data.value[index] = result
-        }
-      } else {
-        // 创建：添加到列表开头
-        data.value.unshift(result)
-      }
+    const handleSuccess = () => {
+      // 刷新列表
+      queryClient.invalidateQueries({ queryKey: queryKeys.says.all })
       handleCloseModal()
     }
 
     const handleDelete = async (id: string) => {
-      await RESTManager.api.says(id).delete()
-      message.success('删除成功')
-      const index = data.value.findIndex((s) => s.id === id)
-      if (index !== -1) {
-        data.value.splice(index, 1)
-      }
+      deleteMutation.mutate(id)
     }
 
     const { setActions } = useLayout()
@@ -115,7 +94,7 @@ const ManageSayListView = defineComponent({
     return () => (
       <div class="space-y-4">
         {/* 内容区域 */}
-        {loading.value && data.value.length === 0 ? (
+        {isLoading.value && data.value.length === 0 ? (
           // 加载骨架屏
           <div class="overflow-hidden rounded-lg border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
             <SayListSkeleton />

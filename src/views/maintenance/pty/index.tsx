@@ -21,8 +21,9 @@ import { GATEWAY_URL } from '~/constants/env'
 import { useMountAndUnmount } from '~/hooks/use-lifecycle'
 import { useLayout } from '~/layouts/content'
 import { EventTypes } from '~/socket/types'
-import { getToken, parseDate, RESTManager } from '~/utils'
+import { getToken, parseDate } from '~/utils'
 import { bus } from '~/utils/event-bus'
+import { systemApi } from '~/api/system'
 
 const StatusIcon = () => (
   <svg width="1em" height="1em" viewBox="0 0 24 24">
@@ -257,7 +258,7 @@ const PasswordConfirmDialog = defineComponent({
 const ConnectionStatus = defineComponent(() => {
   const list = ref([] as any[])
   onMounted(async () => {
-    const data = await RESTManager.api.pty.record.get<{ data: any }>()
+    const data = await systemApi.getPtyRecords()
     list.value = data.data
   })
   return () => (

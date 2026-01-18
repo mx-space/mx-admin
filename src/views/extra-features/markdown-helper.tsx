@@ -25,7 +25,8 @@ import { computed, defineComponent, ref, watch } from 'vue'
 import type { ParsedModel } from '~/utils/markdown-parser'
 import type { DataTableColumns, UploadFileInfo } from 'naive-ui'
 
-import { responseBlobToFile, RESTManager } from '~/utils'
+import { markdownApi } from '~/api'
+import { responseBlobToFile } from '~/utils'
 import { ParseMarkdownYAML } from '~/utils/markdown-parser'
 
 enum ImportType {
@@ -162,11 +163,9 @@ export default defineComponent({
     async function handleImportConfirm() {
       importing.value = true
       try {
-        await RESTManager.api.markdown.import.post({
-          data: {
-            type: importType.value,
-            data: parsedList.value,
-          },
+        await markdownApi.import({
+          type: importType.value,
+          data: parsedList.value,
         })
         message.success(`成功导入 ${parsedList.value.length} 条数据`)
         fileList.value = []
@@ -192,14 +191,11 @@ export default defineComponent({
       try {
         const { includeYAMLHeader, filenameSlug, withMetaJson, titleBigTitle } =
           exportConfig
-        const data = await RESTManager.api.markdown.export.get({
-          params: {
-            slug: filenameSlug,
-            yaml: includeYAMLHeader,
-            show_title: titleBigTitle,
-            with_meta_json: withMetaJson,
-          },
-          responseType: 'blob',
+        const data = await markdownApi.export({
+          slug: filenameSlug,
+          yaml: includeYAMLHeader,
+          show_title: titleBigTitle,
+          with_meta_json: withMetaJson,
         })
         responseBlobToFile(data, 'markdown.zip')
         message.success('导出成功')

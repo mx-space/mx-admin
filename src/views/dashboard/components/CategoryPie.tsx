@@ -3,7 +3,7 @@ import { defineComponent, onMounted, ref, watch } from 'vue'
 
 import { Chart } from '@antv/g2/esm'
 
-import { RESTManager } from '~/utils'
+import { aggregateApi } from '~/api/aggregate'
 
 import { ChartCard } from './ChartCard'
 
@@ -23,10 +23,7 @@ export const CategoryPie = defineComponent({
 
     const fetchData = async () => {
       try {
-        const result =
-          await RESTManager.api.aggregate.stat['category-distribution'].get<
-            CategoryData[]
-          >()
+        const result = await aggregateApi.getCategoryDistribution()
         data.value = Array.isArray(result) ? result : []
       } catch {
         data.value = []

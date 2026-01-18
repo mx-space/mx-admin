@@ -1,3 +1,4 @@
+import { useMutation } from '@tanstack/vue-query'
 import { isString } from 'es-toolkit/compat'
 import transform from 'lodash.transform'
 import { Send as SendIcon } from 'lucide-vue-next'
@@ -7,13 +8,13 @@ import { useRoute, useRouter } from 'vue-router'
 import type { IGithubRepo } from '~/external/api/github-repo'
 import type { ProjectModel } from '~/models/project'
 
+import { projectsApi } from '~/api/projects'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { Editor } from '~/components/editor/universal'
 import { FetchGithubRepoButton } from '~/components/special-button/fetch-github-repo'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
 import { useLayout } from '~/layouts/content'
 import { RouteName } from '~/router/name'
-import { RESTManager } from '~/utils'
 
 type ProjectReactiveType = {
   name: string
@@ -54,60 +55,65 @@ const EditProjectView = defineComponent({
     onMounted(async () => {
       const $id = id.value
       if ($id && typeof $id == 'string') {
-        const payload = (await RESTManager.api.projects($id).get({})) as any
-
-        const data = payload.data
+        const data = await projectsApi.getById($id)
         parsePayloadIntoReactiveData(data as ProjectModel)
       }
     })
 
-    const handleSubmit = async () => {
-      const parseDataToPayload = (): { [key in keyof ProjectModel]?: any } => {
-        try {
-          if (!project.text || project.text.trim().length == 0) {
-            throw '内容为空'
-          }
+    const parseDataToPayload = (): { [key in keyof ProjectModel]?: any } => {
+      try {
+        if (!project.text || project.text.trim().length == 0) {
+          throw '内容为空'
+        }
 
-          return {
-            ...transform(
-              toRaw(project),
-              (res, i, k) => (
-                (res[k] =
-                  typeof i == 'undefined'
-                    ? null
-                    : typeof i == 'string' && i.length == 0
-                      ? ''
-                      : i),
-                res
-              ),
+        return {
+          ...transform(
+            toRaw(project),
+            (res, i, k) => (
+              (res[k] =
+                typeof i == 'undefined'
+                  ? null
+                  : typeof i == 'string' && i.length == 0
+                    ? ''
+                    : i),
+              res
             ),
-            text: project.text.trim(),
-          }
-        } catch (error) {
-          message.error(error as any)
-
-          throw error
+          ),
+          text: project.text.trim(),
         }
+      } catch (error) {
+        message.error(error as any)
+        throw error
       }
-      if (id.value) {
-        // update
-        if (!isString(id.value)) {
-          return
-        }
-        const $id = id.value as string
-        await RESTManager.api.projects($id).put({
-          data: parseDataToPayload(),
-        })
-        message.success('修改成功')
-      } else {
-        // create
-        await RESTManager.api.projects.post({
-          data: parseDataToPayload(),
-        })
+    }
+
+    // 创建项目
+    const createMutation = useMutation({
+      mutationFn: (data: any) => projectsApi.create(data),
+      onSuccess: () => {
         message.success('发布成功')
-      }
+        router.push({ name: RouteName.ListProject })
+      },
+    })
 
-      router.push({ name: RouteName.ListProject })
+    // 更新项目
+    const updateMutation = useMutation({
+      mutationFn: ({ id, data }: { id: string; data: any }) =>
+        projectsApi.update(id, data),
+      onSuccess: () => {
+        message.success('修改成功')
+        router.push({ name: RouteName.ListProject })
+      },
+    })
+
+    const handleSubmit = () => {
+      const payload = parseDataToPayload()
+      if (id.value) {
+        if (!isString(id.value)) return
+        updateMutation.mutate({ id: id.value as string, data: payload })
+      } else {
+        createMutation.mutate(payload)
+      }
     }
 
     const handleParseFromGithub = (

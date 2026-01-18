@@ -3,7 +3,7 @@ import { dump, load } from 'js-yaml'
 import JSON5 from 'json5'
 import { useMessage } from 'naive-ui'
 
-import { RESTManager } from '~/utils'
+import { snippetsApi } from '~/api'
 
 import {
   defaultServerlessFunction,
@@ -89,7 +89,7 @@ export function useSnippetEditor(selectedId: Ref<string | null>) {
 
   // Fetch snippet data when ID changes
   const fetchSnippet = async (id: string) => {
-    const data = await RESTManager.api.snippets(id).get<SnippetModel>()
+    const data = await snippetsApi.getById(id)
 
     // Normalize JSON formatting
     if (data.type === SnippetType.JSON) {
@@ -170,14 +170,10 @@ export function useSnippetEditor(selectedId: Ref<string | null>) {
     try {
       let result: SnippetModel
       if (selectedId.value) {
-        result = await RESTManager.api.snippets(selectedId.value).put({
-          data: finalData,
-        })
+        result = await snippetsApi.update(selectedId.value, finalData)
         message.success('更新成功')
       } else {
-        result = await RESTManager.api.snippets.post({
-          data: finalData,
-        })
+        result = await snippetsApi.create(finalData as any)
         message.success('创建成功')
       }
       return result

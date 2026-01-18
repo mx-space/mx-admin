@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue'
-import type { CategoryModel, CategoryResponse } from '~/models/category'
+import type { CategoryModel } from '~/models/category'
 
-import { RESTManager } from '~/utils/rest'
+import { categoriesApi } from '~/api/categories'
 
 export const useCategoryStore = defineStore('category', () => {
   const data = ref<CategoryModel[]>()
@@ -18,12 +18,7 @@ export const useCategoryStore = defineStore('category', () => {
     },
     async fetch(force?: boolean) {
       if (!data.value || force) {
-        const response = (await RESTManager.api.categories.get({
-          params: {
-            type: 'Category',
-          },
-        })) as CategoryResponse
-
+        const response = await categoriesApi.getList({ type: 'Category' })
         data.value = response.data
       } else {
         return data.value

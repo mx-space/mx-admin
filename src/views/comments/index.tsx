@@ -1,3 +1,4 @@
+import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import {
   Check as CheckmarkSharpIcon,
   X as CloseSharpIcon,
@@ -20,27 +21,27 @@ import {
   NTabs,
   NText,
   useDialog,
-  useMessage,
 } from 'naive-ui'
 import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
-import { defineComponent, nextTick, reactive, ref, unref, watch } from 'vue'
+import { defineComponent, nextTick, reactive, ref, unref, watch, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { CommentModel, CommentsResponse } from '~/models/comment'
+import type { CommentModel } from '~/models/comment'
 
 import { Icon } from '@vicons/utils'
 
+import { commentsApi } from '~/api/comments'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { IpInfoPopover } from '~/components/ip-info'
 import { Table } from '~/components/table'
 import { WEB_URL } from '~/constants/env'
 import { KAOMOJI_LIST } from '~/constants/kaomoji'
+import { useDataTable } from '~/hooks/use-data-table'
+import { queryKeys } from '~/hooks/queries/keys'
 import { useStoreRef } from '~/hooks/use-store-ref'
-import { useDataTableFetch } from '~/hooks/use-table'
 import { useLayout } from '~/layouts/content'
 import { CommentState } from '~/models/comment'
 import { RouteName } from '~/router/name'
 import { UIStore } from '~/stores/ui'
-import { RESTManager } from '~/utils/rest'
 import { relativeTimeFromNow } from '~/utils/time'
 
 import { CommentMarkdownRender } from './markdown-render'
@@ -65,113 +66,114 @@ enum CommentType {
 const ManageComment = defineComponent(() => {
   const route = useRoute()
   const router = useRouter()
+  const queryClient = useQueryClient()
   const { setActions } = useLayout()
 
   const tabValue = ref(
     (+(route.query.state as string) as CommentType) || CommentType.Pending,
   )
 
-  const { data, checkedRowKeys, fetchDataFn, pager, loading } =
-    useDataTableFetch<CommentModel>(
-      (data, pager) =>
-        async (page = route.query.page || 1, size = 10) => {
-          const state: CommentType = route.query.state as any
-          const response = await RESTManager.api.comments.get<CommentsResponse>(
-            {
-              params: {
-                page,
-                size,
-                state: state | 0,
-              },
-            },
-          )
-          data.value = response.data.map(($) => {
-            Reflect.deleteProperty($, 'children')
-            return $
-          })
-          pager.value = response.pagination
-        },
-    )
-  const message = useMessage()
+  const {
+    data,
+    checkedRowKeys,
+    pager,
+    isLoading: loading,
+    refresh,
+  } = useDataTable<CommentModel>({
+    queryKey: (params) =>
+      queryKeys.comments.list(tabValue.value, params),
+    queryFn: async (params) => {
+      const response = await commentsApi.getList({
+        page: params.page,
+        size: params.size,
+        state: tabValue.value,
+      })
+      return {
+        data: response.data.map(($) => {
+          Reflect.deleteProperty($, 'children')
+          return $
+        }),
+        pagination: response.pagination,
+      }
+    },
+    pageSize: 10,
+  })
+
+  // 回复 mutation
+  const replyMutation = useMutation({
+    mutationFn: ({ id, text }: { id: string; text: string }) =>
+      commentsApi.masterReply(id, text),
+    onSuccess: () => {
+      message.success('回复成功')
+      queryClient.invalidateQueries({ queryKey: queryKeys.comments.all })
+    },
+  })
+
+  // 更新状态 mutation
+  const updateStateMutation = useMutation({
+    mutationFn: async ({ ids, state }: { ids: string | string[]; state: CommentState }) => {
+      if (Array.isArray(ids)) {
+        await Promise.all(ids.map((id) => commentsApi.updateState(id, state)))
+      } else {
+        await commentsApi.updateState(ids, state)
+      }
+    },
+    onSuccess: () => {
+      message.success('操作成功')
+      queryClient.invalidateQueries({ queryKey: queryKeys.comments.all })
+    },
+  })
+
+  // 删除 mutation
+  const deleteMutation = useMutation({
+    mutationFn: async (ids: string | string[]) => {
+      if (Array.isArray(ids)) {
+        await Promise.allSettled(ids.map((id) => commentsApi.delete(id)))
+      } else {
+        await commentsApi.delete(ids)
+      }
+    },
+    onSuccess: () => {
+      message.success('删除成功')
+      queryClient.invalidateQueries({ queryKey: queryKeys.comments.all })
+    },
+  })
+
   const replyDialogShow = ref<boolean>(false)
   const replyComment = ref<CommentModel | null>(null)
   const replyText = ref('')
   const replyInputRef = ref<typeof NInput>()
 
-  const requestLoading = ref(false)
-
   const onReplySubmit = async () => {
     if (!replyComment.value) {
       return
     }
-    try {
-      requestLoading.value = true
-      await RESTManager.api.comments.master.reply(replyComment.value.id).post({
-        data: {
-          text: replyText.value,
+    replyMutation.mutate(
+      { id: replyComment.value.id, text: replyText.value },
+      {
+        onSuccess: () => {
+          replyDialogShow.value = false
+          replyComment.value = null
+          replyText.value = ''
         },
-      })
-      replyDialogShow.value = false
-      replyComment.value = null
-      message.success('回复成功')
-      replyText.value = ''
-      await fetchData()
-    } finally {
-      requestLoading.value = false
-    }
+      },
+    )
   }
 
-  const fetchData = fetchDataFn
-  watch(
-    () => route.query.page,
-    async (n) => {
-      // @ts-expect-error
-      await fetchData(n)
-    },
-    { immediate: true },
-  )
-
+  // 切换 tab 时清空选中
   watch(
     () => route.query.state,
-    async (_) => {
-      data.value = []
+    () => {
       checkedRowKeys.value = []
-      nextTick(() => fetchData())
     },
   )
 
-  async function changeState(id: string | string[], state: CommentState) {
-    if (Array.isArray(id)) {
-      await Promise.all(
-        id.map((i) => {
-          return RESTManager.api.comments(i).patch({ data: { state } })
-        }),
-      )
-    } else {
-      await RESTManager.api.comments(id).patch({ data: { state } })
-    }
-    message.success('操作成功')
-    await fetchData()
+  function changeState(id: string | string[], state: CommentState) {
+    updateStateMutation.mutate({ ids: id, state })
   }
 
-  async function handleDelete(id: string | string[]) {
-    if (Array.isArray(id)) {
-      try {
-        await Promise.all(
-          id.map((i) => {
-            return RESTManager.api
-              .comments(i)
-              .delete({ errorHandler: (_err) => void 0 })
-          }),
-        )
-      } catch {
-        // noop
-      }
-    } else {
-      await RESTManager.api.comments(id).delete()
-    }
-    await fetchData()
-    message.success('删除成功')
+  function handleDelete(id: string | string[]) {
+    deleteMutation.mutate(id)
   }
   const columns: TableColumns<CommentModel> = reactive([
     {
@@ -438,8 +440,8 @@ const ManageComment = defineComponent(() => {
         maxWidth={600}
         data={data}
         loading={loading.value}
-        onFetchData={fetchData}
-        pager={pager}
+        onFetchData={refresh}
+        pager={pager as any}
         onUpdateCheckedRowKeys={(keys) => {
           checkedRowKeys.value = keys
         }}
@@ -568,7 +570,7 @@ const ManageComment = defineComponent(() => {
                     type="primary"
                     onClick={onReplySubmit}
                     round
-                    loading={requestLoading.value}
+                    loading={replyMutation.isPending.value}
                   >
                     确定
                   </NButton>

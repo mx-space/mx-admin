@@ -1,8 +1,10 @@
 import './monaco'
 import 'virtual:uno.css'
 
+import { VueQueryPlugin } from '@tanstack/vue-query'
 import { createApp } from 'vue'
 
+import { queryClient } from '~/lib/query-client'
 import { piniaStore } from '~/stores'
 import { bus } from '~/utils/event-bus'
 
@@ -19,6 +21,7 @@ const app = createApp(App)
 
 app.use(router)
 app.use(piniaStore)
+app.use(VueQueryPlugin, { queryClient })
 app.mount('#app')
 
 if (__DEV__) {

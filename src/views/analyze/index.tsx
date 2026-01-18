@@ -26,7 +26,7 @@ import type { IPAggregate, Month, Path, Today, Total, Week } from './types'
 import { Chart } from '@antv/g2/esm'
 
 import { IpInfoPopover } from '~/components/ip-info'
-import { RESTManager } from '~/utils'
+import { analyzeApi } from '~/api/analyze'
 
 import { AnalyzeDataTable } from './components/analyze-data-table'
 import { GuestActivity } from './components/guest-activity'
@@ -48,8 +48,7 @@ export default defineComponent({
     const loading = ref(true)
 
     onBeforeMount(async () => {
-      const data =
-        (await RESTManager.api.analyze.aggregate.get()) as IPAggregate
+      const data = (await analyzeApi.getAggregate()) as IPAggregate
       count.value = data.total
       todayIp.value = data.todayIps
       graphData.value = {

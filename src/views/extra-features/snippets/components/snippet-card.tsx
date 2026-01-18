@@ -13,7 +13,7 @@ import type { PropType } from 'vue'
 import type { SnippetModel } from '../../../../models/snippet'
 
 import { RelativeTime } from '~/components/time/relative-time'
-import { RESTManager } from '~/utils'
+import { API_URL } from '~/constants/env'
 import { getToken } from '~/utils/auth'
 
 import { SnippetType } from '../../../../models/snippet'
@@ -85,7 +85,7 @@ export const SnippetCard = defineComponent({
     const snippetUrl = computed(() => {
       const s = props.snippet
       const base =
-        RESTManager.endpoint +
+        API_URL +
         (s.type === SnippetType.Function ? '/fn/' : '/snippets/') +
         s.reference
       return `${base}/${s.name}${s.private ? `?token=${getToken()}` : ''}`

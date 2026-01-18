@@ -3,7 +3,7 @@ import { defineComponent, onMounted, ref, watch } from 'vue'
 
 import { Chart } from '@antv/g2/esm'
 
-import { RESTManager } from '~/utils'
+import { aggregateApi } from '~/api/aggregate'
 
 import { ChartCard } from './ChartCard'
 
@@ -21,10 +21,7 @@ export const CommentActivity = defineComponent({
 
     const fetchData = async () => {
       try {
-        const result =
-          await RESTManager.api.aggregate.stat['comment-activity'].get<
-            ActivityData[]
-          >()
+        const result = await aggregateApi.getCommentActivity()
         data.value = Array.isArray(result) ? result : []
       } catch {
         data.value = []

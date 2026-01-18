@@ -5,12 +5,11 @@ import type {
 
 import { startAuthentication, startRegistration } from '@simplewebauthn/browser'
 
-import { RESTManager } from './rest'
+import { authApi } from '~/api'
 
 class AuthnUtilsStatic {
   async createPassKey(name: string) {
-    const registrationOptions =
-      await RESTManager.api.passkey.register.post<any>()
+    const registrationOptions = await authApi.startPasskeyRegister()
     let attResp: RegistrationResponseJSON
     try {
       // Pass the options to the authenticator and wait for a response
@@ -30,10 +29,7 @@ class AuthnUtilsStatic {
       Object.assign(attResp, {
         name,
       })
-      const verificationResp =
-        await RESTManager.api.passkey.register.verify.post<any>({
-          data: attResp,
-        })
+      const verificationResp = await authApi.verifyPasskeyRegister(attResp)
       if (verificationResp.verified) {
         message.success('Successfully registered authenticator')
       } else {
@@ -45,8 +41,7 @@ class AuthnUtilsStatic {
   }
 
   async validate(test?: boolean) {
-    const registrationOptions =
-      await RESTManager.api.passkey.authentication.post<any>()
+    const registrationOptions = await authApi.startPasskeyAuth()
     let attResp: AuthenticationResponseJSON
     try {
       // Pass the options to the authenticator and wait for a response
@@ -61,13 +56,7 @@ class AuthnUtilsStatic {
       Object.assign(attResp, { test: true })
     }
     try {
-      const verificationResp =
-        await RESTManager.api.passkey.authentication.verify.post<{
-          verified: boolean
-          token?: string
-        }>({
-          data: attResp,
-        })
+      const verificationResp = await authApi.verifyPasskeyAuth(attResp)
       if (verificationResp.verified) {
         message.success('Successfully authentication by passkey')
       } else {

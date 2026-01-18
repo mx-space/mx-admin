@@ -11,7 +11,7 @@ import {
   NSelect,
   useMessage,
 } from 'naive-ui'
-import { computed, defineComponent, onMounted, reactive, ref, watch } from 'vue'
+import { computed, defineComponent, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { CategoryModel, TagModel } from '~/models/category'
 import type { PostModel } from '~/models/post'
@@ -31,13 +31,15 @@ import { SlugInput } from '~/components/editor/write-editor/slug-input'
 import { ParseContentButton } from '~/components/special-button/parse-content'
 import { HeaderPreviewButton } from '~/components/special-button/preview'
 import { WEB_URL } from '~/constants/env'
-import { useAutoSave, useAutoSaveInEditor } from '~/hooks/use-auto-save'
+import { useServerDraft } from '~/hooks/use-server-draft'
+import { DraftRefType } from '~/models/draft'
+import { postsApi } from '~/api/posts'
+import { categoriesApi } from '~/api/categories'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { useLayout } from '~/layouts/content'
 import { RouteName } from '~/router/name'
 import { CategoryStore } from '~/stores/category'
-import { RESTManager } from '~/utils/rest'
 
 import { useMemoPostList } from './hooks/use-memo-post-list'
 
@@ -92,30 +94,38 @@ const PostWriteView = defineComponent(() => {
   const data = reactive<PostReactiveType>(resetReactive())
 
   const parsePayloadIntoReactiveData = useParsePayloadIntoData(data)
-  const id = computed(() => route.query.id)
+  const id = computed(() => route.query.id as string | undefined)
+  const draftIdFromRoute = computed(
+    () => route.query.draftId as string | undefined,
+  )
 
   const loading = computed(() => !!(id.value && typeof data.id === 'undefined'))
-  const autoSaveHook = useAutoSave(`post-${id.value || 'new'}`, 3000, () => ({
-    text: data.text,
-    title: data.title,
-  }))
 
-  const autoSaveInEditor = useAutoSaveInEditor(data, autoSaveHook)
+  // 服务端草稿 hook
+  const serverDraft = useServerDraft(DraftRefType.Post, {
+    refId: id.value,
+    draftId: draftIdFromRoute.value,
+    interval: 10000, // 10秒自动保存
+    getData: () => ({
+      title: data.title,
+      text: data.text,
+      images: data.images,
+      meta: data.meta,
+      typeSpecificData: {
+        slug: data.slug,
+        categoryId: data.categoryId,
+        copyright: data.copyright,
+        tags: data.tags,
+        summary: data.summary,
+        pin: data.pin ? new Date().toISOString() : null,
+        pinOrder: data.pinOrder,
+        relatedId: data.relatedId,
+        isPublished: data.isPublished,
+      },
+    }),
+  })
 
-  const disposer = watch(
-    () => loading.value,
-    (loading) => {
-      if (loading) {
-        return
-      }
-
-      autoSaveInEditor.enable()
-      requestAnimationFrame(() => {
-        disposer()
-      })
-    },
-    { immediate: true },
-  )
+  const draftInitialized = ref(false)
 
   // const currentSelectCategoryId = ref('')
   const category = computed(
@@ -127,15 +137,131 @@ const PostWriteView = defineComponent(() => {
 
   onMounted(async () => {
     const $id = id.value
+    const $draftId = draftIdFromRoute.value
+
+    // 场景1：通过 draftId 加载草稿
+    if ($draftId) {
+      const draft = await serverDraft.loadDraftById($draftId)
+      if (draft) {
+        // 恢复草稿数据
+        data.title = draft.title
+        data.text = draft.text
+        data.images = draft.images || []
+        data.meta = draft.meta
+        if (draft.typeSpecificData) {
+          const specific = draft.typeSpecificData
+          data.slug = specific.slug || ''
+          data.categoryId = specific.categoryId || data.categoryId
+          data.copyright = specific.copyright ?? true
+          data.tags = specific.tags || []
+          data.summary = specific.summary || ''
+          data.pin = !!specific.pin
+          data.pinOrder = specific.pinOrder || 1
+          data.relatedId = specific.relatedId || []
+          data.isPublished = specific.isPublished ?? true
+        }
+        serverDraft.syncMemory()
+        serverDraft.startAutoSave()
+        draftInitialized.value = true
+        return
+      }
+    }
+
+    // 场景2：编辑已发布文章
     if ($id && typeof $id == 'string') {
-      const payload = (await RESTManager.api.posts($id).get()) as any
+      const payload = (await postsApi.getById($id)) as any
+
+      // 兼容两种 API 响应格式：{ data: PostModel } 或直接 PostModel
+      const postData = payload.data ?? payload
 
       // HACK: transform
-      payload.data.relatedId = payload.data.related?.map((r: any) => r.id) || []
-      postListState.append(payload.data.related)
+      postData.relatedId = postData.related?.map((r: any) => r.id) || []
+      postListState.append(postData.related)
 
-      parsePayloadIntoReactiveData(payload.data as PostModel)
+      parsePayloadIntoReactiveData(postData as PostModel)
+
+      // 检查是否有关联的草稿
+      const relatedDraft = await serverDraft.loadDraftByRef(
+        DraftRefType.Post,
+        $id,
+      )
+      if (relatedDraft) {
+        // 弹窗询问是否恢复草稿
+        window.dialog.info({
+          title: '检测到未保存的草稿',
+          content: `上次保存时间: ${new Date(relatedDraft.updated).toLocaleString()}`,
+          negativeText: '使用已发布版本',
+          positiveText: '恢复草稿',
+          onNegativeClick() {
+            // 使用已发布版本，同步记忆
+            serverDraft.syncMemory()
+            serverDraft.startAutoSave()
+          },
+          onPositiveClick() {
+            // 恢复草稿数据
+            data.title = relatedDraft.title
+            data.text = relatedDraft.text
+            data.images = relatedDraft.images || []
+            data.meta = relatedDraft.meta
+            if (relatedDraft.typeSpecificData) {
+              const specific = relatedDraft.typeSpecificData
+              data.slug = specific.slug || data.slug
+              data.categoryId = specific.categoryId || data.categoryId
+              data.copyright = specific.copyright ?? data.copyright
+              data.tags = specific.tags || data.tags
+              data.summary = specific.summary || data.summary
+              data.pin = !!specific.pin
+              data.pinOrder = specific.pinOrder || data.pinOrder
+              data.relatedId = specific.relatedId || data.relatedId
+              data.isPublished = specific.isPublished ?? data.isPublished
+            }
+            serverDraft.syncMemory()
+            serverDraft.startAutoSave()
+          },
+        })
+      } else {
+        // 没有关联草稿，直接开始自动保存
+        serverDraft.syncMemory()
+        serverDraft.startAutoSave()
+      }
+
+      draftInitialized.value = true
+      return
     }
+
+    // 场景3：新建入口（无参数）
+    // 检查是否有未完成的新建草稿
+    const pendingDrafts = await serverDraft.getNewDrafts(DraftRefType.Post)
+    if (pendingDrafts.length > 0) {
+      window.dialog.info({
+        title: '发现未完成的草稿',
+        content: `你有 ${pendingDrafts.length} 个未完成的文章草稿，是否继续编辑？`,
+        negativeText: '创建新草稿',
+        positiveText: '查看草稿列表',
+        async onNegativeClick() {
+          // 创建新草稿
+          const newDraft = await serverDraft.createDraft()
+          if (newDraft) {
+            router.replace({ query: { draftId: newDraft.id } })
+          }
+          serverDraft.startAutoSave()
+        },
+        onPositiveClick() {
+          // 跳转到草稿管理页面（或使用第一个草稿）
+          const firstDraft = pendingDrafts[0]
+          router.replace({ query: { draftId: firstDraft.id } })
+        },
+      })
+    } else {
+      // 没有未完成草稿，创建新草稿
+      const newDraft = await serverDraft.createDraft()
+      if (newDraft) {
+        router.replace({ query: { draftId: newDraft.id } })
+      }
+      serverDraft.startAutoSave()
+    }
+
+    draftInitialized.value = true
   })
 
   const drawerShow = ref(false)
@@ -149,6 +275,7 @@ const PostWriteView = defineComponent(() => {
       categoryId: category.value.id,
       summary:
         data.summary && data.summary.trim() != '' ? data.summary.trim() : null,
+      pin: data.pin ? new Date().toISOString() : null,
     }
 
     if (id.value) {
@@ -157,20 +284,16 @@ const PostWriteView = defineComponent(() => {
         return
       }
       const $id = id.value as string
-      await RESTManager.api.posts($id).put<PostModel>({
-        data: payload,
-      })
+      await postsApi.update($id, payload)
       message.success('修改成功')
     } else {
       // create
-      await RESTManager.api.posts.post<PostModel>({
-        data: payload,
-      })
+      await postsApi.create(payload)
       message.success('发布成功')
     }
 
     await router.push({ name: RouteName.ViewPost, hash: '|publish' })
-    autoSaveInEditor.clearSaved()
+    // 草稿保留作为历史记录，不删除
   }
   const handleOpenDrawer = () => {
     drawerShow.value = true
@@ -236,6 +359,7 @@ const PostWriteView = defineComponent(() => {
       <WriteEditor
         key={data.id}
         loading={loading.value}
+        autoFocus={id.value ? 'content' : 'title'}
         title={data.title}
         onTitleChange={(v) => {
           data.title = v
@@ -311,12 +435,9 @@ const PostWriteView = defineComponent(() => {
                       if (selectRef.value) {
                         selectRef.value.$el.querySelector('input').focus()
                       }
-                      const { data: tagData } =
-                        await RESTManager.api.categories.get<{
-                          data: TagModel[]
-                        }>({
-                          params: { type: 'Tag' },
-                        })
+                      const { data: tagData } = await categoriesApi.getList({
+                        type: 'Tag',
+                      })
                       tagsRef.value = tagData.map((i) => ({
                         label: `${i.name} (${i.count})`,
                         value: i.name,

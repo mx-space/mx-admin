@@ -7,8 +7,8 @@ import { NButton, NInput, NModal, NPopconfirm } from 'naive-ui'
 import type { SayModel } from '~/models/say'
 import type { PropType } from 'vue'
 
+import { saysApi } from '~/api/says'
 import { RelativeTime } from '~/components/time/relative-time'
-import { RESTManager } from '~/utils'
 
 interface SayWithMeta extends SayModel {
   created?: string
@@ -187,10 +187,10 @@ export const SayEditModal = defineComponent({
         }
 
         if (isEdit.value) {
-          result = await RESTManager.api.says(props.say!.id!).put({ data })
+          result = await saysApi.update(props.say!.id!, data)
           message.success('修改成功')
         } else {
-          result = await RESTManager.api.says.post({ data })
+          result = await saysApi.create(data)
           message.success('发布成功')
         }
 

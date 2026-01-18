@@ -13,12 +13,13 @@ import {
   watch,
 } from 'vue'
 
+import { optionsApi } from '~/api/options'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { ConfigForm } from '~/components/config-form'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { useLayout } from '~/layouts/content'
 import { UIStore } from '~/stores/ui'
-import { deepDiff, RESTManager } from '~/utils'
+import { deepDiff } from '~/utils'
 
 import styles from '../index.module.css'
 import { AIConfigSection } from './sections/ai-config'
@@ -58,9 +59,7 @@ export const TabSystem = defineComponent(() => {
   const schema = ref()
 
   onBeforeMount(async () => {
-    schema.value = await RESTManager.api.config.jsonschema.get({
-      transform: false,
-    })
+    schema.value = await optionsApi.getJsonSchema()
     await fetchConfig()
   })
 
@@ -112,9 +111,7 @@ export const TabSystem = defineComponent(() => {
         }),
       )
 
-      await RESTManager.api.options(key).patch({
-        data: val,
-      })
+      await optionsApi.patch(key, val)
     }
 
     await fetchConfig()
@@ -122,7 +119,7 @@ export const TabSystem = defineComponent(() => {
   }
 
   const fetchConfig = async () => {
-    let response = (await RESTManager.api.options.get()) as any
+    let response = (await optionsApi.getAll()) as any
     response = merge(schema.value.default, response) as any
 
     originConfigs = cloneDeep(response)

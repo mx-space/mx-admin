@@ -8,7 +8,7 @@ import type { PropType } from 'vue'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { Xterm } from '~/components/xterm'
-import { RESTManager } from '~/utils'
+import { healthApi } from '~/api/health'
 
 interface LogFile {
   filename: string
@@ -27,10 +27,8 @@ export const LogListView = defineComponent({
     const fetchDataFn = async () => {
       loading.value = true
       try {
-        const { data: data$ } = await RESTManager.api.health.log
-          .list(logType.value)
-          .get<{ data: LogFile[] }>()
-        data.value = data$
+        const response = await healthApi.getLogList()
+        data.value = response.data
       } finally {
         loading.value = false
       }
@@ -45,9 +43,7 @@ export const LogListView = defineComponent({
     const viewingFilename = ref('')
 
     const handleView = async (item: LogFile) => {
-      const text = await RESTManager.api.health.log(logType.value).get<string>({
-        params: { filename: item.filename },
-      })
+      const text = await healthApi.getLogContent(item.filename)
       logData.value = text
       viewingFilename.value = item.filename
       showLog.value = true
@@ -60,9 +56,7 @@ export const LogListView = defineComponent({
         positiveText: '删除',
         negativeText: '取消',
         onPositiveClick: async () => {
-          await RESTManager.api.health.log(logType.value).delete({
-            params: { filename: item.filename },
-          })
+          await healthApi.deleteLog(item.filename)
           data.value = data.value.filter((i) => i.filename !== item.filename)
           message.success('删除成功')
         },

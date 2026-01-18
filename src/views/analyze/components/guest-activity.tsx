@@ -14,67 +14,54 @@ import { useRoute } from 'vue-router'
 import type {
   NoteModel,
   PageModel,
-  PaginateResult,
   PostModel,
   RecentlyModel,
 } from '@mx-space/api-client'
 import type { ActivityReadDurationType } from '~/models/activity'
+import type { Pager } from '~/models/base'
 import type { PropType, Ref } from 'vue'
 
 import { IpInfoPopover } from '~/components/ip-info'
 import { Table } from '~/components/table'
 import { RelativeTime } from '~/components/time/relative-time'
-import { useDataTableFetch } from '~/hooks/use-table'
-import { RESTManager } from '~/utils'
+import { useDataTableFetch, type fetchDataFn } from '~/hooks/use-table'
+import { activityApi } from '~/api/activity'
+import { apiClient } from '~/utils/request'
 
 import styles from '../index.module.css'
-
-interface ActivityItem {
-  id: string
-  created: string
-  payload: any
-  type: number
-}
 
 enum ActivityType {
   Like,
   ReadDuration,
 }
 
-type WithObjects<T> = {
-  objects: {
-    posts: PostModel[]
-    notes: NoteModel[]
-    pages: PageModel[]
-    recentlies: RecentlyModel[]
-  }
-} & T
+// 使用 API 返回的类型，避免类型转换
+type RefModel = PostModel | NoteModel | PageModel | RecentlyModel
 
 type ObjectsCollection = {
   posts: Record<string, PostModel>
   notes: Record<string, NoteModel>
   pages: Record<string, PageModel>
   recentlies: Record<string, RecentlyModel>
-
-  all: Record<string, PostModel | NoteModel | PageModel | RecentlyModel>
+  all: Record<string, RefModel>
 }
 
-const refObjectCollectionRef = shallowRef({
+const refObjectCollectionRef = shallowRef<ObjectsCollection>({
   posts: {},
   notes: {},
   pages: {},
   recentlies: {},
-
   all: {},
-} as ObjectsCollection)
+})
 
-const mapDataToCollection = (
-  type: keyof ObjectsCollection,
-  data: WithObjects<{}>['objects'],
+const mapDataToCollection = <T extends keyof Omit<ObjectsCollection, 'all'>>(
+  type: T,
+  items: ObjectsCollection[T][string][] | undefined,
 ) => {
+  if (!items) return
+
   const collection = refObjectCollectionRef.value[type]
-  for (const list in data[type]) {
-    const item = data[type][list]
+  for (const item of items) {
     collection[item.id] = item
     refObjectCollectionRef.value.all[item.id] = item
   }
@@ -86,21 +73,20 @@ export const GuestActivity = defineComponent({
 
     const { data, pager, fetchDataFn } = useDataTableFetch(
       (list, pager) => async (page, size) => {
-        RESTManager.api.activity
-          .get<WithObjects<PaginateResult<ActivityItem>>>({
-            params: { page, size, type: tabValue.value },
-          })
-          .then((res) => {
-            list.value = res.data
-            pager.value = res.pagination
+        const res = await activityApi.getList({
+          page: typeof page === 'number' ? page : undefined,
+          size,
+        })
 
-            if (res.objects) {
-              mapDataToCollection('posts', res.objects)
-              mapDataToCollection('notes', res.objects)
-              mapDataToCollection('pages', res.objects)
-              mapDataToCollection('recentlies', res.objects)
-            }
-          })
+        list.value = res.data
+        pager.value = res.pagination
+
+        if (res.objects) {
+          mapDataToCollection('posts', res.objects.posts)
+          mapDataToCollection('notes', res.objects.notes)
+          mapDataToCollection('pages', res.objects.pages)
+          mapDataToCollection('recentlies', res.objects.recentlies)
+        }
       },
     )
 
@@ -146,18 +132,29 @@ export const GuestActivity = defineComponent({
   },
 })
 
+interface ActivityItemData {
+  id: string
+  created: string
+  payload: {
+    id?: string
+    ip: string
+  }
+  type: number
+  ref?: { id: string; title: string }
+}
+
 const LikeActivityList = defineComponent({
   props: {
     data: {
-      type: Object as () => Ref<any[]>,
+      type: Object as () => Ref<ActivityItemData[]>,
       required: true,
     },
     pager: {
-      type: Object as () => Ref<any>,
+      type: Object as () => Ref<Pager>,
       required: true,
     },
     onFetch: {
-      type: Function as PropType<(page?: any) => void>,
+      type: Function as PropType<fetchDataFn>,
       required: true,
     },
   },
@@ -177,7 +174,7 @@ const LikeActivityList = defineComponent({
 
       return (
         <div class={styles.activityList}>
-          {props.data.value.map((item: any) => (
+          {props.data.value.map((item) => (
             <LikeActivityItem key={item.id} item={item} />
           ))}
           {props.pager.value && (
@@ -198,22 +195,15 @@ const LikeActivityList = defineComponent({
 const LikeActivityItem = defineComponent({
   props: {
     item: {
-      type: Object as () => {
-        id: string
-        created: string
-        payload: any
-        type: number
-        ref?: NoteModel | PostModel
-      },
+      type: Object as () => ActivityItemData,
       required: true,
     },
   },
   setup(props) {
     const handleOpenRef = () => {
       if (!props.item.payload?.id) return
-      RESTManager.api
-        .helper('url-builder')(props.item.payload.id)
-        .get<{ data: string }>()
+      apiClient
+        .get<{ data: string }>(`/helper/url-builder/${props.item.payload.id}`)
         .then(({ data: url }) => {
           window.open(url)
         })
@@ -272,15 +262,15 @@ const LikeActivityItem = defineComponent({
 const ReadDurationList = defineComponent({
   props: {
     data: {
-      type: Object as () => Ref<any[]>,
+      type: Object as () => Ref<ActivityReadDurationType[]>,
       required: true,
     },
     pager: {
-      type: Object as () => Ref<any>,
+      type: Object as () => Ref<Pager>,
       required: true,
     },
     onFetch: {
-      type: Function as PropType<(page?: any) => void>,
+      type: Function as PropType<fetchDataFn>,
       required: true,
     },
   },
@@ -326,7 +316,7 @@ const ReadDurationItem = defineComponent({
     },
   },
   setup(props) {
-    const ref = computed(
+    const refModel = computed(
       () => refObjectCollectionRef.value.all[props.item.refId],
     )
 
@@ -357,14 +347,21 @@ const ReadDurationItem = defineComponent({
     })
 
     const handleOpenRef = () => {
-      if (!ref.value?.id) return
-      RESTManager.api
-        .helper('url-builder')(ref.value.id)
-        .get<{ data: string }>()
+      if (!refModel.value?.id) return
+      apiClient
+        .get<{ data: string }>(`/helper/url-builder/${refModel.value.id}`)
         .then(({ data: url }) => {
           window.open(url)
         })
     }
+
+    // 获取 title，不同模型都有 title 属性
+    const refTitle = computed(() => {
+      const model = refModel.value
+      if (!model) return ''
+      // PostModel, NoteModel, PageModel 都有 title
+      return 'title' in model ? model.title : ''
+    })
 
     return () => (
       <article class={styles.activityItem} aria-label="阅读活动">
@@ -388,17 +385,15 @@ const ReadDurationItem = defineComponent({
         </div>
 
         <div class={styles.activityContent}>
-          {ref.value ? (
+          {refModel.value ? (
             <button
               type="button"
               class={styles.activityRef}
               onClick={handleOpenRef}
-              aria-label={`查看文章: ${(ref.value as any).title}`}
+              aria-label={`查看文章: ${refTitle.value}`}
             >
               <BookOpenIcon class={styles.activityRefIcon} />
-              <span class={styles.activityRefTitle}>
-                {(ref.value as any).title}
-              </span>
+              <span class={styles.activityRefTitle}>{refTitle.value}</span>
               <ExternalLinkIcon class="size-3.5 text-neutral-400" />
             </button>
           ) : (

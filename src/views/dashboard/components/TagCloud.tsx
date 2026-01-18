@@ -2,7 +2,7 @@ import { Tags as TagsIcon } from 'lucide-vue-next'
 import { NSpace, NTag } from 'naive-ui'
 import { defineComponent, onMounted, ref } from 'vue'
 
-import { RESTManager } from '~/utils'
+import { aggregateApi } from '~/api/aggregate'
 
 import { ChartCard } from './ChartCard'
 
@@ -19,7 +19,7 @@ export const TagCloud = defineComponent({
     const fetchData = async () => {
       try {
         const result =
-          await RESTManager.api.aggregate.stat['tag-cloud'].get<TagData[]>()
+          await aggregateApi.getTagCloud()
         data.value = Array.isArray(result) ? result : []
       } catch {
         data.value = []

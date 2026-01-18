@@ -7,7 +7,8 @@ import { NButton, NCard, NForm, NFormItem, NInput, NSwitch } from 'naive-ui'
 import type { AuthSocialProviders } from '~/utils/authjs/auth'
 import type { FormInst } from 'naive-ui/lib'
 
-import { RESTManager } from '~/utils'
+import { optionsApi } from '~/api/options'
+import { API_URL } from '~/constants/env'
 import { authClient } from '~/utils/authjs/auth'
 
 import styles from '../../index.module.css'
@@ -77,23 +78,21 @@ export const createProvideSectionComponent = (
       const handleSave = async () => {
         await formRef.value?.validate()
 
-        RESTManager.api.options('oauth').patch({
-          data: {
-            providers: [
-              {
-                type,
-                enabled: isEnabled.value,
-              },
-            ],
-            secrets: {
-              [type]: {
-                clientSecret: formValueRef.value.secret,
-              },
+        await optionsApi.patch('oauth', {
+          providers: [
+            {
+              type,
+              enabled: isEnabled.value,
             },
-            public: {
-              [type]: {
-                clientId: formValueRef.value.clientId,
-              },
+          ],
+          secrets: {
+            [type]: {
+              clientSecret: formValueRef.value.secret,
+            },
+          },
+          public: {
+            [type]: {
+              clientId: formValueRef.value.clientId,
             },
           },
         })
@@ -101,7 +100,7 @@ export const createProvideSectionComponent = (
       }
 
       const copyCallbackUrl = async () => {
-        const url = `${RESTManager.endpoint}/auth/callback/${type}`
+        const url = `${API_URL}/auth/callback/${type}`
         try {
           await navigator.clipboard.writeText(url)
           message.success('已复制到剪贴板')
@@ -173,7 +172,7 @@ export const createProvideSectionComponent = (
                   </div>
                   <div class="flex items-center gap-2">
                     <span class="flex-1 truncate font-mono text-sm text-neutral-700 dark:text-neutral-200">
-                      {RESTManager.endpoint}/auth/callback/{type}
+                      {API_URL}/auth/callback/{type}
                     </span>
                     <NButton text type="primary" onClick={copyCallbackUrl}>
                       <CopyIcon class="size-4" />

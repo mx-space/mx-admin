@@ -1,7 +1,6 @@
 import type { SnippetModel } from '../../../../models/snippet'
-import type { SnippetGroup } from '../interfaces/snippet-group'
 
-import { RESTManager } from '~/utils'
+import { snippetsApi, type SnippetGroup } from '~/api'
 
 export interface GroupWithSnippets extends SnippetGroup {
   snippets: SnippetModel[]
@@ -16,11 +15,7 @@ export function useSnippetList() {
   const fetchGroups = async () => {
     loading.value = true
     try {
-      const data = await RESTManager.api.snippets.group.get<{
-        data: SnippetGroup[]
-      }>({
-        params: { size: 50 },
-      })
+      const data = await snippetsApi.getGroups({ size: 50 })
 
       // Preserve expanded state for existing groups
       const existingExpandedState = new Map(
@@ -46,9 +41,7 @@ export function useSnippetList() {
 
     group.loading = true
     try {
-      const res = await RESTManager.api.snippets
-        .group(reference)
-        .get<{ data: SnippetModel[] }>()
+      const res = await snippetsApi.getGroupSnippets(reference)
       group.snippets = res.data
     } catch (error) {
       console.error('Failed to fetch snippets:', error)
@@ -74,10 +67,14 @@ export function useSnippetList() {
   const deleteSnippet = async (snippet: SnippetModel) => {
     const isBuiltFunction = snippet.builtIn && snippet.type === 'function'
 
+    if (!snippet.id) {
+      throw new Error('Snippet ID is required')
+    }
+
     if (isBuiltFunction) {
-      await RESTManager.api.fn.reset(snippet.id).delete()
+      await snippetsApi.resetFunction(snippet.id)
     } else {
-      await RESTManager.api.snippets(snippet.id).delete()
+      await snippetsApi.delete(snippet.id)
     }
 
     // Remove from local list

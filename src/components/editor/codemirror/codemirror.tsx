@@ -108,6 +108,9 @@ export const CodemirrorEditor = defineComponent({
           })
         }
       },
+      focus: () => {
+        editorView.value?.focus()
+      },
     })
 
     const memoedText = props.text

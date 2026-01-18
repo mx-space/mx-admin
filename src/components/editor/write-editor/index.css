@@ -16,7 +16,8 @@
 
 .write-editor-header {
   flex-shrink: 0;
-  padding: 1.5rem 2rem 0.5rem;
+  padding: 1.5rem 1.5rem 0.5rem;
+  min-width: 0;
 }
 
 .write-editor-subtitle {
@@ -32,7 +33,7 @@
 }
 
 /* 让 CodeMirror 编辑器占满剩余空间 */
-.write-editor-content > div {
+.write-editor-content>div {
   flex: 1;
   min-height: 0;
 }
@@ -43,7 +44,7 @@
 }
 
 .write-editor-content :deep(.cm-scroller) {
-  padding: 0 2rem 2rem;
+  padding: 0 1.5rem 2rem;
 }
 
 /* 确保编辑器内容有足够的左边距与 Title 对齐 */
@@ -66,8 +67,12 @@
   max-width: var(--wysiwyg-content-width);
   margin: 0 auto;
   width: 100%;
-  padding: 1.5rem 2rem 0.5rem;
-  box-sizing: content-box;
+  padding: 0;
+  padding-left: 12px;
+}
+
+.write-editor-wrapper:has(.cm-wysiwyg-mode) .cm-line {
+  padding-left: 12px;
 }
 
 /* Override GhostInput padding in WYSIWYG mode to align with content */

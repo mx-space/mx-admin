@@ -17,9 +17,9 @@ import type { UserModel } from '../../models/user'
 
 import { showConfetti } from '~/utils/confetti'
 import { checkIsInit } from '~/utils/is-init'
+import { systemApi } from '~/api'
 
 import { getToken, removeToken } from '../../utils'
-import { RESTManager } from '../../utils/rest'
 import styles from './index.module.css'
 
 const useDefaultConfigs = () => inject<any>('configs')
@@ -34,7 +34,7 @@ export default defineComponent({
 
     const defaultConfigs = reactive<any>({})
     onMounted(async () => {
-      const configs = await RESTManager.api.init.configs.default.get<any>()
+      const configs = await systemApi.getInitDefaultConfigs()
       Object.assign(defaultConfigs, configs)
     })
     provide('configs', defaultConfigs)
@@ -122,11 +122,8 @@ const Step0 = defineComponent({
         const file = $file.files![0]
         const formData = new FormData()
         formData.append('file', file)
-        RESTManager.api.init.restore
-          .post({
-            data: formData,
-            timeout: 1 << 30,
-          })
+        systemApi
+          .restoreFromBackup(formData, 1 << 30)
           .then(() => {
             message.success('恢复成功，页面将会重载')
             setTimeout(() => {
@@ -172,17 +169,13 @@ const Step1 = defineComponent({
 
     const handleNext = async () => {
       await Promise.all([
-        RESTManager.api.init.configs('seo').patch({
-          data: {
-            title: title.value,
-            keywords: keywords.value,
-            description: description.value,
-          },
+        systemApi.patchInitConfig('seo', {
+          title: title.value,
+          keywords: keywords.value,
+          description: description.value,
         }),
-        RESTManager.api.init.configs('url').patch({
-          data: {
-            ...url,
-          },
+        systemApi.patchInitConfig('url', {
+          ...url,
         }),
       ])
       props.onNext()
@@ -263,10 +256,14 @@ const Step2 = defineComponent({
           user[key] = undefined
         }
       }
-      await RESTManager.api.user.register.post({
-        data: {
-          ...user,
-        },
+      await systemApi.registerUser({
+        username: user.username,
+        password: user.password,
+        name: user.name,
+        mail: user.mail,
+        url: user.url,
+        avatar: user.avatar,
+        introduce: user.introduce,
       })
 
       props.onNext()

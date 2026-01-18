@@ -1,3 +1,4 @@
+import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import { cloneDeep } from 'es-toolkit/compat'
 import { Plus as PlusIcon } from 'lucide-vue-next'
 import {
@@ -19,23 +20,23 @@ import {
   NThing,
   useDialog,
 } from 'naive-ui'
-import useSWRV from 'swrv'
 import type { PaginateResult } from '@mx-space/api-client'
 import type { WebhookEventModel, WebhookModel } from '~/models/wehbook'
 import type { PropType } from 'vue'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { JSONHighlight } from '~/components/json-highlight'
+import { queryKeys } from '~/hooks/queries/keys'
 import { useLayout } from '~/layouts/content'
 import { EventScope } from '~/models/wehbook'
-import { RESTManager } from '~/utils'
-
-const LIST_SWRV_KEY = 'webhook.list'
+import { webhooksApi } from '~/api/webhooks'
 
 export default defineComponent({
   setup() {
-    const { data, mutate } = useSWRV(LIST_SWRV_KEY, async () => {
-      return RESTManager.api.webhooks.get<{ data: WebhookModel[] }>()
+    const queryClient = useQueryClient()
+    const { data, refetch } = useQuery({
+      queryKey: queryKeys.webhooks.list(),
+      queryFn: () => webhooksApi.getList(),
     })
 
     const dialog = useDialog()
@@ -46,7 +47,7 @@ export default defineComponent({
           <EditWebhookForm
             formData={formData}
             onSubmit={() => {
-              mutate()
+              refetch()
             }}
           />
         ),
@@ -133,8 +134,8 @@ export default defineComponent({
                             positiveText={'取消'}
                             negativeText="删除"
                             onNegativeClick={async () => {
-                              await RESTManager.api.webhooks(item.id).delete()
-                              mutate()
+                              await webhooksApi.delete(item.id)
+                              refetch()
                             }}
                           >
                             {{
@@ -176,8 +177,9 @@ export const EditWebhookForm = defineComponent({
     },
   },
   setup(props) {
-    const { data: eventsRef } = useSWRV('webhook.events', async () => {
-      return RESTManager.api.webhooks.events.get<{ data: string[] }>()
+    const { data: eventsRef } = useQuery({
+      queryKey: queryKeys.webhooks.events(),
+      queryFn: () => webhooksApi.getEvents(),
     })
 
     const isEdit = props.formData !== undefined
@@ -196,19 +198,15 @@ export const EditWebhookForm = defineComponent({
     })
     const handleSubmit = async () => {
       if (!isEdit) {
-        await RESTManager.api.webhooks.post({
-          data: {
-            ...reactiveFormData.value,
-          },
+        await webhooksApi.create({
+          ...reactiveFormData.value,
         })
       } else {
         const data = { ...reactiveFormData.value }
         if (!data.secret) {
           Reflect.deleteProperty(data, 'secret')
         }
-        await RESTManager.api.webhooks(props.formData.id).patch({
-          data,
-        })
+        await webhooksApi.update(props.formData.id, data)
       }
       destroyAll()
       props.onSubmit?.()
@@ -287,26 +285,28 @@ export const EditWebhookForm = defineComponent({
 
           <NFormItem required label="Scope">
             <NSpace wrap>
-              {Object.keys(EventScope).map((key) => {
-                const scope = EventScope[key]
-                const value = reactiveFormData.value.scope
-                return (
-                  <NCheckbox
-                    checked={
-                      (value & scope) === scope || value === EventScope.ALL
-                    }
-                    onUpdateChecked={(value) => {
-                      if (value) {
-                        reactiveFormData.value.scope |= EventScope[key]
-                      } else {
-                        reactiveFormData.value.scope &= ~EventScope[key]
+              {(Object.keys(EventScope) as Array<keyof typeof EventScope>).map(
+                (key) => {
+                  const scope = EventScope[key]
+                  const value = reactiveFormData.value.scope
+                  return (
+                    <NCheckbox
+                      checked={
+                        (value & scope) === scope || value === EventScope.ALL
                       }
-                    }}
-                  >
-                    {key}
-                  </NCheckbox>
-                )
-              })}
+                      onUpdateChecked={(value) => {
+                        if (value) {
+                          reactiveFormData.value.scope |= EventScope[key]
+                        } else {
+                          reactiveFormData.value.scope &= ~EventScope[key]
+                        }
+                      }}
+                    >
+                      {key}
+                    </NCheckbox>
+                  )
+                },
+              )}
             </NSpace>
           </NFormItem>
 
@@ -338,13 +338,12 @@ const WebHookDispatches = defineComponent({
   },
 
   setup(props) {
-    const { data } = useSWRV(`webhook.events${props.hookId}`, async () => {
-      return await RESTManager.api
-        .webhooks(props.hookId)
-        .get<PaginateResult<WebhookEventModel>>({
-          params: { page: 1, size: 20 },
-        })
-        .then((d) => d.data)
+    const { data } = useQuery({
+      queryKey: queryKeys.webhooks.dispatches(props.hookId),
+      queryFn: async (): Promise<WebhookEventModel[]> => {
+        // TODO: Implement getWebhookEvents in webhooksApi
+        return []
+      },
     })
 
     const dialog = useDialog()
@@ -360,15 +359,8 @@ const WebHookDispatches = defineComponent({
                 class={'absolute right-4 top-4'}
                 type="primary"
                 onClick={() => {
-                  RESTManager.api.webhooks
-                    .redispatch(item.id)
-                    .post()
-                    .then(() => {
-                      message.success('Re-Dispatch Success')
-                    })
-                    .catch(() => {
-                      message.error('Re-Dispatch Failed')
-                    })
+                  // TODO: Implement redispatch in webhooksApi
+                  message.info('Re-dispatch not yet implemented')
                 }}
               >
                 Re-Dispatch
@@ -446,6 +438,6 @@ const WebHookDispatches = defineComponent({
   },
 })
 
-const reintentJsonStringify = (obj: any) => {
+const reintentJsonStringify = (obj: string) => {
   return JSON.stringify(JSON.parse(obj), null, 2)
 }

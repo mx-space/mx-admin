@@ -3,7 +3,7 @@ import { NDataTable, NText } from 'naive-ui'
 import { defineComponent, h, onMounted, ref } from 'vue'
 import type { DataTableColumns } from 'naive-ui'
 
-import { RESTManager } from '~/utils'
+import { aggregateApi } from '~/api/aggregate'
 
 import { ChartCard } from './ChartCard'
 
@@ -27,9 +27,7 @@ export const TopArticles = defineComponent({
     const fetchData = async () => {
       try {
         const result =
-          await RESTManager.api.aggregate.stat['top-articles'].get<
-            ArticleData[]
-          >()
+          await aggregateApi.getTopArticles()
         data.value = Array.isArray(result) ? result : []
       } catch {
         data.value = []

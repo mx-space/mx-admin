@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/vue-query'
 import { add } from 'date-fns'
 import {
   BookOpen as BookOpenIcon,
@@ -8,7 +9,6 @@ import {
   TrendingUp as TrendingUpIcon,
 } from 'lucide-vue-next'
 import { NButton, NDatePicker, NSkeleton, NSpace } from 'naive-ui'
-import useSWRV from 'swrv'
 import { defineComponent, ref } from 'vue'
 import type {
   NoteModel,
@@ -17,7 +17,9 @@ import type {
   RecentlyModel,
 } from '@mx-space/api-client'
 
-import { RESTManager } from '~/utils'
+import { activityApi } from '~/api/activity'
+import { queryKeys } from '~/hooks/queries/keys'
+import { apiClient } from '~/utils/request'
 
 import styles from '../index.module.css'
 
@@ -34,27 +36,16 @@ export const ReadingRank = defineComponent({
       number,
     ])
 
-    const { data, mutate, isValidating } = useSWRV(
-      '/reading/rank',
-      async () => {
-        return RESTManager.api.activity.reading.rank
-          .get<{
-            data: RankingItem[]
-          }>({
-            params: {
-              start: dateRange.value[0],
-              end: dateRange.value[1],
-            },
-          })
-          .then(({ data }) => data)
-      },
-    )
-
-    watch(dateRange, () => {
-      mutate()
+    const { data, isPending, refetch } = useQuery({
+      queryKey: queryKeys.activity.readingRank(),
+      queryFn: () => activityApi.getReadingRank(),
     })
 
-    const loading = computed(() => isValidating.value && !data.value)
+    watch(dateRange, () => {
+      refetch()
+    })
+
+    const loading = computed(() => isPending.value)
     const maxCount = computed(() =>
       Math.max(...(data.value?.map((item) => item.count) || [1]), 1),
     )
@@ -147,14 +138,22 @@ export const ReadingRank = defineComponent({
           </div>
         ) : (
           <div class={styles.rankingList} role="list" aria-label="阅读排名">
-            {data.value.map((item, index) => (
-              <RankingListItem
-                key={item.refId}
-                item={item}
-                position={index + 1}
-                maxCount={maxCount.value}
-              />
-            ))}
+            {data.value.map((item, index) => {
+              // Transform ReadingRankItem to RankingItem
+              const rankingItem: RankingItem = {
+                ref: { id: item.id, title: item.title },
+                refId: item.refId || item.id,
+                count: item.count,
+              }
+              return (
+                <RankingListItem
+                  key={item.refId || item.id}
+                  item={rankingItem}
+                  position={index + 1}
+                  maxCount={maxCount.value}
+                />
+              )
+            })}
           </div>
         )}
       </>
@@ -182,9 +181,8 @@ const RankingListItem = defineComponent({
     const percentage = computed(() => (props.item.count / props.maxCount) * 100)
 
     const handleOpenArticle = () => {
-      RESTManager.api
-        .helper('url-builder')(props.item.ref.id)
-        .get<{ data: string }>()
+      apiClient
+        .get<{ data: string }>(`/helper/url-builder/${props.item.ref.id}`)
         .then(({ data: url }) => {
           window.open(url)
         })

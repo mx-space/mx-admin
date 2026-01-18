@@ -1,9 +1,10 @@
 import { Crown, Mail, Users } from 'lucide-vue-next'
 import { NAvatar, NEmpty, NInfiniteScroll, NSkeleton, NTooltip } from 'naive-ui'
 import { computed, defineComponent, ref } from 'vue'
-import type { PaginateResult } from '@mx-space/api-client'
 
-import { RESTManager } from '~/utils'
+import { readersApi } from '~/api'
+import type { ReaderModel } from '~/api/readers'
+import type { PaginateResult } from '~/models/base'
 
 const GithubIcon = () => (
   <svg width="1em" height="1em" viewBox="0 0 24 24">
@@ -13,17 +14,6 @@ const GithubIcon = () => (
     />
   </svg>
 )
-
-type ReaderModel = {
-  id: string
-  provider?: string
-  type?: string
-  name: string
-  email: string
-  image: string
-  handle?: string
-  isOwner: boolean
-}
 
 type ReaderWithKey = ReaderModel & { _key: string }
 
@@ -43,11 +33,7 @@ const ReaderView = defineComponent({
     )
 
     const fetchReaders = async (page: number) => {
-      const result = await RESTManager.api.readers.get<
-        PaginateResult<ReaderModel>
-      >({
-        params: { page, size: PAGE_SIZE },
-      })
+      const result = await readersApi.getList({ page, size: PAGE_SIZE })
 
       const newReaders = result.data
         .map((r, idx) => {

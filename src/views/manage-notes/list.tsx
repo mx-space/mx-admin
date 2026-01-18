@@ -1,3 +1,4 @@
+import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import {
   Book as BookIcon,
   Bookmark as BookmarkIcon,
@@ -11,14 +12,14 @@ import {
   Plus as PlusIcon,
   Trash2,
 } from 'lucide-vue-next'
-import { NButton, NEllipsis, NPopconfirm, NSpace, useMessage } from 'naive-ui'
-import { computed, defineComponent, onMounted, reactive, watch } from 'vue'
-import { RouterLink, useRoute } from 'vue-router'
-import type { Pager } from '~/models/base'
+import { NButton, NEllipsis, NPopconfirm, NSpace } from 'naive-ui'
+import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
+import { RouterLink } from 'vue-router'
 import type { NoteModel } from '~/models/note'
 import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import type { PropType } from 'vue'
 
+import { notesApi } from '~/api/notes'
 import { TableTitleLink } from '~/components/link/title-link'
 import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
 import { StatusToggle } from '~/components/status-toggle'
@@ -26,15 +27,15 @@ import { Table } from '~/components/table'
 import { EditColumn } from '~/components/table/edit-column'
 import { RelativeTime } from '~/components/time/relative-time'
 import { WEB_URL } from '~/constants/env'
+import { useDataTable } from '~/hooks/use-data-table'
+import { queryKeys } from '~/hooks/queries/keys'
 import { useStoreRef } from '~/hooks/use-store-ref'
-import { useDataTableFetch } from '~/hooks/use-table'
 import { UIStore } from '~/stores/ui'
 import { getToken } from '~/utils'
 import { formatNumber } from '~/utils/number'
 
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { useLayout } from '../../layouts/content'
-import { RESTManager } from '../../utils/rest'
 
 // Mobile card item component
 const NoteItem = defineComponent({
@@ -171,65 +172,70 @@ const NoteItem = defineComponent({
 export const ManageNoteListView = defineComponent({
   name: 'NoteList',
   setup() {
-    const { loading, checkedRowKeys, data, pager, sortProps, fetchDataFn } =
-      useDataTableFetch<NoteModel>(
-        (data, pager) =>
-          async (page = route.query.page || 1, size = 20, db_query) => {
-            const response = await RESTManager.api.notes.get<{
-              data: NoteModel[]
-              pagination: Pager
-            }>({
-              params: {
-                db_query,
-                page,
-                size,
-                select:
-                  'title _id nid id created modified mood weather publicAt bookmark coordinates location count meta isPublished',
-                ...(sortProps.sortBy
-                  ? { sortBy: sortProps.sortBy, sortOrder: sortProps.sortOrder }
-                  : {}),
-              },
-            })
-            data.value = response.data
-            pager.value = response.pagination
-          },
-      )
-
-    const message = useMessage()
-    const route = useRoute()
-    const fetchData = fetchDataFn
+    const queryClient = useQueryClient()
     const ui = useStoreRef(UIStore)
     const isMobile = computed(() => ui.viewport.value.mobile || ui.viewport.value.pad)
 
-    watch(
-      () => route.query.page,
-      async (n) => {
-        // @ts-expect-error
-        await fetchData(n)
-      },
-    )
+    // 筛选条件
+    const dbQuery = ref<Record<string, boolean> | undefined>(undefined)
 
-    onMounted(async () => {
-      await fetchData()
+    const {
+      isLoading: loading,
+      checkedRowKeys,
+      data,
+      pager,
+      refresh,
+      setSort,
+      setPage,
+    } = useDataTable<NoteModel>({
+      queryKey: (params) => queryKeys.notes.list({ ...params, dbQuery: dbQuery.value }),
+      queryFn: (params) =>
+        notesApi.getList({
+          page: params.page,
+          size: params.size,
+          select:
+            'title _id nid id created modified mood weather publicAt bookmark coordinates location count meta isPublished',
+          sortBy: params.sortBy || undefined,
+          sortOrder: params.sortOrder || undefined,
+          db_query: dbQuery.value,
+        }) as Promise<any>,
+      pageSize: 20,
     })
 
-    const handleDelete = async (id: string) => {
-      await RESTManager.api.notes(id).delete()
-      message.success('删除成功')
-      await fetchData(pager.value.currentPage)
+    // 删除 mutation
+    const deleteMutation = useMutation({
+      mutationFn: notesApi.delete,
+      onSuccess: () => {
+        message.success('删除成功')
+        queryClient.invalidateQueries({ queryKey: queryKeys.notes.all })
+      },
+    })
+
+    // 更新字段 mutation
+    const patchMutation = useMutation({
+      mutationFn: ({ id, data }: { id: string; data: Partial<NoteModel> }) =>
+        notesApi.patch(id, data),
+    })
+
+    // 更新发布状态 mutation
+    const publishMutation = useMutation({
+      mutationFn: ({ id, isPublished }: { id: string; isPublished: boolean }) =>
+        notesApi.patchPublish(id, isPublished),
+      onSuccess: (_, { isPublished }) => {
+        message.success(isPublished ? '已发布' : '已设为草稿')
+        queryClient.invalidateQueries({ queryKey: queryKeys.notes.all })
+      },
+      onError: () => {
+        message.error('操作失败')
+      },
+    })
+
+    const handleDelete = (id: string) => {
+      deleteMutation.mutate(id)
     }
 
     const handleTogglePublish = async (id: string, newStatus: boolean) => {
-      try {
-        await RESTManager.api.notes(id)('publish').patch({
-          data: { isPublished: newStatus },
-        })
-        const item = data.value.find((i) => i.id === id)
-        if (item) item.isPublished = newStatus
-        message.success(newStatus ? '已发布' : '已设为草稿')
-      } catch {
-        message.error('操作失败')
-      }
+      publishMutation.mutate({ id, isPublished: newStatus })
     }
 
     // Mobile card list view
@@ -267,14 +273,14 @@ export const ManageNoteListView = defineComponent({
             )}
 
             {/* Pagination */}
-            {pager.value.totalPage > 1 && (
+            {pager.value && pager.value.totalPage > 1 && (
               <div class="flex items-center justify-center gap-4 py-4 border-t border-neutral-200 dark:border-neutral-800">
                 <button
                   class="px-3 py-1.5 text-sm rounded-md border border-neutral-200 dark:border-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-neutral-50 dark:hover:bg-neutral-800"
                   disabled={!pager.value.hasPrevPage}
                   onClick={() => {
-                    if (pager.value.hasPrevPage) {
-                      fetchData(pager.value.currentPage - 1)
+                    if (pager.value?.hasPrevPage) {
+                      setPage(pager.value.currentPage - 1)
                     }
                   }}
                 >
@@ -287,8 +293,8 @@ export const ManageNoteListView = defineComponent({
                   class="px-3 py-1.5 text-sm rounded-md border border-neutral-200 dark:border-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-neutral-50 dark:hover:bg-neutral-800"
                   disabled={!pager.value.hasNextPage}
                   onClick={() => {
-                    if (pager.value.hasNextPage) {
-                      fetchData(pager.value.currentPage + 1)
+                    if (pager.value?.hasNextPage) {
+                      setPage(pager.value.currentPage + 1)
                     }
                   }}
                 >
@@ -367,16 +373,10 @@ export const ManageNoteListView = defineComponent({
             render(row, index) {
               return (
                 <EditColumn
-                  initialValue={data.value[index].mood ?? ''}
+                  initialValue={data.value[index]?.mood ?? ''}
                   onSubmit={async (v) => {
-                    await RESTManager.api.notes(row.id).patch({
-                      data: {
-                        mood: v,
-                      },
-                    })
-
+                    await patchMutation.mutateAsync({ id: row.id, data: { mood: v } })
                     message.success('修改成功')
-                    data.value[index].mood = v
                   }}
                   placeholder="心情"
                 />
@@ -390,15 +390,10 @@ export const ManageNoteListView = defineComponent({
             render(row, index) {
               return (
                 <EditColumn
-                  initialValue={data.value[index].weather ?? ''}
+                  initialValue={data.value[index]?.weather ?? ''}
                   onSubmit={async (v) => {
-                    await RESTManager.api.notes(row.id).patch({
-                      data: {
-                        weather: v,
-                      },
-                    })
+                    await patchMutation.mutateAsync({ id: row.id, data: { weather: v } })
                     message.success('修改成功')
-                    data.value[index].weather = v
                   }}
                   placeholder="天气"
                 />
@@ -530,27 +525,24 @@ export const ManageNoteListView = defineComponent({
               async onUpdateFilters(filter: { title: string[] }, _column) {
                 const { title } = filter
                 if (!title || title.length === 0) {
-                  await fetchData()
+                  dbQuery.value = undefined
+                  refresh()
                   return
                 }
-                await fetchData(
-                  1,
-                  undefined,
-                  title.reduce((acc, i) => ({ ...acc, [i]: true }), {}),
-                )
+                dbQuery.value = title.reduce((acc, i) => ({ ...acc, [i]: true }), {})
+                setPage(1)
               },
             }}
             loading={loading.value}
             columns={columns}
             data={data}
-            onFetchData={fetchData}
-            pager={pager}
+            onFetchData={refresh}
+            pager={pager as any}
             onUpdateCheckedRowKeys={(keys) => {
               checkedRowKeys.value = keys
             }}
             onUpdateSorter={async (props) => {
-              sortProps.sortBy = props.sortBy
-              sortProps.sortOrder = props.sortOrder
+              setSort(props.sortBy, props.sortOrder as 0 | 1 | -1)
             }}
           />
         )
@@ -567,18 +559,18 @@ export const ManageNoteListView = defineComponent({
             onDelete={async () => {
               const status = await Promise.allSettled(
                 checkedRowKeys.value.map((id) =>
-                  RESTManager.api.notes(id as string).delete(),
+                  notesApi.delete(id as string),
                 ),
               )
 
               for (const s of status) {
                 if (s.status === 'rejected') {
-                  message.success(`删除失败，${s.reason.message}`)
+                  message.error(`删除失败，${s.reason.message}`)
                 }
               }
 
               checkedRowKeys.value.length = 0
-              fetchData()
+              queryClient.invalidateQueries({ queryKey: queryKeys.notes.all })
             }}
           />
 
@@ -591,15 +583,11 @@ export const ManageNoteListView = defineComponent({
               try {
                 await Promise.all(
                   checkedRowKeys.value.map((id) =>
-                    RESTManager.api
-                      .notes(id as string)('publish')
-                      .patch({
-                        data: { isPublished: true },
-                      }),
+                    notesApi.patchPublish(id as string, true),
                   ),
                 )
                 message.success('批量发布成功')
-                fetchData() // 重新获取数据
+                queryClient.invalidateQueries({ queryKey: queryKeys.notes.all })
                 checkedRowKeys.value = []
               } catch (_error) {
                 message.error('批量发布失败')
@@ -616,15 +604,11 @@ export const ManageNoteListView = defineComponent({
               try {
                 await Promise.all(
                   checkedRowKeys.value.map((id) =>
-                    RESTManager.api
-                      .notes(id as string)('publish')
-                      .patch({
-                        data: { isPublished: false },
-                      }),
+                    notesApi.patchPublish(id as string, false),
                   ),
                 )
                 message.success('批量设置草稿成功')
-                fetchData() // 重新获取数据
+                queryClient.invalidateQueries({ queryKey: queryKeys.notes.all })
                 checkedRowKeys.value = []
               } catch (_error) {
                 message.error('批量设置草稿失败')

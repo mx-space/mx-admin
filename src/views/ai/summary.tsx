@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/vue-query'
 import { format } from 'date-fns'
 import {
   Plus as AddIcon,
@@ -22,42 +23,18 @@ import {
   NSkeleton,
   NTooltip,
 } from 'naive-ui'
-import useSWRV from 'swrv'
 import { Transition } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
-import type { AISummaryModel } from '~/models/ai'
 import type { PropType } from 'vue'
 
+import { aiApi, type AISummary, type ArticleInfo } from '~/api/ai'
 import { HeaderActionButton } from '~/components/button/rounded-button'
+import { queryKeys } from '~/hooks/queries/keys'
 import { useLayout } from '~/layouts/content'
-import { RESTManager } from '~/utils'
 
 import styles from './summary.module.css'
 
-type ArticleRefType = 'Post' | 'Note' | 'Page' | 'Recently'
-
-interface ArticleInfo {
-  type: ArticleRefType
-  title: string
-  id: string
-}
-
-interface GroupedSummaryData {
-  article: ArticleInfo
-  summaries: AISummaryModel[]
-}
-
-interface GroupedResponse {
-  data: GroupedSummaryData[]
-  pagination: {
-    total: number
-    currentPage: number
-    totalPage: number
-    size: number
-    hasNextPage: boolean
-    hasPrevPage: boolean
-  }
-}
+type ArticleRefType = ArticleInfo['type']
 
 const RefTypeLabels: Record<ArticleRefType, string> = {
   Post: '文章',
@@ -91,21 +68,14 @@ export default defineComponent({
 const Summaries = defineComponent({
   setup() {
     const pageRef = ref(1)
-    const { data, mutate, isValidating } = useSWRV(
-      () => `/api/ai/summaries/grouped?page=${pageRef.value}`,
-      async () => {
-        return await RESTManager.api.ai.summaries.grouped.get<GroupedResponse>({
-          params: {
-            page: pageRef.value,
-          },
-        })
-      },
-      {
-        revalidateOnFocus: false,
-      },
-    )
+    const { data, refetch, isPending } = useQuery({
+      queryKey: computed(() =>
+        queryKeys.ai.summariesGrouped({ page: pageRef.value }),
+      ),
+      queryFn: () => aiApi.getSummariesGrouped({ page: pageRef.value }),
+    })
 
-    const loading = computed(() => isValidating.value && !data.value)
+    const loading = computed(() => isPending.value)
 
     return () => (
       <Transition name="fade" mode="out-in">
@@ -121,7 +91,7 @@ const Summaries = defineComponent({
                   key={group.article.id}
                   article={group.article}
                   summaries={group.summaries}
-                  onMutate={mutate}
+                  onMutate={refetch}
                 />
               ))}
             </div>
@@ -132,7 +102,7 @@ const Summaries = defineComponent({
                   pageCount={data.value.pagination.totalPage}
                   onUpdatePage={(page) => {
                     pageRef.value = page
-                    mutate()
+                    refetch()
                   }}
                 />
               </div>
@@ -151,7 +121,7 @@ const ArticleGroup = defineComponent({
       required: true,
     },
     summaries: {
-      type: Array as PropType<AISummaryModel[]>,
+      type: Array as PropType<AISummary[]>,
       required: true,
     },
     onMutate: {
@@ -236,7 +206,7 @@ const ArticleGroup = defineComponent({
 const SummaryItem = defineComponent({
   props: {
     item: {
-      type: Object as PropType<AISummaryModel>,
+      type: Object as PropType<AISummary>,
       required: true,
     },
     onMutate: {
@@ -318,7 +288,7 @@ const SummaryItem = defineComponent({
             positiveText="取消"
             negativeText="删除"
             onNegativeClick={async () => {
-              await RESTManager.api.ai.summaries(props.item.id).delete()
+              await aiApi.deleteSummary(props.item.id)
               props.onMutate()
             }}
           >
@@ -359,18 +329,10 @@ const SummaryRefIdContent = defineComponent({
   setup(props) {
     const router = useRouter()
     const refId = props.refId
-    const { data, mutate, isValidating } = useSWRV(
-      `/api/ai/summary/${refId}`,
-      async () => {
-        return await RESTManager.api.ai.summaries.ref(refId).get<{
-          summaries: AISummaryModel[]
-          article: {
-            type: ArticleRefType
-            document: { title: string }
-          }
-        }>()
-      },
-    )
+    const { data, refetch, isPending } = useQuery({
+      queryKey: queryKeys.ai.summaryByRef(refId),
+      queryFn: () => aiApi.getSummaryByRef(refId),
+    })
 
     const { setActions } = useLayout()
 
@@ -390,7 +352,7 @@ const SummaryRefIdContent = defineComponent({
       setActions(null)
     })
 
-    const loading = computed(() => isValidating.value && !data.value)
+    const loading = computed(() => isPending.value)
 
     return () => (
       <div>
@@ -427,7 +389,7 @@ const SummaryRefIdContent = defineComponent({
           ) : (
             <div key="content" class={styles.list}>
               {data.value.summaries.map((item) => (
-                <SummaryCard key={item.id} item={item} onMutate={mutate} />
+                <SummaryCard key={item.id} item={item} onMutate={refetch} />
               ))}
             </div>
           )}
@@ -440,7 +402,7 @@ const SummaryRefIdContent = defineComponent({
 const SummaryCard = defineComponent({
   props: {
     item: {
-      type: Object as PropType<AISummaryModel>,
+      type: Object as PropType<AISummary>,
       required: true,
     },
     onMutate: {
@@ -530,7 +492,7 @@ const SummaryCard = defineComponent({
               positiveText="取消"
               negativeText="删除"
               onNegativeClick={async () => {
-                await RESTManager.api.ai.summaries(props.item.id).delete()
+                await aiApi.deleteSummary(props.item.id)
                 props.onMutate()
               }}
             >
@@ -627,7 +589,7 @@ const LoadingSkeleton = defineComponent({
 // Helper functions for dialogs
 function showGenerateDialog(
   refId: string,
-  onSuccess: (res: AISummaryModel | null) => void,
+  onSuccess: (res: AISummary | null) => void,
 ) {
   const loadingRef = ref(false)
   const langRef = ref('zh')
@@ -652,12 +614,10 @@ function showGenerateDialog(
               onClick={() => {
                 if (!langRef.value) return
                 loadingRef.value = true
-                RESTManager.api.ai.summaries.generate
-                  .post<AISummaryModel | null>({
-                    data: {
-                      refId,
-                      lang: langRef.value,
-                    },
+                aiApi
+                  .generateSummary({
+                    refId,
+                    lang: langRef.value,
                   })
                   .then((res) => {
                     onSuccess(res)
@@ -678,7 +638,7 @@ function showGenerateDialog(
   })
 }
 
-function showEditDialog(item: AISummaryModel, onSuccess: () => void) {
+function showEditDialog(item: AISummary, onSuccess: () => void) {
   const summaryRef = ref(item.summary)
 
   const $dialog = dialog.create({
@@ -698,9 +658,8 @@ function showEditDialog(item: AISummaryModel, onSuccess: () => void) {
               type="primary"
               onClick={() => {
                 if (!summaryRef.value) return
-                RESTManager.api.ai
-                  .summaries(item.id)
-                  .patch({ data: { summary: summaryRef.value } })
+                aiApi
+                  .updateSummary(item.id, { summary: summaryRef.value })
                   .then(() => {
                     onSuccess()
                     $dialog.destroy()

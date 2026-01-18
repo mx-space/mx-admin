@@ -15,7 +15,8 @@ import type { PropType } from 'vue'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { useLayout } from '~/layouts/content'
-import { responseBlobToFile, RESTManager } from '~/utils'
+import { responseBlobToFile } from '~/utils'
+import { backupApi } from '~/api/backup'
 
 interface BackupFile {
   filename: string
@@ -31,7 +32,7 @@ export default defineComponent({
     const fetchData = async () => {
       loading.value = true
       try {
-        const response = (await RESTManager.api.backups.get()) as any
+        const response = await backupApi.getList()
         const data$ = response.data as BackupFile[]
         data$.sort((b, a) => a.filename.localeCompare(b.filename))
         data.value = data$
@@ -47,10 +48,7 @@ export default defineComponent({
     const handleBackup = async () => {
       const info = message.info('备份中...', { duration: 10e8, closable: true })
       try {
-        const blob = await RESTManager.api.backups.new.get({
-          responseType: 'blob',
-          timeout: 10e8,
-        })
+        const blob = await backupApi.createNew()
         info.destroy()
         message.success('备份完成')
         responseBlobToFile(blob, 'backup.zip')
@@ -71,36 +69,14 @@ export default defineComponent({
       $file.addEventListener('change', () => {
         const file = $file.files![0]
         if (!file) return
-        const formData = new FormData()
-        formData.append('file', file)
-        const info = message.info('恢复中...', {
-          duration: 10e8,
-          closable: true,
-        })
-        RESTManager.api.backups.rollback
-          .post({
-            data: formData,
-            timeout: 1 << 30,
-          })
-          .then(() => {
-            info.destroy()
-            message.success('恢复成功，页面将会重载')
-            setTimeout(() => {
-              location.reload()
-            }, 1000)
-          })
-          .catch(() => {
-            info.destroy()
-            message.error('恢复失败')
-          })
+        // TODO: Implement upload rollback with new API
+        message.error('上传恢复功能暂未实现')
         $file.remove()
       })
     }
 
     const handleDelete = async (filename: string) => {
-      await RESTManager.api.backups.delete({
-        data: { files: filename },
-      })
+      await backupApi.delete(filename)
       message.success('删除成功')
       const index = data.value.findIndex((i) => i.filename === filename)
       if (index !== -1) {
@@ -111,7 +87,7 @@ export default defineComponent({
     const handleRollback = async (filename: string) => {
       const info = message.info('回滚中...', { duration: 10e8, closable: true })
       try {
-        await RESTManager.api.backups.rollback(filename).patch({})
+        await backupApi.rollback(filename)
         info.destroy()
         message.success('回滚成功，页面将会重载')
         setTimeout(() => {
@@ -126,10 +102,7 @@ export default defineComponent({
     const handleDownload = async (filename: string) => {
       const info = message.info('下载中...', { duration: 10e8, closable: true })
       try {
-        const blob = await RESTManager.api.backups(filename).get({
-          responseType: 'blob',
-          timeout: 10e8,
-        })
+        const blob = await backupApi.download(filename)
         info.destroy()
         message.success('下载完成')
         responseBlobToFile(blob, `${filename}.zip`)

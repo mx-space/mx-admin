@@ -18,12 +18,12 @@ import { computed, defineComponent, onMounted, Transition } from 'vue'
 import type { RecentlyModel, RecentlyRefTypes } from '~/models/recently'
 import type { PropType } from 'vue'
 
+import { recentlyApi } from '~/api'
 import { useShorthand } from '~/components/shorthand'
 import { RelativeTime } from '~/components/time/relative-time'
 
 import { HeaderActionButton } from '../../components/button/rounded-button'
 import { useLayout } from '../../layouts/content'
-import { RESTManager } from '../../utils/rest'
 import styles from './index.module.css'
 
 const RefTypeIcons: Record<RecentlyRefTypes, typeof ArticleIcon> = {
@@ -255,12 +255,10 @@ export default defineComponent({
     const loading = ref(true)
 
     onMounted(async () => {
-      RESTManager.api.recently.all
-        .get<{ data: RecentlyModel[] }>()
-        .then((res) => {
-          data.value = res.data
-          loading.value = false
-        })
+      recentlyApi.getAll().then((res) => {
+        data.value = res.data
+        loading.value = false
+      })
     })
 
     const { create, edit } = useShorthand()
@@ -307,7 +305,7 @@ export default defineComponent({
                     })
                   }}
                   onDelete={async () => {
-                    await RESTManager.api.recently(item.id).delete()
+                    await recentlyApi.delete(item.id)
                     message.success('删除成功')
                     data.value.splice(data.value.indexOf(item), 1)
                   }}

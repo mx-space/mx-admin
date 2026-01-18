@@ -6,7 +6,7 @@ import type {
 
 import { startAuthentication, startRegistration } from '@simplewebauthn/browser'
 
-import { RESTManager } from '~/utils'
+import { authApi } from '~/api'
 
 export default defineComponent({
   setup() {
@@ -15,8 +15,7 @@ export default defineComponent({
         <>
           <NButton
             onClick={async () => {
-              const registrationOptions =
-                await RESTManager.api.passkey.register.post<any>()
+              const registrationOptions = await authApi.startPasskeyRegister()
               let attResp: RegistrationResponseJSON
               try {
                 // Pass the options to the authenticator and wait for a response
@@ -36,10 +35,9 @@ export default defineComponent({
                 Object.assign(attResp, {
                   name: `test-1${(Math.random() * 100) | 0}`,
                 })
-                const verificationResp =
-                  await RESTManager.api.passkey.register.verify.post<any>({
-                    data: attResp,
-                  })
+                const verificationResp = await authApi.verifyPasskeyRegister(
+                  attResp,
+                )
                 if (verificationResp.verified) {
                   message.success('Successfully registered authenticator')
                 } else {
@@ -55,8 +53,7 @@ export default defineComponent({
 
           <NButton
             onClick={async () => {
-              const registrationOptions =
-                await RESTManager.api.passkey.authentication.post<any>()
+              const registrationOptions = await authApi.startPasskeyAuth()
               let attResp: AuthenticationResponseJSON
               try {
                 // Pass the options to the authenticator and wait for a response
@@ -68,13 +65,10 @@ export default defineComponent({
               }
 
               try {
-                const verificationResp =
-                  await RESTManager.api.passkey.authentication.verify.post<any>(
-                    {
-                      data: attResp,
-                    },
-                  )
-                if (verificationResp.verified) {
+                const verificationResp = await authApi.verifyPasskeyAuth(
+                  attResp,
+                )
+                if (verificationResp.token) {
                   message.success('Successfully registered authenticator')
                 } else {
                   message.error('Error: Could not verify authenticator')

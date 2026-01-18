@@ -6,7 +6,8 @@ import type { TableColumns } from 'naive-ui/es/data-table/src/interface'
 import { Table } from '~/components/table'
 import { RelativeTime } from '~/components/time/relative-time'
 import { useDataTableFetch } from '~/hooks/use-table'
-import { RESTManager } from '~/utils'
+import { subscribeApi } from '~/api/subscribe'
+import { optionsApi } from '~/api/options'
 
 import { SubscribeBit2TextMap } from './constants'
 
@@ -16,37 +17,24 @@ export default defineComponent({
     const subscribeEnabled = ref(false)
 
     onBeforeMount(async () => {
-      const enabled = await RESTManager.api.subscribe.status
-        .get<{
-          enable: boolean
-        }>()
-        .then((res) => {
-          return res.enable
-        })
-      subscribeEnabled.value = enabled
+      const response = await subscribeApi.getStatus()
+      subscribeEnabled.value = response.enabled
     })
 
     const toggleSubscribeEnable = async () => {
-      await RESTManager.api.options('featureList').patch({
-        data: {
-          emailSubscribe: !subscribeEnabled.value,
-        },
+      await optionsApi.patch('featureList', {
+        emailSubscribe: !subscribeEnabled.value,
       })
       subscribeEnabled.value = !subscribeEnabled.value
     }
 
-    const { loading, checkedRowKeys, data, pager, fetchDataFn } =
+    const { loading, checkedRowKeys, data, pager, fetchDataFn} =
       useDataTableFetch((data, pager) => {
         return async (page = route.query.page || 1, size = 10) => {
-          const response =
-            await RESTManager.api.subscribe.get<SubscribeResponse>({
-              params: {
-                page,
-                size,
-                sortBy: 'created',
-                sortOrder: '-1',
-              },
-            })
+          const response = await subscribeApi.getList({
+            page: +page,
+            size,
+          })
           data.value = response.data
           pager.value = response.pagination
         }
@@ -100,12 +88,7 @@ export default defineComponent({
                 positiveText="取消"
                 negativeText="删除"
                 onNegativeClick={async () => {
-                  await RESTManager.api.subscribe.unsubscribe.get({
-                    params: {
-                      email: row.email,
-                      cancelToken: row.cancelToken,
-                    },
-                  })
+                  await subscribeApi.unsubscribe({ email: row.email })
                   message.success('删除成功')
                   await fetchData(pager.value.currentPage)
                 }}

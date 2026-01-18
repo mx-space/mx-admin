@@ -1,5 +1,6 @@
 import QProgress from 'qier-progress'
 
+import { userApi } from '~/api/user'
 import { API_URL, GATEWAY_URL } from '~/constants/env'
 import { SESSION_WITH_LOGIN } from '~/constants/keys'
 import { LayoutStore } from '~/stores/layout'
@@ -8,7 +9,6 @@ import { removeToken, setToken } from '~/utils/auth'
 import { checkIsInit } from '~/utils/is-init'
 
 import { configs } from '../configs'
-import { RESTManager } from '../utils/rest'
 import { router } from './router'
 
 export const progress = new QProgress({ colorful: false, color: '#1a9cf3' })
@@ -53,9 +53,7 @@ router.beforeEach(async (to) => {
     if (now - lastCheckedLogAt < 1000 * 60 * 5) {
       return
     }
-    const { ok } = await RESTManager.api('master')('check_logged').get<{
-      ok: number
-    }>()
+    const { ok } = await userApi.checkLogged()
     lastCheckedLogAt = now
     if (!ok) {
       return `/login?from=${encodeURI(to.fullPath)}`
@@ -70,8 +68,8 @@ router.beforeEach(async (to) => {
       if (loginWithTokenOnce || getTokenIsUpstream()) {
         return
       } else {
-        await RESTManager.api.master.login
-          .put<{ token: string }>()
+        await userApi
+          .loginWithToken()
           .then((res) => {
             loginWithTokenOnce = true
             removeToken()

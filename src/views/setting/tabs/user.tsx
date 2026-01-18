@@ -1,3 +1,4 @@
+import { useMutation } from '@tanstack/vue-query'
 import { cloneDeep, isEmpty } from 'es-toolkit/compat'
 import {
   Calendar as CalendarIcon,
@@ -14,6 +15,7 @@ import { NButton, NInput, NSelect, NSkeleton, useMessage } from 'naive-ui'
 import { computed, defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import type { UserModel } from '~/models/user'
 
+import { userApi } from '~/api/user'
 import Avatar from '~/components/avatar'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { IpInfoPopover } from '~/components/ip-info'
@@ -21,7 +23,7 @@ import { RelativeTime } from '~/components/time/relative-time'
 import { UploadWrapper } from '~/components/upload'
 import { socialKeyMap } from '~/constants/social'
 import { useLayout } from '~/layouts/content'
-import { deepDiff, RESTManager } from '~/utils'
+import { deepDiff } from '~/utils'
 
 import styles from '../index.module.css'
 
@@ -32,7 +34,7 @@ export const TabUser = defineComponent(() => {
 
   async function fetchMaster() {
     loading.value = true
-    const response = (await RESTManager.api.master.get()) as UserModel
+    const response = await userApi.getMaster()
     data.value = response
     origin = cloneDeep(response)
     loading.value = false
@@ -48,7 +50,16 @@ export const TabUser = defineComponent(() => {
 
   const { setActions: setHeaderButton } = useLayout()
 
-  const handleSave = async () => {
+  // 更新用户信息
+  const updateMutation = useMutation({
+    mutationFn: userApi.updateMaster,
+    onSuccess: async () => {
+      message.success('保存成功')
+      await fetchMaster()
+    },
+  })
+
+  const handleSave = () => {
     if (!hasChanges.value) return
 
     const submitData = cloneDeep(unref(diff))
@@ -56,11 +67,7 @@ export const TabUser = defineComponent(() => {
       submitData.socialIds = data.value.socialIds
     }
 
-    await RESTManager.api.master.patch({
-      data: submitData,
-    })
-    message.success('保存成功')
-    await fetchMaster()
+    updateMutation.mutate(submitData)
   }
 
   onMounted(() => {

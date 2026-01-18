@@ -3,7 +3,7 @@ import { defineComponent, ref } from 'vue'
 import type { PopoverTrigger } from 'naive-ui'
 import type { PropType } from 'vue'
 
-import { RESTManager } from '~/utils'
+import { systemApi } from '~/api'
 
 const ipLocationCacheMap = new Map<string, IP>()
 
@@ -49,11 +49,7 @@ export const IpInfoPopover = defineComponent({
           return
         }
 
-        const data: any = await RESTManager.api.fn('built-in').ip.get({
-          params: {
-            ip,
-          },
-        })
+        const data: any = await systemApi.callBuiltInFunction('ip', { ip })
 
         setIpInfoText(data)
         ipLocationCacheMap.set(ip, data)

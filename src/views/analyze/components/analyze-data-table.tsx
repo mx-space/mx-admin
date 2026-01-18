@@ -22,7 +22,7 @@ import { Table } from '~/components/table'
 import { useDataTableFetch } from '~/hooks/use-table'
 import { useLayout } from '~/layouts/content'
 import { router } from '~/router'
-import { RESTManager } from '~/utils'
+import { analyzeApi } from '~/api/analyze'
 
 export const AnalyzeDataTable = defineComponent({
   setup() {
@@ -49,7 +49,7 @@ export const AnalyzeDataTable = defineComponent({
           />
           <DeleteConfirmButton
             onDelete={async () => {
-              await RESTManager.api.analyze.delete()
+              await analyzeApi.deleteAll()
 
               if (Number.parseInt(route.query.page as string) === 1) {
                 fetchData()
@@ -89,15 +89,10 @@ export const AnalyzeDataTable = defineComponent({
     } = useDataTableFetch(
       (data, pager) =>
         async (page = route.query.page || 1, size = 30) => {
-          const response = (await RESTManager.api.analyze.get({
-            params: {
-              page,
-              size,
-            },
-          })) as {
-            data: UA.Root[]
-            pagination: Pager
-          }
+          const response = await analyzeApi.getList({
+            page: +page,
+            size,
+          })
 
           data.value = response.data
           pager.value = response.pagination

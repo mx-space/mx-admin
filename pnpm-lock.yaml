@@ -53,6 +53,9 @@ importers:
       '@simplewebauthn/browser':
         specifier: 10.0.0
         version: 10.0.0
+      '@tanstack/vue-query':
+        specifier: 5.92.8
+        version: 5.92.8(vue@3.5.13(typescript@5.7.2))
       '@types/canvas-confetti':
         specifier: 1.9.0
         version: 1.9.0
@@ -155,6 +158,9 @@ importers:
       octokit:
         specifier: 4.0.3
         version: 4.0.3
+      ofetch:
+        specifier: 1.5.1
+        version: 1.5.1
       openai:
         specifier: 4.77.3
         version: 4.77.3(encoding@0.1.13)(zod@4.3.5)
@@ -1684,6 +1690,22 @@ packages:
 
   '@socket.io/component-emitter@3.1.2':
     resolution: {integrity: sha512-9BCxFwvbGg/RsZK9tjXd8s4UcwR0MWeFQ1XEKIQVVvAGJyINdrqKMcTRyLoK8Rse1GjzLV9cwjWV1olXRWEXVA==}
+
+  '@tanstack/match-sorter-utils@8.19.4':
+    resolution: {integrity: sha512-Wo1iKt2b9OT7d+YGhvEPD3DXvPv2etTusIMhMUoG7fbhmxcXCtIjJDEygy91Y2JFlwGyjqiBPRozme7UD8hoqg==}
+    engines: {node: '>=12'}
+
+  '@tanstack/query-core@5.90.19':
+    resolution: {integrity: sha512-GLW5sjPVIvH491VV1ufddnfldyVB+teCnpPIvweEfkpRx7CfUmUGhoh9cdcUKBh/KwVxk22aNEDxeTsvmyB/WA==}
+
+  '@tanstack/vue-query@5.92.8':
+    resolution: {integrity: sha512-MBNFWyL7cZWwIKpPGnBUad2Sm9K08Elo7YWobQQoYKUm3uLKwBLOtfAtO94M6VNIuk7k2kV5ZN9cTXOeAt7/aQ==}
+    peerDependencies:
+      '@vue/composition-api': ^1.1.2
+      vue: ^2.6.0 || ^3.3.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
 
   '@types/aws-lambda@8.10.147':
     resolution: {integrity: sha512-nD0Z9fNIZcxYX5Mai2CTmFD7wX7UldCkW2ezCF8D1T5hdiLsnTWDGRpfRYntU6VjTdLQjOvyszru7I1c1oCQew==}
@@ -5724,6 +5746,20 @@ snapshots:
   '@simplewebauthn/types@10.0.0': {}
 
   '@socket.io/component-emitter@3.1.2': {}
+
+  '@tanstack/match-sorter-utils@8.19.4':
+    dependencies:
+      remove-accents: 0.5.0
+
+  '@tanstack/query-core@5.90.19': {}
+
+  '@tanstack/vue-query@5.92.8(vue@3.5.13(typescript@5.7.2))':
+    dependencies:
+      '@tanstack/match-sorter-utils': 8.19.4
+      '@tanstack/query-core': 5.90.19
+      '@vue/devtools-api': 6.6.4
+      vue: 3.5.13(typescript@5.7.2)
+      vue-demi: 0.14.10(vue@3.5.13(typescript@5.7.2))
 
   '@types/aws-lambda@8.10.147': {}
 

@@ -2,7 +2,7 @@ import { NButton, NInput, NSpace, useDialog } from 'naive-ui'
 import { ref } from 'vue'
 import type { RecentlyModel } from '~/models/recently'
 
-import { RESTManager } from '~/utils'
+import { recentlyApi } from '~/api'
 
 export const useShorthand = () => {
   const modal = useDialog()
@@ -36,11 +36,9 @@ export const useShorthand = () => {
                   round
                   type="primary"
                   onClick={() => {
-                    RESTManager.api.recently
-                      .post<RecentlyModel>({
-                        data: {
-                          content: quickHandText.value,
-                        },
+                    recentlyApi
+                      .create({
+                        content: quickHandText.value,
                       })
                       .then((res) => {
                         quickHandText.value = ''
@@ -99,12 +97,9 @@ export const useShorthand = () => {
                   round
                   type="primary"
                   onClick={() => {
-                    RESTManager.api
-                      .recently(item.id)
-                      .put<RecentlyModel>({
-                        data: {
-                          content: quickHandText.value,
-                        },
+                    recentlyApi
+                      .update(item.id, {
+                        content: quickHandText.value,
                       })
                       .then((res) => {
                         quickHandText.value = ''
