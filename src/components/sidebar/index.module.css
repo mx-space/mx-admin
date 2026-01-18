@@ -58,19 +58,19 @@
   padding: 0 12px;
 }
 
-.logo {
+/* User Avatar Button */
+.user-avatar-btn {
   display: flex;
   align-items: center;
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 50%;
+  transition: all 0.15s;
 
-  & img {
-    height: 24px;
-    flex-shrink: 0;
+  &:hover {
+    background: var(--sidebar-hover-bg);
   }
 }
-
 
 /* Header 按钮组 */
 .header-actions {
@@ -96,7 +96,6 @@
   }
 }
 
-
 /* 菜单区域 */
 .menu {
   @apply flex-1 overflow-y-auto overflow-x-hidden;
@@ -115,7 +114,6 @@
   @apply flex flex-col gap-0.5 p-2;
   transition: padding var(--duration) ease;
 }
-
 
 /* 菜单项 */
 .item {
@@ -165,7 +163,6 @@
     width var(--duration);
 }
 
-
 /* 子菜单 */
 .has-child {
   @apply overflow-hidden;
@@ -176,32 +173,29 @@
   @apply pl-8;
 }
 
-
-/* Footer 区域 */
+/* Footer 区域 - Theme Toggle */
 .sidebar-footer {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px;
-  cursor: pointer;
-  transition: background 0.15s;
-  border-radius: 8px;
+  justify-content: flex-end;
   margin: 8px;
+}
+
+.theme-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  color: var(--sidebar-text);
+  transition: all 0.15s;
 
   &:hover {
     background: var(--sidebar-hover-bg);
+    color: var(--sidebar-text-active);
   }
 }
-
-.sidebar-username {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 14px;
-  color: var(--sidebar-text);
-  transition: opacity var(--duration);
-}
-
 
 /* 响应式 - 移动端 Sheet 样式 */
 @media (max-width: 768px) {

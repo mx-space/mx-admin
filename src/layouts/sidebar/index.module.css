@@ -9,7 +9,7 @@
     padding: 8px;
     padding-left: 0;
 
-    @apply fixed inset-0 overflow-hidden;
+    @apply fixed inset-0;
   }
 
   .container {
@@ -60,4 +60,3 @@
     opacity: 1;
   }
 }
-
