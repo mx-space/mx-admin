@@ -78,6 +78,13 @@ pnpm format
 - **验证方式**：修改代码后只需运行类型检查（`pnpm tsc --noEmit` 或依赖 IDE 诊断），不要运行 `pnpm build` 构建整个项目
 - **灰阶颜色**：所有灰阶色必须使用 `neutral` 而不是 `gray`（如 `text-neutral-500`、`bg-neutral-800`、`border-neutral-200`）。这与项目的 Vercel 风格设计一致
 
+## API Response Handling
+
+Backend wraps array responses as `{ data: [...] }`. Use `select` to extract:
+```typescript
+select: (res: any) => Array.isArray(res) ? res : res?.data ?? []
+```
+
 ## Related Projects
 
 - **mx-core** - Backend API server (NestJS + MongoDB), located at `../mx-core`
