@@ -1,15 +1,14 @@
 import { isString } from 'es-toolkit/compat'
 import {
+  FolderIcon,
   SlidersHorizontal as SlidersHIcon,
   Send as TelegramPlaneIcon,
 } from 'lucide-vue-next'
 import {
   NDynamicTags,
-  NFormItem,
   NInput,
   NInputNumber,
   NSelect,
-  NSwitch,
   useMessage,
 } from 'naive-ui'
 import { computed, defineComponent, onMounted, reactive, ref, watch } from 'vue'
@@ -21,7 +20,12 @@ import type { SelectMixedOption } from 'naive-ui/lib/select/src/interface'
 
 import { AiHelperButton } from '~/components/ai/ai-helper'
 import { HeaderActionButton } from '~/components/button/rounded-button'
-import { TextBaseDrawer } from '~/components/drawer/text-base-drawer'
+import {
+  FormField,
+  SectionTitle,
+  SwitchRow,
+  TextBaseDrawer,
+} from '~/components/drawer/text-base-drawer'
 import { WriteEditor } from '~/components/editor/write-editor'
 import { SlugInput } from '~/components/editor/write-editor/slug-input'
 import { ParseContentButton } from '~/components/special-button/parse-content'
@@ -260,15 +264,19 @@ const PostWriteView = defineComponent(() => {
 
       {/* Drawer  */}
       <TextBaseDrawer
+        title="文章设定"
         show={drawerShow.value}
         onUpdateShow={(s) => {
           drawerShow.value = s
         }}
         data={data}
       >
-        <NFormItem label="分类" required path="categoryId">
+        {/* 分类与标签 */}
+        <SectionTitle icon={FolderIcon}>分类与标签</SectionTitle>
+
+        <FormField label="分类" required>
           <NSelect
-            placeholder="请选择"
+            placeholder="请选择分类"
             options={
               categoryStore.data.value?.map((i) => ({
                 label: i.name,
@@ -280,8 +288,9 @@ const PostWriteView = defineComponent(() => {
               data.categoryId = v
             }}
           />
-        </NFormItem>
-        <NFormItem label="标签" path="tags">
+        </FormField>
+
+        <FormField label="标签">
           <NDynamicTags
             value={data.tags}
             onUpdateValue={(e) => {
@@ -337,8 +346,9 @@ const PostWriteView = defineComponent(() => {
               },
             }}
           </NDynamicTags>
-        </NFormItem>
-        <NFormItem label="关联阅读">
+        </FormField>
+
+        <FormField label="关联阅读">
           <NSelect
             maxTagCount={3}
             multiple
@@ -355,11 +365,12 @@ const PostWriteView = defineComponent(() => {
             }}
             onScroll={handleFetchNext}
           />
-        </NFormItem>
-        <NFormItem label="摘要">
+        </FormField>
+
+        <FormField label="摘要">
           <NInput
             type="textarea"
-            placeholder="请输入摘要"
+            placeholder="请输入摘要（可选）"
             value={data.summary}
             rows={3}
             autosize={{
@@ -367,44 +378,53 @@ const PostWriteView = defineComponent(() => {
             }}
             onUpdateValue={(v) => void (data.summary = v)}
           />
-        </NFormItem>
-        <NFormItem label="版权注明" labelAlign="right" labelPlacement="left">
-          <NSwitch
-            value={data.copyright}
-            onUpdateValue={(e) => void (data.copyright = e)}
-          />
-        </NFormItem>
-        <NFormItem label="置顶" labelAlign="right" labelPlacement="left">
-          <NSwitch
-            value={!!data.pin}
-            onUpdateValue={(e) => {
-              data.pin = e
-              if (!e) {
-                data.pinOrder = 0
-              } else {
-                data.pinOrder = data.pinOrder || 1
-              }
-            }}
-          />
-        </NFormItem>
-        <NFormItem label="置顶顺序" labelAlign="right" labelPlacement="left">
-          <NInputNumber
-            disabled={!data.pin}
-            value={data.pinOrder}
-            onUpdateValue={(e) => void (data.pinOrder = e || 1)}
-          />
-        </NFormItem>
-        <NFormItem label="发布状态" labelAlign="right" labelPlacement="left">
-          <NSwitch
-            value={data.isPublished}
-            onUpdateValue={(e) => void (data.isPublished = e)}
-          >
-            {{
-              checked: () => '已发布',
-              unchecked: () => '草稿',
-            }}
-          </NSwitch>
-        </NFormItem>
+        </FormField>
+
+        {/* 发布选项 */}
+        <SectionTitle>发布选项</SectionTitle>
+
+        <SwitchRow
+          label="版权注明"
+          description="在文章底部显示版权信息"
+          modelValue={data.copyright}
+          onUpdate={(e) => void (data.copyright = e)}
+        />
+
+        <SwitchRow
+          label="置顶"
+          description="在文章列表中优先显示"
+          modelValue={!!data.pin}
+          onUpdate={(e) => {
+            data.pin = e
+            if (!e) {
+              data.pinOrder = 0
+            } else {
+              data.pinOrder = data.pinOrder || 1
+            }
+          }}
+        />
+
+        {data.pin && (
+          <div class="mb-4 ml-4 border-l-2 border-neutral-200 pl-4 dark:border-neutral-700">
+            <FormField label="置顶顺序">
+              <NInputNumber
+                class="w-full"
+                value={data.pinOrder}
+                onUpdateValue={(e) => void (data.pinOrder = e || 1)}
+                min={1}
+                placeholder="数字越大越靠前"
+              />
+            </FormField>
+          </div>
+        )}
+
+        <SwitchRow
+          label="发布状态"
+          modelValue={data.isPublished}
+          onUpdate={(e) => void (data.isPublished = e)}
+          checkedText="已发布"
+          uncheckedText="草稿"
+        />
       </TextBaseDrawer>
     </>
   )

@@ -236,15 +236,6 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         },
         component: () => import('../views/manage-says/list'),
       },
-      {
-        path: 'edit',
-        name: RouteName.EditSay,
-        meta: {
-          title: '说点什么呢',
-          icon: <PencilAltIcon />,
-        },
-        component: () => import('../views/manage-says/edit'),
-      },
     ],
   },
   {

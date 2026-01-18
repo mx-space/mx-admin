@@ -1,9 +1,10 @@
 import { isString } from 'es-toolkit/compat'
 import {
+  FileTextIcon,
   SlidersHorizontal as SlidersHIcon,
   Send as TelegramPlaneIcon,
 } from 'lucide-vue-next'
-import { NFormItem, NInputNumber, useMessage } from 'naive-ui'
+import { NInputNumber, useMessage } from 'naive-ui'
 import {
   computed,
   defineComponent,
@@ -18,7 +19,11 @@ import type { PageModel } from '~/models/page'
 import type { WriteBaseType } from '~/shared/types/base'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
-import { TextBaseDrawer } from '~/components/drawer/text-base-drawer'
+import {
+  FormField,
+  SectionTitle,
+  TextBaseDrawer,
+} from '~/components/drawer/text-base-drawer'
 import { WriteEditor } from '~/components/editor/write-editor'
 import { SlugInput } from '~/components/editor/write-editor/slug-input'
 import { ParseContentButton } from '~/components/special-button/parse-content'
@@ -224,6 +229,7 @@ const PageWriteView = defineComponent(() => {
 
       {/* Drawer  */}
       <TextBaseDrawer
+        title="页面设定"
         disabledItem={['date-picker']}
         onUpdateShow={(s) => {
           drawerShow.value = s
@@ -231,13 +237,20 @@ const PageWriteView = defineComponent(() => {
         data={data}
         show={drawerShow.value}
       >
-        <NFormItem label="页面顺序">
+        <SectionTitle icon={FileTextIcon}>页面选项</SectionTitle>
+
+        <FormField
+          label="页面顺序"
+          description="用于控制页面在导航中的显示顺序"
+        >
           <NInputNumber
-            placeholder=""
+            class="w-full"
+            placeholder="输入排序数字"
             value={data.order}
             onUpdateValue={(e) => void (data.order = e ?? 0)}
+            min={0}
           />
-        </NFormItem>
+        </FormField>
       </TextBaseDrawer>
 
       {/* Drawer END */}

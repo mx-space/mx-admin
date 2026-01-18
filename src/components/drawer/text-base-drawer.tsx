@@ -1,22 +1,24 @@
 import { isURL } from 'class-validator'
 import { isObject, isUndefined } from 'es-toolkit/compat'
 import {
+  BracesIcon,
+  ChevronDownIcon,
+  ImageIcon,
+  SettingsIcon,
+} from 'lucide-vue-next'
+import {
   NButton,
   NCollapse,
   NCollapseItem,
   NDatePicker,
-  NDivider,
   NDrawer,
   NDrawerContent,
   NDynamicInput,
-  NForm,
-  NFormItem,
   NImage,
   NInput,
   NModal,
   NPopover,
   NSelect,
-  NSwitch,
   NTooltip,
 } from 'naive-ui'
 import type { Image } from '@mx-space/api-client'
@@ -28,6 +30,18 @@ import { JSONParseReturnOriginal } from '~/utils/json'
 
 import { ImageDetailSection } from './components/image-detail-section'
 import { JSONEditor } from './components/json-editor'
+import { FormField, SectionTitle, SwitchRow } from './components/ui'
+
+// 重新导出 UI 组件，方便外部使用
+export {
+  ActionRow,
+  Divider,
+  FieldGroup,
+  FormField,
+  InlineField,
+  SectionTitle,
+  SwitchRow,
+} from './components/ui'
 
 type ItemType = 'date-picker'
 export const TextBaseDrawer = defineComponent({
@@ -45,9 +59,9 @@ export const TextBaseDrawer = defineComponent({
       required: true,
     },
 
-    labelWidth: {
-      type: Number,
-      required: false,
+    title: {
+      type: String,
+      default: '文章设定',
     },
 
     disabledItem: {
@@ -107,6 +121,10 @@ export const TextBaseDrawer = defineComponent({
         deep: true,
       },
     )
+
+    // 附加字段展开状态
+    const metaExpanded = ref(false)
+
     return () => (
       <NDrawer
         show={props.show}
@@ -115,23 +133,29 @@ export const TextBaseDrawer = defineComponent({
         placement="right"
         onUpdateShow={props.onUpdateShow}
       >
-        <NDrawerContent title="文章设定">
-          <NForm
-            labelAlign="right"
-            labelPlacement="left"
-            labelWidth={props.labelWidth ?? 120}
-          >
+        <NDrawerContent
+          title={props.title}
+          closable
+          nativeScrollbar={false}
+          bodyContentClass="!p-0"
+        >
+          <div class="px-5 py-4">
+            {/* 外部传入的内容 (特定设置) */}
             {slots.default?.()}
-            <NFormItem label="允许评论">
-              <NSwitch
-                value={props.data.allowComment}
-                onUpdateValue={(e) => void (props.data.allowComment = e)}
-              />
-            </NFormItem>
+
+            {/* 基础设置 */}
+            <SectionTitle icon={SettingsIcon}>基础设置</SectionTitle>
+
+            <SwitchRow
+              label="允许评论"
+              modelValue={props.data.allowComment}
+              onUpdate={(e) => void (props.data.allowComment = e)}
+            />
 
             {!disabledItem.has('date-picker') && (
-              <NFormItem label="自定义创建时间">
+              <FormField label="自定义创建时间">
                 <NDatePicker
+                  class="w-full"
                   clearable
                   isDateDisabled={(ts: number) => {
                     return ts > Date.now()
@@ -147,66 +171,101 @@ export const TextBaseDrawer = defineComponent({
                     props.data.created = value
                   }}
                 />
-              </NFormItem>
+              </FormField>
             )}
 
-            <NDivider />
+            {/* 图片设置 */}
+            <SectionTitle icon={ImageIcon}>图片设置</SectionTitle>
 
-            <ImageCoverItem
-              images={props.data.images}
-              onChange={(src) => {
-                if (!props.data.meta) props.data.meta = {}
-                if (src === null) {
-                  delete props.data.meta.cover
-                  return
-                }
-                props.data.meta.cover = src
-              }}
-              value={props.data.meta?.cover}
-            />
-
-            <NFormItem label="图片设定" labelAlign="left" />
-            <NFormItem>
-              <ImageDetailSection
-                text={props.data.text}
+            <FormField label="文章缩略图">
+              <ImageCoverInput
                 images={props.data.images}
-                extraImages={
-                  props.data.meta?.cover ? [props.data.meta.cover] : undefined
-                }
-                onChange={(images) => {
-                  props.data.images = images
+                onChange={(src) => {
+                  if (!props.data.meta) props.data.meta = {}
+                  if (src === null) {
+                    delete props.data.meta.cover
+                    return
+                  }
+                  props.data.meta.cover = src
                 }}
+                value={props.data.meta?.cover}
               />
-            </NFormItem>
-            <NDivider />
-            <NFormItem label="附加字段" labelAlign="left">
-              <div class="flex-grow text-right">
-                <NButton onClick={handleEdit} round>
-                  编辑
-                </NButton>
-              </div>
-            </NFormItem>
-            <NDynamicInput
-              preset="pair"
-              value={keyValuePairs.value}
-              keyPlaceholder="附加字段名"
-              valuePlaceholder="附加字段值"
-              onUpdateValue={(value: any[]) => {
-                keyValuePairs.value = value
+            </FormField>
+
+            <ImageDetailSection
+              text={props.data.text}
+              images={props.data.images}
+              extraImages={
+                props.data.meta?.cover ? [props.data.meta.cover] : undefined
+              }
+              onChange={(images) => {
+                props.data.images = images
               }}
             />
 
-            {props.data.meta && (
-              <NCollapse accordion class="mt-4">
-                <NCollapseItem title="预览">
-                  <JSONHighlight
-                    class="max-w-full overflow-auto"
-                    code={JSON.stringify(props.data.meta, null, 2)}
-                  />
-                </NCollapseItem>
-              </NCollapse>
+            {/* 附加字段 */}
+            <SectionTitle icon={BracesIcon}>附加字段</SectionTitle>
+
+            <button
+              type="button"
+              class="mb-3 flex w-full items-center justify-between rounded-lg border border-neutral-200 px-3 py-2.5 text-left transition-colors hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800/50"
+              onClick={() => (metaExpanded.value = !metaExpanded.value)}
+              aria-expanded={metaExpanded.value}
+            >
+              <span class="text-sm text-neutral-600 dark:text-neutral-300">
+                自定义 Meta 数据
+                {props.data.meta && Object.keys(props.data.meta).length > 0 && (
+                  <span class="ml-2 text-xs text-neutral-400">
+                    ({Object.keys(props.data.meta).length} 项)
+                  </span>
+                )}
+              </span>
+              <div class="flex items-center gap-2">
+                <NButton
+                  size="tiny"
+                  quaternary
+                  type="primary"
+                  onClick={(e: MouseEvent) => {
+                    e.stopPropagation()
+                    handleEdit()
+                  }}
+                >
+                  JSON 编辑
+                </NButton>
+                <ChevronDownIcon
+                  class={[
+                    'size-4 text-neutral-400 transition-transform',
+                    metaExpanded.value && 'rotate-180',
+                  ]}
+                />
+              </div>
+            </button>
+
+            {metaExpanded.value && (
+              <div class="space-y-3">
+                <NDynamicInput
+                  preset="pair"
+                  value={keyValuePairs.value}
+                  keyPlaceholder="字段名"
+                  valuePlaceholder="字段值"
+                  onUpdateValue={(value: any[]) => {
+                    keyValuePairs.value = value
+                  }}
+                />
+
+                {props.data.meta && Object.keys(props.data.meta).length > 0 && (
+                  <NCollapse accordion>
+                    <NCollapseItem title="预览 JSON">
+                      <JSONHighlight
+                        class="max-w-full overflow-auto rounded-lg bg-neutral-50 p-3 text-xs dark:bg-neutral-800/50"
+                        code={JSON.stringify(props.data.meta, null, 2)}
+                      />
+                    </NCollapseItem>
+                  </NCollapse>
+                )}
+              </div>
             )}
-          </NForm>
+          </div>
         </NDrawerContent>
 
         <NModal
@@ -232,11 +291,7 @@ export const TextBaseDrawer = defineComponent({
               try {
                 inUpdatedKeyValue = false
                 const parsed = JSON.parse(jsonString)
-
-                // console.log(parsed)
-
                 props.data.meta = parsed
-
                 showJSONEditorModal.value = false
               } catch (error: any) {
                 message.error(error.message)
@@ -249,7 +304,10 @@ export const TextBaseDrawer = defineComponent({
   },
 })
 
-const ImageCoverItem = defineComponent({
+/**
+ * 图片封面输入组件
+ */
+const ImageCoverInput = defineComponent({
   props: {
     images: {
       type: Array as PropType<Image[]>,
@@ -261,7 +319,7 @@ const ImageCoverItem = defineComponent({
     },
     value: {
       type: String,
-      required: true,
+      required: false,
     },
   },
   setup(props) {
@@ -279,69 +337,70 @@ const ImageCoverItem = defineComponent({
     }
     const show = ref(false)
     return () => (
-      <NFormItem label="文章缩略图" labelAlign="left">
-        <NPopover
-          placement="left"
-          show={show.value}
-          onUpdateShow={(newValue) => {
-            if (newValue && !props.value) return
-            show.value = newValue
-          }}
-        >
-          {{
-            trigger() {
-              return props.images.length > 0 ? (
-                <NSelect
-                  status={isValidated.value ? undefined : 'error'}
-                  value={props.value}
-                  onUpdateValue={validateAndCallback}
-                  options={(props.images as Image[]).map((image) => ({
-                    label: image.src,
-                    value: image.src,
-                  }))}
-                  filterable
-                  tag
-                  clearable
-                  maxTagCount={1}
-                  renderOption={({
-                    node,
-                    option,
-                  }: {
-                    node: VNode
-                    option: SelectOption
-                  }) =>
-                    h(
-                      NTooltip,
-                      { placement: 'left' },
-                      {
-                        trigger: () => node,
-                        default: () => (
-                          <NImage
-                            src={option.value as string}
-                            alt="popover"
-                            width={400}
-                          />
-                        ),
-                      },
-                    )
-                  }
-                />
-              ) : (
-                <NInput
-                  value={props.value}
-                  status={isValidated.value ? undefined : 'error'}
-                  onUpdateValue={validateAndCallback}
-                  placeholder={'https?://...'}
-                />
-              )
-            },
-            default() {
-              if (!props.value) return null
-              return <NImage src={props.value} alt="cover" width={400} />
-            },
-          }}
-        </NPopover>
-      </NFormItem>
+      <NPopover
+        placement="left"
+        show={show.value}
+        onUpdateShow={(newValue) => {
+          if (newValue && !props.value) return
+          show.value = newValue
+        }}
+      >
+        {{
+          trigger() {
+            return props.images.length > 0 ? (
+              <NSelect
+                class="w-full"
+                status={isValidated.value ? undefined : 'error'}
+                value={props.value}
+                onUpdateValue={validateAndCallback}
+                options={(props.images as Image[]).map((image) => ({
+                  label: image.src,
+                  value: image.src,
+                }))}
+                filterable
+                tag
+                clearable
+                maxTagCount={1}
+                placeholder="选择或输入图片 URL"
+                renderOption={({
+                  node,
+                  option,
+                }: {
+                  node: VNode
+                  option: SelectOption
+                }) =>
+                  h(
+                    NTooltip,
+                    { placement: 'left' },
+                    {
+                      trigger: () => node,
+                      default: () => (
+                        <NImage
+                          src={option.value as string}
+                          alt="缩略图预览"
+                          width={400}
+                        />
+                      ),
+                    },
+                  )
+                }
+              />
+            ) : (
+              <NInput
+                class="w-full"
+                value={props.value}
+                status={isValidated.value ? undefined : 'error'}
+                onUpdateValue={validateAndCallback}
+                placeholder="输入图片 URL (https://...)"
+              />
+            )
+          },
+          default() {
+            if (!props.value) return null
+            return <NImage src={props.value} alt="封面预览" width={400} />
+          },
+        }}
+      </NPopover>
     )
   },
 })

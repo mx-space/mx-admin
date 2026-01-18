@@ -11,8 +11,8 @@ import {
   UserRound as GuestIcon,
   Heart as HeartIcon,
   Link as LinkIcon,
-  StickyNote as NoteIcon,
   BookOpen as NotebookMinimalistic,
+  StickyNote as NoteIcon,
   Radio as OnlinePredictionFilledIcon,
   Pencil as PencilIcon,
   AlignLeft as PhAlignLeft,
@@ -38,9 +38,9 @@ import {
   ref,
   watchEffect,
 } from 'vue'
-import type { PropType, VNode } from 'vue'
 import { useRouter } from 'vue-router'
 import type { Stat } from '~/models/stat'
+import type { PropType, VNode } from 'vue'
 
 import { Icon } from '@vicons/utils'
 
@@ -54,7 +54,7 @@ import { useLayout } from '~/layouts/content'
 import { RouteName } from '~/router/name'
 import { AppStore } from '~/stores/app'
 import { UserStore } from '~/stores/user'
-import { RESTManager, parseDate } from '~/utils'
+import { parseDate, RESTManager } from '~/utils'
 import { isNewerVersion } from '~/utils/version'
 
 import PKG from '../../../package.json'
@@ -440,7 +440,7 @@ export const DashBoardView = defineComponent({
                 {
                   name: '发布说说',
                   primary: true,
-                  onClick: () => router.push({ name: RouteName.EditSay }),
+                  onClick: () => router.push({ name: RouteName.ListSay }),
                 },
                 {
                   name: '管理',

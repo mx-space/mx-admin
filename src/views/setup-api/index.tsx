@@ -1,4 +1,5 @@
-import { NButton, NCard, NForm, NFormItem, NSelect, NSwitch } from 'naive-ui'
+import { Bug, Check, RotateCcw, Server } from 'lucide-vue-next'
+import { NSelect, NSwitch } from 'naive-ui'
 import { defineComponent } from 'vue'
 
 const storeApiUrlKey = 'mx-admin:setup-api:url'
@@ -44,6 +45,7 @@ export default defineComponent({
       location.href = url.toString()
       location.reload()
     }
+
     const handleReset = () => {
       localStorage.removeItem('__api')
       localStorage.removeItem('__gateway')
@@ -54,6 +56,7 @@ export default defineComponent({
       location.href = location.pathname
       location.hash = ''
     }
+
     const handleLocalDev = () => {
       apiRecord.apiUrl = 'http://localhost:2333'
       apiRecord.gatewayUrl = 'http://localhost:2333'
@@ -67,10 +70,34 @@ export default defineComponent({
     )
 
     return () => (
-      <div class={'relative flex h-screen w-full items-center justify-center'}>
-        <NCard title="设置 API" class="modal-card sm form-card m-auto">
-          <NForm onSubmit={handleOk}>
-            <NFormItem label="API 地址">
+      <div class="flex min-h-screen flex-col items-center justify-center p-4">
+        {/* Icon */}
+        <div class="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-md">
+          <Server class="h-10 w-10" aria-hidden="true" />
+        </div>
+
+        {/* Title */}
+        <h1 class="mb-2 text-xl font-medium tracking-wide text-white drop-shadow-lg">
+          设置 API
+        </h1>
+        <p class="mb-8 text-sm text-white/70">配置后端服务地址</p>
+
+        {/* Form Card */}
+        <div class="w-full max-w-md rounded-2xl border border-white/20 bg-white/10 p-6 backdrop-blur-xl">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              handleOk()
+            }}
+          >
+            {/* API URL */}
+            <div class="mb-4">
+              <label
+                for="api-url"
+                class="mb-2 block text-sm font-medium text-white/90"
+              >
+                API 地址
+              </label>
               <NSelect
                 options={historyApiUrl.map((url) => ({
                   key: url,
@@ -84,9 +111,18 @@ export default defineComponent({
                 onUpdateValue={(val) => {
                   apiRecord.apiUrl = val
                 }}
+                class="setup-api-select"
               />
-            </NFormItem>
-            <NFormItem label="Gateway 地址">
+            </div>
+
+            {/* Gateway URL */}
+            <div class="mb-4">
+              <label
+                for="gateway-url"
+                class="mb-2 block text-sm font-medium text-white/90"
+              >
+                Gateway 地址
+              </label>
               <NSelect
                 tag
                 options={historyGatewayUrl.map((url) => ({
@@ -100,31 +136,54 @@ export default defineComponent({
                 onUpdateValue={(val) => {
                   apiRecord.gatewayUrl = val
                 }}
+                class="setup-api-select"
               />
-            </NFormItem>
+            </div>
 
-            <NFormItem label="持久化" labelPlacement="left">
+            {/* Persist Toggle */}
+            <div class="mb-6 flex items-center justify-between">
+              <span class="text-sm text-white/90">持久化保存</span>
               <NSwitch
                 value={apiRecord.persist}
                 onUpdateValue={(v) => {
                   apiRecord.persist = v
                 }}
               />
-            </NFormItem>
-
-            <div class="space-x-2 text-center">
-              <NButton onClick={handleLocalDev} round>
-                本地调试
-              </NButton>
-              <NButton onClick={handleReset} round>
-                重置
-              </NButton>
-              <NButton onClick={handleOk} round type="primary">
-                确定
-              </NButton>
             </div>
-          </NForm>
-        </NCard>
+
+            {/* Actions */}
+            <div class="flex gap-3">
+              <button
+                type="button"
+                onClick={handleLocalDev}
+                aria-label="本地调试"
+                class="flex h-10 flex-1 items-center justify-center gap-2 rounded-full bg-white/15 text-sm text-white/90 backdrop-blur-sm transition-all hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+              >
+                <Bug class="h-4 w-4" aria-hidden="true" />
+                <span>本地调试</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleReset}
+                aria-label="重置"
+                class="flex h-10 flex-1 items-center justify-center gap-2 rounded-full bg-white/15 text-sm text-white/90 backdrop-blur-sm transition-all hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+              >
+                <RotateCcw class="h-4 w-4" aria-hidden="true" />
+                <span>重置</span>
+              </button>
+
+              <button
+                type="submit"
+                aria-label="确定"
+                class="flex h-10 flex-1 items-center justify-center gap-2 rounded-full bg-white/90 text-sm font-medium text-neutral-900 transition-all hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+              >
+                <Check class="h-4 w-4" aria-hidden="true" />
+                <span>确定</span>
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     )
   },

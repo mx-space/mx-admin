@@ -1,19 +1,17 @@
-import type { PaginateResult } from '@mx-space/api-client'
 import { add } from 'date-fns'
 import { isString } from 'es-toolkit/compat'
 import {
+  BookmarkIcon,
+  MapPinIcon,
   SlidersHorizontal as SlidersHIcon,
   Send as TelegramPlaneIcon,
 } from 'lucide-vue-next'
 import {
   NButton,
-  NButtonGroup,
   NDatePicker,
-  NFormItem,
   NInput,
   NSelect,
   NSpace,
-  NSwitch,
   useMessage,
 } from 'naive-ui'
 import {
@@ -27,13 +25,20 @@ import {
   watch,
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import type { PaginateResult } from '@mx-space/api-client'
 import type { Coordinate, NoteModel } from '~/models/note'
 import type { TopicModel } from '~/models/topic'
 import type { WriteBaseType } from '~/shared/types/base'
 
 import { AiHelperButton } from '~/components/ai/ai-helper'
 import { HeaderActionButton } from '~/components/button/rounded-button'
-import { TextBaseDrawer } from '~/components/drawer/text-base-drawer'
+import {
+  FieldGroup,
+  FormField,
+  SectionTitle,
+  SwitchRow,
+  TextBaseDrawer,
+} from '~/components/drawer/text-base-drawer'
 import { WriteEditor } from '~/components/editor/write-editor'
 import { GetLocationButton } from '~/components/location/get-location-button'
 import { SearchLocationButton } from '~/components/location/search-button'
@@ -296,35 +301,44 @@ const NoteWriteView = defineComponent(() => {
 
       {/* Drawer  */}
       <TextBaseDrawer
+        title="日记设定"
         data={data}
         show={drawerShow.value}
         onUpdateShow={(s) => {
           drawerShow.value = s
         }}
       >
-        <NFormItem label="心情" required>
-          <NSelect
-            clearable
-            value={data.mood}
-            filterable
-            tag
-            options={MOOD_SET.map((i) => ({ label: i, value: i }))}
-            onUpdateValue={(e) => void (data.mood = e)}
-          />
-        </NFormItem>
-        <NFormItem label="天气" required>
-          <NSelect
-            clearable
-            value={data.weather}
-            filterable
-            tag
-            options={WEATHER_SET.map((i) => ({ label: i, value: i }))}
-            onUpdateValue={(e) => void (data.weather = e)}
-          />
-        </NFormItem>
+        {/* 日记信息 */}
+        <SectionTitle icon={BookmarkIcon}>日记信息</SectionTitle>
 
-        <NFormItem label="专栏">
+        <div class="grid grid-cols-2 gap-3">
+          <FormField label="心情" required>
+            <NSelect
+              clearable
+              value={data.mood}
+              filterable
+              tag
+              options={MOOD_SET.map((i) => ({ label: i, value: i }))}
+              onUpdateValue={(e) => void (data.mood = e)}
+              placeholder="选择心情"
+            />
+          </FormField>
+          <FormField label="天气" required>
+            <NSelect
+              clearable
+              value={data.weather}
+              filterable
+              tag
+              options={WEATHER_SET.map((i) => ({ label: i, value: i }))}
+              onUpdateValue={(e) => void (data.weather = e)}
+              placeholder="选择天气"
+            />
+          </FormField>
+        </div>
+
+        <FormField label="专栏">
           <NSelect
+            clearable
             options={topics.value.map((topic) => ({
               label: topic.name,
               value: topic.id!,
@@ -337,82 +351,95 @@ const NoteWriteView = defineComponent(() => {
             onFocus={() => {
               fetchTopic()
             }}
+            placeholder="选择专栏"
           />
-        </NFormItem>
+        </FormField>
 
-        <NFormItem label="获取当前地址" labelPlacement="left">
-          <NSpace vertical>
-            <NButtonGroup>
-              <GetLocationButton
-                onChange={(amap, coordinates) => {
-                  data.location = amap.formattedAddress
-                  data.coordinates = {
-                    longitude: coordinates[0],
-                    latitude: coordinates[1],
-                  }
-                }}
-              />
-              <SearchLocationButton
-                placeholder={data.location}
-                onChange={(locationName, coo) => {
-                  data.location = locationName
-                  data.coordinates = coo
-                }}
-              />
+        {/* 位置信息 */}
+        <SectionTitle icon={MapPinIcon}>位置信息</SectionTitle>
 
-              <NButton
-                round
-                disabled={!data.location}
-                onClick={() => {
-                  data.location = ''
-                  data.coordinates = null
-                }}
-              >
-                清除
-              </NButton>
-            </NButtonGroup>
-
-            <NSpace vertical>
-              <span>{data.location}</span>
-              {data.coordinates && (
-                <span>
-                  {data.coordinates.longitude}, {data.coordinates.latitude}
-                </span>
-              )}
-            </NSpace>
-          </NSpace>
-        </NFormItem>
-
-        <NFormItem label="设定密码?" labelAlign="right" labelPlacement="left">
-          <NSwitch
-            value={enablePassword.value}
-            onUpdateValue={(e) => {
-              if (e) {
-                data.password = ''
-              } else {
-                data.password = null
+        <div class="mb-4 flex items-center gap-2">
+          <GetLocationButton
+            onChange={(amap, coordinates) => {
+              data.location = amap.formattedAddress
+              data.coordinates = {
+                longitude: coordinates[0],
+                latitude: coordinates[1],
               }
             }}
           />
-        </NFormItem>
-        {enablePassword.value && (
-          <NFormItem label="输入密码">
-            <NInput
-              disabled={!enablePassword.value}
-              placeholder=""
-              type="password"
-              value={data.password}
-              inputProps={{
-                name: 'note-password',
-                autocapitalize: 'off',
-                autocomplete: 'new-password',
-              }}
-              onInput={(e) => void (data.password = e)}
-            />
-          </NFormItem>
+          <SearchLocationButton
+            placeholder={data.location}
+            onChange={(locationName, coo) => {
+              data.location = locationName
+              data.coordinates = coo
+            }}
+          />
+          <NButton
+            size="small"
+            disabled={!data.location}
+            onClick={() => {
+              data.location = ''
+              data.coordinates = null
+            }}
+          >
+            清除
+          </NButton>
+        </div>
+
+        {(data.location || data.coordinates) && (
+          <FieldGroup>
+            {data.location && (
+              <div class="text-sm text-neutral-600 dark:text-neutral-300">
+                {data.location}
+              </div>
+            )}
+            {data.coordinates && (
+              <div class="mt-1 text-xs text-neutral-400">
+                {data.coordinates.longitude.toFixed(6)},{' '}
+                {data.coordinates.latitude.toFixed(6)}
+              </div>
+            )}
+          </FieldGroup>
         )}
-        <NFormItem label="公开时间" labelAlign="right" labelPlacement="left">
+
+        {/* 隐私与发布 */}
+        <SectionTitle>隐私与发布</SectionTitle>
+
+        <SwitchRow
+          label="设定密码"
+          description="启用后需要输入密码才能查看"
+          modelValue={enablePassword.value}
+          onUpdate={(e) => {
+            if (e) {
+              data.password = ''
+            } else {
+              data.password = null
+            }
+          }}
+        />
+
+        {enablePassword.value && (
+          <div class="mb-4 ml-4 border-l-2 border-neutral-200 pl-4 dark:border-neutral-700">
+            <FormField label="输入密码">
+              <NInput
+                placeholder="设置访问密码"
+                type="password"
+                value={data.password}
+                inputProps={{
+                  name: 'note-password',
+                  autocapitalize: 'off',
+                  autocomplete: 'new-password',
+                }}
+                onInput={(e) => void (data.password = e)}
+              />
+            </FormField>
+          </div>
+        )}
+
+        <FormField label="公开时间" description="设置后将在指定时间自动公开">
           <NDatePicker
+            class="w-full"
             type="datetime"
             isDateDisabled={(ts: number) => +new Date(ts) - Date.now() < 0}
             placeholder="选择时间"
@@ -426,11 +453,9 @@ const NoteWriteView = defineComponent(() => {
               footer: () => {
                 const date = new Date()
                 return (
-                  <NSpace>
+                  <NSpace size="small">
                     <NButton
-                      round
-                      type="default"
-                      size="small"
+                      size="tiny"
                       onClick={() => {
                         data.publicAt = add(date, { days: 1 })
                       }}
@@ -438,9 +463,7 @@ const NoteWriteView = defineComponent(() => {
                       一天后
                     </NButton>
                     <NButton
-                      round
-                      type="default"
-                      size="small"
+                      size="tiny"
                       onClick={() => {
                         data.publicAt = add(date, { weeks: 1 })
                       }}
@@ -448,9 +471,7 @@ const NoteWriteView = defineComponent(() => {
                       一周后
                     </NButton>
                     <NButton
-                      round
-                      type="default"
-                      size="small"
+                      size="tiny"
                       onClick={() => {
                         data.publicAt = add(date, { days: 14 })
                       }}
@@ -458,9 +479,7 @@ const NoteWriteView = defineComponent(() => {
                       半个月后
                     </NButton>
                     <NButton
-                      round
-                      type="default"
-                      size="small"
+                      size="tiny"
                       onClick={() => {
                         data.publicAt = add(date, { months: 1 })
                       }}
@@ -472,29 +491,22 @@ const NoteWriteView = defineComponent(() => {
               },
             }}
           </NDatePicker>
-        </NFormItem>
+        </FormField>
 
-        <NFormItem
+        <SwitchRow
           label="标记为回忆项"
-          labelAlign="right"
-          labelPlacement="left"
-        >
-          <NSwitch
-            value={data.bookmark}
-            onUpdateValue={(e) => void (data.bookmark = e)}
-          />
-        </NFormItem>
-        <NFormItem label="发布状态" labelAlign="right" labelPlacement="left">
-          <NSwitch
-            value={data.isPublished}
-            onUpdateValue={(e) => void (data.isPublished = e)}
-          >
-            {{
-              checked: () => '已发布',
-              unchecked: () => '草稿',
-            }}
-          </NSwitch>
-        </NFormItem>
+          description="在回忆列表中高亮显示"
+          modelValue={data.bookmark}
+          onUpdate={(e) => void (data.bookmark = e)}
+        />
+
+        <SwitchRow
+          label="发布状态"
+          modelValue={data.isPublished}
+          onUpdate={(e) => void (data.isPublished = e)}
+          checkedText="已发布"
+          uncheckedText="草稿"
+        />
       </TextBaseDrawer>
 
       {/* Drawer END */}
