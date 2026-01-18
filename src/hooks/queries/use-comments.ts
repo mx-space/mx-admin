@@ -1,10 +1,11 @@
+import { computed, toValue } from 'vue'
+import type { GetCommentsParams, ReplyCommentData } from '~/api/comments'
+import type { MaybeRefOrGetter } from 'vue'
+
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
-import { computed, toValue, type MaybeRefOrGetter } from 'vue'
-import {
-  commentsApi,
-  type GetCommentsParams,
-  type ReplyCommentData,
-} from '~/api/comments'
+
+import { commentsApi } from '~/api/comments'
+
 import { queryKeys } from './keys'
 
 /**

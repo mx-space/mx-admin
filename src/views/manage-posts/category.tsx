@@ -1,4 +1,3 @@
-import { useMutation } from '@tanstack/vue-query'
 import {
   Plus as AddIcon,
   FolderOpen,
@@ -18,16 +17,25 @@ import {
   NSkeleton,
   useMessage,
 } from 'naive-ui'
-import { computed, defineComponent, reactive, ref, watch, watchEffect } from 'vue'
+import {
+  computed,
+  defineComponent,
+  reactive,
+  ref,
+  watch,
+  watchEffect,
+} from 'vue'
 import { RouterLink } from 'vue-router'
 import type { TagModel } from '~/models/category'
 import type { Ref } from 'vue'
 
+import { useMutation } from '@tanstack/vue-query'
+
 import { categoriesApi } from '~/api/categories'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import {
-  useTagsQuery,
   usePostsByTagQuery,
+  useTagsQuery,
 } from '~/hooks/queries/use-categories'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { useLayout } from '~/layouts/content'
@@ -45,7 +53,8 @@ export const CategoryView = defineComponent((_props) => {
   const checkedTag = ref('')
 
   // 获取标签关联的文章
-  const { data: tagPostsData, isLoading: tagPostsLoading } = usePostsByTagQuery(checkedTag)
+  const { data: tagPostsData, isLoading: tagPostsLoading } =
+    usePostsByTagQuery(checkedTag)
   const checkedTagPosts = computed(() => tagPostsData.value?.data ?? [])
 
   // 分类列表加载
@@ -83,8 +92,13 @@ export const CategoryView = defineComponent((_props) => {
 
   // 更新分类 mutation
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: { name: string; slug: string; type: number } }) =>
-      categoriesApi.update(id, data),
+    mutationFn: ({
+      id,
+      data,
+    }: {
+      id: string
+      data: { name: string; slug: string; type: number }
+    }) => categoriesApi.update(id, data),
     onSuccess: (_, { id, data }) => {
       nativeMessage.success('修改成功')
       const index = categoryStore.data.value!.findIndex((i) => i.id == id)

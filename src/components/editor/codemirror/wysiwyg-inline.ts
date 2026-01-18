@@ -1,7 +1,8 @@
-import type { DecorationSet, EditorView } from '@codemirror/view'
-import { Decoration, WidgetType, ViewPlugin } from '@codemirror/view'
-import type { EditorState, Range } from '@codemirror/state'
 import { codeToHtml } from 'shiki'
+import type { EditorState, Range } from '@codemirror/state'
+import type { DecorationSet, EditorView } from '@codemirror/view'
+
+import { Decoration, ViewPlugin, WidgetType } from '@codemirror/view'
 
 // Hidden marker widget - displays nothing
 class HiddenMarkerWidget extends WidgetType {

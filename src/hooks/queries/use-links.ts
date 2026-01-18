@@ -1,11 +1,15 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
-import { computed, toValue, type MaybeRefOrGetter } from 'vue'
-import {
-  linksApi,
-  type CreateLinkData,
-  type UpdateLinkData,
-  type GetLinksParams,
+import { computed, toValue } from 'vue'
+import type {
+  CreateLinkData,
+  GetLinksParams,
+  UpdateLinkData,
 } from '~/api/links'
+import type { MaybeRefOrGetter } from 'vue'
+
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
+
+import { linksApi } from '~/api/links'
+
 import { queryKeys } from './keys'
 
 /**

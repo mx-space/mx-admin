@@ -1,5 +1,6 @@
 import type { PaginateResult } from '~/models/base'
 import type { PostModel } from '~/models/post'
+
 import { request } from '~/utils/request'
 
 export interface GetPostsParams {
@@ -36,8 +37,7 @@ export const postsApi = {
   getById: (id: string) => request.get<{ data: PostModel }>(`/posts/${id}`),
 
   // 创建文章
-  create: (data: CreatePostData) =>
-    request.post<PostModel>('/posts', { data }),
+  create: (data: CreatePostData) => request.post<PostModel>('/posts', { data }),
 
   // 更新文章
   update: (id: string, data: UpdatePostData) =>

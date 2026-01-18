@@ -18,8 +18,7 @@ export const TagCloud = defineComponent({
 
     const fetchData = async () => {
       try {
-        const result =
-          await aggregateApi.getTagCloud()
+        const result = await aggregateApi.getTagCloud()
         data.value = Array.isArray(result) ? result : []
       } catch {
         data.value = []

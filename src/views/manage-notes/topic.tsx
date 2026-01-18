@@ -2,17 +2,18 @@
  * Topic List Page
  * 专栏列表页面 - 列表布局
  */
-import { useQueryClient } from '@tanstack/vue-query'
 import { Plus as PlusIcon } from 'lucide-vue-next'
 import { NPagination } from 'naive-ui'
 import { useRoute, useRouter } from 'vue-router'
 import type { TopicModel } from '~/models/topic'
 
+import { useQueryClient } from '@tanstack/vue-query'
+
 import { topicsApi } from '~/api/topics'
 import { HeaderActionButton } from '~/components/button/rounded-button'
-import { useDataTable } from '~/hooks/use-data-table'
 import { queryKeys } from '~/hooks/queries/keys'
 import { useDeleteTopicMutation } from '~/hooks/queries/use-topics'
+import { useDataTable } from '~/hooks/use-data-table'
 import { useLayout } from '~/layouts/content'
 
 import {
@@ -36,8 +37,9 @@ export default defineComponent({
       isLoading: loading,
       refresh,
     } = useDataTable<TopicModel>({
-      queryKey: (params) => queryKeys.topics.list(),
-      queryFn: (params) => topicsApi.getList({ page: params.page, size: params.size }),
+      queryKey: (_params) => queryKeys.topics.list(),
+      queryFn: (params) =>
+        topicsApi.getList({ page: params.page, size: params.size }),
       pageSize: 20,
     })
 
@@ -79,7 +81,7 @@ export default defineComponent({
       showDetailDrawer.value = true
     }
 
-    const handleSubmit = (topic: TopicModel) => {
+    const handleSubmit = (_topic: TopicModel) => {
       handleCloseModal()
       queryClient.invalidateQueries({ queryKey: queryKeys.topics.all })
     }

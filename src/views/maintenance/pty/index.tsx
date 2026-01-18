@@ -14,6 +14,7 @@ import Io from 'socket.io-client'
 import type { IDisposable, Terminal } from '@xterm/xterm'
 import type { PropType } from 'vue'
 
+import { systemApi } from '~/api/system'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { IpInfoPopover } from '~/components/ip-info'
 import { Xterm } from '~/components/xterm'
@@ -23,7 +24,6 @@ import { useLayout } from '~/layouts/content'
 import { EventTypes } from '~/socket/types'
 import { getToken, parseDate } from '~/utils'
 import { bus } from '~/utils/event-bus'
-import { systemApi } from '~/api/system'
 
 const StatusIcon = () => (
   <svg width="1em" height="1em" viewBox="0 0 24 24">

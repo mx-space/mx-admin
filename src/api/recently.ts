@@ -1,4 +1,5 @@
 import type { RecentlyModel } from '~/models/recently'
+
 import { request } from '~/utils/request'
 
 export const recentlyApi = {

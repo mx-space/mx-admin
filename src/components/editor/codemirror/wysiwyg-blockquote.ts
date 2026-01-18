@@ -1,6 +1,7 @@
-import type { DecorationSet, EditorView } from '@codemirror/view'
-import { Decoration, WidgetType, ViewPlugin } from '@codemirror/view'
 import type { EditorState, Range } from '@codemirror/state'
+import type { DecorationSet, EditorView } from '@codemirror/view'
+
+import { Decoration, ViewPlugin, WidgetType } from '@codemirror/view'
 
 // Blockquote marker widget - hidden but occupies space
 class BlockquoteMarkerWidget extends WidgetType {

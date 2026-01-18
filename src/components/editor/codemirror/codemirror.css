@@ -10,7 +10,6 @@
   }
 
   .cm-editor {
-
     .cm-gutters,
     .cm-activeLineGutter,
     .cm-activeLine {
@@ -29,7 +28,6 @@
 
   /* WYSIWYG Mode Styles */
   &.cm-wysiwyg-mode {
-
     /* Hide line numbers and gutters */
     & .cm-gutters {
       display: none !important;
@@ -109,15 +107,19 @@
 
     /* Selection style */
     & .cm-selectionBackground {
-      background-color: color-mix(in srgb,
-          var(--primary-default) 20%,
-          transparent) !important;
+      background-color: color-mix(
+        in srgb,
+        var(--primary-default) 20%,
+        transparent
+      ) !important;
     }
 
     &.cm-focused .cm-selectionBackground {
-      background-color: color-mix(in srgb,
-          var(--primary-default) 30%,
-          transparent) !important;
+      background-color: color-mix(
+        in srgb,
+        var(--primary-default) 30%,
+        transparent
+      ) !important;
     }
 
     /* Cursor style */

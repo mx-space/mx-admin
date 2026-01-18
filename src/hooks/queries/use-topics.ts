@@ -1,11 +1,12 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
-import { computed, toValue, type MaybeRefOrGetter } from 'vue'
-import {
-  topicsApi,
-  type CreateTopicData,
-  type UpdateTopicData,
-} from '~/api/topics'
+import { computed, toValue } from 'vue'
+import type { CreateTopicData, UpdateTopicData } from '~/api/topics'
 import type { TopicModel } from '~/models/topic'
+import type { MaybeRefOrGetter } from 'vue'
+
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
+
+import { topicsApi } from '~/api/topics'
+
 import { queryKeys } from './keys'
 
 /**

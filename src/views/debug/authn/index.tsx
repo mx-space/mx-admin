@@ -35,9 +35,8 @@ export default defineComponent({
                 Object.assign(attResp, {
                   name: `test-1${(Math.random() * 100) | 0}`,
                 })
-                const verificationResp = await authApi.verifyPasskeyRegister(
-                  attResp,
-                )
+                const verificationResp =
+                  await authApi.verifyPasskeyRegister(attResp)
                 if (verificationResp.verified) {
                   message.success('Successfully registered authenticator')
                 } else {
@@ -65,9 +64,8 @@ export default defineComponent({
               }
 
               try {
-                const verificationResp = await authApi.verifyPasskeyAuth(
-                  attResp,
-                )
+                const verificationResp =
+                  await authApi.verifyPasskeyAuth(attResp)
                 if (verificationResp.token) {
                   message.success('Successfully registered authenticator')
                 } else {

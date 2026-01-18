@@ -1,4 +1,3 @@
-import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import {
   Check as CheckmarkSharpIcon,
   X as CloseSharpIcon,
@@ -22,11 +21,20 @@ import {
   NText,
   useDialog,
 } from 'naive-ui'
-import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
-import { defineComponent, nextTick, reactive, ref, unref, watch, watchEffect } from 'vue'
+import {
+  defineComponent,
+  nextTick,
+  reactive,
+  ref,
+  unref,
+  watch,
+  watchEffect,
+} from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { CommentModel } from '~/models/comment'
+import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 
+import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import { Icon } from '@vicons/utils'
 
 import { commentsApi } from '~/api/comments'
@@ -35,8 +43,8 @@ import { IpInfoPopover } from '~/components/ip-info'
 import { Table } from '~/components/table'
 import { WEB_URL } from '~/constants/env'
 import { KAOMOJI_LIST } from '~/constants/kaomoji'
-import { useDataTable } from '~/hooks/use-data-table'
 import { queryKeys } from '~/hooks/queries/keys'
+import { useDataTable } from '~/hooks/use-data-table'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { useLayout } from '~/layouts/content'
 import { CommentState } from '~/models/comment'
@@ -80,8 +88,7 @@ const ManageComment = defineComponent(() => {
     isLoading: loading,
     refresh,
   } = useDataTable<CommentModel>({
-    queryKey: (params) =>
-      queryKeys.comments.list(tabValue.value, params),
+    queryKey: (params) => queryKeys.comments.list(tabValue.value, params),
     queryFn: async (params) => {
       const response = await commentsApi.getList({
         page: params.page,
@@ -111,7 +118,13 @@ const ManageComment = defineComponent(() => {
 
   // 更新状态 mutation
   const updateStateMutation = useMutation({
-    mutationFn: async ({ ids, state }: { ids: string | string[]; state: CommentState }) => {
+    mutationFn: async ({
+      ids,
+      state,
+    }: {
+      ids: string | string[]
+      state: CommentState
+    }) => {
       if (Array.isArray(ids)) {
         await Promise.all(ids.map((id) => commentsApi.updateState(id, state)))
       } else {

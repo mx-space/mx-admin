@@ -1,7 +1,7 @@
 import type { PropType, Ref } from 'vue'
 
-import { useAsyncLoadMonaco } from '~/hooks/use-async-monaco'
 import { systemApi } from '~/api'
+import { useAsyncLoadMonaco } from '~/hooks/use-async-monaco'
 
 import * as typeDefines from './libs/lib.declare'
 import { NodeDeclare } from './libs/node.declare'

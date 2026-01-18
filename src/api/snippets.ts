@@ -1,5 +1,6 @@
 import type { PaginateResult } from '~/models/base'
-import { SnippetModel, SnippetType } from '~/models/snippet'
+import type { SnippetModel, SnippetType } from '~/models/snippet'
+
 import { request } from '~/utils/request'
 
 export interface GetSnippetsParams {

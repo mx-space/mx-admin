@@ -13,8 +13,7 @@ export interface UploadResponse {
 
 export const filesApi = {
   // 按类型获取文件列表
-  getByType: (type: string) =>
-    request.get<FileItem[]>(`/files/${type}`),
+  getByType: (type: string) => request.get<FileItem[]>(`/files/${type}`),
 
   // 上传文件
   upload: (file: File, type?: string) => {

@@ -42,9 +42,9 @@ export const SearchLocationButton = defineComponent({
     const modalOpen = ref(false)
     const keyword = ref('')
     const searchLocation = async (keyword: string) => {
-      const res = await systemApi.callBuiltInFunction('geocode_search', {
+      const res = (await systemApi.callBuiltInFunction('geocode_search', {
         keywords: keyword,
-      }) as AMapSearch
+      })) as AMapSearch
       return res
     }
 

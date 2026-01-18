@@ -1,7 +1,12 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
-import { computed, toValue, type MaybeRefOrGetter } from 'vue'
-import { postsApi, type CreatePostData, type UpdatePostData } from '~/api/posts'
+import { computed, toValue } from 'vue'
+import type { CreatePostData, UpdatePostData } from '~/api/posts'
 import type { PostModel } from '~/models/post'
+import type { MaybeRefOrGetter } from 'vue'
+
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
+
+import { postsApi } from '~/api/posts'
+
 import { queryKeys } from './keys'
 
 /**

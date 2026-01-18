@@ -1,5 +1,6 @@
 import type { CategoryModel, TagModel } from '~/models/category'
 import type { PostModel } from '~/models/post'
+
 import { request } from '~/utils/request'
 
 export interface GetCategoriesParams {
@@ -48,5 +49,7 @@ export const categoriesApi = {
 
   // 获取标签关联的文章
   getPostsByTag: (tagName: string) =>
-    request.get<{ data: PostModel[] }>(`/categories/${tagName}`, { params: { tag: 'true' } }),
+    request.get<{ data: PostModel[] }>(`/categories/${tagName}`, {
+      params: { tag: 'true' },
+    }),
 }

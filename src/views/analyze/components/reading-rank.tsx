@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/vue-query'
 import { add } from 'date-fns'
 import {
   BookOpen as BookOpenIcon,
@@ -16,6 +15,8 @@ import type {
   PostModel,
   RecentlyModel,
 } from '@mx-space/api-client'
+
+import { useQuery } from '@tanstack/vue-query'
 
 import { activityApi } from '~/api/activity'
 import { queryKeys } from '~/hooks/queries/keys'

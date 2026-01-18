@@ -19,13 +19,15 @@ export default defineComponent({
     const errorMsg = ref('')
     const runTest = async () => {
       try {
-        const res = await debugApi.executeFunction({
-          function: value.value,
-        }).catch((err) => {
-          errorMsg.value = `Error: ${err.message || err.data?.message || 'Unknown error'}`
-          message.error(err.message || err.data?.message || 'Unknown error')
-          throw err
-        })
+        const res = await debugApi
+          .executeFunction({
+            function: value.value,
+          })
+          .catch((err) => {
+            errorMsg.value = `Error: ${err.message || err.data?.message || 'Unknown error'}`
+            message.error(err.message || err.data?.message || 'Unknown error')
+            throw err
+          })
 
         import('monaco-editor').then((mo) => {
           mo.editor

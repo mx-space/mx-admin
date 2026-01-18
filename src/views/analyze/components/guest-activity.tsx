@@ -17,15 +17,16 @@ import type {
   PostModel,
   RecentlyModel,
 } from '@mx-space/api-client'
+import type { fetchDataFn } from '~/hooks/use-table'
 import type { ActivityReadDurationType } from '~/models/activity'
 import type { Pager } from '~/models/base'
 import type { PropType, Ref } from 'vue'
 
+import { activityApi } from '~/api/activity'
 import { IpInfoPopover } from '~/components/ip-info'
 import { Table } from '~/components/table'
 import { RelativeTime } from '~/components/time/relative-time'
-import { useDataTableFetch, type fetchDataFn } from '~/hooks/use-table'
-import { activityApi } from '~/api/activity'
+import { useDataTableFetch } from '~/hooks/use-table'
 import { apiClient } from '~/utils/request'
 
 import styles from '../index.module.css'

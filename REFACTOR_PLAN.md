@@ -4,18 +4,18 @@
 
 ## 目标技术栈
 
-| 类别 | 技术选型 |
-|-----|---------|
-| 框架 | React 18+ |
-| 路由 | React Router DOM v6 |
-| 全局状态 | Zustand |
-| 原子状态 | Jotai |
-| 服务端状态 | TanStack Query v5 |
-| 样式 | Tailwind CSS v3 |
-| UI 组件 | Headless UI + Radix UI (自建 Linear 风格) |
-| 表单 | React Hook Form + Zod |
-| 构建 | Vite |
-| 类型 | TypeScript |
+| 类别       | 技术选型                                  |
+| ---------- | ----------------------------------------- |
+| 框架       | React 18+                                 |
+| 路由       | React Router DOM v6                       |
+| 全局状态   | Zustand                                   |
+| 原子状态   | Jotai                                     |
+| 服务端状态 | TanStack Query v5                         |
+| 样式       | Tailwind CSS v3                           |
+| UI 组件    | Headless UI + Radix UI (自建 Linear 风格) |
+| 表单       | React Hook Form + Zod                     |
+| 构建       | Vite                                      |
+| 类型       | TypeScript                                |
 
 ## 项目规模
 
@@ -101,6 +101,7 @@ src/
 #### 0.4 配置文件
 
 **tailwind.config.ts**
+
 ```typescript
 import type { Config } from 'tailwindcss'
 
@@ -142,10 +143,11 @@ export default {
 ```
 
 **vite.config.ts**
+
 ```typescript
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
 import path from 'path'
+import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite'
 
 export default defineConfig({
   plugins: [react()],
@@ -184,7 +186,7 @@ const API_URL = import.meta.env.VITE_API_URL || ''
 
 export async function fetcher<T>(
   endpoint: string,
-  options?: RequestInit
+  options?: RequestInit,
 ): Promise<T> {
   const res = await fetch(`${API_URL}${endpoint}`, {
     credentials: 'include',
@@ -228,8 +230,8 @@ export const useUserStore = create<UserState>()(
       setToken: (token) => set({ token }),
       logout: () => set({ user: null, token: '' }),
     }),
-    { name: 'user-storage' }
-  )
+    { name: 'user-storage' },
+  ),
 )
 ```
 
@@ -264,7 +266,7 @@ import { atomWithStorage } from 'jotai/utils'
 // 编辑器偏好
 export const editorModeAtom = atomWithStorage<'codemirror' | 'monaco'>(
   'editor-mode',
-  'codemirror'
+  'codemirror',
 )
 
 // 表单草稿 (自动保存)
@@ -282,14 +284,13 @@ export const commandPaletteOpenAtom = atom(false)
 ```tsx
 import { QueryClientProvider } from '@tanstack/react-query'
 import { Provider as JotaiProvider } from 'jotai'
+
 import { queryClient } from '@/lib/api'
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <JotaiProvider>
-        {children}
-      </JotaiProvider>
+      <JotaiProvider>{children}</JotaiProvider>
     </QueryClientProvider>
   )
 }
@@ -305,6 +306,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
 ```tsx
 import { createBrowserRouter, Navigate } from 'react-router-dom'
+
 import { AppLayout } from '@/components/layout/app-layout'
 import { AuthLayout } from '@/components/layout/auth-layout'
 
@@ -319,7 +321,10 @@ export const router = createBrowserRouter([
       // 文章模块
       { path: 'posts', lazy: () => import('@/features/posts/list') },
       { path: 'posts/edit/:id?', lazy: () => import('@/features/posts/edit') },
-      { path: 'posts/category', lazy: () => import('@/features/posts/category') },
+      {
+        path: 'posts/category',
+        lazy: () => import('@/features/posts/category'),
+      },
 
       // 笔记模块
       { path: 'notes', lazy: () => import('@/features/notes/list') },
@@ -339,7 +344,10 @@ export const router = createBrowserRouter([
 
       // 项目
       { path: 'projects', lazy: () => import('@/features/projects/list') },
-      { path: 'projects/edit/:id?', lazy: () => import('@/features/projects/edit') },
+      {
+        path: 'projects/edit/:id?',
+        lazy: () => import('@/features/projects/edit'),
+      },
 
       // 速记
       { path: 'recently', lazy: () => import('@/features/recently') },
@@ -359,9 +367,18 @@ export const router = createBrowserRouter([
       { path: 'markdown', lazy: () => import('@/features/markdown-helper') },
 
       // 维护
-      { path: 'maintenance/cron', lazy: () => import('@/features/maintenance/cron') },
-      { path: 'maintenance/backup', lazy: () => import('@/features/maintenance/backup') },
-      { path: 'maintenance/log', lazy: () => import('@/features/maintenance/log') },
+      {
+        path: 'maintenance/cron',
+        lazy: () => import('@/features/maintenance/cron'),
+      },
+      {
+        path: 'maintenance/backup',
+        lazy: () => import('@/features/maintenance/backup'),
+      },
+      {
+        path: 'maintenance/log',
+        lazy: () => import('@/features/maintenance/log'),
+      },
 
       // AI
       { path: 'ai/summary', lazy: () => import('@/features/ai/summary') },
@@ -384,12 +401,14 @@ export const router = createBrowserRouter([
 **文件**: `src/components/layout/app-layout.tsx`
 
 ```tsx
-import { Outlet, Navigate } from 'react-router-dom'
-import { Sidebar } from './sidebar'
-import { Header } from './header'
-import { useUserStore } from '@/stores/user'
-import { useUIStore } from '@/stores/ui'
+import { Navigate, Outlet } from 'react-router-dom'
+
 import { cn } from '@/lib/cn'
+import { useUIStore } from '@/stores/ui'
+import { useUserStore } from '@/stores/user'
+
+import { Header } from './header'
+import { Sidebar } from './sidebar'
 
 export function AppLayout() {
   const { user, token } = useUserStore()
@@ -401,12 +420,12 @@ export function AppLayout() {
   }
 
   return (
-    <div className={cn('min-h-screen bg-background', isDark && 'dark')}>
+    <div className={cn('bg-background min-h-screen', isDark && 'dark')}>
       <Sidebar collapsed={sidebarCollapsed} />
       <main
         className={cn(
           'transition-all duration-200',
-          sidebarCollapsed ? 'ml-16' : 'ml-64'
+          sidebarCollapsed ? 'ml-16' : 'ml-64',
         )}
       >
         <Header />
@@ -424,6 +443,7 @@ export function AppLayout() {
 **文件**: `src/components/layout/sidebar.tsx`
 
 侧边栏需要实现：
+
 - Logo + 收起按钮
 - 导航菜单组 (带图标)
 - 当前路由高亮
@@ -487,6 +507,7 @@ const menuGroups = [
 **文件**: `src/components/ui/dialog.tsx`
 
 基于 Radix Dialog，添加：
+
 - 确认对话框
 - 表单对话框
 
@@ -562,11 +583,13 @@ export function useDashboardStats() {
 #### 4.3 文章管理 [优先级: P0]
 
 **列表页**: `src/features/posts/list.tsx`
+
 - 数据表格
 - 筛选/排序
 - 批量操作
 
 **编辑页**: `src/features/posts/edit.tsx`
+
 - 表单 (React Hook Form)
 - Markdown 编辑器
 - 分类/标签选择
@@ -586,10 +609,11 @@ export function usePostsList(params: PostsParams) {
 export function useUpdatePost() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: ({ id, data }) => fetcher(`/api/posts/${id}`, {
-      method: 'PATCH',
-      body: JSON.stringify(data),
-    }),
+    mutationFn: ({ id, data }) =>
+      fetcher(`/api/posts/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['posts'] })
     },
@@ -600,6 +624,7 @@ export function useUpdatePost() {
 #### 4.4 笔记管理 [优先级: P1]
 
 类似文章，额外包含：
+
 - 地理位置选择
 - 心情/天气
 - 专栏/话题
@@ -642,6 +667,7 @@ export function useUpdatePost() {
 
 ```tsx
 import CodeMirror from '@uiw/react-codemirror'
+
 import { markdown } from '@codemirror/lang-markdown'
 
 export function MarkdownEditor({ value, onChange }) {
@@ -709,21 +735,21 @@ XTerm.js 集成 (维护页面)
 
 ### Vue → React 概念映射
 
-| Vue 3 | React | 说明 |
-|-------|-------|------|
-| `ref()` | `useState()` | 响应式状态 |
-| `reactive()` | `useState()` / `useReducer()` | 对象状态 |
-| `computed()` | `useMemo()` | 计算属性 |
-| `watch()` | `useEffect()` | 副作用监听 |
-| `onMounted()` | `useEffect(() => {}, [])` | 挂载回调 |
-| `onUnmounted()` | `useEffect` 返回清理函数 | 卸载清理 |
-| `defineProps()` | Props 类型定义 | 组件参数 |
-| `defineEmits()` | 回调函数 Props | 事件发射 |
-| `provide/inject` | `Context` | 依赖注入 |
-| `v-model` | `value` + `onChange` | 双向绑定 |
-| `v-if` | `{condition && <Comp />}` | 条件渲染 |
-| `v-for` | `.map()` | 列表渲染 |
-| `<slot>` | `children` / `render props` | 插槽 |
+| Vue 3            | React                         | 说明       |
+| ---------------- | ----------------------------- | ---------- |
+| `ref()`          | `useState()`                  | 响应式状态 |
+| `reactive()`     | `useState()` / `useReducer()` | 对象状态   |
+| `computed()`     | `useMemo()`                   | 计算属性   |
+| `watch()`        | `useEffect()`                 | 副作用监听 |
+| `onMounted()`    | `useEffect(() => {}, [])`     | 挂载回调   |
+| `onUnmounted()`  | `useEffect` 返回清理函数      | 卸载清理   |
+| `defineProps()`  | Props 类型定义                | 组件参数   |
+| `defineEmits()`  | 回调函数 Props                | 事件发射   |
+| `provide/inject` | `Context`                     | 依赖注入   |
+| `v-model`        | `value` + `onChange`          | 双向绑定   |
+| `v-if`           | `{condition && <Comp />}`     | 条件渲染   |
+| `v-for`          | `.map()`                      | 列表渲染   |
+| `<slot>`         | `children` / `render props`   | 插槽       |
 
 ### Pinia → Zustand 映射
 
@@ -760,6 +786,7 @@ const { data } = useQuery({
 ## 执行清单 (Checklist)
 
 ### Phase 0: 项目初始化
+
 - [ ] 创建新项目 `mx-admin-react`
 - [ ] 安装所有依赖
 - [ ] 配置 Tailwind CSS
@@ -768,6 +795,7 @@ const { data } = useQuery({
 - [ ] 配置 TypeScript paths
 
 ### Phase 1: 基础架构
+
 - [ ] 实现 API fetcher
 - [ ] 创建 QueryClient
 - [ ] 实现 useUserStore (Zustand)
@@ -776,6 +804,7 @@ const { data } = useQuery({
 - [ ] 组合 Providers
 
 ### Phase 2: 路由与布局
+
 - [ ] 配置完整路由表
 - [ ] 实现 AppLayout
 - [ ] 实现 AuthLayout
@@ -784,6 +813,7 @@ const { data } = useQuery({
 - [ ] 添加路由守卫
 
 ### Phase 3: UI 组件库
+
 - [ ] Button 组件
 - [ ] Input / Textarea 组件
 - [ ] Select 组件
@@ -799,6 +829,7 @@ const { data } = useQuery({
 - [ ] Command Palette
 
 ### Phase 4: 核心功能
+
 - [ ] 登录页面
 - [ ] 仪表盘
 - [ ] 文章列表
@@ -811,18 +842,21 @@ const { data } = useQuery({
 - [ ] 设置页面
 
 ### Phase 5: 编辑器
+
 - [ ] Markdown 编辑器
 - [ ] 编辑器工具栏
 - [ ] Monaco 编辑器包装
 - [ ] 表情选择器
 
 ### Phase 6: 高级功能
+
 - [ ] WebSocket 集成
 - [ ] 自动保存
 - [ ] 命令面板
 - [ ] 终端模拟器
 
 ### Phase 7: 测试优化
+
 - [ ] 单元测试配置
 - [ ] 关键组件测试
 - [ ] Bundle 优化
@@ -863,16 +897,16 @@ const { data } = useQuery({
 
 ## 时间估算
 
-| 阶段 | 会话数 | 说明 |
-|------|-------|------|
-| Phase 0 | 1 | 项目初始化 |
-| Phase 1 | 2 | 基础架构 |
-| Phase 2 | 2 | 路由布局 |
-| Phase 3 | 3 | UI 组件库 |
-| Phase 4 | 5-8 | 核心功能 |
-| Phase 5 | 2 | 编辑器 |
-| Phase 6 | 2 | 高级功能 |
-| Phase 7 | 2 | 测试优化 |
+| 阶段     | 会话数    | 说明         |
+| -------- | --------- | ------------ |
+| Phase 0  | 1         | 项目初始化   |
+| Phase 1  | 2         | 基础架构     |
+| Phase 2  | 2         | 路由布局     |
+| Phase 3  | 3         | UI 组件库    |
+| Phase 4  | 5-8       | 核心功能     |
+| Phase 5  | 2         | 编辑器       |
+| Phase 6  | 2         | 高级功能     |
+| Phase 7  | 2         | 测试优化     |
 | **总计** | **19-22** | **完整迁移** |
 
 每个"会话"约等于 AI 一次完整的上下文对话（~100k tokens）。
@@ -896,5 +930,5 @@ const { data } = useQuery({
 
 ---
 
-*文档版本: 1.0*
-*创建日期: 2026-01-15*
+_文档版本: 1.0_
+_创建日期: 2026-01-15_

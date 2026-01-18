@@ -1,8 +1,9 @@
 import type { PaginateResult } from '~/models/base'
-import type { RecentlyModel } from '~/models/recently'
 import type { NoteModel } from '~/models/note'
-import type { PostModel } from '~/models/post'
 import type { PageModel } from '~/models/page'
+import type { PostModel } from '~/models/post'
+import type { RecentlyModel } from '~/models/recently'
+
 import { request } from '~/utils/request'
 
 export interface ActivityPresence {

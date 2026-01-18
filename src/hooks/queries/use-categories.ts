@@ -1,17 +1,23 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
-import { computed, toValue, type MaybeRefOrGetter } from 'vue'
-import {
-  categoriesApi,
-  type CreateCategoryData,
-  type UpdateCategoryData,
-  type GetCategoriesParams,
+import { computed, toValue } from 'vue'
+import type {
+  CreateCategoryData,
+  GetCategoriesParams,
+  UpdateCategoryData,
 } from '~/api/categories'
+import type { MaybeRefOrGetter } from 'vue'
+
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
+
+import { categoriesApi } from '~/api/categories'
+
 import { queryKeys } from './keys'
 
 /**
  * 分类列表查询
  */
-export const useCategoriesQuery = (params?: MaybeRefOrGetter<GetCategoriesParams>) => {
+export const useCategoriesQuery = (
+  params?: MaybeRefOrGetter<GetCategoriesParams>,
+) => {
   return useQuery({
     queryKey: computed(() => queryKeys.categories.list()),
     queryFn: () => categoriesApi.getList(toValue(params)),
@@ -74,7 +80,9 @@ export const useUpdateCategoryMutation = () => {
       categoriesApi.update(id, data),
     onSuccess: (_, { id }) => {
       window.message.success('修改成功')
-      queryClient.invalidateQueries({ queryKey: queryKeys.categories.detail(id) })
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.categories.detail(id),
+      })
       queryClient.invalidateQueries({ queryKey: queryKeys.categories.list() })
     },
   })

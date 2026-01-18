@@ -1,10 +1,10 @@
 import { format } from 'date-fns'
 import { NButton, NPopconfirm, NSpace } from 'naive-ui'
 
+import { healthApi } from '~/api/health'
 import { Table } from '~/components/table'
 import { useDataTableFetch } from '~/hooks/use-table'
 import { toPascalCase } from '~/utils'
-import { healthApi } from '~/api/health'
 
 export default defineComponent({
   setup() {

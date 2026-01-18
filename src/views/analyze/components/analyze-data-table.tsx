@@ -12,9 +12,9 @@ import { NButton, NEllipsis, NTooltip } from 'naive-ui'
 import { defineComponent, onBeforeMount, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import type { UA } from '~/models/analyze'
-import type { Pager } from '~/models/base'
 import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 
+import { analyzeApi } from '~/api/analyze'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { IpInfoPopover } from '~/components/ip-info'
 import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
@@ -22,7 +22,6 @@ import { Table } from '~/components/table'
 import { useDataTableFetch } from '~/hooks/use-table'
 import { useLayout } from '~/layouts/content'
 import { router } from '~/router'
-import { analyzeApi } from '~/api/analyze'
 
 export const AnalyzeDataTable = defineComponent({
   setup() {

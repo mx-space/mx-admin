@@ -1,4 +1,3 @@
-import { useMutation } from '@tanstack/vue-query'
 import { isString } from 'es-toolkit/compat'
 import transform from 'lodash.transform'
 import { Send as SendIcon } from 'lucide-vue-next'
@@ -7,6 +6,8 @@ import { computed, defineComponent, onMounted, reactive, toRaw } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { IGithubRepo } from '~/external/api/github-repo'
 import type { ProjectModel } from '~/models/project'
+
+import { useMutation } from '@tanstack/vue-query'
 
 import { projectsApi } from '~/api/projects'
 import { HeaderActionButton } from '~/components/button/rounded-button'

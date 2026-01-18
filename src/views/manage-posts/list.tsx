@@ -1,4 +1,3 @@
-import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import {
   Plus as AddIcon,
   Book as BookIcon,
@@ -18,15 +17,17 @@ import {
   NSpace,
   useMessage,
 } from 'naive-ui'
+import { computed, defineComponent, onMounted, reactive } from 'vue'
+import { RouterLink } from 'vue-router'
 import type {
   FilterOption,
   FilterState,
   TableColumns,
 } from 'naive-ui/lib/data-table/src/interface'
-import { computed, defineComponent, onMounted, reactive } from 'vue'
 import type { ComputedRef, PropType } from 'vue'
-import { RouterLink } from 'vue-router'
 import type { PostModel } from '../../models/post'
+
+import { useMutation, useQueryClient } from '@tanstack/vue-query'
 
 import { postsApi } from '~/api/posts'
 import { TableTitleLink } from '~/components/link/title-link'
@@ -36,8 +37,8 @@ import { Table } from '~/components/table'
 import { EditColumn } from '~/components/table/edit-column'
 import { RelativeTime } from '~/components/time/relative-time'
 import { WEB_URL } from '~/constants/env'
-import { useDataTable } from '~/hooks/use-data-table'
 import { queryKeys } from '~/hooks/queries/keys'
+import { useDataTable } from '~/hooks/use-data-table'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { CategoryStore } from '~/stores/category'
 import { UIStore } from '~/stores/ui'
@@ -204,7 +205,10 @@ export const ManagePostListView = defineComponent({
           select:
             'title _id id created modified slug categoryId copyright tags count pin meta isPublished',
           ...(params.filters?.sortBy
-            ? { sortBy: params.filters.sortBy, sortOrder: params.filters.sortOrder }
+            ? {
+                sortBy: params.filters.sortBy,
+                sortOrder: params.filters.sortOrder,
+              }
             : {}),
         }),
       pageSize: 20,
@@ -242,7 +246,10 @@ export const ManagePostListView = defineComponent({
 
     const handleTogglePublish = async (id: string, newStatus: boolean) => {
       try {
-        await patchMutation.mutateAsync({ id, data: { isPublished: newStatus } })
+        await patchMutation.mutateAsync({
+          id,
+          data: { isPublished: newStatus },
+        })
         // 乐观更新
         const item = data.value.find((i) => i.id === id)
         if (item) item.isPublished = newStatus

@@ -1,4 +1,6 @@
-import { QueryClient, type QueryClientConfig } from '@tanstack/vue-query'
+import type { QueryClientConfig } from '@tanstack/vue-query'
+
+import { QueryClient } from '@tanstack/vue-query'
 
 import { BusinessError } from '~/utils/request'
 

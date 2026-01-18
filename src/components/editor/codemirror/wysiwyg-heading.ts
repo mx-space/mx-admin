@@ -1,6 +1,7 @@
-import type { DecorationSet, EditorView } from '@codemirror/view'
-import { Decoration, WidgetType, ViewPlugin } from '@codemirror/view'
 import type { EditorState, Range } from '@codemirror/state'
+import type { DecorationSet, EditorView } from '@codemirror/view'
+
+import { Decoration, ViewPlugin, WidgetType } from '@codemirror/view'
 
 // Match heading lines: # to ###### followed by space and content
 const headingPattern = /^(#{1,6})\s+(.+)$/
@@ -14,7 +15,7 @@ class HeadingMarkerWidget extends WidgetType {
   toDOM(): HTMLElement {
     const span = document.createElement('span')
     span.className = 'cm-wysiwyg-heading-marker'
-    span.textContent = '#'.repeat(this.level) + ' '
+    span.textContent = `${'#'.repeat(this.level)} `
     return span
   }
 
@@ -39,7 +40,11 @@ const headingLineDecorations = Array.from({ length: 6 }, (_, i) =>
 )
 
 // Check if cursor is on a specific line
-const isCursorOnLine = (state: EditorState, lineFrom: number, lineTo: number): boolean => {
+const isCursorOnLine = (
+  state: EditorState,
+  lineFrom: number,
+  lineTo: number,
+): boolean => {
   const { from, to } = state.selection.main
   return from <= lineTo && to >= lineFrom
 }
@@ -88,7 +93,11 @@ const headingWysiwygPlugin = ViewPlugin.fromClass(
       this.decorations = buildHeadingDecorations(view.state)
     }
 
-    update(update: { docChanged: boolean; selectionSet: boolean; state: EditorState }) {
+    update(update: {
+      docChanged: boolean
+      selectionSet: boolean
+      state: EditorState
+    }) {
       // Rebuild on doc change OR selection change
       if (update.docChanged || update.selectionSet) {
         this.decorations = buildHeadingDecorations(update.state)

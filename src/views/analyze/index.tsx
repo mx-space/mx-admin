@@ -25,8 +25,8 @@ import type { IPAggregate, Month, Path, Today, Total, Week } from './types'
 
 import { Chart } from '@antv/g2/esm'
 
-import { IpInfoPopover } from '~/components/ip-info'
 import { analyzeApi } from '~/api/analyze'
+import { IpInfoPopover } from '~/components/ip-info'
 
 import { AnalyzeDataTable } from './components/analyze-data-table'
 import { GuestActivity } from './components/guest-activity'

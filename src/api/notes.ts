@@ -1,5 +1,6 @@
 import type { PaginateResult } from '~/models/base'
 import type { NoteModel } from '~/models/note'
+
 import { request } from '~/utils/request'
 
 export interface GetNotesParams {
@@ -44,8 +45,7 @@ export const notesApi = {
     request.get<{ data: NoteModel }>(`/notes/${id}`, { params }),
 
   // 创建日记
-  create: (data: CreateNoteData) =>
-    request.post<NoteModel>('/notes', { data }),
+  create: (data: CreateNoteData) => request.post<NoteModel>('/notes', { data }),
 
   // 更新日记
   update: (id: string, data: UpdateNoteData) =>
@@ -64,5 +64,8 @@ export const notesApi = {
 
   // 获取专栏下的日记列表
   getByTopic: (topicId: string, params?: { page?: number; size?: number }) =>
-    request.get<PaginateResult<Partial<NoteModel>>>(`/notes/topics/${topicId}`, { params }),
+    request.get<PaginateResult<Partial<NoteModel>>>(
+      `/notes/topics/${topicId}`,
+      { params },
+    ),
 }

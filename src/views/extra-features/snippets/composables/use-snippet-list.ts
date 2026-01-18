@@ -1,6 +1,7 @@
+import type { SnippetGroup } from '~/api'
 import type { SnippetModel } from '../../../../models/snippet'
 
-import { snippetsApi, type SnippetGroup } from '~/api'
+import { snippetsApi } from '~/api'
 
 export interface GroupWithSnippets extends SnippetGroup {
   snippets: SnippetModel[]

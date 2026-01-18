@@ -1,10 +1,11 @@
+import type { Image, PaginateResult } from '~/models/base'
 import type {
+  DraftHistoryListItem,
   DraftModel,
   DraftRefType,
-  DraftHistoryListItem,
   TypeSpecificData,
 } from '~/models/draft'
-import type { Image, PaginateResult } from '~/models/base'
+
 import { request } from '~/utils/request'
 
 export interface GetDraftsParams {

@@ -6,9 +6,9 @@ import { FileText, RefreshCw, Trash2, X } from 'lucide-vue-next'
 import { NModal, NSelect, NSpin, useDialog, useMessage } from 'naive-ui'
 import type { PropType } from 'vue'
 
+import { healthApi } from '~/api/health'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { Xterm } from '~/components/xterm'
-import { healthApi } from '~/api/health'
 
 interface LogFile {
   filename: string

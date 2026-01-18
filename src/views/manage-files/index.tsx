@@ -17,12 +17,12 @@ import {
 import { defineComponent } from 'vue'
 import type { UploadFileInfo } from 'naive-ui'
 
+import { filesApi } from '~/api'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { Table } from '~/components/table'
-import { useLayout } from '~/layouts/content'
 import { API_URL } from '~/constants/env'
+import { useLayout } from '~/layouts/content'
 import { getToken } from '~/utils'
-import { filesApi } from '~/api'
 
 type FileType = 'file' | 'icon' | 'photo' | 'avatar'
 
@@ -46,12 +46,10 @@ export default defineComponent({
 
     const fetch = () => {
       loading.value = true
-      filesApi
-        .getByType(type.value)
-        .then((data) => {
-          list.value = data
-          loading.value = false
-        })
+      filesApi.getByType(type.value).then((data) => {
+        list.value = data
+        loading.value = false
+      })
     }
 
     const modalShow = ref(false)

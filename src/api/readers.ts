@@ -1,4 +1,5 @@
 import type { PaginateResult } from '~/models/base'
+
 import { request } from '~/utils/request'
 
 export interface ReaderModel {

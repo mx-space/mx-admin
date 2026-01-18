@@ -1,4 +1,5 @@
-import { ofetch, type FetchOptions } from 'ofetch'
+import { ofetch } from 'ofetch'
+import type { FetchOptions } from 'ofetch'
 
 import { simpleCamelcaseKeys } from '@mx-space/api-client'
 

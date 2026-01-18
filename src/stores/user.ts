@@ -4,6 +4,7 @@ import type { UserModel } from '../models/user'
 
 import { userApi } from '~/api/user'
 import { BusinessError } from '~/utils/request'
+
 import { getToken, setToken } from '../utils/auth'
 
 let tokenIsUpstream = false

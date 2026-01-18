@@ -1,4 +1,3 @@
-import { useMutation } from '@tanstack/vue-query'
 import { cloneDeep, isEmpty } from 'es-toolkit/compat'
 import {
   Calendar as CalendarIcon,
@@ -14,6 +13,8 @@ import {
 import { NButton, NInput, NSelect, NSkeleton, useMessage } from 'naive-ui'
 import { computed, defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
 import type { UserModel } from '~/models/user'
+
+import { useMutation } from '@tanstack/vue-query'
 
 import { userApi } from '~/api/user'
 import Avatar from '~/components/avatar'

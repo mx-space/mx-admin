@@ -1,4 +1,5 @@
-import type { CommentsResponse, CommentModel } from '~/models/comment'
+import type { CommentModel, CommentsResponse } from '~/models/comment'
+
 import { request } from '~/utils/request'
 
 export interface GetCommentsParams {
@@ -29,7 +30,9 @@ export const commentsApi = {
 
   // 主人回复评论（只需 text）
   masterReply: (id: string, text: string) =>
-    request.post<CommentModel>(`/comments/master/reply/${id}`, { data: { text } }),
+    request.post<CommentModel>(`/comments/master/reply/${id}`, {
+      data: { text },
+    }),
 
   // 更新评论状态
   updateState: (id: string, state: number) =>

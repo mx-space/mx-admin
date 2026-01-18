@@ -1,10 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import {
+  Plus as AddIcon,
   ExternalLink,
   FileText,
   GripVertical,
   Pencil,
-  Plus as AddIcon,
   Trash2,
 } from 'lucide-vue-next'
 import { NButton, NPopconfirm } from 'naive-ui'
@@ -13,6 +12,8 @@ import { defineComponent, onBeforeUnmount, ref, watchEffect } from 'vue'
 import { RouterLink } from 'vue-router'
 import type { PageModel } from '~/models/page'
 import type { PropType } from 'vue'
+
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 
 import { pagesApi } from '~/api/pages'
 import { RelativeTime } from '~/components/time/relative-time'
@@ -37,77 +38,73 @@ const PageItem = defineComponent({
     return () => {
       const row = props.data
       return (
-        <div class="group flex items-center gap-3 px-4 py-3 border-b border-neutral-200 dark:border-neutral-800 last:border-b-0 hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition-colors">
-          <GripVertical class="drag-handle w-4 h-4 text-neutral-300 dark:text-neutral-600 cursor-grab active:cursor-grabbing shrink-0 hover:text-neutral-500 dark:hover:text-neutral-400" />
+        <div class="group flex items-center gap-3 border-b border-neutral-200 px-4 py-3 transition-colors last:border-b-0 hover:bg-neutral-50 dark:border-neutral-800 dark:hover:bg-neutral-900/50">
+          <GripVertical class="drag-handle h-4 w-4 shrink-0 cursor-grab text-neutral-300 hover:text-neutral-500 active:cursor-grabbing dark:text-neutral-600 dark:hover:text-neutral-400" />
 
-          <div class="flex-1 min-w-0">
+          <div class="min-w-0 flex-1">
             <div class="flex items-center gap-4">
-              <span class="font-medium text-sm text-neutral-900 dark:text-neutral-100 truncate">
+              <span class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
                 {row.title}
               </span>
             </div>
-            <div class="flex items-center gap-3 mt-0.5">
+            <div class="mt-0.5 flex items-center gap-3">
               <span class="text-xs text-neutral-500 dark:text-neutral-400">
                 /{row.slug}
               </span>
               {row.subtitle && (
-                <span class="text-xs text-neutral-400 dark:text-neutral-500 truncate">
+                <span class="truncate text-xs text-neutral-400 dark:text-neutral-500">
                   {row.subtitle}
                 </span>
               )}
             </div>
           </div>
 
-          <div class="shrink-0 flex items-center">
+          <div class="flex shrink-0 items-center">
             <RelativeTime
               time={row.created}
-              class="text-xs text-neutral-400 dark:text-neutral-500 group-hover:hidden"
+              class="text-xs text-neutral-400 group-hover:hidden dark:text-neutral-500"
             />
-            <div class="hidden group-hover:flex items-center gap-1">
-            <RouterLink to={`/pages/edit?id=${row.id}`}>
-              <NButton quaternary size="tiny" class="!px-2">
+            <div class="hidden items-center gap-1 group-hover:flex">
+              <RouterLink to={`/pages/edit?id=${row.id}`}>
+                <NButton quaternary size="tiny" class="!px-2">
+                  {{
+                    icon: () => <Pencil class="h-3.5 w-3.5 text-neutral-500" />,
+                  }}
+                </NButton>
+              </RouterLink>
+
+              <a
+                href={`/${row.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <NButton quaternary size="tiny" class="!px-2">
+                  {{
+                    icon: () => (
+                      <ExternalLink class="h-3.5 w-3.5 text-neutral-500" />
+                    ),
+                  }}
+                </NButton>
+              </a>
+
+              <NPopconfirm
+                positiveText="取消"
+                negativeText="删除"
+                onNegativeClick={() => props.onDelete(row.id)}
+              >
                 {{
-                  icon: () => (
-                    <Pencil class="w-3.5 h-3.5 text-neutral-500" />
+                  trigger: () => (
+                    <NButton quaternary size="tiny" class="!px-2">
+                      {{
+                        icon: () => <Trash2 class="h-3.5 w-3.5 text-red-500" />,
+                      }}
+                    </NButton>
+                  ),
+                  default: () => (
+                    <span class="max-w-48">确定要删除「{row.title}」？</span>
                   ),
                 }}
-              </NButton>
-            </RouterLink>
-
-            <a
-              href={`/${row.slug}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <NButton quaternary size="tiny" class="!px-2">
-                {{
-                  icon: () => (
-                    <ExternalLink class="w-3.5 h-3.5 text-neutral-500" />
-                  ),
-                }}
-              </NButton>
-            </a>
-
-            <NPopconfirm
-              positiveText="取消"
-              negativeText="删除"
-              onNegativeClick={() => props.onDelete(row.id)}
-            >
-              {{
-                trigger: () => (
-                  <NButton quaternary size="tiny" class="!px-2">
-                    {{
-                      icon: () => (
-                        <Trash2 class="w-3.5 h-3.5 text-red-500" />
-                      ),
-                    }}
-                  </NButton>
-                ),
-                default: () => (
-                  <span class="max-w-48">确定要删除「{row.title}」？</span>
-                ),
-              }}
-            </NPopconfirm>
+              </NPopconfirm>
             </div>
           </div>
         </div>
@@ -121,10 +118,8 @@ const EmptyState = defineComponent({
   setup() {
     return () => (
       <div class="flex flex-col items-center justify-center py-16">
-        <FileText class="w-12 h-12 mb-4 text-neutral-300 dark:text-neutral-600" />
-        <p class="text-sm text-neutral-500 dark:text-neutral-400">
-          还没有页面
-        </p>
+        <FileText class="mb-4 h-12 w-12 text-neutral-300 dark:text-neutral-600" />
+        <p class="text-sm text-neutral-500 dark:text-neutral-400">还没有页面</p>
         <RouterLink
           to="/pages/edit"
           class="mt-4 text-sm text-blue-500 hover:text-blue-600 hover:underline"
@@ -237,7 +232,7 @@ export const ManagePageListView = defineComponent({
     setActions(<HeaderActionButton to="/pages/edit" icon={<AddIcon />} />)
 
     return () => (
-      <div class="border border-neutral-200 dark:border-neutral-800 rounded-lg overflow-hidden bg-white dark:bg-neutral-900">
+      <div class="overflow-hidden rounded-lg border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
         {isLoading.value ? (
           <div class="flex items-center justify-center py-16">
             <span class="text-sm text-neutral-400">加载中...</span>
@@ -247,11 +242,7 @@ export const ManagePageListView = defineComponent({
         ) : (
           <div ref={wrapperRef}>
             {data.value.map((item) => (
-              <PageItem
-                data={item}
-                key={item.id}
-                onDelete={handleDelete}
-              />
+              <PageItem data={item} key={item.id} onDelete={handleDelete} />
             ))}
           </div>
         )}

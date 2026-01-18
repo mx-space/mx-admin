@@ -2,7 +2,6 @@
  * Topic Detail Drawer
  * 专栏详情抽屉 - 展示专栏信息和关联文章
  */
-import { useMutation } from '@tanstack/vue-query'
 import { ExternalLink, Hash, Pencil, Plus, X } from 'lucide-vue-next'
 import {
   NButton,
@@ -18,6 +17,8 @@ import type { Pager } from '@mx-space/api-client'
 import type { NoteModel } from '~/models/note'
 import type { TopicModel } from '~/models/topic'
 import type { PropType } from 'vue'
+
+import { useMutation } from '@tanstack/vue-query'
 
 import { notesApi } from '~/api/notes'
 import { topicsApi } from '~/api/topics'
@@ -74,7 +75,10 @@ export const TopicDetailDrawer = defineComponent({
     const fetchTopicNotes = async (topicId: string, page = 1, size = 10) => {
       loadingNotes.value = true
       try {
-        const { data, pagination } = await notesApi.getByTopic(topicId, { page, size })
+        const { data, pagination } = await notesApi.getByTopic(topicId, {
+          page,
+          size,
+        })
         notes.value = data as any
         notePagination.value = pagination
       } finally {

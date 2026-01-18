@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/vue-query'
 import { format } from 'date-fns'
 import {
   Plus as AddIcon,
@@ -25,9 +24,12 @@ import {
 } from 'naive-ui'
 import { Transition } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
+import type { AISummary, ArticleInfo } from '~/api/ai'
 import type { PropType } from 'vue'
 
-import { aiApi, type AISummary, type ArticleInfo } from '~/api/ai'
+import { useQuery } from '@tanstack/vue-query'
+
+import { aiApi } from '~/api/ai'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { queryKeys } from '~/hooks/queries/keys'
 import { useLayout } from '~/layouts/content'

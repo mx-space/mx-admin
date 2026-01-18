@@ -1,5 +1,6 @@
-import type { TokenModel } from '~/models/token'
 import type { AuthnModel } from '~/models/authn'
+import type { TokenModel } from '~/models/token'
+
 import { request } from '~/utils/request'
 
 export interface CreateTokenData {

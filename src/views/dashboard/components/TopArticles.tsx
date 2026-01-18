@@ -26,8 +26,7 @@ export const TopArticles = defineComponent({
 
     const fetchData = async () => {
       try {
-        const result =
-          await aggregateApi.getTopArticles()
+        const result = await aggregateApi.getTopArticles()
         data.value = Array.isArray(result) ? result : []
       } catch {
         data.value = []

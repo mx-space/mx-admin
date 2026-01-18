@@ -1,10 +1,9 @@
 import { Crown, Mail, Users } from 'lucide-vue-next'
 import { NAvatar, NEmpty, NInfiniteScroll, NSkeleton, NTooltip } from 'naive-ui'
 import { computed, defineComponent, ref } from 'vue'
+import type { ReaderModel } from '~/api/readers'
 
 import { readersApi } from '~/api'
-import type { ReaderModel } from '~/api/readers'
-import type { PaginateResult } from '~/models/base'
 
 const GithubIcon = () => (
   <svg width="1em" height="1em" viewBox="0 0 24 24">

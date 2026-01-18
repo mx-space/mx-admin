@@ -1,4 +1,5 @@
 import type { ProjectModel, ProjectResponse } from '~/models/project'
+
 import { request } from '~/utils/request'
 
 export interface GetProjectsParams {

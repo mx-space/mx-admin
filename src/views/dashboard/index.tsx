@@ -44,11 +44,11 @@ import type { PropType, VNode } from 'vue'
 
 import { Icon } from '@vicons/utils'
 
+import { aggregateApi } from '~/api/aggregate'
 import { IpInfoPopover } from '~/components/ip-info'
 import { useShorthand } from '~/components/shorthand'
 import { useUpdateDetailModal } from '~/components/update-detail-modal'
 import { checkUpdateFromGitHub } from '~/external/api/github-check-update'
-import { aggregateApi } from '~/api/aggregate'
 import { usePortalElement } from '~/hooks/use-portal-element'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { useLayout } from '~/layouts/content'

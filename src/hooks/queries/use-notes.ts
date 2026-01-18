@@ -1,7 +1,12 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
-import { computed, toValue, type MaybeRefOrGetter } from 'vue'
-import { notesApi, type CreateNoteData, type UpdateNoteData } from '~/api/notes'
+import { computed, toValue } from 'vue'
+import type { CreateNoteData, UpdateNoteData } from '~/api/notes'
 import type { NoteModel } from '~/models/note'
+import type { MaybeRefOrGetter } from 'vue'
+
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
+
+import { notesApi } from '~/api/notes'
+
 import { queryKeys } from './keys'
 
 /**

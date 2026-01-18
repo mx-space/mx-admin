@@ -13,10 +13,10 @@ import {
 import { NButton, NPopconfirm, NSpin } from 'naive-ui'
 import type { PropType } from 'vue'
 
+import { backupApi } from '~/api/backup'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { useLayout } from '~/layouts/content'
 import { responseBlobToFile } from '~/utils'
-import { backupApi } from '~/api/backup'
 
 interface BackupFile {
   filename: string

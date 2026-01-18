@@ -1,4 +1,5 @@
 import type { LinkModel, LinkResponse, LinkStateCount } from '~/models/link'
+
 import { request } from '~/utils/request'
 
 export interface GetLinksParams {
@@ -30,8 +31,7 @@ export const linksApi = {
   getById: (id: string) => request.get<{ data: LinkModel }>(`/links/${id}`),
 
   // 创建友链
-  create: (data: CreateLinkData) =>
-    request.post<LinkModel>('/links', { data }),
+  create: (data: CreateLinkData) => request.post<LinkModel>('/links', { data }),
 
   // 更新友链
   update: (id: string, data: UpdateLinkData) =>
@@ -46,17 +46,18 @@ export const linksApi = {
 
   // 检查友链健康状态
   checkHealth: (options?: { timeout?: number }) =>
-    request.get<Record<string, { id: string; status: number | string; message?: string }>>(
-      '/links/health',
-      { timeout: options?.timeout },
-    ),
+    request.get<
+      Record<string, { id: string; status: number | string; message?: string }>
+    >('/links/health', { timeout: options?.timeout }),
 
   // 审核通过友链
   auditPass: (id: string) => request.patch<LinkModel>(`/links/audit/${id}`),
 
   // 审核友链并发送理由
   auditWithReason: (id: string, state: number, reason: string) =>
-    request.post<void>(`/links/audit/reason/${id}`, { data: { state, reason } }),
+    request.post<void>(`/links/audit/reason/${id}`, {
+      data: { state, reason },
+    }),
 
   // 迁移头像
   migrateAvatars: (options?: { timeout?: number }) =>

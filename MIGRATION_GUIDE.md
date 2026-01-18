@@ -6,14 +6,14 @@
 
 ### 1. 基本替换规则
 
-| 旧模式 | 新模式 |
-|--------|--------|
-| `RESTManager.api.xxx.get()` | `xxxApi.getList()` 或 `useQuery` |
-| `RESTManager.api.xxx(id).get()` | `xxxApi.getById(id)` |
-| `RESTManager.api.xxx.post({ data })` | `xxxApi.create(data)` 或 `useMutation` |
-| `RESTManager.api.xxx(id).put({ data })` | `xxxApi.update(id, data)` 或 `useMutation` |
-| `RESTManager.api.xxx(id).patch({ data })` | `xxxApi.patch(id, data)` 或 `useMutation` |
-| `RESTManager.api.xxx(id).delete()` | `xxxApi.delete(id)` 或 `useMutation` |
+| 旧模式                                    | 新模式                                     |
+| ----------------------------------------- | ------------------------------------------ |
+| `RESTManager.api.xxx.get()`               | `xxxApi.getList()` 或 `useQuery`           |
+| `RESTManager.api.xxx(id).get()`           | `xxxApi.getById(id)`                       |
+| `RESTManager.api.xxx.post({ data })`      | `xxxApi.create(data)` 或 `useMutation`     |
+| `RESTManager.api.xxx(id).put({ data })`   | `xxxApi.update(id, data)` 或 `useMutation` |
+| `RESTManager.api.xxx(id).patch({ data })` | `xxxApi.patch(id, data)` 或 `useMutation`  |
+| `RESTManager.api.xxx(id).delete()`        | `xxxApi.delete(id)` 或 `useMutation`       |
 
 ### 2. 导入替换
 
@@ -143,78 +143,78 @@ const handleSubmit = () => {
 
 ### 优先级 1: Setting 页面 (5 文件)
 
-| 文件 | RESTManager 调用数 | 涉及 API |
-|------|-------------------|----------|
-| `setting/tabs/security.tsx` | 10 | auth tokens, passkeys |
-| `setting/tabs/auth.tsx` | 7 | auth, sessions |
-| `setting/tabs/system.tsx` | 4 | options/configs |
-| `setting/tabs/sections/oauth.tsx` | 4 | oauth clients |
-| `setting/tabs/sections/ai-config.tsx` | 4 | ai configs |
+| 文件                                  | RESTManager 调用数 | 涉及 API              |
+| ------------------------------------- | ------------------ | --------------------- |
+| `setting/tabs/security.tsx`           | 10                 | auth tokens, passkeys |
+| `setting/tabs/auth.tsx`               | 7                  | auth, sessions        |
+| `setting/tabs/system.tsx`             | 4                  | options/configs       |
+| `setting/tabs/sections/oauth.tsx`     | 4                  | oauth clients         |
+| `setting/tabs/sections/ai-config.tsx` | 4                  | ai configs            |
 
 ### 优先级 2: 核心功能页面 (8 文件)
 
-| 文件 | RESTManager 调用数 | 涉及 API |
-|------|-------------------|----------|
-| `manage-posts/write.tsx` | 5 | posts |
-| `manage-notes/write.tsx` | 5 | notes |
-| `manage-pages/write.tsx` | 4 | pages |
-| `manage-says/components/say-list-item.tsx` | 3 | says |
-| `manage-files/index.tsx` | 4 | files |
-| `login/index.tsx` | 3 | user/auth |
-| `setup/index.tsx` | 6 | setup/init |
-| `ai/summary.tsx` | 7 | ai summaries |
+| 文件                                       | RESTManager 调用数 | 涉及 API     |
+| ------------------------------------------ | ------------------ | ------------ |
+| `manage-posts/write.tsx`                   | 5                  | posts        |
+| `manage-notes/write.tsx`                   | 5                  | notes        |
+| `manage-pages/write.tsx`                   | 4                  | pages        |
+| `manage-says/components/say-list-item.tsx` | 3                  | says         |
+| `manage-files/index.tsx`                   | 4                  | files        |
+| `login/index.tsx`                          | 3                  | user/auth    |
+| `setup/index.tsx`                          | 6                  | setup/init   |
+| `ai/summary.tsx`                           | 7                  | ai summaries |
 
 ### 优先级 3: Dashboard 组件 (6 文件)
 
-| 文件 | RESTManager 调用数 | 涉及 API |
-|------|-------------------|----------|
-| `dashboard/components/TopArticles.tsx` | 2 | aggregate |
-| `dashboard/components/PublicationTrend.tsx` | 2 | aggregate |
-| `dashboard/components/TrafficSource.tsx` | 2 | aggregate |
-| `dashboard/components/CommentActivity.tsx` | 2 | aggregate |
-| `dashboard/components/TagCloud.tsx` | 2 | aggregate |
-| `dashboard/components/CategoryPie.tsx` | 2 | aggregate |
-| `dashboard/update-panel.tsx` | 2 | system |
+| 文件                                        | RESTManager 调用数 | 涉及 API  |
+| ------------------------------------------- | ------------------ | --------- |
+| `dashboard/components/TopArticles.tsx`      | 2                  | aggregate |
+| `dashboard/components/PublicationTrend.tsx` | 2                  | aggregate |
+| `dashboard/components/TrafficSource.tsx`    | 2                  | aggregate |
+| `dashboard/components/CommentActivity.tsx`  | 2                  | aggregate |
+| `dashboard/components/TagCloud.tsx`         | 2                  | aggregate |
+| `dashboard/components/CategoryPie.tsx`      | 2                  | aggregate |
+| `dashboard/update-panel.tsx`                | 2                  | system    |
 
 ### 优先级 4: 分析和维护页面 (8 文件)
 
-| 文件 | RESTManager 调用数 | 涉及 API |
-|------|-------------------|----------|
-| `analyze/index.tsx` | 2 | analyze |
-| `analyze/components/analyze-data-table.tsx` | 3 | analyze |
-| `analyze/components/guest-activity.tsx` | 4 | analyze |
-| `analyze/components/reading-rank.tsx` | 3 | activity |
-| `maintenance/backup.tsx` | 7 | backup |
-| `maintenance/cron.tsx` | 4 | cron |
-| `maintenance/log-view/tabs/log-list.tsx` | 4 | logs |
-| `maintenance/pty/index.tsx` | 2 | pty |
+| 文件                                        | RESTManager 调用数 | 涉及 API |
+| ------------------------------------------- | ------------------ | -------- |
+| `analyze/index.tsx`                         | 2                  | analyze  |
+| `analyze/components/analyze-data-table.tsx` | 3                  | analyze  |
+| `analyze/components/guest-activity.tsx`     | 4                  | analyze  |
+| `analyze/components/reading-rank.tsx`       | 3                  | activity |
+| `maintenance/backup.tsx`                    | 7                  | backup   |
+| `maintenance/cron.tsx`                      | 4                  | cron     |
+| `maintenance/log-view/tabs/log-list.tsx`    | 4                  | logs     |
+| `maintenance/pty/index.tsx`                 | 2                  | pty      |
 
 ### 优先级 5: Extra Features (11 文件)
 
-| 文件 | RESTManager 调用数 | 涉及 API |
-|------|-------------------|----------|
-| `extra-features/webhook/index.tsx` | 8 | webhooks |
-| `extra-features/subscribe/index.tsx` | 5 | subscribe |
-| `extra-features/markdown-helper.tsx` | 3 | markdown |
-| `extra-features/assets/template/tabs/email.tsx` | 4 | email templates |
-| `extra-features/snippets/composables/use-snippet-list.ts` | 5 | snippets |
-| `extra-features/snippets/composables/use-snippet-editor.ts` | 4 | snippets |
-| `extra-features/snippets/components/snippet-card.tsx` | 2 | snippets |
-| `extra-features/snippets/components/import-snippets-button.tsx` | 2 | snippets |
-| `extra-features/snippets/components/update-deps-button.tsx` | 2 | snippets |
-| `extra-features/snippets/components/install-dep-xterm.tsx` | 2 | snippets |
+| 文件                                                            | RESTManager 调用数 | 涉及 API        |
+| --------------------------------------------------------------- | ------------------ | --------------- |
+| `extra-features/webhook/index.tsx`                              | 8                  | webhooks        |
+| `extra-features/subscribe/index.tsx`                            | 5                  | subscribe       |
+| `extra-features/markdown-helper.tsx`                            | 3                  | markdown        |
+| `extra-features/assets/template/tabs/email.tsx`                 | 4                  | email templates |
+| `extra-features/snippets/composables/use-snippet-list.ts`       | 5                  | snippets        |
+| `extra-features/snippets/composables/use-snippet-editor.ts`     | 4                  | snippets        |
+| `extra-features/snippets/components/snippet-card.tsx`           | 2                  | snippets        |
+| `extra-features/snippets/components/import-snippets-button.tsx` | 2                  | snippets        |
+| `extra-features/snippets/components/update-deps-button.tsx`     | 2                  | snippets        |
+| `extra-features/snippets/components/install-dep-xterm.tsx`      | 2                  | snippets        |
 
 ### 优先级 6: 其他 (7 文件)
 
-| 文件 | RESTManager 调用数 | 涉及 API |
-|------|-------------------|----------|
-| `debug/events/index.tsx` | 2 | events |
-| `debug/authn/index.tsx` | 5 | authn |
-| `debug/serverless/index.tsx` | 2 | serverless |
-| `shorthand/index.tsx` | 3 | recently |
-| `reader/index.tsx` | 2 | render |
-| `manage-notes/hooks/use-memo-note-list.ts` | 2 | notes |
-| `manage-posts/hooks/use-memo-post-list.ts` | 2 | posts |
+| 文件                                       | RESTManager 调用数 | 涉及 API   |
+| ------------------------------------------ | ------------------ | ---------- |
+| `debug/events/index.tsx`                   | 2                  | events     |
+| `debug/authn/index.tsx`                    | 5                  | authn      |
+| `debug/serverless/index.tsx`               | 2                  | serverless |
+| `shorthand/index.tsx`                      | 3                  | recently   |
+| `reader/index.tsx`                         | 2                  | render     |
+| `manage-notes/hooks/use-memo-note-list.ts` | 2                  | notes      |
+| `manage-posts/hooks/use-memo-post-list.ts` | 2                  | posts      |
 
 ---
 

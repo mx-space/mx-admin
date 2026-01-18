@@ -1,12 +1,16 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
-import { computed, toValue, type MaybeRefOrGetter } from 'vue'
-import {
-  draftsApi,
-  type CreateDraftData,
-  type UpdateDraftData,
-  type GetDraftsParams,
+import { computed, toValue } from 'vue'
+import type {
+  CreateDraftData,
+  GetDraftsParams,
+  UpdateDraftData,
 } from '~/api/drafts'
 import type { DraftRefType } from '~/models/draft'
+import type { MaybeRefOrGetter } from 'vue'
+
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
+
+import { draftsApi } from '~/api/drafts'
+
 import { queryKeys } from './keys'
 
 /**

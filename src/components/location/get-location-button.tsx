@@ -45,10 +45,10 @@ export const GetLocationButton = defineComponent({
           } = coordinates
 
           const coo = [longitude, latitude] as const
-          const res = await systemApi.callBuiltInFunction('geocode_location', {
+          const res = (await systemApi.callBuiltInFunction('geocode_location', {
             longitude,
             latitude,
-          }) as Amap
+          })) as Amap
 
           props.onChange(res.regeocode, coo)
         } catch (error: any) {

@@ -1,17 +1,23 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
-import { computed, toValue, type MaybeRefOrGetter } from 'vue'
-import {
-  projectsApi,
-  type CreateProjectData,
-  type UpdateProjectData,
-  type GetProjectsParams,
+import { computed, toValue } from 'vue'
+import type {
+  CreateProjectData,
+  GetProjectsParams,
+  UpdateProjectData,
 } from '~/api/projects'
+import type { MaybeRefOrGetter } from 'vue'
+
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
+
+import { projectsApi } from '~/api/projects'
+
 import { queryKeys } from './keys'
 
 /**
  * 项目列表查询
  */
-export const useProjectsQuery = (params?: MaybeRefOrGetter<GetProjectsParams>) => {
+export const useProjectsQuery = (
+  params?: MaybeRefOrGetter<GetProjectsParams>,
+) => {
   return useQuery({
     queryKey: computed(() => queryKeys.projects.list(toValue(params))),
     queryFn: () => projectsApi.getList(toValue(params)),

@@ -1,5 +1,6 @@
 import type { PaginateResult } from '~/models/base'
 import type { PageModel } from '~/models/page'
+
 import { request } from '~/utils/request'
 
 export interface GetPagesParams {
@@ -29,8 +30,7 @@ export const pagesApi = {
   getById: (id: string) => request.get<{ data: PageModel }>(`/pages/${id}`),
 
   // 创建页面
-  create: (data: CreatePageData) =>
-    request.post<PageModel>('/pages', { data }),
+  create: (data: CreatePageData) => request.post<PageModel>('/pages', { data }),
 
   // 更新页面
   update: (id: string, data: UpdatePageData) =>

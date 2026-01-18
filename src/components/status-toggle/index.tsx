@@ -49,7 +49,9 @@ export const StatusToggle = defineComponent<StatusToggleProps>({
       return (
         <div
           class={`group relative inline-flex cursor-pointer items-center justify-center gap-0.5 rounded transition-all duration-200 hover:shadow-sm ${
-            isSmall ? 'px-1.5 py-0.5 text-[10px] leading-tight' : 'px-2 py-1 text-xs'
+            isSmall
+              ? 'px-1.5 py-0.5 text-[10px] leading-tight'
+              : 'px-2 py-1 text-xs'
           }`}
           style={currentStyles}
           onClick={handleClick}
@@ -69,7 +71,11 @@ export const StatusToggle = defineComponent<StatusToggleProps>({
             }`}
             style={currentStyles}
           >
-            {isSmall ? (props.isPublished ? '→草稿' : '→发布') : `切换为${props.isPublished ? '草稿' : '发布'}`}
+            {isSmall
+              ? props.isPublished
+                ? '→草稿'
+                : '→发布'
+              : `切换为${props.isPublished ? '草稿' : '发布'}`}
           </div>
         </div>
       )

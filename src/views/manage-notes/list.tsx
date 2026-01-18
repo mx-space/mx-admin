@@ -1,4 +1,3 @@
-import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import {
   Book as BookIcon,
   Bookmark as BookmarkIcon,
@@ -19,6 +18,8 @@ import type { NoteModel } from '~/models/note'
 import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import type { PropType } from 'vue'
 
+import { useMutation, useQueryClient } from '@tanstack/vue-query'
+
 import { notesApi } from '~/api/notes'
 import { TableTitleLink } from '~/components/link/title-link'
 import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
@@ -27,8 +28,8 @@ import { Table } from '~/components/table'
 import { EditColumn } from '~/components/table/edit-column'
 import { RelativeTime } from '~/components/time/relative-time'
 import { WEB_URL } from '~/constants/env'
-import { useDataTable } from '~/hooks/use-data-table'
 import { queryKeys } from '~/hooks/queries/keys'
+import { useDataTable } from '~/hooks/use-data-table'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { UIStore } from '~/stores/ui'
 import { getToken } from '~/utils'
@@ -50,41 +51,44 @@ const NoteItem = defineComponent({
       required: true,
     },
     onTogglePublish: {
-      type: Function as PropType<(id: string, status: boolean) => Promise<void>>,
+      type: Function as PropType<
+        (id: string, status: boolean) => Promise<void>
+      >,
       required: true,
     },
   },
   setup(props) {
     const row = computed(() => props.data)
     const isSecret = computed(
-      () => row.value.publicAt && +new Date(row.value.publicAt) - Date.now() > 0,
+      () =>
+        row.value.publicAt && +new Date(row.value.publicAt) - Date.now() > 0,
     )
     const isUnpublished = computed(() => !row.value.isPublished)
 
     return () => (
-      <div class="flex items-center gap-2 px-3 py-2.5 border-b border-neutral-200 dark:border-neutral-800 last:border-b-0 hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition-colors">
-        <div class="flex-1 min-w-0">
+      <div class="flex items-center gap-2 border-b border-neutral-200 px-3 py-2.5 transition-colors last:border-b-0 hover:bg-neutral-50 dark:border-neutral-800 dark:hover:bg-neutral-900/50">
+        <div class="min-w-0 flex-1">
           {/* Title row with badges */}
           <div class="flex items-center gap-1.5">
-            <span class="shrink-0 text-[11px] font-mono text-neutral-400 dark:text-neutral-500">
+            <span class="shrink-0 font-mono text-[11px] text-neutral-400 dark:text-neutral-500">
               #{row.value.nid}
             </span>
             {(isUnpublished.value || isSecret.value) && (
-              <EyeHideIcon class="w-3 h-3 shrink-0 text-neutral-500" />
+              <EyeHideIcon class="h-3 w-3 shrink-0 text-neutral-500" />
             )}
             {row.value.bookmark && (
-              <BookmarkIcon class="w-3 h-3 shrink-0 text-red-500" />
+              <BookmarkIcon class="h-3 w-3 shrink-0 text-red-500" />
             )}
             <RouterLink
               to={`/notes/edit?id=${row.value.id}`}
-              class="text-[13px] font-medium text-neutral-900 dark:text-neutral-100 truncate hover:text-blue-600 dark:hover:text-blue-400"
+              class="truncate text-[13px] font-medium text-neutral-900 hover:text-blue-600 dark:text-neutral-100 dark:hover:text-blue-400"
             >
               {row.value.title}
             </RouterLink>
           </div>
 
           {/* Meta row - all in one line with consistent sizing */}
-          <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5 mt-1">
+          <div class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
             {row.value.mood && (
               <span class="text-[11px] text-neutral-500 dark:text-neutral-400">
                 {row.value.mood}
@@ -96,20 +100,22 @@ const NoteItem = defineComponent({
               </span>
             )}
             {row.value.location && (
-              <span class="text-[11px] text-neutral-400 dark:text-neutral-500 flex items-center gap-0.5 truncate max-w-20">
-                <MapPin class="w-2.5 h-2.5 shrink-0" />
+              <span class="flex max-w-20 items-center gap-0.5 truncate text-[11px] text-neutral-400 dark:text-neutral-500">
+                <MapPin class="h-2.5 w-2.5 shrink-0" />
                 {row.value.location}
               </span>
             )}
-            <span class="text-[11px] text-neutral-400 dark:text-neutral-500 flex items-center gap-0.5">
-              <BookIcon class="w-2.5 h-2.5" />
+            <span class="flex items-center gap-0.5 text-[11px] text-neutral-400 dark:text-neutral-500">
+              <BookIcon class="h-2.5 w-2.5" />
               {formatNumber(row.value.count?.read || 0)}
             </span>
-            <span class="text-[11px] text-neutral-400 dark:text-neutral-500 flex items-center gap-0.5">
-              <HeartIcon class="w-2.5 h-2.5" />
+            <span class="flex items-center gap-0.5 text-[11px] text-neutral-400 dark:text-neutral-500">
+              <HeartIcon class="h-2.5 w-2.5" />
               {formatNumber(row.value.count?.like || 0)}
             </span>
-            <span class="text-[11px] text-neutral-400 dark:text-neutral-500">·</span>
+            <span class="text-[11px] text-neutral-400 dark:text-neutral-500">
+              ·
+            </span>
             <RelativeTime
               time={row.value.created}
               class="text-[11px] text-neutral-400 dark:text-neutral-500"
@@ -123,7 +129,7 @@ const NoteItem = defineComponent({
         </div>
 
         {/* Actions */}
-        <div class="shrink-0 flex items-center">
+        <div class="flex shrink-0 items-center">
           <a
             href={`${WEB_URL}/notes/${row.value.nid}${isUnpublished.value || isSecret.value ? `?token=${getToken()}` : ''}`}
             target="_blank"
@@ -132,15 +138,20 @@ const NoteItem = defineComponent({
           >
             <NButton quaternary size="tiny" class="!px-1.5">
               {{
-                icon: () => <ExternalLink class="w-3.5 h-3.5 text-neutral-500" />,
+                icon: () => (
+                  <ExternalLink class="h-3.5 w-3.5 text-neutral-500" />
+                ),
               }}
             </NButton>
           </a>
 
-          <RouterLink to={`/notes/edit?id=${row.value.id}`} aria-label="编辑日记">
+          <RouterLink
+            to={`/notes/edit?id=${row.value.id}`}
+            aria-label="编辑日记"
+          >
             <NButton quaternary size="tiny" class="!px-1.5">
               {{
-                icon: () => <Pencil class="w-3.5 h-3.5 text-neutral-500" />,
+                icon: () => <Pencil class="h-3.5 w-3.5 text-neutral-500" />,
               }}
             </NButton>
           </RouterLink>
@@ -152,9 +163,14 @@ const NoteItem = defineComponent({
           >
             {{
               trigger: () => (
-                <NButton quaternary size="tiny" class="!px-1.5" aria-label="删除日记">
+                <NButton
+                  quaternary
+                  size="tiny"
+                  class="!px-1.5"
+                  aria-label="删除日记"
+                >
                   {{
-                    icon: () => <Trash2 class="w-3.5 h-3.5 text-red-500" />,
+                    icon: () => <Trash2 class="h-3.5 w-3.5 text-red-500" />,
                   }}
                 </NButton>
               ),
@@ -174,7 +190,9 @@ export const ManageNoteListView = defineComponent({
   setup() {
     const queryClient = useQueryClient()
     const ui = useStoreRef(UIStore)
-    const isMobile = computed(() => ui.viewport.value.mobile || ui.viewport.value.pad)
+    const isMobile = computed(
+      () => ui.viewport.value.mobile || ui.viewport.value.pad,
+    )
 
     // 筛选条件
     const dbQuery = ref<Record<string, boolean> | undefined>(undefined)
@@ -188,7 +206,8 @@ export const ManageNoteListView = defineComponent({
       setSort,
       setPage,
     } = useDataTable<NoteModel>({
-      queryKey: (params) => queryKeys.notes.list({ ...params, dbQuery: dbQuery.value }),
+      queryKey: (params) =>
+        queryKeys.notes.list({ ...params, dbQuery: dbQuery.value }),
       queryFn: (params) =>
         notesApi.getList({
           page: params.page,
@@ -242,7 +261,7 @@ export const ManageNoteListView = defineComponent({
     const CardList = defineComponent({
       setup() {
         return () => (
-          <div class="border border-neutral-200 dark:border-neutral-800 rounded-lg overflow-hidden bg-white dark:bg-neutral-900">
+          <div class="overflow-hidden rounded-lg border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
             {loading.value ? (
               <div class="flex items-center justify-center py-16">
                 <span class="text-sm text-neutral-400">加载中…</span>
@@ -274,9 +293,9 @@ export const ManageNoteListView = defineComponent({
 
             {/* Pagination */}
             {pager.value && pager.value.totalPage > 1 && (
-              <div class="flex items-center justify-center gap-4 py-4 border-t border-neutral-200 dark:border-neutral-800">
+              <div class="flex items-center justify-center gap-4 border-t border-neutral-200 py-4 dark:border-neutral-800">
                 <button
-                  class="px-3 py-1.5 text-sm rounded-md border border-neutral-200 dark:border-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-neutral-50 dark:hover:bg-neutral-800"
+                  class="rounded-md border border-neutral-200 px-3 py-1.5 text-sm hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
                   disabled={!pager.value.hasPrevPage}
                   onClick={() => {
                     if (pager.value?.hasPrevPage) {
@@ -290,7 +309,7 @@ export const ManageNoteListView = defineComponent({
                   {pager.value.currentPage} / {pager.value.totalPage}
                 </span>
                 <button
-                  class="px-3 py-1.5 text-sm rounded-md border border-neutral-200 dark:border-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-neutral-50 dark:hover:bg-neutral-800"
+                  class="rounded-md border border-neutral-200 px-3 py-1.5 text-sm hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
                   disabled={!pager.value.hasNextPage}
                   onClick={() => {
                     if (pager.value?.hasNextPage) {
@@ -375,7 +394,10 @@ export const ManageNoteListView = defineComponent({
                 <EditColumn
                   initialValue={data.value[index]?.mood ?? ''}
                   onSubmit={async (v) => {
-                    await patchMutation.mutateAsync({ id: row.id, data: { mood: v } })
+                    await patchMutation.mutateAsync({
+                      id: row.id,
+                      data: { mood: v },
+                    })
                     message.success('修改成功')
                   }}
                   placeholder="心情"
@@ -392,7 +414,10 @@ export const ManageNoteListView = defineComponent({
                 <EditColumn
                   initialValue={data.value[index]?.weather ?? ''}
                   onSubmit={async (v) => {
-                    await patchMutation.mutateAsync({ id: row.id, data: { weather: v } })
+                    await patchMutation.mutateAsync({
+                      id: row.id,
+                      data: { weather: v },
+                    })
                     message.success('修改成功')
                   }}
                   placeholder="天气"
@@ -483,7 +508,9 @@ export const ManageNoteListView = defineComponent({
               return (
                 <StatusToggle
                   isPublished={row.isPublished ?? false}
-                  onToggle={(newStatus) => handleTogglePublish(row.id, newStatus)}
+                  onToggle={(newStatus) =>
+                    handleTogglePublish(row.id, newStatus)
+                  }
                 />
               )
             },
@@ -529,7 +556,10 @@ export const ManageNoteListView = defineComponent({
                   refresh()
                   return
                 }
-                dbQuery.value = title.reduce((acc, i) => ({ ...acc, [i]: true }), {})
+                dbQuery.value = title.reduce(
+                  (acc, i) => ({ ...acc, [i]: true }),
+                  {},
+                )
                 setPage(1)
               },
             }}
@@ -558,9 +588,7 @@ export const ManageNoteListView = defineComponent({
             checkedRowKeys={checkedRowKeys.value}
             onDelete={async () => {
               const status = await Promise.allSettled(
-                checkedRowKeys.value.map((id) =>
-                  notesApi.delete(id as string),
-                ),
+                checkedRowKeys.value.map((id) => notesApi.delete(id as string)),
               )
 
               for (const s of status) {

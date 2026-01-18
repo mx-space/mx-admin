@@ -1,4 +1,3 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 import { omit } from 'es-toolkit/compat'
 import {
   Check as CheckIcon,
@@ -19,22 +18,18 @@ import {
   NTabs,
   useDialog,
 } from 'naive-ui'
-import {
-  computed,
-  defineComponent,
-  Fragment,
-  ref,
-  watchEffect,
-} from 'vue'
+import { computed, defineComponent, Fragment, ref, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { LinkModel, LinkStateCount } from '~/models/link'
+
+import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 
 import { linksApi } from '~/api/links'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { Table } from '~/components/table'
 import { RelativeTime } from '~/components/time/relative-time'
-import { useDataTable } from '~/hooks/use-data-table'
 import { queryKeys } from '~/hooks/queries/keys'
+import { useDataTable } from '~/hooks/use-data-table'
 import { useLayout } from '~/layouts/content'
 import { LinkState, LinkStateNameMap, LinkType } from '~/models/link'
 import { RouteName } from '~/router/name'
@@ -59,7 +54,8 @@ export default defineComponent({
       isLoading: loading,
       refresh,
     } = useDataTable<LinkModel>({
-      queryKey: (params) => queryKeys.links.list({ ...params, state: tabValue.value }),
+      queryKey: (params) =>
+        queryKeys.links.list({ ...params, state: tabValue.value }),
       queryFn: (params) =>
         linksApi.getList({
           page: params.page,
@@ -91,7 +87,9 @@ export default defineComponent({
       queryKey: queryKeys.links.stateCount(),
       queryFn: linksApi.getStateCount,
     })
-    const stateCount = computed(() => stateCountData.value || ({} as LinkStateCount))
+    const stateCount = computed(
+      () => stateCountData.value || ({} as LinkStateCount),
+    )
 
     // 创建/更新友链 mutation
     const saveMutation = useMutation({
@@ -138,8 +136,15 @@ export default defineComponent({
 
     // 审核并发送理由 mutation
     const auditWithReasonMutation = useMutation({
-      mutationFn: ({ id, state, reason }: { id: string; state: number; reason: string }) =>
-        linksApi.auditWithReason(id, state, reason),
+      mutationFn: ({
+        id,
+        state,
+        reason,
+      }: {
+        id: string
+        state: number
+        reason: string
+      }) => linksApi.auditWithReason(id, state, reason),
       onSuccess: (_, { id }) => {
         const item = data.value.find((i) => i.id === id)
         message.success(`已发送友链结果给「${item?.name || ''}」`)

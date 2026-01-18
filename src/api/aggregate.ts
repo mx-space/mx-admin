@@ -81,15 +81,16 @@ export const aggregateApi = {
 
   // 获取分类分布
   getCategoryDistribution: () =>
-    request.get<CategoryDistribution[]>('/aggregate/stat/category-distribution'),
+    request.get<CategoryDistribution[]>(
+      '/aggregate/stat/category-distribution',
+    ),
 
   // 获取发布趋势
   getPublicationTrend: () =>
     request.get<PublicationTrend[]>('/aggregate/stat/publication-trend'),
 
   // 获取标签云
-  getTagCloud: () =>
-    request.get<TagCloudItem[]>('/aggregate/stat/tag-cloud'),
+  getTagCloud: () => request.get<TagCloudItem[]>('/aggregate/stat/tag-cloud'),
 
   // 获取热门文章
   getTopArticles: () =>
@@ -104,8 +105,7 @@ export const aggregateApi = {
     request.get<TrafficSourceData>('/aggregate/stat/traffic-source'),
 
   // 获取站点字数统计
-  countSiteWords: () =>
-    request.get<WordCount>('/aggregate/count_site_words'),
+  countSiteWords: () => request.get<WordCount>('/aggregate/count_site_words'),
 
   // 获取阅读和点赞统计
   countReadAndLike: () =>

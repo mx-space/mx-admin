@@ -1,6 +1,11 @@
+import { computed, toValue } from 'vue'
+import type { CreatePageData, UpdatePageData } from '~/api/pages'
+import type { MaybeRefOrGetter } from 'vue'
+
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
-import { computed, toValue, type MaybeRefOrGetter } from 'vue'
-import { pagesApi, type CreatePageData, type UpdatePageData } from '~/api/pages'
+
+import { pagesApi } from '~/api/pages'
+
 import { queryKeys } from './keys'
 
 /**

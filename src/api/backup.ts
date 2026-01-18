@@ -1,4 +1,4 @@
-import { request, $api } from '~/utils/request'
+import { $api, request } from '~/utils/request'
 
 export interface BackupFile {
   filename: string

@@ -1,6 +1,7 @@
-import type { DecorationSet, EditorView } from '@codemirror/view'
-import { Decoration, WidgetType, ViewPlugin } from '@codemirror/view'
 import type { EditorState, Range } from '@codemirror/state'
+import type { DecorationSet, EditorView } from '@codemirror/view'
+
+import { Decoration, ViewPlugin, WidgetType } from '@codemirror/view'
 
 // Unordered list marker widget
 class UnorderedListMarkerWidget extends WidgetType {
@@ -235,9 +236,15 @@ const buildListDecorations = (state: EditorState): DecorationSet => {
             listItem.checkboxPos!,
           )
         } else if (listItem.type === 'ol') {
-          widget = new OrderedListMarkerWidget(listItem.indent, listItem.number!)
+          widget = new OrderedListMarkerWidget(
+            listItem.indent,
+            listItem.number!,
+          )
         } else {
-          widget = new UnorderedListMarkerWidget(listItem.indent, listItem.marker)
+          widget = new UnorderedListMarkerWidget(
+            listItem.indent,
+            listItem.marker,
+          )
         }
 
         decorations.push(

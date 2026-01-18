@@ -1,8 +1,9 @@
-import type { DecorationSet } from '@codemirror/view'
-import { Decoration, EditorView, WidgetType, keymap } from '@codemirror/view'
-import type { EditorState, Range } from '@codemirror/state'
-import { Prec, StateField } from '@codemirror/state'
 import { codeToHtml } from 'shiki'
+import type { EditorState, Range } from '@codemirror/state'
+import type { DecorationSet } from '@codemirror/view'
+
+import { Prec, StateField } from '@codemirror/state'
+import { Decoration, EditorView, keymap, WidgetType } from '@codemirror/view'
 
 // Widget for code block with shiki highlighting
 class CodeBlockWidget extends WidgetType {
@@ -199,18 +200,12 @@ const isDarkMode = (): boolean => {
   return document.documentElement.classList.contains('dark')
 }
 
-const getCodeBlockEntryPos = (
-  state: EditorState,
-  block: CodeBlock,
-): number => {
+const getCodeBlockEntryPos = (state: EditorState, block: CodeBlock): number => {
   const lineNumber = Math.min(block.startLine + 1, block.endLine)
   return state.doc.line(lineNumber).from
 }
 
-const getCodeBlockExitPos = (
-  state: EditorState,
-  block: CodeBlock,
-): number => {
+const getCodeBlockExitPos = (state: EditorState, block: CodeBlock): number => {
   const lineNumber = Math.max(block.endLine - 1, block.startLine + 1)
   return state.doc.line(lineNumber).from
 }

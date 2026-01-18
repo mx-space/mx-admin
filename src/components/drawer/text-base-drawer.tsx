@@ -1,4 +1,3 @@
-import isURL from 'validator/lib/isURL'
 import { isObject, isUndefined } from 'es-toolkit/compat'
 import {
   BracesIcon,
@@ -21,6 +20,7 @@ import {
   NSelect,
   NTooltip,
 } from 'naive-ui'
+import isURL from 'validator/lib/isURL'
 import type { Image } from '@mx-space/api-client'
 import type { SelectOption } from 'naive-ui'
 import type { PropType } from 'vue'

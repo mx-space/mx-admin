@@ -1,5 +1,6 @@
 import type { PaginateResult } from '~/models/base'
 import type { TopicModel } from '~/models/topic'
+
 import { request } from '~/utils/request'
 
 export interface GetTopicsParams {

@@ -1,4 +1,5 @@
 import type { UserModel } from '~/models/user'
+
 import { request } from '~/utils/request'
 
 export interface LoginData {

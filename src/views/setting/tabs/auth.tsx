@@ -1,4 +1,3 @@
-import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import {
   ExternalLink as ExternalLinkIcon,
   Fingerprint as FingerprintIcon,
@@ -20,9 +19,10 @@ import {
 } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { AuthnModel } from '~/models/authn'
 import type { DialogReactive } from 'naive-ui'
 import type { FlatOauthData, OauthData } from './providers/oauth'
+
+import { useQuery } from '@tanstack/vue-query'
 
 import { authApi } from '~/api/auth'
 import { optionsApi } from '~/api/options'
@@ -50,7 +50,6 @@ export const TabAuth = defineComponent({
 
 const Passkey = defineComponent(() => {
   const uiStore = useStoreRef(UIStore)
-  const queryClient = useQueryClient()
   const { data: passkeys, refetch: refetchTable } = useQuery({
     queryKey: queryKeys.auth.passkeys(),
     queryFn: () => authApi.getPasskeys(),

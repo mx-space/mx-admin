@@ -33,7 +33,7 @@
 }
 
 /* 让 CodeMirror 编辑器占满剩余空间 */
-.write-editor-content>div {
+.write-editor-content > div {
   flex: 1;
   min-height: 0;
 }

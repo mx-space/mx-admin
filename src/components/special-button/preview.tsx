@@ -2,8 +2,8 @@ import { debounce } from 'es-toolkit/compat'
 import { Search as MagnifyingGlass } from 'lucide-vue-next'
 import { NSplit } from 'naive-ui'
 
-import { useUIStore } from '~/stores/ui'
 import { optionsApi } from '~/api'
+import { useUIStore } from '~/stores/ui'
 
 import { HeaderActionButton } from '../button/rounded-button'
 

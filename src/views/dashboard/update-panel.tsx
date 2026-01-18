@@ -1,6 +1,6 @@
 import { ShellOutputNormal } from '~/components/output-modal/normal'
-import { usePortalElement } from '~/hooks/use-portal-element'
 import { API_URL } from '~/constants/env'
+import { usePortalElement } from '~/hooks/use-portal-element'
 
 export const UpdatePanel = defineComponent({
   setup(_) {

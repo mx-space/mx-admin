@@ -1,8 +1,9 @@
 import './monaco'
 import 'virtual:uno.css'
 
-import { VueQueryPlugin } from '@tanstack/vue-query'
 import { createApp } from 'vue'
+
+import { VueQueryPlugin } from '@tanstack/vue-query'
 
 import { queryClient } from '~/lib/query-client'
 import { piniaStore } from '~/stores'

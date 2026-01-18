@@ -1,7 +1,8 @@
-import type { DecorationSet } from '@codemirror/view'
-import { Decoration, EditorView, WidgetType } from '@codemirror/view'
-import { RangeSetBuilder, StateField } from '@codemirror/state'
 import type { EditorState } from '@codemirror/state'
+import type { DecorationSet } from '@codemirror/view'
+
+import { RangeSetBuilder, StateField } from '@codemirror/state'
+import { Decoration, EditorView, WidgetType } from '@codemirror/view'
 
 const dividerPattern = /^-{3,}\s*$/
 

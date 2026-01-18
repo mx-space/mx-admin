@@ -8,8 +8,7 @@ export const queryKeys = {
   posts: {
     all: ['posts'] as const,
     lists: () => [...queryKeys.posts.all, 'list'] as const,
-    list: (params?: object) =>
-      [...queryKeys.posts.lists(), params] as const,
+    list: (params?: object) => [...queryKeys.posts.lists(), params] as const,
     details: () => [...queryKeys.posts.all, 'detail'] as const,
     detail: (id: string) => [...queryKeys.posts.details(), id] as const,
   },
@@ -18,8 +17,7 @@ export const queryKeys = {
   notes: {
     all: ['notes'] as const,
     lists: () => [...queryKeys.notes.all, 'list'] as const,
-    list: (params?: object) =>
-      [...queryKeys.notes.lists(), params] as const,
+    list: (params?: object) => [...queryKeys.notes.lists(), params] as const,
     details: () => [...queryKeys.notes.all, 'detail'] as const,
     detail: (id: string) => [...queryKeys.notes.details(), id] as const,
   },
@@ -28,8 +26,7 @@ export const queryKeys = {
   pages: {
     all: ['pages'] as const,
     lists: () => [...queryKeys.pages.all, 'list'] as const,
-    list: (params?: object) =>
-      [...queryKeys.pages.lists(), params] as const,
+    list: (params?: object) => [...queryKeys.pages.lists(), params] as const,
     details: () => [...queryKeys.pages.all, 'detail'] as const,
     detail: (id: string) => [...queryKeys.pages.details(), id] as const,
   },
@@ -38,14 +35,16 @@ export const queryKeys = {
   categories: {
     all: ['categories'] as const,
     list: () => [...queryKeys.categories.all, 'list'] as const,
-    detail: (id: string) => [...queryKeys.categories.all, 'detail', id] as const,
+    detail: (id: string) =>
+      [...queryKeys.categories.all, 'detail', id] as const,
   },
 
   // === 标签 ===
   tags: {
     all: ['tags'] as const,
     list: () => [...queryKeys.tags.all, 'list'] as const,
-    postsByTag: (tagName: string) => [...queryKeys.tags.all, 'posts', tagName] as const,
+    postsByTag: (tagName: string) =>
+      [...queryKeys.tags.all, 'posts', tagName] as const,
   },
 
   // === 评论 ===
@@ -61,8 +60,7 @@ export const queryKeys = {
   links: {
     all: ['links'] as const,
     lists: () => [...queryKeys.links.all, 'list'] as const,
-    list: (params?: object) =>
-      [...queryKeys.links.lists(), params] as const,
+    list: (params?: object) => [...queryKeys.links.lists(), params] as const,
     stateCount: () => [...queryKeys.links.all, 'state-count'] as const,
     detail: (id: string) => [...queryKeys.links.all, 'detail', id] as const,
   },
@@ -71,13 +69,11 @@ export const queryKeys = {
   drafts: {
     all: ['drafts'] as const,
     lists: () => [...queryKeys.drafts.all, 'list'] as const,
-    list: (params?: object) =>
-      [...queryKeys.drafts.lists(), params] as const,
+    list: (params?: object) => [...queryKeys.drafts.lists(), params] as const,
     detail: (id: string) => [...queryKeys.drafts.all, 'detail', id] as const,
     byRef: (refType: string, refId: string) =>
       [...queryKeys.drafts.all, 'ref', refType, refId] as const,
-    history: (id: string) =>
-      [...queryKeys.drafts.all, 'history', id] as const,
+    history: (id: string) => [...queryKeys.drafts.all, 'history', id] as const,
   },
 
   // === 专栏 ===
@@ -91,8 +87,7 @@ export const queryKeys = {
   says: {
     all: ['says'] as const,
     lists: () => [...queryKeys.says.all, 'list'] as const,
-    list: (params?: object) =>
-      [...queryKeys.says.lists(), params] as const,
+    list: (params?: object) => [...queryKeys.says.lists(), params] as const,
     detail: (id: string) => [...queryKeys.says.all, 'detail', id] as const,
   },
 
@@ -100,8 +95,7 @@ export const queryKeys = {
   projects: {
     all: ['projects'] as const,
     lists: () => [...queryKeys.projects.all, 'list'] as const,
-    list: (params?: object) =>
-      [...queryKeys.projects.lists(), params] as const,
+    list: (params?: object) => [...queryKeys.projects.lists(), params] as const,
     detail: (id: string) => [...queryKeys.projects.all, 'detail', id] as const,
   },
 
@@ -147,8 +141,7 @@ export const queryKeys = {
   analyze: {
     all: ['analyze'] as const,
     lists: () => [...queryKeys.analyze.all, 'list'] as const,
-    list: (params?: object) =>
-      [...queryKeys.analyze.lists(), params] as const,
+    list: (params?: object) => [...queryKeys.analyze.lists(), params] as const,
     aggregate: () => [...queryKeys.analyze.all, 'aggregate'] as const,
   },
 
@@ -156,8 +149,7 @@ export const queryKeys = {
   activity: {
     all: ['activity'] as const,
     lists: () => [...queryKeys.activity.all, 'list'] as const,
-    list: (params?: object) =>
-      [...queryKeys.activity.lists(), params] as const,
+    list: (params?: object) => [...queryKeys.activity.lists(), params] as const,
     readingRank: (type?: string) =>
       [...queryKeys.activity.all, 'reading-rank', type] as const,
     recently: (params?: object) =>
@@ -187,8 +179,7 @@ export const queryKeys = {
   snippets: {
     all: ['snippets'] as const,
     lists: () => [...queryKeys.snippets.all, 'list'] as const,
-    list: (params?: object) =>
-      [...queryKeys.snippets.lists(), params] as const,
+    list: (params?: object) => [...queryKeys.snippets.lists(), params] as const,
     detail: (id: string) => [...queryKeys.snippets.all, 'detail', id] as const,
   },
 

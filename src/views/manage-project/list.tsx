@@ -1,4 +1,3 @@
-import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import {
   Plus as AddIcon,
   ExternalLink,
@@ -19,11 +18,13 @@ import { RouterLink } from 'vue-router'
 import type { ProjectModel } from '~/models/project'
 import type { PropType } from 'vue'
 
+import { useMutation, useQueryClient } from '@tanstack/vue-query'
+
 import { projectsApi } from '~/api/projects'
 import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
 import { RelativeTime } from '~/components/time/relative-time'
-import { useDataTable } from '~/hooks/use-data-table'
 import { queryKeys } from '~/hooks/queries/keys'
+import { useDataTable } from '~/hooks/use-data-table'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { UIStore } from '~/stores/ui'
 
@@ -200,7 +201,8 @@ const ManageProjectView = defineComponent({
       isLoading: loading,
     } = useDataTable<ProjectModel>({
       queryKey: (params) => queryKeys.projects.list(params),
-      queryFn: (params) => projectsApi.getList({ page: params.page, size: params.size }),
+      queryFn: (params) =>
+        projectsApi.getList({ page: params.page, size: params.size }),
       pageSize: 30,
     })
 

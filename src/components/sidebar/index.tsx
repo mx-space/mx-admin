@@ -16,13 +16,13 @@ import type { MenuModel } from '../../utils/build-menus'
 
 import { onClickOutside } from '@vueuse/core'
 
+import { userApi } from '~/api'
 import { WEB_URL } from '~/constants/env'
 import { RouteName } from '~/router/name'
 import { AppStore } from '~/stores/app'
 import { UIStore } from '~/stores/ui'
 import { removeToken } from '~/utils'
 import { authClient } from '~/utils/authjs/auth'
-import { userApi } from '~/api'
 
 import { useStoreRef } from '../../hooks/use-store-ref'
 import { UserStore } from '../../stores/user'

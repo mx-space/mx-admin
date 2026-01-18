@@ -15,9 +15,9 @@ import { defineComponent, ref } from 'vue'
 import type { PropType } from 'vue'
 import type { UserModel } from '../../models/user'
 
+import { systemApi } from '~/api'
 import { showConfetti } from '~/utils/confetti'
 import { checkIsInit } from '~/utils/is-init'
-import { systemApi } from '~/api'
 
 import { getToken, removeToken } from '../../utils'
 import styles from './index.module.css'
@@ -122,14 +122,12 @@ const Step0 = defineComponent({
         const file = $file.files![0]
         const formData = new FormData()
         formData.append('file', file)
-        systemApi
-          .restoreFromBackup(formData, 1 << 30)
-          .then(() => {
-            message.success('恢复成功，页面将会重载')
-            setTimeout(() => {
-              location.reload()
-            }, 1000)
-          })
+        systemApi.restoreFromBackup(formData, 1 << 30).then(() => {
+          message.success('恢复成功，页面将会重载')
+          setTimeout(() => {
+            location.reload()
+          }, 1000)
+        })
       })
     }
     return () => (

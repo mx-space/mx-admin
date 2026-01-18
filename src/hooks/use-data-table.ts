@@ -1,20 +1,10 @@
-import {
-  useQuery,
-  useQueryClient,
-  keepPreviousData,
-  type QueryKey,
-} from '@tanstack/vue-query'
-import {
-  computed,
-  ref,
-  toValue,
-  watch,
-  type ComputedRef,
-  type MaybeRefOrGetter,
-  type Ref,
-} from 'vue'
+import { computed, ref, toValue, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import type { QueryKey } from '@tanstack/vue-query'
 import type { Pager, PaginateResult } from '~/models/base'
+import type { ComputedRef, MaybeRefOrGetter, Ref } from 'vue'
+
+import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/vue-query'
 
 export interface DataTableQueryParams {
   page: number

@@ -3,6 +3,7 @@
 ## ✅ Completed Files (18 files migrated)
 
 ### Priority 1: Settings (5 files)
+
 - [x] `src/views/setting/tabs/security.tsx`
 - [x] `src/views/setting/tabs/auth.tsx`
 - [x] `src/views/setting/tabs/system.tsx`
@@ -10,6 +11,7 @@
 - [x] `src/views/setting/tabs/sections/ai-config.tsx`
 
 ### Priority 2: Core Features (5 files)
+
 - [x] `src/views/manage-posts/write.tsx`
 - [x] `src/views/manage-notes/write.tsx`
 - [x] `src/views/manage-pages/write.tsx`
@@ -17,26 +19,30 @@
 - [x] `src/views/login/index.tsx`
 
 ### Priority 3: Dashboard Components (7 files)
+
 - [x] `src/views/dashboard/components/CategoryPie.tsx`
 - [x] `src/views/dashboard/components/CommentActivity.tsx`
 - [x] `src/views/dashboard/components/PublicationTrend.tsx`
 - [x] `src/views/dashboard/components/TagCloud.tsx`
 - [x] `src/views/dashboard/components/TopArticles.tsx`
 - [x] `src/views/dashboard/components/TrafficSource.tsx`
-- [x] *(Note: ChartCard.tsx already didn't use RESTManager)*
+- [x] _(Note: ChartCard.tsx already didn't use RESTManager)_
 
 ### Additional
+
 - [x] Updated `src/api/aggregate.ts` - Added `getTrafficSource()` method
 - [x] Updated `src/api/ai.ts` - Added `getModelList()` and `testConfig()` methods
 
 ## 🚧 Remaining Files (42 files)
 
 ### Priority 2: Core Features (remaining)
+
 - [ ] `src/views/setup/index.tsx` (6 calls)
 - [ ] `src/views/ai/summary.tsx` (7 calls)
 - [ ] `src/views/manage-files/index.tsx` (4 calls)
 
 ### Priority 4: Analyze & Maintenance (8 files)
+
 - [ ] `src/views/analyze/index.tsx`
 - [ ] `src/views/analyze/components/analyze-data-table.tsx`
 - [ ] `src/views/analyze/components/guest-activity.tsx`
@@ -47,6 +53,7 @@
 - [ ] `src/views/maintenance/pty/index.tsx`
 
 ### Priority 5: Extra Features (10 files)
+
 - [ ] `src/views/extra-features/webhook/index.tsx`
 - [ ] `src/views/extra-features/subscribe/index.tsx`
 - [ ] `src/views/extra-features/markdown-helper.tsx`
@@ -59,6 +66,7 @@
 - [ ] `src/views/extra-features/snippets/components/install-dep-xterm.tsx`
 
 ### Priority 6: Debug & Other (7 files)
+
 - [ ] `src/views/debug/events/index.tsx`
 - [ ] `src/views/debug/authn/index.tsx`
 - [ ] `src/views/debug/serverless/index.tsx`
@@ -69,6 +77,7 @@
 - [ ] `src/views/dashboard/update-panel.tsx`
 
 ### Components (9 files)
+
 - [ ] `src/components/ai/ai-helper.tsx`
 - [ ] `src/components/function-editor/index.tsx`
 - [ ] `src/components/ip-info/index.tsx`
@@ -80,6 +89,7 @@
 - [ ] `src/components/upload/index.tsx`
 
 ### Hooks & Utils (4 files)
+
 - [ ] `src/hooks/use-server-draft.ts`
 - [ ] `src/layouts/sidebar/index.tsx`
 - [ ] `src/utils/authjs/session.ts`
@@ -90,15 +100,17 @@
 ### Successful Patterns Applied
 
 1. **Import Replacement**:
+
    ```typescript
    // Old
-   import { RESTManager } from '~/utils/rest'
 
    // New
    import { xxxApi } from '~/api/xxx'
+   import { RESTManager } from '~/utils/rest'
    ```
 
 2. **GET Requests**:
+
    ```typescript
    // Old
    await RESTManager.api.posts($id).get()
@@ -108,6 +120,7 @@
    ```
 
 3. **POST/Create**:
+
    ```typescript
    // Old
    await RESTManager.api.posts.post({ data })
@@ -117,6 +130,7 @@
    ```
 
 4. **PUT/Update**:
+
    ```typescript
    // Old
    await RESTManager.api.posts($id).put({ data })
@@ -126,6 +140,7 @@
    ```
 
 5. **DELETE**:
+
    ```typescript
    // Old
    await RESTManager.api.posts($id).delete()
@@ -135,12 +150,14 @@
    ```
 
 6. **Endpoint Reference**:
+
    ```typescript
+   // New
+   import { API_URL } from '~/constants/env'
+
    // Old
    RESTManager.endpoint
 
-   // New
-   import { API_URL } from '~/constants/env'
    API_URL
    ```
 
@@ -155,6 +172,7 @@ To complete the remaining files, follow the same patterns above for each file ca
 5. Remove the `RESTManager` import
 
 Most remaining files will need these API modules:
+
 - `analyzeApi` (for analyze views)
 - `backupApi` (for backup/maintenance)
 - `webhooksApi`, `subscribeApi`, `snippetsApi` (for extra-features)

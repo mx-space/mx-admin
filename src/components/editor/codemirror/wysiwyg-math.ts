@@ -1,8 +1,9 @@
-import type { DecorationSet } from '@codemirror/view'
-import { Decoration, EditorView, WidgetType } from '@codemirror/view'
-import type { EditorState, Range } from '@codemirror/state'
-import { StateField } from '@codemirror/state'
 import katex from 'katex'
+import type { EditorState, Range } from '@codemirror/state'
+import type { DecorationSet } from '@codemirror/view'
+
+import { StateField } from '@codemirror/state'
+import { Decoration, EditorView, WidgetType } from '@codemirror/view'
 
 // Inline math widget
 class InlineMathWidget extends WidgetType {
@@ -191,10 +192,7 @@ const isCursorInRange = (
 }
 
 // Get entry position for block math
-const getBlockMathEntryPos = (
-  state: EditorState,
-  block: BlockMath,
-): number => {
+const getBlockMathEntryPos = (state: EditorState, block: BlockMath): number => {
   const lineNumber = Math.min(block.startLine + 1, block.endLine)
   return state.doc.line(lineNumber).from
 }

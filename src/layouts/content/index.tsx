@@ -97,11 +97,11 @@ export const ContentLayout = defineComponent({
     const hasContentPadding = computed(() => layout.contentPadding.value)
 
     return () => (
-      <div class="flex h-full flex-col bg-[var(--content-bg)] @container">
+      <div class="@container flex h-full flex-col bg-[var(--content-bg)]">
         {!shouldHideHeader.value && (
           <header
             class={[
-              'flex h-16 shrink-0 items-center justify-between px-2 @4xl:px-8',
+              '@4xl:px-8 flex h-16 shrink-0 items-center justify-between px-2',
               headerClassName.value,
             ]}
           >
