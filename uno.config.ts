@@ -1,3 +1,5 @@
+import presetTypography from '@unocss/preset-typography'
+
 import {
   defineConfig,
   presetAttributify,
@@ -7,7 +9,19 @@ import {
 } from 'unocss'
 
 export default defineConfig({
-  presets: [presetWind4(), presetAttributify()],
+  presets: [
+    presetWind4(),
+    presetAttributify(),
+    presetTypography({
+      cssExtend: {
+        // 自定义 prose 样式
+        p: {
+          'margin-top': '1.25em',
+          'margin-bottom': '1.25em',
+        },
+      },
+    }),
+  ],
   transformers: [transformerVariantGroup(), transformerDirectives()],
   theme: {
     colors: {

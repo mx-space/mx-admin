@@ -4,6 +4,7 @@ export interface Subscriber {
   id: string
   email: string
   subscribed: boolean
+  subscribe: number
   created: string
 }
 

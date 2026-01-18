@@ -6,7 +6,15 @@
 
 import { Settings as SettingsIcon } from 'lucide-vue-next'
 import { NCard, NElement, NForm, NModal } from 'naive-ui'
-import { computed, defineComponent, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
+import {
+  computed,
+  defineComponent,
+  nextTick,
+  onMounted,
+  onUnmounted,
+  ref,
+  watch,
+} from 'vue'
 import type { PropType, VNode } from 'vue'
 import type { EditorRef } from '../universal/types'
 
@@ -189,6 +197,7 @@ export const WriteEditor = defineComponent({
                 value={props.title}
                 onChange={props.onTitleChange}
                 placeholder={props.titlePlaceholder}
+                onArrowDown={() => cmRef.value?.focus()}
               />
 
               {/* 副标题/Slug 区域 */}
@@ -205,6 +214,7 @@ export const WriteEditor = defineComponent({
                 onChange={props.onChange}
                 unSaveConfirm={props.unSaveConfirm}
                 renderMode={resolvedRenderMode}
+                onArrowUpAtFirstLine={() => titleInputRef.value?.focus()}
               />
             </div>
           </div>

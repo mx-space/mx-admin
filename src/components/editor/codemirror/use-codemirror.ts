@@ -29,6 +29,7 @@ import { useCodeMirrorAutoToggleTheme } from './use-auto-theme'
 interface Props {
   initialDoc: string
   onChange?: (state: EditorState) => void
+  onArrowUpAtFirstLine?: () => void
 }
 
 export const useCodeMirror = <T extends Element>(
@@ -37,7 +38,7 @@ export const useCodeMirror = <T extends Element>(
   const refContainer = ref<T>()
   const editorView = ref<EditorView>()
   const { general } = useEditorConfig()
-  const { onChange } = props
+  const { onChange, onArrowUpAtFirstLine } = props
 
   const format = () => {
     const ev = editorView.value
@@ -101,9 +102,24 @@ export const useCodeMirror = <T extends Element>(
           },
           {
             key: 'Enter',
-            run() {
+            run(view) {
+              // In WYSIWYG mode, insert double newline for paragraph separation
+              if (general.setting.renderMode === 'wysiwyg') {
+                const { state } = view
+                const { from, to } = state.selection.main
+
+                // Insert two newlines (empty line + new line position)
+                view.dispatch({
+                  changes: { from, to, insert: '\n\n' },
+                  selection: { anchor: from + 2 },
+                })
+
+                requestAnimationFrame(format)
+                return true // Prevent default Enter behavior
+              }
+
               requestAnimationFrame(format)
-              return false
+              return false // Use default Enter behavior in plain mode
             },
           },
           {
@@ -112,6 +128,27 @@ export const useCodeMirror = <T extends Element>(
               general.setting.renderMode =
                 general.setting.renderMode === 'wysiwyg' ? 'plain' : 'wysiwyg'
               return true
+            },
+          },
+          {
+            key: 'ArrowUp',
+            run(view) {
+              // In WYSIWYG mode, if cursor is at first line, jump to title input
+              if (
+                general.setting.renderMode === 'wysiwyg' &&
+                onArrowUpAtFirstLine
+              ) {
+                const { state } = view
+                const cursorPos = state.selection.main.head
+                const firstLine = state.doc.line(1)
+
+                // Check if cursor is on the first line
+                if (cursorPos <= firstLine.to) {
+                  onArrowUpAtFirstLine()
+                  return true
+                }
+              }
+              return false // Use default ArrowUp behavior
             },
           },
         ]),

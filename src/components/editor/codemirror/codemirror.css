@@ -10,6 +10,7 @@
   }
 
   .cm-editor {
+
     .cm-gutters,
     .cm-activeLineGutter,
     .cm-activeLine {
@@ -28,6 +29,7 @@
 
   /* WYSIWYG Mode Styles */
   &.cm-wysiwyg-mode {
+
     /* Hide line numbers and gutters */
     & .cm-gutters {
       display: none !important;
@@ -54,15 +56,15 @@
       color: inherit !important;
     }
 
-    /* Typography optimization */
+    /* Typography optimization - prose style */
     & .cm-content {
-      max-width: var(--wysiwyg-content-width, 48rem);
+      max-width: var(--wysiwyg-content-width, 65ch);
       margin: 0 auto;
       font-family: 'Noto Serif SC', 'Source Han Serif SC', 'Source Han Serif',
         'Noto Serif CJK SC', Georgia, 'Times New Roman', serif;
-      font-size: 1.0625rem;
-      line-height: 1.8;
-      letter-spacing: 0.02em;
+      font-size: 1rem;
+      line-height: 1.75;
+      letter-spacing: 0.01em;
     }
 
     /* Remove active line highlight in WYSIWYG mode for cleaner look */
@@ -74,31 +76,48 @@
       background-color: transparent !important;
     }
 
-    /* Paragraph spacing */
+    /* Paragraph spacing - prose style (1.25em between paragraphs) */
     & .cm-line {
-      margin-bottom: 0.25em;
+      margin-bottom: 1.25em;
     }
 
-    /* Empty lines for paragraph breaks */
+    /* First paragraph top margin */
+    & .cm-line:first-child {
+      margin-top: 36px;
+    }
+
+    /* Hide paragraph separator empty lines (applied via decoration) */
+    & .cm-wysiwyg-hidden-empty-line {
+      height: 0 !important;
+      min-height: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: hidden;
+      display: contents;
+    }
+
+    & img.cm-widgetBuffer {
+      display: contents;
+    }
+
+    /* Visible empty lines (user-created extra spacing) */
+    & .cm-line:has(> br:only-child),
     & .cm-line:empty {
       min-height: 1em;
+      margin-bottom: 0;
     }
 
     /* Selection style */
     & .cm-selectionBackground {
-      background-color: color-mix(
-        in srgb,
-        var(--primary-default) 20%,
-        transparent
-      ) !important;
+      background-color: color-mix(in srgb,
+          var(--primary-default) 20%,
+          transparent) !important;
     }
 
     &.cm-focused .cm-selectionBackground {
-      background-color: color-mix(
-        in srgb,
-        var(--primary-default) 30%,
-        transparent
-      ) !important;
+      background-color: color-mix(in srgb,
+          var(--primary-default) 30%,
+          transparent) !important;
     }
 
     /* Cursor style */
@@ -180,7 +199,6 @@
     & .cm-wysiwyg-image-wrapper {
       display: block;
       text-align: center;
-      margin: 1.5em 0;
     }
 
     & .cm-wysiwyg-image {

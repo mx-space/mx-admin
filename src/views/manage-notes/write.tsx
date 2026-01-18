@@ -24,11 +24,13 @@ import {
   toRaw,
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { PaginateResult } from '@mx-space/api-client'
+import type { CreateNoteData } from '~/api/notes'
 import type { Coordinate, NoteModel } from '~/models/note'
 import type { TopicModel } from '~/models/topic'
 import type { WriteBaseType } from '~/shared/types/base'
 
+import { notesApi } from '~/api/notes'
+import { topicsApi } from '~/api/topics'
 import { AiHelperButton } from '~/components/ai/ai-helper'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import {
@@ -45,12 +47,10 @@ import { ParseContentButton } from '~/components/special-button/parse-content'
 import { HeaderPreviewButton } from '~/components/special-button/preview'
 import { WEB_URL } from '~/constants/env'
 import { MOOD_SET, WEATHER_SET } from '~/constants/note'
-import { useServerDraft } from '~/hooks/use-server-draft'
-import { DraftRefType } from '~/models/draft'
-import { notesApi, type CreateNoteData } from '~/api/notes'
-import { topicsApi } from '~/api/topics'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
+import { useServerDraft } from '~/hooks/use-server-draft'
 import { useLayout } from '~/layouts/content'
+import { DraftRefType } from '~/models/draft'
 import { RouteName } from '~/router/name'
 import { getDayOfYear } from '~/utils/time'
 
@@ -133,6 +133,8 @@ const NoteWriteView = defineComponent(() => {
 
   const loading = computed(() => !!(id.value && typeof data.id === 'undefined'))
 
+  const router = useRouter()
+
   // 服务端草稿 hook
   const serverDraft = useServerDraft(DraftRefType.Note, {
     refId: id.value as string | undefined,
@@ -155,11 +157,17 @@ const NoteWriteView = defineComponent(() => {
         isPublished: data.isPublished,
       },
     }),
+    // 草稿首次创建后更新 URL
+    onDraftCreated: (draftId) => {
+      router.replace({ query: { draftId } })
+    },
+    // title 为空使用默认值时同步 UI
+    onTitleFallback: (defaultTitle) => {
+      data.title = defaultTitle
+    },
   })
 
   const draftInitialized = ref(false)
-
-  const router = useRouter()
 
   onMounted(async () => {
     const $id = id.value
@@ -269,11 +277,8 @@ const NoteWriteView = defineComponent(() => {
         content: `你有 ${pendingDrafts.length} 个未完成的手记草稿，是否继续编辑？`,
         negativeText: '创建新草稿',
         positiveText: '继续编辑',
-        async onNegativeClick() {
-          const newDraft = await serverDraft.createDraft()
-          if (newDraft) {
-            router.replace({ query: { draftId: newDraft.id } })
-          }
+        onNegativeClick() {
+          // 开始新草稿，不立即创建，等用户输入内容后自动保存时创建
           serverDraft.startAutoSave()
         },
         onPositiveClick() {
@@ -282,10 +287,8 @@ const NoteWriteView = defineComponent(() => {
         },
       })
     } else {
-      const newDraft = await serverDraft.createDraft()
-      if (newDraft) {
-        router.replace({ query: { draftId: newDraft.id } })
-      }
+      // 没有未完成草稿，直接启动自动保存
+      // 草稿会在用户输入内容后自动创建
       serverDraft.startAutoSave()
     }
 

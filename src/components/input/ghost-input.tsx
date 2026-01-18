@@ -1,4 +1,5 @@
 import { defineComponent, onMounted, ref } from 'vue'
+import type { PropType } from 'vue'
 
 import { inputBaseProps } from './base'
 
@@ -6,6 +7,9 @@ export const GhostInput = defineComponent({
   name: 'GhostInput',
   props: {
     ...inputBaseProps,
+    onArrowDown: {
+      type: Function as PropType<() => void>,
+    },
   },
   emits: ['compositionend', 'compositionstart'],
   setup(props, { emit, expose }) {
@@ -30,6 +34,13 @@ export const GhostInput = defineComponent({
       },
     })
 
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowDown' && props.onArrowDown) {
+        e.preventDefault()
+        props.onArrowDown()
+      }
+    }
+
     return () => (
       <input
         ref={inputRef}
@@ -37,6 +48,7 @@ export const GhostInput = defineComponent({
         value={props.value}
         placeholder={props.placeholder}
         onInput={(e) => props.onChange((e.target as any).value)}
+        onKeydown={handleKeyDown}
         class={[
           'w-full bg-transparent outline-none',
           'text-2xl font-semibold',

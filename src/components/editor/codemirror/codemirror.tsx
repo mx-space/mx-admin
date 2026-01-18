@@ -21,6 +21,7 @@ import { useCodeMirror } from './use-codemirror'
 import { blockquoteWysiwygExtension } from './wysiwyg-blockquote'
 import { codeBlockWysiwygExtension } from './wysiwyg-codeblock'
 import { dividerWysiwygExtension } from './wysiwyg-divider'
+import { emptyLineWysiwygExtension } from './wysiwyg-empty-line'
 import { headingWysiwygExtension } from './wysiwyg-heading'
 import { inlineWysiwygExtension } from './wysiwyg-inline'
 import { listWysiwygExtension } from './wysiwyg-list'
@@ -34,6 +35,10 @@ export const CodemirrorEditor = defineComponent({
       type: Function as PropType<(state: EditorState) => void>,
       required: false,
     },
+    onArrowUpAtFirstLine: {
+      type: Function as PropType<() => void>,
+      required: false,
+    },
     className: {
       type: String,
     },
@@ -45,6 +50,7 @@ export const CodemirrorEditor = defineComponent({
         props.onChange(state.doc.toString())
         props.onStateChange?.(state)
       },
+      onArrowUpAtFirstLine: props.onArrowUpAtFirstLine,
     })
 
     watch(
@@ -77,6 +83,7 @@ export const CodemirrorEditor = defineComponent({
               ...listWysiwygExtension,
               ...blockquoteWysiwygExtension,
               ...mathWysiwygExtension,
+              ...emptyLineWysiwygExtension,
             ]
           : []
 
@@ -123,8 +130,31 @@ export const CodemirrorEditor = defineComponent({
     // 浮动工具栏选区位置追踪
     const { position, hasSelection } = useSelectionPosition(editorView)
 
+    // 点击空白区域聚焦编辑器并将光标移到末尾 (WYSIWYG 模式)
+    const handleContainerPointerDown = (e: PointerEvent) => {
+      const view = editorView.value
+      if (!view) return
+
+      const isWysiwyg = (props.renderMode ?? 'plain') === 'wysiwyg'
+      if (!isWysiwyg) return
+
+      // 检查点击目标是否在 cm-content 内部
+      const target = e.target as HTMLElement
+      if (target.closest('.cm-content')) return
+
+      // 点击的是空白区域，聚焦编辑器并将光标移到文档末尾
+      e.preventDefault()
+      view.focus()
+      view.dispatch({
+        selection: { anchor: view.state.doc.length },
+      })
+    }
+
     return () => (
-      <div class="relative flex h-full flex-col">
+      <div
+        class="relative flex h-full flex-col"
+        onPointerdown={handleContainerPointerDown}
+      >
         <div
           class={[styles.editor, props.className, 'flex-1 overflow-auto']}
           ref={refContainer}

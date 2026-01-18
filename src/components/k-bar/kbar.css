@@ -1,0 +1,267 @@
+/* KBar Command Palette Styles - Web Interface Guidelines Compliant */
+
+/* Positioner: backdrop with blur */
+.kbar-positioner {
+  z-index: 9999;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  overscroll-behavior: contain;
+  touch-action: manipulation;
+}
+
+/* Animator: main dialog container */
+.kbar-animator {
+  width: 560px;
+  max-width: calc(100vw - 32px);
+  overflow: hidden;
+  border-radius: 12px;
+  background-color: #fff;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.06),
+    0 16px 48px rgba(0, 0, 0, 0.12),
+    0 24px 64px rgba(0, 0, 0, 0.08);
+}
+
+html.dark .kbar-animator {
+  background-color: #1a1a1a;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 16px 48px rgba(0, 0, 0, 0.5),
+    0 24px 64px rgba(0, 0, 0, 0.4);
+}
+
+/* Search container */
+.kbar-search-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+html.dark .kbar-search-container {
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+/* Search icon */
+.kbar-search-icon {
+  flex-shrink: 0;
+  color: #a3a3a3;
+}
+
+html.dark .kbar-search-icon {
+  color: #666;
+}
+
+/* Search input */
+.kbar-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #171717;
+  outline: none;
+}
+
+.kbar-search-input::placeholder {
+  color: #a3a3a3;
+}
+
+html.dark .kbar-search-input {
+  color: #fafafa;
+}
+
+html.dark .kbar-search-input::placeholder {
+  color: #666;
+}
+
+/* Keyboard shortcut hint */
+.kbar-shortcut {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 4px;
+  background-color: #f5f5f5;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  color: #666;
+}
+
+html.dark .kbar-shortcut {
+  background-color: #2a2a2a;
+  border-color: rgba(255, 255, 255, 0.06);
+  color: #888;
+}
+
+
+/* Empty state */
+.kbar-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px 16px;
+  color: #a3a3a3;
+  font-size: 14px;
+}
+
+.kbar-empty-icon {
+  color: #d4d4d4;
+}
+
+html.dark .kbar-empty-state {
+  color: #666;
+}
+
+html.dark .kbar-empty-icon {
+  color: #404040;
+}
+
+/* Results list */
+.kbar-results {
+  max-height: 360px;
+  padding: 8px;
+}
+
+/* Group label */
+.kbar-group-label {
+  padding: 8px 12px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #a3a3a3;
+}
+
+html.dark .kbar-group-label {
+  color: #666;
+}
+
+/* Result item */
+.kbar-result-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition-property: background-color;
+  transition-duration: 100ms;
+  transition-timing-function: ease-out;
+}
+
+.kbar-result-item:hover,
+.kbar-result-item.active {
+  background-color: #f5f5f5;
+}
+
+html.dark .kbar-result-item:hover,
+html.dark .kbar-result-item.active {
+  background-color: #262626;
+}
+
+/* Result icon */
+.kbar-result-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background-color: #f5f5f5;
+  color: #666;
+}
+
+html.dark .kbar-result-icon {
+  background-color: #2a2a2a;
+  color: #888;
+}
+
+.kbar-result-item.active .kbar-result-icon {
+  background-color: #171717;
+  color: #fff;
+}
+
+html.dark .kbar-result-item.active .kbar-result-icon {
+  background-color: #fafafa;
+  color: #171717;
+}
+
+/* Result content */
+.kbar-result-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.kbar-result-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #171717;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+html.dark .kbar-result-name {
+  color: #fafafa;
+}
+
+.kbar-result-subtitle {
+  font-size: 12px;
+  color: #a3a3a3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+html.dark .kbar-result-subtitle {
+  color: #666;
+}
+
+/* Result hint (enter key) */
+.kbar-result-hint {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background-color: #e5e5e5;
+  color: #525252;
+}
+
+html.dark .kbar-result-hint {
+  background-color: #404040;
+  color: #a3a3a3;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .kbar-result-item {
+    transition: none;
+  }
+}
+
+/* Focus visible for keyboard navigation */
+.kbar-result-item:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: -2px;
+}
+
+html.dark .kbar-result-item:focus-visible {
+  outline-color: #60a5fa;
+}

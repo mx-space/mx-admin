@@ -13,11 +13,13 @@ import {
 } from 'naive-ui'
 import { computed, defineComponent, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { CategoryModel, TagModel } from '~/models/category'
+import type { CategoryModel } from '~/models/category'
 import type { PostModel } from '~/models/post'
 import type { WriteBaseType } from '~/shared/types/base'
 import type { SelectMixedOption } from 'naive-ui/lib/select/src/interface'
 
+import { categoriesApi } from '~/api/categories'
+import { postsApi } from '~/api/posts'
 import { AiHelperButton } from '~/components/ai/ai-helper'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import {
@@ -31,13 +33,11 @@ import { SlugInput } from '~/components/editor/write-editor/slug-input'
 import { ParseContentButton } from '~/components/special-button/parse-content'
 import { HeaderPreviewButton } from '~/components/special-button/preview'
 import { WEB_URL } from '~/constants/env'
-import { useServerDraft } from '~/hooks/use-server-draft'
-import { DraftRefType } from '~/models/draft'
-import { postsApi } from '~/api/posts'
-import { categoriesApi } from '~/api/categories'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
+import { useServerDraft } from '~/hooks/use-server-draft'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { useLayout } from '~/layouts/content'
+import { DraftRefType } from '~/models/draft'
 import { RouteName } from '~/router/name'
 import { CategoryStore } from '~/stores/category'
 
@@ -101,6 +101,8 @@ const PostWriteView = defineComponent(() => {
 
   const loading = computed(() => !!(id.value && typeof data.id === 'undefined'))
 
+  const router = useRouter()
+
   // 服务端草稿 hook
   const serverDraft = useServerDraft(DraftRefType.Post, {
     refId: id.value,
@@ -123,6 +125,14 @@ const PostWriteView = defineComponent(() => {
         isPublished: data.isPublished,
       },
     }),
+    // 草稿首次创建后更新 URL
+    onDraftCreated: (draftId) => {
+      router.replace({ query: { draftId } })
+    },
+    // title 为空使用默认值时同步 UI
+    onTitleFallback: (defaultTitle) => {
+      data.title = defaultTitle
+    },
   })
 
   const draftInitialized = ref(false)
@@ -238,12 +248,8 @@ const PostWriteView = defineComponent(() => {
         content: `你有 ${pendingDrafts.length} 个未完成的文章草稿，是否继续编辑？`,
         negativeText: '创建新草稿',
         positiveText: '查看草稿列表',
-        async onNegativeClick() {
-          // 创建新草稿
-          const newDraft = await serverDraft.createDraft()
-          if (newDraft) {
-            router.replace({ query: { draftId: newDraft.id } })
-          }
+        onNegativeClick() {
+          // 开始新草稿，不立即创建，等用户输入内容后自动保存时创建
           serverDraft.startAutoSave()
         },
         onPositiveClick() {
@@ -253,11 +259,8 @@ const PostWriteView = defineComponent(() => {
         },
       })
     } else {
-      // 没有未完成草稿，创建新草稿
-      const newDraft = await serverDraft.createDraft()
-      if (newDraft) {
-        router.replace({ query: { draftId: newDraft.id } })
-      }
+      // 没有未完成草稿，直接启动自动保存
+      // 草稿会在用户输入内容后自动创建
       serverDraft.startAutoSave()
     }
 
@@ -267,7 +270,6 @@ const PostWriteView = defineComponent(() => {
   const drawerShow = ref(false)
 
   const message = useMessage()
-  const router = useRouter()
 
   const handleSubmit = async () => {
     const payload = {

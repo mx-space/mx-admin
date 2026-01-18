@@ -1,11 +1,7 @@
-import { computed, onUnmounted, ref } from 'vue'
 import { throttle } from 'es-toolkit/compat'
+import { computed, onUnmounted, ref } from 'vue'
+import type { DraftModel, DraftRefType, TypeSpecificData } from '~/models/draft'
 
-import type {
-  DraftModel,
-  DraftRefType,
-  TypeSpecificData,
-} from '~/models/draft'
 import { draftsApi } from '~/api'
 
 export interface DraftData {
@@ -27,9 +23,19 @@ export const useServerDraft = (
     interval?: number
     /** 获取当前数据的函数 */
     getData: () => DraftData
+    /** 草稿首次创建时的回调（用于更新 URL） */
+    onDraftCreated?: (draftId: string) => void
+    /** title 为空使用默认值时的回调（用于同步 UI） */
+    onTitleFallback?: (defaultTitle: string) => void
   },
 ) => {
-  const { refId, interval = 10000, getData } = options
+  const {
+    refId,
+    interval = 10000,
+    getData,
+    onDraftCreated,
+    onTitleFallback,
+  } = options
 
   const draftId = ref<string | undefined>(options.draftId)
   const lastSavedVersion = ref(0)
@@ -55,10 +61,18 @@ export const useServerDraft = (
   const doSave = async () => {
     const data = getData()
 
+    // 没有任何内容时不保存
     if (!data.text && !data.title) return
     if (!hasChanges(data)) {
       hasUnsavedChanges.value = false
       return
+    }
+
+    // 兜底：title 为空时使用默认值，并同步 UI
+    let title = data.title?.trim()
+    if (!title) {
+      title = 'Untitled'
+      onTitleFallback?.(title)
     }
 
     isSaving.value = true
@@ -68,7 +82,7 @@ export const useServerDraft = (
       if (draftId.value) {
         // 更新现有草稿
         response = await draftsApi.update(draftId.value, {
-          title: data.title,
+          title,
           text: data.text,
           images: data.images,
           meta: data.meta,
@@ -79,13 +93,15 @@ export const useServerDraft = (
         response = await draftsApi.create({
           refType,
           refId,
-          title: data.title,
+          title,
           text: data.text,
           images: data.images,
           meta: data.meta,
           typeSpecificData: data.typeSpecificData,
         })
         draftId.value = response.id
+        // 通知调用方草稿已创建（用于更新 URL）
+        onDraftCreated?.(response.id)
       }
 
       memoPreviousData = { ...data }
@@ -159,13 +175,15 @@ export const useServerDraft = (
     }
   }
 
-  // 创建新草稿
-  const createDraft = async (): Promise<DraftModel | null> => {
+  // 创建新草稿（仅用于需要立即获取 draftId 的场景）
+  const createDraft = async (
+    initialTitle?: string,
+  ): Promise<DraftModel | null> => {
     try {
       const response = await draftsApi.create({
         refType,
         refId,
-        title: '',
+        title: initialTitle?.trim() || 'Untitled',
         text: '',
         typeSpecificData: {},
       })

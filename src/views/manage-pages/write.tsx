@@ -5,18 +5,13 @@ import {
   Send as TelegramPlaneIcon,
 } from 'lucide-vue-next'
 import { NInputNumber, useMessage } from 'naive-ui'
-import {
-  computed,
-  defineComponent,
-  onMounted,
-  reactive,
-  ref,
-  toRaw,
-} from 'vue'
+import { computed, defineComponent, onMounted, reactive, ref, toRaw } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import type { CreatePageData } from '~/api/pages'
 import type { PageModel } from '~/models/page'
 import type { WriteBaseType } from '~/shared/types/base'
 
+import { pagesApi } from '~/api/pages'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import {
   FormField,
@@ -28,11 +23,10 @@ import { SlugInput } from '~/components/editor/write-editor/slug-input'
 import { ParseContentButton } from '~/components/special-button/parse-content'
 import { HeaderPreviewButton } from '~/components/special-button/preview'
 import { WEB_URL } from '~/constants/env'
-import { useServerDraft } from '~/hooks/use-server-draft'
-import { DraftRefType } from '~/models/draft'
-import { pagesApi, type CreatePageData } from '~/api/pages'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
+import { useServerDraft } from '~/hooks/use-server-draft'
 import { useLayout } from '~/layouts/content'
+import { DraftRefType } from '~/models/draft'
 import { RouteName } from '~/router/name'
 
 type PageReactiveType = WriteBaseType & {
@@ -90,6 +84,14 @@ const PageWriteView = defineComponent(() => {
         order: data.order,
       },
     }),
+    // 草稿首次创建后更新 URL
+    onDraftCreated: (draftId) => {
+      router.replace({ query: { draftId } })
+    },
+    // title 为空使用默认值时同步 UI
+    onTitleFallback: (defaultTitle) => {
+      data.title = defaultTitle
+    },
   })
 
   const draftInitialized = ref(false)
@@ -173,11 +175,8 @@ const PageWriteView = defineComponent(() => {
         content: `你有 ${pendingDrafts.length} 个未完成的页面草稿，是否继续编辑？`,
         negativeText: '创建新草稿',
         positiveText: '继续编辑',
-        async onNegativeClick() {
-          const newDraft = await serverDraft.createDraft()
-          if (newDraft) {
-            router.replace({ query: { draftId: newDraft.id } })
-          }
+        onNegativeClick() {
+          // 开始新草稿，不立即创建，等用户输入内容后自动保存时创建
           serverDraft.startAutoSave()
         },
         onPositiveClick() {
@@ -186,10 +185,8 @@ const PageWriteView = defineComponent(() => {
         },
       })
     } else {
-      const newDraft = await serverDraft.createDraft()
-      if (newDraft) {
-        router.replace({ query: { draftId: newDraft.id } })
-      }
+      // 没有未完成草稿，直接启动自动保存
+      // 草稿会在用户输入内容后自动创建
       serverDraft.startAutoSave()
     }
 
