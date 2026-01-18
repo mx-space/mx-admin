@@ -1,5 +1,4 @@
 import './monaco'
-import 'reflect-metadata'
 import 'virtual:uno.css'
 
 import { createApp } from 'vue'

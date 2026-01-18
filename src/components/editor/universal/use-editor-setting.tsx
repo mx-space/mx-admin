@@ -1,8 +1,15 @@
-import { NFormItem, NH5, NInput, NInputNumber, NSwitch } from 'naive-ui'
+import {
+  NFormItem,
+  NH5,
+  NInput,
+  NInputNumber,
+  NSelect,
+  NSwitch,
+} from 'naive-ui'
 
 import { useStorageObject } from '~/hooks/use-storage'
 
-import { GeneralSettingDto } from './editor-config'
+import { GeneralSettingSchema } from './editor-config'
 import { ResetIconButton } from './reset-icon-button'
 
 const StorageKeys = {
@@ -14,7 +21,7 @@ export const useEditorConfig = () => {
     storage: generalSetting,
     reset: resetGeneralSetting,
     destory: generalDestory,
-  } = useStorageObject(GeneralSettingDto, StorageKeys.general)
+  } = useStorageObject(GeneralSettingSchema, StorageKeys.general)
 
   const destory = () => {
     generalDestory()
@@ -44,6 +51,19 @@ export const useEditorConfig = () => {
           <NSwitch
             value={generalSetting.autocorrect}
             onUpdateValue={(e) => void (generalSetting.autocorrect = e)}
+          />
+        </NFormItem>
+        <NFormItem label="渲染模式">
+          <NSelect
+            value={generalSetting.renderMode}
+            to="body"
+            onUpdateValue={(e) =>
+              void (generalSetting.renderMode = e as 'plain' | 'wysiwyg')
+            }
+            options={[
+              { label: '普通模式', value: 'plain' },
+              { label: '所见即所得', value: 'wysiwyg' },
+            ]}
           />
         </NFormItem>
       </Fragment>

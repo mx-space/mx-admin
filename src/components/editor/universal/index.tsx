@@ -96,6 +96,8 @@ export const Editor = defineComponent({
 
     return () => {
       const { setting: generalSetting } = general
+      const resolvedRenderMode =
+        props.renderMode ?? generalSetting.renderMode ?? 'plain'
       return (
         <NElement
           tag="div"
@@ -109,7 +111,11 @@ export const Editor = defineComponent({
           }
           class={'editor-wrapper'}
         >
-          <CodemirrorEditor ref={cmRef} {...props} />
+          <CodemirrorEditor
+            ref={cmRef}
+            {...props}
+            renderMode={resolvedRenderMode}
+          />
           <Modal />
         </NElement>
       )

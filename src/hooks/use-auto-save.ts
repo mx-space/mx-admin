@@ -1,19 +1,17 @@
-import { IsISO8601, IsString } from 'class-validator'
 import { toRaw } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
+import { z } from 'zod'
 
 import { useStorageObject } from './use-storage'
 
-class SaveDto {
-  @IsISO8601()
-  savedTime!: string
+const SaveSchema = z.object({
+  savedTime: z.string().default(''),
+  text: z.string().default(''),
+  title: z.string().default(''),
+})
 
-  @IsString()
-  text!: string
+type SaveDto = z.infer<typeof SaveSchema>
 
-  @IsString()
-  title!: string
-}
 // TODO
 export const useAutoSave = (
   cacheKey: string,
@@ -23,7 +21,7 @@ export const useAutoSave = (
   let timer: any
   const key = `auto-save-${cacheKey}`
   const { storage, reset, clear, destory } = useStorageObject(
-    SaveDto,
+    SaveSchema,
     key,
     false,
   )

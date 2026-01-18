@@ -25,4 +25,463 @@
   & .cm-gutter {
     @apply !min-w-[3rem];
   }
+
+  /* WYSIWYG Mode Styles */
+  &.cm-wysiwyg-mode {
+    /* Hide line numbers and gutters */
+    & .cm-gutters {
+      display: none !important;
+    }
+
+    /* Override theme colors - use inherit for natural text color */
+    color: inherit !important;
+
+    & .cm-scroller {
+      color: inherit !important;
+    }
+
+    & .cm-content {
+      color: inherit !important;
+      caret-color: currentColor !important;
+    }
+
+    & .cm-line {
+      color: inherit !important;
+    }
+
+    /* Reset all syntax highlighting colors in WYSIWYG mode */
+    & .cm-line * {
+      color: inherit !important;
+    }
+
+    /* Typography optimization */
+    & .cm-content {
+      max-width: var(--wysiwyg-content-width, 48rem);
+      margin: 0 auto;
+      font-family: 'Noto Serif SC', 'Source Han Serif SC', 'Source Han Serif',
+        'Noto Serif CJK SC', Georgia, 'Times New Roman', serif;
+      font-size: 1.0625rem;
+      line-height: 1.8;
+      letter-spacing: 0.02em;
+    }
+
+    /* Remove active line highlight in WYSIWYG mode for cleaner look */
+    & .cm-activeLine {
+      background-color: transparent !important;
+    }
+
+    & .cm-activeLineGutter {
+      background-color: transparent !important;
+    }
+
+    /* Paragraph spacing */
+    & .cm-line {
+      margin-bottom: 0.25em;
+    }
+
+    /* Empty lines for paragraph breaks */
+    & .cm-line:empty {
+      min-height: 1em;
+    }
+
+    /* Selection style */
+    & .cm-selectionBackground {
+      background-color: color-mix(
+        in srgb,
+        var(--primary-default) 20%,
+        transparent
+      ) !important;
+    }
+
+    &.cm-focused .cm-selectionBackground {
+      background-color: color-mix(
+        in srgb,
+        var(--primary-default) 30%,
+        transparent
+      ) !important;
+    }
+
+    /* Cursor style */
+    & .cm-cursor {
+      border-left-width: 2px;
+      border-color: currentColor !important;
+    }
+
+    /* Enhanced heading styles for article typography */
+    /* Page title is text-2xl (1.5rem = 24px), so article headings should be smaller */
+    & .cm-wysiwyg-heading {
+      font-family:
+        'Noto Sans SC',
+        'Source Han Sans SC',
+        'Source Han Sans',
+        'Noto Sans CJK SC',
+        -apple-system,
+        BlinkMacSystemFont,
+        'Segoe UI',
+        Roboto,
+        sans-serif;
+    }
+
+    & .cm-wysiwyg-heading-1 {
+      font-size: 1.375rem;
+      margin-top: 1.5em;
+      margin-bottom: 0.5em;
+    }
+
+    & .cm-wysiwyg-heading-2 {
+      font-size: 1.25rem;
+      margin-top: 1.25em;
+      margin-bottom: 0.4em;
+    }
+
+    & .cm-wysiwyg-heading-3 {
+      font-size: 1.125rem;
+      margin-top: 1em;
+      margin-bottom: 0.35em;
+    }
+
+    & .cm-wysiwyg-heading-4 {
+      font-size: 1rem;
+      margin-top: 0.875em;
+      margin-bottom: 0.3em;
+    }
+
+    /* Enhanced divider for article */
+    & .cm-wysiwyg-divider {
+      margin: 2em 0;
+      opacity: 0.4;
+    }
+
+    /* Enhanced blockquote for article */
+    & .cm-wysiwyg-blockquote-line {
+      margin: 0.5em 0;
+      padding-left: 1.25em;
+      border-left-width: 4px;
+      border-color: color-mix(in srgb, var(--primary-default) 60%, transparent);
+    }
+
+    /* Enhanced code block for article */
+    & .cm-wysiwyg-codeblock {
+      margin: 1.5em 0;
+      border-radius: 0.625rem;
+    }
+
+    & .cm-wysiwyg-codeblock-content {
+      font-size: 0.875em;
+      line-height: 1.6;
+    }
+
+    /* Enhanced list styles for article */
+    & .cm-wysiwyg-list-marker {
+      opacity: 0.9;
+    }
+
+    /* Enhanced image for article */
+    & .cm-wysiwyg-image-wrapper {
+      display: block;
+      text-align: center;
+      margin: 1.5em 0;
+    }
+
+    & .cm-wysiwyg-image {
+      max-height: 400px;
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Enhanced math block for article */
+    & .cm-wysiwyg-math-block {
+      margin: 1.5em 0;
+    }
+
+    /* Enhanced inline code for article */
+    & .cm-wysiwyg-inline-code {
+      font-size: 0.875em;
+      padding: 0.15em 0.4em;
+      border-radius: 0.3rem;
+    }
+  }
+
+  .cm-wysiwyg-divider {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 0;
+    opacity: 0.6;
+  }
+
+  .cm-wysiwyg-divider hr {
+    border: 0;
+    border-top: 1px solid currentColor;
+    margin: 0;
+  }
+
+  /* Heading WYSIWYG styles */
+  .cm-wysiwyg-heading-marker {
+    display: none;
+  }
+
+  .cm-wysiwyg-heading {
+    font-weight: 600;
+  }
+
+  .cm-wysiwyg-heading-1 {
+    font-size: 2em;
+    line-height: 1.3;
+  }
+
+  .cm-wysiwyg-heading-2 {
+    font-size: 1.5em;
+    line-height: 1.35;
+  }
+
+  .cm-wysiwyg-heading-3 {
+    font-size: 1.25em;
+    line-height: 1.4;
+  }
+
+  .cm-wysiwyg-heading-4 {
+    font-size: 1.125em;
+    line-height: 1.45;
+  }
+
+  .cm-wysiwyg-heading-5 {
+    font-size: 1em;
+    line-height: 1.5;
+  }
+
+  .cm-wysiwyg-heading-6 {
+    font-size: 0.875em;
+    line-height: 1.5;
+    opacity: 0.85;
+  }
+
+  /* Inline WYSIWYG styles */
+  .cm-wysiwyg-hidden-marker {
+    display: none;
+  }
+
+  .cm-wysiwyg-bold {
+    font-weight: 700;
+  }
+
+  .cm-wysiwyg-italic {
+    font-style: italic;
+  }
+
+  .cm-wysiwyg-strikethrough {
+    text-decoration: line-through;
+    opacity: 0.7;
+  }
+
+  .cm-wysiwyg-link {
+    color: var(--primary-default);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .cm-wysiwyg-link-url {
+    display: none;
+  }
+
+  /* Inline code styles */
+  .cm-wysiwyg-inline-code {
+    font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+      'Liberation Mono', monospace;
+    font-size: 0.9em;
+    padding: 0.125em 0.375em;
+    border-radius: 0.25rem;
+    background-color: color-mix(in srgb, currentColor 10%, transparent);
+  }
+
+  /* Image styles */
+  .cm-wysiwyg-image-wrapper {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .cm-wysiwyg-image {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 0.375rem;
+    object-fit: contain;
+  }
+
+  /* Code block styles - editing mode */
+  .cm-wysiwyg-codeblock-line {
+    font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+      'Liberation Mono', monospace;
+    font-size: 0.9em;
+    background-color: color-mix(in srgb, currentColor 5%, transparent);
+  }
+
+  .cm-wysiwyg-codeblock-editing {
+    background-color: color-mix(in srgb, currentColor 8%, transparent);
+  }
+
+  /* Code block widget - display mode */
+  .cm-wysiwyg-codeblock {
+    display: block;
+    margin: 0.5rem 0;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background-color: color-mix(in srgb, currentColor 5%, transparent);
+  }
+
+  .cm-wysiwyg-codeblock-lang {
+    display: block;
+    font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+      'Liberation Mono', monospace;
+    font-size: 0.75em;
+    padding: 0.375rem 0.75rem;
+    background-color: color-mix(in srgb, currentColor 8%, transparent);
+    color: currentColor;
+    opacity: 0.7;
+    border-bottom: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+  }
+
+  .cm-wysiwyg-codeblock-content {
+    font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+      'Liberation Mono', monospace;
+    font-size: 0.9em;
+    padding: 0.75rem;
+    overflow-x: auto;
+    white-space: pre;
+    line-height: 1.5;
+  }
+
+  .cm-wysiwyg-codeblock-content .line {
+    display: block;
+  }
+
+  /* List styles */
+  .cm-wysiwyg-list-marker {
+    display: inline-block;
+    color: var(--primary-default, currentColor);
+    opacity: 0.8;
+  }
+
+  .cm-wysiwyg-ul-marker {
+    font-size: 0.8em;
+  }
+
+  .cm-wysiwyg-ol-marker {
+    font-variant-numeric: tabular-nums;
+    min-width: 1.5em;
+  }
+
+  .cm-wysiwyg-checkbox {
+    display: inline-block;
+    font-size: 1em;
+    line-height: 1;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+  }
+
+  .cm-wysiwyg-checkbox:hover {
+    transform: scale(1.1);
+  }
+
+  .cm-wysiwyg-checkbox:active {
+    transform: scale(0.95);
+  }
+
+  .cm-wysiwyg-checkbox-checked {
+    color: var(--primary-default);
+  }
+
+  /* Highlight styles */
+  .cm-wysiwyg-highlight {
+    background-color: rgba(255, 235, 59, 0.4);
+    border-radius: 0.125rem;
+    padding: 0 0.125em;
+  }
+
+  :root.dark .cm-wysiwyg-highlight {
+    background-color: rgba(255, 235, 59, 0.25);
+  }
+
+  /* Blockquote styles */
+  .cm-wysiwyg-blockquote-marker {
+    display: inline-block;
+    width: 0;
+  }
+
+  .cm-wysiwyg-blockquote-line {
+    border-left: 3px solid var(--primary-default, currentColor);
+    padding-left: 1em;
+    opacity: 0.85;
+    font-style: italic;
+  }
+
+  .cm-wysiwyg-blockquote-level-2 {
+    border-left-width: 3px;
+    margin-left: 1em;
+  }
+
+  .cm-wysiwyg-blockquote-level-3 {
+    border-left-width: 3px;
+    margin-left: 2em;
+  }
+
+  .cm-wysiwyg-blockquote-level-4 {
+    border-left-width: 3px;
+    margin-left: 3em;
+  }
+
+  .cm-wysiwyg-blockquote-level-5 {
+    border-left-width: 3px;
+    margin-left: 4em;
+  }
+
+  /* Math styles */
+  .cm-wysiwyg-math-inline {
+    display: inline-block;
+    vertical-align: middle;
+    padding: 0 0.125em;
+  }
+
+  .cm-wysiwyg-math-inline-editing {
+    font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+      'Liberation Mono', monospace;
+    background-color: color-mix(in srgb, currentColor 8%, transparent);
+    border-radius: 0.25rem;
+    padding: 0 0.25em;
+  }
+
+  .cm-wysiwyg-math-block {
+    display: block;
+    margin: 0.75rem 0;
+    padding: 1rem;
+    text-align: center;
+    background-color: color-mix(in srgb, currentColor 3%, transparent);
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    cursor: pointer;
+  }
+
+  .cm-wysiwyg-math-block:hover {
+    background-color: color-mix(in srgb, currentColor 6%, transparent);
+  }
+
+  .cm-wysiwyg-math-block-line {
+    font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+      'Liberation Mono', monospace;
+    font-size: 0.9em;
+  }
+
+  .cm-wysiwyg-math-block-editing {
+    background-color: color-mix(in srgb, currentColor 5%, transparent);
+  }
+
+  .cm-wysiwyg-math-error {
+    color: #ef4444;
+    font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+      'Liberation Mono', monospace;
+    font-size: 0.9em;
+  }
+
+  /* KaTeX overrides */
+  .katex {
+    font-size: 1.1em;
+  }
 }

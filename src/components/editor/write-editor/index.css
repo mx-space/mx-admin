@@ -1,4 +1,6 @@
 .write-editor-wrapper {
+  --wysiwyg-content-width: 60rem;
+
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -52,4 +54,33 @@
 /* 行号区域样式调整 */
 .write-editor-content :deep(.cm-gutters) {
   padding-left: 1rem;
+}
+
+/* ========================================
+   WYSIWYG Mode Styles
+   ======================================== */
+
+/* WYSIWYG mode header alignment */
+/* Use same max-width and padding as cm-content for perfect alignment */
+.write-editor-wrapper:has(.cm-wysiwyg-mode) .write-editor-header {
+  max-width: var(--wysiwyg-content-width);
+  margin: 0 auto;
+  width: 100%;
+  padding: 1.5rem 2rem 0.5rem;
+  box-sizing: content-box;
+}
+
+/* Override GhostInput padding in WYSIWYG mode to align with content */
+.write-editor-wrapper:has(.cm-wysiwyg-mode) .write-editor-header input {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.write-editor-wrapper:has(.cm-wysiwyg-mode) .write-editor-subtitle {
+  padding-left: 0;
+}
+
+/* WYSIWYG mode scroller - remove extra padding since content is centered */
+.write-editor-wrapper:has(.cm-wysiwyg-mode) :deep(.cm-scroller) {
+  padding: 0 0 2rem;
 }

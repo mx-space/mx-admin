@@ -10,6 +10,11 @@ export const editorBaseProps = {
     required: true,
   },
 
+  renderMode: {
+    type: String as PropType<'plain' | 'wysiwyg'>,
+    required: false,
+  },
+
   unSaveConfirm: {
     type: Boolean,
     default: true,

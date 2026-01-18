@@ -38,9 +38,6 @@ export const GhostInput = defineComponent({
           'rounded-lg border border-transparent px-2 py-3',
           'transition-all duration-200',
           'placeholder:text-neutral-400 dark:placeholder:text-neutral-500',
-          'hover:border-neutral-200/50 dark:hover:border-neutral-700/50',
-          'focus:border-neutral-300 dark:focus:border-neutral-600',
-          'focus:ring-1 focus:ring-neutral-200/50 dark:focus:ring-neutral-700/50',
         ]}
       />
     )

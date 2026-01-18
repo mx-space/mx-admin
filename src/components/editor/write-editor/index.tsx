@@ -123,6 +123,8 @@ export const WriteEditor = defineComponent({
 
     return () => {
       const { setting: generalSetting } = general
+      const resolvedRenderMode =
+        props.renderMode ?? generalSetting.renderMode ?? 'plain'
       return (
         <NElement
           tag="div"
@@ -158,6 +160,7 @@ export const WriteEditor = defineComponent({
                 text={props.text}
                 onChange={props.onChange}
                 unSaveConfirm={props.unSaveConfirm}
+                renderMode={resolvedRenderMode}
               />
             </div>
           </div>

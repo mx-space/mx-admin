@@ -1,4 +1,4 @@
-import { isURL } from 'class-validator'
+import isURL from 'validator/lib/isURL'
 import { isObject, isUndefined } from 'es-toolkit/compat'
 import {
   BracesIcon,

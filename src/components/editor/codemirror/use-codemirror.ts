@@ -106,6 +106,14 @@ export const useCodeMirror = <T extends Element>(
               return false
             },
           },
+          {
+            key: 'Mod-/',
+            run() {
+              general.setting.renderMode =
+                general.setting.renderMode === 'wysiwyg' ? 'plain' : 'wysiwyg'
+              return true
+            },
+          },
         ]),
         createToolbarKeymapExtension(),
         keymap.of([
