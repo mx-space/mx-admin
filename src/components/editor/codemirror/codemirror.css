@@ -10,6 +10,7 @@
   }
 
   .cm-editor {
+
     .cm-gutters,
     .cm-activeLineGutter,
     .cm-activeLine {
@@ -28,6 +29,7 @@
 
   /* WYSIWYG Mode Styles */
   &.cm-wysiwyg-mode {
+
     /* Hide line numbers and gutters */
     & .cm-gutters {
       display: none !important;
@@ -74,10 +76,7 @@
       background-color: transparent !important;
     }
 
-    /* Paragraph spacing - prose style (1.25em between paragraphs) */
-    & .cm-line {
-      margin-bottom: 1.25em;
-    }
+
 
     /* First paragraph top margin */
     & .cm-line:first-child {
@@ -107,19 +106,15 @@
 
     /* Selection style */
     & .cm-selectionBackground {
-      background-color: color-mix(
-        in srgb,
-        var(--primary-default) 20%,
-        transparent
-      ) !important;
+      background-color: color-mix(in srgb,
+          var(--primary-default) 20%,
+          transparent) !important;
     }
 
     &.cm-focused .cm-selectionBackground {
-      background-color: color-mix(
-        in srgb,
-        var(--primary-default) 30%,
-        transparent
-      ) !important;
+      background-color: color-mix(in srgb,
+          var(--primary-default) 30%,
+          transparent) !important;
     }
 
     /* Cursor style */
@@ -185,11 +180,16 @@
     & .cm-wysiwyg-codeblock {
       margin: 1.5em 0;
       border-radius: 0.625rem;
+      min-width: 0;
     }
 
     & .cm-wysiwyg-codeblock-content {
       font-size: 0.875em;
       line-height: 1.6;
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      gap: 6px;
     }
 
     /* Enhanced list styles for article */

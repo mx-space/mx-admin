@@ -23,7 +23,7 @@ import {
 } from 'vue'
 import type { IPAggregate, Month, Path, Today, Total, Week } from './types'
 
-import { Chart } from '@antv/g2/esm'
+import { Chart } from '@antv/g2'
 
 import { analyzeApi } from '~/api/analyze'
 import { IpInfoPopover } from '~/components/ip-info'
@@ -212,36 +212,37 @@ const ChartsSection = defineComponent({
         container: element,
         autoFit: true,
         height: 250,
-        padding: [30, 20, 50, 40],
+        paddingTop: 30,
+        paddingRight: 20,
+        paddingBottom: 50,
+        paddingLeft: 40,
       })
       charts[field] = chart
 
-      chart.data(data)
-      chart.tooltip({
-        showCrosshairs: true,
-        shared: true,
-      })
-      chart.scale({
-        [label[0]]: {
-          range: [0, 1],
+      chart.options({
+        type: 'view',
+        data,
+        scale: {
+          [label[0]]: { range: [0, 1] },
+          [label[2]]: { domainMin: 0, nice: true },
         },
-        [label[2]]: {
-          min: 0,
-          nice: true,
+        interaction: {
+          tooltip: { crosshairs: true, shared: true },
         },
+        children: [
+          {
+            type: 'line',
+            encode: { x: label[0], y: label[2], color: label[1] },
+            style: { shape: 'smooth' },
+            labels: [{ text: label[2] }],
+          },
+          {
+            type: 'point',
+            encode: { x: label[0], y: label[2], color: label[1] },
+            labels: [{ text: label[2] }],
+          },
+        ],
       })
-      chart
-        .line()
-        .position(`${label[0]}*${label[2]}`)
-        .label(label[2])
-        .color(label[1])
-        .shape('smooth')
-      chart
-        .point()
-        .position(`${label[0]}*${label[2]}`)
-        .label(label[2])
-        .color(label[1])
-        .shape('circle')
 
       chart.render()
     }

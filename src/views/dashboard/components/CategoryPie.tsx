@@ -1,7 +1,7 @@
 import { PieChart as PieChartIcon } from 'lucide-vue-next'
 import { defineComponent, onMounted, ref, watch } from 'vue'
 
-import { Chart } from '@antv/g2/esm'
+import { Chart } from '@antv/g2'
 
 import { aggregateApi } from '~/api/aggregate'
 
@@ -52,27 +52,21 @@ export const CategoryPie = defineComponent({
         height: 220,
       })
 
-      chart.coordinate('theta', {
-        radius: 0.75,
-        innerRadius: 0.5,
+      chart.options({
+        type: 'interval',
+        data: chartData,
+        transform: [{ type: 'stackY' }],
+        coordinate: { type: 'theta', outerRadius: 0.75, innerRadius: 0.5 },
+        encode: { y: 'count', color: 'name' },
+        legend: { color: { position: 'right' } },
+        tooltip: false,
+        labels: [
+          {
+            text: (d: { name: string; percent: number }) =>
+              `${d.name}: ${(d.percent * 100).toFixed(0)}%`,
+          },
+        ],
       })
-
-      chart.data(chartData)
-      chart.tooltip({
-        showTitle: false,
-        showMarkers: false,
-      })
-      chart.legend({
-        position: 'right',
-      })
-      chart
-        .interval()
-        .position('count')
-        .color('name')
-        .label('percent', {
-          content: (d) => `${d.name}: ${(d.percent * 100).toFixed(0)}%`,
-        })
-        .adjust('stack')
 
       chart.render()
     }

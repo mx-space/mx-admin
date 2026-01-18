@@ -49,4 +49,5 @@ export enum RouteName {
   Maintain = 'maintain',
   Other = 'other',
   Reader = 'reader',
+  Draft = 'draft',
 }

@@ -2,7 +2,7 @@ import { Monitor as MonitorIcon } from 'lucide-vue-next'
 import { NGi, NGrid } from 'naive-ui'
 import { defineComponent, onMounted, ref, watch } from 'vue'
 
-import { Chart } from '@antv/g2/esm'
+import { Chart } from '@antv/g2'
 
 import { aggregateApi } from '~/api/aggregate'
 
@@ -65,27 +65,21 @@ export const TrafficSource = defineComponent({
         height: 180,
       })
 
-      chart.coordinate('theta', {
-        radius: 0.75,
+      chart.options({
+        type: 'interval',
+        data: pieData,
+        transform: [{ type: 'stackY' }],
+        coordinate: { type: 'theta', outerRadius: 0.75 },
+        encode: { y: 'count', color: 'name' },
+        legend: { color: { position: 'bottom', flipPage: false } },
+        tooltip: false,
+        labels: [
+          {
+            text: (d: { percent: number }) =>
+              `${(d.percent * 100).toFixed(0)}%`,
+          },
+        ],
       })
-
-      chart.data(pieData)
-      chart.tooltip({
-        showTitle: false,
-        showMarkers: false,
-      })
-      chart.legend({
-        position: 'bottom',
-        flipPage: false,
-      })
-      chart
-        .interval()
-        .position('count')
-        .color('name')
-        .label('percent', {
-          content: (d) => `${(d.percent * 100).toFixed(0)}%`,
-        })
-        .adjust('stack')
 
       chart.render()
       return chart

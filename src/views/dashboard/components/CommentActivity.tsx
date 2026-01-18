@@ -1,7 +1,7 @@
 import { MessageSquare as CommentIcon } from 'lucide-vue-next'
 import { defineComponent, onMounted, ref, watch } from 'vue'
 
-import { Chart } from '@antv/g2/esm'
+import { Chart } from '@antv/g2'
 
 import { aggregateApi } from '~/api/aggregate'
 
@@ -41,19 +41,36 @@ export const CommentActivity = defineComponent({
         container: chartRef.value,
         autoFit: true,
         height: 220,
-        padding: [20, 20, 50, 40],
+        paddingTop: 20,
+        paddingRight: 20,
+        paddingBottom: 50,
+        paddingLeft: 40,
       })
 
-      chart.data(data.value)
-      chart.scale({
-        date: { range: [0, 1] },
-        count: { min: 0, nice: true },
+      chart.options({
+        type: 'view',
+        data: data.value,
+        scale: {
+          date: { range: [0, 1] },
+          count: { domainMin: 0, nice: true },
+        },
+        interaction: {
+          tooltip: { crosshairs: true },
+        },
+        children: [
+          {
+            type: 'area',
+            encode: { x: 'date', y: 'count' },
+            style: { shape: 'smooth', fill: '#8884d8', fillOpacity: 0.4 },
+          },
+          {
+            type: 'line',
+            encode: { x: 'date', y: 'count' },
+            style: { shape: 'smooth', stroke: '#8884d8' },
+          },
+        ],
       })
-      chart.tooltip({
-        showCrosshairs: true,
-      })
-      chart.area().position('date*count').shape('smooth').color('#8884d8')
-      chart.line().position('date*count').shape('smooth').color('#8884d8')
+
       chart.render()
     }
 

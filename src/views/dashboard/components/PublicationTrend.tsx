@@ -1,7 +1,7 @@
 import { TrendingUp as TrendingUpIcon } from 'lucide-vue-next'
 import { defineComponent, onMounted, ref, watch } from 'vue'
 
-import { Chart } from '@antv/g2/esm'
+import { Chart } from '@antv/g2'
 
 import { aggregateApi } from '~/api/aggregate'
 
@@ -49,23 +49,36 @@ export const PublicationTrend = defineComponent({
         container: chartRef.value,
         autoFit: true,
         height: 220,
-        padding: [20, 20, 50, 40],
+        paddingTop: 20,
+        paddingRight: 20,
+        paddingBottom: 50,
+        paddingLeft: 40,
       })
 
-      chart.data(chartData)
-      chart.scale({
-        date: { range: [0, 1] },
-        count: { min: 0, nice: true },
+      chart.options({
+        type: 'view',
+        data: chartData,
+        scale: {
+          date: { range: [0, 1] },
+          count: { domainMin: 0, nice: true },
+        },
+        interaction: {
+          tooltip: { crosshairs: true, shared: true },
+        },
+        legend: { color: { position: 'top' } },
+        children: [
+          {
+            type: 'line',
+            encode: { x: 'date', y: 'count', color: 'type' },
+            style: { shape: 'smooth' },
+          },
+          {
+            type: 'point',
+            encode: { x: 'date', y: 'count', color: 'type' },
+          },
+        ],
       })
-      chart.tooltip({
-        showCrosshairs: true,
-        shared: true,
-      })
-      chart.legend({
-        position: 'top',
-      })
-      chart.line().position('date*count').color('type').shape('smooth')
-      chart.point().position('date*count').color('type').shape('circle')
+
       chart.render()
     }
 

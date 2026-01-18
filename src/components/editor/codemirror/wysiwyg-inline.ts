@@ -457,8 +457,7 @@ const buildInlineDecorations = (state: EditorState): DecorationSet => {
     }
   }
 
-  decorations.sort((a, b) => a.from - b.from || a.to - b.to)
-  return Decoration.set(decorations)
+  return Decoration.set(decorations, true)
 }
 
 // Use ViewPlugin to react to selection changes

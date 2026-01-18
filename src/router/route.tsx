@@ -11,6 +11,7 @@ import {
   MessageSquare as CommentIcon,
   MessagesSquare as CommentsIcon,
   Bug as DebugIcon,
+  FileEdit as DraftIcon,
   MoreHorizontal as EllipsisHIcon,
   Eye as EyeIcon,
   File as FileIcon,
@@ -152,6 +153,15 @@ export const routeForMenu: Array<RouteRecordRaw> = [
       icon: <CommentIcon />,
     },
     component: CommentPage,
+  },
+  {
+    path: '/drafts',
+    name: RouteName.Draft,
+    meta: {
+      title: '草稿箱',
+      icon: <DraftIcon />,
+    },
+    component: () => import('../views/drafts'),
   },
   {
     path: '/pages',
