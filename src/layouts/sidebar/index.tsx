@@ -1,12 +1,12 @@
-import { NLayoutContent } from 'naive-ui'
 import { computed, defineComponent, watchEffect } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRoute } from 'vue-router'
 import type { CSSProperties } from 'vue'
 
 import { KBarWrapper } from '~/components/k-bar'
-import { GATEWAY_URL } from '~/constants/env'
+import { API_URL, GATEWAY_URL } from '~/constants/env'
+import { ContentLayout } from '~/layouts/content'
 import $RouterView from '~/layouts/router-view'
-import { RESTManager } from '~/utils'
+import { LayoutStore } from '~/stores/layout'
 
 import { Sidebar } from '../../components/sidebar'
 import { useStoreRef } from '../../hooks/use-store-ref'
@@ -18,6 +18,16 @@ export const SidebarLayout = defineComponent({
 
   setup() {
     const ui = useStoreRef(UIStore)
+    const route = useRoute()
+    const layoutStore = LayoutStore()
+
+    // 路由变化时重置 layout store 状态
+    watch(
+      () => route.fullPath,
+      () => {
+        layoutStore.reset()
+      },
+    )
 
     const { meta, b } = useMagicKeys()
     watchEffect(() => {
@@ -52,56 +62,68 @@ export const SidebarLayout = defineComponent({
       collapse.value = isLaptop.value ? true : false
     })
 
-    const sidebarWidth = ui.sidebarWidth
-
     return () => (
       <KBarWrapper>
         {{
           default() {
             return (
-              <div class={styles.root}>
+              <div
+                class={[styles.root, collapse.value ? 'collapsed' : 'expanded']}
+              >
                 {isInApiDebugMode && (
                   <div
                     class={[
-                      'bg-dark-800 z-2 fixed left-0 right-0 top-0 flex h-[40px] items-center whitespace-pre text-gray-400 transition-all duration-500',
-                      window.injectData.PAGE_PROXY && 'bg-red-900',
+                      'fixed left-0 right-0 top-0 z-20 flex h-10 items-center whitespace-pre px-4 text-sm text-[var(--sidebar-text)]',
+                      window.injectData.PAGE_PROXY && 'bg-red-900/20',
                     ]}
                     style={{
-                      paddingLeft: !collapse.value ? '270px' : '80px',
+                      paddingLeft: !collapse.value ? '236px' : '16px',
                     }}
                   >
-                    You are in customizing the API endpoint mode, please check:{' '}
-                    <RouterLink to={'/setup-api'}>setup-api</RouterLink>.
-                    Endpoint: {RESTManager.endpoint}, Gateway: {GATEWAY_URL}
-                    {window.injectData.PAGE_PROXY &&
-                      ', Dashboard is in local dev mode'}
+                    API endpoint mode:{' '}
+                    <RouterLink
+                      to="/setup-api"
+                      class="mx-2 text-blue-400 hover:underline"
+                    >
+                      setup-api
+                    </RouterLink>
+                    | Endpoint: {API_URL} | Gateway: {GATEWAY_URL}
+                    {window.injectData.PAGE_PROXY && ' | Local dev mode'}
                   </div>
                 )}
+
                 <Sidebar
                   collapse={collapse.value}
-                  width={sidebarWidth.value}
                   onCollapseChange={(s) => {
                     collapse.value = s
                   }}
                 />
 
-                <NLayoutContent
-                  embedded
-                  nativeScrollbar={false}
+                {/* 移动端遮罩层 */}
+                {isLaptop.value && !collapse.value && (
+                  <div
+                    class={styles.overlay}
+                    onClick={() => (collapse.value = true)}
+                  />
+                )}
+
+                <div
                   class={styles.content}
                   style={
                     {
-                      left: !collapse.value
-                        ? `${sidebarWidth.value}px`
-                        : '50px',
+                      left: !collapse.value ? 'var(--sidebar-width)' : '0',
                       pointerEvents:
                         isLaptop.value && !collapse.value ? 'none' : 'auto',
-                      top: isInApiDebugMode && '40px',
+                      top: isInApiDebugMode ? '28px' : '0',
                     } as CSSProperties
                   }
                 >
-                  <$RouterView />
-                </NLayoutContent>
+                  <div class={styles.container}>
+                    <ContentLayout>
+                      <$RouterView />
+                    </ContentLayout>
+                  </div>
+                </div>
               </div>
             )
           },

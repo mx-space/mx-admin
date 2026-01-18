@@ -1,12 +1,13 @@
 import './monaco'
-import 'reflect-metadata'
-
-import { piniaStore } from '~/stores'
-import { bus } from '~/utils/event-bus'
-
-import 'virtual:windi.css'
+import 'virtual:uno.css'
 
 import { createApp } from 'vue'
+
+import { VueQueryPlugin } from '@tanstack/vue-query'
+
+import { queryClient } from '~/lib/query-client'
+import { piniaStore } from '~/stores'
+import { bus } from '~/utils/event-bus'
 
 import App from './App'
 
@@ -21,6 +22,7 @@ const app = createApp(App)
 
 app.use(router)
 app.use(piniaStore)
+app.use(VueQueryPlugin, { queryClient })
 app.mount('#app')
 
 if (__DEV__) {

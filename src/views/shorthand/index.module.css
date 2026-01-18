@@ -1,20 +1,262 @@
-.timeline-grid {
-  @apply grid;
+/* Container */
+.container {
+  @apply mx-auto max-w-3xl px-4 py-6;
+}
 
-  grid-template-columns: auto 50px;
-  grid-gap: 0.5rem;
+/* List */
+.list {
+  @apply flex flex-col gap-4;
+}
+
+/* Card */
+.card {
+  @apply rounded-naive relative border border-neutral-200 bg-white p-5 transition-shadow;
 
   &:hover {
-    :global {
-      .action {
-        @apply opacity-100;
-      }
+    @apply shadow-md;
+
+    .actions {
+      @apply opacity-100;
     }
   }
 
-  :global {
-    .action {
-      @apply relative flex opacity-0 transition-opacity;
+  :global(.dark) & {
+    @apply border-neutral-800 bg-neutral-900;
+  }
+}
+
+/* Content */
+.content {
+  @apply mb-4;
+}
+
+.text {
+  @apply m-0 whitespace-pre-wrap break-words text-base leading-relaxed text-neutral-900;
+
+  :global(.dark) & {
+    @apply text-neutral-100;
+  }
+}
+
+/* Reference Link */
+.reference {
+  @apply mb-4;
+}
+
+.referenceLink {
+  @apply inline-flex items-center gap-2 rounded-lg bg-neutral-50 px-3 py-2 text-sm no-underline transition-colors;
+
+  &:hover {
+    @apply bg-neutral-100;
+  }
+
+  :global(.dark) & {
+    @apply bg-neutral-800;
+
+    &:hover {
+      @apply bg-neutral-700;
     }
   }
+}
+
+.referenceIcon {
+  @apply size-4 shrink-0 text-neutral-400;
+}
+
+.referenceType {
+  @apply shrink-0 text-xs font-medium text-neutral-500;
+
+  :global(.dark) & {
+    @apply text-neutral-400;
+  }
+}
+
+.referenceTitle {
+  @apply truncate text-neutral-700;
+
+  :global(.dark) & {
+    @apply text-neutral-200;
+  }
+}
+
+.externalIcon {
+  @apply size-3.5 shrink-0 text-neutral-400;
+}
+
+/* Footer */
+.footer {
+  @apply flex items-center justify-between gap-4;
+}
+
+.meta {
+  @apply flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-neutral-500;
+
+  :global(.dark) & {
+    @apply text-neutral-400;
+  }
+}
+
+/* Time Info */
+.timeInfo {
+  @apply flex items-center gap-1.5;
+}
+
+.time {
+  @apply tabular-nums;
+}
+
+.modified {
+  @apply flex items-center gap-1 text-neutral-400;
+
+  :global(.dark) & {
+    @apply text-neutral-500;
+  }
+}
+
+/* Votes */
+.votes {
+  @apply flex items-center gap-2;
+}
+
+.voteItem {
+  @apply flex items-center gap-1;
+}
+
+.voteIcon {
+  @apply size-3.5;
+}
+
+.voteCount {
+  @apply tabular-nums;
+}
+
+.voteDivider {
+  @apply h-3 w-px bg-neutral-200;
+
+  :global(.dark) & {
+    @apply bg-neutral-700;
+  }
+}
+
+.voteBar {
+  @apply ml-1 h-1.5 w-12 overflow-hidden rounded-full bg-neutral-200;
+
+  :global(.dark) & {
+    @apply bg-neutral-700;
+  }
+}
+
+.voteBarFill {
+  @apply h-full rounded-full bg-green-500 transition-[width];
+  transition-duration: 300ms;
+
+  :global(.dark) & {
+    @apply bg-green-600;
+  }
+}
+
+/* Comments */
+.comments {
+  @apply flex items-center gap-1;
+}
+
+.commentIcon {
+  @apply size-3.5;
+}
+
+/* Actions */
+.actions {
+  @apply flex items-center gap-1 opacity-0 transition-opacity;
+  transition-duration: 150ms;
+}
+
+.actionButton {
+  @apply flex size-8 items-center justify-center rounded-lg text-neutral-500 transition-colors;
+
+  &:hover {
+    @apply bg-neutral-100 text-neutral-700;
+  }
+
+  &:focus-visible {
+    @apply outline-primary outline-2 outline-offset-2;
+  }
+
+  :global(.dark) & {
+    @apply text-neutral-400;
+
+    &:hover {
+      @apply bg-neutral-800 text-neutral-200;
+    }
+  }
+
+  svg {
+    @apply size-4;
+  }
+}
+
+.deleteButton {
+  &:hover {
+    @apply bg-red-50 text-red-600;
+  }
+
+  :global(.dark) &:hover {
+    @apply bg-red-950 text-red-400;
+  }
+}
+
+/* Empty State */
+.empty {
+  @apply flex flex-col items-center justify-center py-16 text-center;
+}
+
+.emptyIcon {
+  @apply mb-4 flex size-16 items-center justify-center rounded-full bg-neutral-100 text-neutral-400;
+
+  :global(.dark) & {
+    @apply bg-neutral-800 text-neutral-500;
+  }
+
+  svg {
+    @apply size-8;
+  }
+}
+
+.emptyTitle {
+  @apply m-0 mb-2 text-lg font-medium text-neutral-900;
+
+  :global(.dark) & {
+    @apply text-neutral-100;
+  }
+}
+
+.emptyDescription {
+  @apply m-0 mb-6 text-sm text-neutral-500;
+
+  :global(.dark) & {
+    @apply text-neutral-400;
+  }
+}
+
+/* Skeleton */
+.skeleton {
+  @apply rounded-naive border border-neutral-200 bg-white p-5;
+
+  :global(.dark) & {
+    @apply border-neutral-800 bg-neutral-900;
+  }
+}
+
+.skeletonFooter {
+  @apply mt-4 flex items-center gap-4;
+}
+
+/* Fade Transition */
+:global(.fade-enter-active),
+:global(.fade-leave-active) {
+  transition: opacity 200ms ease;
+}
+
+:global(.fade-enter-from),
+:global(.fade-leave-to) {
+  opacity: 0;
 }

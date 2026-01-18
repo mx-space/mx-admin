@@ -1,246 +1,168 @@
-import {
-  NAvatar,
-  NButton,
-  NButtonGroup,
-  NList,
-  NListItem,
-  NPagination,
-  NPopconfirm,
-  NThing,
-} from 'naive-ui'
+/**
+ * Topic List Page
+ * 专栏列表页面 - 列表布局
+ */
+import { Plus as PlusIcon } from 'lucide-vue-next'
+import { NPagination } from 'naive-ui'
 import { useRoute, useRouter } from 'vue-router'
-import type { PaginateResult } from '@mx-space/api-client'
 import type { TopicModel } from '~/models/topic'
 
-import { Icon } from '@vicons/utils'
+import { useQueryClient } from '@tanstack/vue-query'
 
+import { topicsApi } from '~/api/topics'
 import { HeaderActionButton } from '~/components/button/rounded-button'
-import { PlusIcon, TrashIcon } from '~/components/icons'
-import { useDataTableFetch } from '~/hooks/use-table'
-import { ContentLayout } from '~/layouts/content'
-import { RESTManager } from '~/utils'
-import { textToBigCharOrWord } from '~/utils/word'
+import { queryKeys } from '~/hooks/queries/keys'
+import { useDeleteTopicMutation } from '~/hooks/queries/use-topics'
+import { useDataTable } from '~/hooks/use-data-table'
+import { useLayout } from '~/layouts/content'
 
-import { TopicDetail } from './components/topic-detail'
+import {
+  TopicEmptyState,
+  TopicListItem,
+  TopicListSkeleton,
+} from './components/topic-card'
+import { TopicDetailDrawer } from './components/topic-detail'
 import { TopicEditModal } from './components/topic-modal'
 
 export default defineComponent({
+  name: 'TopicListPage',
   setup() {
     const router = useRouter()
     const route = useRoute()
-
-    watch(
-      () => route.query.page,
-      (page) => {
-        if (!page) {
-          fetchTopic(0)
-        } else {
-          fetchTopic(+page)
-        }
-      },
-    )
+    const queryClient = useQueryClient()
 
     const {
-      fetchDataFn: fetchTopic,
       data: topics,
       pager: pagination,
-    } = useDataTableFetch<TopicModel>(
-      (topics, pagination) =>
-        async (
-          page = Number.parseInt(route.query.page as any) || 1,
-          size = 20,
-        ) => {
-          const res = await RESTManager.api.topics.get<
-            PaginateResult<TopicModel>
-          >({
-            page,
-            size,
-          })
+      isLoading: loading,
+      refresh,
+    } = useDataTable<TopicModel>({
+      queryKey: (_params) => queryKeys.topics.list(),
+      queryFn: (params) =>
+        topicsApi.getList({ page: params.page, size: params.size }),
+      pageSize: 20,
+    })
 
-          pagination.value = res.pagination
-
-          topics.value = res.data
-
-          return res
-        },
-    )
-
-    onMounted(() => fetchTopic())
-
+    // 编辑状态
     const editTopicId = ref('')
     const showTopicModal = ref(false)
+
+    // 详情状态
+    const detailTopicId = ref('')
+    const showDetailDrawer = ref(false)
+
     const handleAddTopic = () => {
       showTopicModal.value = true
       editTopicId.value = ''
     }
+
     const handleCloseModal = () => {
       showTopicModal.value = false
       editTopicId.value = ''
     }
 
-    const handleDelete = async (id: string) => {
-      await RESTManager.api.topics(id).delete()
-      fetchTopic()
+    // 删除专栏
+    const deleteMutation = useDeleteTopicMutation()
+    const handleDelete = (id: string) => {
+      deleteMutation.mutate(id, {
+        onSuccess: () => {
+          refresh()
+        },
+      })
     }
+
     const handleEdit = (id: string) => {
       editTopicId.value = id
       showTopicModal.value = true
     }
-    return {
-      pagination,
-      topics,
-      fetchTopic,
-      handleAddTopic,
-      editTopicId,
-      showTopicModal,
-      handleCloseModal,
-      handleSubmit(topic: TopicModel) {
-        handleCloseModal()
 
-        const index = topics.value.findIndex((item) => item.id === topic.id)
-        if (-~index) {
-          topics.value[index] = topic
-        } else {
-          topics.value.push(topic)
-        }
-      },
-      handleDelete,
-      handleEdit,
-      route,
-      router,
+    const handleViewDetail = (id: string) => {
+      detailTopicId.value = id
+      showDetailDrawer.value = true
     }
-  },
-  render() {
-    const {
-      pagination,
-      topics,
-      router,
-      route,
-      editTopicId,
-      showTopicModal,
-      handleAddTopic,
-      handleCloseModal,
-      handleSubmit,
-      handleEdit,
-      handleDelete,
-    } = this
 
-    return (
-      <ContentLayout>
-        {{
-          actions() {
-            return (
-              <>
-                <HeaderActionButton
-                  icon={<PlusIcon />}
-                  onClick={handleAddTopic}
-                  variant="success"
-                />
-              </>
-            )
-          },
-          default() {
-            return (
-              <>
-                <NList bordered class={'mb-4'}>
-                  {topics.map((topic) => (
-                    <NListItem key={topic.id}>
-                      {{
-                        prefix() {
-                          return (
-                            <NAvatar
-                              data-src={topic.icon}
-                              class={`mt-2 ${topic.icon && '!bg-transparent'}`}
-                              circle
-                              size={50}
-                              src={topic.icon || undefined}
-                            >
-                              {topic.icon
-                                ? undefined
-                                : textToBigCharOrWord(topic.name)}
-                            </NAvatar>
-                          )
-                        },
-                        suffix() {
-                          return (
-                            <NButtonGroup>
-                              <NButton
-                                round
-                                onClick={() => handleEdit(topic.id!)}
-                              >
-                                编辑
-                              </NButton>
-                              <NPopconfirm
-                                onPositiveClick={() => handleDelete(topic.id!)}
-                              >
-                                {{
-                                  default() {
-                                    return `确定删除「${topic.name}」？`
-                                  },
-                                  trigger() {
-                                    return (
-                                      <NButton circle tertiary type="error">
-                                        <Icon>
-                                          <TrashIcon />
-                                        </Icon>
-                                      </NButton>
-                                    )
-                                  },
-                                }}
-                              </NPopconfirm>
-                            </NButtonGroup>
-                          )
-                        },
-                        default() {
-                          return (
-                            <NThing
-                              title={topic.name}
-                              description={topic.introduce}
-                              titleExtra={topic.slug}
-                            >
-                              {{
-                                default() {
-                                  return topic.description
-                                },
-                                footer() {
-                                  return <TopicDetail id={topic.id!} />
-                                },
-                              }}
-                            </NThing>
-                          )
-                        },
-                      }}
-                    </NListItem>
-                  ))}
-                </NList>
-                {pagination && (
-                  <div class={'flex justify-end'}>
-                    <NPagination
-                      page={pagination.currentPage}
-                      onUpdatePage={(page) => {
-                        router.replace({
-                          query: { ...route.query, page },
-                          params: { ...route.params },
-                        })
-                      }}
-                      pageCount={pagination.totalPage}
-                      pageSize={pagination.size}
-                      showQuickJumper
-                    />
-                  </div>
-                )}
+    const handleSubmit = (_topic: TopicModel) => {
+      handleCloseModal()
+      queryClient.invalidateQueries({ queryKey: queryKeys.topics.all })
+    }
 
-                <TopicEditModal
-                  onClose={handleCloseModal}
-                  show={Boolean(showTopicModal || editTopicId)}
-                  id={editTopicId}
-                  onSubmit={handleSubmit}
-                />
-              </>
-            )
-          },
-        }}
-      </ContentLayout>
+    const { setActions } = useLayout()
+
+    setActions(
+      <HeaderActionButton
+        icon={<PlusIcon />}
+        onClick={handleAddTopic}
+        variant="success"
+        name="新建专栏"
+      />,
+    )
+
+    return () => (
+      <div class="space-y-4">
+        {/* 内容区域 */}
+        {loading.value && topics.value.length === 0 ? (
+          // 加载骨架屏
+          <div class="overflow-hidden rounded-lg border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
+            <TopicListSkeleton />
+          </div>
+        ) : topics.value.length === 0 ? (
+          // 空状态
+          <TopicEmptyState onAdd={handleAddTopic} />
+        ) : (
+          // 列表
+          <div class="overflow-hidden rounded-lg border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
+            {topics.value.map((topic) => (
+              <TopicListItem
+                key={topic.id}
+                topic={topic}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onViewDetail={handleViewDetail}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* 分页 */}
+        {pagination.value && pagination.value.totalPage > 1 && (
+          <div class="flex justify-center">
+            <NPagination
+              page={pagination.value.currentPage}
+              onUpdatePage={(page) => {
+                router.replace({
+                  query: { ...route.query, page },
+                  params: { ...route.params },
+                })
+              }}
+              pageCount={pagination.value.totalPage}
+              pageSize={pagination.value.size}
+              showQuickJumper
+            />
+          </div>
+        )}
+
+        {/* 详情 Drawer */}
+        <TopicDetailDrawer
+          show={showDetailDrawer.value}
+          topicId={detailTopicId.value}
+          onClose={() => {
+            showDetailDrawer.value = false
+            detailTopicId.value = ''
+          }}
+          onEdit={(id: string) => {
+            showDetailDrawer.value = false
+            handleEdit(id)
+          }}
+        />
+
+        {/* 编辑 Modal */}
+        <TopicEditModal
+          onClose={handleCloseModal}
+          show={Boolean(showTopicModal.value || editTopicId.value)}
+          id={editTopicId.value}
+          onSubmit={handleSubmit}
+        />
+      </div>
     )
   },
 })

@@ -15,11 +15,11 @@ import { defineComponent, ref } from 'vue'
 import type { PropType } from 'vue'
 import type { UserModel } from '../../models/user'
 
+import { systemApi } from '~/api'
 import { showConfetti } from '~/utils/confetti'
 import { checkIsInit } from '~/utils/is-init'
 
 import { getToken, removeToken } from '../../utils'
-import { RESTManager } from '../../utils/rest'
 import styles from './index.module.css'
 
 const useDefaultConfigs = () => inject<any>('configs')
@@ -34,7 +34,7 @@ export default defineComponent({
 
     const defaultConfigs = reactive<any>({})
     onMounted(async () => {
-      const configs = await RESTManager.api.init.configs.default.get<any>()
+      const configs = await systemApi.getInitDefaultConfigs()
       Object.assign(defaultConfigs, configs)
     })
     provide('configs', defaultConfigs)
@@ -58,24 +58,24 @@ export default defineComponent({
             <NStep
               status={step.value > 0 ? 'finish' : 'process'}
               title="(๑•̀ㅂ•́)و✧"
-              description="让我们开始吧"
+              description="欢迎进行初始化配置"
             />
 
             <NStep
               status={getStatus(1)}
               title="站点设置"
-              description="先设置一下站点相关配置吧"
+              description="请配置站点基本信息"
             />
 
             <NStep
               status={getStatus(2)}
               title="主人信息"
-              description="请告诉你的名字"
+              description="请创建管理员账户"
             />
             <NStep
               status={getStatus(3)}
               title="(๑•̀ㅂ•́)و✧"
-              description="一切就绪了"
+              description="初始化即将完成"
             />
           </NSteps>
 
@@ -122,17 +122,12 @@ const Step0 = defineComponent({
         const file = $file.files![0]
         const formData = new FormData()
         formData.append('file', file)
-        RESTManager.api.init.restore
-          .post({
-            data: formData,
-            timeout: 1 << 30,
-          })
-          .then(() => {
-            message.success('恢复成功，页面将会重载')
-            setTimeout(() => {
-              location.reload()
-            }, 1000)
-          })
+        systemApi.restoreFromBackup(formData, 1 << 30).then(() => {
+          message.success('恢复成功，页面将会重载')
+          setTimeout(() => {
+            location.reload()
+          }, 1000)
+        })
       })
     }
     return () => (
@@ -172,17 +167,13 @@ const Step1 = defineComponent({
 
     const handleNext = async () => {
       await Promise.all([
-        RESTManager.api.init.configs('seo').patch({
-          data: {
-            title: title.value,
-            keywords: keywords.value,
-            description: description.value,
-          },
+        systemApi.patchInitConfig('seo', {
+          title: title.value,
+          keywords: keywords.value,
+          description: description.value,
         }),
-        RESTManager.api.init.configs('url').patch({
-          data: {
-            ...url,
-          },
+        systemApi.patchInitConfig('url', {
+          ...url,
         }),
       ])
       props.onNext()
@@ -263,10 +254,14 @@ const Step2 = defineComponent({
           user[key] = undefined
         }
       }
-      await RESTManager.api.user.register.post({
-        data: {
-          ...user,
-        },
+      await systemApi.registerUser({
+        username: user.username,
+        password: user.password,
+        name: user.name,
+        mail: user.mail,
+        url: user.url,
+        avatar: user.avatar,
+        introduce: user.introduce,
       })
 
       props.onNext()
@@ -370,7 +365,7 @@ const Step3 = defineComponent({
   setup() {
     return () => (
       <NSpace class="text-center" vertical>
-        <span class="text-base">你已经完成了所有的步骤，干得漂亮。</span>
+        <span class="text-base">所有配置已完成，请继续下一步操作。</span>
         <NButton
           type="primary"
           round

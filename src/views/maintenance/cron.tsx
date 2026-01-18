@@ -1,18 +1,18 @@
 import { format } from 'date-fns'
 import { NButton, NPopconfirm, NSpace } from 'naive-ui'
 
+import { healthApi } from '~/api/health'
 import { Table } from '~/components/table'
 import { useDataTableFetch } from '~/hooks/use-table'
-import { ContentLayout } from '~/layouts/content'
-import { RESTManager, toPascalCase } from '~/utils'
+import { toPascalCase } from '~/utils'
 
 export default defineComponent({
   setup() {
     const { data, fetchDataFn, loading } = useDataTableFetch((dataRef) => {
       return async () => {
-        const data = (await RESTManager.api.health.cron.get()) as any
+        const response = await healthApi.getCronList()
         dataRef.value = Array.from(
-          Object.values(data.data).map((item: any) => ({
+          Object.values(response.data).map((item: any) => ({
             ...item,
             _name: item.name,
             name: toPascalCase(item.name),
@@ -24,27 +24,12 @@ export default defineComponent({
       await fetchDataFn()
     })
     const executeCron = async (name: string, niceName: string) => {
-      await RESTManager.api.health.cron.run(name).post()
-      // 开始轮询状态
-      let timer: any = setTimeout(function polling() {
-        RESTManager.api.health.cron
-          .task(name)
-          .get()
-          .then((data: any) => {
-            if (data.status === 'fulfill') {
-              message.success(`${niceName} 执行完成`)
-              timer = clearTimeout(timer)
-            } else if (data.status === 'reject') {
-              message.error(`${niceName} 执行失败，${data.message}`)
-              timer = clearTimeout(timer)
-            } else {
-              timer = setTimeout(polling, 1000)
-            }
-          })
-      }, 1000)
+      await healthApi.runCron(name)
+      message.success(`${niceName} 已开始执行`)
+      // TODO: Implement task status polling if needed
     }
     return () => (
-      <ContentLayout>
+      <>
         <Table
           noPagination
           data={data}
@@ -108,7 +93,7 @@ export default defineComponent({
             },
           ]}
         />
-      </ContentLayout>
+      </>
     )
   },
 })

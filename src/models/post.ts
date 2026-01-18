@@ -20,9 +20,20 @@ export interface PostModel {
   modified: string
   created: string
   category: Category
+  summary?: string
   pin?: string | null
   pinOrder?: number
-  related?: Pick<PostModel, 'id' | 'title'>[]
+  related?: Pick<
+    PostModel,
+    | 'id'
+    | 'title'
+    | 'slug'
+    | 'categoryId'
+    | 'modified'
+    | 'created'
+    | 'category'
+    | 'summary'
+  >[]
   meta?: any
   isPublished?: boolean
 }
@@ -33,6 +44,6 @@ export interface Category {
   id: string
   name: string
   slug: string
-  created: Date
+  created: string
   categoryId: string
 }

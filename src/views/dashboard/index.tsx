@@ -1,23 +1,36 @@
-import { pick } from 'es-toolkit/compat'
+import {
+  Activity as ActivityIcon,
+  Link as AddLinkFilledIcon,
+  ChartScatter as BubbleChartFilledIcon,
+  MessageCircle as ChatbubblesSharpIcon,
+  Code as CodeIcon,
+  MessageSquare as CommentIcon,
+  MessagesSquare as CommentsIcon,
+  Puzzle as ExtensionIcon,
+  File as FileIcon,
+  UserRound as GuestIcon,
+  Heart as HeartIcon,
+  Link as LinkIcon,
+  BookOpen as NotebookMinimalistic,
+  StickyNote as NoteIcon,
+  Radio as OnlinePredictionFilledIcon,
+  Pencil as PencilIcon,
+  AlignLeft as PhAlignLeft,
+  RefreshCw as RefreshIcon,
+  TrendingUp as TrendingUpIcon,
+} from 'lucide-vue-next'
 import {
   NButton,
-  NCard,
   NElement,
   NGi,
   NGrid,
   NH1,
-  NH3,
-  NH4,
   NIcon,
   NP,
-  NPopover,
-  NSpace,
-  NText,
   useMessage,
   useNotification,
 } from 'naive-ui'
 import {
-  computed,
   defineComponent,
   onBeforeMount,
   onBeforeUnmount,
@@ -26,58 +39,191 @@ import {
   watchEffect,
 } from 'vue'
 import { useRouter } from 'vue-router'
-import type { ShiJuData } from '~/external/api/jinrishici'
 import type { Stat } from '~/models/stat'
-import type { CardProps } from './card'
+import type { PropType, VNode } from 'vue'
 
 import { Icon } from '@vicons/utils'
 
-import {
-  ActivityIcon,
-  AddLinkFilledIcon,
-  BubbleChartFilledIcon,
-  ChatbubblesSharpIcon,
-  CodeIcon,
-  CommentIcon,
-  CommentsIcon,
-  CopyIcon,
-  ExtensionIcon,
-  FileIcon,
-  GamesIcon,
-  GuestIcon,
-  HeartIcon,
-  LinkIcon,
-  NotebookMinimalistic,
-  NoteIcon,
-  OnlinePredictionFilledIcon,
-  PencilIcon,
-  PhAlignLeft,
-  RedisIcon,
-  RefreshIcon,
-} from '~/components/icons'
+import { aggregateApi } from '~/api/aggregate'
 import { IpInfoPopover } from '~/components/ip-info'
 import { useShorthand } from '~/components/shorthand'
 import { useUpdateDetailModal } from '~/components/update-detail-modal'
 import { checkUpdateFromGitHub } from '~/external/api/github-check-update'
-import { fetchHitokoto, SentenceType } from '~/external/api/hitokoto'
-import { getJinRiShiCiOne } from '~/external/api/jinrishici'
 import { usePortalElement } from '~/hooks/use-portal-element'
 import { useStoreRef } from '~/hooks/use-store-ref'
-import { ContentLayout } from '~/layouts/content'
+import { useLayout } from '~/layouts/content'
 import { RouteName } from '~/router/name'
 import { AppStore } from '~/stores/app'
 import { UserStore } from '~/stores/user'
-import { parseDate, RESTManager } from '~/utils'
+import { parseDate } from '~/utils'
 import { isNewerVersion } from '~/utils/version'
 
 import PKG from '../../../package.json'
-import { Card } from './card'
+import { CategoryPie } from './components/CategoryPie'
+import { CommentActivity } from './components/CommentActivity'
+import { PublicationTrend } from './components/PublicationTrend'
+import { TagCloud } from './components/TagCloud'
+import { TopArticles } from './components/TopArticles'
+import { TrafficSource } from './components/TrafficSource'
 import { UpdatePanel } from './update-panel'
+
+// 分区标题组件
+const SectionTitle = defineComponent({
+  props: {
+    title: { type: String, required: true },
+    extra: { type: Object as PropType<VNode> },
+  },
+  setup(props, { slots }) {
+    return () => (
+      <div class="mb-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-base font-medium text-neutral-700 dark:text-neutral-300">
+            {props.title}
+          </h3>
+          {slots.extra?.() || props.extra}
+        </div>
+        <div class="mt-2 h-px bg-neutral-200 dark:bg-neutral-700" />
+      </div>
+    )
+  },
+})
+
+// 实时数据项 - 扁平设计
+const LiveStatItem = defineComponent({
+  props: {
+    label: { type: String, required: true },
+    value: { type: [Number, String], required: true },
+    icon: { type: Object as PropType<VNode>, required: true },
+    isLive: { type: Boolean, default: false },
+  },
+  setup(props) {
+    return () => (
+      <div class="flex items-center gap-4 rounded-lg bg-neutral-50 p-4 dark:bg-neutral-800/50">
+        <div class="relative shrink-0">
+          {props.isLive && (
+            <span class="absolute -right-1 -top-1 flex h-2.5 w-2.5">
+              <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+              <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500" />
+            </span>
+          )}
+          <Icon class="text-2xl text-neutral-400">{props.icon}</Icon>
+        </div>
+        <div>
+          <div class="text-2xl font-semibold tabular-nums">
+            {typeof props.value === 'number'
+              ? Intl.NumberFormat('en-us').format(props.value)
+              : props.value}
+          </div>
+          <div class="text-xs text-neutral-500">{props.label}</div>
+        </div>
+      </div>
+    )
+  },
+})
+
+// 简洁统计项 - 无边框设计
+const StatItem = defineComponent({
+  props: {
+    label: { type: String, required: true },
+    value: { type: [Number, String], required: true },
+    icon: { type: Object as PropType<VNode> },
+    onClick: { type: Function as PropType<() => void> },
+  },
+  setup(props) {
+    return () => (
+      <div
+        class={[
+          'flex items-center gap-3 rounded-md p-3 transition-colors',
+          props.onClick
+            ? 'cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-800'
+            : '',
+        ]}
+        onClick={props.onClick}
+      >
+        {props.icon && (
+          <Icon class="shrink-0 text-lg text-neutral-400">{props.icon}</Icon>
+        )}
+        <div class="min-w-0 flex-1">
+          <div class="truncate text-xs text-neutral-500">{props.label}</div>
+          <div class="text-lg font-medium tabular-nums">
+            {typeof props.value === 'number'
+              ? Intl.NumberFormat('en-us').format(props.value)
+              : props.value}
+          </div>
+        </div>
+      </div>
+    )
+  },
+})
+
+interface ActionItem {
+  name: string
+  primary?: boolean
+  onClick: () => void
+}
+
+// 带操作按钮的统计项 - 扁平设计
+const ActionStatItem = defineComponent({
+  props: {
+    label: { type: String, required: true },
+    value: { type: [Number, String], required: true },
+    icon: { type: Object as PropType<VNode> },
+    actions: { type: Array as PropType<ActionItem[]>, default: () => [] },
+  },
+  setup(props) {
+    return () => (
+      <div class="rounded-md p-3">
+        <div class="flex items-start justify-between gap-2">
+          <div class="min-w-0 flex-1">
+            <div class="text-xs text-neutral-500">{props.label}</div>
+            <div class="mt-1 text-2xl font-semibold tabular-nums">
+              {typeof props.value === 'number'
+                ? Intl.NumberFormat('en-us').format(props.value)
+                : props.value}
+            </div>
+          </div>
+          {props.icon && (
+            <Icon class="mt-1 shrink-0 text-xl text-neutral-400">
+              {props.icon}
+            </Icon>
+          )}
+        </div>
+        {props.actions.length > 0 && (
+          <div class="mt-3 flex items-center gap-2">
+            {props.actions.map((action, index) => (
+              <NButton
+                key={index}
+                size="small"
+                type={action.primary ? 'primary' : 'default'}
+                secondary={!action.primary}
+                onClick={action.onClick}
+              >
+                {action.name}
+              </NButton>
+            ))}
+          </div>
+        )}
+      </div>
+    )
+  },
+})
+
+const RedisIcon = () => (
+  <svg width="1em" height="1em" viewBox="0 0 24 24">
+    <path
+      fill="currentColor"
+      d="m10.5 2.661l.54.997l-1.797.644l2.409.218l.748 1.246l.467-1.121l2.077-.208l-1.61-.613l.426-1.017l-1.578.519zm6.905 2.077L13.76 6.182l3.292 1.298l.353-.146l3.293-1.298zm-10.51.312a2.97 1.153 0 0 0-2.97 1.152a2.97 1.153 0 0 0 2.97 1.153a2.97 1.153 0 0 0 2.97-1.153a2.97 1.153 0 0 0-2.97-1.152zM24 6.805s-8.983 4.278-10.395 4.953c-1.226.561-1.901.561-3.261.094C8.318 11.022 0 7.241 0 7.241v1.038c0 .24.332.499.966.8c1.277.613 8.34 3.677 9.45 4.206c1.112.53 1.9.54 3.313-.197c1.412-.738 8.049-3.905 9.326-4.57c.654-.342.945-.602.945-.84zm-10.042.602L8.39 8.26l3.884 1.61zM24 10.637s-8.983 4.279-10.395 4.954c-1.226.56-1.901.56-3.261.093C8.318 14.854 0 11.074 0 11.074v1.038c0 .238.332.498.966.8c1.277.612 8.34 3.676 9.45 4.205c1.112.53 1.9.54 3.313-.197c1.412-.737 8.049-3.905 9.326-4.57c.654-.332.945-.602.945-.84zm0 3.842l-10.395 4.954c-1.226.56-1.901.56-3.261.094C8.318 18.696 0 14.916 0 14.916v1.038c0 .239.332.499.966.8c1.277.613 8.34 3.676 9.45 4.206c1.112.53 1.9.54 3.313-.198c1.412-.737 8.049-3.904 9.326-4.569c.654-.343.945-.613.945-.841z"
+    />
+  </svg>
+)
 
 export const DashBoardView = defineComponent({
   name: 'DashboardView',
 
   setup() {
+    const { setHideHeader } = useLayout()
+    setHideHeader(true)
+
     const stat = ref(
       new Proxy(
         {},
@@ -90,8 +236,8 @@ export const DashBoardView = defineComponent({
     )
     const statTime = ref(null as unknown as Date)
     const fetchStat = async () => {
-      const counts = (await RESTManager.api.aggregate.stat.get()) as any
-      stat.value = counts
+      const counts = await aggregateApi.getStat()
+      stat.value = counts as any
       statTime.value = new Date()
     }
 
@@ -101,55 +247,22 @@ export const DashBoardView = defineComponent({
       totalReads: 0,
       siteLikeCount: 0,
     })
-    const fetchSiteWordCount = async () => {
-      return await RESTManager.api.aggregate.count_site_words.get<{
-        data: { length: number }
-      }>()
-    }
-
-    const fetchReadAndLikeCounts = async () => {
-      return await RESTManager.api.aggregate.count_read_and_like.get<{
-        totalLikes: number
-        totalReads: number
-      }>()
-    }
-
-    const fetchSiteLikeCount = async () => {
-      return await RESTManager.api('like_this').get<number>()
-    }
 
     onMounted(async () => {
-      const [c, rl, sl] = await Promise.all([
-        fetchSiteWordCount(),
-        fetchReadAndLikeCounts(),
-        fetchSiteLikeCount(),
+      const [wordCountRes, readLikeRes, siteLikeCount] = await Promise.all([
+        aggregateApi.countSiteWords(),
+        aggregateApi.countReadAndLike(),
+        aggregateApi.getSiteLikeCount(),
       ])
-      siteWordCount.value = c.data.length
+
+      siteWordCount.value = wordCountRes.data.totalWordCount
 
       readAndLikeCounts.value = {
-        totalLikes: rl.totalLikes,
-        totalReads: rl.totalReads,
-        siteLikeCount: sl,
+        totalLikes: readLikeRes.data.totalLike,
+        totalReads: readLikeRes.data.totalRead,
+        siteLikeCount,
       }
     })
-
-    const refreshHitokoto = () => {
-      fetchHitokoto([
-        SentenceType.动画,
-        SentenceType.原创,
-        SentenceType.哲学,
-        SentenceType.文学,
-      ]).then((data) => {
-        const postfix = Object.values(
-          pick(data, ['from', 'from_who', 'creator']),
-        ).find(Boolean)
-        if (!data.hitokoto) {
-          hitokoto.value = '没有获取到句子信息'
-        } else {
-          hitokoto.value = data.hitokoto + (postfix ? ` —— ${postfix}` : '')
-        }
-      })
-    }
 
     // 轮询状态计时器
     let timer: any
@@ -162,474 +275,330 @@ export const DashBoardView = defineComponent({
       timer = clearTimeout(timer)
     })
 
-    const shiju = ref('')
-    const shijuData = ref<ShiJuData | null>(null)
-
     onBeforeMount(() => {
-      refreshHitokoto()
       fetchStat()
-
-      getJinRiShiCiOne().then((data) => {
-        shiju.value = data.content
-        shijuData.value = data
-      })
     })
 
-    const hitokoto = ref('')
     const message = useMessage()
 
     const userStore = useStoreRef(UserStore)
     const router = useRouter()
-    const UserLoginStat = defineComponent(() => () => (
-      <>
-        <NH3 class="font-light text-opacity-80">登录记录</NH3>
-        <p class="relative -mt-2 mb-3 text-gray-500">
-          <span>
-            上次登录 IP:{' '}
-            {userStore.user.value?.lastLoginIp ? (
-              <IpInfoPopover
-                trigger="hover"
-                triggerEl={<span>{userStore.user.value?.lastLoginIp}</span>}
-                ip={userStore.user.value?.lastLoginIp}
-              />
-            ) : (
-              'N/A'
-            )}
-          </span>
-          <div class="pt-[.5rem]" />
-          <span>
-            上次登录时间:{' '}
-            {userStore.user.value?.lastLoginTime ? (
-              <time>
-                {parseDate(
-                  userStore.user.value?.lastLoginTime,
-                  'yyyy 年 M 月 d 日 HH:mm:ss',
-                )}
-              </time>
-            ) : (
-              'N/A'
-            )}
-          </span>
-        </p>
-
-        <div class="pb-4" />
-      </>
-    ))
 
     const { create: createShortHand } = useShorthand()
 
-    const dataStat = computed<CardProps[]>(() => [
-      {
-        label: '博文',
-        value: stat.value.posts,
-        icon: <CodeIcon />,
-        actions: [
-          {
-            name: '撰写',
-            primary: true,
-            onClick() {
-              router.push({ name: RouteName.EditPost })
-            },
-          },
-          {
-            name: '管理',
-            onClick() {
-              router.push({ name: RouteName.ViewPost, query: { page: 1 } })
-            },
-          },
-        ],
-      },
+    // 渲染用户登录信息
+    const renderUserLoginStat = () => (
+      <div class="mt-8 text-sm text-neutral-500">
+        <p>
+          上次登录 IP:{' '}
+          {userStore.user.value?.lastLoginIp ? (
+            <IpInfoPopover
+              trigger="hover"
+              triggerEl={
+                <span class="text-neutral-700 dark:text-neutral-300">
+                  {userStore.user.value?.lastLoginIp}
+                </span>
+              }
+              ip={userStore.user.value?.lastLoginIp}
+            />
+          ) : (
+            'N/A'
+          )}
+        </p>
+        <p class="mt-1">
+          上次登录时间:{' '}
+          {userStore.user.value?.lastLoginTime ? (
+            <time class="text-neutral-700 dark:text-neutral-300">
+              {parseDate(
+                userStore.user.value?.lastLoginTime,
+                'yyyy 年 M 月 d 日 HH:mm:ss',
+              )}
+            </time>
+          ) : (
+            'N/A'
+          )}
+        </p>
+      </div>
+    )
 
-      {
-        label: '日记',
-        value: stat.value.notes,
-        icon: <NoteIcon />,
-        actions: [
-          {
-            name: '撰写',
-            primary: true,
-            onClick() {
-              router.push({ name: RouteName.EditNote })
-            },
-          },
-          {
-            name: '管理',
-            onClick() {
-              router.push({ name: RouteName.ViewNote, query: { page: 1 } })
-            },
-          },
-        ],
-      },
-
-      {
-        label: '页面',
-        value: stat.value.pages,
-        icon: <FileIcon />,
-        actions: [
-          {
-            primary: true,
-            name: '管理',
-            onClick() {
-              router.push({ name: RouteName.ListPage, query: { page: 1 } })
-            },
-          },
-        ],
-      },
-      {
-        label: '速记',
-        value: stat.value.recently,
-        icon: <PencilIcon />,
-        actions: [
-          {
-            primary: true,
-            name: '记点啥',
-
-            onClick() {
-              createShortHand()
-            },
-          },
-          {
-            name: '管理',
-            onClick() {
-              router.push({
-                name: RouteName.ListShortHand,
-                query: { page: 1 },
-              })
-            },
-          },
-        ],
-      },
-
-      {
-        label: '分类',
-        value: stat.value.categories,
-        icon: <ExtensionIcon />,
-        actions: [
-          {
-            primary: true,
-            name: '管理',
-            onClick() {
-              router.push({ name: RouteName.EditCategory })
-            },
-          },
-        ],
-      },
-
-      {
-        label: '全部评论',
-        value: stat.value.allComments,
-        icon: <CommentIcon />,
-        actions: [
-          {
-            primary: true,
-            name: '管理',
-            onClick() {
-              router.push({ name: RouteName.Comment, query: { state: 1 } })
-            },
-          },
-        ],
-      },
-      {
-        label: '未读评论',
-        value: stat.value.unreadComments,
-        icon: <ChatbubblesSharpIcon />,
-        actions: [
-          {
-            primary: true,
-            showBadage: true,
-            name: '查看',
-            onClick() {
-              router.push({ name: RouteName.Comment, query: { state: 0 } })
-            },
-          },
-        ],
-      },
-
-      {
-        label: '友链',
-        value: stat.value.links,
-        icon: <LinkIcon />,
-        actions: [
-          {
-            primary: true,
-            name: '管理',
-            onClick() {
-              router.push({ name: RouteName.Friend, query: { state: 0 } })
-            },
-          },
-        ],
-      },
-      {
-        label: '新的友链申请',
-        value: stat.value.linkApply,
-        icon: <AddLinkFilledIcon />,
-        actions: [
-          {
-            primary: true,
-            showBadage: true,
-            name: '查看',
-            onClick() {
-              router.push({ name: RouteName.Friend, query: { state: 1 } })
-            },
-          },
-        ],
-      },
-
-      {
-        label: '说说',
-        value: stat.value.says,
-        icon: <CommentsIcon />,
-        actions: [
-          {
-            primary: true,
-
-            name: '说一句',
-            onClick() {
-              router.push({
-                name: RouteName.EditSay,
-              })
-            },
-          },
-
-          {
-            primary: false,
-            name: '管理',
-            onClick() {
-              router.push({
-                name: RouteName.ListSay,
-              })
-            },
-          },
-        ],
-      },
-      {
-        label: '缓存',
-        value: 'Redis',
-        icon: <RedisIcon />,
-        actions: [
-          {
-            primary: false,
-            name: '清除 API 缓存',
-            onClick() {
-              RESTManager.api.clean_catch.get().then(() => {
-                message.success('清除成功')
-              })
-            },
-          },
-          {
-            primary: false,
-            name: '清除数据缓存',
-            onClick() {
-              RESTManager.api.clean_redis.get().then(() => {
-                message.success('清除成功')
-              })
-            },
-          },
-        ],
-      },
-
-      {
-        label: 'API 总调用次数',
-        value: stat.value.callTime,
-        icon: <ActivityIcon />,
-        actions: [
-          {
-            primary: true,
-            name: '查看',
-            onClick() {
-              router.push({
-                name: RouteName.Analyze,
-              })
-            },
-          },
-        ],
-      },
-      {
-        label: '今日 IP 访问次数',
-        value: stat.value.todayIpAccessCount,
-        icon: <BubbleChartFilledIcon />,
-        actions: [
-          {
-            primary: true,
-            name: '查看',
-            onClick() {
-              router.push({
-                name: RouteName.Analyze,
-              })
-            },
-          },
-        ],
-      },
-      {
-        label: '全站字符数',
-        value: siteWordCount.value,
-        icon: <PhAlignLeft />,
-      },
-
-      {
-        label: '总阅读量',
-        value: readAndLikeCounts.value.totalReads,
-        icon: <NotebookMinimalistic />,
-      },
-      {
-        label: '文章总点赞数',
-        value: readAndLikeCounts.value.totalLikes,
-        icon: <HeartIcon />,
-      },
-      {
-        label: '站点总点赞数',
-        value: readAndLikeCounts.value.siteLikeCount,
-        icon: <HeartIcon />,
-      },
-
-      {
-        label: '当前在线访客',
-        value: stat.value.online,
-        icon: <OnlinePredictionFilledIcon />,
-      },
-      {
-        label: '今日访客',
-        value: stat.value.todayOnlineTotal,
-        icon: <GuestIcon />,
-      },
-      {
-        value: stat.value.todayMaxOnline,
-        label: '今日最多同时在线人数',
-        icon: <GamesIcon />,
-      },
-    ])
-
-    const DataStat = defineComponent(() => {
-      return () => (
-        <>
-          <NSpace vertical>
-            <NH3 class="font-light text-opacity-80">数据统计</NH3>
-
-            <p class="relative -mt-4 mb-3 flex items-center text-gray-500">
-              <span>数据更新于：</span>
-              <time>
-                {' '}
-                {statTime.value
-                  ? parseDate(statTime.value, 'yyyy 年 M 月 d 日 HH:mm:ss')
-                  : 'N/A'}
-              </time>
-
-              <NButton text onClick={fetchStat} class="ml-4">
-                <Icon>
-                  <RefreshIcon />
-                </Icon>
-              </NButton>
-            </p>
-          </NSpace>
-          <NGrid
-            xGap={20}
-            yGap={20}
-            cols={'2 100:1 400:2 600:3 900:4 1200:5 1600:6'}
-          >
-            {dataStat.value.map((props) => (
-              <NGi key={props.label}>
-                <Card {...props} />
-              </NGi>
-            ))}
-          </NGrid>
-        </>
-      )
-    })
     return () => (
-      <ContentLayout>
-        <NH1 class="font-light">欢迎回来</NH1>
-        <NGrid xGap={12} cols={'1 900:2'}>
-          <NGi>
-            <NH3 class="!mb-[10px] !mt-[10px] font-light text-opacity-80">
-              一言
-            </NH3>
-            <NP>
-              <NSpace align="center" class="min-h-[3rem]">
-                {hitokoto.value ? (
-                  <>
-                    <NText class="leading-normal">{hitokoto.value}</NText>
-                    <div class="flex items-center space-x-2">
-                      <NButton
-                        text
-                        onClick={refreshHitokoto}
-                        class="phone:float-right ml-0"
-                      >
-                        <Icon>
-                          <RefreshIcon />
-                        </Icon>
-                      </NButton>
+      <>
+        <NH1 class="!mb-6 font-light">欢迎回来</NH1>
 
-                      <NButton
-                        text
-                        onClick={() => {
-                          navigator.clipboard.writeText(hitokoto.value)
-                          message.success('已复制')
-                          message.info(hitokoto.value)
-                        }}
-                      >
-                        <Icon>
-                          <CopyIcon />
-                        </Icon>
-                      </NButton>
-                    </div>
-                  </>
-                ) : (
-                  <NText>加载中...</NText>
-                )}
-              </NSpace>
-            </NP>
-          </NGi>
-          <NGi>
-            <NH3 class="!mb-[10px] !mt-[10px] font-light text-opacity-80">
-              今日诗句
-            </NH3>
-            <NP>
-              <NPopover trigger={'hover'} placement="bottom">
-                {{
-                  trigger() {
-                    return <NText>{shiju.value || '获取中'}</NText>
+        {/* 实时数据区 */}
+        <section class="mb-8">
+          <SectionTitle title="实时数据" />
+          <NGrid xGap={12} yGap={12} cols="1 500:3">
+            <NGi>
+              <LiveStatItem
+                label="当前在线访客"
+                value={stat.value.online}
+                icon={<OnlinePredictionFilledIcon />}
+                isLive
+              />
+            </NGi>
+            <NGi>
+              <LiveStatItem
+                label="今日访客"
+                value={stat.value.todayOnlineTotal}
+                icon={<GuestIcon />}
+              />
+            </NGi>
+            <NGi>
+              <LiveStatItem
+                label="今日最高在线"
+                value={stat.value.todayMaxOnline}
+                icon={<TrendingUpIcon />}
+              />
+            </NGi>
+          </NGrid>
+        </section>
+
+        {/* 快速操作区 */}
+        <section class="mb-8">
+          <SectionTitle title="快速操作" />
+          <div class="grid grid-cols-2 gap-x-4 gap-y-1 sm:grid-cols-4">
+            <ActionStatItem
+              label="博文"
+              value={stat.value.posts}
+              icon={<CodeIcon />}
+              actions={[
+                {
+                  name: '撰写',
+                  primary: true,
+                  onClick: () => router.push({ name: RouteName.EditPost }),
+                },
+                {
+                  name: '管理',
+                  onClick: () =>
+                    router.push({
+                      name: RouteName.ViewPost,
+                      query: { page: 1 },
+                    }),
+                },
+              ]}
+            />
+            <ActionStatItem
+              label="日记"
+              value={stat.value.notes}
+              icon={<NoteIcon />}
+              actions={[
+                {
+                  name: '撰写',
+                  primary: true,
+                  onClick: () => router.push({ name: RouteName.EditNote }),
+                },
+                {
+                  name: '管理',
+                  onClick: () =>
+                    router.push({
+                      name: RouteName.ViewNote,
+                      query: { page: 1 },
+                    }),
+                },
+              ]}
+            />
+            <ActionStatItem
+              label="速记"
+              value={stat.value.recently}
+              icon={<PencilIcon />}
+              actions={[
+                {
+                  name: '新建速记',
+                  primary: true,
+                  onClick: () => createShortHand(),
+                },
+                {
+                  name: '管理',
+                  onClick: () =>
+                    router.push({
+                      name: RouteName.ListShortHand,
+                      query: { page: 1 },
+                    }),
+                },
+              ]}
+            />
+            <ActionStatItem
+              label="说说"
+              value={stat.value.says}
+              icon={<CommentsIcon />}
+              actions={[
+                {
+                  name: '发布说说',
+                  primary: true,
+                  onClick: () => router.push({ name: RouteName.ListSay }),
+                },
+                {
+                  name: '管理',
+                  onClick: () => router.push({ name: RouteName.ListSay }),
+                },
+              ]}
+            />
+          </div>
+        </section>
+
+        {/* 数据统计区 - 扁平网格 */}
+        <section class="mb-8">
+          <SectionTitle
+            title="数据统计"
+            v-slots={{
+              extra: () => (
+                <div class="flex items-center text-xs text-neutral-400">
+                  <span>
+                    更新于{' '}
+                    {statTime.value
+                      ? parseDate(statTime.value, 'H:mm:ss a')
+                      : '--:--:--'}
+                  </span>
+                  <NButton text onClick={fetchStat} class="ml-2">
+                    <NIcon size={14}>
+                      <RefreshIcon />
+                    </NIcon>
+                  </NButton>
+                </div>
+              ),
+            }}
+          />
+          <div class="grid grid-cols-2 gap-x-4 gap-y-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+            <StatItem
+              label="页面"
+              value={stat.value.pages}
+              icon={<FileIcon />}
+              onClick={() =>
+                router.push({ name: RouteName.ListPage, query: { page: 1 } })
+              }
+            />
+            <StatItem
+              label="分类"
+              value={stat.value.categories}
+              icon={<ExtensionIcon />}
+              onClick={() => router.push({ name: RouteName.EditCategory })}
+            />
+            <StatItem
+              label="全部评论"
+              value={stat.value.allComments}
+              icon={<CommentIcon />}
+              onClick={() =>
+                router.push({ name: RouteName.Comment, query: { state: 1 } })
+              }
+            />
+            <StatItem
+              label="未读评论"
+              value={stat.value.unreadComments}
+              icon={<ChatbubblesSharpIcon />}
+              onClick={() =>
+                router.push({ name: RouteName.Comment, query: { state: 0 } })
+              }
+            />
+            <StatItem
+              label="友链"
+              value={stat.value.links}
+              icon={<LinkIcon />}
+              onClick={() =>
+                router.push({ name: RouteName.Friend, query: { state: 0 } })
+              }
+            />
+            <StatItem
+              label="友链申请"
+              value={stat.value.linkApply}
+              icon={<AddLinkFilledIcon />}
+              onClick={() =>
+                router.push({ name: RouteName.Friend, query: { state: 1 } })
+              }
+            />
+            <StatItem
+              label="API 调用"
+              value={stat.value.callTime}
+              icon={<ActivityIcon />}
+              onClick={() => router.push({ name: RouteName.Analyze })}
+            />
+            <StatItem
+              label="今日 IP 访问"
+              value={stat.value.todayIpAccessCount}
+              icon={<BubbleChartFilledIcon />}
+              onClick={() => router.push({ name: RouteName.Analyze })}
+            />
+            <StatItem
+              label="全站字符数"
+              value={siteWordCount.value}
+              icon={<PhAlignLeft />}
+            />
+            <StatItem
+              label="总阅读量"
+              value={readAndLikeCounts.value.totalReads}
+              icon={<NotebookMinimalistic />}
+            />
+            <StatItem
+              label="文章点赞"
+              value={readAndLikeCounts.value.totalLikes}
+              icon={<HeartIcon />}
+            />
+            <StatItem
+              label="站点点赞"
+              value={readAndLikeCounts.value.siteLikeCount}
+              icon={<HeartIcon />}
+            />
+          </div>
+        </section>
+
+        {/* 数据图表区 */}
+        <section class="mb-8">
+          <SectionTitle title="数据图表" />
+          <NGrid xGap={16} yGap={16} cols="1 800:2">
+            <NGi>
+              <PublicationTrend />
+            </NGi>
+            <NGi>
+              <CategoryPie />
+            </NGi>
+            <NGi>
+              <CommentActivity />
+            </NGi>
+            <NGi>
+              <TrafficSource />
+            </NGi>
+            <NGi>
+              <TopArticles />
+            </NGi>
+            <NGi>
+              <TagCloud />
+            </NGi>
+          </NGrid>
+        </section>
+
+        {/* 系统操作 */}
+        <section class="mb-8">
+          <SectionTitle title="系统操作" />
+          <div class="grid grid-cols-2 gap-x-4 gap-y-1 sm:grid-cols-4 lg:grid-cols-6">
+            <ActionStatItem
+              label="缓存"
+              value="Redis"
+              icon={<RedisIcon />}
+              actions={[
+                {
+                  name: '清除 API 缓存',
+                  onClick: () => {
+                    aggregateApi.cleanCache().then(() => {
+                      message.success('清除成功')
+                    })
                   },
-                  default() {
-                    const origin = shijuData.value?.origin
-                    if (!origin) {
-                      return null
-                    }
-                    return (
-                      <NCard
-                        class="box-border max-h-[60vh] max-w-[65vw] overflow-auto text-center"
-                        bordered={false}
-                      >
-                        <NElement>
-                          <NH3
-                            class={
-                              'sticky top-0 bg-[var(--popover-color)] py-2'
-                            }
-                          >
-                            {origin.title}
-                          </NH3>
-                        </NElement>
-                        <NH4>
-                          【{origin.dynasty.replace(/代$/, '')}】{origin.author}
-                        </NH4>
-                        <div class={'px-6'}>
-                          {origin.content.map((c) => (
-                            <NP key={c} class="flex">
-                              {c}
-                            </NP>
-                          ))}
-                        </div>
-                      </NCard>
-                    )
+                },
+                {
+                  name: '清除数据缓存',
+                  onClick: () => {
+                    aggregateApi.cleanRedis().then(() => {
+                      message.success('清除成功')
+                    })
                   },
-                }}
-              </NPopover>
-            </NP>
-          </NGi>
-        </NGrid>
-        <UserLoginStat />
-        <DataStat />
+                },
+              ]}
+            />
+          </div>
+        </section>
+
+        {renderUserLoginStat()}
         <AppIF />
-      </ContentLayout>
+      </>
     )
   },
 })
@@ -666,7 +635,7 @@ const AppIF = defineComponent({
         closedTips.value.dashboard !== dashboard
       ) {
         const $notice = notice.info({
-          title: '[管理中台] 有新版本啦！',
+          title: '管理后台有新版本可用',
           content: () => (
             <div>
               <p>{`当前版本：${PKG.version}，最新版本：${dashboard}`}</p>
@@ -691,7 +660,7 @@ const AppIF = defineComponent({
                     $notice.destroy()
                   }}
                 >
-                  更更更！
+                  立即更新
                 </NButton>
               </div>
             </div>
@@ -717,7 +686,7 @@ const AppIF = defineComponent({
       if (app.value?.version.startsWith('demo')) {
         notice.info({
           title: 'Demo Mode',
-          content: '当前处于 Demo 模式，部分功能不可用',
+          content: '当前处于演示模式，部分功能可能受到限制',
         })
         return
       }
@@ -730,7 +699,7 @@ const AppIF = defineComponent({
         isNewerVersion(app.value.version, versionMap.value.system)
       ) {
         notice.info({
-          title: '[系统] 有新版本啦！',
+          title: '系统有新版本可用',
           content: () => (
             <div>
               <p>{`当前版本：${app.value?.version || 'N/A'}，最新版本：${versionMap.value.system}`}</p>

@@ -2,39 +2,40 @@
  * 路由在此定义
  * @author Innei <https://innei.ren>
  */
+import {
+  Book as BookIcon,
+  ChartLine as ChartLineIcon,
+  Clock as ClockIcon,
+  Code as CodeIcon,
+  Settings as CogsIcon,
+  MessageSquare as CommentIcon,
+  MessagesSquare as CommentsIcon,
+  Bug as DebugIcon,
+  FileEdit as DraftIcon,
+  MoreHorizontal as EllipsisHIcon,
+  Eye as EyeIcon,
+  File as FileIcon,
+  Beaker as FlaskIcon,
+  FunctionSquare as FunctionIcon,
+  Newspaper as LogIcon,
+  FileCode2 as MarkdownIcon,
+  Hammer as MidHammer,
+  Pencil as PencilAltIcon,
+  Pencil as PencilIcon,
+  Users as PhUsersThreeBold,
+  Puzzle as PuzzlePieceIcon,
+  Sparkles as SparklesIcon,
+  BellOff as SubscribeIcon,
+  Paperclip as SymbolIcon,
+  Gauge as TachometerAltIcon,
+  Layout as TemplateIcon,
+  Database as TopicIcon,
+  Undo2 as UndoAltIcon,
+  Users as UserFriendsIcon,
+  Webhook as WebhookIcon,
+} from 'lucide-vue-next'
 import type { RouteRecordRaw } from 'vue-router'
 
-import {
-  BookIcon,
-  ChartLineIcon,
-  ClockIcon,
-  CodeIcon,
-  CogsIcon,
-  CommentIcon,
-  CommentsIcon,
-  DebugIcon,
-  EllipsisHIcon,
-  EyeIcon,
-  FileIcon,
-  FlaskIcon,
-  FunctionIcon,
-  LogIcon,
-  MarkdownIcon,
-  MidHammer,
-  OpenAIIcon,
-  PencilAltIcon,
-  PencilIcon,
-  PhUsersThreeBold,
-  PuzzlePieceIcon,
-  SubscribeIcon,
-  SymbolIcon,
-  TachometerAltIcon,
-  TemplateIcon,
-  TopicIcon,
-  UndoAltIcon,
-  UserFriendsIcon,
-  WebhookIcon,
-} from '~/components/icons'
 import { AppLayout } from '~/layouts/app-layout'
 import $RouterView from '~/layouts/router-view'
 import { DashBoardView } from '~/views/dashboard'
@@ -154,6 +155,15 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     component: CommentPage,
   },
   {
+    path: '/drafts',
+    name: RouteName.Draft,
+    meta: {
+      title: '草稿箱',
+      icon: <DraftIcon />,
+    },
+    component: () => import('../views/drafts'),
+  },
+  {
     path: '/pages',
     name: RouteName.Page,
     redirect: '/pages/list',
@@ -224,15 +234,6 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         },
         component: () => import('../views/manage-says/list'),
       },
-      {
-        path: 'edit',
-        name: RouteName.EditSay,
-        meta: {
-          title: '说点什么呢',
-          icon: <PencilAltIcon />,
-        },
-        component: () => import('../views/manage-says/edit'),
-      },
     ],
   },
   {
@@ -290,7 +291,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     name: RouteName.Ai,
     meta: {
       title: 'AI',
-      icon: <OpenAIIcon />,
+      icon: <SparklesIcon />,
     },
 
     redirect: '/ai/summary',
@@ -300,7 +301,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         name: RouteName.AiSummary,
         meta: {
           title: '摘要',
-          icon: <OpenAIIcon />,
+          icon: <SparklesIcon />,
         },
         component: () => import('../views/ai/summary'),
       },

@@ -1,13 +1,14 @@
 import QProgress from 'qier-progress'
 
+import { userApi } from '~/api/user'
 import { API_URL, GATEWAY_URL } from '~/constants/env'
 import { SESSION_WITH_LOGIN } from '~/constants/keys'
+import { LayoutStore } from '~/stores/layout'
 import { getTokenIsUpstream } from '~/stores/user'
 import { removeToken, setToken } from '~/utils/auth'
 import { checkIsInit } from '~/utils/is-init'
 
 import { configs } from '../configs'
-import { RESTManager } from '../utils/rest'
 import { router } from './router'
 
 export const progress = new QProgress({ colorful: false, color: '#1a9cf3' })
@@ -52,9 +53,7 @@ router.beforeEach(async (to) => {
     if (now - lastCheckedLogAt < 1000 * 60 * 5) {
       return
     }
-    const { ok } = await RESTManager.api('master')('check_logged').get<{
-      ok: number
-    }>()
+    const { ok } = await userApi.checkLogged()
     lastCheckedLogAt = now
     if (!ok) {
       return `/login?from=${encodeURI(to.fullPath)}`
@@ -69,8 +68,8 @@ router.beforeEach(async (to) => {
       if (loginWithTokenOnce || getTokenIsUpstream()) {
         return
       } else {
-        await RESTManager.api.master.login
-          .put<{ token: string }>()
+        await userApi
+          .loginWithToken()
           .then((res) => {
             loginWithTokenOnce = true
             removeToken()
@@ -92,6 +91,9 @@ router.beforeEach(async (to) => {
 router.afterEach((to, _) => {
   document.title = getPageTitle(to?.meta.title as any)
   progress.finish()
+  // 路由变化后重置 layout store，清除旧 VNode 引用
+  // 注意：必须在 afterEach 中调用，而不是 beforeEach，否则组件还在渲染时 VNode 就被清空会导致错误
+  LayoutStore().reset()
 })
 
 // HACK editor save

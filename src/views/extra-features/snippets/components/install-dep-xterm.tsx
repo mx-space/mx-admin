@@ -1,5 +1,5 @@
 import { ShellOutputXterm } from '~/components/output-modal/xterm'
-import { RESTManager } from '~/utils'
+import { API_URL } from '~/constants/env'
 
 export const InstallDepsXterm = defineComponent({
   setup(_, { expose }) {
@@ -7,7 +7,7 @@ export const InstallDepsXterm = defineComponent({
     expose({
       install(pkg: string | string[], onFinish?: () => any) {
         $shell.value.run(
-          `${RESTManager.endpoint}/dependencies/install_deps?packageNames=${
+          `${API_URL}/dependencies/install_deps?packageNames=${
             Array.isArray(pkg) ? pkg.join(',') : pkg
           }`,
           onFinish,

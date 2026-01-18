@@ -1,8 +1,6 @@
+import { Search as MagnifyIcon } from 'lucide-vue-next'
 import { NButton, NPopover } from 'naive-ui'
 
-import { Icon } from '@vicons/utils'
-
-import { MagnifyIcon } from '~/components/icons'
 import { ArticlePreview } from '~/components/preview'
 
 export const IframePreviewButton = defineComponent({
@@ -25,6 +23,7 @@ export const IframePreviewButton = defineComponent({
                 text
                 type="primary"
                 tag="a"
+                class="cursor-pointer"
                 // @ts-ignore
                 target="_blank"
                 // @ts-ignore
@@ -33,9 +32,7 @@ export const IframePreviewButton = defineComponent({
                   e.stopPropagation()
                 }}
               >
-                <Icon>
-                  <MagnifyIcon />
-                </Icon>
+                <MagnifyIcon size={12} />
               </NButton>
             )
           },

@@ -1,14 +1,10 @@
 import { decode } from 'blurhash'
 import { uniqBy } from 'es-toolkit/compat'
+import { ChevronDownIcon, ExternalLinkIcon, Trash2Icon } from 'lucide-vue-next'
 import {
   NButton,
-  NButtonGroup,
   NCheckbox,
-  NCollapse,
-  NCollapseItem,
   NColorPicker,
-  NForm,
-  NFormItem,
   NInput,
   NInputNumber,
 } from 'naive-ui'
@@ -170,129 +166,210 @@ export const ImageDetailSection = defineComponent({
       loading.value = false
     }
 
+    // 展开状态管理
+    const expandedIndex = ref<number | null>(null)
+
     return () => (
-      <div class="relative flex w-full flex-grow flex-col">
-        <div class="flex items-center justify-between space-x-2">
-          <div class="inline-block flex-shrink flex-grow">
-            调整 Markdown 中包含的图片信息
-          </div>
+      <div class="flex w-full flex-col">
+        {/* 头部操作区 */}
+        <div class="flex items-center justify-between gap-3">
+          <span class="text-sm text-neutral-500">
+            调整 Markdown 中的图片信息
+          </span>
           <NButton
             loading={loading.value}
-            class="self-end"
-            round
+            size="small"
             onClick={handleCorrectImageDimensions}
+            type="primary"
+            secondary
           >
             自动修正
           </NButton>
         </div>
-        <div class="mt-2 flex items-center gap-1 pl-1 text-sm">
+
+        {/* WebGL 选项 */}
+        <label class="mt-3 flex cursor-pointer items-center gap-2 text-xs text-neutral-400">
           <NCheckbox
             size="small"
             checked={useWebglFlag.value}
             onUpdateChecked={(e) => void (useWebglFlag.value = e)}
+            aria-label="使用 WebGL 加速"
           />
-          <label for="useWebglFlag" class="ml-2">
-            使用 Webgl 加速图片处理（实验性，调用 GPU 计算）
-          </label>
-        </div>
-        <NCollapse accordion class="mt-4">
-          {images.value.map((image: ImageModel, index: number) => {
-            return (
-              <NCollapseItem
-                key={image.src}
-                // @ts-expect-error
-                title={
-                  <span class="flex w-full flex-shrink break-all">
-                    {image.src}
-                  </span>
-                }
-              >
-                <NForm labelPlacement="left" labelWidth="100">
-                  <NFormItem label="高度">
-                    <NInputNumber
-                      value={image.height}
-                      onUpdateValue={(n) => {
-                        if (!n) {
-                          return
-                        }
-                        props.images[index].height = n
-                      }}
-                    />
-                  </NFormItem>
+          <span>使用 WebGL 加速图片处理（实验性）</span>
+        </label>
 
-                  <NFormItem label="宽度">
-                    <NInputNumber
-                      value={image.width}
-                      onUpdateValue={(n) => {
-                        if (!n) {
-                          return
-                        }
-                        props.images[index].width = n
-                      }}
-                    />
-                  </NFormItem>
-                  <NFormItem label="类型">
-                    <NInput
-                      value={image.type || ''}
-                      onUpdateValue={(n) => {
-                        if (!n) {
-                          return
-                        }
-                        props.images[index].type = n
-                      }}
-                    />
-                  </NFormItem>
-                  <NFormItem label="主色调">
-                    <NColorPicker
-                      value={image.accent || ''}
-                      onUpdateValue={(n) => {
-                        if (!n) {
-                          return
-                        }
-                        props.images[index].accent = n
-                      }}
-                    />
-                  </NFormItem>
+        {/* 图片列表 */}
+        {images.value.length > 0 && (
+          <div class="mt-4 space-y-2">
+            {images.value.map((image: ImageModel, index: number) => {
+              const isExpanded = expandedIndex.value === index
+              const fileName = image.src.split('/').pop() || image.src
 
-                  <NFormItem label="Blur Preview">
-                    <div>
-                      {image.blurHash && (
-                        <BlurHashPreview hash={image.blurHash} />
+              return (
+                <div
+                  key={image.src}
+                  class="overflow-hidden rounded-lg border border-neutral-200 dark:border-neutral-700"
+                >
+                  {/* 折叠头部 */}
+                  <button
+                    type="button"
+                    class="flex w-full items-center justify-between gap-2 bg-neutral-50 px-3 py-2.5 text-left transition-colors hover:bg-neutral-100 dark:bg-neutral-800/50 dark:hover:bg-neutral-800"
+                    onClick={() => {
+                      expandedIndex.value = isExpanded ? null : index
+                    }}
+                    aria-expanded={isExpanded}
+                    aria-controls={`image-detail-${index}`}
+                  >
+                    <span class="min-w-0 flex-1 truncate text-sm text-neutral-700 dark:text-neutral-200">
+                      {fileName}
+                    </span>
+                    <div class="flex items-center gap-1 text-xs text-neutral-400">
+                      {image.width && image.height && (
+                        <span>
+                          {image.width}×{image.height}
+                        </span>
                       )}
+                      <ChevronDownIcon
+                        class={[
+                          'size-4 transition-transform',
+                          isExpanded && 'rotate-180',
+                        ]}
+                      />
                     </div>
-                  </NFormItem>
+                  </button>
 
-                  <NFormItem label="操作">
-                    <div class="flex w-full justify-end">
-                      <NButtonGroup>
+                  {/* 展开内容 */}
+                  {isExpanded && (
+                    <div
+                      id={`image-detail-${index}`}
+                      class="space-y-3 border-t border-neutral-200 p-3 dark:border-neutral-700"
+                    >
+                      {/* 尺寸 */}
+                      <div class="grid grid-cols-2 gap-3">
+                        <div>
+                          <label class="mb-1 block text-xs text-neutral-500">
+                            宽度
+                          </label>
+                          <NInputNumber
+                            class="w-full"
+                            size="small"
+                            value={image.width}
+                            onUpdateValue={(n) => {
+                              if (!n) return
+                              props.images[index].width = n
+                            }}
+                            aria-label="图片宽度"
+                          />
+                        </div>
+                        <div>
+                          <label class="mb-1 block text-xs text-neutral-500">
+                            高度
+                          </label>
+                          <NInputNumber
+                            class="w-full"
+                            size="small"
+                            value={image.height}
+                            onUpdateValue={(n) => {
+                              if (!n) return
+                              props.images[index].height = n
+                            }}
+                            aria-label="图片高度"
+                          />
+                        </div>
+                      </div>
+
+                      {/* 类型和主色调 */}
+                      <div class="grid grid-cols-2 gap-3">
+                        <div>
+                          <label class="mb-1 block text-xs text-neutral-500">
+                            类型
+                          </label>
+                          <NInput
+                            class="w-full"
+                            size="small"
+                            value={image.type || ''}
+                            onUpdateValue={(n) => {
+                              if (!n) return
+                              props.images[index].type = n
+                            }}
+                            placeholder="jpg, png..."
+                            aria-label="图片类型"
+                          />
+                        </div>
+                        <div>
+                          <label class="mb-1 block text-xs text-neutral-500">
+                            主色调
+                          </label>
+                          <NColorPicker
+                            size="small"
+                            value={image.accent || ''}
+                            onUpdateValue={(n) => {
+                              if (!n) return
+                              props.images[index].accent = n
+                            }}
+                            aria-label="主色调"
+                          />
+                        </div>
+                      </div>
+
+                      {/* BlurHash 预览 */}
+                      {image.blurHash && (
+                        <div>
+                          <label class="mb-1 block text-xs text-neutral-500">
+                            BlurHash 预览
+                          </label>
+                          <BlurHashPreview hash={image.blurHash} />
+                        </div>
+                      )}
+
+                      {/* 操作按钮 */}
+                      <div class="flex justify-end gap-2 pt-1">
                         <NButton
-                          round
+                          size="small"
+                          quaternary
                           onClick={() => {
                             window.open(image.src)
                           }}
-                          secondary
+                          aria-label="在新窗口查看图片"
                         >
-                          查看
+                          {{
+                            icon: () => <ExternalLinkIcon class="size-4" />,
+                            default: () => '查看',
+                          }}
                         </NButton>
 
                         <NButton
-                          secondary
-                          round
+                          size="small"
+                          quaternary
                           type="error"
                           onClick={() => {
                             props.images.splice(index, 1)
+                            if (expandedIndex.value === index) {
+                              expandedIndex.value = null
+                            }
                           }}
+                          aria-label="删除图片"
                         >
-                          删除
+                          {{
+                            icon: () => <Trash2Icon class="size-4" />,
+                            default: () => '删除',
+                          }}
                         </NButton>
-                      </NButtonGroup>
+                      </div>
                     </div>
-                  </NFormItem>
-                </NForm>
-              </NCollapseItem>
-            )
-          })}
-        </NCollapse>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        )}
+
+        {/* 空状态 */}
+        {images.value.length === 0 && (
+          <div class="mt-4 rounded-lg border border-dashed border-neutral-200 py-6 text-center text-sm text-neutral-400 dark:border-neutral-700">
+            文章中暂无图片
+          </div>
+        )}
       </div>
     )
   },
@@ -320,9 +397,10 @@ const BlurHashPreview = defineComponent({
     return () => (
       <canvas
         ref={canvasRef}
-        class="bg-cover bg-center"
+        class="rounded bg-cover bg-center"
         height={32}
         width={32}
+        aria-label="BlurHash 预览图"
       />
     )
   },

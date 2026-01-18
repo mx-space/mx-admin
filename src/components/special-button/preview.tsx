@@ -1,11 +1,11 @@
 import { debounce } from 'es-toolkit/compat'
+import { Search as MagnifyingGlass } from 'lucide-vue-next'
 import { NSplit } from 'naive-ui'
 
+import { optionsApi } from '~/api'
 import { useUIStore } from '~/stores/ui'
-import { RESTManager } from '~/utils'
 
 import { HeaderActionButton } from '../button/rounded-button'
-import { MagnifyingGlass } from '../icons'
 
 export type PreviewButtonExposed = {
   getWindow: () => Window | null
@@ -53,10 +53,8 @@ export const HeaderPreviewButton = defineComponent({
 
       const { id } = data
       if (!webUrl) {
-        const res = await RESTManager.api.options.url
-          .get<any>()
-          .then((data) => data.data)
-        webUrl = res.webUrl
+        const res = await optionsApi.getUrl()
+        webUrl = res.data.webUrl
       }
 
       let url: URL

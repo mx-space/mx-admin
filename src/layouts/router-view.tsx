@@ -17,7 +17,7 @@ const $RouterView = defineComponent({
 
                   fallback() {
                     return (
-                      <div class="text-primary-default fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform">
+                      <div class="text-primary fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform">
                         <NSpin strokeWidth={14} show rotate />
                       </div>
                     )

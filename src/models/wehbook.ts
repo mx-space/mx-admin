@@ -3,8 +3,8 @@ export interface WebhookModel {
   events: string[]
   enabled: boolean
   id: string
-  secret: string
-
+  secret?: string
+  url?: string
   scope: number
 }
 

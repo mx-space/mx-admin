@@ -1,8 +1,7 @@
+import { Eye as EyeIcon, EyeOff as EyeOffIcon } from 'lucide-vue-next'
 import { defineComponent } from 'vue'
 
 import { Icon } from '@vicons/utils'
-
-import { EyeIcon, EyeOffIcon } from '~/components/icons'
 
 interface StatusToggleProps {
   isPublished: boolean
@@ -49,14 +48,16 @@ export const StatusToggle = defineComponent<StatusToggleProps>({
 
       return (
         <div
-          class={`group relative inline-flex cursor-pointer items-center justify-center gap-1 rounded-lg transition-all duration-200 hover:shadow-sm ${
-            isSmall ? 'w-16 px-1.5 py-0.5 text-xs' : 'w-20 px-2 py-1 text-xs'
+          class={`group relative inline-flex cursor-pointer items-center justify-center gap-0.5 rounded transition-all duration-200 hover:shadow-sm ${
+            isSmall
+              ? 'px-1.5 py-0.5 text-[10px] leading-tight'
+              : 'px-2 py-1 text-xs'
           }`}
           style={currentStyles}
           onClick={handleClick}
         >
           {/* 默认状态显示 */}
-          <div class="flex items-center gap-1 transition-opacity duration-200 group-hover:opacity-0">
+          <div class="flex items-center gap-0.5 transition-opacity duration-200 group-hover:opacity-0">
             <Icon size={isSmall ? 10 : 12}>
               {props.isPublished ? <EyeIcon /> : <EyeOffIcon />}
             </Icon>
@@ -65,10 +66,16 @@ export const StatusToggle = defineComponent<StatusToggleProps>({
 
           {/* hover时的切换提示 */}
           <div
-            class="absolute inset-0 flex items-center justify-center rounded-lg bg-inherit text-xs opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+            class={`absolute inset-0 flex items-center justify-center rounded bg-inherit opacity-0 transition-opacity duration-200 group-hover:opacity-100 ${
+              isSmall ? 'text-[10px]' : 'text-xs'
+            }`}
             style={currentStyles}
           >
-            切换为{props.isPublished ? '草稿' : '发布'}
+            {isSmall
+              ? props.isPublished
+                ? '→草稿'
+                : '→发布'
+              : `切换为${props.isPublished ? '草稿' : '发布'}`}
           </div>
         </div>
       )

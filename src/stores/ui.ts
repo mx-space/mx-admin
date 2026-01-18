@@ -9,7 +9,9 @@
 import { debounce } from 'es-toolkit/compat'
 import { computed, onMounted, ref, watch } from 'vue'
 
-import { useDark, useToggle } from '@vueuse/core'
+import { usePreferredDark, useStorage } from '@vueuse/core'
+
+export type ThemeMode = 'light' | 'dark' | 'system'
 
 export interface ViewportRecord {
   w: number
@@ -24,11 +26,41 @@ export interface ViewportRecord {
 
 export const useUIStore = defineStore('ui', () => {
   const viewport = ref<ViewportRecord>({} as any)
-  const sidebarWidth = ref(250)
   const sidebarCollapse = ref(viewport.value.mobile ? true : false)
 
-  const isDark = useDark()
-  const toggleDark = useToggle(isDark)
+  // Three-state theme: light, dark, system
+  const themeMode = useStorage<ThemeMode>('theme-mode', 'system')
+  const prefersDark = usePreferredDark()
+
+  // Computed: actual dark state based on mode
+  const isDark = computed(() => {
+    if (themeMode.value === 'system') {
+      return prefersDark.value
+    }
+    return themeMode.value === 'dark'
+  })
+
+  // Cycle through theme modes: light -> dark -> system -> light
+  const cycleTheme = () => {
+    const modes: ThemeMode[] = ['light', 'dark', 'system']
+    const currentIndex = modes.indexOf(themeMode.value)
+    const nextIndex = (currentIndex + 1) % modes.length
+    themeMode.value = modes[nextIndex]
+  }
+
+  // Set specific theme mode
+  const setThemeMode = (mode: ThemeMode) => {
+    themeMode.value = mode
+  }
+
+  // Legacy toggle (for backward compatibility)
+  const toggleDark = () => {
+    if (isDark.value) {
+      themeMode.value = 'light'
+    } else {
+      themeMode.value = 'dark'
+    }
+  }
 
   onMounted(() => {
     const resizeHandler = debounce(updateViewport, 500, { trailing: true })
@@ -63,18 +95,19 @@ export const useUIStore = defineStore('ui', () => {
     }
   }
 
-  const contentWidth = computed(
-    () =>
-      viewport.value.w -
-      sidebarWidth.value +
-      (sidebarCollapse.value
-        ? Number.parseInt(
-            getComputedStyle(document.documentElement).getPropertyValue(
-              '--sidebar-collapse-width',
-            ),
-          )
-        : 0),
-  )
+  const contentWidth = computed(() => {
+    if (sidebarCollapse.value) {
+      // 折叠时内容区域占满整个屏幕宽度
+      return viewport.value.w
+    }
+    // 展开时减去 Sidebar 宽度
+    const sidebarWidthValue = Number.parseInt(
+      getComputedStyle(document.documentElement).getPropertyValue(
+        '--sidebar-width',
+      ),
+    )
+    return viewport.value.w - sidebarWidthValue
+  })
 
   const contentInsetWidth = computed(
     () =>
@@ -91,18 +124,21 @@ export const useUIStore = defineStore('ui', () => {
         document.documentElement.classList.remove('dark')
       }
     },
+    { immediate: true },
   )
 
   const naiveUIDark = ref(false)
   return {
     viewport,
     contentWidth,
-    sidebarWidth,
     contentInsetWidth,
     sidebarCollapse,
 
     isDark,
     toggleDark,
+    themeMode,
+    cycleTheme,
+    setThemeMode,
 
     naiveUIDark,
     onlyToggleNaiveUIDark: (dark?: boolean) => {

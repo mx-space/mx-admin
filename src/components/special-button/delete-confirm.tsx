@@ -1,8 +1,8 @@
+import { Trash2 as DeleteIcon } from 'lucide-vue-next'
 import { useDialog, useMessage } from 'naive-ui'
 import type { PropType, Ref } from 'vue'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
-import { DeleteIcon } from '~/components/icons'
 
 type AccpetType = string[] | Set<string>
 
@@ -72,8 +72,8 @@ export const DeleteConfirmButton = defineComponent({
               title: '警告',
               content:
                 content ?? `你确定要删除${size > 1 ? '多条' : '这条'}数据？`,
-              positiveText: 'はい',
-              negativeText: '达咩',
+              positiveText: '确认',
+              negativeText: '取消',
               onPositiveClick: async () => {
                 await onDelete(checkedRowKeys)
                 showSuccessMessage &&

@@ -1,3 +1,4 @@
+import { MapPin as LocationIcon } from 'lucide-vue-next'
 import { NButton, useMessage } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import type { Amap, Regeocode } from '~/models/amap'
@@ -5,8 +6,7 @@ import type { PropType } from 'vue'
 
 import { Icon } from '@vicons/utils'
 
-import { LocationIcon } from '~/components/icons'
-import { RESTManager } from '~/utils/rest'
+import { systemApi } from '~/api'
 
 export const GetLocationButton = defineComponent({
   props: {
@@ -45,14 +45,10 @@ export const GetLocationButton = defineComponent({
           } = coordinates
 
           const coo = [longitude, latitude] as const
-          const res = await RESTManager.api
-            .fn('built-in')
-            .geocode_location.get<Amap>({
-              params: {
-                longitude,
-                latitude,
-              },
-            })
+          const res = (await systemApi.callBuiltInFunction('geocode_location', {
+            longitude,
+            latitude,
+          })) as Amap
 
           props.onChange(res.regeocode, coo)
         } catch (error: any) {

@@ -3,12 +3,11 @@
  *
  */
 
+import { Settings as SettingsIcon } from 'lucide-vue-next'
 import { NCard, NElement, NForm, NModal } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 
-import { Icon } from '@vicons/utils'
-
-import { SettingsIcon } from '~/components/icons'
+import { FabButton } from '~/components/button/rounded-button'
 import { useMountAndUnmount } from '~/hooks/use-lifecycle'
 import { useLayout } from '~/layouts/content'
 
@@ -37,15 +36,13 @@ export const Editor = defineComponent({
 
     useMountAndUnmount(() => {
       const settingButton = layout.addFloatButton(
-        <button
+        <FabButton
+          icon={<SettingsIcon />}
+          label="编辑器设置"
           onClick={() => {
             modalOpen.value = true
           }}
-        >
-          <Icon size={18}>
-            <SettingsIcon />
-          </Icon>
-        </button>,
+        />,
       )
 
       return () => {
@@ -99,6 +96,8 @@ export const Editor = defineComponent({
 
     return () => {
       const { setting: generalSetting } = general
+      const resolvedRenderMode =
+        props.renderMode ?? generalSetting.renderMode ?? 'plain'
       return (
         <NElement
           tag="div"
@@ -112,7 +111,11 @@ export const Editor = defineComponent({
           }
           class={'editor-wrapper'}
         >
-          <CodemirrorEditor ref={cmRef} {...props} />
+          <CodemirrorEditor
+            ref={cmRef}
+            {...props}
+            renderMode={resolvedRenderMode}
+          />
           <Modal />
         </NElement>
       )

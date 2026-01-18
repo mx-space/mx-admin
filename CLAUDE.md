@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-MX Admin (admin-vue3) is the **legacy dashboard** for MX Space, a personal blog management system. Built with Vue 3, Naive UI, and WindiCSS. This project is being replaced by `mx-dashboard` (React-based rewrite).
+MX Admin (admin-vue3) is the **legacy dashboard** for MX Space, a personal blog management system. Built with Vue 3, Naive UI, and Tailwind CSS v4. This project is being replaced by `mx-dashboard` (React-based rewrite).
 
 > **Note**: This is the old version of the dashboard. For new feature development, prefer working on `mx-dashboard` instead.
 
@@ -50,7 +50,7 @@ pnpm format
 
 - **Vue 3** - UI framework with Composition API
 - **Naive UI** - Component library
-- **WindiCSS** - Utility-first CSS framework
+- **Tailwind CSS v4** - Utility-first CSS framework
 - **Pinia** - State management
 - **Vue Router** - Routing
 - **CodeMirror/Monaco** - Code editors
@@ -70,10 +70,15 @@ pnpm format
 
 - Environment variables in `.env` and `.env.production`
 - Vite configuration in `vite.config.mts`
-- WindiCSS configuration in `windi.config.ts`
-- Theme configuration in `theme.config.ts`
+- Tailwind CSS configuration in `src/index.css` (@theme block)
+- Theme colors in `src/utils/color.ts` (fixed Vercel-style neutral gray)
+
+## Claude Code Rules
+
+- **验证方式**：修改代码后只需运行类型检查（`pnpm tsc --noEmit` 或依赖 IDE 诊断），不要运行 `pnpm build` 构建整个项目
+- **灰阶颜色**：所有灰阶色必须使用 `neutral` 而不是 `gray`（如 `text-neutral-500`、`bg-neutral-800`、`border-neutral-200`）。这与项目的 Vercel 风格设计一致
 
 ## Related Projects
 
-- **mx-core** - Backend API server (NestJS + MongoDB)
+- **mx-core** - Backend API server (NestJS + MongoDB), located at `../mx-core`
 - **mx-dashboard** - New React-based dashboard (replacement for this project)

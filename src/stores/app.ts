@@ -1,14 +1,7 @@
 import { onMounted, ref } from 'vue'
+import type { AppInfo } from '~/models/system'
 
-/*
- * @Author: Innei
- * @Date: 2021-03-22 11:41:32
- * @LastEditTime: 2021-03-22 11:41:32
- * @LastEditors: Innei
- * @FilePath: /admin-next/src/stores/ui.ts
- * Mark: Coding with Love
- */
-import { RESTManager } from '~/utils'
+import { systemApi } from '~/api/system'
 
 export interface ViewportRecord {
   w: number
@@ -24,7 +17,7 @@ export interface ViewportRecord {
 export const useAppStore = defineStore('app', () => {
   const app = ref<AppInfo>()
   onMounted(() => {
-    RESTManager.api.get<AppInfo>().then((res) => {
+    systemApi.getAppInfo().then((res) => {
       app.value = res
     })
   })

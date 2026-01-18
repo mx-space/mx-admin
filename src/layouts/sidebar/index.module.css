@@ -1,14 +1,62 @@
 .root {
-  .content {
-    left: var(--w);
+  @apply min-h-screen;
+  background: var(--page-bg);
 
-    @apply transition-all duration-500;
-    @apply fixed inset-0 overflow-hidden;
+  .content {
+    left: var(--sidebar-width);
+    transition: left var(--sidebar-transition-duration) ease;
+    background: transparent;
+    padding: 8px;
+    padding-left: 0;
+
+    @apply fixed inset-0;
   }
 
-  @screen phone {
+  .container {
+    background: var(--content-bg);
+    border-radius: var(--content-container-radius);
+    height: 100%;
+    overflow: hidden;
+    box-shadow: var(--content-shadow);
+
+    @apply flex flex-col;
+  }
+
+  &:global(.collapsed) .content,
+  &:global(.collapsing) .content {
+    left: 0;
+    padding-left: 16px;
+  }
+
+  @media (max-width: 768px) {
     .content {
-      left: var(--sidebar-collapse-width) !important;
+      left: 0 !important;
+      /* 移动端全屏，去掉 padding */
+      padding: 0 !important;
     }
+
+    .container {
+      /* 移动端去掉卡片形式，改为全屏 */
+      border-radius: 0;
+      box-shadow: none;
+    }
+  }
+}
+
+/* 遮罩层 */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 98;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }

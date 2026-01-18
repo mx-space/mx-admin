@@ -1,7 +1,7 @@
 import type { PropType, Ref } from 'vue'
 
+import { systemApi } from '~/api'
 import { useAsyncLoadMonaco } from '~/hooks/use-async-monaco'
-import { RESTManager } from '~/utils'
 
 import * as typeDefines from './libs/lib.declare'
 import { NodeDeclare } from './libs/node.declare'
@@ -66,9 +66,7 @@ export const FunctionCodeEditor = defineComponent({
 
         const libUri = 'ts:filename/global.d.ts'
         if (!monaco.editor.getModel(monaco.Uri.parse(libUri))) {
-          RESTManager.api.fn.types.get<any>().then((data) => {
-            const libSource = data
-
+          systemApi.getFnTypes().then((libSource) => {
             monaco.languages.typescript.typescriptDefaults.addExtraLib(
               libSource,
               libUri,

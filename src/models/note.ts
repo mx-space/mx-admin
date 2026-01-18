@@ -15,6 +15,7 @@ export interface NoteModel {
   publicAt?: Date
   password?: string | null
   nid: number
+  hide: boolean
 
   location?: string
 
@@ -22,6 +23,7 @@ export interface NoteModel {
 
   meta?: any
   isPublished?: boolean
+  topicId?: string
 }
 
 export interface Coordinate {

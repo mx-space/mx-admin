@@ -3,7 +3,8 @@ import type { UploadOnFinish } from 'naive-ui'
 import type { OnError } from 'naive-ui/es/upload/src/interface'
 import type { PropType } from 'vue'
 
-import { getToken, RESTManager } from '~/utils'
+import { API_URL } from '~/constants/env'
+import { getToken } from '~/utils'
 
 export const UploadWrapper = defineComponent({
   props: {
@@ -29,7 +30,7 @@ export const UploadWrapper = defineComponent({
           }}
           showFileList={false}
           accept="image/*"
-          action={`${RESTManager.endpoint}/files/upload?type=${type}`}
+          action={`${API_URL}/files/upload?type=${type}`}
           onError={
             onError ||
             ((e) => {

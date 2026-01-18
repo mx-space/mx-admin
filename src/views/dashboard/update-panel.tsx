@@ -1,12 +1,12 @@
 import { ShellOutputNormal } from '~/components/output-modal/normal'
+import { API_URL } from '~/constants/env'
 import { usePortalElement } from '~/hooks/use-portal-element'
-import { RESTManager } from '~/utils'
 
 export const UpdatePanel = defineComponent({
   setup(_) {
     const $shellRef = ref<any>()
     const handleUpdate = () => {
-      $shellRef.value.run(`${RESTManager.endpoint}/update/upgrade/dashboard`)
+      $shellRef.value.run(`${API_URL}/update/upgrade/dashboard`)
     }
 
     const portal = usePortalElement()

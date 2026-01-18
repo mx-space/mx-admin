@@ -1,4 +1,8 @@
 import {
+  ExternalLink as ExternalLinkIcon,
+  Download as ImportIcon,
+} from 'lucide-vue-next'
+import {
   NButton,
   NCard,
   NForm,
@@ -13,13 +17,12 @@ import { basename, extname } from 'path-browserify'
 import type { SnippetModel } from '~/models/snippet'
 import type { PropType } from 'vue'
 
+import { snippetsApi } from '~/api'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { CodeHighlight } from '~/components/code-highlight'
-import { ExternalLinkIcon, ImportIcon } from '~/components/icons'
 import { CenterSpin } from '~/components/spin'
 import { GitHubSnippetRepo } from '~/external/api/github-mx-snippets'
 import { SnippetType } from '~/models/snippet'
-import { RESTManager } from '~/utils'
 
 import { InstallDepsXterm } from './install-dep-xterm'
 
@@ -287,10 +290,7 @@ const ProcessView = defineComponent({
       const message$ = message.loading('正在导入...', {
         duration: 10e5,
       })
-      await RESTManager.api.snippets.import.post({
-        data: payload,
-        timeout: 10e5,
-      })
+      await snippetsApi.import(payload)
       message$.destroy()
       if (payload.packages.length > 0) {
         // @ts-ignore

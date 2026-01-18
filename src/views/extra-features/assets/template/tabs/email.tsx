@@ -1,11 +1,11 @@
+import { Check as CheckIcon, Trash as TrashIcon } from 'lucide-vue-next'
 import { NForm, NFormItem, NGi, NSelect, useDialog } from 'naive-ui'
 
+import { optionsApi } from '~/api'
 import { HeaderActionButton } from '~/components/button/rounded-button'
-import { CheckIcon, TrashIcon } from '~/components/icons'
 import { useMountAndUnmount } from '~/hooks/use-lifecycle'
 import { useLayout } from '~/layouts/content'
 import { TwoColGridLayout } from '~/layouts/two-col'
-import { RESTManager } from '~/utils'
 
 import { CodeEditorForTemplateEditing } from '../code-editor'
 import { EJSRender } from '../ejs-render'
@@ -28,13 +28,13 @@ export const EmailTab = defineComponent({
     )
 
     const renderProps = ref<any>(null)
-    const { setHeaderButtons: setHeaderButton } = useLayout()
+    const { setActions: setHeaderButton } = useLayout()
 
     const save = async () => {
-      await RESTManager.api.options.email.template.put({
-        params: { type: templateType.value },
-        data: { source: modifiedTemplate.value },
-      })
+      await optionsApi.updateEmailTemplate(
+        { type: templateType.value },
+        { source: modifiedTemplate.value },
+      )
 
       await fetch()
     }
@@ -45,17 +45,15 @@ export const EmailTab = defineComponent({
         title: '确认重置？',
         content: '重置后，模板将被恢复为默认模板',
         async onNegativeClick() {
-          await RESTManager.api.options.email.template.delete({
-            params: { type: templateType.value },
-          })
+          await optionsApi.deleteEmailTemplate({ type: templateType.value })
 
           await fetch()
         },
         onPositiveClick() {
           return
         },
-        negativeText: '嗯',
-        positiveText: '达咩',
+        negativeText: '取消',
+        positiveText: '确认',
       })
     }
     // TODO
@@ -92,14 +90,9 @@ export const EmailTab = defineComponent({
     })
 
     const fetch = async () => {
-      const { template, props } =
-        await RESTManager.api.options.email.template.get<{
-          template: string
-          props: any
-        }>({
-          params: { type: templateType.value },
-          transform: false,
-        })
+      const { template, props } = await optionsApi.getEmailTemplate({
+        type: templateType.value,
+      })
       templateString.value = template
       modifiedTemplate.value = template
       renderProps.value = props

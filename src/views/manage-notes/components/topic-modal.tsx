@@ -1,28 +1,53 @@
-import {
-  NButton,
-  NCard,
-  NForm,
-  NFormItem,
-  NIcon,
-  NInput,
-  NModal,
-} from 'naive-ui'
+/**
+ * Topic Edit Modal
+ * 专栏编辑模态框 - 创建/编辑专栏
+ */
+import { Upload as UploadIcon, X } from 'lucide-vue-next'
+import { NButton, NInput, NModal, NSpin } from 'naive-ui'
 import type { TopicModel } from '~/models/topic'
-import type { FormInst } from 'naive-ui'
 import type { PropType } from 'vue'
 
-import { UploadIcon } from '~/components/icons'
+import { useMutation } from '@tanstack/vue-query'
+
+import { topicsApi } from '~/api/topics'
 import { UploadWrapper } from '~/components/upload'
-import { RESTManager } from '~/utils/rest'
+
+/**
+ * Form Field Component
+ */
+const FormField = defineComponent({
+  props: {
+    label: { type: String, required: true },
+    required: { type: Boolean, default: false },
+    error: { type: String, required: false },
+  },
+  setup(props, { slots }) {
+    return () => (
+      <div class="mb-4">
+        <label class="mb-1.5 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+          {props.label}
+          {props.required && <span class="ml-0.5 text-red-500">*</span>}
+        </label>
+        {slots.default?.()}
+        {props.error && (
+          <p class="mt-1 text-xs text-red-500" role="alert">
+            {props.error}
+          </p>
+        )}
+      </div>
+    )
+  },
+})
 
 export const TopicEditModal = defineComponent({
+  name: 'TopicEditModal',
   props: {
     show: {
       type: Boolean,
       required: true,
     },
     onClose: {
-      type: Function,
+      type: Function as PropType<() => void>,
       required: true,
     },
     id: {
@@ -30,18 +55,51 @@ export const TopicEditModal = defineComponent({
       required: false,
     },
     onSubmit: {
-      type: Function as PropType<(topic: TopicModel) => any>,
+      type: Function as PropType<(topic: TopicModel) => void>,
       required: false,
     },
   },
   setup(props) {
     const topic = reactive<Partial<TopicModel>>({})
     const loading = ref(false)
+    const submitting = ref(false)
+    const errors = reactive<Record<string, string>>({})
 
     const resetTopicData = () => {
       Object.keys(topic).forEach((key) => {
-        delete topic[key]
+        delete topic[key as keyof typeof topic]
       })
+      Object.keys(errors).forEach((key) => {
+        delete errors[key]
+      })
+    }
+
+    const validateForm = (): boolean => {
+      Object.keys(errors).forEach((key) => delete errors[key])
+
+      if (!topic.name?.trim()) {
+        errors.name = '请输入专栏名称'
+      } else if (topic.name.length > 50) {
+        errors.name = '名称不能超过 50 个字符'
+      }
+
+      if (!topic.slug?.trim()) {
+        errors.slug = '请输入专栏 ID'
+      } else if (!/^[\w-]+$/.test(topic.slug)) {
+        errors.slug = 'ID 只能包含字母、数字、下划线和连字符'
+      }
+
+      if (!topic.introduce?.trim()) {
+        errors.introduce = '请输入简介'
+      } else if (topic.introduce.length > 100) {
+        errors.introduce = '简介不能超过 100 个字符'
+      }
+
+      if (topic.description && topic.description.length > 500) {
+        errors.description = '描述不能超过 500 个字符'
+      }
+
+      return Object.keys(errors).length === 0
     }
 
     watch(
@@ -51,11 +109,12 @@ export const TopicEditModal = defineComponent({
           resetTopicData()
         } else {
           loading.value = true
-          RESTManager.api
-            .topics(id)
-            .get<TopicModel>()
+          topicsApi
+            .getById(id)
             .then((data) => {
               Object.assign(topic, data)
+            })
+            .finally(() => {
               loading.value = false
             })
         }
@@ -64,177 +123,179 @@ export const TopicEditModal = defineComponent({
 
     const handleClose = () => {
       props.onClose()
+      nextTick(() => resetTopicData())
     }
-    const handleSubmit = () => {
-      formRef?.value?.validate(async (err) => {
-        if (err?.length) {
-          return
-        }
 
-        await handlePostData()
-      })
-
-      async function handlePostData() {
-        let data: TopicModel
-        if (props.id) {
-          data = await RESTManager.api.topics(props.id).put({
-            data: topic,
-          })
-          message.success('修改成功')
-        } else {
-          data = await RESTManager.api.topics.post({
-            data: topic,
-          })
-          message.success('添加成功')
-        }
+    // 创建专栏
+    const createMutation = useMutation({
+      mutationFn: (data: Partial<TopicModel>) => topicsApi.create(data as any),
+      onSuccess: (data) => {
+        message.success('创建成功')
         props.onSubmit?.(data)
-        nextTick(() => {
-          resetTopicData()
+        resetTopicData()
+      },
+    })
+
+    // 更新专栏
+    const updateMutation = useMutation({
+      mutationFn: ({ id, data }: { id: string; data: Partial<TopicModel> }) =>
+        topicsApi.update(id, data),
+      onSuccess: (data) => {
+        message.success('修改成功')
+        props.onSubmit?.(data)
+        resetTopicData()
+      },
+    })
+
+    const handleSubmit = () => {
+      if (!validateForm()) return
+
+      submitting.value = true
+      if (props.id) {
+        updateMutation.mutate(
+          { id: props.id, data: topic },
+          { onSettled: () => (submitting.value = false) },
+        )
+      } else {
+        createMutation.mutate(topic, {
+          onSettled: () => (submitting.value = false),
         })
       }
     }
-    const formRef = ref<FormInst>()
+
+    const handleKeydown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+        handleSubmit()
+      }
+    }
+
     return () => (
-      <>
-        <NModal
-          show={props.show}
-          onUpdateShow={handleClose}
-          closable
-          onClose={handleClose}
-          transformOrigin="center"
+      <NModal
+        show={props.show}
+        onUpdateShow={(show) => {
+          if (!show) handleClose()
+        }}
+        closeOnEsc
+        transformOrigin="center"
+      >
+        <div
+          class="w-full max-w-lg rounded-xl bg-white shadow-xl dark:bg-neutral-900"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="topic-modal-title"
+          onKeydown={handleKeydown}
         >
-          <NCard
-            role="dialog"
-            title={props.id ? '编辑话题' : '新建话题'}
-            closable
-            onClose={handleClose}
-            class="modal-card sm"
-          >
-            <NForm
-              labelPlacement="top"
-              ref={formRef}
-              model={topic}
-              disabled={loading.value}
+          {/* Header */}
+          <div class="flex items-center justify-between border-b border-neutral-200 px-5 py-4 dark:border-neutral-800">
+            <h2
+              id="topic-modal-title"
+              class="text-lg font-semibold text-neutral-900 dark:text-neutral-100"
             >
-              <NFormItem
-                label="名字"
-                required
-                rule={{
-                  max: 50,
-                  required: true,
-                  trigger: ['blur', 'input'],
-                }}
-                path="name"
-              >
-                <NInput
-                  value={topic.name}
-                  onUpdateValue={(val) => {
-                    topic.name = val
-                  }}
-                />
-              </NFormItem>
+              {props.id ? '编辑专栏' : '新建专栏'}
+            </h2>
+            <button
+              type="button"
+              class="rounded-lg p-1 text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-600 dark:hover:bg-neutral-800"
+              onClick={handleClose}
+              aria-label="关闭"
+            >
+              <X class="size-5" />
+            </button>
+          </div>
 
-              <NFormItem
-                label="id"
-                required
-                rule={{
-                  required: true,
-                  trigger: ['blur', 'input'],
-                }}
-                path="slug"
-              >
-                <NInput
-                  value={topic.slug}
-                  onUpdateValue={(val) => {
-                    topic.slug = val
-                  }}
-                />
-              </NFormItem>
-
-              <NFormItem
-                label="简介"
-                required
-                rule={{
-                  max: 100,
-                  required: true,
-                  trigger: ['blur', 'input'],
-                }}
-                path="introduce"
-              >
-                <NInput
-                  value={topic.introduce}
-                  onUpdateValue={(val) => {
-                    topic.introduce = val
-                  }}
-                />
-              </NFormItem>
-
-              <NFormItem label="图标">
-                <NInput
-                  value={topic.icon}
-                  onUpdateValue={(val) => {
-                    topic.icon = val
-                  }}
-                >
-                  {{
-                    suffix() {
-                      return (
-                        <UploadWrapper
-                          class={'flex items-center'}
-                          type="icon"
-                          onFinish={(e) => {
-                            const res = JSON.parse(
-                              (e.event?.target as XMLHttpRequest).responseText,
-                            )
-                            e.file.url = res.url
-
-                            topic.icon = e.file.url as string
-
-                            return e.file
-                          }}
-                        >
-                          <NButton quaternary>
-                            <NIcon>
-                              <UploadIcon />
-                            </NIcon>
-                          </NButton>
-                        </UploadWrapper>
-                      )
-                    },
-                  }}
-                </NInput>
-              </NFormItem>
-
-              <NFormItem
-                label="长描述"
-                rule={{
-                  max: 500,
-                  trigger: ['blur', 'input'],
-                }}
-                path="description"
-              >
-                <NInput
-                  type="textarea"
-                  autosize={{
-                    maxRows: 5,
-                    minRows: 2,
-                  }}
-                  value={topic.description}
-                  onUpdateValue={(val) => {
-                    topic.description = val
-                  }}
-                />
-              </NFormItem>
-
-              <div class={'flex justify-end gap-2'}>
-                <NButton round type="primary" onClick={handleSubmit}>
-                  提交
-                </NButton>
+          {/* Body */}
+          <div class="px-5 py-4">
+            {loading.value ? (
+              <div class="flex items-center justify-center py-12">
+                <NSpin size="medium" />
               </div>
-            </NForm>
-          </NCard>
-        </NModal>
-      </>
+            ) : (
+              <>
+                <FormField label="名称" required error={errors.name}>
+                  <NInput
+                    value={topic.name}
+                    onUpdateValue={(v) => (topic.name = v)}
+                    placeholder="输入专栏名称"
+                    maxlength={50}
+                    showCount
+                  />
+                </FormField>
+
+                <FormField label="ID (Slug)" required error={errors.slug}>
+                  <NInput
+                    value={topic.slug}
+                    onUpdateValue={(v) => (topic.slug = v)}
+                    placeholder="输入唯一标识，如 my-topic"
+                  />
+                  <p class="mt-1 text-xs text-neutral-400">
+                    用于 URL，只能包含字母、数字、下划线和连字符
+                  </p>
+                </FormField>
+
+                <FormField label="简介" required error={errors.introduce}>
+                  <NInput
+                    value={topic.introduce}
+                    onUpdateValue={(v) => (topic.introduce = v)}
+                    placeholder="简短介绍这个专栏"
+                    maxlength={100}
+                    showCount
+                  />
+                </FormField>
+
+                <FormField label="图标">
+                  <div class="flex items-center gap-3">
+                    <NInput
+                      value={topic.icon}
+                      onUpdateValue={(v) => (topic.icon = v)}
+                      placeholder="输入图标 URL 或上传"
+                      class="flex-1"
+                    />
+                    <UploadWrapper
+                      type="icon"
+                      onFinish={(e) => {
+                        const res = JSON.parse(
+                          (e.event?.target as XMLHttpRequest).responseText,
+                        )
+                        topic.icon = res.url
+                        return e.file
+                      }}
+                    >
+                      <NButton quaternary type="primary" aria-label="上传图标">
+                        <UploadIcon class="size-4" />
+                      </NButton>
+                    </UploadWrapper>
+                  </div>
+                </FormField>
+
+                <FormField label="详细描述" error={errors.description}>
+                  <NInput
+                    type="textarea"
+                    value={topic.description}
+                    onUpdateValue={(v) => (topic.description = v)}
+                    placeholder="可选的详细描述"
+                    autosize={{ minRows: 2, maxRows: 5 }}
+                    maxlength={500}
+                    showCount
+                  />
+                </FormField>
+              </>
+            )}
+          </div>
+
+          {/* Footer */}
+          <div class="flex items-center justify-end gap-2 border-t border-neutral-200 px-5 py-4 dark:border-neutral-800">
+            <NButton onClick={handleClose}>取消</NButton>
+            <NButton
+              type="primary"
+              loading={submitting.value}
+              disabled={loading.value}
+              onClick={handleSubmit}
+            >
+              {props.id ? '保存修改' : '创建专栏'}
+            </NButton>
+          </div>
+        </div>
+      </NModal>
     )
   },
 })

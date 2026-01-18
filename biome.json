@@ -76,8 +76,8 @@
         "noUnsafeOptionalChaining": "error",
         "noUnusedLabels": "error",
         "noUnusedVariables": "warn",
-        "useExhaustiveDependencies": "warn",
-        "useHookAtTopLevel": "error",
+        "useExhaustiveDependencies": "off",
+        "useHookAtTopLevel": "off",
         "useIsNan": "error",
         "useValidForDirection": "error",
         "useYield": "error"

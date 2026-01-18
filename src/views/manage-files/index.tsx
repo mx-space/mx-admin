@@ -1,3 +1,4 @@
+import { Archive as ArchiveIcon, Upload as UploadIcon } from 'lucide-vue-next'
 import {
   NButton,
   NButtonGroup,
@@ -16,11 +17,12 @@ import {
 import { defineComponent } from 'vue'
 import type { UploadFileInfo } from 'naive-ui'
 
+import { filesApi } from '~/api'
 import { HeaderActionButton } from '~/components/button/rounded-button'
-import { ArchiveIcon, UploadIcon } from '~/components/icons'
 import { Table } from '~/components/table'
-import { ContentLayout } from '~/layouts/content'
-import { getToken, RESTManager } from '~/utils'
+import { API_URL } from '~/constants/env'
+import { useLayout } from '~/layouts/content'
+import { getToken } from '~/utils'
 
 type FileType = 'file' | 'icon' | 'photo' | 'avatar'
 
@@ -44,13 +46,10 @@ export default defineComponent({
 
     const fetch = () => {
       loading.value = true
-      RESTManager.api
-        .files(type.value)
-        .get<any>()
-        .then(({ data }) => {
-          list.value = data
-          loading.value = false
-        })
+      filesApi.getByType(type.value).then((data) => {
+        list.value = data
+        loading.value = false
+      })
     }
 
     const modalShow = ref(false)
@@ -93,20 +92,19 @@ export default defineComponent({
       return file
     }
 
+    const { setActions } = useLayout()
+    setActions(
+      <HeaderActionButton
+        variant="info"
+        onClick={() => {
+          modalShow.value = true
+        }}
+        icon={<UploadIcon />}
+      />,
+    )
+
     return () => (
-      <ContentLayout
-        actionsElement={
-          <>
-            <HeaderActionButton
-              variant="info"
-              onClick={() => {
-                modalShow.value = true
-              }}
-              icon={<UploadIcon />}
-            />
-          </>
-        }
-      >
+      <>
         <NTabs
           value={type.value}
           onUpdateValue={(val) => {
@@ -165,9 +163,8 @@ export default defineComponent({
                   <NButtonGroup>
                     <NPopconfirm
                       onPositiveClick={() => {
-                        RESTManager.api
-                          .files(type.value)(row.name)
-                          .delete()
+                        filesApi
+                          .deleteByTypeAndName(type.value, row.name)
                           .then(() => {
                             message.success('删除成功')
                             list.value = list.value.filter(
@@ -220,7 +217,7 @@ export default defineComponent({
               headers={{
                 authorization: getToken() || '',
               }}
-              action={`${RESTManager.endpoint}/files/upload?type=${type.value}`}
+              action={`${API_URL}/files/upload?type=${type.value}`}
               directory-dnd
               multiple
               onBeforeUpload={checkUploadFile}
@@ -250,7 +247,7 @@ export default defineComponent({
             </NUpload>
           </NCard>
         </NModal>
-      </ContentLayout>
+      </>
     )
   },
 })

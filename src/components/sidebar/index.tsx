@@ -1,43 +1,41 @@
-import { NIcon, NLayoutContent } from 'naive-ui'
-import { computed, defineComponent, onMounted, ref } from 'vue'
+import {
+  ExternalLink,
+  LogOut,
+  Monitor,
+  Moon,
+  PanelLeftClose,
+  Sun,
+} from 'lucide-vue-next'
+import { NDropdown, NLayoutContent } from 'naive-ui'
+import { computed, defineComponent, h, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import type { ThemeMode } from '~/stores/ui'
+import type { DropdownOption } from 'naive-ui'
 import type { PropType } from 'vue'
 import type { MenuModel } from '../../utils/build-menus'
 
-import { Icon } from '@vicons/utils'
 import { onClickOutside } from '@vueuse/core'
 
-import {
-  LogoutIcon,
-  MoonIcon,
-  SidebarCloseIcon,
-  SunIcon,
-} from '~/components/icons'
+import { userApi } from '~/api'
 import { WEB_URL } from '~/constants/env'
 import { RouteName } from '~/router/name'
 import { AppStore } from '~/stores/app'
 import { UIStore } from '~/stores/ui'
-import { removeToken, RESTManager } from '~/utils'
+import { removeToken } from '~/utils'
 import { authClient } from '~/utils/authjs/auth'
 
-import { configs } from '../../configs'
 import { useStoreRef } from '../../hooks/use-store-ref'
 import { UserStore } from '../../stores/user'
 import { buildMenuModel, buildMenus } from '../../utils/build-menus'
 import { Avatar } from '../avatar'
 import { useSidebarStatusInjection } from './hooks'
 import styles from './index.module.css'
-import uwu from './uwu.png'
 
 export const Sidebar = defineComponent({
   name: 'SideBar',
   props: {
     collapse: {
       type: Boolean,
-      required: true,
-    },
-    width: {
-      type: Number,
       required: true,
     },
     onCollapseChange: {
@@ -96,7 +94,6 @@ export const Sidebar = defineComponent({
       }
     }
 
-    const title = configs.title
     const sidebarRef = ref<HTMLDivElement>()
     const uiStore = useStoreRef(UIStore)
     onClickOutside(sidebarRef, () => {
@@ -106,78 +103,160 @@ export const Sidebar = defineComponent({
         props.onCollapseChange(true)
       }
     })
-    const { isDark, toggleDark } = useStoreRef(UIStore)
+    const { isDark, themeMode, setThemeMode } = useStoreRef(UIStore)
+
+    // User dropdown options
+    const userDropdownOptions = computed<DropdownOption[]>(() => [
+      {
+        key: 'header',
+        type: 'render',
+        render: () =>
+          h('div', { class: 'flex items-center gap-3 px-3 py-2.5' }, [
+            h(Avatar, {
+              src: user.value?.avatar,
+              size: 36,
+              class: 'rounded-full flex-shrink-0',
+            }),
+            h('div', { class: 'flex flex-col min-w-0' }, [
+              h(
+                'span',
+                {
+                  class:
+                    'text-sm font-medium text-[var(--sidebar-text-active)] truncate',
+                },
+                user.value?.name,
+              ),
+              user.value?.mail &&
+                h(
+                  'span',
+                  {
+                    class: 'text-xs text-[var(--sidebar-text)] truncate',
+                  },
+                  user.value.mail,
+                ),
+            ]),
+          ]),
+      },
+      { type: 'divider', key: 'd1' },
+      {
+        label: '前往主站',
+        key: 'visit-site',
+        icon: () => h(ExternalLink, { size: 14 }),
+      },
+      {
+        label: '登出',
+        key: 'logout',
+        icon: () => h(LogOut, { size: 14 }),
+      },
+    ])
+
+    const handleUserDropdownSelect = async (key: string) => {
+      if (key === 'visit-site') {
+        window.open(WEB_URL)
+      } else if (key === 'logout') {
+        await userApi.logout()
+        removeToken()
+        await authClient.signOut()
+        router.push({ name: RouteName.Login })
+      }
+    }
+
+    // Theme dropdown options
+    const themeDropdownOptions = computed<DropdownOption[]>(() => [
+      {
+        label: 'Light',
+        key: 'light',
+        icon: () => h(Sun, { size: 14 }),
+      },
+      {
+        label: 'Dark',
+        key: 'dark',
+        icon: () => h(Moon, { size: 14 }),
+      },
+      {
+        label: 'System',
+        key: 'system',
+        icon: () => h(Monitor, { size: 14 }),
+      },
+    ])
+
+    const handleThemeSelect = (key: string) => {
+      setThemeMode(key as ThemeMode)
+    }
 
     const { onTransitionEnd, statusRef } = useSidebarStatusInjection(
       () => props.collapse,
     )
 
     return () => {
-      const isPhone = uiStore.viewport.value.mobile
       return (
         <div
           class={[
             styles.root,
             props.collapse ? styles.collapse : null,
-
             styles[statusRef.value],
           ]}
-          style={{
-            width: !props.collapse && props.width ? `${props.width}px` : '',
-          }}
           onTransitionend={onTransitionEnd}
           ref={sidebarRef}
         >
           <div class={styles.sidebar}>
-            <div
-              class={
-                'relative h-20 flex-shrink-0 text-center text-2xl font-medium'
-              }
-            >
-              <button
-                class={styles['toggle-color-btn']}
-                onClick={() => void toggleDark()}
+            {/* Header - User Avatar with Dropdown */}
+            <div class={styles.header}>
+              {/* User Avatar with Dropdown Menu */}
+              <NDropdown
+                options={userDropdownOptions.value}
+                onSelect={handleUserDropdownSelect}
+                placement="bottom-start"
+                trigger="click"
               >
-                {!isDark.value ? <SunIcon /> : <MoonIcon />}
-              </button>
-              <h1 class={styles['header-title']}>
-                {statusRef.value === 'expanded' && (
-                  <img
-                    class={
-                      'absolute left-1/2 top-1/2 h-[50px] -translate-x-1/2 -translate-y-1/2 transform'
-                    }
-                    src={uwu}
+                <button
+                  class={styles['user-avatar-btn']}
+                  title={user.value?.name || 'User'}
+                >
+                  <Avatar
+                    src={user.value?.avatar}
+                    size={32}
+                    class="rounded-full"
                   />
-                )}
-                <span class={'sr-only'}>{title}</span>
-              </h1>
-              <button
-                class={styles['collapse-button']}
-                onClick={() => {
-                  props.onCollapseChange(!props.collapse)
-                }}
-              >
-                <SidebarCloseIcon class={styles['collapse-icon']} />
-              </button>
+                </button>
+              </NDropdown>
+
+              {/* Header Actions - Only collapse button */}
+              <div class={styles['header-actions']}>
+                <button
+                  class={styles['header-btn']}
+                  onClick={() => props.onCollapseChange(!props.collapse)}
+                  title={props.collapse ? '展开' : '收起'}
+                >
+                  <PanelLeftClose
+                    size={16}
+                    class={[
+                      'transition-transform duration-200',
+                      props.collapse && 'rotate-180',
+                    ]}
+                  />
+                </button>
+              </div>
             </div>
 
-            <NLayoutContent class={styles.menu} nativeScrollbar={false}>
-              <div class={styles.items}>
+            {/* Menu */}
+            <NLayoutContent
+              class={[styles.menu, '!bg-transparent']}
+              nativeScrollbar={false}
+            >
+              <nav class={styles.items}>
                 {menus.value.map((item, index) => {
+                  const isActive =
+                    route.value.fullPath === item.fullPath ||
+                    route.value.fullPath.startsWith(item.fullPath)
+
                   return (
                     <div
-                      class={[
-                        route.value.fullPath === item.fullPath ||
-                        route.value.fullPath.startsWith(item.fullPath)
-                          ? styles.active
-                          : '',
-
-                        styles.item,
-                      ]}
+                      key={item.fullPath}
+                      class={[styles.item, isActive && styles.active]}
                       data-path={item.fullPath}
                     >
                       <MenuItem
-                        className={!isPhone ? 'py-4' : 'py-6'}
                         title={item.title}
                         onClick={() =>
                           item.subItems?.length
@@ -187,73 +266,76 @@ export const Sidebar = defineComponent({
                         collapse={props.collapse}
                       >
                         {{
-                          icon() {
-                            return item.icon
-                          },
+                          icon: () => item.icon,
                         }}
                       </MenuItem>
 
-                      {item.subItems && (
-                        <ul
+                      {item.subItems && item.subItems.length > 0 && (
+                        <div
                           class={[
-                            'overflow-hidden',
-                            item.subItems.length ? styles['has-child'] : '',
-                            indexRef.value === index ? styles.expand : '',
+                            styles['has-child'],
+                            indexRef.value === index && styles.expand,
                           ]}
                           style={{
                             maxHeight:
                               indexRef.value === index
-                                ? `${item.subItems.length * 3.5}rem`
+                                ? `${item.subItems.length * 2.75}rem`
                                 : '0',
                           }}
                         >
                           {item.subItems.map((child) => {
+                            const isChildActive =
+                              route.value.fullPath === child.fullPath ||
+                              route.value.fullPath.startsWith(child.fullPath)
+
                             return (
-                              <li
+                              <div
                                 key={child.path}
                                 class={[
-                                  route.value.fullPath === child.fullPath ||
-                                  route.value.fullPath.startsWith(
-                                    child.fullPath,
-                                  )
-                                    ? styles.active
-                                    : '',
                                   styles.item,
+                                  isChildActive && styles.active,
                                 ]}
                               >
                                 <MenuItem
                                   collapse={props.collapse}
                                   title={child.title}
                                   onClick={() => handleRoute(child)}
-                                  className={'py-4'}
                                 >
                                   {{
-                                    icon() {
-                                      return child.icon
-                                    },
+                                    icon: () => child.icon,
                                   }}
                                 </MenuItem>
-                              </li>
+                              </div>
                             )
                           })}
-                        </ul>
+                        </div>
                       )}
                     </div>
                   )
                 })}
-              </div>
+              </nav>
             </NLayoutContent>
 
-            <button
-              class={styles['sidebar-footer']}
-              onClick={() => {
-                window.open(WEB_URL)
-              }}
-            >
-              <LogoutAvatarButton />
-
-              <span class={styles['sidebar-username']}>{user.value?.name}</span>
-            </button>
+            {/* Footer - Theme Toggle with Dropdown */}
+            <div class={styles['sidebar-footer']}>
+              <NDropdown
+                options={themeDropdownOptions.value}
+                onSelect={handleThemeSelect}
+                placement="top-end"
+                trigger="click"
+                value={themeMode.value}
+              >
+                <button class={styles['theme-toggle-btn']} title="切换主题">
+                  {themeMode.value === 'system' ? (
+                    <Monitor size={16} />
+                  ) : isDark.value ? (
+                    <Moon size={16} />
+                  ) : (
+                    <Sun size={16} />
+                  )}
+                </button>
+              </NDropdown>
+            </div>
           </div>
         </div>
       )
@@ -275,67 +357,16 @@ const MenuItem = defineComponent({
       type: Boolean,
       required: true,
     },
-    className: {
-      type: String,
-    },
   },
 
   setup(props, { slots }) {
     return () => (
-      <button
-        onClick={props.onClick}
-        class={['flex w-full items-center py-4', props.className]}
-      >
-        <span
-          class={[
-            'flex basis-12 items-center justify-center transition-all duration-300 ease-in-out',
-            props.collapse ? 'basis-[var(--w)]' : '',
-          ]}
-        >
-          <Icon>{slots.icon!()}</Icon>
+      <button onClick={props.onClick}>
+        <span class="flex items-center justify-center [&>svg]:h-[18px] [&>svg]:w-[18px]">
+          {slots.icon!()}
         </span>
         <span class={styles['item-title']}>{props.title}</span>
       </button>
     )
-  },
-})
-
-const LogoutAvatarButton = defineComponent({
-  setup() {
-    const { user } = useStoreRef(UserStore)
-    const router = useRouter()
-    const handleLogout = async (e: MouseEvent) => {
-      e.stopPropagation()
-      await RESTManager.api.user.logout.post({})
-      removeToken()
-      await authClient.signOut()
-      router.push({
-        name: RouteName.Login,
-      })
-    }
-
-    return () => {
-      const avatar = user.value?.avatar
-
-      return (
-        <div
-          class={'relative h-[35px] w-[35px]'}
-          onClick={handleLogout}
-          role="button"
-        >
-          <Avatar src={avatar} size={35} class="z-1 absolute inset-0" />
-          <div
-            class={[
-              'z-2 bg-dark-200 absolute inset-0 flex items-center justify-center rounded-full bg-opacity-80 opacity-0 transition-opacity hover:opacity-50',
-              'text-xl',
-            ]}
-          >
-            <NIcon>
-              <LogoutIcon />
-            </NIcon>
-          </div>
-        </div>
-      )
-    }
   },
 })

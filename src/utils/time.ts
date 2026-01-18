@@ -6,7 +6,7 @@ export enum DateFormat {
   'yyyy 年 M 月 d 日 HH:mm:ss',
   'HH:mm',
 
-  'H:mm:ss A',
+  'H:mm:ss a',
   'M-d HH:mm:ss',
 }
 

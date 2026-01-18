@@ -1,9 +1,13 @@
-import { NTabPane, NTabs } from 'naive-ui'
+import {
+  Fingerprint as FingerprintIcon,
+  Settings as SettingsIcon,
+  Shield as ShieldIcon,
+  User as UserIcon,
+} from 'lucide-vue-next'
 import { defineComponent, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-import { ContentLayout } from '~/layouts/content'
-
+import styles from './index.module.css'
 import { TabAuth } from './tabs/auth'
 import { TabSecurity } from './tabs/security'
 import { TabSystem } from './tabs/system'
@@ -15,11 +19,34 @@ enum SettingTab {
   Security = 'security',
   Auth = 'auth',
 }
+
+const tabConfig = [
+  { key: SettingTab.User, label: '用户', icon: UserIcon, component: TabUser },
+  {
+    key: SettingTab.System,
+    label: '系统',
+    icon: SettingsIcon,
+    component: TabSystem,
+  },
+  {
+    key: SettingTab.Security,
+    label: '安全',
+    icon: ShieldIcon,
+    component: TabSecurity,
+  },
+  {
+    key: SettingTab.Auth,
+    label: '登入方式',
+    icon: FingerprintIcon,
+    component: TabAuth,
+  },
+]
+
 export default defineComponent({
   setup() {
     const route = useRoute()
     const router = useRouter()
-    const tabValue = ref(route.params.type as string)
+    const tabValue = ref((route.params.type as string) || SettingTab.User)
 
     watch(
       () => route.params.type,
@@ -30,32 +57,46 @@ export default defineComponent({
         tabValue.value = n as any
       },
     )
-    const headerActionsEl = ref<null | VNode>(null)
-    return () => (
-      <ContentLayout actionsElement={headerActionsEl.value}>
-        <NTabs
-          value={tabValue.value}
-          onUpdateValue={(e) => {
-            // @ts-expect-error
-            router.replace({ ...route, params: { ...route.params, type: e } })
-          }}
-        >
-          <NTabPane tab="用户" name={SettingTab.User}>
-            <TabUser />
-          </NTabPane>
 
-          <NTabPane tab="系统" name={SettingTab.System}>
-            <TabSystem />
-          </NTabPane>
+    const handleTabChange = (key: string) => {
+      router.replace({
+        name: route.name as string,
+        params: { ...route.params, type: key },
+      })
+    }
 
-          <NTabPane tab="安全" name={SettingTab.Security}>
-            <TabSecurity />
-          </NTabPane>
-          <NTabPane tab="登入方式" name={SettingTab.Auth}>
-            <TabAuth />
-          </NTabPane>
-        </NTabs>
-      </ContentLayout>
-    )
+    return () => {
+      const ActiveComponent =
+        tabConfig.find((t) => t.key === tabValue.value)?.component || TabUser
+
+      return (
+        <div class={styles.container}>
+          <nav class={styles.sidebar}>
+            <ul class={styles.navList}>
+              {tabConfig.map((tab) => {
+                const Icon = tab.icon
+                const isActive = tabValue.value === tab.key
+                return (
+                  <li key={tab.key}>
+                    <button
+                      class={[styles.navItem, isActive && styles.navItemActive]}
+                      onClick={() => handleTabChange(tab.key)}
+                      type="button"
+                    >
+                      <Icon class={styles.navIcon} aria-hidden="true" />
+                      <span>{tab.label}</span>
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
+          </nav>
+
+          <main class={styles.content}>
+            <ActiveComponent />
+          </main>
+        </div>
+      )
+    }
   },
 })

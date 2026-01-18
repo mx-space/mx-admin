@@ -1,169 +1,149 @@
-import { NButton, NPopconfirm, NSpace, useDialog, useMessage } from 'naive-ui'
-import { defineComponent, onMounted, reactive, watch } from 'vue'
-import { RouterLink, useRoute } from 'vue-router'
-import type { SayResponse } from '~/models/say'
-import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
+/**
+ * Say List Page
+ * 一言列表页面 - 引用风格列表 + 模态框编辑
+ */
+import { Plus as AddIcon } from 'lucide-vue-next'
+import { NPagination } from 'naive-ui'
+import { useRoute, useRouter } from 'vue-router'
+import type { SayModel } from '~/models/say'
 
-import { AddIcon } from '~/components/icons'
-import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
-import { Table } from '~/components/table'
-import { RelativeTime } from '~/components/time/relative-time'
-import { useDataTableFetch } from '~/hooks/use-table'
+import { useMutation, useQueryClient } from '@tanstack/vue-query'
 
-import { HeaderActionButton } from '../../components/button/rounded-button'
-import { ContentLayout } from '../../layouts/content'
-import { RESTManager } from '../../utils/rest'
+import { saysApi } from '~/api/says'
+import { HeaderActionButton } from '~/components/button/rounded-button'
+import { queryKeys } from '~/hooks/queries/keys'
+import { useDataTable } from '~/hooks/use-data-table'
+import { useLayout } from '~/layouts/content'
+
+import {
+  SayEditModal,
+  SayEmptyState,
+  SayListItem,
+  SayListSkeleton,
+} from './components/say-list-item'
+
+interface SayWithMeta extends SayModel {
+  created?: string
+  modified?: string
+}
 
 const ManageSayListView = defineComponent({
   name: 'SayList',
-  setup(_props, _ctx) {
-    const { checkedRowKeys, data, pager, loading, fetchDataFn } =
-      useDataTableFetch(
-        (data, pager) =>
-          async (page = route.query.page || 1, size = 30) => {
-            const response = await RESTManager.api.says.get<SayResponse>({
-              params: {
-                page,
-                size,
-                select: 'title text _id id created modified author source',
-              },
-            })
-            data.value = response.data
-            pager.value = response.pagination
-          },
-      )
-
-    const message = useMessage()
-    const _dialog = useDialog()
-
+  setup() {
     const route = useRoute()
-    const fetchData = fetchDataFn
-    watch(
-      () => route.query.page,
-      async (n) => {
-        // @ts-expect-error
-        await fetchData(n)
+    const router = useRouter()
+    const queryClient = useQueryClient()
+
+    const { data, pager, isLoading } = useDataTable<SayWithMeta>({
+      queryKey: (params) => queryKeys.says.list(params),
+      queryFn: (params) =>
+        saysApi.getList({
+          page: params.page,
+          size: params.size,
+        }) as Promise<any>,
+      pageSize: 20,
+    })
+
+    // 删除 mutation
+    const deleteMutation = useMutation({
+      mutationFn: saysApi.delete,
+      onSuccess: () => {
+        message.success('删除成功')
+        queryClient.invalidateQueries({ queryKey: queryKeys.says.all })
       },
+    })
+
+    // 模态框状态
+    const showModal = ref(false)
+    const editingSay = ref<SayWithMeta | null>(null)
+
+    const handleCreate = () => {
+      editingSay.value = null
+      showModal.value = true
+    }
+
+    const handleEdit = (say: SayWithMeta) => {
+      editingSay.value = say
+      showModal.value = true
+    }
+
+    const handleCloseModal = () => {
+      showModal.value = false
+      editingSay.value = null
+    }
+
+    const handleSuccess = () => {
+      // 刷新列表
+      queryClient.invalidateQueries({ queryKey: queryKeys.says.all })
+      handleCloseModal()
+    }
+
+    const handleDelete = async (id: string) => {
+      deleteMutation.mutate(id)
+    }
+
+    const { setActions } = useLayout()
+
+    setActions(
+      <HeaderActionButton
+        onClick={handleCreate}
+        icon={<AddIcon />}
+        name="添加一言"
+      />,
     )
 
-    onMounted(async () => {
-      await fetchData()
-    })
+    return () => (
+      <div class="space-y-4">
+        {/* 内容区域 */}
+        {isLoading.value && data.value.length === 0 ? (
+          // 加载骨架屏
+          <div class="overflow-hidden rounded-lg border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
+            <SayListSkeleton />
+          </div>
+        ) : data.value.length === 0 ? (
+          // 空状态
+          <SayEmptyState onCreate={handleCreate} />
+        ) : (
+          // 列表
+          <div class="overflow-hidden rounded-lg border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
+            {data.value.map((say) => (
+              <SayListItem
+                key={say.id}
+                say={say}
+                onEdit={() => handleEdit(say)}
+                onDelete={handleDelete}
+              />
+            ))}
+          </div>
+        )}
 
-    const DataTable = defineComponent({
-      setup() {
-        const columns = reactive<TableColumns<any>>([
-          {
-            type: 'selection',
-            options: ['none', 'all'],
-          },
-          {
-            title: '创建于',
-            key: 'created',
-            width: 100,
-            render(row) {
-              return (
-                <RouterLink to={`/says/edit?id=${row.id}`}>
-                  <RelativeTime time={row.created} />
-                </RouterLink>
-              )
-            },
-          },
-          {
-            title: '内容',
-            key: 'text',
-          },
-          { title: '作者', key: 'author' },
-          { title: '来源', key: 'source' },
-          {
-            title: '操作',
-            fixed: 'right',
-            key: 'id',
-            width: 130,
-            render(row) {
-              return (
-                <NSpace wrap={false}>
-                  <RouterLink to={`/says/edit?id=${row.id}`}>
-                    <NButton quaternary type="primary" size="tiny">
-                      编辑
-                    </NButton>
-                  </RouterLink>
-                  <NPopconfirm
-                    positiveText={'取消'}
-                    negativeText="删除"
-                    onNegativeClick={async () => {
-                      await RESTManager.api.says(row.id).delete()
-                      message.success('删除成功')
-                      await fetchData(pager.value.currentPage)
-                    }}
-                  >
-                    {{
-                      trigger: () => (
-                        <NButton quaternary type="error" size="tiny">
-                          移除
-                        </NButton>
-                      ),
+        {/* 分页 */}
+        {pager.value && pager.value.totalPage > 1 && (
+          <div class="flex justify-center">
+            <NPagination
+              page={pager.value.currentPage}
+              onUpdatePage={(page) => {
+                router.replace({
+                  query: { ...route.query, page },
+                  params: { ...route.params },
+                })
+              }}
+              pageCount={pager.value.totalPage}
+              pageSize={pager.value.size}
+              showQuickJumper
+            />
+          </div>
+        )}
 
-                      default: () => (
-                        <span class="max-w-48">确定要删除“{row.text}” ?</span>
-                      ),
-                    }}
-                  </NPopconfirm>
-                </NSpace>
-              )
-            },
-          },
-        ])
-
-        return () => (
-          <Table
-            loading={loading.value}
-            columns={columns}
-            data={data}
-            onFetchData={fetchData}
-            pager={pager}
-            onUpdateCheckedRowKeys={(keys) => {
-              checkedRowKeys.value = keys
-            }}
-          />
-        )
-      },
-    })
-
-    return () => {
-      return (
-        <ContentLayout>
-          {{
-            actions: () => (
-              <>
-                <DeleteConfirmButton
-                  checkedRowKeys={checkedRowKeys.value}
-                  onDelete={async () => {
-                    const status = await Promise.allSettled(
-                      checkedRowKeys.value.map((id) =>
-                        RESTManager.api.says(id as string).delete(),
-                      ),
-                    )
-
-                    for (const s of status) {
-                      if (s.status === 'rejected') {
-                        message.success(`删除失败，${s.reason.message}`)
-                      }
-                    }
-
-                    checkedRowKeys.value.length = 0
-                    fetchData()
-                  }}
-                />
-
-                <HeaderActionButton to={'/says/edit'} icon={<AddIcon />} />
-              </>
-            ),
-            default: () => <DataTable />,
-          }}
-        </ContentLayout>
-      )
-    }
+        {/* 编辑/创建模态框 */}
+        <SayEditModal
+          show={showModal.value}
+          say={editingSay.value}
+          onClose={handleCloseModal}
+          onSuccess={handleSuccess}
+        />
+      </div>
+    )
   },
 })
 

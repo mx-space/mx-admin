@@ -1,7 +1,7 @@
+import { Download as DownloadOutlined } from 'lucide-vue-next'
 import { NButton, NCard, NForm, NFormItem, NInput, NModal } from 'naive-ui'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
-import { DownloadOutlined } from '~/components/icons'
 
 import { InstallDepsXterm } from './install-dep-xterm'
 
@@ -24,7 +24,7 @@ export const InstallDependencyButton = defineComponent({
           <HeaderActionButton
             icon={<DownloadOutlined />}
             name="安装依赖"
-            color="#FADC"
+            variant="warning"
             onClick={() => {
               modalShow.value = true
             }}

@@ -1,0 +1,775 @@
+/* Setting Page Styles */
+
+/* Container - Responsive Layout */
+.container {
+  @apply flex min-h-full flex-col md:flex-row md:gap-8;
+}
+
+/* Sidebar Navigation - Desktop: sticky left sidebar, Mobile: fixed top header */
+.sidebar {
+  @apply sticky top-0 z-10 -mx-8 shrink-0 border-b border-neutral-200 bg-[var(--content-bg)] px-8 py-3 md:static md:mx-0 md:w-52 md:border-b-0 md:bg-transparent md:px-0 md:pt-6;
+
+  :global(.dark) & {
+    @apply border-neutral-800;
+  }
+}
+
+.navList {
+  @apply m-0 flex list-none gap-1 overflow-x-auto p-0 md:flex-col md:overflow-x-visible;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.navItem {
+  @apply flex shrink-0 cursor-pointer items-center gap-2 whitespace-nowrap rounded-lg border-0 bg-transparent px-3 py-2 text-sm font-medium text-neutral-600 transition-colors md:w-full md:gap-3 md:px-4 md:py-2.5;
+
+  &:hover {
+    @apply bg-neutral-100 text-neutral-900;
+  }
+
+  :global(.dark) & {
+    @apply text-neutral-400;
+
+    &:hover {
+      @apply bg-neutral-800 text-neutral-100;
+    }
+  }
+
+  &:focus-visible {
+    @apply ring-primary/50 outline-none ring-2;
+  }
+}
+
+.navItemActive {
+  @apply bg-neutral-100 text-neutral-900;
+
+  :global(.dark) & {
+    @apply bg-neutral-800 text-neutral-100;
+  }
+}
+
+.navIcon {
+  @apply size-4;
+}
+
+/* Content Area */
+.content {
+  @apply min-w-0 flex-1 py-6;
+}
+
+/* Card Base */
+.card {
+  @apply rounded-naive border border-neutral-200 bg-white p-6 transition-shadow;
+
+  &:hover {
+    @apply shadow-md;
+  }
+
+  :global(.dark) & {
+    @apply border-neutral-800 bg-neutral-900;
+  }
+}
+
+.cardCompact {
+  @apply rounded-naive border border-neutral-200 bg-white p-4 transition-shadow;
+
+  &:hover {
+    @apply shadow-md;
+  }
+
+  :global(.dark) & {
+    @apply border-neutral-800 bg-neutral-900;
+  }
+}
+
+/* Section Header */
+.sectionHeader {
+  @apply mb-6 flex items-center justify-between;
+}
+
+.sectionTitle {
+  @apply m-0 text-lg font-semibold text-neutral-900;
+
+  :global(.dark) & {
+    @apply text-neutral-100;
+  }
+}
+
+.sectionSubtitle {
+  @apply text-sm text-neutral-500;
+
+  :global(.dark) & {
+    @apply text-neutral-400;
+  }
+}
+
+/* Profile Card - User Tab */
+.profileCard {
+  @apply rounded-naive border border-neutral-200 bg-white p-8 transition-shadow;
+
+  &:hover {
+    @apply shadow-lg;
+  }
+
+  :global(.dark) & {
+    @apply border-neutral-800 bg-neutral-900;
+  }
+}
+
+.profileHeader {
+  @apply flex flex-col items-center gap-6 md:flex-row md:items-start;
+}
+
+.avatarContainer {
+  @apply relative size-32 shrink-0;
+
+  :global(.n-upload),
+  :global(.n-upload-trigger) {
+    @apply size-32 overflow-hidden rounded-full;
+  }
+}
+
+.avatarWrapper {
+  @apply relative size-32 overflow-hidden rounded-full ring-4 ring-neutral-100 transition-all;
+
+  &:hover {
+    @apply ring-primary/30;
+  }
+
+  :global(.dark) & {
+    @apply ring-neutral-800;
+
+    &:hover {
+      @apply ring-primary/30;
+    }
+  }
+}
+
+.avatarUploadOverlay {
+  @apply absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity;
+
+  .avatarWrapper:hover & {
+    @apply opacity-100;
+  }
+}
+
+.avatarUploadIcon {
+  @apply size-8 text-white;
+}
+
+.profileInfo {
+  @apply flex-1 text-center md:text-left;
+}
+
+.profileName {
+  @apply m-0 mb-2 text-2xl font-bold text-neutral-900;
+
+  :global(.dark) & {
+    @apply text-neutral-100;
+  }
+}
+
+.profileUsername {
+  @apply mb-4 text-sm text-neutral-500;
+
+  :global(.dark) & {
+    @apply text-neutral-400;
+  }
+}
+
+.profileMeta {
+  @apply flex flex-wrap items-center justify-center gap-4 md:justify-start;
+}
+
+.profileMetaItem {
+  @apply flex items-center gap-1.5 text-sm text-neutral-600;
+
+  :global(.dark) & {
+    @apply text-neutral-300;
+  }
+}
+
+.profileMetaIcon {
+  @apply size-4 text-neutral-400;
+
+  :global(.dark) & {
+    @apply text-neutral-500;
+  }
+}
+
+/* Form Section */
+.formSection {
+  @apply mt-8;
+}
+
+.formGrid {
+  @apply grid gap-6 md:grid-cols-2;
+}
+
+.formGroup {
+  @apply flex flex-col gap-2;
+}
+
+.formLabel {
+  @apply text-sm font-medium text-neutral-700;
+
+  :global(.dark) & {
+    @apply text-neutral-300;
+  }
+}
+
+.formDescription {
+  @apply text-xs text-neutral-500;
+
+  :global(.dark) & {
+    @apply text-neutral-400;
+  }
+}
+
+.formGroupFull {
+  @apply col-span-full;
+}
+
+/* Social Links Section */
+.socialSection {
+  @apply rounded-naive mt-8 border border-neutral-200 bg-neutral-50 p-6;
+
+  :global(.dark) & {
+    @apply border-neutral-700 bg-neutral-800/50;
+  }
+}
+
+.socialTitle {
+  @apply mb-4 flex items-center gap-2 text-base font-semibold text-neutral-900;
+
+  :global(.dark) & {
+    @apply text-neutral-100;
+  }
+}
+
+.socialIcon {
+  @apply size-5 text-neutral-500;
+
+  :global(.dark) & {
+    @apply text-neutral-400;
+  }
+}
+
+/* Session/Device List */
+.sessionList {
+  @apply flex flex-col gap-4;
+}
+
+.sessionItem {
+  @apply rounded-naive border border-neutral-200 bg-white p-4 transition-shadow;
+
+  &:hover {
+    @apply shadow-md;
+  }
+
+  :global(.dark) & {
+    @apply border-neutral-800 bg-neutral-900;
+  }
+}
+
+.sessionItemCurrent {
+  @apply border-primary/30 bg-primary/5;
+
+  :global(.dark) & {
+    @apply border-primary/30 bg-primary/10;
+  }
+}
+
+.sessionHeader {
+  @apply mb-3 flex items-center justify-between;
+}
+
+.sessionBadge {
+  @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium;
+}
+
+.sessionBadgeCurrent {
+  @apply bg-green-100 text-green-700;
+
+  :global(.dark) & {
+    @apply bg-green-900/50 text-green-400;
+  }
+}
+
+.sessionBadgeOther {
+  @apply bg-neutral-100 text-neutral-600;
+
+  :global(.dark) & {
+    @apply bg-neutral-800 text-neutral-400;
+  }
+}
+
+.sessionContent {
+  @apply space-y-2;
+}
+
+.sessionRow {
+  @apply flex items-center gap-2 text-sm;
+}
+
+.sessionLabel {
+  @apply shrink-0 text-neutral-500;
+
+  :global(.dark) & {
+    @apply text-neutral-400;
+  }
+}
+
+.sessionValue {
+  @apply min-w-0 flex-1 truncate text-neutral-700;
+
+  :global(.dark) & {
+    @apply text-neutral-200;
+  }
+}
+
+.sessionUA {
+  @apply rounded-lg bg-neutral-50 px-3 py-2 font-mono text-xs text-neutral-600;
+
+  :global(.dark) & {
+    @apply bg-neutral-800 text-neutral-300;
+  }
+}
+
+/* Token Table */
+.tokenCard {
+  @apply rounded-naive border border-neutral-200 bg-white p-5;
+
+  :global(.dark) & {
+    @apply border-neutral-800 bg-neutral-900;
+  }
+}
+
+.tokenHeader {
+  @apply mb-4 flex items-center justify-between;
+}
+
+.tokenTitle {
+  @apply m-0 text-base font-semibold text-neutral-900;
+
+  :global(.dark) & {
+    @apply text-neutral-100;
+  }
+}
+
+/* Password Reset Section */
+.passwordSection {
+  @apply rounded-naive border border-neutral-200 bg-white p-6;
+
+  :global(.dark) & {
+    @apply border-neutral-800 bg-neutral-900;
+  }
+}
+
+.passwordHeader {
+  @apply mb-6 flex items-center gap-3;
+}
+
+.passwordIcon {
+  @apply flex size-10 items-center justify-center rounded-full bg-amber-100 text-amber-600;
+
+  :global(.dark) & {
+    @apply bg-amber-900/50 text-amber-400;
+  }
+
+  svg {
+    @apply size-5;
+  }
+}
+
+.passwordTitle {
+  @apply m-0 text-base font-semibold text-neutral-900;
+
+  :global(.dark) & {
+    @apply text-neutral-100;
+  }
+}
+
+/* Auth Provider Cards */
+.authGrid {
+  @apply grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3;
+}
+
+.authProviderCard {
+  @apply rounded-naive border border-neutral-200 bg-white p-5 transition-shadow;
+
+  &:hover {
+    @apply shadow-md;
+  }
+
+  :global(.dark) & {
+    @apply border-neutral-800 bg-neutral-900;
+  }
+}
+
+.authProviderHeader {
+  @apply mb-4 flex items-center gap-3;
+}
+
+.authProviderIcon {
+  @apply flex size-10 items-center justify-center rounded-lg bg-neutral-100;
+
+  :global(.dark) & {
+    @apply bg-neutral-800;
+  }
+
+  svg {
+    @apply size-5;
+  }
+}
+
+.authProviderName {
+  @apply m-0 text-base font-semibold text-neutral-900;
+
+  :global(.dark) & {
+    @apply text-neutral-100;
+  }
+}
+
+.authProviderStatus {
+  @apply ml-auto;
+}
+
+.authProviderEnabled {
+  @apply inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700;
+
+  :global(.dark) & {
+    @apply bg-green-900/50 text-green-400;
+  }
+}
+
+.authProviderDisabled {
+  @apply inline-flex items-center gap-1 rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-500;
+
+  :global(.dark) & {
+    @apply bg-neutral-800 text-neutral-400;
+  }
+}
+
+/* Passkey Section */
+.passkeySection {
+  @apply rounded-naive border border-neutral-200 bg-white p-6;
+
+  :global(.dark) & {
+    @apply border-neutral-800 bg-neutral-900;
+  }
+}
+
+.passkeyHeader {
+  @apply mb-6 flex items-center justify-between;
+}
+
+.passkeyTitle {
+  @apply flex items-center gap-3;
+}
+
+.passkeyIcon {
+  @apply flex size-10 items-center justify-center rounded-full bg-blue-100 text-blue-600;
+
+  :global(.dark) & {
+    @apply bg-blue-900/50 text-blue-400;
+  }
+
+  svg {
+    @apply size-5;
+  }
+}
+
+.passkeyTitleText {
+  @apply m-0 text-lg font-semibold text-neutral-900;
+
+  :global(.dark) & {
+    @apply text-neutral-100;
+  }
+}
+
+.passkeyDescription {
+  @apply m-0 text-sm text-neutral-500;
+
+  :global(.dark) & {
+    @apply text-neutral-400;
+  }
+}
+
+/* Empty State */
+.empty {
+  @apply flex flex-col items-center justify-center py-12 text-center;
+}
+
+.emptyIcon {
+  @apply mb-4 flex size-14 items-center justify-center rounded-full bg-neutral-100 text-neutral-400;
+
+  :global(.dark) & {
+    @apply bg-neutral-800 text-neutral-500;
+  }
+
+  svg {
+    @apply size-7;
+  }
+}
+
+.emptyTitle {
+  @apply m-0 mb-2 text-base font-medium text-neutral-900;
+
+  :global(.dark) & {
+    @apply text-neutral-100;
+  }
+}
+
+.emptyDescription {
+  @apply m-0 text-sm text-neutral-500;
+
+  :global(.dark) & {
+    @apply text-neutral-400;
+  }
+}
+
+/* Action Footer */
+.actionFooter {
+  @apply mt-6 flex justify-end gap-3;
+}
+
+/* Info Row */
+.infoRow {
+  @apply flex items-center gap-2 rounded-lg bg-neutral-50 px-4 py-3 text-sm;
+
+  :global(.dark) & {
+    @apply bg-neutral-800;
+  }
+}
+
+.infoIcon {
+  @apply size-4 shrink-0 text-neutral-400;
+
+  :global(.dark) & {
+    @apply text-neutral-500;
+  }
+}
+
+.infoLabel {
+  @apply shrink-0 text-neutral-500;
+
+  :global(.dark) & {
+    @apply text-neutral-400;
+  }
+}
+
+.infoValue {
+  @apply ml-auto font-medium text-neutral-700;
+
+  :global(.dark) & {
+    @apply text-neutral-200;
+  }
+}
+
+/* Tab Content */
+.tabContent {
+  @apply py-6;
+}
+
+/* Settings Group */
+.settingsGroup {
+  @apply mb-8;
+}
+
+.settingsGroupTitle {
+  @apply mb-4 flex items-center gap-2 text-base font-semibold text-neutral-900;
+
+  :global(.dark) & {
+    @apply text-neutral-100;
+  }
+}
+
+.settingsGroupIcon {
+  @apply size-5 text-neutral-500;
+
+  :global(.dark) & {
+    @apply text-neutral-400;
+  }
+}
+
+/* Switch Row */
+.switchRow {
+  @apply flex items-center justify-between rounded-lg border border-neutral-200 bg-white px-4 py-3;
+
+  :global(.dark) & {
+    @apply border-neutral-700 bg-neutral-900;
+  }
+}
+
+.switchLabel {
+  @apply flex flex-col gap-0.5;
+}
+
+.switchLabelText {
+  @apply text-sm font-medium text-neutral-700;
+
+  :global(.dark) & {
+    @apply text-neutral-200;
+  }
+}
+
+.switchLabelDescription {
+  @apply text-xs text-neutral-500;
+
+  :global(.dark) & {
+    @apply text-neutral-400;
+  }
+}
+
+/* Callback URL Display */
+.callbackUrl {
+  @apply mt-4 rounded-lg bg-neutral-50 p-3;
+
+  :global(.dark) & {
+    @apply bg-neutral-800;
+  }
+}
+
+.callbackUrlLabel {
+  @apply mb-1 text-xs text-neutral-500;
+
+  :global(.dark) & {
+    @apply text-neutral-400;
+  }
+}
+
+.callbackUrlValue {
+  @apply flex items-center gap-2;
+}
+
+.callbackUrlText {
+  @apply flex-1 truncate font-mono text-sm text-neutral-700;
+
+  :global(.dark) & {
+    @apply text-neutral-200;
+  }
+}
+
+/* Skeleton */
+.skeleton {
+  @apply rounded-naive border border-neutral-200 bg-white p-5;
+
+  :global(.dark) & {
+    @apply border-neutral-800 bg-neutral-900;
+  }
+}
+
+/* User Tab Styles */
+.userTabContainer {
+  @apply w-full;
+}
+
+.userSection {
+  @apply mb-8 w-full max-w-2xl;
+}
+
+.userSectionHeader {
+  @apply flex items-center gap-5;
+}
+
+.userHeaderInfo {
+  @apply min-w-0 flex-1;
+}
+
+.userName {
+  @apply m-0 text-xl font-semibold text-neutral-900;
+
+  :global(.dark) & {
+    @apply text-neutral-100;
+  }
+}
+
+.userHandle {
+  @apply m-0 mt-0.5 text-sm text-neutral-500;
+
+  :global(.dark) & {
+    @apply text-neutral-400;
+  }
+}
+
+.userMeta {
+  @apply mt-3 flex flex-wrap items-center gap-x-4 gap-y-1;
+}
+
+.userMetaItem {
+  @apply flex shrink-0 items-center gap-1.5 whitespace-nowrap text-xs text-neutral-500;
+
+  :global(.dark) & {
+    @apply text-neutral-400;
+  }
+}
+
+.userMetaIcon {
+  @apply size-3.5;
+}
+
+.userSectionTitle {
+  @apply m-0 mb-4 text-sm font-medium text-neutral-900;
+
+  :global(.dark) & {
+    @apply text-neutral-100;
+  }
+}
+
+.userSectionTitleRow {
+  @apply mb-4 flex items-center justify-between;
+
+  .userSectionTitle {
+    @apply mb-0;
+  }
+}
+
+/* Social Platform Styles */
+.socialList {
+  @apply flex flex-col gap-3;
+}
+
+.socialRow {
+  @apply flex items-center gap-3;
+}
+
+.socialSelect {
+  @apply w-40 shrink-0;
+}
+
+.socialInput {
+  @apply min-w-0 flex-1;
+}
+
+.socialRemoveBtn {
+  @apply flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-lg border-0 bg-transparent text-neutral-400 transition-colors;
+
+  &:hover {
+    @apply bg-red-50 text-red-500;
+  }
+
+  :global(.dark) & {
+    @apply text-neutral-500;
+
+    &:hover {
+      @apply bg-red-900/20 text-red-400;
+    }
+  }
+
+  &:focus-visible {
+    @apply ring-primary/50 outline-none ring-2;
+  }
+}
+
+.socialEmpty {
+  @apply rounded-lg border border-dashed border-neutral-300 py-8 text-center text-sm text-neutral-400;
+
+  :global(.dark) & {
+    @apply border-neutral-700 text-neutral-500;
+  }
+}

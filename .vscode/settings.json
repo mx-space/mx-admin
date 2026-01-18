@@ -5,5 +5,8 @@
     "**/node_modules/@types/node",
     "**/node_modules/@vicons/**"
   ],
-  "typescript.tsserver.log": "verbose"
+  "typescript.tsserver.log": "verbose",
+  "search.exclude": {
+    ".specstory/history/**": true
+  }
 }

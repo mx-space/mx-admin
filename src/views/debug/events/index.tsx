@@ -2,14 +2,13 @@ import { NButton, NForm, NFormItem, NGi, NSelect } from 'naive-ui'
 
 import { useLocalStorage } from '@vueuse/core'
 
+import { systemApi } from '~/api'
 import {
   useAsyncLoadMonaco,
   usePropsValueToRef,
 } from '~/hooks/use-async-monaco'
-import { ContentLayout } from '~/layouts/content'
 import { TwoColGridLayout } from '~/layouts/two-col'
 import { EventTypes } from '~/socket/types'
-import { RESTManager } from '~/utils'
 
 const generateFakeData = (type: string) => {
   switch (type) {
@@ -74,18 +73,15 @@ export default defineComponent({
           },
         ) ?? ''
 
-      RESTManager.api.debug.events.post({
-        params: {
-          type: type.value,
-          event: event.value,
-        },
-        data: new Function(
+      await systemApi.sendDebugEvent({
+        type: `${type.value}:${event.value}`,
+        payload: new Function(
           `return ${replaceText.replace(/^export default /, '')}`,
         )(),
       })
     }
     return () => (
-      <ContentLayout>
+      <>
         <TwoColGridLayout>
           <NGi span="12">
             <NForm>
@@ -127,7 +123,7 @@ export default defineComponent({
             </div>
           </NGi>
         </TwoColGridLayout>
-      </ContentLayout>
+      </>
     )
   },
 })

@@ -1,6 +1,8 @@
 import { camelCase, cloneDeep, isEmpty, merge } from 'es-toolkit/compat'
-import { NButton, NColorPicker, NFormItem, useThemeVars } from 'naive-ui'
-import { ThemeColorConfig } from 'theme.config'
+import {
+  CircleCheck as CheckCircleOutlinedIcon,
+  Settings as SettingsIcon,
+} from 'lucide-vue-next'
 import {
   defineComponent,
   onBeforeUnmount,
@@ -11,15 +13,15 @@ import {
   watch,
 } from 'vue'
 
+import { optionsApi } from '~/api/options'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { ConfigForm } from '~/components/config-form'
-import { CheckCircleOutlinedIcon } from '~/components/icons'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { useLayout } from '~/layouts/content'
 import { UIStore } from '~/stores/ui'
-import { deepDiff, RESTManager } from '~/utils'
-import { colorRef, defineColors } from '~/utils/color'
+import { deepDiff } from '~/utils'
 
+import styles from '../index.module.css'
 import { AIConfigSection } from './sections/ai-config'
 
 const NFormPrefixCls = 'mt-6'
@@ -36,8 +38,9 @@ export const autosizeableProps = {
   clearable: true,
   style: 'min-width: 300px; max-width: 100%',
 } as const
+
 export const TabSystem = defineComponent(() => {
-  const { setHeaderButtons: setHeaderButton } = useLayout()
+  const { setActions: setHeaderButton } = useLayout()
 
   onMounted(() => {
     setHeaderButton(
@@ -56,9 +59,7 @@ export const TabSystem = defineComponent(() => {
   const schema = ref()
 
   onBeforeMount(async () => {
-    schema.value = await RESTManager.api.config.jsonschema.get({
-      transform: false,
-    })
+    schema.value = await optionsApi.getJsonSchema()
     await fetchConfig()
   })
 
@@ -73,6 +74,7 @@ export const TabSystem = defineComponent(() => {
     },
     { deep: true },
   )
+
   watch(
     () => diff.value,
     (n) => {
@@ -109,9 +111,7 @@ export const TabSystem = defineComponent(() => {
         }),
       )
 
-      await RESTManager.api.options(key).patch({
-        data: val,
-      })
+      await optionsApi.patch(key, val)
     }
 
     await fetchConfig()
@@ -119,7 +119,7 @@ export const TabSystem = defineComponent(() => {
   }
 
   const fetchConfig = async () => {
-    let response = (await RESTManager.api.options.get()) as any
+    let response = (await optionsApi.getAll()) as any
     response = merge(schema.value.default, response) as any
 
     originConfigs = cloneDeep(response)
@@ -144,76 +144,48 @@ export const TabSystem = defineComponent(() => {
     },
     { immediate: true },
   )
+
   return () => (
-    <Fragment>
-      <div class="pt-4" />
-
-      {schema.value && (
-        <ConfigForm
-          initialValue={configs}
-          getKey={(key) => {
-            return key
-              .split('.')
-              .map((kk) => camelCase(kk))
-              .join('.')
-              .replace('Dto', '')
-          }}
-          schema={schema.value}
-          v-slots={{
-            AdminExtraDto: () => (
-              <>
-                <NFormItem label={'主题色'}>
-                  <AppColorSetter />
-                </NFormItem>
-              </>
-            ),
-            AIDto: () => (
-              <AIConfigSection
-                value={configs.ai || {}}
-                onUpdate={(value: any) => {
-                  configs.ai = value
-                }}
-              />
-            ),
-          }}
-        />
-      )}
-    </Fragment>
-  )
-})
-
-const AppColorSetter = defineComponent({
-  setup() {
-    const vars = useThemeVars()
-
-    const $style = document.createElement('style')
-    $style.innerHTML = `* { transition: none !important; }`
-
-    return () => (
-      <div class={'flex items-center gap-2'}>
-        <NColorPicker
-          class={'w-36'}
-          value={vars.value.primaryColor}
-          onUpdateValue={(value) => {
-            document.head.appendChild($style)
-
-            Object.assign(colorRef.value, defineColors(value))
-            setTimeout(() => {
-              document.head.removeChild($style)
-            })
-          }}
-        />
-
-        <NButton
-          size="small"
-          ghost
-          onClick={() => {
-            Object.assign(colorRef.value, ThemeColorConfig)
-          }}
-        >
-          <span>重置</span>
-        </NButton>
+    <div class={styles.tabContent}>
+      {/* Header */}
+      <div class={styles.sectionHeader}>
+        <div>
+          <h2 class={styles.sectionTitle}>
+            <SettingsIcon class="mr-2 inline-block size-5" aria-hidden="true" />
+            系统设置
+          </h2>
+          <p class={styles.sectionSubtitle}>
+            配置站点信息、SEO 设置、邮件服务等
+          </p>
+        </div>
       </div>
-    )
-  },
+
+      {/* Config Form Container */}
+      <div class={styles.card}>
+        {schema.value && (
+          <ConfigForm
+            initialValue={configs}
+            getKey={(key) => {
+              return key
+                .split('.')
+                .map((kk) => camelCase(kk))
+                .join('.')
+                .replace('Dto', '')
+            }}
+            schema={schema.value}
+            v-slots={{
+              AIDto: () => (
+                <AIConfigSection
+                  value={configs.ai || {}}
+                  onUpdate={(value: any) => {
+                    configs.ai = value
+                  }}
+                />
+              ),
+            }}
+          />
+        )}
+      </div>
+    </div>
+  )
 })
