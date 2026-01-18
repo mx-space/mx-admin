@@ -20,4 +20,5 @@ export const darkThemeColors = {
   primaryColorHover: '#d4d4d4',
   primaryColorPressed: '#fafafa',
   primaryColorSuppl: '#a3a3a3',
+  modalColor: '#171717',
 } satisfies Partial<ThemeCommonVars>

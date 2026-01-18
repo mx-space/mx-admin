@@ -73,6 +73,7 @@ const App = defineComponent({
     return () => {
       const { isDark, naiveUIDark } = uiStore
       const isCurrentDark = naiveUIDark || isDark
+
       return (
         <NConfigProvider
           locale={zhCN}

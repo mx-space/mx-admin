@@ -1,4 +1,8 @@
-import { Pause, Play, RotateCcw, Trash2 } from 'lucide-vue-next'
+/**
+ * Realtime Log Pipeline
+ * 实时日志查看器
+ */
+import { Pause, Play, Radio, RotateCcw, Trash2 } from 'lucide-vue-next'
 import type { Terminal } from '@xterm/xterm'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
@@ -17,7 +21,7 @@ export const RealtimeLogPipeline = defineComponent({
     const pausedMessages: string[] = []
 
     const listen = (prevLog = true) => {
-      socket.socket.emit('log', { prevLog })
+      socket?.socket?.emit('log', { prevLog })
     }
 
     const logHandler = (e: string) => {
@@ -75,48 +79,46 @@ export const RealtimeLogPipeline = defineComponent({
       const handler = () => {
         listen(false)
       }
-      socket.socket.io.on('open', handler)
+      socket?.socket?.io?.on('open', handler)
 
       return () => {
-        socket.socket.io.off('open', handler)
+        socket?.socket?.io?.off('open', handler)
       }
     })
 
     onBeforeUnmount(() => {
-      socket.socket.emit('unlog')
+      socket?.socket?.emit('unlog')
       bus.off(EventTypes.STDOUT, logHandler)
     })
 
     return () => (
       <div class="flex h-full flex-col">
         {/* Toolbar */}
-        <div class="mb-3 flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <div
+        <div class="mb-4 flex items-center justify-between">
+          {/* Status Badge */}
+          <div
+            class={[
+              'flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium',
+              isPaused.value
+                ? 'bg-amber-50 text-amber-600 dark:bg-amber-950/50 dark:text-amber-400'
+                : 'bg-green-50 text-green-600 dark:bg-green-950/50 dark:text-green-400',
+            ]}
+          >
+            <span
               class={[
-                'flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium',
-                isPaused.value
-                  ? 'bg-amber-50 text-amber-600 dark:bg-amber-950/50 dark:text-amber-400'
-                  : 'bg-green-50 text-green-600 dark:bg-green-950/50 dark:text-green-400',
+                'size-2 rounded-full',
+                isPaused.value ? 'bg-amber-500' : 'animate-pulse bg-green-500',
               ]}
-            >
-              <span
-                class={[
-                  'size-2 rounded-full',
-                  isPaused.value
-                    ? 'bg-amber-500'
-                    : 'animate-pulse bg-green-500',
-                ]}
-              />
-              {isPaused.value ? '已暂停' : '实时接收中'}
-              {isPaused.value && pausedMessages.length > 0 && (
-                <span class="ml-1 tabular-nums">
-                  ({pausedMessages.length} 条待处理)
-                </span>
-              )}
-            </div>
+            />
+            <span>{isPaused.value ? '已暂停' : '实时接收中'}</span>
+            {isPaused.value && pausedMessages.length > 0 && (
+              <span class="rounded-md bg-amber-100 px-1.5 py-0.5 text-xs tabular-nums dark:bg-amber-900/50">
+                {pausedMessages.length} 条待处理
+              </span>
+            )}
           </div>
 
+          {/* Action Buttons */}
           <div class="flex items-center gap-1">
             <HeaderActionButton
               icon={isPaused.value ? <Play /> : <Pause />}
@@ -131,20 +133,33 @@ export const RealtimeLogPipeline = defineComponent({
             />
             <HeaderActionButton
               icon={<RotateCcw />}
-              name="重新连接"
+              name="重连"
               onClick={handleReconnect}
             />
           </div>
         </div>
 
-        {/* Terminal */}
+        {/* Terminal Container */}
         <div
           class={[
-            'flex-1 overflow-hidden rounded-xl border',
+            'relative flex-1 overflow-hidden rounded-xl border',
             'border-neutral-200 dark:border-neutral-800',
             'bg-neutral-900',
           ]}
         >
+          {/* Empty State Overlay */}
+          {!hasContent.value && (
+            <div class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-neutral-900/80">
+              <div class="mb-4 flex size-16 items-center justify-center rounded-full bg-neutral-800">
+                <Radio class="size-8 text-neutral-500" />
+              </div>
+              <p class="mb-1 text-base font-medium text-neutral-300">
+                等待日志输出...
+              </p>
+              <p class="text-sm text-neutral-500">日志将会实时显示在这里</p>
+            </div>
+          )}
+
           <Xterm
             darkMode
             class="h-full w-full"

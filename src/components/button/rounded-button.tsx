@@ -1,4 +1,4 @@
-import { NButton } from 'naive-ui'
+import { NButton, NTooltip } from 'naive-ui'
 import { defineComponent } from 'vue'
 import { RouterLink } from 'vue-router'
 import type { ButtonHTMLAttributes, PropType, VNode } from 'vue'
@@ -215,13 +215,29 @@ export const HeaderActionButton = defineComponent({
       </button>
     )
 
-    return () =>
-      props.to ? (
+    const ButtonWithTooltip = () => {
+      const btn = props.to ? (
         <RouterLink to={props.to} class="inline-flex">
           <Button />
         </RouterLink>
       ) : (
         <Button />
       )
+
+      if (props.name) {
+        return (
+          <NTooltip placement="bottom">
+            {{
+              trigger: () => btn,
+              default: () => props.name,
+            }}
+          </NTooltip>
+        )
+      }
+
+      return btn
+    }
+
+    return () => <ButtonWithTooltip />
   },
 })

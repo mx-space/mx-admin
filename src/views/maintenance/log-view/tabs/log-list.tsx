@@ -1,5 +1,10 @@
-import { FileText, RefreshCw, Trash2 } from 'lucide-vue-next'
-import { NCard, NModal, NSelect, NSpin, useDialog, useMessage } from 'naive-ui'
+/**
+ * Log List View
+ * 日志文件列表 - 列表形式
+ */
+import { FileText, RefreshCw, Trash2, X } from 'lucide-vue-next'
+import { NModal, NSelect, NSpin, useDialog, useMessage } from 'naive-ui'
+import type { PropType } from 'vue'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { Xterm } from '~/components/xterm'
@@ -72,15 +77,31 @@ export const LogListView = defineComponent({
           show={showLog.value}
           onUpdateShow={(s) => (showLog.value = s)}
         >
-          <NCard
-            title={viewingFilename.value || '查看日志'}
-            class="modal-card !bg-neutral-900"
-            bordered={false}
-            closable
-            onClose={() => (showLog.value = false)}
-          >
-            <LogDisplay data={logData.value} />
-          </NCard>
+          <div class="w-full max-w-4xl rounded-xl bg-neutral-900 shadow-2xl">
+            {/* Modal Header */}
+            <div class="flex items-center justify-between border-b border-neutral-800 px-5 py-4">
+              <div class="flex items-center gap-3">
+                <div class="flex size-8 items-center justify-center rounded-lg bg-neutral-800">
+                  <FileText class="size-4 text-neutral-400" />
+                </div>
+                <h2 class="text-base font-medium text-white">
+                  {viewingFilename.value || '查看日志'}
+                </h2>
+              </div>
+              <button
+                type="button"
+                class="rounded-lg p-1.5 text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-white"
+                onClick={() => (showLog.value = false)}
+                aria-label="关闭"
+              >
+                <X class="size-5" />
+              </button>
+            </div>
+            {/* Modal Body */}
+            <div class="p-4">
+              <LogDisplay data={logData.value} />
+            </div>
+          </div>
         </NModal>
 
         {/* Main Content */}
@@ -114,9 +135,9 @@ export const LogListView = defineComponent({
               {data.value.length === 0 && !loading.value ? (
                 <LogEmptyState />
               ) : (
-                <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                <div class="overflow-hidden rounded-lg border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
                   {data.value.map((item) => (
-                    <LogFileCard
+                    <LogFileListItem
                       key={item.filename}
                       item={item}
                       onView={() => handleView(item)}
@@ -133,7 +154,10 @@ export const LogListView = defineComponent({
   },
 })
 
-const LogFileCard = defineComponent({
+/**
+ * Log File List Item
+ */
+const LogFileListItem = defineComponent({
   props: {
     item: {
       type: Object as PropType<LogFile>,
@@ -154,65 +178,53 @@ const LogFileCard = defineComponent({
       const isError = item.type === 'error' || item.filename.includes('error')
 
       return (
-        <div
-          class={[
-            'group relative rounded-xl border p-4',
-            'bg-white dark:bg-neutral-900',
-            'border-neutral-200 dark:border-neutral-800',
-            'transition-all duration-150',
-            'hover:border-neutral-300 dark:hover:border-neutral-700',
-            'hover:shadow-sm',
-          ]}
-        >
-          {/* Header */}
-          <div class="mb-3 flex items-start justify-between gap-2">
-            <div class="flex min-w-0 items-center gap-2">
-              <div
-                class={[
-                  'flex size-8 shrink-0 items-center justify-center rounded-lg',
-                  isError
-                    ? 'bg-red-50 text-red-500 dark:bg-red-950/50 dark:text-red-400'
-                    : 'bg-neutral-100 text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400',
-                ]}
-              >
-                <FileText class="size-4" />
-              </div>
+        <div class="group flex items-center gap-4 border-b border-neutral-200 px-4 py-3 transition-colors last:border-b-0 hover:bg-neutral-50 dark:border-neutral-800 dark:hover:bg-neutral-800/50">
+          {/* Icon */}
+          <div
+            class={[
+              'flex size-10 shrink-0 items-center justify-center rounded-lg',
+              isError
+                ? 'bg-red-50 text-red-500 dark:bg-red-950/50 dark:text-red-400'
+                : 'bg-neutral-100 text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400',
+            ]}
+          >
+            <FileText class="size-5" />
+          </div>
+
+          {/* Content */}
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center gap-2">
               <span
-                class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100"
+                class="truncate text-base font-medium text-neutral-900 dark:text-neutral-100"
                 title={item.filename}
               >
                 {item.filename}
               </span>
+              <span
+                class={[
+                  'shrink-0 rounded-full px-2 py-0.5 text-xs',
+                  isError
+                    ? 'bg-red-50 text-red-600 dark:bg-red-950/50 dark:text-red-400'
+                    : 'bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400',
+                ]}
+              >
+                {item.type}
+              </span>
+            </div>
+            <div class="mt-0.5 text-sm tabular-nums text-neutral-500 dark:text-neutral-400">
+              {item.size}
             </div>
           </div>
 
-          {/* Meta */}
-          <div class="mb-4 flex items-center gap-4 text-xs text-neutral-500 dark:text-neutral-400">
-            <span class="tabular-nums">{item.size}</span>
-            <span
-              class={[
-                'rounded-full px-2 py-0.5',
-                isError
-                  ? 'bg-red-50 text-red-600 dark:bg-red-950/50 dark:text-red-400'
-                  : 'bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400',
-              ]}
-            >
-              {item.type}
-            </span>
-          </div>
-
           {/* Actions */}
-          <div class="flex items-center gap-2">
+          <div class="flex shrink-0 items-center gap-2">
             <button
               onClick={props.onView}
               class={[
-                'flex-1 rounded-lg px-3 py-1.5 text-sm font-medium',
+                'rounded-lg px-3 py-1.5 text-sm font-medium',
                 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900',
                 'hover:bg-neutral-800 dark:hover:bg-neutral-100',
                 'transition-colors duration-150',
-                'focus-visible:outline-none focus-visible:ring-2',
-                'focus-visible:ring-neutral-400 focus-visible:ring-offset-2',
-                'dark:focus-visible:ring-neutral-500 dark:focus-visible:ring-offset-neutral-900',
               ]}
             >
               查看
@@ -225,9 +237,6 @@ const LogFileCard = defineComponent({
                 'text-neutral-400 hover:text-red-500',
                 'hover:bg-red-50 dark:hover:bg-red-950/50',
                 'transition-colors duration-150',
-                'focus-visible:outline-none focus-visible:ring-2',
-                'focus-visible:ring-red-400 focus-visible:ring-offset-2',
-                'dark:focus-visible:ring-red-500 dark:focus-visible:ring-offset-neutral-900',
               ]}
             >
               <Trash2 class="size-4" />
@@ -239,20 +248,30 @@ const LogFileCard = defineComponent({
   },
 })
 
+/**
+ * Empty State
+ */
 const LogEmptyState = defineComponent({
   setup() {
     return () => (
-      <div class="flex h-[300px] flex-col items-center justify-center text-neutral-400">
-        <FileText class="mb-4 size-12 text-neutral-300 dark:text-neutral-600" />
-        <p class="mb-2 text-lg font-medium text-neutral-600 dark:text-neutral-300">
+      <div class="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-neutral-200 bg-neutral-50/50 py-16 dark:border-neutral-800 dark:bg-neutral-900/50">
+        <div class="mb-4 flex size-16 items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800">
+          <FileText class="size-8 text-neutral-400" />
+        </div>
+        <h3 class="mb-1 text-lg font-medium text-neutral-900 dark:text-neutral-100">
           暂无日志文件
+        </h3>
+        <p class="text-sm text-neutral-500 dark:text-neutral-400">
+          当前没有可用的日志文件
         </p>
-        <p class="text-sm">当前没有可用的日志文件</p>
       </div>
     )
   },
 })
 
+/**
+ * Log Display with Terminal
+ */
 const LogDisplay = defineComponent({
   props: {
     data: {
@@ -266,7 +285,7 @@ const LogDisplay = defineComponent({
     onMounted(() => {
       setTimeout(() => {
         wait.value = false
-      }, 500)
+      }, 300)
     })
 
     return () => (
@@ -277,7 +296,8 @@ const LogDisplay = defineComponent({
           </div>
         ) : (
           <Xterm
-            class="w-full flex-grow"
+            darkMode
+            class="h-full w-full"
             onReady={(term) => {
               term.write(props.data)
             }}

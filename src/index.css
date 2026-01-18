@@ -140,3 +140,71 @@ button:where(:not(.n-button):not([class*='n-'])) {
 .n-data-table-table {
   @apply rounded-naive;
 }
+
+/* Modal & Dialog 样式优化 - Vercel 风格 */
+.n-modal-mask {
+  backdrop-filter: blur(4px);
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.n-modal-body-wrapper {
+  /* 优化动画 */
+  --n-bezier: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Light mode Dialog 阴影 */
+html:not(.dark) .n-dialog {
+  @apply !rounded-xl;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.06),
+    0 8px 24px rgba(0, 0, 0, 0.08),
+    0 16px 32px rgba(0, 0, 0, 0.06);
+}
+
+/* Dark mode Dialog 阴影 */
+html.dark .n-dialog {
+  @apply !rounded-xl;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 8px 24px rgba(0, 0, 0, 0.5),
+    0 16px 32px rgba(0, 0, 0, 0.4);
+}
+
+.n-dialog__title {
+  @apply !font-semibold;
+}
+
+.n-dialog__action {
+  @apply !pt-0;
+}
+
+/* Dialog 按钮间距优化 */
+.n-dialog__action .n-button + .n-button {
+  @apply !ml-3;
+}
+
+/* Light mode Card 阴影 */
+html:not(.dark) .n-modal .n-card {
+  @apply !rounded-xl;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.06),
+    0 8px 24px rgba(0, 0, 0, 0.08),
+    0 16px 32px rgba(0, 0, 0, 0.06);
+}
+
+/* Dark mode Card 阴影 */
+html.dark .n-modal .n-card {
+  @apply !rounded-xl;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 8px 24px rgba(0, 0, 0, 0.5),
+    0 16px 32px rgba(0, 0, 0, 0.4);
+}
+
+.n-card__header {
+  @apply !pb-4;
+}
+
+.n-card-header__main {
+  @apply !font-semibold;
+}
