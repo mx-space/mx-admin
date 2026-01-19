@@ -88,22 +88,24 @@ const ManageComment = defineComponent(() => {
     isLoading: loading,
     refresh,
   } = useDataTable<CommentModel>({
-    queryKey: (params) => queryKeys.comments.list(tabValue.value, params),
+    queryKey: (params) =>
+      queryKeys.comments.list(params.filters?.state ?? 0, params),
     queryFn: async (params) => {
       const response = await commentsApi.getList({
         page: params.page,
         size: params.size,
-        state: tabValue.value,
+        state: params.filters?.state ?? 0,
       })
       return {
-        data: response.data.map(($) => {
-          Reflect.deleteProperty($, 'children')
-          return $
+        data: response.data.map((data) => {
+          Reflect.deleteProperty(data, 'children')
+          return data
         }),
         pagination: response.pagination,
       }
     },
     pageSize: 10,
+    filters: () => ({ state: tabValue.value }),
   })
 
   // 回复 mutation

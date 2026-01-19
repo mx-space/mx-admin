@@ -145,7 +145,6 @@ export default defineComponent({
 
     // Clean up on unmount
     onUnmounted(() => {
-      console.log('onUnmounted')
       setActions(null)
     })
 
