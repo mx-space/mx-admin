@@ -9,9 +9,10 @@ import {
   MapPin,
   Pencil,
   Plus as PlusIcon,
+  Search as SearchIcon,
   Trash2,
 } from 'lucide-vue-next'
-import { NButton, NEllipsis, NPopconfirm, NSpace } from 'naive-ui'
+import { NButton, NEllipsis, NInput, NPopconfirm, NSpace } from 'naive-ui'
 import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
 import { RouterLink } from 'vue-router'
 import type { NoteModel } from '~/models/note'
@@ -21,6 +22,7 @@ import type { PropType } from 'vue'
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
 
 import { notesApi } from '~/api/notes'
+import { searchApi } from '~/api/search'
 import { TableTitleLink } from '~/components/link/title-link'
 import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
 import { StatusToggle } from '~/components/status-toggle'
@@ -194,6 +196,10 @@ export const ManageNoteListView = defineComponent({
       () => ui.viewport.value.mobile || ui.viewport.value.pad,
     )
 
+    // 搜索关键词
+    const searchKeyword = ref('')
+    const debouncedSearch = debouncedRef(searchKeyword, 300)
+
     // 筛选条件
     const dbQuery = ref<Record<string, boolean> | undefined>(undefined)
 
@@ -207,18 +213,33 @@ export const ManageNoteListView = defineComponent({
       setPage,
     } = useDataTable<NoteModel>({
       queryKey: (params) =>
-        queryKeys.notes.list({ ...params, dbQuery: dbQuery.value }),
-      queryFn: (params) =>
-        notesApi.getList({
+        queryKeys.notes.list({ ...params, dbQuery: params.filters?.dbQuery }),
+      queryFn: (params) => {
+        const keyword = params.filters?.search
+        // 有搜索关键词时使用搜索 API
+        if (keyword) {
+          return searchApi.searchNotes({
+            keyword,
+            page: params.page,
+            size: params.size,
+          }) as Promise<any>
+        }
+        // 否则使用列表 API
+        return notesApi.getList({
           page: params.page,
           size: params.size,
           select:
             'title _id nid id created modified mood weather publicAt bookmark coordinates location count meta isPublished',
           sortBy: params.sortBy || undefined,
           sortOrder: params.sortOrder || undefined,
-          db_query: dbQuery.value,
-        }) as Promise<any>,
+          db_query: params.filters?.dbQuery,
+        }) as Promise<any>
+      },
       pageSize: 20,
+      filters: () => ({
+        dbQuery: dbQuery.value,
+        search: debouncedSearch.value || undefined,
+      }),
     })
 
     // 删除 mutation
@@ -648,6 +669,24 @@ export const ManageNoteListView = defineComponent({
       )
     })
 
-    return () => (isMobile.value ? <CardList /> : <DataTable />)
+    return () => (
+      <div class="flex flex-col gap-4">
+        {/* 搜索框 */}
+        <div class="flex items-center gap-2">
+          <NInput
+            v-model:value={searchKeyword.value}
+            placeholder="搜索标题..."
+            clearable
+            class="max-w-xs"
+          >
+            {{
+              prefix: () => <SearchIcon class="h-4 w-4 text-neutral-400" />,
+            }}
+          </NInput>
+        </div>
+
+        {isMobile.value ? <CardList /> : <DataTable />}
+      </div>
+    )
   },
 })

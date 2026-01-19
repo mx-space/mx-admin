@@ -9,6 +9,7 @@ export interface GetPostsParams {
   select?: string
   sortBy?: string
   sortOrder?: number
+  categoryIds?: string[]
 }
 
 export interface CreatePostData {

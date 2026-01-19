@@ -6,18 +6,20 @@ import {
   EyeOff as EyeOffIcon,
   Pencil,
   Pin as PhPushPin,
+  Search as SearchIcon,
   ThumbsUp as ThumbsUpIcon,
   Trash2,
 } from 'lucide-vue-next'
 import {
   NButton,
   NIcon,
+  NInput,
   NPopconfirm,
   NPopover,
   NSpace,
   useMessage,
 } from 'naive-ui'
-import { computed, defineComponent, onMounted, reactive } from 'vue'
+import { computed, defineComponent, onMounted, reactive, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import type {
   FilterOption,
@@ -30,6 +32,7 @@ import type { PostModel } from '../../models/post'
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
 
 import { postsApi } from '~/api/posts'
+import { searchApi } from '~/api/search'
 import { TableTitleLink } from '~/components/link/title-link'
 import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
 import { StatusToggle } from '~/components/status-toggle'
@@ -188,6 +191,13 @@ export const ManagePostListView = defineComponent({
     const queryClient = useQueryClient()
     const message = useMessage()
 
+    // 搜索关键词
+    const searchKeyword = ref('')
+    const debouncedSearch = debouncedRef(searchKeyword, 300)
+
+    // 分类筛选条件（支持多选）
+    const categoryFilter = ref<string[] | undefined>(undefined)
+
     const {
       isLoading: loading,
       checkedRowKeys,
@@ -198,20 +208,36 @@ export const ManagePostListView = defineComponent({
       setPage,
     } = useDataTable<PostModel>({
       queryKey: (params) => queryKeys.posts.list(params),
-      queryFn: (params) =>
-        postsApi.getList({
+      queryFn: (params) => {
+        const keyword = params.filters?.search
+        // 有搜索关键词时使用搜索 API
+        if (keyword) {
+          return searchApi.searchPosts({
+            keyword,
+            page: params.page,
+            size: params.size,
+          })
+        }
+        // 否则使用列表 API
+        return postsApi.getList({
           page: params.page,
           size: params.size,
           select:
             'title _id id created modified slug categoryId copyright tags count pin meta isPublished',
-          ...(params.filters?.sortBy
+          categoryIds: params.filters?.categoryIds,
+          ...(params.sortBy
             ? {
-                sortBy: params.filters.sortBy,
-                sortOrder: params.filters.sortOrder,
+                sortBy: params.sortBy,
+                sortOrder: params.sortOrder,
               }
             : {}),
-        }),
+        })
+      },
       pageSize: 20,
+      filters: () => ({
+        categoryIds: categoryFilter.value,
+        search: debouncedSearch.value || undefined,
+      }),
     })
 
     const ui = useStoreRef(UIStore)
@@ -529,10 +555,13 @@ export const ManagePostListView = defineComponent({
             columns={columns}
             data={data}
             nTableProps={{
-              // TODO: 分类过滤功能需要重新实现
-              onUpdateFilters: async (_filterState: FilterState) => {
-                // 暂时禁用分类过滤，刷新数据
-                await fetchData()
+              onUpdateFilters: (filterState: FilterState) => {
+                const categoryIds = filterState.category as string[] | null
+                categoryFilter.value =
+                  categoryIds && categoryIds.length > 0
+                    ? categoryIds
+                    : undefined
+                setPage(1)
               },
             }}
             onFetchData={fetchData}
@@ -617,6 +646,24 @@ export const ManagePostListView = defineComponent({
       )
     })
 
-    return () => (isMobile.value ? <CardList /> : <DataTable />)
+    return () => (
+      <div class="flex flex-col gap-4">
+        {/* 搜索框 */}
+        <div class="flex items-center gap-2">
+          <NInput
+            v-model:value={searchKeyword.value}
+            placeholder="搜索标题..."
+            clearable
+            class="max-w-xs"
+          >
+            {{
+              prefix: () => <SearchIcon class="h-4 w-4 text-neutral-400" />,
+            }}
+          </NInput>
+        </div>
+
+        {isMobile.value ? <CardList /> : <DataTable />}
+      </div>
+    )
   },
 })

@@ -55,14 +55,15 @@ export default defineComponent({
       refresh,
     } = useDataTable<LinkModel>({
       queryKey: (params) =>
-        queryKeys.links.list({ ...params, state: tabValue.value }),
+        queryKeys.links.list({ ...params, state: params.filters?.state }),
       queryFn: (params) =>
         linksApi.getList({
           page: params.page,
           size: params.size,
-          state: tabValue.value,
+          state: params.filters?.state,
         }),
       pageSize: 50,
+      filters: () => ({ state: tabValue.value }),
     })
 
     const resetEditData: () => Omit<
