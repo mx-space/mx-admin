@@ -1,0 +1,1 @@
+import{q as l}from"./index-C6jMXiE5.js";import{r as t,o as p}from"./index-BfIRmUdd.js";const m=r=>{const s=t([]),o=t({}),c=p({sortBy:"",sortOrder:0}),n=t([]),a=t(!1);return{data:s,pager:o,sortProps:c,checkedRowKeys:n,loading:a,fetchDataFn:async(i,f,e)=>{a.value=!0,await r(s,o)(i,f,e?l.stringify(e):void 0),a.value=!1}}};export{m as u};
