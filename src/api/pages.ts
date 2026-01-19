@@ -17,6 +17,8 @@ export interface CreatePageData {
   order?: number
   allowComment?: boolean
   meta?: Record<string, unknown>
+  /** 关联的草稿 ID，发布时传递以标记草稿为已发布 */
+  draftId?: string
 }
 
 export interface UpdatePageData extends Partial<CreatePageData> {}

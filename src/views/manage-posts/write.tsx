@@ -22,6 +22,7 @@ import { categoriesApi } from '~/api/categories'
 import { postsApi } from '~/api/posts'
 import { AiHelperButton } from '~/components/ai/ai-helper'
 import { HeaderActionButton } from '~/components/button/rounded-button'
+import { DraftSaveIndicator } from '~/components/draft/draft-save-indicator'
 import {
   FormField,
   SectionTitle,
@@ -57,8 +58,13 @@ type PostReactiveType = WriteBaseType & {
 
 const PostWriteView = defineComponent(() => {
   const route = useRoute()
-  const { setTitle, setHeaderClass, setActions, setContentPadding } =
-    useLayout()
+  const {
+    setTitle,
+    setHeaderClass,
+    setActions,
+    setContentPadding,
+    setHeaderSubtitle,
+  } = useLayout()
 
   // 启用沉浸式编辑模式（无 padding）
   setContentPadding(false)
@@ -278,6 +284,8 @@ const PostWriteView = defineComponent(() => {
       summary:
         data.summary && data.summary.trim() != '' ? data.summary.trim() : null,
       pin: data.pin ? new Date().toISOString() : null,
+      // 传递草稿 ID，让后端标记该草稿为已发布
+      draftId: serverDraft.draftId.value,
     }
 
     if (id.value) {
@@ -295,7 +303,6 @@ const PostWriteView = defineComponent(() => {
     }
 
     await router.push({ name: RouteName.ViewPost, hash: '|publish' })
-    // 草稿保留作为历史记录，不删除
   }
   const handleOpenDrawer = () => {
     drawerShow.value = true
@@ -323,6 +330,14 @@ const PostWriteView = defineComponent(() => {
   setHeaderClass('pt-1')
   watchEffect(() => {
     setTitle(id.value ? '修改文章' : '撰写新文章')
+
+    // 设置草稿保存状态指示器
+    setHeaderSubtitle(
+      <DraftSaveIndicator
+        isSaving={serverDraft.isSaving}
+        lastSavedTime={serverDraft.lastSavedTime}
+      />,
+    )
 
     setActions(
       <>

@@ -5,7 +5,15 @@ import {
   Send as TelegramPlaneIcon,
 } from 'lucide-vue-next'
 import { NInputNumber, useMessage } from 'naive-ui'
-import { computed, defineComponent, onMounted, reactive, ref, toRaw } from 'vue'
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  reactive,
+  ref,
+  toRaw,
+  watchEffect,
+} from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { CreatePageData } from '~/api/pages'
 import type { PageModel } from '~/models/page'
@@ -13,6 +21,7 @@ import type { WriteBaseType } from '~/shared/types/base'
 
 import { pagesApi } from '~/api/pages'
 import { HeaderActionButton } from '~/components/button/rounded-button'
+import { DraftSaveIndicator } from '~/components/draft/draft-save-indicator'
 import {
   FormField,
   SectionTitle,
@@ -37,8 +46,13 @@ type PageReactiveType = WriteBaseType & {
 
 const PageWriteView = defineComponent(() => {
   const route = useRoute()
-  const { setTitle, setHeaderClass, setActions, setContentPadding } =
-    useLayout()
+  const {
+    setTitle,
+    setHeaderClass,
+    setActions,
+    setContentPadding,
+    setHeaderSubtitle,
+  } = useLayout()
 
   // 启用沉浸式编辑模式
   setContentPadding(false)
@@ -217,27 +231,42 @@ const PageWriteView = defineComponent(() => {
         throw error
       }
     }
+    // 获取草稿 ID，发布时传递给后端标记为已发布
+    const draftId = serverDraft.draftId.value
+
     if (id.value) {
       // update
       if (!isString(id.value)) {
         return
       }
       const $id = id.value as string
-      await pagesApi.update($id, parseDataToPayload())
+      await pagesApi.update($id, { ...parseDataToPayload(), draftId })
       message.success('修改成功')
     } else {
       // create
-      await pagesApi.create(parseDataToPayload() as CreatePageData)
+      await pagesApi.create({
+        ...parseDataToPayload(),
+        draftId,
+      } as CreatePageData)
       message.success('发布成功')
     }
 
     router.push({ name: RouteName.ListPage, hash: '|publish' })
-    // 草稿保留作为历史记录
   }
 
   // 设置 layout 状态
   setHeaderClass('pt-1')
   setTitle(id.value ? '修改页面' : '新建页面')
+
+  // 设置草稿保存状态指示器
+  watchEffect(() => {
+    setHeaderSubtitle(
+      <DraftSaveIndicator
+        isSaving={serverDraft.isSaving}
+        lastSavedTime={serverDraft.lastSavedTime}
+      />,
+    )
+  })
   setActions(
     <>
       <ParseContentButton
