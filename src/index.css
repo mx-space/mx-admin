@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,300;1,300&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,300;1,300&display=swap");
 
 body,
 html {
@@ -6,7 +6,7 @@ html {
   font-size: 14px !important;
   padding: 0;
 
-  --sans-font: 'Segoe UI', 'Helvetica Neue', sans-serif, -apple-system,
+  --sans-font: "Segoe UI", "Helvetica Neue", sans-serif, -apple-system,
     system-ui;
 
   font-family: var(--sans-font);
@@ -35,7 +35,7 @@ button {
   outline: unset;
 }
 
-button:where(:not(.n-button):not([class*='n-'])) {
+button:where(:not(.n-button):not([class*="n-"])) {
   border: none;
   background: transparent;
   padding: 0;
@@ -151,18 +151,14 @@ button:where(:not(.n-button):not([class*='n-'])) {
 /* Light mode Dialog 阴影 */
 html:not(.dark) .n-dialog {
   @apply !rounded-xl;
-  box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.06),
-    0 8px 24px rgba(0, 0, 0, 0.08),
-    0 16px 32px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.08), 0
+    16px 32px rgba(0, 0, 0, 0.06);
 }
 
 /* Dark mode Dialog 阴影 */
 html.dark .n-dialog {
   @apply !rounded-xl;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.08),
-    0 8px 24px rgba(0, 0, 0, 0.5),
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 8px 24px rgba(0, 0, 0, 0.5),
     0 16px 32px rgba(0, 0, 0, 0.4);
 }
 
@@ -177,18 +173,14 @@ html.dark .n-dialog {
 /* Light mode Card 阴影 */
 html:not(.dark) .n-modal .n-card {
   @apply !rounded-xl;
-  box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.06),
-    0 8px 24px rgba(0, 0, 0, 0.08),
-    0 16px 32px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.08), 0
+    16px 32px rgba(0, 0, 0, 0.06);
 }
 
 /* Dark mode Card 阴影 */
 html.dark .n-modal .n-card {
   @apply !rounded-xl;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.08),
-    0 8px 24px rgba(0, 0, 0, 0.5),
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 8px 24px rgba(0, 0, 0, 0.5),
     0 16px 32px rgba(0, 0, 0, 0.4);
 }
 
@@ -198,4 +190,56 @@ html.dark .n-modal .n-card {
 
 .n-card-header__main {
   @apply !font-semibold;
+}
+
+/* Naive UI 动画加速 - 全局 transition duration 覆盖 */
+[class*="n-"] {
+  --n-duration: 0.2s !important;
+}
+
+/* Transition 动画覆盖 */
+.fade-in-transition-enter-active,
+.fade-in-transition-leave-active,
+.fade-in-scale-up-transition-enter-active,
+.fade-in-scale-up-transition-leave-active,
+.fade-down-transition-enter-active,
+.fade-down-transition-leave-active,
+.icon-switch-transition-enter-active,
+.icon-switch-transition-leave-active,
+.fade-in-height-expand-transition-enter-active,
+.fade-in-height-expand-transition-leave-active,
+.fade-in-width-expand-transition-enter-active,
+.fade-in-width-expand-transition-leave-active {
+  transition-duration: 0.2s !important;
+}
+
+/* 组件内部 transition 覆盖 */
+.n-base-selection,
+.n-base-selection-label,
+.n-base-selection-input,
+.n-input,
+.n-input__input-el,
+.n-button,
+.n-checkbox,
+.n-radio,
+.n-switch,
+.n-slider,
+.n-select,
+.n-dropdown,
+.n-popover,
+.n-tooltip,
+.n-modal,
+.n-dialog,
+.n-drawer,
+.n-message,
+.n-notification,
+.n-card,
+.n-collapse,
+.n-collapse-item,
+.n-data-table,
+.n-pagination,
+.n-tabs,
+.n-menu,
+.n-tree {
+  transition-duration: 0.2s !important;
 }
