@@ -104,7 +104,7 @@ const DraftItem = defineComponent({
           <div class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs">
             <span
               class={[
-                'rounded px-1.5 py-0.5 text-[11px]',
+                'rounded px-1.5 py-0.5 text-xs',
                 config.value.bgColor,
                 config.value.color,
               ]}
@@ -112,11 +112,11 @@ const DraftItem = defineComponent({
               {config.value.label}
             </span>
             {props.draft.refId ? (
-              <span class="rounded bg-amber-50 px-1.5 py-0.5 text-[11px] text-amber-600 dark:bg-amber-950/50 dark:text-amber-400">
+              <span class="rounded bg-amber-50 px-1.5 py-0.5 text-xs text-amber-600 dark:bg-amber-950/50 dark:text-amber-400">
                 编辑中
               </span>
             ) : (
-              <span class="rounded bg-neutral-100 px-1.5 py-0.5 text-[11px] text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
+              <span class="rounded bg-neutral-100 px-1.5 py-0.5 text-xs text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
                 新建
               </span>
             )}

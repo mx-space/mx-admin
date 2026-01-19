@@ -86,7 +86,7 @@ const PostItem = defineComponent({
             )}
             <RouterLink
               to={`/posts/edit?id=${row.value.id}`}
-              class="truncate text-[13px] font-medium text-neutral-900 hover:text-blue-600 dark:text-neutral-100 dark:hover:text-blue-400"
+              class="truncate text-sm font-medium text-neutral-900 hover:text-blue-600 dark:text-neutral-100 dark:hover:text-blue-400"
             >
               {row.value.title}
             </RouterLink>
@@ -95,30 +95,30 @@ const PostItem = defineComponent({
           {/* Meta row - all in one line with consistent sizing */}
           <div class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
             {props.categoryName && (
-              <span class="rounded bg-neutral-100 px-1 py-px text-[11px] text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">
+              <span class="rounded bg-neutral-100 px-1 py-px text-xs text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">
                 {props.categoryName}
               </span>
             )}
             {row.value.tags && row.value.tags.length > 0 && (
-              <span class="max-w-24 truncate text-[11px] text-neutral-500 dark:text-neutral-400">
+              <span class="max-w-24 truncate text-xs text-neutral-500 dark:text-neutral-400">
                 {row.value.tags.slice(0, 2).join('、')}
                 {row.value.tags.length > 2 && '…'}
               </span>
             )}
-            <span class="flex items-center gap-0.5 text-[11px] text-neutral-400 dark:text-neutral-500">
+            <span class="flex items-center gap-0.5 text-xs text-neutral-400 dark:text-neutral-500">
               <BookIcon class="h-2.5 w-2.5" />
               {row.value.count?.read || 0}
             </span>
-            <span class="flex items-center gap-0.5 text-[11px] text-neutral-400 dark:text-neutral-500">
+            <span class="flex items-center gap-0.5 text-xs text-neutral-400 dark:text-neutral-500">
               <ThumbsUpIcon class="h-2.5 w-2.5" />
               {row.value.count?.like || 0}
             </span>
-            <span class="text-[11px] text-neutral-400 dark:text-neutral-500">
+            <span class="text-xs text-neutral-400 dark:text-neutral-500">
               ·
             </span>
             <RelativeTime
               time={row.value.created}
-              class="text-[11px] text-neutral-400 dark:text-neutral-500"
+              class="text-xs text-neutral-400 dark:text-neutral-500"
             />
             <StatusToggle
               isPublished={row.value.isPublished ?? false}

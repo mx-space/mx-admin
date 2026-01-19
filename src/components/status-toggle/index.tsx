@@ -50,7 +50,7 @@ export const StatusToggle = defineComponent<StatusToggleProps>({
         <div
           class={`group relative inline-flex cursor-pointer items-center justify-center gap-0.5 rounded transition-all duration-200 hover:shadow-sm ${
             isSmall
-              ? 'px-1.5 py-0.5 text-[10px] leading-tight'
+              ? 'px-1.5 py-0.5 text-xs leading-tight'
               : 'px-2 py-1 text-xs'
           }`}
           style={currentStyles}
@@ -67,7 +67,7 @@ export const StatusToggle = defineComponent<StatusToggleProps>({
           {/* hover时的切换提示 */}
           <div
             class={`absolute inset-0 flex items-center justify-center rounded bg-inherit opacity-0 transition-opacity duration-200 group-hover:opacity-100 ${
-              isSmall ? 'text-[10px]' : 'text-xs'
+              isSmall ? 'text-xs' : 'text-xs'
             }`}
             style={currentStyles}
           >

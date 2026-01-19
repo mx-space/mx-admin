@@ -72,7 +72,7 @@ const NoteItem = defineComponent({
         <div class="min-w-0 flex-1">
           {/* Title row with badges */}
           <div class="flex items-center gap-1.5">
-            <span class="shrink-0 font-mono text-[11px] text-neutral-400 dark:text-neutral-500">
+            <span class="shrink-0 font-mono text-xs text-neutral-400 dark:text-neutral-500">
               #{row.value.nid}
             </span>
             {(isUnpublished.value || isSecret.value) && (
@@ -83,7 +83,7 @@ const NoteItem = defineComponent({
             )}
             <RouterLink
               to={`/notes/edit?id=${row.value.id}`}
-              class="truncate text-[13px] font-medium text-neutral-900 hover:text-blue-600 dark:text-neutral-100 dark:hover:text-blue-400"
+              class="truncate text-sm font-medium text-neutral-900 hover:text-blue-600 dark:text-neutral-100 dark:hover:text-blue-400"
             >
               {row.value.title}
             </RouterLink>
@@ -92,35 +92,35 @@ const NoteItem = defineComponent({
           {/* Meta row - all in one line with consistent sizing */}
           <div class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
             {row.value.mood && (
-              <span class="text-[11px] text-neutral-500 dark:text-neutral-400">
+              <span class="text-xs text-neutral-500 dark:text-neutral-400">
                 {row.value.mood}
               </span>
             )}
             {row.value.weather && (
-              <span class="text-[11px] text-neutral-500 dark:text-neutral-400">
+              <span class="text-xs text-neutral-500 dark:text-neutral-400">
                 {row.value.weather}
               </span>
             )}
             {row.value.location && (
-              <span class="flex max-w-20 items-center gap-0.5 truncate text-[11px] text-neutral-400 dark:text-neutral-500">
+              <span class="flex max-w-20 items-center gap-0.5 truncate text-xs text-neutral-400 dark:text-neutral-500">
                 <MapPin class="h-2.5 w-2.5 shrink-0" />
                 {row.value.location}
               </span>
             )}
-            <span class="flex items-center gap-0.5 text-[11px] text-neutral-400 dark:text-neutral-500">
+            <span class="flex items-center gap-0.5 text-xs text-neutral-400 dark:text-neutral-500">
               <BookIcon class="h-2.5 w-2.5" />
               {formatNumber(row.value.count?.read || 0)}
             </span>
-            <span class="flex items-center gap-0.5 text-[11px] text-neutral-400 dark:text-neutral-500">
+            <span class="flex items-center gap-0.5 text-xs text-neutral-400 dark:text-neutral-500">
               <HeartIcon class="h-2.5 w-2.5" />
               {formatNumber(row.value.count?.like || 0)}
             </span>
-            <span class="text-[11px] text-neutral-400 dark:text-neutral-500">
+            <span class="text-xs text-neutral-400 dark:text-neutral-500">
               ·
             </span>
             <RelativeTime
               time={row.value.created}
-              class="text-[11px] text-neutral-400 dark:text-neutral-500"
+              class="text-xs text-neutral-400 dark:text-neutral-500"
             />
             <StatusToggle
               isPublished={row.value.isPublished ?? false}

@@ -77,6 +77,15 @@ pnpm format
 
 - **验证方式**：修改代码后只需运行类型检查（`pnpm tsc --noEmit` 或依赖 IDE 诊断），不要运行 `pnpm build` 构建整个项目
 - **灰阶颜色**：所有灰阶色必须使用 `neutral` 而不是 `gray`（如 `text-neutral-500`、`bg-neutral-800`、`border-neutral-200`）。这与项目的 Vercel 风格设计一致
+- **字号规范**：禁止使用任意值字号（如 `text-[11px]`、`text-[13px]`），必须使用标准 Tailwind 类：
+  - `text-2xl` (24px) - 页面大标题
+  - `text-xl` (20px) - 区块标题
+  - `text-lg` (18px) - 卡片/Modal 标题
+  - `text-base` (16px) - 次级标题
+  - `text-sm` (14px) - 正文、列表标题、按钮
+  - `text-xs` (12px) - 元数据、时间戳、徽章
+
+  详见 `docs/typography.md`
 
 ## API Response Handling
 

@@ -10,7 +10,6 @@
   }
 
   .cm-editor {
-
     .cm-gutters,
     .cm-activeLineGutter,
     .cm-activeLine {
@@ -29,7 +28,6 @@
 
   /* WYSIWYG Mode Styles */
   &.cm-wysiwyg-mode {
-
     /* Hide line numbers and gutters */
     & .cm-gutters {
       display: none !important;
@@ -104,15 +102,19 @@
 
     /* Selection style */
     & .cm-selectionBackground {
-      background-color: color-mix(in srgb,
-          var(--primary-default) 20%,
-          transparent) !important;
+      background-color: color-mix(
+        in srgb,
+        var(--primary-default) 20%,
+        transparent
+      ) !important;
     }
 
     &.cm-focused .cm-selectionBackground {
-      background-color: color-mix(in srgb,
-          var(--primary-default) 30%,
-          transparent) !important;
+      background-color: color-mix(
+        in srgb,
+        var(--primary-default) 30%,
+        transparent
+      ) !important;
     }
 
     /* Cursor style */
@@ -502,4 +504,36 @@
   .katex {
     font-size: 1.1em;
   }
+
+  /* Image click hint */
+  .cm-wysiwyg-image {
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+  }
+
+  .cm-wysiwyg-image:hover {
+    opacity: 0.85;
+  }
+}
+
+/* Image Edit Popover */
+.cm-image-edit-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: auto;
+}
+
+.cm-image-edit-popover {
+  position: fixed;
+  z-index: 10000;
+  padding: 12px;
+  min-width: 280px;
+  border-radius: 8px;
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
+  background-color: var(--card-color);
+  border: 1px solid var(--border-color);
+  pointer-events: auto;
 }

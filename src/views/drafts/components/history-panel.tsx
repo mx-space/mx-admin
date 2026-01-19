@@ -96,7 +96,7 @@ export const HistoryPanel = defineComponent({
                           版本 {item.version}
                         </span>
                         {index === 0 && (
-                          <span class="rounded bg-blue-100 px-1.5 py-0.5 text-[10px] text-blue-600 dark:bg-blue-900/50 dark:text-blue-400">
+                          <span class="rounded bg-blue-100 px-1.5 py-0.5 text-xs text-blue-600 dark:bg-blue-900/50 dark:text-blue-400">
                             当前
                           </span>
                         )}

@@ -22,6 +22,7 @@ import { PortalInjectKey } from '~/hooks/use-portal-element'
 import { useUIStore } from './stores/ui'
 import {
   commonThemeVars,
+  componentThemeOverrides,
   darkThemeColors,
   lightThemeColors,
 } from './utils/color'
@@ -84,6 +85,7 @@ const App = defineComponent({
               commonThemeVars,
               isCurrentDark ? darkThemeColors : lightThemeColors,
             ),
+            ...componentThemeOverrides,
           }}
           theme={isCurrentDark ? darkTheme : lightTheme}
         >

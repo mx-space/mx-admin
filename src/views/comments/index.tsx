@@ -519,7 +519,7 @@ const ManageComment = defineComponent(() => {
                   {{
                     trigger() {
                       return (
-                        <NButton text class="text-[20px]">
+                        <NButton text class="text-xl">
                           <Icon>
                             <EmojiAddIcon />
                           </Icon>

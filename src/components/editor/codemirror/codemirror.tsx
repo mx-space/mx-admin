@@ -15,8 +15,10 @@ import './codemirror.css'
 
 import {
   codemirrorReconfigureExtensionMap,
+  disableVirtualScrollExtension,
   wysiwygModeExtension,
 } from './extension'
+import { ImageEditPopover } from './ImageEditPopover'
 import { useCodeMirror } from './use-codemirror'
 import { blockquoteWysiwygExtension } from './wysiwyg-blockquote'
 import { codeBlockWysiwygExtension } from './wysiwyg-codeblock'
@@ -91,7 +93,9 @@ export const CodemirrorEditor = defineComponent({
           effects: [
             codemirrorReconfigureExtensionMap.wysiwyg.reconfigure(extensions),
             codemirrorReconfigureExtensionMap.wysiwygMode.reconfigure(
-              isWysiwyg ? [wysiwygModeExtension] : [],
+              isWysiwyg
+                ? [wysiwygModeExtension, disableVirtualScrollExtension]
+                : [],
             ),
           ],
         })
@@ -165,6 +169,8 @@ export const CodemirrorEditor = defineComponent({
           visible={hasSelection.value}
           position={position.value}
         />
+        {/* 图片编辑 Popover 单例 */}
+        <ImageEditPopover />
       </div>
     )
   },

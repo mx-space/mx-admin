@@ -128,7 +128,7 @@ export const SnippetCard = defineComponent({
 
             <span
               class={[
-                'flex-1 truncate text-[13px]',
+                'flex-1 truncate text-sm',
                 snippet.enable === false
                   ? 'text-neutral-400 line-through dark:text-neutral-500'
                   : 'text-neutral-700 dark:text-neutral-300',

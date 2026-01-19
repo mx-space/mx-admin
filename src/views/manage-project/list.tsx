@@ -96,12 +96,12 @@ const ProjectCard = defineComponent({
                 href={item.value.projectUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                class="truncate text-[14px] font-medium text-neutral-900 hover:text-blue-600 hover:underline dark:text-neutral-100 dark:hover:text-blue-400"
+                class="truncate text-sm font-medium text-neutral-900 hover:text-blue-600 hover:underline dark:text-neutral-100 dark:hover:text-blue-400"
               >
                 {item.value.name}
               </a>
             ) : (
-              <span class="truncate text-[14px] font-medium text-neutral-900 dark:text-neutral-100">
+              <span class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
                 {item.value.name}
               </span>
             )}
@@ -112,13 +112,13 @@ const ProjectCard = defineComponent({
 
           {/* Description */}
           {item.value.description && (
-            <p class="mt-1 line-clamp-2 text-[13px] text-neutral-600 dark:text-neutral-400">
+            <p class="mt-1 line-clamp-2 text-sm text-neutral-600 dark:text-neutral-400">
               {item.value.description}
             </p>
           )}
 
           {/* Meta row */}
-          <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-neutral-500 dark:text-neutral-400">
+          <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-neutral-500 dark:text-neutral-400">
             <RelativeTime time={item.value.created} />
             {item.value.modified && (
               <>
@@ -265,12 +265,10 @@ const ManageProjectView = defineComponent({
         <div class="mb-4 rounded-full bg-neutral-100 p-4 dark:bg-neutral-800">
           <Folder class="h-8 w-8 text-neutral-400" />
         </div>
-        <p class="text-[14px] text-neutral-600 dark:text-neutral-400">
-          暂无项目
-        </p>
+        <p class="text-sm text-neutral-600 dark:text-neutral-400">暂无项目</p>
         <RouterLink
           to="/projects/edit"
-          class="mt-4 text-[14px] text-blue-500 hover:text-blue-600 hover:underline"
+          class="mt-4 text-sm text-blue-500 hover:text-blue-600 hover:underline"
         >
           创建第一个项目
         </RouterLink>
@@ -280,7 +278,7 @@ const ManageProjectView = defineComponent({
     // 加载状态
     const LoadingState = () => (
       <div class="flex items-center justify-center py-20">
-        <span class="text-[14px] text-neutral-400">加载中…</span>
+        <span class="text-sm text-neutral-400">加载中…</span>
       </div>
     )
 
@@ -291,7 +289,7 @@ const ManageProjectView = defineComponent({
       return isMobile.value ? (
         <div class="flex items-center justify-center gap-4 border-t border-neutral-200 py-4 dark:border-neutral-800">
           <button
-            class="rounded-md border border-neutral-200 px-3 py-1.5 text-[13px] transition-colors hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
+            class="rounded-md border border-neutral-200 px-3 py-1.5 text-sm transition-colors hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
             disabled={!pager.value.hasPrevPage}
             onClick={() => {
               // 分页由 useDataTable 通过路由自动处理
@@ -299,11 +297,11 @@ const ManageProjectView = defineComponent({
           >
             上一页
           </button>
-          <span class="text-[13px] text-neutral-500 dark:text-neutral-400">
+          <span class="text-sm text-neutral-500 dark:text-neutral-400">
             {pager.value.currentPage} / {pager.value.totalPage}
           </span>
           <button
-            class="rounded-md border border-neutral-200 px-3 py-1.5 text-[13px] transition-colors hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
+            class="rounded-md border border-neutral-200 px-3 py-1.5 text-sm transition-colors hover:bg-neutral-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
             disabled={!pager.value.hasNextPage}
             onClick={() => {
               // 分页由 useDataTable 通过路由自动处理

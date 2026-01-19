@@ -1,8 +1,4 @@
-import {
-  Check as CheckIcon,
-  Copy as CopyIcon,
-  Github as GithubIcon,
-} from 'lucide-vue-next'
+import { Copy as CopyIcon, Github as GithubIcon } from 'lucide-vue-next'
 import { NButton, NCard, NForm, NFormItem, NInput, NSwitch } from 'naive-ui'
 import type { AuthSocialProviders } from '~/utils/authjs/auth'
 import type { FormInst } from 'naive-ui/lib'
@@ -121,17 +117,15 @@ export const createProvideSectionComponent = (
                 </div>
                 <div class="flex-1">
                   <h3 class={styles.authProviderName}>{options.name}</h3>
-                  <div class={styles.authProviderStatus}>
-                    {isEnabled.value ? (
-                      <span class={styles.authProviderEnabled}>
-                        <CheckIcon class="size-3" />
-                        已启用
-                      </span>
-                    ) : (
-                      <span class={styles.authProviderDisabled}>未启用</span>
-                    )}
-                  </div>
                 </div>
+                <label class="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-300">
+                  <NSwitch
+                    value={isEnabled.value}
+                    onUpdateValue={(v) => {
+                      isEnabled.value = v
+                    }}
+                  />
+                </label>
               </div>
             ),
             default: () => (
@@ -180,16 +174,7 @@ export const createProvideSectionComponent = (
                   </div>
                 </div>
 
-                <div class="mt-4 flex items-center justify-between">
-                  <label class="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-300">
-                    启用
-                    <NSwitch
-                      value={isEnabled.value}
-                      onUpdateValue={(v) => {
-                        isEnabled.value = v
-                      }}
-                    />
-                  </label>
+                <div class="mt-4 flex items-center justify-end">
                   <div class="flex gap-2">
                     <NButton onClick={handleValidate} tertiary size="small">
                       验证

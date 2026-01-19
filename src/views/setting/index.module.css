@@ -2,12 +2,12 @@
 
 /* Container - Responsive Layout */
 .container {
-  @apply flex min-h-full flex-col md:flex-row md:gap-8;
+  @apply -mx-8 flex h-full flex-col md:flex-row;
 }
 
-/* Sidebar Navigation - Desktop: sticky left sidebar, Mobile: fixed top header */
+/* Sidebar Navigation - Desktop: fixed left sidebar, Mobile: fixed top header */
 .sidebar {
-  @apply sticky top-0 z-10 -mx-8 shrink-0 border-b border-neutral-200 bg-[var(--content-bg)] px-8 py-3 md:static md:mx-0 md:w-56 md:border-b-0 md:bg-transparent md:px-0 md:pt-6;
+  @apply sticky top-0 z-10 -mx-8 shrink-0 border-b border-neutral-200 bg-[var(--content-bg)] px-8 py-3 md:mx-0 md:h-full md:w-56 md:shrink-0 md:overflow-y-auto md:border-b-0 md:border-r md:bg-transparent md:px-6 md:py-6;
 
   :global(.dark) & {
     @apply border-neutral-800;
@@ -152,7 +152,7 @@
 
 /* Content Area */
 .content {
-  @apply min-w-0 flex-1 py-6;
+  @apply min-w-0 flex-1 overflow-y-auto px-8 py-6;
 }
 
 /* Card Base */

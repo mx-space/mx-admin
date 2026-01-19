@@ -4,6 +4,8 @@ import type { DecorationSet, EditorView } from '@codemirror/view'
 
 import { Decoration, ViewPlugin, WidgetType } from '@codemirror/view'
 
+import { ImageWidget } from './wysiwyg-image'
+
 // Hidden marker widget - displays nothing
 class HiddenMarkerWidget extends WidgetType {
   constructor(readonly marker: string) {
@@ -42,38 +44,6 @@ class LinkUrlWidget extends WidgetType {
 
   eq(other: LinkUrlWidget): boolean {
     return this.url === other.url
-  }
-
-  ignoreEvent(): boolean {
-    return false
-  }
-}
-
-// Image widget - shows image preview
-class ImageWidget extends WidgetType {
-  constructor(
-    readonly alt: string,
-    readonly url: string,
-  ) {
-    super()
-  }
-
-  toDOM(): HTMLElement {
-    const wrapper = document.createElement('span')
-    wrapper.className = 'cm-wysiwyg-image-wrapper'
-
-    const img = document.createElement('img')
-    img.src = this.url
-    img.alt = this.alt
-    img.className = 'cm-wysiwyg-image'
-    img.title = this.alt || this.url
-
-    wrapper.appendChild(img)
-    return wrapper
-  }
-
-  eq(other: ImageWidget): boolean {
-    return this.url === other.url && this.alt === other.alt
   }
 
   ignoreEvent(): boolean {
@@ -171,8 +141,6 @@ interface InlineMatch {
   isImage?: boolean
   imageAlt?: string
   imageUrl?: string
-  lineFrom?: number
-  lineTo?: number
   // For inline code
   isInlineCode?: boolean
   codeContent?: string
@@ -182,7 +150,7 @@ interface InlineMatch {
 const findInlinePatterns = (
   lineText: string,
   lineFrom: number,
-  lineTo: number,
+  _lineTo: number,
 ): InlineMatch[] => {
   const matches: InlineMatch[] = []
   let match: RegExpExecArray | null
@@ -222,8 +190,6 @@ const findInlinePatterns = (
       isImage: true,
       imageAlt: alt,
       imageUrl: url,
-      lineFrom: lineFrom,
-      lineTo: lineTo,
     })
   }
 
@@ -369,22 +335,15 @@ const isCursorInRange = (
   return from < end && to > start
 }
 
-// Check if cursor is on a line
-const isCursorOnLine = (
-  state: EditorState,
-  lineFrom: number,
-  lineTo: number,
-): boolean => {
-  const { from, to } = state.selection.main
-  return from <= lineTo && to >= lineFrom
-}
-
 // Detect dark mode
 const isDarkMode = (): boolean => {
   return document.documentElement.classList.contains('dark')
 }
 
-const buildInlineDecorations = (state: EditorState): DecorationSet => {
+const buildInlineDecorations = (
+  state: EditorState,
+  view: EditorView,
+): DecorationSet => {
   const decorations: Range<Decoration>[] = []
   const dark = isDarkMode()
 
@@ -393,27 +352,33 @@ const buildInlineDecorations = (state: EditorState): DecorationSet => {
     const matches = findInlinePatterns(line.text, line.from, line.to)
 
     for (const match of matches) {
-      // For images, use line-level cursor detection
-      const cursorInMatch = match.isImage
-        ? isCursorOnLine(state, match.lineFrom!, match.lineTo!)
-        : isCursorInRange(state, match.start, match.end)
+      // For images, always show the widget (no cursor detection)
+      // Other inline elements still use cursor detection
+      if (match.isImage && match.imageUrl) {
+        // Always replace image syntax with image widget
+        decorations.push(
+          Decoration.replace({
+            widget: new ImageWidget(
+              match.imageAlt || '',
+              match.imageUrl,
+              match.start,
+              match.end,
+              view,
+            ),
+          }).range(match.start, match.end),
+        )
+        continue
+      }
+
+      const cursorInMatch = isCursorInRange(state, match.start, match.end)
 
       if (cursorInMatch) {
         // Only apply the style, don't hide markers
-        if (!match.isImage) {
-          decorations.push(
-            Decoration.mark({ class: match.className }).range(
-              match.contentStart,
-              match.contentEnd,
-            ),
-          )
-        }
-      } else if (match.isImage && match.imageUrl) {
-        // Replace entire image syntax with image widget
         decorations.push(
-          Decoration.replace({
-            widget: new ImageWidget(match.imageAlt || '', match.imageUrl),
-          }).range(match.start, match.end),
+          Decoration.mark({ class: match.className }).range(
+            match.contentStart,
+            match.contentEnd,
+          ),
         )
       } else if (match.isInlineCode && match.codeContent) {
         // Replace entire inline code with highlighted widget
@@ -466,16 +431,17 @@ const inlineWysiwygPlugin = ViewPlugin.fromClass(
     decorations: DecorationSet
 
     constructor(view: EditorView) {
-      this.decorations = buildInlineDecorations(view.state)
+      this.decorations = buildInlineDecorations(view.state, view)
     }
 
     update(update: {
       docChanged: boolean
       selectionSet: boolean
       state: EditorState
+      view: EditorView
     }) {
       if (update.docChanged || update.selectionSet) {
-        this.decorations = buildInlineDecorations(update.state)
+        this.decorations = buildInlineDecorations(update.state, update.view)
       }
     }
   },
