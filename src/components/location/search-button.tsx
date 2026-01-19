@@ -79,8 +79,8 @@ export const SearchLocationButton = defineComponent({
     return () => (
       <>
         <NButton
-          ghost
-          round
+          tertiary
+          size="tiny"
           onClick={() => {
             modalOpen.value = true
           }}

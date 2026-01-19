@@ -24,9 +24,9 @@ import {
   toRaw,
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import type { TopicModel } from '@mx-space/api-client'
 import type { CreateNoteData } from '~/api/notes'
 import type { Coordinate, NoteModel } from '~/models/note'
-import type { TopicModel } from '~/models/topic'
 import type { WriteBaseType } from '~/shared/types/base'
 
 import { notesApi } from '~/api/notes'
@@ -202,18 +202,15 @@ const NoteWriteView = defineComponent(() => {
 
     // 场景2：编辑已发布手记
     if ($id && typeof $id == 'string') {
-      const payload = (await notesApi.getById($id, {
+      const noteData = await notesApi.getById($id, {
         single: true,
-      })) as any
-
-      const noteData = payload.data
+      })
 
       if (noteData.topic) {
         topics.value.push(noteData.topic)
       }
 
       nid.value = noteData.nid
-      noteData.secret = noteData.secret ? new Date(noteData.secret) : null
 
       const created = new Date((noteData as any).created)
       defaultTitle.value = `记录 ${created.getFullYear()} 年第 ${getDayOfYear(
@@ -413,6 +410,7 @@ const NoteWriteView = defineComponent(() => {
         title="日记设定"
         data={data}
         show={drawerShow.value}
+        scope="note"
         onUpdateShow={(s) => {
           drawerShow.value = s
         }}
@@ -485,7 +483,7 @@ const NoteWriteView = defineComponent(() => {
             }}
           />
           <NButton
-            size="small"
+            size="tiny"
             disabled={!data.location}
             onClick={() => {
               data.location = ''

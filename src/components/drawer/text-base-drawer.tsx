@@ -1,35 +1,22 @@
-import { isObject, isUndefined } from 'es-toolkit/compat'
+import { BracesIcon, ImageIcon, SettingsIcon } from 'lucide-vue-next'
 import {
-  BracesIcon,
-  ChevronDownIcon,
-  ImageIcon,
-  SettingsIcon,
-} from 'lucide-vue-next'
-import {
-  NButton,
-  NCollapse,
-  NCollapseItem,
   NDatePicker,
   NDrawer,
   NDrawerContent,
-  NDynamicInput,
   NImage,
   NInput,
-  NModal,
   NPopover,
   NSelect,
   NTooltip,
 } from 'naive-ui'
 import isURL from 'validator/lib/isURL'
 import type { Image } from '@mx-space/api-client'
+import type { MetaPresetScope } from '~/models/meta-preset'
 import type { SelectOption } from 'naive-ui'
 import type { PropType } from 'vue'
 
-import { JSONHighlight } from '~/components/json-highlight'
-import { JSONParseReturnOriginal } from '~/utils/json'
-
 import { ImageDetailSection } from './components/image-detail-section'
-import { JSONEditor } from './components/json-editor'
+import { MetaPresetSection } from './components/meta-preset-section'
 import { FormField, SectionTitle, SwitchRow } from './components/ui'
 
 // 重新导出 UI 组件，方便外部使用
@@ -68,62 +55,22 @@ export const TextBaseDrawer = defineComponent({
       type: Array as PropType<ItemType[]>,
       required: false,
     },
+
+    /**
+     * 元数据预设字段的适用范围
+     */
+    scope: {
+      type: String as PropType<MetaPresetScope>,
+      default: 'both',
+    },
   },
   setup(props, { slots }) {
     const disabledItem = new Set(props.disabledItem || [])
 
-    const showJSONEditorModal = ref(false)
-    const handleEdit = () => {
-      showJSONEditorModal.value = true
+    // 更新 meta 数据
+    const handleUpdateMeta = (meta: Record<string, any> | undefined) => {
+      props.data.meta = meta
     }
-
-    const keyValuePairs = ref([] as { key: string; value: string }[])
-
-    let inUpdatedKeyValue = false
-
-    watch(
-      () => keyValuePairs.value,
-      () => {
-        inUpdatedKeyValue = true
-        props.data.meta = keyValuePairs.value.reduce((acc, { key, value }) => {
-          return isUndefined(value) || value === ''
-            ? acc
-            : { ...acc, [key]: JSONParseReturnOriginal(value) }
-        }, {})
-      },
-    )
-
-    watch(
-      () => props.data.meta,
-      () => {
-        if (inUpdatedKeyValue) {
-          inUpdatedKeyValue = false
-          return
-        }
-
-        if (props.data.meta && isObject(props.data.meta)) {
-          keyValuePairs.value = Object.entries(props.data.meta).reduce(
-            (acc, [key, value]): any => {
-              return [
-                ...acc,
-                {
-                  key,
-                  value: JSON.stringify(value),
-                },
-              ]
-            },
-            [],
-          )
-        }
-      },
-      {
-        flush: 'post',
-        deep: true,
-      },
-    )
-
-    // 附加字段展开状态
-    const metaExpanded = ref(false)
 
     return () => (
       <NDrawer
@@ -184,6 +131,10 @@ export const TextBaseDrawer = defineComponent({
                   if (!props.data.meta) props.data.meta = {}
                   if (src === null) {
                     delete props.data.meta.cover
+                    // 如果 meta 为空对象，设为 undefined
+                    if (Object.keys(props.data.meta).length === 0) {
+                      props.data.meta = undefined
+                    }
                     return
                   }
                   props.data.meta.cover = src
@@ -206,99 +157,13 @@ export const TextBaseDrawer = defineComponent({
             {/* 附加字段 */}
             <SectionTitle icon={BracesIcon}>附加字段</SectionTitle>
 
-            <button
-              type="button"
-              class="mb-3 flex w-full items-center justify-between rounded-lg border border-neutral-200 px-3 py-2.5 text-left transition-colors hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800/50"
-              onClick={() => (metaExpanded.value = !metaExpanded.value)}
-              aria-expanded={metaExpanded.value}
-            >
-              <span class="text-sm text-neutral-600 dark:text-neutral-300">
-                自定义 Meta 数据
-                {props.data.meta && Object.keys(props.data.meta).length > 0 && (
-                  <span class="ml-2 text-xs text-neutral-400">
-                    ({Object.keys(props.data.meta).length} 项)
-                  </span>
-                )}
-              </span>
-              <div class="flex items-center gap-2">
-                <NButton
-                  size="tiny"
-                  quaternary
-                  type="primary"
-                  onClick={(e: MouseEvent) => {
-                    e.stopPropagation()
-                    handleEdit()
-                  }}
-                >
-                  JSON 编辑
-                </NButton>
-                <ChevronDownIcon
-                  class={[
-                    'size-4 text-neutral-400 transition-transform',
-                    metaExpanded.value && 'rotate-180',
-                  ]}
-                />
-              </div>
-            </button>
-
-            {metaExpanded.value && (
-              <div class="space-y-3">
-                <NDynamicInput
-                  preset="pair"
-                  value={keyValuePairs.value}
-                  keyPlaceholder="字段名"
-                  valuePlaceholder="字段值"
-                  onUpdateValue={(value: any[]) => {
-                    keyValuePairs.value = value
-                  }}
-                />
-
-                {props.data.meta && Object.keys(props.data.meta).length > 0 && (
-                  <NCollapse accordion>
-                    <NCollapseItem title="预览 JSON">
-                      <JSONHighlight
-                        class="max-w-full overflow-auto rounded-lg bg-neutral-50 p-3 text-xs dark:bg-neutral-800/50"
-                        code={JSON.stringify(props.data.meta, null, 2)}
-                      />
-                    </NCollapseItem>
-                  </NCollapse>
-                )}
-              </div>
-            )}
+            <MetaPresetSection
+              meta={props.data.meta}
+              onUpdateMeta={handleUpdateMeta}
+              scope={props.scope}
+            />
           </div>
         </NDrawerContent>
-
-        <NModal
-          show={showJSONEditorModal.value}
-          onUpdateShow={(e) => {
-            showJSONEditorModal.value = e
-          }}
-          zIndex={2222}
-          preset="card"
-          closable
-          closeOnEsc={false}
-          title="编辑附加字段"
-          onClose={() => {
-            showJSONEditorModal.value = false
-          }}
-          class="w-[unset]"
-        >
-          <JSONEditor
-            value={
-              props.data.meta ? JSON.stringify(props.data.meta, null, 2) : ''
-            }
-            onFinish={(jsonString) => {
-              try {
-                inUpdatedKeyValue = false
-                const parsed = JSON.parse(jsonString)
-                props.data.meta = parsed
-                showJSONEditorModal.value = false
-              } catch (error: any) {
-                message.error(error.message)
-              }
-            }}
-          />
-        </NModal>
       </NDrawer>
     )
   },

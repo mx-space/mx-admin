@@ -42,7 +42,7 @@ export const notesApi = {
 
   // 获取单篇日记
   getById: (id: string, params?: { single?: boolean }) =>
-    request.get<{ data: NoteModel }>(`/notes/${id}`, { params }),
+    request.get<NoteModel>(`/notes/${id}`, { params }),
 
   // 创建日记
   create: (data: CreateNoteData) => request.post<NoteModel>('/notes', { data }),

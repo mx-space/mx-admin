@@ -102,10 +102,6 @@ button:where(:not(.n-button):not([class*='n-'])) {
   }
 }
 
-.n-tabs-tab {
-  padding-top: 10px !important;
-}
-
 .n-data-table-base-table-header {
   @apply overflow-hidden;
 }

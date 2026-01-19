@@ -198,4 +198,12 @@ export const queryKeys = {
     dispatches: (hookId: string) =>
       [...queryKeys.webhooks.all, 'dispatches', hookId] as const,
   },
+
+  // === Meta 预设 ===
+  metaPresets: {
+    all: ['metaPresets'] as const,
+    list: () => [...queryKeys.metaPresets.all, 'list'] as const,
+    detail: (id: string) =>
+      [...queryKeys.metaPresets.all, 'detail', id] as const,
+  },
 }

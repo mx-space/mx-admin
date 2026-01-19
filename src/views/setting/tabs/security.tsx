@@ -108,7 +108,7 @@ export const TabSecurity = defineComponent(() => {
                 <NButton
                   size="small"
                   type="error"
-                  ghost
+                  tertiary
                   disabled={
                     sessions.value.length === 1 && sessions.value[0]?.current
                   }
@@ -164,7 +164,7 @@ export const TabSecurity = defineComponent(() => {
                         <NButton
                           size="small"
                           type={current ? 'warning' : 'error'}
-                          ghost
+                          tertiary
                         >
                           {current ? '注销' : '踢出'}
                         </NButton>

@@ -341,7 +341,7 @@ export const TabUser = defineComponent(() => {
               <NButton
                 size="small"
                 type="primary"
-                ghost
+                tertiary
                 onClick={addSocialEntry}
                 disabled={usedSocialKeys.value.size >= socialOptions.length}
               >

@@ -40,7 +40,7 @@ export const ImageDetailSection = defineComponent({
   setup(props) {
     const loading = ref(false)
 
-    const useWebglFlag = useStorage('useWebglFlag', false)
+    const useWebglFlag = useStorage('useWebglFlag', true)
 
     const originImageMap = computed(() => {
       const map = new Map<string, ImageModel>()
@@ -178,10 +178,10 @@ export const ImageDetailSection = defineComponent({
           </span>
           <NButton
             loading={loading.value}
-            size="small"
+            size="tiny"
             onClick={handleCorrectImageDimensions}
             type="primary"
-            secondary
+            tertiary
           >
             自动修正
           </NButton>

@@ -16,6 +16,6 @@ export interface Image {
 }
 
 export class BaseModel {
-  created?: Date
-  id?: string
+  created: string = ''
+  id: string = ''
 }

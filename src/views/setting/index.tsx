@@ -1,5 +1,6 @@
 import {
   Fingerprint as FingerprintIcon,
+  ListPlus as ListPlusIcon,
   Settings as SettingsIcon,
   Shield as ShieldIcon,
   User as UserIcon,
@@ -9,6 +10,7 @@ import { useRoute, useRouter } from 'vue-router'
 
 import styles from './index.module.css'
 import { TabAuth } from './tabs/auth'
+import { TabMetaPresets } from './tabs/meta-presets'
 import { TabSecurity } from './tabs/security'
 import { TabSystem } from './tabs/system'
 import { TabUser } from './tabs/user'
@@ -18,6 +20,7 @@ enum SettingTab {
   System = 'system',
   Security = 'security',
   Auth = 'auth',
+  MetaPreset = 'meta-preset',
 }
 
 const tabConfig = [
@@ -39,6 +42,12 @@ const tabConfig = [
     label: '登入方式',
     icon: FingerprintIcon,
     component: TabAuth,
+  },
+  {
+    key: SettingTab.MetaPreset,
+    label: 'Meta 预设',
+    icon: ListPlusIcon,
+    component: TabMetaPresets,
   },
 ]
 

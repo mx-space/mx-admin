@@ -1,3 +1,5 @@
+import type { TopicModel } from '@mx-space/api-client'
+
 export interface NoteModel {
   id: string
   allowComment: boolean
@@ -24,6 +26,7 @@ export interface NoteModel {
   meta?: any
   isPublished?: boolean
   topicId?: string
+  topic?: TopicModel
 }
 
 export interface Coordinate {

@@ -66,8 +66,8 @@ export const GetLocationButton = defineComponent({
     }
     return () => (
       <NButton
-        ghost
-        round
+        tertiary
+        size="tiny"
         type="primary"
         onClick={handleGetLocation}
         loading={loading.value}

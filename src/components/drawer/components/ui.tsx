@@ -51,13 +51,13 @@ export const FormField = defineComponent({
   },
   setup(props, { slots }) {
     return () => (
-      <div class="mb-4">
-        <label class="mb-1.5 block text-sm text-neutral-600 dark:text-neutral-300">
+      <div class="mb-3">
+        <label class="mb-1 block text-xs text-neutral-500 dark:text-neutral-400">
           {props.label}
           {props.required && <span class="ml-0.5 text-red-500">*</span>}
         </label>
         {props.description && (
-          <p class="mb-1.5 text-xs text-neutral-400">{props.description}</p>
+          <p class="mb-1 text-xs text-neutral-400">{props.description}</p>
         )}
         <div class="w-full">{slots.default?.()}</div>
       </div>
@@ -98,7 +98,7 @@ export const SwitchRow = defineComponent({
   setup(props) {
     return () => (
       <div
-        class="-mx-2 flex cursor-pointer items-center justify-between rounded-lg px-2 py-2.5 transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-800/50"
+        class="-mx-2 flex cursor-pointer items-center justify-between px-2 py-2"
         onClick={() => props.onUpdate(!props.modelValue)}
         role="switch"
         aria-checked={props.modelValue}
@@ -112,21 +112,27 @@ export const SwitchRow = defineComponent({
         }}
       >
         <div class="flex flex-col">
-          <span class="text-sm text-neutral-700 dark:text-neutral-200">
+          <span class="text-xs text-neutral-600 dark:text-neutral-300">
             {props.label}
           </span>
           {props.description && (
             <span class="text-xs text-neutral-400">{props.description}</span>
           )}
         </div>
-        <NSwitch value={props.modelValue} onUpdateValue={props.onUpdate}>
-          {props.checkedText || props.uncheckedText
-            ? {
-                checked: () => props.checkedText,
-                unchecked: () => props.uncheckedText,
-              }
-            : undefined}
-        </NSwitch>
+        <div onClick={(e: MouseEvent) => e.stopPropagation()}>
+          <NSwitch
+            value={props.modelValue}
+            onUpdateValue={props.onUpdate}
+            size="small"
+          >
+            {props.checkedText || props.uncheckedText
+              ? {
+                  checked: () => props.checkedText,
+                  unchecked: () => props.uncheckedText,
+                }
+              : undefined}
+          </NSwitch>
+        </div>
       </div>
     )
   },
