@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [5.0.1](https://github.com/mx-space/admin-vue3/compare/v5.0.0...v5.0.1) (2026-01-19)
+
+
+### Features
+
+* add meta presets management functionality ([833dc5b](https://github.com/mx-space/admin-vue3/commit/833dc5b8a0aa389937deb69c7c30fd0f33bd0cb6))
+
+
+
 # [5.0.0](https://github.com/mx-space/admin-vue3/compare/v4.12.1...v5.0.0) (2026-01-18)
 
 
