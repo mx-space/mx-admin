@@ -15,7 +15,6 @@ import './codemirror.css'
 
 import {
   codemirrorReconfigureExtensionMap,
-  disableVirtualScrollExtension,
   wysiwygModeExtension,
 } from './extension'
 import { ImageEditPopover } from './ImageEditPopover'
@@ -93,9 +92,7 @@ export const CodemirrorEditor = defineComponent({
           effects: [
             codemirrorReconfigureExtensionMap.wysiwyg.reconfigure(extensions),
             codemirrorReconfigureExtensionMap.wysiwygMode.reconfigure(
-              isWysiwyg
-                ? [wysiwygModeExtension, disableVirtualScrollExtension]
-                : [],
+              isWysiwyg ? [wysiwygModeExtension] : [],
             ),
           ],
         })

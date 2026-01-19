@@ -18,15 +18,6 @@ export const wysiwygModeExtension = EditorView.editorAttributes.of({
   class: 'cm-wysiwyg-mode',
 })
 
-// Extension to disable virtual scrolling in WYSIWYG mode
-// By setting a very large scroll margin, CodeMirror will render all content
-export const disableVirtualScrollExtension = EditorView.scrollMargins.of(
-  () => ({
-    top: 1e8,
-    bottom: 1e8,
-  }),
-)
-
 export const codemirrorReconfigureExtension: Extension[] = [
   extensionMap.theme.of([]),
   extensionMap.language.of(
