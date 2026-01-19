@@ -88,12 +88,15 @@ router.beforeEach(async (to) => {
   }
 })
 
-router.afterEach((to, _) => {
+router.afterEach((to, from) => {
   document.title = getPageTitle(to?.meta.title as any)
   progress.finish()
-  // 路由变化后重置 layout store，清除旧 VNode 引用
+  // 跨页面（route.name 变化）时重置 layout store，清除旧 VNode 引用
+  // 同一页面内的参数/查询变化不重置，以保留 header actions 等状态
   // 注意：必须在 afterEach 中调用，而不是 beforeEach，否则组件还在渲染时 VNode 就被清空会导致错误
-  LayoutStore().reset()
+  if (to.name !== from.name) {
+    LayoutStore().reset()
+  }
 })
 
 // HACK editor save

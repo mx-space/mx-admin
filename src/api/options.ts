@@ -1,10 +1,8 @@
+import type { FormDSL } from '~/components/config-form/types'
+
 import { request } from '~/utils/request'
 
 export interface SystemOptions {
-  [key: string]: any
-}
-
-export interface ConfigSchema {
   [key: string]: any
 }
 
@@ -35,9 +33,8 @@ export const optionsApi = {
   patch: (key: string, data: any) =>
     request.patch<void>(`/options/${key}`, { data }),
 
-  // 获取配置 JSON Schema
-  getJsonSchema: (params?: { key?: string }) =>
-    request.get<ConfigSchema>('/config/jsonschema', { params }),
+  // 获取表单 DSL Schema
+  getFormSchema: () => request.get<FormDSL>('/config/form-schema'),
 
   // 获取邮件模板
   getEmailTemplate: (params: { type: string }) =>

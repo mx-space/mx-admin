@@ -7,7 +7,7 @@
 
 /* Sidebar Navigation - Desktop: sticky left sidebar, Mobile: fixed top header */
 .sidebar {
-  @apply sticky top-0 z-10 -mx-8 shrink-0 border-b border-neutral-200 bg-[var(--content-bg)] px-8 py-3 md:static md:mx-0 md:w-52 md:border-b-0 md:bg-transparent md:px-0 md:pt-6;
+  @apply sticky top-0 z-10 -mx-8 shrink-0 border-b border-neutral-200 bg-[var(--content-bg)] px-8 py-3 md:static md:mx-0 md:w-56 md:border-b-0 md:bg-transparent md:px-0 md:pt-6;
 
   :global(.dark) & {
     @apply border-neutral-800;
@@ -56,6 +56,100 @@
   @apply size-4;
 }
 
+.navExpandIcon {
+  @apply hidden size-4 shrink-0 transition-transform duration-200 md:block;
+}
+
+.navExpandIconOpen {
+  @apply rotate-180;
+}
+
+/* Sub Navigation - Desktop: vertical nested list, Mobile: horizontal second row */
+.subNavList {
+  /* Mobile: hidden in main nav, shown separately */
+  @apply hidden;
+
+  /* Desktop: vertical nested list */
+  @media (min-width: 768px) {
+    @apply m-0 ml-7 mt-1 flex list-none flex-col gap-0.5 border-l border-neutral-200 p-0 pl-3;
+
+    :global(.dark) & {
+      @apply border-neutral-700;
+    }
+  }
+}
+
+/* Mobile sub navigation - horizontal scrollable row */
+.mobileSubNav {
+  @apply -mx-8 border-b border-neutral-200 bg-neutral-50 px-8 py-2 md:hidden;
+
+  :global(.dark) & {
+    @apply border-neutral-800 bg-neutral-900;
+  }
+}
+
+.mobileSubNavList {
+  @apply m-0 flex list-none gap-1 overflow-x-auto p-0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.mobileSubNavItem {
+  @apply shrink-0 cursor-pointer whitespace-nowrap rounded-full border-0 bg-transparent px-3 py-1.5 text-xs font-medium text-neutral-500 transition-colors;
+
+  &:hover {
+    @apply bg-neutral-200 text-neutral-700;
+  }
+
+  :global(.dark) & {
+    @apply text-neutral-400;
+
+    &:hover {
+      @apply bg-neutral-700 text-neutral-200;
+    }
+  }
+}
+
+.mobileSubNavItemActive {
+  @apply bg-neutral-900 text-white;
+
+  :global(.dark) & {
+    @apply bg-neutral-100 text-neutral-900;
+  }
+}
+
+.subNavItem {
+  @apply w-full cursor-pointer truncate rounded-md border-0 bg-transparent px-3 py-1.5 text-left text-sm text-neutral-500 transition-colors;
+
+  &:hover {
+    @apply bg-neutral-100 text-neutral-700;
+  }
+
+  :global(.dark) & {
+    @apply text-neutral-400;
+
+    &:hover {
+      @apply bg-neutral-800 text-neutral-200;
+    }
+  }
+
+  &:focus-visible {
+    @apply ring-primary/50 outline-none ring-2;
+  }
+}
+
+.subNavItemActive {
+  @apply bg-neutral-100 font-medium text-neutral-900;
+
+  :global(.dark) & {
+    @apply bg-neutral-800 text-neutral-100;
+  }
+}
+
 /* Content Area */
 .content {
   @apply min-w-0 flex-1 py-6;
@@ -65,10 +159,6 @@
 .card {
   @apply rounded-naive border border-neutral-200 bg-white p-6 transition-shadow;
 
-  &:hover {
-    @apply shadow-md;
-  }
-
   :global(.dark) & {
     @apply border-neutral-800 bg-neutral-900;
   }
@@ -76,10 +166,6 @@
 
 .cardCompact {
   @apply rounded-naive border border-neutral-200 bg-white p-4 transition-shadow;
-
-  &:hover {
-    @apply shadow-md;
-  }
 
   :global(.dark) & {
     @apply border-neutral-800 bg-neutral-900;
@@ -110,10 +196,6 @@
 /* Profile Card - User Tab */
 .profileCard {
   @apply rounded-naive border border-neutral-200 bg-white p-8 transition-shadow;
-
-  &:hover {
-    @apply shadow-lg;
-  }
 
   :global(.dark) & {
     @apply border-neutral-800 bg-neutral-900;
@@ -267,10 +349,6 @@
 .sessionItem {
   @apply rounded-naive border border-neutral-200 bg-white p-4 transition-shadow;
 
-  &:hover {
-    @apply shadow-md;
-  }
-
   :global(.dark) & {
     @apply border-neutral-800 bg-neutral-900;
   }
@@ -401,10 +479,6 @@
 
 .authProviderCard {
   @apply rounded-naive border border-neutral-200 bg-white p-5 transition-shadow;
-
-  &:hover {
-    @apply shadow-md;
-  }
 
   :global(.dark) & {
     @apply border-neutral-800 bg-neutral-900;
@@ -772,4 +846,147 @@
   :global(.dark) & {
     @apply border-neutral-700 text-neutral-500;
   }
+}
+
+/* Group Navigation Item */
+.groupNavItem {
+  @apply flex w-full cursor-pointer items-start gap-3 rounded-lg border-0 bg-transparent px-3 py-3 text-left transition-colors md:px-4;
+
+  &:hover {
+    @apply bg-neutral-100;
+  }
+
+  :global(.dark) & {
+    &:hover {
+      @apply bg-neutral-800;
+    }
+  }
+
+  &:focus-visible {
+    @apply ring-primary/50 outline-none ring-2;
+  }
+}
+
+.groupNavItemActive {
+  @apply bg-neutral-100;
+
+  :global(.dark) & {
+    @apply bg-neutral-800;
+  }
+}
+
+.groupNavIcon {
+  @apply mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-neutral-200 text-neutral-600;
+
+  :global(.dark) & {
+    @apply bg-neutral-700 text-neutral-300;
+  }
+
+  svg {
+    @apply size-4;
+  }
+}
+
+.groupNavIconActive {
+  @apply bg-primary/10 text-primary;
+
+  :global(.dark) & {
+    @apply bg-primary/20 text-primary;
+  }
+}
+
+.groupNavContent {
+  @apply min-w-0 flex-1;
+}
+
+.groupNavTitle {
+  @apply truncate text-sm font-medium text-neutral-900;
+
+  :global(.dark) & {
+    @apply text-neutral-100;
+  }
+}
+
+.groupNavDescription {
+  @apply mt-0.5 truncate text-xs text-neutral-500;
+
+  :global(.dark) & {
+    @apply text-neutral-400;
+  }
+}
+
+/* Section Card with Save Button */
+.sectionCard {
+  @apply rounded-naive border border-neutral-200 bg-white transition-shadow;
+
+  :global(.dark) & {
+    @apply border-neutral-800 bg-neutral-900;
+  }
+}
+
+.sectionCardHeader {
+  @apply flex items-center justify-between border-b border-neutral-100 px-6 py-4;
+
+  :global(.dark) & {
+    @apply border-neutral-800;
+  }
+}
+
+.sectionCardTitle {
+  @apply m-0 text-base font-semibold text-neutral-900;
+
+  :global(.dark) & {
+    @apply text-neutral-100;
+  }
+}
+
+.sectionCardBody {
+  @apply p-6;
+}
+
+/* Mobile Group Navigation */
+.mobileGroupNav {
+  @apply -mx-8 border-b border-neutral-200 bg-neutral-50 px-4 py-2 md:hidden;
+
+  :global(.dark) & {
+    @apply border-neutral-800 bg-neutral-900;
+  }
+}
+
+.mobileGroupNavList {
+  @apply m-0 flex list-none gap-2 overflow-x-auto p-0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.mobileGroupNavItem {
+  @apply flex shrink-0 cursor-pointer items-center gap-1.5 whitespace-nowrap rounded-full border-0 bg-transparent px-3 py-1.5 text-xs font-medium text-neutral-500 transition-colors;
+
+  &:hover {
+    @apply bg-neutral-200 text-neutral-700;
+  }
+
+  :global(.dark) & {
+    @apply text-neutral-400;
+
+    &:hover {
+      @apply bg-neutral-700 text-neutral-200;
+    }
+  }
+}
+
+.mobileGroupNavItemActive {
+  @apply bg-neutral-900 text-white;
+
+  :global(.dark) & {
+    @apply bg-neutral-100 text-neutral-900;
+  }
+}
+
+.mobileGroupNavIcon {
+  @apply size-3.5;
 }

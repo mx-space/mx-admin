@@ -60,19 +60,12 @@ export interface TrafficSourceData {
 }
 
 export interface WordCount {
-  data: {
-    totalWordCount: number
-    postWordCount: number
-    noteWordCount: number
-    pageWordCount: number
-  }
+  length: number
 }
 
 export interface ReadAndLikeCount {
-  data: {
-    totalRead: number
-    totalLike: number
-  }
+  totalLikes: number
+  totalReads: number
 }
 
 export const aggregateApi = {

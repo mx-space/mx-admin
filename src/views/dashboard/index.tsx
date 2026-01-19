@@ -255,11 +255,11 @@ export const DashBoardView = defineComponent({
         aggregateApi.getSiteLikeCount(),
       ])
 
-      siteWordCount.value = wordCountRes.data.totalWordCount
+      siteWordCount.value = wordCountRes.length
 
       readAndLikeCounts.value = {
-        totalLikes: readLikeRes.data.totalLike,
-        totalReads: readLikeRes.data.totalRead,
+        totalLikes: readLikeRes.totalLikes,
+        totalReads: readLikeRes.totalReads,
         siteLikeCount,
       }
     })

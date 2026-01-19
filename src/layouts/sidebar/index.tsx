@@ -21,9 +21,10 @@ export const SidebarLayout = defineComponent({
     const route = useRoute()
     const layoutStore = LayoutStore()
 
-    // 路由变化时重置 layout store 状态
+    // 跨页面（route.name 变化）时重置 layout store 状态
+    // 同一页面内的参数/查询变化不重置，以保留 header actions 等状态
     watch(
-      () => route.fullPath,
+      () => route.name,
       () => {
         layoutStore.reset()
       },
