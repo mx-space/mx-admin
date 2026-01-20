@@ -1,10 +1,11 @@
 import { codeToHtml } from 'shiki'
 import type { EditorState, Range } from '@codemirror/state'
-import type { DecorationSet, EditorView } from '@codemirror/view'
+import type { DecorationSet } from '@codemirror/view'
 
-import { Decoration, ViewPlugin, WidgetType } from '@codemirror/view'
+import { StateField } from '@codemirror/state'
+import { Decoration, EditorView, WidgetType } from '@codemirror/view'
 
-import { ImageWidget } from './wysiwyg-image'
+import { imageHeightChangedEffect, ImageWidget } from './wysiwyg-image'
 
 // Hidden marker widget - displays nothing
 class HiddenMarkerWidget extends WidgetType {
@@ -63,7 +64,7 @@ class InlineCodeWidget extends WidgetType {
     super()
   }
 
-  toDOM(): HTMLElement {
+  toDOM(view: EditorView): HTMLElement {
     const span = document.createElement('span')
     span.className = 'cm-wysiwyg-inline-code'
     span.textContent = this.code
@@ -73,6 +74,7 @@ class InlineCodeWidget extends WidgetType {
     const cached = InlineCodeWidget.highlightCache.get(cacheKey)
     if (cached) {
       span.innerHTML = cached
+      view.requestMeasure()
       return span
     }
 
@@ -82,6 +84,7 @@ class InlineCodeWidget extends WidgetType {
       pending.then((html) => {
         if (span.isConnected) {
           span.innerHTML = html
+          view.requestMeasure()
         }
       })
       return span
@@ -96,6 +99,7 @@ class InlineCodeWidget extends WidgetType {
       InlineCodeWidget.pendingHighlights.delete(cacheKey)
       if (span.isConnected) {
         span.innerHTML = html
+        view.requestMeasure()
       }
     })
 
@@ -340,10 +344,7 @@ const isDarkMode = (): boolean => {
   return document.documentElement.classList.contains('dark')
 }
 
-const buildInlineDecorations = (
-  state: EditorState,
-  view: EditorView,
-): DecorationSet => {
+const buildInlineDecorations = (state: EditorState): DecorationSet => {
   const decorations: Range<Decoration>[] = []
   const dark = isDarkMode()
 
@@ -355,7 +356,15 @@ const buildInlineDecorations = (
       // For images, always show the widget (no cursor detection)
       // Other inline elements still use cursor detection
       if (match.isImage && match.imageUrl) {
-        // Always replace image syntax with image widget
+        const matchText = line.text.slice(
+          match.start - line.from,
+          match.end - line.from,
+        )
+        const isBlockImage = line.text.trim() === matchText
+        const imageFrom = isBlockImage ? line.from : match.start
+        const imageTo = isBlockImage ? line.to : match.end
+
+        // Replace image syntax with image widget
         decorations.push(
           Decoration.replace({
             widget: new ImageWidget(
@@ -363,9 +372,10 @@ const buildInlineDecorations = (
               match.imageUrl,
               match.start,
               match.end,
-              view,
+              isBlockImage,
             ),
-          }).range(match.start, match.end),
+            block: isBlockImage,
+          }).range(imageFrom, imageTo),
         )
         continue
       }
@@ -425,29 +435,23 @@ const buildInlineDecorations = (
   return Decoration.set(decorations, true)
 }
 
-// Use ViewPlugin to react to selection changes
-const inlineWysiwygPlugin = ViewPlugin.fromClass(
-  class {
-    decorations: DecorationSet
+const inlineWysiwygField = StateField.define<DecorationSet>({
+  create(state) {
+    return buildInlineDecorations(state)
+  },
+  update(value, tr) {
+    const selectionChanged = !tr.startState.selection.eq(tr.state.selection)
+    const hasImageHeightChange = tr.effects.some((effect) =>
+      effect.is(imageHeightChangedEffect),
+    )
 
-    constructor(view: EditorView) {
-      this.decorations = buildInlineDecorations(view.state, view)
+    if (tr.docChanged || selectionChanged || hasImageHeightChange) {
+      return buildInlineDecorations(tr.state)
     }
 
-    update(update: {
-      docChanged: boolean
-      selectionSet: boolean
-      state: EditorState
-      view: EditorView
-    }) {
-      if (update.docChanged || update.selectionSet) {
-        this.decorations = buildInlineDecorations(update.state, update.view)
-      }
-    }
+    return value
   },
-  {
-    decorations: (v) => v.decorations,
-  },
-)
+  provide: (field) => EditorView.decorations.from(field),
+})
 
-export const inlineWysiwygExtension = [inlineWysiwygPlugin]
+export const inlineWysiwygExtension = [inlineWysiwygField]

@@ -1,7 +1,13 @@
+import type { Text } from '@codemirror/state'
 import type { DecorationSet, EditorView, ViewUpdate } from '@codemirror/view'
 
 import { cursorLineDown, cursorLineUp } from '@codemirror/commands'
-import { Prec, RangeSetBuilder } from '@codemirror/state'
+import {
+  EditorSelection,
+  EditorState,
+  Prec,
+  RangeSetBuilder,
+} from '@codemirror/state'
 import { Decoration, keymap, ViewPlugin } from '@codemirror/view'
 
 // Decoration to hide paragraph separator empty lines
@@ -60,8 +66,7 @@ const emptyLinePlugin = ViewPlugin.fromClass(
 /**
  * Check if a line is a hidden paragraph separator (empty line after content)
  */
-function isHiddenSeparatorLine(view: EditorView, lineNumber: number): boolean {
-  const doc = view.state.doc
+function isHiddenSeparatorLine(doc: Text, lineNumber: number): boolean {
   if (lineNumber < 1 || lineNumber > doc.lines) return false
 
   const line = doc.line(lineNumber)
@@ -75,6 +80,82 @@ function isHiddenSeparatorLine(view: EditorView, lineNumber: number): boolean {
 
   return !isPrevEmpty // It's a separator if previous line has content
 }
+
+const getHiddenLineAdjustedPos = (
+  doc: Text,
+  lineNumber: number,
+  direction: 'up' | 'down',
+): number | null => {
+  const hasPrev = lineNumber > 1
+  const hasNext = lineNumber < doc.lines
+
+  if (direction === 'down' && hasNext) {
+    return doc.line(lineNumber + 1).from
+  }
+
+  if (hasPrev) {
+    return doc.line(lineNumber - 1).to
+  }
+
+  if (hasNext) {
+    return doc.line(lineNumber + 1).from
+  }
+
+  return null
+}
+
+const skipHiddenLineSelectionFilter = EditorState.transactionFilter.of((tr) => {
+  const selection = tr.newSelection.main
+  if (!selection.empty) return tr
+
+  const doc = tr.newDoc
+  const line = doc.lineAt(selection.head)
+  const isHidden = isHiddenSeparatorLine(doc, line.number)
+  if (!isHidden) return tr
+
+  const prevHead = tr.startState.selection.main.head
+  const direction = selection.head >= prevHead ? 'down' : 'up'
+  const adjustedPos = getHiddenLineAdjustedPos(doc, line.number, direction)
+  if (adjustedPos == null || adjustedPos === selection.head) return tr
+
+  if (
+    typeof window !== 'undefined' &&
+    ((window as unknown as { __CM_WYSIWYG_DEBUG__?: boolean })
+      .__CM_WYSIWYG_DEBUG__ === true ||
+      window.localStorage?.getItem('cm-wysiwyg-debug') === '1')
+  ) {
+    const prevLine = line.number > 1 ? doc.line(line.number - 1) : null
+    const nextLine = line.number < doc.lines ? doc.line(line.number + 1) : null
+    console.log('[CM WYSIWYG] hidden-line-adjust', {
+      line: {
+        number: line.number,
+        from: line.from,
+        to: line.to,
+        text: line.text,
+      },
+      prevLine: prevLine
+        ? { number: prevLine.number, text: prevLine.text }
+        : null,
+      nextLine: nextLine
+        ? { number: nextLine.number, text: nextLine.text }
+        : null,
+      selection: {
+        head: selection.head,
+        anchor: selection.anchor,
+      },
+      direction,
+      adjustedPos,
+    })
+  }
+
+  return [
+    tr,
+    {
+      selection: EditorSelection.cursor(adjustedPos),
+      sequential: true,
+    },
+  ]
+})
 
 /**
  * Custom cursor movement that skips hidden empty lines.
@@ -95,7 +176,7 @@ function moveCursorSkippingHidden(
   const pos = view.state.selection.main.head
   const currentLine = view.state.doc.lineAt(pos)
 
-  if (isHiddenSeparatorLine(view, currentLine.number)) {
+  if (isHiddenSeparatorLine(view.state.doc, currentLine.number)) {
     // If on a hidden line, move once more to skip it
     return moveCommand(view)
   }
@@ -116,4 +197,8 @@ const skipHiddenLineKeymap = Prec.highest(
   ]),
 )
 
-export const emptyLineWysiwygExtension = [emptyLinePlugin, skipHiddenLineKeymap]
+export const emptyLineWysiwygExtension = [
+  emptyLinePlugin,
+  skipHiddenLineSelectionFilter,
+  skipHiddenLineKeymap,
+]

@@ -51,6 +51,7 @@ class InlineMathWidget extends WidgetType {
 // Block math widget
 class BlockMathWidget extends WidgetType {
   private static renderCache = new Map<string, string>()
+  private resizeObserver?: ResizeObserver
 
   constructor(
     readonly formula: string,
@@ -93,6 +94,13 @@ class BlockMathWidget extends WidgetType {
       wrapper.classList.add('cm-wysiwyg-math-error')
     }
 
+    if (typeof ResizeObserver !== 'undefined') {
+      this.resizeObserver = new ResizeObserver(() => {
+        view.requestMeasure()
+      })
+      this.resizeObserver.observe(wrapper)
+    }
+
     return wrapper
   }
 
@@ -102,6 +110,13 @@ class BlockMathWidget extends WidgetType {
 
   ignoreEvent(): boolean {
     return false
+  }
+
+  destroy(_dom: HTMLElement): void {
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect()
+      this.resizeObserver = undefined
+    }
   }
 }
 

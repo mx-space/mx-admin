@@ -27,6 +27,7 @@ import { headingWysiwygExtension } from './wysiwyg-heading'
 import { inlineWysiwygExtension } from './wysiwyg-inline'
 import { listWysiwygExtension } from './wysiwyg-list'
 import { mathWysiwygExtension } from './wysiwyg-math'
+import { wysiwygMeasureExtension } from './wysiwyg-measure'
 
 export const CodemirrorEditor = defineComponent({
   name: 'CodemirrorEditor',
@@ -79,12 +80,13 @@ export const CodemirrorEditor = defineComponent({
           ? [
               ...dividerWysiwygExtension,
               ...headingWysiwygExtension,
-              ...inlineWysiwygExtension,
-              ...codeBlockWysiwygExtension,
               ...listWysiwygExtension,
               ...blockquoteWysiwygExtension,
               ...mathWysiwygExtension,
+              ...inlineWysiwygExtension,
+              ...codeBlockWysiwygExtension,
               ...emptyLineWysiwygExtension,
+              wysiwygMeasureExtension,
             ]
           : []
 
@@ -96,6 +98,7 @@ export const CodemirrorEditor = defineComponent({
             ),
           ],
         })
+        view.requestMeasure()
 
         if (hadFocus) {
           requestAnimationFrame(() => view.focus())
@@ -131,7 +134,7 @@ export const CodemirrorEditor = defineComponent({
     // 浮动工具栏选区位置追踪
     const { position, hasSelection } = useSelectionPosition(editorView)
 
-    // 点击空白区域聚焦编辑器并将光标移到末尾 (WYSIWYG 模式)
+    // 点击空白区域聚焦编辑器并将光标移到对应位置 (WYSIWYG 模式)
     const handleContainerPointerDown = (e: PointerEvent) => {
       const view = editorView.value
       if (!view) return
@@ -139,15 +142,21 @@ export const CodemirrorEditor = defineComponent({
       const isWysiwyg = (props.renderMode ?? 'plain') === 'wysiwyg'
       if (!isWysiwyg) return
 
-      // 检查点击目标是否在 cm-content 内部
-      const target = e.target as HTMLElement
-      if (target.closest('.cm-content')) return
+      if (e.button !== 0) return
 
-      // 点击的是空白区域，聚焦编辑器并将光标移到文档末尾
+      const path = e.composedPath()
+      if (path.includes(view.contentDOM)) return
+
+      const target = e.target
+      if (target instanceof Node && view.contentDOM.contains(target)) return
+
+      const pos = view.posAtCoords({ x: e.clientX, y: e.clientY })
+      if (pos == null) return
+
       e.preventDefault()
       view.focus()
       view.dispatch({
-        selection: { anchor: view.state.doc.length },
+        selection: { anchor: pos },
       })
     }
 

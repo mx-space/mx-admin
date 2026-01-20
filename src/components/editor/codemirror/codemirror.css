@@ -28,6 +28,7 @@
 
   /* WYSIWYG Mode Styles */
   &.cm-wysiwyg-mode {
+    --wysiwyg-paragraph-gap: 0.9rem;
     /* Hide line numbers and gutters */
     & .cm-gutters {
       display: none !important;
@@ -36,28 +37,30 @@
     /* Override theme colors - use inherit for natural text color */
     color: inherit !important;
 
-    & .cm-scroller {
+    & > .cm-scroller {
       color: inherit !important;
     }
 
-    & .cm-content {
+    & > .cm-scroller > .cm-content {
       color: inherit !important;
       caret-color: currentColor !important;
     }
 
-    & .cm-line {
+    & > .cm-scroller > .cm-content > .cm-line {
       color: inherit !important;
     }
 
     /* Reset all syntax highlighting colors in WYSIWYG mode */
-    & .cm-line * {
+    & > .cm-scroller > .cm-content > .cm-line * {
       color: inherit !important;
     }
 
     /* Typography optimization - prose style */
-    & .cm-content {
+    & > .cm-scroller > .cm-content {
       max-width: var(--wysiwyg-content-width, 65ch);
       margin: 0 auto;
+      padding-top: 36px;
+      padding-bottom: 36px;
       font-family: 'Noto Serif SC', 'Source Han Serif SC', 'Source Han Serif',
         'Noto Serif CJK SC', Georgia, 'Times New Roman', serif;
       font-size: 1rem;
@@ -66,42 +69,34 @@
     }
 
     /* Remove active line highlight in WYSIWYG mode for cleaner look */
-    & .cm-activeLine {
-      background-color: transparent !important;
+    & > .cm-scroller > .cm-content .cm-activeLine {
+      @apply rounded bg-neutral-100 dark:bg-neutral-800;
     }
 
-    & .cm-activeLineGutter {
+    & > .cm-gutters .cm-activeLineGutter {
       background-color: transparent !important;
-    }
-
-    /* First paragraph top margin */
-    & .cm-line:first-child {
-      margin-top: 36px;
     }
 
     /* Hide paragraph separator empty lines (applied via decoration) */
     & .cm-wysiwyg-hidden-empty-line {
-      height: 0 !important;
-      min-height: 0 !important;
+      height: var(--wysiwyg-paragraph-gap) !important;
+      min-height: var(--wysiwyg-paragraph-gap) !important;
       margin: 0 !important;
       padding: 0 !important;
       overflow: hidden;
-      display: contents;
-    }
-
-    & img.cm-widgetBuffer {
-      display: contents;
+      font-size: 0;
+      line-height: var(--wysiwyg-paragraph-gap);
     }
 
     /* Visible empty lines (user-created extra spacing) */
-    & .cm-line:has(> br:only-child),
-    & .cm-line:empty {
+    & > .cm-scroller > .cm-content > .cm-line:has(> br:only-child),
+    & > .cm-scroller > .cm-content > .cm-line:empty {
       min-height: 1em;
       margin-bottom: 0;
     }
 
     /* Selection style */
-    & .cm-selectionBackground {
+    & > .cm-scroller > .cm-content .cm-selectionBackground {
       background-color: color-mix(
         in srgb,
         var(--primary-default) 20%,
@@ -109,7 +104,7 @@
       ) !important;
     }
 
-    &.cm-focused .cm-selectionBackground {
+    &.cm-focused > .cm-scroller > .cm-content .cm-selectionBackground {
       background-color: color-mix(
         in srgb,
         var(--primary-default) 30%,
@@ -140,37 +135,38 @@
 
     & .cm-wysiwyg-heading-1 {
       font-size: 1.375rem;
-      margin-top: 1.5em;
-      margin-bottom: 0.5em;
+      padding-top: 1.5em;
+      padding-bottom: 0.5em;
     }
 
     & .cm-wysiwyg-heading-2 {
       font-size: 1.25rem;
-      margin-top: 1.25em;
-      margin-bottom: 0.4em;
+      padding-top: 1.25em;
+      padding-bottom: 0.4em;
     }
 
     & .cm-wysiwyg-heading-3 {
       font-size: 1.125rem;
-      margin-top: 1em;
-      margin-bottom: 0.35em;
+      padding-top: 1em;
+      padding-bottom: 0.35em;
     }
 
     & .cm-wysiwyg-heading-4 {
       font-size: 1rem;
-      margin-top: 0.875em;
-      margin-bottom: 0.3em;
+      padding-top: 0.875em;
+      padding-bottom: 0.3em;
     }
 
     /* Enhanced divider for article */
     & .cm-wysiwyg-divider {
-      margin: 2em 0;
+      padding: 2em 0;
       opacity: 0.4;
     }
 
     /* Enhanced blockquote for article */
     & .cm-wysiwyg-blockquote-line {
-      margin: 0.5em 0;
+      padding-top: 0.5em;
+      padding-bottom: 0.5em;
       padding-left: 1.25em;
       border-left-width: 4px;
       border-color: color-mix(in srgb, var(--primary-default) 60%, transparent);
@@ -178,18 +174,17 @@
 
     /* Enhanced code block for article */
     & .cm-wysiwyg-codeblock {
-      margin: 1.5em 0;
       border-radius: 0.625rem;
+      overflow: hidden;
       min-width: 0;
+      display: flex;
+      flex-direction: column;
     }
 
-    & .cm-wysiwyg-codeblock-content {
+    & .cm-wysiwyg-codeblock-editor .cm-content {
       font-size: 0.875em;
       line-height: 1.6;
-      display: flex;
       min-width: 0;
-      flex-direction: column;
-      gap: 6px;
     }
 
     /* Enhanced list styles for article */
@@ -198,7 +193,7 @@
     }
 
     /* Enhanced image for article */
-    & .cm-wysiwyg-image-wrapper {
+    & .cm-wysiwyg-image-wrapper-block {
       display: block;
       text-align: center;
     }
@@ -211,7 +206,8 @@
 
     /* Enhanced math block for article */
     & .cm-wysiwyg-math-block {
-      margin: 1.5em 0;
+      padding-top: 1.5em;
+      padding-bottom: 1.5em;
     }
 
     /* Enhanced inline code for article */
@@ -277,7 +273,10 @@
 
   /* Inline WYSIWYG styles */
   .cm-wysiwyg-hidden-marker {
-    display: none;
+    display: inline-block;
+    width: 0;
+    overflow: hidden;
+    white-space: nowrap;
   }
 
   .cm-wysiwyg-bold {
@@ -300,7 +299,10 @@
   }
 
   .cm-wysiwyg-link-url {
-    display: none;
+    display: inline-block;
+    width: 0;
+    overflow: hidden;
+    white-space: nowrap;
   }
 
   /* Inline code styles */
@@ -311,6 +313,13 @@
     padding: 0.125em 0.375em;
     border-radius: 0.25rem;
     background-color: color-mix(in srgb, currentColor 10%, transparent);
+    display: inline-block;
+    white-space: pre;
+    vertical-align: baseline;
+  }
+
+  .cm-wysiwyg-inline-code .line {
+    display: inline;
   }
 
   /* Image styles */
@@ -331,47 +340,21 @@
     font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
       'Liberation Mono', monospace;
     font-size: 0.9em;
-    background-color: color-mix(in srgb, currentColor 5%, transparent);
   }
 
   .cm-wysiwyg-codeblock-editing {
     background-color: color-mix(in srgb, currentColor 8%, transparent);
   }
 
-  /* Code block widget - display mode */
+  /* Code block widget - host element styles (can be overridden externally) */
   .cm-wysiwyg-codeblock {
     display: block;
-    margin: 0.5rem 0;
+    margin: 0;
     border-radius: 0.5rem;
     overflow: hidden;
-    background-color: color-mix(in srgb, currentColor 5%, transparent);
   }
 
-  .cm-wysiwyg-codeblock-lang {
-    display: block;
-    font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
-      'Liberation Mono', monospace;
-    font-size: 0.75em;
-    padding: 0.375rem 0.75rem;
-    background-color: color-mix(in srgb, currentColor 8%, transparent);
-    color: currentColor;
-    opacity: 0.7;
-    border-bottom: 1px solid color-mix(in srgb, currentColor 10%, transparent);
-  }
-
-  .cm-wysiwyg-codeblock-content {
-    font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
-      'Liberation Mono', monospace;
-    font-size: 0.9em;
-    padding: 0.75rem;
-    overflow-x: auto;
-    white-space: pre;
-    line-height: 1.5;
-  }
-
-  .cm-wysiwyg-codeblock-content .line {
-    display: block;
-  }
+  /* Internal styles moved to Shadow DOM in wysiwyg-codeblock.ts */
 
   /* List styles */
   .cm-wysiwyg-list-marker {
@@ -470,7 +453,7 @@
 
   .cm-wysiwyg-math-block {
     display: block;
-    margin: 0.75rem 0;
+    margin: 0;
     padding: 1rem;
     text-align: center;
     background-color: color-mix(in srgb, currentColor 3%, transparent);
