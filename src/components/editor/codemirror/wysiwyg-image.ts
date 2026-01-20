@@ -75,13 +75,32 @@ export class ImageWidget extends WidgetType {
 
     img.addEventListener('load', updateHeight)
 
+    // Handle image load error - show placeholder
+    img.addEventListener('error', () => {
+      const placeholder = this.createErrorPlaceholder()
+      wrapper.replaceChild(placeholder, img)
+
+      // Clean up ResizeObserver since img is removed
+      if (this.resizeObserver) {
+        this.resizeObserver.disconnect()
+        this.resizeObserver = undefined
+      }
+    })
+
     if (typeof ResizeObserver !== 'undefined') {
       this.resizeObserver = new ResizeObserver(() => updateHeight())
       this.resizeObserver.observe(img)
     }
 
-    if (img.complete) {
+    if (img.complete && !img.naturalWidth) {
+      // Image already failed to load (cached failure)
+      const placeholder = this.createErrorPlaceholder()
+      wrapper.appendChild(placeholder)
+    } else if (img.complete) {
       requestAnimationFrame(updateHeight)
+      wrapper.appendChild(img)
+    } else {
+      wrapper.appendChild(img)
     }
 
     // Click to edit
@@ -91,8 +110,37 @@ export class ImageWidget extends WidgetType {
       showImagePopover(wrapper, view)
     })
 
-    wrapper.appendChild(img)
     return wrapper
+  }
+
+  private createErrorPlaceholder(): HTMLElement {
+    const placeholder = document.createElement('div')
+    placeholder.className = 'cm-wysiwyg-image-placeholder'
+    placeholder.title = `点击编辑 · ${this.alt || this.url}`
+
+    // Icon container
+    const iconWrapper = document.createElement('div')
+    iconWrapper.className = 'cm-wysiwyg-image-placeholder-icon'
+    iconWrapper.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/><line x1="4" y1="4" x2="20" y2="20" stroke="currentColor" stroke-width="1.5"/></svg>`
+    placeholder.appendChild(iconWrapper)
+
+    // URL text (truncated)
+    const urlText = document.createElement('div')
+    urlText.className = 'cm-wysiwyg-image-placeholder-url'
+    const displayUrl =
+      this.url.length > 50
+        ? `${this.url.slice(0, 25)}...${this.url.slice(-22)}`
+        : this.url
+    urlText.textContent = displayUrl
+    placeholder.appendChild(urlText)
+
+    // Hint text
+    const hint = document.createElement('div')
+    hint.className = 'cm-wysiwyg-image-placeholder-hint'
+    hint.textContent = '图片加载失败，点击编辑'
+    placeholder.appendChild(hint)
+
+    return placeholder
   }
 
   destroy(): void {

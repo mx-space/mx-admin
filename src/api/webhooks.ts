@@ -25,10 +25,10 @@ export interface UpdateWebhookData extends Partial<CreateWebhookData> {}
 
 export const webhooksApi = {
   // 获取 Webhook 列表
-  getList: () => request.get<{ data: WebhookModel[] }>('/webhooks'),
+  getList: () => request.get<WebhookModel[]>('/webhooks'),
 
   // 获取可用事件列表
-  getEvents: () => request.get<{ data: string[] }>('/webhooks/events'),
+  getEvents: () => request.get<string[]>('/webhooks/events'),
 
   // 创建 Webhook
   create: (data: CreateWebhookData) =>

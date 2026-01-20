@@ -15,18 +15,16 @@ export const optionsApi = {
   // 获取所有配置
   getAll: () => request.get<SystemOptions>('/options'),
 
-  // 获取指定配置
-  get: <T = any>(key: string) => request.get<{ data: T }>(`/options/${key}`),
+  // 获取指定配置（后端直接返回配置对象）
+  get: <T = any>(key: string) => request.get<T>(`/options/${key}`),
 
   // 获取 URL 配置
   getUrl: () =>
     request.get<{
-      data: {
-        webUrl: string
-        adminUrl: string
-        serverUrl: string
-        wsUrl: string
-      }
+      webUrl: string
+      adminUrl: string
+      serverUrl: string
+      wsUrl: string
     }>('/options/url'),
 
   // 更新指定配置

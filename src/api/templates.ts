@@ -12,9 +12,9 @@ export interface UpdateTemplateData {
 }
 
 export const templatesApi = {
-  // 获取邮件模板
+  // 获取邮件模板（后端直接返回模板对象）
   getEmailTemplate: (type: string) =>
-    request.get<{ data: EmailTemplate }>(`/options/email/template`, {
+    request.get<EmailTemplate>(`/options/email/template`, {
       params: { type },
     }),
 

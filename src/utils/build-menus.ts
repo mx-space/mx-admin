@@ -22,10 +22,8 @@ export interface MenuModel {
 }
 
 const parsePath = (path: string, params?: KV) => {
-  // 1. add slash
   let n = /^\//.test(path) ? path : `/${path}`
 
-  // 2. replace default params into path
   const hasParams = n.match(/(\/?:)/)
   if (!hasParams) {
     return n

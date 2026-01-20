@@ -23,7 +23,6 @@ export const shallowDiff = <T extends KV>(
     if (isObject(newObject[key])) {
       const insideObject = newObject[key]
       const originInsideObject = origin[key]
-      // shallow compare, 2 层
       Object.keys(toRaw(insideObject)).map((key$) => {
         if (isObject(insideObject[key$])) {
           const insideObject$ = insideObject[key$]

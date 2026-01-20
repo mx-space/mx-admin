@@ -100,7 +100,7 @@ const Passkey = defineComponent(() => {
   const { data: setting, refetch: refetchSetting } = useQuery({
     queryKey: queryKeys.options.detail('authSecurity'),
     queryFn: async () => {
-      const { data } = await optionsApi.get<{
+      const data = await optionsApi.get<{
         disablePasswordLogin: boolean
       }>('authSecurity')
       return data
@@ -266,7 +266,7 @@ const Oauth = defineComponent(() => {
 
   const oauthDataRef = ref({} as FlatOauthData)
   onMounted(async () => {
-    const { data } = await optionsApi.get<OauthData>('oauth')
+    const data = await optionsApi.get<OauthData>('oauth')
 
     oauthDataRef.value = flattenOauthData(data)
   })

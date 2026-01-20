@@ -23,7 +23,7 @@ export function useSnippetList() {
         groupsWithSnippets.value.map((g) => [g.reference, g.expanded]),
       )
 
-      groupsWithSnippets.value = data.data.map((group) => ({
+      groupsWithSnippets.value = data.map((group) => ({
         ...group,
         snippets: [],
         expanded: existingExpandedState.get(group.reference) ?? false,
@@ -43,7 +43,7 @@ export function useSnippetList() {
     group.loading = true
     try {
       const res = await snippetsApi.getGroupSnippets(reference)
-      group.snippets = res.data
+      group.snippets = res
     } catch (error) {
       console.error('Failed to fetch snippets:', error)
     } finally {

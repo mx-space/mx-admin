@@ -15,26 +15,17 @@ export interface CreateCategoryData {
 
 export interface UpdateCategoryData extends Partial<CreateCategoryData> {}
 
-export interface CategoryResponse {
-  data: CategoryModel[]
-}
-
-export interface TagResponse {
-  data: TagModel[]
-}
-
 export const categoriesApi = {
-  // 获取分类列表
+  // 获取分类列表（响应会被自动解包）
   getList: (params?: GetCategoriesParams) =>
-    request.get<CategoryResponse>('/categories', { params }),
+    request.get<CategoryModel[]>('/categories', { params }),
 
-  // 获取单个分类
-  getById: (id: string) =>
-    request.get<{ data: CategoryModel }>(`/categories/${id}`),
+  // 获取单个分类（响应会被自动解包）
+  getById: (id: string) => request.get<CategoryModel>(`/categories/${id}`),
 
-  // 创建分类
+  // 创建分类（响应会被自动解包）
   create: (data: CreateCategoryData) =>
-    request.post<{ data: CategoryModel }>('/categories', { data }),
+    request.post<CategoryModel>('/categories', { data }),
 
   // 更新分类
   update: (id: string, data: UpdateCategoryData) =>
@@ -43,13 +34,13 @@ export const categoriesApi = {
   // 删除分类
   delete: (id: string) => request.delete<void>(`/categories/${id}`),
 
-  // 获取标签列表
+  // 获取标签列表（响应会被自动解包）
   getTags: () =>
-    request.get<TagResponse>('/categories', { params: { type: 'tag' } }),
+    request.get<TagModel[]>('/categories', { params: { type: 'tag' } }),
 
-  // 获取标签关联的文章
+  // 获取标签关联的文章（响应会被自动解包）
   getPostsByTag: (tagName: string) =>
-    request.get<{ data: PostModel[] }>(`/categories/${tagName}`, {
+    request.get<PostModel[]>(`/categories/${tagName}`, {
       params: { tag: 'true' },
     }),
 }

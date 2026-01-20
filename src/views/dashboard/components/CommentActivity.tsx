@@ -6,6 +6,7 @@ import { Chart } from '@antv/g2'
 import { aggregateApi } from '~/api/aggregate'
 
 import { ChartCard } from './ChartCard'
+import { useChartTheme } from './use-chart-theme'
 
 interface ActivityData {
   date: string
@@ -18,6 +19,8 @@ export const CommentActivity = defineComponent({
     const loading = ref(true)
     const data = ref<ActivityData[]>([])
     let chart: Chart | null = null
+
+    const { isDark, chartTheme } = useChartTheme()
 
     const fetchData = async () => {
       try {
@@ -37,22 +40,36 @@ export const CommentActivity = defineComponent({
         chart.destroy()
       }
 
+      const theme = chartTheme.value
+
       chart = new Chart({
         container: chartRef.value,
         autoFit: true,
-        height: 220,
-        paddingTop: 20,
-        paddingRight: 20,
-        paddingBottom: 50,
-        paddingLeft: 40,
+        height: 250,
       })
 
       chart.options({
         type: 'view',
         data: data.value,
+        paddingTop: 24,
+        paddingRight: 24,
+        paddingBottom: 36,
+        paddingLeft: 36,
         scale: {
           date: { range: [0, 1] },
           count: { domainMin: 0, nice: true },
+        },
+        axis: {
+          x: {
+            labelFill: theme.axis.x.labelFill,
+            lineStroke: theme.axis.x.lineStroke,
+            tickStroke: theme.axis.x.tickStroke,
+          },
+          y: {
+            labelFill: theme.axis.y.labelFill,
+            lineStroke: theme.axis.y.lineStroke,
+            gridStroke: theme.axis.y.gridStroke,
+          },
         },
         interaction: {
           tooltip: { crosshairs: true },
@@ -78,14 +95,12 @@ export const CommentActivity = defineComponent({
       fetchData()
     })
 
-    watch(
-      () => data.value,
-      () => {
-        if (data.value.length > 0) {
-          setTimeout(renderChart, 0)
-        }
-      },
-    )
+    // 数据变化或主题变化时重新渲染
+    watch([() => data.value, isDark], () => {
+      if (data.value.length > 0) {
+        setTimeout(renderChart, 0)
+      }
+    })
 
     return () => (
       <ChartCard

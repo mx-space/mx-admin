@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,300;1,300&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,300;1,300&display=swap');
 
 body,
 html {
@@ -6,7 +6,7 @@ html {
   font-size: 14px !important;
   padding: 0;
 
-  --sans-font: "Segoe UI", "Helvetica Neue", sans-serif, -apple-system,
+  --sans-font: 'Segoe UI', 'Helvetica Neue', sans-serif, -apple-system,
     system-ui;
 
   font-family: var(--sans-font);
@@ -35,7 +35,7 @@ button {
   outline: unset;
 }
 
-button:where(:not(.n-button):not([class*="n-"])) {
+button:where(:not(.n-button):not([class*='n-'])) {
   border: none;
   background: transparent;
   padding: 0;
@@ -151,14 +151,18 @@ button:where(:not(.n-button):not([class*="n-"])) {
 /* Light mode Dialog 阴影 */
 html:not(.dark) .n-dialog {
   @apply !rounded-xl;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.08), 0
-    16px 32px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.06),
+    0 8px 24px rgba(0, 0, 0, 0.08),
+    0 16px 32px rgba(0, 0, 0, 0.06);
 }
 
 /* Dark mode Dialog 阴影 */
 html.dark .n-dialog {
   @apply !rounded-xl;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 8px 24px rgba(0, 0, 0, 0.5),
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 8px 24px rgba(0, 0, 0, 0.5),
     0 16px 32px rgba(0, 0, 0, 0.4);
 }
 
@@ -173,14 +177,18 @@ html.dark .n-dialog {
 /* Light mode Card 阴影 */
 html:not(.dark) .n-modal .n-card {
   @apply !rounded-xl;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.08), 0
-    16px 32px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.06),
+    0 8px 24px rgba(0, 0, 0, 0.08),
+    0 16px 32px rgba(0, 0, 0, 0.06);
 }
 
 /* Dark mode Card 阴影 */
 html.dark .n-modal .n-card {
   @apply !rounded-xl;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 8px 24px rgba(0, 0, 0, 0.5),
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 8px 24px rgba(0, 0, 0, 0.5),
     0 16px 32px rgba(0, 0, 0, 0.4);
 }
 
@@ -193,7 +201,7 @@ html.dark .n-modal .n-card {
 }
 
 /* Naive UI 动画加速 - 全局 transition duration 覆盖 */
-[class*="n-"] {
+[class*='n-'] {
   --n-duration: 0.2s !important;
 }
 

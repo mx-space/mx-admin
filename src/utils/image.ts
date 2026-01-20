@@ -9,10 +9,8 @@ export function getDominantColor(imageObject: HTMLImageElement) {
   canvas.width = 1
   canvas.height = 1
 
-  // draw the image to one pixel and let the browser find the dominant color
   ctx.drawImage(imageObject, 0, 0, 1, 1)
 
-  // get pixel color
   const i = ctx.getImageData(0, 0, 1, 1).data
 
   return `#${((1 << 24) + (i[0] << 16) + (i[1] << 8) + i[2]).toString(16).slice(1)}`
@@ -71,7 +69,6 @@ export const encodeImageToBlurhashWebgl = (image: HTMLImageElement) => {
   canvas.width = image.naturalWidth
   canvas.height = image.naturalHeight
 
-  // Create a texture and bind image
   const texture = gl.createTexture()
   gl.bindTexture(gl.TEXTURE_2D, texture)
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image)
@@ -80,7 +77,6 @@ export const encodeImageToBlurhashWebgl = (image: HTMLImageElement) => {
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
 
-  // Create a framebuffer and attach the texture
   const framebuffer = gl.createFramebuffer()
   gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer)
   gl.framebufferTexture2D(
@@ -91,7 +87,6 @@ export const encodeImageToBlurhashWebgl = (image: HTMLImageElement) => {
     0,
   )
 
-  // Read the pixels
   const pixels = new Uint8Array(image.naturalWidth * image.naturalHeight * 4)
   gl.readPixels(
     0,
@@ -103,7 +98,6 @@ export const encodeImageToBlurhashWebgl = (image: HTMLImageElement) => {
     pixels,
   )
 
-  // Resize the image to 32x32
   const resizedCanvas = document.createElement('canvas')
   resizedCanvas.width = 32
   resizedCanvas.height = 32
@@ -117,6 +111,5 @@ export const encodeImageToBlurhashWebgl = (image: HTMLImageElement) => {
   resizedCtx.drawImage(resizedCanvas, 0, 0, 32, 32)
   const resizedImageData = resizedCtx.getImageData(0, 0, 32, 32)
 
-  // Encode the resized image to BlurHash
   return encode(resizedImageData.data, 32, 32, 4, 4)
 }

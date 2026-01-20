@@ -259,7 +259,7 @@ const ConnectionStatus = defineComponent(() => {
   const list = ref([] as any[])
   onMounted(async () => {
     const data = await systemApi.getPtyRecords()
-    list.value = data.data
+    list.value = data
   })
   return () => (
     <NCard bordered={false} class="max-h-[70vh] overflow-auto">

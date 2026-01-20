@@ -256,7 +256,7 @@ export default defineComponent({
 
     onMounted(async () => {
       recentlyApi.getAll().then((res) => {
-        data.value = res.data
+        data.value = res
         loading.value = false
       })
     })

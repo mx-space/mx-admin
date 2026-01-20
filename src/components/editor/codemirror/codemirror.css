@@ -335,6 +335,49 @@
     object-fit: contain;
   }
 
+  /* Image error placeholder */
+  .cm-wysiwyg-image-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1.5rem 2rem;
+    min-width: 200px;
+    min-height: 120px;
+    border-radius: 0.5rem;
+    border: 1px dashed;
+    cursor: pointer;
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease;
+    @apply border-neutral-300 bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900;
+  }
+
+  .cm-wysiwyg-image-placeholder:hover {
+    @apply border-neutral-400 bg-neutral-100 dark:border-neutral-600 dark:bg-neutral-800;
+  }
+
+  .cm-wysiwyg-image-placeholder-icon {
+    @apply text-neutral-400 dark:text-neutral-500;
+  }
+
+  .cm-wysiwyg-image-placeholder-url {
+    font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+      'Liberation Mono', monospace;
+    font-size: 0.75rem;
+    max-width: 280px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    @apply text-neutral-500 dark:text-neutral-400;
+  }
+
+  .cm-wysiwyg-image-placeholder-hint {
+    font-size: 0.75rem;
+    @apply text-neutral-400 dark:text-neutral-500;
+  }
+
   /* Code block styles - editing mode */
   .cm-wysiwyg-codeblock-line {
     font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
@@ -500,6 +543,17 @@
 }
 
 /* Image Edit Popover */
+@keyframes popover-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
 .cm-image-edit-overlay {
   position: fixed;
   inset: 0;
@@ -513,10 +567,38 @@
   padding: 12px;
   min-width: 280px;
   border-radius: 8px;
-  box-shadow:
-    0 4px 6px -1px rgb(0 0 0 / 0.1),
-    0 2px 4px -2px rgb(0 0 0 / 0.1);
-  background-color: var(--card-color);
-  border: 1px solid var(--border-color);
+  border: none;
   pointer-events: auto;
+  /* Entry animation */
+  animation: popover-enter 0.2s cubic-bezier(0.22, 1, 0.36, 1); /* ease-spring */
+  transform-origin: top left;
+}
+
+/* Light mode (default) */
+.cm-image-edit-popover {
+  background-color: #fff;
+  color: #171717; /* neutral-900 */
+  /* Vercel-style shadow for light mode */
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.08),
+    0 8px 24px rgba(0, 0, 0, 0.12),
+    0 16px 32px rgba(0, 0, 0, 0.08);
+}
+
+/* Dark mode */
+html.dark .cm-image-edit-popover {
+  background-color: #171717; /* neutral-900 */
+  color: #fafafa; /* neutral-50 */
+  /* Vercel-style shadow for dark mode */
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 8px 24px rgba(0, 0, 0, 0.5),
+    0 16px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .cm-image-edit-popover {
+    animation: none;
+  }
 }

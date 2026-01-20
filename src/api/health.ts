@@ -20,16 +20,16 @@ export interface LogFile {
 export const healthApi = {
   // === Cron 任务管理 ===
 
-  // 获取 Cron 任务列表
-  getCronList: () => request.get<{ data: CronJob[] }>('/health/cron'),
+  // 获取 Cron 任务列表（后端使用 @Bypass 直接返回对象）
+  getCronList: () => request.get<Record<string, CronJob>>('/health/cron'),
 
   // 手动运行 Cron 任务
   runCron: (name: string) => request.post<void>(`/health/cron/run/${name}`),
 
   // === 日志管理 ===
 
-  // 获取日志文件列表
-  getLogList: () => request.get<{ data: LogFile[] }>('/health/log'),
+  // 获取日志文件列表（响应会被自动解包）
+  getLogList: () => request.get<LogFile[]>('/health/log'),
 
   // 获取日志文件内容
   getLogContent: (filename: string) =>

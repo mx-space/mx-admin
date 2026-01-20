@@ -29,7 +29,7 @@ export const pagesApi = {
     request.get<PaginateResult<PageModel>>('/pages', { params }),
 
   // 获取单个页面
-  getById: (id: string) => request.get<{ data: PageModel }>(`/pages/${id}`),
+  getById: (id: string) => request.get<PageModel>(`/pages/${id}`),
 
   // 创建页面
   create: (data: CreatePageData) => request.post<PageModel>('/pages', { data }),

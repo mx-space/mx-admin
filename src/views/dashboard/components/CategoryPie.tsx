@@ -6,6 +6,7 @@ import { Chart } from '@antv/g2'
 import { aggregateApi } from '~/api/aggregate'
 
 import { ChartCard } from './ChartCard'
+import { useChartTheme } from './use-chart-theme'
 
 interface CategoryData {
   id: string
@@ -20,6 +21,8 @@ export const CategoryPie = defineComponent({
     const loading = ref(true)
     const data = ref<CategoryData[]>([])
     let chart: Chart | null = null
+
+    const { isDark, chartTheme } = useChartTheme()
 
     const fetchData = async () => {
       try {
@@ -46,26 +49,34 @@ export const CategoryPie = defineComponent({
         percent: item.count / total,
       }))
 
+      const theme = chartTheme.value
+
       chart = new Chart({
         container: chartRef.value,
         autoFit: true,
-        height: 220,
+        height: 250,
       })
 
       chart.options({
         type: 'interval',
         data: chartData,
         transform: [{ type: 'stackY' }],
-        coordinate: { type: 'theta', outerRadius: 0.75, innerRadius: 0.5 },
+        coordinate: { type: 'theta', outerRadius: 0.85, innerRadius: 0.55 },
         encode: { y: 'count', color: 'name' },
-        legend: { color: { position: 'right' } },
-        tooltip: false,
-        labels: [
-          {
-            text: (d: { name: string; percent: number }) =>
-              `${d.name}: ${(d.percent * 100).toFixed(0)}%`,
+        legend: {
+          color: {
+            position: 'right',
+            itemLabelFill: theme.legend.itemLabelFill,
           },
-        ],
+        },
+        tooltip: {
+          items: [
+            (d: { name: string; count: number; percent: number }) => ({
+              name: d.name,
+              value: `${d.count} 篇 (${(d.percent * 100).toFixed(0)}%)`,
+            }),
+          ],
+        },
       })
 
       chart.render()
@@ -75,14 +86,12 @@ export const CategoryPie = defineComponent({
       fetchData()
     })
 
-    watch(
-      () => data.value,
-      () => {
-        if (data.value.length > 0) {
-          setTimeout(renderChart, 0)
-        }
-      },
-    )
+    // 数据变化或主题变化时重新渲染
+    watch([() => data.value, isDark], () => {
+      if (data.value.length > 0) {
+        setTimeout(renderChart, 0)
+      }
+    })
 
     return () => (
       <ChartCard

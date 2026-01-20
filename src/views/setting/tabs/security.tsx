@@ -59,7 +59,7 @@ export const TabSecurity = defineComponent(() => {
     loading.value = true
     const res = await userApi.getSessions()
     sessions.value =
-      res.data?.map((s) => ({
+      res?.map((s) => ({
         ...s,
         date: s.lastActiveAt,
       })) || []
@@ -256,7 +256,7 @@ const ApiToken = defineComponent(() => {
 
   const fetchToken = async () => {
     loading.value = true
-    const { data } = await authApi.getTokens()
+    const data = await authApi.getTokens()
     tokens.value = data
     loading.value = false
   }

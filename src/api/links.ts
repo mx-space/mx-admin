@@ -28,7 +28,7 @@ export const linksApi = {
   getStateCount: () => request.get<LinkStateCount>('/links/state'),
 
   // 获取单个友链
-  getById: (id: string) => request.get<{ data: LinkModel }>(`/links/${id}`),
+  getById: (id: string) => request.get<LinkModel>(`/links/${id}`),
 
   // 创建友链
   create: (data: CreateLinkData) => request.post<LinkModel>('/links', { data }),

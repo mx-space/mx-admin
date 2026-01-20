@@ -185,12 +185,10 @@ const PostWriteView = defineComponent(() => {
 
     // 场景2：编辑已发布文章
     if ($id && typeof $id == 'string') {
-      const payload = (await postsApi.getById($id)) as any
-
-      // 兼容两种 API 响应格式：{ data: PostModel } 或直接 PostModel
-      const postData = payload.data ?? payload
+      const payload = await postsApi.getById($id)
 
       // HACK: transform
+      const postData = payload as any
       postData.relatedId = postData.related?.map((r: any) => r.id) || []
       postListState.append(postData.related)
 
@@ -453,7 +451,7 @@ const PostWriteView = defineComponent(() => {
                       if (selectRef.value) {
                         selectRef.value.$el.querySelector('input').focus()
                       }
-                      const { data: tagData } = await categoriesApi.getList({
+                      const tagData = await categoriesApi.getList({
                         type: 'Tag',
                       })
                       tagsRef.value = tagData.map((i) => ({

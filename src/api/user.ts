@@ -78,7 +78,7 @@ export const userApi = {
     request.post<void>('/user/logout', { params }),
 
   // 获取会话列表
-  getSessions: () => request.get<{ data: Session[] }>('/user/session'),
+  getSessions: () => request.get<Session[]>('/user/session'),
 
   // 删除指定会话
   deleteSession: (id: string) => request.delete<void>(`/user/session/${id}`),

@@ -6,6 +6,7 @@ import { Chart } from '@antv/g2'
 import { aggregateApi } from '~/api/aggregate'
 
 import { ChartCard } from './ChartCard'
+import { useChartTheme } from './use-chart-theme'
 
 interface TrendData {
   date: string
@@ -19,6 +20,8 @@ export const PublicationTrend = defineComponent({
     const loading = ref(true)
     const data = ref<TrendData[]>([])
     let chart: Chart | null = null
+
+    const { isDark, chartTheme } = useChartTheme()
 
     const fetchData = async () => {
       try {
@@ -45,27 +48,49 @@ export const PublicationTrend = defineComponent({
         chartData.push({ date: item.date, type: '日记', count: item.notes })
       }
 
+      const theme = chartTheme.value
+
       chart = new Chart({
         container: chartRef.value,
         autoFit: true,
-        height: 220,
-        paddingTop: 20,
-        paddingRight: 20,
-        paddingBottom: 50,
-        paddingLeft: 40,
+        height: 250,
       })
 
       chart.options({
         type: 'view',
         data: chartData,
+        paddingTop: 36,
+        paddingRight: 24,
+        paddingBottom: 36,
+        paddingLeft: 36,
         scale: {
           date: { range: [0, 1] },
           count: { domainMin: 0, nice: true },
         },
+        axis: {
+          x: {
+            labelFill: theme.axis.x.labelFill,
+            lineStroke: theme.axis.x.lineStroke,
+            tickStroke: theme.axis.x.tickStroke,
+            labelAutoRotate: false,
+            tickFilter: (_: unknown, index: number) => index % 3 === 0,
+            labelFilter: (_: unknown, index: number) => index % 3 === 0,
+          },
+          y: {
+            labelFill: theme.axis.y.labelFill,
+            lineStroke: theme.axis.y.lineStroke,
+            gridStroke: theme.axis.y.gridStroke,
+          },
+        },
         interaction: {
           tooltip: { crosshairs: true, shared: true },
         },
-        legend: { color: { position: 'top' } },
+        legend: {
+          color: {
+            position: 'top',
+            itemLabelFill: theme.legend.itemLabelFill,
+          },
+        },
         children: [
           {
             type: 'line',
@@ -86,14 +111,12 @@ export const PublicationTrend = defineComponent({
       fetchData()
     })
 
-    watch(
-      () => data.value,
-      () => {
-        if (data.value.length > 0) {
-          setTimeout(renderChart, 0)
-        }
-      },
-    )
+    // 数据变化或主题变化时重新渲染
+    watch([() => data.value, isDark], () => {
+      if (data.value.length > 0) {
+        setTimeout(renderChart, 0)
+      }
+    })
 
     return () => (
       <ChartCard

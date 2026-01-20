@@ -82,7 +82,7 @@ export const systemApi = {
   // === PTY ===
 
   // 获取 PTY 记录
-  getPtyRecords: () => request.get<{ data: PtyRecord[] }>('/pty/record'),
+  getPtyRecords: () => request.get<PtyRecord[]>('/pty/record'),
 
   // === 内置函数 ===
 

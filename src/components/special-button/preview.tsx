@@ -54,7 +54,7 @@ export const HeaderPreviewButton = defineComponent({
       const { id } = data
       if (!webUrl) {
         const res = await optionsApi.getUrl()
-        webUrl = res.data.webUrl
+        webUrl = res.webUrl
       }
 
       let url: URL

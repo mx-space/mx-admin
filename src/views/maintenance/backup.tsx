@@ -32,10 +32,9 @@ export default defineComponent({
     const fetchData = async () => {
       loading.value = true
       try {
-        const response = await backupApi.getList()
-        const data$ = response.data as BackupFile[]
-        data$.sort((b, a) => a.filename.localeCompare(b.filename))
-        data.value = data$
+        const list = await backupApi.getList()
+        list.sort((b, a) => a.filename.localeCompare(b.filename))
+        data.value = list
       } finally {
         loading.value = false
       }

@@ -6,13 +6,9 @@ export interface BackupFile {
   createdAt: string
 }
 
-export interface BackupListResponse {
-  data: BackupFile[]
-}
-
 export const backupApi = {
-  // 获取备份列表
-  getList: () => request.get<BackupListResponse>('/backups'),
+  // 获取备份列表（响应会被自动解包）
+  getList: () => request.get<BackupFile[]>('/backups'),
 
   // 创建新备份
   createNew: () =>

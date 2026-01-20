@@ -28,11 +28,9 @@ export const useUIStore = defineStore('ui', () => {
   const viewport = ref<ViewportRecord>({} as any)
   const sidebarCollapse = ref(viewport.value.mobile ? true : false)
 
-  // Three-state theme: light, dark, system
   const themeMode = useStorage<ThemeMode>('theme-mode', 'system')
   const prefersDark = usePreferredDark()
 
-  // Computed: actual dark state based on mode
   const isDark = computed(() => {
     if (themeMode.value === 'system') {
       return prefersDark.value
@@ -40,7 +38,6 @@ export const useUIStore = defineStore('ui', () => {
     return themeMode.value === 'dark'
   })
 
-  // Cycle through theme modes: light -> dark -> system -> light
   const cycleTheme = () => {
     const modes: ThemeMode[] = ['light', 'dark', 'system']
     const currentIndex = modes.indexOf(themeMode.value)
@@ -48,12 +45,10 @@ export const useUIStore = defineStore('ui', () => {
     themeMode.value = modes[nextIndex]
   }
 
-  // Set specific theme mode
   const setThemeMode = (mode: ThemeMode) => {
     themeMode.value = mode
   }
 
-  // Legacy toggle (for backward compatibility)
   const toggleDark = () => {
     if (isDark.value) {
       themeMode.value = 'light'

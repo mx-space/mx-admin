@@ -57,11 +57,11 @@ export const snippetsApi = {
 
   // 获取分组列表
   getGroups: (params?: { size?: number }) =>
-    request.get<{ data: SnippetGroup[] }>('/snippets/group', { params }),
+    request.get<SnippetGroup[]>('/snippets/group', { params }),
 
   // 获取分组下的片段
   getGroupSnippets: (reference: string) =>
-    request.get<{ data: SnippetModel[] }>(`/snippets/group/${reference}`),
+    request.get<SnippetModel[]>(`/snippets/group/${reference}`),
 
   // 重置函数片段（内置函数）
   resetFunction: (id: string) => request.delete<void>(`/fn/reset/${id}`),

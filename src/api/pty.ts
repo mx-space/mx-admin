@@ -11,7 +11,7 @@ export interface PTYRecord {
 
 export const ptyApi = {
   // 获取 PTY 记录列表
-  getRecords: () => request.get<{ data: PTYRecord[] }>('/pty/record'),
+  getRecords: () => request.get<PTYRecord[]>('/pty/record'),
 
   // 获取单个 PTY 记录
   getRecord: (id: string) => request.get<PTYRecord>(`/pty/record/${id}`),

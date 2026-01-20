@@ -137,10 +137,9 @@ const PageWriteView = defineComponent(() => {
 
     // 场景2：编辑已发布页面
     if ($id && typeof $id == 'string') {
-      const payload = (await pagesApi.getById($id)) as any
+      const payload = await pagesApi.getById($id)
 
-      const pageData = payload.data
-      parsePayloadIntoReactiveData(pageData as PageModel)
+      parsePayloadIntoReactiveData(payload as PageModel)
 
       // 检查是否有关联的草稿
       const relatedDraft = await serverDraft.loadDraftByRef(

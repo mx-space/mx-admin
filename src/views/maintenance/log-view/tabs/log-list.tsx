@@ -27,8 +27,7 @@ export const LogListView = defineComponent({
     const fetchDataFn = async () => {
       loading.value = true
       try {
-        const response = await healthApi.getLogList()
-        data.value = response.data
+        data.value = await healthApi.getLogList()
       } finally {
         loading.value = false
       }

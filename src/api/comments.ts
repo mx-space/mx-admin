@@ -21,8 +21,7 @@ export const commentsApi = {
     request.get<CommentsResponse>('/comments', { params }),
 
   // 获取单个评论
-  getById: (id: string) =>
-    request.get<{ data: CommentModel }>(`/comments/${id}`),
+  getById: (id: string) => request.get<CommentModel>(`/comments/${id}`),
 
   // 回复评论（普通）
   reply: (id: string, data: ReplyCommentData) =>

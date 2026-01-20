@@ -47,7 +47,7 @@ export const CategoryView = defineComponent((_props) => {
 
   // 获取标签列表
   const { data: tagsData, isLoading: tagsLoading } = useTagsQuery()
-  const tags = computed(() => tagsData.value?.data ?? [])
+  const tags = computed(() => tagsData.value ?? [])
 
   // 选中的标签
   const checkedTag = ref('')
@@ -55,7 +55,7 @@ export const CategoryView = defineComponent((_props) => {
   // 获取标签关联的文章
   const { data: tagPostsData, isLoading: tagPostsLoading } =
     usePostsByTagQuery(checkedTag)
-  const checkedTagPosts = computed(() => tagPostsData.value?.data ?? [])
+  const checkedTagPosts = computed(() => tagPostsData.value ?? [])
 
   // 分类列表加载
   const loading = ref(true)
@@ -83,9 +83,9 @@ export const CategoryView = defineComponent((_props) => {
   // 创建分类 mutation
   const createMutation = useMutation({
     mutationFn: categoriesApi.create,
-    onSuccess: (payload) => {
+    onSuccess: (category) => {
       nativeMessage.success('创建成功')
-      categoryStore.data.value!.push(payload.data)
+      categoryStore.data.value!.push(category)
       showDialog.value = false
     },
   })

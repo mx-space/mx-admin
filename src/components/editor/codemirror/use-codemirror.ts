@@ -272,8 +272,8 @@ export const useCodeMirror = <T extends Element>(
       if (!shouldDebugWysiwyg()) return
       const coords = { x: event.clientX, y: event.clientY }
       const pos = view.posAtCoords(coords)
-      const posLeft = view.posAtCoords(coords, -1)
-      const posRight = view.posAtCoords(coords, 1)
+      const posLeft = view.posAtCoords(coords, false)
+      const posRight = view.posAtCoords(coords)
       const line = pos == null ? null : view.state.doc.lineAt(pos)
       const domAtPos = pos == null ? null : view.domAtPos(pos).node
       const caretInfo = getCaretInfo(coords.x, coords.y)

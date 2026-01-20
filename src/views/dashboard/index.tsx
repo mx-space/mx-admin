@@ -77,7 +77,7 @@ const SectionTitle = defineComponent({
     return () => (
       <div class="mb-4">
         <div class="flex items-center justify-between">
-          <h3 class="text-base font-medium text-neutral-700 dark:text-neutral-300">
+          <h3 class="text-lg font-medium text-neutral-700 dark:text-neutral-300">
             {props.title}
           </h3>
           {slots.extra?.() || props.extra}
@@ -106,15 +106,15 @@ const LiveStatItem = defineComponent({
               <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500" />
             </span>
           )}
-          <Icon class="text-2xl text-neutral-400">{props.icon}</Icon>
+          <Icon class="text-xl text-neutral-400">{props.icon}</Icon>
         </div>
         <div>
-          <div class="text-2xl font-semibold tabular-nums">
+          <div class="text-xl font-semibold tabular-nums">
             {typeof props.value === 'number'
               ? Intl.NumberFormat('en-us').format(props.value)
               : props.value}
           </div>
-          <div class="text-xs text-neutral-500">{props.label}</div>
+          <div class="text-sm text-neutral-500">{props.label}</div>
         </div>
       </div>
     )
@@ -141,11 +141,11 @@ const StatItem = defineComponent({
         onClick={props.onClick}
       >
         {props.icon && (
-          <Icon class="shrink-0 text-lg text-neutral-400">{props.icon}</Icon>
+          <Icon class="shrink-0 text-xl text-neutral-400">{props.icon}</Icon>
         )}
         <div class="min-w-0 flex-1">
-          <div class="truncate text-xs text-neutral-500">{props.label}</div>
-          <div class="text-lg font-medium tabular-nums">
+          <div class="truncate text-sm text-neutral-500">{props.label}</div>
+          <div class="text-xl font-medium tabular-nums">
             {typeof props.value === 'number'
               ? Intl.NumberFormat('en-us').format(props.value)
               : props.value}
@@ -175,8 +175,8 @@ const ActionStatItem = defineComponent({
       <div class="rounded-md p-3">
         <div class="flex items-start justify-between gap-2">
           <div class="min-w-0 flex-1">
-            <div class="text-xs text-neutral-500">{props.label}</div>
-            <div class="mt-1 text-2xl font-semibold tabular-nums">
+            <div class="text-sm text-neutral-500">{props.label}</div>
+            <div class="mt-1 text-xl font-semibold tabular-nums">
               {typeof props.value === 'number'
                 ? Intl.NumberFormat('en-us').format(props.value)
                 : props.value}

@@ -12,7 +12,7 @@ export default defineComponent({
       return async () => {
         const response = await healthApi.getCronList()
         dataRef.value = Array.from(
-          Object.values(response.data).map((item: any) => ({
+          Object.values(response).map((item: any) => ({
             ...item,
             _name: item.name,
             name: toPascalCase(item.name),

@@ -9,7 +9,6 @@ import { router } from '../router/router'
 import { getToken } from './auth'
 import { uuid } from './index'
 
-// 系统错误类型（ofetch 层处理）
 export class SystemError extends Error {
   constructor(
     message: string,
@@ -20,7 +19,6 @@ export class SystemError extends Error {
   }
 }
 
-// 业务错误类型（上层处理）
 export class BusinessError extends Error {
   constructor(
     message: string | string[],
@@ -34,13 +32,11 @@ export class BusinessError extends Error {
 
 const _uuid = uuid()
 
-// 基础 ofetch 实例
 export const $api = ofetch.create({
   baseURL: API_URL,
   timeout: 10000,
   credentials: 'include',
 
-  // 请求拦截
   onRequest({ options }) {
     const token = getToken()
     const headers = new Headers(options.headers)
@@ -61,18 +57,9 @@ export const $api = ofetch.create({
     options.headers = headers
   },
 
-  // 响应拦截：camelCase 转换
-  onResponse({ response }) {
-    if (response._data && typeof response._data === 'object') {
-      response._data = simpleCamelcaseKeys(response._data)
-    }
-  },
-
-  // 错误处理：仅处理系统错误
   onResponseError({ response }) {
     const Message = window.message
 
-    // 网络错误
     if (!response) {
       Message.error('网络错误')
       throw new SystemError('网络错误')
@@ -80,7 +67,6 @@ export const $api = ofetch.create({
 
     const status = response.status
 
-    // 401 未授权 - 系统级错误
     if (status === 401) {
       router.push(
         `/login?from=${encodeURIComponent(router.currentRoute.value.fullPath)}`,
@@ -88,47 +74,99 @@ export const $api = ofetch.create({
       throw new SystemError('未授权，请重新登录', 401)
     }
 
-    // 5xx 服务器错误 - 系统级错误
     if (status >= 500) {
       Message.error('服务器错误，请稍后重试')
       throw new SystemError('服务器错误', status)
     }
 
-    // 4xx 业务错误 - 不处理，抛给上层
     const data = response._data
     const message = data?.message || '请求失败'
     throw new BusinessError(message, status, data)
   },
 })
 
-// 类型安全的请求方法
 export type RequestOptions<T = unknown> = Omit<FetchOptions<'json'>, 'body'> & {
   data?: T
-  transform?: boolean
+  /** 跳过响应转换（camelCase 转换和数组解包） */
+  bypassTransform?: boolean
+}
+
+/**
+ * 转换响应数据
+ * 1. camelCase 转换
+ * 2. 解包后端包装的数组响应 { data: [...] } -> [...]
+ */
+function transformResponse<T>(data: unknown, bypass?: boolean): T {
+  if (bypass || !data || typeof data !== 'object') {
+    return data as T
+  }
+
+  let result = simpleCamelcaseKeys(data as Record<string, unknown>)
+
+  if (
+    result &&
+    typeof result === 'object' &&
+    !Array.isArray(result) &&
+    'data' in result &&
+    Array.isArray(result.data) &&
+    Object.keys(result).length === 1
+  ) {
+    result = result.data
+  }
+
+  return result as T
 }
 
 export const request = {
-  get<T>(url: string, options?: RequestOptions): Promise<T> {
-    return $api<T>(url, { method: 'GET', ...options })
+  async get<T>(url: string, options?: RequestOptions): Promise<T> {
+    const { bypassTransform, ...rest } = options || {}
+    const result = await $api<unknown>(url, { method: 'GET', ...rest })
+    return transformResponse<T>(result, bypassTransform)
   },
 
-  post<T, D = unknown>(url: string, options?: RequestOptions<D>): Promise<T> {
-    const { data, ...rest } = options || {}
-    return $api<T>(url, { method: 'POST', body: data as BodyInit, ...rest })
+  async post<T, D = unknown>(
+    url: string,
+    options?: RequestOptions<D>,
+  ): Promise<T> {
+    const { data, bypassTransform, ...rest } = options || {}
+    const result = await $api<unknown>(url, {
+      method: 'POST',
+      body: data as BodyInit,
+      ...rest,
+    })
+    return transformResponse<T>(result, bypassTransform)
   },
 
-  put<T, D = unknown>(url: string, options?: RequestOptions<D>): Promise<T> {
-    const { data, ...rest } = options || {}
-    return $api<T>(url, { method: 'PUT', body: data as BodyInit, ...rest })
+  async put<T, D = unknown>(
+    url: string,
+    options?: RequestOptions<D>,
+  ): Promise<T> {
+    const { data, bypassTransform, ...rest } = options || {}
+    const result = await $api<unknown>(url, {
+      method: 'PUT',
+      body: data as BodyInit,
+      ...rest,
+    })
+    return transformResponse<T>(result, bypassTransform)
   },
 
-  patch<T, D = unknown>(url: string, options?: RequestOptions<D>): Promise<T> {
-    const { data, ...rest } = options || {}
-    return $api<T>(url, { method: 'PATCH', body: data as BodyInit, ...rest })
+  async patch<T, D = unknown>(
+    url: string,
+    options?: RequestOptions<D>,
+  ): Promise<T> {
+    const { data, bypassTransform, ...rest } = options || {}
+    const result = await $api<unknown>(url, {
+      method: 'PATCH',
+      body: data as BodyInit,
+      ...rest,
+    })
+    return transformResponse<T>(result, bypassTransform)
   },
 
-  delete<T>(url: string, options?: RequestOptions): Promise<T> {
-    return $api<T>(url, { method: 'DELETE', ...options })
+  async delete<T>(url: string, options?: RequestOptions): Promise<T> {
+    const { bypassTransform, ...rest } = options || {}
+    const result = await $api<unknown>(url, { method: 'DELETE', ...rest })
+    return transformResponse<T>(result, bypassTransform)
   },
 }
 

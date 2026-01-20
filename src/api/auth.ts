@@ -23,7 +23,7 @@ export const authApi = {
   // === Token 管理 ===
 
   // 获取 Token 列表
-  getTokens: () => request.get<{ data: TokenModel[] }>('/auth/token'),
+  getTokens: () => request.get<TokenModel[]>('/auth/token'),
 
   // 获取单个 Token
   getToken: (id: string) =>

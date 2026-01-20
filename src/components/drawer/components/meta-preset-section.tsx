@@ -54,22 +54,17 @@ export const MetaPresetSection = defineComponent({
     },
   },
   setup(props) {
-    // 当前激活的标签页
     const activeTab = ref<'preset' | 'json'>('preset')
 
-    // 预设字段列表
     const presets = ref<MetaPresetField[]>([])
     const loading = ref(true)
     const error = ref<string | null>(null)
 
-    // JSON 编辑器 modal 状态
     const showJSONEditorModal = ref(false)
 
-    // 键值对形式（用于自定义 JSON 标签页）
     const keyValuePairs = ref<{ key: string; value: string }[]>([])
     let inUpdatedKeyValue = false
 
-    // 加载预设字段
     const loadPresets = async () => {
       try {
         loading.value = true
@@ -87,13 +82,10 @@ export const MetaPresetSection = defineComponent({
       }
     }
 
-    // 组件挂载时加载
     onMounted(loadPresets)
 
-    // 监听 scope 变化重新加载
     watch(() => props.scope, loadPresets)
 
-    // 同步 meta 到 keyValuePairs
     watch(
       () => props.meta,
       () => {
@@ -122,7 +114,6 @@ export const MetaPresetSection = defineComponent({
       { flush: 'post', deep: true, immediate: true },
     )
 
-    // 同步 keyValuePairs 到 meta
     watch(
       () => keyValuePairs.value,
       () => {
@@ -140,7 +131,6 @@ export const MetaPresetSection = defineComponent({
       },
     )
 
-    // 判断值是否为空（undefined, null, '', 或空对象）
     const isEmptyValue = (val: any): boolean => {
       if (val === undefined || val === null || val === '') return true
       if (
@@ -152,7 +142,6 @@ export const MetaPresetSection = defineComponent({
       return false
     }
 
-    // 更新单个预设字段的值
     const updateFieldValue = (key: string, value: any) => {
       const currentMeta = props.meta ?? {}
       if (isEmptyValue(value)) {
@@ -163,12 +152,10 @@ export const MetaPresetSection = defineComponent({
       }
     }
 
-    // 展开状态
     const expanded = ref(false)
 
     return () => (
       <div class="space-y-3">
-        {/* 折叠标题 */}
         <button
           type="button"
           class="flex w-full items-center justify-between rounded-lg border border-neutral-200 px-3 py-2.5 text-left transition-colors hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800/50"
@@ -204,7 +191,6 @@ export const MetaPresetSection = defineComponent({
           </div>
         </button>
 
-        {/* 展开内容 */}
         {expanded.value && (
           <div class="rounded-lg border border-neutral-200 p-3 dark:border-neutral-700">
             {loading.value ? (
@@ -273,7 +259,6 @@ export const MetaPresetSection = defineComponent({
           </div>
         )}
 
-        {/* JSON 编辑器 Modal */}
         <NModal
           show={showJSONEditorModal.value}
           onUpdateShow={(show) => {

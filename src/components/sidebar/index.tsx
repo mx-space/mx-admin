@@ -85,6 +85,10 @@ export const Sidebar = defineComponent({
         return
       }
 
+      if (route.value.path === item.fullPath) {
+        return
+      }
+
       router.push({
         path: item.fullPath,
         query: item.query,
@@ -105,7 +109,6 @@ export const Sidebar = defineComponent({
     })
     const { isDark, themeMode, setThemeMode } = useStoreRef(UIStore)
 
-    // User dropdown options
     const userDropdownOptions = computed<DropdownOption[]>(() => [
       {
         key: 'header',
@@ -161,7 +164,6 @@ export const Sidebar = defineComponent({
       }
     }
 
-    // Theme dropdown options
     const themeDropdownOptions = computed<DropdownOption[]>(() => [
       {
         label: 'Light',
@@ -200,9 +202,7 @@ export const Sidebar = defineComponent({
           ref={sidebarRef}
         >
           <div class={styles.sidebar}>
-            {/* Header - User Avatar with Dropdown */}
             <div class={styles.header}>
-              {/* User Avatar with Dropdown Menu */}
               <NDropdown
                 options={userDropdownOptions.value}
                 onSelect={handleUserDropdownSelect}
@@ -221,7 +221,6 @@ export const Sidebar = defineComponent({
                 </button>
               </NDropdown>
 
-              {/* Header Actions - Only collapse button */}
               <div class={styles['header-actions']}>
                 <button
                   class={styles['header-btn']}
@@ -239,7 +238,6 @@ export const Sidebar = defineComponent({
               </div>
             </div>
 
-            {/* Menu */}
             <NLayoutContent
               class={[styles.menu, '!bg-transparent']}
               nativeScrollbar={false}
@@ -316,7 +314,6 @@ export const Sidebar = defineComponent({
               </nav>
             </NLayoutContent>
 
-            {/* Footer - Theme Toggle with Dropdown */}
             <div class={styles['sidebar-footer']}>
               <NDropdown
                 options={themeDropdownOptions.value}

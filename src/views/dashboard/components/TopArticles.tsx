@@ -1,7 +1,6 @@
-import { BarChart3 as BarChartIcon } from 'lucide-vue-next'
-import { NDataTable, NText } from 'naive-ui'
-import { defineComponent, h, onMounted, ref } from 'vue'
-import type { DataTableColumns } from 'naive-ui'
+import { Eye, Heart } from 'lucide-vue-next'
+import { NScrollbar } from 'naive-ui'
+import { defineComponent, onMounted, ref } from 'vue'
 
 import { aggregateApi } from '~/api/aggregate'
 
@@ -39,62 +38,58 @@ export const TopArticles = defineComponent({
       fetchData()
     })
 
-    const columns: DataTableColumns<ArticleData> = [
-      {
-        title: '#',
-        key: 'index',
-        width: 40,
-        render: (_, index) =>
-          h(NText, { depth: 3 }, { default: () => (index + 1).toString() }),
-      },
-      {
-        title: '标题',
-        key: 'title',
-        ellipsis: {
-          tooltip: true,
-        },
-        render: (row) =>
-          h(
-            'a',
-            {
-              class: 'hover:underline cursor-pointer text-inherit',
-              href: row.category
-                ? `/posts/${row.category.slug}/${row.slug}`
-                : '#',
-              target: '_blank',
-            },
-            row.title,
-          ),
-      },
-      {
-        title: '阅读',
-        key: 'reads',
-        width: 70,
-        render: (row) => Intl.NumberFormat('en-us').format(row.reads),
-      },
-      {
-        title: '点赞',
-        key: 'likes',
-        width: 60,
-        render: (row) => row.likes.toString(),
-      },
-    ]
+    const formatNumber = (num: number) => {
+      if (num >= 10000) {
+        return `${(num / 10000).toFixed(1)}w`
+      }
+      if (num >= 1000) {
+        return `${(num / 1000).toFixed(1)}k`
+      }
+      return num.toString()
+    }
 
     return () => (
-      <ChartCard
-        title="热门文章 Top 10"
-        icon={<BarChartIcon />}
-        loading={loading.value}
-        height={300}
-      >
-        <NDataTable
-          columns={columns}
-          data={data.value}
-          size="small"
-          bordered={false}
-          singleLine={false}
-          maxHeight={280}
-        />
+      <ChartCard title="热门文章 Top 10" loading={loading.value} height={250}>
+        <NScrollbar style={{ maxHeight: '250px' }}>
+          <div class="space-y-1 px-4 pb-3">
+            {data.value.map((item, index) => (
+              <a
+                key={item.id}
+                href={
+                  item.category
+                    ? `/posts/${item.category.slug}/${item.slug}`
+                    : '#'
+                }
+                target="_blank"
+                class="group flex items-center gap-3 rounded-md px-2 py-1.5 transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800"
+              >
+                <span
+                  class={[
+                    'flex h-5 w-5 shrink-0 items-center justify-center rounded text-xs font-medium',
+                    index < 3
+                      ? 'bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900'
+                      : 'text-neutral-400',
+                  ]}
+                >
+                  {index + 1}
+                </span>
+                <span class="min-w-0 flex-1 truncate text-sm text-neutral-700 group-hover:text-neutral-900 dark:text-neutral-300 dark:group-hover:text-neutral-100">
+                  {item.title}
+                </span>
+                <div class="flex shrink-0 items-center gap-3 text-xs text-neutral-400">
+                  <span class="flex items-center gap-1">
+                    <Eye class="h-3 w-3" />
+                    {formatNumber(item.reads)}
+                  </span>
+                  <span class="flex items-center gap-1">
+                    <Heart class="h-3 w-3" />
+                    {formatNumber(item.likes)}
+                  </span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </NScrollbar>
       </ChartCard>
     )
   },

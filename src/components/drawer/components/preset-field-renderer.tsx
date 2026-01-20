@@ -171,10 +171,8 @@ const MultiSelectFieldRenderer = defineComponent({
   setup(props) {
     const { field, value, onChange } = toRefs(props)
 
-    // 当前选中值（标准化为数组）
     const currentValues = computed(() => normalizeToArray(value.value))
 
-    // 分离预定义值和自定义值
     const predefinedValues = computed(() => {
       const optionValues = new Set(
         field.value.options?.map((o) => o.value) ?? [],
@@ -193,22 +191,18 @@ const MultiSelectFieldRenderer = defineComponent({
       )
     })
 
-    // 自定义输入
     const customInput = ref('')
 
-    // 处理预定义选项变化
     const handlePredefinedChange = (newValues: any[]) => {
       const processed = handleSelectExclusive(
         newValues,
         predefinedValues.value,
         field.value.options ?? [],
       )
-      // 合并自定义值
       const merged = [...processed, ...customValues.value]
       onChange.value(normalizeFromArray(merged))
     }
 
-    // 添加自定义值
     const addCustomValue = () => {
       const trimmed = customInput.value.trim()
       if (!trimmed) return
@@ -231,14 +225,12 @@ const MultiSelectFieldRenderer = defineComponent({
       customInput.value = ''
     }
 
-    // 移除自定义值
     const removeCustomValue = (val: string) => {
       const newCustom = customValues.value.filter((v) => v !== val)
       const merged = [...predefinedValues.value, ...newCustom]
       onChange.value(normalizeFromArray(merged))
     }
 
-    // 构建选项列表
     const selectOptions = computed(() => {
       return (
         field.value.options?.map((o) => ({
@@ -261,7 +253,6 @@ const MultiSelectFieldRenderer = defineComponent({
           maxTagCount="responsive"
         />
 
-        {/* 自定义值标签 */}
         {customValues.value.length > 0 && (
           <div class="flex flex-wrap gap-1.5">
             {customValues.value.map((val) => (
@@ -282,7 +273,6 @@ const MultiSelectFieldRenderer = defineComponent({
           </div>
         )}
 
-        {/* 自定义输入 */}
         {field.value.allowCustomOption && (
           <div class="flex gap-2">
             <NInput
@@ -338,7 +328,6 @@ const ObjectFieldRenderer = defineComponent({
     // 当 value 存在时（包括空对象）认为是启用状态
     const isEnabled = ref(value.value !== undefined)
 
-    // 监听外部值变化，同步启用状态
     watch(
       () => value.value,
       (newVal) => {
@@ -346,19 +335,15 @@ const ObjectFieldRenderer = defineComponent({
       },
     )
 
-    // 切换启用状态
     const toggleEnabled = (enabled: boolean) => {
       isEnabled.value = enabled
       if (enabled) {
-        // 启用时初始化空对象
         onChange.value({})
       } else {
-        // 禁用时清除所有值
         onChange.value(undefined)
       }
     }
 
-    // 更新子字段值
     const updateChildValue = (key: string, childValue: any) => {
       const current = value.value ?? {}
       if (

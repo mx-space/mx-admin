@@ -7,6 +7,7 @@ import { Chart } from '@antv/g2'
 import { aggregateApi } from '~/api/aggregate'
 
 import { ChartCard } from './ChartCard'
+import { useChartTheme } from './use-chart-theme'
 
 interface SourceData {
   name: string
@@ -26,6 +27,8 @@ export const TrafficSource = defineComponent({
     const data = ref<TrafficData>({ os: [], browser: [] })
     let osChart: Chart | null = null
     let browserChart: Chart | null = null
+
+    const { isDark, chartTheme } = useChartTheme()
 
     const fetchData = async () => {
       try {
@@ -59,24 +62,33 @@ export const TrafficSource = defineComponent({
         percent: item.count / total,
       }))
 
+      const theme = chartTheme.value
+
       const chart = new Chart({
         container,
         autoFit: true,
-        height: 180,
+        height: 160,
       })
 
       chart.options({
         type: 'interval',
         data: pieData,
         transform: [{ type: 'stackY' }],
-        coordinate: { type: 'theta', outerRadius: 0.75 },
+        coordinate: { type: 'theta', outerRadius: 0.85 },
         encode: { y: 'count', color: 'name' },
-        legend: { color: { position: 'bottom', flipPage: false } },
+        legend: {
+          color: {
+            position: 'bottom',
+            flipPage: false,
+            itemLabelFill: theme.legend.itemLabelFill,
+          },
+        },
         tooltip: false,
         labels: [
           {
             text: (d: { percent: number }) =>
               `${(d.percent * 100).toFixed(0)}%`,
+            fill: theme.label.fill,
           },
         ],
       })
@@ -102,8 +114,9 @@ export const TrafficSource = defineComponent({
       fetchData()
     })
 
+    // 数据变化或主题变化时重新渲染
     watch(
-      () => data.value,
+      [() => data.value, isDark],
       () => {
         if (data.value.os.length > 0 || data.value.browser.length > 0) {
           setTimeout(renderCharts, 0)
@@ -117,18 +130,18 @@ export const TrafficSource = defineComponent({
         title="访问来源（近7天）"
         icon={<MonitorIcon />}
         loading={loading.value}
-        height={220}
+        height={250}
       >
-        <NGrid xGap={12} cols={2}>
+        <NGrid xGap={12} cols={2} class="px-4">
           <NGi>
-            <div class="mb-2 text-center text-xs text-neutral-500">
+            <div class="mb-1 text-center text-xs text-neutral-500">
               操作系统
             </div>
-            <div ref={osChartRef} style={{ height: '180px' }} />
+            <div ref={osChartRef} style={{ height: '200px' }} />
           </NGi>
           <NGi>
-            <div class="mb-2 text-center text-xs text-neutral-500">浏览器</div>
-            <div ref={browserChartRef} style={{ height: '180px' }} />
+            <div class="mb-1 text-center text-xs text-neutral-500">浏览器</div>
+            <div ref={browserChartRef} style={{ height: '200px' }} />
           </NGi>
         </NGrid>
       </ChartCard>

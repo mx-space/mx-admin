@@ -37,7 +37,7 @@ export const postsApi = {
     request.get<PaginateResult<PostModel>>('/posts', { params }),
 
   // 获取单篇文章
-  getById: (id: string) => request.get<{ data: PostModel }>(`/posts/${id}`),
+  getById: (id: string) => request.get<PostModel>(`/posts/${id}`),
 
   // 创建文章
   create: (data: CreatePostData) => request.post<PostModel>('/posts', { data }),

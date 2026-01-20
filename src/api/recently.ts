@@ -4,7 +4,7 @@ import { request } from '~/utils/request'
 
 export const recentlyApi = {
   // 获取最近访问列表
-  getAll: () => request.get<{ data: RecentlyModel[] }>('/recently/all'),
+  getAll: () => request.get<RecentlyModel[]>('/recently/all'),
 
   // 创建速记
   create: (data: { content: string }) =>

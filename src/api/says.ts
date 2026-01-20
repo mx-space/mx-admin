@@ -21,7 +21,7 @@ export const saysApi = {
     request.get<SayResponse>('/says', { params }),
 
   // 获取单个一言
-  getById: (id: string) => request.get<{ data: SayModel }>(`/says/${id}`),
+  getById: (id: string) => request.get<SayModel>(`/says/${id}`),
 
   // 创建一言
   create: (data: CreateSayData) => request.post<SayModel>('/says', { data }),

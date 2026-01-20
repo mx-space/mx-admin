@@ -13,17 +13,19 @@ export const ChartCard = defineComponent({
   },
   setup(props, { slots }) {
     return () => (
-      <div class="rounded-lg border border-neutral-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-900">
-        <div class="mb-3 flex items-center justify-between">
+      <div class="rounded-lg border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-900">
+        <div class="flex items-center justify-between px-4 py-3">
           <h4 class="text-sm font-medium text-neutral-700 dark:text-neutral-300">
             {props.title}
           </h4>
           {props.icon && (
-            <Icon class="text-base text-neutral-400">{props.icon}</Icon>
+            <Icon class="text-sm text-neutral-400">{props.icon}</Icon>
           )}
         </div>
         {props.loading ? (
-          <NSkeleton height={`${props.height}px`} />
+          <div class="px-4 pb-3">
+            <NSkeleton height={`${props.height}px`} />
+          </div>
         ) : (
           <div style={{ height: `${props.height}px` }}>{slots.default?.()}</div>
         )}

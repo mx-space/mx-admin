@@ -373,7 +373,7 @@ const WebhookEditDrawer = defineComponent({
       queryFn: () => webhooksApi.getEvents(),
     })
 
-    const availableEvents = computed(() => eventsData.value?.data ?? [])
+    const availableEvents = computed(() => eventsData.value ?? [])
 
     // 当表单数据变化时同步
     watch(
@@ -582,7 +582,7 @@ export default defineComponent({
       queryFn: () => webhooksApi.getList(),
     })
 
-    const webhooks = computed(() => webhooksData.value?.data ?? [])
+    const webhooks = computed(() => webhooksData.value ?? [])
     const enabledCount = computed(
       () => webhooks.value.filter((w) => w.enabled).length,
     )

@@ -18,8 +18,7 @@ export const useCategoryStore = defineStore('category', () => {
     },
     async fetch(force?: boolean) {
       if (!data.value || force) {
-        const response = await categoriesApi.getList({ type: 'Category' })
-        data.value = response.data
+        data.value = await categoriesApi.getList({ type: 'Category' })
       } else {
         return data.value
       }
