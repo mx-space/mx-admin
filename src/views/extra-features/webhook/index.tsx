@@ -29,6 +29,7 @@ import {
   NSwitch,
   NTag,
 } from 'naive-ui'
+import { computed, defineComponent, ref, watch, watchEffect } from 'vue'
 import type { WebhookModel } from '~/api/webhooks'
 import type { PropType, VNode } from 'vue'
 

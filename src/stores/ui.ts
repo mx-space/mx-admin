@@ -7,6 +7,7 @@
  * Mark: Coding with Love
  */
 import { debounce } from 'es-toolkit/compat'
+import { defineStore } from 'pinia'
 import { computed, onMounted, ref, watch } from 'vue'
 
 import { usePreferredDark, useStorage } from '@vueuse/core'

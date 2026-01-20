@@ -1,4 +1,5 @@
 import { render } from 'ejs'
+import { defineComponent, ref, watch } from 'vue'
 import type { PropType } from 'vue'
 
 export const EJSRender = defineComponent({

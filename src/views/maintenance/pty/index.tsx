@@ -11,6 +11,7 @@ import {
   useMessage,
 } from 'naive-ui'
 import Io from 'socket.io-client'
+import { defineComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { IDisposable, Terminal } from '@xterm/xterm'
 import type { PropType } from 'vue'
 

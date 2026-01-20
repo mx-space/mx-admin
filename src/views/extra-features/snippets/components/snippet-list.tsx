@@ -7,6 +7,7 @@ import {
   Search as SearchIcon,
 } from 'lucide-vue-next'
 import { NInput, NScrollbar, NSpin } from 'naive-ui'
+import { computed, defineComponent, ref } from 'vue'
 import type { PropType } from 'vue'
 import type { SnippetModel } from '../../../../models/snippet'
 import type { GroupWithSnippets } from '../composables/use-snippet-list'

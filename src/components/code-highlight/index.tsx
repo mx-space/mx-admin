@@ -1,3 +1,5 @@
+import { defineComponent, onMounted, ref } from 'vue'
+
 export const CodeHighlight = defineComponent({
   props: {
     language: {

@@ -14,6 +14,15 @@ import {
   useDialog,
 } from 'naive-ui'
 import { basename, extname } from 'path-browserify'
+import {
+  defineComponent,
+  h,
+  nextTick,
+  onMounted,
+  ref,
+  unref,
+  watchEffect,
+} from 'vue'
 import type { SnippetModel } from '~/models/snippet'
 import type { PropType } from 'vue'
 

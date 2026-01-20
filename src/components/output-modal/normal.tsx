@@ -2,6 +2,7 @@
 import { AnsiUp } from 'ansi_up'
 import { EventSourcePolyfill } from 'event-source-polyfill'
 import { NCard, NModal } from 'naive-ui'
+import { defineComponent, ref, watch } from 'vue'
 
 import { getToken } from '~/utils'
 

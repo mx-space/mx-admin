@@ -3,7 +3,10 @@
  * 实时日志查看器
  */
 import { Pause, Play, Radio, RotateCcw, Trash2 } from 'lucide-vue-next'
+import { defineComponent, onBeforeUnmount, ref } from 'vue'
 import type { Terminal } from '@xterm/xterm'
+
+import { tryOnMounted } from '@vueuse/core'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { Xterm } from '~/components/xterm'

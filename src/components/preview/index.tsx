@@ -1,3 +1,5 @@
+import { defineComponent } from 'vue'
+
 export const ArticlePreview = defineComponent({
   props: {
     url: {

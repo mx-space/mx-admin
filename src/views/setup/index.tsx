@@ -11,7 +11,16 @@ import {
   NSteps,
   useMessage,
 } from 'naive-ui'
-import { defineComponent, ref } from 'vue'
+import {
+  defineComponent,
+  h,
+  inject,
+  onBeforeMount,
+  onMounted,
+  provide,
+  reactive,
+  ref,
+} from 'vue'
 import type { PropType } from 'vue'
 import type { UserModel } from '../../models/user'
 

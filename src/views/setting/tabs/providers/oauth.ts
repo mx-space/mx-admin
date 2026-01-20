@@ -1,3 +1,6 @@
+import { inject, provide } from 'vue'
+import type { Ref } from 'vue'
+
 export interface OauthData {
   providers: ProvidersItem[]
   public: {

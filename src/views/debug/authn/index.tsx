@@ -1,4 +1,5 @@
 import { NButton } from 'naive-ui'
+import { defineComponent } from 'vue'
 import type {
   AuthenticationResponseJSON,
   RegistrationResponseJSON,

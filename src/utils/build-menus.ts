@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
+import type { VNode } from 'vue'
 import type { RouteRecordNormalized } from 'vue-router'
 
 type TRouteRecordNormalized = Omit<RouteRecordNormalized, 'meta'> & {

@@ -1,9 +1,8 @@
-import { visualizer } from 'rollup-plugin-visualizer'
 import UnoCSS from 'unocss/vite'
-import AutoImport from 'unplugin-auto-import/vite'
+
 import { defineConfig, loadEnv } from 'vite'
 import { checker } from 'vite-plugin-checker'
-import { VueTracer } from 'vite-plugin-vue-tracer'
+
 import wasm from 'vite-plugin-wasm'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import type { PluginOption } from 'vite'
@@ -24,20 +23,10 @@ export default ({ mode }) => {
       // mkcert(),
       wasm(),
       UnoCSS(),
-      VueTracer(),
       vue({}),
       vueJsx(),
       tsconfigPaths(),
-      visualizer({ open: process.env.CI ? false : true }),
 
-      AutoImport({
-        include: [
-          /\.[tj]sx?$/, // .ts, .tsx, .js, .jsx
-          /\.vue\??/, // .vue
-        ],
-        dts: './src/auto-import.d.ts',
-        imports: ['vue', 'pinia', '@vueuse/core'],
-      }),
       checker({
         enableBuild: true,
       }),
@@ -107,10 +96,8 @@ const htmlPlugin: (env: any) => PluginOption = (env) => {
         .replace(/@gh-pages/g, `@page_v${PKG.version}`)
         .replace(
           '<!-- ENV INJECT -->',
-          `<script id="env_injection">window.injectData = {WEB_URL:'${
-            env.VITE_APP_WEB_URL || ''
-          }', GATEWAY: '${env.VITE_APP_GATEWAY || ''}',BASE_API: '${
-            env.VITE_APP_BASE_API || ''
+          `<script id="env_injection">window.injectData = {WEB_URL:'${env.VITE_APP_WEB_URL || ''
+          }', GATEWAY: '${env.VITE_APP_GATEWAY || ''}',BASE_API: '${env.VITE_APP_BASE_API || ''
           }'}</script>`,
         )
     },

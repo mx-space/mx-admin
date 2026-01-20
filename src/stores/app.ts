@@ -1,3 +1,4 @@
+import { defineStore } from 'pinia'
 import { onMounted, ref } from 'vue'
 import type { AppInfo } from '~/models/system'
 

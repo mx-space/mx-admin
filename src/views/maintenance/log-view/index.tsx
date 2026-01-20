@@ -1,4 +1,5 @@
 import { FileText, Radio } from 'lucide-vue-next'
+import { computed, defineComponent } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import { LogListView } from './tabs/log-list'

@@ -4,6 +4,7 @@
  */
 import { Plus as PlusIcon } from 'lucide-vue-next'
 import { NPagination } from 'naive-ui'
+import { defineComponent, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { TopicModel } from '~/models/topic'
 

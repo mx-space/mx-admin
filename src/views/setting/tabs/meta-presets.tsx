@@ -6,6 +6,7 @@ import { ListPlus as ListPlusIcon, Plus as PlusIcon } from 'lucide-vue-next'
 import { NButton, NCard } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import type { MetaPresetField } from '~/models/meta-preset'
+import type { PropType } from 'vue'
 
 import { useQueryClient } from '@tanstack/vue-query'
 

@@ -3,6 +3,7 @@
  * 提供一致的视觉语言和交互模式
  */
 import { NSwitch } from 'naive-ui'
+import { defineComponent, h } from 'vue'
 import type { Component, PropType } from 'vue'
 
 /**

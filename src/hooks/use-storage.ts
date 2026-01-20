@@ -1,5 +1,5 @@
 import { throttle } from 'es-toolkit/compat'
-import { reactive, watch } from 'vue'
+import { onBeforeMount, reactive, watch } from 'vue'
 import type { z } from 'zod'
 
 const key2reactive = new Map<string, any>()

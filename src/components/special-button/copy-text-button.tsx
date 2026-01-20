@@ -1,5 +1,6 @@
 import { Copy as MingcuteCopy2Line } from 'lucide-vue-next'
 import { NButton, NIcon } from 'naive-ui'
+import { defineComponent } from 'vue'
 
 export const CopyTextButton = defineComponent({
   props: {

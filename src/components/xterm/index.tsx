@@ -1,3 +1,4 @@
+import { defineComponent, onBeforeUnmount, ref } from 'vue'
 import { Material, MaterialDark } from 'xterm-theme'
 import type { ITerminalOptions, Terminal } from '@xterm/xterm'
 import type { PropType } from 'vue'

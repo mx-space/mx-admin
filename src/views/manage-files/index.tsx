@@ -14,7 +14,7 @@ import {
   NUpload,
   NUploadDragger,
 } from 'naive-ui'
-import { defineComponent } from 'vue'
+import { defineComponent, onMounted, ref, watch } from 'vue'
 import type { UploadFileInfo } from 'naive-ui'
 
 import { filesApi } from '~/api'

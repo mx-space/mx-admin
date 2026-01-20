@@ -1,4 +1,5 @@
 import { NUpload } from 'naive-ui'
+import { defineComponent } from 'vue'
 import type { UploadOnFinish } from 'naive-ui'
 import type { OnError } from 'naive-ui/es/upload/src/interface'
 import type { PropType } from 'vue'

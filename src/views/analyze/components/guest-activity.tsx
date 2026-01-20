@@ -9,7 +9,14 @@ import {
   User as UserIcon,
 } from 'lucide-vue-next'
 import { NTabPane, NTabs } from 'naive-ui'
-import { defineComponent, onBeforeMount, ref, shallowRef, watch } from 'vue'
+import {
+  computed,
+  defineComponent,
+  onBeforeMount,
+  ref,
+  shallowRef,
+  watch,
+} from 'vue'
 import { useRoute } from 'vue-router'
 import type {
   NoteModel,

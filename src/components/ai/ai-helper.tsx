@@ -1,4 +1,6 @@
 import { NButton, NIcon, NTooltip } from 'naive-ui'
+import { defineComponent, ref } from 'vue'
+import type { PropType } from 'vue'
 
 import { aiApi, AiQueryType } from '~/api'
 

@@ -1,4 +1,5 @@
 import { NBadge, NButton, NCard, NSpace, NThing } from 'naive-ui'
+import { defineComponent } from 'vue'
 import type { PropType, VNode } from 'vue'
 
 import { Icon } from '@vicons/utils'

@@ -1,4 +1,5 @@
 import { marked } from 'marked'
+import { defineComponent } from 'vue'
 import xss from 'xss'
 
 marked.use({

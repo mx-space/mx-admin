@@ -20,6 +20,7 @@ import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import type { PropType } from 'vue'
 
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
+import { debouncedRef } from '@vueuse/core'
 
 import { notesApi } from '~/api/notes'
 import { searchApi } from '~/api/search'

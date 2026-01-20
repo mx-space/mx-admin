@@ -1,6 +1,9 @@
 import { ArrowUpCircle as UpgradeIcon } from 'lucide-vue-next'
 import { NButton, NCard, NDataTable, NModal } from 'naive-ui'
+import { defineComponent, onBeforeUnmount, ref, watch } from 'vue'
 import type { NpmPKGInfo } from '~/external/types/npm-pkg'
+
+import { useElementVisibility } from '@vueuse/core'
 
 import { dependenciesApi } from '~/api'
 import { HeaderActionButton } from '~/components/button/rounded-button'

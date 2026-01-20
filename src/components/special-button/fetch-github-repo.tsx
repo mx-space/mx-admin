@@ -1,4 +1,5 @@
 import { NButton, NInput, useDialog } from 'naive-ui'
+import { defineComponent, onMounted, ref } from 'vue'
 import type { IGithubRepo } from '~/external/api/github-repo'
 import type { PropType } from 'vue'
 

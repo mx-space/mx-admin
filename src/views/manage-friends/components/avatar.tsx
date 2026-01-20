@@ -1,4 +1,7 @@
 import { NAvatar } from 'naive-ui'
+import { defineComponent, ref } from 'vue'
+
+import { useIntersectionObserver } from '@vueuse/core'
 
 import FallbackAvatar from './fallback.jpg'
 

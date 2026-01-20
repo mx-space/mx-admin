@@ -9,7 +9,13 @@ import {
   Trash as TrashIcon,
 } from 'lucide-vue-next'
 import { NButton, NEllipsis, NTooltip } from 'naive-ui'
-import { defineComponent, onBeforeMount, onMounted } from 'vue'
+import {
+  defineComponent,
+  onBeforeMount,
+  onBeforeUnmount,
+  onMounted,
+  watch,
+} from 'vue'
 import { useRoute } from 'vue-router'
 import type { UA } from '~/models/analyze'
 import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'

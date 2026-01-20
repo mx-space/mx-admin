@@ -14,6 +14,7 @@ import type { PageModel } from '~/models/page'
 import type { PropType } from 'vue'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
+import { watchOnce } from '@vueuse/core'
 
 import { pagesApi } from '~/api/pages'
 import { RelativeTime } from '~/components/time/relative-time'

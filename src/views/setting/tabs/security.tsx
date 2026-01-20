@@ -26,7 +26,7 @@ import {
   NSwitch,
   NText,
 } from 'naive-ui'
-import { defineComponent, onBeforeMount, reactive, ref } from 'vue'
+import { defineComponent, onBeforeMount, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import type { TokenModel } from '~/models/token'
 

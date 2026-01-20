@@ -1,3 +1,4 @@
+import { watch } from 'vue'
 import type { EditorView } from '@codemirror/view/dist'
 import type { Ref } from 'vue'
 

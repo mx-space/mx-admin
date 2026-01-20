@@ -14,6 +14,7 @@ import {
   NTabPane,
   NTabs,
 } from 'naive-ui'
+import { defineComponent, onMounted, ref, watch } from 'vue'
 import type { MetaPresetField, MetaPresetScope } from '~/models/meta-preset'
 import type { PropType } from 'vue'
 

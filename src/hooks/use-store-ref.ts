@@ -1,3 +1,4 @@
+import { storeToRefs } from 'pinia'
 import type { StoreGeneric } from 'pinia'
 
 export const useStoreRef = <SS extends StoreGeneric>(store: () => SS) =>

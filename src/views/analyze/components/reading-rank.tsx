@@ -8,7 +8,7 @@ import {
   TrendingUp as TrendingUpIcon,
 } from 'lucide-vue-next'
 import { NButton, NDatePicker, NSkeleton, NSpace } from 'naive-ui'
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref, watch } from 'vue'
 import type {
   NoteModel,
   PageModel,

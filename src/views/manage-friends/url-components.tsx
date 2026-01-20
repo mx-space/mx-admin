@@ -1,4 +1,5 @@
 import { NPopover } from 'naive-ui'
+import { defineComponent } from 'vue'
 
 export const UrlComponent = defineComponent({
   props: {

@@ -5,6 +5,7 @@ import {
   Settings as SettingsIcon,
 } from 'lucide-vue-next'
 import { NButton, NModal, NPopover, useMessage } from 'naive-ui'
+import { computed, defineComponent, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { SnippetModel } from '../../../models/snippet'
 

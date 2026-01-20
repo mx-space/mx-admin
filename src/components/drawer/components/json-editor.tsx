@@ -1,4 +1,5 @@
 import { NButton } from 'naive-ui'
+import { defineComponent, ref } from 'vue'
 import type { PropType } from 'vue'
 
 import { useAsyncLoadMonaco } from '~/hooks/use-async-monaco'

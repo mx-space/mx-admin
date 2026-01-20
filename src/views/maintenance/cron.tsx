@@ -1,5 +1,6 @@
 import { format } from 'date-fns'
 import { NButton, NPopconfirm, NSpace } from 'naive-ui'
+import { defineComponent, onMounted } from 'vue'
 
 import { healthApi } from '~/api/health'
 import { Table } from '~/components/table'

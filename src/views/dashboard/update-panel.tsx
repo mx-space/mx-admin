@@ -1,3 +1,5 @@
+import { defineComponent, nextTick, onMounted, ref } from 'vue'
+
 import { ShellOutputNormal } from '~/components/output-modal/normal'
 import { API_URL } from '~/constants/env'
 import { usePortalElement } from '~/hooks/use-portal-element'

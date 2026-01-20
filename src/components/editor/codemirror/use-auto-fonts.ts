@@ -1,4 +1,6 @@
+import { watch } from 'vue'
 import type { EditorView } from '@codemirror/view'
+import type { Ref } from 'vue'
 
 import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
 import { tags } from '@lezer/highlight'

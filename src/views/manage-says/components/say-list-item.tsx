@@ -4,6 +4,7 @@
  */
 import { Pencil, Quote, Trash2, User, X } from 'lucide-vue-next'
 import { NButton, NInput, NModal, NPopconfirm } from 'naive-ui'
+import { computed, defineComponent, reactive, ref, watch } from 'vue'
 import type { SayModel } from '~/models/say'
 import type { PropType } from 'vue'
 

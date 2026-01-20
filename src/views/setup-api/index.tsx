@@ -1,6 +1,6 @@
 import { Bug, Check, RotateCcw, Server } from 'lucide-vue-next'
 import { NSelect, NSwitch } from 'naive-ui'
-import { defineComponent } from 'vue'
+import { defineComponent, reactive } from 'vue'
 
 const storeApiUrlKey = 'mx-admin:setup-api:url'
 const storeGatewayUrlKey = 'mx-admin:setup-api:gateway'

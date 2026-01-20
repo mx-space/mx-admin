@@ -1,5 +1,6 @@
 import { Code2, MousePointerClick, Plus } from 'lucide-vue-next'
 import { NButton } from 'naive-ui'
+import { defineComponent } from 'vue'
 import type { PropType } from 'vue'
 
 export const SnippetEmptyState = defineComponent({

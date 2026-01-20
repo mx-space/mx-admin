@@ -1,4 +1,5 @@
 import { NGrid } from 'naive-ui'
+import { defineComponent } from 'vue'
 
 export const TwoColGridLayout = defineComponent({
   setup(_props, { slots }) {

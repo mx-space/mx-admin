@@ -1,3 +1,4 @@
+import { defineComponent, ref, watch } from 'vue'
 import type { PropType } from 'vue'
 
 import { FunctionCodeEditor } from '~/components/function-editor'

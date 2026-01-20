@@ -1,3 +1,5 @@
+import type { Ref } from 'vue'
+
 export interface WebhookModel {
   payloadUrl: string
   events: string[]

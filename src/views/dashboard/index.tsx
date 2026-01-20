@@ -43,6 +43,7 @@ import type { Stat } from '~/models/stat'
 import type { PropType, VNode } from 'vue'
 
 import { Icon } from '@vicons/utils'
+import { useStorage } from '@vueuse/core'
 
 import { aggregateApi } from '~/api/aggregate'
 import { IpInfoPopover } from '~/components/ip-info'

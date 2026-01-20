@@ -7,7 +7,7 @@ import {
   Sun,
 } from 'lucide-vue-next'
 import { NDropdown, NLayoutContent } from 'naive-ui'
-import { computed, defineComponent, h, onMounted, ref } from 'vue'
+import { computed, defineComponent, h, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import type { ThemeMode } from '~/stores/ui'
 import type { DropdownOption } from 'naive-ui'

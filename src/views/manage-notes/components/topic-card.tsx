@@ -4,6 +4,7 @@
  */
 import { Hash, Pencil, Search, Trash2 } from 'lucide-vue-next'
 import { NButton, NPopconfirm } from 'naive-ui'
+import { defineComponent } from 'vue'
 import type { TopicModel } from '~/models/topic'
 import type { PropType } from 'vue'
 

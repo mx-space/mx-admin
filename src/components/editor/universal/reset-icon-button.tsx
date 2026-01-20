@@ -1,5 +1,6 @@
 import { RefreshCcw as RefreshCircle } from 'lucide-vue-next'
 import { NButton, NPopover } from 'naive-ui'
+import { defineComponent } from 'vue'
 
 import { Icon } from '@vicons/utils'
 

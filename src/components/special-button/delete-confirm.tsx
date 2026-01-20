@@ -1,5 +1,7 @@
 import { Trash2 as DeleteIcon } from 'lucide-vue-next'
 import { useDialog, useMessage } from 'naive-ui'
+import { defineComponent, isRef } from 'vue'
+import type { VNode } from 'vue'
 import type { PropType, Ref } from 'vue'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'

@@ -1,4 +1,13 @@
 import { AutoTypings, LocalStorageCache } from 'monaco-editor-auto-typings'
+import {
+  defineComponent,
+  h,
+  onMounted,
+  onUnmounted,
+  ref,
+  unref,
+  watch,
+} from 'vue'
 import type { editor, IKeyboardEvent } from 'monaco-editor'
 import type { AutoTypingsCore } from 'monaco-editor-auto-typings/lib/AutoTypingsCore'
 import type { Ref } from 'vue'

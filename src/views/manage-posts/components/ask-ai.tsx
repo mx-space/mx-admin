@@ -9,6 +9,10 @@ import {
   useMessage,
 } from 'naive-ui'
 import { OpenAI } from 'openai'
+import { defineComponent, ref } from 'vue'
+import type { PropType } from 'vue'
+
+import { useStorage } from '@vueuse/core'
 
 export const AISummaryDialog = defineComponent({
   props: {

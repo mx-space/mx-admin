@@ -1,3 +1,4 @@
+import { defineComponent } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { RouteName } from '~/router/name'

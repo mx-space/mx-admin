@@ -17,7 +17,7 @@ import {
   NSkeleton,
   NSwitch,
 } from 'naive-ui'
-import { defineComponent, ref } from 'vue'
+import { defineComponent, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { DialogReactive } from 'naive-ui'
 import type { FlatOauthData, OauthData } from './providers/oauth'

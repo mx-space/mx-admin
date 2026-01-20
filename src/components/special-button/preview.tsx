@@ -1,6 +1,16 @@
 import { debounce } from 'es-toolkit/compat'
 import { Search as MagnifyingGlass } from 'lucide-vue-next'
 import { NSplit } from 'naive-ui'
+import {
+  defineComponent,
+  onBeforeUnmount,
+  onMounted,
+  onUnmounted,
+  ref,
+  watch,
+  watchEffect,
+} from 'vue'
+import type { PropType } from 'vue'
 
 import { optionsApi } from '~/api'
 import { useUIStore } from '~/stores/ui'

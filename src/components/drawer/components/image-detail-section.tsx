@@ -8,8 +8,11 @@ import {
   NInput,
   NInputNumber,
 } from 'naive-ui'
+import { computed, defineComponent, onMounted, ref } from 'vue'
 import type { Image as ImageModel } from '~/models/base'
 import type { PropType } from 'vue'
+
+import { useStorage } from '@vueuse/core'
 
 import {
   encodeImageToBlurhash,

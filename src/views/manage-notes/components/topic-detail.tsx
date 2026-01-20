@@ -12,6 +12,7 @@ import {
   NSelect,
   NUploadDragger,
 } from 'naive-ui'
+import { defineComponent, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import type { Pager } from '@mx-space/api-client'
 import type { NoteModel } from '~/models/note'

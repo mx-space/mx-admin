@@ -1,6 +1,8 @@
-import { computed, defineComponent, watchEffect } from 'vue'
+import { computed, defineComponent, watch, watchEffect } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import type { CSSProperties } from 'vue'
+
+import { useMagicKeys } from '@vueuse/core'
 
 import { KBarWrapper } from '~/components/k-bar'
 import { API_URL, GATEWAY_URL } from '~/constants/env'

@@ -4,6 +4,7 @@
  */
 import { FileText, RefreshCw, Trash2, X } from 'lucide-vue-next'
 import { NModal, NSelect, NSpin, useDialog, useMessage } from 'naive-ui'
+import { defineComponent, onMounted, ref } from 'vue'
 import type { PropType } from 'vue'
 
 import { healthApi } from '~/api/health'

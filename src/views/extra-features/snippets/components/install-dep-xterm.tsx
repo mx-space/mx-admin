@@ -1,3 +1,5 @@
+import { defineComponent, ref } from 'vue'
+
 import { ShellOutputXterm } from '~/components/output-modal/xterm'
 import { API_URL } from '~/constants/env'
 

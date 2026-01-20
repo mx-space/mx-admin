@@ -22,7 +22,7 @@ import {
   NSkeleton,
   NTooltip,
 } from 'naive-ui'
-import { Transition } from 'vue'
+import { computed, defineComponent, onUnmounted, ref, Transition } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import type { AISummary, ArticleInfo } from '~/api/ai'
 import type { PropType } from 'vue'

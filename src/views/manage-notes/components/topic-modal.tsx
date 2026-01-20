@@ -4,6 +4,7 @@
  */
 import { Upload as UploadIcon, X } from 'lucide-vue-next'
 import { NButton, NInput, NModal, NSpin } from 'naive-ui'
+import { defineComponent, nextTick, reactive, ref, watch } from 'vue'
 import type { TopicModel } from '~/models/topic'
 import type { PropType } from 'vue'
 

@@ -14,7 +14,7 @@ import {
   Trash2 as TrashIcon,
 } from 'lucide-vue-next'
 import { NButton, NPopconfirm, NSkeleton, NTooltip } from 'naive-ui'
-import { computed, defineComponent, onMounted, Transition } from 'vue'
+import { computed, defineComponent, onMounted, ref, Transition } from 'vue'
 import type { RecentlyModel, RecentlyRefTypes } from '~/models/recently'
 import type { PropType } from 'vue'
 

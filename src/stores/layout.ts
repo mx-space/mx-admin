@@ -1,4 +1,5 @@
-import { shallowReactive, shallowRef } from 'vue'
+import { defineStore } from 'pinia'
+import { ref, shallowReactive, shallowRef } from 'vue'
 import type { VNode } from 'vue'
 
 export const useLayoutStore = defineStore('layout', () => {

@@ -11,6 +11,7 @@ import {
   Upload,
 } from 'lucide-vue-next'
 import { NButton, NPopconfirm, NSpin } from 'naive-ui'
+import { defineComponent, onMounted, ref } from 'vue'
 import type { PropType } from 'vue'
 
 import { backupApi } from '~/api/backup'

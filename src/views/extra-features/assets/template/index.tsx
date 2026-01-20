@@ -1,4 +1,5 @@
 import { NTabPane, NTabs } from 'naive-ui'
+import { defineComponent, ref } from 'vue'
 
 import { EmailTab } from './tabs/email'
 import { MarkdownTab } from './tabs/markdown'

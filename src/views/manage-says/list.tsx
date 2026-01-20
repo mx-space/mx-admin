@@ -4,6 +4,7 @@
  */
 import { Plus as AddIcon } from 'lucide-vue-next'
 import { NPagination } from 'naive-ui'
+import { defineComponent, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { SayModel } from '~/models/say'
 

@@ -1,3 +1,5 @@
+import { acceptHMRUpdate, createPinia } from 'pinia'
+
 import { useAppStore } from './app'
 import { useCategoryStore } from './category'
 import { useLayoutStore } from './layout'

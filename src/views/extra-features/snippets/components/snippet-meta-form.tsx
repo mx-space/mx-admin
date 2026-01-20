@@ -3,6 +3,7 @@ import {
   Info as InfoIcon,
 } from 'lucide-vue-next'
 import { NInput, NSelect, NSwitch, NTooltip } from 'naive-ui'
+import { computed, defineComponent, ref } from 'vue'
 import type { PropType } from 'vue'
 import type { SnippetModel } from '../../../../models/snippet'
 

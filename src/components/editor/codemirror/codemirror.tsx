@@ -1,5 +1,5 @@
 /* eslint-disable vue/no-setup-props-destructure */
-import { defineComponent } from 'vue'
+import { defineComponent, watch } from 'vue'
 import type { EditorState } from '@codemirror/state'
 import type { PropType } from 'vue'
 

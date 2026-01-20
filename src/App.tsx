@@ -13,7 +13,7 @@ import {
   useThemeVars,
   zhCN,
 } from 'naive-ui'
-import { defineComponent, onMounted } from 'vue'
+import { defineComponent, onMounted, provide, ref, watchEffect } from 'vue'
 import { RouterView } from 'vue-router'
 import type { VNode } from 'vue'
 

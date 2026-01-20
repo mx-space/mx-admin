@@ -1,5 +1,6 @@
 import { Search as MagnifyIcon } from 'lucide-vue-next'
 import { NButton, NPopover } from 'naive-ui'
+import { defineComponent } from 'vue'
 
 import { ArticlePreview } from '~/components/preview'
 

@@ -2,6 +2,8 @@ import { omit } from 'es-toolkit/compat'
 import { dump, load } from 'js-yaml'
 import JSON5 from 'json5'
 import { useMessage } from 'naive-ui'
+import { computed, reactive, ref, watch } from 'vue'
+import type { Ref } from 'vue'
 
 import { snippetsApi } from '~/api'
 

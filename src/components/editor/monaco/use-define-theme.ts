@@ -1,3 +1,5 @@
+import { onMounted } from 'vue'
+
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { UIStore } from '~/stores/ui'
 

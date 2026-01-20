@@ -1,5 +1,6 @@
 import { Copy as CopyIcon, Github as GithubIcon } from 'lucide-vue-next'
 import { NButton, NCard, NForm, NFormItem, NInput, NSwitch } from 'naive-ui'
+import { defineComponent, ref, watchEffect } from 'vue'
 import type { AuthSocialProviders } from '~/utils/authjs/auth'
 import type { FormInst } from 'naive-ui/lib'
 

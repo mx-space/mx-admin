@@ -11,7 +11,15 @@ import {
   NSelect,
   useMessage,
 } from 'naive-ui'
-import { computed, defineComponent, onMounted, reactive, ref } from 'vue'
+import {
+  computed,
+  defineComponent,
+  onBeforeUnmount,
+  onMounted,
+  reactive,
+  ref,
+  watchEffect,
+} from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { CategoryModel } from '~/models/category'
 import type { PostModel } from '~/models/post'

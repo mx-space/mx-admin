@@ -3,7 +3,7 @@ import {
   Sparkles as SparklesIcon,
 } from 'lucide-vue-next'
 import { NButton, NEllipsis } from 'naive-ui'
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
 import { RouterLink } from 'vue-router'
 
 import { IframePreviewButton } from '~/components/special-button/iframe-preview'

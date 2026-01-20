@@ -9,6 +9,7 @@ import {
   Trash2 as TrashIcon,
 } from 'lucide-vue-next'
 import { NPopconfirm } from 'naive-ui'
+import { computed, defineComponent } from 'vue'
 import type { PropType } from 'vue'
 import type { SnippetModel } from '../../../../models/snippet'
 

@@ -1,3 +1,4 @@
+import { defineComponent, ref } from 'vue'
 import type { PropType } from 'vue'
 
 import { CenterSpin } from '~/components/spin'

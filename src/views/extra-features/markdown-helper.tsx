@@ -21,7 +21,7 @@ import {
   NUpload,
   useMessage,
 } from 'naive-ui'
-import { computed, defineComponent, ref, watch } from 'vue'
+import { computed, defineComponent, reactive, ref, watch } from 'vue'
 import type { ParsedModel } from '~/utils/markdown-parser'
 import type { DataTableColumns, UploadFileInfo } from 'naive-ui'
 

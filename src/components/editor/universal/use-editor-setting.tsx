@@ -6,6 +6,7 @@ import {
   NSelect,
   NSwitch,
 } from 'naive-ui'
+import { defineComponent } from 'vue'
 
 import { useStorageObject } from '~/hooks/use-storage'
 

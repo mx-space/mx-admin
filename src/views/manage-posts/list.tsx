@@ -19,7 +19,14 @@ import {
   NSpace,
   useMessage,
 } from 'naive-ui'
-import { computed, defineComponent, onMounted, reactive, ref } from 'vue'
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  reactive,
+  ref,
+  watchEffect,
+} from 'vue'
 import { RouterLink } from 'vue-router'
 import type {
   FilterOption,
@@ -30,6 +37,7 @@ import type { ComputedRef, PropType } from 'vue'
 import type { PostModel } from '../../models/post'
 
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
+import { debouncedRef } from '@vueuse/core'
 
 import { postsApi } from '~/api/posts'
 import { searchApi } from '~/api/search'

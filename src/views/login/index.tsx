@@ -1,6 +1,14 @@
 import { KeyRound as PassKeyIcon } from 'lucide-vue-next'
 import { useMessage } from 'naive-ui'
-import { defineComponent, onBeforeUnmount, onMounted, ref } from 'vue'
+import { storeToRefs } from 'pinia'
+import {
+  defineComponent,
+  onBeforeMount,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watchEffect,
+} from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import { useQuery } from '@tanstack/vue-query'

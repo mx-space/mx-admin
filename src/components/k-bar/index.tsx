@@ -1,4 +1,5 @@
 import { CornerDownLeft, LogIn, Search } from 'lucide-vue-next'
+import { defineComponent, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import type { Action } from '@bytebase/vue-kbar'
 
