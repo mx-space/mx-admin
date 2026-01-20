@@ -1,5 +1,17 @@
 # CHANGELOG
 
+# [5.1.0](https://github.com/mx-space/admin-vue3/compare/v5.0.1...v5.1.0) (2026-01-20)
+
+
+### Features
+
+* add draft ID support to notes, pages, and posts ([d21fc76](https://github.com/mx-space/admin-vue3/commit/d21fc7604063aab19385683c1eb10a4dec19e7f6))
+* add Lit support and enhance WYSIWYG editor functionality ([c61867b](https://github.com/mx-space/admin-vue3/commit/c61867b98f8b2c7b79f1464b29e502f161089b13))
+* add search functionality for posts and notes ([98e424e](https://github.com/mx-space/admin-vue3/commit/98e424e67d86f046949320c10439bf9aac714921))
+* implement typography standards and image editing functionality ([c244514](https://github.com/mx-space/admin-vue3/commit/c2445144210b36d6d62fbad0fc61fccb75f1c14b))
+
+
+
 ## [5.0.1](https://github.com/mx-space/admin-vue3/compare/v5.0.0...v5.0.1) (2026-01-19)
 
 
