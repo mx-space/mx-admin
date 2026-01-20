@@ -1,0 +1,1 @@
+import{ar as t}from"./index-R5yA_R4y.js";const s={getList:e=>t.get("/pages",{params:e}),getById:e=>t.get(`/pages/${e}`),create:e=>t.post("/pages",{data:e}),update:(e,a)=>t.put(`/pages/${e}`,{data:a}),delete:e=>t.delete(`/pages/${e}`),reorder:e=>t.patch("/pages/reorder",{data:{seq:e}})};export{s as p};
