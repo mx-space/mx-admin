@@ -56,8 +56,8 @@ export const snippetsApi = {
   delete: (id: string) => request.delete<void>(`/snippets/${id}`),
 
   // 获取分组列表
-  getGroups: (params?: { size?: number }) =>
-    request.get<SnippetGroup[]>('/snippets/group', { params }),
+  getGroups: (params?: { page?: number; size?: number }) =>
+    request.get<PaginateResult<SnippetGroup>>('/snippets/group', { params }),
 
   // 获取分组下的片段
   getGroupSnippets: (reference: string) =>

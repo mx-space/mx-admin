@@ -85,15 +85,23 @@ export const SnippetCard = defineComponent({
 
     const snippetUrl = computed(() => {
       const s = props.snippet
-      const base =
-        API_URL +
-        (s.type === SnippetType.Function ? '/fn/' : '/snippets/') +
-        s.reference
-      return `${base}/${s.name}${s.private ? `?token=${getToken()}` : ''}`
+      const path =
+        s.type === SnippetType.Function
+          ? `/serverless/${s.reference}/${s.name}`
+          : `/${s.reference}/${s.name}`
+      return `${API_URL}${path}${s.private ? `?token=${getToken()}` : ''}`
     })
 
     const handleClick = () => {
       props.onSelect?.(props.snippet)
+    }
+
+    const handleDoubleClick = (e: MouseEvent) => {
+      // Avoid triggering when double-clicking interactive controls inside the card
+      const target = e.target as HTMLElement | null
+      if (target?.closest('button, a, input, textarea, [role="button"]')) return
+
+      window.open(snippetUrl.value, '_blank')
     }
 
     const handleExternalLink = (e: MouseEvent) => {
@@ -119,6 +127,8 @@ export const SnippetCard = defineComponent({
               selected && 'bg-neutral-100 dark:bg-neutral-800',
             ]}
             onClick={handleClick}
+            onDblclick={handleDoubleClick}
+            title="双击打开访问地址"
           >
             {(() => {
               const Icon = typeIcon.value
@@ -178,6 +188,8 @@ export const SnippetCard = defineComponent({
             selected && 'bg-neutral-100 dark:bg-neutral-800/80',
           ]}
           onClick={handleClick}
+          onDblclick={handleDoubleClick}
+          title="双击打开访问地址"
         >
           {/* Row 1: Name + Icons */}
           <div class="flex items-center gap-1.5">

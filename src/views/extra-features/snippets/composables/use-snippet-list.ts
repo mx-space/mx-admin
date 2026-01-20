@@ -24,7 +24,7 @@ export function useSnippetList() {
         groupsWithSnippets.value.map((g) => [g.reference, g.expanded]),
       )
 
-      groupsWithSnippets.value = data.map((group) => ({
+      groupsWithSnippets.value = data.data.map((group) => ({
         ...group,
         snippets: [],
         expanded: existingExpandedState.get(group.reference) ?? false,

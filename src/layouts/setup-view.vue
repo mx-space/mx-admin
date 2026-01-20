@@ -1,4 +1,6 @@
 <script lang="ts">
+import { defineComponent, onMounted, ref } from 'vue'
+
 import { bgUrl } from '~/constants/env'
 
 export default defineComponent({
