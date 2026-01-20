@@ -1,0 +1,1 @@
+import{ar as t}from"./index-qXdkAhVq.js";const h={getCronList:()=>t.get("/health/cron"),runCron:e=>t.post(`/health/cron/run/${e}`),getLogList:()=>t.get("/health/log"),getLogContent:e=>t.get(`/health/log/${e}`),deleteLog:e=>t.delete(`/health/log/${e}`),clearLog:e=>t.put(`/health/log/${e}/clear`)};export{h};
