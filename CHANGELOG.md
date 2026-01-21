@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## [5.1.2](https://github.com/mx-space/admin-vue3/compare/v5.1.1...v5.1.2) (2026-01-21)
+
+
+### Features
+
+* enhance snippets API and UI interactions ([3ceb168](https://github.com/mx-space/admin-vue3/commit/3ceb168024b723b38cb5e502ffb6c13fdeb6058a))
+* integrate vue-sonner for toast notifications ([074068a](https://github.com/mx-space/admin-vue3/commit/074068accacbea67af63ccf14633b3e73e327745))
+
+
+
 ## [5.1.1](https://github.com/mx-space/admin-vue3/compare/v5.1.0...v5.1.1) (2026-01-20)
 
 
