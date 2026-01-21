@@ -1,0 +1,1 @@
+import{ar as t}from"./index-DoEgFLcO.js";const s={getList:e=>t.get("/projects",{params:e}),getById:e=>t.get(`/projects/${e}`),create:e=>t.post("/projects",{data:e}),update:(e,p)=>t.put(`/projects/${e}`,{data:p}),delete:e=>t.delete(`/projects/${e}`)};export{s as p};
