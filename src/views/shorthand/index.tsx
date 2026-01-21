@@ -15,6 +15,7 @@ import {
 } from 'lucide-vue-next'
 import { NButton, NPopconfirm, NSkeleton, NTooltip } from 'naive-ui'
 import { computed, defineComponent, onMounted, ref, Transition } from 'vue'
+import { toast } from 'vue-sonner'
 import type { RecentlyModel, RecentlyRefTypes } from '~/models/recently'
 import type { PropType } from 'vue'
 
@@ -306,7 +307,7 @@ export default defineComponent({
                   }}
                   onDelete={async () => {
                     await recentlyApi.delete(item.id)
-                    message.success('删除成功')
+                    toast.success('删除成功')
                     data.value.splice(data.value.indexOf(item), 1)
                   }}
                 />

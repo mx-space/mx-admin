@@ -1,4 +1,5 @@
 import { computed, toValue } from 'vue'
+import { toast } from 'vue-sonner'
 import type { GetCommentsParams, ReplyCommentData } from '~/api/comments'
 import type { MaybeRefOrGetter } from 'vue'
 
@@ -32,7 +33,7 @@ export const useReplyCommentMutation = () => {
     mutationFn: ({ id, data }: { id: string; data: ReplyCommentData }) =>
       commentsApi.reply(id, data),
     onSuccess: () => {
-      window.message.success('回复成功')
+      toast.success('回复成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.comments.all })
     },
   })
@@ -74,7 +75,7 @@ export const useDeleteCommentMutation = () => {
   return useMutation({
     mutationFn: commentsApi.delete,
     onSuccess: () => {
-      window.message.success('删除成功')
+      toast.success('删除成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.comments.all })
     },
   })
@@ -88,7 +89,7 @@ export const useBatchDeleteCommentsMutation = () => {
   return useMutation({
     mutationFn: commentsApi.batchDelete,
     onSuccess: () => {
-      window.message.success('删除成功')
+      toast.success('删除成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.comments.all })
     },
   })

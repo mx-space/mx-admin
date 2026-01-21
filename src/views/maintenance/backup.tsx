@@ -12,6 +12,7 @@ import {
 } from 'lucide-vue-next'
 import { NButton, NPopconfirm, NSpin } from 'naive-ui'
 import { defineComponent, onMounted, ref } from 'vue'
+import { toast } from 'vue-sonner'
 import type { PropType } from 'vue'
 
 import { backupApi } from '~/api/backup'
@@ -46,16 +47,19 @@ export default defineComponent({
     })
 
     const handleBackup = async () => {
-      const info = message.info('备份中...', { duration: 10e8, closable: true })
+      const info = toast.info('备份中...', {
+        duration: 10e8,
+        closeButton: true,
+      })
       try {
         const blob = await backupApi.createNew()
-        info.destroy()
-        message.success('备份完成')
+        toast.dismiss(info)
+        toast.success('备份完成')
         responseBlobToFile(blob, 'backup.zip')
         fetchData()
       } catch {
-        info.destroy()
-        message.error('备份失败')
+        toast.dismiss(info)
+        toast.error('备份失败')
       }
     }
 
@@ -70,14 +74,14 @@ export default defineComponent({
         const file = $file.files![0]
         if (!file) return
         // TODO: Implement upload rollback with new API
-        message.error('上传恢复功能暂未实现')
+        toast.error('上传恢复功能暂未实现')
         $file.remove()
       })
     }
 
     const handleDelete = async (filename: string) => {
       await backupApi.delete(filename)
-      message.success('删除成功')
+      toast.success('删除成功')
       const index = data.value.findIndex((i) => i.filename === filename)
       if (index !== -1) {
         data.value.splice(index, 1)
@@ -85,30 +89,36 @@ export default defineComponent({
     }
 
     const handleRollback = async (filename: string) => {
-      const info = message.info('回滚中...', { duration: 10e8, closable: true })
+      const info = toast.info('回滚中...', {
+        duration: 10e8,
+        closeButton: true,
+      })
       try {
         await backupApi.rollback(filename)
-        info.destroy()
-        message.success('回滚成功，页面将会重载')
+        toast.dismiss(info)
+        toast.success('回滚成功，页面将会重载')
         setTimeout(() => {
           location.reload()
         }, 1000)
       } catch {
-        info.destroy()
-        message.error('回滚失败')
+        toast.dismiss(info)
+        toast.error('回滚失败')
       }
     }
 
     const handleDownload = async (filename: string) => {
-      const info = message.info('下载中...', { duration: 10e8, closable: true })
+      const info = toast.info('下载中...', {
+        duration: 10e8,
+        closeButton: true,
+      })
       try {
         const blob = await backupApi.download(filename)
-        info.destroy()
-        message.success('下载完成')
+        toast.dismiss(info)
+        toast.success('下载完成')
         responseBlobToFile(blob, `${filename}.zip`)
       } catch {
-        info.destroy()
-        message.error('下载失败')
+        toast.dismiss(info)
+        toast.error('下载失败')
       }
     }
 

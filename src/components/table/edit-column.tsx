@@ -1,5 +1,6 @@
-import { NInput, NSelect, useMessage } from 'naive-ui'
+import { NInput, NSelect } from 'naive-ui'
 import { defineComponent, ref, watch } from 'vue'
+import { toast } from 'vue-sonner'
 import type { SelectMixedOption } from 'naive-ui/lib/select/src/interface'
 import type { PropType } from 'vue'
 
@@ -45,7 +46,6 @@ export const EditColumn = defineComponent({
 
     const isEdit = ref(false)
     const inputRef = ref<HTMLInputElement>()
-    const message = useMessage()
     watch(
       () => isEdit.value,
       (n) => {
@@ -53,7 +53,7 @@ export const EditColumn = defineComponent({
           return
         }
         if (n) {
-          message.info('回车以完成修改', { duration: 1500 })
+          toast.info('回车以完成修改', { duration: 1500 })
           requestAnimationFrame(() => {
             inputRef.value?.focus()
           })

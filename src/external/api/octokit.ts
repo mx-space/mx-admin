@@ -1,4 +1,5 @@
 import { Octokit } from 'octokit'
+import { toast } from 'vue-sonner'
 
 const getGHTokenFromLocalStorage = () => {
   const token = localStorage.getItem('ghToken')
@@ -18,7 +19,7 @@ const octokit = new Octokit(
 
 octokit.hook.error('request', async (error, _options) => {
   try {
-    message.error(error.message)
+    toast.error(error.message)
   } catch {
     // noop
   }

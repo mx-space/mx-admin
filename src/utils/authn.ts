@@ -1,3 +1,4 @@
+import { toast } from 'vue-sonner'
 import type {
   AuthenticationResponseJSON,
   RegistrationResponseJSON,
@@ -17,11 +18,11 @@ class AuthnUtilsStatic {
     } catch (error: any) {
       // Some basic error handling
       if (error.name === 'InvalidStateError') {
-        message.error(
+        toast.error(
           'Error: Authenticator was probably already registered by user',
         )
       } else {
-        message.error(error.message)
+        toast.error(error.message)
       }
     }
 
@@ -31,12 +32,12 @@ class AuthnUtilsStatic {
       })
       const verificationResp = await authApi.verifyPasskeyRegister(attResp)
       if (verificationResp.verified) {
-        message.success('Successfully registered authenticator')
+        toast.success('Successfully registered authenticator')
       } else {
-        message.error('Error: Could not verify authenticator')
+        toast.error('Error: Could not verify authenticator')
       }
     } catch {
-      message.error('Error: Could not verify authenticator')
+      toast.error('Error: Could not verify authenticator')
     }
   }
 
@@ -49,7 +50,7 @@ class AuthnUtilsStatic {
     } catch (error: any) {
       // Some basic error handling
 
-      message.error(error.message)
+      toast.error(error.message)
     }
 
     if (test) {
@@ -58,13 +59,13 @@ class AuthnUtilsStatic {
     try {
       const verificationResp = await authApi.verifyPasskeyAuth(attResp)
       if (verificationResp.verified) {
-        message.success('Successfully authentication by passkey')
+        toast.success('Successfully authentication by passkey')
       } else {
-        message.error('Error: Could not verify authenticator')
+        toast.error('Error: Could not verify authenticator')
       }
       return verificationResp
     } catch (error: any) {
-      message.error(error.message)
+      toast.error(error.message)
     }
   }
 }

@@ -1,6 +1,7 @@
 import { Copy as MingcuteCopy2Line } from 'lucide-vue-next'
 import { NButton, NIcon } from 'naive-ui'
 import { defineComponent } from 'vue'
+import { toast } from 'vue-sonner'
 
 export const CopyTextButton = defineComponent({
   props: {
@@ -15,7 +16,7 @@ export const CopyTextButton = defineComponent({
         size="tiny"
         onClick={() => {
           navigator.clipboard.writeText(props.text)
-          message.success('Copied to clipboard')
+          toast.success('Copied to clipboard')
         }}
         text
         class={'ml-2'}

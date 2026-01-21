@@ -31,6 +31,7 @@ import {
   watchEffect,
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { toast } from 'vue-sonner'
 import type { CommentModel } from '~/models/comment'
 import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 
@@ -113,7 +114,7 @@ const ManageComment = defineComponent(() => {
     mutationFn: ({ id, text }: { id: string; text: string }) =>
       commentsApi.masterReply(id, text),
     onSuccess: () => {
-      message.success('回复成功')
+      toast.success('回复成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.comments.all })
     },
   })
@@ -134,7 +135,7 @@ const ManageComment = defineComponent(() => {
       }
     },
     onSuccess: () => {
-      message.success('操作成功')
+      toast.success('操作成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.comments.all })
     },
   })
@@ -149,7 +150,7 @@ const ManageComment = defineComponent(() => {
       }
     },
     onSuccess: () => {
-      message.success('删除成功')
+      toast.success('删除成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.comments.all })
     },
   })

@@ -1,4 +1,5 @@
 import { computed, toValue } from 'vue'
+import { toast } from 'vue-sonner'
 import type {
   CreateProjectData,
   GetProjectsParams,
@@ -43,7 +44,7 @@ export const useCreateProjectMutation = () => {
   return useMutation({
     mutationFn: (data: CreateProjectData) => projectsApi.create(data),
     onSuccess: () => {
-      window.message.success('创建成功')
+      toast.success('创建成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.projects.all })
     },
   })
@@ -58,7 +59,7 @@ export const useUpdateProjectMutation = () => {
     mutationFn: ({ id, data }: { id: string; data: UpdateProjectData }) =>
       projectsApi.update(id, data),
     onSuccess: (_, { id }) => {
-      window.message.success('修改成功')
+      toast.success('修改成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.projects.detail(id) })
       queryClient.invalidateQueries({ queryKey: queryKeys.projects.lists() })
     },
@@ -73,7 +74,7 @@ export const useDeleteProjectMutation = () => {
   return useMutation({
     mutationFn: projectsApi.delete,
     onSuccess: () => {
-      window.message.success('删除成功')
+      toast.success('删除成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.projects.all })
     },
   })

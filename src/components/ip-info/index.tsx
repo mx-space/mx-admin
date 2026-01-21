@@ -1,8 +1,7 @@
 import { NPopover } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import type { PopoverTrigger } from 'naive-ui'
-import type { VNode } from 'vue'
-import type { PropType } from 'vue'
+import type { PropType, VNode } from 'vue'
 
 import { systemApi } from '~/api'
 

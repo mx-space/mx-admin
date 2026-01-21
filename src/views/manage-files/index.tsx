@@ -15,6 +15,7 @@ import {
   NUploadDragger,
 } from 'naive-ui'
 import { defineComponent, onMounted, ref, watch } from 'vue'
+import { toast } from 'vue-sonner'
 import type { UploadFileInfo } from 'naive-ui'
 
 import { filesApi } from '~/api'
@@ -65,7 +66,7 @@ export default defineComponent({
         if (data.file.file?.type.startsWith('image')) {
           return true
         }
-        message.error('只能上传图片文件，请重新上传')
+        toast.error('只能上传图片文件，请重新上传')
       }
 
       return true
@@ -166,7 +167,7 @@ export default defineComponent({
                         filesApi
                           .deleteByTypeAndName(type.value, row.name)
                           .then(() => {
-                            message.success('删除成功')
+                            toast.success('删除成功')
                             list.value = list.value.filter(
                               (item) => item.name !== row.name,
                             )
@@ -226,11 +227,11 @@ export default defineComponent({
                 const xhr = e.event?.target as XMLHttpRequest
                 e.file.status = 'error'
                 if (!xhr) {
-                  message.warning('网络异常')
+                  toast.warning('网络异常')
                   return e.file
                 }
                 const { message: errMessage } = JSON.parse(xhr.responseText)
-                message.warning(errMessage)
+                toast.warning(errMessage)
                 return e.file
               }}
             >

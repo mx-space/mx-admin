@@ -1,6 +1,7 @@
 import { format } from 'date-fns'
 import { NButton, NPopconfirm, NSpace } from 'naive-ui'
 import { defineComponent, onMounted } from 'vue'
+import { toast } from 'vue-sonner'
 
 import { healthApi } from '~/api/health'
 import { Table } from '~/components/table'
@@ -26,7 +27,7 @@ export default defineComponent({
     })
     const executeCron = async (name: string, niceName: string) => {
       await healthApi.runCron(name)
-      message.success(`${niceName} 已开始执行`)
+      toast.success(`${niceName} 已开始执行`)
       // TODO: Implement task status polling if needed
     }
     return () => (

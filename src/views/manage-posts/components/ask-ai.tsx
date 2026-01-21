@@ -6,10 +6,10 @@ import {
   NPopover,
   NSelect,
   NSpace,
-  useMessage,
 } from 'naive-ui'
 import { OpenAI } from 'openai'
 import { defineComponent, ref } from 'vue'
+import { toast } from 'vue-sonner'
 import type { PropType } from 'vue'
 
 import { useStorage } from '@vueuse/core'
@@ -52,7 +52,6 @@ CONCISE SUMMARY:`,
     ]
     const isOtherModel = ref(false)
     isOtherModel.value = !default_models.some((m) => m.value === model.value)
-    const message = useMessage()
     const isLoading = ref(false)
     const handleAskAI = async () => {
       const ai = new OpenAI({
@@ -62,7 +61,7 @@ CONCISE SUMMARY:`,
       })
 
       const finalPrompt = prompt.value.replace('{text}', props.article)
-      const messageIns = message.loading('AI 正在生成摘要...')
+      const messageIns = toast.loading('AI 正在生成摘要...')
       isLoading.value = true
       const response = await ai.chat.completions
         .create({
@@ -77,8 +76,8 @@ CONCISE SUMMARY:`,
           stream: false,
         })
         .catch((error) => {
-          messageIns.destroy()
-          message.error(`AI 生成摘要失败： ${error.message}`)
+          toast.dismiss(messageIns)
+          toast.error(`AI 生成摘要失败： ${error.message}`)
         })
         .finally(() => {
           isLoading.value = false
@@ -87,13 +86,13 @@ CONCISE SUMMARY:`,
       if (!response) return
       const summary = response.choices[0].message?.content as string
       if (!summary) {
-        messageIns.destroy()
-        message.error('AI 生成摘要失败')
+        toast.dismiss(messageIns)
+        toast.error('AI 生成摘要失败')
         return
       }
 
-      messageIns.destroy()
-      message.success(`AI 生成的摘要： ${summary}`)
+      toast.dismiss(messageIns)
+      toast.success(`AI 生成的摘要： ${summary}`)
       props.onSuccess(summary)
     }
 

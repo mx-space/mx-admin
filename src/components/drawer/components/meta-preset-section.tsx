@@ -15,6 +15,7 @@ import {
   NTabs,
 } from 'naive-ui'
 import { defineComponent, onMounted, ref, watch } from 'vue'
+import { toast } from 'vue-sonner'
 import type { MetaPresetField, MetaPresetScope } from '~/models/meta-preset'
 import type { PropType } from 'vue'
 
@@ -286,7 +287,7 @@ export const MetaPresetSection = defineComponent({
                 )
                 showJSONEditorModal.value = false
               } catch (error: any) {
-                message.error(error.message)
+                toast.error(error.message)
               }
             }}
           />

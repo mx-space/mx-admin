@@ -10,7 +10,7 @@ import {
   Trash2 as TrashIcon,
   User as UserIcon,
 } from 'lucide-vue-next'
-import { NButton, NInput, NSelect, NSkeleton, useMessage } from 'naive-ui'
+import { NButton, NInput, NSelect, NSkeleton } from 'naive-ui'
 import {
   computed,
   defineComponent,
@@ -20,6 +20,7 @@ import {
   unref,
   watch,
 } from 'vue'
+import { toast } from 'vue-sonner'
 import type { UserModel } from '~/models/user'
 
 import { useMutation } from '@tanstack/vue-query'
@@ -52,8 +53,6 @@ export const TabUser = defineComponent(() => {
   onMounted(async () => {
     await fetchMaster()
   })
-
-  const message = useMessage()
   const diff = computed(() => deepDiff(origin, data.value))
   const hasChanges = computed(() => !isEmpty(diff.value))
 
@@ -63,7 +62,7 @@ export const TabUser = defineComponent(() => {
   const updateMutation = useMutation({
     mutationFn: userApi.updateMaster,
     onSuccess: async () => {
-      message.success('保存成功')
+      toast.success('保存成功')
       await fetchMaster()
     },
   })

@@ -6,14 +6,7 @@ import {
   SlidersHorizontal as SlidersHIcon,
   Send as TelegramPlaneIcon,
 } from 'lucide-vue-next'
-import {
-  NButton,
-  NDatePicker,
-  NInput,
-  NSelect,
-  NSpace,
-  useMessage,
-} from 'naive-ui'
+import { NButton, NDatePicker, NInput, NSelect, NSpace } from 'naive-ui'
 import {
   computed,
   defineComponent,
@@ -25,6 +18,7 @@ import {
   watchEffect,
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { toast } from 'vue-sonner'
 import type { TopicModel } from '@mx-space/api-client'
 import type { CreateNoteData } from '~/api/notes'
 import type { Coordinate, NoteModel } from '~/models/note'
@@ -295,9 +289,6 @@ const NoteWriteView = defineComponent(() => {
   })
 
   const drawerShow = ref(false)
-
-  const message = useMessage()
-
   const enablePassword = computed(() => typeof data.password === 'string')
 
   const handleSubmit = async () => {
@@ -333,12 +324,12 @@ const NoteWriteView = defineComponent(() => {
       }
       const $id = id.value as string
       await notesApi.update($id, { ...parseDataToPayload(), draftId })
-      message.success('修改成功')
+      toast.success('修改成功')
     } else {
       const payload = parseDataToPayload()
       // create
       await notesApi.create({ ...payload, draftId } as CreateNoteData)
-      message.success('发布成功')
+      toast.success('发布成功')
     }
 
     await router.push({ name: RouteName.ViewNote, hash: '|publish' })

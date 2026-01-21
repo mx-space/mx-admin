@@ -1,3 +1,5 @@
+import { toast } from 'vue-sonner'
+
 import { useMutation, useQuery } from '@tanstack/vue-query'
 
 import { aggregateApi } from '~/api/aggregate'
@@ -91,7 +93,7 @@ export const useCleanCacheMutation = () => {
   return useMutation({
     mutationFn: aggregateApi.cleanCache,
     onSuccess: () => {
-      window.message.success('缓存已清理')
+      toast.success('缓存已清理')
     },
   })
 }
@@ -103,7 +105,7 @@ export const useCleanRedisMutation = () => {
   return useMutation({
     mutationFn: aggregateApi.cleanRedis,
     onSuccess: () => {
-      window.message.success('Redis 已清理')
+      toast.success('Redis 已清理')
     },
   })
 }

@@ -3,6 +3,7 @@ import { AnsiUp } from 'ansi_up'
 import { EventSourcePolyfill } from 'event-source-polyfill'
 import { NCard, NModal } from 'naive-ui'
 import { defineComponent, ref, watch } from 'vue'
+import { toast } from 'vue-sonner'
 
 import { getToken } from '~/utils'
 
@@ -49,7 +50,7 @@ export const ShellOutputNormal = defineComponent({
         event.onerror = (e: any) => {
           event.close()
           if (e?.data) {
-            message.error(e.data)
+            toast.error(e.data)
           } else {
             console.error(e)
           }

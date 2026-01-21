@@ -4,13 +4,7 @@ import {
   SlidersHorizontal as SlidersHIcon,
   Send as TelegramPlaneIcon,
 } from 'lucide-vue-next'
-import {
-  NDynamicTags,
-  NInput,
-  NInputNumber,
-  NSelect,
-  useMessage,
-} from 'naive-ui'
+import { NDynamicTags, NInput, NInputNumber, NSelect } from 'naive-ui'
 import {
   computed,
   defineComponent,
@@ -21,6 +15,7 @@ import {
   watchEffect,
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { toast } from 'vue-sonner'
 import type { CategoryModel } from '~/models/category'
 import type { PostModel } from '~/models/post'
 import type { WriteBaseType } from '~/shared/types/base'
@@ -280,9 +275,6 @@ const PostWriteView = defineComponent(() => {
   })
 
   const drawerShow = ref(false)
-
-  const message = useMessage()
-
   const handleSubmit = async () => {
     const payload = {
       ...data,
@@ -301,11 +293,11 @@ const PostWriteView = defineComponent(() => {
       }
       const $id = id.value as string
       await postsApi.update($id, payload)
-      message.success('修改成功')
+      toast.success('修改成功')
     } else {
       // create
       await postsApi.create(payload)
-      message.success('发布成功')
+      toast.success('发布成功')
     }
 
     await router.push({ name: RouteName.ViewPost, hash: '|publish' })

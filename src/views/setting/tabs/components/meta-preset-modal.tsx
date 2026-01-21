@@ -17,6 +17,7 @@ import {
   NSwitch,
 } from 'naive-ui'
 import { defineComponent, nextTick, reactive, ref, watch } from 'vue'
+import { toast } from 'vue-sonner'
 import type {
   CreateMetaPresetDto,
   MetaFieldType,
@@ -194,7 +195,7 @@ export const MetaPresetModal = defineComponent({
     const createMutation = useMutation({
       mutationFn: (data: CreateMetaPresetDto) => metaPresetsApi.create(data),
       onSuccess: (data) => {
-        message.success('创建成功')
+        toast.success('创建成功')
         props.onSubmit?.(data)
         resetPresetData()
       },
@@ -210,7 +211,7 @@ export const MetaPresetModal = defineComponent({
         data: Partial<CreateMetaPresetDto>
       }) => metaPresetsApi.update(id, data),
       onSuccess: (data) => {
-        message.success('修改成功')
+        toast.success('修改成功')
         props.onSubmit?.(data)
         resetPresetData()
       },

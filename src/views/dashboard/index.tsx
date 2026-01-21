@@ -19,17 +19,7 @@ import {
   RefreshCw as RefreshIcon,
   TrendingUp as TrendingUpIcon,
 } from 'lucide-vue-next'
-import {
-  NButton,
-  NElement,
-  NGi,
-  NGrid,
-  NH1,
-  NIcon,
-  NP,
-  useMessage,
-  useNotification,
-} from 'naive-ui'
+import { NButton, NElement, NGi, NGrid, NH1, NIcon, NP } from 'naive-ui'
 import {
   defineComponent,
   onBeforeMount,
@@ -39,6 +29,7 @@ import {
   watchEffect,
 } from 'vue'
 import { useRouter } from 'vue-router'
+import { toast } from 'vue-sonner'
 import type { Stat } from '~/models/stat'
 import type { PropType, VNode } from 'vue'
 
@@ -279,9 +270,6 @@ export const DashBoardView = defineComponent({
     onBeforeMount(() => {
       fetchStat()
     })
-
-    const message = useMessage()
-
     const userStore = useStoreRef(UserStore)
     const router = useRouter()
 
@@ -580,7 +568,7 @@ export const DashBoardView = defineComponent({
                   name: '清除 API 缓存',
                   onClick: () => {
                     aggregateApi.cleanCache().then(() => {
-                      message.success('清除成功')
+                      toast.success('清除成功')
                     })
                   },
                 },
@@ -588,7 +576,7 @@ export const DashBoardView = defineComponent({
                   name: '清除数据缓存',
                   onClick: () => {
                     aggregateApi.cleanRedis().then(() => {
-                      message.success('清除成功')
+                      toast.success('清除成功')
                     })
                   },
                 },
@@ -607,7 +595,6 @@ export const DashBoardView = defineComponent({
 const AppIF = defineComponent({
   setup() {
     const { app } = useStoreRef(AppStore)
-    const notice = useNotification()
     const versionMap = ref({} as { admin: string; system: string })
     const closedTips = useStorage('closed-tips', {
       dashboard: null as string | null,
@@ -635,40 +622,14 @@ const AppIF = defineComponent({
         isNewerVersion(PKG.version, dashboard) &&
         closedTips.value.dashboard !== dashboard
       ) {
-        const $notice = notice.info({
-          title: '管理后台有新版本可用',
-          content: () => (
-            <div>
-              <p>{`当前版本：${PKG.version}，最新版本：${dashboard}`}</p>
-              <div class={'space-x-2 text-right'}>
-                <NButton
-                  size="small"
-                  onClick={() => {
-                    openUpdateModal({
-                      version: dashboard,
-                      repo: 'mx-admin',
-                      title: '[管理中台] 更新详情',
-                    })
-                  }}
-                >
-                  查看详情
-                </NButton>
-                <NButton
-                  type="primary"
-                  size="small"
-                  onClick={() => {
-                    handleUpdate()
-                    $notice.destroy()
-                  }}
-                >
-                  立即更新
-                </NButton>
-              </div>
-            </div>
-          ),
-          closable: true,
-          onClose: () => {
-            closedTips.value.dashboard = dashboard
+        toast.info(`管理后台有新版本：${PKG.version} → ${dashboard}`, {
+          duration: 10000,
+          action: {
+            label: '更新',
+            onClick: () => {
+              handleUpdate()
+              closedTips.value.dashboard = dashboard
+            },
           },
         })
       }
@@ -685,10 +646,7 @@ const AppIF = defineComponent({
       }
 
       if (app.value?.version.startsWith('demo')) {
-        notice.info({
-          title: 'Demo Mode',
-          content: '当前处于演示模式，部分功能可能受到限制',
-        })
+        toast.info('Demo Mode - 当前处于演示模式，部分功能可能受到限制')
         return
       }
 
@@ -699,32 +657,23 @@ const AppIF = defineComponent({
         closedTips.value.system !== versionMap.value.system &&
         isNewerVersion(app.value.version, versionMap.value.system)
       ) {
-        notice.info({
-          title: '系统有新版本可用',
-          content: () => (
-            <div>
-              <p>{`当前版本：${app.value?.version || 'N/A'}，最新版本：${versionMap.value.system}`}</p>
-              <div class={'space-x-2 text-right'}>
-                <NButton
-                  size="small"
-                  onClick={() => {
-                    openUpdateModal({
-                      version: versionMap.value.system,
-                      repo: 'mx-server',
-                      title: '[系统] 更新详情',
-                    })
-                  }}
-                >
-                  查看详情
-                </NButton>
-              </div>
-            </div>
-          ),
-          closable: true,
-          onClose: () => {
-            closedTips.value.system = versionMap.value.system
+        toast.info(
+          `系统有新版本：${app.value?.version || 'N/A'} → ${versionMap.value.system}`,
+          {
+            duration: 10000,
+            action: {
+              label: '查看',
+              onClick: () => {
+                openUpdateModal({
+                  version: versionMap.value.system,
+                  repo: 'mx-server',
+                  title: '[系统] 更新详情',
+                })
+                closedTips.value.system = versionMap.value.system
+              },
+            },
           },
-        })
+        )
       }
     })
 

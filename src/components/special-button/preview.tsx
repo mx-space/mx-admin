@@ -10,6 +10,7 @@ import {
   watch,
   watchEffect,
 } from 'vue'
+import { toast } from 'vue-sonner'
 import type { PropType } from 'vue'
 
 import { optionsApi } from '~/api'
@@ -108,7 +109,7 @@ export const HeaderPreviewButton = defineComponent({
         iframeRef.value = null
       }
       if (!forkWindow) {
-        message.error('打开预览失败')
+        toast.error('打开预览失败')
         return
       }
 

@@ -1,4 +1,5 @@
 import { computed, toValue } from 'vue'
+import { toast } from 'vue-sonner'
 import type {
   CreateLinkData,
   GetLinksParams,
@@ -51,7 +52,7 @@ export const useCreateLinkMutation = () => {
   return useMutation({
     mutationFn: (data: CreateLinkData) => linksApi.create(data),
     onSuccess: () => {
-      window.message.success('创建成功')
+      toast.success('创建成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.links.all })
     },
   })
@@ -66,7 +67,7 @@ export const useUpdateLinkMutation = () => {
     mutationFn: ({ id, data }: { id: string; data: UpdateLinkData }) =>
       linksApi.update(id, data),
     onSuccess: (_, { id }) => {
-      window.message.success('修改成功')
+      toast.success('修改成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.links.detail(id) })
       queryClient.invalidateQueries({ queryKey: queryKeys.links.lists() })
       queryClient.invalidateQueries({ queryKey: queryKeys.links.stateCount() })
@@ -96,7 +97,7 @@ export const useDeleteLinkMutation = () => {
   return useMutation({
     mutationFn: linksApi.delete,
     onSuccess: () => {
-      window.message.success('删除成功')
+      toast.success('删除成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.links.all })
     },
   })
@@ -109,7 +110,7 @@ export const useCheckLinkHealthMutation = () => {
   return useMutation({
     mutationFn: linksApi.checkHealth,
     onSuccess: () => {
-      window.message.success('检查完成')
+      toast.success('检查完成')
     },
   })
 }

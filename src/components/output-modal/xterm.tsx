@@ -1,6 +1,7 @@
 import { EventSourcePolyfill } from 'event-source-polyfill'
 import { NCard, NModal, NSpin } from 'naive-ui'
 import { defineComponent, ref, watch } from 'vue'
+import { toast } from 'vue-sonner'
 import type { Terminal } from '@xterm/xterm'
 
 // 展示 Shell 输出的 xterm
@@ -50,7 +51,7 @@ export const ShellOutputXterm = defineComponent({
         event.onerror = (e: any) => {
           event.close()
           if (e?.data) {
-            message.error(e.data)
+            toast.error(e.data)
           } else {
             console.error(e)
           }

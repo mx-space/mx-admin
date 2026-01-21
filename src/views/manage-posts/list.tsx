@@ -10,15 +10,7 @@ import {
   ThumbsUp as ThumbsUpIcon,
   Trash2,
 } from 'lucide-vue-next'
-import {
-  NButton,
-  NIcon,
-  NInput,
-  NPopconfirm,
-  NPopover,
-  NSpace,
-  useMessage,
-} from 'naive-ui'
+import { NButton, NIcon, NInput, NPopconfirm, NPopover, NSpace } from 'naive-ui'
 import {
   computed,
   defineComponent,
@@ -28,6 +20,7 @@ import {
   watchEffect,
 } from 'vue'
 import { RouterLink } from 'vue-router'
+import { toast } from 'vue-sonner'
 import type {
   FilterOption,
   FilterState,
@@ -197,8 +190,6 @@ export const ManagePostListView = defineComponent({
   name: 'PostList',
   setup() {
     const queryClient = useQueryClient()
-    const message = useMessage()
-
     // 搜索关键词
     const searchKeyword = ref('')
     const debouncedSearch = debouncedRef(searchKeyword, 300)
@@ -263,7 +254,7 @@ export const ManagePostListView = defineComponent({
     const deleteMutation = useMutation({
       mutationFn: postsApi.delete,
       onSuccess: () => {
-        message.success('删除成功')
+        toast.success('删除成功')
         queryClient.invalidateQueries({ queryKey: queryKeys.posts.all })
       },
     })
@@ -287,9 +278,9 @@ export const ManagePostListView = defineComponent({
         // 乐观更新
         const item = data.value.find((i) => i.id === id)
         if (item) item.isPublished = newStatus
-        message.success(newStatus ? '已发布' : '已设为草稿')
+        toast.success(newStatus ? '已发布' : '已设为草稿')
       } catch {
-        message.error('操作失败')
+        toast.error('操作失败')
       }
     }
 
@@ -451,7 +442,7 @@ export const ManagePostListView = defineComponent({
                   }
                   onSubmit={async (v) => {
                     await postsApi.patch(row.id, { categoryId: v })
-                    message.success('修改成功')
+                    toast.success('修改成功')
                     data.value.find((i) => i.id === row.id)!.categoryId = v
                   }}
                   type="select"
@@ -599,7 +590,7 @@ export const ManagePostListView = defineComponent({
 
               for (const s of status) {
                 if (s.status === 'rejected') {
-                  message.success(`删除失败，${(s.reason as Error).message}`)
+                  toast.success(`删除失败，${(s.reason as Error).message}`)
                 }
               }
 
@@ -620,11 +611,11 @@ export const ManagePostListView = defineComponent({
                     postsApi.patch(id as string, { isPublished: true }),
                   ),
                 )
-                message.success('批量发布成功')
+                toast.success('批量发布成功')
                 queryClient.invalidateQueries({ queryKey: queryKeys.posts.all })
                 checkedRowKeys.value = []
               } catch (_error) {
-                message.error('批量发布失败')
+                toast.error('批量发布失败')
               }
             }}
           />
@@ -641,11 +632,11 @@ export const ManagePostListView = defineComponent({
                     postsApi.patch(id as string, { isPublished: false }),
                   ),
                 )
-                message.success('批量设置草稿成功')
+                toast.success('批量设置草稿成功')
                 queryClient.invalidateQueries({ queryKey: queryKeys.posts.all })
                 checkedRowKeys.value = []
               } catch (_error) {
-                message.error('批量设置草稿失败')
+                toast.error('批量设置草稿失败')
               }
             }}
           />

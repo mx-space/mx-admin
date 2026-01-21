@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,300;1,300&display=swap');
+@import 'vue-sonner/style.css';
 
 body,
 html {
@@ -67,12 +68,127 @@ button:where(:not(.n-button):not([class*='n-'])) {
   @apply z-100;
 }
 
-.n-message {
-  @apply !rounded-full;
+/* vue-sonner toast 样式 - Vercel Design System */
+[data-sonner-toaster] {
+  font-family: var(--sans-font) !important;
+  --width: 356px;
 }
 
-.n-notification-main-footer {
-  @apply !block;
+/* Toast 基础样式 */
+[data-sonner-toast].sonner-toast {
+  @apply !rounded-xl !border-0 !p-4;
+  font-family: var(--sans-font) !important;
+  --normal-bg: white;
+  --normal-border: transparent;
+}
+
+/* Light mode */
+html:not(.dark) [data-sonner-toast].sonner-toast {
+  @apply !bg-white !text-neutral-900;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.04),
+    0 4px 6px -1px rgba(0, 0, 0, 0.06),
+    0 10px 15px -3px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Dark mode */
+html.dark [data-sonner-toast].sonner-toast {
+  @apply !bg-neutral-900 !text-neutral-100;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 4px 6px -1px rgba(0, 0, 0, 0.3),
+    0 10px 15px -3px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* 成功状态图标 */
+[data-sonner-toast][data-type='success'] [data-icon] svg {
+  @apply !text-emerald-500;
+}
+
+/* 错误状态图标 */
+[data-sonner-toast][data-type='error'] [data-icon] svg {
+  @apply !text-red-500;
+}
+
+/* 警告状态图标 */
+[data-sonner-toast][data-type='warning'] [data-icon] svg {
+  @apply !text-amber-500;
+}
+
+/* 信息状态图标 */
+[data-sonner-toast][data-type='info'] [data-icon] svg {
+  @apply !text-blue-500;
+}
+
+/* 加载状态图标 */
+[data-sonner-toast][data-type='loading'] [data-icon] svg {
+  @apply !text-neutral-400;
+}
+
+/* Toast 标题 */
+.sonner-title {
+  @apply !text-sm !font-medium !leading-5;
+}
+
+html:not(.dark) .sonner-title {
+  @apply !text-neutral-900;
+}
+
+html.dark .sonner-title {
+  @apply !text-neutral-100;
+}
+
+/* Toast 描述 */
+.sonner-description {
+  @apply !text-sm !leading-5;
+}
+
+html:not(.dark) .sonner-description {
+  @apply !text-neutral-500;
+}
+
+html.dark .sonner-description {
+  @apply !text-neutral-400;
+}
+
+/* Toast 关闭按钮 */
+[data-sonner-toast][data-styled='true'] [data-close-button] {
+  --toast-close-button-transform: none !important;
+  @apply !right-2 !top-2 !rounded-md !border-0 !bg-transparent;
+}
+
+html:not(.dark) [data-sonner-toast] [data-close-button] {
+  @apply !text-neutral-400 hover:!bg-neutral-100 hover:!text-neutral-600;
+}
+
+html.dark [data-sonner-toast] [data-close-button] {
+  @apply !text-neutral-500 hover:!bg-neutral-800 hover:!text-neutral-300;
+}
+
+/* Toast Action 按钮 */
+.sonner-action-button {
+  @apply !rounded-lg !px-3 !py-1.5 !text-sm !font-medium !transition-colors;
+}
+
+html:not(.dark) .sonner-action-button {
+  @apply !bg-neutral-900 !text-white hover:!bg-neutral-700;
+}
+
+html.dark .sonner-action-button {
+  @apply !bg-white !text-neutral-900 hover:!bg-neutral-200;
+}
+
+/* Cancel 按钮样式 */
+.sonner-cancel-button {
+  @apply !rounded-lg !px-3 !py-1.5 !text-sm !font-medium !transition-colors;
+}
+
+html:not(.dark) .sonner-cancel-button {
+  @apply !bg-neutral-100 !text-neutral-700 hover:!bg-neutral-200;
+}
+
+html.dark .sonner-cancel-button {
+  @apply !bg-neutral-800 !text-neutral-300 hover:!bg-neutral-700;
 }
 
 .modal-card {
@@ -239,8 +355,6 @@ html.dark .n-modal .n-card {
 .n-modal,
 .n-dialog,
 .n-drawer,
-.n-message,
-.n-notification,
 .n-card,
 .n-collapse,
 .n-collapse-item,

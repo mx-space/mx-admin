@@ -1,6 +1,7 @@
 import { MapPin as LocationIcon } from 'lucide-vue-next'
-import { NButton, useMessage } from 'naive-ui'
+import { NButton } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
+import { toast } from 'vue-sonner'
 import type { Amap, Regeocode } from '~/models/amap'
 import type { PropType } from 'vue'
 
@@ -18,7 +19,6 @@ export const GetLocationButton = defineComponent({
     },
   },
   setup(props) {
-    const message = useMessage()
     const loading = ref(false)
     const handleGetLocation = async () => {
       const GetGeo = () =>
@@ -55,13 +55,13 @@ export const GetLocationButton = defineComponent({
           console.error(error)
 
           if (error.code == 2) {
-            message.error('获取定位失败，连接超时')
+            toast.error('获取定位失败，连接超时')
           } else {
-            message.error('定位权限未打开')
+            toast.error('定位权限未打开')
           }
         }
       } else {
-        message.error('浏览器不支持定位')
+        toast.error('浏览器不支持定位')
       }
     }
     return () => (

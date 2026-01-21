@@ -1,6 +1,7 @@
 import { Copy as CopyIcon, Github as GithubIcon } from 'lucide-vue-next'
 import { NButton, NCard, NForm, NFormItem, NInput, NSwitch } from 'naive-ui'
 import { defineComponent, ref, watchEffect } from 'vue'
+import { toast } from 'vue-sonner'
 import type { AuthSocialProviders } from '~/utils/authjs/auth'
 import type { FormInst } from 'naive-ui/lib'
 
@@ -93,16 +94,16 @@ export const createProvideSectionComponent = (
             },
           },
         })
-        message.success('保存成功')
+        toast.success('保存成功')
       }
 
       const copyCallbackUrl = async () => {
         const url = `${API_URL}/auth/callback/${type}`
         try {
           await navigator.clipboard.writeText(url)
-          message.success('已复制到剪贴板')
+          toast.success('已复制到剪贴板')
         } catch {
-          message.error('复制失败')
+          toast.error('复制失败')
         }
       }
 

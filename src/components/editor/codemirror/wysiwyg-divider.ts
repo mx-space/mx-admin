@@ -4,7 +4,7 @@ import type { DecorationSet } from '@codemirror/view'
 import { RangeSetBuilder, StateField } from '@codemirror/state'
 import { Decoration, EditorView, WidgetType } from '@codemirror/view'
 
-const dividerPattern = /^-{3,}\s*$/
+const dividerPattern = /^-{3}\s*$/
 
 class DividerWidget extends WidgetType {
   toDOM(_view: EditorView): HTMLElement {

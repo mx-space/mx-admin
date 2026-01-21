@@ -1,4 +1,5 @@
 import { computed, toValue } from 'vue'
+import { toast } from 'vue-sonner'
 import type { CreatePageData, UpdatePageData } from '~/api/pages'
 import type { MaybeRefOrGetter } from 'vue'
 
@@ -39,7 +40,7 @@ export const useCreatePageMutation = () => {
   return useMutation({
     mutationFn: (data: CreatePageData) => pagesApi.create(data),
     onSuccess: () => {
-      window.message.success('创建成功')
+      toast.success('创建成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.pages.lists() })
     },
   })
@@ -54,7 +55,7 @@ export const useUpdatePageMutation = () => {
     mutationFn: ({ id, data }: { id: string; data: UpdatePageData }) =>
       pagesApi.update(id, data),
     onSuccess: (_, { id }) => {
-      window.message.success('修改成功')
+      toast.success('修改成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.pages.detail(id) })
       queryClient.invalidateQueries({ queryKey: queryKeys.pages.lists() })
     },
@@ -69,7 +70,7 @@ export const useDeletePageMutation = () => {
   return useMutation({
     mutationFn: pagesApi.delete,
     onSuccess: () => {
-      window.message.success('删除成功')
+      toast.success('删除成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.pages.lists() })
     },
   })

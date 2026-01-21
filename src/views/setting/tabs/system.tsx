@@ -9,6 +9,7 @@ import {
   toRaw,
   watch,
 } from 'vue'
+import { toast } from 'vue-sonner'
 import type {
   FormDSL,
   FormGroup,
@@ -111,7 +112,7 @@ export const TabSystem = defineComponent({
         await fetchConfig()
       }
       if (!skipMessage) {
-        message.success('修改成功')
+        toast.success('修改成功')
       }
     }
 
@@ -198,10 +199,10 @@ export const TabSystem = defineComponent({
 
         // Refetch config once after all saves
         await fetchConfig()
-        message.success(`已保存 ${sectionKeys.length} 项修改`)
+        toast.success(`已保存 ${sectionKeys.length} 项修改`)
       } catch (error: any) {
         console.error('Failed to save:', error)
-        message.error(error?.message || '保存失败，请重试')
+        toast.error(error?.message || '保存失败，请重试')
       }
     }
 

@@ -1,8 +1,8 @@
 import { omit } from 'es-toolkit/compat'
 import { dump, load } from 'js-yaml'
 import JSON5 from 'json5'
-import { useMessage } from 'naive-ui'
 import { computed, reactive, ref, watch } from 'vue'
+import { toast } from 'vue-sonner'
 import type { Ref } from 'vue'
 
 import { snippetsApi } from '~/api'
@@ -14,8 +14,6 @@ import {
 } from '../../../../models/snippet'
 
 export function useSnippetEditor(selectedId: Ref<string | null>) {
-  const message = useMessage()
-
   const editData = ref<SnippetModel>(new SnippetModel())
 
   // Type to raw value mapping for format conversion
@@ -134,7 +132,7 @@ export function useSnippetEditor(selectedId: Ref<string | null>) {
       try {
         return JSON.stringify(JSON.parse(text), null, 0)
       } catch {
-        message.error('JSON 格式错误')
+        toast.error('JSON 格式错误')
         return null
       }
     }
@@ -148,7 +146,7 @@ export function useSnippetEditor(selectedId: Ref<string | null>) {
           try {
             load(currentTypeText)
           } catch {
-            message.error('YAML 格式错误')
+            toast.error('YAML 格式错误')
             return null
           }
           return currentTypeText
@@ -173,14 +171,14 @@ export function useSnippetEditor(selectedId: Ref<string | null>) {
       let result: SnippetModel
       if (selectedId.value) {
         result = await snippetsApi.update(selectedId.value, finalData)
-        message.success('更新成功')
+        toast.success('更新成功')
       } else {
         result = await snippetsApi.create(finalData as any)
-        message.success('创建成功')
+        toast.success('创建成功')
       }
       return result
     } catch (error) {
-      message.error('保存失败')
+      toast.error('保存失败')
       return null
     }
   }

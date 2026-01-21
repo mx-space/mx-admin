@@ -6,6 +6,7 @@ import { Plus as AddIcon } from 'lucide-vue-next'
 import { NPagination } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { toast } from 'vue-sonner'
 import type { SayModel } from '~/models/say'
 
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
@@ -49,7 +50,7 @@ const ManageSayListView = defineComponent({
     const deleteMutation = useMutation({
       mutationFn: saysApi.delete,
       onSuccess: () => {
-        message.success('删除成功')
+        toast.success('删除成功')
         queryClient.invalidateQueries({ queryKey: queryKeys.says.all })
       },
     })

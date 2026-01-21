@@ -1,10 +1,8 @@
-import type { MessageApi, useDialog, useNotification } from 'naive-ui'
+import type { useDialog } from 'naive-ui'
 import type { VNodeProps } from 'vue'
 
 declare global {
   export interface Window {
-    message: MessageApi
-    notification: ReturnType<typeof useNotification>
     dialog: ReturnType<typeof useDialog>
     injectData: {
       BASE_API: null | string
@@ -21,11 +19,7 @@ declare global {
     [K: string]: any
   }
 
-  export const message: Omit<MessageApi, 'error'> & {
-    error: (content: ContentType, options?: MessageOptions) => never
-  }
   export const dialog: ReturnType<typeof useDialog>
-  export const notification: ReturnType<typeof useNotification>
 
   export const Fragment: {
     new (): {

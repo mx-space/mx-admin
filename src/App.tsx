@@ -5,16 +5,13 @@ import {
   NConfigProvider,
   NDialogProvider,
   NElement,
-  NMessageProvider,
-  NNotificationProvider,
   useDialog,
-  useMessage,
-  useNotification,
   useThemeVars,
   zhCN,
 } from 'naive-ui'
 import { defineComponent, onMounted, provide, ref, watchEffect } from 'vue'
 import { RouterView } from 'vue-router'
+import { Toaster } from 'vue-sonner'
 import type { VNode } from 'vue'
 
 import { PortalInjectKey } from '~/hooks/use-portal-element'
@@ -32,18 +29,6 @@ const Root = defineComponent({
 
   setup() {
     onMounted(() => {
-      const message = useMessage()
-      const _error = message.error
-      Object.assign(message, {
-        error: (...rest: any[]) => {
-          // @ts-ignore
-          _error.apply(this, rest)
-          throw rest[0]
-        },
-      })
-
-      window.message = message
-      window.notification = useNotification()
       window.dialog = useDialog()
     })
     const $portalElement = ref<VNode | null>(null)
@@ -89,16 +74,29 @@ const App = defineComponent({
           }}
           theme={isCurrentDark ? darkTheme : lightTheme}
         >
-          <NNotificationProvider>
-            <NMessageProvider>
-              <NDialogProvider>
-                <AccentColorInjector />
-                <NElement>
-                  <Root />
-                </NElement>
-              </NDialogProvider>
-            </NMessageProvider>
-          </NNotificationProvider>
+          <Toaster
+            position="bottom-right"
+            theme={isCurrentDark ? 'dark' : 'light'}
+            closeButton
+            closeButtonPosition="top-right"
+            gap={12}
+            toastOptions={{
+              classes: {
+                toast: 'sonner-toast',
+                title: 'sonner-title',
+                description: 'sonner-description',
+                actionButton: 'sonner-action-button',
+                cancelButton: 'sonner-cancel-button',
+                closeButton: 'sonner-close-button',
+              },
+            }}
+          />
+          <NDialogProvider>
+            <AccentColorInjector />
+            <NElement>
+              <Root />
+            </NElement>
+          </NDialogProvider>
         </NConfigProvider>
       )
     }

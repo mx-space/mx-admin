@@ -9,6 +9,7 @@ import {
   NInputNumber,
 } from 'naive-ui'
 import { computed, defineComponent, onMounted, ref } from 'vue'
+import { toast } from 'vue-sonner'
 import type { Image as ImageModel } from '~/models/base'
 import type { PropType } from 'vue'
 
@@ -158,7 +159,7 @@ export const ImageDetailSection = defineComponent({
       fetchImageTasks.map((task) => {
         if (task.status === 'fulfilled') nextImageDimensions.push(task.value)
         else {
-          message.warning(
+          toast.warning(
             ` 获取图片信息失败：${task.reason.src}: ${task.reason.err}`,
           )
         }

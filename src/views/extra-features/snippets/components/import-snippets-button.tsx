@@ -23,6 +23,7 @@ import {
   unref,
   watchEffect,
 } from 'vue'
+import { toast } from 'vue-sonner'
 import type { SnippetModel } from '~/models/snippet'
 import type { PropType } from 'vue'
 
@@ -224,7 +225,7 @@ const ProcessView = defineComponent({
                       ) {
                         const download_url = file.download_url
                         if (!download_url) {
-                          message.error(`获取下载地址失败，${file.name}`)
+                          toast.error(`获取下载地址失败，${file.name}`)
                           return
                         }
                         const text = await fetch(download_url).then((res) =>
@@ -261,7 +262,7 @@ const ProcessView = defineComponent({
             const fileDownloadUrl = fileInfo.download_url
 
             if (!fileDownloadUrl) {
-              message.error('无法获取 package.json 文件的下载地址')
+              toast.error('无法获取 package.json 文件的下载地址')
               return
             }
 
@@ -296,18 +297,18 @@ const ProcessView = defineComponent({
         packages: unref(dependencies),
       }
 
-      const message$ = message.loading('正在导入...', {
+      const message$ = toast.loading('正在导入...', {
         duration: 10e5,
       })
       await snippetsApi.import(payload)
-      message$.destroy()
+      toast.dismiss(message$)
       if (payload.packages.length > 0) {
         // @ts-ignore
         $installDepsComponent.value?.install(payload.packages, () => {
           props.onRootFinish()
         })
       } else {
-        message.success('导入成功')
+        toast.success('导入成功')
         props.onFinish()
       }
     }

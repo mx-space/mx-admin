@@ -10,6 +10,7 @@ import { NButton, NPopconfirm } from 'naive-ui'
 import Sortable from 'sortablejs'
 import { defineComponent, onBeforeUnmount, ref, watchEffect } from 'vue'
 import { RouterLink } from 'vue-router'
+import { toast } from 'vue-sonner'
 import type { PageModel } from '~/models/page'
 import type { PropType } from 'vue'
 
@@ -168,7 +169,7 @@ export const ManagePageListView = defineComponent({
     const deleteMutation = useMutation({
       mutationFn: pagesApi.delete,
       onSuccess: () => {
-        message.success('删除成功')
+        toast.success('删除成功')
         queryClient.invalidateQueries({ queryKey: queryKeys.pages.all })
       },
     })
@@ -177,7 +178,7 @@ export const ManagePageListView = defineComponent({
     const reorderMutation = useMutation({
       mutationFn: pagesApi.reorder,
       onSuccess: () => {
-        message.success('排序成功')
+        toast.success('排序成功')
       },
     })
 

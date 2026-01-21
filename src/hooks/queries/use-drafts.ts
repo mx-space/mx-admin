@@ -1,4 +1,5 @@
 import { computed, toValue } from 'vue'
+import { toast } from 'vue-sonner'
 import type {
   CreateDraftData,
   GetDraftsParams,
@@ -97,7 +98,7 @@ export const useDeleteDraftMutation = () => {
   return useMutation({
     mutationFn: draftsApi.delete,
     onSuccess: () => {
-      window.message.success('删除成功')
+      toast.success('删除成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.drafts.all })
     },
   })
@@ -112,7 +113,7 @@ export const useRestoreDraftVersionMutation = () => {
     mutationFn: ({ id, version }: { id: string; version: number }) =>
       draftsApi.restoreVersion(id, version),
     onSuccess: (_, { id }) => {
-      window.message.success('恢复成功')
+      toast.success('恢复成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.drafts.detail(id) })
       queryClient.invalidateQueries({ queryKey: queryKeys.drafts.history(id) })
     },

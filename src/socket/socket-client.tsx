@@ -1,5 +1,5 @@
-import { NButton, NSpace } from 'naive-ui'
 import io from 'socket.io-client'
+import { toast } from 'vue-sonner'
 import type { NotificationTypes } from './types'
 
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
@@ -12,23 +12,6 @@ import { BrowserNotification } from '~/utils/notification'
 import { configs } from '../configs'
 import { EventTypes } from './types'
 
-const Notification = {
-  get warning() {
-    return window.notification.warning
-  },
-  get warn() {
-    return window.notification.warning
-  },
-  get success() {
-    return window.notification.success
-  },
-  get error() {
-    return window.notification.error
-  },
-  get info() {
-    return window.notification.info
-  },
-}
 export class SocketClient {
   private _socket!: ReturnType<typeof io>
 
@@ -75,28 +58,28 @@ export class SocketClient {
     )
     this.socket.on('connect_error', () => {
       if (__DEV__) {
-        window.message.error('Socket 连接异常')
+        toast.error('Socket 连接异常')
       }
     })
 
     this.socket.io.on('error', () => {
       if (__DEV__) {
-        window.message.error('Socket 连接异常')
+        toast.error('Socket 连接异常')
       }
     })
     this.socket.io.on('reconnect', () => {
       if (__DEV__) {
-        window.message.info('Socket 重连成功')
+        toast.info('Socket 重连成功')
       }
     })
     this.socket.io.on('reconnect_attempt', () => {
       if (__DEV__) {
-        window.message.info('Socket 重连中')
+        toast.info('Socket 重连中')
       }
     })
     this.socket.io.on('reconnect_failed', () => {
       if (__DEV__) {
-        window.message.info('Socket 重连失败')
+        toast.info('Socket 重连失败')
       }
     })
 
@@ -120,7 +103,7 @@ export class SocketClient {
         break
       }
       case EventTypes.GATEWAY_DISCONNECT: {
-        Notification.warning(payload)
+        toast.warning(payload)
         break
       }
       case EventTypes.AUTH_FAILED: {
@@ -132,20 +115,15 @@ export class SocketClient {
         const body = `${payload.author}: ${payload.text}`
         const handler = () => {
           router.push({ name: 'comment' })
-          notice.destroy()
+          toast.dismiss(toastId)
         }
-        const notice = Notification.success({
-          title: '新的评论',
-          content: body,
-          action() {
-            return (
-              <NSpace justify="end">
-                <NButton onClick={handler} type="primary" round ghost>
-                  查看
-                </NButton>
-              </NSpace>
-            )
+        const toastId = toast.success('新的评论', {
+          description: body,
+          action: {
+            label: '查看',
+            onClick: handler,
           },
+          duration: 10000,
         })
 
         this.#notice.notice(`${this.#title} 收到新的评论`, body).then((no) => {
@@ -163,16 +141,16 @@ export class SocketClient {
         break
       }
       case EventTypes.ADMIN_NOTIFICATION: {
-        const { type, message } = payload as {
+        const { type: notificationType, message: msg } = payload as {
           type: NotificationTypes
           message: string
         }
 
-        Notification[type]({ content: message })
+        toast[notificationType](msg)
         break
       }
       case EventTypes.CONTENT_REFRESH: {
-        Notification.warning({ content: '数据库有变动，将在 1 秒后重载页面' })
+        toast.warning('数据库有变动，将在 1 秒后重载页面')
         setTimeout(() => {
           location.reload()
         }, 1000)
@@ -188,20 +166,15 @@ export class SocketClient {
               state: 1,
             },
           })
-          notice.destroy()
+          toast.dismiss(toastId)
         }
-        const notice = Notification.success({
-          title: '新的友链申请',
-          content: sitename,
-          action() {
-            return (
-              <NSpace justify="end">
-                <NButton onClick={handler} type="primary" round ghost>
-                  查看
-                </NButton>
-              </NSpace>
-            )
+        const toastId = toast.success('新的友链申请', {
+          description: sitename,
+          action: {
+            label: '查看',
+            onClick: handler,
           },
+          duration: 10000,
         })
         this.#notice
           .notice(`${this.#title} 收到新的友链申请`, sitename)
@@ -214,7 +187,6 @@ export class SocketClient {
               if (document.hasFocus()) {
                 handler()
               } else {
-                // TODO
                 window.open('/')
               }
             })

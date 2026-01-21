@@ -15,6 +15,7 @@ import {
 import { NButton, NEllipsis, NInput, NPopconfirm, NSpace } from 'naive-ui'
 import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
 import { RouterLink } from 'vue-router'
+import { toast } from 'vue-sonner'
 import type { NoteModel } from '~/models/note'
 import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import type { PropType } from 'vue'
@@ -247,7 +248,7 @@ export const ManageNoteListView = defineComponent({
     const deleteMutation = useMutation({
       mutationFn: notesApi.delete,
       onSuccess: () => {
-        message.success('删除成功')
+        toast.success('删除成功')
         queryClient.invalidateQueries({ queryKey: queryKeys.notes.all })
       },
     })
@@ -263,11 +264,11 @@ export const ManageNoteListView = defineComponent({
       mutationFn: ({ id, isPublished }: { id: string; isPublished: boolean }) =>
         notesApi.patchPublish(id, isPublished),
       onSuccess: (_, { isPublished }) => {
-        message.success(isPublished ? '已发布' : '已设为草稿')
+        toast.success(isPublished ? '已发布' : '已设为草稿')
         queryClient.invalidateQueries({ queryKey: queryKeys.notes.all })
       },
       onError: () => {
-        message.error('操作失败')
+        toast.error('操作失败')
       },
     })
 
@@ -420,7 +421,7 @@ export const ManageNoteListView = defineComponent({
                       id: row.id,
                       data: { mood: v },
                     })
-                    message.success('修改成功')
+                    toast.success('修改成功')
                   }}
                   placeholder="心情"
                 />
@@ -440,7 +441,7 @@ export const ManageNoteListView = defineComponent({
                       id: row.id,
                       data: { weather: v },
                     })
-                    message.success('修改成功')
+                    toast.success('修改成功')
                   }}
                   placeholder="天气"
                 />
@@ -615,7 +616,7 @@ export const ManageNoteListView = defineComponent({
 
               for (const s of status) {
                 if (s.status === 'rejected') {
-                  message.error(`删除失败，${s.reason.message}`)
+                  toast.error(`删除失败，${s.reason.message}`)
                 }
               }
 
@@ -636,11 +637,11 @@ export const ManageNoteListView = defineComponent({
                     notesApi.patchPublish(id as string, true),
                   ),
                 )
-                message.success('批量发布成功')
+                toast.success('批量发布成功')
                 queryClient.invalidateQueries({ queryKey: queryKeys.notes.all })
                 checkedRowKeys.value = []
               } catch (_error) {
-                message.error('批量发布失败')
+                toast.error('批量发布失败')
               }
             }}
           />
@@ -657,11 +658,11 @@ export const ManageNoteListView = defineComponent({
                     notesApi.patchPublish(id as string, false),
                   ),
                 )
-                message.success('批量设置草稿成功')
+                toast.success('批量设置草稿成功')
                 queryClient.invalidateQueries({ queryKey: queryKeys.notes.all })
                 checkedRowKeys.value = []
               } catch (_error) {
-                message.error('批量设置草稿失败')
+                toast.error('批量设置草稿失败')
               }
             }}
           />

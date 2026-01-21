@@ -1,4 +1,5 @@
 import { computed, toValue } from 'vue'
+import { toast } from 'vue-sonner'
 import type { CreateTopicData, UpdateTopicData } from '~/api/topics'
 import type { TopicModel } from '~/models/topic'
 import type { MaybeRefOrGetter } from 'vue'
@@ -40,7 +41,7 @@ export const useCreateTopicMutation = () => {
   return useMutation({
     mutationFn: (data: CreateTopicData) => topicsApi.create(data),
     onSuccess: () => {
-      window.message.success('创建成功')
+      toast.success('创建成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.topics.all })
     },
   })
@@ -55,7 +56,7 @@ export const useUpdateTopicMutation = () => {
     mutationFn: ({ id, data }: { id: string; data: UpdateTopicData }) =>
       topicsApi.update(id, data),
     onSuccess: (_, { id }) => {
-      window.message.success('修改成功')
+      toast.success('修改成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.topics.detail(id) })
       queryClient.invalidateQueries({ queryKey: queryKeys.topics.list() })
     },
@@ -85,7 +86,7 @@ export const useDeleteTopicMutation = () => {
   return useMutation({
     mutationFn: topicsApi.delete,
     onSuccess: () => {
-      window.message.success('删除成功')
+      toast.success('删除成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.topics.all })
     },
   })

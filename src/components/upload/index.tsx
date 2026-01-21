@@ -1,5 +1,6 @@
 import { NUpload } from 'naive-ui'
 import { defineComponent } from 'vue'
+import { toast } from 'vue-sonner'
 import type { UploadOnFinish } from 'naive-ui'
 import type { OnError } from 'naive-ui/es/upload/src/interface'
 import type { PropType } from 'vue'
@@ -35,7 +36,7 @@ export const UploadWrapper = defineComponent({
           onError={
             onError ||
             ((e) => {
-              message.error('上传失败')
+              toast.error('上传失败')
               return e.file
             })
           }

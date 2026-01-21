@@ -4,6 +4,7 @@ import { Send as SendIcon } from 'lucide-vue-next'
 import { NDynamicTags, NForm, NFormItem, NInput } from 'naive-ui'
 import { computed, defineComponent, onMounted, reactive, toRaw } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { toast } from 'vue-sonner'
 import type { IGithubRepo } from '~/external/api/github-repo'
 import type { ProjectModel } from '~/models/project'
 
@@ -83,7 +84,7 @@ const EditProjectView = defineComponent({
           text: project.text.trim(),
         }
       } catch (error) {
-        message.error(error as any)
+        toast.error(error as any)
         throw error
       }
     }
@@ -92,7 +93,7 @@ const EditProjectView = defineComponent({
     const createMutation = useMutation({
       mutationFn: (data: any) => projectsApi.create(data),
       onSuccess: () => {
-        message.success('发布成功')
+        toast.success('发布成功')
         router.push({ name: RouteName.ListProject })
       },
     })
@@ -102,7 +103,7 @@ const EditProjectView = defineComponent({
       mutationFn: ({ id, data }: { id: string; data: any }) =>
         projectsApi.update(id, data),
       onSuccess: () => {
-        message.success('修改成功')
+        toast.success('修改成功')
         router.push({ name: RouteName.ListProject })
       },
     })

@@ -9,7 +9,6 @@ import {
   NSpin,
   NStep,
   NSteps,
-  useMessage,
 } from 'naive-ui'
 import {
   defineComponent,
@@ -21,6 +20,7 @@ import {
   reactive,
   ref,
 } from 'vue'
+import { toast } from 'vue-sonner'
 import type { PropType } from 'vue'
 import type { UserModel } from '../../models/user'
 
@@ -132,7 +132,7 @@ const Step0 = defineComponent({
         const formData = new FormData()
         formData.append('file', file)
         systemApi.restoreFromBackup(formData, 1 << 30).then(() => {
-          message.success('恢复成功，页面将会重载')
+          toast.success('恢复成功，页面将会重载')
           setTimeout(() => {
             location.reload()
           }, 1000)
@@ -252,10 +252,9 @@ const Step2 = defineComponent({
   setup(props) {
     const user = reactive({} as UserModel & { password: string })
     const repassword = ref('')
-    const message = useMessage()
     const handleNext = async () => {
       if (repassword.value !== user.password) {
-        message.error('两次密码不一致')
+        toast.error('两次密码不一致')
         return
       }
       for (const key in user) {

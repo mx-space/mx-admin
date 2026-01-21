@@ -19,6 +19,7 @@ import {
 } from 'naive-ui'
 import { defineComponent, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { toast } from 'vue-sonner'
 import type { DialogReactive } from 'naive-ui'
 import type { FlatOauthData, OauthData } from './providers/oauth'
 
@@ -173,7 +174,7 @@ const Passkey = defineComponent(() => {
           value={setting.value?.disablePasswordLogin}
           onUpdateValue={(v) => {
             if (v && !passkeys.value?.length) {
-              message.error('至少需要一个 Passkey 才能开启这个功能')
+              toast.error('至少需要一个 Passkey 才能开启这个功能')
               return
             }
             updateSetting(v)
@@ -281,7 +282,7 @@ const Oauth = defineComponent(() => {
       const session = await getSession()
 
       if (session) {
-        message.success('验证成功')
+        toast.success('验证成功')
 
         dialog.create({
           title: '设定为主人账户？',

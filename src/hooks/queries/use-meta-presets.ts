@@ -1,4 +1,5 @@
 import { computed, toValue } from 'vue'
+import { toast } from 'vue-sonner'
 import type { MetaPresetQueryParams } from '~/api/meta-presets'
 import type {
   CreateMetaPresetDto,
@@ -46,7 +47,7 @@ export const useCreateMetaPresetMutation = () => {
   return useMutation({
     mutationFn: (data: CreateMetaPresetDto) => metaPresetsApi.create(data),
     onSuccess: () => {
-      window.message.success('创建成功')
+      toast.success('创建成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.metaPresets.all })
     },
   })
@@ -61,7 +62,7 @@ export const useUpdateMetaPresetMutation = () => {
     mutationFn: ({ id, data }: { id: string; data: UpdateMetaPresetDto }) =>
       metaPresetsApi.update(id, data),
     onSuccess: (_, { id }) => {
-      window.message.success('修改成功')
+      toast.success('修改成功')
       queryClient.invalidateQueries({
         queryKey: queryKeys.metaPresets.detail(id),
       })
@@ -78,7 +79,7 @@ export const useDeleteMetaPresetMutation = () => {
   return useMutation({
     mutationFn: metaPresetsApi.delete,
     onSuccess: () => {
-      window.message.success('删除成功')
+      toast.success('删除成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.metaPresets.all })
     },
   })

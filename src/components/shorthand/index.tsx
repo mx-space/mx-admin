@@ -1,5 +1,6 @@
 import { NButton, NInput, NSpace, useDialog } from 'naive-ui'
 import { ref } from 'vue'
+import { toast } from 'vue-sonner'
 import type { RecentlyModel } from '~/models/recently'
 
 import { recentlyApi } from '~/api'
@@ -42,7 +43,7 @@ export const useShorthand = () => {
                       })
                       .then((res) => {
                         quickHandText.value = ''
-                        message.success('保存成功')
+                        toast.success('保存成功')
                         dialog.destroy()
                         resolve(res)
                       })
@@ -103,7 +104,7 @@ export const useShorthand = () => {
                       })
                       .then((res) => {
                         quickHandText.value = ''
-                        message.success('修改成功')
+                        toast.success('修改成功')
                         dialog.destroy()
                         resolve(res)
                       })

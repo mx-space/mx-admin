@@ -1,6 +1,7 @@
 import { CircleCheck as CheckCircleOutlinedIcon } from 'lucide-vue-next'
-import { NGi, useMessage } from 'naive-ui'
+import { NGi } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
+import { toast } from 'vue-sonner'
 
 import { useLocalStorage } from '@vueuse/core'
 
@@ -14,8 +15,6 @@ import { defaultServerlessFunction } from '~/models/snippet'
 export default defineComponent({
   setup() {
     const value = useLocalStorage('debug-serverless', defaultServerlessFunction)
-
-    const message = useMessage()
     const previewRef = ref<HTMLPreElement>()
     const errorMsg = ref('')
     const runTest = async () => {
@@ -26,7 +25,7 @@ export default defineComponent({
           })
           .catch((err) => {
             errorMsg.value = `Error: ${err.message || err.data?.message || 'Unknown error'}`
-            message.error(err.message || err.data?.message || 'Unknown error')
+            toast.error(err.message || err.data?.message || 'Unknown error')
             throw err
           })
 

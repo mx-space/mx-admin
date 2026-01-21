@@ -30,6 +30,7 @@ import {
   NTag,
 } from 'naive-ui'
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue'
+import { toast } from 'vue-sonner'
 import type { WebhookModel } from '~/api/webhooks'
 import type { PropType, VNode } from 'vue'
 
@@ -592,7 +593,7 @@ export default defineComponent({
     const createMutation = useMutation({
       mutationFn: webhooksApi.create,
       onSuccess: () => {
-        message.success('Webhook 创建成功')
+        toast.success('Webhook 创建成功')
         queryClient.invalidateQueries({ queryKey: queryKeys.webhooks.all })
         drawerVisible.value = false
         editingWebhook.value = undefined
@@ -604,7 +605,7 @@ export default defineComponent({
       mutationFn: ({ id, data }: { id: string; data: Partial<WebhookModel> }) =>
         webhooksApi.update(id, data),
       onSuccess: () => {
-        message.success('Webhook 更新成功')
+        toast.success('Webhook 更新成功')
         queryClient.invalidateQueries({ queryKey: queryKeys.webhooks.all })
         drawerVisible.value = false
         editingWebhook.value = undefined
@@ -615,7 +616,7 @@ export default defineComponent({
     const deleteMutation = useMutation({
       mutationFn: webhooksApi.delete,
       onSuccess: () => {
-        message.success('Webhook 已删除')
+        toast.success('Webhook 已删除')
         queryClient.invalidateQueries({ queryKey: queryKeys.webhooks.all })
       },
     })
@@ -625,10 +626,10 @@ export default defineComponent({
       mutationFn: ({ id, event }: { id: string; event: string }) =>
         webhooksApi.test(id, event),
       onSuccess: () => {
-        message.success('测试请求已发送')
+        toast.success('测试请求已发送')
       },
       onError: () => {
-        message.error('测试请求发送失败')
+        toast.error('测试请求发送失败')
       },
     })
 

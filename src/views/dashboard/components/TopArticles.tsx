@@ -62,6 +62,7 @@ export const TopArticles = defineComponent({
                 }
                 target="_blank"
                 class="group flex items-center gap-3 rounded-md px-2 py-1.5 transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                rel="noreferrer"
               >
                 <span
                   class={[

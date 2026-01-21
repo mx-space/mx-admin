@@ -3,8 +3,9 @@
  * 日志文件列表 - 列表形式
  */
 import { FileText, RefreshCw, Trash2, X } from 'lucide-vue-next'
-import { NModal, NSelect, NSpin, useDialog, useMessage } from 'naive-ui'
+import { NModal, NSelect, NSpin, useDialog } from 'naive-ui'
 import { defineComponent, onMounted, ref } from 'vue'
+import { toast } from 'vue-sonner'
 import type { PropType } from 'vue'
 
 import { healthApi } from '~/api/health'
@@ -23,8 +24,6 @@ export const LogListView = defineComponent({
     const loading = ref(false)
     const logType = ref<'native' | 'pm2'>('native')
     const dialog = useDialog()
-    const message = useMessage()
-
     const fetchDataFn = async () => {
       loading.value = true
       try {
@@ -58,7 +57,7 @@ export const LogListView = defineComponent({
         onPositiveClick: async () => {
           await healthApi.deleteLog(item.filename)
           data.value = data.value.filter((i) => i.filename !== item.filename)
-          message.success('删除成功')
+          toast.success('删除成功')
         },
       })
     }

@@ -1,8 +1,8 @@
 import { Trash2 as DeleteIcon } from 'lucide-vue-next'
-import { useDialog, useMessage } from 'naive-ui'
+import { useDialog } from 'naive-ui'
 import { defineComponent, isRef } from 'vue'
-import type { VNode } from 'vue'
-import type { PropType, Ref } from 'vue'
+import { toast } from 'vue-sonner'
+import type { PropType, Ref, VNode } from 'vue'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
 
@@ -41,8 +41,6 @@ export const DeleteConfirmButton = defineComponent({
   },
   setup(props) {
     const dialog = useDialog()
-    const message = useMessage()
-
     return () => {
       const {
         customIcon,
@@ -79,7 +77,7 @@ export const DeleteConfirmButton = defineComponent({
               onPositiveClick: async () => {
                 await onDelete(checkedRowKeys)
                 showSuccessMessage &&
-                  message.success(customSuccessMessage ?? '删除成功')
+                  toast.success(customSuccessMessage ?? '删除成功')
               },
             })
           }}

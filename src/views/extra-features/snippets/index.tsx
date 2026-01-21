@@ -4,9 +4,10 @@ import {
   Plus as PlusIcon,
   Settings as SettingsIcon,
 } from 'lucide-vue-next'
-import { NButton, NModal, NPopover, useMessage } from 'naive-ui'
+import { NButton, NModal, NPopover } from 'naive-ui'
 import { computed, defineComponent, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { toast } from 'vue-sonner'
 import type { SnippetModel } from '../../../models/snippet'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
@@ -30,7 +31,6 @@ export default defineComponent({
   setup() {
     const route = useRoute()
     const router = useRouter()
-    const message = useMessage()
     const layout = useLayout()
     const uiStore = useUIStore()
 
@@ -105,11 +105,11 @@ export default defineComponent({
     const handleCreateConfirm = () => {
       // Validate required fields
       if (!editData.value.name?.trim()) {
-        message.warning('请填写片段名称')
+        toast.warning('请填写片段名称')
         return
       }
       if (!editData.value.reference?.trim()) {
-        message.warning('请填写引用分组')
+        toast.warning('请填写引用分组')
         return
       }
 
@@ -125,7 +125,7 @@ export default defineComponent({
 
     const handleDelete = async (snippet: SnippetModel) => {
       const action = await deleteSnippet(snippet)
-      message.success(`${action === 'reset' ? '重置' : '删除'}成功`)
+      toast.success(`${action === 'reset' ? '重置' : '删除'}成功`)
 
       if (selectedId.value === snippet.id) {
         selectedId.value = null

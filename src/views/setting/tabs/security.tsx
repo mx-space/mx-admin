@@ -28,6 +28,7 @@ import {
 } from 'naive-ui'
 import { defineComponent, onBeforeMount, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { toast } from 'vue-sonner'
 import type { TokenModel } from '~/models/token'
 
 import { authApi } from '~/api/auth'
@@ -302,13 +303,13 @@ const ApiToken = defineComponent(() => {
         tokens.value[index].token = response.token
       }
     } catch {
-      message.error('创建 Token 失败，请重试')
+      toast.error('创建 Token 失败，请重试')
     }
   }
 
   const onDeleteToken = async (id: string) => {
     await authApi.deleteToken(id)
-    message.success('删除成功')
+    toast.success('删除成功')
     const index = tokens.value.findIndex((i) => i.id === id)
     if (index !== -1) {
       tokens.value.splice(index, 1)
@@ -329,7 +330,7 @@ const ApiToken = defineComponent(() => {
         visibleTokens.value.add(tokenId)
       } catch (error) {
         console.error('获取Token详情失败:', error)
-        message.error('获取Token详情失败，请重试')
+        toast.error('获取Token详情失败，请重试')
       }
     }
   }
@@ -337,7 +338,7 @@ const ApiToken = defineComponent(() => {
   const copyToken = async (token: string) => {
     try {
       await navigator.clipboard.writeText(token)
-      message.success('Token 已复制到剪贴板')
+      toast.success('Token 已复制到剪贴板')
     } catch {
       const textArea = document.createElement('textarea')
       textArea.value = token
@@ -348,9 +349,9 @@ const ApiToken = defineComponent(() => {
       textArea.select()
       try {
         document.execCommand('copy')
-        message.success('Token 已复制到剪贴板')
+        toast.success('Token 已复制到剪贴板')
       } catch {
-        message.error('复制失败，请手动复制Token')
+        toast.error('复制失败，请手动复制Token')
       }
       document.body.removeChild(textArea)
     }
@@ -639,7 +640,7 @@ const ResetPass = defineComponent(() => {
         await userApi.updateMaster({
           password: resetPassword.password,
         })
-        message.success('密码修改成功，请重新登录')
+        toast.success('密码修改成功，请重新登录')
         removeToken()
         router.push({ name: RouteName.Login })
       }

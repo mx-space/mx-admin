@@ -8,16 +8,10 @@ import {
   Plus as PlusIcon,
   Trash2,
 } from 'lucide-vue-next'
-import {
-  NButton,
-  NDropdown,
-  NPopconfirm,
-  NSelect,
-  NSpin,
-  useMessage,
-} from 'naive-ui'
+import { NButton, NDropdown, NPopconfirm, NSelect, NSpin } from 'naive-ui'
 import { computed, defineComponent, ref, watchEffect } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
+import { toast } from 'vue-sonner'
 import type { DraftModel } from '~/models/draft'
 import type { PropType } from 'vue'
 
@@ -218,7 +212,6 @@ const EmptyState = defineComponent({
 export default defineComponent({
   name: 'DraftsView',
   setup() {
-    const message = useMessage()
     const queryClient = useQueryClient()
 
     // 筛选状态
@@ -239,11 +232,11 @@ export default defineComponent({
     const deleteMutation = useMutation({
       mutationFn: draftsApi.delete,
       onSuccess: () => {
-        message.success('删除成功')
+        toast.success('删除成功')
         queryClient.invalidateQueries({ queryKey: ['drafts'] })
       },
       onError: () => {
-        message.error('删除失败')
+        toast.error('删除失败')
       },
     })
 

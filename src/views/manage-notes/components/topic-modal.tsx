@@ -5,6 +5,7 @@
 import { Upload as UploadIcon, X } from 'lucide-vue-next'
 import { NButton, NInput, NModal, NSpin } from 'naive-ui'
 import { defineComponent, nextTick, reactive, ref, watch } from 'vue'
+import { toast } from 'vue-sonner'
 import type { TopicModel } from '~/models/topic'
 import type { PropType } from 'vue'
 
@@ -131,7 +132,7 @@ export const TopicEditModal = defineComponent({
     const createMutation = useMutation({
       mutationFn: (data: Partial<TopicModel>) => topicsApi.create(data as any),
       onSuccess: (data) => {
-        message.success('创建成功')
+        toast.success('创建成功')
         props.onSubmit?.(data)
         resetTopicData()
       },
@@ -142,7 +143,7 @@ export const TopicEditModal = defineComponent({
       mutationFn: ({ id, data }: { id: string; data: Partial<TopicModel> }) =>
         topicsApi.update(id, data),
       onSuccess: (data) => {
-        message.success('修改成功')
+        toast.success('修改成功')
         props.onSubmit?.(data)
         resetTopicData()
       },

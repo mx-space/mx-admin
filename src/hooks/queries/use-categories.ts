@@ -1,4 +1,5 @@
 import { computed, toValue } from 'vue'
+import { toast } from 'vue-sonner'
 import type {
   CreateCategoryData,
   GetCategoriesParams,
@@ -64,7 +65,7 @@ export const useCreateCategoryMutation = () => {
   return useMutation({
     mutationFn: (data: CreateCategoryData) => categoriesApi.create(data),
     onSuccess: () => {
-      window.message.success('创建成功')
+      toast.success('创建成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.categories.all })
     },
   })
@@ -79,7 +80,7 @@ export const useUpdateCategoryMutation = () => {
     mutationFn: ({ id, data }: { id: string; data: UpdateCategoryData }) =>
       categoriesApi.update(id, data),
     onSuccess: (_, { id }) => {
-      window.message.success('修改成功')
+      toast.success('修改成功')
       queryClient.invalidateQueries({
         queryKey: queryKeys.categories.detail(id),
       })
@@ -96,7 +97,7 @@ export const useDeleteCategoryMutation = () => {
   return useMutation({
     mutationFn: categoriesApi.delete,
     onSuccess: () => {
-      window.message.success('删除成功')
+      toast.success('删除成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.categories.all })
     },
   })

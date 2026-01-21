@@ -14,6 +14,7 @@ import {
 } from 'naive-ui'
 import { defineComponent, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { toast } from 'vue-sonner'
 import type { Pager } from '@mx-space/api-client'
 import type { NoteModel } from '~/models/note'
 import type { TopicModel } from '~/models/topic'
@@ -91,7 +92,7 @@ export const TopicDetailDrawer = defineComponent({
     const removeNoteMutation = useMutation({
       mutationFn: (noteId: string) => notesApi.patch(noteId, { topicId: null }),
       onSuccess: (_, noteId) => {
-        message.success('已移除文章的专栏引用')
+        toast.success('已移除文章的专栏引用')
         const index = notes.value.findIndex((note) => note.id === noteId)
         if (index !== -1) {
           notes.value.splice(index, 1)
@@ -191,7 +192,7 @@ export const TopicDetailDrawer = defineComponent({
                             const res = JSON.parse(
                               (e.event?.target as XMLHttpRequest).responseText,
                             )
-                            message.warning(res.message)
+                            toast.warning(res.message)
                           } catch {
                             // noop
                           }
@@ -479,7 +480,7 @@ const AddNoteToTopicModal = defineComponent({
 
     const handleSubmit = async () => {
       if (selectedNoteIds.value.length === 0) {
-        message.warning('请选择要添加的文章')
+        toast.warning('请选择要添加的文章')
         return
       }
 
@@ -490,7 +491,7 @@ const AddNoteToTopicModal = defineComponent({
             notesApi.patch(noteId, { topicId: props.topicId }),
           ),
         )
-        message.success('添加成功')
+        toast.success('添加成功')
         selectedNoteIds.value = []
         props.onSuccess()
       } finally {

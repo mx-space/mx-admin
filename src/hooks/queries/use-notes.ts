@@ -1,4 +1,5 @@
 import { computed, toValue } from 'vue'
+import { toast } from 'vue-sonner'
 import type { CreateNoteData, UpdateNoteData } from '~/api/notes'
 import type { NoteModel } from '~/models/note'
 import type { MaybeRefOrGetter } from 'vue'
@@ -43,7 +44,7 @@ export const useCreateNoteMutation = () => {
   return useMutation({
     mutationFn: (data: CreateNoteData) => notesApi.create(data),
     onSuccess: () => {
-      window.message.success('发布成功')
+      toast.success('发布成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.notes.lists() })
     },
   })
@@ -58,7 +59,7 @@ export const useUpdateNoteMutation = () => {
     mutationFn: ({ id, data }: { id: string; data: UpdateNoteData }) =>
       notesApi.update(id, data),
     onSuccess: (_, { id }) => {
-      window.message.success('修改成功')
+      toast.success('修改成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.notes.detail(id) })
       queryClient.invalidateQueries({ queryKey: queryKeys.notes.lists() })
     },
@@ -88,7 +89,7 @@ export const useDeleteNoteMutation = () => {
   return useMutation({
     mutationFn: notesApi.delete,
     onSuccess: () => {
-      window.message.success('删除成功')
+      toast.success('删除成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.notes.lists() })
     },
   })

@@ -6,9 +6,9 @@ import {
   NEmpty,
   NPopconfirm,
   NSpin,
-  useMessage,
 } from 'naive-ui'
 import { defineComponent } from 'vue'
+import { toast } from 'vue-sonner'
 import type { PropType } from 'vue'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
@@ -33,7 +33,6 @@ export const HistoryPanel = defineComponent({
     },
   },
   setup(props) {
-    const message = useMessage()
     const queryClient = useQueryClient()
 
     // 获取版本历史
@@ -50,12 +49,12 @@ export const HistoryPanel = defineComponent({
       mutationFn: (version: number) =>
         draftsApi.restoreVersion(props.draftId, version),
       onSuccess: () => {
-        message.success('版本已恢复')
+        toast.success('版本已恢复')
         queryClient.invalidateQueries({ queryKey: ['drafts'] })
         props.onUpdateShow(false)
       },
       onError: () => {
-        message.error('恢复失败')
+        toast.error('恢复失败')
       },
     })
 

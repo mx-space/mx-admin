@@ -4,7 +4,7 @@ import {
   SlidersHorizontal as SlidersHIcon,
   Send as TelegramPlaneIcon,
 } from 'lucide-vue-next'
-import { NInputNumber, useMessage } from 'naive-ui'
+import { NInputNumber } from 'naive-ui'
 import {
   computed,
   defineComponent,
@@ -15,6 +15,7 @@ import {
   watchEffect,
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { toast } from 'vue-sonner'
 import type { CreatePageData } from '~/api/pages'
 import type { PageModel } from '~/models/page'
 import type { WriteBaseType } from '~/shared/types/base'
@@ -207,9 +208,6 @@ const PageWriteView = defineComponent(() => {
   })
 
   const drawerShow = ref(false)
-
-  const message = useMessage()
-
   const handleSubmit = async () => {
     const parseDataToPayload = (): { [key in keyof PageModel]?: any } => {
       try {
@@ -225,7 +223,7 @@ const PageWriteView = defineComponent(() => {
           slug: data.slug.trim(),
         }
       } catch (error) {
-        message.error(error as any)
+        toast.error(error as any)
 
         throw error
       }
@@ -240,14 +238,14 @@ const PageWriteView = defineComponent(() => {
       }
       const $id = id.value as string
       await pagesApi.update($id, { ...parseDataToPayload(), draftId })
-      message.success('修改成功')
+      toast.success('修改成功')
     } else {
       // create
       await pagesApi.create({
         ...parseDataToPayload(),
         draftId,
       } as CreatePageData)
-      message.success('发布成功')
+      toast.success('发布成功')
     }
 
     router.push({ name: RouteName.ListPage, hash: '|publish' })

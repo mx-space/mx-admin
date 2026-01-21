@@ -10,7 +10,7 @@ export class ParseMarkdownYAML {
     const raw = str
 
     // 增加对windows CRLF的兼容
-    const parts = /-{3,}\r?\n(.*?)-{3,}\r?\n*(.*)$/gms.exec(raw)
+    const parts = /-{3}\r?\n(.*?)-{3}\r?\n*(.*)$/gms.exec(raw)
     if (!parts) {
       return { text: raw }
     }

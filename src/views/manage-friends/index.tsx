@@ -20,6 +20,7 @@ import {
 } from 'naive-ui'
 import { computed, defineComponent, Fragment, ref, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { toast } from 'vue-sonner'
 import type { LinkModel, LinkStateCount } from '~/models/link'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
@@ -106,7 +107,7 @@ export default defineComponent({
         }
       },
       onSuccess: () => {
-        message.success('操作成功')
+        toast.success('操作成功')
         queryClient.invalidateQueries({ queryKey: queryKeys.links.all })
         refetchStateCount()
         editDialogShow.value = false
@@ -118,7 +119,7 @@ export default defineComponent({
     const deleteMutation = useMutation({
       mutationFn: linksApi.delete,
       onSuccess: () => {
-        message.success('删除成功')
+        toast.success('删除成功')
         queryClient.invalidateQueries({ queryKey: queryKeys.links.all })
         refetchStateCount()
       },
@@ -129,7 +130,7 @@ export default defineComponent({
       mutationFn: linksApi.auditPass,
       onSuccess: (_, id) => {
         const item = data.value.find((i) => i.id === id)
-        message.success(`通过了来自${item?.name || ''}的友链邀请`)
+        toast.success(`通过了来自${item?.name || ''}的友链邀请`)
         queryClient.invalidateQueries({ queryKey: queryKeys.links.all })
         refetchStateCount()
       },
@@ -148,7 +149,7 @@ export default defineComponent({
       }) => linksApi.auditWithReason(id, state, reason),
       onSuccess: (_, { id }) => {
         const item = data.value.find((i) => i.id === id)
-        message.success(`已发送友链结果给「${item?.name || ''}」`)
+        toast.success(`已发送友链结果给「${item?.name || ''}」`)
         queryClient.invalidateQueries({ queryKey: queryKeys.links.all })
         refetchStateCount()
       },
@@ -170,7 +171,7 @@ export default defineComponent({
     >()
 
     const handleCheck = async () => {
-      const l = message.loading('检查中', { duration: 20e4 })
+      const l = toast.loading('检查中', { duration: 20e4 })
 
       try {
         const result = await linksApi.checkHealth({ timeout: 20e4 })
@@ -180,29 +181,29 @@ export default defineComponent({
         health.value = Object.entries(result).reduce((acc, [k, v]) => {
           return { ...acc, [k.toLowerCase()]: v }
         }, {})
-        message.success('检查完成')
+        toast.success('检查完成')
       } catch (error) {
         console.error(error)
       } finally {
         requestAnimationFrame(() => {
-          l.destroy()
+          toast.dismiss(l)
         })
       }
     }
 
     const handleMigrateAvatars = async () => {
-      const l = message.loading('迁移中', { duration: 20e4 })
+      const l = toast.loading('迁移中', { duration: 20e4 })
 
       try {
         await linksApi.migrateAvatars({ timeout: 20e4 })
-        message.success('迁移完成')
+        toast.success('迁移完成')
         queryClient.invalidateQueries({ queryKey: queryKeys.links.all })
       } catch (error) {
         console.error(error)
-        message.error('迁移失败')
+        toast.error('迁移失败')
       } finally {
         requestAnimationFrame(() => {
-          l.destroy()
+          toast.dismiss(l)
         })
       }
     }

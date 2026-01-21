@@ -11,6 +11,7 @@ import {
   NText,
 } from 'naive-ui'
 import { computed, defineComponent, onMounted, ref, watch } from 'vue'
+import { toast } from 'vue-sonner'
 import type { PropType } from 'vue'
 
 import { aiApi } from '~/api/ai'
@@ -521,12 +522,12 @@ export const AIConfigSection = defineComponent({
           providerModels.value[provider.id] = response.models
         }
         if (response.error) {
-          message.warning(`获取模型列表: ${response.error}`)
+          toast.warning(`获取模型列表: ${response.error}`)
         }
       } catch (error: any) {
         console.error(`Failed to fetch models for ${provider.id}:`, error)
         if (!error?.response) {
-          message.error(`获取模型列表失败: ${error.message || error}`)
+          toast.error(`获取模型列表失败: ${error.message || error}`)
         }
       } finally {
         loadingProviders.value.delete(provider.id)
@@ -549,7 +550,7 @@ export const AIConfigSection = defineComponent({
 
     const testProviderConnection = async (provider: AIProviderConfig) => {
       if (!provider.defaultModel) {
-        message.warning('请先填写默认模型')
+        toast.warning('请先填写默认模型')
         return
       }
 
@@ -562,11 +563,11 @@ export const AIConfigSection = defineComponent({
           endpoint: provider.endpoint || undefined,
           model: provider.defaultModel || undefined,
         })
-        message.success('连接可用')
+        toast.success('连接可用')
       } catch (error: any) {
         console.error(`Failed to test provider ${provider.id}:`, error)
         if (!error?.response) {
-          message.error(`连接失败: ${error.message || error}`)
+          toast.error(`连接失败: ${error.message || error}`)
         }
       } finally {
         testingProviders.value.delete(provider.id)

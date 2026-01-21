@@ -5,16 +5,10 @@ import {
   Pencil,
   Trash2,
 } from 'lucide-vue-next'
-import {
-  NAvatar,
-  NButton,
-  NCheckbox,
-  NPagination,
-  NPopconfirm,
-  useMessage,
-} from 'naive-ui'
+import { NAvatar, NButton, NCheckbox, NPagination, NPopconfirm } from 'naive-ui'
 import { computed, defineComponent, reactive, watchEffect } from 'vue'
 import { RouterLink } from 'vue-router'
+import { toast } from 'vue-sonner'
 import type { ProjectModel } from '~/models/project'
 import type { PropType } from 'vue'
 
@@ -192,7 +186,6 @@ const ProjectCard = defineComponent({
 
 const ManageProjectView = defineComponent({
   setup() {
-    const nativeMessage = useMessage()
     const queryClient = useQueryClient()
 
     const {
@@ -217,7 +210,7 @@ const ManageProjectView = defineComponent({
     const deleteMutation = useMutation({
       mutationFn: projectsApi.delete,
       onSuccess: () => {
-        nativeMessage.success('删除成功')
+        toast.success('删除成功')
         queryClient.invalidateQueries({ queryKey: queryKeys.projects.all })
       },
     })
@@ -237,7 +230,7 @@ const ManageProjectView = defineComponent({
       },
       onSuccess: () => {
         checkedRowKeys.clear()
-        nativeMessage.success('删除成功')
+        toast.success('删除成功')
         queryClient.invalidateQueries({ queryKey: queryKeys.projects.all })
       },
     })

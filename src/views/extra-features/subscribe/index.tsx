@@ -15,8 +15,8 @@ import {
   NTag,
 } from 'naive-ui'
 import { computed, defineComponent, ref, watchEffect } from 'vue'
-import type { PropType } from 'vue'
-import type { VNode } from 'vue'
+import { toast } from 'vue-sonner'
+import type { PropType, VNode } from 'vue'
 
 import { useQuery } from '@tanstack/vue-query'
 
@@ -236,7 +236,7 @@ export default defineComponent({
     // 删除订阅者
     const handleDelete = async (email: string) => {
       await subscribeApi.unsubscribe({ email })
-      message.success('已移除订阅者')
+      toast.success('已移除订阅者')
       refetchList()
     }
 
@@ -252,9 +252,9 @@ export default defineComponent({
         a.click()
         window.URL.revokeObjectURL(url)
         document.body.removeChild(a)
-        message.success('导出成功')
+        toast.success('导出成功')
       } catch {
-        message.error('导出失败')
+        toast.error('导出失败')
       }
     }
 

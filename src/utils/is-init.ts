@@ -1,3 +1,5 @@
+import { toast } from 'vue-sonner'
+
 import { systemApi } from '~/api/system'
 
 export const checkIsInit = async (): Promise<boolean> => {
@@ -10,7 +12,7 @@ export const checkIsInit = async (): Promise<boolean> => {
     const res = await systemApi.checkInit()
     if (typeof res !== 'object' || !('isInit' in res)) {
       // 返回 false，让调用方处理跳转
-      message.error('api error')
+      toast.error('api error')
       return false
     }
     return res.isInit === true

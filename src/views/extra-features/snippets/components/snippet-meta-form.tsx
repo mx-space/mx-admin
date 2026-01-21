@@ -227,7 +227,7 @@ export const SnippetMetaForm = defineComponent({
         )}
 
         {/* 开关选项 */}
-        <div class="space-y-3 rounded-md bg-neutral-50 dark:bg-neutral-800/30">
+        <div class="space-y-3">
           <SwitchRow
             value={!props.data.private}
             label="公开访问"

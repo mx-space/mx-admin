@@ -8,10 +8,10 @@ import {
   NList,
   NListItem,
   useDialog,
-  useMessage,
 } from 'naive-ui'
 import Io from 'socket.io-client'
 import { defineComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { toast } from 'vue-sonner'
 import type { IDisposable, Terminal } from '@xterm/xterm'
 import type { PropType } from 'vue'
 
@@ -50,7 +50,6 @@ export default defineComponent({
 
       term.focus()
     }
-    const message = useMessage()
     const modal = useDialog()
 
     const socket = Io(`${GATEWAY_URL}/pty`, {
@@ -71,7 +70,7 @@ export default defineComponent({
     useMountAndUnmount(() => {
       const handler = () => {
         term.writeln('PTY connection closed')
-        message.warning('连接已断开', { closable: true })
+        toast.warning('连接已断开', { closeButton: true })
       }
       socket.on('disconnect', handler)
 
@@ -110,7 +109,7 @@ export default defineComponent({
             ),
           })
         }
-        message.info(data)
+        toast.info(data)
       })
 
       return () => {
@@ -156,7 +155,7 @@ export default defineComponent({
               term ? { cols: term.cols, rows: term.rows } : undefined,
             )
           } else {
-            message.error('重连 Socket 失败')
+            toast.error('重连 Socket 失败')
           }
         }, 1500)
 

@@ -19,9 +19,9 @@ import {
   NSwitch,
   NTag,
   NUpload,
-  useMessage,
 } from 'naive-ui'
 import { computed, defineComponent, reactive, ref, watch } from 'vue'
+import { toast } from 'vue-sonner'
 import type { ParsedModel } from '~/utils/markdown-parser'
 import type { DataTableColumns, UploadFileInfo } from 'naive-ui'
 
@@ -59,9 +59,6 @@ export default defineComponent({
     const importing = ref(false)
     const exporting = ref(false)
     const showImportConfirm = ref(false)
-
-    const message = useMessage()
-
     // Computed
     const hasFiles = computed(() => fileList.value.length > 0)
     const hasParsedData = computed(() => parsedList.value.length > 0)
@@ -93,7 +90,7 @@ export default defineComponent({
       e?.stopPropagation()
 
       if (!hasFiles.value) {
-        message.warning('请先选择文件')
+        toast.warning('请先选择文件')
         return
       }
 
@@ -139,9 +136,9 @@ export default defineComponent({
           ...v,
           filename: fileList.value[index].file?.name ?? '',
         }))
-        message.success(`成功解析 ${parsed.length} 个文件`)
+        toast.success(`成功解析 ${parsed.length} 个文件`)
       } catch (e: any) {
-        message.error(e.message || '解析失败')
+        toast.error(e.message || '解析失败')
         console.error(e)
       } finally {
         parsing.value = false
@@ -154,7 +151,7 @@ export default defineComponent({
       e.preventDefault()
 
       if (!hasParsedData.value) {
-        message.warning('请先解析文件')
+        toast.warning('请先解析文件')
         return
       }
       showImportConfirm.value = true
@@ -167,11 +164,11 @@ export default defineComponent({
           type: importType.value,
           data: parsedList.value,
         })
-        message.success(`成功导入 ${parsedList.value.length} 条数据`)
+        toast.success(`成功导入 ${parsedList.value.length} 条数据`)
         fileList.value = []
         parsedList.value = []
       } catch (e: any) {
-        message.error(e.message || '导入失败')
+        toast.error(e.message || '导入失败')
       } finally {
         importing.value = false
         showImportConfirm.value = false
@@ -198,9 +195,9 @@ export default defineComponent({
           with_meta_json: withMetaJson,
         })
         responseBlobToFile(data, 'markdown.zip')
-        message.success('导出成功')
+        toast.success('导出成功')
       } catch (e: any) {
-        message.error(e.message || '导出失败')
+        toast.error(e.message || '导出失败')
       } finally {
         exporting.value = false
       }

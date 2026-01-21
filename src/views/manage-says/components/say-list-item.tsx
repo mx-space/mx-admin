@@ -5,6 +5,7 @@
 import { Pencil, Quote, Trash2, User, X } from 'lucide-vue-next'
 import { NButton, NInput, NModal, NPopconfirm } from 'naive-ui'
 import { computed, defineComponent, reactive, ref, watch } from 'vue'
+import { toast } from 'vue-sonner'
 import type { SayModel } from '~/models/say'
 import type { PropType } from 'vue'
 
@@ -189,10 +190,10 @@ export const SayEditModal = defineComponent({
 
         if (isEdit.value) {
           result = await saysApi.update(props.say!.id!, data)
-          message.success('修改成功')
+          toast.success('修改成功')
         } else {
           result = await saysApi.create(data)
-          message.success('发布成功')
+          toast.success('发布成功')
         }
 
         props.onSuccess(result)

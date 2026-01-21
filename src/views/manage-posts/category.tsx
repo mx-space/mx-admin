@@ -15,7 +15,6 @@ import {
   NModal,
   NPopconfirm,
   NSkeleton,
-  useMessage,
 } from 'naive-ui'
 import {
   computed,
@@ -26,6 +25,7 @@ import {
   watchEffect,
 } from 'vue'
 import { RouterLink } from 'vue-router'
+import { toast } from 'vue-sonner'
 import type { TagModel } from '~/models/category'
 import type { Ref } from 'vue'
 
@@ -43,8 +43,6 @@ import { CategoryStore } from '~/stores/category'
 
 export const CategoryView = defineComponent((_props) => {
   const categoryStore = useStoreRef(CategoryStore)
-  const nativeMessage = useMessage()
-
   // 获取标签列表
   const { data: tagsData, isLoading: tagsLoading } = useTagsQuery()
   const tags = computed(() => tagsData.value ?? [])
@@ -75,7 +73,7 @@ export const CategoryView = defineComponent((_props) => {
   const deleteMutation = useMutation({
     mutationFn: categoriesApi.delete,
     onSuccess: async () => {
-      nativeMessage.success('删除成功')
+      toast.success('删除成功')
       await categoryStore.fetch(true)
     },
   })
@@ -84,7 +82,7 @@ export const CategoryView = defineComponent((_props) => {
   const createMutation = useMutation({
     mutationFn: categoriesApi.create,
     onSuccess: (category) => {
-      nativeMessage.success('创建成功')
+      toast.success('创建成功')
       categoryStore.data.value!.push(category)
       showDialog.value = false
     },
@@ -100,7 +98,7 @@ export const CategoryView = defineComponent((_props) => {
       data: { name: string; slug: string; type: number }
     }) => categoriesApi.update(id, data),
     onSuccess: (_, { id, data }) => {
-      nativeMessage.success('修改成功')
+      toast.success('修改成功')
       const index = categoryStore.data.value!.findIndex((i) => i.id == id)
       if (index !== -1) {
         categoryStore.data.value![index] = {
@@ -527,10 +525,9 @@ const EditCategoryDialog = defineComponent<{
       }
     },
   )
-  const message = useMessage()
   const handleSubmit = () => {
     if (!state.name || !state.slug) {
-      message.error('名称和路径不能为空')
+      toast.error('名称和路径不能为空')
       return
     }
     props.onSubmit(state)

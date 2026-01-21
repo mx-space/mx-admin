@@ -1,5 +1,4 @@
 import { KeyRound as PassKeyIcon } from 'lucide-vue-next'
-import { useMessage } from 'naive-ui'
 import { storeToRefs } from 'pinia'
 import {
   defineComponent,
@@ -10,6 +9,7 @@ import {
   watchEffect,
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { toast } from 'vue-sonner'
 
 import { useQuery } from '@tanstack/vue-query'
 
@@ -59,7 +59,6 @@ export const LoginView = defineComponent({
     const router = useRouter()
     const route = useRoute()
     const inputRef = ref<HTMLInputElement | null>(null)
-    const toast = useMessage()
     const password = ref('')
     const isLoading = ref(false)
 

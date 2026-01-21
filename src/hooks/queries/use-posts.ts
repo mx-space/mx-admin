@@ -1,4 +1,5 @@
 import { computed, toValue } from 'vue'
+import { toast } from 'vue-sonner'
 import type { CreatePostData, UpdatePostData } from '~/api/posts'
 import type { PostModel } from '~/models/post'
 import type { MaybeRefOrGetter } from 'vue'
@@ -40,7 +41,7 @@ export const useCreatePostMutation = () => {
   return useMutation({
     mutationFn: (data: CreatePostData) => postsApi.create(data),
     onSuccess: () => {
-      window.message.success('发布成功')
+      toast.success('发布成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.posts.lists() })
     },
   })
@@ -55,7 +56,7 @@ export const useUpdatePostMutation = () => {
     mutationFn: ({ id, data }: { id: string; data: UpdatePostData }) =>
       postsApi.update(id, data),
     onSuccess: (_, { id }) => {
-      window.message.success('修改成功')
+      toast.success('修改成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.posts.detail(id) })
       queryClient.invalidateQueries({ queryKey: queryKeys.posts.lists() })
     },
@@ -85,7 +86,7 @@ export const useDeletePostMutation = () => {
   return useMutation({
     mutationFn: postsApi.delete,
     onSuccess: () => {
-      window.message.success('删除成功')
+      toast.success('删除成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.posts.lists() })
     },
   })
