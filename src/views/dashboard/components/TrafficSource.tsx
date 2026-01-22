@@ -44,6 +44,41 @@ export const TrafficSource = defineComponent({
       }
     }
 
+    const processChartData = (chartData: SourceData[], topN = 5) => {
+      if (chartData.length === 0) return []
+
+      const sorted = [...chartData].sort((a, b) => b.count - a.count)
+      const total = sorted.reduce((sum, item) => sum + item.count, 0)
+
+      if (sorted.length <= topN) {
+        return sorted.map((item) => ({
+          name: item.name || '未知',
+          count: item.count,
+          percent: item.count / total,
+        }))
+      }
+
+      const topItems = sorted.slice(0, topN)
+      const otherItems = sorted.slice(topN)
+      const otherCount = otherItems.reduce((sum, item) => sum + item.count, 0)
+
+      const result = topItems.map((item) => ({
+        name: item.name || '未知',
+        count: item.count,
+        percent: item.count / total,
+      }))
+
+      if (otherCount > 0) {
+        result.push({
+          name: '其他',
+          count: otherCount,
+          percent: otherCount / total,
+        })
+      }
+
+      return result
+    }
+
     const renderPieChart = (
       container: HTMLElement,
       chartData: SourceData[],
@@ -55,12 +90,7 @@ export const TrafficSource = defineComponent({
         existingChart.destroy()
       }
 
-      const total = chartData.reduce((sum, item) => sum + item.count, 0)
-      const pieData = chartData.map((item) => ({
-        name: item.name || '未知',
-        count: item.count,
-        percent: item.count / total,
-      }))
+      const pieData = processChartData(chartData, 5)
 
       const theme = chartTheme.value
 
@@ -80,14 +110,22 @@ export const TrafficSource = defineComponent({
           color: {
             position: 'bottom',
             flipPage: false,
+            maxRows: 2,
             itemLabelFill: theme.legend.itemLabelFill,
           },
         },
-        tooltip: false,
+        tooltip: {
+          items: [
+            (d: { name: string; count: number; percent: number }) => ({
+              name: d.name,
+              value: `${d.count} 次 (${(d.percent * 100).toFixed(1)}%)`,
+            }),
+          ],
+        },
         labels: [
           {
             text: (d: { percent: number }) =>
-              `${(d.percent * 100).toFixed(0)}%`,
+              d.percent >= 0.05 ? `${(d.percent * 100).toFixed(0)}%` : '',
             fill: theme.label.fill,
           },
         ],
