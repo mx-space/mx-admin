@@ -140,15 +140,14 @@ export const ReadingRank = defineComponent({
         ) : (
           <div class={styles.rankingList} role="list" aria-label="阅读排名">
             {data.value.map((item, index) => {
-              // Transform ReadingRankItem to RankingItem
               const rankingItem: RankingItem = {
-                ref: { id: item.id, title: item.title },
-                refId: item.refId || item.id,
+                ref: item.ref,
+                refId: item.refId,
                 count: item.count,
               }
               return (
                 <RankingListItem
-                  key={item.refId || item.id}
+                  key={item.refId}
                   item={rankingItem}
                   position={index + 1}
                   maxCount={maxCount.value}

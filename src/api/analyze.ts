@@ -43,6 +43,19 @@ export interface IPAggregate {
 export interface GetAnalyzeParams {
   page?: number
   size?: number
+  from?: string
+  to?: string
+}
+
+export interface TrafficSourceResponse {
+  categories: Array<{ name: string; value: number }>
+  details: Array<{ source: string; count: number }>
+}
+
+export interface DeviceDistributionResponse {
+  browsers: Array<{ name: string; value: number }>
+  os: Array<{ name: string; value: number }>
+  devices: Array<{ name: string; value: number }>
 }
 
 export const analyzeApi = {
@@ -52,6 +65,14 @@ export const analyzeApi = {
 
   // 获取聚合数据
   getAggregate: () => request.get<IPAggregate>('/analyze/aggregate'),
+
+  // 获取流量来源
+  getTrafficSource: (params?: { from?: string; to?: string }) =>
+    request.get<TrafficSourceResponse>('/analyze/traffic-source', { params }),
+
+  // 获取设备分布
+  getDeviceDistribution: (params?: { from?: string; to?: string }) =>
+    request.get<DeviceDistributionResponse>('/analyze/device', { params }),
 
   // 清空分析数据
   deleteAll: () => request.delete<void>('/analyze'),

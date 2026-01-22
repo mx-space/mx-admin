@@ -16,16 +16,24 @@ import {
 import {
   computed,
   defineComponent,
+  nextTick,
   onBeforeMount,
   onMounted,
+  onUnmounted,
   ref,
   toRaw,
   watch,
 } from 'vue'
+import type { ReadingRankItem } from '~/api/activity'
+import type {
+  DeviceDistributionResponse,
+  TrafficSourceResponse,
+} from '~/api/analyze'
 import type { IPAggregate, Month, Path, Today, Total, Week } from './types'
 
 import { Chart } from '@antv/g2'
 
+import { activityApi } from '~/api/activity'
 import { analyzeApi } from '~/api/analyze'
 import { IpInfoPopover } from '~/components/ip-info'
 
@@ -188,27 +196,54 @@ const ChartsSection = defineComponent({
     },
   },
   setup(props) {
-    const dayChart = ref<HTMLDivElement>()
-    const weekChart = ref<HTMLDivElement>()
-    const monthChart = ref<HTMLDivElement>()
+    const trendChart = ref<HTMLDivElement>()
+    const articlesChart = ref<HTMLDivElement>()
+    const trafficChart = ref<HTMLDivElement>()
+    const deviceChart = ref<HTMLDivElement>()
     const charts: Record<string, Chart | null> = {
-      day: null,
-      week: null,
-      month: null,
+      trend: null,
+      articles: null,
+      traffic: null,
+      device: null,
     }
 
-    function renderChart(
-      element: HTMLElement | undefined,
-      field: 'day' | 'week' | 'month',
-      data: any,
-      label: [string, string, string],
-    ) {
-      if (!element || !data?.length) return
+    const topArticles = ref<ReadingRankItem[]>([])
+    const trafficSource = ref<TrafficSourceResponse | null>(null)
+    const deviceDistribution = ref<DeviceDistributionResponse | null>(null)
+    const chartsLoading = ref(true)
 
-      if (charts[field]) {
-        charts[field]?.destroy()
+    const isDark = () => document.documentElement.classList.contains('dark')
+    const getTextColor = () => (isDark() ? '#a3a3a3' : '#525252')
+
+    const fetchChartsData = async () => {
+      chartsLoading.value = true
+      try {
+        const [articlesRes, trafficRes, deviceRes] = await Promise.all([
+          activityApi.getReadingRank(),
+          analyzeApi.getTrafficSource(),
+          analyzeApi.getDeviceDistribution(),
+        ])
+        topArticles.value = articlesRes.slice(0, 5)
+        trafficSource.value = trafficRes
+        deviceDistribution.value = deviceRes
+      } catch (e) {
+        console.error('Failed to fetch charts data:', e)
+      } finally {
+        chartsLoading.value = false
+      }
+    }
+
+    function renderTrendChart(
+      element: HTMLElement | undefined,
+      weekData: Week[],
+    ) {
+      if (!element || !weekData?.length) return
+
+      if (charts.trend) {
+        charts.trend?.destroy()
       }
 
+      const textColor = getTextColor()
       const chart = new Chart({
         container: element,
         autoFit: true,
@@ -218,29 +253,32 @@ const ChartsSection = defineComponent({
         paddingBottom: 50,
         paddingLeft: 40,
       })
-      charts[field] = chart
+      charts.trend = chart
 
       chart.options({
         type: 'view',
-        data,
+        data: weekData,
         scale: {
-          [label[0]]: { range: [0, 1] },
-          [label[2]]: { domainMin: 0, nice: true },
+          day: { range: [0, 1] },
+          value: { domainMin: 0, nice: true },
         },
+        axis: {
+          x: { labelFill: textColor, titleFill: textColor },
+          y: { labelFill: textColor, titleFill: textColor },
+        },
+        legend: { color: { itemLabelFill: textColor } },
         interaction: {
           tooltip: { crosshairs: true, shared: true },
         },
         children: [
           {
             type: 'line',
-            encode: { x: label[0], y: label[2], color: label[1] },
+            encode: { x: 'day', y: 'value', color: 'key' },
             style: { shape: 'smooth' },
-            labels: [{ text: label[2] }],
           },
           {
             type: 'point',
-            encode: { x: label[0], y: label[2], color: label[1] },
-            labels: [{ text: label[2] }],
+            encode: { x: 'day', y: 'value', color: 'key' },
           },
         ],
       })
@@ -248,136 +286,269 @@ const ChartsSection = defineComponent({
       chart.render()
     }
 
-    const renderAllChart = () => {
-      renderChart(dayChart.value, 'day', props.graphData.day, [
-        'hour',
-        'key',
-        'value',
-      ])
-      renderChart(weekChart.value, 'week', props.graphData.week, [
-        'day',
-        'key',
-        'value',
-      ])
-      renderChart(monthChart.value, 'month', props.graphData.month, [
-        'date',
-        'key',
-        'value',
-      ])
+    function renderArticlesChart(
+      element: HTMLElement | undefined,
+      articles: ReadingRankItem[],
+    ) {
+      if (!element || !articles?.length) return
+
+      if (charts.articles) {
+        charts.articles?.destroy()
+      }
+
+      const textColor = getTextColor()
+      const chart = new Chart({
+        container: element,
+        autoFit: true,
+        height: 250,
+        paddingLeft: 120,
+        paddingRight: 30,
+      })
+      charts.articles = chart
+
+      const data = articles
+        .map((item, index) => ({
+          title: item.ref?.title || '未知标题',
+          count: item.count,
+          rank: index + 1,
+        }))
+        .reverse()
+
+      chart.options({
+        type: 'interval',
+        data,
+        encode: { x: 'title', y: 'count', color: 'rank' },
+        coordinate: { transform: [{ type: 'transpose' }] },
+        scale: {
+          color: {
+            range: ['#f59e0b', '#fbbf24', '#fcd34d', '#a3a3a3', '#d4d4d4'],
+          },
+        },
+        axis: {
+          y: { title: false, labelFill: textColor },
+          x: {
+            title: false,
+            labelFill: textColor,
+            labelFormatter: (text: string) =>
+              text.length > 12 ? `${text.slice(0, 12)}...` : text,
+          },
+        },
+        legend: false,
+        tooltip: {
+          items: [
+            {
+              channel: 'y',
+              name: '阅读量',
+              valueFormatter: (d: number) => `${d.toLocaleString()} 次`,
+            },
+          ],
+        },
+      })
+
+      chart.render()
+    }
+
+    function renderTrafficChart(
+      element: HTMLElement | undefined,
+      data: TrafficSourceResponse | null,
+    ) {
+      if (!element || !data?.categories?.length) return
+
+      if (charts.traffic) {
+        charts.traffic?.destroy()
+      }
+
+      const textColor = getTextColor()
+      const chart = new Chart({
+        container: element,
+        autoFit: true,
+        height: 250,
+      })
+      charts.traffic = chart
+
+      chart.options({
+        type: 'interval',
+        data: data.categories,
+        encode: { x: 'name', y: 'value', color: 'name' },
+        transform: [{ type: 'stackY' }],
+        coordinate: { type: 'theta', innerRadius: 0.4 },
+        legend: {
+          color: {
+            position: 'bottom',
+            layout: { justifyContent: 'center' },
+            itemLabelFill: textColor,
+          },
+        },
+        labels: [
+          {
+            text: 'value',
+            position: 'outside',
+            style: { fill: textColor },
+          },
+        ],
+        tooltip: {
+          items: [{ channel: 'y', valueFormatter: (d: number) => `${d} 次` }],
+        },
+      })
+
+      chart.render()
+    }
+
+    function renderDeviceChart(
+      element: HTMLElement | undefined,
+      data: DeviceDistributionResponse | null,
+    ) {
+      if (!element || !data?.devices?.length) return
+
+      if (charts.device) {
+        charts.device?.destroy()
+      }
+
+      const textColor = getTextColor()
+      const chart = new Chart({
+        container: element,
+        autoFit: true,
+        height: 250,
+      })
+      charts.device = chart
+
+      chart.options({
+        type: 'interval',
+        data: data.devices,
+        encode: { x: 'name', y: 'value', color: 'name' },
+        transform: [{ type: 'stackY' }],
+        coordinate: {
+          type: 'theta',
+          innerRadius: 0.4,
+        },
+        legend: {
+          color: {
+            position: 'bottom',
+            layout: { justifyContent: 'center' },
+            itemLabelFill: textColor,
+          },
+        },
+        labels: [
+          {
+            text: 'value',
+            position: 'outside',
+            style: { fill: textColor },
+          },
+        ],
+        tooltip: {
+          items: [{ channel: 'y', valueFormatter: (d: number) => `${d} 次` }],
+        },
+      })
+
+      chart.render()
     }
 
     onMounted(() => {
-      if (!isEmpty(toRaw(props.graphData))) {
-        renderAllChart()
+      fetchChartsData()
+    })
+
+    onUnmounted(() => {
+      Object.values(charts).forEach((chart) => chart?.destroy())
+    })
+
+    watch(
+      () => props.loading,
+      async (loading) => {
+        if (!loading && !isEmpty(toRaw(props.graphData))) {
+          await nextTick()
+          renderTrendChart(trendChart.value, props.graphData.week)
+        }
+      },
+    )
+
+    watch(chartsLoading, async (loading) => {
+      if (!loading) {
+        await nextTick()
+        if (topArticles.value?.length) {
+          renderArticlesChart(articlesChart.value, topArticles.value)
+        }
+        if (trafficSource.value) {
+          renderTrafficChart(trafficChart.value, trafficSource.value)
+        }
+        if (deviceDistribution.value) {
+          renderDeviceChart(deviceChart.value, deviceDistribution.value)
+        }
       }
     })
 
-    const watcher = watch(
-      () => props.graphData,
-      () => {
-        if (!isEmpty(toRaw(props.graphData))) {
-          renderAllChart()
-          watcher()
-        }
-      },
-      { deep: true },
-    )
-
     return () => (
       <div class={styles.chartsGrid}>
-        {/* Day Chart */}
+        {/* Trend Chart */}
         <div class={styles.chartCard}>
           <div class={styles.chartHeader}>
-            <h3 class={styles.chartTitle}>今日请求走势</h3>
-            <span class={styles.chartSubtitle}>按小时统计</span>
+            <h3 class={styles.chartTitle}>本周访问趋势</h3>
+            <span class={styles.chartSubtitle}>PV / UV 对比</span>
           </div>
           <div class={styles.chartContainer}>
             {props.loading ? (
               <NSkeleton animated height={250} />
             ) : (
-              <div ref={dayChart} />
+              <div ref={trendChart} />
             )}
           </div>
         </div>
 
-        {/* Week Chart */}
+        {/* Top Articles Bar Chart */}
         <div class={styles.chartCard}>
           <div class={styles.chartHeader}>
-            <h3 class={styles.chartTitle}>本周请求走势</h3>
-            <span class={styles.chartSubtitle}>按天统计</span>
+            <h3 class={styles.chartTitle}>热门文章</h3>
+            <span class={styles.chartSubtitle}>阅读量 Top 5</span>
           </div>
           <div class={styles.chartContainer}>
-            {props.loading ? (
+            {chartsLoading.value ? (
               <NSkeleton animated height={250} />
+            ) : topArticles.value.length === 0 ? (
+              <div class={styles.empty}>
+                <p class={styles.emptyDescription}>暂无阅读数据</p>
+              </div>
             ) : (
-              <div ref={weekChart} />
+              <div ref={articlesChart} />
             )}
           </div>
         </div>
 
-        {/* Month Chart */}
+        {/* Traffic Source Pie Chart */}
         <div class={styles.chartCard}>
           <div class={styles.chartHeader}>
-            <h3 class={styles.chartTitle}>本月请求走势</h3>
-            <span class={styles.chartSubtitle}>按日期统计</span>
+            <h3 class={styles.chartTitle}>流量来源</h3>
+            <span class={styles.chartSubtitle}>最近 7 天</span>
           </div>
           <div class={styles.chartContainer}>
-            {props.loading ? (
+            {chartsLoading.value ? (
               <NSkeleton animated height={250} />
+            ) : !trafficSource.value?.categories?.length ? (
+              <div class={styles.empty}>
+                <p class={styles.emptyDescription}>暂无流量来源数据</p>
+              </div>
             ) : (
-              <div ref={monthChart} />
+              <div ref={trafficChart} />
             )}
           </div>
         </div>
 
-        {/* Top Paths */}
+        {/* Device Distribution Chart */}
         <div class={styles.chartCard}>
           <div class={styles.chartHeader}>
-            <h3 class={styles.chartTitle}>热门请求路径</h3>
-            <span class={styles.chartSubtitle}>最近 7 天 Top 10</span>
+            <h3 class={styles.chartTitle}>设备分布</h3>
+            <span class={styles.chartSubtitle}>最近 7 天</span>
           </div>
           <div class={styles.chartContainer}>
-            {props.loading ? (
+            {chartsLoading.value ? (
               <NSkeleton animated height={250} />
+            ) : !deviceDistribution.value?.devices?.length ? (
+              <div class={styles.empty}>
+                <p class={styles.emptyDescription}>暂无设备数据</p>
+              </div>
             ) : (
-              <TopPathsList paths={props.topPaths.slice(0, 10)} />
+              <div ref={deviceChart} />
             )}
           </div>
         </div>
-      </div>
-    )
-  },
-})
-
-const TopPathsList = defineComponent({
-  props: {
-    paths: {
-      type: Array as () => Path[],
-      required: true,
-    },
-  },
-  setup(props) {
-    const maxCount = computed(() =>
-      Math.max(...props.paths.map((p) => p.count), 1),
-    )
-
-    return () => (
-      <div class={styles.pathList} role="list" aria-label="热门路径列表">
-        {props.paths.map((path, index) => (
-          <div key={path.path} class={styles.pathItem} role="listitem">
-            <span class={styles.pathRank}>{index + 1}</span>
-            <span class={styles.pathName} title={decodeURI(path.path)}>
-              {decodeURI(path.path)}
-            </span>
-            <span class={styles.pathCount}>{path.count.toLocaleString()}</span>
-            <div class={styles.pathBar}>
-              <div
-                class={styles.pathBarFill}
-                style={{ width: `${(path.count / maxCount.value) * 100}%` }}
-              />
-            </div>
-          </div>
-        ))}
       </div>
     )
   },

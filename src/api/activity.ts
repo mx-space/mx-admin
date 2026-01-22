@@ -35,11 +35,14 @@ export interface ActivityListResponse extends PaginateResult<ActivityItem> {
 }
 
 export interface ReadingRankItem {
-  id: string
-  title: string
-  type: string
+  refId: string
   count: number
-  refId?: string
+  ref: {
+    id?: string
+    title?: string
+    slug?: string
+    nid?: number
+  }
 }
 
 export interface GetActivityParams {
@@ -47,6 +50,11 @@ export interface GetActivityParams {
   size?: number
   before?: string
   after?: string
+}
+
+export interface OnlineCountResponse {
+  total: number
+  rooms: Record<string, number>
 }
 
 export const activityApi = {
@@ -64,4 +72,8 @@ export const activityApi = {
 
   // 删除最近动态
   deleteRecently: (id: string) => request.delete<void>(`/recently/${id}`),
+
+  // 获取在线人数
+  getOnlineCount: () =>
+    request.get<OnlineCountResponse>('/activity/online-count'),
 }
