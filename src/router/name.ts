@@ -31,7 +31,6 @@ export enum RouteName {
   Markdown = 'markdown',
   Subscribe = 'subscribe',
   Cron = 'cron',
-  Log = 'log',
   Optimize = 'optimize',
   Login = 'login',
   Home = 'home',
@@ -41,7 +40,6 @@ export enum RouteName {
   Webhook = 'webhook',
 
   AssetTemplate = 'asset-template',
-  Pty = 'pty',
 
   Ai = 'ai',
   AiSummary = 'ai-summary',

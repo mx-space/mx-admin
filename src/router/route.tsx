@@ -17,7 +17,6 @@ import {
   File as FileIcon,
   Beaker as FlaskIcon,
   FunctionSquare as FunctionIcon,
-  Newspaper as LogIcon,
   FileCode2 as MarkdownIcon,
   Hammer as MidHammer,
   Pencil as PencilAltIcon,
@@ -399,7 +398,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
     name: RouteName.Maintain,
     path: '/maintenance',
     component: $RouterView,
-    redirect: '/maintain/log',
+    redirect: '/maintenance/cron',
     meta: {
       title: '维护',
       icon: <MidHammer />,
@@ -422,16 +421,6 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           icon: <UndoAltIcon />,
         },
         component: () => import('../views/maintenance/backup'),
-      },
-
-      {
-        path: 'log',
-        name: RouteName.Log,
-        meta: {
-          title: '日志',
-          icon: <LogIcon />,
-        },
-        component: () => import('../views/maintenance/log-view'),
       },
     ],
   },

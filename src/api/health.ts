@@ -9,14 +9,6 @@ export interface CronJob {
   lastRunTime?: string
 }
 
-export interface LogFile {
-  filename: string
-  name: string
-  size: string
-  type: string
-  modified: string
-}
-
 export const healthApi = {
   // === Cron 任务管理 ===
 
@@ -25,21 +17,4 @@ export const healthApi = {
 
   // 手动运行 Cron 任务
   runCron: (name: string) => request.post<void>(`/health/cron/run/${name}`),
-
-  // === 日志管理 ===
-
-  // 获取日志文件列表（响应会被自动解包）
-  getLogList: () => request.get<LogFile[]>('/health/log'),
-
-  // 获取日志文件内容
-  getLogContent: (filename: string) =>
-    request.get<string>(`/health/log/${filename}`),
-
-  // 删除日志文件
-  deleteLog: (filename: string) =>
-    request.delete<void>(`/health/log/${filename}`),
-
-  // 清空日志文件
-  clearLog: (filename: string) =>
-    request.put<void>(`/health/log/${filename}/clear`),
 }

@@ -59,27 +59,6 @@ importers:
       '@types/canvas-confetti':
         specifier: 1.9.0
         version: 1.9.0
-      '@vicons/antd':
-        specifier: 0.13.0
-        version: 0.13.0
-      '@vicons/fa':
-        specifier: 0.13.0
-        version: 0.13.0
-      '@vicons/fluent':
-        specifier: 0.13.0
-        version: 0.13.0
-      '@vicons/ionicons4':
-        specifier: 0.13.0
-        version: 0.13.0
-      '@vicons/ionicons5':
-        specifier: 0.13.0
-        version: 0.13.0
-      '@vicons/material':
-        specifier: 0.13.0
-        version: 0.13.0
-      '@vicons/tabler':
-        specifier: 0.13.0
-        version: 0.13.0
       '@vicons/utils':
         specifier: 0.1.4
         version: 0.1.4(vue@3.5.13(typescript@5.7.2))
@@ -191,9 +170,6 @@ importers:
       sortablejs:
         specifier: 1.15.6
         version: 1.15.6
-      tinycolor2:
-        specifier: 1.6.0
-        version: 1.6.0
       umi-request:
         specifier: 1.4.0
         version: 1.4.0
@@ -243,9 +219,6 @@ importers:
       '@types/sortablejs':
         specifier: 1.15.8
         version: 1.15.8
-      '@types/tinycolor2':
-        specifier: 1.4.6
-        version: 1.4.6
       '@types/validator':
         specifier: 13.12.2
         version: 13.12.2
@@ -1700,9 +1673,6 @@ packages:
   '@types/sortablejs@1.15.8':
     resolution: {integrity: sha512-b79830lW+RZfwaztgs1aVPgbasJ8e7AXtZYHTELNXZPsERt4ymJdjV4OccDbHQAvHrCcFpbF78jkm0R6h/pZVg==}
 
-  '@types/tinycolor2@1.4.6':
-    resolution: {integrity: sha512-iEN8J0BoMnsWBqjVbWH/c0G0Hh7O21lpR2/+PrvAVgWdzL7eexIFm4JN/Wn10PTcmNdtS6U67r499mlWMXOxNw==}
-
   '@types/trusted-types@2.0.7':
     resolution: {integrity: sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw==}
 
@@ -1803,27 +1773,6 @@ packages:
     resolution: {integrity: sha512-SC0/rX0xSjdu8Jaj98XztHOuvXHWDVk0YaHKRAQks2Oj3yyqAOrhzhDUH0zzFaQWf5bsKVYK40H+h4rMk9vm5Q==}
     peerDependencies:
       vite: ^2.9.0 || ^3.0.0-0 || ^4.0.0 || ^5.0.0-0 || ^6.0.0-0 || ^7.0.0-0 || ^8.0.0-0
-
-  '@vicons/antd@0.13.0':
-    resolution: {integrity: sha512-yrUGoUSz2BbGupk9ghQOahc04n5H3MwUDM9pVPsLh9U1uqB47oRWZvYRiZaT1JKPqgTgSE6BXcVw4i9MOF4M+g==}
-
-  '@vicons/fa@0.13.0':
-    resolution: {integrity: sha512-BFcDewcT78fSn4Y/fOgqlswbLUEW3+qJK2iJiNtgmkMzadBVpDXhNyVKsYM3V2uKPvDUrZT0JCWDWVRCiBXJZA==}
-
-  '@vicons/fluent@0.13.0':
-    resolution: {integrity: sha512-bYGZsOE3qzvm3Cm43e7tybgGlr5ZUpYqtRZq0g0Tfupe8jIzLolpvQLNUt1zS8Mgt6goTbUk5YH7Fkv16jkykg==}
-
-  '@vicons/ionicons4@0.13.0':
-    resolution: {integrity: sha512-5WHIl/4R5a4i9GONa+hIQWxg/WczrbsCdqxawHZvdd3drsEr+Q3yzlfS+NNRO4WS3uDW2uWLCwoW+yp5TgcKeQ==}
-
-  '@vicons/ionicons5@0.13.0':
-    resolution: {integrity: sha512-zvZKBPjEXKN7AXNo2Na2uy+nvuv6SP4KAMQxpKL2vfHMj0fSvuw7JZcOPCjQC3e7ayssKnaoFVAhbYcW6v41qQ==}
-
-  '@vicons/material@0.13.0':
-    resolution: {integrity: sha512-lKVxFNprM+CaBkUH3gt6VjIeiMsKQl2zARQMwTCZruQl2vRHzyeZiKeCflWS99CEfv2JzX/6y697smxlzyxcVw==}
-
-  '@vicons/tabler@0.13.0':
-    resolution: {integrity: sha512-AykuhiqjszkIoAL/7knIFm6RDOBS1ZmQdJfQ+RNLEah0fVsxykUFCfMBSNZh8lOzC85EtdD1k5g/sv5GYk0Ohg==}
 
   '@vicons/utils@0.1.4':
     resolution: {integrity: sha512-OHI19qVNN6i+uPQ+Y3f2s0dUxwsYnOCcKBW7XOU4yXXO1aU3ZoKpblCc3+4N0qmgoJs5rWKRAaMisipqEXJwAg==}
@@ -3568,9 +3517,6 @@ packages:
 
   tiny-invariant@1.3.3:
     resolution: {integrity: sha512-+FbBPE1o9QAYvviau/qC5SE3caw21q3xkvWKBtja5vgqOWIHHJ3ioaq1VPfn/Szqctz2bU/oYeKd9/z5BL+PVg==}
-
-  tinycolor2@1.6.0:
-    resolution: {integrity: sha512-XPaBkWQJdsf3pLKJV9p4qN/S+fm2Oj8AIPo1BTUhg5oxkvm9+SVEGFdhyOz7tTdUTfvxMiAs4sp6/eZO2Ew+pw==}
 
   tinyexec@1.0.2:
     resolution: {integrity: sha512-W/KYk+NFhkmsYpuHq5JykngiOCnxeVL8v8dFnqxSD8qEEdRfXk1SDM6JzNqcERbcGYj9tMrDQBYV9cjgnunFIg==}
@@ -5694,8 +5640,6 @@ snapshots:
 
   '@types/sortablejs@1.15.8': {}
 
-  '@types/tinycolor2@1.4.6': {}
-
   '@types/trusted-types@2.0.7': {}
 
   '@types/unist@3.0.3': {}
@@ -5854,20 +5798,6 @@ snapshots:
       tinyglobby: 0.2.15
       unplugin-utils: 0.3.1
       vite: 6.4.1(@types/node@18.19.130)(jiti@2.6.1)(yaml@2.6.1)
-
-  '@vicons/antd@0.13.0': {}
-
-  '@vicons/fa@0.13.0': {}
-
-  '@vicons/fluent@0.13.0': {}
-
-  '@vicons/ionicons4@0.13.0': {}
-
-  '@vicons/ionicons5@0.13.0': {}
-
-  '@vicons/material@0.13.0': {}
-
-  '@vicons/tabler@0.13.0': {}
 
   '@vicons/utils@0.1.4(vue@3.5.13(typescript@5.7.2))':
     dependencies:
@@ -7683,8 +7613,6 @@ snapshots:
       utrie: 1.0.2
 
   tiny-invariant@1.3.3: {}
-
-  tinycolor2@1.6.0: {}
 
   tinyexec@1.0.2: {}
 
