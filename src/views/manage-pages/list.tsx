@@ -19,6 +19,7 @@ import { watchOnce } from '@vueuse/core'
 
 import { pagesApi } from '~/api/pages'
 import { RelativeTime } from '~/components/time/relative-time'
+import { WEB_URL } from '~/constants/env'
 import { queryKeys } from '~/hooks/queries/keys'
 
 import { HeaderActionButton } from '../../components/button/rounded-button'
@@ -76,7 +77,7 @@ const PageItem = defineComponent({
               </RouterLink>
 
               <a
-                href={`/${row.slug}`}
+                href={`${WEB_URL}/${row.slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >

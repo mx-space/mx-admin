@@ -259,6 +259,9 @@ const ManageComment = defineComponent(() => {
             case 'pages': {
               return `${WEB_URL}/${row.ref.slug}`
             }
+            case 'recentlies': {
+              return `${WEB_URL}/thinking/${row.ref.id}`
+            }
           }
         })() as string
         return (
@@ -272,14 +275,26 @@ const ManageComment = defineComponent(() => {
                 </a>
               )}
               {row.ref.content && (
-                <NPopover>
+                <NPopover trigger="hover">
                   {{
                     default() {
-                      return <p>{row.ref.content}</p>
+                      return (
+                        <div class="max-h-[50vh] max-w-[70vw] overflow-auto break-words text-sm leading-relaxed text-neutral-700 dark:text-neutral-300">
+                          <CommentMarkdownRender text={row.ref.content} />
+                        </div>
+                      )
                     },
                     trigger() {
                       return (
-                        <NButton text size="tiny" type="primary">
+                        <NButton
+                          text
+                          size="tiny"
+                          type="primary"
+                          tag="a"
+                          href={link}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
                           速记
                         </NButton>
                       )
