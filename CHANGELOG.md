@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [5.1.3](https://github.com/mx-space/admin-vue3/compare/v5.1.2...v5.1.3) (2026-01-22)
+
+
+### Features
+
+* redesign setup view ([4f0e38d](https://github.com/mx-space/admin-vue3/commit/4f0e38d1203d6c6dc494d99608cddd5257053161))
+
+
+
 ## [5.1.2](https://github.com/mx-space/admin-vue3/compare/v5.1.1...v5.1.2) (2026-01-21)
 
 
