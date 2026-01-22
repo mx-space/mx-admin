@@ -60,7 +60,7 @@ export interface TrafficSourceData {
 }
 
 export interface WordCount {
-  length: number
+  count: number
 }
 
 export interface ReadAndLikeCount {

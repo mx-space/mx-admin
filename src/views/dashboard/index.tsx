@@ -247,7 +247,7 @@ export const DashBoardView = defineComponent({
         aggregateApi.getSiteLikeCount(),
       ])
 
-      siteWordCount.value = wordCountRes.length
+      siteWordCount.value = wordCountRes.count
 
       readAndLikeCounts.value = {
         totalLikes: readLikeRes.totalLikes,
