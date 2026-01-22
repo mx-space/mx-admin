@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [5.1.4](https://github.com/mx-space/admin-vue3/compare/v5.1.3...v5.1.4) (2026-01-22)
+
+
+### Features
+
+* add rounded button components ([c47a604](https://github.com/mx-space/admin-vue3/commit/c47a6041c051b51cff8e75c6453f6ac93f4264cb))
+
+
+
 ## [5.1.3](https://github.com/mx-space/admin-vue3/compare/v5.1.2...v5.1.3) (2026-01-22)
 
 
