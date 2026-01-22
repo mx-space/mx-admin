@@ -1,5 +1,19 @@
 # CHANGELOG
 
+# [5.2.0](https://github.com/mx-space/admin-vue3/compare/v5.1.4...v5.2.0) (2026-01-22)
+
+
+### Bug Fixes
+
+* **dashboard:** optimize traffic source chart with top 5 aggregation ([d19b5d8](https://github.com/mx-space/admin-vue3/commit/d19b5d8b7f80863095154956ef7fee449c6ca9e5))
+
+
+### Features
+
+* add analysic chart ([2af156a](https://github.com/mx-space/admin-vue3/commit/2af156af1049412a10550e53166edab3e50fdb0f))
+
+
+
 ## [5.1.4](https://github.com/mx-space/admin-vue3/compare/v5.1.3...v5.1.4) (2026-01-22)
 
 
