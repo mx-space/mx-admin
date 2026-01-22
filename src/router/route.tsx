@@ -41,7 +41,7 @@ import $RouterView from '~/layouts/router-view'
 import { DashBoardView } from '~/views/dashboard'
 import { ManagePostListView } from '~/views/manage-posts/list'
 
-import SetupLayout from '../layouts/setup-view.vue'
+import SetupLayout from '../layouts/setup-view'
 import CommentPage from '../views/comments/index'
 import LoginView from '../views/login'
 import { ManageNoteListView } from '../views/manage-notes/list'

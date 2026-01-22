@@ -10,13 +10,14 @@ import {
   Trash2,
   Upload,
 } from 'lucide-vue-next'
-import { NButton, NPopconfirm, NSpin } from 'naive-ui'
-import { defineComponent, onMounted, ref } from 'vue'
+import { NButton, NCheckbox, NPopconfirm, NSpin } from 'naive-ui'
+import { computed, defineComponent, onMounted, ref, watchEffect } from 'vue'
 import { toast } from 'vue-sonner'
 import type { PropType } from 'vue'
 
 import { backupApi } from '~/api/backup'
 import { HeaderActionButton } from '~/components/button/rounded-button'
+import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
 import { useLayout } from '~/layouts/content'
 import { responseBlobToFile } from '~/utils'
 
@@ -30,6 +31,7 @@ export default defineComponent({
     const { setActions } = useLayout()
     const data = ref<BackupFile[]>([])
     const loading = ref(false)
+    const selectedKeys = ref<Set<string>>(new Set())
 
     const fetchData = async () => {
       loading.value = true
@@ -70,12 +72,26 @@ export default defineComponent({
       $file.accept = '.zip'
       document.body.append($file)
       $file.click()
-      $file.addEventListener('change', () => {
+      $file.addEventListener('change', async () => {
         const file = $file.files![0]
         if (!file) return
-        // TODO: Implement upload rollback with new API
-        toast.error('上传恢复功能暂未实现')
         $file.remove()
+
+        const info = toast.info('上传恢复中...', {
+          duration: 10e8,
+          closeButton: true,
+        })
+        try {
+          await backupApi.uploadAndRestore(file)
+          toast.dismiss(info)
+          toast.success('恢复成功，页面将会重载')
+          setTimeout(() => {
+            location.reload()
+          }, 1000)
+        } catch {
+          toast.dismiss(info)
+          toast.error('上传恢复失败')
+        }
       })
     }
 
@@ -85,6 +101,56 @@ export default defineComponent({
       const index = data.value.findIndex((i) => i.filename === filename)
       if (index !== -1) {
         data.value.splice(index, 1)
+      }
+      selectedKeys.value.delete(filename)
+    }
+
+    const handleBatchDelete = async () => {
+      const toDelete = Array.from(selectedKeys.value)
+      const results = await Promise.allSettled(
+        toDelete.map((filename) => backupApi.delete(filename)),
+      )
+
+      let successCount = 0
+      for (const [i, result] of results.entries()) {
+        if (result.status === 'fulfilled') {
+          successCount++
+          const index = data.value.findIndex(
+            (item) => item.filename === toDelete[i],
+          )
+          if (index !== -1) {
+            data.value.splice(index, 1)
+          }
+        }
+      }
+
+      selectedKeys.value.clear()
+      if (successCount === toDelete.length) {
+        toast.success(`成功删除 ${successCount} 个备份`)
+      } else {
+        toast.warning(
+          `删除完成：成功 ${successCount}，失败 ${toDelete.length - successCount}`,
+        )
+      }
+    }
+
+    const toggleSelect = (filename: string) => {
+      if (selectedKeys.value.has(filename)) {
+        selectedKeys.value.delete(filename)
+      } else {
+        selectedKeys.value.add(filename)
+      }
+    }
+
+    const isAllSelected = computed(
+      () => data.value.length > 0 && selectedKeys.value.size === data.value.length,
+    )
+
+    const toggleSelectAll = () => {
+      if (isAllSelected.value) {
+        selectedKeys.value.clear()
+      } else {
+        selectedKeys.value = new Set(data.value.map((item) => item.filename))
       }
     }
 
@@ -122,22 +188,30 @@ export default defineComponent({
       }
     }
 
-    setActions(
-      <>
-        <HeaderActionButton
-          icon={<Database />}
-          name="立即备份"
-          variant="primary"
-          onClick={handleBackup}
-        />
-        <HeaderActionButton
-          icon={<Upload />}
-          onClick={handleUploadAndRestore}
-          name="上传恢复"
-          variant="info"
-        />
-      </>,
-    )
+    watchEffect(() => {
+      setActions(
+        <>
+          <DeleteConfirmButton
+            checkedRowKeys={selectedKeys.value}
+            onDelete={handleBatchDelete}
+            customButtonTip="批量删除"
+            message={`确定要删除选中的 ${selectedKeys.value.size} 个备份吗？`}
+          />
+          <HeaderActionButton
+            icon={<Upload />}
+            onClick={handleUploadAndRestore}
+            name="上传恢复"
+            variant="info"
+          />
+          <HeaderActionButton
+            icon={<Database />}
+            name="立即备份"
+            variant="primary"
+            onClick={handleBackup}
+          />
+        </>,
+      )
+    })
 
     return () => (
       <div class="space-y-4">
@@ -147,10 +221,27 @@ export default defineComponent({
               <BackupEmptyState onCreate={handleBackup} />
             ) : (
               <div class="overflow-hidden rounded-lg border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
+                {/* Select All Header */}
+                <div class="flex items-center gap-3 border-b border-neutral-200 bg-neutral-50 px-4 py-2 dark:border-neutral-800 dark:bg-neutral-800/50">
+                  <NCheckbox
+                    checked={isAllSelected.value}
+                    indeterminate={
+                      selectedKeys.value.size > 0 && !isAllSelected.value
+                    }
+                    onUpdateChecked={toggleSelectAll}
+                  />
+                  <span class="text-sm text-neutral-500 dark:text-neutral-400">
+                    {selectedKeys.value.size > 0
+                      ? `已选择 ${selectedKeys.value.size} 项`
+                      : '全选'}
+                  </span>
+                </div>
                 {data.value.map((item) => (
                   <BackupListItem
                     key={item.filename}
                     item={item}
+                    selected={selectedKeys.value.has(item.filename)}
+                    onSelect={() => toggleSelect(item.filename)}
                     onDownload={() => handleDownload(item.filename)}
                     onRollback={() => handleRollback(item.filename)}
                     onDelete={() => handleDelete(item.filename)}
@@ -172,6 +263,14 @@ const BackupListItem = defineComponent({
   props: {
     item: {
       type: Object as PropType<BackupFile>,
+      required: true,
+    },
+    selected: {
+      type: Boolean,
+      default: false,
+    },
+    onSelect: {
+      type: Function as PropType<() => void>,
       required: true,
     },
     onDownload: {
@@ -201,6 +300,13 @@ const BackupListItem = defineComponent({
 
     return () => (
       <div class="group flex items-center gap-4 border-b border-neutral-200 px-4 py-4 transition-colors last:border-b-0 hover:bg-neutral-50 dark:border-neutral-800 dark:hover:bg-neutral-800/50">
+        {/* Checkbox */}
+        <NCheckbox
+          checked={props.selected}
+          onUpdateChecked={props.onSelect}
+          class="shrink-0"
+        />
+
         {/* Icon */}
         <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-500 dark:bg-blue-950/50 dark:text-blue-400">
           <HardDrive class="size-5" />

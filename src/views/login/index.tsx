@@ -19,7 +19,7 @@ import { queryKeys } from '~/hooks/queries/keys'
 import { authClient } from '~/utils/authjs/auth'
 import { AuthnUtils } from '~/utils/authn'
 
-import Avatar from '../../components/avatar/index.vue'
+import Avatar from '../../components/avatar'
 import { useUserStore } from '../../stores/user'
 import { checkIsInit } from '../../utils/is-init'
 

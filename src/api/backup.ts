@@ -26,9 +26,18 @@ export const backupApi = {
 
   // 删除备份
   delete: (filename: string) =>
-    request.delete<void>('/backups', { params: { filename } }),
+    request.delete<void>(`/backups/${encodeURIComponent(filename)}`),
 
   // 从备份恢复
   rollback: (filename: string) =>
     request.patch<void>(`/backups/rollback/${filename}`),
+
+  // 上传备份文件并恢复
+  uploadAndRestore: (file: File) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    return request.post<void, FormData>('/backups/rollback', {
+      data: formData,
+    })
+  },
 }

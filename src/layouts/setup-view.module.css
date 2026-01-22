@@ -1,0 +1,5 @@
+.bg {
+  @apply fixed inset-0 -z-10;
+  @apply -m-4 bg-neutral-600 bg-cover bg-center bg-no-repeat transition-opacity duration-700 ease-linear;
+  filter: blur(5px);
+}

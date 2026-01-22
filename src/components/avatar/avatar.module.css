@@ -1,0 +1,18 @@
+.avatar {
+  @apply relative inline-block select-none overflow-hidden rounded-full;
+  background-color: #ddd;
+}
+
+.avatar img {
+  @apply h-full max-w-full rounded-full;
+  animation: scale 0.5s ease-out;
+}
+
+@keyframes scale {
+  0% {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
