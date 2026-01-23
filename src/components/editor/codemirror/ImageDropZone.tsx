@@ -42,11 +42,9 @@ export const ImageDropZone = defineComponent({
       )
 
       if (imageFiles.length > 0) {
-        const uploadFn = editorStore.uploadImageFile
-        if (!uploadFn) return
         event.preventDefault()
         event.stopPropagation()
-        imageFiles.forEach((file) => uploadFn(file))
+        imageFiles.forEach((file) => editorStore.uploadImageFile(file))
       }
     }
 

@@ -1,39 +1,44 @@
 import { inject, provide } from 'vue'
 import type { Ref } from 'vue'
 
+export type OauthProviderType = 'github' | 'google'
+
 export interface OauthData {
   providers: ProvidersItem[]
-  public: {
-    github: Github
-  }
+  public: Partial<Record<OauthProviderType, ProviderPublicConfig>>
 }
+
 interface ProvidersItem {
-  type: 'github'
+  type: OauthProviderType
   enabled: boolean
 }
-interface Github {
+
+interface ProviderPublicConfig {
   clientId: string
 }
 
-export interface FlatOauthData {
-  github: Github & { enabled: boolean; type: 'github' }
-}
+export type FlatOauthData = Partial<
+  Record<
+    OauthProviderType,
+    ProviderPublicConfig & { enabled: boolean; type: OauthProviderType }
+  >
+>
+
+const ALL_OAUTH_PROVIDERS: OauthProviderType[] = ['github', 'google']
 
 export function flattenOauthData(data: OauthData): FlatOauthData {
-  const flatData: FlatOauthData = {} as any
+  const flatData: FlatOauthData = {}
 
-  for (const provider of data.providers) {
-    const providerType = provider.type
-    if (providerType in data.public) {
-      flatData[providerType] = {
-        ...data.public[providerType],
-        enabled: provider.enabled,
-        type: providerType,
-      }
-    } else {
-      console.warn(
-        `Provider type ${providerType} found in providers but not in public data.`,
-      )
+  const providerMap = new Map(data.providers.map((p) => [p.type, p]))
+
+  for (const providerType of ALL_OAUTH_PROVIDERS) {
+    const provider = providerMap.get(providerType)
+    const publicConfig = data.public[providerType]
+
+    flatData[providerType] = {
+      clientId: publicConfig?.clientId ?? '',
+      enabled: provider?.enabled ?? false,
+      type: providerType,
     }
   }
 

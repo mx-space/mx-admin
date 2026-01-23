@@ -267,9 +267,9 @@ const Oauth = defineComponent(() => {
 
   const oauthDataRef = ref({} as FlatOauthData)
   onMounted(async () => {
-    const data = await optionsApi.get<OauthData>('oauth')
+    const res = await optionsApi.get<{ data: OauthData }>('oauth')
 
-    oauthDataRef.value = flattenOauthData(data)
+    oauthDataRef.value = flattenOauthData(res.data)
   })
 
   useProvideOauthData()(oauthDataRef)

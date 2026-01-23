@@ -1,5 +1,4 @@
 import { onBeforeUnmount, onMounted, ref } from 'vue'
-import { toast } from 'vue-sonner'
 import type { Ref } from 'vue'
 
 import {
@@ -20,18 +19,11 @@ import {
   lineNumbers,
 } from '@codemirror/view'
 
-import { filesApi } from '~/api/files'
-
 import { createToolbarKeymapExtension } from '../toolbar'
 import { useEditorConfig } from '../universal/use-editor-setting'
 import { useEditorStore } from './editor-store'
 import { codemirrorReconfigureExtension } from './extension'
 import { syntaxTheme } from './syntax-highlight'
-import {
-  addPendingUpload,
-  removePendingUpload,
-  setPendingUploadError,
-} from './upload-store'
 import { useCodeMirrorConfigureFonts } from './use-auto-fonts'
 import { useCodeMirrorAutoToggleTheme } from './use-auto-theme'
 
@@ -338,87 +330,6 @@ export const useCodeMirror = <T extends Element>(
     view.dom.addEventListener('pointerdown', debugPointerDown, true)
     view.dom.addEventListener('pointerup', debugPointerUp, true)
 
-    let uploadIdCounter = 0
-    const generateUploadId = () =>
-      `__upload_${Date.now()}_${++uploadIdCounter}__`
-
-    const readFileAsBase64 = (file: File): Promise<string> => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader()
-        reader.onload = () => resolve(reader.result as string)
-        reader.onerror = reject
-        reader.readAsDataURL(file)
-      })
-    }
-
-    const uploadImageFile = async (file: File) => {
-      const uploadId = generateUploadId()
-      const placeholder = `![上传中...](${uploadId})`
-
-      // Read file as base64 for preview
-      let base64: string | null = null
-      try {
-        base64 = await readFileAsBase64(file)
-        addPendingUpload(uploadId, base64, file.name)
-      } catch {
-        // Failed to read base64, continue without preview
-      }
-
-      const { from: cursorPos } = view.state.selection.main
-      const currentLine = view.state.doc.lineAt(cursorPos)
-      const isLineEmpty = currentLine.text.trim() === ''
-
-      const insertPos = isLineEmpty ? cursorPos : currentLine.to
-      const prefix = isLineEmpty ? '' : '\n\n'
-      const insertText = `${prefix}${placeholder}`
-
-      view.dispatch({
-        changes: { from: insertPos, insert: insertText },
-        selection: { anchor: insertPos + insertText.length },
-      })
-
-      try {
-        const result = await filesApi.upload(file, 'image')
-
-        const currentDoc = view.state.doc.toString()
-        const placeholderIndex = currentDoc.indexOf(placeholder)
-
-        if (placeholderIndex !== -1) {
-          const imageMarkdown = `![](${result.url})`
-          view.dispatch({
-            changes: {
-              from: placeholderIndex,
-              to: placeholderIndex + placeholder.length,
-              insert: imageMarkdown,
-            },
-          })
-        }
-        // Clean up pending upload
-        removePendingUpload(uploadId)
-      } catch {
-        toast.error('图片上传失败')
-        setPendingUploadError(uploadId)
-
-        const currentDoc = view.state.doc.toString()
-        const placeholderIndex = currentDoc.indexOf(placeholder)
-        if (placeholderIndex !== -1) {
-          const placeholderLine = view.state.doc.lineAt(placeholderIndex)
-          const isOnlyPlaceholder = placeholderLine.text.trim() === placeholder
-          view.dispatch({
-            changes: {
-              from: isOnlyPlaceholder ? placeholderLine.from : placeholderIndex,
-              to: isOnlyPlaceholder
-                ? Math.min(placeholderLine.to + 1, view.state.doc.length)
-                : placeholderIndex + placeholder.length,
-              insert: '',
-            },
-          })
-        }
-        // Clean up pending upload after removing placeholder
-        removePendingUpload(uploadId)
-      }
-    }
-
     const handlePaste = (event: ClipboardEvent) => {
       const items = event.clipboardData?.items
       if (!items) return
@@ -433,13 +344,12 @@ export const useCodeMirror = <T extends Element>(
 
       if (imageFiles.length > 0) {
         event.preventDefault()
-        imageFiles.forEach((file) => uploadImageFile(file))
+        imageFiles.forEach((file) => editorStore.uploadImageFile(file))
       }
     }
 
     // 设置 store
     editorStore.setEditorView(view)
-    editorStore.setUploadImageFile(uploadImageFile)
 
     view.dom.addEventListener('paste', handlePaste)
 
@@ -458,7 +368,6 @@ export const useCodeMirror = <T extends Element>(
     editorView.value?.destroy()
     // 清理 store
     editorStore.setEditorView(undefined)
-    editorStore.setUploadImageFile(undefined)
   })
 
   return [refContainer, editorView]

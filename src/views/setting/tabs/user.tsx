@@ -123,12 +123,11 @@ export const TabUser = defineComponent(() => {
   )
 
   const addSocialEntry = () => {
-    if (!data.value.socialIds) {
-      data.value.socialIds = {}
-    }
+    const currentIds = data.value.socialIds || {}
     const availableKey =
       socialOptions.find((o) => !usedSocialKeys.value.has(o.value))?.value || ''
-    data.value.socialIds = { ...data.value.socialIds, [availableKey]: '' }
+    if (!availableKey) return
+    data.value.socialIds = { ...currentIds, [availableKey]: '' }
   }
 
   const updateSocialKey = (oldKey: string, newKey: string) => {
@@ -350,7 +349,9 @@ export const TabUser = defineComponent(() => {
                 type="primary"
                 tertiary
                 onClick={addSocialEntry}
-                disabled={usedSocialKeys.value.size >= socialOptions.length}
+                disabled={
+                  !socialOptions.some((o) => !usedSocialKeys.value.has(o.value))
+                }
               >
                 <PlusIcon class="mr-1 size-4" aria-hidden="true" />
                 添加
