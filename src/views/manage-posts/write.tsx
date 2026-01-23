@@ -14,9 +14,10 @@ import {
   ref,
   watchEffect,
 } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
 import type { CategoryModel } from '~/models/category'
+import type { DraftModel } from '~/models/draft'
 import type { PostModel } from '~/models/post'
 import type { WriteBaseType } from '~/shared/types/base'
 import type { SelectMixedOption } from 'naive-ui/lib/select/src/interface'
@@ -38,8 +39,8 @@ import { ParseContentButton } from '~/components/special-button/parse-content'
 import { HeaderPreviewButton } from '~/components/special-button/preview'
 import { WEB_URL } from '~/constants/env'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
-import { useServerDraft } from '~/hooks/use-server-draft'
 import { useStoreRef } from '~/hooks/use-store-ref'
+import { useWriteDraft } from '~/hooks/use-write-draft'
 import { useLayout } from '~/layouts/content'
 import { DraftRefType } from '~/models/draft'
 import { RouteName } from '~/router/name'
@@ -60,7 +61,6 @@ type PostReactiveType = WriteBaseType & {
 }
 
 const PostWriteView = defineComponent(() => {
-  const route = useRoute()
   const {
     setTitle,
     setHeaderClass,
@@ -69,7 +69,6 @@ const PostWriteView = defineComponent(() => {
     setHeaderSubtitle,
   } = useLayout()
 
-  // 启用沉浸式编辑模式（无 padding）
   setContentPadding(false)
 
   const categoryStore = useStoreRef(CategoryStore)
@@ -84,9 +83,7 @@ const PostWriteView = defineComponent(() => {
     title: '',
     copyright: true,
     tags: [],
-
     summary: '',
-
     allowComment: true,
     id: undefined,
     images: [],
@@ -99,54 +96,80 @@ const PostWriteView = defineComponent(() => {
   })
 
   const postListState = useMemoPostList()
-
   const data = reactive<PostReactiveType>(resetReactive())
-
   const parsePayloadIntoReactiveData = useParsePayloadIntoData(data)
-  const id = computed(() => route.query.id as string | undefined)
-  const draftIdFromRoute = computed(
-    () => route.query.draftId as string | undefined,
+
+  const router = useRouter()
+
+  // 从草稿恢复数据
+  const applyDraft = (
+    draft: DraftModel,
+    target: PostReactiveType,
+    isPartial?: boolean,
+  ) => {
+    target.title = draft.title
+    target.text = draft.text
+    target.images = draft.images || []
+    target.meta = draft.meta
+    if (draft.typeSpecificData) {
+      const specific = draft.typeSpecificData
+      target.slug = specific.slug || (isPartial ? target.slug : '')
+      target.categoryId = specific.categoryId || target.categoryId
+      target.copyright =
+        specific.copyright ?? (isPartial ? target.copyright : true)
+      target.tags = specific.tags || (isPartial ? target.tags : [])
+      target.summary = specific.summary || (isPartial ? target.summary : '')
+      target.pin = !!specific.pin
+      target.pinOrder = specific.pinOrder || (isPartial ? target.pinOrder : 1)
+      target.relatedId =
+        specific.relatedId || (isPartial ? target.relatedId : [])
+      target.isPublished =
+        specific.isPublished ?? (isPartial ? target.isPublished : true)
+    }
+  }
+
+  // 加载已发布文章
+  const loadPublished = async (id: string) => {
+    const payload = await postsApi.getById(id)
+    const postData = payload as any
+    postData.relatedId = postData.related?.map((r: any) => r.id) || []
+    postListState.append(postData.related)
+    parsePayloadIntoReactiveData(postData as PostModel)
+  }
+
+  const { id, serverDraft, isEditing, actualRefId, initialize } = useWriteDraft(
+    data,
+    {
+      refType: DraftRefType.Post,
+      interval: 10000,
+      draftLabel: '文章',
+      getData: () => ({
+        title: data.title,
+        text: data.text,
+        images: data.images,
+        meta: data.meta,
+        typeSpecificData: {
+          slug: data.slug,
+          categoryId: data.categoryId,
+          copyright: data.copyright,
+          tags: data.tags,
+          summary: data.summary,
+          pin: data.pin ? new Date().toISOString() : null,
+          pinOrder: data.pinOrder,
+          relatedId: data.relatedId,
+          isPublished: data.isPublished,
+        },
+      }),
+      applyDraft,
+      loadPublished,
+      onTitleFallback: (defaultTitle) => {
+        data.title = defaultTitle
+      },
+    },
   )
 
   const loading = computed(() => !!(id.value && typeof data.id === 'undefined'))
 
-  const router = useRouter()
-
-  // 服务端草稿 hook
-  const serverDraft = useServerDraft(DraftRefType.Post, {
-    refId: id.value,
-    draftId: draftIdFromRoute.value,
-    interval: 10000, // 10秒自动保存
-    getData: () => ({
-      title: data.title,
-      text: data.text,
-      images: data.images,
-      meta: data.meta,
-      typeSpecificData: {
-        slug: data.slug,
-        categoryId: data.categoryId,
-        copyright: data.copyright,
-        tags: data.tags,
-        summary: data.summary,
-        pin: data.pin ? new Date().toISOString() : null,
-        pinOrder: data.pinOrder,
-        relatedId: data.relatedId,
-        isPublished: data.isPublished,
-      },
-    }),
-    // 草稿首次创建后更新 URL
-    onDraftCreated: (draftId) => {
-      router.replace({ query: { draftId } })
-    },
-    // title 为空使用默认值时同步 UI
-    onTitleFallback: (defaultTitle) => {
-      data.title = defaultTitle
-    },
-  })
-
-  const draftInitialized = ref(false)
-
-  // const currentSelectCategoryId = ref('')
   const category = computed(
     () =>
       categoryStore.get(data.categoryId) ||
@@ -154,164 +177,42 @@ const PostWriteView = defineComponent(() => {
       ({} as CategoryModel),
   )
 
-  onMounted(async () => {
-    const $id = id.value
-    const $draftId = draftIdFromRoute.value
-
-    // 场景1：通过 draftId 加载草稿
-    if ($draftId) {
-      const draft = await serverDraft.loadDraftById($draftId)
-      if (draft) {
-        // 恢复草稿数据
-        data.title = draft.title
-        data.text = draft.text
-        data.images = draft.images || []
-        data.meta = draft.meta
-        if (draft.typeSpecificData) {
-          const specific = draft.typeSpecificData
-          data.slug = specific.slug || ''
-          data.categoryId = specific.categoryId || data.categoryId
-          data.copyright = specific.copyright ?? true
-          data.tags = specific.tags || []
-          data.summary = specific.summary || ''
-          data.pin = !!specific.pin
-          data.pinOrder = specific.pinOrder || 1
-          data.relatedId = specific.relatedId || []
-          data.isPublished = specific.isPublished ?? true
-        }
-        serverDraft.syncMemory()
-        serverDraft.startAutoSave()
-        draftInitialized.value = true
-        return
-      }
-    }
-
-    // 场景2：编辑已发布文章
-    if ($id && typeof $id == 'string') {
-      const payload = await postsApi.getById($id)
-
-      // HACK: transform
-      const postData = payload as any
-      postData.relatedId = postData.related?.map((r: any) => r.id) || []
-      postListState.append(postData.related)
-
-      parsePayloadIntoReactiveData(postData as PostModel)
-
-      // 检查是否有关联的草稿
-      const relatedDraft = await serverDraft.loadDraftByRef(
-        DraftRefType.Post,
-        $id,
-      )
-      if (relatedDraft) {
-        // 弹窗询问是否恢复草稿
-        window.dialog.info({
-          title: '检测到未保存的草稿',
-          content: `上次保存时间: ${new Date(relatedDraft.updated).toLocaleString()}`,
-          negativeText: '使用已发布版本',
-          positiveText: '恢复草稿',
-          onNegativeClick() {
-            // 使用已发布版本，同步记忆
-            serverDraft.syncMemory()
-            serverDraft.startAutoSave()
-          },
-          onPositiveClick() {
-            // 恢复草稿数据
-            data.title = relatedDraft.title
-            data.text = relatedDraft.text
-            data.images = relatedDraft.images || []
-            data.meta = relatedDraft.meta
-            if (relatedDraft.typeSpecificData) {
-              const specific = relatedDraft.typeSpecificData
-              data.slug = specific.slug || data.slug
-              data.categoryId = specific.categoryId || data.categoryId
-              data.copyright = specific.copyright ?? data.copyright
-              data.tags = specific.tags || data.tags
-              data.summary = specific.summary || data.summary
-              data.pin = !!specific.pin
-              data.pinOrder = specific.pinOrder || data.pinOrder
-              data.relatedId = specific.relatedId || data.relatedId
-              data.isPublished = specific.isPublished ?? data.isPublished
-            }
-            serverDraft.syncMemory()
-            serverDraft.startAutoSave()
-          },
-        })
-      } else {
-        // 没有关联草稿，直接开始自动保存
-        serverDraft.syncMemory()
-        serverDraft.startAutoSave()
-      }
-
-      draftInitialized.value = true
-      return
-    }
-
-    // 场景3：新建入口（无参数）
-    // 检查是否有未完成的新建草稿
-    const pendingDrafts = await serverDraft.getNewDrafts(DraftRefType.Post)
-    if (pendingDrafts.length > 0) {
-      window.dialog.info({
-        title: '发现未完成的草稿',
-        content: `你有 ${pendingDrafts.length} 个未完成的文章草稿，是否继续编辑？`,
-        negativeText: '创建新草稿',
-        positiveText: '查看草稿列表',
-        onNegativeClick() {
-          // 开始新草稿，不立即创建，等用户输入内容后自动保存时创建
-          serverDraft.startAutoSave()
-        },
-        onPositiveClick() {
-          // 跳转到草稿管理页面（或使用第一个草稿）
-          const firstDraft = pendingDrafts[0]
-          router.replace({ query: { draftId: firstDraft.id } })
-        },
-      })
-    } else {
-      // 没有未完成草稿，直接启动自动保存
-      // 草稿会在用户输入内容后自动创建
-      serverDraft.startAutoSave()
-    }
-
-    draftInitialized.value = true
+  onMounted(() => {
+    initialize()
   })
 
   const drawerShow = ref(false)
+
   const handleSubmit = async () => {
     const payload = {
       ...data,
       categoryId: category.value.id,
-      summary:
-        data.summary && data.summary.trim() != '' ? data.summary.trim() : null,
+      summary: data.summary?.trim() || null,
       pin: data.pin ? new Date().toISOString() : null,
-      // 传递草稿 ID，让后端标记该草稿为已发布
       draftId: serverDraft.draftId.value,
     }
 
-    if (id.value) {
-      // update
-      if (!isString(id.value)) {
-        return
-      }
-      const $id = id.value as string
-      await postsApi.update($id, payload)
+    if (actualRefId.value) {
+      if (!isString(actualRefId.value)) return
+      await postsApi.update(actualRefId.value, payload)
       toast.success('修改成功')
     } else {
-      // create
       await postsApi.create(payload)
       toast.success('发布成功')
     }
 
     await router.push({ name: RouteName.ViewPost, hash: '|publish' })
   }
+
   const handleOpenDrawer = () => {
     drawerShow.value = true
-
     if (postListState.loading.value) {
       postListState.fetchNext()
     }
   }
+
   const handleFetchNext = (e: Event) => {
     const currentTarget = e.currentTarget as HTMLElement
-
     if (
       currentTarget.scrollTop + currentTarget.offsetHeight + 10 >=
       currentTarget.scrollHeight
@@ -327,9 +228,8 @@ const PostWriteView = defineComponent(() => {
   // 设置 layout 状态
   setHeaderClass('pt-1')
   watchEffect(() => {
-    setTitle(id.value ? '修改文章' : '撰写新文章')
+    setTitle(isEditing.value ? '修改文章' : '撰写新文章')
 
-    // 设置草稿保存状态指示器
     setHeaderSubtitle(
       <DraftSaveIndicator
         isSaving={serverDraft.isSaving}
@@ -342,23 +242,18 @@ const PostWriteView = defineComponent(() => {
         <ParseContentButton
           data={data}
           onHandleYamlParsedMeta={(meta) => {
-            // TODO: other meta field attach to data
             const { title, slug, ...rest } = meta
             data.title = title ?? data.title
             data.slug = slug ?? data.slug
-
             data.meta = { ...rest }
           }}
         />
-
         <HeaderPreviewButton iframe data={data} />
-
         <HeaderActionButton
           icon={<SlidersHIcon />}
           name="文章设置"
           onClick={handleOpenDrawer}
         />
-
         <HeaderActionButton
           icon={<TelegramPlaneIcon />}
           name="发布"
@@ -374,7 +269,7 @@ const PostWriteView = defineComponent(() => {
       <WriteEditor
         key={data.id}
         loading={loading.value}
-        autoFocus={id.value ? 'content' : 'title'}
+        autoFocus={isEditing.value ? 'content' : 'title'}
         title={data.title}
         onTitleChange={(v) => {
           data.title = v
@@ -393,7 +288,6 @@ const PostWriteView = defineComponent(() => {
             }}
             placeholder="slug"
           >
-            {/* AI Helper 按钮 */}
             {(!data.title || !data.slug) && data.text.length > 0 && (
               <AiHelperButton reactiveData={data} />
             )}
@@ -401,7 +295,6 @@ const PostWriteView = defineComponent(() => {
         )}
       />
 
-      {/* Drawer  */}
       <TextBaseDrawer
         title="文章设定"
         show={drawerShow.value}
@@ -411,7 +304,6 @@ const PostWriteView = defineComponent(() => {
         }}
         data={data}
       >
-        {/* 分类与标签 */}
         <SectionTitle icon={FolderIcon}>分类与标签</SectionTitle>
 
         <FormField label="分类" required>
@@ -510,14 +402,11 @@ const PostWriteView = defineComponent(() => {
             placeholder="请输入摘要（可选）"
             value={data.summary}
             rows={3}
-            autosize={{
-              minRows: 3,
-            }}
+            autosize={{ minRows: 3 }}
             onUpdateValue={(v) => void (data.summary = v)}
           />
         </FormField>
 
-        {/* 发布选项 */}
         <SectionTitle>发布选项</SectionTitle>
 
         <SwitchRow

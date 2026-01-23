@@ -17,6 +17,7 @@ import {
   File as FileIcon,
   Beaker as FlaskIcon,
   FunctionSquare as FunctionIcon,
+  Image as ImageIcon,
   FileCode2 as MarkdownIcon,
   Hammer as MidHammer,
   Pencil as PencilAltIcon,
@@ -208,11 +209,32 @@ export const routeForMenu: Array<RouteRecordRaw> = [
   {
     path: '/files',
     name: RouteName.File,
+    redirect: '/files/list',
     meta: {
       title: '文件',
       icon: <SymbolIcon />,
     },
-    component: () => import('../views/manage-files'),
+    component: $RouterView,
+    children: [
+      {
+        path: 'list',
+        name: 'file-list',
+        meta: {
+          title: '文件管理',
+          icon: <EyeIcon />,
+        },
+        component: () => import('../views/manage-files'),
+      },
+      {
+        path: 'orphans',
+        name: 'file-orphans',
+        meta: {
+          title: '孤儿图片',
+          icon: <ImageIcon />,
+        },
+        component: () => import('../views/manage-files/orphans'),
+      },
+    ],
   },
   {
     path: '/says',

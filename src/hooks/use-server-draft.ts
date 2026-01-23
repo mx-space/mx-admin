@@ -38,6 +38,7 @@ export const useServerDraft = (
   } = options
 
   const draftId = ref<string | undefined>(options.draftId)
+  const currentRefId = ref<string | undefined>(refId)
   const lastSavedVersion = ref(0)
   const isSaving = ref(false)
   const lastSavedTime = ref<Date | null>(null)
@@ -92,7 +93,7 @@ export const useServerDraft = (
         // 创建新草稿
         response = await draftsApi.create({
           refType,
-          refId,
+          refId: currentRefId.value,
           title,
           text: data.text,
           images: data.images,
@@ -133,6 +134,10 @@ export const useServerDraft = (
           images: draft.images,
           meta: draft.meta,
           typeSpecificData: draft.typeSpecificData || {},
+        }
+        // 更新关联的已发布内容 ID
+        if (draft.refId) {
+          currentRefId.value = draft.refId
         }
       }
       return draft
@@ -182,7 +187,7 @@ export const useServerDraft = (
     try {
       const response = await draftsApi.create({
         refType,
-        refId,
+        refId: currentRefId.value,
         title: initialTitle?.trim() || 'Untitled',
         text: '',
         typeSpecificData: {},
@@ -248,6 +253,8 @@ export const useServerDraft = (
 
   return {
     draftId: computed(() => draftId.value),
+    /** 关联的已发布内容 ID（从草稿加载后更新） */
+    refId: computed(() => currentRefId.value),
     isSaving: computed(() => isSaving.value),
     lastSavedTime: computed(() => lastSavedTime.value),
     lastSavedVersion: computed(() => lastSavedVersion.value),

@@ -12,11 +12,10 @@ import { useMountAndUnmount } from '~/hooks/use-lifecycle'
 import { useLayout } from '~/layouts/content'
 
 import { CodemirrorEditor } from '../codemirror/codemirror'
+import { useEditorStore } from '../codemirror/editor-store'
 import { editorBaseProps } from './props'
 
 import './index.css'
-
-import type { EditorRef } from './types'
 
 import { useEditorConfig } from './use-editor-setting'
 
@@ -86,11 +85,11 @@ export const Editor = defineComponent({
       },
     })
 
-    const cmRef = ref<EditorRef>()
+    const editorStore = useEditorStore()
 
     expose({
       setValue: (value: string) => {
-        cmRef.value?.setValue(value)
+        editorStore.setValue(value)
       },
     })
 
@@ -111,11 +110,7 @@ export const Editor = defineComponent({
           }
           class={'editor-wrapper'}
         >
-          <CodemirrorEditor
-            ref={cmRef}
-            {...props}
-            renderMode={resolvedRenderMode}
-          />
+          <CodemirrorEditor {...props} renderMode={resolvedRenderMode} />
           <Modal />
         </NElement>
       )

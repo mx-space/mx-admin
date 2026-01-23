@@ -16,7 +16,6 @@ import {
   watch,
 } from 'vue'
 import type { PropType, VNode } from 'vue'
-import type { EditorRef } from '../universal/types'
 
 import { FabButton } from '~/components/button/rounded-button'
 import { GhostInput } from '~/components/input/ghost-input'
@@ -24,6 +23,8 @@ import { useMountAndUnmount } from '~/hooks/use-lifecycle'
 import { useLayout } from '~/layouts/content'
 
 import { CodemirrorEditor } from '../codemirror/codemirror'
+import { useEditorStore } from '../codemirror/editor-store'
+import { ImageDropZone } from '../codemirror/ImageDropZone'
 import { editorBaseProps } from '../universal/props'
 import { useEditorConfig } from '../universal/use-editor-setting'
 
@@ -118,18 +119,18 @@ export const WriteEditor = defineComponent({
       },
     })
 
-    const cmRef = ref<EditorRef>()
+    const editorStore = useEditorStore()
     const titleInputRef = ref<{ focus: () => void }>()
 
     expose({
       setValue: (value: string) => {
-        cmRef.value?.setValue(value)
+        editorStore.setValue(value)
       },
       focusTitle: () => {
         titleInputRef.value?.focus()
       },
       focusContent: () => {
-        cmRef.value?.focus()
+        editorStore.focus()
       },
     })
 
@@ -141,7 +142,7 @@ export const WriteEditor = defineComponent({
         if (props.autoFocus === 'title') {
           titleInputRef.value?.focus()
         } else if (props.autoFocus === 'content') {
-          cmRef.value?.focus()
+          editorStore.focus()
         }
       })
     }
@@ -197,7 +198,7 @@ export const WriteEditor = defineComponent({
                 value={props.title}
                 onChange={props.onTitleChange}
                 placeholder={props.titlePlaceholder}
-                onArrowDown={() => cmRef.value?.focus()}
+                onArrowDown={() => editorStore.focus()}
               />
 
               {/* 副标题/Slug 区域 */}
@@ -209,7 +210,6 @@ export const WriteEditor = defineComponent({
             {/* 编辑器区域 */}
             <div class="write-editor-content">
               <CodemirrorEditor
-                ref={cmRef}
                 text={props.text}
                 onChange={props.onChange}
                 unSaveConfirm={props.unSaveConfirm}
@@ -217,6 +217,9 @@ export const WriteEditor = defineComponent({
                 onArrowUpAtFirstLine={() => titleInputRef.value?.focus()}
               />
             </div>
+
+            {/* 图片拖放区域 */}
+            <ImageDropZone />
           </div>
 
           <Modal />

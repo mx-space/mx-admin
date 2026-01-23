@@ -4,78 +4,57 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-MX Admin (admin-vue3) is the **legacy dashboard** for MX Space, a personal blog management system. Built with Vue 3, Naive UI, and Tailwind CSS v4. This project is being replaced by `mx-dashboard` (React-based rewrite).
-
-> **Note**: This is the old version of the dashboard. For new feature development, prefer working on `mx-dashboard` instead.
+MX Admin (admin-vue3) is the dashboard for MX Space, a personal blog management system. Built with Vue 3, Naive UI, and UnoCSS.
 
 ## Development Commands
 
 ```bash
-# Install dependencies
-pnpm install
-
-# Start development server (opens browser automatically)
-pnpm dev
-
-# Build for production
-pnpm build
-
-# Preview production build
-pnpm preview
-
-# Lint code
-pnpm lint
-pnpm lint:fix
-
-# Format code
-pnpm format
+pnpm install          # Install dependencies
+pnpm dev              # Start development server (opens browser automatically)
+pnpm build            # Build for production
+pnpm lint             # Lint code with Biome
+pnpm lint:fix         # Lint and auto-fix
+npx tsc --noEmit      # Type check (use this instead of build for validation)
 ```
 
 ## Architecture Overview
 
-### Directory Structure
-
-- `src/views/` - Page components organized by feature
-- `src/components/` - Reusable UI components
-- `src/layouts/` - Layout components (sidebar, header, etc.)
-- `src/stores/` - Pinia state management stores
-- `src/router/` - Vue Router configuration
-- `src/models/` - TypeScript type definitions and API models
-- `src/hooks/` - Vue 3 composables
-- `src/utils/` - Utility functions
-- `src/socket/` - WebSocket connection handling
-- `src/external/` - External service integrations
-
 ### Technology Stack
 
-- **Vue 3** - UI framework with Composition API
-- **Naive UI** - Component library
-- **Tailwind CSS v4** - Utility-first CSS framework
+- **Vue 3** with Composition API and TSX (JSX via `@vitejs/plugin-vue-jsx`)
+- **Naive UI** - Component library with Vercel-style neutral theme
+- **UnoCSS** (preset-wind4) - Tailwind-compatible utility classes
 - **Pinia** - State management
-- **Vue Router** - Routing
+- **TanStack Query** (`@tanstack/vue-query`) - Server state management
+- **Socket.IO** - Real-time WebSocket updates
 - **CodeMirror/Monaco** - Code editors
-- **@mx-space/api-client** - API client for backend communication
 
-### Key Patterns
+### Path Aliases
 
-**State Management**: Uses Pinia stores in `src/stores/` for global state.
+```typescript
+import { something } from '~/utils/...'  // ~ maps to ./src
+```
 
-**API Integration**: Uses `@mx-space/api-client` for type-safe API calls to MX Core backend.
+### API Layer (`src/api/`)
 
-**Auto Import**: Uses `unplugin-auto-import` for automatic importing of Vue APIs and components.
+API services wrap `@mx-space/api-client`. Backend wraps array responses as `{ data: [...] }`. Extract with:
+```typescript
+select: (res: any) => Array.isArray(res) ? res : res?.data ?? []
+```
 
-**WebSocket**: Real-time updates via Socket.IO connection to backend.
+### Auto-Imported APIs
 
-## Configuration
+Vue Composition APIs (`ref`, `computed`, `watch`, etc.) are globally available via Biome globals config - no imports needed.
 
-- Environment variables in `.env` and `.env.production`
-- Vite configuration in `vite.config.mts`
-- Tailwind CSS configuration in `src/index.css` (@theme block)
-- Theme colors in `src/utils/color.ts` (fixed Vercel-style neutral gray)
+### Responsive Breakpoints (UnoCSS)
+
+- `phone:` - max-width: 768px
+- `tablet:` - max-width: 1023px
+- `desktop:` - min-width: 1024px
 
 ## Claude Code Rules
 
-- **验证方式**：修改代码后只需运行类型检查（`pnpm tsc --noEmit` 或依赖 IDE 诊断），不要运行 `pnpm build` 构建整个项目
+- **验证方式**：修改代码后只需运行类型检查（`npx tsc --noEmit`），不要运行 `pnpm build` 构建整个项目
 - **灰阶颜色**：所有灰阶色必须使用 `neutral` 而不是 `gray`（如 `text-neutral-500`、`bg-neutral-800`、`border-neutral-200`）。这与项目的 Vercel 风格设计一致
 - **字号规范**：禁止使用任意值字号（如 `text-[11px]`、`text-[13px]`），必须使用标准 Tailwind 类：
   - `text-2xl` (24px) - 页面大标题
@@ -87,14 +66,13 @@ pnpm format
 
   详见 `docs/typography.md`
 
-## API Response Handling
+## Configuration Files
 
-Backend wraps array responses as `{ data: [...] }`. Use `select` to extract:
-```typescript
-select: (res: any) => Array.isArray(res) ? res : res?.data ?? []
-```
+- `uno.config.ts` - UnoCSS configuration with custom breakpoints and theme colors
+- `src/utils/color.ts` - Naive UI theme overrides (Vercel-style neutral gray palette)
+- `biome.json` - Linter/formatter configuration with Vue globals
+- `.env` - Local dev API endpoint (`VITE_APP_BASE_API`)
 
 ## Related Projects
 
 - **mx-core** - Backend API server (NestJS + MongoDB), located at `../mx-core`
-- **mx-dashboard** - New React-based dashboard (replacement for this project)

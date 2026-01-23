@@ -192,18 +192,6 @@
       opacity: 0.9;
     }
 
-    /* Enhanced image for article */
-    & .cm-wysiwyg-image-wrapper-block {
-      display: block;
-      text-align: center;
-    }
-
-    & .cm-wysiwyg-image {
-      max-height: 400px;
-      border-radius: 0.5rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
     /* Enhanced math block for article */
     & .cm-wysiwyg-math-block {
       padding-top: 1.5em;
@@ -320,62 +308,6 @@
 
   .cm-wysiwyg-inline-code .line {
     display: inline;
-  }
-
-  /* Image styles */
-  .cm-wysiwyg-image-wrapper {
-    display: inline-block;
-    vertical-align: middle;
-  }
-
-  .cm-wysiwyg-image {
-    max-width: 100%;
-    max-height: 300px;
-    border-radius: 0.375rem;
-    object-fit: contain;
-  }
-
-  /* Image error placeholder */
-  .cm-wysiwyg-image-placeholder {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 1.5rem 2rem;
-    min-width: 200px;
-    min-height: 120px;
-    border-radius: 0.5rem;
-    border: 1px dashed;
-    cursor: pointer;
-    transition:
-      background-color 0.15s ease,
-      border-color 0.15s ease;
-    @apply border-neutral-300 bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900;
-  }
-
-  .cm-wysiwyg-image-placeholder:hover {
-    @apply border-neutral-400 bg-neutral-100 dark:border-neutral-600 dark:bg-neutral-800;
-  }
-
-  .cm-wysiwyg-image-placeholder-icon {
-    @apply text-neutral-400 dark:text-neutral-500;
-  }
-
-  .cm-wysiwyg-image-placeholder-url {
-    font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
-      'Liberation Mono', monospace;
-    font-size: 0.75rem;
-    max-width: 280px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    @apply text-neutral-500 dark:text-neutral-400;
-  }
-
-  .cm-wysiwyg-image-placeholder-hint {
-    font-size: 0.75rem;
-    @apply text-neutral-400 dark:text-neutral-500;
   }
 
   /* Code block styles - editing mode */
@@ -529,16 +461,6 @@
   /* KaTeX overrides */
   .katex {
     font-size: 1.1em;
-  }
-
-  /* Image click hint */
-  .cm-wysiwyg-image {
-    cursor: pointer;
-    transition: opacity 0.15s ease;
-  }
-
-  .cm-wysiwyg-image:hover {
-    opacity: 0.85;
   }
 }
 

@@ -117,6 +117,45 @@ export const ImageEditPopover = defineComponent({
       hideImagePopover()
     }
 
+    const handleDelete = () => {
+      const data = popoverData.value
+      const view = imagePopoverState.view
+      if (!data || !view) return
+
+      // Find the line containing the image and check if it's the only content
+      const doc = view.state.doc
+      const line = doc.lineAt(data.matchStart)
+      const lineText = line.text.trim()
+      const imageMarkdown = doc.sliceString(data.matchStart, data.matchEnd)
+
+      // If the line only contains this image, delete the entire line
+      const isOnlyContentOnLine = lineText === imageMarkdown.trim()
+
+      if (isOnlyContentOnLine) {
+        // Delete the entire line including the newline
+        const deleteFrom = line.from
+        const deleteTo = Math.min(line.to + 1, doc.length)
+        view.dispatch({
+          changes: {
+            from: deleteFrom,
+            to: deleteTo,
+            insert: '',
+          },
+        })
+      } else {
+        // Just delete the image markdown
+        view.dispatch({
+          changes: {
+            from: data.matchStart,
+            to: data.matchEnd,
+            insert: '',
+          },
+        })
+      }
+
+      hideImagePopover()
+    }
+
     const handleKeydown = (e: KeyboardEvent) => {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault()
@@ -161,14 +200,19 @@ export const ImageEditPopover = defineComponent({
                   size="small"
                 />
               </div>
-              <NSpace justify="end" size={8}>
-                <NButton size="small" onClick={handleCancel}>
-                  取消
+              <div class="flex items-center justify-between">
+                <NButton size="small" type="error" text onClick={handleDelete}>
+                  删除
                 </NButton>
-                <NButton size="small" type="primary" onClick={handleSave}>
-                  保存
-                </NButton>
-              </NSpace>
+                <NSpace size={8}>
+                  <NButton size="small" onClick={handleCancel}>
+                    取消
+                  </NButton>
+                  <NButton size="small" type="primary" onClick={handleSave}>
+                    保存
+                  </NButton>
+                </NSpace>
+              </div>
             </div>
           </div>
         </Teleport>

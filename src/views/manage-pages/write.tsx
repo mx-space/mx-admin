@@ -14,9 +14,10 @@ import {
   toRaw,
   watchEffect,
 } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
 import type { CreatePageData } from '~/api/pages'
+import type { DraftModel } from '~/models/draft'
 import type { PageModel } from '~/models/page'
 import type { WriteBaseType } from '~/shared/types/base'
 
@@ -34,7 +35,7 @@ import { ParseContentButton } from '~/components/special-button/parse-content'
 import { HeaderPreviewButton } from '~/components/special-button/preview'
 import { WEB_URL } from '~/constants/env'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
-import { useServerDraft } from '~/hooks/use-server-draft'
+import { useWriteDraft } from '~/hooks/use-write-draft'
 import { useLayout } from '~/layouts/content'
 import { DraftRefType } from '~/models/draft'
 import { RouteName } from '~/router/name'
@@ -46,7 +47,6 @@ type PageReactiveType = WriteBaseType & {
 }
 
 const PageWriteView = defineComponent(() => {
-  const route = useRoute()
   const {
     setTitle,
     setHeaderClass,
@@ -55,7 +55,6 @@ const PageWriteView = defineComponent(() => {
     setHeaderSubtitle,
   } = useLayout()
 
-  // 启用沉浸式编辑模式
   setContentPadding(false)
 
   const resetReactive: () => PageReactiveType = () => ({
@@ -65,7 +64,6 @@ const PageWriteView = defineComponent(() => {
     slug: '',
     subtitle: '',
     allowComment: true,
-
     id: undefined,
     images: [],
     meta: undefined,
@@ -74,140 +72,66 @@ const PageWriteView = defineComponent(() => {
   const parsePayloadIntoReactiveData = (payload: PageModel) =>
     useParsePayloadIntoData(data)(payload)
   const data = reactive<PageReactiveType>(resetReactive())
-  const id = computed(() => route.query.id as string | undefined)
-  const draftIdFromRoute = computed(
-    () => route.query.draftId as string | undefined,
+
+  const router = useRouter()
+
+  // 从草稿恢复数据
+  const applyDraft = (
+    draft: DraftModel,
+    target: PageReactiveType,
+    isPartial?: boolean,
+  ) => {
+    target.title = draft.title
+    target.text = draft.text
+    target.images = draft.images || []
+    target.meta = draft.meta
+    if (draft.typeSpecificData) {
+      const specific = draft.typeSpecificData
+      target.slug = specific.slug || (isPartial ? target.slug : '')
+      target.subtitle = specific.subtitle || (isPartial ? target.subtitle : '')
+      target.order = specific.order ?? (isPartial ? target.order : 0)
+    }
+  }
+
+  // 加载已发布页面
+  const loadPublished = async (id: string) => {
+    const payload = await pagesApi.getById(id)
+    parsePayloadIntoReactiveData(payload as PageModel)
+  }
+
+  const { id, serverDraft, isEditing, actualRefId, initialize } = useWriteDraft(
+    data,
+    {
+      refType: DraftRefType.Page,
+      interval: 10000,
+      draftLabel: '页面',
+      getData: () => ({
+        title: data.title,
+        text: data.text,
+        images: data.images,
+        meta: data.meta,
+        typeSpecificData: {
+          slug: data.slug,
+          subtitle: data.subtitle,
+          order: data.order,
+        },
+      }),
+      applyDraft,
+      loadPublished,
+      onTitleFallback: (title) => {
+        data.title = title
+      },
+    },
   )
 
   const loading = computed(() => !!(id.value && typeof data.id === 'undefined'))
 
-  const router = useRouter()
-
-  // 服务端草稿 hook
-  const serverDraft = useServerDraft(DraftRefType.Page, {
-    refId: id.value,
-    draftId: draftIdFromRoute.value,
-    interval: 10000,
-    getData: () => ({
-      title: data.title,
-      text: data.text,
-      images: data.images,
-      meta: data.meta,
-      typeSpecificData: {
-        slug: data.slug,
-        subtitle: data.subtitle,
-        order: data.order,
-      },
-    }),
-    // 草稿首次创建后更新 URL
-    onDraftCreated: (draftId) => {
-      router.replace({ query: { draftId } })
-    },
-    // title 为空使用默认值时同步 UI
-    onTitleFallback: (defaultTitle) => {
-      data.title = defaultTitle
-    },
-  })
-
-  const draftInitialized = ref(false)
-
-  onMounted(async () => {
-    const $id = id.value
-    const $draftId = draftIdFromRoute.value
-
-    // 场景1：通过 draftId 加载草稿
-    if ($draftId) {
-      const draft = await serverDraft.loadDraftById($draftId)
-      if (draft) {
-        data.title = draft.title
-        data.text = draft.text
-        data.images = draft.images || []
-        data.meta = draft.meta
-        if (draft.typeSpecificData) {
-          const specific = draft.typeSpecificData
-          data.slug = specific.slug || ''
-          data.subtitle = specific.subtitle || ''
-          data.order = specific.order ?? 0
-        }
-        serverDraft.syncMemory()
-        serverDraft.startAutoSave()
-        draftInitialized.value = true
-        return
-      }
-    }
-
-    // 场景2：编辑已发布页面
-    if ($id && typeof $id == 'string') {
-      const payload = await pagesApi.getById($id)
-
-      parsePayloadIntoReactiveData(payload as PageModel)
-
-      // 检查是否有关联的草稿
-      const relatedDraft = await serverDraft.loadDraftByRef(
-        DraftRefType.Page,
-        $id,
-      )
-      if (relatedDraft) {
-        window.dialog.info({
-          title: '检测到未保存的草稿',
-          content: `上次保存时间: ${new Date(relatedDraft.updated).toLocaleString()}`,
-          negativeText: '使用已发布版本',
-          positiveText: '恢复草稿',
-          onNegativeClick() {
-            serverDraft.syncMemory()
-            serverDraft.startAutoSave()
-          },
-          onPositiveClick() {
-            data.title = relatedDraft.title
-            data.text = relatedDraft.text
-            data.images = relatedDraft.images || []
-            data.meta = relatedDraft.meta
-            if (relatedDraft.typeSpecificData) {
-              const specific = relatedDraft.typeSpecificData
-              data.slug = specific.slug || data.slug
-              data.subtitle = specific.subtitle || data.subtitle
-              data.order = specific.order ?? data.order
-            }
-            serverDraft.syncMemory()
-            serverDraft.startAutoSave()
-          },
-        })
-      } else {
-        serverDraft.syncMemory()
-        serverDraft.startAutoSave()
-      }
-
-      draftInitialized.value = true
-      return
-    }
-
-    // 场景3：新建入口
-    const pendingDrafts = await serverDraft.getNewDrafts(DraftRefType.Page)
-    if (pendingDrafts.length > 0) {
-      window.dialog.info({
-        title: '发现未完成的草稿',
-        content: `你有 ${pendingDrafts.length} 个未完成的页面草稿，是否继续编辑？`,
-        negativeText: '创建新草稿',
-        positiveText: '继续编辑',
-        onNegativeClick() {
-          // 开始新草稿，不立即创建，等用户输入内容后自动保存时创建
-          serverDraft.startAutoSave()
-        },
-        onPositiveClick() {
-          const firstDraft = pendingDrafts[0]
-          router.replace({ query: { draftId: firstDraft.id } })
-        },
-      })
-    } else {
-      // 没有未完成草稿，直接启动自动保存
-      // 草稿会在用户输入内容后自动创建
-      serverDraft.startAutoSave()
-    }
-
-    draftInitialized.value = true
+  onMounted(() => {
+    initialize()
   })
 
   const drawerShow = ref(false)
+
   const handleSubmit = async () => {
     const parseDataToPayload = (): { [key in keyof PageModel]?: any } => {
       try {
@@ -224,23 +148,20 @@ const PageWriteView = defineComponent(() => {
         }
       } catch (error) {
         toast.error(error as any)
-
         throw error
       }
     }
-    // 获取草稿 ID，发布时传递给后端标记为已发布
+
     const draftId = serverDraft.draftId.value
 
-    if (id.value) {
-      // update
-      if (!isString(id.value)) {
-        return
-      }
-      const $id = id.value as string
-      await pagesApi.update($id, { ...parseDataToPayload(), draftId })
+    if (actualRefId.value) {
+      if (!isString(actualRefId.value)) return
+      await pagesApi.update(actualRefId.value, {
+        ...parseDataToPayload(),
+        draftId,
+      })
       toast.success('修改成功')
     } else {
-      // create
       await pagesApi.create({
         ...parseDataToPayload(),
         draftId,
@@ -253,10 +174,10 @@ const PageWriteView = defineComponent(() => {
 
   // 设置 layout 状态
   setHeaderClass('pt-1')
-  setTitle(id.value ? '修改页面' : '新建页面')
 
-  // 设置草稿保存状态指示器
   watchEffect(() => {
+    setTitle(isEditing.value ? '修改页面' : '新建页面')
+
     setHeaderSubtitle(
       <DraftSaveIndicator
         isSaving={serverDraft.isSaving}
@@ -264,6 +185,7 @@ const PageWriteView = defineComponent(() => {
       />,
     )
   })
+
   setActions(
     <>
       <ParseContentButton
@@ -273,13 +195,10 @@ const PageWriteView = defineComponent(() => {
           data.title = title ?? data.title
           data.slug = slug ?? data.slug
           data.subtitle = subtitle ?? data.subtitle
-
           data.meta = { ...rest }
         }}
       />
-
       <HeaderPreviewButton iframe data={data} />
-
       <HeaderActionButton
         icon={<SlidersHIcon />}
         name="页面设置"
@@ -287,7 +206,6 @@ const PageWriteView = defineComponent(() => {
           drawerShow.value = true
         }}
       />
-
       <HeaderActionButton
         icon={<TelegramPlaneIcon />}
         name="发布"
@@ -302,7 +220,7 @@ const PageWriteView = defineComponent(() => {
       <WriteEditor
         key={data.id}
         loading={loading.value}
-        autoFocus={id.value ? 'content' : 'title'}
+        autoFocus={isEditing.value ? 'content' : 'title'}
         title={data.title}
         onTitleChange={(v) => {
           data.title = v
@@ -314,7 +232,6 @@ const PageWriteView = defineComponent(() => {
         }}
         subtitleSlot={() => (
           <div class="space-y-2">
-            {/* Slug 输入 */}
             <SlugInput
               prefix={`${WEB_URL}/`}
               value={data.slug}
@@ -323,7 +240,6 @@ const PageWriteView = defineComponent(() => {
               }}
               placeholder="slug"
             />
-            {/* 副标题输入 */}
             <input
               class={[
                 'w-full bg-transparent outline-none',
@@ -341,7 +257,6 @@ const PageWriteView = defineComponent(() => {
         )}
       />
 
-      {/* Drawer  */}
       <TextBaseDrawer
         title="页面设定"
         disabledItem={['date-picker']}
@@ -366,8 +281,6 @@ const PageWriteView = defineComponent(() => {
           />
         </FormField>
       </TextBaseDrawer>
-
-      {/* Drawer END */}
     </>
   )
 })

@@ -17,10 +17,11 @@ import {
   toRaw,
   watchEffect,
 } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
 import type { TopicModel } from '@mx-space/api-client'
 import type { CreateNoteData } from '~/api/notes'
+import type { DraftModel } from '~/models/draft'
 import type { Coordinate, NoteModel } from '~/models/note'
 import type { WriteBaseType } from '~/shared/types/base'
 
@@ -44,7 +45,7 @@ import { HeaderPreviewButton } from '~/components/special-button/preview'
 import { WEB_URL } from '~/constants/env'
 import { MOOD_SET, WEATHER_SET } from '~/constants/note'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
-import { useServerDraft } from '~/hooks/use-server-draft'
+import { useWriteDraft } from '~/hooks/use-write-draft'
 import { useLayout } from '~/layouts/content'
 import { DraftRefType } from '~/models/draft'
 import { RouteName } from '~/router/name'
@@ -57,7 +58,6 @@ type NoteReactiveType = {
   publicAt: Date | null
   bookmark: boolean
   isPublished: boolean
-
   location: null | string
   coordinates: null | Coordinate
   topicId: string | null | undefined
@@ -67,42 +67,22 @@ const useNoteTopic = () => {
   const topics = ref([] as TopicModel[])
 
   const fetchTopic = async () => {
-    const { data } = await topicsApi.getList({
-      // TODO
-      size: 50,
-    })
-
+    const { data } = await topicsApi.getList({ size: 50 })
     topics.value = data
   }
 
-  return {
-    topics,
-    fetchTopic,
-  }
+  return { topics, fetchTopic }
 }
 
 const NoteWriteView = defineComponent(() => {
-  const route = useRoute()
-
   const defaultTitle = ref('新建日记')
-  const id = computed(() => route.query.id)
-
-  onBeforeMount(() => {
-    if (id.value) {
-      return
-    }
-    const currentTime = new Date()
-    defaultTitle.value = `记录 ${currentTime.getFullYear()} 年第 ${getDayOfYear(
-      currentTime,
-    )} 天`
-  })
+  const router = useRouter()
 
   const resetReactive: () => NoteReactiveType = () => ({
     text: '',
     title: '',
     bookmark: false,
     mood: '',
-
     password: null,
     publicAt: null,
     weather: '',
@@ -110,7 +90,6 @@ const NoteWriteView = defineComponent(() => {
     coordinates: null,
     allowComment: true,
     isPublished: true,
-
     id: undefined,
     nid: undefined,
     topicId: undefined,
@@ -123,169 +102,94 @@ const NoteWriteView = defineComponent(() => {
     useParsePayloadIntoData(data)(payload)
   const data = reactive<NoteReactiveType>(resetReactive())
   const nid = ref<number>()
-  const draftIdFromRoute = computed(
-    () => route.query.draftId as string | undefined,
+
+  // 从草稿恢复数据
+  const applyDraft = (
+    draft: DraftModel,
+    target: NoteReactiveType,
+    isPartial?: boolean,
+  ) => {
+    target.title = draft.title
+    target.text = draft.text
+    target.images = draft.images || []
+    target.meta = draft.meta
+    if (draft.typeSpecificData) {
+      const specific = draft.typeSpecificData
+      target.mood = specific.mood || (isPartial ? target.mood : '')
+      target.weather = specific.weather || (isPartial ? target.weather : '')
+      target.password =
+        specific.password ?? (isPartial ? target.password : null)
+      target.publicAt = specific.publicAt
+        ? new Date(specific.publicAt)
+        : isPartial
+          ? target.publicAt
+          : null
+      target.bookmark =
+        specific.bookmark ?? (isPartial ? target.bookmark : false)
+      target.location = specific.location || (isPartial ? target.location : '')
+      target.coordinates =
+        specific.coordinates || (isPartial ? target.coordinates : null)
+      target.topicId = specific.topicId ?? (isPartial ? target.topicId : null)
+      target.isPublished =
+        specific.isPublished ?? (isPartial ? target.isPublished : true)
+    }
+  }
+
+  // 加载已发布手记
+  const loadPublished = async (id: string) => {
+    const noteData = await notesApi.getById(id, { single: true })
+    if (noteData.topic) {
+      topics.value.push(noteData.topic)
+    }
+    nid.value = noteData.nid
+
+    const created = new Date((noteData as any).created)
+    defaultTitle.value = `记录 ${created.getFullYear()} 年第 ${getDayOfYear(created)} 天`
+
+    parsePayloadIntoReactiveData(noteData as NoteModel)
+  }
+
+  const { id, serverDraft, isEditing, actualRefId, initialize } = useWriteDraft(
+    data,
+    {
+      refType: DraftRefType.Note,
+      interval: 10000,
+      draftLabel: '手记',
+      getData: () => ({
+        title: data.title,
+        text: data.text,
+        images: data.images,
+        meta: data.meta,
+        typeSpecificData: {
+          mood: data.mood,
+          weather: data.weather,
+          password: data.password,
+          publicAt: data.publicAt?.toISOString() || null,
+          bookmark: data.bookmark,
+          location: data.location,
+          coordinates: data.coordinates,
+          topicId: data.topicId,
+          isPublished: data.isPublished,
+        },
+      }),
+      applyDraft,
+      loadPublished,
+      onTitleFallback: (title) => {
+        data.title = title
+      },
+    },
   )
 
   const loading = computed(() => !!(id.value && typeof data.id === 'undefined'))
 
-  const router = useRouter()
-
-  // 服务端草稿 hook
-  const serverDraft = useServerDraft(DraftRefType.Note, {
-    refId: id.value as string | undefined,
-    draftId: draftIdFromRoute.value,
-    interval: 10000,
-    getData: () => ({
-      title: data.title,
-      text: data.text,
-      images: data.images,
-      meta: data.meta,
-      typeSpecificData: {
-        mood: data.mood,
-        weather: data.weather,
-        password: data.password,
-        publicAt: data.publicAt?.toISOString() || null,
-        bookmark: data.bookmark,
-        location: data.location,
-        coordinates: data.coordinates,
-        topicId: data.topicId,
-        isPublished: data.isPublished,
-      },
-    }),
-    // 草稿首次创建后更新 URL
-    onDraftCreated: (draftId) => {
-      router.replace({ query: { draftId } })
-    },
-    // title 为空使用默认值时同步 UI
-    onTitleFallback: (defaultTitle) => {
-      data.title = defaultTitle
-    },
+  onBeforeMount(() => {
+    if (id.value) return
+    const currentTime = new Date()
+    defaultTitle.value = `记录 ${currentTime.getFullYear()} 年第 ${getDayOfYear(currentTime)} 天`
   })
 
-  const draftInitialized = ref(false)
-
-  onMounted(async () => {
-    const $id = id.value
-    const $draftId = draftIdFromRoute.value
-
-    // 场景1：通过 draftId 加载草稿
-    if ($draftId) {
-      const draft = await serverDraft.loadDraftById($draftId)
-      if (draft) {
-        data.title = draft.title
-        data.text = draft.text
-        data.images = draft.images || []
-        data.meta = draft.meta
-        if (draft.typeSpecificData) {
-          const specific = draft.typeSpecificData
-          data.mood = specific.mood || ''
-          data.weather = specific.weather || ''
-          data.password = specific.password || null
-          data.publicAt = specific.publicAt ? new Date(specific.publicAt) : null
-          data.bookmark = specific.bookmark ?? false
-          data.location = specific.location || ''
-          data.coordinates = specific.coordinates || null
-          data.topicId = specific.topicId || null
-          data.isPublished = specific.isPublished ?? true
-        }
-        serverDraft.syncMemory()
-        serverDraft.startAutoSave()
-        draftInitialized.value = true
-        return
-      }
-    }
-
-    // 场景2：编辑已发布手记
-    if ($id && typeof $id == 'string') {
-      const noteData = await notesApi.getById($id, {
-        single: true,
-      })
-
-      if (noteData.topic) {
-        topics.value.push(noteData.topic)
-      }
-
-      nid.value = noteData.nid
-
-      const created = new Date((noteData as any).created)
-      defaultTitle.value = `记录 ${created.getFullYear()} 年第 ${getDayOfYear(
-        created,
-      )} 天`
-
-      parsePayloadIntoReactiveData(noteData as NoteModel)
-
-      // 检查是否有关联的草稿
-      const relatedDraft = await serverDraft.loadDraftByRef(
-        DraftRefType.Note,
-        $id,
-      )
-      if (relatedDraft) {
-        window.dialog.info({
-          title: '检测到未保存的草稿',
-          content: `上次保存时间: ${new Date(relatedDraft.updated).toLocaleString()}`,
-          negativeText: '使用已发布版本',
-          positiveText: '恢复草稿',
-          onNegativeClick() {
-            serverDraft.syncMemory()
-            serverDraft.startAutoSave()
-          },
-          onPositiveClick() {
-            data.title = relatedDraft.title
-            data.text = relatedDraft.text
-            data.images = relatedDraft.images || []
-            data.meta = relatedDraft.meta
-            if (relatedDraft.typeSpecificData) {
-              const specific = relatedDraft.typeSpecificData
-              data.mood = specific.mood || data.mood
-              data.weather = specific.weather || data.weather
-              data.password = specific.password ?? data.password
-              data.publicAt = specific.publicAt
-                ? new Date(specific.publicAt)
-                : data.publicAt
-              data.bookmark = specific.bookmark ?? data.bookmark
-              data.location = specific.location || data.location
-              data.coordinates = specific.coordinates || data.coordinates
-              data.topicId = specific.topicId ?? data.topicId
-              data.isPublished = specific.isPublished ?? data.isPublished
-            }
-            serverDraft.syncMemory()
-            serverDraft.startAutoSave()
-          },
-        })
-      } else {
-        serverDraft.syncMemory()
-        serverDraft.startAutoSave()
-      }
-
-      draftInitialized.value = true
-      return
-    }
-
-    // 场景3：新建入口
-    const pendingDrafts = await serverDraft.getNewDrafts(DraftRefType.Note)
-    if (pendingDrafts.length > 0) {
-      window.dialog.info({
-        title: '发现未完成的草稿',
-        content: `你有 ${pendingDrafts.length} 个未完成的手记草稿，是否继续编辑？`,
-        negativeText: '创建新草稿',
-        positiveText: '继续编辑',
-        onNegativeClick() {
-          // 开始新草稿，不立即创建，等用户输入内容后自动保存时创建
-          serverDraft.startAutoSave()
-        },
-        onPositiveClick() {
-          const firstDraft = pendingDrafts[0]
-          router.replace({ query: { draftId: firstDraft.id } })
-        },
-      })
-    } else {
-      // 没有未完成草稿，直接启动自动保存
-      // 草稿会在用户输入内容后自动创建
-      serverDraft.startAutoSave()
-    }
-
-    draftInitialized.value = true
+  onMounted(() => {
+    initialize()
   })
 
   const drawerShow = ref(false)
@@ -295,45 +199,36 @@ const NoteWriteView = defineComponent(() => {
     const parseDataToPayload = (): { [key in keyof NoteModel]?: any } => {
       return {
         ...toRaw(data),
-        title:
-          data.title && data.title.trim()
-            ? data.title.trim()
-            : defaultTitle.value,
+        title: data.title?.trim() || defaultTitle.value,
         password:
           data.password && data.password.length > 0 ? data.password : null,
         publicAt: data.publicAt
           ? (() => {
               const date = new Date(data.publicAt)
-              if (+date - Date.now() <= 0) {
-                return null
-              } else {
-                return date
-              }
+              return +date - Date.now() <= 0 ? null : date
             })()
           : null,
       }
     }
 
-    // 获取草稿 ID，发布时传递给后端标记为已发布
     const draftId = serverDraft.draftId.value
 
-    if (id.value) {
-      // update
-      if (!isString(id.value)) {
-        return
-      }
-      const $id = id.value as string
-      await notesApi.update($id, { ...parseDataToPayload(), draftId })
+    if (actualRefId.value) {
+      if (!isString(actualRefId.value)) return
+      await notesApi.update(actualRefId.value, {
+        ...parseDataToPayload(),
+        draftId,
+      })
       toast.success('修改成功')
     } else {
       const payload = parseDataToPayload()
-      // create
       await notesApi.create({ ...payload, draftId } as CreateNoteData)
       toast.success('发布成功')
     }
 
     await router.push({ name: RouteName.ViewNote, hash: '|publish' })
   }
+
   const { fetchTopic, topics } = useNoteTopic()
 
   const {
@@ -344,13 +239,12 @@ const NoteWriteView = defineComponent(() => {
     setHeaderSubtitle,
   } = useLayout()
 
-  // 启用沉浸式编辑模式
   setContentPadding(false)
-  setTitle('撰写日记')
   setHeaderClass('pt-1')
 
-  // 设置草稿保存状态指示器
   watchEffect(() => {
+    setTitle(isEditing.value ? '修改日记' : '撰写日记')
+
     setHeaderSubtitle(
       <DraftSaveIndicator
         isSaving={serverDraft.isSaving}
@@ -368,13 +262,10 @@ const NoteWriteView = defineComponent(() => {
           data.title = title ?? data.title
           data.mood = mood ?? data.mood
           data.weather = weather ?? data.weather
-
           data.meta = { ...rest }
         }}
       />
-
       <HeaderPreviewButton data={data} iframe />
-
       <HeaderActionButton
         icon={<SlidersHIcon />}
         name="日记设置"
@@ -382,7 +273,6 @@ const NoteWriteView = defineComponent(() => {
           drawerShow.value = true
         }}
       />
-
       <HeaderActionButton
         icon={<TelegramPlaneIcon />}
         name="发布"
@@ -397,7 +287,7 @@ const NoteWriteView = defineComponent(() => {
       <WriteEditor
         key={data.id}
         loading={loading.value}
-        autoFocus={id.value ? 'content' : 'title'}
+        autoFocus={isEditing.value ? 'content' : 'title'}
         title={data.title}
         onTitleChange={(v) => {
           data.title = v
@@ -410,13 +300,11 @@ const NoteWriteView = defineComponent(() => {
         subtitleSlot={() => (
           <div class="flex items-center gap-2 text-sm text-neutral-500">
             <span>{`${WEB_URL}/notes/${nid.value ?? ''}`}</span>
-            {/* AI Helper 按钮 */}
             {data.text.length > 0 && <AiHelperButton reactiveData={data} />}
           </div>
         )}
       />
 
-      {/* Drawer  */}
       <TextBaseDrawer
         title="日记设定"
         data={data}
@@ -426,7 +314,6 @@ const NoteWriteView = defineComponent(() => {
           drawerShow.value = s
         }}
       >
-        {/* 日记信息 */}
         <SectionTitle icon={BookmarkIcon}>日记信息</SectionTitle>
 
         <div class="grid grid-cols-2 gap-3">
@@ -473,7 +360,6 @@ const NoteWriteView = defineComponent(() => {
           />
         </FormField>
 
-        {/* 位置信息 */}
         <SectionTitle icon={MapPinIcon}>位置信息</SectionTitle>
 
         <div class="mb-4 flex items-center gap-2">
@@ -521,7 +407,6 @@ const NoteWriteView = defineComponent(() => {
           </FieldGroup>
         )}
 
-        {/* 隐私与发布 */}
         <SectionTitle>隐私与发布</SectionTitle>
 
         <SwitchRow
@@ -626,8 +511,6 @@ const NoteWriteView = defineComponent(() => {
           uncheckedText="草稿"
         />
       </TextBaseDrawer>
-
-      {/* Drawer END */}
     </>
   )
 })
