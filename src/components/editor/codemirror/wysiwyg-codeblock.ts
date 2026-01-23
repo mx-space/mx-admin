@@ -1052,7 +1052,7 @@ class CodeBlockElement extends LitElement {
     parts[0] = newLang
 
     const newInfo = parts.filter(Boolean).join(' ')
-    const newLineText = '```' + newInfo
+    const newLineText = `\`\`\`${newInfo}`
 
     this.outerView.dispatch({
       changes: { from: langLine.from, to: langLine.to, insert: newLineText },
@@ -1299,7 +1299,10 @@ const findCodeBlocks = (state: EditorState): CodeBlock[] => {
   return blocks
 }
 
-const isLineInsideCodeBlock = (doc: Text, lineNumber: number): boolean => {
+export const isLineInsideCodeBlock = (
+  doc: Text,
+  lineNumber: number,
+): boolean => {
   let inCodeBlock = false
 
   for (let i = 1; i < lineNumber; i++) {

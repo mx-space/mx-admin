@@ -93,7 +93,10 @@
         "useBlockStatements": "off",
         "useConst": "error",
         "useImportType": "warn",
-        "useTemplate": "error",
+        "useTemplate": {
+          "level": "error",
+          "fix": "unsafe"
+        },
         "useSelfClosingElements": "error"
       },
       "suspicious": {
@@ -204,25 +207,39 @@
       }
     },
     {
-      "include": ["*.d.ts"],
+      "include": [
+        "*.d.ts"
+      ],
       "linter": {
         "rules": {}
       }
     },
     {
-      "include": ["*.js"],
+      "include": [
+        "*.js"
+      ],
       "linter": {
         "rules": {}
       }
     },
     {
-      "include": ["*.test.ts", "*.test.js", "*.spec.ts", "*.spec.js"],
+      "include": [
+        "*.test.ts",
+        "*.test.js",
+        "*.spec.ts",
+        "*.spec.js"
+      ],
       "linter": {
         "rules": {}
       }
     },
     {
-      "include": ["*.ts", "*.tsx", "*.mts", "*.cts"],
+      "include": [
+        "*.ts",
+        "*.tsx",
+        "*.mts",
+        "*.cts"
+      ],
       "linter": {
         "rules": {
           "correctness": {

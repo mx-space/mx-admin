@@ -16,14 +16,14 @@ import {
   Undo2,
 } from 'lucide-vue-next'
 import { NPopover } from 'naive-ui'
-import { defineComponent, ref } from 'vue'
+import { defineComponent, onUnmounted, ref, watch } from 'vue'
 import type { EditorView } from '@codemirror/view'
 import type { Component, PropType } from 'vue'
 
 import { redo, undo } from '@codemirror/commands'
 
 import { EmojiPicker } from './emoji-picker'
-import { commands } from './markdown-commands'
+import { commands, isInlineFormatActive } from './markdown-commands'
 
 interface ToolbarButton {
   icon: Component
@@ -31,6 +31,7 @@ interface ToolbarButton {
   shortcut: string
   action: () => void
   divider?: boolean
+  isActive?: (view: EditorView) => boolean
 }
 
 export const MarkdownToolbar = defineComponent({
@@ -44,10 +45,13 @@ export const MarkdownToolbar = defineComponent({
   setup(props) {
     const emojiPickerVisible = ref(false)
     const emojiButtonRef = ref<HTMLElement>()
+    const selectionVersion = ref(0)
+    let detachSelectionListeners: (() => void) | null = null
 
     const executeCommand = (commandFn: (view: EditorView) => boolean) => {
       if (props.editorView) {
         commandFn(props.editorView)
+        selectionVersion.value += 1
       }
     }
 
@@ -78,18 +82,21 @@ export const MarkdownToolbar = defineComponent({
         title: '粗体',
         shortcut: 'Ctrl+B',
         action: () => executeCommand(commands.bold),
+        isActive: (view) => isInlineFormatActive(view, 'bold'),
       },
       {
         icon: Italic,
         title: '斜体',
         shortcut: 'Ctrl+I',
         action: () => executeCommand(commands.italic),
+        isActive: (view) => isInlineFormatActive(view, 'italic'),
       },
       {
         icon: Strikethrough,
         title: '删除线',
         shortcut: 'Ctrl+D',
         action: () => executeCommand(commands.strikethrough),
+        isActive: (view) => isInlineFormatActive(view, 'strikethrough'),
       },
       {
         icon: Link,
@@ -141,6 +148,7 @@ export const MarkdownToolbar = defineComponent({
         shortcut: 'Ctrl+G',
         action: () => executeCommand(commands.inlineCode),
         divider: true,
+        isActive: (view) => isInlineFormatActive(view, 'inlineCode'),
       },
       {
         icon: Undo2,
@@ -150,6 +158,7 @@ export const MarkdownToolbar = defineComponent({
           if (props.editorView) {
             props.editorView.focus()
             undo(props.editorView)
+            selectionVersion.value += 1
           }
         },
       },
@@ -161,10 +170,61 @@ export const MarkdownToolbar = defineComponent({
           if (props.editorView) {
             props.editorView.focus()
             redo(props.editorView)
+            selectionVersion.value += 1
           }
         },
       },
     ]
+
+    const updateSelectionState = () => {
+      selectionVersion.value += 1
+    }
+
+    const setupSelectionListeners = (view: EditorView | undefined) => {
+      if (!view) return
+
+      const handleMouseUp = () => updateSelectionState()
+      const handleKeyUp = (e: KeyboardEvent) => {
+        if (
+          e.key === 'Shift' ||
+          e.key.startsWith('Arrow') ||
+          e.ctrlKey ||
+          e.metaKey
+        ) {
+          updateSelectionState()
+        }
+      }
+      const handleMouseDown = () => updateSelectionState()
+
+      view.dom.addEventListener('mouseup', handleMouseUp)
+      view.dom.addEventListener('keyup', handleKeyUp)
+      view.dom.addEventListener('mousedown', handleMouseDown)
+
+      detachSelectionListeners = () => {
+        view.dom.removeEventListener('mouseup', handleMouseUp)
+        view.dom.removeEventListener('keyup', handleKeyUp)
+        view.dom.removeEventListener('mousedown', handleMouseDown)
+      }
+    }
+
+    watch(
+      () => props.editorView,
+      (view) => {
+        if (detachSelectionListeners) {
+          detachSelectionListeners()
+          detachSelectionListeners = null
+        }
+        setupSelectionListeners(view)
+        updateSelectionState()
+      },
+      { immediate: true },
+    )
+
+    onUnmounted(() => {
+      if (detachSelectionListeners) {
+        detachSelectionListeners()
+      }
+    })
 
     const ToolbarButtonComponent = defineComponent({
       props: {
@@ -190,7 +250,14 @@ export const MarkdownToolbar = defineComponent({
                 <button
                   ref={buttonProps.isEmojiButton ? emojiButtonRef : undefined}
                   onClick={buttonProps.button.action}
-                  class="toolbar-button inline-flex cursor-pointer items-center justify-center border-none bg-transparent outline-none"
+                  class={[
+                    'toolbar-button inline-flex cursor-pointer items-center justify-center border-none bg-transparent outline-none',
+                    selectionVersion.value && props.editorView
+                      ? buttonProps.button.isActive?.(props.editorView)
+                        ? 'is-active'
+                        : ''
+                      : '',
+                  ]}
                   aria-label={buttonProps.button.title}
                 >
                   {/* @ts-ignore */}
@@ -269,8 +336,15 @@ export const MarkdownToolbar = defineComponent({
             opacity: 1;
             background-color: rgba(0, 0, 0, 0.04);
           }
+          .markdown-toolbar .toolbar-button.is-active {
+            opacity: 1;
+            background-color: rgba(59, 130, 246, 0.18);
+          }
           .dark .markdown-toolbar .toolbar-button:hover {
             background-color: rgba(255, 255, 255, 0.08);
+          }
+          .dark .markdown-toolbar .toolbar-button.is-active {
+            background-color: rgba(96, 165, 250, 0.25);
           }
           .markdown-toolbar .toolbar-button:active {
             transform: scale(0.95);

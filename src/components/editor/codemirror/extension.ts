@@ -11,6 +11,7 @@ const extensionMap = {
   fonts: new Compartment(),
   wysiwyg: new Compartment(),
   wysiwygMode: new Compartment(),
+  slashMenu: new Compartment(),
 }
 
 // Extension to add wysiwyg class to editor
@@ -30,6 +31,7 @@ export const codemirrorReconfigureExtension: Extension[] = [
   extensionMap.fonts.of([]),
   extensionMap.wysiwyg.of([]),
   extensionMap.wysiwygMode.of([]),
+  extensionMap.slashMenu.of([]),
 ]
 
 export { extensionMap as codemirrorReconfigureExtensionMap }

@@ -5,6 +5,7 @@ import type { PropType } from 'vue'
 
 import { useSaveConfirm } from '~/hooks/use-save-confirm'
 
+import { SlashMenu, slashMenuExtension } from '../slash-menu'
 import { FloatingToolbar } from '../toolbar/floating-toolbar'
 import { useSelectionPosition } from '../toolbar/use-selection-position'
 import styles from '../universal/editor.module.css'
@@ -96,6 +97,9 @@ export const CodemirrorEditor = defineComponent({
             codemirrorReconfigureExtensionMap.wysiwygMode.reconfigure(
               isWysiwyg ? [wysiwygModeExtension] : [],
             ),
+            codemirrorReconfigureExtensionMap.slashMenu.reconfigure(
+              isWysiwyg ? slashMenuExtension : [],
+            ),
           ],
         })
         view.requestMeasure()
@@ -175,6 +179,9 @@ export const CodemirrorEditor = defineComponent({
           visible={hasSelection.value}
           position={position.value}
         />
+        {(props.renderMode ?? 'plain') === 'wysiwyg' && (
+          <SlashMenu editorView={editorView.value} />
+        )}
         {/* 图片编辑 Popover 单例 */}
         <ImageEditPopover />
       </div>

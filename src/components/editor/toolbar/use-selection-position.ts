@@ -8,10 +8,29 @@ export interface SelectionPosition {
   above: boolean
 }
 
+const findScrollableParent = (el: HTMLElement | null): HTMLElement | null => {
+  while (el) {
+    if (el.classList.contains('n-scrollbar-container')) {
+      return el
+    }
+    const style = getComputedStyle(el)
+    const overflowY = style.overflowY
+    if (
+      (overflowY === 'auto' || overflowY === 'scroll') &&
+      el.scrollHeight > el.clientHeight
+    ) {
+      return el
+    }
+    el = el.parentElement
+  }
+  return null
+}
+
 export function useSelectionPosition(editorView: Ref<EditorView | undefined>) {
   const position = ref<SelectionPosition | null>(null)
   const hasSelection = ref(false)
   const selectionText = ref('')
+  const scrollerRef = ref<HTMLElement | null>(null)
 
   let updateTimeout: ReturnType<typeof setTimeout> | null = null
 
@@ -26,7 +45,6 @@ export function useSelectionPosition(editorView: Ref<EditorView | undefined>) {
 
     const { from, to } = view.state.selection.main
 
-    // No selection (cursor only)
     if (from === to) {
       hasSelection.value = false
       position.value = null
@@ -34,11 +52,9 @@ export function useSelectionPosition(editorView: Ref<EditorView | undefined>) {
       return
     }
 
-    // Get selected text
     selectionText.value = view.state.sliceDoc(from, to)
     hasSelection.value = true
 
-    // Get coordinates
     const fromCoords = view.coordsAtPos(from)
     const toCoords = view.coordsAtPos(to)
 
@@ -47,13 +63,26 @@ export function useSelectionPosition(editorView: Ref<EditorView | undefined>) {
       return
     }
 
-    // Calculate center position of selection
+    const scroller = scrollerRef.value
+    if (scroller) {
+      const scrollerRect = scroller.getBoundingClientRect()
+      const selectionTop = Math.min(fromCoords.top, toCoords.top)
+      const selectionBottom = Math.max(fromCoords.bottom, toCoords.bottom)
+
+      const isOutOfView =
+        selectionBottom < scrollerRect.top || selectionTop > scrollerRect.bottom
+
+      if (isOutOfView) {
+        position.value = null
+        return
+      }
+    }
+
     const selectionCenterX = (fromCoords.left + toCoords.right) / 2
     const selectionTop = Math.min(fromCoords.top, toCoords.top)
     const selectionBottom = Math.max(fromCoords.bottom, toCoords.bottom)
 
-    // Determine placement (above/below based on available space)
-    const viewportTop = 120 // Header height consideration
+    const viewportTop = 120
     const above = selectionTop > viewportTop
 
     position.value = {
@@ -68,10 +97,8 @@ export function useSelectionPosition(editorView: Ref<EditorView | undefined>) {
     updateTimeout = setTimeout(updatePosition, 50)
   }
 
-  // Event handlers
   const handleMouseUp = () => debouncedUpdate()
   const handleKeyUp = (e: KeyboardEvent) => {
-    // Only update on selection-related keys
     if (
       e.key === 'Shift' ||
       e.key.startsWith('Arrow') ||
@@ -82,21 +109,30 @@ export function useSelectionPosition(editorView: Ref<EditorView | undefined>) {
     }
   }
 
-  // Watch for editor changes
+  const handleScroll = () => {
+    if (hasSelection.value) {
+      updatePosition()
+    }
+  }
+
   watch(
     editorView,
     (view, _, onCleanup) => {
       if (!view) return
 
+      const scroller = findScrollableParent(view.dom) ?? view.scrollDOM
+      scrollerRef.value = scroller
+
       view.dom.addEventListener('mouseup', handleMouseUp)
       view.dom.addEventListener('keyup', handleKeyUp)
+      scroller.addEventListener('scroll', handleScroll, { passive: true })
 
-      // Initial check
       updatePosition()
 
       onCleanup(() => {
         view.dom.removeEventListener('mouseup', handleMouseUp)
         view.dom.removeEventListener('keyup', handleKeyUp)
+        scroller.removeEventListener('scroll', handleScroll)
       })
     },
     { immediate: true },
@@ -106,7 +142,6 @@ export function useSelectionPosition(editorView: Ref<EditorView | undefined>) {
     if (updateTimeout) clearTimeout(updateTimeout)
   })
 
-  // Method to manually clear selection state (useful when toolbar action is taken)
   const clearSelection = () => {
     hasSelection.value = false
     position.value = null
