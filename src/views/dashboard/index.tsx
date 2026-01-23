@@ -11,9 +11,11 @@ import {
   UserRound as GuestIcon,
   Heart as HeartIcon,
   Link as LinkIcon,
+  Menu as MenuIcon,
   BookOpen as NotebookMinimalistic,
   StickyNote as NoteIcon,
   Radio as OnlinePredictionFilledIcon,
+  PanelLeftOpen,
   Pencil as PencilIcon,
   AlignLeft as PhAlignLeft,
   RefreshCw as RefreshIcon,
@@ -21,6 +23,7 @@ import {
 } from 'lucide-vue-next'
 import { NButton, NElement, NGi, NGrid, NH1, NIcon, NP } from 'naive-ui'
 import {
+  computed,
   defineComponent,
   onBeforeMount,
   onBeforeUnmount,
@@ -46,6 +49,7 @@ import { useStoreRef } from '~/hooks/use-store-ref'
 import { useLayout } from '~/layouts/content'
 import { RouteName } from '~/router/name'
 import { AppStore } from '~/stores/app'
+import { UIStore } from '~/stores/ui'
 import { UserStore } from '~/stores/user'
 import { parseDate } from '~/utils'
 import { isNewerVersion } from '~/utils/version'
@@ -216,6 +220,8 @@ export const DashBoardView = defineComponent({
     const { setHideHeader } = useLayout()
     setHideHeader(true)
 
+    const ui = useStoreRef(UIStore)
+
     const stat = ref(
       new Proxy(
         {},
@@ -310,9 +316,28 @@ export const DashBoardView = defineComponent({
       </div>
     )
 
+    const isMobile = computed(
+      () => ui.viewport.value.mobile || ui.viewport.value.pad,
+    )
+
     return () => (
       <>
-        <NH1 class="!mb-6 font-light">欢迎回来</NH1>
+        <div class="!mb-6 mt-6 flex items-center gap-3">
+          {(isMobile.value || ui.sidebarCollapse.value) && (
+            <button
+              class="flex h-9 w-9 items-center justify-center rounded text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+              onClick={() => (ui.sidebarCollapse.value = false)}
+              title={isMobile.value ? '打开菜单' : '展开侧边栏 (⌘B)'}
+            >
+              {isMobile.value ? (
+                <MenuIcon size={20} />
+              ) : (
+                <PanelLeftOpen size={20} />
+              )}
+            </button>
+          )}
+          <NH1 class="!mb-0 !mt-0 font-light">欢迎回来</NH1>
+        </div>
 
         {/* 实时数据区 */}
         <section class="mb-8">

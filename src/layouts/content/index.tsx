@@ -1,4 +1,4 @@
-import { PanelLeftOpen } from 'lucide-vue-next'
+import { Menu as MenuIcon, PanelLeftOpen } from 'lucide-vue-next'
 import { NLayoutContent } from 'naive-ui'
 import { computed, defineComponent, inject, provide, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
@@ -96,6 +96,10 @@ export const ContentLayout = defineComponent({
     const headerSubtitle = computed(() => layout.headerSubtitle.value)
     const hasContentPadding = computed(() => layout.contentPadding.value)
 
+    const isMobile = computed(
+      () => ui.viewport.value.mobile || ui.viewport.value.pad,
+    )
+
     return () => (
       <div class="@container flex h-full flex-col bg-[var(--content-bg)]">
         {!shouldHideHeader.value && (
@@ -106,14 +110,18 @@ export const ContentLayout = defineComponent({
             ]}
           >
             <div class="flex items-center gap-3">
-              {/* 展开 Sidebar 按钮 */}
-              {ui.sidebarCollapse.value && (
+              {/* 展开 Sidebar / 打开菜单 按钮 */}
+              {(isMobile.value || ui.sidebarCollapse.value) && (
                 <button
                   class="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--sidebar-text)] transition-colors hover:bg-[var(--sidebar-hover-bg)] hover:text-[var(--sidebar-text-active)]"
                   onClick={() => (ui.sidebarCollapse.value = false)}
-                  title="展开侧边栏"
+                  title={isMobile.value ? '打开菜单' : '展开侧边栏 (⌘B)'}
                 >
-                  <PanelLeftOpen size={18} />
+                  {isMobile.value ? (
+                    <MenuIcon size={18} />
+                  ) : (
+                    <PanelLeftOpen size={18} />
+                  )}
                 </button>
               )}
               <h1 class="text-lg font-semibold text-[var(--sidebar-text-active)]">
