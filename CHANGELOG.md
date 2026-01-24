@@ -1,5 +1,14 @@
 # CHANGELOG
 
+# [5.4.0](https://github.com/mx-space/admin-vue3/compare/v5.3.0...v5.4.0) (2026-01-24)
+
+
+### Features
+
+* refactor settings layout and enhance configuration forms ([3d42692](https://github.com/mx-space/admin-vue3/commit/3d4269258f17162ba596a549eda8b7489e9adb72))
+
+
+
 # [5.3.0](https://github.com/mx-space/admin-vue3/compare/v5.2.0...v5.3.0) (2026-01-24)
 
 
