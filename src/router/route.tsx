@@ -340,22 +340,11 @@ export const routeForMenu: Array<RouteRecordRaw> = [
   },
   {
     path: '/setting',
-    redirect: '/setting/user',
-    meta: {
-      title: '设定',
-      icon: <CogsIcon />,
-      params: { type: 'user' },
-    },
-    component: () => null,
-    children: [],
-  },
-  {
-    path: '/setting/:type',
     name: RouteName.Setting,
     meta: {
       title: '设定',
-      params: { type: 'user' },
-      hide: true,
+      icon: <CogsIcon />,
+      query: { group: 'user' },
     },
     component: () => import('../views/setting'),
   },

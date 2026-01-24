@@ -3,7 +3,7 @@
  * Meta 预设字段管理 - 设置页 Tab
  */
 import { ListPlus as ListPlusIcon, Plus as PlusIcon } from 'lucide-vue-next'
-import { NButton, NCard } from 'naive-ui'
+import { NButton } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import type { MetaPresetField } from '~/models/meta-preset'
 import type { PropType } from 'vue'
@@ -17,8 +17,8 @@ import {
   useUpdateMetaPresetMutation,
   useUpdateMetaPresetOrderMutation,
 } from '~/hooks/queries/use-meta-presets'
+import { SettingsCard } from '~/layouts/settings-layout'
 
-import styles from '../index.module.css'
 import { MetaPresetCard } from './components/meta-preset-card'
 import { MetaPresetModal } from './components/meta-preset-modal'
 
@@ -31,7 +31,6 @@ export const TabMetaPresets = defineComponent({
     const updateMutation = useUpdateMetaPresetMutation()
     const updateOrderMutation = useUpdateMetaPresetOrderMutation()
 
-    // Modal state
     const showModal = ref(false)
     const editId = ref('')
 
@@ -66,7 +65,6 @@ export const TabMetaPresets = defineComponent({
       queryClient.invalidateQueries({ queryKey: queryKeys.metaPresets.all })
     }
 
-    // 拖拽排序
     const draggedIndex = ref<number | null>(null)
 
     const handleDragStart = (index: number) => {
@@ -86,7 +84,6 @@ export const TabMetaPresets = defineComponent({
       const [draggedItem] = items.splice(draggedIndex.value, 1)
       items.splice(dropIndex, 0, draggedItem)
 
-      // 更新排序
       const ids = items.map((item) => item.id)
       updateOrderMutation.mutate(ids)
 
@@ -98,35 +95,37 @@ export const TabMetaPresets = defineComponent({
     }
 
     return () => (
-      <div class={styles.tabContent}>
-        <NCard size="small">
-          {/* Header */}
-          <div class="mb-6 flex items-center justify-between">
-            <div>
-              <h2 class="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
-                <ListPlusIcon
-                  class="mr-2 inline-block size-5"
-                  aria-hidden="true"
-                />
-                Meta 预设字段
-              </h2>
-              <p class="text-sm text-neutral-500 dark:text-neutral-400">
-                配置可复用的自定义 meta 字段（如音乐、电影、书籍等元数据模板）
-              </p>
-            </div>
-            <NButton type="primary" onClick={handleAdd}>
-              <PlusIcon class="mr-1 size-4" />
-              新增预设
-            </NButton>
-          </div>
-
+      <div class="py-6">
+        <SettingsCard
+          title="Meta 预设字段"
+          description="配置可复用的自定义 meta 字段（如音乐、电影、书籍等元数据模板）"
+          icon={ListPlusIcon}
+          pure
+          v-slots={{
+            actions: () => (
+              <NButton
+                type="primary"
+                size="small"
+                secondary
+                onClick={handleAdd}
+              >
+                <PlusIcon class="mr-1 size-4" />
+                新增预设
+              </NButton>
+            ),
+          }}
+        >
           {/* Content */}
           {isLoading.value ? (
-            <MetaPresetSkeleton />
+            <div class="p-6">
+              <MetaPresetSkeleton />
+            </div>
           ) : !presets.value || presets.value.length === 0 ? (
-            <MetaPresetEmptyState onAdd={handleAdd} />
+            <div class="p-6">
+              <MetaPresetEmptyState onAdd={handleAdd} />
+            </div>
           ) : (
-            <div class="overflow-hidden rounded-lg border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
+            <div>
               {presets.value.map((preset, index) => (
                 <div
                   key={preset.id}
@@ -150,7 +149,7 @@ export const TabMetaPresets = defineComponent({
               ))}
             </div>
           )}
-        </NCard>
+        </SettingsCard>
 
         {/* Modal */}
         <MetaPresetModal

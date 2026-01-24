@@ -73,7 +73,7 @@ export const MetaPresetCard = defineComponent({
   },
   setup(props) {
     return () => (
-      <div class="group flex items-center gap-3 border-b border-neutral-200 px-4 py-3 transition-colors last:border-b-0 hover:bg-neutral-50 dark:border-neutral-800 dark:hover:bg-neutral-900/50">
+      <div class="group flex items-center gap-3 border-b border-neutral-200 px-6 py-4 transition-colors last:border-b-0 hover:bg-neutral-50 dark:border-neutral-800 dark:hover:bg-neutral-900/50">
         {/* 拖拽手柄 */}
         {!props.preset.isBuiltin && (
           <div class="shrink-0 cursor-grab text-neutral-300 dark:text-neutral-600">

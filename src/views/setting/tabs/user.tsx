@@ -33,9 +33,8 @@ import { RelativeTime } from '~/components/time/relative-time'
 import { UploadWrapper } from '~/components/upload'
 import { socialKeyMap } from '~/constants/social'
 import { useLayout } from '~/layouts/content'
+import { SettingsCard, SettingsItem } from '~/layouts/settings-layout'
 import { deepDiff } from '~/utils'
-
-import styles from '../index.module.css'
 
 export const TabUser = defineComponent(() => {
   const data = ref({} as UserModel)
@@ -58,7 +57,6 @@ export const TabUser = defineComponent(() => {
 
   const { setActions: setHeaderButton } = useLayout()
 
-  // 更新用户信息
   const updateMutation = useMutation({
     mutationFn: userApi.updateMaster,
     onSuccess: async () => {
@@ -157,25 +155,25 @@ export const TabUser = defineComponent(() => {
   }
 
   return () => (
-    <div class={styles.userTabContainer}>
+    <div class="w-full">
       {loading.value ? (
         <UserSkeleton />
       ) : (
         <>
           {/* Profile Header Section */}
-          <section class={styles.userSection}>
-            <div class={styles.userSectionHeader}>
+          <SettingsCard title="个人资料" icon={UserIcon}>
+            <div class="flex items-center gap-5">
               {/* Avatar with upload */}
-              <div class={styles.avatarContainer}>
+              <div class="relative size-[100px] shrink-0 [&_.n-upload-trigger]:size-[100px] [&_.n-upload-trigger]:overflow-hidden [&_.n-upload-trigger]:rounded-full [&_.n-upload]:size-[100px] [&_.n-upload]:overflow-hidden [&_.n-upload]:rounded-full">
                 <UploadWrapper
                   onFinish={handleAvatarUpload}
                   type="avatar"
                   v-slots={{
                     default: () => (
-                      <div class={styles.avatarWrapper}>
-                        <Avatar src={data.value.avatar} size={128} />
-                        <div class={styles.avatarUploadOverlay}>
-                          <CameraIcon class={styles.avatarUploadIcon} />
+                      <div class="hover:ring-primary/30 dark:hover:ring-primary/30 relative size-[100px] overflow-hidden rounded-full ring-4 ring-neutral-100 transition-all dark:ring-neutral-800">
+                        <Avatar src={data.value.avatar} size={100} />
+                        <div class="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity hover:opacity-100">
+                          <CameraIcon class="size-6 text-white" />
                         </div>
                       </div>
                     ),
@@ -184,34 +182,29 @@ export const TabUser = defineComponent(() => {
               </div>
 
               {/* Name & Meta */}
-              <div class={styles.userHeaderInfo}>
-                <h2 class={styles.userName}>{data.value.name || '–'}</h2>
-                <p class={styles.userHandle}>@{data.value.username}</p>
-                <div class={styles.userMeta}>
+              <div class="min-w-0 flex-1">
+                <h2 class="m-0 text-xl font-semibold text-neutral-900 dark:text-neutral-100">
+                  {data.value.name || '–'}
+                </h2>
+                <p class="m-0 mt-0.5 text-sm text-neutral-500 dark:text-neutral-400">
+                  @{data.value.username}
+                </p>
+                <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1">
                   {data.value.mail && (
-                    <span class={styles.userMetaItem}>
-                      <MailIcon
-                        class={styles.userMetaIcon}
-                        aria-hidden="true"
-                      />
+                    <span class="flex shrink-0 items-center gap-1.5 whitespace-nowrap text-xs text-neutral-500 dark:text-neutral-400">
+                      <MailIcon class="size-3.5" aria-hidden="true" />
                       {data.value.mail}
                     </span>
                   )}
                   {data.value.lastLoginTime && (
-                    <span class={styles.userMetaItem}>
-                      <CalendarIcon
-                        class={styles.userMetaIcon}
-                        aria-hidden="true"
-                      />
+                    <span class="flex shrink-0 items-center gap-1.5 whitespace-nowrap text-xs text-neutral-500 dark:text-neutral-400">
+                      <CalendarIcon class="size-3.5" aria-hidden="true" />
                       上次登录: <RelativeTime time={data.value.lastLoginTime} />
                     </span>
                   )}
                   {data.value.lastLoginIp && (
-                    <span class={styles.userMetaItem}>
-                      <GlobeIcon
-                        class={styles.userMetaIcon}
-                        aria-hidden="true"
-                      />
+                    <span class="flex shrink-0 items-center gap-1.5 whitespace-nowrap text-xs text-neutral-500 dark:text-neutral-400">
+                      <GlobeIcon class="size-3.5" aria-hidden="true" />
                       <IpInfoPopover
                         ip={data.value.lastLoginIp}
                         triggerEl={
@@ -225,147 +218,128 @@ export const TabUser = defineComponent(() => {
                 </div>
               </div>
             </div>
-          </section>
+          </SettingsCard>
 
           {/* Basic Info Section */}
-          <section class={styles.userSection}>
-            <h3 class={styles.userSectionTitle}>
-              <UserIcon class="mr-1.5 inline-block size-4" aria-hidden="true" />
-              基本信息
-            </h3>
-            <div class={styles.formGrid}>
-              <div class={styles.formGroup}>
-                <label class={styles.formLabel} for="user-name">
-                  昵称
-                </label>
-                <NInput
-                  value={data.value.name}
-                  onInput={(v) => (data.value.name = v)}
-                  placeholder="输入昵称…"
-                  inputProps={{
-                    id: 'user-name',
-                    autocomplete: 'name',
-                  }}
-                />
-              </div>
-              <div class={styles.formGroup}>
-                <label class={styles.formLabel} for="user-username">
-                  用户名
-                </label>
-                <NInput
-                  value={data.value.username}
-                  onInput={(v) => (data.value.username = v)}
-                  placeholder="输入用户名…"
-                  inputProps={{
-                    id: 'user-username',
-                    autocomplete: 'username',
-                    spellcheck: false,
-                  }}
-                />
-              </div>
-              <div class={styles.formGroup}>
-                <label class={styles.formLabel} for="user-mail">
-                  邮箱
-                </label>
-                <NInput
-                  value={data.value.mail}
-                  onInput={(v) => (data.value.mail = v)}
-                  placeholder="输入邮箱地址…"
-                  inputProps={{
-                    id: 'user-mail',
-                    type: 'email',
-                    inputmode: 'email',
-                    autocomplete: 'email',
-                    spellcheck: false,
-                  }}
-                />
-              </div>
-              <div class={styles.formGroup}>
-                <label class={styles.formLabel} for="user-url">
-                  个人网站
-                </label>
-                <NInput
-                  value={data.value.url}
-                  onInput={(v) => (data.value.url = v)}
-                  placeholder="https://example.com"
-                  inputProps={{
-                    id: 'user-url',
-                    type: 'url',
-                    inputmode: 'url',
-                    autocomplete: 'url',
-                    spellcheck: false,
-                  }}
-                />
-              </div>
-              <div class={[styles.formGroup, styles.formGroupFull]}>
-                <label class={styles.formLabel} for="user-introduce">
-                  个人简介
-                </label>
-                <NInput
-                  value={data.value.introduce}
-                  onInput={(v) => (data.value.introduce = v)}
-                  type="textarea"
-                  placeholder="介绍一下自己…"
-                  autosize={{ minRows: 3, maxRows: 6 }}
-                  inputProps={{
-                    id: 'user-introduce',
-                  }}
-                />
-              </div>
-              <div class={styles.formGroup}>
-                <label class={styles.formLabel} for="user-avatar">
-                  头像 URL
-                </label>
-                <NInput
-                  value={data.value.avatar}
-                  onInput={(v) => (data.value.avatar = v)}
-                  placeholder="https://example.com/avatar.jpg"
-                  inputProps={{
-                    id: 'user-avatar',
-                    type: 'url',
-                    inputmode: 'url',
-                    spellcheck: false,
-                  }}
-                />
-                <p class={styles.formDescription}>
-                  也可以点击上方头像直接上传图片
-                </p>
-              </div>
-            </div>
-          </section>
+          <SettingsCard title="基本信息" icon={UserIcon}>
+            <SettingsItem title="昵称">
+              <NInput
+                value={data.value.name}
+                onInput={(v) => (data.value.name = v)}
+                placeholder="输入昵称…"
+                inputProps={{
+                  id: 'user-name',
+                  autocomplete: 'name',
+                }}
+              />
+            </SettingsItem>
+
+            <SettingsItem title="用户名">
+              <NInput
+                value={data.value.username}
+                onInput={(v) => (data.value.username = v)}
+                placeholder="输入用户名…"
+                inputProps={{
+                  id: 'user-username',
+                  autocomplete: 'username',
+                  spellcheck: false,
+                }}
+              />
+            </SettingsItem>
+
+            <SettingsItem title="邮箱">
+              <NInput
+                value={data.value.mail}
+                onInput={(v) => (data.value.mail = v)}
+                placeholder="输入邮箱地址…"
+                inputProps={{
+                  id: 'user-mail',
+                  type: 'email',
+                  inputmode: 'email',
+                  autocomplete: 'email',
+                  spellcheck: false,
+                }}
+              />
+            </SettingsItem>
+
+            <SettingsItem title="个人网站">
+              <NInput
+                value={data.value.url}
+                onInput={(v) => (data.value.url = v)}
+                placeholder="https://example.com"
+                inputProps={{
+                  id: 'user-url',
+                  type: 'url',
+                  inputmode: 'url',
+                  autocomplete: 'url',
+                  spellcheck: false,
+                }}
+              />
+            </SettingsItem>
+
+            <SettingsItem title="个人简介">
+              <NInput
+                value={data.value.introduce}
+                onInput={(v) => (data.value.introduce = v)}
+                type="textarea"
+                placeholder="介绍一下自己…"
+                autosize={{ minRows: 3, maxRows: 6 }}
+                inputProps={{
+                  id: 'user-introduce',
+                }}
+              />
+            </SettingsItem>
+
+            <SettingsItem
+              title="头像 URL"
+              description="也可以点击上方头像直接上传图片"
+            >
+              <NInput
+                value={data.value.avatar}
+                onInput={(v) => (data.value.avatar = v)}
+                placeholder="https://example.com/avatar.jpg"
+                inputProps={{
+                  id: 'user-avatar',
+                  type: 'url',
+                  inputmode: 'url',
+                  spellcheck: false,
+                }}
+              />
+            </SettingsItem>
+          </SettingsCard>
 
           {/* Social Links Section */}
-          <section class={styles.userSection}>
-            <div class={styles.userSectionTitleRow}>
-              <h3 class={styles.userSectionTitle}>
-                <LinkIcon
-                  class="mr-1.5 inline-block size-4"
-                  aria-hidden="true"
-                />
-                社交链接
-              </h3>
-              <NButton
-                size="small"
-                type="primary"
-                tertiary
-                onClick={addSocialEntry}
-                disabled={
-                  !socialOptions.some((o) => !usedSocialKeys.value.has(o.value))
-                }
-              >
-                <PlusIcon class="mr-1 size-4" aria-hidden="true" />
-                添加
-              </NButton>
-            </div>
-
+          <SettingsCard
+            title="社交链接"
+            icon={LinkIcon}
+            v-slots={{
+              actions: () => (
+                <NButton
+                  size="small"
+                  secondary
+                  onClick={addSocialEntry}
+                  disabled={
+                    !socialOptions.some(
+                      (o) => !usedSocialKeys.value.has(o.value),
+                    )
+                  }
+                >
+                  <PlusIcon class="mr-1 size-4" aria-hidden="true" />
+                  添加
+                </NButton>
+              ),
+            }}
+          >
             {socialEntries.value.length === 0 ? (
-              <div class={styles.socialEmpty}>暂未添加任何社交链接</div>
+              <div class="rounded-lg border border-dashed border-neutral-300 py-8 text-center text-sm text-neutral-400 dark:border-neutral-700 dark:text-neutral-500">
+                暂未添加任何社交链接
+              </div>
             ) : (
-              <div class={styles.socialList}>
+              <div class="flex flex-col gap-3">
                 {socialEntries.value.map(({ key, value }) => (
-                  <div class={styles.socialRow} key={key}>
+                  <div class="flex items-center gap-3" key={key}>
                     <NSelect
-                      class={styles.socialSelect}
+                      class="w-40 shrink-0"
                       value={key}
                       options={socialOptions.map((opt) => ({
                         ...opt,
@@ -376,7 +350,7 @@ export const TabUser = defineComponent(() => {
                       onUpdateValue={(newKey) => updateSocialKey(key, newKey)}
                     />
                     <NInput
-                      class={styles.socialInput}
+                      class="min-w-0 flex-1"
                       value={value}
                       onInput={(v) => updateSocialValue(key, v)}
                       placeholder="输入链接或 ID…"
@@ -384,7 +358,7 @@ export const TabUser = defineComponent(() => {
                     />
                     <button
                       type="button"
-                      class={styles.socialRemoveBtn}
+                      class="focus-visible:ring-primary/50 flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-lg border-0 bg-transparent text-neutral-400 transition-colors hover:bg-red-50 hover:text-red-500 focus-visible:outline-none focus-visible:ring-2 dark:text-neutral-500 dark:hover:bg-red-900/20 dark:hover:text-red-400"
                       onClick={() => removeSocialEntry(key)}
                       aria-label={`删除 ${key} 社交链接`}
                     >
@@ -394,7 +368,7 @@ export const TabUser = defineComponent(() => {
                 ))}
               </div>
             )}
-          </section>
+          </SettingsCard>
         </>
       )}
     </div>
@@ -403,11 +377,11 @@ export const TabUser = defineComponent(() => {
 
 const UserSkeleton = defineComponent(() => {
   return () => (
-    <div class={styles.userTabContainer}>
-      <section class={styles.userSection}>
-        <div class={styles.userSectionHeader}>
+    <div class="w-full">
+      <section class="mb-8 w-full max-w-2xl">
+        <div class="flex items-center gap-5">
           <NSkeleton circle style={{ width: '128px', height: '128px' }} />
-          <div class={styles.userHeaderInfo}>
+          <div class="min-w-0 flex-1">
             <NSkeleton text style={{ width: '120px', height: '28px' }} />
             <NSkeleton
               text
@@ -420,7 +394,7 @@ const UserSkeleton = defineComponent(() => {
           </div>
         </div>
       </section>
-      <section class={styles.userSection}>
+      <section class="mb-8 w-full max-w-2xl">
         <NSkeleton text style={{ width: '80px', height: '20px' }} />
         <div class="mt-4 grid gap-6 md:grid-cols-2">
           {Array.from({ length: 4 }).map((_, i) => (

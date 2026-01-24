@@ -1,15 +1,12 @@
-import { CircleCheck as CheckCircleOutlinedIcon } from 'lucide-vue-next'
 import {
-  NButton,
-  NCard,
-  NForm,
-  NFormItem,
-  NInput,
-  NSelect,
-  NSpace,
-  NSwitch,
-  NText,
-} from 'naive-ui'
+  CircleCheck as CheckCircleOutlinedIcon,
+  ChevronDown as ChevronDownIcon,
+  Cpu as CpuIcon,
+  Globe as GlobeIcon,
+  Plus as PlusIcon,
+  Zap as ZapIcon,
+} from 'lucide-vue-next'
+import { NButton, NInput, NSelect, NSpace, NSwitch } from 'naive-ui'
 import { computed, defineComponent, onMounted, ref, watch } from 'vue'
 import { toast } from 'vue-sonner'
 import type { PropType } from 'vue'
@@ -17,6 +14,7 @@ import type { PropType } from 'vue'
 import { aiApi } from '~/api/ai'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
+import { SettingsItem } from '~/layouts/settings-layout'
 
 // Types
 enum AIProviderType {
@@ -57,21 +55,13 @@ interface ModelInfo {
   created?: number
 }
 
-interface ProviderModelsResponse {
-  providerId: string
-  providerName: string
-  providerType: AIProviderType
-  models: ModelInfo[]
-  error?: string
-}
-
 const AIProviderTypeOptions = [
   { label: 'OpenAI', value: AIProviderType.OpenAI },
   {
-    label: 'OpenAI 兼容 (DeepSeek/Groq 等)',
+    label: 'OpenAI Compatible',
     value: AIProviderType.OpenAICompatible,
   },
-  { label: 'Anthropic (Claude)', value: AIProviderType.Anthropic },
+  { label: 'Anthropic', value: AIProviderType.Anthropic },
   { label: 'OpenRouter', value: AIProviderType.OpenRouter },
 ]
 
@@ -135,11 +125,19 @@ const getModelPlaceholderForType = (type: AIProviderType): string => {
   }
 }
 
-// Provider Card Component
-const AIProviderCard = defineComponent({
+// Provider Row Component
+const AIProviderRow = defineComponent({
   props: {
     provider: {
       type: Object as PropType<AIProviderConfig>,
+      required: true,
+    },
+    expanded: {
+      type: Boolean,
+      default: false,
+    },
+    onToggle: {
+      type: Function as PropType<() => void>,
       required: true,
     },
     onUpdate: {
@@ -188,7 +186,6 @@ const AIProviderCard = defineComponent({
       props.onUpdate(localProvider.value)
     }
 
-    // 当类型改变时，自动更新默认模型
     const handleTypeChange = (type: AIProviderType) => {
       localProvider.value.type = type
       localProvider.value.defaultModel = getDefaultModelForType(type)
@@ -209,49 +206,116 @@ const AIProviderCard = defineComponent({
         localProvider.value.type === AIProviderType.OpenRouter,
     )
 
-    // 卡片标题：优先显示名称，否则根据类型显示
     const cardTitle = computed(() => {
-      if (localProvider.value.name) {
-        return localProvider.value.name
-      }
+      if (localProvider.value.name) return localProvider.value.name
+      return getProviderTypeLabel(localProvider.value.type)
+    })
+
+    const ProviderIcon = computed(() => {
       switch (localProvider.value.type) {
-        case AIProviderType.Anthropic:
-          return 'Anthropic (Claude)'
         case AIProviderType.OpenAI:
-          return 'OpenAI'
+          return ZapIcon
+        case AIProviderType.Anthropic:
+          return CpuIcon
         case AIProviderType.OpenRouter:
-          return 'OpenRouter'
-        case AIProviderType.OpenAICompatible:
-          return 'OpenAI 兼容'
+          return GlobeIcon
         default:
-          return '新 Provider'
+          return ZapIcon
       }
     })
 
     return () => (
-      <NCard title={cardTitle.value} size="small" class="mb-4">
-        {{
-          default: () => (
-            <NForm labelPlacement="left" labelWidth={120}>
-              <NFormItem label="类型">
+      <div class="group border-b border-neutral-100 last:border-0 dark:border-neutral-800">
+        {/* Header Row */}
+        <div
+          class="flex cursor-pointer items-center gap-4 px-5 py-4 transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-800/50"
+          onClick={() => props.onToggle()}
+        >
+          <div
+            class={[
+              'flex size-9 shrink-0 items-center justify-center rounded-lg transition-colors',
+              localProvider.value.enabled
+                ? 'bg-primary/10 text-primary dark:bg-primary/20'
+                : 'bg-neutral-100 text-neutral-400 dark:bg-neutral-800',
+            ]}
+          >
+            <ProviderIcon.value class="size-4" />
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                {cardTitle.value}
+              </span>
+              {localProvider.value.enabled && (
+                <span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">
+                  已启用
+                </span>
+              )}
+            </div>
+            <span class="text-xs text-neutral-500 dark:text-neutral-400">
+              {localProvider.value.defaultModel || '未设置模型'}
+            </span>
+          </div>
+          <div
+            class="flex items-center gap-2"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div class="hidden items-center gap-1 group-hover:flex">
+              <HeaderActionButton
+                variant="success"
+                icon={<CheckCircleOutlinedIcon />}
+                name="测试"
+                disabled={props.isTesting || !localProvider.value.defaultModel}
+                onClick={() => props.onTest?.(localProvider.value)}
+              />
+              <DeleteConfirmButton
+                onDelete={() => props.onDelete()}
+                message="确定删除此 Provider？"
+              />
+            </div>
+          </div>
+          <ChevronDownIcon
+            class={[
+              'size-4 shrink-0 text-neutral-400 transition-transform duration-200',
+              props.expanded ? 'rotate-180' : '',
+            ]}
+          />
+        </div>
+
+        {/* Expanded Content */}
+        {props.expanded && (
+          <div class="border-t border-neutral-100 bg-neutral-50/50 px-5 py-4 dark:border-neutral-800 dark:bg-neutral-800/30">
+            <div class="grid gap-4 sm:grid-cols-2">
+              <div class="space-y-1.5">
+                <label class="text-xs font-medium text-neutral-500 dark:text-neutral-400">
+                  服务类型
+                </label>
                 <NSelect
                   value={localProvider.value.type}
                   onUpdateValue={handleTypeChange}
                   options={AIProviderTypeOptions}
+                  size="small"
                 />
-              </NFormItem>
+              </div>
 
-              <NFormItem label="显示名称">
+              <div class="space-y-1.5">
+                <label class="text-xs font-medium text-neutral-500 dark:text-neutral-400">
+                  显示名称
+                </label>
                 <NInput
                   value={localProvider.value.name}
                   onUpdateValue={(v: string) => handleChange('name', v)}
                   placeholder={getNamePlaceholderForType(
                     localProvider.value.type,
                   )}
+                  size="small"
                 />
-              </NFormItem>
+              </div>
 
-              <NFormItem label="API Key">
+              <div class="space-y-1.5 sm:col-span-2">
+                <label class="text-xs font-medium text-neutral-500 dark:text-neutral-400">
+                  API Key
+                </label>
                 <NInput
                   type="password"
                   showPasswordOn="click"
@@ -264,11 +328,15 @@ const AIProviderCard = defineComponent({
                         ? 'sk-or-...'
                         : 'sk-...'
                   }
+                  size="small"
                 />
-              </NFormItem>
+              </div>
 
               {showEndpoint.value && (
-                <NFormItem label="Endpoint">
+                <div class="space-y-1.5 sm:col-span-2">
+                  <label class="text-xs font-medium text-neutral-500 dark:text-neutral-400">
+                    Endpoint
+                  </label>
                   <NInput
                     value={localProvider.value.endpoint}
                     onUpdateValue={(v: string) => handleChange('endpoint', v)}
@@ -280,12 +348,16 @@ const AIProviderCard = defineComponent({
                           ? '可选，默认 https://openrouter.ai/api/v1'
                           : '可选，留空使用默认'
                     }
+                    size="small"
                   />
-                </NFormItem>
+                </div>
               )}
 
-              <NFormItem label="默认模型">
-                <NSpace align="center">
+              <div class="space-y-1.5 sm:col-span-2">
+                <label class="text-xs font-medium text-neutral-500 dark:text-neutral-400">
+                  默认模型
+                </label>
+                <NSpace align="center" wrap={false}>
                   {props.availableModels.length > 0 ? (
                     <NSelect
                       value={localProvider.value.defaultModel}
@@ -295,7 +367,8 @@ const AIProviderCard = defineComponent({
                       options={modelOptions.value}
                       filterable
                       tag
-                      style="min-width: 200px"
+                      size="small"
+                      class="min-w-[200px]"
                       placeholder="选择或输入模型名"
                     />
                   ) : (
@@ -307,49 +380,39 @@ const AIProviderCard = defineComponent({
                       placeholder={getModelPlaceholderForType(
                         localProvider.value.type,
                       )}
-                      style="min-width: 200px"
+                      size="small"
+                      class="min-w-[200px]"
                     />
                   )}
                   <NButton
                     tertiary
                     type="primary"
+                    size="small"
                     loading={props.isLoadingModels}
                     onClick={() => props.onRefreshModels?.()}
                   >
-                    获取模型列表
+                    获取模型
                   </NButton>
                 </NSpace>
-              </NFormItem>
+              </div>
 
-              <NFormItem label="启用">
-                <NSwitch
-                  value={localProvider.value.enabled}
-                  onUpdateValue={(v: boolean) => handleChange('enabled', v)}
-                />
-              </NFormItem>
-            </NForm>
-          ),
-          action: () => (
-            <div class="flex justify-end">
-              <NSpace align="center">
-                <HeaderActionButton
-                  variant="success"
-                  icon={<CheckCircleOutlinedIcon />}
-                  name="测试连接"
-                  disabled={
-                    props.isTesting || !localProvider.value.defaultModel
-                  }
-                  onClick={() => props.onTest?.(localProvider.value)}
-                />
-                <DeleteConfirmButton
-                  onDelete={() => props.onDelete()}
-                  message="确定删除此 Provider？"
-                />
-              </NSpace>
+              <div class="sm:col-span-2">
+                <div class="flex items-center justify-between rounded-lg border border-neutral-200 bg-white p-3 dark:border-neutral-800 dark:bg-neutral-900/50">
+                  <div class="flex flex-col">
+                    <span class="text-sm font-medium text-neutral-700 dark:text-neutral-200">
+                      启用此服务商
+                    </span>
+                  </div>
+                  <NSwitch
+                    value={localProvider.value.enabled}
+                    onUpdateValue={(v: boolean) => handleChange('enabled', v)}
+                  />
+                </div>
+              </div>
             </div>
-          ),
-        }}
-      </NCard>
+          </div>
+        )}
+      </div>
     )
   },
 })
@@ -451,36 +514,29 @@ const AIModelAssignmentSelect = defineComponent({
     }
 
     return () => (
-      <NFormItem label={props.label}>
-        <NSpace vertical class="w-full">
-          <NSpace>
-            <NSelect
-              value={selectedProviderId.value || null}
-              onUpdateValue={handleProviderChange}
-              options={providerOptions.value}
-              placeholder="选择 Provider"
-              clearable
-              style="min-width: 180px"
-            />
-            <NSelect
-              value={selectedModel.value || null}
-              onUpdateValue={handleModelChange}
-              options={modelOptions.value}
-              placeholder="使用 Provider 默认模型"
-              clearable
-              filterable
-              tag
-              style="min-width: 200px"
-              disabled={!selectedProviderId.value}
-            />
-          </NSpace>
-          {props.description && (
-            <NText depth={3} class="text-xs">
-              {props.description}
-            </NText>
-          )}
-        </NSpace>
-      </NFormItem>
+      <SettingsItem title={props.label} description={props.description}>
+        <div class="flex flex-wrap gap-2">
+          <NSelect
+            value={selectedProviderId.value || null}
+            onUpdateValue={handleProviderChange}
+            options={providerOptions.value}
+            placeholder="选择 Provider"
+            clearable
+            class="w-full sm:w-[180px]"
+          />
+          <NSelect
+            value={selectedModel.value || null}
+            onUpdateValue={handleModelChange}
+            options={modelOptions.value}
+            placeholder="使用 Provider 默认模型"
+            clearable
+            filterable
+            tag
+            class="w-full sm:w-[240px]"
+            disabled={!selectedProviderId.value}
+          />
+        </div>
+      </SettingsItem>
     )
   },
 })
@@ -603,6 +659,16 @@ export const AIConfigSection = defineComponent({
       updateConfig({ providers: newProviders })
     }
 
+    const expandedProviders = ref<Set<string>>(new Set())
+
+    const toggleProvider = (id: string) => {
+      if (expandedProviders.value.has(id)) {
+        expandedProviders.value.delete(id)
+      } else {
+        expandedProviders.value.add(id)
+      }
+    }
+
     const handleAddProvider = () => {
       const defaultType = AIProviderType.OpenAI
       const newProvider: AIProviderConfig = {
@@ -616,35 +682,54 @@ export const AIConfigSection = defineComponent({
       updateConfig({
         providers: [...(config.value.providers || []), newProvider],
       })
+      expandedProviders.value.add(newProvider.id)
     }
 
     return () => (
-      <NSpace vertical size="large" class="w-full">
+      <div class="space-y-8">
         {/* AI Providers */}
-        <NCard title="AI Providers" size="small">
-          <NSpace vertical class="w-full">
-            {config.value.providers?.map((provider, index) => (
-              <AIProviderCard
-                key={provider.id}
-                provider={provider}
-                onUpdate={(p) => handleProviderUpdate(index, p)}
-                onDelete={() => handleProviderDelete(index)}
-                onTest={(p) => testProviderConnection(p)}
-                availableModels={providerModels.value[provider.id] || []}
-                isLoadingModels={loadingProviders.value.has(provider.id)}
-                isTesting={testingProviders.value.has(provider.id)}
-                onRefreshModels={() => fetchModelsForProvider(provider)}
-              />
-            ))}
-            <NButton onClick={handleAddProvider} dashed block>
-              + 添加 Provider
-            </NButton>
-          </NSpace>
-        </NCard>
+        <div>
+          <h3 class="mb-4 text-base font-semibold text-neutral-900 dark:text-neutral-100">
+            AI 服务商
+          </h3>
+          <div class="overflow-hidden rounded-xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
+            {config.value.providers && config.value.providers.length > 0 ? (
+              config.value.providers.map((provider, index) => (
+                <AIProviderRow
+                  key={provider.id}
+                  provider={provider}
+                  expanded={expandedProviders.value.has(provider.id)}
+                  onToggle={() => toggleProvider(provider.id)}
+                  onUpdate={(p) => handleProviderUpdate(index, p)}
+                  onDelete={() => handleProviderDelete(index)}
+                  onTest={(p) => testProviderConnection(p)}
+                  availableModels={providerModels.value[provider.id] || []}
+                  isLoadingModels={loadingProviders.value.has(provider.id)}
+                  isTesting={testingProviders.value.has(provider.id)}
+                  onRefreshModels={() => fetchModelsForProvider(provider)}
+                />
+              ))
+            ) : (
+              <div class="py-12 text-center text-sm text-neutral-500">
+                暂无服务商，点击下方按钮添加
+              </div>
+            )}
+            <div
+              class="flex cursor-pointer items-center justify-center gap-2 border-t border-neutral-100 px-5 py-3 text-sm text-neutral-500 transition-colors hover:bg-neutral-50 hover:text-neutral-700 dark:border-neutral-800 dark:hover:bg-neutral-800/50 dark:hover:text-neutral-300"
+              onClick={handleAddProvider}
+            >
+              <PlusIcon class="size-4" />
+              <span>添加服务商</span>
+            </div>
+          </div>
+        </div>
 
         {/* 功能模型分配 */}
-        <NCard title="功能模型分配" size="small">
-          <NForm labelPlacement="left" labelWidth={150}>
+        <div>
+          <h3 class="mb-4 text-base font-semibold text-neutral-900 dark:text-neutral-100">
+            模型分配
+          </h3>
+          <div class="rounded-xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
             <AIModelAssignmentSelect
               label="摘要功能"
               description="用于生成文章摘要的模型"
@@ -671,37 +756,38 @@ export const AIConfigSection = defineComponent({
               providerModels={providerModels.value}
               onUpdate={(a) => updateConfig({ commentReviewModel: a })}
             />
-          </NForm>
-        </NCard>
+          </div>
+        </div>
 
         {/* 功能开关 */}
-        <NCard title="功能开关" size="small">
-          <NForm labelPlacement="left" labelWidth={200}>
-            <NFormItem label="启用 AI 摘要">
+        <div>
+          <h3 class="mb-4 text-base font-semibold text-neutral-900 dark:text-neutral-100">
+            功能开关
+          </h3>
+          <div class="rounded-xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
+            <SettingsItem title="启用 AI 摘要">
               <NSwitch
                 value={config.value.enableSummary}
                 onUpdateValue={(v: boolean) =>
                   updateConfig({ enableSummary: v })
                 }
               />
-            </NFormItem>
+            </SettingsItem>
 
-            <NFormItem label="自动生成摘要">
-              <NSpace vertical>
-                <NSwitch
-                  value={config.value.enableAutoGenerateSummary}
-                  onUpdateValue={(v: boolean) =>
-                    updateConfig({ enableAutoGenerateSummary: v })
-                  }
-                  disabled={!config.value.enableSummary}
-                />
-                <NText depth={3} class="text-xs">
-                  发布文章时自动生成摘要
-                </NText>
-              </NSpace>
-            </NFormItem>
+            <SettingsItem
+              title="自动生成摘要"
+              description="发布文章时自动生成摘要"
+            >
+              <NSwitch
+                value={config.value.enableAutoGenerateSummary}
+                onUpdateValue={(v: boolean) =>
+                  updateConfig({ enableAutoGenerateSummary: v })
+                }
+                disabled={!config.value.enableSummary}
+              />
+            </SettingsItem>
 
-            <NFormItem label="摘要目标语言">
+            <SettingsItem title="摘要目标语言">
               <NInput
                 value={config.value.aiSummaryTargetLanguage}
                 onUpdateValue={(v: string) =>
@@ -710,10 +796,10 @@ export const AIConfigSection = defineComponent({
                 placeholder="auto 或 ISO 639-1 语言代码"
                 style="max-width: 200px"
               />
-            </NFormItem>
-          </NForm>
-        </NCard>
-      </NSpace>
+            </SettingsItem>
+          </div>
+        </div>
+      </div>
     )
   },
 })

@@ -1,5 +1,4 @@
 import { cloneDeep, isEmpty } from 'es-toolkit/compat'
-import { NForm } from 'naive-ui'
 import {
   computed,
   defineComponent,
@@ -19,11 +18,9 @@ import type { PropType } from 'vue'
 
 import { optionsApi } from '~/api/options'
 import { SectionFields } from '~/components/config-form'
-import { useStoreRef } from '~/hooks/use-store-ref'
-import { UIStore } from '~/stores/ui'
+import { SettingsCard } from '~/layouts/settings-layout'
 import { deepDiff } from '~/utils'
 
-import styles from '../index.module.css'
 import { AIConfigSection } from './sections/ai-config'
 
 export const autosizeableProps = {
@@ -31,15 +28,6 @@ export const autosizeableProps = {
   clearable: true,
   style: 'min-width: 300px; max-width: 100%',
 } as const
-
-const NFormPrefixCls = 'mt-4'
-const NFormBaseProps = {
-  class: NFormPrefixCls,
-  labelPlacement: 'left',
-  labelAlign: 'right',
-  labelWidth: 150,
-  autocomplete: 'chrome-off',
-}
 
 export const TabSystem = defineComponent({
   props: {
@@ -57,7 +45,6 @@ export const TabSystem = defineComponent({
     let originConfigs: any = {}
     const configs = reactive<Record<string, any>>({})
 
-    // Track which sections have changes
     const sectionDiffs = ref<Record<string, any>>({})
     const isInitializing = ref(true)
 
@@ -69,13 +56,11 @@ export const TabSystem = defineComponent({
       () => configs,
       (n) => {
         if (!props.schema) return
-        // Skip diff calculation during initialization or if originConfigs is empty
         if (isInitializing.value || Object.keys(originConfigs).length === 0)
           return
 
         const fullDiff = deepDiff(originConfigs, toRaw(n))
 
-        // Group diffs by section key
         const newSectionDiffs: Record<string, any> = {}
         for (const [key, value] of Object.entries(fullDiff)) {
           if (!isEmpty(value)) {
@@ -125,19 +110,16 @@ export const TabSystem = defineComponent({
       }
 
       originConfigs = cloneDeep(response)
-      // Clear existing keys and assign new values
       for (const key of Object.keys(configs)) {
         delete configs[key]
       }
       for (const [key, value] of Object.entries(response)) {
         configs[key] = value
       }
-      // Reset diffs after fetching new config
       sectionDiffs.value = {}
       isInitializing.value = false
     }
 
-    // Re-fetch when schema changes
     watch(
       () => props.schema,
       async (newSchema) => {
@@ -147,25 +129,6 @@ export const TabSystem = defineComponent({
       },
     )
 
-    const uiStore = useStoreRef(UIStore)
-
-    const formProps = reactive(NFormBaseProps) as any
-
-    watch(
-      () => uiStore.viewport.value.mobile,
-      (n) => {
-        if (n) {
-          formProps.labelPlacement = 'top'
-          formProps.labelAlign = 'left'
-        } else {
-          formProps.labelPlacement = 'left'
-          formProps.labelAlign = 'right'
-        }
-      },
-      { immediate: true },
-    )
-
-    // Computed properties for dirty state
     const isDirty = computed(() => {
       return Object.keys(sectionDiffs.value).length > 0
     })
@@ -174,7 +137,6 @@ export const TabSystem = defineComponent({
       return Object.keys(sectionDiffs.value).length
     })
 
-    // Emit dirty info changes to parent
     watch(
       [isDirty, unsavedChangesCount],
       () => {
@@ -186,18 +148,15 @@ export const TabSystem = defineComponent({
       { immediate: true },
     )
 
-    // Save all sections with changes
     async function saveAll() {
       const sectionKeys = Object.keys(sectionDiffs.value)
       if (sectionKeys.length === 0) return
 
       try {
-        // Save all sections without individual refetch and messages
         await Promise.all(
           sectionKeys.map((key) => saveSection(key, true, true)),
         )
 
-        // Refetch config once after all saves
         await fetchConfig()
         toast.success(`已保存 ${sectionKeys.length} 项修改`)
       } catch (error: any) {
@@ -206,7 +165,6 @@ export const TabSystem = defineComponent({
       }
     }
 
-    // Expose saveAll method to parent
     expose({
       saveAll,
     })
@@ -223,33 +181,26 @@ export const TabSystem = defineComponent({
           {activeGroup.sections
             .filter((section: FormSection) => !section.hidden)
             .map((section: FormSection) => (
-              <div
+              <SettingsCard
                 key={section.key}
+                title={section.title}
                 id={`section-${section.key}`}
-                class={styles.sectionCard}
               >
-                <div class={styles.sectionCardHeader}>
-                  <h3 class={styles.sectionCardTitle}>{section.title}</h3>
-                </div>
-                <div class={styles.sectionCardBody}>
-                  <NForm {...formProps}>
-                    {section.key === 'ai' ? (
-                      <AIConfigSection
-                        value={configs.ai || {}}
-                        onUpdate={(value: any) => {
-                          configs.ai = value
-                        }}
-                      />
-                    ) : (
-                      <SectionFields
-                        fields={section.fields}
-                        formData={computed(() => configs)}
-                        dataKeyPrefix={section.key}
-                      />
-                    )}
-                  </NForm>
-                </div>
-              </div>
+                {section.key === 'ai' ? (
+                  <AIConfigSection
+                    value={configs.ai || {}}
+                    onUpdate={(value: any) => {
+                      configs.ai = value
+                    }}
+                  />
+                ) : (
+                  <SectionFields
+                    fields={section.fields}
+                    formData={computed(() => configs)}
+                    dataKeyPrefix={section.key}
+                  />
+                )}
+              </SettingsCard>
             ))}
         </div>
       )

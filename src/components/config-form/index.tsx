@@ -1,21 +1,11 @@
 import { get, set } from 'es-toolkit/compat'
 import { marked } from 'marked'
-import {
-  NDynamicTags,
-  NFormItem,
-  NInput,
-  NInputNumber,
-  NSelect,
-  NSpace,
-  NSwitch,
-  NText,
-} from 'naive-ui'
-import { computed, defineComponent, ref, watch, watchEffect } from 'vue'
+import { NDynamicTags, NInput, NInputNumber, NSelect, NSwitch } from 'naive-ui'
+import { defineComponent, ref, watch, watchEffect } from 'vue'
 import type { PropType, Ref } from 'vue'
 import type { FormField } from './types'
 
-import { useStoreRef } from '~/hooks/use-store-ref'
-import { UIStore } from '~/stores/ui'
+import { SettingsItem } from '~/layouts/settings-layout'
 import { uuid } from '~/utils'
 
 export const SectionFields = defineComponent({
@@ -206,33 +196,20 @@ export const FormFieldItem = defineComponent({
       }
     }
 
-    const uiStore = useStoreRef(UIStore)
-    const gridCols = computed(() => (uiStore.viewport.value.mobile ? 1 : 2))
-
     return () => {
       const { field } = props
-      const { title, description, ui } = field
+      const { title, description } = field
 
-      const base = (
-        <NFormItem label={title}>
-          {description ? (
-            <NSpace class="w-full" vertical>
-              {renderComponent()}
-              <NText class="text-xs" depth={3}>
-                <span innerHTML={marked.parse(description) as string} />
-              </NText>
-            </NSpace>
-          ) : (
-            renderComponent()
-          )}
-        </NFormItem>
+      return (
+        <SettingsItem title={title}>
+          {{
+            default: () => renderComponent(),
+            description: description
+              ? () => <span innerHTML={marked.parse(description) as string} />
+              : undefined,
+          }}
+        </SettingsItem>
       )
-
-      if (ui.halfGrid && gridCols.value === 2) {
-        return <div class="inline-block w-1/2">{base}</div>
-      }
-
-      return base
     }
   },
 })

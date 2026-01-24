@@ -1,5 +1,5 @@
 import { Copy as CopyIcon, Github as GithubIcon } from 'lucide-vue-next'
-import { NButton, NCard, NForm, NFormItem, NInput, NSwitch } from 'naive-ui'
+import { NButton, NForm, NFormItem, NInput, NSwitch } from 'naive-ui'
 import { defineComponent, ref, watchEffect } from 'vue'
 import { toast } from 'vue-sonner'
 import type { AuthSocialProviders } from '~/utils/authjs/auth'
@@ -9,7 +9,6 @@ import { optionsApi } from '~/api/options'
 import { API_URL } from '~/constants/env'
 import { authClient } from '~/utils/authjs/auth'
 
-import styles from '../../index.module.css'
 import { useInjectOauthData } from '../providers/oauth'
 
 const GoogleIcon = () => (
@@ -110,86 +109,86 @@ export const createProvideSectionComponent = (
       const IconComponent = providerIcons[type] || GithubIcon
 
       return () => (
-        <NCard size="small">
-          {{
-            header: () => (
-              <div class="flex items-center gap-3">
-                <div class={styles.authProviderIcon}>
-                  <IconComponent />
-                </div>
-                <div class="flex-1">
-                  <h3 class={styles.authProviderName}>{options.name}</h3>
-                </div>
-                <label class="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-300">
-                  <NSwitch
-                    value={isEnabled.value}
-                    onUpdateValue={(v) => {
-                      isEnabled.value = v
-                    }}
-                  />
-                </label>
+        <div class="flex flex-col overflow-hidden rounded-xl border border-neutral-200 bg-white transition-colors dark:border-neutral-800 dark:bg-neutral-900">
+          <div class="flex items-center gap-3 border-b border-neutral-100 px-5 py-4 dark:border-neutral-800">
+            <div class="[&_svg]:size-4.5 flex size-9 items-center justify-center rounded-lg bg-neutral-100 dark:bg-neutral-800">
+              <IconComponent />
+            </div>
+            <div class="min-w-0 flex-1">
+              <h3 class="truncate text-sm font-semibold text-neutral-900 dark:text-neutral-100">
+                {options.name}
+              </h3>
+            </div>
+            <NSwitch
+              size="small"
+              value={isEnabled.value}
+              onUpdateValue={(v) => {
+                isEnabled.value = v
+              }}
+            />
+          </div>
+
+          <div class="flex-1 p-5">
+            <NForm
+              model={formValueRef.value}
+              ref={formRef}
+              rules={rules}
+              labelPlacement="top"
+              showRequireMark={false}
+            >
+              <NFormItem label="Client ID" path="clientId">
+                <NInput
+                  size="small"
+                  value={formValueRef.value.clientId}
+                  onUpdateValue={(v) => {
+                    formValueRef.value.clientId = v
+                  }}
+                  placeholder="输入 Client ID"
+                />
+              </NFormItem>
+
+              <NFormItem label="Client Secret" path="secret">
+                <NInput
+                  size="small"
+                  showPasswordToggle
+                  type="password"
+                  value={formValueRef.value.secret}
+                  onUpdateValue={(v) => {
+                    formValueRef.value.secret = v
+                  }}
+                  placeholder="输入 Client Secret"
+                />
+              </NFormItem>
+            </NForm>
+
+            <div class="mt-2 rounded-lg bg-neutral-50 px-3 py-2.5 dark:bg-neutral-800/50">
+              <div class="mb-1 text-[10px] font-medium uppercase tracking-wider text-neutral-400">
+                Callback URL
               </div>
-            ),
-            default: () => (
-              <>
-                <NForm
-                  model={formValueRef.value}
-                  ref={formRef}
-                  rules={rules}
-                  labelPlacement="left"
-                  labelWidth={100}
+              <div class="flex items-center gap-2">
+                <span class="flex-1 truncate font-mono text-xs text-neutral-600 dark:text-neutral-400">
+                  {API_URL}/auth/callback/{type}
+                </span>
+                <button
+                  type="button"
+                  class="hover:text-primary text-neutral-400 transition-colors"
+                  onClick={copyCallbackUrl}
                 >
-                  <NFormItem label="Client ID" path="clientId" required>
-                    <NInput
-                      value={formValueRef.value.clientId}
-                      onUpdateValue={(v) => {
-                        formValueRef.value.clientId = v
-                      }}
-                      placeholder="输入 Client ID"
-                    />
-                  </NFormItem>
+                  <CopyIcon class="size-3.5" />
+                </button>
+              </div>
+            </div>
+          </div>
 
-                  <NFormItem label="Client Secret" required path="secret">
-                    <NInput
-                      showPasswordToggle
-                      type="password"
-                      value={formValueRef.value.secret}
-                      onUpdateValue={(v) => {
-                        formValueRef.value.secret = v
-                      }}
-                      placeholder="输入 Client Secret"
-                    />
-                  </NFormItem>
-                </NForm>
-
-                <div class="mt-4 rounded-lg bg-neutral-50 p-3 dark:bg-neutral-800">
-                  <div class="mb-1 text-xs text-neutral-500 dark:text-neutral-400">
-                    Callback URL
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <span class="flex-1 truncate font-mono text-sm text-neutral-700 dark:text-neutral-200">
-                      {API_URL}/auth/callback/{type}
-                    </span>
-                    <NButton text type="primary" onClick={copyCallbackUrl}>
-                      <CopyIcon class="size-4" />
-                    </NButton>
-                  </div>
-                </div>
-
-                <div class="mt-4 flex items-center justify-end">
-                  <div class="flex gap-2">
-                    <NButton onClick={handleValidate} tertiary size="small">
-                      验证
-                    </NButton>
-                    <NButton onClick={handleSave} type="primary" size="small">
-                      保存
-                    </NButton>
-                  </div>
-                </div>
-              </>
-            ),
-          }}
-        </NCard>
+          <div class="flex items-center justify-end gap-2 border-t border-neutral-100 bg-neutral-50/30 px-5 py-3 dark:border-neutral-800 dark:bg-neutral-800/50">
+            <NButton onClick={handleValidate} size="tiny" quaternary>
+              验证连接
+            </NButton>
+            <NButton onClick={handleSave} type="primary" size="tiny" secondary>
+              保存配置
+            </NButton>
+          </div>
+        </div>
       )
     },
   })
