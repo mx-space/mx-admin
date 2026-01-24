@@ -164,6 +164,11 @@ class ImageElement extends LitElement {
 
     .error-icon {
       color: #a3a3a3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
     }
 
     :host-context(html.dark) .error-icon {
