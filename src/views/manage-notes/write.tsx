@@ -11,6 +11,7 @@ import {
   computed,
   defineComponent,
   onBeforeMount,
+  onBeforeUnmount,
   onMounted,
   reactive,
   ref,
@@ -48,7 +49,6 @@ import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
 import { useWriteDraft } from '~/hooks/use-write-draft'
 import { useLayout } from '~/layouts/content'
 import { DraftRefType } from '~/models/draft'
-import { RouteName } from '~/router/name'
 import { getDayOfYear } from '~/utils/time'
 
 type NoteReactiveType = {
@@ -188,8 +188,20 @@ const NoteWriteView = defineComponent(() => {
     defaultTitle.value = `记录 ${currentTime.getFullYear()} 年第 ${getDayOfYear(currentTime)} 天`
   })
 
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+      e.preventDefault()
+      serverDraft.saveImmediately()
+    }
+  }
+
   onMounted(() => {
     initialize()
+    window.addEventListener('keydown', handleKeyDown)
+  })
+
+  onBeforeUnmount(() => {
+    window.removeEventListener('keydown', handleKeyDown)
   })
 
   const drawerShow = ref(false)
@@ -222,11 +234,15 @@ const NoteWriteView = defineComponent(() => {
       toast.success('修改成功')
     } else {
       const payload = parseDataToPayload()
-      await notesApi.create({ ...payload, draftId } as CreateNoteData)
+      const result = await notesApi.create({
+        ...payload,
+        draftId,
+      } as CreateNoteData)
+      data.id = result.id
+      nid.value = result.nid
+      await router.replace({ query: { id: result.id } })
       toast.success('发布成功')
     }
-
-    await router.push({ name: RouteName.ViewNote, hash: '|publish' })
   }
 
   const { fetchTopic, topics } = useNoteTopic()

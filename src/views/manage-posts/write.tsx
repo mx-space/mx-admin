@@ -43,7 +43,6 @@ import { useStoreRef } from '~/hooks/use-store-ref'
 import { useWriteDraft } from '~/hooks/use-write-draft'
 import { useLayout } from '~/layouts/content'
 import { DraftRefType } from '~/models/draft'
-import { RouteName } from '~/router/name'
 import { CategoryStore } from '~/stores/category'
 
 import { useMemoPostList } from './hooks/use-memo-post-list'
@@ -177,8 +176,16 @@ const PostWriteView = defineComponent(() => {
       ({} as CategoryModel),
   )
 
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+      e.preventDefault()
+      serverDraft.saveImmediately()
+    }
+  }
+
   onMounted(() => {
     initialize()
+    window.addEventListener('keydown', handleKeyDown)
   })
 
   const drawerShow = ref(false)
@@ -197,11 +204,11 @@ const PostWriteView = defineComponent(() => {
       await postsApi.update(actualRefId.value, payload)
       toast.success('修改成功')
     } else {
-      await postsApi.create(payload)
+      const result = await postsApi.create(payload)
+      data.id = result.id
+      await router.replace({ query: { id: result.id } })
       toast.success('发布成功')
     }
-
-    await router.push({ name: RouteName.ViewPost, hash: '|publish' })
   }
 
   const handleOpenDrawer = () => {
@@ -222,6 +229,7 @@ const PostWriteView = defineComponent(() => {
   }
 
   onBeforeUnmount(() => {
+    window.removeEventListener('keydown', handleKeyDown)
     postListState.refresh()
   })
 
