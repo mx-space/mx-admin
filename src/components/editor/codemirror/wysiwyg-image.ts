@@ -96,11 +96,12 @@ class ImageElement extends LitElement {
     }
 
     .uploading-spinner {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       animation: spin 1s linear infinite;
-    }
-
-    .uploading-spinner svg {
-      display: block;
     }
 
     .uploading-text {
