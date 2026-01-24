@@ -1,5 +1,24 @@
 # CHANGELOG
 
+# [5.3.0](https://github.com/mx-space/admin-vue3/compare/v5.2.0...v5.3.0) (2026-01-24)
+
+
+### Bug Fixes
+
+* **admin:** 修正前端跳转 ([#1018](https://github.com/mx-space/admin-vue3/issues/1018)) ([b17ec81](https://github.com/mx-space/admin-vue3/commit/b17ec8125ad9f2ae30c9f69ce256082ee1b4e3de))
+* **dashboard:** fix site word count not displaying ([ba8827c](https://github.com/mx-space/admin-vue3/commit/ba8827c58fa3c9fae887b47d87f3a0cfc08e5fbd))
+
+
+### Features
+
+* enhance file management interface ([38a5fcd](https://github.com/mx-space/admin-vue3/commit/38a5fcdcc63dc1f8b889d7a56f28d88595c4929b))
+* enhance sidebar and mobile menu interaction ([1230c42](https://github.com/mx-space/admin-vue3/commit/1230c4250c5897f31c37575b2eb0c05d84134dd5))
+* image paste and upload ([f049d45](https://github.com/mx-space/admin-vue3/commit/f049d4590fe755aa12753df8ff2f9b0bd2a0ebdc))
+* implement image upload functionality in editor ([b1c14ac](https://github.com/mx-space/admin-vue3/commit/b1c14acfca71847473dde882f3fa4535cd951609))
+* implement slash menu functionality ([eef465e](https://github.com/mx-space/admin-vue3/commit/eef465ee348a9edc3ca68008fdd4bb435ec8bd04))
+
+
+
 # [5.2.0](https://github.com/mx-space/admin-vue3/compare/v5.1.4...v5.2.0) (2026-01-22)
 
 
