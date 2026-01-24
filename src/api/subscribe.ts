@@ -32,6 +32,12 @@ export const subscribeApi = {
   unsubscribe: (params: { email: string }) =>
     request.get<void>('/subscribe/unsubscribe', { params }),
 
+  // 批量取消订阅
+  unsubscribeBatch: (params: { emails?: string[]; all?: boolean }) =>
+    request.delete<{ deletedCount: number }>('/subscribe/unsubscribe/batch', {
+      data: params,
+    }),
+
   // 批量导出订阅
   export: () => request.get<Blob>('/subscribe/export'),
 }

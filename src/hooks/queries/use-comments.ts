@@ -59,8 +59,11 @@ export const useUpdateCommentStateMutation = () => {
 export const useBatchUpdateCommentStateMutation = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: ({ ids, state }: { ids: string[]; state: number }) =>
-      commentsApi.batchUpdateState(ids, state),
+    mutationFn: (
+      options:
+        | { ids: string[]; state: number }
+        | { all: true; state: number; currentState: number },
+    ) => commentsApi.batchUpdateState(options),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.comments.all })
     },

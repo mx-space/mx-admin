@@ -31,6 +31,7 @@ export default defineComponent({
                 } else {
                   toast.error(error.message)
                 }
+                return
               }
 
               try {
@@ -63,6 +64,7 @@ export default defineComponent({
                 // Some basic error handling
 
                 toast.error(error.message)
+                return
               }
 
               try {

@@ -95,7 +95,7 @@
         "useImportType": "warn",
         "useTemplate": {
           "level": "error",
-          "fix": "unsafe"
+          "fix": "safe"
         },
         "useSelfClosingElements": "error"
       },

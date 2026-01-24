@@ -38,13 +38,16 @@ export const commentsApi = {
     request.patch<CommentModel>(`/comments/${id}`, { data: { state } }),
 
   // 批量更新状态
-  batchUpdateState: (ids: string[], state: number) =>
-    request.patch<void>('/comments', { data: { ids, state } }),
+  batchUpdateState: (
+    options:
+      | { ids: string[]; state: number }
+      | { all: true; state: number; currentState: number },
+  ) => request.patch<void>('/comments/batch/state', { data: options }),
 
   // 删除评论
   delete: (id: string) => request.delete<void>(`/comments/${id}`),
 
   // 批量删除
-  batchDelete: (ids: string[]) =>
-    request.delete<void>('/comments', { params: { ids: ids.join(',') } }),
+  batchDelete: (options: { ids: string[] } | { all: true; state: number }) =>
+    request.delete<void>('/comments/batch', { data: options }),
 }

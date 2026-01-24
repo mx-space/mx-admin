@@ -13,3 +13,9 @@ const bit2TextMap = new Map([
 ])
 
 export { bit2TextMap as SubscribeBit2TextMap }
+export {
+  SubscribeNoteCreateBit,
+  SubscribePostCreateBit,
+  SubscribeRecentCreateBit,
+  SubscribeSayCreateBit,
+}

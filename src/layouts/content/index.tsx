@@ -1,8 +1,15 @@
 import { Menu as MenuIcon, PanelLeftOpen } from 'lucide-vue-next'
 import { NLayoutContent } from 'naive-ui'
-import { computed, defineComponent, inject, provide, watchEffect } from 'vue'
+import {
+  computed,
+  defineComponent,
+  inject,
+  provide,
+  ref,
+  watchEffect,
+} from 'vue'
 import { useRouter } from 'vue-router'
-import type { InjectionKey, PropType, VNode } from 'vue'
+import type { InjectionKey, PropType, Ref, VNode } from 'vue'
 
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { LayoutStore } from '~/stores/layout'
@@ -10,6 +17,10 @@ import { UIStore } from '~/stores/ui'
 
 // 用于检测嵌套的 ContentLayout
 const ContentLayoutContextKey: InjectionKey<boolean> = Symbol('ContentLayout')
+
+// 用于传递 Layout DOM 节点的 Context
+export const ContentLayoutDOMContextKey: InjectionKey<Ref<HTMLElement | null>> =
+  Symbol('ContentLayoutDOM')
 
 export const ContentLayout = defineComponent({
   name: 'ContentLayout',
@@ -65,6 +76,10 @@ export const ContentLayout = defineComponent({
     // 标记当前在 ContentLayout 内部
     provide(ContentLayoutContextKey, true)
 
+    // 创建 DOM 引用并通过 Context 传递
+    const layoutRef = ref<HTMLElement | null>(null)
+    provide(ContentLayoutDOMContextKey, layoutRef)
+
     const router = useRouter()
     const route = computed(() => router.currentRoute.value)
 
@@ -101,11 +116,14 @@ export const ContentLayout = defineComponent({
     )
 
     return () => (
-      <div class="@container flex h-full flex-col bg-[var(--content-bg)]">
+      <div
+        ref={layoutRef}
+        class="@container flex h-full flex-col bg-[var(--content-bg)]"
+      >
         {!shouldHideHeader.value && (
           <header
             class={[
-              '@4xl:px-8 flex h-16 shrink-0 items-center justify-between px-2',
+              '@4xl:px-8 flex h-16 shrink-0 items-center justify-between px-4',
               headerClassName.value,
             ]}
           >
@@ -144,7 +162,7 @@ export const ContentLayout = defineComponent({
         <NLayoutContent
           nativeScrollbar={false}
           class="flex-1 !bg-transparent"
-          contentClass={hasContentPadding.value ? 'px-8 pb-8' : 'pr-2'}
+          contentClass={hasContentPadding.value ? 'px-4 md:px-8 pb-8' : 'pr-2'}
         >
           {slots.default?.()}
         </NLayoutContent>
@@ -180,3 +198,8 @@ export const ContentLayout = defineComponent({
 
 // Re-export useLayout composable for convenience
 export { useLayout } from '~/hooks/use-layout'
+
+// Hook to get the ContentLayout DOM element
+export function useContentLayoutDOM() {
+  return inject(ContentLayoutDOMContextKey, ref(null))
+}

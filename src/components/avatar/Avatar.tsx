@@ -11,7 +11,6 @@ export const Avatar = defineComponent({
     },
     src: {
       type: String,
-      required: true,
     },
   },
   setup(props) {

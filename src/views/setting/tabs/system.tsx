@@ -181,11 +181,7 @@ export const TabSystem = defineComponent({
           {activeGroup.sections
             .filter((section: FormSection) => !section.hidden)
             .map((section: FormSection) => (
-              <SettingsCard
-                key={section.key}
-                title={section.title}
-                id={`section-${section.key}`}
-              >
+              <SettingsCard key={section.key} title={section.title}>
                 {section.key === 'ai' ? (
                   <AIConfigSection
                     value={configs.ai || {}}

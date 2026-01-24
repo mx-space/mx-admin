@@ -24,6 +24,7 @@ class AuthnUtilsStatic {
       } else {
         toast.error(error.message)
       }
+      return
     }
 
     try {
@@ -51,6 +52,7 @@ class AuthnUtilsStatic {
       // Some basic error handling
 
       toast.error(error.message)
+      return
     }
 
     if (test) {

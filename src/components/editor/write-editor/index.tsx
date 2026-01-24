@@ -3,7 +3,6 @@
  * 整合 Title、Slug/Subtitle 和 CodeMirror 编辑器
  * Title 和 Slug 随编辑器内容一起滚动
  */
-
 import { Settings as SettingsIcon } from 'lucide-vue-next'
 import { NCard, NElement, NForm, NModal } from 'naive-ui'
 import {
@@ -188,7 +187,7 @@ export const WriteEditor = defineComponent({
               '--editor-font-family': generalSetting.fontFamily,
             } as any
           }
-          class="write-editor-wrapper"
+          class="write-editor-wrapper min-h-[100dvh]"
         >
           <div ref={scrollContainerRef} class="write-editor-scroll-container">
             {/* Title 区域 */}

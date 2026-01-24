@@ -163,9 +163,16 @@ export const request = {
     return transformResponse<T>(result, bypassTransform)
   },
 
-  async delete<T>(url: string, options?: RequestOptions): Promise<T> {
-    const { bypassTransform, ...rest } = options || {}
-    const result = await $api<unknown>(url, { method: 'DELETE', ...rest })
+  async delete<T, D = unknown>(
+    url: string,
+    options?: RequestOptions<D>,
+  ): Promise<T> {
+    const { data, bypassTransform, ...rest } = options || {}
+    const result = await $api<unknown>(url, {
+      method: 'DELETE',
+      body: data as BodyInit,
+      ...rest,
+    })
     return transformResponse<T>(result, bypassTransform)
   },
 }
