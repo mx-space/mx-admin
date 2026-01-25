@@ -395,10 +395,10 @@ const ManageComment = defineComponent(() => {
   )
 
   const MobileLayout = () => (
-    <div class="relative h-[calc(100vh-4rem)] overflow-hidden">
+    <div class="absolute inset-0 w-full overflow-x-hidden">
       <div
         class={[
-          'absolute inset-0 transition-transform duration-300',
+          'absolute inset-0 w-full',
           showDetailOnMobile.value && '-translate-x-full',
         ]}
       >
@@ -423,8 +423,9 @@ const ManageComment = defineComponent(() => {
 
       <div
         class={[
-          'absolute inset-0 transition-transform duration-300',
-          showDetailOnMobile.value ? 'translate-x-0' : 'translate-x-full',
+          'absolute inset-0 w-full',
+          // showDetailOnMobile.value ? 'translate-x-0' : 'translate-x-full',
+          !showDetailOnMobile.value && 'hidden',
         ]}
       >
         <div class="h-full bg-white dark:bg-neutral-900">

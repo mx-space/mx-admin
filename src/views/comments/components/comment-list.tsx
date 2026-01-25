@@ -2,7 +2,7 @@ import {
   ChevronDown as ChevronDownIcon,
   Inbox as InboxIcon,
 } from 'lucide-vue-next'
-import { NCheckbox, NPopover, NScrollbar } from 'naive-ui'
+import { NCheckbox, NPagination, NPopover, NScrollbar } from 'naive-ui'
 import { computed, defineComponent } from 'vue'
 import type { CommentModel } from '~/models/comment'
 import type { PropType } from 'vue'
@@ -206,26 +206,13 @@ export const CommentList = defineComponent({
         </div>
 
         {props.pager && props.pager.totalPage > 1 && (
-          <div class="flex items-center justify-between border-t border-neutral-200 bg-neutral-50/50 px-4 py-2 dark:border-neutral-800 dark:bg-neutral-900/50">
-            <span class="text-xs text-neutral-500">
-              {props.pager.currentPage} / {props.pager.totalPage}
-            </span>
-            <div class="flex gap-1">
-              <button
-                disabled={!props.pager.hasPrevPage}
-                onClick={() => props.onPageChange(props.pager!.currentPage - 1)}
-                class="rounded border border-neutral-200 bg-white px-2 py-0.5 text-xs font-medium text-neutral-600 hover:bg-neutral-50 disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
-              >
-                上一页
-              </button>
-              <button
-                disabled={!props.pager.hasNextPage}
-                onClick={() => props.onPageChange(props.pager!.currentPage + 1)}
-                class="rounded border border-neutral-200 bg-white px-2 py-0.5 text-xs font-medium text-neutral-600 hover:bg-neutral-50 disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
-              >
-                下一页
-              </button>
-            </div>
+          <div class="flex items-center justify-end border-t border-neutral-200 bg-neutral-50/50 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-900/50">
+            <NPagination
+              page={props.pager.currentPage}
+              pageCount={props.pager.totalPage}
+              onUpdatePage={props.onPageChange}
+              simple
+            />
           </div>
         )}
       </div>
