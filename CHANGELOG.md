@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## [5.4.4](https://github.com/mx-space/admin-vue3/compare/v5.4.3...v5.4.4) (2026-01-25)
+
+
+### Features
+
+* add history diff modal for draft version comparison ([cd30f8d](https://github.com/mx-space/admin-vue3/commit/cd30f8d230cae16676b03753c4d7589376c116d9))
+* enhance draft management with new components and layout improvements ([c007606](https://github.com/mx-space/admin-vue3/commit/c007606237da7d577f5253100ccc1a0e70d8171c))
+
+
+
 ## [5.4.3](https://github.com/mx-space/admin-vue3/compare/v5.4.2...v5.4.3) (2026-01-25)
 
 
