@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [5.4.2](https://github.com/mx-space/admin-vue3/compare/v5.4.1...v5.4.2) (2026-01-25)
+
+
+### Features
+
+* implement split layout for comment management ([1796f8c](https://github.com/mx-space/admin-vue3/commit/1796f8ca044aa139416e144d988f89368c16b09c))
+
+
+
 ## [5.4.1](https://github.com/mx-space/admin-vue3/compare/v5.4.0...v5.4.1) (2026-01-25)
 
 
