@@ -514,6 +514,9 @@
   transform-origin: top left;
 }
 
+cm-wysiwyg-image {
+  margin: 0;
+}
 /* Light mode (default) */
 .cm-image-edit-popover {
   background-color: #fff;

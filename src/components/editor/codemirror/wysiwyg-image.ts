@@ -35,13 +35,18 @@ class ImageElement extends LitElement {
     :host {
       display: block;
       width: 100%;
-      margin: 0.5em 0;
+      margin: 0;
+      padding: 8px 0 !important;
+      line-height: 0;
+      font-size: 0;
       text-align: center;
     }
 
     :host([isblock]) {
       display: block;
       width: 100%;
+      margin: 0;
+      padding: 8px 0 !important;
     }
 
     .image-inner {
@@ -109,6 +114,7 @@ class ImageElement extends LitElement {
     .uploading-text {
       font-size: 0.875rem;
       font-weight: 500;
+      line-height: 1.4;
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     }
 
@@ -181,6 +187,7 @@ class ImageElement extends LitElement {
       font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
         'Liberation Mono', monospace;
       font-size: 0.75rem;
+      line-height: 1.4;
       max-width: 280px;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -194,6 +201,7 @@ class ImageElement extends LitElement {
 
     .error-hint {
       font-size: 0.75rem;
+      line-height: 1.4;
       color: #a3a3a3;
     }
 
