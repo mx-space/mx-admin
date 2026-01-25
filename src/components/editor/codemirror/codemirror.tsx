@@ -3,6 +3,8 @@ import { defineComponent, watch } from 'vue'
 import type { EditorState } from '@codemirror/state'
 import type { PropType } from 'vue'
 
+import { EditorView } from '@codemirror/view'
+
 import { useSaveConfirm } from '~/hooks/use-save-confirm'
 
 import { SlashMenu, slashMenuExtension } from '../slash-menu'
@@ -91,6 +93,8 @@ export const CodemirrorEditor = defineComponent({
             ]
           : []
 
+        const selectionHead = view.state.selection.main.head
+
         view.dispatch({
           effects: [
             codemirrorReconfigureExtensionMap.wysiwyg.reconfigure(extensions),
@@ -103,6 +107,14 @@ export const CodemirrorEditor = defineComponent({
           ],
         })
         view.requestMeasure()
+
+        requestAnimationFrame(() => {
+          view.dispatch({
+            effects: EditorView.scrollIntoView(selectionHead, {
+              y: 'center',
+            }),
+          })
+        })
 
         if (hadFocus) {
           requestAnimationFrame(() => view.focus())

@@ -212,12 +212,6 @@ const buildListDecorations = (state: EditorState): DecorationSet => {
     const listItem = findListItem(line.text, line.from, line.to)
 
     if (listItem) {
-      const cursorOnLine = isCursorOnLine(
-        state,
-        listItem.lineFrom,
-        listItem.lineTo,
-      )
-
       // Add line decoration
       decorations.push(
         Decoration.line({
@@ -225,35 +219,26 @@ const buildListDecorations = (state: EditorState): DecorationSet => {
         }).range(line.from),
       )
 
-      // Only hide marker if cursor is NOT on this line
-      if (!cursorOnLine) {
-        let widget: WidgetType
+      let widget: WidgetType
 
-        if (listItem.type === 'task') {
-          widget = new TaskListMarkerWidget(
-            listItem.indent,
-            listItem.checked!,
-            listItem.checkboxPos!,
-          )
-        } else if (listItem.type === 'ol') {
-          widget = new OrderedListMarkerWidget(
-            listItem.indent,
-            listItem.number!,
-          )
-        } else {
-          widget = new UnorderedListMarkerWidget(
-            listItem.indent,
-            listItem.marker,
-          )
-        }
-
-        decorations.push(
-          Decoration.replace({ widget }).range(
-            listItem.markerStart,
-            listItem.markerEnd,
-          ),
+      if (listItem.type === 'task') {
+        widget = new TaskListMarkerWidget(
+          listItem.indent,
+          listItem.checked!,
+          listItem.checkboxPos!,
         )
+      } else if (listItem.type === 'ol') {
+        widget = new OrderedListMarkerWidget(listItem.indent, listItem.number!)
+      } else {
+        widget = new UnorderedListMarkerWidget(listItem.indent, listItem.marker)
       }
+
+      decorations.push(
+        Decoration.replace({ widget }).range(
+          listItem.markerStart,
+          listItem.markerEnd,
+        ),
+      )
     }
   }
 

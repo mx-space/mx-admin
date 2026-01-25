@@ -348,12 +348,11 @@
     overflow: hidden;
   }
 
-  /* Internal styles moved to Shadow DOM in wysiwyg-codeblock.ts */
-
   /* List styles */
   .cm-wysiwyg-list-marker {
     display: inline-block;
     color: var(--primary-default, currentColor);
+    font-family: system-ui;
     opacity: 0.8;
   }
 

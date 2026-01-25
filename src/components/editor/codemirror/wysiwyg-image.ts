@@ -33,12 +33,14 @@ class ImageElement extends LitElement {
 
   static styles = css`
     :host {
-      display: inline-block;
+      display: block;
+      width: 100%;
+      margin: 0.5em 0;
+      text-align: center;
     }
 
     :host([isblock]) {
-      display: flex;
-      justify-content: center;
+      display: block;
       width: 100%;
     }
 
