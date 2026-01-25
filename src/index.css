@@ -407,3 +407,8 @@ html.dark .n-modal .n-card {
   background: transparent !important;
   box-shadow: none !important;
 }
+
+.n-split__resize-trigger,
+.n-split__resize-trigger-wrapper {
+  width: 0px !important;
+}

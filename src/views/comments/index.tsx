@@ -3,7 +3,7 @@ import {
   ShieldAlert as SpamIcon,
   Trash2 as TrashIcon,
 } from 'lucide-vue-next'
-import { useDialog } from 'naive-ui'
+import { NSplit, useDialog } from 'naive-ui'
 import {
   computed,
   defineComponent,
@@ -340,39 +340,57 @@ const ManageComment = defineComponent(() => {
   })
 
   const DesktopLayout = () => (
-    <div class="absolute inset-0 flex overflow-hidden">
-      <div class="w-[340px] flex-shrink-0 border-r border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
-        <CommentList
-          data={data.value}
-          loading={loading.value}
-          checkedKeys={checkedRowKeys.value}
-          selectedId={selectedId.value}
-          pager={pager.value}
-          selectAllMode={selectAllMode.value}
-          filterValue={tabValue.value}
-          onCheck={handleCheck}
-          onCheckAll={handleCheckAll}
-          onSelectAll={handleSelectAll}
-          onSelect={handleSelect}
-          onPageChange={setPage}
-          onFilterChange={handleFilterChange}
-        />
-      </div>
-
-      <div class="min-w-0 flex-1 bg-neutral-50 dark:bg-neutral-950">
-        {selectedComment.value ? (
-          <CommentDetail
-            comment={selectedComment.value}
-            currentTab={tabValue.value}
-            replyLoading={replyMutation.isPending.value}
-            onChangeState={changeState}
-            onDelete={handleDelete}
-            onReply={handleReply}
-          />
-        ) : (
-          <CommentEmptyState />
-        )}
-      </div>
+    <div class="absolute inset-0 overflow-hidden">
+      <NSplit
+        direction="horizontal"
+        defaultSize={0.35}
+        min={0.25}
+        max={0.5}
+        class="h-full"
+      >
+        {{
+          1: () => (
+            <div class="h-full overflow-hidden border-r border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
+              <CommentList
+                data={data.value}
+                loading={loading.value}
+                checkedKeys={checkedRowKeys.value}
+                selectedId={selectedId.value}
+                pager={pager.value}
+                selectAllMode={selectAllMode.value}
+                filterValue={tabValue.value}
+                onCheck={handleCheck}
+                onCheckAll={handleCheckAll}
+                onSelectAll={handleSelectAll}
+                onSelect={handleSelect}
+                onPageChange={setPage}
+                onFilterChange={handleFilterChange}
+              />
+            </div>
+          ),
+          2: () => (
+            <div class="h-full min-w-0 flex-1 overflow-hidden bg-neutral-50 dark:bg-neutral-950">
+              {selectedComment.value ? (
+                <CommentDetail
+                  comment={selectedComment.value}
+                  currentTab={tabValue.value}
+                  replyLoading={replyMutation.isPending.value}
+                  onChangeState={changeState}
+                  onDelete={handleDelete}
+                  onReply={handleReply}
+                />
+              ) : (
+                <CommentEmptyState />
+              )}
+            </div>
+          ),
+          'resize-trigger': () => (
+            <div class="group relative h-full w-0 cursor-col-resize">
+              <div class="absolute left-1/2 top-1/2 h-8 w-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-neutral-300 transition-colors group-hover:bg-neutral-400 dark:bg-neutral-700 dark:group-hover:bg-neutral-600" />
+            </div>
+          ),
+        }}
+      </NSplit>
     </div>
   )
 
