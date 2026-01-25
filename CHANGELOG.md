@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## [5.4.1](https://github.com/mx-space/admin-vue3/compare/v5.4.0...v5.4.1) (2026-01-25)
+
+
+### Features
+
+* add keyboard shortcut for saving drafts and improve note/post creation flow ([2e745f4](https://github.com/mx-space/admin-vue3/commit/2e745f477d90f4b76cdfe800fb565a9ed6262a41))
+* enhance WYSIWYG editor functionality and styling ([904afc9](https://github.com/mx-space/admin-vue3/commit/904afc9aff565edc9cd718fd2bc677918dc8f26d))
+* implement draft management features with upload queue ([7492e17](https://github.com/mx-space/admin-vue3/commit/7492e1717b6a1c5e966b0d8433f4d0a2352e8478))
+* integrate emoji picker and enhance comment management features ([2d8e738](https://github.com/mx-space/admin-vue3/commit/2d8e7381a3435272953fe167324b4c7960031741))
+
+
+
 # [5.4.0](https://github.com/mx-space/admin-vue3/compare/v5.3.0...v5.4.0) (2026-01-24)
 
 
