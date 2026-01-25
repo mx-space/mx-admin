@@ -80,12 +80,15 @@ export const useServerDraft = (
     try {
       let response: DraftModel
 
+      // 过滤掉 images 数组中的 null/undefined 值
+      const validImages = data.images?.filter((img) => img != null && img.src)
+
       if (draftId.value) {
         // 更新现有草稿
         response = await draftsApi.update(draftId.value, {
           title,
           text: data.text,
-          images: data.images,
+          images: validImages,
           meta: data.meta,
           typeSpecificData: data.typeSpecificData,
         })
@@ -96,7 +99,7 @@ export const useServerDraft = (
           refId: currentRefId.value,
           title,
           text: data.text,
-          images: data.images,
+          images: validImages,
           meta: data.meta,
           typeSpecificData: data.typeSpecificData,
         })
@@ -246,6 +249,14 @@ export const useServerDraft = (
     memoPreviousData = getData()
   }
 
+  // 检查当前数据是否与已保存的草稿一致
+  const checkIsSynced = (): boolean => {
+    const data = getData()
+    // 如果没有任何内容且没有保存过，视为同步
+    if (!data.text && !data.title && !memoPreviousData) return true
+    return !hasChanges(data)
+  }
+
   // 组件卸载时停止自动保存
   onUnmounted(() => {
     stopAutoSave()
@@ -270,5 +281,6 @@ export const useServerDraft = (
     startAutoSave,
     stopAutoSave,
     syncMemory,
+    checkIsSynced,
   }
 }

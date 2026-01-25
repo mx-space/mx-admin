@@ -30,6 +30,8 @@ import { notesApi } from '~/api/notes'
 import { topicsApi } from '~/api/topics'
 import { AiHelperButton } from '~/components/ai/ai-helper'
 import { HeaderActionButton } from '~/components/button/rounded-button'
+import { DraftListModal } from '~/components/draft/draft-list-modal'
+import { DraftRecoveryModal } from '~/components/draft/draft-recovery-modal'
 import { DraftSaveIndicator } from '~/components/draft/draft-save-indicator'
 import {
   FieldGroup,
@@ -46,6 +48,7 @@ import { HeaderPreviewButton } from '~/components/special-button/preview'
 import { WEB_URL } from '~/constants/env'
 import { MOOD_SET, WEATHER_SET } from '~/constants/note'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
+import { useS3Upload } from '~/hooks/use-s3-upload'
 import { useWriteDraft } from '~/hooks/use-write-draft'
 import { useLayout } from '~/layouts/content'
 import { DraftRefType } from '~/models/draft'
@@ -149,36 +152,41 @@ const NoteWriteView = defineComponent(() => {
     parsePayloadIntoReactiveData(noteData as NoteModel)
   }
 
-  const { id, serverDraft, isEditing, actualRefId, initialize } = useWriteDraft(
-    data,
-    {
-      refType: DraftRefType.Note,
-      interval: 10000,
-      draftLabel: '手记',
-      getData: () => ({
-        title: data.title,
-        text: data.text,
-        images: data.images,
-        meta: data.meta,
-        typeSpecificData: {
-          mood: data.mood,
-          weather: data.weather,
-          password: data.password,
-          publicAt: data.publicAt?.toISOString() || null,
-          bookmark: data.bookmark,
-          location: data.location,
-          coordinates: data.coordinates,
-          topicId: data.topicId,
-          isPublished: data.isPublished,
-        },
-      }),
-      applyDraft,
-      loadPublished,
-      onTitleFallback: (title) => {
-        data.title = title
+  const {
+    id,
+    serverDraft,
+    isEditing,
+    actualRefId,
+    initialize,
+    recoveryModal,
+    listModal,
+  } = useWriteDraft(data, {
+    refType: DraftRefType.Note,
+    interval: 10000,
+    draftLabel: '手记',
+    getData: () => ({
+      title: data.title,
+      text: data.text,
+      images: data.images,
+      meta: data.meta,
+      typeSpecificData: {
+        mood: data.mood,
+        weather: data.weather,
+        password: data.password,
+        publicAt: data.publicAt?.toISOString() || null,
+        bookmark: data.bookmark,
+        location: data.location,
+        coordinates: data.coordinates,
+        topicId: data.topicId,
+        isPublished: data.isPublished,
       },
+    }),
+    applyDraft,
+    loadPublished,
+    onTitleFallback: (title) => {
+      data.title = title
     },
-  )
+  })
 
   const loading = computed(() => !!(id.value && typeof data.id === 'undefined'))
 
@@ -206,11 +214,16 @@ const NoteWriteView = defineComponent(() => {
 
   const drawerShow = ref(false)
   const enablePassword = computed(() => typeof data.password === 'string')
+  const { processLocalImages } = useS3Upload()
 
   const handleSubmit = async () => {
-    const parseDataToPayload = (): { [key in keyof NoteModel]?: any } => {
+    const { text, images } = await processLocalImages(data.text, data.images)
+
+    const parseDataToPayload = () => {
       return {
         ...toRaw(data),
+        text,
+        images,
         title: data.title?.trim() || defaultTitle.value,
         password:
           data.password && data.password.length > 0 ? data.password : null,
@@ -227,10 +240,13 @@ const NoteWriteView = defineComponent(() => {
 
     if (actualRefId.value) {
       if (!isString(actualRefId.value)) return
-      await notesApi.update(actualRefId.value, {
+      const result = await notesApi.update(actualRefId.value, {
         ...parseDataToPayload(),
         draftId,
       })
+      data.text = result.text
+      data.images = (result as any).images || []
+      serverDraft.syncMemory()
       toast.success('修改成功')
     } else {
       const payload = parseDataToPayload()
@@ -239,7 +255,10 @@ const NoteWriteView = defineComponent(() => {
         draftId,
       } as CreateNoteData)
       data.id = result.id
+      data.text = result.text
+      data.images = (result as any).images || []
       nid.value = result.nid
+      serverDraft.syncMemory()
       await router.replace({ query: { id: result.id } })
       toast.success('发布成功')
     }
@@ -313,6 +332,7 @@ const NoteWriteView = defineComponent(() => {
         onChange={(v) => {
           data.text = v
         }}
+        saveConfirmFn={serverDraft.checkIsSynced}
         subtitleSlot={() => (
           <div class="flex items-center gap-2 text-sm text-neutral-500">
             <span>{`${WEB_URL}/notes/${nid.value ?? ''}`}</span>
@@ -527,6 +547,27 @@ const NoteWriteView = defineComponent(() => {
           uncheckedText="草稿"
         />
       </TextBaseDrawer>
+
+      {/* Draft Recovery Modal (场景2) */}
+      {recoveryModal.draft.value && recoveryModal.publishedContent.value && (
+        <DraftRecoveryModal
+          show={recoveryModal.show.value}
+          onClose={recoveryModal.onClose}
+          draft={recoveryModal.draft.value}
+          publishedContent={recoveryModal.publishedContent.value}
+          onRecover={recoveryModal.onRecover}
+        />
+      )}
+
+      {/* Draft List Modal (场景3) */}
+      <DraftListModal
+        show={listModal.show.value}
+        onClose={listModal.onClose}
+        drafts={listModal.drafts.value}
+        draftLabel={listModal.draftLabel}
+        onSelect={listModal.onSelect}
+        onCreate={listModal.onCreate}
+      />
     </>
   )
 })

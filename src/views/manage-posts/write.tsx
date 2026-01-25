@@ -26,6 +26,8 @@ import { categoriesApi } from '~/api/categories'
 import { postsApi } from '~/api/posts'
 import { AiHelperButton } from '~/components/ai/ai-helper'
 import { HeaderActionButton } from '~/components/button/rounded-button'
+import { DraftListModal } from '~/components/draft/draft-list-modal'
+import { DraftRecoveryModal } from '~/components/draft/draft-recovery-modal'
 import { DraftSaveIndicator } from '~/components/draft/draft-save-indicator'
 import {
   FormField,
@@ -39,6 +41,7 @@ import { ParseContentButton } from '~/components/special-button/parse-content'
 import { HeaderPreviewButton } from '~/components/special-button/preview'
 import { WEB_URL } from '~/constants/env'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
+import { useS3Upload } from '~/hooks/use-s3-upload'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { useWriteDraft } from '~/hooks/use-write-draft'
 import { useLayout } from '~/layouts/content'
@@ -136,36 +139,41 @@ const PostWriteView = defineComponent(() => {
     parsePayloadIntoReactiveData(postData as PostModel)
   }
 
-  const { id, serverDraft, isEditing, actualRefId, initialize } = useWriteDraft(
-    data,
-    {
-      refType: DraftRefType.Post,
-      interval: 10000,
-      draftLabel: '文章',
-      getData: () => ({
-        title: data.title,
-        text: data.text,
-        images: data.images,
-        meta: data.meta,
-        typeSpecificData: {
-          slug: data.slug,
-          categoryId: data.categoryId,
-          copyright: data.copyright,
-          tags: data.tags,
-          summary: data.summary,
-          pin: data.pin ? new Date().toISOString() : null,
-          pinOrder: data.pinOrder,
-          relatedId: data.relatedId,
-          isPublished: data.isPublished,
-        },
-      }),
-      applyDraft,
-      loadPublished,
-      onTitleFallback: (defaultTitle) => {
-        data.title = defaultTitle
+  const {
+    id,
+    serverDraft,
+    isEditing,
+    actualRefId,
+    initialize,
+    recoveryModal,
+    listModal,
+  } = useWriteDraft(data, {
+    refType: DraftRefType.Post,
+    interval: 10000,
+    draftLabel: '文章',
+    getData: () => ({
+      title: data.title,
+      text: data.text,
+      images: data.images,
+      meta: data.meta,
+      typeSpecificData: {
+        slug: data.slug,
+        categoryId: data.categoryId,
+        copyright: data.copyright,
+        tags: data.tags,
+        summary: data.summary,
+        pin: data.pin ? new Date().toISOString() : null,
+        pinOrder: data.pinOrder,
+        relatedId: data.relatedId,
+        isPublished: data.isPublished,
       },
+    }),
+    applyDraft,
+    loadPublished,
+    onTitleFallback: (defaultTitle) => {
+      data.title = defaultTitle
     },
-  )
+  })
 
   const loading = computed(() => !!(id.value && typeof data.id === 'undefined'))
 
@@ -189,10 +197,15 @@ const PostWriteView = defineComponent(() => {
   })
 
   const drawerShow = ref(false)
+  const { processLocalImages } = useS3Upload()
 
   const handleSubmit = async () => {
+    const { text, images } = await processLocalImages(data.text, data.images)
+
     const payload = {
       ...data,
+      text,
+      images,
       categoryId: category.value.id,
       summary: data.summary?.trim() || null,
       pin: data.pin ? new Date().toISOString() : null,
@@ -201,11 +214,17 @@ const PostWriteView = defineComponent(() => {
 
     if (actualRefId.value) {
       if (!isString(actualRefId.value)) return
-      await postsApi.update(actualRefId.value, payload)
+      const result = await postsApi.update(actualRefId.value, payload)
+      data.text = result.text
+      data.images = result.images || []
+      serverDraft.syncMemory()
       toast.success('修改成功')
     } else {
       const result = await postsApi.create(payload)
       data.id = result.id
+      data.text = result.text
+      data.images = result.images || []
+      serverDraft.syncMemory()
       await router.replace({ query: { id: result.id } })
       toast.success('发布成功')
     }
@@ -287,6 +306,7 @@ const PostWriteView = defineComponent(() => {
         onChange={(v) => {
           data.text = v
         }}
+        saveConfirmFn={serverDraft.checkIsSynced}
         subtitleSlot={() => (
           <SlugInput
             prefix={`${WEB_URL}/posts/${category.value.slug}/`}
@@ -460,6 +480,27 @@ const PostWriteView = defineComponent(() => {
           uncheckedText="草稿"
         />
       </TextBaseDrawer>
+
+      {/* Draft Recovery Modal (场景2) */}
+      {recoveryModal.draft.value && recoveryModal.publishedContent.value && (
+        <DraftRecoveryModal
+          show={recoveryModal.show.value}
+          onClose={recoveryModal.onClose}
+          draft={recoveryModal.draft.value}
+          publishedContent={recoveryModal.publishedContent.value}
+          onRecover={recoveryModal.onRecover}
+        />
+      )}
+
+      {/* Draft List Modal (场景3) */}
+      <DraftListModal
+        show={listModal.show.value}
+        onClose={listModal.onClose}
+        drafts={listModal.drafts.value}
+        draftLabel={listModal.draftLabel}
+        onSelect={listModal.onSelect}
+        onCreate={listModal.onCreate}
+      />
     </>
   )
 })

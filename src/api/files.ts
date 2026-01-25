@@ -35,6 +35,27 @@ export interface CleanupResult {
   totalOrphan: number
 }
 
+export interface S3UploadResult {
+  originalUrl: string
+  s3Url: string | null
+  error?: string
+}
+
+export interface BatchS3UploadResponse {
+  results: S3UploadResult[]
+}
+
+export interface ImageStorageOptions {
+  enable?: boolean
+  syncOnPublish?: boolean
+  deleteLocalAfterSync?: boolean
+  endpoint?: string
+  bucket?: string
+  region?: string
+  customDomain?: string
+  prefix?: string
+}
+
 export const filesApi = {
   // 按类型获取文件列表
   getByType: (type: string) => request.get<FileItem[]>(`/files/${type}`),
@@ -74,6 +95,27 @@ export const filesApi = {
     cleanup: (maxAgeMinutes = 60) =>
       request.post<CleanupResult>('/files/orphans/cleanup', {
         query: { maxAgeMinutes },
+      }),
+
+    // 批量删除孤儿文件
+    batchDelete: (options: { ids: string[] } | { all: true }) =>
+      request.delete<{ deletedCount: number }>('/files/orphans/batch', {
+        data: options,
+      }),
+  },
+
+  // S3 相关
+  s3: {
+    // 获取图床配置
+    getConfig: () =>
+      request.get<{ data: ImageStorageOptions }>(
+        '/options/imageStorageOptions',
+      ),
+
+    // 批量上传到 S3（后端代理）
+    batchUpload: (urls: string[]) =>
+      request.post<BatchS3UploadResponse>('/files/s3/batch-upload', {
+        data: { urls },
       }),
   },
 }

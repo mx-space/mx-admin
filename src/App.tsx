@@ -14,6 +14,7 @@ import { RouterView } from 'vue-router'
 import { Toaster } from 'vue-sonner'
 import type { VNode } from 'vue'
 
+import { UploadQueue } from '~/components/upload-queue'
 import { PortalInjectKey } from '~/hooks/use-portal-element'
 
 import { useUIStore } from './stores/ui'
@@ -96,6 +97,7 @@ const App = defineComponent({
             <NElement>
               <Root />
             </NElement>
+            <UploadQueue />
           </NDialogProvider>
         </NConfigProvider>
       )

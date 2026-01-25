@@ -132,7 +132,9 @@ export const CodemirrorEditor = defineComponent({
 
     useSaveConfirm(
       props.unSaveConfirm,
-      () => memoedText === editorView.value?.state.doc.toString(),
+      () =>
+        props.saveConfirmFn?.() ??
+        memoedText === editorView.value?.state.doc.toString(),
     )
 
     // 浮动工具栏选区位置追踪

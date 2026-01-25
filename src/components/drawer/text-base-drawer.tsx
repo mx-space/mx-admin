@@ -213,13 +213,16 @@ const ImageCoverInput = defineComponent({
       >
         {{
           trigger() {
-            return props.images.length > 0 ? (
+            const validImages = (props.images as Image[]).filter(
+              (img) => img?.src,
+            )
+            return validImages.length > 0 ? (
               <NSelect
                 class="w-full"
                 status={isValidated.value ? undefined : 'error'}
                 value={props.value}
                 onUpdateValue={validateAndCallback}
-                options={(props.images as Image[]).map((image) => ({
+                options={validImages.map((image) => ({
                   label: image.src,
                   value: image.src,
                 }))}

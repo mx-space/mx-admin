@@ -212,6 +212,7 @@ export const WriteEditor = defineComponent({
                 text={props.text}
                 onChange={props.onChange}
                 unSaveConfirm={props.unSaveConfirm}
+                saveConfirmFn={props.saveConfirmFn}
                 renderMode={resolvedRenderMode}
                 onArrowUpAtFirstLine={() => titleInputRef.value?.focus()}
               />

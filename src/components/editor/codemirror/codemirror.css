@@ -1,6 +1,19 @@
 .cm-editor {
   @apply bg-transparent;
 
+  /* Fix widget buffer img causing line height issues */
+  & .cm-widgetBuffer {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    vertical-align: baseline;
+    font-size: 0;
+    line-height: 0;
+  }
+
   & .cm-gutters {
     @apply bg-transparent;
   }
@@ -263,8 +276,11 @@
   .cm-wysiwyg-hidden-marker {
     display: inline-block;
     width: 0;
+    height: 0;
     overflow: hidden;
     white-space: nowrap;
+    font-size: 0;
+    line-height: 0;
   }
 
   .cm-wysiwyg-bold {
@@ -289,8 +305,11 @@
   .cm-wysiwyg-link-url {
     display: inline-block;
     width: 0;
+    height: 0;
     overflow: hidden;
     white-space: nowrap;
+    font-size: 0;
+    line-height: 0;
   }
 
   /* Inline code styles */

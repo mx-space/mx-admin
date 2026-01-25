@@ -23,6 +23,8 @@ import type { WriteBaseType } from '~/shared/types/base'
 
 import { pagesApi } from '~/api/pages'
 import { HeaderActionButton } from '~/components/button/rounded-button'
+import { DraftListModal } from '~/components/draft/draft-list-modal'
+import { DraftRecoveryModal } from '~/components/draft/draft-recovery-modal'
 import { DraftSaveIndicator } from '~/components/draft/draft-save-indicator'
 import {
   FormField,
@@ -35,6 +37,7 @@ import { ParseContentButton } from '~/components/special-button/parse-content'
 import { HeaderPreviewButton } from '~/components/special-button/preview'
 import { WEB_URL } from '~/constants/env'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
+import { useS3Upload } from '~/hooks/use-s3-upload'
 import { useWriteDraft } from '~/hooks/use-write-draft'
 import { useLayout } from '~/layouts/content'
 import { DraftRefType } from '~/models/draft'
@@ -99,30 +102,35 @@ const PageWriteView = defineComponent(() => {
     parsePayloadIntoReactiveData(payload as PageModel)
   }
 
-  const { id, serverDraft, isEditing, actualRefId, initialize } = useWriteDraft(
-    data,
-    {
-      refType: DraftRefType.Page,
-      interval: 10000,
-      draftLabel: '页面',
-      getData: () => ({
-        title: data.title,
-        text: data.text,
-        images: data.images,
-        meta: data.meta,
-        typeSpecificData: {
-          slug: data.slug,
-          subtitle: data.subtitle,
-          order: data.order,
-        },
-      }),
-      applyDraft,
-      loadPublished,
-      onTitleFallback: (title) => {
-        data.title = title
+  const {
+    id,
+    serverDraft,
+    isEditing,
+    actualRefId,
+    initialize,
+    recoveryModal,
+    listModal,
+  } = useWriteDraft(data, {
+    refType: DraftRefType.Page,
+    interval: 10000,
+    draftLabel: '页面',
+    getData: () => ({
+      title: data.title,
+      text: data.text,
+      images: data.images,
+      meta: data.meta,
+      typeSpecificData: {
+        slug: data.slug,
+        subtitle: data.subtitle,
+        order: data.order,
       },
+    }),
+    applyDraft,
+    loadPublished,
+    onTitleFallback: (title) => {
+      data.title = title
     },
-  )
+  })
 
   const loading = computed(() => !!(id.value && typeof data.id === 'undefined'))
 
@@ -131,9 +139,12 @@ const PageWriteView = defineComponent(() => {
   })
 
   const drawerShow = ref(false)
+  const { processLocalImages } = useS3Upload()
 
   const handleSubmit = async () => {
-    const parseDataToPayload = (): { [key in keyof PageModel]?: any } => {
+    const { text, images } = await processLocalImages(data.text, data.images)
+
+    const parseDataToPayload = () => {
       try {
         if (!data.title || data.title.trim().length == 0) {
           throw '标题为空'
@@ -143,6 +154,8 @@ const PageWriteView = defineComponent(() => {
         }
         return {
           ...toRaw(data),
+          text,
+          images,
           title: data.title.trim(),
           slug: data.slug.trim(),
         }
@@ -156,16 +169,22 @@ const PageWriteView = defineComponent(() => {
 
     if (actualRefId.value) {
       if (!isString(actualRefId.value)) return
-      await pagesApi.update(actualRefId.value, {
+      const result = await pagesApi.update(actualRefId.value, {
         ...parseDataToPayload(),
         draftId,
       })
+      data.text = result.text
+      data.images = (result as any).images || []
+      serverDraft.syncMemory()
       toast.success('修改成功')
     } else {
-      await pagesApi.create({
+      const result = await pagesApi.create({
         ...parseDataToPayload(),
         draftId,
       } as CreatePageData)
+      data.text = result.text
+      data.images = (result as any).images || []
+      serverDraft.syncMemory()
       toast.success('发布成功')
     }
 
@@ -230,6 +249,7 @@ const PageWriteView = defineComponent(() => {
         onChange={(v) => {
           data.text = v
         }}
+        saveConfirmFn={serverDraft.checkIsSynced}
         subtitleSlot={() => (
           <div class="space-y-2">
             <SlugInput
@@ -281,6 +301,27 @@ const PageWriteView = defineComponent(() => {
           />
         </FormField>
       </TextBaseDrawer>
+
+      {/* Draft Recovery Modal (场景2) */}
+      {recoveryModal.draft.value && recoveryModal.publishedContent.value && (
+        <DraftRecoveryModal
+          show={recoveryModal.show.value}
+          onClose={recoveryModal.onClose}
+          draft={recoveryModal.draft.value}
+          publishedContent={recoveryModal.publishedContent.value}
+          onRecover={recoveryModal.onRecover}
+        />
+      )}
+
+      {/* Draft List Modal (场景3) */}
+      <DraftListModal
+        show={listModal.show.value}
+        onClose={listModal.onClose}
+        drafts={listModal.drafts.value}
+        draftLabel={listModal.draftLabel}
+        onSelect={listModal.onSelect}
+        onCreate={listModal.onCreate}
+      />
     </>
   )
 })

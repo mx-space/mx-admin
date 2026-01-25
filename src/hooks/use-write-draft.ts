@@ -1,5 +1,6 @@
-import { computed, ref } from 'vue'
+import { computed, ref, shallowRef } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import type { PublishedContent } from '~/components/draft/draft-recovery-modal'
 import type { DraftModel, DraftRefType } from '~/models/draft'
 import type { DraftData } from './use-server-draft'
 
@@ -43,6 +44,17 @@ export function useWriteDraft<T>(data: T, options: UseWriteDraftOptions<T>) {
 
   const draftInitialized = ref(false)
 
+  // Modal states for draft recovery (scene 2)
+  const showRecoveryModal = ref(false)
+  const recoveryModalDraft = shallowRef<DraftModel | null>(null)
+  const recoveryModalPublishedContent = shallowRef<PublishedContent | null>(
+    null,
+  )
+
+  // Modal states for draft list (scene 3)
+  const showListModal = ref(false)
+  const listModalDrafts = shallowRef<DraftModel[]>([])
+
   const serverDraft = useServerDraft(refType, {
     refId: id.value,
     draftId: draftIdFromRoute.value,
@@ -59,6 +71,42 @@ export function useWriteDraft<T>(data: T, options: UseWriteDraftOptions<T>) {
 
   /** 实际关联的已发布内容 ID */
   const actualRefId = computed(() => serverDraft.refId.value || id.value)
+
+  // Handler for recovery modal
+  const handleRecoveryModalRecover = (
+    version: number | 'published',
+    versionData?: DraftModel,
+  ) => {
+    if (version === 'published') {
+      serverDraft.syncMemory()
+      serverDraft.startAutoSave()
+    } else if (versionData) {
+      applyDraft(versionData, data, true)
+      serverDraft.syncMemory()
+      serverDraft.startAutoSave()
+    }
+  }
+
+  const handleRecoveryModalClose = () => {
+    showRecoveryModal.value = false
+    // If modal is closed without selection, use published version
+    serverDraft.syncMemory()
+    serverDraft.startAutoSave()
+  }
+
+  // Handler for list modal
+  const handleListModalSelect = (draftId: string) => {
+    router.replace({ query: { draftId } })
+  }
+
+  const handleListModalCreate = () => {
+    serverDraft.startAutoSave()
+  }
+
+  const handleListModalClose = () => {
+    showListModal.value = false
+    serverDraft.startAutoSave()
+  }
 
   /**
    * 初始化草稿（在 onMounted 中调用）
@@ -85,24 +133,21 @@ export function useWriteDraft<T>(data: T, options: UseWriteDraftOptions<T>) {
       onBeforeLoadPublished?.()
       await loadPublished($id)
 
+      // Get current published content for comparison
+      const currentData = getData()
+      const publishedContent: PublishedContent = {
+        title: currentData.title,
+        text: currentData.text,
+        updated: new Date().toISOString(),
+      }
+
       // 检查是否有关联的草稿
       const relatedDraft = await serverDraft.loadDraftByRef(refType, $id)
       if (relatedDraft) {
-        window.dialog.info({
-          title: '检测到未保存的草稿',
-          content: `上次保存时间: ${new Date(relatedDraft.updated).toLocaleString()}`,
-          negativeText: '使用已发布版本',
-          positiveText: '恢复草稿',
-          onNegativeClick() {
-            serverDraft.syncMemory()
-            serverDraft.startAutoSave()
-          },
-          onPositiveClick() {
-            applyDraft(relatedDraft, data, true)
-            serverDraft.syncMemory()
-            serverDraft.startAutoSave()
-          },
-        })
+        // Show recovery modal instead of dialog
+        recoveryModalDraft.value = relatedDraft
+        recoveryModalPublishedContent.value = publishedContent
+        showRecoveryModal.value = true
       } else {
         serverDraft.syncMemory()
         serverDraft.startAutoSave()
@@ -115,19 +160,9 @@ export function useWriteDraft<T>(data: T, options: UseWriteDraftOptions<T>) {
     // 场景3：新建入口
     const pendingDrafts = await serverDraft.getNewDrafts(refType)
     if (pendingDrafts.length > 0) {
-      window.dialog.info({
-        title: '发现未完成的草稿',
-        content: `你有 ${pendingDrafts.length} 个未完成的${draftLabel}草稿，是否继续编辑？`,
-        negativeText: '创建新草稿',
-        positiveText: '继续编辑',
-        onNegativeClick() {
-          serverDraft.startAutoSave()
-        },
-        onPositiveClick() {
-          const firstDraft = pendingDrafts[0]
-          router.replace({ query: { draftId: firstDraft.id } })
-        },
-      })
+      // Show list modal instead of dialog
+      listModalDrafts.value = pendingDrafts
+      showListModal.value = true
     } else {
       serverDraft.startAutoSave()
     }
@@ -150,5 +185,24 @@ export function useWriteDraft<T>(data: T, options: UseWriteDraftOptions<T>) {
     actualRefId,
     /** 初始化函数（在 onMounted 中调用） */
     initialize,
+
+    // Draft Recovery Modal (场景2) props
+    recoveryModal: {
+      show: showRecoveryModal,
+      draft: recoveryModalDraft,
+      publishedContent: recoveryModalPublishedContent,
+      onClose: handleRecoveryModalClose,
+      onRecover: handleRecoveryModalRecover,
+    },
+
+    // Draft List Modal (场景3) props
+    listModal: {
+      show: showListModal,
+      drafts: listModalDrafts,
+      draftLabel,
+      onClose: handleListModalClose,
+      onSelect: handleListModalSelect,
+      onCreate: handleListModalCreate,
+    },
   }
 }

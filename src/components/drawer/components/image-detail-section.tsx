@@ -49,12 +49,18 @@ export const ImageDetailSection = defineComponent({
     const originImageMap = computed(() => {
       const map = new Map<string, ImageModel>()
       props.images.forEach((image) => {
-        map.set(image.src, image)
+        if (image?.src) {
+          map.set(image.src, image)
+        }
       })
       return map
     })
 
     const images = computed<ImageModel[]>(() => {
+      // 过滤掉 null/undefined 值，防止数据崩坏
+      const validPropsImages = props.images.filter(
+        (img): img is ImageModel => img != null && !!img.src,
+      )
       const basedImages: ImageModel[] = props.text
         ? uniqBy(
             pickImagesFromMarkdown(props.text)
@@ -69,14 +75,14 @@ export const ImageDetailSection = defineComponent({
                   blurHash: existImageInfo?.blurHash,
                 } as any
               })
-              .concat(props.images),
+              .concat(validPropsImages),
             'src',
           )
-        : props.images
+        : validPropsImages
       const srcSet = new Set<string>()
 
       for (const image of basedImages) {
-        image.src && srcSet.add(image.src)
+        srcSet.add(image.src)
       }
       const nextImages = basedImages.concat()
       if (props.extraImages) {
@@ -156,11 +162,17 @@ export const ImageDetailSection = defineComponent({
       loading.value = false
 
       const nextImageDimensions = [] as ImageModel[]
-      fetchImageTasks.map((task) => {
-        if (task.status === 'fulfilled') nextImageDimensions.push(task.value)
-        else {
+      fetchImageTasks.forEach((task, index) => {
+        if (task.status === 'fulfilled') {
+          nextImageDimensions.push(task.value)
+        } else {
+          // 保留原始图片信息，避免丢失
+          const originalImage = images.value[index]
+          if (originalImage) {
+            nextImageDimensions.push(originalImage)
+          }
           toast.warning(
-            ` 获取图片信息失败：${task.reason.src}: ${task.reason.err}`,
+            `获取图片信息失败：${task.reason.src}: ${task.reason.err}`,
           )
         }
       })
