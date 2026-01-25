@@ -1,4 +1,11 @@
-import { Check, ChevronLeft, PartyPopper, Rocket, Settings, User } from 'lucide-vue-next'
+import {
+  Check,
+  ChevronLeft,
+  PartyPopper,
+  Rocket,
+  Settings,
+  User,
+} from 'lucide-vue-next'
 import { NDynamicTags } from 'naive-ui'
 import {
   computed,
@@ -109,9 +116,12 @@ export default defineComponent({
         </h1>
         <p class="mb-8 text-sm text-white/70">
           {
-            ['欢迎进行初始化配置', '请配置站点基本信息', '请创建管理员账户', '初始化即将完成'][
-              step.value
-            ]
+            [
+              '欢迎进行初始化配置',
+              '请配置站点基本信息',
+              '请创建管理员账户',
+              '初始化即将完成',
+            ][step.value]
           }
         </p>
 
@@ -185,14 +195,14 @@ const Step0 = defineComponent({
           <button
             type="button"
             onClick={handleUploadAndRestore}
-            class={buttonSecondaryClass + ' flex-1'}
+            class={`${buttonSecondaryClass} flex-1`}
           >
             还原备份
           </button>
           <button
             type="button"
             onClick={() => props.onNext()}
-            class={buttonPrimaryClass + ' flex-1'}
+            class={`${buttonPrimaryClass} flex-1`}
           >
             开始配置
           </button>
@@ -367,11 +377,19 @@ const Step1 = defineComponent({
 
           {/* Actions */}
           <div class="mt-6 flex justify-between">
-            <button type="button" onClick={props.onPrev} class={buttonSecondaryClass}>
+            <button
+              type="button"
+              onClick={props.onPrev}
+              class={buttonSecondaryClass}
+            >
               <ChevronLeft class="mr-1 inline h-4 w-4" aria-hidden="true" />
               返回
             </button>
-            <button type="submit" disabled={!canSubmit.value || isSubmitting.value} class={buttonPrimaryClass}>
+            <button
+              type="submit"
+              disabled={!canSubmit.value || isSubmitting.value}
+              class={buttonPrimaryClass}
+            >
               下一步
             </button>
           </div>
@@ -581,11 +599,19 @@ const Step2 = defineComponent({
 
           {/* Actions */}
           <div class="mt-6 flex justify-between">
-            <button type="button" onClick={props.onPrev} class={buttonSecondaryClass}>
+            <button
+              type="button"
+              onClick={props.onPrev}
+              class={buttonSecondaryClass}
+            >
               <ChevronLeft class="mr-1 inline h-4 w-4" aria-hidden="true" />
               返回
             </button>
-            <button type="submit" disabled={!canSubmit.value || isSubmitting.value} class={buttonPrimaryClass}>
+            <button
+              type="submit"
+              disabled={!canSubmit.value || isSubmitting.value}
+              class={buttonPrimaryClass}
+            >
               下一步
             </button>
           </div>
@@ -617,11 +643,19 @@ const Step3 = defineComponent({
         </p>
 
         <div class="flex gap-3">
-          <button type="button" onClick={props.onPrev} class={buttonSecondaryClass}>
+          <button
+            type="button"
+            onClick={props.onPrev}
+            class={buttonSecondaryClass}
+          >
             <ChevronLeft class="mr-1 inline h-4 w-4" aria-hidden="true" />
             返回
           </button>
-          <button type="button" onClick={handleComplete} class={buttonPrimaryClass}>
+          <button
+            type="button"
+            onClick={handleComplete}
+            class={buttonPrimaryClass}
+          >
             LINK START
           </button>
         </div>

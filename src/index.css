@@ -365,3 +365,45 @@ html.dark .n-modal .n-card {
 .n-tree {
   transition-duration: 0.2s !important;
 }
+
+.n-headless.n-popover {
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+/* Comment filter select - custom trigger styling */
+.comment-filter-select .n-base-selection {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  min-height: auto !important;
+  cursor: pointer !important;
+}
+
+.comment-filter-select .n-base-selection .n-base-selection-label {
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+.comment-filter-select .n-base-selection .n-base-selection__border,
+.comment-filter-select .n-base-selection .n-base-selection__state-border {
+  display: none !important;
+}
+
+.comment-filter-select .n-base-selection-input {
+  padding: 0 !important;
+}
+
+.comment-filter-select .n-base-suffix {
+  display: none !important;
+}
+
+.comment-filter-select .n-base-selection:hover {
+  background: transparent !important;
+}
+
+.comment-filter-select .n-base-selection.n-base-selection--active {
+  background: transparent !important;
+  box-shadow: none !important;
+}

@@ -65,6 +65,11 @@ export const useLayout = () => {
       layout.contentPadding.value = hasPadding
     },
 
+    /** 设置内容区域是否强制 min-h-full（需要撑满高度时设为 true） */
+    setContentMinFullHeight: (isFull: boolean) => {
+      layout.contentMinFullHeight.value = isFull
+    },
+
     /** 添加浮动按钮，返回用于删除的 key */
     addFloatButton: (button: VNode): symbol => {
       return layout.addFloatButton(button)

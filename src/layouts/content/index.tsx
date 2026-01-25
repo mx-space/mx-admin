@@ -110,6 +110,16 @@ export const ContentLayout = defineComponent({
 
     const headerSubtitle = computed(() => layout.headerSubtitle.value)
     const hasContentPadding = computed(() => layout.contentPadding.value)
+    const shouldContentMinFullHeight = computed(
+      () => layout.contentMinFullHeight.value,
+    )
+
+    const contentClassName = computed(() => {
+      const base = hasContentPadding.value ? 'px-4 md:px-8 pb-8' : 'pr-2'
+      return shouldContentMinFullHeight.value
+        ? `${base} min-h-full relative`
+        : base
+    })
 
     const isMobile = computed(
       () => ui.viewport.value.mobile || ui.viewport.value.pad,
@@ -162,7 +172,7 @@ export const ContentLayout = defineComponent({
         <NLayoutContent
           nativeScrollbar={false}
           class="flex-1 !bg-transparent"
-          contentClass={hasContentPadding.value ? 'px-4 md:px-8 pb-8' : 'pr-2'}
+          contentClass={contentClassName.value}
         >
           {slots.default?.()}
         </NLayoutContent>

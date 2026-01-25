@@ -10,6 +10,7 @@ export const useLayoutStore = defineStore('layout', () => {
   const headerClass = ref<string | null>(null)
   const headerSubtitle = shallowRef<VNode | null>(null)
   const contentPadding = ref(true)
+  const contentMinFullHeight = ref(false)
   const floatButtons = shallowReactive<Map<symbol, VNode>>(new Map())
 
   const addFloatButton = (button: VNode): symbol => {
@@ -30,6 +31,7 @@ export const useLayoutStore = defineStore('layout', () => {
     headerClass.value = null
     headerSubtitle.value = null
     contentPadding.value = true
+    contentMinFullHeight.value = false
     floatButtons.clear()
   }
 
@@ -41,6 +43,7 @@ export const useLayoutStore = defineStore('layout', () => {
     headerClass,
     headerSubtitle,
     contentPadding,
+    contentMinFullHeight,
     floatButtons,
     addFloatButton,
     removeFloatButton,
