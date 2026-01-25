@@ -111,7 +111,7 @@ export const DiffPreview = defineComponent({
     return () => (
       <div
         ref={containerRef}
-        class="h-full overflow-auto rounded-lg border border-neutral-200 bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900"
+        class="h-full overflow-auto rounded-lg bg-neutral-50 dark:bg-neutral-900"
       >
         {isLoading.value && (
           <div class="flex h-full items-center justify-center text-neutral-400">
