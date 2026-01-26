@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## [5.4.5](https://github.com/mx-space/admin-vue3/compare/v5.4.4...v5.4.5) (2026-01-26)
+
+
+### Features
+
+* introduce Master-Detail layout for improved content management ([bd670e8](https://github.com/mx-space/admin-vue3/commit/bd670e82d333b7bce17c72b5e717073cbc560033))
+* refactor AI summary page with Master-Detail layout and new components ([3f3abab](https://github.com/mx-space/admin-vue3/commit/3f3abab0f6b0a9739a07f90f8f047edc0b41a25d))
+
+
+
 ## [5.4.4](https://github.com/mx-space/admin-vue3/compare/v5.4.3...v5.4.4) (2026-01-25)
 
 
