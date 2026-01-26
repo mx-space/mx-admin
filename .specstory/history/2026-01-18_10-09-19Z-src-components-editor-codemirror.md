@@ -4,13 +4,13 @@
 
 <!-- Codex CLI Session 019bd094-9f14-76a0-b665-16e85185c5d7 (2026-01-18 10:10:52Z) -->
 
-_**User (2026-01-18T10:10:52.907Z)**_
+_**User (2026-01-18 10:10:52Z)**_
 
 src/components/editor/codemirror 在 wysiwyg 下，编辑器首次加载内容的时候，没有对 inline block（比如 inline code、加粗等格式）以及块级的图片和代码块，呈现出“所见即所得”的形态
 
 ---
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:10:56.626Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:10:56Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Preparing to inspect Vue files**
@@ -18,7 +18,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:10:56.626Z)**_
 I'm planning to use ripgrep to search through the Vue files to understand the task requirements better.
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:10:57.400Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:10:57Z)**_
 
 <tool-use data-tool-type="unknown" data-tool-name="exec_command"><details>
 <summary>Tool use: **exec_command**</summary>
@@ -34,13 +34,13 @@ src/components/editor/codemirror/codemirror.tsx
 ```
 </details></tool-use>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:11:00.069Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:11:00Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Locating WYSIWYG view files**
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:11:00.470Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:11:00Z)**_
 
 <tool-use data-tool-type="unknown" data-tool-name="exec_command"><details>
 <summary>Tool use: **exec_command**</summary>
@@ -106,13 +106,13 @@ src/components/editor/co
 ```
 </details></tool-use>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:11:02.940Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:11:02Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Requesting open files for debugging**
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:11:03.290Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:11:03Z)**_
 
 <tool-use data-tool-type="unknown" data-tool-name="exec_command"><details>
 <summary>Tool use: **exec_command**</summary>
@@ -249,7 +249,7 @@ export const CodemirrorEditor = defineComponent({
 ```
 </details></tool-use>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:11:06.510Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:11:06Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Identifying component needs**
@@ -257,7 +257,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:11:06.510Z)**_
 I'm noting the requirement for code implementations of use-codemirror, wysiwyg-inline, and codeblock components.
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:11:06.766Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:11:06Z)**_
 
 <tool-use data-tool-type="unknown" data-tool-name="exec_command"><details>
 <summary>Tool use: **exec_command**</summary>
@@ -437,7 +437,7 @@ export const useCodeMirror = <T extends Element>(
 ```
 </details></tool-use>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:11:11.679Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:11:11Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Investigating initial WYSIWYG rendering issue**
@@ -445,7 +445,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:11:11.679Z)**_
 I’m checking how the WYSIWYG inline and codeblock handle initial document decoration updates, suspecting the ViewPlugin’s update may not trigger correctly on initial load due to reliance on viewport or visibleRanges before view is attached to the DOM.
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:11:11.989Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:11:11Z)**_
 
 <tool-use data-tool-type="unknown" data-tool-name="exec_command"><details>
 <summary>Tool use: **exec_command**</summary>
@@ -658,7 +658,7 @@ const findInlinePatterns = (
 ```
 </details></tool-use>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:11:14.919Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:11:14Z)**_
 
 <tool-use data-tool-type="unknown" data-tool-name="exec_command"><details>
 <summary>Tool use: **exec_command**</summary>
@@ -835,7 +835,7 @@ const buildInlineDecorations = (state: EditorState): DecorationSet => {
 ```
 </details></tool-use>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:11:25.874Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:11:25Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Investigating initial extension reconfiguration**
@@ -843,7 +843,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:11:25.874Z)**_
 Noticing that inline decorations aren't applied on initial load suggests the plugin might not activate until after the view is created and updated; the reconfigure logic watching renderMode and editorView should trigger, but the extension's reconfigure handling may have issues applying decorations initially. I'll check the extension reconfiguration code for possible gaps on first render.
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:11:26.270Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:11:26Z)**_
 
 <tool-use data-tool-type="unknown" data-tool-name="exec_command"><details>
 <summary>Tool use: **exec_command**</summary>
@@ -883,7 +883,7 @@ export { extensionMap as codemirrorReconfigureExtensionMap }
 ```
 </details></tool-use>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:11:32.639Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:11:32Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Investigating renderMode reconfiguration timing**
@@ -891,7 +891,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:11:32.639Z)**_
 I'm verifying how the renderMode watch triggers extension setup since it runs after the editor view is created on mount; potential async timing or initial render nuances may affect proper extension inclusion. Next, I'll search the project for usage of renderMode to clarify its update flow.
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:11:32.929Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:11:32Z)**_
 
 <tool-use data-tool-type="unknown" data-tool-name="exec_command"><details>
 <summary>Tool use: **exec_command**</summary>
@@ -917,7 +917,7 @@ src/components/editor/codemirror/use-codemirror.ts:113:                general.s
 ```
 </details></tool-use>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:11:35.977Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:11:35Z)**_
 
 <tool-use data-tool-type="unknown" data-tool-name="exec_command"><details>
 <summary>Tool use: **exec_command**</summary>
@@ -1014,7 +1014,7 @@ Output:
 ```
 </details></tool-use>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:12:07.520Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:12:07Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Analyzing initial WYSIWYG render issue**
@@ -1022,7 +1022,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:12:07.520Z)**_
 The initial WYSIWYG content isn't showing because the editor view is undefined on the first watch run, so the reactive watch skips updating; however, once the editorView is assigned, the watch should trigger again due to dependencies changing, but there's uncertainty if the current setup ensures that reactivity triggers as expected after mount.
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:12:07.520Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:12:07Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Pinpointing WYSIWYG plugin update timing**
@@ -1030,7 +1030,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:12:07.520Z)**_
 The WYSIWYG decorations likely don't appear initially because the plugin is added after mount and initial empty doc setup, so when content loads asynchronously and updates the doc, the plugin should react but may miss applying decorations immediately; the plugin’s reliance on docChanged or selectionSet might delay rendering until further interaction or toggling.
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:12:07.871Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:12:07Z)**_
 
 <tool-use data-tool-type="unknown" data-tool-name="exec_command"><details>
 <summary>Tool use: **exec_command**</summary>
@@ -1222,7 +1222,7 @@ const findCodeBlocks = (state: EditorState): CodeBlock[] => {
 ```
 </details></tool-use>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:12:25.536Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:12:25Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Diagnosing initial WYSIWYG rendering issue**
@@ -1230,7 +1230,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:12:25.536Z)**_
 The initial editor load may not display inline blocks and images in WYSIWYG because decorations aren't applied until a selection or document change triggers them, possibly due to reconfiguration running before the editor view is fully ready.
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:12:25.536Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:12:25Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Verifying editor reconfiguration and CSS loading**
@@ -1238,7 +1238,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:12:25.536Z)**_
 The code watches render mode and editor view correctly, triggering reconfiguration, so the WYSIWYG extension dispatch should run after mounting; the issue may lie in CSS not applying initially or decorations depending on DOM state not ready when the plugin runs.
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:12:25.862Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:12:25Z)**_
 
 <tool-use data-tool-type="unknown" data-tool-name="exec_command"><details>
 <summary>Tool use: **exec_command**</summary>
@@ -1430,7 +1430,7 @@ Output:
 ```
 </details></tool-use>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:12:30.676Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:12:30Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Inspecting renderMode loading timing**
@@ -1438,7 +1438,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:12:30.676Z)**_
 I'm checking if the renderMode setting loads asynchronously from local storage via use-editor-setting, which could cause initial renders to default to 'plain' before the correct mode is applied. This may explain missing WYSIWYG decorations initially.
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:12:30.980Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:12:30Z)**_
 
 <tool-use data-tool-type="unknown" data-tool-name="exec_command"><details>
 <summary>Tool use: **exec_command**</summary>
@@ -1533,7 +1533,7 @@ export const useEditorConfig = () => {
 ```
 </details></tool-use>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:12:34.765Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:12:34Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Inspecting storage defaults**
@@ -1541,7 +1541,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:12:34.765Z)**_
 I'm checking useStorageObject and GeneralSettingDto to confirm where default storage values originate.
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:12:35.041Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:12:35Z)**_
 
 <tool-use data-tool-type="unknown" data-tool-name="exec_command"><details>
 <summary>Tool use: **exec_command**</summary>
@@ -1569,7 +1569,7 @@ export class GeneralSettingDto {
 ```
 </details></tool-use>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:13:03.258Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:13:03Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Analyzing renderMode and focus impact**
@@ -1577,7 +1577,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:13:03.258Z)**_
 The renderMode updates reactively from storage, so WYSIWYG should apply after loading, but the editor likely starts unfocused—which may affect extension updates relying on focus to trigger display changes.
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:13:03.258Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:13:03Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Investigating decoration timing and extension reconfiguration**
@@ -1585,7 +1585,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:13:03.258Z)**_
 The WYSIWYG plugin should reconfigure reactively when the editor view initializes, but initial document dispatch may conflict with decoration setup; also, inline widgets relying on async rendering might delay display, and block-level content may need different decoration handling to show properly on load.
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:13:03.476Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:13:03Z)**_
 
 <tool-use data-tool-type="unknown" data-tool-name="exec_command"><details>
 <summary>Tool use: **exec_command**</summary>
@@ -1652,13 +1652,13 @@ export const dividerWysiwygExtension = [dividerWysiwygField]
 ```
 </details></tool-use>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:13:05.989Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:13:05Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Noting divider state management**
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:13:06.999Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:13:06Z)**_
 
 <tool-use data-tool-type="unknown" data-tool-name="exec_command"><details>
 <summary>Tool use: **exec_command**</summary>
@@ -1774,7 +1774,7 @@ export const headingWysiwygExtension = [headingWysiwygPlugin]
 ```
 </details></tool-use>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:13:38.488Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:13:38Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Spotting missing imported watcher**
@@ -1782,7 +1782,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:13:38.488Z)**_
 Noticed `watch` is used but not explicitly imported from Vue, which might cause reactive updates for the view plugin to fail or behave unexpectedly. Next, I'll verify if `watch` is globally available or needs an explicit import to fix update handling.
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:13:38.489Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:13:38Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Confirming auto-imports and exploring rendering issues**
@@ -1790,7 +1790,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:13:38.489Z)**_
 Verified `watch` and `onBeforeUnmount` are likely auto-imported, so missing imports aren't the issue. I'm exploring whether decoration application, CSS nesting for hidden markers, or extension reconfiguration order during initial load causes WYSIWYG not to appear correctly. Next, I'll inspect related theme and font configuration hooks that might interfere.
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:13:38.759Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:13:38Z)**_
 
 <tool-use data-tool-type="unknown" data-tool-name="exec_command"><details>
 <summary>Tool use: **exec_command**</summary>
@@ -1843,13 +1843,13 @@ export const useCodeMirrorAutoToggleTheme = (
 ```
 </details></tool-use>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:15:51.880Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:15:51Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Reviewing theme reconfiguration and font usage**
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:15:52.062Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:15:52Z)**_
 
 <tool-use data-tool-type="unknown" data-tool-name="exec_command"><details>
 <summary>Tool use: **exec_command**</summary>
@@ -1920,7 +1920,7 @@ export const useCodeMirrorConfigureFonts = (
 ```
 </details></tool-use>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:18:25.768Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:18:25Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Identifying block decoration error cause**
@@ -1928,7 +1928,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:18:25.768Z)**_
 The error arises because the codeBlockWysiwygPlugin uses a ViewPlugin to provide block decorations, which CM6 forbids; block decorations must come from a StateField or extension like in the dividerWysiwyg plugin to avoid this issue.
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:18:25.769Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:18:25Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Diagnosing WYSIWYG initial load failure**
@@ -1936,7 +1936,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:18:25.769Z)**_
 The block decoration error thrown by the codeBlock plugin during extension reconfigure likely aborts extension setup, preventing WYSIWYG inline and block decorations from rendering on first load. The fix involves replacing the codeBlock ViewPlugin with a StateField-based extension to provide block decorations without errors.
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:18:25.769Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:18:25Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Planning block decoration rebuild on effects**
@@ -1944,7 +1944,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:18:25.769Z)**_
 Deciding to rebuild code block decorations on any transaction effects (to capture theme toggles and reconfigures) alongside doc and selection changes; this supports dynamic updates while fixing the block decoration error by migrating the code block plugin to a StateField-based extension.
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:18:36.609Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:18:36Z)**_
 
 <tool-use data-tool-type="write" data-tool-name="apply_patch"><details>
 <summary>Tool use: **apply_patch**</summary>
@@ -2006,7 +2006,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:18:36.609Z)**_
 ```
 </details></tool-use>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:18:57.083Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:18:57Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Verifying Transaction properties**
@@ -2014,7 +2014,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:18:57.083Z)**_
 I confirmed `tr.effects` is always an array, so no default needed, but adding a length check avoids errors. Also checked `EditorView` use is only as a value, not a type. I'm clarifying that `Transaction` has both `startState` and `state` (new state), which is important for accessing selection in field updates.
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:18:57.084Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:18:57Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Confirming correct EditorState and EditorView usage**
@@ -2022,7 +2022,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:18:57.084Z)**_
 I verified using `tr.state` in state field updates is valid for accessing the new state and its selection with the `eq` method. Also confirmed `EditorView` is only imported as a runtime value, never used as a type, so the import is appropriate. Next, I'll check for any lint or type errors by reviewing the file.
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:18:57.380Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:18:57Z)**_
 
 <tool-use data-tool-type="unknown" data-tool-name="exec_command"><details>
 <summary>Tool use: **exec_command**</summary>
@@ -2212,7 +2212,7 @@ const findCodeBlocks = (state: EditorState): CodeBlock[] => {
 ```
 </details></tool-use>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:20:03.350Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:20:03Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Verifying CodeMirror StateField integration**
@@ -2220,7 +2220,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:20:03.350Z)**_
 I'm confirming that using `EditorState.selection` with `eq` is correct and that `StateField` combined with `EditorView.decorations.from` plus `provide` aligns with existing patterns. The use of `document.documentElement` is consistent with prior client-side code. Next, I’ll check if the error about block decorations from plugins is resolved and ensure the new StateField extension is properly included in the reconfigure compartment for WYSIWYG.
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:20:03.351Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:20:03Z)**_
 
 <think><details><summary>Thought Process</summary>
 **解释代码块 WYSIWYG 修复**
@@ -2236,7 +2236,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:20:03.351Z)**_
 3) 如需支持块级图片（整行仅含图片时块级显示），可再扩展图片插件进行检测和调整
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:20:05.939Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:20:05Z)**_
 
 把 code block 的 WYSIWYG 装饰改为 StateField 提供，避免 CodeMirror 对 block decoration 的限制在 reconfigure 时抛错，从而让首次加载就能正常渲染 inline/image/code block 的 WYSIWYG。  
 - 在 `src/components/editor/codemirror/wysiwyg-codeblock.ts` 用 `StateField` + `EditorView.decorations.from` 取代 `ViewPlugin`，并在 doc/selection/effects 变化时重建装饰，保留原有 block replace 与主题判断逻辑，避免 `Block decorations may not be specified via plugins` 让扩展整体失效
@@ -2247,13 +2247,13 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:20:05.939Z)**_
 
 ---
 
-_**User (2026-01-18T10:29:08.375Z)**_
+_**User (2026-01-18 10:29:08Z)**_
 
 现在还有一点小问题，就是在方向键上下移动的时候，无法进入到 code block 块中去进行代码编辑. 会直接跳过这一个块，进入到上一行中. 同样的，现在也无法通过鼠标点击的方式，进入到编辑这个代码块中
 
 ---
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:32:13.370Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:32:13Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Planning selection fix for replaced code block**
@@ -2261,7 +2261,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:32:13.370Z)**_
 The current replaced code block uses Decoration.replace with block true, which removes text and blocks cursor entry. The plan is to implement a widget that, on click or arrow key, switches to editing mode and moves the cursor into the block since selection can't be inside replaced content.
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:32:13.370Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:32:13Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Designing arrow key and click handlers to enter replaced code blocks**
@@ -2269,7 +2269,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:32:13.370Z)**_
 Selection can't naturally enter replaced code blocks since decorations hide the text, so the plan is to add click handlers on the block widget to programmatically set the cursor inside the code block (at first code line). For arrow keys, I'll add keymap handlers that detect when arrow up/down moves toward a collapsed code block and shift selection inside it to trigger editing mode and show raw markdown.
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:32:13.370Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:32:13Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Finalizing arrow key and click behavior with computed entry positions**
@@ -2277,7 +2277,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:32:13.370Z)**_
 The plan is to detect adjacent collapsed code blocks on arrow up/down and, on those keys, programmatically move the cursor inside the block at computed positions (start of code lines for down, end for up). The code block widget gets updated to receive this entry position and adds a mousedown handler that sets selection inside the block to trigger editing mode. This coordinated approach enables entering replaced code blocks via keyboard or mouse.
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:32:13.370Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:32:13Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Adding keymap and widget updates with position-aware cursor entry**
@@ -2285,7 +2285,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:32:13.370Z)**_
 The plan is to extend the code block widget to include an entry position and add click handling to move the cursor inside on mouse down. I'll also add helper functions to compute cursor entry/exit positions, include these in widget equality for proper DOM updates, and add a keymap intercepting arrow keys to programmatically move selection inside collapsed code blocks. These will be integrated into the WYSIWYG code block extension.
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:32:35.584Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:32:35Z)**_
 
 <tool-use data-tool-type="write" data-tool-name="apply_patch"><details>
 <summary>Tool use: **apply_patch**</summary>
@@ -2449,7 +2449,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:32:35.584Z)**_
 ```
 </details></tool-use>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:33:05.174Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:33:05Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Validating EditorView usage and keymap imports**
@@ -2457,7 +2457,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:33:05.174Z)**_
 Confirmed EditorView is used in widget rendering and field decoration without import issues, and keymap is correctly imported for the extension. The arrow-up position logic handles edge cases of single-line blocks acceptably.
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:33:05.174Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:33:05Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Confirming arrow key and click entry into code blocks**
@@ -2465,7 +2465,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:33:05.174Z)**_
 The code now supports entering collapsed code blocks via ArrowUp/Down and clicking, implemented with position helpers and key handling in `src/components/editor/codemirror/wysiwyg-codeblock.ts`. Next, testing navigation and considering optional enhancements for mouse entry or additional keys would be helpful.
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:33:08.042Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:33:08Z)**_
 
 让 code block 在 WYSIWYG 模式下能被进入编辑：点击预览块会把光标送到块内，方向键上下遇到折叠的 code block 会自动进入块内，从而切换到可编辑的 markdown 视图。  
 - 在 `src/components/editor/codemirror/wysiwyg-codeblock.ts` 给 code block widget 加了 `mousedown` 定位光标的逻辑，并新增 `ArrowUp/ArrowDown` 的 keymap，在相邻行遇到折叠 code block 时跳入块内；同时为点击定位缓存了进入位置，避免位置变化时复用旧 widget
@@ -2476,13 +2476,13 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:33:08.042Z)**_
 
 ---
 
-_**User (2026-01-18T10:37:19.905Z)**_
+_**User (2026-01-18 10:37:19Z)**_
 
 现在通过方向键还是会直接跳过 code block
 
 ---
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:38:19.312Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:38:19Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Debugging keymap precedence**
@@ -2490,7 +2490,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:38:19.312Z)**_
 I'm analyzing that the keymap may be inactive due to its lower precedence within the compartment or conflict with default handlers; wrapping the keymap in a highest-precedence wrapper from the state package could ensure it overrides built-in keymaps.
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:38:19.312Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:38:19Z)**_
 
 <think><details><summary>Thought Process</summary>
 **Confirming keymap precedence and implementing Prec.highest**
@@ -2498,7 +2498,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:38:19.312Z)**_
 The keymap likely doesn't trigger because default keymaps with arrow keys have higher precedence due to extension order, so wrapping our keymap in Prec.highest will ensure it runs first and can intercept arrow keys as intended. I'll proceed to import Prec and update the keymap accordingly.
 </details></think>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:38:35.785Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:38:35Z)**_
 
 <tool-use data-tool-type="write" data-tool-name="apply_patch"><details>
 <summary>Tool use: **apply_patch**</summary>
@@ -2612,7 +2612,7 @@ _**Agent (gpt-5.2-codex 2026-01-18T10:38:35.785Z)**_
 ```
 </details></tool-use>
 
-_**Agent (gpt-5.2-codex 2026-01-18T10:38:40.162Z)**_
+_**Agent (gpt-5.2-codex 2026-01-18 10:38:40Z)**_
 
 把方向键 keymap 提升到最高优先级，避免被默认的 `ArrowUp/ArrowDown` 行移动先吞掉。  
 - 更新在 `src/components/editor/codemirror/wysiwyg-codeblock.ts`，用 `Prec.highest` 包裹 keymap
