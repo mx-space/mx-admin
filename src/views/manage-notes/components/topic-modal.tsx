@@ -246,13 +246,21 @@ export const TopicEditModal = defineComponent({
 
                 <FormField label="图标">
                   <div class="flex items-center gap-3">
+                    {topic.icon && (
+                      <img
+                        src={topic.icon}
+                        alt="专栏图标"
+                        class="size-10 shrink-0 rounded-lg object-cover"
+                      />
+                    )}
                     <NInput
-                      value={topic.icon}
+                      value={topic.icon ?? ''}
                       onUpdateValue={(v) => (topic.icon = v)}
                       placeholder="输入图标 URL 或上传"
-                      class="flex-1"
+                      class="min-w-0 flex-1"
                     />
                     <UploadWrapper
+                      class="!w-auto"
                       type="icon"
                       onFinish={(e) => {
                         const res = JSON.parse(
@@ -262,7 +270,12 @@ export const TopicEditModal = defineComponent({
                         return e.file
                       }}
                     >
-                      <NButton quaternary type="primary" aria-label="上传图标">
+                      <NButton
+                        quaternary
+                        type="primary"
+                        circle
+                        aria-label="上传图标"
+                      >
                         <UploadIcon class="size-4" />
                       </NButton>
                     </UploadWrapper>

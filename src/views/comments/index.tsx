@@ -3,7 +3,7 @@ import {
   ShieldAlert as SpamIcon,
   Trash2 as TrashIcon,
 } from 'lucide-vue-next'
-import { NSplit, useDialog } from 'naive-ui'
+import { useDialog } from 'naive-ui'
 import {
   computed,
   defineComponent,
@@ -21,14 +21,12 @@ import { useMutation, useQueryClient } from '@tanstack/vue-query'
 
 import { commentsApi } from '~/api/comments'
 import { HeaderActionButton } from '~/components/button/rounded-button'
+import { MasterDetailLayout, useMasterDetailLayout } from '~/components/layout'
 import { queryKeys } from '~/hooks/queries/keys'
 import { useDataTable } from '~/hooks/use-data-table'
-import { useStoreRef } from '~/hooks/use-store-ref'
 import { useLayout } from '~/layouts/content'
 import { CommentState } from '~/models/comment'
 import { RouteName } from '~/router/name'
-import { LayoutStore } from '~/stores/layout'
-import { UIStore } from '~/stores/ui'
 
 import { CommentDetail } from './components/comment-detail'
 import { CommentEmptyState } from './components/comment-empty-state'
@@ -45,6 +43,7 @@ const ManageComment = defineComponent(() => {
   const router = useRouter()
   const queryClient = useQueryClient()
   const { setActions } = useLayout()
+  const { isMobile } = useMasterDetailLayout()
 
   const tabValue = ref(
     (+(route.query.state as string) as CommentType) || CommentType.Pending,
@@ -200,8 +199,6 @@ const ManageComment = defineComponent(() => {
   }
 
   const totalCount = computed(() => pager.value?.total ?? 0)
-
-  const ui = useStoreRef(UIStore)
   const dialog = useDialog()
 
   const batchOperationLoading = ref(false)
@@ -324,85 +321,15 @@ const ManageComment = defineComponent(() => {
     }
   })
 
-  const layout = useStoreRef(LayoutStore)
-
-  const isMobile = computed(
-    () => ui.viewport.value.mobile || ui.viewport.value.pad,
-  )
-  const { setHeaderClass } = useLayout()
-
-  watchEffect(() => {
-    layout.contentPadding.value = false
-    layout.contentMinFullHeight.value = true
-    setHeaderClass(
-      'md:px-4 border-b border-neutral-100 dark:border-neutral-900',
-    )
-  })
-
-  const DesktopLayout = () => (
-    <div class="absolute inset-0 overflow-hidden">
-      <NSplit
-        direction="horizontal"
-        defaultSize={0.35}
-        min={0.25}
-        max={0.5}
-        class="h-full"
-      >
-        {{
-          1: () => (
-            <div class="h-full overflow-hidden border-r border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
-              <CommentList
-                data={data.value}
-                loading={loading.value}
-                checkedKeys={checkedRowKeys.value}
-                selectedId={selectedId.value}
-                pager={pager.value}
-                selectAllMode={selectAllMode.value}
-                filterValue={tabValue.value}
-                onCheck={handleCheck}
-                onCheckAll={handleCheckAll}
-                onSelectAll={handleSelectAll}
-                onSelect={handleSelect}
-                onPageChange={setPage}
-                onFilterChange={handleFilterChange}
-              />
-            </div>
-          ),
-          2: () => (
-            <div class="h-full min-w-0 flex-1 overflow-hidden bg-neutral-50 dark:bg-neutral-950">
-              {selectedComment.value ? (
-                <CommentDetail
-                  comment={selectedComment.value}
-                  currentTab={tabValue.value}
-                  replyLoading={replyMutation.isPending.value}
-                  onChangeState={changeState}
-                  onDelete={handleDelete}
-                  onReply={handleReply}
-                />
-              ) : (
-                <CommentEmptyState />
-              )}
-            </div>
-          ),
-          'resize-trigger': () => (
-            <div class="group relative h-full w-0 cursor-col-resize">
-              <div class="absolute left-1/2 top-1/2 h-8 w-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-neutral-300 transition-colors group-hover:bg-neutral-400 dark:bg-neutral-700 dark:group-hover:bg-neutral-600" />
-            </div>
-          ),
-        }}
-      </NSplit>
-    </div>
-  )
-
-  const MobileLayout = () => (
-    <div class="absolute inset-0 w-full overflow-x-hidden">
-      <div
-        class={[
-          'absolute inset-0 w-full',
-          showDetailOnMobile.value && '-translate-x-full',
-        ]}
-      >
-        <div class="h-full bg-white dark:bg-neutral-900">
+  return () => (
+    <MasterDetailLayout
+      showDetailOnMobile={showDetailOnMobile.value}
+      defaultSize={0.35}
+      min={0.25}
+      max={0.5}
+    >
+      {{
+        list: () => (
           <CommentList
             data={data.value}
             loading={loading.value}
@@ -418,35 +345,24 @@ const ManageComment = defineComponent(() => {
             onPageChange={setPage}
             onFilterChange={handleFilterChange}
           />
-        </div>
-      </div>
-
-      <div
-        class={[
-          'absolute inset-0 w-full',
-          // showDetailOnMobile.value ? 'translate-x-0' : 'translate-x-full',
-          !showDetailOnMobile.value && 'hidden',
-        ]}
-      >
-        <div class="h-full bg-white dark:bg-neutral-900">
-          {selectedComment.value && (
+        ),
+        detail: () =>
+          selectedComment.value ? (
             <CommentDetail
               comment={selectedComment.value}
               currentTab={tabValue.value}
-              isMobile={true}
+              isMobile={isMobile.value}
               replyLoading={replyMutation.isPending.value}
               onBack={handleBack}
               onChangeState={changeState}
               onDelete={handleDelete}
               onReply={handleReply}
             />
-          )}
-        </div>
-      </div>
-    </div>
+          ) : null,
+        empty: () => <CommentEmptyState />,
+      }}
+    </MasterDetailLayout>
   )
-
-  return () => (isMobile.value ? <MobileLayout /> : <DesktopLayout />)
 })
 
 export default ManageComment

@@ -283,16 +283,7 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           query: { page: 1 },
           icon: <EyeIcon />,
         },
-        component: () => import('../views/manage-project/list'),
-      },
-      {
-        path: 'edit',
-        name: RouteName.EditProject,
-        meta: {
-          title: '创建项目',
-          icon: <PencilAltIcon />,
-        },
-        component: () => import('../views/manage-project/edit'),
+        component: () => import('../views/manage-project/index'),
       },
     ],
   },

@@ -1,0 +1,146 @@
+import { NSplit } from 'naive-ui'
+import { computed, defineComponent, watchEffect } from 'vue'
+import type { PropType } from 'vue'
+
+import { useStoreRef } from '~/hooks/use-store-ref'
+import { useLayout } from '~/layouts/content'
+import { LayoutStore } from '~/stores/layout'
+import { UIStore } from '~/stores/ui'
+
+export interface MasterDetailLayoutProps {
+  showDetailOnMobile?: boolean
+  defaultSize?: number
+  min?: number
+  max?: number
+  listBgClass?: string
+  detailBgClass?: string
+}
+
+export const MasterDetailLayout = defineComponent({
+  name: 'MasterDetailLayout',
+  props: {
+    showDetailOnMobile: {
+      type: Boolean,
+      default: false,
+    },
+    defaultSize: {
+      type: Number,
+      default: 0.3,
+    },
+    min: {
+      type: Number,
+      default: 0.2,
+    },
+    max: {
+      type: Number,
+      default: 0.4,
+    },
+    listBgClass: {
+      type: String,
+      default: 'bg-white dark:bg-neutral-900',
+    },
+    detailBgClass: {
+      type: String,
+      default: 'bg-neutral-50 dark:bg-neutral-950',
+    },
+    onMobileBack: {
+      type: Function as PropType<() => void>,
+    },
+  },
+  setup(props, { slots }) {
+    const ui = useStoreRef(UIStore)
+    const layout = useStoreRef(LayoutStore)
+    const { setHeaderClass } = useLayout()
+
+    const isMobile = computed(
+      () => ui.viewport.value.mobile || ui.viewport.value.pad,
+    )
+
+    watchEffect(() => {
+      layout.contentPadding.value = false
+      layout.contentMinFullHeight.value = true
+      setHeaderClass(
+        'md:px-4 border-b border-neutral-100 dark:border-neutral-900',
+      )
+    })
+
+    const ResizeTrigger = () => (
+      <div class="group relative h-full w-0 cursor-col-resize">
+        <div class="absolute left-1/2 top-1/2 h-8 w-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-neutral-300 transition-colors group-hover:bg-neutral-400 dark:bg-neutral-700 dark:group-hover:bg-neutral-600" />
+      </div>
+    )
+
+    const DesktopLayout = () => (
+      <div class="absolute inset-0 overflow-hidden">
+        <NSplit
+          direction="horizontal"
+          defaultSize={props.defaultSize}
+          min={props.min}
+          max={props.max}
+          class="h-full"
+        >
+          {{
+            1: () => (
+              <div
+                class={[
+                  'h-full overflow-hidden border-r border-neutral-200 dark:border-neutral-800',
+                  props.listBgClass,
+                ]}
+              >
+                {slots.list?.()}
+              </div>
+            ),
+            2: () => (
+              <div
+                class={[
+                  'h-full min-w-0 flex-1 overflow-hidden',
+                  props.detailBgClass,
+                ]}
+              >
+                {slots.detail?.() ?? slots.empty?.()}
+              </div>
+            ),
+            'resize-trigger': ResizeTrigger,
+          }}
+        </NSplit>
+      </div>
+    )
+
+    const MobileLayout = () => (
+      <div class="absolute inset-0 w-full overflow-x-hidden">
+        <div
+          class={[
+            'absolute inset-0 w-full transition-transform duration-300',
+            props.showDetailOnMobile && '-translate-x-full',
+          ]}
+        >
+          <div class={['h-full', props.listBgClass]}>{slots.list?.()}</div>
+        </div>
+
+        <div
+          class={[
+            'absolute inset-0 w-full',
+            !props.showDetailOnMobile && 'hidden',
+          ]}
+        >
+          <div class={['h-full', props.listBgClass]}>
+            {slots.detail?.() ?? slots.empty?.()}
+          </div>
+        </div>
+      </div>
+    )
+
+    return () => (isMobile.value ? <MobileLayout /> : <DesktopLayout />)
+  },
+})
+
+export const useMasterDetailLayout = () => {
+  const ui = useStoreRef(UIStore)
+  const isMobile = computed(
+    () => ui.viewport.value.mobile || ui.viewport.value.pad,
+  )
+
+  return {
+    isMobile,
+  }
+}

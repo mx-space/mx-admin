@@ -1,10 +1,9 @@
 /**
  * Topic List Page
- * 专栏列表页面 - 列表布局
+ * 专栏列表页面 - Master-Detail 布局
  */
 import { Plus as PlusIcon } from 'lucide-vue-next'
-import { NPagination } from 'naive-ui'
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, watch, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { TopicModel } from '~/models/topic'
 
@@ -12,17 +11,18 @@ import { useQueryClient } from '@tanstack/vue-query'
 
 import { topicsApi } from '~/api/topics'
 import { HeaderActionButton } from '~/components/button/rounded-button'
+import { MasterDetailLayout, useMasterDetailLayout } from '~/components/layout'
 import { queryKeys } from '~/hooks/queries/keys'
 import { useDeleteTopicMutation } from '~/hooks/queries/use-topics'
 import { useDataTable } from '~/hooks/use-data-table'
 import { useLayout } from '~/layouts/content'
+import { RouteName } from '~/router/name'
 
 import {
-  TopicEmptyState,
-  TopicListItem,
-  TopicListSkeleton,
-} from './components/topic-card'
-import { TopicDetailDrawer } from './components/topic-detail'
+  TopicDetailEmptyState,
+  TopicDetailPanel,
+} from './components/topic-detail-panel'
+import { TopicList } from './components/topic-list'
 import { TopicEditModal } from './components/topic-modal'
 
 export default defineComponent({
@@ -31,12 +31,15 @@ export default defineComponent({
     const router = useRouter()
     const route = useRoute()
     const queryClient = useQueryClient()
+    const { setActions } = useLayout()
+    const { isMobile } = useMasterDetailLayout()
 
     const {
       data: topics,
       pager: pagination,
       isLoading: loading,
       refresh,
+      setPage,
     } = useDataTable<TopicModel>({
       queryKey: (_params) => queryKeys.topics.list(),
       queryFn: (params) =>
@@ -44,13 +47,11 @@ export default defineComponent({
       pageSize: 20,
     })
 
-    // 编辑状态
+    const selectedId = ref<string | null>((route.query.id as string) || null)
+    const showDetailOnMobile = ref(false)
+
     const editTopicId = ref('')
     const showTopicModal = ref(false)
-
-    // 详情状态
-    const detailTopicId = ref('')
-    const showDetailDrawer = ref(false)
 
     const handleAddTopic = () => {
       showTopicModal.value = true
@@ -62,11 +63,14 @@ export default defineComponent({
       editTopicId.value = ''
     }
 
-    // 删除专栏
     const deleteMutation = useDeleteTopicMutation()
     const handleDelete = (id: string) => {
       deleteMutation.mutate(id, {
         onSuccess: () => {
+          if (selectedId.value === id) {
+            selectedId.value = null
+            showDetailOnMobile.value = false
+          }
           refresh()
         },
       })
@@ -77,9 +81,15 @@ export default defineComponent({
       showTopicModal.value = true
     }
 
-    const handleViewDetail = (id: string) => {
-      detailTopicId.value = id
-      showDetailDrawer.value = true
+    const handleSelect = (topic: TopicModel) => {
+      selectedId.value = topic.id!
+      if (isMobile.value) {
+        showDetailOnMobile.value = true
+      }
+    }
+
+    const handleBack = () => {
+      showDetailOnMobile.value = false
     }
 
     const handleSubmit = (_topic: TopicModel) => {
@@ -87,83 +97,70 @@ export default defineComponent({
       queryClient.invalidateQueries({ queryKey: queryKeys.topics.all })
     }
 
-    const { setActions } = useLayout()
-
-    setActions(
-      <HeaderActionButton
-        icon={<PlusIcon />}
-        onClick={handleAddTopic}
-        variant="success"
-        name="新建专栏"
-      />,
+    watch(
+      selectedId,
+      (id) => {
+        router.replace({
+          name: RouteName.Topic,
+          query: {
+            ...(id ? { id } : {}),
+          },
+        })
+      },
+      { flush: 'post' },
     )
 
+    watchEffect(() => {
+      setActions(
+        <HeaderActionButton
+          icon={<PlusIcon />}
+          onClick={handleAddTopic}
+          variant="success"
+          name="新建专栏"
+        />,
+      )
+    })
+
     return () => (
-      <div class="space-y-4">
-        {/* 内容区域 */}
-        {loading.value && topics.value.length === 0 ? (
-          // 加载骨架屏
-          <div class="overflow-hidden rounded-lg border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
-            <TopicListSkeleton />
-          </div>
-        ) : topics.value.length === 0 ? (
-          // 空状态
-          <TopicEmptyState onAdd={handleAddTopic} />
-        ) : (
-          // 列表
-          <div class="overflow-hidden rounded-lg border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
-            {topics.value.map((topic) => (
-              <TopicListItem
-                key={topic.id}
-                topic={topic}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-                onViewDetail={handleViewDetail}
+      <>
+        <MasterDetailLayout
+          showDetailOnMobile={showDetailOnMobile.value}
+          defaultSize={0.3}
+          min={0.2}
+          max={0.4}
+        >
+          {{
+            list: () => (
+              <TopicList
+                data={topics.value}
+                loading={loading.value}
+                selectedId={selectedId.value}
+                pager={pagination.value}
+                onSelect={handleSelect}
+                onPageChange={setPage}
               />
-            ))}
-          </div>
-        )}
-
-        {/* 分页 */}
-        {pagination.value && pagination.value.totalPage > 1 && (
-          <div class="flex justify-center">
-            <NPagination
-              page={pagination.value.currentPage}
-              onUpdatePage={(page) => {
-                router.replace({
-                  query: { ...route.query, page },
-                  params: { ...route.params },
-                })
-              }}
-              pageCount={pagination.value.totalPage}
-              pageSize={pagination.value.size}
-              showQuickJumper
-            />
-          </div>
-        )}
-
-        {/* 详情 Drawer */}
-        <TopicDetailDrawer
-          show={showDetailDrawer.value}
-          topicId={detailTopicId.value}
-          onClose={() => {
-            showDetailDrawer.value = false
-            detailTopicId.value = ''
+            ),
+            detail: () =>
+              selectedId.value ? (
+                <TopicDetailPanel
+                  topicId={selectedId.value}
+                  isMobile={isMobile.value}
+                  onBack={handleBack}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                />
+              ) : null,
+            empty: () => <TopicDetailEmptyState />,
           }}
-          onEdit={(id: string) => {
-            showDetailDrawer.value = false
-            handleEdit(id)
-          }}
-        />
+        </MasterDetailLayout>
 
-        {/* 编辑 Modal */}
         <TopicEditModal
           onClose={handleCloseModal}
           show={Boolean(showTopicModal.value || editTopicId.value)}
           id={editTopicId.value}
           onSubmit={handleSubmit}
         />
-      </div>
+      </>
     )
   },
 })
