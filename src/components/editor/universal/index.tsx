@@ -3,13 +3,8 @@
  *
  */
 
-import { Settings as SettingsIcon } from 'lucide-vue-next'
-import { NCard, NElement, NForm, NModal } from 'naive-ui'
-import { defineComponent, onUnmounted, ref } from 'vue'
-
-import { FabButton } from '~/components/button/rounded-button'
-import { useMountAndUnmount } from '~/hooks/use-lifecycle'
-import { useLayout } from '~/layouts/content'
+import { NElement } from 'naive-ui'
+import { defineComponent, onUnmounted } from 'vue'
 
 import { CodemirrorEditor } from '../codemirror/codemirror'
 import { useEditorStore } from '../codemirror/editor-store'
@@ -30,59 +25,10 @@ export const Editor = defineComponent({
   },
   expose: ['setValue'],
   setup(props, { expose }) {
-    const modalOpen = ref(false)
-    const layout = useLayout()
-
-    useMountAndUnmount(() => {
-      const settingButton = layout.addFloatButton(
-        <FabButton
-          icon={<SettingsIcon />}
-          label="编辑器设置"
-          onClick={() => {
-            modalOpen.value = true
-          }}
-        />,
-      )
-
-      return () => {
-        layout.removeFloatButton(settingButton)
-      }
-    })
-
     const { general, destory } = useEditorConfig()
 
     onUnmounted(() => {
       destory()
-    })
-
-    const Modal = defineComponent({
-      setup() {
-        const handleModalClose = () => {
-          modalOpen.value = false
-        }
-        const { Panel: GeneralSetting } = general
-
-        const handleUpdateShow = (s: boolean) => void (modalOpen.value = s)
-        return () => (
-          <NModal
-            transformOrigin="center"
-            show={modalOpen.value}
-            onUpdateShow={handleUpdateShow}
-          >
-            <NCard
-              closable
-              onClose={handleModalClose}
-              title="编辑器设定"
-              style="max-width: 90vw;width: 500px; max-height: 65vh; overflow: auto"
-              bordered={false}
-            >
-              <NForm labelPlacement="left" labelWidth="8rem" labelAlign="right">
-                <GeneralSetting />
-              </NForm>
-            </NCard>
-          </NModal>
-        )
-      },
     })
 
     const editorStore = useEditorStore()
@@ -111,7 +57,6 @@ export const Editor = defineComponent({
           class={'editor-wrapper'}
         >
           <CodemirrorEditor {...props} renderMode={resolvedRenderMode} />
-          <Modal />
         </NElement>
       )
     }

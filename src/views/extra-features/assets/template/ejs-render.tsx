@@ -1,4 +1,4 @@
-import { render } from 'ejs'
+import ejs from 'ejs'
 import { defineComponent, ref, watch } from 'vue'
 import type { PropType } from 'vue'
 
@@ -21,15 +21,17 @@ export const EJSRender = defineComponent({
     watch(
       () => props.template,
       async () => {
-        html.value = await render(props.template, props.data, {
-          async: true,
-        }).catch((error) => {
-          props.onError?.(error)
+        html.value = await ejs
+          .render(props.template, props.data, {
+            async: true,
+          })
+          .catch((error) => {
+            props.onError?.(error)
 
-          console.error(error)
+            console.error(error)
 
-          return html.value
-        })
+            return html.value
+          })
       },
       { immediate: true },
     )

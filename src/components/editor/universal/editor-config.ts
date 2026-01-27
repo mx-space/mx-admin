@@ -7,7 +7,7 @@ export const GeneralSettingSchema = z.object({
     .default(
       '"Helvetica Neue","Luxi Sans","DejaVu Sans","Hiragino Sans GB","Microsoft Yahei",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji","Segoe UI Symbol","Android Emoji","EmojiSymbols"',
     ),
-  autocorrect: z.boolean().default(false),
+
   renderMode: z.enum(['plain', 'wysiwyg']).default('wysiwyg'),
 })
 

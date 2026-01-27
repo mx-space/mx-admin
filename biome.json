@@ -1,34 +1,33 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.6.4/schema.json",
-  "organizeImports": {
-    "enabled": true
-  },
+  "$schema": "https://biomejs.dev/schemas/2.3.13/schema.json",
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "files": {
-    "ignore": [
-      "./src/socket/worker-polyfill.ts",
-      "*.min.*",
-      "CHANGELOG.md",
-      "dist",
-      "LICENSE*",
-      "output",
-      "coverage",
-      "public",
-      "temp",
-      "packages-lock.json",
-      "pnpm-lock.yaml",
-      "yarn.lock",
-      "__snapshots__",
-      "!.github",
-      "!.vitepress",
-      "!.vscode",
-      "polyfills",
-      "src/components/function-editor/libs",
-      "src/views/setting/tabs/user.module.css",
-      "src/components/sidebar/index.module.css",
-      "src/layouts/content/index.module.css",
-      "src/auto-import.d.ts",
-      "src/components/input/underline.module.css",
-      "src/components/input/material.module.css"
+    "includes": [
+      "**",
+      "!src/socket/worker-polyfill.ts",
+      "!**/*.min.*",
+      "!**/CHANGELOG.md",
+      "!**/dist",
+      "!**/LICENSE*",
+      "!**/output",
+      "!**/coverage",
+      "!**/public",
+      "!**/temp",
+      "!**/packages-lock.json",
+      "!**/pnpm-lock.yaml",
+      "!**/yarn.lock",
+      "!**/__snapshots__",
+      "!**/!.github",
+      "!**/!.vitepress",
+      "!**/!.vscode",
+      "!**/polyfills",
+      "!**/src/components/function-editor/libs",
+      "!**/src/views/setting/tabs/user.module.css",
+      "!**/src/components/sidebar/index.module.css",
+      "!**/src/layouts/content/index.module.css",
+      "!**/src/auto-import.d.ts",
+      "!**/src/components/input/underline.module.css",
+      "!**/src/components/input/material.module.css"
     ]
   },
   "css": {
@@ -40,18 +39,16 @@
     "enabled": true,
     "rules": {
       "recommended": false,
-      "a11y": {
-        "noBlankTarget": "warn"
-      },
+      "a11y": {},
       "complexity": {
         "noBannedTypes": "off",
         "noExtraBooleanCast": "error",
-        "noMultipleSpacesInRegularExpressionLiterals": "error",
         "noUselessCatch": "error",
         "noUselessThisAlias": "error",
         "noUselessTypeConstraint": "error",
-        "noWith": "error",
-        "useArrowFunction": "off"
+        "useArrowFunction": "off",
+        "noAdjacentSpacesInRegex": "error",
+        "noArguments": "error"
       },
       "correctness": {
         "noUnusedImports": "error",
@@ -63,7 +60,6 @@
         "noGlobalObjectCalls": "error",
         "noInnerDeclarations": "error",
         "noInvalidConstructorSuper": "error",
-        "noNewSymbol": "error",
         "noNonoctalDecimalEscape": "error",
         "noPrecisionLoss": "error",
         "noSelfAssign": "error",
@@ -80,13 +76,15 @@
         "useHookAtTopLevel": "off",
         "useIsNan": "error",
         "useValidForDirection": "error",
-        "useYield": "error"
+        "useYield": "error",
+        "noInvalidBuiltinInstantiation": "error",
+        "useValidTypeof": "error"
       },
       "security": {
-        "noDangerouslySetInnerHtml": "warn"
+        "noDangerouslySetInnerHtml": "warn",
+        "noBlankTarget": "warn"
       },
       "style": {
-        "noArguments": "error",
         "noDefaultExport": "off",
         "noNamespace": "off",
         "useAsConstAssertion": "error",
@@ -106,7 +104,6 @@
         "noClassAssign": "error",
         "noCommentText": "error",
         "noCompareNegZero": "error",
-        "noConsoleLog": "warn",
         "noControlCharactersInRegex": "error",
         "noDebugger": "error",
         "noDuplicateCase": "error",
@@ -129,7 +126,8 @@
         "noUnsafeDeclarationMerging": "error",
         "noUnsafeNegation": "error",
         "useGetterReturn": "error",
-        "useValidTypeof": "error"
+        "noWith": "error",
+        "noConsole": { "level": "warn", "options": { "allow": ["log"] } }
       }
     }
   },
@@ -189,14 +187,14 @@
   },
   "overrides": [
     {
-      "include": [
-        "*.config.[tj]s",
-        "pages/**/*.[tj]sx",
-        "src/pages/**/*.[tj]sx",
-        "src/views/**/*.[tj]sx",
-        "views/**/*.[tj]sx",
-        "src/store/**/*.[tj]s",
-        "store/**/*.[tj]s"
+      "includes": [
+        "**/*.config.\\[tj\\]s",
+        "**/pages/**/*.\\[tj\\]sx",
+        "**/src/pages/**/*.\\[tj\\]sx",
+        "**/src/views/**/*.\\[tj\\]sx",
+        "**/views/**/*.\\[tj\\]sx",
+        "**/src/store/**/*.\\[tj\\]s",
+        "**/store/**/*.\\[tj\\]s"
       ],
       "linter": {
         "rules": {
@@ -207,54 +205,43 @@
       }
     },
     {
-      "include": [
-        "*.d.ts"
+      "includes": ["**/*.d.ts"],
+      "linter": {
+        "rules": {}
+      }
+    },
+    {
+      "includes": ["**/*.js"],
+      "linter": {
+        "rules": {}
+      }
+    },
+    {
+      "includes": [
+        "**/*.test.ts",
+        "**/*.test.js",
+        "**/*.spec.ts",
+        "**/*.spec.js"
       ],
       "linter": {
         "rules": {}
       }
     },
     {
-      "include": [
-        "*.js"
-      ],
-      "linter": {
-        "rules": {}
-      }
-    },
-    {
-      "include": [
-        "*.test.ts",
-        "*.test.js",
-        "*.spec.ts",
-        "*.spec.js"
-      ],
-      "linter": {
-        "rules": {}
-      }
-    },
-    {
-      "include": [
-        "*.ts",
-        "*.tsx",
-        "*.mts",
-        "*.cts"
-      ],
+      "includes": ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"],
       "linter": {
         "rules": {
           "correctness": {
             "noConstAssign": "off",
             "noGlobalObjectCalls": "off",
             "noInvalidConstructorSuper": "off",
-            "noNewSymbol": "off",
             "noSetterReturn": "off",
             "noUndeclaredVariables": "off",
             "noUnreachable": "off",
-            "noUnreachableSuper": "off"
+            "noUnreachableSuper": "off",
+            "noInvalidBuiltinInstantiation": "off"
           },
           "style": {
-            "noArguments": "error",
-            "noVar": "error",
             "useConst": "error"
           },
           "suspicious": {
@@ -265,7 +252,11 @@
             "noImportAssign": "off",
             "noRedeclare": "off",
             "noUnsafeNegation": "off",
-            "useGetterReturn": "off"
+            "useGetterReturn": "off",
+            "noVar": "error"
+          },
+          "complexity": {
+            "noArguments": "error"
           }
         }
       }

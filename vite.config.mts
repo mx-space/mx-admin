@@ -3,7 +3,7 @@ import UnoCSS from 'unocss/vite'
 import { defineConfig, loadEnv } from 'vite'
 import { checker } from 'vite-plugin-checker'
 
-import wasm from 'vite-plugin-wasm'
+
 import tsconfigPaths from 'vite-tsconfig-paths'
 import type { PluginOption } from 'vite'
 
@@ -21,7 +21,6 @@ export default ({ mode }) => {
   return defineConfig({
     plugins: [
       // mkcert(),
-      wasm(),
       UnoCSS(),
       vue({}),
       vueJsx(),
@@ -75,10 +74,11 @@ export default ({ mode }) => {
       // https: true,
       port: 9528,
     },
-    esbuild: {
-      jsxFactory: '__h',
-      jsxInject: 'import {h as __h,Fragment as __Fragment} from "vue"',
-      jsxFragment: '__Fragment',
+    oxc: {
+      jsx: {
+        runtime: 'automatic',
+        importSource: 'vue',
+      },
     },
   })
 }

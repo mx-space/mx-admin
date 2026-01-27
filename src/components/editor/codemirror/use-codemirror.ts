@@ -43,52 +43,6 @@ export const useCodeMirror = <T extends Element>(
   const { onChange, onArrowUpAtFirstLine } = props
   let cleanupDebugListeners: (() => void) | null = null
 
-  const format = () => {
-    const ev = editorView.value
-    const autocorrect = general.setting.autocorrect
-
-    if (autocorrect && ev) {
-      import('@huacnlee/autocorrect')
-        .then(({ formatFor }) => {
-          const { state, dispatch } = ev
-          const currentLine = state.doc.lineAt(state.selection.main.head)
-          if (currentLine.text) {
-            return
-          }
-
-          const allLineBeforeCurrentLine = state.doc.sliceString(
-            0,
-            currentLine.from,
-          )
-          const format = (text: string) => {
-            return formatFor(text, 'cm.md').out as string
-          }
-          const newText = format(allLineBeforeCurrentLine)
-
-          const delta = newText.length - allLineBeforeCurrentLine.length
-
-          const afterCurrentLine = state.doc.sliceString(
-            currentLine.to,
-            state.doc.length,
-          )
-          const newAfterCurrentLine = format(afterCurrentLine)
-
-          dispatch({
-            changes: {
-              from: 0,
-              to: state.doc.length,
-              insert: newText + newAfterCurrentLine,
-            },
-            selection: {
-              anchor: state.selection.main.anchor + delta,
-            },
-          })
-        })
-        .catch(() => {
-          // not support wasm
-        })
-    }
-  }
   onMounted(() => {
     if (!refContainer.value) return
 
@@ -117,11 +71,9 @@ export const useCodeMirror = <T extends Element>(
                   selection: { anchor: from + 2 },
                 })
 
-                requestAnimationFrame(format)
                 return true // Prevent default Enter behavior
               }
 
-              requestAnimationFrame(format)
               return false // Use default Enter behavior in plain mode
             },
           },

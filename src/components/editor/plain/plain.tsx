@@ -5,7 +5,6 @@ import type { HTMLAttributes, PropType } from 'vue'
 import { useSaveConfirm } from '~/hooks/use-save-confirm'
 
 import { editorBaseProps } from '../universal/props'
-import { useEditorConfig } from '../universal/use-editor-setting'
 
 export const PlainEditor = defineComponent({
   props: {
@@ -33,28 +32,10 @@ export const PlainEditor = defineComponent({
       props.unSaveConfirm,
       () => props.saveConfirmFn?.() ?? memoInitialValue === props.text,
     )
-    const { general } = useEditorConfig()
-    const handleKeydown = (e: KeyboardEvent) => {
-      const autocorrect = general.setting.autocorrect
-      if (!autocorrect) {
-        return
-      }
-      if (e.key === 'Enter') {
-        import('@huacnlee/autocorrect')
-          .then(({ format }) => {
-            const newValue = format((e.target as HTMLInputElement).value)
 
-            props.onChange(newValue)
-          })
-          .catch(() => {
-            // noop
-          })
-      }
-    }
     return () => (
       <div {...props.wrapperProps}>
         <NInput
-          onKeydown={handleKeydown}
           ref={textRef}
           type="textarea"
           onInput={(e) => void props.onChange(e)}
