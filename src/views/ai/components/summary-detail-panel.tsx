@@ -239,7 +239,7 @@ export const SummaryDetailPanel = defineComponent({
         {/* Content */}
         <NScrollbar class="min-h-0 flex-1">
           {loading.value ? (
-            <div class="flex h-full items-center justify-center">
+            <div class="absolute inset-0 flex items-center justify-center">
               <div class="h-6 w-6 animate-spin rounded-full border-2 border-neutral-300 border-t-neutral-900 dark:border-neutral-700 dark:border-t-white" />
             </div>
           ) : article.value ? (
