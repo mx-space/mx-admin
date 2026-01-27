@@ -205,9 +205,9 @@ export default defineComponent({
     return () => (
       <MasterDetailLayout
         showDetailOnMobile={showDetailOnMobile.value}
-        defaultSize={0.25}
-        min={0.18}
-        max={0.35}
+        defaultSize={'250px'}
+        min={'200px'}
+        max={'400px'}
         listBgClass="bg-white dark:bg-neutral-900"
         detailBgClass="bg-neutral-50 dark:bg-neutral-950"
       >
