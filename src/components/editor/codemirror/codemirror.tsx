@@ -25,7 +25,6 @@ import { useCodeMirror } from './use-codemirror'
 import { blockquoteWysiwygExtension } from './wysiwyg-blockquote'
 import { codeBlockWysiwygExtension } from './wysiwyg-codeblock'
 import { dividerWysiwygExtension } from './wysiwyg-divider'
-import { emptyLineWysiwygExtension } from './wysiwyg-empty-line'
 import { headingWysiwygExtension } from './wysiwyg-heading'
 import { inlineWysiwygExtension } from './wysiwyg-inline'
 import { listWysiwygExtension } from './wysiwyg-list'
@@ -88,7 +87,7 @@ export const CodemirrorEditor = defineComponent({
               ...mathWysiwygExtension,
               ...inlineWysiwygExtension,
               ...codeBlockWysiwygExtension,
-              ...emptyLineWysiwygExtension,
+              // ...emptyLineWysiwygExtension,
               wysiwygMeasureExtension,
             ]
           : []

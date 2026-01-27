@@ -1,6 +1,12 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.3.13/schema.json",
-  "assist": { "actions": { "source": { "organizeImports": "on" } } },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
   "files": {
     "includes": [
       "**",
@@ -51,7 +57,10 @@
         "noArguments": "error"
       },
       "correctness": {
-        "noUnusedImports": "error",
+        "noUnusedImports": {
+          "level": "error",
+          "fix": "safe"
+        },
         "noChildrenProp": "error",
         "noConstAssign": "error",
         "noConstantCondition": "error",
@@ -127,7 +136,14 @@
         "noUnsafeNegation": "error",
         "useGetterReturn": "error",
         "noWith": "error",
-        "noConsole": { "level": "warn", "options": { "allow": ["log"] } }
+        "noConsole": {
+          "level": "warn",
+          "options": {
+            "allow": [
+              "log"
+            ]
+          }
+        }
       }
     }
   },
@@ -205,13 +221,17 @@
       }
     },
     {
-      "includes": ["**/*.d.ts"],
+      "includes": [
+        "**/*.d.ts"
+      ],
       "linter": {
         "rules": {}
       }
     },
     {
-      "includes": ["**/*.js"],
+      "includes": [
+        "**/*.js"
+      ],
       "linter": {
         "rules": {}
       }
@@ -228,7 +248,12 @@
       }
     },
     {
-      "includes": ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"],
+      "includes": [
+        "**/*.ts",
+        "**/*.tsx",
+        "**/*.mts",
+        "**/*.cts"
+      ],
       "linter": {
         "rules": {
           "correctness": {
