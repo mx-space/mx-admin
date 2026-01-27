@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [5.5.1](https://github.com/mx-space/admin-vue3/compare/v5.5.0...v5.5.1) (2026-01-27)
+
+
+
 # [5.5.0](https://github.com/mx-space/admin-vue3/compare/v5.4.5...v5.5.0) (2026-01-27)
 
 
