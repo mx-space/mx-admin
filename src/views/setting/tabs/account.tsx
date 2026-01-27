@@ -45,7 +45,7 @@ import { IpInfoPopover } from '~/components/ip-info'
 import { RelativeTime } from '~/components/time/relative-time'
 import { queryKeys } from '~/hooks/queries/keys'
 import { useStoreRef } from '~/hooks/use-store-ref'
-import { SettingsCard } from '~/layouts/settings-layout'
+import { SettingsSection } from '~/layouts/settings-layout'
 import { RouteName } from '~/router/name'
 import { UIStore } from '~/stores/ui'
 import { parseDate, removeToken } from '~/utils'
@@ -67,23 +67,7 @@ type Session = {
 
 export const TabAccount = defineComponent(() => {
   return () => (
-    <div class="py-6">
-      <style>
-        {`
-          .n-data-table .n-data-table-td {
-            vertical-align: baseline !important;
-          }
-          /* 统一表格首列和末列的缩进，与卡片 Header 保持一致 */
-          .n-data-table .n-data-table-th:first-child,
-          .n-data-table .n-data-table-td:first-child {
-            padding-left: 24px !important;
-          }
-          .n-data-table .n-data-table-th:last-child,
-          .n-data-table .n-data-table-td:last-child {
-            padding-right: 24px !important;
-          }
-        `}
-      </style>
+    <div class="space-y-8">
       <SessionSection />
       <ResetPass />
       <ApiToken />
@@ -130,7 +114,7 @@ const SessionSection = defineComponent(() => {
   }
 
   return () => (
-    <SettingsCard
+    <SettingsSection
       title="登录设备"
       description="管理你的登录会话，保护账户安全"
       icon={MonitorIcon}
@@ -162,24 +146,16 @@ const SessionSection = defineComponent(() => {
       {loading.value ? (
         <SessionSkeleton />
       ) : (
-        <div class="flex flex-col gap-4">
+        <div class="divide-y divide-neutral-100 dark:divide-neutral-800">
           {sessions.value.map(({ id, ua, ip, date, current }) => (
-            <div
-              key={id}
-              class={[
-                'rounded-lg border bg-neutral-50/50 p-4 transition-shadow dark:bg-neutral-800/20',
-                current
-                  ? 'border-primary/20 bg-primary/5 dark:border-primary/20 dark:bg-primary/5'
-                  : 'border-neutral-200 dark:border-neutral-800',
-              ]}
-            >
-              <div class="mb-3 flex items-center justify-between">
+            <div key={id} class="py-4">
+              <div class="mb-2 flex items-center justify-between">
                 <span
                   class={[
-                    'inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium',
+                    'inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium',
                     current
                       ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                      : 'bg-neutral-200 text-neutral-600 dark:bg-neutral-700 dark:text-neutral-400',
+                      : 'bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400',
                   ]}
                 >
                   {current ? (
@@ -212,59 +188,48 @@ const SessionSection = defineComponent(() => {
                 </NPopconfirm>
               </div>
 
-              <div class="space-y-2">
-                {ua && (
-                  <div class="font-mono text-xs text-neutral-600 dark:text-neutral-300">
-                    {ua}
+              {ua && (
+                <div class="mb-2 font-mono text-xs text-neutral-600 dark:text-neutral-300">
+                  {ua}
+                </div>
+              )}
+
+              <div class="flex flex-wrap items-center gap-4 text-xs text-neutral-500 dark:text-neutral-400">
+                {ip && (
+                  <div class="flex items-center gap-1.5">
+                    <GlobeIcon class="size-3.5" />
+                    <IpInfoPopover
+                      ip={ip}
+                      triggerEl={
+                        <span class="cursor-pointer hover:underline">{ip}</span>
+                      }
+                    />
                   </div>
                 )}
-
-                <div class="mt-3 flex flex-wrap items-center gap-4 text-xs text-neutral-500 dark:text-neutral-400">
-                  {ip && (
-                    <div class="flex items-center gap-1.5">
-                      <GlobeIcon class="size-3.5" />
-                      <IpInfoPopover
-                        ip={ip}
-                        triggerEl={
-                          <span class="cursor-pointer hover:underline">
-                            {ip}
-                          </span>
-                        }
-                      />
-                    </div>
-                  )}
-
-                  <div class="flex items-center gap-1.5">
-                    <span>{current ? '活跃时间:' : '登录时间:'}</span>
-                    <RelativeTime time={date} />
-                  </div>
+                <div class="flex items-center gap-1.5">
+                  <span>{current ? '活跃时间:' : '登录时间:'}</span>
+                  <RelativeTime time={date} />
                 </div>
               </div>
             </div>
           ))}
         </div>
       )}
-    </SettingsCard>
+    </SettingsSection>
   )
 })
 
 const SessionSkeleton = defineComponent(() => {
   return () => (
-    <div class="flex flex-col gap-4">
-      {Array.from({ length: 3 }).map((_, i) => (
-        <div
-          key={i}
-          class="rounded-lg border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900"
-        >
-          <div class="mb-3 flex items-center justify-between">
-            <NSkeleton text style={{ width: '80px', height: '24px' }} />
-            <NSkeleton text style={{ width: '60px', height: '28px' }} />
+    <div class="divide-y divide-neutral-100 dark:divide-neutral-800">
+      {Array.from({ length: 2 }).map((_, i) => (
+        <div key={i} class="py-4">
+          <div class="mb-2 flex items-center justify-between">
+            <NSkeleton text style={{ width: '80px', height: '22px' }} />
+            <NSkeleton text style={{ width: '50px', height: '24px' }} />
           </div>
-          <NSkeleton
-            text
-            style={{ width: '100%', height: '40px', marginTop: '12px' }}
-          />
-          <div class="mt-3 flex gap-4">
+          <NSkeleton text style={{ width: '100%', height: '16px' }} />
+          <div class="mt-2 flex gap-4">
             <NSkeleton text style={{ width: '100px' }} />
             <NSkeleton text style={{ width: '120px' }} />
           </div>
@@ -304,68 +269,70 @@ const ResetPass = defineComponent(() => {
   }
 
   return () => (
-    <SettingsCard
+    <SettingsSection
       title="修改密码"
       description="修改后需要重新登录"
       icon={LockIcon}
     >
-      <NForm
-        ref={formRef}
-        model={resetPassword}
-        labelPlacement="top"
-        showRequireMark={false}
-        rules={{
-          password: [
-            {
-              required: true,
-              message: '请输入密码',
-            },
-          ],
-          reenteredPassword: [
-            {
-              required: true,
-              message: '请再次输入密码',
-              trigger: ['input', 'blur'],
-            },
-            {
-              validator: validatePasswordSame,
-              message: '两次密码输入不一致',
-              trigger: ['blur', 'password-input'],
-            },
-          ],
-        }}
-      >
-        <div class="grid gap-6 md:grid-cols-2">
-          <NFormItem label="新密码" path="password">
-            <NInput
-              {...autosizeableProps}
-              value={resetPassword.password}
-              onInput={(e) => void (resetPassword.password = e)}
-              type="password"
-              showPasswordOn="click"
-              placeholder="输入新密码"
-            />
-          </NFormItem>
-          <NFormItem label="确认密码" path="reenteredPassword">
-            <NInput
-              {...autosizeableProps}
-              value={resetPassword.reenteredPassword}
-              onInput={(e) => void (resetPassword.reenteredPassword = e)}
-              type="password"
-              showPasswordOn="click"
-              placeholder="再次输入新密码"
-            />
-          </NFormItem>
-        </div>
+      <div class="py-4">
+        <NForm
+          ref={formRef}
+          model={resetPassword}
+          labelPlacement="top"
+          showRequireMark={false}
+          rules={{
+            password: [
+              {
+                required: true,
+                message: '请输入密码',
+              },
+            ],
+            reenteredPassword: [
+              {
+                required: true,
+                message: '请再次输入密码',
+                trigger: ['input', 'blur'],
+              },
+              {
+                validator: validatePasswordSame,
+                message: '两次密码输入不一致',
+                trigger: ['blur', 'password-input'],
+              },
+            ],
+          }}
+        >
+          <div class="grid gap-4 md:grid-cols-2">
+            <NFormItem label="新密码" path="password">
+              <NInput
+                {...autosizeableProps}
+                value={resetPassword.password}
+                onInput={(e) => void (resetPassword.password = e)}
+                type="password"
+                showPasswordOn="click"
+                placeholder="输入新密码"
+              />
+            </NFormItem>
+            <NFormItem label="确认密码" path="reenteredPassword">
+              <NInput
+                {...autosizeableProps}
+                value={resetPassword.reenteredPassword}
+                onInput={(e) => void (resetPassword.reenteredPassword = e)}
+                type="password"
+                showPasswordOn="click"
+                placeholder="再次输入新密码"
+              />
+            </NFormItem>
+          </div>
 
-        <div class="mt-4 flex justify-end border-t border-neutral-100 pt-4 dark:border-neutral-800">
-          <NButton onClick={reset} type="primary">
-            <ShieldIcon class="mr-1 size-4" />
-            修改密码
-          </NButton>
-        </div>
-      </NForm>
-    </SettingsCard>
+          <div class="flex justify-end pt-2">
+            <NButton onClick={reset} type="primary" size="small">
+              <ShieldIcon class="mr-1 size-4" />
+              修改密码
+            </NButton>
+          </div>
+        </NForm>
+      </div>
+    </SettingsSection>
   )
 })
 
@@ -486,11 +453,10 @@ const ApiToken = defineComponent(() => {
 
   return () => (
     <>
-      <SettingsCard
+      <SettingsSection
         title="API Token"
         description="用于 API 调用的访问令牌"
         icon={KeyIcon}
-        pure
         v-slots={{
           actions: () => (
             <NButton
@@ -508,14 +474,14 @@ const ApiToken = defineComponent(() => {
         }}
       >
         {loading.value ? (
-          <div class="p-6">
-            <NSkeleton text style={{ width: '100%', height: '200px' }} />
+          <div class="p-4">
+            <NSkeleton text style={{ width: '100%', height: '150px' }} />
           </div>
         ) : (
           <NDataTable
             scrollX={Math.max(
-              800,
-              uiStore.contentWidth.value - uiStore.contentInsetWidth.value,
+              700,
+              uiStore.contentWidth.value - uiStore.contentInsetWidth.value - 48,
             )}
             remote
             bordered={false}
@@ -536,7 +502,7 @@ const ApiToken = defineComponent(() => {
                         text
                         type="primary"
                         onClick={() => copyToken(token)}
-                        class="max-w-[200px] truncate text-left font-mono"
+                        class="max-w-[180px] truncate text-left font-mono"
                       >
                         {token}
                       </NButton>
@@ -544,7 +510,7 @@ const ApiToken = defineComponent(() => {
                   } else {
                     return (
                       <span class="font-mono text-neutral-400">
-                        {'•'.repeat(32)}
+                        {'•'.repeat(24)}
                       </span>
                     )
                   }
@@ -562,7 +528,7 @@ const ApiToken = defineComponent(() => {
                 key: 'expired',
                 render({ expired }) {
                   return expired ? (
-                    parseDate(expired, 'yyyy 年 M 月 d 日 HH:mm:ss')
+                    parseDate(expired, 'yyyy 年 M 月 d 日')
                   ) : (
                     <span class="text-neutral-400">永不过期</span>
                   )
@@ -571,12 +537,13 @@ const ApiToken = defineComponent(() => {
               {
                 title: '操作',
                 key: 'id',
+                width: 80,
                 render(row) {
                   const { id, name } = row
                   const isVisible = visibleTokens.value.has(id)
 
                   return (
-                    <div class="flex items-center gap-2 opacity-0 transition-opacity group-hover:opacity-100">
+                    <div class="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
                       <NButton
                         text
                         type="primary"
@@ -615,7 +582,7 @@ const ApiToken = defineComponent(() => {
             ]}
           />
         )}
-      </SettingsCard>
+      </SettingsSection>
 
       {/* Create Token Modal */}
       <NModal
@@ -826,11 +793,10 @@ const Passkey = defineComponent(() => {
   NewModalContent.props = ['dialog']
 
   return () => (
-    <SettingsCard
+    <SettingsSection
       title="通行密钥"
       description="使用生物识别或安全密钥登录"
       icon={FingerprintIcon}
-      pure
       v-slots={{
         actions: () => (
           <div class="flex items-center gap-2">
@@ -862,7 +828,7 @@ const Passkey = defineComponent(() => {
         ),
       }}
     >
-      <div class="flex items-baseline justify-between border-b border-neutral-100 px-6 py-4 dark:border-neutral-800">
+      <div class="flex items-center justify-between border-b border-neutral-100 px-4 py-3 dark:border-neutral-800">
         <div class="flex flex-col gap-0.5">
           <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
             禁止密码登录
@@ -885,26 +851,26 @@ const Passkey = defineComponent(() => {
 
       <div>
         {!passkeys.value ? (
-          <div class="p-6">
-            <NSkeleton text style={{ width: '100%', height: '150px' }} />
+          <div class="p-4">
+            <NSkeleton text style={{ width: '100%', height: '100px' }} />
           </div>
         ) : passkeys.value.length === 0 ? (
-          <div class="flex flex-col items-center justify-center py-12 text-center">
-            <div class="mb-4 flex size-14 items-center justify-center rounded-full bg-neutral-100 text-neutral-400 dark:bg-neutral-800 dark:text-neutral-500">
-              <KeyIcon class="size-7" />
+          <div class="flex flex-col items-center justify-center py-10 text-center">
+            <div class="mb-3 flex size-12 items-center justify-center rounded-full bg-neutral-100 text-neutral-400 dark:bg-neutral-800 dark:text-neutral-500">
+              <KeyIcon class="size-6" />
             </div>
-            <h3 class="m-0 mb-2 text-base font-medium text-neutral-900 dark:text-neutral-100">
+            <h3 class="m-0 mb-1 text-sm font-medium text-neutral-900 dark:text-neutral-100">
               暂无通行密钥
             </h3>
-            <p class="m-0 text-sm text-neutral-500 dark:text-neutral-400">
+            <p class="m-0 text-xs text-neutral-500 dark:text-neutral-400">
               添加一个通行密钥以启用无密码登录
             </p>
           </div>
         ) : (
           <NDataTable
             scrollX={Math.max(
-              600,
-              uiStore.contentWidth.value - uiStore.contentInsetWidth.value,
+              500,
+              uiStore.contentWidth.value - uiStore.contentInsetWidth.value - 48,
             )}
             remote
             bordered={false}
@@ -933,7 +899,7 @@ const Passkey = defineComponent(() => {
               {
                 title: '操作',
                 key: 'id',
-                width: 100,
+                width: 80,
                 render({ id, name }) {
                   return (
                     <div class="opacity-0 transition-opacity group-hover:opacity-100">
@@ -965,7 +931,7 @@ const Passkey = defineComponent(() => {
           />
         )}
       </div>
-    </SettingsCard>
+    </SettingsSection>
   )
 })
 
@@ -1006,15 +972,15 @@ const Oauth = defineComponent(() => {
   })
 
   return () => (
-    <SettingsCard
+    <SettingsSection
       title="OAuth 登录"
       description="配置第三方账号登录方式"
       icon={ExternalLinkIcon}
     >
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div class="grid grid-cols-1 gap-4 py-4 md:grid-cols-2">
         <GitHubProvider />
         <GoogleProvider />
       </div>
-    </SettingsCard>
+    </SettingsSection>
   )
 })

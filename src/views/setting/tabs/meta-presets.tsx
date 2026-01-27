@@ -17,7 +17,7 @@ import {
   useUpdateMetaPresetMutation,
   useUpdateMetaPresetOrderMutation,
 } from '~/hooks/queries/use-meta-presets'
-import { SettingsCard } from '~/layouts/settings-layout'
+import { SettingsSection } from '~/layouts/settings-layout'
 
 import { MetaPresetCard } from './components/meta-preset-card'
 import { MetaPresetModal } from './components/meta-preset-modal'
@@ -95,12 +95,11 @@ export const TabMetaPresets = defineComponent({
     }
 
     return () => (
-      <div class="py-6">
-        <SettingsCard
+      <div class="space-y-8">
+        <SettingsSection
           title="Meta 预设字段"
           description="配置可复用的自定义 meta 字段（如音乐、电影、书籍等元数据模板）"
           icon={ListPlusIcon}
-          pure
           v-slots={{
             actions: () => (
               <NButton
@@ -115,13 +114,12 @@ export const TabMetaPresets = defineComponent({
             ),
           }}
         >
-          {/* Content */}
           {isLoading.value ? (
-            <div class="p-6">
+            <div class="p-4">
               <MetaPresetSkeleton />
             </div>
           ) : !presets.value || presets.value.length === 0 ? (
-            <div class="p-6">
+            <div class="p-4">
               <MetaPresetEmptyState onAdd={handleAdd} />
             </div>
           ) : (
@@ -149,7 +147,7 @@ export const TabMetaPresets = defineComponent({
               ))}
             </div>
           )}
-        </SettingsCard>
+        </SettingsSection>
 
         {/* Modal */}
         <MetaPresetModal
@@ -175,17 +173,17 @@ const MetaPresetEmptyState = defineComponent({
   },
   setup(props) {
     return () => (
-      <div class="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-neutral-200 bg-neutral-50/50 py-16 dark:border-neutral-800 dark:bg-neutral-900/50">
-        <div class="mb-4 flex size-16 items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800">
-          <ListPlusIcon class="size-8 text-neutral-400" aria-hidden="true" />
+      <div class="flex flex-col items-center justify-center py-12 text-center">
+        <div class="mb-4 flex size-14 items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800">
+          <ListPlusIcon class="size-7 text-neutral-400" aria-hidden="true" />
         </div>
-        <h3 class="mb-1 text-lg font-medium text-neutral-900 dark:text-neutral-100">
+        <h3 class="mb-1 text-sm font-medium text-neutral-900 dark:text-neutral-100">
           暂无预设字段
         </h3>
-        <p class="mb-6 text-sm text-neutral-500 dark:text-neutral-400">
+        <p class="mb-4 text-xs text-neutral-500 dark:text-neutral-400">
           创建预设字段来快速配置文章和笔记的元数据
         </p>
-        <NButton type="primary" onClick={props.onAdd}>
+        <NButton type="primary" size="small" onClick={props.onAdd}>
           创建第一个预设
         </NButton>
       </div>
@@ -199,20 +197,20 @@ const MetaPresetEmptyState = defineComponent({
 const MetaPresetSkeleton = defineComponent({
   setup() {
     return () => (
-      <div class="animate-pulse overflow-hidden rounded-lg border border-neutral-200 dark:border-neutral-800">
+      <div class="animate-pulse">
         {[1, 2, 3].map((i) => (
           <div
             key={i}
-            class="flex items-center gap-4 border-b border-neutral-200 px-4 py-4 last:border-b-0 dark:border-neutral-800"
+            class="flex items-center gap-4 border-b border-neutral-100 py-3 last:border-b-0 dark:border-neutral-800"
           >
             <div class="size-5 rounded bg-neutral-200 dark:bg-neutral-700" />
             <div class="flex-1">
-              <div class="h-5 w-32 rounded bg-neutral-200 dark:bg-neutral-700" />
-              <div class="mt-2 h-4 w-48 rounded bg-neutral-100 dark:bg-neutral-800" />
+              <div class="h-4 w-32 rounded bg-neutral-200 dark:bg-neutral-700" />
+              <div class="mt-2 h-3 w-48 rounded bg-neutral-100 dark:bg-neutral-800" />
             </div>
             <div class="flex gap-2">
-              <div class="h-6 w-16 rounded bg-neutral-100 dark:bg-neutral-800" />
-              <div class="h-6 w-16 rounded bg-neutral-100 dark:bg-neutral-800" />
+              <div class="h-6 w-14 rounded bg-neutral-100 dark:bg-neutral-800" />
+              <div class="h-6 w-14 rounded bg-neutral-100 dark:bg-neutral-800" />
             </div>
           </div>
         ))}

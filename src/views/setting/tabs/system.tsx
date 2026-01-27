@@ -18,7 +18,7 @@ import type { PropType } from 'vue'
 
 import { optionsApi } from '~/api/options'
 import { SectionFields } from '~/components/config-form'
-import { SettingsCard } from '~/layouts/settings-layout'
+import { SettingsSection } from '~/layouts/settings-layout'
 import { deepDiff } from '~/utils'
 
 import { AIConfigSection } from './sections/ai-config'
@@ -177,27 +177,30 @@ export const TabSystem = defineComponent({
       }
 
       return (
-        <div class="flex flex-col gap-6">
+        <div class="space-y-8">
           {activeGroup.sections
             .filter((section: FormSection) => !section.hidden)
-            .map((section: FormSection) => (
-              <SettingsCard key={section.key} title={section.title}>
-                {section.key === 'ai' ? (
-                  <AIConfigSection
-                    value={configs.ai || {}}
-                    onUpdate={(value: any) => {
-                      configs.ai = value
-                    }}
-                  />
-                ) : (
-                  <SectionFields
-                    fields={section.fields}
-                    formData={computed(() => configs)}
-                    dataKeyPrefix={section.key}
-                  />
-                )}
-              </SettingsCard>
-            ))}
+            .map((section: FormSection) =>
+              section.key === 'ai' ? (
+                <AIConfigSection
+                  key={section.key}
+                  value={configs.ai || {}}
+                  onUpdate={(value: any) => {
+                    configs.ai = value
+                  }}
+                />
+              ) : (
+                <SettingsSection key={section.key} title={section.title}>
+                  <div class="py-2">
+                    <SectionFields
+                      fields={section.fields}
+                      formData={computed(() => configs)}
+                      dataKeyPrefix={section.key}
+                    />
+                  </div>
+                </SettingsSection>
+              ),
+            )}
         </div>
       )
     }

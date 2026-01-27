@@ -14,7 +14,7 @@ import type { PropType } from 'vue'
 import { aiApi } from '~/api/ai'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
-import { SettingsItem } from '~/layouts/settings-layout'
+import { SettingsRow, SettingsSection } from '~/layouts/settings-layout'
 
 // Types
 enum AIProviderType {
@@ -77,7 +77,6 @@ const formatProviderLabel = (provider: AIProviderConfig): string => {
   return typeLabel
 }
 
-// 根据 Provider 类型获取默认模型
 const getDefaultModelForType = (type: AIProviderType): string => {
   switch (type) {
     case AIProviderType.Anthropic:
@@ -93,7 +92,6 @@ const getDefaultModelForType = (type: AIProviderType): string => {
   }
 }
 
-// 根据 Provider 类型获取名称占位符
 const getNamePlaceholderForType = (type: AIProviderType): string => {
   switch (type) {
     case AIProviderType.Anthropic:
@@ -109,7 +107,6 @@ const getNamePlaceholderForType = (type: AIProviderType): string => {
   }
 }
 
-// 根据 Provider 类型获取模型占位符
 const getModelPlaceholderForType = (type: AIProviderType): string => {
   switch (type) {
     case AIProviderType.Anthropic:
@@ -225,15 +222,15 @@ const AIProviderRow = defineComponent({
     })
 
     return () => (
-      <div class="group border-b border-neutral-100 last:border-0 dark:border-neutral-800">
+      <div class="group">
         {/* Header Row */}
         <div
-          class="flex cursor-pointer items-center gap-4 px-5 py-4 transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-800/50"
+          class="flex cursor-pointer items-center gap-3 px-4 py-3 transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-800/50"
           onClick={() => props.onToggle()}
         >
           <div
             class={[
-              'flex size-9 shrink-0 items-center justify-center rounded-lg transition-colors',
+              'flex size-8 shrink-0 items-center justify-center rounded-lg transition-colors',
               localProvider.value.enabled
                 ? 'bg-primary/10 text-primary dark:bg-primary/20'
                 : 'bg-neutral-100 text-neutral-400 dark:bg-neutral-800',
@@ -247,7 +244,7 @@ const AIProviderRow = defineComponent({
                 {cardTitle.value}
               </span>
               {localProvider.value.enabled && (
-                <span class="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">
+                <span class="inline-flex items-center rounded-full bg-emerald-50 px-1.5 py-0.5 text-xs font-medium text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">
                   已启用
                 </span>
               )}
@@ -257,7 +254,7 @@ const AIProviderRow = defineComponent({
             </span>
           </div>
           <div
-            class="flex items-center gap-2"
+            class="flex items-center gap-1"
             onClick={(e) => e.stopPropagation()}
           >
             <div class="hidden items-center gap-1 group-hover:flex">
@@ -284,7 +281,7 @@ const AIProviderRow = defineComponent({
 
         {/* Expanded Content */}
         {props.expanded && (
-          <div class="border-t border-neutral-100 bg-neutral-50/50 px-5 py-4 dark:border-neutral-800 dark:bg-neutral-800/30">
+          <div class="border-t border-neutral-100 bg-neutral-50/50 px-4 py-4 dark:border-neutral-800 dark:bg-neutral-800/30">
             <div class="grid gap-4 sm:grid-cols-2">
               <div class="space-y-1.5">
                 <label class="text-xs font-medium text-neutral-500 dark:text-neutral-400">
@@ -396,18 +393,14 @@ const AIProviderRow = defineComponent({
                 </NSpace>
               </div>
 
-              <div class="sm:col-span-2">
-                <div class="flex items-center justify-between rounded-lg border border-neutral-200 bg-white p-3 dark:border-neutral-800 dark:bg-neutral-900/50">
-                  <div class="flex flex-col">
-                    <span class="text-sm font-medium text-neutral-700 dark:text-neutral-200">
-                      启用此服务商
-                    </span>
-                  </div>
-                  <NSwitch
-                    value={localProvider.value.enabled}
-                    onUpdateValue={(v: boolean) => handleChange('enabled', v)}
-                  />
-                </div>
+              <div class="flex items-center justify-between pt-2 sm:col-span-2">
+                <span class="text-sm text-neutral-700 dark:text-neutral-200">
+                  启用此服务商
+                </span>
+                <NSwitch
+                  value={localProvider.value.enabled}
+                  onUpdateValue={(v: boolean) => handleChange('enabled', v)}
+                />
               </div>
             </div>
           </div>
@@ -417,8 +410,8 @@ const AIProviderRow = defineComponent({
   },
 })
 
-// Model Assignment Select Component
-const AIModelAssignmentSelect = defineComponent({
+// Model Assignment Row Component
+const AIModelAssignmentRow = defineComponent({
   props: {
     label: { type: String, required: true },
     description: { type: String },
@@ -472,7 +465,6 @@ const AIModelAssignmentSelect = defineComponent({
         value: m.id,
       }))
 
-      // Add default model option from provider
       const provider = props.providers.find(
         (p) => p.id === selectedProviderId.value,
       )
@@ -514,15 +506,16 @@ const AIModelAssignmentSelect = defineComponent({
     }
 
     return () => (
-      <SettingsItem title={props.label} description={props.description}>
-        <div class="flex flex-wrap gap-2">
+      <SettingsRow title={props.label} description={props.description}>
+        <div class="flex flex-col gap-2 sm:flex-row">
           <NSelect
             value={selectedProviderId.value || null}
             onUpdateValue={handleProviderChange}
             options={providerOptions.value}
-            placeholder="选择 Provider"
+            placeholder="选择服务商"
             clearable
-            class="w-full sm:w-[180px]"
+            class="w-full sm:w-40"
+            size="small"
           />
           <NSelect
             value={selectedModel.value || null}
@@ -532,16 +525,17 @@ const AIModelAssignmentSelect = defineComponent({
             clearable
             filterable
             tag
-            class="w-full sm:w-[240px]"
+            class="w-full sm:min-w-[200px] sm:flex-1"
+            size="small"
             disabled={!selectedProviderId.value}
           />
         </div>
-      </SettingsItem>
+      </SettingsRow>
     )
   },
 })
 
-// Main AI Config Section - Slot-based Component
+// Main AI Config Section
 export const AIConfigSection = defineComponent({
   props: {
     value: {
@@ -558,13 +552,11 @@ export const AIConfigSection = defineComponent({
     const loadingProviders = ref<Set<string>>(new Set())
     const testingProviders = ref<Set<string>>(new Set())
 
-    // Local config ref that syncs with props
     const config = computed({
       get: () => props.value,
       set: (val) => props.onUpdate(val),
     })
 
-    // Fetch models for a specific provider (using list endpoint, no need to save first)
     const fetchModelsForProvider = async (provider: AIProviderConfig) => {
       loadingProviders.value.add(provider.id)
       try {
@@ -590,7 +582,6 @@ export const AIConfigSection = defineComponent({
       }
     }
 
-    // Fetch all models for enabled providers
     const fetchAllModels = async () => {
       try {
         const response = await aiApi.getModels()
@@ -631,18 +622,15 @@ export const AIConfigSection = defineComponent({
     }
 
     onMounted(() => {
-      // Fetch models for enabled providers
       if (config.value.providers?.some((p) => p.enabled)) {
         fetchAllModels()
       }
     })
 
-    // Helper to update config
     const updateConfig = (partial: Partial<AIConfig>) => {
       props.onUpdate({ ...config.value, ...partial })
     }
 
-    // Provider management
     const handleProviderUpdate = (
       index: number,
       provider: AIProviderConfig,
@@ -688,117 +676,124 @@ export const AIConfigSection = defineComponent({
     return () => (
       <div class="space-y-8">
         {/* AI Providers */}
-        <div>
-          <h3 class="mb-4 text-base font-semibold text-neutral-900 dark:text-neutral-100">
-            AI 服务商
-          </h3>
-          <div class="overflow-hidden rounded-xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
-            {config.value.providers && config.value.providers.length > 0 ? (
-              config.value.providers.map((provider, index) => (
-                <AIProviderRow
-                  key={provider.id}
-                  provider={provider}
-                  expanded={expandedProviders.value.has(provider.id)}
-                  onToggle={() => toggleProvider(provider.id)}
-                  onUpdate={(p) => handleProviderUpdate(index, p)}
-                  onDelete={() => handleProviderDelete(index)}
-                  onTest={(p) => testProviderConnection(p)}
-                  availableModels={providerModels.value[provider.id] || []}
-                  isLoadingModels={loadingProviders.value.has(provider.id)}
-                  isTesting={testingProviders.value.has(provider.id)}
-                  onRefreshModels={() => fetchModelsForProvider(provider)}
-                />
-              ))
-            ) : (
-              <div class="py-12 text-center text-sm text-neutral-500">
-                暂无服务商，点击下方按钮添加
+        <SettingsSection
+          title="AI 服务商"
+          description="配置 AI 服务提供商"
+          icon={ZapIcon}
+          v-slots={{
+            actions: () => (
+              <NButton
+                size="small"
+                secondary
+                type="primary"
+                onClick={handleAddProvider}
+              >
+                <PlusIcon class="mr-1 size-4" />
+                添加
+              </NButton>
+            ),
+          }}
+        >
+          {config.value.providers && config.value.providers.length > 0 ? (
+            config.value.providers.map((provider, index) => (
+              <AIProviderRow
+                key={provider.id}
+                provider={provider}
+                expanded={expandedProviders.value.has(provider.id)}
+                onToggle={() => toggleProvider(provider.id)}
+                onUpdate={(p) => handleProviderUpdate(index, p)}
+                onDelete={() => handleProviderDelete(index)}
+                onTest={(p) => testProviderConnection(p)}
+                availableModels={providerModels.value[provider.id] || []}
+                isLoadingModels={loadingProviders.value.has(provider.id)}
+                isTesting={testingProviders.value.has(provider.id)}
+                onRefreshModels={() => fetchModelsForProvider(provider)}
+              />
+            ))
+          ) : (
+            <div class="flex flex-col items-center justify-center py-10 text-center">
+              <div class="mb-3 flex size-12 items-center justify-center rounded-full bg-neutral-100 text-neutral-400 dark:bg-neutral-800 dark:text-neutral-500">
+                <ZapIcon class="size-6" />
               </div>
-            )}
-            <div
-              class="flex cursor-pointer items-center justify-center gap-2 border-t border-neutral-100 px-5 py-3 text-sm text-neutral-500 transition-colors hover:bg-neutral-50 hover:text-neutral-700 dark:border-neutral-800 dark:hover:bg-neutral-800/50 dark:hover:text-neutral-300"
-              onClick={handleAddProvider}
-            >
-              <PlusIcon class="size-4" />
-              <span>添加服务商</span>
+              <p class="text-sm text-neutral-500 dark:text-neutral-400">
+                暂无服务商，点击添加按钮创建
+              </p>
             </div>
-          </div>
-        </div>
+          )}
+        </SettingsSection>
 
-        {/* 功能模型分配 */}
-        <div>
-          <h3 class="mb-4 text-base font-semibold text-neutral-900 dark:text-neutral-100">
-            模型分配
-          </h3>
-          <div class="rounded-xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
-            <AIModelAssignmentSelect
-              label="摘要功能"
-              description="用于生成文章摘要的模型"
-              assignment={config.value.summaryModel}
-              providers={config.value.providers || []}
-              providerModels={providerModels.value}
-              onUpdate={(a) => updateConfig({ summaryModel: a })}
+        {/* Model Assignment */}
+        <SettingsSection
+          title="模型分配"
+          description="为不同功能分配 AI 模型"
+          icon={CpuIcon}
+        >
+          <AIModelAssignmentRow
+            label="摘要功能"
+            description="用于生成文章摘要的模型"
+            assignment={config.value.summaryModel}
+            providers={config.value.providers || []}
+            providerModels={providerModels.value}
+            onUpdate={(a) => updateConfig({ summaryModel: a })}
+          />
+
+          <AIModelAssignmentRow
+            label="写作助手"
+            description="用于生成标题、Slug 等的模型"
+            assignment={config.value.writerModel}
+            providers={config.value.providers || []}
+            providerModels={providerModels.value}
+            onUpdate={(a) => updateConfig({ writerModel: a })}
+          />
+
+          <AIModelAssignmentRow
+            label="评论审核"
+            description="用于审核评论的模型"
+            assignment={config.value.commentReviewModel}
+            providers={config.value.providers || []}
+            providerModels={providerModels.value}
+            onUpdate={(a) => updateConfig({ commentReviewModel: a })}
+          />
+        </SettingsSection>
+
+        {/* Feature Toggles */}
+        <SettingsSection
+          title="功能开关"
+          description="AI 功能的启用与配置"
+          icon={GlobeIcon}
+        >
+          <SettingsRow title="启用 AI 摘要">
+            <NSwitch
+              value={config.value.enableSummary}
+              onUpdateValue={(v: boolean) => updateConfig({ enableSummary: v })}
             />
+          </SettingsRow>
 
-            <AIModelAssignmentSelect
-              label="写作助手"
-              description="用于生成标题、Slug 等的模型"
-              assignment={config.value.writerModel}
-              providers={config.value.providers || []}
-              providerModels={providerModels.value}
-              onUpdate={(a) => updateConfig({ writerModel: a })}
+          <SettingsRow
+            title="自动生成摘要"
+            description="发布文章时自动生成摘要"
+          >
+            <NSwitch
+              value={config.value.enableAutoGenerateSummary}
+              onUpdateValue={(v: boolean) =>
+                updateConfig({ enableAutoGenerateSummary: v })
+              }
+              disabled={!config.value.enableSummary}
             />
+          </SettingsRow>
 
-            <AIModelAssignmentSelect
-              label="评论审核"
-              description="用于审核评论的模型"
-              assignment={config.value.commentReviewModel}
-              providers={config.value.providers || []}
-              providerModels={providerModels.value}
-              onUpdate={(a) => updateConfig({ commentReviewModel: a })}
+          <SettingsRow title="摘要目标语言">
+            <NInput
+              value={config.value.aiSummaryTargetLanguage}
+              onUpdateValue={(v: string) =>
+                updateConfig({ aiSummaryTargetLanguage: v })
+              }
+              placeholder="auto 或 ISO 639-1 语言代码"
+              class="max-w-[200px]"
+              size="small"
             />
-          </div>
-        </div>
-
-        {/* 功能开关 */}
-        <div>
-          <h3 class="mb-4 text-base font-semibold text-neutral-900 dark:text-neutral-100">
-            功能开关
-          </h3>
-          <div class="rounded-xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
-            <SettingsItem title="启用 AI 摘要">
-              <NSwitch
-                value={config.value.enableSummary}
-                onUpdateValue={(v: boolean) =>
-                  updateConfig({ enableSummary: v })
-                }
-              />
-            </SettingsItem>
-
-            <SettingsItem
-              title="自动生成摘要"
-              description="发布文章时自动生成摘要"
-            >
-              <NSwitch
-                value={config.value.enableAutoGenerateSummary}
-                onUpdateValue={(v: boolean) =>
-                  updateConfig({ enableAutoGenerateSummary: v })
-                }
-                disabled={!config.value.enableSummary}
-              />
-            </SettingsItem>
-
-            <SettingsItem title="摘要目标语言">
-              <NInput
-                value={config.value.aiSummaryTargetLanguage}
-                onUpdateValue={(v: string) =>
-                  updateConfig({ aiSummaryTargetLanguage: v })
-                }
-                placeholder="auto 或 ISO 639-1 语言代码"
-                style="max-width: 200px"
-              />
-            </SettingsItem>
-          </div>
-        </div>
+          </SettingsRow>
+        </SettingsSection>
       </div>
     )
   },

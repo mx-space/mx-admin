@@ -1,10 +1,9 @@
-import { Save as SaveIcon } from 'lucide-vue-next'
+import { Save as SaveIcon, Settings as SettingsIcon } from 'lucide-vue-next'
 import { NButton } from 'naive-ui'
 import {
   computed,
   defineComponent,
   onBeforeMount,
-  onMounted,
   onUnmounted,
   ref,
   watchEffect,
@@ -13,15 +12,23 @@ import { useRoute, useRouter } from 'vue-router'
 import type { FormDSL } from '~/components/config-form/types'
 
 import { optionsApi } from '~/api/options'
+import { MasterDetailLayout, useMasterDetailLayout } from '~/components/layout'
 import { useLayout } from '~/hooks/use-layout'
+import { SettingsDetailPanel } from '~/layouts/settings-layout'
 
-import { SettingSidebar } from './components/SettingSidebar'
+import { SettingListPanel } from './components/SettingListPanel'
 import { TabAccount } from './tabs/account'
 import { TabMetaPresets } from './tabs/meta-presets'
 import { TabSystem } from './tabs/system'
 import { TabUser } from './tabs/user'
 
 const staticGroupKeys = ['user', 'account', 'meta-preset']
+
+const staticGroupTitles: Record<string, string> = {
+  user: '用户',
+  account: '账号安全',
+  'meta-preset': 'Meta 预设',
+}
 
 const staticComponentMap: Record<string, ReturnType<typeof defineComponent>> = {
   user: TabUser,
@@ -33,7 +40,8 @@ export default defineComponent({
   setup() {
     const route = useRoute()
     const router = useRouter()
-    const { setActions, setHeaderClass } = useLayout()
+    const { setActions } = useLayout()
+    const { isMobile } = useMasterDetailLayout()
 
     const systemSchema = ref<FormDSL | null>(null)
     const systemTabRef = ref<any>(null)
@@ -41,6 +49,7 @@ export default defineComponent({
       isDirty: false,
       count: 0,
     })
+    const showDetailOnMobile = ref(false)
 
     const activeGroupKey = computed(() => {
       const queryGroup = route.query.group as string
@@ -69,6 +78,13 @@ export default defineComponent({
         name: route.name as string,
         query: { group: groupKey },
       })
+      if (isMobile.value) {
+        showDetailOnMobile.value = true
+      }
+    }
+
+    const handleMobileBack = () => {
+      showDetailOnMobile.value = false
     }
 
     const isSystemGroup = computed(() => {
@@ -84,6 +100,13 @@ export default defineComponent({
       return systemSchema.value.groups.find(
         (g) => g.key === activeGroupKey.value,
       )
+    })
+
+    const activeGroupTitle = computed(() => {
+      if (staticGroupTitles[activeGroupKey.value]) {
+        return staticGroupTitles[activeGroupKey.value]
+      }
+      return activeGroup.value?.title ?? '设置'
     })
 
     const handleDirtyInfoUpdate = (info: {
@@ -105,7 +128,7 @@ export default defineComponent({
       if (isSystemGroup.value && isDirty) {
         setActions(
           <div class="flex items-center gap-3">
-            <span class="text-sm text-neutral-600 dark:text-neutral-400">
+            <span class="hidden text-sm text-neutral-600 md:inline dark:text-neutral-400">
               你有 {count} 项未保存的修改
             </span>
             <NButton
@@ -122,44 +145,66 @@ export default defineComponent({
         setActions(null)
       }
     })
-    onMounted(() => {
-      setHeaderClass('md:pl-72 mt-4')
-    })
 
     onUnmounted(() => {
       setActions(null)
-      setHeaderClass(null)
     })
 
-    return () => {
+    const EmptyState = () => (
+      <div class="flex h-full flex-col items-center justify-center bg-neutral-50 text-center dark:bg-neutral-950">
+        <div class="mb-4 flex size-16 items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800">
+          <SettingsIcon class="size-8 text-neutral-400" />
+        </div>
+        <h3 class="mb-1 text-base font-medium text-neutral-900 dark:text-neutral-100">
+          选择一个设置项
+        </h3>
+        <p class="text-sm text-neutral-500 dark:text-neutral-400">
+          从左侧列表选择查看详情
+        </p>
+      </div>
+    )
+
+    const DetailContent = () => {
       const StaticComponent = staticComponentMap[activeGroupKey.value]
 
       return (
-        <div class="-mx-8 flex h-full flex-col md:flex-row">
-          <SettingSidebar
-            activeGroupKey={activeGroupKey.value}
-            systemSchema={systemSchema.value}
-            onGroupChange={handleGroupChange}
+        <SettingsDetailPanel
+          title={activeGroupTitle.value}
+          onBack={handleMobileBack}
+        >
+          <TabSystem
+            ref={systemTabRef}
+            activeGroup={activeGroup.value}
+            schema={systemSchema.value}
+            style={{ display: isSystemGroup.value ? undefined : 'none' }}
+            {...{ 'onUpdate:dirty-info': handleDirtyInfoUpdate }}
           />
-
-          <main
-            class={[
-              'min-w-0 flex-1 overflow-y-auto px-8 py-6',
-              'md:transition-[margin-left] md:duration-200 md:ease-in-out',
-              'md:ml-64',
-            ]}
-          >
-            <TabSystem
-              ref={systemTabRef}
-              activeGroup={activeGroup.value}
-              schema={systemSchema.value}
-              style={{ display: isSystemGroup.value ? undefined : 'none' }}
-              {...{ 'onUpdate:dirty-info': handleDirtyInfoUpdate }}
-            />
-            {!isSystemGroup.value && StaticComponent && <StaticComponent />}
-          </main>
-        </div>
+          {!isSystemGroup.value && StaticComponent && <StaticComponent />}
+        </SettingsDetailPanel>
       )
     }
+
+    return () => (
+      <MasterDetailLayout
+        showDetailOnMobile={showDetailOnMobile.value}
+        defaultSize={0.25}
+        min={0.18}
+        max={0.35}
+        listBgClass="bg-white dark:bg-neutral-900"
+        detailBgClass="bg-neutral-50 dark:bg-neutral-950"
+      >
+        {{
+          list: () => (
+            <SettingListPanel
+              activeGroupKey={activeGroupKey.value}
+              systemSchema={systemSchema.value}
+              onGroupChange={handleGroupChange}
+            />
+          ),
+          detail: () => <DetailContent />,
+          empty: () => <EmptyState />,
+        }}
+      </MasterDetailLayout>
+    )
   },
 })
