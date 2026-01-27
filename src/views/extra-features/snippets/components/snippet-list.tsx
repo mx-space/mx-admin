@@ -79,7 +79,7 @@ export const SnippetList = defineComponent({
     return () => (
       <div class="flex h-full flex-col">
         {/* Header: Search + Create */}
-        <div class="flex flex-shrink-0 items-center gap-2 border-b border-neutral-200 p-2 dark:border-neutral-800">
+        <div class="flex h-12 flex-shrink-0 items-center gap-2 border-b border-neutral-200 p-2 dark:border-neutral-800">
           <NInput
             v-model:value={searchQuery.value}
             placeholder="搜索…"

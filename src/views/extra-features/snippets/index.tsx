@@ -5,15 +5,18 @@ import {
   Settings as SettingsIcon,
 } from 'lucide-vue-next'
 import { NButton, NModal, NPopover } from 'naive-ui'
-import { computed, defineComponent, onMounted, ref, watch } from 'vue'
+import { defineComponent, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
 import type { SnippetModel } from '../../../models/snippet'
 
 import { HeaderActionButton } from '~/components/button/rounded-button'
+import {
+  MasterDetailLayout,
+  useMasterDetailLayout,
+} from '~/components/layout/master-detail-layout'
 import { useMountAndUnmount } from '~/hooks/use-lifecycle'
 import { useLayout } from '~/layouts/content'
-import { useUIStore } from '~/stores/ui'
 
 import { SnippetTypeToLanguage } from '../../../models/snippet'
 import { CodeEditorForSnippet } from './components/code-editor'
@@ -32,7 +35,7 @@ export default defineComponent({
     const route = useRoute()
     const router = useRouter()
     const layout = useLayout()
-    const uiStore = useUIStore()
+    const { isMobile } = useMasterDetailLayout()
 
     // State
     const selectedId = ref<string | null>(null)
@@ -59,9 +62,6 @@ export default defineComponent({
       save,
       updateEditorValue,
     } = useSnippetEditor(selectedId)
-
-    // Computed
-    const isMobile = computed(() => uiStore.viewport.mobile)
 
     // URL sync
     watch(
@@ -184,168 +184,76 @@ export default defineComponent({
       </div>
     )
 
-    // Desktop Layout
-    const DesktopLayout = () => (
-      <div class="flex h-[calc(100vh-8rem)] gap-0 overflow-hidden rounded-lg border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
-        {/* Master Panel - Group Tree */}
-        <div class="w-[260px] flex-shrink-0 border-r border-neutral-200 dark:border-neutral-800">
-          <SnippetList
-            groups={groupsWithSnippets.value}
-            selectedId={selectedId.value}
-            loading={listLoading.value}
-            onSelect={handleSelect}
-            onDelete={handleDelete}
-            onToggleGroup={toggleGroup}
-            onCreate={handleCreate}
-          />
-        </div>
-
-        {/* Detail Panel */}
-        <div class="min-w-0 flex-1">
-          {selectedId.value || isNew.value ? (
-            <div class="flex h-full flex-col">
-              {/* Header with Config Button */}
-              <div class="flex flex-shrink-0 items-center justify-between border-b border-neutral-200 px-4 py-2 dark:border-neutral-700">
-                <div class="flex items-center gap-2">
-                  <span class="font-medium text-neutral-900 dark:text-neutral-100">
-                    {isNew.value ? '新建片段' : editData.value.name}
-                  </span>
-                  {!isNew.value && (
-                    <span class="rounded bg-neutral-100 px-1.5 py-0.5 text-xs text-neutral-500 dark:bg-neutral-800">
-                      {editData.value.type.toUpperCase()}
-                    </span>
-                  )}
-                </div>
-
-                <div class="flex items-center gap-2">
-                  <NPopover
-                    trigger="click"
-                    placement="bottom-end"
-                    showArrow={false}
-                  >
-                    {{
-                      trigger: () => (
-                        <NButton size="small" quaternary>
-                          <SettingsIcon class="mr-1 h-4 w-4" />
-                          配置
-                        </NButton>
-                      ),
-                      default: ConfigPopover,
-                    }}
-                  </NPopover>
-
-                  <InstallDependencyButton />
-
-                  <NButton
-                    type="primary"
-                    size="small"
-                    onClick={handleSave}
-                    renderIcon={() => <CheckCircleIcon class="h-4 w-4" />}
-                  >
-                    保存
-                  </NButton>
-                </div>
-              </div>
-
-              {/* Code Editor - takes remaining space */}
-              <div class="min-h-0 flex-1">
-                <CodeEditorForSnippet
-                  language={SnippetTypeToLanguage[editData.value.type]}
-                  value={editorValue.value}
-                  onChange={updateEditorValue}
-                  onSave={handleSave}
-                />
-              </div>
-            </div>
-          ) : (
-            <SnippetEmptyState
-              hasSnippets={groupsWithSnippets.value.some((g) => g.count > 0)}
-              onCreate={handleCreate}
-            />
-          )}
-        </div>
-      </div>
+    // List Panel Content
+    const ListPanel = () => (
+      <SnippetList
+        groups={groupsWithSnippets.value}
+        selectedId={selectedId.value}
+        loading={listLoading.value}
+        onSelect={handleSelect}
+        onDelete={handleDelete}
+        onToggleGroup={toggleGroup}
+        onCreate={handleCreate}
+      />
     )
 
-    // Mobile Layout
-    const MobileLayout = () => (
-      <div class="relative h-[calc(100vh-8rem)] overflow-hidden">
-        {/* List View */}
-        <div
-          class={[
-            'absolute inset-0 transition-transform duration-300',
-            showDetailOnMobile.value && '-translate-x-full',
-          ]}
-        >
-          <div class="h-full rounded-lg border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
-            <SnippetList
-              groups={groupsWithSnippets.value}
-              selectedId={selectedId.value}
-              loading={listLoading.value}
-              onSelect={handleSelect}
-              onDelete={handleDelete}
-              onToggleGroup={toggleGroup}
-              onCreate={handleCreate}
-            />
+    // Detail Panel Content
+    const DetailPanel = () => (
+      <div class="flex h-full flex-col bg-white dark:bg-black">
+        {/* Header */}
+        <div class="flex h-12 flex-shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
+          <div class="flex items-center gap-3">
+            {isMobile.value && (
+              <button
+                onClick={handleBack}
+                class="-ml-2 flex h-8 w-8 items-center justify-center rounded-md text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+              >
+                <ArrowLeftIcon class="h-5 w-5" />
+              </button>
+            )}
+            <h2 class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+              {isNew.value ? '新建片段' : editData.value.name}
+            </h2>
+            {!isNew.value && (
+              <span class="rounded bg-neutral-100 px-1.5 py-0.5 text-xs text-neutral-500 dark:bg-neutral-800">
+                {editData.value.type.toUpperCase()}
+              </span>
+            )}
+          </div>
+
+          <div class="flex items-center gap-1">
+            <NPopover trigger="click" placement="bottom-end" showArrow={false}>
+              {{
+                trigger: () => (
+                  <button class="flex h-8 w-8 items-center justify-center rounded-md text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100">
+                    <SettingsIcon class="h-4 w-4" />
+                  </button>
+                ),
+                default: ConfigPopover,
+              }}
+            </NPopover>
+
+            <InstallDependencyButton />
+
+            <NButton
+              type="primary"
+              size="small"
+              onClick={handleSave}
+              renderIcon={() => <CheckCircleIcon class="h-4 w-4" />}
+            >
+              保存
+            </NButton>
           </div>
         </div>
 
-        {/* Detail View */}
-        <div
-          class={[
-            'absolute inset-0 transition-transform duration-300',
-            showDetailOnMobile.value ? 'translate-x-0' : 'translate-x-full',
-          ]}
-        >
-          <div class="flex h-full flex-col rounded-lg border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
-            {/* Back Header */}
-            <div class="flex flex-shrink-0 items-center justify-between border-b border-neutral-200 px-3 py-2 dark:border-neutral-700">
-              <div class="flex items-center">
-                <NButton text onClick={handleBack} class="mr-2">
-                  <ArrowLeftIcon class="h-5 w-5" />
-                </NButton>
-                <span class="font-medium">
-                  {isNew.value ? '新建片段' : editData.value.name}
-                </span>
-              </div>
-
-              <div class="flex items-center gap-2">
-                <NPopover
-                  trigger="click"
-                  placement="bottom-end"
-                  showArrow={false}
-                >
-                  {{
-                    trigger: () => (
-                      <NButton size="small" quaternary>
-                        <SettingsIcon class="h-4 w-4" />
-                      </NButton>
-                    ),
-                    default: ConfigPopover,
-                  }}
-                </NPopover>
-
-                <NButton
-                  type="primary"
-                  size="small"
-                  onClick={handleSave}
-                  renderIcon={() => <CheckCircleIcon class="h-4 w-4" />}
-                >
-                  保存
-                </NButton>
-              </div>
-            </div>
-
-            {/* Code Editor */}
-            <div class="min-h-0 flex-1">
-              <CodeEditorForSnippet
-                language={SnippetTypeToLanguage[editData.value.type]}
-                value={editorValue.value}
-                onChange={updateEditorValue}
-                onSave={handleSave}
-              />
-            </div>
-          </div>
+        {/* Code Editor */}
+        <div class="min-h-0 flex-1">
+          <CodeEditorForSnippet
+            language={SnippetTypeToLanguage[editData.value.type]}
+            value={editorValue.value}
+            onChange={updateEditorValue}
+            onSave={handleSave}
+          />
         </div>
       </div>
     )
@@ -379,7 +287,24 @@ export default defineComponent({
 
     return () => (
       <>
-        {isMobile.value ? <MobileLayout /> : <DesktopLayout />}
+        <MasterDetailLayout
+          showDetailOnMobile={showDetailOnMobile.value}
+          defaultSize={0.25}
+          min={0.2}
+          max={0.35}
+        >
+          {{
+            list: ListPanel,
+            detail: () =>
+              selectedId.value || isNew.value ? <DetailPanel /> : null,
+            empty: () => (
+              <SnippetEmptyState
+                hasSnippets={groupsWithSnippets.value.some((g) => g.count > 0)}
+                onCreate={handleCreate}
+              />
+            ),
+          }}
+        </MasterDetailLayout>
         <CreateModal />
       </>
     )
