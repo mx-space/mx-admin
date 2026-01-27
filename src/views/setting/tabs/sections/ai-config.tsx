@@ -3,7 +3,9 @@ import {
   ChevronDown as ChevronDownIcon,
   Cpu as CpuIcon,
   Globe as GlobeIcon,
+  Languages as LanguagesIcon,
   Plus as PlusIcon,
+  X as XIcon,
   Zap as ZapIcon,
 } from 'lucide-vue-next'
 import { NButton, NInput, NSelect, NSpace, NSwitch } from 'naive-ui'
@@ -44,9 +46,13 @@ interface AIConfig {
   summaryModel?: AIModelAssignment
   writerModel?: AIModelAssignment
   commentReviewModel?: AIModelAssignment
+  translationModel?: AIModelAssignment
   enableSummary: boolean
   enableAutoGenerateSummary: boolean
   aiSummaryTargetLanguage: string
+  enableTranslation?: boolean
+  enableAutoGenerateTranslation?: boolean
+  translationTargetLanguages?: string[]
 }
 
 interface ModelInfo {
@@ -535,6 +541,98 @@ const AIModelAssignmentRow = defineComponent({
   },
 })
 
+// Translation Languages Input Component
+const TranslationLanguagesInput = defineComponent({
+  props: {
+    value: {
+      type: Array as PropType<string[]>,
+      default: () => [],
+    },
+    onUpdate: {
+      type: Function as PropType<(value: string[]) => void>,
+      required: true,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  setup(props) {
+    const inputValue = ref('')
+
+    const handleAdd = () => {
+      const lang = inputValue.value.trim().toLowerCase()
+      if (!lang) return
+      if (props.value.includes(lang)) {
+        toast.warning(`语言 ${lang} 已存在`)
+        return
+      }
+      if (lang.length !== 2) {
+        toast.warning('请使用 ISO 639-1 语言代码（2 个字母）')
+        return
+      }
+      props.onUpdate([...props.value, lang])
+      inputValue.value = ''
+    }
+
+    const handleRemove = (lang: string) => {
+      props.onUpdate(props.value.filter((l) => l !== lang))
+    }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        e.preventDefault()
+        handleAdd()
+      }
+    }
+
+    return () => (
+      <div class="space-y-2">
+        <div class="flex items-center gap-2">
+          <NInput
+            value={inputValue.value}
+            onUpdateValue={(v: string) => (inputValue.value = v)}
+            placeholder="输入语言代码，如 en, ja, ko"
+            size="small"
+            class="max-w-[200px]"
+            disabled={props.disabled}
+            onKeydown={handleKeyDown}
+          />
+          <NButton
+            size="small"
+            type="primary"
+            secondary
+            onClick={handleAdd}
+            disabled={props.disabled || !inputValue.value.trim()}
+          >
+            添加
+          </NButton>
+        </div>
+        {props.value.length > 0 && (
+          <div class="flex flex-wrap gap-1.5">
+            {props.value.map((lang) => (
+              <span
+                key={lang}
+                class="inline-flex items-center gap-1 rounded-md bg-neutral-100 px-2 py-1 text-xs font-medium text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300"
+              >
+                {lang.toUpperCase()}
+                {!props.disabled && (
+                  <button
+                    class="ml-0.5 rounded p-0.5 text-neutral-400 transition-colors hover:bg-neutral-200 hover:text-neutral-600 dark:hover:bg-neutral-700 dark:hover:text-neutral-200"
+                    onClick={() => handleRemove(lang)}
+                  >
+                    <XIcon class="size-3" />
+                  </button>
+                )}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    )
+  },
+})
+
 // Main AI Config Section
 export const AIConfigSection = defineComponent({
   props: {
@@ -754,6 +852,15 @@ export const AIConfigSection = defineComponent({
             providerModels={providerModels.value}
             onUpdate={(a) => updateConfig({ commentReviewModel: a })}
           />
+
+          <AIModelAssignmentRow
+            label="翻译功能"
+            description="用于生成文章翻译的模型"
+            assignment={config.value.translationModel}
+            providers={config.value.providers || []}
+            providerModels={providerModels.value}
+            onUpdate={(a) => updateConfig({ translationModel: a })}
+          />
         </SettingsSection>
 
         {/* Feature Toggles */}
@@ -791,6 +898,46 @@ export const AIConfigSection = defineComponent({
               placeholder="auto 或 ISO 639-1 语言代码"
               class="max-w-[200px]"
               size="small"
+            />
+          </SettingsRow>
+        </SettingsSection>
+
+        {/* Translation Settings */}
+        <SettingsSection
+          title="AI 翻译"
+          description="文章多语言翻译功能配置"
+          icon={LanguagesIcon}
+        >
+          <SettingsRow title="启用 AI 翻译">
+            <NSwitch
+              value={config.value.enableTranslation}
+              onUpdateValue={(v: boolean) =>
+                updateConfig({ enableTranslation: v })
+              }
+            />
+          </SettingsRow>
+
+          <SettingsRow
+            title="自动生成翻译"
+            description="发布文章时自动生成翻译（需要先启用 AI 翻译）"
+          >
+            <NSwitch
+              value={config.value.enableAutoGenerateTranslation}
+              onUpdateValue={(v: boolean) =>
+                updateConfig({ enableAutoGenerateTranslation: v })
+              }
+              disabled={!config.value.enableTranslation}
+            />
+          </SettingsRow>
+
+          <SettingsRow
+            title="翻译目标语言"
+            description="自动生成翻译的目标语言列表，使用 ISO 639-1 语言代码"
+          >
+            <TranslationLanguagesInput
+              value={config.value.translationTargetLanguages || []}
+              onUpdate={(v) => updateConfig({ translationTargetLanguages: v })}
+              disabled={!config.value.enableTranslation}
             />
           </SettingsRow>
         </SettingsSection>

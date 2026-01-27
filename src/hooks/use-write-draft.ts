@@ -95,7 +95,13 @@ export function useWriteDraft<T>(data: T, options: UseWriteDraftOptions<T>) {
   }
 
   // Handler for list modal
-  const handleListModalSelect = (draftId: string) => {
+  const handleListModalSelect = async (draftId: string) => {
+    const draft = await serverDraft.loadDraftById(draftId)
+    if (draft) {
+      applyDraft(draft, data, false)
+      serverDraft.syncMemory()
+      serverDraft.startAutoSave()
+    }
     router.replace({ query: { draftId } })
   }
 

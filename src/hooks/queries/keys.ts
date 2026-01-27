@@ -164,6 +164,11 @@ export const queryKeys = {
       [...queryKeys.ai.summaries(), 'grouped', params] as const,
     summaryByRef: (refId: string) =>
       [...queryKeys.ai.summaries(), 'ref', refId] as const,
+    translations: () => [...queryKeys.ai.all, 'translations'] as const,
+    translationsGrouped: (params?: object) =>
+      [...queryKeys.ai.translations(), 'grouped', params] as const,
+    translationsByRef: (refId: string) =>
+      [...queryKeys.ai.translations(), 'ref', refId] as const,
     models: () => [...queryKeys.ai.all, 'models'] as const,
   },
 

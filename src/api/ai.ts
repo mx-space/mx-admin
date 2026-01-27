@@ -63,6 +63,46 @@ export interface SummaryByRefResponse {
   }
 }
 
+// AI Translation 类型
+export interface AITranslation {
+  id: string
+  created: string
+  hash: string
+  refId: string
+  refType: string
+  lang: string
+  sourceLang: string
+  title: string
+  text: string
+  summary?: string
+  tags?: string[]
+}
+
+export interface GroupedTranslationData {
+  article: ArticleInfo
+  translations: AITranslation[]
+}
+
+export interface GroupedTranslationResponse {
+  data: GroupedTranslationData[]
+  pagination: {
+    total: number
+    currentPage: number
+    totalPage: number
+    size: number
+    hasNextPage: boolean
+    hasPrevPage: boolean
+  }
+}
+
+export interface TranslationByRefResponse {
+  translations: AITranslation[]
+  article: {
+    type: 'Post' | 'Note' | 'Page' | 'Recently'
+    document: { title: string }
+  }
+}
+
 export interface ProviderModel {
   id: string
   name: string
@@ -124,4 +164,30 @@ export const aiApi = {
 
   // 测试 AI 配置
   testConfig: (data: AITestData) => request.post<void>('/ai/test', { data }),
+
+  // === AI Translation ===
+
+  // 获取翻译列表（分组）
+  getTranslationsGrouped: (params?: { page?: number; size?: number }) =>
+    request.get<GroupedTranslationResponse>('/ai/translations/grouped', {
+      params,
+    }),
+
+  // 根据引用获取翻译
+  getTranslationsByRef: (refId: string) =>
+    request.get<TranslationByRefResponse>(`/ai/translations/ref/${refId}`),
+
+  // 删除翻译
+  deleteTranslation: (id: string) =>
+    request.delete<void>(`/ai/translations/${id}`),
+
+  // 更新翻译
+  updateTranslation: (
+    id: string,
+    data: { title?: string; text?: string; summary?: string; tags?: string[] },
+  ) => request.patch<AITranslation>(`/ai/translations/${id}`, { data }),
+
+  // 生成翻译
+  generateTranslation: (data: { refId: string; targetLanguages?: string[] }) =>
+    request.post<AITranslation[]>('/ai/translations/generate', { data }),
 }

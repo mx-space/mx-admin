@@ -317,6 +317,15 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         },
         component: () => import('../views/ai/summary'),
       },
+      {
+        path: 'translation',
+        name: RouteName.AiTranslation,
+        meta: {
+          title: '翻译',
+          icon: <SparklesIcon />,
+        },
+        component: () => import('../views/ai/translation'),
+      },
     ],
   },
   {

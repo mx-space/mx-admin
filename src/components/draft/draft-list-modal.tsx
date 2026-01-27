@@ -1,5 +1,5 @@
 import { X } from 'lucide-vue-next'
-import { NButton, NModal } from 'naive-ui'
+import { NButton, NCheckbox, NModal } from 'naive-ui'
 import { defineComponent, ref, watch } from 'vue'
 import type { DraftModel } from '~/models/draft'
 import type { PropType } from 'vue'
@@ -103,76 +103,58 @@ export const DraftListModal = defineComponent({
           {/* Body - Split View */}
           <div class="flex min-h-0 flex-1">
             {/* Left: Draft List */}
-            <div class="w-60 flex-shrink-0 overflow-y-auto border-r border-neutral-200 p-4 dark:border-neutral-800">
-              <h3 class="mb-3 text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                草稿列表
-              </h3>
-              <div class="space-y-2">
-                {props.drafts.map((draft) => (
-                  <div
-                    key={draft.id}
-                    class={[
-                      'cursor-pointer rounded-lg border p-3 transition-all',
-                      selectedDraftId.value === draft.id
-                        ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-950/30'
-                        : 'border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50 dark:border-neutral-700 dark:hover:border-neutral-600 dark:hover:bg-neutral-800',
-                    ]}
-                    onClick={() => handleSelectDraft(draft)}
-                  >
-                    <div class="flex items-start gap-2">
-                      <div class="mt-0.5 flex-shrink-0">
-                        {selectedDraftId.value === draft.id ? (
-                          <div class="flex h-4 w-4 items-center justify-center rounded-full bg-blue-500">
-                            <span class="text-xs text-white">✓</span>
-                          </div>
-                        ) : (
-                          <div class="h-4 w-4 rounded-full border-2 border-neutral-300 dark:border-neutral-600" />
-                        )}
-                      </div>
+            <div class="w-60 flex-shrink-0 overflow-y-auto border-r border-neutral-200 dark:border-neutral-800">
+              {props.drafts.map((draft, index) => (
+                <div
+                  key={draft.id}
+                  class={[
+                    'cursor-pointer px-4 py-3 transition-colors',
+                    selectedDraftId.value === draft.id
+                      ? 'bg-neutral-100 dark:bg-neutral-800'
+                      : 'hover:bg-neutral-50 dark:hover:bg-neutral-800/50',
+                    index !== props.drafts.length - 1 &&
+                      'border-b border-neutral-100 dark:border-neutral-800',
+                  ]}
+                  onClick={() => handleSelectDraft(draft)}
+                >
+                  <div class="flex items-start gap-3">
+                    <div class="mt-0.5 flex-shrink-0">
+                      <NCheckbox
+                        checked={selectedDraftId.value === draft.id}
+                        onUpdateChecked={() => handleSelectDraft(draft)}
+                      />
+                    </div>
 
-                      <div class="min-w-0 flex-1">
-                        <p
-                          class={[
-                            'truncate text-sm font-medium',
-                            selectedDraftId.value === draft.id
-                              ? 'text-blue-700 dark:text-blue-300'
-                              : 'text-neutral-900 dark:text-neutral-100',
-                          ]}
-                        >
-                          {draft.title || '无标题'}
-                        </p>
-                        <p class="mt-1 text-xs text-neutral-400 dark:text-neutral-500">
-                          v{draft.version} · {formatWordCount(draft.text)} 字
-                        </p>
-                        <p class="mt-0.5 text-xs text-neutral-400 dark:text-neutral-500">
-                          {new Date(draft.updated).toLocaleString()}
-                        </p>
-                      </div>
+                    <div class="min-w-0 flex-1">
+                      <p class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                        {draft.title || '无标题'}
+                      </p>
+                      <p class="mt-1 text-xs text-neutral-400 dark:text-neutral-500">
+                        v{draft.version} · {formatWordCount(draft.text)} 字
+                      </p>
+                      <p class="mt-0.5 text-xs text-neutral-400 dark:text-neutral-500">
+                        {new Date(draft.updated).toLocaleString()}
+                      </p>
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
 
             {/* Right: Content Preview */}
-            <div class="min-w-0 flex-1 p-4">
-              <h3 class="mb-3 text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                内容预览
-              </h3>
-              <div class="h-[calc(100%-2rem)]">
-                {selectedDraft.value ? (
-                  <FilePreview
-                    file={{
-                      name: `${selectedDraft.value.title || 'draft'}.md`,
-                      contents: selectedDraft.value.text,
-                    }}
-                  />
-                ) : (
-                  <div class="flex h-full items-center justify-center rounded-lg border border-neutral-200 bg-neutral-50 text-neutral-400 dark:border-neutral-700 dark:bg-neutral-900">
-                    选择一个草稿查看内容
-                  </div>
-                )}
-              </div>
+            <div class="min-w-0 flex-1">
+              {selectedDraft.value ? (
+                <FilePreview
+                  file={{
+                    name: `${selectedDraft.value.title || 'draft'}.md`,
+                    contents: selectedDraft.value.text,
+                  }}
+                />
+              ) : (
+                <div class="flex h-full items-center justify-center text-neutral-400">
+                  选择一个草稿查看内容
+                </div>
+              )}
             </div>
           </div>
 
