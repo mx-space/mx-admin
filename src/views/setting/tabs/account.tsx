@@ -1,5 +1,7 @@
 import {
+  ArrowLeft as ArrowLeftIcon,
   Check as CheckIcon,
+  ChevronRight as ChevronRightIcon,
   Copy as CopyIcon,
   ExternalLinkIcon,
   Eye as EyeIcon,
@@ -18,22 +20,31 @@ import {
 import {
   NButton,
   NCard,
-  NDataTable,
   NDatePicker,
   NForm,
   NFormItem,
   NInput,
   NModal,
   NPopconfirm,
+  NScrollbar,
   NSkeleton,
   NSwitch,
   NText,
 } from 'naive-ui'
-import { defineComponent, onBeforeMount, onMounted, reactive, ref } from 'vue'
+import {
+  computed,
+  defineComponent,
+  inject,
+  onMounted,
+  provide,
+  reactive,
+  ref,
+} from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
 import type { TokenModel } from '~/models/token'
 import type { DialogReactive } from 'naive-ui'
+import type { InjectionKey, Ref } from 'vue'
 import type { FlatOauthData, OauthData } from './providers/oauth'
 
 import { useQuery } from '@tanstack/vue-query'
@@ -42,12 +53,11 @@ import { authApi } from '~/api/auth'
 import { optionsApi } from '~/api/options'
 import { userApi } from '~/api/user'
 import { IpInfoPopover } from '~/components/ip-info'
+import { useMasterDetailLayout } from '~/components/layout'
 import { RelativeTime } from '~/components/time/relative-time'
 import { queryKeys } from '~/hooks/queries/keys'
-import { useStoreRef } from '~/hooks/use-store-ref'
 import { SettingsSection } from '~/layouts/settings-layout'
 import { RouteName } from '~/router/name'
-import { UIStore } from '~/stores/ui'
 import { parseDate, removeToken } from '~/utils'
 import { authClient } from '~/utils/authjs/auth'
 import { getSession } from '~/utils/authjs/session'
@@ -65,21 +75,119 @@ type Session = {
   current?: boolean
 }
 
+type ActivePanel = 'tokens' | 'passkeys' | null
+
+const ActivePanelKey: InjectionKey<{
+  activePanel: Ref<ActivePanel>
+  setActivePanel: (panel: ActivePanel) => void
+}> = Symbol('activePanel')
+
+const useActivePanel = () => {
+  const ctx = inject(ActivePanelKey)
+  if (!ctx) throw new Error('useActivePanel must be used within TabAccount')
+  return ctx
+}
+
 export const TabAccount = defineComponent(() => {
-  return () => (
-    <div class="space-y-8">
+  const activePanel = ref<ActivePanel>(null)
+  const { isMobile } = useMasterDetailLayout()
+
+  const setActivePanel = (panel: ActivePanel) => {
+    activePanel.value = panel
+  }
+
+  provide(ActivePanelKey, { activePanel, setActivePanel })
+
+  const SettingsContent = () => (
+    <>
       <SessionSection />
       <ResetPass />
-      <ApiToken />
-      <Passkey />
+      <ApiTokenEntry />
+      <PasskeyEntry />
       <Oauth />
+    </>
+  )
+
+  const SidePanelContent = () => {
+    if (activePanel.value === 'tokens') {
+      return <TokenListPanel />
+    }
+    if (activePanel.value === 'passkeys') {
+      return <PasskeyListPanel />
+    }
+    return null
+  }
+
+  const hasPanel = computed(() => activePanel.value !== null)
+
+  // 移动端布局：全屏切换
+  const MobileLayout = () => (
+    <div class="relative h-full overflow-hidden">
+      {/* 设置列表 */}
+      <div
+        class={[
+          'absolute inset-0 transition-transform duration-300 ease-out',
+          hasPanel.value && '-translate-x-full',
+        ]}
+      >
+        <NScrollbar class="h-full">
+          <div class="space-y-8 p-6">
+            <SettingsContent />
+          </div>
+        </NScrollbar>
+      </div>
+
+      {/* 详情面板 */}
+      <div
+        class={[
+          'absolute inset-0 bg-white transition-transform duration-300 ease-out dark:bg-black',
+          hasPanel.value ? 'translate-x-0' : 'translate-x-full',
+        ]}
+      >
+        <SidePanelContent />
+      </div>
     </div>
   )
+
+  // 桌面端布局：分栏
+  const DesktopLayout = () => (
+    <div class="relative h-full overflow-hidden">
+      {/* 左侧设置内容 */}
+      <div
+        class={[
+          'absolute inset-y-0 left-0 overflow-hidden transition-all duration-300 ease-out',
+          hasPanel.value &&
+            'border-r border-neutral-200 dark:border-neutral-800',
+        ]}
+        style={{ right: hasPanel.value ? '50%' : '0' }}
+      >
+        <NScrollbar class="h-full">
+          <div class="mx-auto max-w-3xl space-y-8 p-6">
+            <SettingsContent />
+          </div>
+        </NScrollbar>
+      </div>
+
+      {/* 右侧面板 - 从右侧滑入 */}
+      <div
+        class={[
+          'absolute inset-y-0 right-0 w-1/2 overflow-hidden bg-white transition-transform duration-300 ease-out dark:bg-black',
+          hasPanel.value ? 'translate-x-0' : 'translate-x-full',
+        ]}
+      >
+        <SidePanelContent />
+      </div>
+    </div>
+  )
+
+  return () => (isMobile.value ? <MobileLayout /> : <DesktopLayout />)
 })
 
 const SessionSection = defineComponent(() => {
   const sessions = ref<Session[]>([])
   const loading = ref(true)
+  const expanded = ref(false)
+  const MAX_VISIBLE = 5
 
   const fetchSession = async () => {
     loading.value = true
@@ -112,6 +220,93 @@ const SessionSection = defineComponent(() => {
     await userApi.deleteAllSessions()
     await fetchSession()
   }
+
+  const visibleSessions = computed(() => {
+    if (expanded.value) return sessions.value
+    return sessions.value.slice(0, MAX_VISIBLE)
+  })
+
+  const hasMore = computed(() => sessions.value.length > MAX_VISIBLE)
+  const hiddenCount = computed(() => sessions.value.length - MAX_VISIBLE)
+
+  const SessionItem = ({
+    id,
+    ua,
+    ip,
+    date,
+    current,
+  }: {
+    id: string
+    ua?: string
+    ip?: string
+    date: string
+    current?: boolean
+  }) => (
+    <div class="px-4 py-4">
+      <div class="mb-2 flex items-center justify-between">
+        <span
+          class={[
+            'inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium',
+            current
+              ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+              : 'bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400',
+          ]}
+        >
+          {current ? (
+            <>
+              <CheckIcon class="size-3" />
+              当前设备
+            </>
+          ) : (
+            <>
+              <SmartphoneIcon class="size-3" />
+              其他设备
+            </>
+          )}
+        </span>
+
+        <NPopconfirm onPositiveClick={() => handleKick(!!current, id)}>
+          {{
+            trigger: () => (
+              <NButton
+                size="tiny"
+                type={current ? 'warning' : 'error'}
+                quaternary
+              >
+                {current ? '注销' : '踢出'}
+              </NButton>
+            ),
+            default: () =>
+              current ? '确定要注销当前会话？' : '确定要踢出此设备？',
+          }}
+        </NPopconfirm>
+      </div>
+
+      {ua && (
+        <div class="mb-2 font-mono text-xs text-neutral-600 dark:text-neutral-300">
+          {ua}
+        </div>
+      )}
+
+      <div class="flex flex-wrap items-center gap-4 text-xs text-neutral-500 dark:text-neutral-400">
+        {ip && (
+          <div class="flex items-center gap-1.5">
+            <GlobeIcon class="size-3.5" />
+            <IpInfoPopover
+              ip={ip}
+              triggerEl={
+                <span class="cursor-pointer hover:underline">{ip}</span>
+              }
+            />
+          </div>
+        )}
+        <div class="flex items-center gap-1.5">
+          <span>{current ? '活跃时间:' : '登录时间:'}</span>
+          <RelativeTime time={date} />
+        </div>
+      </div>
+    </div>
+  )
 
   return () => (
     <SettingsSection
@@ -147,72 +342,34 @@ const SessionSection = defineComponent(() => {
         <SessionSkeleton />
       ) : (
         <div class="divide-y divide-neutral-100 dark:divide-neutral-800">
-          {sessions.value.map(({ id, ua, ip, date, current }) => (
-            <div key={id} class="py-4">
-              <div class="mb-2 flex items-center justify-between">
-                <span
-                  class={[
-                    'inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium',
-                    current
-                      ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                      : 'bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400',
-                  ]}
-                >
-                  {current ? (
-                    <>
-                      <CheckIcon class="size-3" />
-                      当前设备
-                    </>
-                  ) : (
-                    <>
-                      <SmartphoneIcon class="size-3" />
-                      其他设备
-                    </>
-                  )}
-                </span>
-
-                <NPopconfirm onPositiveClick={() => handleKick(!!current, id)}>
-                  {{
-                    trigger: () => (
-                      <NButton
-                        size="tiny"
-                        type={current ? 'warning' : 'error'}
-                        quaternary
-                      >
-                        {current ? '注销' : '踢出'}
-                      </NButton>
-                    ),
-                    default: () =>
-                      current ? '确定要注销当前会话？' : '确定要踢出此设备？',
-                  }}
-                </NPopconfirm>
-              </div>
-
-              {ua && (
-                <div class="mb-2 font-mono text-xs text-neutral-600 dark:text-neutral-300">
-                  {ua}
-                </div>
-              )}
-
-              <div class="flex flex-wrap items-center gap-4 text-xs text-neutral-500 dark:text-neutral-400">
-                {ip && (
-                  <div class="flex items-center gap-1.5">
-                    <GlobeIcon class="size-3.5" />
-                    <IpInfoPopover
-                      ip={ip}
-                      triggerEl={
-                        <span class="cursor-pointer hover:underline">{ip}</span>
-                      }
-                    />
-                  </div>
-                )}
-                <div class="flex items-center gap-1.5">
-                  <span>{current ? '活跃时间:' : '登录时间:'}</span>
-                  <RelativeTime time={date} />
-                </div>
-              </div>
-            </div>
+          {visibleSessions.value.map(({ id, ua, ip, date, current }) => (
+            <SessionItem
+              key={id}
+              id={id}
+              ua={ua}
+              ip={ip}
+              date={date}
+              current={current}
+            />
           ))}
+
+          {hasMore.value && (
+            <div class="px-4 py-3">
+              <button
+                type="button"
+                class="flex w-full items-center justify-center gap-1.5 text-sm text-neutral-500 transition-colors hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200"
+                onClick={() => {
+                  expanded.value = !expanded.value
+                }}
+              >
+                {expanded.value ? (
+                  <>收起</>
+                ) : (
+                  <>查看更多 ({hiddenCount.value} 个设备)</>
+                )}
+              </button>
+            </div>
+          )}
         </div>
       )}
     </SettingsSection>
@@ -246,6 +403,12 @@ const ResetPass = defineComponent(() => {
   })
   const formRef = ref<typeof NForm>()
   const router = useRouter()
+  const showModal = ref(false)
+
+  const resetForm = () => {
+    resetPassword.password = ''
+    resetPassword.reenteredPassword = ''
+  }
 
   const reset = async () => {
     if (!formRef.value) {
@@ -258,6 +421,7 @@ const ResetPass = defineComponent(() => {
           password: resetPassword.password,
         })
         toast.success('密码修改成功，请重新登录')
+        showModal.value = false
         removeToken()
         router.push({ name: RouteName.Login })
       }
@@ -269,39 +433,69 @@ const ResetPass = defineComponent(() => {
   }
 
   return () => (
-    <SettingsSection
-      title="修改密码"
-      description="修改后需要重新登录"
-      icon={LockIcon}
-    >
-      <div class="py-4">
-        <NForm
-          ref={formRef}
-          model={resetPassword}
-          labelPlacement="top"
-          showRequireMark={false}
-          rules={{
-            password: [
-              {
-                required: true,
-                message: '请输入密码',
-              },
-            ],
-            reenteredPassword: [
-              {
-                required: true,
-                message: '请再次输入密码',
-                trigger: ['input', 'blur'],
-              },
-              {
-                validator: validatePasswordSame,
-                message: '两次密码输入不一致',
-                trigger: ['blur', 'password-input'],
-              },
-            ],
-          }}
+    <>
+      <SettingsSection
+        title="修改密码"
+        description="修改后需要重新登录"
+        icon={LockIcon}
+      >
+        <div class="flex items-center justify-between px-4 py-4">
+          <div class="text-sm text-neutral-600 dark:text-neutral-400">
+            定期更改密码可以提高账户安全性
+          </div>
+          <NButton
+            size="small"
+            type="primary"
+            secondary
+            onClick={() => {
+              resetForm()
+              showModal.value = true
+            }}
+          >
+            <LockIcon class="mr-1 size-4" />
+            修改密码
+          </NButton>
+        </div>
+      </SettingsSection>
+
+      <NModal
+        transformOrigin="center"
+        show={showModal.value}
+        onUpdateShow={(e) => void (showModal.value = e)}
+      >
+        <NCard
+          bordered={false}
+          title="修改密码"
+          class="w-[400px] max-w-full"
+          closable
+          onClose={() => void (showModal.value = false)}
         >
-          <div class="grid gap-4 md:grid-cols-2">
+          <NForm
+            ref={formRef}
+            model={resetPassword}
+            labelPlacement="top"
+            showRequireMark={false}
+            rules={{
+              password: [
+                {
+                  required: true,
+                  message: '请输入密码',
+                },
+              ],
+              reenteredPassword: [
+                {
+                  required: true,
+                  message: '请再次输入密码',
+                  trigger: ['input', 'blur'],
+                },
+                {
+                  validator: validatePasswordSame,
+                  message: '两次密码输入不一致',
+                  trigger: ['blur', 'password-input'],
+                },
+              ],
+            }}
+          >
             <NFormItem label="新密码" path="password">
               <NInput
                 {...autosizeableProps}
@@ -322,23 +516,86 @@ const ResetPass = defineComponent(() => {
                 placeholder="再次输入新密码"
               />
             </NFormItem>
-          </div>
+          </NForm>
 
-          <div class="flex justify-end pt-2">
-            <NButton onClick={reset} type="primary" size="small">
+          <div class="flex justify-end gap-3">
+            <NButton onClick={() => void (showModal.value = false)}>
+              取消
+            </NButton>
+            <NButton onClick={reset} type="primary">
               <ShieldIcon class="mr-1 size-4" />
-              修改密码
+              确认修改
             </NButton>
           </div>
-        </NForm>
-      </div>
+        </NCard>
+      </NModal>
+    </>
+  )
+})
+
+// === API Token 入口组件 ===
+const ApiTokenEntry = defineComponent(() => {
+  const { activePanel, setActivePanel } = useActivePanel()
+  const { data: tokens, isLoading } = useQuery({
+    queryKey: queryKeys.auth.tokens(),
+    queryFn: () => authApi.getTokens(),
+  })
+
+  const isActive = computed(() => activePanel.value === 'tokens')
+
+  return () => (
+    <SettingsSection
+      title="API Token"
+      description="用于 API 调用的访问令牌"
+      icon={KeyIcon}
+    >
+      <button
+        type="button"
+        class={[
+          'flex w-full items-center justify-between px-4 py-4 text-left transition-colors',
+          isActive.value
+            ? 'bg-neutral-100 dark:bg-neutral-800'
+            : 'hover:bg-neutral-50 dark:hover:bg-neutral-800/50',
+        ]}
+        onClick={() => setActivePanel(isActive.value ? null : 'tokens')}
+      >
+        <div>
+          <div class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+            管理 API Token
+          </div>
+          <div class="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
+            {isLoading.value
+              ? '加载中...'
+              : `已创建 ${tokens.value?.length ?? 0} 个 Token`}
+          </div>
+        </div>
+        <ChevronRightIcon
+          class={[
+            'size-5 text-neutral-400 transition-transform',
+            isActive.value && 'rotate-90',
+          ]}
+        />
+      </button>
     </SettingsSection>
   )
 })
 
-const ApiToken = defineComponent(() => {
-  const tokens = ref([] as TokenModel[])
-  const loading = ref(true)
+// === Token 列表面板 ===
+const TokenListPanel = defineComponent(() => {
+  const { setActivePanel } = useActivePanel()
+  const {
+    data: tokens,
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: queryKeys.auth.tokens(),
+    queryFn: () => authApi.getTokens(),
+  })
+
+  const newTokenDialogShow = ref(false)
+  const tokenDisplayDialogShow = ref(false)
+  const createdTokenInfo = ref<TokenModel | null>(null)
+  const visibleTokens = ref<Set<string>>(new Set())
 
   const defaultModel = () => ({
     name: '',
@@ -347,21 +604,14 @@ const ApiToken = defineComponent(() => {
   })
   const dataModel = reactive(defaultModel())
 
-  const fetchToken = async () => {
-    loading.value = true
-    const data = await authApi.getTokens()
-    tokens.value = data
-    loading.value = false
+  const copyToken = async (token: string) => {
+    try {
+      await navigator.clipboard.writeText(token)
+      toast.success('Token 已复制到剪贴板')
+    } catch {
+      toast.error('复制失败')
+    }
   }
-
-  onBeforeMount(() => {
-    fetchToken()
-  })
-
-  const newTokenDialogShow = ref(false)
-  const tokenDisplayDialogShow = ref(false)
-  const createdTokenInfo = ref<TokenModel | null>(null)
-  const visibleTokens = ref<Set<string>>(new Set())
 
   const newToken = async () => {
     try {
@@ -371,41 +621,24 @@ const ApiToken = defineComponent(() => {
           ? dataModel.expiredTime.toISOString()
           : undefined,
       }
-
       const response = await authApi.createToken(payload)
-
       try {
         await navigator.clipboard.writeText(response.token)
-      } catch {
-        console.warn('复制到剪贴板失败')
-      }
-
+      } catch {}
       newTokenDialogShow.value = false
-      const n = defaultModel()
-      for (const key in n) {
-        dataModel[key] = n[key]
-      }
-
+      Object.assign(dataModel, defaultModel())
       createdTokenInfo.value = response
       tokenDisplayDialogShow.value = true
-
-      await fetchToken()
-      const index = tokens.value.findIndex((i) => i.name === payload.name)
-      if (index !== -1) {
-        tokens.value[index].token = response.token
-      }
+      refetch()
     } catch {
-      toast.error('创建 Token 失败，请重试')
+      toast.error('创建 Token 失败')
     }
   }
 
   const onDeleteToken = async (id: string) => {
     await authApi.deleteToken(id)
     toast.success('删除成功')
-    const index = tokens.value.findIndex((i) => i.id === id)
-    if (index !== -1) {
-      tokens.value.splice(index, 1)
-    }
+    refetch()
   }
 
   const toggleTokenVisibility = async (tokenData: TokenModel) => {
@@ -415,174 +648,153 @@ const ApiToken = defineComponent(() => {
     } else {
       try {
         const response = await authApi.getToken(tokenId)
-        const index = tokens.value.findIndex((i) => i.id === tokenId)
-        if (index !== -1) {
-          tokens.value[index].token = response.token
+        if (tokens.value) {
+          const index = tokens.value.findIndex((i) => i.id === tokenId)
+          if (index !== -1) {
+            tokens.value[index].token = response.token
+          }
         }
         visibleTokens.value.add(tokenId)
-      } catch (error) {
-        console.error('获取Token详情失败:', error)
-        toast.error('获取Token详情失败，请重试')
-      }
-    }
-  }
-
-  const copyToken = async (token: string) => {
-    try {
-      await navigator.clipboard.writeText(token)
-      toast.success('Token 已复制到剪贴板')
-    } catch {
-      const textArea = document.createElement('textarea')
-      textArea.value = token
-      textArea.style.position = 'fixed'
-      textArea.style.left = '-9999px'
-      document.body.appendChild(textArea)
-      textArea.focus()
-      textArea.select()
-      try {
-        document.execCommand('copy')
-        toast.success('Token 已复制到剪贴板')
       } catch {
-        toast.error('复制失败，请手动复制Token')
+        toast.error('获取 Token 详情失败')
       }
-      document.body.removeChild(textArea)
     }
   }
 
-  const uiStore = useStoreRef(UIStore)
+  const TokenItem = ({ token: tokenData }: { token: TokenModel }) => {
+    const { id, name, token, created, expired } = tokenData
+    const isVisible = visibleTokens.value.has(id)
+
+    return (
+      <div class="group px-4 py-4">
+        <div class="mb-2 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <KeyIcon class="size-4 text-neutral-400" />
+            <span class="font-medium text-neutral-900 dark:text-neutral-100">
+              {name}
+            </span>
+          </div>
+          <div class="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+            <NButton
+              text
+              type="primary"
+              size="tiny"
+              onClick={() => toggleTokenVisibility(tokenData)}
+            >
+              {isVisible ? (
+                <EyeOffIcon class="size-4" />
+              ) : (
+                <EyeIcon class="size-4" />
+              )}
+            </NButton>
+            <NPopconfirm
+              positiveText="取消"
+              negativeText="删除"
+              onNegativeClick={() => onDeleteToken(id)}
+            >
+              {{
+                trigger: () => (
+                  <NButton text type="error" size="tiny">
+                    <TrashIcon class="size-4" />
+                  </NButton>
+                ),
+                default: () => (
+                  <span class="max-w-48">确定要删除 Token "{name}"?</span>
+                ),
+              }}
+            </NPopconfirm>
+          </div>
+        </div>
+
+        <div class="mb-2">
+          {isVisible && token && token !== '*'.repeat(40) ? (
+            <button
+              type="button"
+              class="max-w-full truncate font-mono text-xs text-blue-600 hover:underline dark:text-blue-400"
+              onClick={() => copyToken(token)}
+            >
+              {token}
+            </button>
+          ) : (
+            <span class="font-mono text-xs text-neutral-400">
+              {'•'.repeat(24)}
+            </span>
+          )}
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3 text-xs text-neutral-500 dark:text-neutral-400">
+          <span>
+            创建于 <RelativeTime time={created} />
+          </span>
+          <span>
+            {expired ? (
+              <>过期时间: {parseDate(expired, 'yyyy 年 M 月 d 日')}</>
+            ) : (
+              '永不过期'
+            )}
+          </span>
+        </div>
+      </div>
+    )
+  }
 
   return () => (
     <>
-      <SettingsSection
-        title="API Token"
-        description="用于 API 调用的访问令牌"
-        icon={KeyIcon}
-        v-slots={{
-          actions: () => (
-            <NButton
-              type="primary"
-              size="small"
-              secondary
-              onClick={() => {
-                newTokenDialogShow.value = true
-              }}
+      <div class="flex h-full flex-col">
+        {/* Header */}
+        <div class="flex h-14 shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
+          <div class="flex items-center gap-3">
+            <button
+              type="button"
+              class="flex size-8 items-center justify-center rounded-md text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+              onClick={() => setActivePanel(null)}
             >
-              <PlusIcon class="mr-1 size-4" />
-              新增 Token
-            </NButton>
-          ),
-        }}
-      >
-        {loading.value ? (
-          <div class="p-4">
-            <NSkeleton text style={{ width: '100%', height: '150px' }} />
+              <ArrowLeftIcon class="size-5" />
+            </button>
+            <h2 class="text-base font-semibold text-neutral-900 dark:text-neutral-100">
+              API Token
+            </h2>
           </div>
-        ) : (
-          <NDataTable
-            scrollX={Math.max(
-              700,
-              uiStore.contentWidth.value - uiStore.contentInsetWidth.value - 48,
-            )}
-            remote
-            bordered={false}
-            data={tokens.value}
-            rowClassName={() => 'group'}
-            columns={[
-              { key: 'name', title: '名称' },
-              {
-                key: 'token',
-                title: 'Token',
-                render(row) {
-                  const { token, id } = row
-                  const isVisible = visibleTokens.value.has(id)
+          <NButton
+            type="primary"
+            size="small"
+            onClick={() => {
+              newTokenDialogShow.value = true
+            }}
+          >
+            <PlusIcon class="mr-1 size-4" />
+            新增
+          </NButton>
+        </div>
 
-                  if (isVisible && token && token !== '*'.repeat(40)) {
-                    return (
-                      <NButton
-                        text
-                        type="primary"
-                        onClick={() => copyToken(token)}
-                        class="max-w-[180px] truncate text-left font-mono"
-                      >
-                        {token}
-                      </NButton>
-                    )
-                  } else {
-                    return (
-                      <span class="font-mono text-neutral-400">
-                        {'•'.repeat(24)}
-                      </span>
-                    )
-                  }
-                },
-              },
-              {
-                title: '创建时间',
-                key: 'created',
-                render({ created }) {
-                  return <RelativeTime time={created} />
-                },
-              },
-              {
-                title: '过期时间',
-                key: 'expired',
-                render({ expired }) {
-                  return expired ? (
-                    parseDate(expired, 'yyyy 年 M 月 d 日')
-                  ) : (
-                    <span class="text-neutral-400">永不过期</span>
-                  )
-                },
-              },
-              {
-                title: '操作',
-                key: 'id',
-                width: 80,
-                render(row) {
-                  const { id, name } = row
-                  const isVisible = visibleTokens.value.has(id)
-
-                  return (
-                    <div class="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-                      <NButton
-                        text
-                        type="primary"
-                        onClick={() => toggleTokenVisibility(row)}
-                      >
-                        {isVisible ? (
-                          <EyeOffIcon class="size-4" />
-                        ) : (
-                          <EyeIcon class="size-4" />
-                        )}
-                      </NButton>
-                      <NPopconfirm
-                        positiveText="取消"
-                        negativeText="删除"
-                        onNegativeClick={() => {
-                          onDeleteToken(id)
-                        }}
-                      >
-                        {{
-                          trigger: () => (
-                            <NButton text type="error">
-                              <TrashIcon class="size-4" />
-                            </NButton>
-                          ),
-                          default: () => (
-                            <span class="max-w-48">
-                              确定要删除 Token "{name}"?
-                            </span>
-                          ),
-                        }}
-                      </NPopconfirm>
-                    </div>
-                  )
-                },
-              },
-            ]}
-          />
-        )}
-      </SettingsSection>
+        {/* Content */}
+        <NScrollbar class="min-h-0 flex-1">
+          {isLoading.value ? (
+            <div class="space-y-4 p-4">
+              <NSkeleton text style={{ width: '100%', height: '80px' }} />
+              <NSkeleton text style={{ width: '100%', height: '80px' }} />
+            </div>
+          ) : !tokens.value?.length ? (
+            <div class="flex flex-col items-center justify-center py-16 text-center">
+              <div class="mb-3 flex size-12 items-center justify-center rounded-full bg-neutral-100 text-neutral-400 dark:bg-neutral-800 dark:text-neutral-500">
+                <KeyIcon class="size-6" />
+              </div>
+              <h3 class="m-0 mb-1 text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                暂无 Token
+              </h3>
+              <p class="m-0 text-xs text-neutral-500 dark:text-neutral-400">
+                创建一个 Token 以便 API 调用
+              </p>
+            </div>
+          ) : (
+            <div class="divide-y divide-neutral-100 dark:divide-neutral-800">
+              {tokens.value.map((token) => (
+                <TokenItem key={token.id} token={token} />
+              ))}
+            </div>
+          )}
+        </NScrollbar>
+      </div>
 
       {/* Create Token Modal */}
       <NModal
@@ -599,14 +811,12 @@ const ApiToken = defineComponent(() => {
                 placeholder="为这个 Token 起个名字…"
               />
             </NFormItem>
-
             <NFormItem label="是否过期">
               <NSwitch
                 value={dataModel.expired}
                 onUpdateValue={(e) => void (dataModel.expired = e)}
               />
             </NFormItem>
-
             <NFormItem label="过期时间">
               <NDatePicker
                 disabled={!dataModel.expired}
@@ -618,7 +828,6 @@ const ApiToken = defineComponent(() => {
               />
             </NFormItem>
           </NForm>
-
           <div class="flex justify-end gap-3">
             <NButton onClick={() => void (newTokenDialogShow.value = false)}>
               取消
@@ -652,7 +861,6 @@ const ApiToken = defineComponent(() => {
               <CheckIcon class="size-5" />
               <span>Token 创建成功，请妥善保存</span>
             </div>
-
             <div class="space-y-3">
               <div class="flex items-center gap-2 rounded-lg bg-neutral-50 px-4 py-3 text-sm dark:bg-neutral-800">
                 <span class="shrink-0 text-neutral-500 dark:text-neutral-400">
@@ -662,7 +870,6 @@ const ApiToken = defineComponent(() => {
                   {createdTokenInfo.value?.name}
                 </span>
               </div>
-
               <div>
                 <div class="mb-2 text-sm font-medium text-neutral-700 dark:text-neutral-300">
                   Token:
@@ -674,9 +881,9 @@ const ApiToken = defineComponent(() => {
                   <NButton
                     size="small"
                     type="primary"
-                    onClick={async () => {
+                    onClick={() => {
                       if (createdTokenInfo.value?.token) {
-                        await copyToken(createdTokenInfo.value.token)
+                        copyToken(createdTokenInfo.value.token)
                       }
                     }}
                   >
@@ -684,7 +891,6 @@ const ApiToken = defineComponent(() => {
                   </NButton>
                 </div>
               </div>
-
               {createdTokenInfo.value?.expired && (
                 <div class="flex items-center gap-2 rounded-lg bg-neutral-50 px-4 py-3 text-sm dark:bg-neutral-800">
                   <span class="shrink-0 text-neutral-500 dark:text-neutral-400">
@@ -699,13 +905,11 @@ const ApiToken = defineComponent(() => {
                 </div>
               )}
             </div>
-
             <div class="rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-700 dark:bg-amber-900/20 dark:text-amber-400">
               请将此 Token 保存在安全的地方，关闭此窗口后将无法再次查看完整
               Token。
             </div>
           </div>
-
           <div class="mt-6 flex justify-end">
             <NButton
               type="primary"
@@ -720,16 +924,111 @@ const ApiToken = defineComponent(() => {
   )
 })
 
-const Passkey = defineComponent(() => {
-  const uiStore = useStoreRef(UIStore)
-  const { data: passkeys, refetch: refetchTable } = useQuery({
+// === Passkey 入口组件 ===
+const PasskeyEntry = defineComponent(() => {
+  const { activePanel, setActivePanel } = useActivePanel()
+  const { data: passkeys, isLoading } = useQuery({
     queryKey: queryKeys.auth.passkeys(),
     queryFn: () => authApi.getPasskeys(),
   })
 
-  const onDeleteToken = (id: string) => {
+  const { data: setting, refetch: refetchSetting } = useQuery({
+    queryKey: queryKeys.options.detail('authSecurity'),
+    queryFn: async () => {
+      const data = await optionsApi.get<{
+        disablePasswordLogin: boolean
+      }>('authSecurity')
+      return data
+    },
+  })
+
+  const updateSetting = (value: boolean) => {
+    optionsApi
+      .patch('authSecurity', {
+        disablePasswordLogin: value,
+      })
+      .then(() => {
+        refetchSetting()
+      })
+  }
+
+  const isActive = computed(() => activePanel.value === 'passkeys')
+
+  return () => (
+    <SettingsSection
+      title="通行密钥"
+      description="使用生物识别或安全密钥登录"
+      icon={FingerprintIcon}
+    >
+      {/* 禁止密码登录开关 */}
+      <div class="flex items-center justify-between px-4 py-4">
+        <div class="flex flex-col gap-0.5">
+          <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+            禁止密码登录
+          </span>
+          <span class="text-xs text-neutral-500 dark:text-neutral-400">
+            开启后只能通过 Passkey 或 OAuth 登录
+          </span>
+        </div>
+        <NSwitch
+          value={setting.value?.disablePasswordLogin}
+          onUpdateValue={(v) => {
+            if (v && !passkeys.value?.length) {
+              toast.error('至少需要一个 Passkey 才能开启这个功能')
+              return
+            }
+            updateSetting(v)
+          }}
+        />
+      </div>
+
+      {/* 管理通行密钥入口 */}
+      <button
+        type="button"
+        class={[
+          'flex w-full items-center justify-between border-t border-neutral-100 px-4 py-4 text-left transition-colors dark:border-neutral-800',
+          isActive.value
+            ? 'bg-neutral-100 dark:bg-neutral-800'
+            : 'hover:bg-neutral-50 dark:hover:bg-neutral-800/50',
+        ]}
+        onClick={() => setActivePanel(isActive.value ? null : 'passkeys')}
+      >
+        <div>
+          <div class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+            管理通行密钥
+          </div>
+          <div class="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
+            {isLoading.value
+              ? '加载中...'
+              : `已添加 ${passkeys.value?.length ?? 0} 个通行密钥`}
+          </div>
+        </div>
+        <ChevronRightIcon
+          class={[
+            'size-5 text-neutral-400 transition-transform',
+            isActive.value && 'rotate-90',
+          ]}
+        />
+      </button>
+    </SettingsSection>
+  )
+})
+
+// === Passkey 列表面板 ===
+const PasskeyListPanel = defineComponent(() => {
+  const { setActivePanel } = useActivePanel()
+  const {
+    data: passkeys,
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: queryKeys.auth.passkeys(),
+    queryFn: () => authApi.getPasskeys(),
+  })
+
+  const onDeletePasskey = (id: string) => {
     authApi.deletePasskey(id).then(() => {
-      refetchTable()
+      refetch()
     })
   }
 
@@ -740,7 +1039,7 @@ const Passkey = defineComponent(() => {
         e.preventDefault()
         e.stopPropagation()
         AuthnUtils.createPassKey(name.value).then(() => {
-          refetchTable()
+          refetch()
           props.dialog.destroy()
         })
       }
@@ -769,95 +1068,100 @@ const Passkey = defineComponent(() => {
     },
   )
 
-  const { data: setting, refetch: refetchSetting } = useQuery({
-    queryKey: queryKeys.options.detail('authSecurity'),
-    queryFn: async () => {
-      const data = await optionsApi.get<{
-        disablePasswordLogin: boolean
-      }>('authSecurity')
-      return data
-    },
-  })
-
-  const updateSetting = (value: boolean) => {
-    optionsApi
-      .patch('authSecurity', {
-        disablePasswordLogin: value,
-      })
-      .then(() => {
-        refetchSetting()
-      })
-  }
-
   // @ts-ignore
   NewModalContent.props = ['dialog']
 
-  return () => (
-    <SettingsSection
-      title="通行密钥"
-      description="使用生物识别或安全密钥登录"
-      icon={FingerprintIcon}
-      v-slots={{
-        actions: () => (
-          <div class="flex items-center gap-2">
-            <NButton
-              secondary
-              size="small"
-              onClick={() => {
-                AuthnUtils.validate(true)
-              }}
-            >
-              <ShieldCheckIcon class="mr-1 size-4" />
-              验证
-            </NButton>
-            <NButton
-              type="primary"
-              secondary
-              size="small"
-              onClick={() => {
-                const $dialog = dialog.create({
-                  title: '创建 Passkey',
-                  content: () => <NewModalContent dialog={$dialog} />,
-                })
-              }}
-            >
-              <PlusIcon class="mr-1 size-4" />
-              新增
-            </NButton>
-          </div>
-        ),
-      }}
-    >
-      <div class="flex items-center justify-between border-b border-neutral-100 px-4 py-3 dark:border-neutral-800">
-        <div class="flex flex-col gap-0.5">
-          <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
-            禁止密码登录
-          </span>
-          <span class="text-xs text-neutral-500 dark:text-neutral-400">
-            开启后只能通过 Passkey 或 OAuth 登录
+  const PasskeyItem = ({
+    passkey,
+  }: {
+    passkey: { credentialID: string; name: string }
+  }) => (
+    <div class="group px-4 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <FingerprintIcon class="size-4 text-blue-500" />
+          <span class="font-medium text-neutral-900 dark:text-neutral-100">
+            {passkey.name}
           </span>
         </div>
-        <NSwitch
-          value={setting.value?.disablePasswordLogin}
-          onUpdateValue={(v) => {
-            if (v && !passkeys.value?.length) {
-              toast.error('至少需要一个 Passkey 才能开启这个功能')
-              return
-            }
-            updateSetting(v)
-          }}
-        />
+        <div class="opacity-0 transition-opacity group-hover:opacity-100">
+          <NPopconfirm
+            positiveText="取消"
+            negativeText="删除"
+            onNegativeClick={() => onDeletePasskey(passkey.credentialID)}
+          >
+            {{
+              trigger: () => (
+                <NButton text type="error" size="tiny">
+                  <TrashIcon class="size-4" />
+                </NButton>
+              ),
+              default: () => (
+                <span class="max-w-48">
+                  确定要删除 Passkey "{passkey.name}"?
+                </span>
+              ),
+            }}
+          </NPopconfirm>
+        </div>
+      </div>
+    </div>
+  )
+
+  return () => (
+    <div class="flex h-full flex-col">
+      {/* Header */}
+      <div class="flex h-14 shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
+        <div class="flex items-center gap-3">
+          <button
+            type="button"
+            class="flex size-8 items-center justify-center rounded-md text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+            onClick={() => setActivePanel(null)}
+          >
+            <ArrowLeftIcon class="size-5" />
+          </button>
+          <h2 class="text-base font-semibold text-neutral-900 dark:text-neutral-100">
+            通行密钥
+          </h2>
+        </div>
+        <div class="flex items-center gap-2">
+          <NButton
+            secondary
+            size="small"
+            onClick={() => {
+              AuthnUtils.validate(true)
+            }}
+          >
+            <ShieldCheckIcon class="mr-1 size-4" />
+            验证
+          </NButton>
+          <NButton
+            type="primary"
+            size="small"
+            onClick={() => {
+              const $dialog = dialog.create({
+                title: '创建 Passkey',
+                content: () => <NewModalContent dialog={$dialog} />,
+              })
+            }}
+          >
+            <PlusIcon class="mr-1 size-4" />
+            新增
+          </NButton>
+        </div>
       </div>
 
-      <div>
-        {!passkeys.value ? (
-          <div class="p-4">
-            <NSkeleton text style={{ width: '100%', height: '100px' }} />
+      {/* Content */}
+      <NScrollbar class="min-h-0 flex-1">
+        {isLoading.value ? (
+          <div class="space-y-4 p-4">
+            <NSkeleton text style={{ width: '100%', height: '60px' }} />
+            <NSkeleton text style={{ width: '100%', height: '60px' }} />
           </div>
-        ) : passkeys.value.length === 0 ? (
-          <div class="flex flex-col items-center justify-center py-10 text-center">
+        ) : !passkeys.value?.length ? (
+          <div class="flex flex-col items-center justify-center py-16 text-center">
             <div class="mb-3 flex size-12 items-center justify-center rounded-full bg-neutral-100 text-neutral-400 dark:bg-neutral-800 dark:text-neutral-500">
-              <KeyIcon class="size-6" />
+              <FingerprintIcon class="size-6" />
             </div>
             <h3 class="m-0 mb-1 text-sm font-medium text-neutral-900 dark:text-neutral-100">
               暂无通行密钥
@@ -867,71 +1171,14 @@ const Passkey = defineComponent(() => {
             </p>
           </div>
         ) : (
-          <NDataTable
-            scrollX={Math.max(
-              500,
-              uiStore.contentWidth.value - uiStore.contentInsetWidth.value - 48,
-            )}
-            remote
-            bordered={false}
-            rowClassName={() => 'group'}
-            data={passkeys.value}
-            columns={[
-              {
-                key: 'name',
-                title: '名称',
-                render({ name }) {
-                  return (
-                    <div class="flex items-baseline gap-2">
-                      <FingerprintIcon class="size-4 translate-y-0.5 text-blue-500" />
-                      <span class="font-medium">{name}</span>
-                    </div>
-                  )
-                },
-              },
-              {
-                title: '创建时间',
-                key: 'created',
-                render({ created }) {
-                  return <RelativeTime time={created} />
-                },
-              },
-              {
-                title: '操作',
-                key: 'id',
-                width: 80,
-                render({ id, name }) {
-                  return (
-                    <div class="opacity-0 transition-opacity group-hover:opacity-100">
-                      <NPopconfirm
-                        positiveText="取消"
-                        negativeText="删除"
-                        onNegativeClick={() => {
-                          onDeleteToken(id)
-                        }}
-                      >
-                        {{
-                          trigger: () => (
-                            <NButton text type="error">
-                              <TrashIcon class="size-4" />
-                            </NButton>
-                          ),
-                          default: () => (
-                            <span class="max-w-48">
-                              确定要删除 Passkey "{name}"?
-                            </span>
-                          ),
-                        }}
-                      </NPopconfirm>
-                    </div>
-                  )
-                },
-              },
-            ]}
-          />
+          <div class="divide-y divide-neutral-100 dark:divide-neutral-800">
+            {passkeys.value.map((passkey) => (
+              <PasskeyItem key={passkey.credentialID} passkey={passkey} />
+            ))}
+          </div>
         )}
-      </div>
-    </SettingsSection>
+      </NScrollbar>
+    </div>
   )
 })
 
@@ -977,7 +1224,7 @@ const Oauth = defineComponent(() => {
       description="配置第三方账号登录方式"
       icon={ExternalLinkIcon}
     >
-      <div class="grid grid-cols-1 gap-4 py-4 md:grid-cols-2">
+      <div class="divide-y divide-neutral-100 dark:divide-neutral-800">
         <GitHubProvider />
         <GoogleProvider />
       </div>

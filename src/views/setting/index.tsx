@@ -167,6 +167,24 @@ export default defineComponent({
     const DetailContent = () => {
       const StaticComponent = staticComponentMap[activeGroupKey.value]
 
+      // TabAccount 需要自己控制布局，不使用 SettingsDetailPanel 包裹
+      if (activeGroupKey.value === 'account') {
+        return (
+          <div class="flex h-full flex-col bg-white dark:bg-black">
+            {/* Header */}
+            <div class="flex h-12 shrink-0 items-center border-b border-neutral-200 px-4 dark:border-neutral-800">
+              <h2 class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                {activeGroupTitle.value}
+              </h2>
+            </div>
+            {/* Content - TabAccount 自己管理滚动 */}
+            <div class="min-h-0 flex-1">
+              <TabAccount />
+            </div>
+          </div>
+        )
+      }
+
       return (
         <SettingsDetailPanel
           title={activeGroupTitle.value}
