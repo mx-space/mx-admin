@@ -35,6 +35,10 @@ export const VersionListItem = defineComponent({
       type: Object as PropType<DiffStats>,
       default: undefined,
     },
+    isFullSnapshot: {
+      type: Boolean,
+      default: undefined,
+    },
     onClick: {
       type: Function as PropType<() => void>,
       required: true,
@@ -78,6 +82,24 @@ export const VersionListItem = defineComponent({
                   基准
                 </span>
               )}
+              {typeof props.version === 'number' &&
+                props.isFullSnapshot !== undefined && (
+                  <span
+                    class={[
+                      'rounded px-1.5 py-0.5 text-xs',
+                      props.isFullSnapshot
+                        ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-400'
+                        : 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-400',
+                    ]}
+                    title={
+                      props.isFullSnapshot
+                        ? '全量快照，存储完整内容'
+                        : '增量存储，仅保存与上一全量版本的差异'
+                    }
+                  >
+                    {props.isFullSnapshot ? '全量' : '增量'}
+                  </span>
+                )}
             </div>
 
             {/* 标题 */}

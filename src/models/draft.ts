@@ -38,6 +38,8 @@ export interface DraftHistoryListItem {
   version: number
   title: string
   savedAt: string
+  /** 是否为全量快照，false 表示增量 diff */
+  isFullSnapshot: boolean
 }
 
 // Type-specific data interfaces

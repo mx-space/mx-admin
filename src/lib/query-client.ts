@@ -25,8 +25,8 @@ const handleQueryError = (error: unknown) => {
 const queryClientConfig: QueryClientConfig = {
   defaultOptions: {
     queries: {
-      // 数据过期时间：5分钟
-      staleTime: 5 * 60 * 1000,
+      // 数据过期时间：0，始终重新验证
+      staleTime: 0,
       // 缓存时间：10分钟
       gcTime: 10 * 60 * 1000,
       // 重试策略
@@ -40,8 +40,8 @@ const queryClientConfig: QueryClientConfig = {
       },
       // 重新聚焦时不自动刷新（后台管理系统特性）
       refetchOnWindowFocus: false,
-      // 重新挂载时不自动刷新
-      refetchOnMount: false,
+      // 每次进入页面都重新获取数据
+      refetchOnMount: true,
     },
     mutations: {
       // mutation 错误处理

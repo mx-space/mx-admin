@@ -24,15 +24,15 @@ export const MasterDetailLayout = defineComponent({
       default: false,
     },
     defaultSize: {
-      type: Number,
+      type: [String, Number],
       default: 0.3,
     },
     min: {
-      type: Number,
+      type: [String, Number],
       default: 0.2,
     },
     max: {
-      type: Number,
+      type: [Number, String],
       default: 0.4,
     },
     listBgClass: {

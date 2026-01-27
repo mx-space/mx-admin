@@ -65,6 +65,7 @@ export const DraftRecoveryModal = defineComponent({
         title: string
         savedAt: string
         isCurrent?: boolean
+        isFullSnapshot?: boolean
       }> = []
 
       // Current draft (latest version)
@@ -86,6 +87,7 @@ export const DraftRecoveryModal = defineComponent({
               version: item.version,
               title: item.title,
               savedAt: item.savedAt,
+              isFullSnapshot: item.isFullSnapshot,
             })
           }
         }
@@ -289,6 +291,7 @@ export const DraftRecoveryModal = defineComponent({
                                   : selectedVersion.value === item.version
                               }
                               isCurrent={item.isCurrent}
+                              isFullSnapshot={item.isFullSnapshot}
                               diffStats={
                                 item.version !== 'published'
                                   ? calcDiffStats(

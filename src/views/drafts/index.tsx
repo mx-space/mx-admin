@@ -138,9 +138,9 @@ export default defineComponent({
     return () => (
       <MasterDetailLayout
         showDetailOnMobile={showDetailOnMobile.value}
-        defaultSize={0.3}
-        min={0.2}
-        max={0.4}
+        defaultSize={'300px'}
+        min={'200px'}
+        max={'400px'}
       >
         {{
           list: () => (
