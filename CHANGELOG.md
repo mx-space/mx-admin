@@ -1,5 +1,14 @@
 # CHANGELOG
 
+# [5.5.0](https://github.com/mx-space/admin-vue3/compare/v5.4.5...v5.5.0) (2026-01-27)
+
+
+### Features
+
+* draft diff ui optimize ([65fa17a](https://github.com/mx-space/admin-vue3/commit/65fa17aa79229a50648596347d5b86574ac293e7))
+
+
+
 ## [5.4.5](https://github.com/mx-space/admin-vue3/compare/v5.4.4...v5.4.5) (2026-01-26)
 
 
