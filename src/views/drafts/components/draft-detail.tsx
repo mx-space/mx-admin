@@ -379,7 +379,7 @@ export const DraftDetail = defineComponent({
                 ),
                 default: () => (
                   <span class="max-w-48">
-                    确定要删除「{props.draft.title || '无标题'}」？
+                    确定要删除草稿「{props.draft.title || '无标题'}」？
                   </span>
                 ),
               }}
