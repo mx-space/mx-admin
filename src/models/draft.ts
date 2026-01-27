@@ -40,6 +40,10 @@ export interface DraftHistoryListItem {
   savedAt: string
   /** 是否为全量快照，false 表示增量 diff */
   isFullSnapshot: boolean
+  /** 指向最近的全量快照版本（用于无 diff 的去重） */
+  refVersion?: number
+  /** 当前版本基于哪个全量快照 */
+  baseVersion?: number
 }
 
 // Type-specific data interfaces

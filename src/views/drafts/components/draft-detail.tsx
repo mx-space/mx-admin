@@ -56,6 +56,8 @@ interface VersionItem {
   savedAt: string
   isCurrent: boolean
   isFullSnapshot?: boolean
+  refVersion?: number
+  baseVersion?: number
 }
 
 const VersionListItem = defineComponent({
@@ -120,6 +122,23 @@ const VersionListItem = defineComponent({
                 {props.item.isFullSnapshot ? '全量' : '增量'}
               </span>
             )}
+            {props.item.refVersion !== undefined && (
+              <span
+                class="rounded bg-purple-100 px-1.5 py-0.5 text-xs text-purple-700 dark:bg-purple-900/50 dark:text-purple-400"
+                title={`内容与 v${props.item.refVersion} 相同，无需存储`}
+              >
+                = v{props.item.refVersion}
+              </span>
+            )}
+            {props.item.baseVersion !== undefined &&
+              !props.item.isFullSnapshot && (
+                <span
+                  class="rounded bg-neutral-100 px-1.5 py-0.5 text-xs text-neutral-600 dark:bg-neutral-700 dark:text-neutral-400"
+                  title={`基于 v${props.item.baseVersion} 的增量`}
+                >
+                  基于 v{props.item.baseVersion}
+                </span>
+              )}
             <span class="text-xs text-neutral-400 dark:text-neutral-500">
               <RelativeTime time={props.item.savedAt} />
             </span>
@@ -228,6 +247,8 @@ export const DraftDetail = defineComponent({
         savedAt: item.savedAt,
         isCurrent: index === 0,
         isFullSnapshot: item.isFullSnapshot,
+        refVersion: item.refVersion,
+        baseVersion: item.baseVersion,
       }))
     })
 
