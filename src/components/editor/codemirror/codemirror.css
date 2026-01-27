@@ -74,7 +74,8 @@
       margin: 0 auto;
       padding-top: 36px;
       padding-bottom: 36px;
-      font-family: 'Noto Serif SC', 'Source Han Serif SC', 'Source Han Serif',
+      font-family:
+        'Noto Serif SC', 'Source Han Serif SC', 'Source Han Serif',
         'Noto Serif CJK SC', Georgia, 'Times New Roman', serif;
       font-size: 1rem;
       line-height: 1.75;
@@ -183,6 +184,25 @@
       padding-left: 1.25em;
       border-left-width: 4px;
       border-color: color-mix(in srgb, var(--primary-default) 60%, transparent);
+    }
+
+    /* Ensure alerts keep their own border color in article styling */
+    & .cm-wysiwyg-alert-line {
+      border-left-color: var(--cm-alert-color) !important;
+    }
+
+    /* Ensure alert header (icon + label) keeps type color */
+    & .cm-wysiwyg-alert-marker,
+    & .cm-wysiwyg-alert-label,
+    & .cm-wysiwyg-alert-icon {
+      color: var(--cm-alert-color) !important;
+    }
+
+    /* Beat the very specific color reset on .cm-line * */
+    & > .cm-scroller > .cm-content > .cm-line .cm-wysiwyg-alert-marker,
+    & > .cm-scroller > .cm-content > .cm-line .cm-wysiwyg-alert-label,
+    & > .cm-scroller > .cm-content > .cm-line .cm-wysiwyg-alert-icon {
+      color: var(--cm-alert-color) !important;
     }
 
     /* Enhanced code block for article */
@@ -314,7 +334,8 @@
 
   /* Inline code styles */
   .cm-wysiwyg-inline-code {
-    font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+    font-family:
+      ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
       'Liberation Mono', monospace;
     font-size: 0.9em;
     padding: 0.125em 0.375em;
@@ -331,7 +352,8 @@
 
   /* Code block styles - editing mode */
   .cm-wysiwyg-codeblock-line {
-    font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+    font-family:
+      ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
       'Liberation Mono', monospace;
     font-size: 0.9em;
   }
@@ -407,6 +429,99 @@
     padding-left: 1em;
     opacity: 0.85;
     font-style: italic;
+    border-radius: 0;
+    background-color: color-mix(
+      in srgb,
+      var(--primary-default) 8%,
+      transparent
+    );
+    margin: 0;
+  }
+
+  .cm-wysiwyg-blockquote-start,
+  .cm-wysiwyg-blockquote-single {
+    margin-top: 16px;
+  }
+
+  .cm-wysiwyg-blockquote-end,
+  .cm-wysiwyg-blockquote-single {
+    margin-bottom: 16px;
+  }
+
+  /* GitHub alert styles */
+  .cm-wysiwyg-alert-line {
+    --cm-alert-color: #0969da;
+    font-style: normal;
+    opacity: 1;
+    border-left: 4px solid var(--cm-alert-color);
+    background-color: transparent;
+    padding-left: 16px;
+    padding-right: 16px;
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .cm-wysiwyg-alert-marker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: var(--cm-alert-color);
+    margin-bottom: 0;
+    user-select: none;
+    vertical-align: middle;
+    min-width: var(--cm-alert-marker-width, 10ch);
+  }
+
+  .cm-wysiwyg-alert-icon {
+    width: 18px;
+    height: 18px;
+    flex: none;
+    stroke: currentColor;
+  }
+
+  .cm-wysiwyg-alert-label {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* Specific Colors (Light Mode - Standard GitHub) */
+  .cm-wysiwyg-alert-note {
+    --cm-alert-color: #0969da;
+    --cm-alert-marker-width: 10ch;
+  }
+  .cm-wysiwyg-alert-tip {
+    --cm-alert-color: #1a7f37;
+    --cm-alert-marker-width: 9ch;
+  }
+  .cm-wysiwyg-alert-important {
+    --cm-alert-color: #8250df;
+    --cm-alert-marker-width: 15ch;
+  }
+  .cm-wysiwyg-alert-warning {
+    --cm-alert-color: #9a6700;
+    --cm-alert-marker-width: 13ch;
+  }
+  .cm-wysiwyg-alert-caution {
+    --cm-alert-color: #cf222e;
+    --cm-alert-marker-width: 13ch;
+  }
+
+  .cm-wysiwyg-alert-start,
+  .cm-wysiwyg-alert-single {
+    margin-top: 16px;
+    padding-top: 12px;
+  }
+
+  .cm-wysiwyg-alert-end,
+  .cm-wysiwyg-alert-single {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+  }
+
+  .cm-wysiwyg-alert-middle {
+    padding-top: 2px;
+    padding-bottom: 2px;
   }
 
   .cm-wysiwyg-blockquote-level-2 {
@@ -429,6 +544,29 @@
     margin-left: 4em;
   }
 
+  .cm-wysiwyg-alert-line.cm-wysiwyg-blockquote-level-2,
+  .cm-wysiwyg-alert-line.cm-wysiwyg-blockquote-level-3,
+  .cm-wysiwyg-alert-line.cm-wysiwyg-blockquote-level-4,
+  .cm-wysiwyg-alert-line.cm-wysiwyg-blockquote-level-5 {
+    border-left-width: 0.25em;
+  }
+
+  /* Keep blockquote shape/background stable on active line */
+  & > .cm-scroller > .cm-content .cm-wysiwyg-blockquote-line.cm-activeLine {
+    border-radius: 0 !important;
+    background-color: color-mix(
+      in srgb,
+      var(--primary-default) 8%,
+      transparent
+    ) !important;
+  }
+
+  /* Prevent active-line highlight from altering alert shape/height */
+  & > .cm-scroller > .cm-content .cm-wysiwyg-alert-line.cm-activeLine {
+    background-color: transparent !important;
+    border-radius: 0 !important;
+  }
+
   /* Math styles */
   .cm-wysiwyg-math-inline {
     display: inline-block;
@@ -437,7 +575,8 @@
   }
 
   .cm-wysiwyg-math-inline-editing {
-    font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+    font-family:
+      ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
       'Liberation Mono', monospace;
     background-color: color-mix(in srgb, currentColor 8%, transparent);
     border-radius: 0.25rem;
@@ -460,7 +599,8 @@
   }
 
   .cm-wysiwyg-math-block-line {
-    font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+    font-family:
+      ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
       'Liberation Mono', monospace;
     font-size: 0.9em;
   }
@@ -471,7 +611,8 @@
 
   .cm-wysiwyg-math-error {
     color: #ef4444;
-    font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+    font-family:
+      ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
       'Liberation Mono', monospace;
     font-size: 0.9em;
   }
