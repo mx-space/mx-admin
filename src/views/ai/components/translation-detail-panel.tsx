@@ -12,6 +12,7 @@ import {
   Languages as LanguagesIcon,
   Pencil as PencilIcon,
   Plus as PlusIcon,
+  RotateCw as RotateCwIcon,
   StickyNote as StickyNoteIcon,
   Trash2 as TrashIcon,
 } from 'lucide-vue-next'
@@ -66,6 +67,24 @@ export const TranslationDetailPanel = defineComponent({
     onRefresh: {
       type: Function as PropType<() => void>,
     },
+    onOptimisticUpdate: {
+      type: Function as PropType<
+        (
+          update:
+            | {
+                type: 'upsert'
+                article: ArticleInfo
+                translations: AITranslation[]
+              }
+            | {
+                type: 'remove'
+                articleId: string
+                translationId: string
+                lang: string
+              },
+        ) => void
+      >,
+    },
   },
   setup(props) {
     const article = ref<{
@@ -74,6 +93,7 @@ export const TranslationDetailPanel = defineComponent({
     } | null>(null)
     const translations = ref<AITranslation[]>([])
     const loading = ref(false)
+    const regenerationLoadingMap = ref<Record<string, boolean>>({})
 
     const fetchData = async (refId: string) => {
       loading.value = true
@@ -100,10 +120,18 @@ export const TranslationDetailPanel = defineComponent({
     )
 
     const handleDelete = async (id: string) => {
+      const removed = translations.value.find((t) => t.id === id)
       await aiApi.deleteTranslation(id)
       translations.value = translations.value.filter((t) => t.id !== id)
       toast.success('删除成功')
-      props.onRefresh?.()
+      if (props.articleId && removed) {
+        props.onOptimisticUpdate?.({
+          type: 'remove',
+          articleId: props.articleId,
+          translationId: removed.id,
+          lang: removed.lang,
+        })
+      }
     }
 
     const handleGenerate = () => {
@@ -149,13 +177,32 @@ export const TranslationDetailPanel = defineComponent({
                       })
                       .then((res) => {
                         if (res && res.length > 0) {
-                          translations.value.push(...res)
+                          // Merge by language to avoid duplicates / handle upsert responses
+                          const next = [...translations.value]
+                          for (const t of res) {
+                            const idxByLang = next.findIndex(
+                              (x) => x.lang === t.lang,
+                            )
+                            if (idxByLang !== -1) next[idxByLang] = t
+                            else next.push(t)
+                          }
+                          translations.value = next
                           toast.success(`生成了 ${res.length} 个翻译`)
+                          if (article.value) {
+                            props.onOptimisticUpdate?.({
+                              type: 'upsert',
+                              article: {
+                                id: props.articleId!,
+                                type: article.value.type,
+                                title: article.value.document.title,
+                              },
+                              translations: res,
+                            })
+                          }
                         } else {
                           toast.info('没有生成新的翻译')
                         }
                         $dialog.destroy()
-                        props.onRefresh?.()
                       })
                       .catch(() => {
                         loadingRef.value = false
@@ -257,6 +304,51 @@ export const TranslationDetailPanel = defineComponent({
       })
     }
 
+    const handleRegeneration = async (item: AITranslation) => {
+      if (regenerationLoadingMap.value[item.id]) return
+      regenerationLoadingMap.value[item.id] = true
+      try {
+        const res = await aiApi.generateTranslation({
+          refId: item.refId,
+          targetLanguages: [item.lang],
+        })
+
+        if (!res || res.length === 0) {
+          toast.info('没有生成新的翻译')
+          return
+        }
+
+        // backend may upsert or return a new record; replace current locale translation
+        const regenerated = res.find((t) => t.lang === item.lang) ?? res[0]
+
+        const idxById = translations.value.findIndex((t) => t.id === item.id)
+        if (idxById !== -1) {
+          translations.value[idxById] = regenerated
+        } else {
+          const idxByLang = translations.value.findIndex(
+            (t) => t.lang === item.lang,
+          )
+          if (idxByLang !== -1) translations.value[idxByLang] = regenerated
+          else translations.value.unshift(regenerated)
+        }
+
+        toast.success(`已重新生成 ${item.lang.toUpperCase()} 翻译`)
+        if (article.value) {
+          props.onOptimisticUpdate?.({
+            type: 'upsert',
+            article: {
+              id: item.refId,
+              type: article.value.type,
+              title: article.value.document.title,
+            },
+            translations: [regenerated],
+          })
+        }
+      } finally {
+        regenerationLoadingMap.value[item.id] = false
+      }
+    }
+
     const RefIcon = computed(() =>
       article.value ? RefTypeIcons[article.value.type] : FileTextIcon,
     )
@@ -343,6 +435,10 @@ export const TranslationDetailPanel = defineComponent({
                         key={translation.id}
                         item={translation}
                         onEdit={() => handleEdit(translation)}
+                        onRegeneration={() => handleRegeneration(translation)}
+                        regenerationLoading={
+                          !!regenerationLoadingMap.value[translation.id]
+                        }
                         onDelete={() => handleDelete(translation.id)}
                       />
                     ))}
@@ -366,6 +462,14 @@ const TranslationItem = defineComponent({
     onEdit: {
       type: Function as PropType<() => void>,
       required: true,
+    },
+    onRegeneration: {
+      type: Function as PropType<() => void>,
+      required: true,
+    },
+    regenerationLoading: {
+      type: Boolean,
+      default: false,
     },
     onDelete: {
       type: Function as PropType<() => void>,
@@ -411,6 +515,17 @@ const TranslationItem = defineComponent({
                 default: () => '编辑',
               }}
             </NTooltip>
+
+            <NButton
+              size="tiny"
+              quaternary
+              loading={props.regenerationLoading}
+              onClick={props.onRegeneration}
+            >
+              {{
+                icon: () => <RotateCwIcon class="size-3.5" />,
+              }}
+            </NButton>
 
             <NPopconfirm
               positiveText="取消"

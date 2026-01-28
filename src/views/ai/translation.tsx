@@ -5,6 +5,7 @@
 import { defineComponent, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type {
+  AITranslation,
   ArticleInfo,
   GroupedTranslationData,
   GroupedTranslationResponse,
@@ -80,6 +81,77 @@ export default defineComponent({
       refetch()
     }
 
+    type TranslationListOptimisticUpdate =
+      | {
+          type: 'upsert'
+          article: ArticleInfo
+          translations: AITranslation[]
+        }
+      | {
+          type: 'remove'
+          articleId: string
+          translationId: string
+          lang: string
+        }
+
+    const applyOptimisticUpdate = (update: TranslationListOptimisticUpdate) => {
+      if (update.type === 'upsert') {
+        const idx = listData.value.findIndex(
+          (g) => g.article.id === update.article.id,
+        )
+        if (idx === -1) {
+          // Only add when it's safe (first page), to avoid breaking pagination UX
+          if (pageRef.value === 1) {
+            // Respect search filter when possible
+            if (
+              searchRef.value.trim().length === 0 ||
+              update.article.title
+                .toLowerCase()
+                .includes(searchRef.value.trim().toLowerCase())
+            ) {
+              listData.value = [
+                {
+                  article: update.article,
+                  translations: [...update.translations],
+                },
+                ...listData.value,
+              ]
+            }
+          }
+          return
+        }
+
+        const group = listData.value[idx]
+        const nextTranslations = [...group.translations]
+        for (const t of update.translations) {
+          const idxByLang = nextTranslations.findIndex((x) => x.lang === t.lang)
+          if (idxByLang !== -1) nextTranslations[idxByLang] = t
+          else nextTranslations.push(t)
+        }
+
+        listData.value[idx] = {
+          ...group,
+          translations: nextTranslations,
+        }
+        return
+      }
+
+      // remove
+      const idx = listData.value.findIndex(
+        (g) => g.article.id === update.articleId,
+      )
+      if (idx === -1) return
+      const group = listData.value[idx]
+      const nextTranslations = group.translations.filter(
+        (t) => t.id !== update.translationId && t.lang !== update.lang,
+      )
+      if (nextTranslations.length === 0) {
+        listData.value = listData.value.filter((_, i) => i !== idx)
+      } else {
+        listData.value[idx] = { ...group, translations: nextTranslations }
+      }
+    }
+
     watch(
       () => data.value,
       (value) => {
@@ -135,6 +207,7 @@ export default defineComponent({
                 isMobile={isMobile.value}
                 onBack={handleBack}
                 onRefresh={refreshList}
+                onOptimisticUpdate={applyOptimisticUpdate}
               />
             ) : null,
           empty: () => <TranslationDetailEmptyState />,
