@@ -31,6 +31,7 @@ import type { AITranslation, ArticleInfo } from '~/api/ai'
 import type { PropType } from 'vue'
 
 import { aiApi } from '~/api/ai'
+import { MarkdownRender } from '~/components/markdown/markdown-render'
 
 type ArticleRefType = ArticleInfo['type']
 
@@ -441,14 +442,18 @@ const TranslationItem = defineComponent({
         </h5>
 
         {/* Content */}
-        <p
+        <div
           class={[
-            'm-0 whitespace-pre-wrap break-words text-sm leading-relaxed text-neutral-700 dark:text-neutral-300',
-            !expanded.value && shouldShowExpand.value ? 'line-clamp-3' : '',
+            !expanded.value && shouldShowExpand.value
+              ? 'max-h-[4.5rem] overflow-hidden'
+              : '',
           ]}
         >
-          {props.item.text}
-        </p>
+          <MarkdownRender
+            text={props.item.text}
+            class="text-sm leading-relaxed text-neutral-700 dark:text-neutral-300"
+          />
+        </div>
 
         {/* Summary */}
         {props.item.summary && expanded.value && (
