@@ -128,6 +128,7 @@ export const SummaryDetailPanel = defineComponent({
               </div>
               <div class="text-right">
                 <NButton
+                  size="small"
                   type="primary"
                   loading={loadingRef.value}
                   onClick={() => {

@@ -34,7 +34,7 @@ const _uuid = uuid()
 
 export const $api = ofetch.create({
   baseURL: API_URL,
-  timeout: 10000,
+  timeout: 60_000,
   credentials: 'include',
 
   onRequest({ options }) {

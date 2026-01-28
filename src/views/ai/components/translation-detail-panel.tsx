@@ -129,6 +129,7 @@ export const TranslationDetailPanel = defineComponent({
               </div>
               <div class="text-right">
                 <NButton
+                  size="small"
                   type="primary"
                   loading={loadingRef.value}
                   onClick={() => {
@@ -164,7 +165,6 @@ export const TranslationDetailPanel = defineComponent({
                       })
                   }}
                 >
-                  <LanguagesIcon class="mr-1.5 size-4" />
                   生成
                 </NButton>
               </div>

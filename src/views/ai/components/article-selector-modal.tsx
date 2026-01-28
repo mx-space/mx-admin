@@ -446,7 +446,6 @@ export const ArticleSelectorModal = defineComponent({
                 quaternary
                 onClick={handleGenerateAll}
                 disabled={generating.value}
-                loading={generating.value}
               >
                 为全部文章生成翻译（后台任务）
               </NButton>
