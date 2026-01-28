@@ -1,5 +1,25 @@
 # CHANGELOG
 
+# [5.6.0](https://github.com/mx-space/admin-vue3/compare/v5.5.1...v5.6.0) (2026-01-28)
+
+
+### Bug Fixes
+
+* loading style ([1423591](https://github.com/mx-space/admin-vue3/commit/14235915f9254145fe6f69a6ad496a5ba092843c))
+* panel width ([de41c66](https://github.com/mx-space/admin-vue3/commit/de41c66e3be7ea4476fd5adad57ec04cfbebca54))
+
+
+### Features
+
+* add AI translation functionality and components ([c054d8d](https://github.com/mx-space/admin-vue3/commit/c054d8d7741b0cf1584d9b73ae915f72c906d988))
+* enhance account settings layout and functionality ([b1273b6](https://github.com/mx-space/admin-vue3/commit/b1273b6a774db973b36495bc5af693074189caa4))
+* enhance draft model and detail view with versioning support ([3d2cb5a](https://github.com/mx-space/admin-vue3/commit/3d2cb5adc00ee9f07fc45c6126e5ab5457139c19))
+* enhance WYSIWYG editor with GitHub alert styles and blockquote support ([a356d13](https://github.com/mx-space/admin-vue3/commit/a356d13a063804f78fe07c95dc46205bc7a7ce26))
+* refactor settings layout with new components and improved structure ([872de4f](https://github.com/mx-space/admin-vue3/commit/872de4f03973bbed0e2d2c218aa526996853d364))
+* refactor snippets view with Master-Detail layout ([42ce3ce](https://github.com/mx-space/admin-vue3/commit/42ce3ce6866b4cc7f1d80a6e566f6c618e1ca119))
+
+
+
 ## [5.5.1](https://github.com/mx-space/admin-vue3/compare/v5.5.0...v5.5.1) (2026-01-27)
 
 
