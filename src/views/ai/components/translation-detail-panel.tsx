@@ -145,7 +145,10 @@ export const TranslationDetailPanel = defineComponent({
         content() {
           return (
             <NFlex vertical size="large">
-              <div>
+              <form
+                onSubmit={(e) => e.preventDefault()}
+                class="flex flex-col gap-2"
+              >
                 <label class="mb-2 block text-sm text-neutral-600 dark:text-neutral-400">
                   目标语言（多个语言用逗号分隔，留空使用默认配置）
                 </label>
@@ -154,67 +157,68 @@ export const TranslationDetailPanel = defineComponent({
                   onUpdateValue={(v) => (langsRef.value = v)}
                   placeholder="如：en, ja, ko 或留空"
                 />
-              </div>
-              <div class="text-right">
-                <NButton
-                  size="small"
-                  type="primary"
-                  loading={loadingRef.value}
-                  onClick={() => {
-                    loadingRef.value = true
-                    const targetLanguages = langsRef.value
-                      .split(',')
-                      .map((l) => l.trim().toLowerCase())
-                      .filter((l) => l.length === 2)
+                <div class="text-right">
+                  <NButton
+                    attrType="submit"
+                    size="small"
+                    type="primary"
+                    loading={loadingRef.value}
+                    onClick={() => {
+                      loadingRef.value = true
+                      const targetLanguages = langsRef.value
+                        .split(',')
+                        .map((l) => l.trim().toLowerCase())
+                        .filter((l) => l.length === 2)
 
-                    aiApi
-                      .generateTranslation({
-                        refId: props.articleId!,
-                        targetLanguages:
-                          targetLanguages.length > 0
-                            ? targetLanguages
-                            : undefined,
-                      })
-                      .then((res) => {
-                        if (res && res.length > 0) {
-                          // Merge by language to avoid duplicates / handle upsert responses
-                          const next = [...translations.value]
-                          for (const t of res) {
-                            const idxByLang = next.findIndex(
-                              (x) => x.lang === t.lang,
-                            )
-                            if (idxByLang !== -1) next[idxByLang] = t
-                            else next.push(t)
+                      aiApi
+                        .generateTranslation({
+                          refId: props.articleId!,
+                          targetLanguages:
+                            targetLanguages.length > 0
+                              ? targetLanguages
+                              : undefined,
+                        })
+                        .then((res) => {
+                          if (res && res.length > 0) {
+                            // Merge by language to avoid duplicates / handle upsert responses
+                            const next = [...translations.value]
+                            for (const t of res) {
+                              const idxByLang = next.findIndex(
+                                (x) => x.lang === t.lang,
+                              )
+                              if (idxByLang !== -1) next[idxByLang] = t
+                              else next.push(t)
+                            }
+                            translations.value = next
+                            toast.success(`生成了 ${res.length} 个翻译`)
+                            if (article.value) {
+                              props.onOptimisticUpdate?.({
+                                type: 'upsert',
+                                article: {
+                                  id: props.articleId!,
+                                  type: article.value.type,
+                                  title: article.value.document.title,
+                                },
+                                translations: res,
+                              })
+                            }
+                          } else {
+                            toast.info('没有生成新的翻译')
                           }
-                          translations.value = next
-                          toast.success(`生成了 ${res.length} 个翻译`)
-                          if (article.value) {
-                            props.onOptimisticUpdate?.({
-                              type: 'upsert',
-                              article: {
-                                id: props.articleId!,
-                                type: article.value.type,
-                                title: article.value.document.title,
-                              },
-                              translations: res,
-                            })
-                          }
-                        } else {
-                          toast.info('没有生成新的翻译')
-                        }
-                        $dialog.destroy()
-                      })
-                      .catch(() => {
-                        loadingRef.value = false
-                      })
-                      .finally(() => {
-                        loadingRef.value = false
-                      })
-                  }}
-                >
-                  生成
-                </NButton>
-              </div>
+                          $dialog.destroy()
+                        })
+                        .catch(() => {
+                          loadingRef.value = false
+                        })
+                        .finally(() => {
+                          loadingRef.value = false
+                        })
+                    }}
+                  >
+                    生成
+                  </NButton>
+                </div>
+              </form>
             </NFlex>
           )
         },
