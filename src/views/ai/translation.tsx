@@ -4,7 +4,11 @@
  */
 import { defineComponent, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { ArticleInfo } from '~/api/ai'
+import type {
+  ArticleInfo,
+  GroupedTranslationData,
+  GroupedTranslationResponse,
+} from '~/api/ai'
 
 import { useQuery } from '@tanstack/vue-query'
 
@@ -27,9 +31,19 @@ export default defineComponent({
     const { isMobile } = useMasterDetailLayout()
 
     const pageRef = ref(1)
+    const searchRef = ref('')
+    const listData = ref<GroupedTranslationData[]>([])
+    const pagerRef = ref<GroupedTranslationResponse['pagination'] | null>(null)
     const { data, refetch, isPending } = useQuery({
-      queryKey: queryKeys.ai.translationsGrouped({ page: pageRef.value }),
-      queryFn: () => aiApi.getTranslationsGrouped({ page: pageRef.value }),
+      queryKey: queryKeys.ai.translationsGrouped({
+        page: pageRef.value,
+        search: searchRef.value,
+      }),
+      queryFn: () =>
+        aiApi.getTranslationsGrouped({
+          page: pageRef.value,
+          search: searchRef.value || undefined,
+        }),
     })
 
     const selectedId = ref<string | null>((route.query.id as string) || null)
@@ -47,9 +61,38 @@ export default defineComponent({
     }
 
     const handlePageChange = (page: number) => {
+      if (pageRef.value === page) return
       pageRef.value = page
       refetch()
     }
+
+    const handleSearchChange = (search: string) => {
+      if (searchRef.value === search) return
+      searchRef.value = search
+      pageRef.value = 1
+      listData.value = []
+      refetch()
+    }
+
+    const refreshList = () => {
+      pageRef.value = 1
+      listData.value = []
+      refetch()
+    }
+
+    watch(
+      () => data.value,
+      (value) => {
+        if (!value) return
+        pagerRef.value = value.pagination ?? null
+        if (pageRef.value === 1) {
+          listData.value = value.data ?? []
+        } else {
+          listData.value = [...listData.value, ...(value.data ?? [])]
+        }
+      },
+      { immediate: true },
+    )
 
     watch(
       selectedId,
@@ -74,12 +117,15 @@ export default defineComponent({
         {{
           list: () => (
             <TranslationList
-              data={data.value?.data ?? []}
+              data={listData.value}
               loading={isPending.value}
               selectedId={selectedId.value}
-              pager={data.value?.pagination ?? null}
+              pager={pagerRef.value}
+              search={searchRef.value}
               onSelect={handleSelect}
               onPageChange={handlePageChange}
+              onSearchChange={handleSearchChange}
+              onRefresh={refreshList}
             />
           ),
           detail: () =>
@@ -88,7 +134,7 @@ export default defineComponent({
                 articleId={selectedId.value}
                 isMobile={isMobile.value}
                 onBack={handleBack}
-                onRefresh={refetch}
+                onRefresh={refreshList}
               />
             ) : null,
           empty: () => <TranslationDetailEmptyState />,

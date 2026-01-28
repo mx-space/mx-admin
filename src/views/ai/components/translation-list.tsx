@@ -6,12 +6,19 @@ import {
   FileText as FileTextIcon,
   Inbox as InboxIcon,
   Languages as LanguagesIcon,
+  LoaderIcon,
+  Plus as PlusIcon,
+  Search as SearchIcon,
   StickyNote as StickyNoteIcon,
 } from 'lucide-vue-next'
-import { NScrollbar } from 'naive-ui'
-import { computed, defineComponent } from 'vue'
+import { NButton, NInput, NScrollbar, NTooltip } from 'naive-ui'
+import { computed, defineComponent, ref, watch } from 'vue'
 import type { ArticleInfo, GroupedTranslationData } from '~/api/ai'
 import type { PropType } from 'vue'
+
+import { refDebounced } from '@vueuse/core'
+
+import { ArticleSelectorModal } from './article-selector-modal'
 
 type ArticleRefType = ArticleInfo['type']
 
@@ -63,9 +70,45 @@ export const TranslationList = defineComponent({
     onPageChange: {
       type: Function as PropType<(page: number) => void>,
     },
+    onRefresh: {
+      type: Function as PropType<() => void>,
+    },
+    onSearchChange: {
+      type: Function as PropType<(search: string) => void>,
+    },
+    search: {
+      type: String,
+      default: '',
+    },
   },
   setup(props) {
     const totalCount = computed(() => props.pager?.total ?? props.data.length)
+    const showBatchModal = ref(false)
+    const searchInputValue = ref('')
+    const debouncedSearch = refDebounced(searchInputValue, 300)
+
+    watch(debouncedSearch, (val) => {
+      props.onSearchChange?.(val)
+    })
+
+    const showSearchEmpty = computed(
+      () => props.search.trim().length > 0 && props.data.length === 0,
+    )
+
+    const handleBatchSuccess = () => {
+      props.onRefresh?.()
+    }
+
+    const handleScroll = (event: Event) => {
+      if (props.loading || !props.pager?.hasNextPage) return
+      const target = event.target as HTMLElement
+      if (!target) return
+      const reachedBottom =
+        target.scrollTop + target.clientHeight >= target.scrollHeight - 24
+      if (reachedBottom) {
+        props.onPageChange?.(props.pager.currentPage + 1)
+      }
+    }
 
     return () => (
       <div class="flex h-full flex-col">
@@ -74,17 +117,59 @@ export const TranslationList = defineComponent({
             <LanguagesIcon class="h-4 w-4" />
             AI 翻译
           </span>
-          {totalCount.value > 0 && (
-            <span class="text-xs text-neutral-400">
-              {totalCount.value} 篇文章
-            </span>
-          )}
+          <div class="flex items-center gap-2">
+            {totalCount.value > 0 && (
+              <span class="text-xs text-neutral-400">
+                {totalCount.value} 篇
+              </span>
+            )}
+            <NTooltip>
+              {{
+                trigger: () => (
+                  <NButton
+                    size="tiny"
+                    quaternary
+                    circle
+                    onClick={() => (showBatchModal.value = true)}
+                  >
+                    <PlusIcon class="size-4" />
+                  </NButton>
+                ),
+                default: () => '批量生成翻译',
+              }}
+            </NTooltip>
+          </div>
+        </div>
+
+        <ArticleSelectorModal
+          show={showBatchModal.value}
+          onClose={() => (showBatchModal.value = false)}
+          onSuccess={handleBatchSuccess}
+        />
+
+        <div class="flex flex-shrink-0 flex-col gap-2 border-b border-neutral-100 px-4 py-2 dark:border-neutral-800/50">
+          <NInput
+            value={searchInputValue.value}
+            onUpdateValue={(val) => (searchInputValue.value = val)}
+            placeholder="输入文章标题关键词"
+            clearable
+            inputProps={{
+              id: 'ai-translation-search',
+              name: 'ai-translation-search',
+              autocomplete: 'off',
+              class: 'text-base',
+            }}
+          >
+            {{
+              prefix: () => <SearchIcon class="size-4 text-neutral-400" />,
+            }}
+          </NInput>
         </div>
 
         <div class="min-h-0 flex-1">
           {props.loading && props.data.length === 0 ? (
             <div class="flex items-center justify-center py-24">
-              <div class="h-6 w-6 animate-spin rounded-full border-2 border-neutral-300 border-t-neutral-900 dark:border-neutral-700 dark:border-t-white" />
+              <LoaderIcon class="size-6 animate-spin text-neutral-400 dark:text-neutral-500" />
             </div>
           ) : props.data.length === 0 ? (
             <div class="flex flex-col items-center justify-center py-24 text-center">
@@ -94,8 +179,14 @@ export const TranslationList = defineComponent({
                 为文章生成 AI 翻译后会显示在这里
               </p>
             </div>
+          ) : showSearchEmpty.value ? (
+            <div class="flex flex-col items-center justify-center py-24 text-center">
+              <InboxIcon class="mb-4 h-10 w-10 text-neutral-300 dark:text-neutral-700" />
+              <p class="text-sm text-neutral-500">没有找到匹配的文章</p>
+              <p class="mt-1 text-xs text-neutral-400">试试其他关键词</p>
+            </div>
           ) : (
-            <NScrollbar class="h-full">
+            <NScrollbar class="h-full" onScroll={handleScroll}>
               <div>
                 {props.data.map((group) => (
                   <TranslationListItem
@@ -107,6 +198,11 @@ export const TranslationList = defineComponent({
                     onSelect={() => props.onSelect(group.article)}
                   />
                 ))}
+                {props.loading && props.data.length > 0 && (
+                  <div class="flex items-center justify-center py-3">
+                    <LoaderIcon class="size-4 animate-spin text-neutral-400 dark:text-neutral-500" />
+                  </div>
+                )}
               </div>
             </NScrollbar>
           )}

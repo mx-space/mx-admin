@@ -134,7 +134,11 @@ export const aiApi = {
     request.post<AIWriterGenerateResponse>('/ai/writer/generate', { data }),
 
   // 获取摘要列表（分组）
-  getSummariesGrouped: (params?: { page?: number; size?: number }) =>
+  getSummariesGrouped: (params?: {
+    page?: number
+    size?: number
+    search?: string
+  }) =>
     request.get<GroupedSummaryResponse>('/ai/summaries/grouped', { params }),
 
   // 根据引用获取摘要
@@ -168,7 +172,11 @@ export const aiApi = {
   // === AI Translation ===
 
   // 获取翻译列表（分组）
-  getTranslationsGrouped: (params?: { page?: number; size?: number }) =>
+  getTranslationsGrouped: (params?: {
+    page?: number
+    size?: number
+    search?: string
+  }) =>
     request.get<GroupedTranslationResponse>('/ai/translations/grouped', {
       params,
     }),
@@ -190,4 +198,21 @@ export const aiApi = {
   // 生成翻译
   generateTranslation: (data: { refId: string; targetLanguages?: string[] }) =>
     request.post<AITranslation[]>('/ai/translations/generate', { data }),
+
+  // 批量生成翻译
+  generateTranslationBatch: (data: {
+    refIds: string[]
+    targetLanguages?: string[]
+  }) =>
+    request.post<{ success: string[]; failed: string[] }>(
+      '/ai/translations/generate/batch',
+      { data },
+    ),
+
+  // 为全部文章生成翻译
+  generateTranslationAll: (data: { targetLanguages?: string[] }) =>
+    request.post<{ total: number; queued: number }>(
+      '/ai/translations/generate/all',
+      { data },
+    ),
 }
