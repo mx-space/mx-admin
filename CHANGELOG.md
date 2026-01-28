@@ -1,5 +1,15 @@
 # CHANGELOG
 
+# [5.7.0](https://github.com/mx-space/admin-vue3/compare/v5.6.0...v5.7.0) (2026-01-28)
+
+
+### Features
+
+* enhance AI API and UI components for summaries and translations ([b82c5eb](https://github.com/mx-space/admin-vue3/commit/b82c5eb4228484694c4d13ccb758933abe9a56b9))
+* implement optimistic updates for translation management ([6a1f168](https://github.com/mx-space/admin-vue3/commit/6a1f1686417cfb9413e60af32825e52d73335daa))
+
+
+
 # [5.6.0](https://github.com/mx-space/admin-vue3/compare/v5.5.1...v5.6.0) (2026-01-28)
 
 
