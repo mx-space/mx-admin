@@ -7,7 +7,15 @@ import {
   Sun,
 } from 'lucide-vue-next'
 import { NDropdown, NLayoutContent } from 'naive-ui'
-import { computed, defineComponent, h, onMounted, ref, watch } from 'vue'
+import {
+  computed,
+  defineComponent,
+  h,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from 'vue'
 import { useRouter } from 'vue-router'
 import type { ThemeMode } from '~/stores/ui'
 import type { DropdownOption } from 'naive-ui'
@@ -190,6 +198,82 @@ export const Sidebar = defineComponent({
       () => props.collapse,
     )
 
+    // iOS-style drag to dismiss
+    const dragStartY = ref(0)
+    const dragCurrentY = ref(0)
+    const isDragging = ref(false)
+    const dragOffset = ref(0)
+
+    const handleTouchStart = (e: TouchEvent) => {
+      const v = uiStore.viewport
+      const isMobile = v.value.pad || v.value.mobile
+      if (!isMobile || props.collapse) return
+
+      dragStartY.value = e.touches[0].clientY
+      isDragging.value = true
+      dragOffset.value = 0
+    }
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!isDragging.value) return
+
+      dragCurrentY.value = e.touches[0].clientY
+      const delta = dragCurrentY.value - dragStartY.value
+
+      // Only allow dragging down (positive delta)
+      if (delta > 0) {
+        // Apply rubber band effect for resistance
+        dragOffset.value = delta * 0.6
+        e.preventDefault()
+      }
+    }
+
+    const handleTouchEnd = () => {
+      if (!isDragging.value) return
+
+      const threshold = 100 // px threshold to trigger close
+      if (dragOffset.value > threshold) {
+        props.onCollapseChange(true)
+      }
+
+      // Reset
+      isDragging.value = false
+      dragOffset.value = 0
+    }
+
+    onMounted(() => {
+      const sidebar = sidebarRef.value
+      console.log('sidebar', sidebar)
+      if (sidebar) {
+        sidebar.addEventListener('touchstart', handleTouchStart, {
+          passive: true,
+        })
+        sidebar.addEventListener('touchmove', handleTouchMove, {
+          passive: false,
+        })
+        sidebar.addEventListener('touchend', handleTouchEnd, { passive: true })
+      }
+    })
+
+    onBeforeUnmount(() => {
+      const sidebar = sidebarRef.value
+      if (sidebar) {
+        sidebar.removeEventListener('touchstart', handleTouchStart)
+        sidebar.removeEventListener('touchmove', handleTouchMove)
+        sidebar.removeEventListener('touchend', handleTouchEnd)
+      }
+    })
+
+    const sidebarInnerStyle = computed(() => {
+      if (isDragging.value && dragOffset.value > 0) {
+        return {
+          transform: `translateY(${dragOffset.value}px)`,
+          transition: 'none',
+        }
+      }
+      return {}
+    })
+
     return () => {
       return (
         <div
@@ -201,7 +285,7 @@ export const Sidebar = defineComponent({
           onTransitionend={onTransitionEnd}
           ref={sidebarRef}
         >
-          <div class={styles.sidebar}>
+          <div class={styles.sidebar} style={sidebarInnerStyle.value}>
             <div class={styles.header}>
               <NDropdown
                 options={userDropdownOptions.value}
