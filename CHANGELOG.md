@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [5.7.1](https://github.com/mx-space/admin-vue3/compare/v5.7.0...v5.7.1) (2026-01-29)
+
+
+### Features
+
+* implement drag-to-dismiss functionality for sidebar on mobile ([f07fb2f](https://github.com/mx-space/admin-vue3/commit/f07fb2fd393a4cab0410df878f49b1ea4dbba7ae))
+
+
+
 # [5.7.0](https://github.com/mx-space/admin-vue3/compare/v5.6.0...v5.7.0) (2026-01-28)
 
 
