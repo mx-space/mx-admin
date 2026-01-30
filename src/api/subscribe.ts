@@ -22,7 +22,7 @@ export interface SubscribeResponse {
 
 export const subscribeApi = {
   // 获取订阅状态
-  getStatus: () => request.get<{ enabled: boolean }>('/subscribe/status'),
+  getStatus: () => request.get<{ enable: boolean }>('/subscribe/status'),
 
   // 获取订阅列表
   getList: (params?: { page?: number; size?: number }) =>

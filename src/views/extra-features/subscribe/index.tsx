@@ -220,7 +220,7 @@ export default defineComponent({
       queryFn: () => subscribeApi.getStatus(),
     })
 
-    const subscribeEnabled = computed(() => statusData.value?.enabled ?? false)
+    const subscribeEnabled = computed(() => statusData.value?.enable ?? false)
 
     const page = ref(1)
     const pageSize = 50

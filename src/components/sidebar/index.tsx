@@ -243,7 +243,7 @@ export const Sidebar = defineComponent({
 
     onMounted(() => {
       const sidebar = sidebarRef.value
-      console.log('sidebar', sidebar)
+
       if (sidebar) {
         sidebar.addEventListener('touchstart', handleTouchStart, {
           passive: true,
