@@ -218,9 +218,9 @@ export default defineComponent({
     return () => (
       <MasterDetailLayout
         showDetailOnMobile={!!selectedTaskId.value}
-        defaultSize={0.35}
-        min={0.25}
-        max={0.5}
+        defaultSize={'400px'}
+        min={'300px'}
+        max={'500px'}
       >
         {{
           list: () => (
