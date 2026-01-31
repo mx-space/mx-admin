@@ -1,5 +1,21 @@
 # CHANGELOG
 
+# [5.8.0](https://github.com/mx-space/admin-vue3/compare/v5.7.1...v5.8.0) (2026-01-31)
+
+
+### Bug Fixes
+
+* correct property name in subscription API and related components ([95a76f4](https://github.com/mx-space/admin-vue3/commit/95a76f4fe43787df5cf4fb7c5b1059158b80d0fe))
+* update layout dimensions for task management component ([ca882b3](https://github.com/mx-space/admin-vue3/commit/ca882b3f24c3a39d03c9f87283f33c0eb19eba76))
+
+
+### Features
+
+* implement AI task management system ([aa09198](https://github.com/mx-space/admin-vue3/commit/aa091980d75a88ff89cd23ed07ca38710ff2f638))
+* integrate AI model queries with localStorage persistence ([0c945e6](https://github.com/mx-space/admin-vue3/commit/0c945e6ea45f12aa7659f47b96623fc0654f5382))
+
+
+
 ## [5.7.1](https://github.com/mx-space/admin-vue3/compare/v5.7.0...v5.7.1) (2026-01-29)
 
 
