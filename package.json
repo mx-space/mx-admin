@@ -44,6 +44,8 @@
     "@mx-space/api-client": "1.18.1",
     "@pierre/diffs": "1.0.8",
     "@simplewebauthn/browser": "13.2.2",
+    "@tanstack/query-async-storage-persister": "5.90.22",
+    "@tanstack/query-persist-client-core": "5.91.19",
     "@tanstack/vue-query": "5.92.9",
     "@types/canvas-confetti": "1.9.0",
     "@vicons/utils": "0.1.4",

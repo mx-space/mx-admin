@@ -9,13 +9,15 @@ import {
   Zap as ZapIcon,
 } from 'lucide-vue-next'
 import { NButton, NInput, NSelect, NSpace, NSwitch } from 'naive-ui'
-import { computed, defineComponent, onMounted, ref, watch } from 'vue'
+import { computed, defineComponent, ref, watch } from 'vue'
 import { toast } from 'vue-sonner'
+import type { ProviderModel } from '~/api/ai'
 import type { PropType } from 'vue'
 
 import { aiApi } from '~/api/ai'
 import { HeaderActionButton } from '~/components/button/rounded-button'
 import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
+import { useAIModelsQuery, useUpdateModelsCache } from '~/hooks/queries/use-ai'
 import { SettingsRow, SettingsSection } from '~/layouts/settings-layout'
 
 // Types
@@ -646,7 +648,6 @@ export const AIConfigSection = defineComponent({
     },
   },
   setup(props) {
-    const providerModels = ref<Record<string, ModelInfo[]>>({})
     const loadingProviders = ref<Set<string>>(new Set())
     const testingProviders = ref<Set<string>>(new Set())
 
@@ -654,6 +655,13 @@ export const AIConfigSection = defineComponent({
       get: () => props.value,
       set: (val) => props.onUpdate(val),
     })
+
+    // 使用 Query 获取模型列表（带持久化缓存）
+    const hasEnabledProviders = computed(() =>
+      config.value.providers?.some((p) => p.enabled),
+    )
+    const { data: providerModels } = useAIModelsQuery(hasEnabledProviders)
+    const updateModelsCache = useUpdateModelsCache()
 
     const fetchModelsForProvider = async (provider: AIProviderConfig) => {
       loadingProviders.value.add(provider.id)
@@ -665,7 +673,7 @@ export const AIConfigSection = defineComponent({
           endpoint: provider.endpoint || undefined,
         })
         if (response.models) {
-          providerModels.value[provider.id] = response.models
+          updateModelsCache(provider.id, response.models as ProviderModel[])
         }
         if (response.error) {
           toast.warning(`获取模型列表: ${response.error}`)
@@ -677,19 +685,6 @@ export const AIConfigSection = defineComponent({
         }
       } finally {
         loadingProviders.value.delete(provider.id)
-      }
-    }
-
-    const fetchAllModels = async () => {
-      try {
-        const response = await aiApi.getModels()
-        for (const providerData of response) {
-          if (providerData.models) {
-            providerModels.value[providerData.provider] = providerData.models
-          }
-        }
-      } catch (error) {
-        console.error('Failed to fetch all models:', error)
       }
     }
 
@@ -718,12 +713,6 @@ export const AIConfigSection = defineComponent({
         testingProviders.value.delete(provider.id)
       }
     }
-
-    onMounted(() => {
-      if (config.value.providers?.some((p) => p.enabled)) {
-        fetchAllModels()
-      }
-    })
 
     const updateConfig = (partial: Partial<AIConfig>) => {
       props.onUpdate({ ...config.value, ...partial })
@@ -802,7 +791,7 @@ export const AIConfigSection = defineComponent({
                 onUpdate={(p) => handleProviderUpdate(index, p)}
                 onDelete={() => handleProviderDelete(index)}
                 onTest={(p) => testProviderConnection(p)}
-                availableModels={providerModels.value[provider.id] || []}
+                availableModels={providerModels.value?.[provider.id] || []}
                 isLoadingModels={loadingProviders.value.has(provider.id)}
                 isTesting={testingProviders.value.has(provider.id)}
                 onRefreshModels={() => fetchModelsForProvider(provider)}
@@ -831,7 +820,7 @@ export const AIConfigSection = defineComponent({
             description="用于生成文章摘要的模型"
             assignment={config.value.summaryModel}
             providers={config.value.providers || []}
-            providerModels={providerModels.value}
+            providerModels={providerModels.value || {}}
             onUpdate={(a) => updateConfig({ summaryModel: a })}
           />
 
@@ -840,7 +829,7 @@ export const AIConfigSection = defineComponent({
             description="用于生成标题、Slug 等的模型"
             assignment={config.value.writerModel}
             providers={config.value.providers || []}
-            providerModels={providerModels.value}
+            providerModels={providerModels.value || {}}
             onUpdate={(a) => updateConfig({ writerModel: a })}
           />
 
@@ -849,7 +838,7 @@ export const AIConfigSection = defineComponent({
             description="用于审核评论的模型"
             assignment={config.value.commentReviewModel}
             providers={config.value.providers || []}
-            providerModels={providerModels.value}
+            providerModels={providerModels.value || {}}
             onUpdate={(a) => updateConfig({ commentReviewModel: a })}
           />
 
@@ -858,7 +847,7 @@ export const AIConfigSection = defineComponent({
             description="用于生成文章翻译的模型"
             assignment={config.value.translationModel}
             providers={config.value.providers || []}
-            providerModels={providerModels.value}
+            providerModels={providerModels.value || {}}
             onUpdate={(a) => updateConfig({ translationModel: a })}
           />
         </SettingsSection>
