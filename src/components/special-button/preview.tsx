@@ -16,7 +16,7 @@ import type { PropType } from 'vue'
 import { optionsApi } from '~/api'
 import { useUIStore } from '~/stores/ui'
 
-import { HeaderActionButton } from '../button/rounded-button'
+import { HeaderActionButton } from '../button/header-action-button'
 
 export type PreviewButtonExposed = {
   getWindow: () => Window | null

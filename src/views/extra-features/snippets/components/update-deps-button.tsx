@@ -6,7 +6,7 @@ import type { NpmPKGInfo } from '~/external/types/npm-pkg'
 import { useElementVisibility } from '@vueuse/core'
 
 import { dependenciesApi } from '~/api'
-import { HeaderActionButton } from '~/components/button/rounded-button'
+import { HeaderActionButton } from '~/components/button/header-action-button'
 import { getNpmPKGLatest } from '~/external/api/npm'
 
 import { InstallDepsXterm } from './install-dep-xterm'

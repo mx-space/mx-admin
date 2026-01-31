@@ -22,7 +22,7 @@ import type { PageModel } from '~/models/page'
 import type { WriteBaseType } from '~/shared/types/base'
 
 import { pagesApi } from '~/api/pages'
-import { HeaderActionButton } from '~/components/button/rounded-button'
+import { HeaderActionButton } from '~/components/button/header-action-button'
 import { DraftListModal } from '~/components/draft/draft-list-modal'
 import { DraftRecoveryModal } from '~/components/draft/draft-recovery-modal'
 import { DraftSaveIndicator } from '~/components/draft/draft-save-indicator'

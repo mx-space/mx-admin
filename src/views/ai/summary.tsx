@@ -2,7 +2,7 @@
  * AI Summary Page
  * AI 摘要页面 - Master-Detail 布局
  */
-import { defineComponent, ref, watch } from 'vue'
+import { computed, defineComponent, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type {
   ArticleInfo,
@@ -35,10 +35,12 @@ export default defineComponent({
     const listData = ref<GroupedSummaryData[]>([])
     const pagerRef = ref<GroupedSummaryResponse['pagination'] | null>(null)
     const { data, refetch, isPending } = useQuery({
-      queryKey: queryKeys.ai.summariesGrouped({
-        page: pageRef.value,
-        search: searchRef.value,
-      }),
+      queryKey: computed(() =>
+        queryKeys.ai.summariesGrouped({
+          page: pageRef.value,
+          search: searchRef.value,
+        }),
+      ),
       queryFn: () =>
         aiApi.getSummariesGrouped({
           page: pageRef.value,
@@ -76,7 +78,7 @@ export default defineComponent({
 
     const refreshList = () => {
       pageRef.value = 1
-      listData.value = []
+      // 不清空列表，等待新数据到达后由 watch 更新
       refetch()
     }
 
@@ -85,10 +87,13 @@ export default defineComponent({
       (value) => {
         if (!value) return
         pagerRef.value = value.pagination ?? null
-        if (pageRef.value === 1) {
-          listData.value = value.data ?? []
-        } else {
-          listData.value = [...listData.value, ...(value.data ?? [])]
+        // 只有当 API 返回了数据时才更新列表，避免重新获取期间清空列表
+        if (value.data !== undefined) {
+          if (pageRef.value === 1) {
+            listData.value = value.data
+          } else {
+            listData.value = [...listData.value, ...value.data]
+          }
         }
       },
       { immediate: true },

@@ -28,7 +28,7 @@ import type { SnippetModel } from '~/models/snippet'
 import type { PropType } from 'vue'
 
 import { snippetsApi } from '~/api'
-import { HeaderActionButton } from '~/components/button/rounded-button'
+import { HeaderActionButton } from '~/components/button/header-action-button'
 import { CodeHighlight } from '~/components/code-highlight'
 import { CenterSpin } from '~/components/spin'
 import { GitHubSnippetRepo } from '~/external/api/github-mx-snippets'

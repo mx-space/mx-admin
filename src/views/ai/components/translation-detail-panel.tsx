@@ -31,7 +31,8 @@ import { toast } from 'vue-sonner'
 import type { AITranslation, ArticleInfo } from '~/api/ai'
 import type { PropType } from 'vue'
 
-import { aiApi } from '~/api/ai'
+import { aiApi, AITaskType } from '~/api/ai'
+import { useAiTaskQueue } from '~/components/ai-task-queue'
 import { MarkdownRender } from '~/components/markdown/markdown-render'
 
 type ArticleRefType = ArticleInfo['type']
@@ -87,6 +88,8 @@ export const TranslationDetailPanel = defineComponent({
     },
   },
   setup(props) {
+    const taskQueue = useAiTaskQueue()
+
     const article = ref<{
       type: ArticleRefType
       document: { title: string }
@@ -170,40 +173,30 @@ export const TranslationDetailPanel = defineComponent({
                         .map((l) => l.trim().toLowerCase())
                         .filter((l) => l.length === 2)
 
+                      const taskPayload = {
+                        refId: props.articleId!,
+                        targetLanguages:
+                          targetLanguages.length > 0
+                            ? targetLanguages
+                            : undefined,
+                      }
                       aiApi
-                        .generateTranslation({
-                          refId: props.articleId!,
-                          targetLanguages:
-                            targetLanguages.length > 0
-                              ? targetLanguages
-                              : undefined,
-                        })
+                        .createTranslationTask(taskPayload)
                         .then((res) => {
-                          if (res && res.length > 0) {
-                            // Merge by language to avoid duplicates / handle upsert responses
-                            const next = [...translations.value]
-                            for (const t of res) {
-                              const idxByLang = next.findIndex(
-                                (x) => x.lang === t.lang,
-                              )
-                              if (idxByLang !== -1) next[idxByLang] = t
-                              else next.push(t)
-                            }
-                            translations.value = next
-                            toast.success(`生成了 ${res.length} 个翻译`)
-                            if (article.value) {
-                              props.onOptimisticUpdate?.({
-                                type: 'upsert',
-                                article: {
-                                  id: props.articleId!,
-                                  type: article.value.type,
-                                  title: article.value.document.title,
-                                },
-                                translations: res,
-                              })
-                            }
+                          if (res.created) {
+                            taskQueue.trackTask({
+                              taskId: res.taskId,
+                              type: AITaskType.Translation,
+                              label: `翻译: ${article.value?.document.title || '文章'}`,
+                              onComplete: () => {
+                                fetchData(props.articleId!)
+                              },
+                              retryFn: () =>
+                                aiApi.createTranslationTask(taskPayload),
+                            })
+                            toast.success('已创建翻译任务')
                           } else {
-                            toast.info('没有生成新的翻译')
+                            toast.info('任务已存在，正在处理中')
                           }
                           $dialog.destroy()
                         })
@@ -312,41 +305,25 @@ export const TranslationDetailPanel = defineComponent({
       if (regenerationLoadingMap.value[item.id]) return
       regenerationLoadingMap.value[item.id] = true
       try {
-        const res = await aiApi.generateTranslation({
+        const taskPayload = {
           refId: item.refId,
           targetLanguages: [item.lang],
-        })
-
-        if (!res || res.length === 0) {
-          toast.info('没有生成新的翻译')
-          return
         }
+        const res = await aiApi.createTranslationTask(taskPayload)
 
-        // backend may upsert or return a new record; replace current locale translation
-        const regenerated = res.find((t) => t.lang === item.lang) ?? res[0]
-
-        const idxById = translations.value.findIndex((t) => t.id === item.id)
-        if (idxById !== -1) {
-          translations.value[idxById] = regenerated
-        } else {
-          const idxByLang = translations.value.findIndex(
-            (t) => t.lang === item.lang,
-          )
-          if (idxByLang !== -1) translations.value[idxByLang] = regenerated
-          else translations.value.unshift(regenerated)
-        }
-
-        toast.success(`已重新生成 ${item.lang.toUpperCase()} 翻译`)
-        if (article.value) {
-          props.onOptimisticUpdate?.({
-            type: 'upsert',
-            article: {
-              id: item.refId,
-              type: article.value.type,
-              title: article.value.document.title,
+        if (res.created) {
+          taskQueue.trackTask({
+            taskId: res.taskId,
+            type: AITaskType.Translation,
+            label: `翻译 (${item.lang.toUpperCase()}): ${article.value?.document.title || '文章'}`,
+            onComplete: () => {
+              fetchData(props.articleId!)
             },
-            translations: [regenerated],
+            retryFn: () => aiApi.createTranslationTask(taskPayload),
           })
+          toast.success(`已创建 ${item.lang.toUpperCase()} 翻译任务`)
+        } else {
+          toast.info('任务已存在，正在处理中')
         }
       } finally {
         regenerationLoadingMap.value[item.id] = false

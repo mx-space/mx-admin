@@ -48,8 +48,8 @@ importers:
         specifier: 1.2.3
         version: 1.2.3
       '@mx-space/api-client':
-        specifier: 1.18.1
-        version: 1.18.1
+        specifier: 1.21.2
+        version: 1.21.2
       '@pierre/diffs':
         specifier: 1.0.8
         version: 1.0.8(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -1078,8 +1078,9 @@ packages:
   '@marijn/find-cluster-break@1.0.2':
     resolution: {integrity: sha512-l0h88YhZFyKdXIFNfSWpyjStDjGHwZ/U7iobcK1cQQD8sejsONdQtTVU+1wVN1PBw40PiiHB1vA5S7VTfQiP9g==}
 
-  '@mx-space/api-client@1.18.1':
-    resolution: {integrity: sha512-Jq69AHOWt7tdjmFBR7evQ76blzrCX8e+H5p+s/MRYqM6qc+799ZsF7tUeITZQnmckXRKYTYKmF8E3tQ/V57Fmg==}
+  '@mx-space/api-client@1.21.2':
+    resolution: {integrity: sha512-WOYXj4xq+p9GkGr+PhfRhCxDFd39352MjOHNOQt+dnCKkfp98RSU4sU1MbCjFtCBIghwFim1rYYxNeDpUi7f3w==}
+    engines: {node: '>=22'}
 
   '@napi-rs/wasm-runtime@1.1.1':
     resolution: {integrity: sha512-p64ah1M1ld8xjWv3qbvFwHiFVWrq1yFvV4f7w+mzaqiR4IlSgkqhcRdHwsGgomwzBH51sRY4NEowLxnaBjcW/A==}
@@ -4929,7 +4930,7 @@ snapshots:
 
   '@marijn/find-cluster-break@1.0.2': {}
 
-  '@mx-space/api-client@1.18.1': {}
+  '@mx-space/api-client@1.21.2': {}
 
   '@napi-rs/wasm-runtime@1.1.1':
     dependencies:

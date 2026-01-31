@@ -24,7 +24,7 @@ import { useQuery } from '@tanstack/vue-query'
 
 import { optionsApi } from '~/api/options'
 import { subscribeApi } from '~/api/subscribe'
-import { HeaderActionButton } from '~/components/button/rounded-button'
+import { HeaderActionButton } from '~/components/button/header-action-button'
 import { RelativeTime } from '~/components/time/relative-time'
 import { useLayout } from '~/layouts/content'
 

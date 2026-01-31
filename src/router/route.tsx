@@ -20,6 +20,7 @@ import {
   FunctionSquare as FunctionIcon,
   Image as ImageIcon,
   Languages as LanguagesIcon,
+  ListTodo as ListTodoIcon,
   FileCode2 as MarkdownIcon,
   Hammer as MidHammer,
   Pencil as PencilAltIcon,
@@ -327,6 +328,15 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           icon: <LanguagesIcon />,
         },
         component: () => import('../views/ai/translation'),
+      },
+      {
+        path: 'tasks',
+        name: RouteName.AiTasks,
+        meta: {
+          title: '任务队列',
+          icon: <ListTodoIcon />,
+        },
+        component: () => import('../views/ai/tasks'),
       },
     ],
   },

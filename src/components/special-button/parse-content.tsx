@@ -18,7 +18,7 @@ import type { PropType } from 'vue'
 
 import { Icon } from '@vicons/utils'
 
-import { HeaderActionButton } from '~/components/button/rounded-button'
+import { HeaderActionButton } from '~/components/button/header-action-button'
 import { PlainEditor } from '~/components/editor/plain/plain'
 
 export const ParseContentButton = defineComponent({

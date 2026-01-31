@@ -4,7 +4,7 @@ import { defineComponent, isRef } from 'vue'
 import { toast } from 'vue-sonner'
 import type { PropType, Ref, VNode } from 'vue'
 
-import { HeaderActionButton } from '~/components/button/rounded-button'
+import { HeaderActionButton } from '~/components/button/header-action-button'
 
 type AccpetType = string[] | Set<string>
 

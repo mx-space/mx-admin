@@ -12,7 +12,7 @@ import type { SayModel } from '~/models/say'
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
 
 import { saysApi } from '~/api/says'
-import { HeaderActionButton } from '~/components/button/rounded-button'
+import { HeaderActionButton } from '~/components/button/header-action-button'
 import { queryKeys } from '~/hooks/queries/keys'
 import { useDataTable } from '~/hooks/use-data-table'
 import { useLayout } from '~/layouts/content'

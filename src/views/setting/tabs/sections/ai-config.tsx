@@ -15,7 +15,7 @@ import type { ProviderModel } from '~/api/ai'
 import type { PropType } from 'vue'
 
 import { aiApi } from '~/api/ai'
-import { HeaderActionButton } from '~/components/button/rounded-button'
+import { HeaderActionButton } from '~/components/button/header-action-button'
 import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
 import { useAIModelsQuery, useUpdateModelsCache } from '~/hooks/queries/use-ai'
 import { SettingsRow, SettingsSection } from '~/layouts/settings-layout'

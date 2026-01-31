@@ -31,7 +31,7 @@ import { toast } from 'vue-sonner'
 import type { UploadFileInfo } from 'naive-ui'
 
 import { filesApi } from '~/api'
-import { HeaderActionButton } from '~/components/button/rounded-button'
+import { HeaderActionButton } from '~/components/button/header-action-button'
 import { API_URL } from '~/constants/env'
 import { useLayout } from '~/layouts/content'
 import { getToken } from '~/utils'

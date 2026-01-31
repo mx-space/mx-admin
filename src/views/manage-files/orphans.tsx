@@ -22,7 +22,7 @@ import { toast } from 'vue-sonner'
 import type { OrphanFile } from '~/api/files'
 
 import { filesApi } from '~/api/files'
-import { HeaderActionButton } from '~/components/button/rounded-button'
+import { HeaderActionButton } from '~/components/button/header-action-button'
 import { useLayout } from '~/layouts/content'
 
 export default defineComponent({

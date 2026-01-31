@@ -11,7 +11,7 @@ import type { ProjectModel } from '~/models/project'
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
 
 import { projectsApi } from '~/api/projects'
-import { HeaderActionButton } from '~/components/button/rounded-button'
+import { HeaderActionButton } from '~/components/button/header-action-button'
 import { MasterDetailLayout, useMasterDetailLayout } from '~/components/layout'
 import { queryKeys } from '~/hooks/queries/keys'
 import { useDataTable } from '~/hooks/use-data-table'

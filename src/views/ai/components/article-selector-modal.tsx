@@ -24,10 +24,11 @@ import type { PropType } from 'vue'
 
 import { debouncedRef } from '@vueuse/core'
 
-import { aiApi } from '~/api/ai'
+import { aiApi, AITaskType } from '~/api/ai'
 import { notesApi } from '~/api/notes'
 import { postsApi } from '~/api/posts'
 import { searchApi } from '~/api/search'
+import { useAiTaskQueue } from '~/components/ai-task-queue'
 
 type ArticleRefType = 'Post' | 'Note'
 
@@ -70,6 +71,8 @@ export const ArticleSelectorModal = defineComponent({
     },
   },
   setup(props) {
+    const taskQueue = useAiTaskQueue()
+
     const loading = ref(false)
     const generating = ref(false)
     const articles = ref<SelectableArticle[]>([])
@@ -250,19 +253,27 @@ export const ArticleSelectorModal = defineComponent({
       const refIds = Array.from(selectedIds.value)
 
       try {
-        const result = await aiApi.generateTranslationBatch({
+        const taskPayload = {
           refIds,
           targetLanguages: langs,
-        })
-
-        if (result.success.length > 0) {
-          toast.success(`已提交 ${result.success.length} 篇文章的翻译任务`)
         }
-        if (result.failed.length > 0) {
-          toast.warning(`${result.failed.length} 篇文章提交失败`)
+        const result = await aiApi.createTranslationBatchTask(taskPayload)
+
+        if (result.created) {
+          taskQueue.trackTask({
+            taskId: result.taskId,
+            type: AITaskType.TranslationBatch,
+            label: `批量翻译 (${refIds.length} 篇)`,
+            onComplete: () => {
+              props.onSuccess?.()
+            },
+            retryFn: () => aiApi.createTranslationBatchTask(taskPayload),
+          })
+          toast.success(`已创建批量翻译任务，共 ${refIds.length} 篇文章`)
+        } else {
+          toast.info('任务已存在，正在处理中')
         }
 
-        props.onSuccess?.()
         props.onClose()
       } catch {
         toast.error('提交翻译任务失败')
@@ -277,15 +288,26 @@ export const ArticleSelectorModal = defineComponent({
       const langs = parseTargetLanguages()
 
       try {
-        const result = await aiApi.generateTranslationAll({
+        const taskPayload = {
           targetLanguages: langs,
-        })
+        }
+        const result = await aiApi.createTranslationAllTask(taskPayload)
 
-        toast.success(
-          `已提交全部文章翻译任务，共 ${result.total} 篇文章加入队列`,
-        )
+        if (result.created) {
+          taskQueue.trackTask({
+            taskId: result.taskId,
+            type: AITaskType.TranslationAll,
+            label: '全量翻译任务',
+            onComplete: () => {
+              props.onSuccess?.()
+            },
+            retryFn: () => aiApi.createTranslationAllTask(taskPayload),
+          })
+          toast.success('已创建全量翻译任务')
+        } else {
+          toast.info('任务已存在，正在处理中')
+        }
 
-        props.onSuccess?.()
         props.onClose()
       } catch {
         toast.error('提交翻译任务失败')

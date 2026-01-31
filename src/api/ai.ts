@@ -128,6 +128,62 @@ export interface AIModelListData {
   endpoint?: string
 }
 
+// AI Task 类型
+export enum AITaskType {
+  Summary = 'ai:summary',
+  Translation = 'ai:translation',
+  TranslationBatch = 'ai:translation:batch',
+  TranslationAll = 'ai:translation:all',
+}
+
+export enum AITaskStatus {
+  Pending = 'pending',
+  Running = 'running',
+  Completed = 'completed',
+  Failed = 'failed',
+  Cancelled = 'cancelled',
+}
+
+export interface AITaskLog {
+  timestamp: number
+  level: 'info' | 'warn' | 'error'
+  message: string
+}
+
+export interface AITask {
+  id: string
+  type: AITaskType
+  status: AITaskStatus
+  payload: Record<string, unknown>
+  groupId?: string
+
+  progress?: number
+  progressMessage?: string
+  totalItems?: number
+  completedItems?: number
+
+  createdAt: number
+  startedAt?: number
+  completedAt?: number
+
+  result?: unknown
+  error?: string
+  logs: AITaskLog[]
+
+  workerId?: string
+  retryCount: number
+}
+
+export interface AITasksResponse {
+  data: AITask[]
+  total: number
+}
+
+export interface CreateTaskResponse {
+  taskId: string
+  created: boolean
+}
+
 export const aiApi = {
   // AI 写作生成标题/Slug
   writerGenerate: (data: AIWriterGenerateData) =>
@@ -152,9 +208,9 @@ export const aiApi = {
   updateSummary: (id: string, data: { summary: string }) =>
     request.patch<AISummary>(`/ai/summaries/${id}`, { data }),
 
-  // 生成摘要
-  generateSummary: (data: { refId: string; lang: string }) =>
-    request.post<AISummary | null>('/ai/summaries/generate', { data }),
+  // 生成摘要（创建任务）
+  createSummaryTask: (data: { refId: string; lang?: string }) =>
+    request.post<CreateTaskResponse>('/ai/summaries/task', { data }),
 
   // 获取可用模型列表
   getModels: () => request.get<ProviderModelsResponse[]>('/ai/models'),
@@ -195,24 +251,52 @@ export const aiApi = {
     data: { title?: string; text?: string; summary?: string; tags?: string[] },
   ) => request.patch<AITranslation>(`/ai/translations/${id}`, { data }),
 
-  // 生成翻译
-  generateTranslation: (data: { refId: string; targetLanguages?: string[] }) =>
-    request.post<AITranslation[]>('/ai/translations/generate', { data }),
+  // 生成翻译（创建任务）
+  createTranslationTask: (data: {
+    refId: string
+    targetLanguages?: string[]
+  }) => request.post<CreateTaskResponse>('/ai/translations/task', { data }),
 
-  // 批量生成翻译
-  generateTranslationBatch: (data: {
+  // 批量生成翻译（创建任务）
+  createTranslationBatchTask: (data: {
     refIds: string[]
     targetLanguages?: string[]
   }) =>
-    request.post<{ success: string[]; failed: string[] }>(
-      '/ai/translations/generate/batch',
-      { data },
-    ),
+    request.post<CreateTaskResponse>('/ai/translations/task/batch', { data }),
 
-  // 为全部文章生成翻译
-  generateTranslationAll: (data: { targetLanguages?: string[] }) =>
-    request.post<{ total: number; queued: number }>(
-      '/ai/translations/generate/all',
-      { data },
-    ),
+  // 为全部文章生成翻译（创建任务）
+  createTranslationAllTask: (data: { targetLanguages?: string[] }) =>
+    request.post<CreateTaskResponse>('/ai/translations/task/all', { data }),
+
+  // === AI Tasks ===
+
+  // 获取任务列表
+  getTasks: (params?: {
+    status?: AITaskStatus
+    type?: AITaskType
+    page?: number
+    size?: number
+  }) => request.get<AITasksResponse>('/ai/tasks', { params }),
+
+  // 获取单个任务
+  getTask: (taskId: string) => request.get<AITask>(`/ai/tasks/${taskId}`),
+
+  // 取消任务
+  cancelTask: (taskId: string) =>
+    request.delete<{ success: boolean }>(`/ai/tasks/${taskId}`),
+
+  // 批量删除任务
+  deleteTasks: (params: {
+    status?: AITaskStatus
+    type?: AITaskType
+    before: number
+  }) => request.delete<{ deleted: number }>('/ai/tasks', { params }),
+
+  // 获取组内所有任务（子任务）
+  getTasksByGroupId: (groupId: string) =>
+    request.get<AITask[]>(`/ai/tasks/group/${groupId}`),
+
+  // 取消组内所有任务
+  cancelTasksByGroupId: (groupId: string) =>
+    request.delete<{ cancelled: number }>(`/ai/tasks/group/${groupId}`),
 }

@@ -2,7 +2,7 @@ import { Download as DownloadOutlined } from 'lucide-vue-next'
 import { NButton, NCard, NForm, NFormItem, NInput, NModal } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 
-import { HeaderActionButton } from '~/components/button/rounded-button'
+import { HeaderActionButton } from '~/components/button/header-action-button'
 
 import { InstallDepsXterm } from './install-dep-xterm'
 

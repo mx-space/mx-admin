@@ -3,7 +3,7 @@ import { defineComponent, onMounted, ref } from 'vue'
 import type { IGithubRepo } from '~/external/api/github-repo'
 import type { PropType } from 'vue'
 
-import { HeaderActionButton } from '~/components/button/rounded-button'
+import { HeaderActionButton } from '~/components/button/header-action-button'
 import { getRepoDetail, getRepoReadme } from '~/external/api/github-repo'
 
 const GithubIcon = () => (

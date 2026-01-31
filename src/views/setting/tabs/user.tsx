@@ -27,7 +27,7 @@ import { useMutation } from '@tanstack/vue-query'
 
 import { userApi } from '~/api/user'
 import Avatar from '~/components/avatar'
-import { HeaderActionButton } from '~/components/button/rounded-button'
+import { HeaderActionButton } from '~/components/button/header-action-button'
 import { IpInfoPopover } from '~/components/ip-info'
 import { RelativeTime } from '~/components/time/relative-time'
 import { UploadWrapper } from '~/components/upload'

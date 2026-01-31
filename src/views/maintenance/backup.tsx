@@ -16,7 +16,7 @@ import { toast } from 'vue-sonner'
 import type { PropType } from 'vue'
 
 import { backupApi } from '~/api/backup'
-import { HeaderActionButton } from '~/components/button/rounded-button'
+import { HeaderActionButton } from '~/components/button/header-action-button'
 import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
 import { useLayout } from '~/layouts/content'
 import { responseBlobToFile } from '~/utils'
@@ -143,7 +143,8 @@ export default defineComponent({
     }
 
     const isAllSelected = computed(
-      () => data.value.length > 0 && selectedKeys.value.size === data.value.length,
+      () =>
+        data.value.length > 0 && selectedKeys.value.size === data.value.length,
     )
 
     const toggleSelectAll = () => {

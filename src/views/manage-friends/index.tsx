@@ -26,7 +26,7 @@ import type { LinkModel, LinkStateCount } from '~/models/link'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 
 import { linksApi } from '~/api/links'
-import { HeaderActionButton } from '~/components/button/rounded-button'
+import { HeaderActionButton } from '~/components/button/header-action-button'
 import { Table } from '~/components/table'
 import { RelativeTime } from '~/components/time/relative-time'
 import { queryKeys } from '~/hooks/queries/keys'

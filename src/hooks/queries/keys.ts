@@ -170,6 +170,10 @@ export const queryKeys = {
     translationsByRef: (refId: string) =>
       [...queryKeys.ai.translations(), 'ref', refId] as const,
     models: () => [...queryKeys.ai.all, 'models'] as const,
+    tasks: () => [...queryKeys.ai.all, 'tasks'] as const,
+    tasksList: (params?: object) =>
+      [...queryKeys.ai.tasks(), 'list', params] as const,
+    task: (taskId: string) => [...queryKeys.ai.tasks(), taskId] as const,
   },
 
   // === 配置 ===

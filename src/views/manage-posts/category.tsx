@@ -32,7 +32,7 @@ import type { Ref } from 'vue'
 import { useMutation } from '@tanstack/vue-query'
 
 import { categoriesApi } from '~/api/categories'
-import { HeaderActionButton } from '~/components/button/rounded-button'
+import { HeaderActionButton } from '~/components/button/header-action-button'
 import {
   usePostsByTagQuery,
   useTagsQuery,

@@ -6,7 +6,7 @@ import { toast } from 'vue-sonner'
 import { useLocalStorage } from '@vueuse/core'
 
 import { debugApi } from '~/api'
-import { HeaderActionButton } from '~/components/button/rounded-button'
+import { HeaderActionButton } from '~/components/button/header-action-button'
 import { FunctionCodeEditor } from '~/components/function-editor'
 import { useLayout } from '~/layouts/content'
 import { TwoColGridLayout } from '~/layouts/two-col'

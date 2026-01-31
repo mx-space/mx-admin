@@ -20,7 +20,7 @@ import type { CommentModel } from '~/models/comment'
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
 
 import { commentsApi } from '~/api/comments'
-import { HeaderActionButton } from '~/components/button/rounded-button'
+import { HeaderActionButton } from '~/components/button/header-action-button'
 import { MasterDetailLayout, useMasterDetailLayout } from '~/components/layout'
 import { queryKeys } from '~/hooks/queries/keys'
 import { useDataTable } from '~/hooks/use-data-table'

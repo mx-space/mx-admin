@@ -10,7 +10,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
 import type { SnippetModel } from '../../../models/snippet'
 
-import { HeaderActionButton } from '~/components/button/rounded-button'
+import { HeaderActionButton } from '~/components/button/header-action-button'
 import {
   MasterDetailLayout,
   useMasterDetailLayout,

@@ -8,7 +8,7 @@ import type { DraftModel, DraftRefType } from '~/models/draft'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 
 import { draftsApi } from '~/api/drafts'
-import { HeaderActionButton } from '~/components/button/rounded-button'
+import { HeaderActionButton } from '~/components/button/header-action-button'
 import { MasterDetailLayout, useMasterDetailLayout } from '~/components/layout'
 import { useLayout } from '~/layouts/content'
 import { RouteName } from '~/router/name'

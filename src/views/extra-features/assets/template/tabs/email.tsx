@@ -3,7 +3,7 @@ import { NForm, NFormItem, NGi, NSelect, useDialog } from 'naive-ui'
 import { defineComponent, onMounted, ref, watch } from 'vue'
 
 import { optionsApi } from '~/api'
-import { HeaderActionButton } from '~/components/button/rounded-button'
+import { HeaderActionButton } from '~/components/button/header-action-button'
 import { useMountAndUnmount } from '~/hooks/use-lifecycle'
 import { useLayout } from '~/layouts/content'
 import { TwoColGridLayout } from '~/layouts/two-col'

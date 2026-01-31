@@ -39,7 +39,7 @@ import { UIStore } from '~/stores/ui'
 import { getToken } from '~/utils'
 import { formatNumber } from '~/utils/number'
 
-import { HeaderActionButton } from '../../components/button/rounded-button'
+import { HeaderActionButton } from '../../components/button/header-action-button'
 import { useLayout } from '../../layouts/content'
 
 // Mobile card item component

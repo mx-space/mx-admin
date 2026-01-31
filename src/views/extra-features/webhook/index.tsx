@@ -37,7 +37,7 @@ import type { PropType, VNode } from 'vue'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 
 import { webhooksApi } from '~/api/webhooks'
-import { HeaderActionButton } from '~/components/button/rounded-button'
+import { HeaderActionButton } from '~/components/button/header-action-button'
 import { queryKeys } from '~/hooks/queries/keys'
 import { useLayout } from '~/layouts/content'
 import { EventScope } from '~/models/wehbook'

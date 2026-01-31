@@ -30,7 +30,8 @@ import { toast } from 'vue-sonner'
 import type { AISummary, ArticleInfo } from '~/api/ai'
 import type { PropType } from 'vue'
 
-import { aiApi } from '~/api/ai'
+import { aiApi, AITaskType } from '~/api/ai'
+import { useAiTaskQueue } from '~/components/ai-task-queue'
 
 type ArticleRefType = ArticleInfo['type']
 
@@ -67,6 +68,8 @@ export const SummaryDetailPanel = defineComponent({
     },
   },
   setup(props) {
+    const taskQueue = useAiTaskQueue()
+
     const article = ref<{
       type: ArticleRefType
       document: { title: string }
@@ -134,18 +137,28 @@ export const SummaryDetailPanel = defineComponent({
                   onClick={() => {
                     if (!langRef.value) return
                     loadingRef.value = true
+                    const taskPayload = {
+                      refId: props.articleId!,
+                      lang: langRef.value,
+                    }
                     aiApi
-                      .generateSummary({
-                        refId: props.articleId!,
-                        lang: langRef.value,
-                      })
+                      .createSummaryTask(taskPayload)
                       .then((res) => {
-                        if (res) {
-                          summaries.value.push(res)
-                          toast.success('生成成功')
+                        if (res.created) {
+                          taskQueue.trackTask({
+                            taskId: res.taskId,
+                            type: AITaskType.Summary,
+                            label: `摘要: ${article.value?.document.title || '文章'}`,
+                            onComplete: () => {
+                              fetchData(props.articleId!)
+                            },
+                            retryFn: () => aiApi.createSummaryTask(taskPayload),
+                          })
+                          toast.success('已创建摘要生成任务')
+                        } else {
+                          toast.info('任务已存在，正在处理中')
                         }
                         $dialog.destroy()
-                        props.onRefresh?.()
                       })
                       .finally(() => {
                         loadingRef.value = false

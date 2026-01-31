@@ -10,7 +10,7 @@ import type { TopicModel } from '~/models/topic'
 import { useQueryClient } from '@tanstack/vue-query'
 
 import { topicsApi } from '~/api/topics'
-import { HeaderActionButton } from '~/components/button/rounded-button'
+import { HeaderActionButton } from '~/components/button/header-action-button'
 import { MasterDetailLayout, useMasterDetailLayout } from '~/components/layout'
 import { queryKeys } from '~/hooks/queries/keys'
 import { useDeleteTopicMutation } from '~/hooks/queries/use-topics'

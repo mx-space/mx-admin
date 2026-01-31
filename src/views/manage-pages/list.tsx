@@ -22,7 +22,7 @@ import { RelativeTime } from '~/components/time/relative-time'
 import { WEB_URL } from '~/constants/env'
 import { queryKeys } from '~/hooks/queries/keys'
 
-import { HeaderActionButton } from '../../components/button/rounded-button'
+import { HeaderActionButton } from '../../components/button/header-action-button'
 import { useLayout } from '../../layouts/content'
 
 const PageItem = defineComponent({

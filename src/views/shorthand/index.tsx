@@ -23,7 +23,7 @@ import { recentlyApi } from '~/api'
 import { useShorthand } from '~/components/shorthand'
 import { RelativeTime } from '~/components/time/relative-time'
 
-import { HeaderActionButton } from '../../components/button/rounded-button'
+import { HeaderActionButton } from '../../components/button/header-action-button'
 import { useLayout } from '../../layouts/content'
 import styles from './index.module.css'
 

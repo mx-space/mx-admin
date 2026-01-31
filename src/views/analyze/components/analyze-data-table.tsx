@@ -21,7 +21,7 @@ import type { UA } from '~/models/analyze'
 import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 
 import { analyzeApi } from '~/api/analyze'
-import { HeaderActionButton } from '~/components/button/rounded-button'
+import { HeaderActionButton } from '~/components/button/header-action-button'
 import { IpInfoPopover } from '~/components/ip-info'
 import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
 import { Table } from '~/components/table'
