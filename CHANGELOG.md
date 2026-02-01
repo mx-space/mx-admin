@@ -1,5 +1,14 @@
 # CHANGELOG
 
+# [5.9.0](https://github.com/mx-space/admin-vue3/compare/v5.8.0...v5.9.0) (2026-02-01)
+
+
+### Features
+
+* enhance AI task management and layout components ([6f1f840](https://github.com/mx-space/admin-vue3/commit/6f1f84071cb584a2caa4bea1a0d0eca80bafd918))
+
+
+
 # [5.8.0](https://github.com/mx-space/admin-vue3/compare/v5.7.1...v5.8.0) (2026-01-31)
 
 
