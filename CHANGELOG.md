@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [5.9.1](https://github.com/mx-space/admin-vue3/compare/v5.9.0...v5.9.1) (2026-02-01)
+
+
+### Features
+
+* add task deletion functionality to AI task management ([e3e55a5](https://github.com/mx-space/admin-vue3/commit/e3e55a5b15ffc3904181b384f9bf562ee7ce3e54))
+
+
+
 # [5.9.0](https://github.com/mx-space/admin-vue3/compare/v5.8.0...v5.9.0) (2026-02-01)
 
 
