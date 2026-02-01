@@ -1,30 +1,24 @@
 /**
  * AI Translation Detail Panel Component
  * AI 翻译详情面板 - 用于 MasterDetailLayout 右侧
+ * 采用分栏布局：左侧翻译列表，右侧编辑面板
  */
 import { format } from 'date-fns'
 import {
   ArrowLeft as ArrowLeftIcon,
+  Bot as BotIcon,
   Calendar as CalendarIcon,
-  ChevronDown as ChevronDownIcon,
-  ChevronUp as ChevronUpIcon,
   FileText as FileTextIcon,
   Languages as LanguagesIcon,
   Pencil as PencilIcon,
   Plus as PlusIcon,
   RotateCw as RotateCwIcon,
+  Save as SaveIcon,
   StickyNote as StickyNoteIcon,
   Trash2 as TrashIcon,
+  X as XIcon,
 } from 'lucide-vue-next'
-import {
-  NButton,
-  NEmpty,
-  NFlex,
-  NInput,
-  NPopconfirm,
-  NScrollbar,
-  NTooltip,
-} from 'naive-ui'
+import { NButton, NEmpty, NInput, NPopconfirm, NScrollbar } from 'naive-ui'
 import { computed, defineComponent, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import { toast } from 'vue-sonner'
@@ -33,16 +27,10 @@ import type { PropType } from 'vue'
 
 import { aiApi, AITaskType } from '~/api/ai'
 import { useAiTaskQueue } from '~/components/ai-task-queue'
+import { SplitPanelEmptyState, SplitPanelLayout } from '~/components/layout'
 import { MarkdownRender } from '~/components/markdown/markdown-render'
 
 type ArticleRefType = ArticleInfo['type']
-
-const RefTypeLabels: Record<ArticleRefType, string> = {
-  Post: '文章',
-  Note: '笔记',
-  Page: '页面',
-  Recently: '速记',
-}
 
 const RefTypeIcons: Record<ArticleRefType, typeof FileTextIcon> = {
   Post: FileTextIcon,
@@ -50,6 +38,8 @@ const RefTypeIcons: Record<ArticleRefType, typeof FileTextIcon> = {
   Page: FileTextIcon,
   Recently: FileTextIcon,
 }
+
+type ActivePanel = { type: 'edit'; translation: AITranslation } | null
 
 export const TranslationDetailPanel = defineComponent({
   name: 'TranslationDetailPanel',
@@ -97,6 +87,11 @@ export const TranslationDetailPanel = defineComponent({
     const translations = ref<AITranslation[]>([])
     const loading = ref(false)
     const regenerationLoadingMap = ref<Record<string, boolean>>({})
+    const activePanel = ref<ActivePanel>(null)
+
+    const setActivePanel = (panel: ActivePanel) => {
+      activePanel.value = panel
+    }
 
     const fetchData = async (refId: string) => {
       loading.value = true
@@ -114,9 +109,11 @@ export const TranslationDetailPanel = defineComponent({
       (id) => {
         if (id) {
           fetchData(id)
+          activePanel.value = null
         } else {
           article.value = null
           translations.value = []
+          activePanel.value = null
         }
       },
       { immediate: true },
@@ -135,6 +132,12 @@ export const TranslationDetailPanel = defineComponent({
           lang: removed.lang,
         })
       }
+      if (
+        activePanel.value?.type === 'edit' &&
+        activePanel.value.translation.id === id
+      ) {
+        activePanel.value = null
+      }
     }
 
     const handleGenerate = () => {
@@ -147,7 +150,7 @@ export const TranslationDetailPanel = defineComponent({
         title: '生成 AI 翻译',
         content() {
           return (
-            <NFlex vertical size="large">
+            <div class="flex flex-col gap-4">
               <form
                 onSubmit={(e) => e.preventDefault()}
                 class="flex flex-col gap-2"
@@ -212,93 +215,26 @@ export const TranslationDetailPanel = defineComponent({
                   </NButton>
                 </div>
               </form>
-            </NFlex>
+            </div>
           )
         },
       })
     }
 
     const handleEdit = (item: AITranslation) => {
-      const titleRef = ref(item.title)
-      const textRef = ref(item.text)
-      const summaryRef = ref(item.summary || '')
+      setActivePanel({ type: 'edit', translation: item })
+    }
 
-      const $dialog = dialog.create({
-        title: `编辑翻译 (${item.lang.toUpperCase()})`,
-        style: { width: '600px' },
-        content() {
-          return (
-            <NFlex vertical size="large">
-              <div>
-                <label class="mb-2 block text-sm text-neutral-600 dark:text-neutral-400">
-                  标题
-                </label>
-                <NInput
-                  value={titleRef.value}
-                  onUpdateValue={(v) => (titleRef.value = v)}
-                  placeholder="标题"
-                />
-              </div>
-              <div>
-                <label class="mb-2 block text-sm text-neutral-600 dark:text-neutral-400">
-                  内容
-                </label>
-                <NInput
-                  value={textRef.value}
-                  onUpdateValue={(v) => (textRef.value = v)}
-                  type="textarea"
-                  rows={8}
-                  placeholder="翻译内容"
-                />
-              </div>
-              <div>
-                <label class="mb-2 block text-sm text-neutral-600 dark:text-neutral-400">
-                  摘要（可选）
-                </label>
-                <NInput
-                  value={summaryRef.value}
-                  onUpdateValue={(v) => (summaryRef.value = v)}
-                  type="textarea"
-                  rows={3}
-                  placeholder="翻译摘要"
-                />
-              </div>
-              <div class="text-right">
-                <NButton
-                  type="primary"
-                  onClick={() => {
-                    if (!titleRef.value || !textRef.value) {
-                      toast.warning('标题和内容不能为空')
-                      return
-                    }
-                    aiApi
-                      .updateTranslation(item.id, {
-                        title: titleRef.value,
-                        text: textRef.value,
-                        summary: summaryRef.value || undefined,
-                      })
-                      .then(() => {
-                        const idx = translations.value.findIndex(
-                          (t) => t.id === item.id,
-                        )
-                        if (idx !== -1) {
-                          translations.value[idx].title = titleRef.value
-                          translations.value[idx].text = textRef.value
-                          translations.value[idx].summary =
-                            summaryRef.value || undefined
-                        }
-                        toast.success('保存成功')
-                        $dialog.destroy()
-                      })
-                  }}
-                >
-                  保存
-                </NButton>
-              </div>
-            </NFlex>
-          )
-        },
-      })
+    const handleSaveEdit = (
+      id: string,
+      updates: { title: string; text: string; summary?: string },
+    ) => {
+      const idx = translations.value.findIndex((t) => t.id === id)
+      if (idx !== -1) {
+        translations.value[idx].title = updates.title
+        translations.value[idx].text = updates.text
+        translations.value[idx].summary = updates.summary
+      }
     }
 
     const handleRegeneration = async (item: AITranslation) => {
@@ -334,17 +270,20 @@ export const TranslationDetailPanel = defineComponent({
       article.value ? RefTypeIcons[article.value.type] : FileTextIcon,
     )
 
-    return () => (
-      <div class="flex h-full flex-col bg-white dark:bg-black">
+    const hasPanel = computed(() => activePanel.value !== null)
+
+    // 左侧内容：文章信息 + 翻译列表
+    const ListContent = () => (
+      <div class="flex h-full flex-col">
         {/* Header */}
-        <div class="flex h-12 flex-shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
+        <div class="flex h-12 shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
           <div class="flex items-center gap-3">
             {props.isMobile && props.onBack && (
               <button
                 onClick={props.onBack}
-                class="-ml-2 flex h-8 w-8 items-center justify-center rounded-md text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+                class="-ml-2 flex size-8 items-center justify-center rounded-md text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
               >
-                <ArrowLeftIcon class="h-5 w-5" />
+                <ArrowLeftIcon class="size-5" />
               </button>
             )}
             <h2 class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
@@ -365,11 +304,11 @@ export const TranslationDetailPanel = defineComponent({
         {/* Content */}
         <NScrollbar class="min-h-0 flex-1">
           {loading.value ? (
-            <div class="absolute inset-0 flex items-center justify-center">
-              <div class="h-6 w-6 animate-spin rounded-full border-2 border-neutral-300 border-t-neutral-900 dark:border-neutral-700 dark:border-t-white" />
+            <div class="flex h-full items-center justify-center">
+              <div class="size-6 animate-spin rounded-full border-2 border-neutral-300 border-t-neutral-900 dark:border-neutral-700 dark:border-t-white" />
             </div>
           ) : article.value ? (
-            <div class="mx-auto max-w-3xl space-y-6 p-6">
+            <div class="space-y-4 p-4">
               {/* Article Info */}
               <div>
                 <RouterLink
@@ -377,15 +316,10 @@ export const TranslationDetailPanel = defineComponent({
                   class="group inline-flex items-center gap-2 no-underline"
                 >
                   <RefIcon.value class="size-5 shrink-0 text-neutral-400" />
-                  <h3 class="text-lg font-semibold text-neutral-900 transition-colors group-hover:text-blue-600 dark:text-neutral-100 dark:group-hover:text-blue-400">
+                  <h3 class="text-base font-semibold text-neutral-900 transition-colors group-hover:text-blue-600 dark:text-neutral-100 dark:group-hover:text-blue-400">
                     {article.value.document.title}
                   </h3>
                 </RouterLink>
-                <div class="mt-1.5 pl-7">
-                  <span class="inline-block rounded bg-neutral-100 px-2 py-0.5 text-xs text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">
-                    {RefTypeLabels[article.value.type]}
-                  </span>
-                </div>
               </div>
 
               <div class="h-px bg-neutral-100 dark:bg-neutral-800" />
@@ -410,11 +344,15 @@ export const TranslationDetailPanel = defineComponent({
                     }}
                   </NEmpty>
                 ) : (
-                  <div>
+                  <div class="-mx-4 divide-y divide-neutral-100 dark:divide-neutral-800">
                     {translations.value.map((translation) => (
-                      <TranslationItem
+                      <TranslationListItem
                         key={translation.id}
                         item={translation}
+                        selected={
+                          activePanel.value?.type === 'edit' &&
+                          activePanel.value.translation.id === translation.id
+                        }
                         onEdit={() => handleEdit(translation)}
                         onRegeneration={() => handleRegeneration(translation)}
                         regenerationLoading={
@@ -431,14 +369,49 @@ export const TranslationDetailPanel = defineComponent({
         </NScrollbar>
       </div>
     )
+
+    // 右侧面板内容
+    const PanelContent = () => {
+      if (activePanel.value?.type === 'edit') {
+        return (
+          <TranslationEditPanel
+            translation={activePanel.value.translation}
+            onSave={handleSaveEdit}
+            onClose={() => setActivePanel(null)}
+          />
+        )
+      }
+      return null
+    }
+
+    return () => (
+      <SplitPanelLayout showPanel={hasPanel.value} forceMobile={props.isMobile}>
+        {{
+          list: ListContent,
+          panel: PanelContent,
+          empty: () => (
+            <SplitPanelEmptyState
+              icon={() => <PencilIcon class="size-6 text-neutral-400" />}
+              title="选择一条翻译"
+              description="从左侧列表选择翻译进行编辑"
+            />
+          ),
+        }}
+      </SplitPanelLayout>
+    )
   },
 })
 
-const TranslationItem = defineComponent({
+/** 翻译列表项 */
+const TranslationListItem = defineComponent({
   props: {
     item: {
       type: Object as PropType<AITranslation>,
       required: true,
+    },
+    selected: {
+      type: Boolean,
+      default: false,
     },
     onEdit: {
       type: Function as PropType<() => void>,
@@ -458,45 +431,31 @@ const TranslationItem = defineComponent({
     },
   },
   setup(props) {
-    const expanded = ref(false)
-    const shouldShowExpand = computed(
-      () => props.item.text.length > 200 || props.item.text.includes('\n'),
-    )
-
     return () => (
-      <div class="group border-b border-neutral-100 py-4 last:border-b-0 dark:border-neutral-800">
+      <div
+        class={[
+          'group cursor-pointer px-4 py-3 transition-colors',
+          props.selected
+            ? 'bg-neutral-100 dark:bg-neutral-800'
+            : 'hover:bg-neutral-50 dark:hover:bg-neutral-800/50',
+        ]}
+        onClick={props.onEdit}
+      >
         {/* Header */}
-        <div class="mb-2 flex items-center justify-between">
+        <div class="mb-1.5 flex items-center justify-between">
           <div class="flex items-center gap-2">
             <span class="rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-600 dark:bg-blue-950 dark:text-blue-400">
               {props.item.lang.toUpperCase()}
             </span>
             <span class="text-xs text-neutral-400">
-              来自 {props.item.sourceLang.toUpperCase()}
-            </span>
-            <span class="flex items-center gap-1 text-xs text-neutral-400">
-              <CalendarIcon class="size-3" />
-              <time datetime={props.item.created}>
-                {format(new Date(props.item.created), 'yyyy-MM-dd HH:mm')}
-              </time>
+              ← {props.item.sourceLang.toUpperCase()}
             </span>
           </div>
 
-          <div class="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-            <NTooltip>
-              {{
-                trigger: () => (
-                  <button
-                    class="flex size-7 items-center justify-center rounded text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-700 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-200"
-                    onClick={props.onEdit}
-                  >
-                    <PencilIcon class="size-3.5" />
-                  </button>
-                ),
-                default: () => '编辑',
-              }}
-            </NTooltip>
-
+          <div
+            class="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100"
+            onClick={(e) => e.stopPropagation()}
+          >
             <NButton
               size="tiny"
               quaternary
@@ -515,16 +474,9 @@ const TranslationItem = defineComponent({
             >
               {{
                 trigger: () => (
-                  <NTooltip>
-                    {{
-                      trigger: () => (
-                        <button class="flex size-7 items-center justify-center rounded text-neutral-500 transition-colors hover:bg-red-50 hover:text-red-600 dark:text-neutral-400 dark:hover:bg-red-950 dark:hover:text-red-400">
-                          <TrashIcon class="size-3.5" />
-                        </button>
-                      ),
-                      default: () => '删除',
-                    }}
-                  </NTooltip>
+                  <button class="flex size-7 items-center justify-center rounded text-neutral-500 transition-colors hover:bg-red-50 hover:text-red-600 dark:text-neutral-400 dark:hover:bg-red-950 dark:hover:text-red-400">
+                    <TrashIcon class="size-3.5" />
+                  </button>
                 ),
                 default: () => '确定要删除这条翻译吗？',
               }}
@@ -533,68 +485,257 @@ const TranslationItem = defineComponent({
         </div>
 
         {/* Title */}
-        <h5 class="mb-2 text-sm font-medium text-neutral-800 dark:text-neutral-200">
+        <h5 class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
           {props.item.title}
         </h5>
 
-        {/* Content */}
-        <div
-          class={[
-            !expanded.value && shouldShowExpand.value
-              ? 'max-h-[4.5rem] overflow-hidden'
-              : '',
-          ]}
-        >
-          <MarkdownRender
-            text={props.item.text}
-            class="text-sm leading-relaxed text-neutral-700 dark:text-neutral-300"
-          />
+        {/* Meta */}
+        <div class="mt-1 flex items-center gap-3 text-xs text-neutral-500 dark:text-neutral-400">
+          <span class="flex items-center gap-1">
+            <CalendarIcon class="size-3" />
+            {format(new Date(props.item.created), 'MM-dd HH:mm')}
+          </span>
+          {props.item.aiModel && (
+            <span class="flex items-center gap-1">
+              <BotIcon class="size-3" />
+              {props.item.aiModel}
+            </span>
+          )}
+        </div>
+      </div>
+    )
+  },
+})
+
+/** 翻译编辑面板 */
+const TranslationEditPanel = defineComponent({
+  props: {
+    translation: {
+      type: Object as PropType<AITranslation>,
+      required: true,
+    },
+    onSave: {
+      type: Function as PropType<
+        (
+          id: string,
+          updates: { title: string; text: string; summary?: string },
+        ) => void
+      >,
+      required: true,
+    },
+    onClose: {
+      type: Function as PropType<() => void>,
+      required: true,
+    },
+  },
+  setup(props) {
+    const titleRef = ref(props.translation.title)
+    const textRef = ref(props.translation.text)
+    const summaryRef = ref(props.translation.summary || '')
+    const saving = ref(false)
+
+    // 当 translation 变化时重置表单
+    watch(
+      () => props.translation.id,
+      () => {
+        titleRef.value = props.translation.title
+        textRef.value = props.translation.text
+        summaryRef.value = props.translation.summary || ''
+      },
+    )
+
+    const handleSave = async () => {
+      if (!titleRef.value || !textRef.value) {
+        toast.warning('标题和内容不能为空')
+        return
+      }
+      saving.value = true
+      try {
+        await aiApi.updateTranslation(props.translation.id, {
+          title: titleRef.value,
+          text: textRef.value,
+          summary: summaryRef.value || undefined,
+        })
+        props.onSave(props.translation.id, {
+          title: titleRef.value,
+          text: textRef.value,
+          summary: summaryRef.value || undefined,
+        })
+        toast.success('保存成功')
+        props.onClose()
+      } finally {
+        saving.value = false
+      }
+    }
+
+    return () => (
+      <div class="flex h-full flex-col">
+        {/* Header */}
+        <div class="flex h-12 shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
+          <div class="flex items-center gap-3">
+            <button
+              type="button"
+              class="flex size-8 items-center justify-center rounded-md text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+              onClick={props.onClose}
+            >
+              <ArrowLeftIcon class="size-5" />
+            </button>
+            <div>
+              <h2 class="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
+                编辑翻译
+              </h2>
+              <span class="text-xs text-neutral-500">
+                {props.translation.lang.toUpperCase()}
+              </span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <NButton size="small" onClick={props.onClose}>
+              <XIcon class="mr-1 size-4" />
+              取消
+            </NButton>
+            <NButton
+              size="small"
+              type="primary"
+              loading={saving.value}
+              onClick={handleSave}
+            >
+              <SaveIcon class="mr-1 size-4" />
+              保存
+            </NButton>
+          </div>
         </div>
 
-        {/* Summary */}
-        {props.item.summary && expanded.value && (
-          <div class="mt-3 rounded bg-neutral-50 p-3 dark:bg-neutral-900">
-            <span class="mb-1 block text-xs font-medium text-neutral-500">
-              摘要
-            </span>
-            <p class="m-0 text-sm text-neutral-600 dark:text-neutral-400">
-              {props.item.summary}
-            </p>
-          </div>
-        )}
+        {/* Content */}
+        <NScrollbar class="min-h-0 flex-1">
+          <div class="space-y-4 p-4">
+            {/* Title */}
+            <div>
+              <label class="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                标题
+              </label>
+              <NInput
+                value={titleRef.value}
+                onUpdateValue={(v) => (titleRef.value = v)}
+                placeholder="翻译标题"
+              />
+            </div>
 
-        {/* Tags */}
-        {props.item.tags && props.item.tags.length > 0 && expanded.value && (
-          <div class="mt-3 flex flex-wrap gap-1">
-            {props.item.tags.map((tag) => (
-              <span
-                key={tag}
-                class="rounded bg-neutral-100 px-1.5 py-0.5 text-xs text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
+            {/* Content */}
+            <div>
+              <label class="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                内容
+              </label>
+              <NInput
+                value={textRef.value}
+                onUpdateValue={(v) => (textRef.value = v)}
+                type="textarea"
+                rows={12}
+                placeholder="翻译内容"
+              />
+            </div>
 
-        {shouldShowExpand.value && (
-          <button
-            class="mt-2 flex items-center text-xs text-neutral-500 transition-colors hover:text-blue-600 dark:hover:text-blue-400"
-            onClick={() => (expanded.value = !expanded.value)}
-          >
-            {expanded.value ? (
-              <>
-                <ChevronUpIcon class="mr-1 size-3" />
-                收起
-              </>
-            ) : (
-              <>
-                <ChevronDownIcon class="mr-1 size-3" />
-                展开
-              </>
+            {/* Summary */}
+            <div>
+              <label class="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                摘要
+                <span class="ml-1 text-xs text-neutral-400">（可选）</span>
+              </label>
+              <NInput
+                value={summaryRef.value}
+                onUpdateValue={(v) => (summaryRef.value = v)}
+                type="textarea"
+                rows={3}
+                placeholder="翻译摘要"
+              />
+            </div>
+
+            {/* Preview */}
+            <div>
+              <label class="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                预览
+              </label>
+              <div class="rounded-lg border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-900">
+                <h3 class="mb-3 text-base font-semibold text-neutral-900 dark:text-neutral-100">
+                  {titleRef.value || '无标题'}
+                </h3>
+                <MarkdownRender
+                  text={textRef.value || '无内容'}
+                  class="text-sm leading-relaxed text-neutral-700 dark:text-neutral-300"
+                />
+                {summaryRef.value && (
+                  <div class="mt-4 border-t border-neutral-200 pt-3 dark:border-neutral-700">
+                    <span class="text-xs font-medium text-neutral-500">
+                      摘要
+                    </span>
+                    <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
+                      {summaryRef.value}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Tags */}
+            {props.translation.tags && props.translation.tags.length > 0 && (
+              <div>
+                <label class="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                  标签
+                </label>
+                <div class="flex flex-wrap gap-1">
+                  {props.translation.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      class="rounded bg-neutral-100 px-2 py-0.5 text-xs text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
             )}
-          </button>
-        )}
+
+            {/* Meta Info */}
+            <div class="rounded-lg bg-neutral-50 p-4 dark:bg-neutral-900">
+              <h4 class="mb-3 text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                元信息
+              </h4>
+              <div class="space-y-2 text-xs">
+                <div class="flex items-center gap-2">
+                  <span class="text-neutral-500">创建时间</span>
+                  <span class="text-neutral-700 dark:text-neutral-300">
+                    {format(
+                      new Date(props.translation.created),
+                      'yyyy-MM-dd HH:mm:ss',
+                    )}
+                  </span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-neutral-500">源语言</span>
+                  <span class="text-neutral-700 dark:text-neutral-300">
+                    {props.translation.sourceLang.toUpperCase()}
+                  </span>
+                </div>
+                {props.translation.aiModel && (
+                  <div class="flex items-center gap-2">
+                    <span class="text-neutral-500">AI 模型</span>
+                    <span class="text-neutral-700 dark:text-neutral-300">
+                      {props.translation.aiModel}
+                    </span>
+                  </div>
+                )}
+                {props.translation.aiProvider && (
+                  <div class="flex items-center gap-2">
+                    <span class="text-neutral-500">提供商</span>
+                    <span class="text-neutral-700 dark:text-neutral-300">
+                      {props.translation.aiProvider}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </NScrollbar>
       </div>
     )
   },

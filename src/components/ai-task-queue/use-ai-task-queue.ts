@@ -70,6 +70,7 @@ function startPolling() {
           task.status = result.status
           task.progress = result.progress
           task.progressMessage = result.progressMessage
+          task.tokensGenerated = result.tokensGenerated
           task.error = result.error
 
           if (

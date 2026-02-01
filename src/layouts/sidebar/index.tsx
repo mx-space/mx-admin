@@ -1,8 +1,6 @@
-import { computed, defineComponent, watch, watchEffect } from 'vue'
+import { computed, defineComponent, onUnmounted, watch, watchEffect } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import type { CSSProperties } from 'vue'
-
-import { useMagicKeys } from '@vueuse/core'
 
 import { KBarWrapper } from '~/components/k-bar'
 import { API_URL, GATEWAY_URL } from '~/constants/env'
@@ -32,10 +30,8 @@ export const SidebarLayout = defineComponent({
       },
     )
 
-    const { meta, b } = useMagicKeys()
-    watchEffect(() => {
-      if (meta.value && b.value) {
-        // is the focus in the input box?
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.metaKey && e.key.toLowerCase() === 'b') {
         const activeElement = document.activeElement
         const isInEditor =
           activeElement?.tagName === 'TEXTAREA' ||
@@ -45,9 +41,15 @@ export const SidebarLayout = defineComponent({
           activeElement?.closest('[role="textbox"]')
 
         if (!isInEditor) {
+          e.preventDefault()
           collapse.value = !collapse.value
         }
       }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    onUnmounted(() => {
+      window.removeEventListener('keydown', handleKeyDown)
     })
 
     const isInApiDebugMode =

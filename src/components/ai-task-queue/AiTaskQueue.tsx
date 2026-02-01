@@ -1,5 +1,6 @@
 import {
   AlertCircle,
+  AlertTriangle,
   CheckCircle2,
   Clock,
   Loader2,
@@ -53,10 +54,13 @@ const TaskItem = defineComponent({
       const isFailed =
         task.status === AITaskStatus.Failed ||
         task.status === AITaskStatus.Cancelled
+      const isPartialFailed = task.status === AITaskStatus.PartialFailed
       const isRunning =
         task.status === AITaskStatus.Running || hasActiveSubTasks
       const isCompleted =
-        task.status === AITaskStatus.Completed && !hasActiveSubTasks
+        (task.status === AITaskStatus.Completed ||
+          task.status === AITaskStatus.PartialFailed) &&
+        !hasActiveSubTasks
       const canRetry = isFailed && task.retryFn
 
       const getStatusIcon = () => {
@@ -64,6 +68,8 @@ const TaskItem = defineComponent({
           return <Clock class="size-4 text-neutral-400" />
         if (isRunning)
           return <Loader2 class="size-4 animate-spin text-blue-500" />
+        if (isPartialFailed)
+          return <AlertTriangle class="size-4 text-yellow-500" />
         if (isCompleted) return <CheckCircle2 class="size-4 text-green-500" />
         if (isFailed) return <AlertCircle class="size-4 text-red-500" />
         return <Clock class="size-4 text-neutral-400" />
@@ -116,6 +122,19 @@ const TaskItem = defineComponent({
                   <span class="text-xs text-blue-500">{progressInfo.text}</span>
                 </>
               )}
+              {isRunning &&
+                !hasBatchSubTasks &&
+                task.tokensGenerated !== undefined &&
+                task.tokensGenerated > 0 && (
+                  <>
+                    <span class="text-neutral-300 dark:text-neutral-600">
+                      ·
+                    </span>
+                    <span class="text-xs tabular-nums text-blue-500">
+                      {task.tokensGenerated} tokens
+                    </span>
+                  </>
+                )}
               {isFailed && task.error && (
                 <>
                   <span class="text-neutral-300 dark:text-neutral-600">·</span>

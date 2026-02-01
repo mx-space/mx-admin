@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-MX Admin (admin-vue3) is the dashboard for MX Space, a personal blog management system. Built with Vue 3, Naive UI, and UnoCSS.
+MX Admin (admin-vue3) is the dashboard for MX Space, a personal blog management system. Built with Vue 3, Naive UI, and UnoCSS. This is the v4.0 admin interface for Mix Space Server v5.0.
 
 ## Development Commands
 
@@ -25,7 +25,7 @@ npx tsc --noEmit      # Type check (use this instead of build for validation)
 - **Naive UI** - Component library with Vercel-style neutral theme
 - **UnoCSS** (preset-wind4) - Tailwind-compatible utility classes
 - **Pinia** - State management
-- **TanStack Query** (`@tanstack/vue-query`) - Server state management
+- **TanStack Query** (`@tanstack/vue-query`) - Server state management with localStorage persistence
 - **Socket.IO** - Real-time WebSocket updates
 - **CodeMirror/Monaco** - Code editors
 
@@ -37,14 +37,24 @@ import { something } from '~/utils/...'  // ~ maps to ./src
 
 ### API Layer (`src/api/`)
 
-API services wrap `@mx-space/api-client`. Backend wraps array responses as `{ data: [...] }`. Extract with:
+API services use the custom request layer built on `ofetch`. The backend wraps array responses as `{ data: [...] }`, which is automatically unwrapped by the request layer.
+
+When using TanStack Query, extract arrays with:
 ```typescript
 select: (res: any) => Array.isArray(res) ? res : res?.data ?? []
 ```
 
-### Auto-Imported APIs
+**Error Classes:**
+- `BusinessError` - Application-level errors (4xx responses)
+- `SystemError` - Network/server errors (5xx responses, network failures)
 
-Vue Composition APIs (`ref`, `computed`, `watch`, etc.) are globally available via Biome globals config - no imports needed.
+### State Management
+
+**Pinia Stores (`src/stores/`):**
+- `useUIStore` - Theme mode (light/dark/system), viewport dimensions, sidebar state
+- `useUserStore` - User authentication state
+- `useAppStore` - Global application state
+- `useCategoryStore` - Category data
 
 ### Responsive Breakpoints (UnoCSS)
 
@@ -52,19 +62,32 @@ Vue Composition APIs (`ref`, `computed`, `watch`, etc.) are globally available v
 - `tablet:` - max-width: 1023px
 - `desktop:` - min-width: 1024px
 
-## Claude Code Rules
+## Code Style Rules
 
-- **验证方式**：修改代码后只需运行类型检查（`npx tsc --noEmit`），不要运行 `pnpm build` 构建整个项目
-- **灰阶颜色**：所有灰阶色必须使用 `neutral` 而不是 `gray`（如 `text-neutral-500`、`bg-neutral-800`、`border-neutral-200`）。这与项目的 Vercel 风格设计一致
-- **字号规范**：禁止使用任意值字号（如 `text-[11px]`、`text-[13px]`），必须使用标准 Tailwind 类：
-  - `text-2xl` (24px) - 页面大标题
-  - `text-xl` (20px) - 区块标题
-  - `text-lg` (18px) - 卡片/Modal 标题
-  - `text-base` (16px) - 次级标题
-  - `text-sm` (14px) - 正文、列表标题、按钮
-  - `text-xs` (12px) - 元数据、时间戳、徽章
+### Validation
 
-  详见 `docs/typography.md`
+After modifying code, run type check only (`npx tsc --noEmit`). Do not run `pnpm build` for validation.
+
+### Gray Scale Colors
+
+All gray colors MUST use `neutral` instead of `gray` to match the Vercel-style design:
+- ✅ `text-neutral-500`, `bg-neutral-800`, `border-neutral-200`
+- ❌ `text-gray-500`, `bg-gray-800`, `border-gray-200`
+
+### Typography
+
+Do NOT use arbitrary font sizes (e.g., `text-[11px]`, `text-[13px]`). Use standard Tailwind classes:
+
+| Purpose | Class | Size | Use Case |
+|---------|-------|------|----------|
+| Page title | `text-2xl` | 24px | Main page titles |
+| Section title | `text-xl` | 20px | Section headers |
+| Card/Modal title | `text-lg` | 18px | Card titles, modal headers |
+| Secondary title | `text-base` | 16px | Sub-headings, stats |
+| Body text | `text-sm` | 14px | List items, form labels, buttons |
+| Metadata | `text-xs` | 12px | Timestamps, badges, descriptions |
+
+See `docs/typography.md` for full guidelines.
 
 ## Configuration Files
 

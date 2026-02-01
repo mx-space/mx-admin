@@ -76,6 +76,8 @@ export interface AITranslation {
   text: string
   summary?: string
   tags?: string[]
+  aiModel?: string
+  aiProvider?: string
 }
 
 export interface GroupedTranslationData {
@@ -140,6 +142,7 @@ export enum AITaskStatus {
   Pending = 'pending',
   Running = 'running',
   Completed = 'completed',
+  PartialFailed = 'partial_failed',
   Failed = 'failed',
   Cancelled = 'cancelled',
 }
@@ -148,6 +151,14 @@ export interface AITaskLog {
   timestamp: number
   level: 'info' | 'warn' | 'error'
   message: string
+}
+
+export interface SubTaskStats {
+  total: number
+  completed: number
+  failed: number
+  running: number
+  pending: number
 }
 
 export interface AITask {
@@ -161,6 +172,7 @@ export interface AITask {
   progressMessage?: string
   totalItems?: number
   completedItems?: number
+  tokensGenerated?: number
 
   createdAt: number
   startedAt?: number
@@ -172,6 +184,9 @@ export interface AITask {
 
   workerId?: string
   retryCount: number
+
+  // For batch tasks: sub-task statistics
+  subTaskStats?: SubTaskStats
 }
 
 export interface AITasksResponse {
@@ -280,6 +295,10 @@ export const aiApi = {
 
   // 获取单个任务
   getTask: (taskId: string) => request.get<AITask>(`/ai/tasks/${taskId}`),
+
+  // 重试任务
+  retryTask: (taskId: string) =>
+    request.post<CreateTaskResponse>(`/ai/tasks/${taskId}/retry`),
 
   // 取消任务
   cancelTask: (taskId: string) =>

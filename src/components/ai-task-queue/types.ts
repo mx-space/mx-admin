@@ -15,6 +15,7 @@ export interface TrackedTask {
   label: string
   progress?: number
   progressMessage?: string
+  tokensGenerated?: number
   error?: string
   createdAt: number
   onComplete?: () => void

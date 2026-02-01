@@ -1,29 +1,22 @@
 /**
  * AI Summary Detail Panel Component
  * AI 摘要详情面板 - 用于 MasterDetailLayout 右侧
+ * 采用分栏布局：左侧摘要列表，右侧编辑面板
  */
 import { format } from 'date-fns'
 import {
   ArrowLeft as ArrowLeftIcon,
   Calendar as CalendarIcon,
-  ChevronDown as ChevronDownIcon,
-  ChevronUp as ChevronUpIcon,
   FileText as FileTextIcon,
   Pencil as PencilIcon,
   Plus as PlusIcon,
+  Save as SaveIcon,
   Sparkles as SparklesIcon,
   StickyNote as StickyNoteIcon,
   Trash2 as TrashIcon,
+  X as XIcon,
 } from 'lucide-vue-next'
-import {
-  NButton,
-  NEmpty,
-  NFlex,
-  NInput,
-  NPopconfirm,
-  NScrollbar,
-  NTooltip,
-} from 'naive-ui'
+import { NButton, NEmpty, NInput, NPopconfirm, NScrollbar } from 'naive-ui'
 import { computed, defineComponent, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import { toast } from 'vue-sonner'
@@ -32,15 +25,9 @@ import type { PropType } from 'vue'
 
 import { aiApi, AITaskType } from '~/api/ai'
 import { useAiTaskQueue } from '~/components/ai-task-queue'
+import { SplitPanelEmptyState, SplitPanelLayout } from '~/components/layout'
 
 type ArticleRefType = ArticleInfo['type']
-
-const RefTypeLabels: Record<ArticleRefType, string> = {
-  Post: '文章',
-  Note: '笔记',
-  Page: '页面',
-  Recently: '速记',
-}
 
 const RefTypeIcons: Record<ArticleRefType, typeof FileTextIcon> = {
   Post: FileTextIcon,
@@ -48,6 +35,8 @@ const RefTypeIcons: Record<ArticleRefType, typeof FileTextIcon> = {
   Page: FileTextIcon,
   Recently: FileTextIcon,
 }
+
+type ActivePanel = { type: 'edit'; summary: AISummary } | null
 
 export const SummaryDetailPanel = defineComponent({
   name: 'SummaryDetailPanel',
@@ -76,6 +65,11 @@ export const SummaryDetailPanel = defineComponent({
     } | null>(null)
     const summaries = ref<AISummary[]>([])
     const loading = ref(false)
+    const activePanel = ref<ActivePanel>(null)
+
+    const setActivePanel = (panel: ActivePanel) => {
+      activePanel.value = panel
+    }
 
     const fetchData = async (refId: string) => {
       loading.value = true
@@ -93,9 +87,11 @@ export const SummaryDetailPanel = defineComponent({
       (id) => {
         if (id) {
           fetchData(id)
+          activePanel.value = null
         } else {
           article.value = null
           summaries.value = []
+          activePanel.value = null
         }
       },
       { immediate: true },
@@ -106,6 +102,12 @@ export const SummaryDetailPanel = defineComponent({
       summaries.value = summaries.value.filter((s) => s.id !== id)
       toast.success('删除成功')
       props.onRefresh?.()
+      if (
+        activePanel.value?.type === 'edit' &&
+        activePanel.value.summary.id === id
+      ) {
+        activePanel.value = null
+      }
     }
 
     const handleGenerate = () => {
@@ -118,7 +120,7 @@ export const SummaryDetailPanel = defineComponent({
         title: '生成 AI 摘要',
         content() {
           return (
-            <NFlex vertical size="large">
+            <div class="flex flex-col gap-4">
               <div>
                 <label class="mb-2 block text-sm text-neutral-600 dark:text-neutral-400">
                   目标语言
@@ -169,70 +171,41 @@ export const SummaryDetailPanel = defineComponent({
                   生成
                 </NButton>
               </div>
-            </NFlex>
+            </div>
           )
         },
       })
     }
 
     const handleEdit = (item: AISummary) => {
-      const summaryRef = ref(item.summary)
+      setActivePanel({ type: 'edit', summary: item })
+    }
 
-      const $dialog = dialog.create({
-        title: '编辑摘要',
-        content() {
-          return (
-            <NFlex vertical size="large">
-              <NInput
-                value={summaryRef.value}
-                onUpdateValue={(v) => (summaryRef.value = v)}
-                type="textarea"
-                rows={6}
-                placeholder="摘要内容"
-              />
-              <div class="text-right">
-                <NButton
-                  type="primary"
-                  onClick={() => {
-                    if (!summaryRef.value) return
-                    aiApi
-                      .updateSummary(item.id, { summary: summaryRef.value })
-                      .then(() => {
-                        const idx = summaries.value.findIndex(
-                          (s) => s.id === item.id,
-                        )
-                        if (idx !== -1) {
-                          summaries.value[idx].summary = summaryRef.value
-                        }
-                        toast.success('保存成功')
-                        $dialog.destroy()
-                      })
-                  }}
-                >
-                  保存
-                </NButton>
-              </div>
-            </NFlex>
-          )
-        },
-      })
+    const handleSaveEdit = (id: string, summary: string) => {
+      const idx = summaries.value.findIndex((s) => s.id === id)
+      if (idx !== -1) {
+        summaries.value[idx].summary = summary
+      }
     }
 
     const RefIcon = computed(() =>
       article.value ? RefTypeIcons[article.value.type] : FileTextIcon,
     )
 
-    return () => (
-      <div class="flex h-full flex-col bg-white dark:bg-black">
+    const hasPanel = computed(() => activePanel.value !== null)
+
+    // 左侧内容：文章信息 + 摘要列表
+    const ListContent = () => (
+      <div class="flex h-full flex-col">
         {/* Header */}
-        <div class="flex h-12 flex-shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
+        <div class="flex h-12 shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
           <div class="flex items-center gap-3">
             {props.isMobile && props.onBack && (
               <button
                 onClick={props.onBack}
-                class="-ml-2 flex h-8 w-8 items-center justify-center rounded-md text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+                class="-ml-2 flex size-8 items-center justify-center rounded-md text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
               >
-                <ArrowLeftIcon class="h-5 w-5" />
+                <ArrowLeftIcon class="size-5" />
               </button>
             )}
             <h2 class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
@@ -253,11 +226,11 @@ export const SummaryDetailPanel = defineComponent({
         {/* Content */}
         <NScrollbar class="min-h-0 flex-1">
           {loading.value ? (
-            <div class="absolute inset-0 flex items-center justify-center">
-              <div class="h-6 w-6 animate-spin rounded-full border-2 border-neutral-300 border-t-neutral-900 dark:border-neutral-700 dark:border-t-white" />
+            <div class="flex h-full items-center justify-center">
+              <div class="size-6 animate-spin rounded-full border-2 border-neutral-300 border-t-neutral-900 dark:border-neutral-700 dark:border-t-white" />
             </div>
           ) : article.value ? (
-            <div class="mx-auto max-w-3xl space-y-6 p-6">
+            <div class="space-y-4 p-4">
               {/* Article Info */}
               <div>
                 <RouterLink
@@ -265,15 +238,10 @@ export const SummaryDetailPanel = defineComponent({
                   class="group inline-flex items-center gap-2 no-underline"
                 >
                   <RefIcon.value class="size-5 shrink-0 text-neutral-400" />
-                  <h3 class="text-lg font-semibold text-neutral-900 transition-colors group-hover:text-blue-600 dark:text-neutral-100 dark:group-hover:text-blue-400">
+                  <h3 class="text-base font-semibold text-neutral-900 transition-colors group-hover:text-blue-600 dark:text-neutral-100 dark:group-hover:text-blue-400">
                     {article.value.document.title}
                   </h3>
                 </RouterLink>
-                <div class="mt-1.5 pl-7">
-                  <span class="inline-block rounded bg-neutral-100 px-2 py-0.5 text-xs text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">
-                    {RefTypeLabels[article.value.type]}
-                  </span>
-                </div>
               </div>
 
               <div class="h-px bg-neutral-100 dark:bg-neutral-800" />
@@ -298,11 +266,15 @@ export const SummaryDetailPanel = defineComponent({
                     }}
                   </NEmpty>
                 ) : (
-                  <div>
+                  <div class="-mx-4 divide-y divide-neutral-100 dark:divide-neutral-800">
                     {summaries.value.map((summary) => (
-                      <SummaryItem
+                      <SummaryListItem
                         key={summary.id}
                         item={summary}
+                        selected={
+                          activePanel.value?.type === 'edit' &&
+                          activePanel.value.summary.id === summary.id
+                        }
                         onEdit={() => handleEdit(summary)}
                         onDelete={() => handleDelete(summary.id)}
                       />
@@ -315,14 +287,49 @@ export const SummaryDetailPanel = defineComponent({
         </NScrollbar>
       </div>
     )
+
+    // 右侧面板内容
+    const PanelContent = () => {
+      if (activePanel.value?.type === 'edit') {
+        return (
+          <SummaryEditPanel
+            summary={activePanel.value.summary}
+            onSave={handleSaveEdit}
+            onClose={() => setActivePanel(null)}
+          />
+        )
+      }
+      return null
+    }
+
+    return () => (
+      <SplitPanelLayout showPanel={hasPanel.value} forceMobile={props.isMobile}>
+        {{
+          list: ListContent,
+          panel: PanelContent,
+          empty: () => (
+            <SplitPanelEmptyState
+              icon={() => <PencilIcon class="size-6 text-neutral-400" />}
+              title="选择一条摘要"
+              description="从左侧列表选择摘要进行编辑"
+            />
+          ),
+        }}
+      </SplitPanelLayout>
+    )
   },
 })
 
-const SummaryItem = defineComponent({
+/** 摘要列表项 */
+const SummaryListItem = defineComponent({
   props: {
     item: {
       type: Object as PropType<AISummary>,
       required: true,
+    },
+    selected: {
+      type: Boolean,
+      default: false,
     },
     onEdit: {
       type: Function as PropType<() => void>,
@@ -334,43 +341,32 @@ const SummaryItem = defineComponent({
     },
   },
   setup(props) {
-    const expanded = ref(false)
-    const shouldShowExpand = computed(
-      () =>
-        props.item.summary.length > 150 || props.item.summary.includes('\n'),
-    )
-
     return () => (
-      <div class="group border-b border-neutral-100 py-4 last:border-b-0 dark:border-neutral-800">
+      <div
+        class={[
+          'group cursor-pointer px-4 py-3 transition-colors',
+          props.selected
+            ? 'bg-neutral-100 dark:bg-neutral-800'
+            : 'hover:bg-neutral-50 dark:hover:bg-neutral-800/50',
+        ]}
+        onClick={props.onEdit}
+      >
         {/* Header */}
-        <div class="mb-2 flex items-center justify-between">
+        <div class="mb-1.5 flex items-center justify-between">
           <div class="flex items-center gap-2">
             <span class="rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-600 dark:bg-blue-950 dark:text-blue-400">
               {props.item.lang.toUpperCase()}
             </span>
             <span class="flex items-center gap-1 text-xs text-neutral-400">
               <CalendarIcon class="size-3" />
-              <time datetime={props.item.created}>
-                {format(new Date(props.item.created), 'yyyy-MM-dd HH:mm')}
-              </time>
+              {format(new Date(props.item.created), 'MM-dd HH:mm')}
             </span>
           </div>
 
-          <div class="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-            <NTooltip>
-              {{
-                trigger: () => (
-                  <button
-                    class="flex size-7 items-center justify-center rounded text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-700 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-200"
-                    onClick={props.onEdit}
-                  >
-                    <PencilIcon class="size-3.5" />
-                  </button>
-                ),
-                default: () => '编辑',
-              }}
-            </NTooltip>
-
+          <div
+            class="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100"
+            onClick={(e) => e.stopPropagation()}
+          >
             <NPopconfirm
               positiveText="取消"
               negativeText="删除"
@@ -378,16 +374,9 @@ const SummaryItem = defineComponent({
             >
               {{
                 trigger: () => (
-                  <NTooltip>
-                    {{
-                      trigger: () => (
-                        <button class="flex size-7 items-center justify-center rounded text-neutral-500 transition-colors hover:bg-red-50 hover:text-red-600 dark:text-neutral-400 dark:hover:bg-red-950 dark:hover:text-red-400">
-                          <TrashIcon class="size-3.5" />
-                        </button>
-                      ),
-                      default: () => '删除',
-                    }}
-                  </NTooltip>
+                  <button class="flex size-7 items-center justify-center rounded text-neutral-500 transition-colors hover:bg-red-50 hover:text-red-600 dark:text-neutral-400 dark:hover:bg-red-950 dark:hover:text-red-400">
+                    <TrashIcon class="size-3.5" />
+                  </button>
                 ),
                 default: () => '确定要删除这条摘要吗？',
               }}
@@ -396,33 +385,152 @@ const SummaryItem = defineComponent({
         </div>
 
         {/* Content */}
-        <p
-          class={[
-            'm-0 whitespace-pre-wrap break-words text-sm leading-relaxed text-neutral-700 dark:text-neutral-300',
-            !expanded.value && shouldShowExpand.value ? 'line-clamp-3' : '',
-          ]}
-        >
+        <p class="line-clamp-2 text-sm text-neutral-700 dark:text-neutral-300">
           {props.item.summary}
         </p>
+      </div>
+    )
+  },
+})
 
-        {shouldShowExpand.value && (
-          <button
-            class="mt-2 flex items-center text-xs text-neutral-500 transition-colors hover:text-blue-600 dark:hover:text-blue-400"
-            onClick={() => (expanded.value = !expanded.value)}
-          >
-            {expanded.value ? (
-              <>
-                <ChevronUpIcon class="mr-1 size-3" />
-                收起
-              </>
-            ) : (
-              <>
-                <ChevronDownIcon class="mr-1 size-3" />
-                展开
-              </>
-            )}
-          </button>
-        )}
+/** 摘要编辑面板 */
+const SummaryEditPanel = defineComponent({
+  props: {
+    summary: {
+      type: Object as PropType<AISummary>,
+      required: true,
+    },
+    onSave: {
+      type: Function as PropType<(id: string, summary: string) => void>,
+      required: true,
+    },
+    onClose: {
+      type: Function as PropType<() => void>,
+      required: true,
+    },
+  },
+  setup(props) {
+    const summaryRef = ref(props.summary.summary)
+    const saving = ref(false)
+
+    // 当 summary 变化时重置表单
+    watch(
+      () => props.summary.id,
+      () => {
+        summaryRef.value = props.summary.summary
+      },
+    )
+
+    const handleSave = async () => {
+      if (!summaryRef.value) {
+        toast.warning('摘要内容不能为空')
+        return
+      }
+      saving.value = true
+      try {
+        await aiApi.updateSummary(props.summary.id, {
+          summary: summaryRef.value,
+        })
+        props.onSave(props.summary.id, summaryRef.value)
+        toast.success('保存成功')
+        props.onClose()
+      } finally {
+        saving.value = false
+      }
+    }
+
+    return () => (
+      <div class="flex h-full flex-col">
+        {/* Header */}
+        <div class="flex h-12 shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
+          <div class="flex items-center gap-3">
+            <button
+              type="button"
+              class="flex size-8 items-center justify-center rounded-md text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+              onClick={props.onClose}
+            >
+              <ArrowLeftIcon class="size-5" />
+            </button>
+            <div>
+              <h2 class="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
+                编辑摘要
+              </h2>
+              <span class="text-xs text-neutral-500">
+                {props.summary.lang.toUpperCase()}
+              </span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <NButton size="small" onClick={props.onClose}>
+              <XIcon class="mr-1 size-4" />
+              取消
+            </NButton>
+            <NButton
+              size="small"
+              type="primary"
+              loading={saving.value}
+              onClick={handleSave}
+            >
+              <SaveIcon class="mr-1 size-4" />
+              保存
+            </NButton>
+          </div>
+        </div>
+
+        {/* Content */}
+        <NScrollbar class="min-h-0 flex-1">
+          <div class="space-y-4 p-4">
+            {/* Summary */}
+            <div>
+              <label class="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                摘要内容
+              </label>
+              <NInput
+                value={summaryRef.value}
+                onUpdateValue={(v) => (summaryRef.value = v)}
+                type="textarea"
+                rows={8}
+                placeholder="摘要内容"
+              />
+            </div>
+
+            {/* Preview */}
+            <div>
+              <label class="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                预览
+              </label>
+              <div class="rounded-lg border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-900">
+                <p class="whitespace-pre-wrap text-sm leading-relaxed text-neutral-700 dark:text-neutral-300">
+                  {summaryRef.value || '无内容'}
+                </p>
+              </div>
+            </div>
+
+            {/* Meta Info */}
+            <div class="rounded-lg bg-neutral-50 p-4 dark:bg-neutral-900">
+              <h4 class="mb-3 text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                元信息
+              </h4>
+              <div class="space-y-2 text-xs">
+                <div class="flex items-center gap-2">
+                  <span class="text-neutral-500">创建时间</span>
+                  <span class="text-neutral-700 dark:text-neutral-300">
+                    {format(
+                      new Date(props.summary.created),
+                      'yyyy-MM-dd HH:mm:ss',
+                    )}
+                  </span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-neutral-500">语言</span>
+                  <span class="text-neutral-700 dark:text-neutral-300">
+                    {props.summary.lang.toUpperCase()}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </NScrollbar>
       </div>
     )
   },

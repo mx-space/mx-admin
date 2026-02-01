@@ -5,6 +5,7 @@
 
 import {
   AlertCircle as AlertCircleIcon,
+  AlertTriangle as AlertTriangleIcon,
   CheckCircle as CheckCircleIcon,
   ChevronDown as ChevronDownIcon,
   ChevronRight as ChevronRightIcon,
@@ -13,6 +14,7 @@ import {
   ListTodo as ListTodoIcon,
   Loader2 as LoaderIcon,
   RefreshCw as RefreshIcon,
+  RotateCcw as RetryIcon,
   Trash2 as TrashIcon,
   XCircle as XCircleIcon,
 } from 'lucide-vue-next'
@@ -42,6 +44,7 @@ import { useQuery, useQueryClient } from '@tanstack/vue-query'
 import { aiApi, AITaskStatus, AITaskType } from '~/api/ai'
 import { HeaderActionButton } from '~/components/button/header-action-button'
 import { MasterDetailLayout } from '~/components/layout/master-detail-layout'
+import { SplitPanelLayout } from '~/components/layout/split-panel-layout'
 import { RelativeTime } from '~/components/time/relative-time'
 import { queryKeys } from '~/hooks/queries/keys'
 import { useLayout } from '~/hooks/use-layout'
@@ -57,6 +60,7 @@ const TaskStatusLabels: Record<AITaskStatus, string> = {
   [AITaskStatus.Pending]: '等待中',
   [AITaskStatus.Running]: '执行中',
   [AITaskStatus.Completed]: '已完成',
+  [AITaskStatus.PartialFailed]: '部分失败',
   [AITaskStatus.Failed]: '失败',
   [AITaskStatus.Cancelled]: '已取消',
 }
@@ -71,6 +75,9 @@ const TaskStatusIcons: Record<AITaskStatus, () => VNode> = {
   [AITaskStatus.Completed]: () => (
     <CheckCircleIcon class="size-4 text-green-500" aria-hidden="true" />
   ),
+  [AITaskStatus.PartialFailed]: () => (
+    <AlertTriangleIcon class="size-4 text-yellow-500" aria-hidden="true" />
+  ),
   [AITaskStatus.Failed]: () => (
     <AlertCircleIcon class="size-4 text-red-500" aria-hidden="true" />
   ),
@@ -83,6 +90,7 @@ const TaskStatusColors: Record<AITaskStatus, string> = {
   [AITaskStatus.Pending]: 'default',
   [AITaskStatus.Running]: 'info',
   [AITaskStatus.Completed]: 'success',
+  [AITaskStatus.PartialFailed]: 'warning',
   [AITaskStatus.Failed]: 'error',
   [AITaskStatus.Cancelled]: 'default',
 }
@@ -127,6 +135,7 @@ export default defineComponent({
       { label: '等待中', value: AITaskStatus.Pending },
       { label: '执行中', value: AITaskStatus.Running },
       { label: '已完成', value: AITaskStatus.Completed },
+      { label: '部分失败', value: AITaskStatus.PartialFailed },
       { label: '失败', value: AITaskStatus.Failed },
       { label: '已取消', value: AITaskStatus.Cancelled },
     ]
@@ -162,22 +171,12 @@ export default defineComponent({
     watchEffect(() => {
       setActions(
         <div class="flex items-center gap-2">
-          <NPopconfirm
-            positiveText="保留"
-            negativeText="清理"
-            onNegativeClick={handleDeleteCompleted}
-          >
-            {{
-              trigger: () => (
-                <HeaderActionButton
-                  icon={<TrashIcon />}
-                  name="清理已完成"
-                  variant="error"
-                />
-              ),
-              default: () => '将删除所有已完成的任务，此操作不可撤销',
-            }}
-          </NPopconfirm>
+          <HeaderActionButton
+            icon={<TrashIcon />}
+            name="清理已完成"
+            variant="error"
+            onClick={handleDeleteCompleted}
+          />
           <HeaderActionButton
             icon={
               isPending.value ? (
@@ -302,13 +301,32 @@ const TaskListItem = defineComponent({
     onClick: { type: Function as PropType<() => void>, required: true },
   },
   setup(props) {
-    const StatusIcon = computed(() => TaskStatusIcons[props.task.status])
-
     const isBatchTask = computed(
       () =>
         props.task.type === AITaskType.TranslationBatch ||
         props.task.type === AITaskType.TranslationAll,
     )
+
+    // For batch tasks, check if sub-tasks are still running
+    const hasActiveSubTasks = computed(() => {
+      if (!isBatchTask.value || !props.task.subTaskStats) return false
+      const stats = props.task.subTaskStats
+      return stats.pending > 0 || stats.running > 0
+    })
+
+    // Effective status considers sub-task progress for batch tasks
+    const effectiveStatus = computed(() => {
+      if (
+        isBatchTask.value &&
+        props.task.status === AITaskStatus.Completed &&
+        hasActiveSubTasks.value
+      ) {
+        return AITaskStatus.Running
+      }
+      return props.task.status
+    })
+
+    const StatusIcon = computed(() => TaskStatusIcons[effectiveStatus.value])
 
     const payloadSummary = computed(() => {
       const payload = props.task.payload
@@ -332,6 +350,15 @@ const TaskListItem = defineComponent({
         return count ? `${count} 篇文章` : '全部文章'
       }
       return '任务'
+    })
+
+    // Status label for batch tasks with active sub-tasks
+    const statusLabel = computed(() => {
+      if (hasActiveSubTasks.value && props.task.subTaskStats) {
+        const stats = props.task.subTaskStats
+        return `${stats.completed + stats.failed}/${stats.total}`
+      }
+      return TaskStatusLabels[effectiveStatus.value]
     })
 
     return () => (
@@ -359,8 +386,11 @@ const TaskListItem = defineComponent({
           </div>
         </div>
         <div class="shrink-0 text-right">
-          <NTag size="tiny" type={TaskStatusColors[props.task.status] as any}>
-            {TaskStatusLabels[props.task.status]}
+          <NTag
+            size="tiny"
+            type={TaskStatusColors[effectiveStatus.value] as any}
+          >
+            {statusLabel.value}
           </NTag>
           <div class="mt-1">
             <RelativeTime
@@ -387,8 +417,11 @@ const TaskDetailPanel = defineComponent({
     const subTasks = ref<AITask[]>([])
     const loadingSubTasks = ref(false)
     const subTasksLoaded = ref(false)
+    const selectedSubTaskId = ref<string | null>(null)
 
-    const StatusIcon = computed(() => TaskStatusIcons[props.task.status])
+    const selectedSubTask = computed(() =>
+      subTasks.value.find((t) => t.id === selectedSubTaskId.value),
+    )
 
     const isBatchTask = computed(
       () =>
@@ -396,11 +429,64 @@ const TaskDetailPanel = defineComponent({
         props.task.type === AITaskType.TranslationAll,
     )
 
+    // For batch tasks, check if sub-tasks are still running
+    const hasActiveSubTasks = computed(() => {
+      if (!isBatchTask.value) return false
+      // Use loaded sub-tasks stats if available, otherwise use backend stats
+      const stats = subTasksLoaded.value
+        ? {
+            pending: subTasks.value.filter(
+              (t) => t.status === AITaskStatus.Pending,
+            ).length,
+            running: subTasks.value.filter(
+              (t) => t.status === AITaskStatus.Running,
+            ).length,
+          }
+        : props.task.subTaskStats
+      if (!stats) return false
+      return stats.pending > 0 || stats.running > 0
+    })
+
+    // Effective status considers sub-task progress for batch tasks
+    const effectiveStatus = computed(() => {
+      if (
+        isBatchTask.value &&
+        props.task.status === AITaskStatus.Completed &&
+        hasActiveSubTasks.value
+      ) {
+        return AITaskStatus.Running
+      }
+      return props.task.status
+    })
+
+    const StatusIcon = computed(() => TaskStatusIcons[effectiveStatus.value])
+
     const canCancel = computed(
       () =>
-        props.task.status === AITaskStatus.Pending ||
-        props.task.status === AITaskStatus.Running,
+        effectiveStatus.value === AITaskStatus.Pending ||
+        effectiveStatus.value === AITaskStatus.Running,
     )
+
+    const canRetry = computed(
+      () =>
+        props.task.status === AITaskStatus.Failed ||
+        props.task.status === AITaskStatus.PartialFailed ||
+        props.task.status === AITaskStatus.Cancelled,
+    )
+
+    const handleRetryTask = async () => {
+      try {
+        const result = await aiApi.retryTask(props.task.id)
+        if (result.created) {
+          toast.success('已创建重试任务')
+          queryClient.invalidateQueries({ queryKey: queryKeys.ai.tasks() })
+        } else {
+          toast.info('任务已存在')
+        }
+      } catch {
+        toast.error('重试失败')
+      }
+    }
 
     const payloadSummary = computed(() => {
       const payload = props.task.payload
@@ -472,15 +558,28 @@ const TaskDetailPanel = defineComponent({
       if (isBatchTask.value) loadSubTasks(true)
     })
 
-    // Poll sub-tasks when there are active ones
+    // Check if we should keep polling
+    const shouldPoll = computed(() => {
+      // Poll if there are pending/running sub-tasks
+      if (subTaskStats.value.pending > 0 || subTaskStats.value.running > 0) {
+        return true
+      }
+      // Also poll if selected sub-task is running
+      if (
+        selectedSubTask.value &&
+        selectedSubTask.value.status === AITaskStatus.Running
+      ) {
+        return true
+      }
+      return false
+    })
+
+    // Poll sub-tasks when there are active ones or when viewing a running sub-task
     let pollInterval: ReturnType<typeof setInterval> | null = null
     const startPolling = () => {
       if (pollInterval) return
       pollInterval = setInterval(async () => {
-        if (
-          subTaskStats.value.pending === 0 &&
-          subTaskStats.value.running === 0
-        ) {
+        if (!shouldPoll.value) {
           stopPolling()
           return
         }
@@ -500,17 +599,28 @@ const TaskDetailPanel = defineComponent({
         if (isBatchTask.value) {
           subTasks.value = []
           subTasksLoaded.value = false
+          selectedSubTaskId.value = null
           loadSubTasks(true)
         }
       },
     )
 
+    // Start polling when sub-tasks are loaded and there are active ones
     watch(subTasksLoaded, (loaded) => {
-      if (
-        loaded &&
-        (subTaskStats.value.pending > 0 || subTaskStats.value.running > 0)
-      ) {
+      if (loaded && shouldPoll.value) {
         startPolling()
+      }
+    })
+
+    // When selecting a sub-task, refresh and potentially start polling
+    watch(selectedSubTaskId, (newId) => {
+      if (newId && subTasksLoaded.value) {
+        // Refresh sub-tasks when selecting one
+        loadSubTasks(true)
+        // Start polling if the selected sub-task is running
+        if (shouldPoll.value && !pollInterval) {
+          startPolling()
+        }
       }
     })
 
@@ -535,9 +645,9 @@ const TaskDetailPanel = defineComponent({
             <div class="flex items-center gap-2">
               <NTag
                 size="small"
-                type={TaskStatusColors[props.task.status] as any}
+                type={TaskStatusColors[effectiveStatus.value] as any}
               >
-                {TaskStatusLabels[props.task.status]}
+                {TaskStatusLabels[effectiveStatus.value]}
               </NTag>
               {props.task.retryCount > 0 && (
                 <NTag size="small" type="warning">
@@ -587,6 +697,26 @@ const TaskDetailPanel = defineComponent({
               </div>
             )}
 
+          {/* Token progress for non-batch running tasks */}
+          {!isBatchTask.value &&
+            props.task.status === AITaskStatus.Running &&
+            props.task.tokensGenerated !== undefined &&
+            props.task.tokensGenerated > 0 && (
+              <div class="mb-4 flex items-center gap-2 rounded-lg bg-blue-50 px-3 py-2 dark:bg-blue-950/50">
+                <LoaderIcon
+                  class="size-4 animate-spin text-blue-500"
+                  aria-hidden="true"
+                />
+                <span class="text-sm text-blue-700 dark:text-blue-300">
+                  已生成{' '}
+                  <span class="font-medium tabular-nums">
+                    {props.task.tokensGenerated}
+                  </span>{' '}
+                  个 token
+                </span>
+              </div>
+            )}
+
           {/* Error */}
           {props.task.error && (
             <div
@@ -599,27 +729,42 @@ const TaskDetailPanel = defineComponent({
           )}
 
           {/* Actions */}
-          {canCancel.value && (
-            <div class="mb-4">
-              <NPopconfirm
-                positiveText="保留"
-                negativeText="终止"
-                onNegativeClick={props.onCancel}
-              >
-                {{
-                  trigger: () => (
-                    <NButton size="small" type="error" secondary>
-                      {{
-                        icon: () => (
-                          <XCircleIcon class="size-4" aria-hidden="true" />
-                        ),
-                        default: () => '终止任务',
-                      }}
-                    </NButton>
-                  ),
-                  default: () => '终止此任务后将无法恢复',
-                }}
-              </NPopconfirm>
+          {(canCancel.value || canRetry.value) && (
+            <div class="mb-4 flex items-center gap-2">
+              {canCancel.value && (
+                <NPopconfirm
+                  positiveText="保留"
+                  negativeText="终止"
+                  onNegativeClick={props.onCancel}
+                >
+                  {{
+                    trigger: () => (
+                      <NButton size="small" type="error" secondary>
+                        {{
+                          icon: () => (
+                            <XCircleIcon class="size-4" aria-hidden="true" />
+                          ),
+                          default: () => '终止任务',
+                        }}
+                      </NButton>
+                    ),
+                    default: () => '终止此任务后将无法恢复',
+                  }}
+                </NPopconfirm>
+              )}
+              {canRetry.value && (
+                <NButton
+                  size="small"
+                  type="primary"
+                  secondary
+                  onClick={handleRetryTask}
+                >
+                  {{
+                    icon: () => <RetryIcon class="size-4" aria-hidden="true" />,
+                    default: () => '重试任务',
+                  }}
+                </NButton>
+              )}
             </div>
           )}
 
@@ -667,22 +812,65 @@ const TaskDetailPanel = defineComponent({
               </button>
 
               {subTasksExpanded.value && (
-                <div class="rounded-lg border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
-                  {loadingSubTasks.value && subTasks.value.length === 0 ? (
-                    <div class="flex items-center justify-center py-6">
-                      <LoaderIcon class="size-4 animate-spin text-neutral-400" />
-                    </div>
-                  ) : subTasks.value.length === 0 ? (
-                    <div class="py-6 text-center text-xs text-neutral-400">
-                      暂无子任务
-                    </div>
-                  ) : (
-                    <div class="max-h-64 divide-y divide-neutral-100 overflow-auto dark:divide-neutral-800">
-                      {subTasks.value.map((subTask) => (
-                        <SubTaskItem key={subTask.id} task={subTask} />
-                      ))}
-                    </div>
-                  )}
+                <div class="h-80 overflow-hidden rounded-lg border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
+                  <SplitPanelLayout
+                    showPanel={!!selectedSubTaskId.value}
+                    defaultSize={0.4}
+                    min={0.3}
+                    max={0.6}
+                    forceMobile={false}
+                  >
+                    {{
+                      list: () => (
+                        <NScrollbar class="h-full">
+                          {loadingSubTasks.value &&
+                          subTasks.value.length === 0 ? (
+                            <div class="flex items-center justify-center py-6">
+                              <LoaderIcon class="size-4 animate-spin text-neutral-400" />
+                            </div>
+                          ) : subTasks.value.length === 0 ? (
+                            <div class="py-6 text-center text-xs text-neutral-400">
+                              暂无子任务
+                            </div>
+                          ) : (
+                            <div class="divide-y divide-neutral-100 dark:divide-neutral-800">
+                              {subTasks.value.map((subTask) => (
+                                <SubTaskItem
+                                  key={subTask.id}
+                                  task={subTask}
+                                  selected={
+                                    selectedSubTaskId.value === subTask.id
+                                  }
+                                  onClick={() =>
+                                    (selectedSubTaskId.value = subTask.id)
+                                  }
+                                />
+                              ))}
+                            </div>
+                          )}
+                        </NScrollbar>
+                      ),
+                      panel: () =>
+                        selectedSubTask.value ? (
+                          <SubTaskDetailPanel
+                            task={selectedSubTask.value}
+                            onBack={() => (selectedSubTaskId.value = null)}
+                            onRetry={() => loadSubTasks(true)}
+                          />
+                        ) : null,
+                      empty: () => (
+                        <div class="flex h-full flex-col items-center justify-center bg-neutral-50 dark:bg-neutral-900">
+                          <ListTodoIcon
+                            class="mb-2 size-8 text-neutral-300 dark:text-neutral-600"
+                            aria-hidden="true"
+                          />
+                          <p class="text-xs text-neutral-400">
+                            选择子任务查看详情
+                          </p>
+                        </div>
+                      ),
+                    }}
+                  </SplitPanelLayout>
                 </div>
               )}
             </div>
@@ -741,6 +929,15 @@ const TaskDetailPanel = defineComponent({
                 </code>
               </div>
             )}
+            {props.task.tokensGenerated !== undefined &&
+              props.task.tokensGenerated > 0 && (
+                <div class="flex items-center gap-2">
+                  <span class="text-neutral-500">生成 Tokens</span>
+                  <span class="tabular-nums text-neutral-700 dark:text-neutral-300">
+                    {props.task.tokensGenerated}
+                  </span>
+                </div>
+              )}
             <div class="flex items-center gap-2">
               <span class="text-neutral-500">创建于</span>
               <RelativeTime time={new Date(props.task.createdAt)} />
@@ -762,6 +959,8 @@ const TaskDetailPanel = defineComponent({
 const SubTaskItem = defineComponent({
   props: {
     task: { type: Object as PropType<AITask>, required: true },
+    selected: { type: Boolean, default: false },
+    onClick: { type: Function as PropType<() => void> },
   },
   setup(props) {
     const StatusIcon = computed(() => TaskStatusIcons[props.task.status])
@@ -772,15 +971,195 @@ const SubTaskItem = defineComponent({
     })
 
     return () => (
-      <div class="flex items-center gap-2 px-3 py-2">
+      <div
+        class={[
+          'flex cursor-pointer items-center gap-2 px-3 py-2 transition-colors',
+          props.selected
+            ? 'bg-neutral-100 dark:bg-neutral-800'
+            : 'hover:bg-neutral-50 dark:hover:bg-neutral-800/50',
+        ]}
+        onClick={props.onClick}
+      >
         <StatusIcon.value />
         <span class="min-w-0 flex-1 truncate text-xs text-neutral-700 dark:text-neutral-300">
           {title.value}
         </span>
+        {props.task.status === AITaskStatus.Running &&
+          props.task.tokensGenerated !== undefined &&
+          props.task.tokensGenerated > 0 && (
+            <span class="shrink-0 text-xs tabular-nums text-blue-500">
+              {props.task.tokensGenerated} tokens
+            </span>
+          )}
         <NTag size="tiny" type={TaskStatusColors[props.task.status] as any}>
           {TaskStatusLabels[props.task.status]}
         </NTag>
       </div>
+    )
+  },
+})
+
+/** 子任务详情面板 */
+const SubTaskDetailPanel = defineComponent({
+  props: {
+    task: { type: Object as PropType<AITask>, required: true },
+    onBack: { type: Function as PropType<() => void> },
+    onRetry: { type: Function as PropType<() => void> },
+  },
+  setup(props) {
+    const queryClient = useQueryClient()
+    const StatusIcon = computed(() => TaskStatusIcons[props.task.status])
+
+    const title = computed(() => {
+      const payload = props.task.payload
+      return (payload.title as string) || (payload.refId as string) || '子任务'
+    })
+
+    const targetLanguages = computed(() => {
+      const payload = props.task.payload
+      return (payload.targetLanguages as string[])?.join(', ') || '默认'
+    })
+
+    const canRetry = computed(
+      () =>
+        props.task.status === AITaskStatus.Failed ||
+        props.task.status === AITaskStatus.PartialFailed ||
+        props.task.status === AITaskStatus.Cancelled,
+    )
+
+    const handleRetry = async () => {
+      try {
+        const result = await aiApi.retryTask(props.task.id)
+        if (result.created) {
+          toast.success('已创建重试任务')
+          queryClient.invalidateQueries({ queryKey: queryKeys.ai.tasks() })
+          props.onRetry?.()
+        } else {
+          toast.info('任务已存在')
+        }
+      } catch {
+        toast.error('重试失败')
+      }
+    }
+
+    return () => (
+      <NScrollbar class="h-full">
+        <div class="p-3">
+          {/* Header with back button on mobile */}
+          <div class="mb-3 flex items-start gap-2">
+            <StatusIcon.value />
+            <div class="min-w-0 flex-1">
+              <h3 class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                {title.value}
+              </h3>
+              <p class="mt-0.5 text-xs text-neutral-500">
+                → {targetLanguages.value}
+              </p>
+            </div>
+            <NTag size="tiny" type={TaskStatusColors[props.task.status] as any}>
+              {TaskStatusLabels[props.task.status]}
+            </NTag>
+          </div>
+
+          {/* Retry button */}
+          {canRetry.value && (
+            <div class="mb-3">
+              <NButton
+                size="tiny"
+                type="primary"
+                secondary
+                onClick={handleRetry}
+              >
+                {{
+                  icon: () => <RetryIcon class="size-3" aria-hidden="true" />,
+                  default: () => '重试',
+                }}
+              </NButton>
+            </div>
+          )}
+
+          {/* Progress */}
+          {props.task.status === AITaskStatus.Running &&
+            props.task.tokensGenerated !== undefined &&
+            props.task.tokensGenerated > 0 && (
+              <div class="mb-3 flex items-center gap-2 rounded bg-blue-50 px-2 py-1.5 dark:bg-blue-950/50">
+                <LoaderIcon
+                  class="size-3 animate-spin text-blue-500"
+                  aria-hidden="true"
+                />
+                <span class="text-xs text-blue-700 dark:text-blue-300">
+                  <span class="tabular-nums">{props.task.tokensGenerated}</span>{' '}
+                  tokens
+                </span>
+              </div>
+            )}
+
+          {/* Error */}
+          {props.task.error && (
+            <div
+              class="mb-3 rounded bg-red-50 p-2 text-xs text-red-700 dark:bg-red-950/50 dark:text-red-300"
+              role="alert"
+            >
+              {props.task.error}
+            </div>
+          )}
+
+          {/* Result */}
+          {props.task.result && (
+            <div class="mb-3">
+              <div class="mb-1 text-xs font-medium text-neutral-600 dark:text-neutral-400">
+                结果
+              </div>
+              <pre class="overflow-auto rounded bg-neutral-100 p-2 font-mono text-xs leading-relaxed dark:bg-neutral-800">
+                {JSON.stringify(props.task.result, null, 2)}
+              </pre>
+            </div>
+          )}
+
+          {/* Logs */}
+          {props.task.logs.length > 0 && (
+            <div class="mb-3">
+              <div class="mb-1 text-xs font-medium text-neutral-600 dark:text-neutral-400">
+                日志
+                <span class="ml-1 tabular-nums text-neutral-400">
+                  ({props.task.logs.length})
+                </span>
+              </div>
+              <div class="max-h-32 space-y-0.5 overflow-auto rounded bg-neutral-100 p-2 dark:bg-neutral-800">
+                {props.task.logs.map((log, idx) => (
+                  <LogLine key={idx} log={log} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Metadata */}
+          <div class="space-y-1 text-xs">
+            <div class="flex items-center gap-2">
+              <span class="text-neutral-400">ID</span>
+              <code class="truncate rounded bg-neutral-100 px-1 py-0.5 font-mono text-[10px] dark:bg-neutral-800">
+                {props.task.id}
+              </code>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-neutral-400">创建</span>
+              <RelativeTime
+                time={new Date(props.task.createdAt)}
+                class="text-xs"
+              />
+            </div>
+            {props.task.completedAt && (
+              <div class="flex items-center gap-2">
+                <span class="text-neutral-400">完成</span>
+                <RelativeTime
+                  time={new Date(props.task.completedAt)}
+                  class="text-xs"
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      </NScrollbar>
     )
   },
 })
