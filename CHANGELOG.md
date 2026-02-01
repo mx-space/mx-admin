@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## [5.9.2](https://github.com/mx-space/admin-vue3/compare/v5.9.1...v5.9.2) (2026-02-01)
+
+
+### Bug Fixes
+
+* update avatar upload component dimensions for consistency ([7a3c986](https://github.com/mx-space/admin-vue3/commit/7a3c986802547ed5a4afeff3231411e9b23cb842))
+* update visibility prop in AiTaskQueue component ([2504657](https://github.com/mx-space/admin-vue3/commit/25046573eb9fd3b55497fd86204121ec3b89e055))
+
+
+
 ## [5.9.1](https://github.com/mx-space/admin-vue3/compare/v5.9.0...v5.9.1) (2026-02-01)
 
 
