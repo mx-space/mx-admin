@@ -162,13 +162,13 @@ export const TabUser = defineComponent(() => {
         <>
           {/* Profile Header */}
           <div class="flex items-center gap-5 pb-6">
-            <div class="relative size-20 shrink-0 [&_.n-upload-trigger]:size-20 [&_.n-upload-trigger]:overflow-hidden [&_.n-upload-trigger]:rounded-full [&_.n-upload]:size-20 [&_.n-upload]:overflow-hidden [&_.n-upload]:rounded-full">
+            <div class="relative size-[80px] shrink-0 [&_.n-upload-trigger]:size-[80px] [&_.n-upload-trigger]:overflow-hidden [&_.n-upload-trigger]:rounded-full [&_.n-upload]:size-[80px] [&_.n-upload]:overflow-hidden [&_.n-upload]:rounded-full">
               <UploadWrapper
                 onFinish={handleAvatarUpload}
                 type="avatar"
                 v-slots={{
                   default: () => (
-                    <div class="hover:ring-primary/30 dark:hover:ring-primary/30 relative size-20 overflow-hidden rounded-full ring-4 ring-neutral-100 transition-all dark:ring-neutral-800">
+                    <div class="hover:ring-primary/30 dark:hover:ring-primary/30 relative size-[80px] overflow-hidden rounded-full ring-4 ring-neutral-100 transition-all dark:ring-neutral-800">
                       <Avatar src={data.value.avatar} size={80} />
                       <div class="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity hover:opacity-100">
                         <CameraIcon class="size-5 text-white" />
