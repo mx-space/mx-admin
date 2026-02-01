@@ -302,6 +302,10 @@ export const aiApi = {
 
   // 取消任务
   cancelTask: (taskId: string) =>
+    request.post<{ success: boolean }>(`/ai/tasks/${taskId}/cancel`),
+
+  // 删除单个任务
+  deleteTask: (taskId: string) =>
     request.delete<{ success: boolean }>(`/ai/tasks/${taskId}`),
 
   // 批量删除任务

@@ -157,6 +157,13 @@ export default defineComponent({
       queryClient.invalidateQueries({ queryKey: queryKeys.ai.tasks() })
     }
 
+    const handleDeleteTask = async (taskId: string) => {
+      await aiApi.deleteTask(taskId)
+      selectedTaskId.value = null
+      queryClient.invalidateQueries({ queryKey: queryKeys.ai.tasks() })
+      toast.success('任务已删除')
+    }
+
     const handleDeleteCompleted = async () => {
       await aiApi.deleteTasks({
         status: AITaskStatus.Completed,
@@ -193,7 +200,7 @@ export default defineComponent({
     })
 
     const EmptyState = () => (
-      <div class="flex h-full flex-col items-center justify-center">
+      <div class="absolute inset-0 flex -translate-y-[50px] flex-col items-center justify-center">
         <ListTodoIcon
           class="mb-4 size-12 text-neutral-300 dark:text-neutral-600"
           aria-hidden="true"
@@ -283,6 +290,7 @@ export default defineComponent({
               <TaskDetailPanel
                 task={selectedTask.value}
                 onCancel={() => handleCancelTask(selectedTask.value!.id)}
+                onDelete={() => handleDeleteTask(selectedTask.value!.id)}
                 onBack={() => (selectedTaskId.value = null)}
               />
             ) : null,
@@ -409,6 +417,7 @@ const TaskDetailPanel = defineComponent({
   props: {
     task: { type: Object as PropType<AITask>, required: true },
     onCancel: { type: Function as PropType<() => void>, required: true },
+    onDelete: { type: Function as PropType<() => void>, required: true },
     onBack: { type: Function as PropType<() => void>, required: true },
   },
   setup(props) {
@@ -469,6 +478,14 @@ const TaskDetailPanel = defineComponent({
 
     const canRetry = computed(
       () =>
+        props.task.status === AITaskStatus.Failed ||
+        props.task.status === AITaskStatus.PartialFailed ||
+        props.task.status === AITaskStatus.Cancelled,
+    )
+
+    const canDelete = computed(
+      () =>
+        props.task.status === AITaskStatus.Completed ||
         props.task.status === AITaskStatus.Failed ||
         props.task.status === AITaskStatus.PartialFailed ||
         props.task.status === AITaskStatus.Cancelled,
@@ -729,7 +746,7 @@ const TaskDetailPanel = defineComponent({
           )}
 
           {/* Actions */}
-          {(canCancel.value || canRetry.value) && (
+          {(canCancel.value || canRetry.value || canDelete.value) && (
             <div class="mb-4 flex items-center gap-2">
               {canCancel.value && (
                 <NPopconfirm
@@ -764,6 +781,27 @@ const TaskDetailPanel = defineComponent({
                     default: () => '重试任务',
                   }}
                 </NButton>
+              )}
+              {canDelete.value && (
+                <NPopconfirm
+                  positiveText="保留"
+                  negativeText="删除"
+                  onNegativeClick={props.onDelete}
+                >
+                  {{
+                    trigger: () => (
+                      <NButton size="small" type="error" tertiary>
+                        {{
+                          icon: () => (
+                            <TrashIcon class="size-4" aria-hidden="true" />
+                          ),
+                          default: () => '删除任务',
+                        }}
+                      </NButton>
+                    ),
+                    default: () => '删除此任务记录？',
+                  }}
+                </NPopconfirm>
               )}
             </div>
           )}
