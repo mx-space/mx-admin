@@ -247,7 +247,7 @@ export const AiTaskQueue = defineComponent({
 
       return (
         <TaskQueuePanel
-          visible
+          visible={queue.visible.value}
           isProcessing={isProcessing}
           tasks={tasks}
           closeTitle={isProcessing ? '隐藏' : '关闭'}
