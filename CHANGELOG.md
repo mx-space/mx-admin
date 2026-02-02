@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [5.10.1](https://github.com/mx-space/admin-vue3/compare/v5.10.0...v5.10.1) (2026-02-02)
+
+
+### Bug Fixes
+
+* correct API response handling in PasskeyEntry component ([22b2798](https://github.com/mx-space/admin-vue3/commit/22b2798721222df67841a8ef23b6186f8c09358a))
+
+
+
 # [5.10.0](https://github.com/mx-space/admin-vue3/compare/v5.9.3...v5.10.0) (2026-02-02)
 
 
