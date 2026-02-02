@@ -89,11 +89,11 @@ const TaskItem = defineComponent({
 
       return (
         <div
-          class="group flex items-center gap-3 border-b border-neutral-100 px-1 dark:border-neutral-800"
+          class="phone:gap-2 group flex items-center gap-3 border-b border-neutral-100 px-1 dark:border-neutral-800"
           style={{ height: `${ITEM_HEIGHT}px` }}
         >
           {/* Status Icon */}
-          <div class="flex size-8 shrink-0 items-center justify-center rounded-full bg-neutral-50 dark:bg-neutral-800">
+          <div class="phone:size-7 flex size-8 shrink-0 items-center justify-center rounded-full bg-neutral-50 dark:bg-neutral-800">
             {getStatusIcon()}
           </div>
 
@@ -102,7 +102,7 @@ const TaskItem = defineComponent({
             <div class="flex items-center gap-2">
               <span
                 class={[
-                  'truncate text-sm font-medium',
+                  'phone:text-xs truncate text-sm font-medium',
                   isFailed
                     ? 'text-red-600 dark:text-red-400'
                     : 'text-neutral-800 dark:text-neutral-100',
@@ -112,13 +112,15 @@ const TaskItem = defineComponent({
                 {task.label}
               </span>
             </div>
-            <div class="mt-0.5 flex h-5 items-center gap-2">
+            <div class="phone:h-4 phone:gap-1.5 mt-0.5 flex h-5 items-center gap-2">
               <span class="shrink-0 text-xs text-neutral-400">
                 {TaskTypeLabels[task.type] || task.type}
               </span>
               {isRunning && progressInfo && (
                 <>
-                  <span class="text-neutral-300 dark:text-neutral-600">·</span>
+                  <span class="phone:hidden text-neutral-300 dark:text-neutral-600">
+                    ·
+                  </span>
                   <span class="text-xs text-blue-500">{progressInfo.text}</span>
                 </>
               )}
@@ -127,17 +129,19 @@ const TaskItem = defineComponent({
                 task.tokensGenerated !== undefined &&
                 task.tokensGenerated > 0 && (
                   <>
-                    <span class="text-neutral-300 dark:text-neutral-600">
+                    <span class="phone:hidden text-neutral-300 dark:text-neutral-600">
                       ·
                     </span>
-                    <span class="text-xs tabular-nums text-blue-500">
+                    <span class="phone:hidden text-xs tabular-nums text-blue-500">
                       {task.tokensGenerated} tokens
                     </span>
                   </>
                 )}
               {isFailed && task.error && (
                 <>
-                  <span class="text-neutral-300 dark:text-neutral-600">·</span>
+                  <span class="phone:hidden text-neutral-300 dark:text-neutral-600">
+                    ·
+                  </span>
                   <span
                     class="truncate text-xs text-red-500"
                     title={task.error}
@@ -151,7 +155,7 @@ const TaskItem = defineComponent({
 
           {/* Progress bar for running tasks */}
           {isRunning && progressInfo && (
-            <div class="w-16 shrink-0">
+            <div class="phone:w-12 w-16 shrink-0">
               <NProgress
                 type="line"
                 percentage={progressInfo.percent}
@@ -165,11 +169,11 @@ const TaskItem = defineComponent({
           {/* Retry button */}
           {canRetry && (
             <button
-              class="shrink-0 rounded-md p-1.5 text-neutral-400 opacity-0 transition-all hover:bg-neutral-100 hover:text-neutral-600 group-hover:opacity-100 dark:hover:bg-neutral-700 dark:hover:text-neutral-300"
+              class="phone:opacity-100 phone:p-1 shrink-0 rounded-md p-1.5 text-neutral-400 opacity-0 transition-all hover:bg-neutral-100 hover:text-neutral-600 group-hover:opacity-100 dark:hover:bg-neutral-700 dark:hover:text-neutral-300"
               onClick={() => props.onRetry?.(task.id)}
               title="重试"
             >
-              <RefreshCw class="size-4" />
+              <RefreshCw class="phone:size-3.5 size-4" />
             </button>
           )}
         </div>
@@ -271,7 +275,7 @@ export const AiTaskQueue = defineComponent({
             ),
             footer: () =>
               !isProcessing && tasks.length > 0 ? (
-                <div class="flex items-center justify-between border-t border-neutral-100 px-4 py-2.5 text-xs dark:border-neutral-800">
+                <div class="phone:px-3 phone:py-2 flex items-center justify-between border-t border-neutral-100 px-4 py-2.5 text-xs dark:border-neutral-800">
                   <div class="text-neutral-400">
                     {completedCount > 0 && (
                       <span class="text-green-600 dark:text-green-400">

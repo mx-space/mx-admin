@@ -110,18 +110,18 @@ export const TaskQueuePanel = defineComponent({
           leaveToClass="opacity-0 translate-y-4"
         >
           {props.visible && props.tasks.length > 0 && (
-            <div class="fixed bottom-4 right-4 z-50 w-[500px]">
-              <div class="overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-xl dark:border-neutral-700 dark:bg-neutral-900">
+            <div class="phone:bottom-0 phone:left-0 phone:right-0 phone:w-full phone:shadow-[0_-4px_16px_rgba(0,0,0,0.08)] dark:phone:shadow-[0_-4px_16px_rgba(0,0,0,0.3)] fixed bottom-4 right-4 z-50 w-[500px]">
+              <div class="phone:rounded-b-none phone:border-x-0 phone:border-b-0 phone:shadow-none overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-xl dark:border-neutral-700 dark:bg-neutral-900">
                 {/* Header */}
                 <div
-                  class="flex cursor-pointer select-none items-center justify-between px-4 py-3"
+                  class="phone:px-3 phone:py-2.5 flex cursor-pointer select-none items-center justify-between px-4 py-3"
                   onClick={toggleCollapse}
                 >
-                  <div class="flex items-center gap-2.5">
-                    <div class="flex size-6 items-center justify-center rounded-md bg-neutral-100 dark:bg-neutral-800">
+                  <div class="phone:gap-2 flex items-center gap-2.5">
+                    <div class="phone:size-5 flex size-6 items-center justify-center rounded-md bg-neutral-100 dark:bg-neutral-800">
                       {slots.icon?.()}
                     </div>
-                    <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                    <span class="phone:text-xs text-sm font-medium text-neutral-900 dark:text-neutral-100">
                       {slots.title?.()}
                     </span>
                   </div>
@@ -135,9 +135,9 @@ export const TaskQueuePanel = defineComponent({
                       title={collapsed.value ? '展开' : '折叠'}
                     >
                       {collapsed.value ? (
-                        <ChevronUp class="size-4" />
+                        <ChevronUp class="phone:size-3.5 size-4" />
                       ) : (
-                        <ChevronDown class="size-4" />
+                        <ChevronDown class="phone:size-3.5 size-4" />
                       )}
                     </button>
                     {(props.showCloseWhenProcessing || !props.isProcessing) && (
@@ -149,7 +149,7 @@ export const TaskQueuePanel = defineComponent({
                         }}
                         title={props.closeTitle}
                       >
-                        <X class="size-4" />
+                        <X class="phone:size-3.5 size-4" />
                       </button>
                     )}
                   </div>
@@ -167,7 +167,7 @@ export const TaskQueuePanel = defineComponent({
                 >
                   {!collapsed.value && (
                     <div class="overflow-hidden border-t border-neutral-100 dark:border-neutral-800">
-                      <div class="h-[600px] overflow-y-auto px-4 py-2">
+                      <div class="phone:h-[50vh] phone:px-3 phone:py-1.5 h-[600px] overflow-y-auto px-4 py-2">
                         <TransitionGroup
                           moveClass="transition-all duration-200"
                           enterActiveClass="transition-all duration-200"
