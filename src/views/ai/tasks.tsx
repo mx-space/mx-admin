@@ -6,6 +6,7 @@
 import {
   AlertCircle as AlertCircleIcon,
   AlertTriangle as AlertTriangleIcon,
+  ArrowLeft as ArrowLeftIcon,
   CheckCircle as CheckCircleIcon,
   ChevronDown as ChevronDownIcon,
   ChevronRight as ChevronRightIcon,
@@ -43,7 +44,10 @@ import { useQuery, useQueryClient } from '@tanstack/vue-query'
 
 import { aiApi, AITaskStatus, AITaskType } from '~/api/ai'
 import { HeaderActionButton } from '~/components/button/header-action-button'
-import { MasterDetailLayout } from '~/components/layout/master-detail-layout'
+import {
+  MasterDetailLayout,
+  useMasterDetailLayout,
+} from '~/components/layout/master-detail-layout'
 import { SplitPanelLayout } from '~/components/layout/split-panel-layout'
 import { RelativeTime } from '~/components/time/relative-time'
 import { queryKeys } from '~/hooks/queries/keys'
@@ -1046,6 +1050,7 @@ const SubTaskDetailPanel = defineComponent({
   },
   setup(props) {
     const queryClient = useQueryClient()
+    const { isMobile } = useMasterDetailLayout()
     const StatusIcon = computed(() => TaskStatusIcons[props.task.status])
 
     const title = computed(() => {
@@ -1083,7 +1088,21 @@ const SubTaskDetailPanel = defineComponent({
     return () => (
       <NScrollbar class="h-full">
         <div class="p-3">
-          {/* Header with back button on mobile */}
+          {/* Mobile back button */}
+          {isMobile.value && props.onBack && (
+            <div class="mb-3">
+              <button
+                type="button"
+                class="flex items-center gap-1.5 text-sm text-neutral-600 transition-colors hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
+                onClick={props.onBack}
+              >
+                <ArrowLeftIcon class="size-4" aria-hidden="true" />
+                返回列表
+              </button>
+            </div>
+          )}
+
+          {/* Header */}
           <div class="mb-3 flex items-start gap-2">
             <StatusIcon.value />
             <div class="min-w-0 flex-1">
