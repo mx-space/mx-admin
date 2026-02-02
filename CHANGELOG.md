@@ -1,5 +1,14 @@
 # CHANGELOG
 
+# [5.10.0](https://github.com/mx-space/admin-vue3/compare/v5.9.3...v5.10.0) (2026-02-02)
+
+
+### Features
+
+* add email testing functionality to health API and config form ([dfc0f88](https://github.com/mx-space/admin-vue3/commit/dfc0f88a4cd1501be4612a827152e73552ec322f))
+
+
+
 ## [5.9.3](https://github.com/mx-space/admin-vue3/compare/v5.9.2...v5.9.3) (2026-02-02)
 
 
