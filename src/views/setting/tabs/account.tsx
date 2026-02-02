@@ -935,10 +935,10 @@ const PasskeyEntry = defineComponent(() => {
   const { data: setting, refetch: refetchSetting } = useQuery({
     queryKey: queryKeys.options.detail('authSecurity'),
     queryFn: async () => {
-      const data = await optionsApi.get<{
-        disablePasswordLogin: boolean
+      const res = await optionsApi.get<{
+        data: { disablePasswordLogin: boolean }
       }>('authSecurity')
-      return data
+      return res.data
     },
   })
 
