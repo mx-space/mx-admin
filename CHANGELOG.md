@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [5.10.2](https://github.com/mx-space/admin-vue3/compare/v5.10.1...v5.10.2) (2026-02-02)
+
+
+### Features
+
+* enhance BackupEmptyState component with restore functionality ([cb0f0ae](https://github.com/mx-space/admin-vue3/commit/cb0f0ae348b0e7203fef26147b8a1738104923bf))
+
+
+
 ## [5.10.1](https://github.com/mx-space/admin-vue3/compare/v5.10.0...v5.10.1) (2026-02-02)
 
 
