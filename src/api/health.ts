@@ -17,4 +17,10 @@ export const healthApi = {
 
   // 手动运行 Cron 任务
   runCron: (name: string) => request.post<void>(`/health/cron/run/${name}`),
+
+  // === 邮件测试 ===
+
+  // 发送测试邮件
+  sendTestEmail: () =>
+    request.get<{ message?: string; trace?: string }>('/health/email/test'),
 }

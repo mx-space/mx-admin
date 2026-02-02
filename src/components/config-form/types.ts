@@ -13,6 +13,11 @@ export interface UIConfig {
   hidden?: boolean
   placeholder?: string
   options?: Array<{ label: string; value: string | number }>
+  /**
+   * Conditionally show this field based on sibling field values.
+   * When the condition is not met, the field and all its nested children are hidden.
+   */
+  showWhen?: Record<string, string | string[]>
 }
 
 export interface FormField {

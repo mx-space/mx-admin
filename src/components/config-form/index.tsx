@@ -8,6 +8,29 @@ import type { FormField } from './types'
 import { SettingsItem } from '~/layouts/settings-layout'
 import { uuid } from '~/utils'
 
+/**
+ * Check if a field should be shown based on showWhen conditions.
+ * When the condition is not met, the field and all its nested children are hidden.
+ */
+function shouldShowField(
+  field: FormField,
+  formData: Ref<any>,
+  sectionPrefix: string,
+): boolean {
+  const { showWhen } = field.ui
+  if (!showWhen) return true
+
+  for (const [key, expected] of Object.entries(showWhen)) {
+    const actualValue = get(formData.value, `${sectionPrefix}.${key}`)
+    if (Array.isArray(expected)) {
+      if (!expected.includes(actualValue)) return false
+    } else {
+      if (actualValue !== expected) return false
+    }
+  }
+  return true
+}
+
 export const SectionFields = defineComponent({
   props: {
     fields: {
@@ -31,6 +54,7 @@ export const SectionFields = defineComponent({
         <>
           {fields
             .filter((field) => !field.ui.hidden)
+            .filter((field) => shouldShowField(field, formData, dataKeyPrefix))
             .map((field) => {
               const fieldPath = `${dataKeyPrefix}.${field.key}`
 

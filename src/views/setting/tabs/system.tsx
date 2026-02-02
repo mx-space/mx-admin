@@ -1,4 +1,6 @@
 import { cloneDeep, isEmpty } from 'es-toolkit/compat'
+import { Mail as MailIcon } from 'lucide-vue-next'
+import { NButton } from 'naive-ui'
 import {
   computed,
   defineComponent,
@@ -16,6 +18,7 @@ import type {
 } from '~/components/config-form/types'
 import type { PropType } from 'vue'
 
+import { healthApi } from '~/api/health'
 import { optionsApi } from '~/api/options'
 import { SectionFields } from '~/components/config-form'
 import { SettingsSection } from '~/layouts/settings-layout'
@@ -169,6 +172,25 @@ export const TabSystem = defineComponent({
       saveAll,
     })
 
+    const isSendingTestEmail = ref(false)
+
+    const handleSendTestEmail = async () => {
+      if (isSendingTestEmail.value) return
+      isSendingTestEmail.value = true
+      try {
+        const result = await healthApi.sendTestEmail()
+        if (result.message) {
+          toast.error(`发送失败: ${result.message}`)
+        } else {
+          toast.success('测试邮件已发送，请检查收件箱')
+        }
+      } catch (error: any) {
+        toast.error(error?.message || '发送测试邮件失败')
+      } finally {
+        isSendingTestEmail.value = false
+      }
+    }
+
     return () => {
       const { activeGroup } = props
 
@@ -191,13 +213,31 @@ export const TabSystem = defineComponent({
                 />
               ) : (
                 <SettingsSection key={section.key} title={section.title}>
-                  <div class="py-2">
-                    <SectionFields
-                      fields={section.fields}
-                      formData={computed(() => configs)}
-                      dataKeyPrefix={section.key}
-                    />
-                  </div>
+                  {{
+                    default: () => (
+                      <div class="py-2">
+                        <SectionFields
+                          fields={section.fields}
+                          formData={computed(() => configs)}
+                          dataKeyPrefix={section.key}
+                        />
+                      </div>
+                    ),
+                    actions:
+                      section.key === 'mailOptions'
+                        ? () => (
+                            <NButton
+                              size="small"
+                              secondary
+                              loading={isSendingTestEmail.value}
+                              onClick={handleSendTestEmail}
+                              renderIcon={() => <MailIcon size={14} />}
+                            >
+                              发送测试邮件
+                            </NButton>
+                          )
+                        : undefined,
+                  }}
                 </SettingsSection>
               ),
             )}
