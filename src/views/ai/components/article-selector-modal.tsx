@@ -3,6 +3,7 @@
  * 文章选择器弹窗 - 用于批量生成 AI 翻译
  */
 import {
+  File as FileIcon,
   FileText as FileTextIcon,
   Languages as LanguagesIcon,
   Search as SearchIcon,
@@ -26,11 +27,12 @@ import { debouncedRef } from '@vueuse/core'
 
 import { aiApi, AITaskType } from '~/api/ai'
 import { notesApi } from '~/api/notes'
+import { pagesApi } from '~/api/pages'
 import { postsApi } from '~/api/posts'
 import { searchApi } from '~/api/search'
 import { useAiTaskQueue } from '~/components/ai-task-queue'
 
-type ArticleRefType = 'Post' | 'Note'
+type ArticleRefType = 'Post' | 'Note' | 'Page'
 
 interface SelectableArticle {
   id: string
@@ -42,17 +44,20 @@ interface SelectableArticle {
 const RefTypeLabels: Record<ArticleRefType, string> = {
   Post: '文章',
   Note: '手记',
+  Page: '页面',
 }
 
 const RefTypeIcons: Record<ArticleRefType, typeof FileTextIcon> = {
   Post: FileTextIcon,
   Note: StickyNoteIcon,
+  Page: FileIcon,
 }
 
 const typeFilterOptions = [
   { label: '全部类型', value: 'all' },
   { label: '文章', value: 'Post' },
   { label: '手记', value: 'Note' },
+  { label: '页面', value: 'Page' },
 ]
 
 export const ArticleSelectorModal = defineComponent({
@@ -88,18 +93,24 @@ export const ArticleSelectorModal = defineComponent({
       try {
         const allArticles: SelectableArticle[] = []
 
-        if (keyword && keyword.trim()) {
-          const shouldSearchPosts =
-            typeFilter.value === 'all' || typeFilter.value === 'Post'
-          const shouldSearchNotes =
-            typeFilter.value === 'all' || typeFilter.value === 'Note'
+        const shouldFetchPosts =
+          typeFilter.value === 'all' || typeFilter.value === 'Post'
+        const shouldFetchNotes =
+          typeFilter.value === 'all' || typeFilter.value === 'Note'
+        const shouldFetchPages =
+          typeFilter.value === 'all' || typeFilter.value === 'Page'
 
-          const [postsRes, notesRes] = await Promise.all([
-            shouldSearchPosts
+        if (keyword && keyword.trim()) {
+          const [postsRes, notesRes, pagesRes] = await Promise.all([
+            shouldFetchPosts
               ? searchApi.searchPosts({ keyword, size: 50 })
               : Promise.resolve({ data: [] }),
-            shouldSearchNotes
+            shouldFetchNotes
               ? searchApi.searchNotes({ keyword, size: 50 })
+              : Promise.resolve({ data: [] }),
+            // Pages 没有搜索 API，获取全部后前端过滤
+            shouldFetchPages
+              ? pagesApi.getList({ select: 'title' })
               : Promise.resolve({ data: [] }),
           ])
 
@@ -126,19 +137,35 @@ export const ArticleSelectorModal = defineComponent({
               selected: selectedIds.value.has(note.id),
             })
           })
-        } else {
-          const shouldFetchPosts =
-            typeFilter.value === 'all' || typeFilter.value === 'Post'
-          const shouldFetchNotes =
-            typeFilter.value === 'all' || typeFilter.value === 'Note'
 
-          const [postsRes, notesRes] = await Promise.all([
+          // Pages 前端过滤
+          const pages = Array.isArray(pagesRes)
+            ? pagesRes
+            : (pagesRes?.data ?? [])
+          const lowerKeyword = keyword.toLowerCase()
+          pages
+            .filter((page: { title: string }) =>
+              page.title.toLowerCase().includes(lowerKeyword),
+            )
+            .forEach((page: { id: string; title: string }) => {
+              allArticles.push({
+                id: page.id,
+                title: page.title,
+                type: 'Page',
+                selected: selectedIds.value.has(page.id),
+              })
+            })
+        } else {
+          const [postsRes, notesRes, pagesRes] = await Promise.all([
             shouldFetchPosts
               ? postsApi.getList({ size: 50, select: 'title' })
               : Promise.resolve({ data: [] }),
             shouldFetchNotes
               ? notesApi.getList({ size: 50, select: 'title' })
               : Promise.resolve({ data: [] }),
+            shouldFetchPages
+              ? pagesApi.getList({ select: 'title' })
+              : Promise.resolve({ data: [] }),
           ])
 
           const posts = Array.isArray(postsRes)
@@ -162,6 +189,18 @@ export const ArticleSelectorModal = defineComponent({
               title: note.title,
               type: 'Note',
               selected: selectedIds.value.has(note.id),
+            })
+          })
+
+          const pages = Array.isArray(pagesRes)
+            ? pagesRes
+            : (pagesRes?.data ?? [])
+          pages.forEach((page: { id: string; title: string }) => {
+            allArticles.push({
+              id: page.id,
+              title: page.title,
+              type: 'Page',
+              selected: selectedIds.value.has(page.id),
             })
           })
         }
