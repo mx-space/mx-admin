@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [5.9.3](https://github.com/mx-space/admin-vue3/compare/v5.9.2...v5.9.3) (2026-02-02)
+
+
+### Features
+
+* add mobile back button to SubTaskDetailPanel ([c206b7c](https://github.com/mx-space/admin-vue3/commit/c206b7c1286310f782ebe88b5cb976d10d939ae8))
+
+
+
 ## [5.9.2](https://github.com/mx-space/admin-vue3/compare/v5.9.1...v5.9.2) (2026-02-01)
 
 
