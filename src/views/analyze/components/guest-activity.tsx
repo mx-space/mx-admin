@@ -18,15 +18,13 @@ import {
   watch,
 } from 'vue'
 import { useRoute } from 'vue-router'
-import type {
-  NoteModel,
-  PageModel,
-  PostModel,
-  RecentlyModel,
-} from '@mx-space/api-client'
 import type { fetchDataFn } from '~/hooks/use-table'
 import type { ActivityReadDurationType } from '~/models/activity'
 import type { Pager } from '~/models/base'
+import type { NoteModel } from '~/models/note'
+import type { PageModel } from '~/models/page'
+import type { PostModel } from '~/models/post'
+import type { RecentlyModel } from '~/models/recently'
 import type { PropType, Ref } from 'vue'
 
 import { activityApi } from '~/api/activity'

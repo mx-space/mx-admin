@@ -11,7 +11,7 @@ import {
   Upload,
 } from 'lucide-vue-next'
 import { NButton, NCheckbox, NPopconfirm, NSpin } from 'naive-ui'
-import { computed, defineComponent, onMounted, ref, watchEffect } from 'vue'
+import { computed, defineComponent, onMounted, ref } from 'vue'
 import { toast } from 'vue-sonner'
 import type { PropType } from 'vue'
 
@@ -189,7 +189,7 @@ export default defineComponent({
       }
     }
 
-    watchEffect(() => {
+    onMounted(() => {
       setActions(
         <>
           <DeleteConfirmButton

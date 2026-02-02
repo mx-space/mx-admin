@@ -4,7 +4,7 @@ import { toast } from 'vue-sonner'
 import type {
   AuthenticationResponseJSON,
   RegistrationResponseJSON,
-} from '@simplewebauthn/types'
+} from '@simplewebauthn/browser'
 
 import { startAuthentication, startRegistration } from '@simplewebauthn/browser'
 

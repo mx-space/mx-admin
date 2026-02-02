@@ -54,24 +54,19 @@ export const FunctionCodeEditor = defineComponent({
     onMounted(() => {
       import('monaco-editor').then((monaco) => {
         const compilerOptions =
-          monaco.languages.typescript.typescriptDefaults.getCompilerOptions()
-        compilerOptions.target = monaco.languages.typescript.ScriptTarget.ESNext
+          monaco.typescript.typescriptDefaults.getCompilerOptions()
+        compilerOptions.target = monaco.typescript.ScriptTarget.ESNext
         compilerOptions.allowNonTsExtensions = true
         compilerOptions.moduleResolution =
-          monaco.languages.typescript.ModuleResolutionKind.NodeJs
+          monaco.typescript.ModuleResolutionKind.NodeJs
         compilerOptions.esModuleInterop = true
 
-        monaco.languages.typescript.typescriptDefaults.setCompilerOptions(
-          compilerOptions,
-        )
+        monaco.typescript.typescriptDefaults.setCompilerOptions(compilerOptions)
 
         const libUri = 'ts:filename/global.d.ts'
         if (!monaco.editor.getModel(monaco.Uri.parse(libUri))) {
           systemApi.getFnTypes().then((libSource) => {
-            monaco.languages.typescript.typescriptDefaults.addExtraLib(
-              libSource,
-              libUri,
-            )
+            monaco.typescript.typescriptDefaults.addExtraLib(libSource, libUri)
             // When resolving definitions and references, the editor will try to use created models.
             // Creating a model for the library allows "peek definition/references" commands to work with the library.
             monaco.editor.createModel(
@@ -94,10 +89,7 @@ export const FunctionCodeEditor = defineComponent({
             return
           }
 
-          monaco.languages.typescript.typescriptDefaults.addExtraLib(
-            libSource,
-            libUri,
-          )
+          monaco.typescript.typescriptDefaults.addExtraLib(libSource, libUri)
           // When resolving definitions and references, the editor will try to use created models.
           // Creating a model for the library allows "peek definition/references" commands to work with the library.
           monaco.editor.createModel(
@@ -110,10 +102,7 @@ export const FunctionCodeEditor = defineComponent({
         for (const libUri in NodeDeclare) {
           const libSource = NodeDeclare[libUri]
 
-          monaco.languages.typescript.typescriptDefaults.addExtraLib(
-            libSource,
-            libUri,
-          )
+          monaco.typescript.typescriptDefaults.addExtraLib(libSource, libUri)
 
           monaco.editor.createModel(
             libSource,

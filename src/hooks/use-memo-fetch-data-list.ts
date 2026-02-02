@@ -1,5 +1,5 @@
 import { nextTick, ref } from 'vue'
-import type { PaginateResult } from '@mx-space/api-client'
+import type { PaginateResult } from '~/models/base'
 import type { Ref } from 'vue'
 
 import { createGlobalState } from '@vueuse/core'

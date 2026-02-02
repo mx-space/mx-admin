@@ -1,4 +1,4 @@
-import type { NoteModel } from '@mx-space/api-client'
+import type { NoteModel } from '~/models/note'
 
 import { notesApi } from '~/api'
 import { createMemoDataListFetchHook } from '~/hooks/use-memo-fetch-data-list'
