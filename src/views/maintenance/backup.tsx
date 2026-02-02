@@ -219,7 +219,10 @@ export default defineComponent({
         <NSpin show={loading.value}>
           <div class="min-h-[200px]">
             {data.value.length === 0 && !loading.value ? (
-              <BackupEmptyState onCreate={handleBackup} />
+              <BackupEmptyState
+                onCreate={handleBackup}
+                onRestore={handleUploadAndRestore}
+              />
             ) : (
               <div class="overflow-hidden rounded-lg border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
                 {/* Select All Header */}
@@ -402,6 +405,10 @@ const BackupEmptyState = defineComponent({
       type: Function as PropType<() => void>,
       required: true,
     },
+    onRestore: {
+      type: Function as PropType<() => void>,
+      required: true,
+    },
   },
   setup(props) {
     return () => (
@@ -415,9 +422,17 @@ const BackupEmptyState = defineComponent({
         <p class="mb-6 text-sm text-neutral-500 dark:text-neutral-400">
           创建备份以保护你的数据
         </p>
-        <NButton type="primary" onClick={props.onCreate}>
-          立即备份
-        </NButton>
+        <div class="flex items-center gap-3">
+          <NButton type="primary" onClick={props.onCreate}>
+            立即备份
+          </NButton>
+          <NButton onClick={props.onRestore}>
+            {{
+              icon: () => <Upload class="size-4" />,
+              default: () => '上传恢复',
+            }}
+          </NButton>
+        </div>
       </div>
     )
   },
