@@ -199,7 +199,24 @@ export interface CreateTaskResponse {
   created: boolean
 }
 
+export interface AICommentReviewTestData {
+  text: string
+  author?: string
+}
+
+export interface AICommentReviewTestResponse {
+  isSpam: boolean
+  score?: number
+  reason?: string
+}
+
 export const aiApi = {
+  // AI 评论审核测试
+  testCommentReview: (data: AICommentReviewTestData) =>
+    request.post<AICommentReviewTestResponse>('/ai/comment-review/test', {
+      data,
+    }),
+
   // AI 写作生成标题/Slug
   writerGenerate: (data: AIWriterGenerateData) =>
     request.post<AIWriterGenerateResponse>('/ai/writer/generate', { data }),

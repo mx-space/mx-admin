@@ -1,12 +1,39 @@
 import { get, set } from 'es-toolkit/compat'
 import { marked } from 'marked'
-import { NDynamicTags, NInput, NInputNumber, NSelect, NSwitch } from 'naive-ui'
-import { defineComponent, ref, watch, watchEffect } from 'vue'
-import type { PropType, Ref } from 'vue'
+import {
+  NButton,
+  NDynamicTags,
+  NInput,
+  NInputNumber,
+  NSelect,
+  NSwitch,
+} from 'naive-ui'
+import { defineComponent, inject, provide, ref, watch, watchEffect } from 'vue'
+import type { InjectionKey, PropType, Ref } from 'vue'
 import type { FormField } from './types'
 
 import { SettingsItem } from '~/layouts/settings-layout'
 import { uuid } from '~/utils'
+
+export type ActionHandler = (actionId: string) => void
+export const ActionHandlerKey: InjectionKey<ActionHandler> = Symbol(
+  'config-form-action-handler',
+)
+
+/**
+ * Compare values for showWhen conditions.
+ * Handles boolean/string coercion for values like { aiReview: 'true' }
+ */
+function matchShowWhenValue(actualValue: unknown, expected: unknown): boolean {
+  if (actualValue === expected) return true
+  if (typeof actualValue === 'boolean' && typeof expected === 'string') {
+    return String(actualValue) === expected
+  }
+  if (typeof actualValue === 'string' && typeof expected === 'boolean') {
+    return actualValue === String(expected)
+  }
+  return false
+}
 
 /**
  * Check if a field should be shown based on showWhen conditions.
@@ -23,9 +50,11 @@ function shouldShowField(
   for (const [key, expected] of Object.entries(showWhen)) {
     const actualValue = get(formData.value, `${sectionPrefix}.${key}`)
     if (Array.isArray(expected)) {
-      if (!expected.includes(actualValue)) return false
+      if (!expected.some((exp) => matchShowWhenValue(actualValue, exp))) {
+        return false
+      }
     } else {
-      if (actualValue !== expected) return false
+      if (!matchShowWhenValue(actualValue, expected)) return false
     }
   }
   return true
@@ -45,8 +74,18 @@ export const SectionFields = defineComponent({
       type: String,
       required: true,
     },
+    onAction: {
+      type: Function as PropType<ActionHandler>,
+    },
   },
   setup(props) {
+    const parentHandler = inject(ActionHandlerKey, undefined)
+    const handler = props.onAction || parentHandler
+
+    if (handler) {
+      provide(ActionHandlerKey, handler)
+    }
+
     return () => {
       const { fields, formData, dataKeyPrefix } = props
 
@@ -111,6 +150,7 @@ export const FormFieldItem = defineComponent({
   },
   setup(props) {
     const innerValue = ref(props.value)
+    const actionHandler = inject(ActionHandlerKey, undefined)
 
     watch(
       () => props.value,
@@ -133,7 +173,7 @@ export const FormFieldItem = defineComponent({
             <NInput
               inputProps={{ id: uuid() }}
               value={innerValue.value}
-              onUpdateValue={(val) => {
+              onUpdateValue={(val: string | null) => {
                 innerValue.value = val
               }}
               placeholder={ui.placeholder}
@@ -146,7 +186,7 @@ export const FormFieldItem = defineComponent({
             <NInput
               inputProps={{ id: uuid() }}
               value={innerValue.value}
-              onUpdateValue={(val) => {
+              onUpdateValue={(val: string | null) => {
                 innerValue.value = val
               }}
               type="password"
@@ -161,7 +201,7 @@ export const FormFieldItem = defineComponent({
             <NInput
               inputProps={{ id: uuid() }}
               value={innerValue.value}
-              onUpdateValue={(val) => {
+              onUpdateValue={(val: string | null) => {
                 innerValue.value = val
               }}
               type="textarea"
@@ -175,7 +215,7 @@ export const FormFieldItem = defineComponent({
           return (
             <NInputNumber
               value={innerValue.value}
-              onUpdateValue={(val) => {
+              onUpdateValue={(val: number | null) => {
                 innerValue.value = val
               }}
               placeholder={ui.placeholder}
@@ -186,7 +226,7 @@ export const FormFieldItem = defineComponent({
           return (
             <NSwitch
               value={innerValue.value}
-              onUpdateValue={(val) => {
+              onUpdateValue={(val: boolean) => {
                 innerValue.value = val
               }}
             />
@@ -196,7 +236,7 @@ export const FormFieldItem = defineComponent({
           return (
             <NSelect
               value={innerValue.value}
-              onUpdateValue={(val) => {
+              onUpdateValue={(val: string | number | null) => {
                 innerValue.value = val
               }}
               options={ui.options}
@@ -209,10 +249,25 @@ export const FormFieldItem = defineComponent({
           return (
             <NDynamicTags
               value={innerValue.value}
-              onUpdateValue={(val) => {
+              onUpdateValue={(val: string[]) => {
                 innerValue.value = val
               }}
             />
+          )
+
+        case 'action':
+          return (
+            <NButton
+              size="small"
+              secondary
+              onClick={() => {
+                if (ui.actionId && actionHandler) {
+                  actionHandler(ui.actionId)
+                }
+              }}
+            >
+              {ui.actionLabel || field.title}
+            </NButton>
           )
 
         default:

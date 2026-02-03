@@ -1,4 +1,5 @@
-import { NButton, NIcon, NTooltip } from 'naive-ui'
+import { SparklesIcon } from 'lucide-vue-next'
+import { NButton, NTooltip } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import type { PropType } from 'vue'
 
@@ -93,9 +94,9 @@ export const AiHelperButton = defineComponent({
                   loading={loading.value}
                   onClick={callApi}
                   text
-                  class={'ml-2'}
+                  class={'ml-2 size-4'}
                 >
-                  <NIcon>{!loading.value && <OpenAIIcon />}</NIcon>
+                  <SparklesIcon class="size-3" />
                 </NButton>
               )
             },

@@ -1,6 +1,6 @@
 import { cloneDeep, isEmpty } from 'es-toolkit/compat'
 import { Mail as MailIcon } from 'lucide-vue-next'
-import { NButton } from 'naive-ui'
+import { NButton, NCard, NInput, NModal } from 'naive-ui'
 import {
   computed,
   defineComponent,
@@ -18,6 +18,7 @@ import type {
 } from '~/components/config-form/types'
 import type { PropType } from 'vue'
 
+import { aiApi } from '~/api/ai'
 import { healthApi } from '~/api/health'
 import { optionsApi } from '~/api/options'
 import { SectionFields } from '~/components/config-form'
@@ -191,6 +192,48 @@ export const TabSystem = defineComponent({
       }
     }
 
+    const showTestAiReviewModal = ref(false)
+    const testAiReviewInput = ref('')
+    const isTestingAiReview = ref(false)
+
+    const handleTestAiReview = async () => {
+      if (!testAiReviewInput.value.trim()) {
+        toast.warning('请输入测试内容')
+        return
+      }
+      isTestingAiReview.value = true
+      try {
+        const result = await aiApi.testCommentReview({
+          text: testAiReviewInput.value,
+        })
+        if (result.isSpam) {
+          toast.warning(
+            `判定为垃圾评论${result.score !== undefined ? ` (评分: ${result.score})` : ''}${result.reason ? `\n原因: ${result.reason}` : ''}`,
+          )
+        } else {
+          toast.success(
+            `判定为正常评论${result.score !== undefined ? ` (评分: ${result.score})` : ''}`,
+          )
+        }
+        showTestAiReviewModal.value = false
+        testAiReviewInput.value = ''
+      } catch (error: any) {
+        toast.error(error?.message || '测试 AI 审核失败')
+      } finally {
+        isTestingAiReview.value = false
+      }
+    }
+
+    const handleAction = (actionId: string) => {
+      switch (actionId) {
+        case 'test-ai-review':
+          showTestAiReviewModal.value = true
+          break
+        default:
+          console.warn(`Unknown action: ${actionId}`)
+      }
+    }
+
     return () => {
       const { activeGroup } = props
 
@@ -220,6 +263,7 @@ export const TabSystem = defineComponent({
                           fields={section.fields}
                           formData={computed(() => configs)}
                           dataKeyPrefix={section.key}
+                          onAction={handleAction}
                         />
                       </div>
                     ),
@@ -241,6 +285,51 @@ export const TabSystem = defineComponent({
                 </SettingsSection>
               ),
             )}
+
+          <NModal
+            transformOrigin="center"
+            show={showTestAiReviewModal.value}
+            onUpdateShow={(e) => void (showTestAiReviewModal.value = e)}
+          >
+            <NCard
+              bordered={false}
+              title="测试 AI 审核"
+              class="w-[500px] max-w-full"
+            >
+              <div class="space-y-4">
+                <p class="text-sm text-neutral-500">
+                  输入测试内容，验证 AI 审核功能是否正常工作
+                </p>
+                <NInput
+                  type="textarea"
+                  value={testAiReviewInput.value}
+                  onUpdateValue={(v: string | null) =>
+                    (testAiReviewInput.value = v || '')
+                  }
+                  placeholder="输入要测试的评论内容..."
+                  autosize={{ minRows: 3, maxRows: 6 }}
+                />
+              </div>
+              <div class="mt-6 flex justify-end gap-2">
+                <NButton
+                  secondary
+                  onClick={() => {
+                    showTestAiReviewModal.value = false
+                    testAiReviewInput.value = ''
+                  }}
+                >
+                  取消
+                </NButton>
+                <NButton
+                  type="primary"
+                  loading={isTestingAiReview.value}
+                  onClick={handleTestAiReview}
+                >
+                  测试
+                </NButton>
+              </div>
+            </NCard>
+          </NModal>
         </div>
       )
     }
