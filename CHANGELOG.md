@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## [5.10.3](https://github.com/mx-space/admin-vue3/compare/v5.10.2...v5.10.3) (2026-02-03)
+
+
+### Bug Fixes
+
+* update input class for improved accessibility and styling ([1071941](https://github.com/mx-space/admin-vue3/commit/1071941b9748c775cf287ec0dba2199555fa1b43))
+
+
+### Features
+
+* enhance AI comment review functionality and update toast styles ([2589db3](https://github.com/mx-space/admin-vue3/commit/2589db33bb445604d0ba5ec5e0d11cdca147c4de))
+* extend ArticleSelectorModal to include Page type ([465afb3](https://github.com/mx-space/admin-vue3/commit/465afb3f582e899c927a91a8c194ac158b85a222))
+
+
+
 ## [5.10.2](https://github.com/mx-space/admin-vue3/compare/v5.10.1...v5.10.2) (2026-02-02)
 
 
