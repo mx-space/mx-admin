@@ -194,23 +194,16 @@ html.dark .sonner-description {
   @apply !text-neutral-400;
 }
 
-/* Toast 关闭按钮 - 20x20px，在内容区域 */
+/* Toast 关闭按钮 - 20x20px */
 [data-sonner-toast][data-styled='true'] [data-close-button] {
-  --toast-close-button-transform: none !important;
   @apply !border-0 !bg-transparent;
   width: 20px !important;
   height: 20px !important;
   padding: 0 !important;
   border-radius: 4px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  position: relative !important;
-  top: auto !important;
-  right: auto !important;
+  top: 12px !important;
+  right: 12px !important;
   left: auto !important;
-  margin-left: auto !important;
-  flex-shrink: 0 !important;
   transition: all 0.2s !important;
 }
 
