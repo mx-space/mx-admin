@@ -198,7 +198,7 @@ export const LoginView = defineComponent({
                   autocomplete="current-password"
                   placeholder="输入密码"
                   disabled={isLoading.value}
-                  class="h-[38px] w-full rounded-full border-0 bg-white/20 px-4 text-center text-sm text-white backdrop-blur-md transition-all placeholder:text-white/60 disabled:cursor-not-allowed disabled:opacity-50"
+                  class="h-[38px] w-full rounded-full border-0 bg-white/20 px-4 text-center text-sm text-white outline-none ring-0 backdrop-blur-md transition-all placeholder:text-white/60 disabled:cursor-not-allowed disabled:opacity-50"
                 />
                 {/* Submit on Enter - hidden button */}
                 <button type="submit" class="sr-only">
