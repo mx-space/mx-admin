@@ -1,5 +1,14 @@
 # CHANGELOG
 
+# [5.11.0](https://github.com/mx-space/admin-vue3/compare/v5.10.3...v5.11.0) (2026-02-04)
+
+
+### Features
+
+* implement cron task management API and UI components ([a31a106](https://github.com/mx-space/admin-vue3/commit/a31a106c303e346685ca2d6b530c96291c6322c7))
+
+
+
 ## [5.10.3](https://github.com/mx-space/admin-vue3/compare/v5.10.2...v5.10.3) (2026-02-03)
 
 
