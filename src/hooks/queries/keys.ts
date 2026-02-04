@@ -176,6 +176,16 @@ export const queryKeys = {
     task: (taskId: string) => [...queryKeys.ai.tasks(), taskId] as const,
   },
 
+  // === Cron Task ===
+  cronTask: {
+    all: ['cronTask'] as const,
+    definitions: () => [...queryKeys.cronTask.all, 'definitions'] as const,
+    tasks: () => [...queryKeys.cronTask.all, 'tasks'] as const,
+    tasksList: (params?: object) =>
+      [...queryKeys.cronTask.tasks(), 'list', params] as const,
+    task: (taskId: string) => [...queryKeys.cronTask.tasks(), taskId] as const,
+  },
+
   // === 配置 ===
   options: {
     all: ['options'] as const,
