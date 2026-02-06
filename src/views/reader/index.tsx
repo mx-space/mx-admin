@@ -33,7 +33,6 @@ const ReaderItem = defineComponent({
 
       return (
         <div class="group flex items-center gap-4 border-b border-neutral-200 px-4 py-3 transition-colors last:border-b-0 hover:bg-neutral-50 dark:border-neutral-800 dark:hover:bg-neutral-900/50">
-          {/* Avatar */}
           <div class="relative shrink-0">
             <NAvatar
               round
@@ -48,7 +47,6 @@ const ReaderItem = defineComponent({
             )}
           </div>
 
-          {/* Info */}
           <div class="min-w-0 flex-1">
             <div class="flex items-center gap-2">
               <span class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
@@ -90,7 +88,6 @@ const ReaderItem = defineComponent({
             </div>
           </div>
 
-          {/* Provider Badge */}
           {reader.provider && (
             <div class="hidden shrink-0 sm:block">
               <span class="rounded-full bg-neutral-100 px-2 py-0.5 text-xs capitalize text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">
@@ -149,7 +146,6 @@ const ReaderView = defineComponent({
       await fetchReaders(currentPage.value + 1)
     }
 
-    // Initial load
     fetchReaders(1)
 
     return () => (

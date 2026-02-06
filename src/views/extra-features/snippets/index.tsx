@@ -37,12 +37,10 @@ export default defineComponent({
     const layout = useLayout()
     const { isMobile } = useMasterDetailLayout()
 
-    // State
     const selectedId = ref<string | null>(null)
     const showDetailOnMobile = ref(false)
     const showCreateModal = ref(false)
 
-    // Composables
     const {
       groupsWithSnippets,
       loading: listLoading,
@@ -63,7 +61,6 @@ export default defineComponent({
       updateEditorValue,
     } = useSnippetEditor(selectedId)
 
-    // URL sync
     watch(
       selectedId,
       (id) => {
@@ -76,14 +73,12 @@ export default defineComponent({
       { flush: 'post' },
     )
 
-    // Restore from URL on mount
     onMounted(async () => {
       if (route.query.id) {
         selectedId.value = route.query.id as string
       }
     })
 
-    // Fetch snippet when ID changes
     watch(selectedId, async (id) => {
       if (id) {
         await fetchSnippet(id)
@@ -95,7 +90,6 @@ export default defineComponent({
       }
     })
 
-    // Handlers
     const handleCreate = () => {
       selectedId.value = null
       resetEditor()
@@ -103,7 +97,6 @@ export default defineComponent({
     }
 
     const handleCreateConfirm = () => {
-      // Validate required fields
       if (!editData.value.name?.trim()) {
         toast.warning('请填写片段名称')
         return
@@ -138,10 +131,8 @@ export default defineComponent({
     const handleSave = async () => {
       const result = await save()
       if (result) {
-        // Refresh list
         fetchGroups()
 
-        // If creating new, update selectedId
         if (isNew.value && result.id) {
           selectedId.value = result.id
         }
@@ -156,7 +147,6 @@ export default defineComponent({
       Object.assign(editData.value, newData)
     }
 
-    // Layout actions
     useMountAndUnmount(() => {
       layout.setActions(
         <>
@@ -171,7 +161,6 @@ export default defineComponent({
       }
     })
 
-    // Config Popover content
     const ConfigPopover = () => (
       <div class="w-[400px] max-w-[90vw]">
         <SnippetMetaForm
@@ -184,7 +173,6 @@ export default defineComponent({
       </div>
     )
 
-    // List Panel Content
     const ListPanel = () => (
       <SnippetList
         groups={groupsWithSnippets.value}
@@ -197,7 +185,6 @@ export default defineComponent({
       />
     )
 
-    // Detail Panel Content
     const DetailPanel = () => (
       <div class="flex h-full flex-col bg-white dark:bg-black">
         {/* Header */}
@@ -206,9 +193,9 @@ export default defineComponent({
             {isMobile.value && (
               <button
                 onClick={handleBack}
-                class="-ml-2 flex h-8 w-8 items-center justify-center rounded-md text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+                class="-ml-2 flex size-8 items-center justify-center rounded-md text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
               >
-                <ArrowLeftIcon class="h-5 w-5" />
+                <ArrowLeftIcon class="size-5" />
               </button>
             )}
             <h2 class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
@@ -225,8 +212,8 @@ export default defineComponent({
             <NPopover trigger="click" placement="bottom-end" showArrow={false}>
               {{
                 trigger: () => (
-                  <button class="flex h-8 w-8 items-center justify-center rounded-md text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100">
-                    <SettingsIcon class="h-4 w-4" />
+                  <button class="flex size-8 items-center justify-center rounded-md text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100">
+                    <SettingsIcon class="size-4" />
                   </button>
                 ),
                 default: ConfigPopover,
@@ -239,7 +226,7 @@ export default defineComponent({
               type="primary"
               size="small"
               onClick={handleSave}
-              renderIcon={() => <CheckCircleIcon class="h-4 w-4" />}
+              renderIcon={() => <CheckCircleIcon class="size-4" />}
             >
               保存
             </NButton>
@@ -258,7 +245,6 @@ export default defineComponent({
       </div>
     )
 
-    // Create Modal
     const CreateModal = () => (
       <NModal
         show={showCreateModal.value}

@@ -1,7 +1,3 @@
-/**
- * Backup Management Page
- * 备份管理页面 - Master-Detail 布局
- */
 import {
   ArrowLeft,
   Calendar,
@@ -292,9 +288,6 @@ export default defineComponent({
   },
 })
 
-/**
- * Backup List Panel (left side)
- */
 const BackupListPanel = defineComponent({
   props: {
     data: { type: Array as PropType<BackupFile[]>, required: true },
@@ -326,7 +319,6 @@ const BackupListPanel = defineComponent({
   setup(props) {
     return () => (
       <div class="flex h-full flex-col">
-        {/* Header */}
         <div class="flex h-12 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
           <div class="flex items-center gap-3">
             <NCheckbox
@@ -347,7 +339,6 @@ const BackupListPanel = defineComponent({
           </span>
         </div>
 
-        {/* List */}
         <div class="min-h-0 flex-1">
           {props.loading ? (
             <div class="flex items-center justify-center py-24">
@@ -402,9 +393,6 @@ const BackupListPanel = defineComponent({
   },
 })
 
-/**
- * Backup Detail Panel (right side)
- */
 const BackupDetailPanel = defineComponent({
   props: {
     item: { type: Object as PropType<BackupFile>, required: true },
@@ -417,7 +405,6 @@ const BackupDetailPanel = defineComponent({
   setup(props) {
     return () => (
       <div class="flex h-full flex-col bg-white dark:bg-black">
-        {/* Header */}
         <div class="flex h-12 shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
           <div class="flex items-center gap-3">
             {props.isMobile && (
@@ -469,10 +456,8 @@ const BackupDetailPanel = defineComponent({
           </div>
         </div>
 
-        {/* Content */}
         <NScrollbar class="min-h-0 flex-1">
           <div class="mx-auto max-w-3xl space-y-6 p-6">
-            {/* Backup Icon */}
             <div class="flex flex-col items-center py-8">
               <div class="mb-4 flex size-20 items-center justify-center rounded-2xl bg-blue-50 dark:bg-blue-950/50">
                 <HardDrive class="size-10 text-blue-500 dark:text-blue-400" />
@@ -485,7 +470,6 @@ const BackupDetailPanel = defineComponent({
               </p>
             </div>
 
-            {/* Info Cards */}
             <div class="grid grid-cols-2 gap-4">
               <div class="rounded-xl border border-neutral-200 p-4 dark:border-neutral-800">
                 <div class="mb-2 flex items-center gap-2 text-neutral-400 dark:text-neutral-500">
@@ -507,7 +491,6 @@ const BackupDetailPanel = defineComponent({
               </div>
             </div>
 
-            {/* Quick Actions */}
             <div class="space-y-3">
               <h4 class="text-sm font-medium text-neutral-500 dark:text-neutral-400">
                 操作
@@ -623,9 +606,6 @@ const DetailActionButton = defineComponent({
   },
 })
 
-/**
- * Detail Empty State (no selection)
- */
 const BackupDetailEmptyState = defineComponent({
   setup() {
     return () => (
@@ -644,9 +624,6 @@ const BackupDetailEmptyState = defineComponent({
   },
 })
 
-/**
- * List Empty State (no backups)
- */
 const BackupListEmptyState = defineComponent({
   props: {
     onCreate: { type: Function as PropType<() => void>, required: true },

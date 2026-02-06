@@ -1,7 +1,3 @@
-/**
- * Topic List Panel Component
- * 专栏列表面板 - 用于 MasterDetailLayout 左侧
- */
 import { Hash, Inbox as InboxIcon } from 'lucide-vue-next'
 import { NButton, NScrollbar } from 'naive-ui'
 import { computed, defineComponent } from 'vue'
@@ -142,7 +138,6 @@ const TopicListItem = defineComponent({
         ]}
         onClick={props.onSelect}
       >
-        {/* 图标 */}
         <div class="shrink-0">
           {props.data.icon ? (
             <img
@@ -158,7 +153,6 @@ const TopicListItem = defineComponent({
           )}
         </div>
 
-        {/* 内容 */}
         <div class="min-w-0 flex-1">
           <div class="flex items-center gap-2">
             <h3 class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">

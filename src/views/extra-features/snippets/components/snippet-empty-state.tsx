@@ -43,7 +43,7 @@ export const SnippetEmptyState = defineComponent({
             <NButton
               type="primary"
               onClick={props.onCreate}
-              renderIcon={() => <Plus class="h-4 w-4" />}
+              renderIcon={() => <Plus class="size-4" />}
             >
               新建片段
             </NButton>

@@ -120,10 +120,8 @@ export const TabAccount = defineComponent(() => {
 
   const hasPanel = computed(() => activePanel.value !== null)
 
-  // 移动端布局：全屏切换
   const MobileLayout = () => (
     <div class="relative h-full overflow-hidden">
-      {/* 设置列表 */}
       <div
         class={[
           'absolute inset-0 transition-transform duration-300 ease-out',
@@ -137,7 +135,6 @@ export const TabAccount = defineComponent(() => {
         </NScrollbar>
       </div>
 
-      {/* 详情面板 */}
       <div
         class={[
           'absolute inset-0 bg-white transition-transform duration-300 ease-out dark:bg-black',
@@ -149,10 +146,8 @@ export const TabAccount = defineComponent(() => {
     </div>
   )
 
-  // 桌面端布局：分栏
   const DesktopLayout = () => (
     <div class="relative h-full overflow-hidden">
-      {/* 左侧设置内容 */}
       <div
         class={[
           'absolute inset-y-0 left-0 overflow-hidden transition-all duration-300 ease-out',
@@ -168,7 +163,6 @@ export const TabAccount = defineComponent(() => {
         </NScrollbar>
       </div>
 
-      {/* 右侧面板 - 从右侧滑入 */}
       <div
         class={[
           'absolute inset-y-0 right-0 w-1/2 overflow-hidden bg-white transition-transform duration-300 ease-out dark:bg-black',
@@ -567,7 +561,6 @@ const ResetPass = defineComponent(() => {
   )
 })
 
-// === API Token 入口组件 ===
 const ApiTokenEntry = defineComponent(() => {
   const { activePanel, setActivePanel } = useActivePanel()
   const { data: tokens, isLoading } = useQuery({
@@ -614,7 +607,6 @@ const ApiTokenEntry = defineComponent(() => {
   )
 })
 
-// === Token 列表面板 ===
 const TokenListPanel = defineComponent(() => {
   const { setActivePanel } = useActivePanel()
   const {
@@ -775,7 +767,6 @@ const TokenListPanel = defineComponent(() => {
   return () => (
     <>
       <div class="flex h-full flex-col">
-        {/* Header */}
         <div class="flex h-14 shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
           <div class="flex items-center gap-3">
             <button
@@ -801,7 +792,6 @@ const TokenListPanel = defineComponent(() => {
           </NButton>
         </div>
 
-        {/* Content */}
         <NScrollbar class="min-h-0 flex-1">
           {isLoading.value ? (
             <div class="space-y-4 p-4">
@@ -830,7 +820,6 @@ const TokenListPanel = defineComponent(() => {
         </NScrollbar>
       </div>
 
-      {/* Create Token Modal */}
       <NModal
         transformOrigin="center"
         show={newTokenDialogShow.value}
@@ -877,7 +866,6 @@ const TokenListPanel = defineComponent(() => {
         </NCard>
       </NModal>
 
-      {/* Token Display Modal */}
       <NModal
         transformOrigin="center"
         show={tokenDisplayDialogShow.value}
@@ -958,7 +946,6 @@ const TokenListPanel = defineComponent(() => {
   )
 })
 
-// === Passkey 入口组件 ===
 const PasskeyEntry = defineComponent(() => {
   const { activePanel, setActivePanel } = useActivePanel()
   const { data: passkeys, isLoading } = useQuery({
@@ -994,7 +981,6 @@ const PasskeyEntry = defineComponent(() => {
       description="使用生物识别或安全密钥登录"
       icon={FingerprintIcon}
     >
-      {/* 禁止密码登录开关 */}
       <div class="flex items-center justify-between px-4 py-4">
         <div class="flex flex-col gap-0.5">
           <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
@@ -1016,7 +1002,6 @@ const PasskeyEntry = defineComponent(() => {
         />
       </div>
 
-      {/* 管理通行密钥入口 */}
       <button
         type="button"
         class={[
@@ -1048,7 +1033,6 @@ const PasskeyEntry = defineComponent(() => {
   )
 })
 
-// === Passkey 列表面板 ===
 const PasskeyListPanel = defineComponent(() => {
   const { setActivePanel } = useActivePanel()
   const {
@@ -1144,7 +1128,6 @@ const PasskeyListPanel = defineComponent(() => {
 
   return () => (
     <div class="flex h-full flex-col">
-      {/* Header */}
       <div class="flex h-14 shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
         <div class="flex items-center gap-3">
           <button
@@ -1185,7 +1168,6 @@ const PasskeyListPanel = defineComponent(() => {
         </div>
       </div>
 
-      {/* Content */}
       <NScrollbar class="min-h-0 flex-1">
         {isLoading.value ? (
           <div class="space-y-4 p-4">

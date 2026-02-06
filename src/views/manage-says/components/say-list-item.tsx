@@ -1,7 +1,3 @@
-/**
- * Say List Item Component
- * 一言列表项组件 - 引用风格设计
- */
 import { Pencil, Quote, Trash2, User, X } from 'lucide-vue-next'
 import { NButton, NInput, NModal, NPopconfirm } from 'naive-ui'
 import { computed, defineComponent, reactive, ref, watch } from 'vue'
@@ -12,7 +8,7 @@ import type { PropType } from 'vue'
 import { saysApi } from '~/api/says'
 import { RelativeTime } from '~/components/time/relative-time'
 
-interface SayWithMeta extends SayModel {
+export interface SayWithMeta extends SayModel {
   created?: string
   modified?: string
 }
@@ -36,9 +32,7 @@ export const SayListItem = defineComponent({
   setup(props) {
     return () => (
       <div class="group border-b border-neutral-200 px-4 py-4 transition-colors last:border-b-0 hover:bg-neutral-50 dark:border-neutral-800 dark:hover:bg-neutral-900/50">
-        {/* 内容区 */}
         <div class="flex gap-3">
-          {/* 引号图标 */}
           <div class="shrink-0 pt-0.5">
             <Quote
               class="size-5 text-neutral-300 dark:text-neutral-600"
@@ -46,14 +40,11 @@ export const SayListItem = defineComponent({
             />
           </div>
 
-          {/* 主内容 */}
           <div class="min-w-0 flex-1">
-            {/* 引用文本 */}
             <p class="text-base leading-relaxed text-neutral-800 dark:text-neutral-200">
               {props.say.text}
             </p>
 
-            {/* 元信息 */}
             <div class="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-neutral-500 dark:text-neutral-400">
               {props.say.author && (
                 <span class="flex items-center gap-1">
@@ -75,7 +66,6 @@ export const SayListItem = defineComponent({
             </div>
           </div>
 
-          {/* 操作按钮 */}
           <div class="flex shrink-0 items-start gap-1 opacity-0 transition-opacity group-hover:opacity-100">
             <NButton
               size="tiny"
@@ -117,9 +107,6 @@ export const SayListItem = defineComponent({
   },
 })
 
-/**
- * Say Edit Modal
- */
 export const SayEditModal = defineComponent({
   name: 'SayEditModal',
   props: {
@@ -149,7 +136,6 @@ export const SayEditModal = defineComponent({
     const submitting = ref(false)
     const textError = ref('')
 
-    // 当 say 变化或 modal 打开时，重置表单
     watch(
       () => [props.show, props.say],
       ([show, say]) => {
@@ -224,7 +210,6 @@ export const SayEditModal = defineComponent({
           aria-labelledby="say-modal-title"
           onKeydown={handleKeydown}
         >
-          {/* Header */}
           <div class="flex items-center justify-between border-b border-neutral-200 px-5 py-4 dark:border-neutral-800">
             <h2
               id="say-modal-title"
@@ -242,9 +227,7 @@ export const SayEditModal = defineComponent({
             </button>
           </div>
 
-          {/* Body */}
           <div class="px-5 py-4">
-            {/* 内容 */}
             <div class="mb-4">
               <label class="mb-1.5 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
                 内容 <span class="text-red-500">*</span>
@@ -262,7 +245,6 @@ export const SayEditModal = defineComponent({
               )}
             </div>
 
-            {/* 作者 */}
             <div class="mb-4">
               <label class="mb-1.5 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
                 作者
@@ -274,7 +256,6 @@ export const SayEditModal = defineComponent({
               />
             </div>
 
-            {/* 来源 */}
             <div class="mb-4">
               <label class="mb-1.5 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
                 来源
@@ -287,7 +268,6 @@ export const SayEditModal = defineComponent({
             </div>
           </div>
 
-          {/* Footer */}
           <div class="flex items-center justify-end gap-2 border-t border-neutral-200 px-5 py-4 dark:border-neutral-800">
             <span class="mr-auto text-xs text-neutral-400">
               Cmd/Ctrl + Enter 快速保存
@@ -307,9 +287,6 @@ export const SayEditModal = defineComponent({
   },
 })
 
-/**
- * Empty State for Says
- */
 export const SayEmptyState = defineComponent({
   name: 'SayEmptyState',
   props: {
@@ -338,9 +315,6 @@ export const SayEmptyState = defineComponent({
   },
 })
 
-/**
- * Loading Skeleton for Say List
- */
 export const SayListSkeleton = defineComponent({
   name: 'SayListSkeleton',
   setup() {

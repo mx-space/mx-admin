@@ -1,7 +1,3 @@
-/**
- * Article Selector Modal Component
- * 文章选择器弹窗 - 用于批量生成 AI 翻译
- */
 import {
   File as FileIcon,
   FileText as FileTextIcon,
@@ -88,11 +84,24 @@ export const ArticleSelectorModal = defineComponent({
 
     const selectedIds = ref<Set<string>>(new Set())
 
+    const unwrapResponse = (res: unknown): { id: string; title: string }[] => {
+      return Array.isArray(res) ? res : ((res as any)?.data ?? [])
+    }
+
+    const toSelectableArticles = (
+      items: { id: string; title: string }[],
+      type: ArticleRefType,
+    ): SelectableArticle[] =>
+      items.map((item) => ({
+        id: item.id,
+        title: item.title,
+        type,
+        selected: selectedIds.value.has(item.id),
+      }))
+
     const fetchArticles = async (keyword?: string) => {
       loading.value = true
       try {
-        const allArticles: SelectableArticle[] = []
-
         const shouldFetchPosts =
           typeFilter.value === 'all' || typeFilter.value === 'Post'
         const shouldFetchNotes =
@@ -100,112 +109,37 @@ export const ArticleSelectorModal = defineComponent({
         const shouldFetchPages =
           typeFilter.value === 'all' || typeFilter.value === 'Page'
 
-        if (keyword && keyword.trim()) {
-          const [postsRes, notesRes, pagesRes] = await Promise.all([
-            shouldFetchPosts
+        const hasKeyword = keyword && keyword.trim()
+
+        const [postsRes, notesRes, pagesRes] = await Promise.all([
+          shouldFetchPosts
+            ? hasKeyword
               ? searchApi.searchPosts({ keyword, size: 50 })
-              : Promise.resolve({ data: [] }),
-            shouldFetchNotes
+              : postsApi.getList({ size: 50, select: 'title' })
+            : Promise.resolve({ data: [] }),
+          shouldFetchNotes
+            ? hasKeyword
               ? searchApi.searchNotes({ keyword, size: 50 })
-              : Promise.resolve({ data: [] }),
-            // Pages 没有搜索 API，获取全部后前端过滤
-            shouldFetchPages
-              ? pagesApi.getList({ select: 'title' })
-              : Promise.resolve({ data: [] }),
-          ])
+              : notesApi.getList({ size: 50, select: 'title' })
+            : Promise.resolve({ data: [] }),
+          shouldFetchPages
+            ? pagesApi.getList({ select: 'title' })
+            : Promise.resolve({ data: [] }),
+        ])
 
-          const posts = Array.isArray(postsRes)
-            ? postsRes
-            : (postsRes?.data ?? [])
-          posts.forEach((post: { id: string; title: string }) => {
-            allArticles.push({
-              id: post.id,
-              title: post.title,
-              type: 'Post',
-              selected: selectedIds.value.has(post.id),
-            })
-          })
+        const posts = toSelectableArticles(unwrapResponse(postsRes), 'Post')
+        const notes = toSelectableArticles(unwrapResponse(notesRes), 'Note')
 
-          const notes = Array.isArray(notesRes)
-            ? notesRes
-            : (notesRes?.data ?? [])
-          notes.forEach((note: { id: string; title: string }) => {
-            allArticles.push({
-              id: note.id,
-              title: note.title,
-              type: 'Note',
-              selected: selectedIds.value.has(note.id),
-            })
-          })
-
-          // Pages 前端过滤
-          const pages = Array.isArray(pagesRes)
-            ? pagesRes
-            : (pagesRes?.data ?? [])
+        let pages = unwrapResponse(pagesRes)
+        if (hasKeyword) {
           const lowerKeyword = keyword.toLowerCase()
-          pages
-            .filter((page: { title: string }) =>
-              page.title.toLowerCase().includes(lowerKeyword),
-            )
-            .forEach((page: { id: string; title: string }) => {
-              allArticles.push({
-                id: page.id,
-                title: page.title,
-                type: 'Page',
-                selected: selectedIds.value.has(page.id),
-              })
-            })
-        } else {
-          const [postsRes, notesRes, pagesRes] = await Promise.all([
-            shouldFetchPosts
-              ? postsApi.getList({ size: 50, select: 'title' })
-              : Promise.resolve({ data: [] }),
-            shouldFetchNotes
-              ? notesApi.getList({ size: 50, select: 'title' })
-              : Promise.resolve({ data: [] }),
-            shouldFetchPages
-              ? pagesApi.getList({ select: 'title' })
-              : Promise.resolve({ data: [] }),
-          ])
-
-          const posts = Array.isArray(postsRes)
-            ? postsRes
-            : (postsRes?.data ?? [])
-          posts.forEach((post: { id: string; title: string }) => {
-            allArticles.push({
-              id: post.id,
-              title: post.title,
-              type: 'Post',
-              selected: selectedIds.value.has(post.id),
-            })
-          })
-
-          const notes = Array.isArray(notesRes)
-            ? notesRes
-            : (notesRes?.data ?? [])
-          notes.forEach((note: { id: string; title: string }) => {
-            allArticles.push({
-              id: note.id,
-              title: note.title,
-              type: 'Note',
-              selected: selectedIds.value.has(note.id),
-            })
-          })
-
-          const pages = Array.isArray(pagesRes)
-            ? pagesRes
-            : (pagesRes?.data ?? [])
-          pages.forEach((page: { id: string; title: string }) => {
-            allArticles.push({
-              id: page.id,
-              title: page.title,
-              type: 'Page',
-              selected: selectedIds.value.has(page.id),
-            })
-          })
+          pages = pages.filter((page) =>
+            page.title.toLowerCase().includes(lowerKeyword),
+          )
         }
+        const pageArticles = toSelectableArticles(pages, 'Page')
 
-        articles.value = allArticles
+        articles.value = [...posts, ...notes, ...pageArticles]
       } finally {
         loading.value = false
       }
@@ -372,7 +306,6 @@ export const ArticleSelectorModal = defineComponent({
           role="dialog"
           aria-modal="true"
         >
-          {/* Header */}
           <div class="flex flex-shrink-0 items-center justify-between border-b border-neutral-200 px-5 py-4 dark:border-neutral-800">
             <div class="flex items-center gap-2">
               <LanguagesIcon class="size-5 text-neutral-500" />
@@ -391,7 +324,6 @@ export const ArticleSelectorModal = defineComponent({
             </button>
           </div>
 
-          {/* Toolbar */}
           <div class="flex flex-shrink-0 items-center gap-3 border-b border-neutral-200 px-5 py-3 dark:border-neutral-800">
             <NInput
               value={searchQuery.value}
@@ -413,7 +345,6 @@ export const ArticleSelectorModal = defineComponent({
             />
           </div>
 
-          {/* Selection Info */}
           <div class="flex flex-shrink-0 items-center justify-between border-b border-neutral-100 px-5 py-2 dark:border-neutral-800/50">
             <div class="flex items-center gap-3">
               <NCheckbox
@@ -441,7 +372,6 @@ export const ArticleSelectorModal = defineComponent({
             )}
           </div>
 
-          {/* Article List */}
           <div class="min-h-0 flex-1">
             {loading.value ? (
               <div class="flex h-full items-center justify-center">
@@ -492,7 +422,6 @@ export const ArticleSelectorModal = defineComponent({
             )}
           </div>
 
-          {/* Footer */}
           <div class="flex flex-shrink-0 flex-col gap-3 border-t border-neutral-200 px-5 py-4 dark:border-neutral-800">
             <NInput
               value={targetLanguages.value}

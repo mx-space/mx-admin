@@ -146,7 +146,6 @@ export const ManagePageListView = defineComponent({
   setup() {
     const queryClient = useQueryClient()
 
-    // 获取页面列表
     const { data: pagesData, isLoading } = useQuery({
       queryKey: queryKeys.pages.list(),
       queryFn: () =>
@@ -159,14 +158,12 @@ export const ManagePageListView = defineComponent({
 
     const data = ref<PageModel[]>([])
 
-    // 同步 query 数据到本地 ref（用于拖拽排序）
     watchEffect(() => {
       if (pagesData.value?.data) {
         data.value = [...pagesData.value.data]
       }
     })
 
-    // 删除 mutation
     const deleteMutation = useMutation({
       mutationFn: pagesApi.delete,
       onSuccess: () => {
@@ -175,7 +172,6 @@ export const ManagePageListView = defineComponent({
       },
     })
 
-    // 排序 mutation
     const reorderMutation = useMutation({
       mutationFn: pagesApi.reorder,
       onSuccess: () => {
@@ -184,7 +180,6 @@ export const ManagePageListView = defineComponent({
     })
 
     const handleDelete = (id: string) => {
-      // 乐观更新
       data.value = data.value.filter((i) => i.id !== id)
       deleteMutation.mutate(id)
     }

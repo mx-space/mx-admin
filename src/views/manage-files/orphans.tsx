@@ -92,30 +92,22 @@ export default defineComponent({
     }
 
     const handleBatchDelete = async () => {
-      if (selectAllMode.value) {
-        batchDeleting.value = true
-        try {
-          const res = await filesApi.orphans.batchDelete({ all: true })
-          toast.success(`已删除 ${res.deletedCount} 个孤儿文件`)
-          await fetchOrphanFiles(1)
-        } catch (error: any) {
-          toast.error(error.message || '批量删除失败')
-        } finally {
-          batchDeleting.value = false
-        }
-      } else if (checkedRowKeys.value.length > 0) {
-        batchDeleting.value = true
-        try {
-          const res = await filesApi.orphans.batchDelete({
-            ids: checkedRowKeys.value,
-          })
-          toast.success(`已删除 ${res.deletedCount} 个孤儿文件`)
-          await fetchOrphanFiles(pagination.value.currentPage)
-        } catch (error: any) {
-          toast.error(error.message || '批量删除失败')
-        } finally {
-          batchDeleting.value = false
-        }
+      if (!selectAllMode.value && checkedRowKeys.value.length === 0) return
+
+      batchDeleting.value = true
+      try {
+        const params = selectAllMode.value
+          ? { all: true as const }
+          : { ids: checkedRowKeys.value }
+        const res = await filesApi.orphans.batchDelete(params)
+        toast.success(`已删除 ${res.deletedCount} 个孤儿文件`)
+        await fetchOrphanFiles(
+          selectAllMode.value ? 1 : pagination.value.currentPage,
+        )
+      } catch (error: any) {
+        toast.error(error.message || '批量删除失败')
+      } finally {
+        batchDeleting.value = false
       }
     }
 
@@ -276,7 +268,6 @@ export default defineComponent({
           </p>
         </div>
 
-        {/* 选择操作栏 */}
         {orphanFiles.value.length > 0 && (
           <div class="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg border border-neutral-200 bg-neutral-50/50 px-4 py-2.5 dark:border-neutral-800 dark:bg-neutral-900/50">
             <NCheckbox
@@ -317,7 +308,6 @@ export default defineComponent({
           </div>
         )}
 
-        {/* 图片列表 */}
         <div class="relative min-h-0 flex-1">
           {loading.value ? (
             <div class="flex h-64 items-center justify-center">
@@ -347,7 +337,6 @@ export default defineComponent({
           )}
         </div>
 
-        {/* 分页 */}
         {pagination.value.totalPage > 1 && (
           <div class="mt-4 flex justify-center">
             <NPagination
@@ -408,7 +397,6 @@ const OrphanFileCard = defineComponent({
         ]}
         onClick={handleCardClick}
       >
-        {/* Checkbox */}
         <div class="absolute left-2 top-2 z-10">
           <NCheckbox
             checked={props.checked}

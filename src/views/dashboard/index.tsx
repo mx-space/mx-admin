@@ -63,7 +63,6 @@ import { TopArticles } from './components/TopArticles'
 import { TrafficSource } from './components/TrafficSource'
 import { UpdatePanel } from './update-panel'
 
-// 分区标题组件
 const SectionTitle = defineComponent({
   props: {
     title: { type: String, required: true },
@@ -84,7 +83,6 @@ const SectionTitle = defineComponent({
   },
 })
 
-// 实时数据项 - 扁平设计
 const LiveStatItem = defineComponent({
   props: {
     label: { type: String, required: true },
@@ -117,7 +115,6 @@ const LiveStatItem = defineComponent({
   },
 })
 
-// 简洁统计项 - 无边框设计
 const StatItem = defineComponent({
   props: {
     label: { type: String, required: true },
@@ -158,7 +155,6 @@ interface ActionItem {
   onClick: () => void
 }
 
-// 带操作按钮的统计项 - 扁平设计
 const ActionStatItem = defineComponent({
   props: {
     label: { type: String, required: true },
@@ -262,7 +258,6 @@ export const DashBoardView = defineComponent({
       }
     })
 
-    // 轮询状态计时器
     let timer: any
     onMounted(() => {
       timer = setInterval(() => {
@@ -281,7 +276,6 @@ export const DashBoardView = defineComponent({
 
     const { create: createShortHand } = useShorthand()
 
-    // 渲染用户登录信息
     const renderUserLoginStat = () => (
       <div class="mt-8 text-sm text-neutral-500">
         <p>
@@ -339,7 +333,6 @@ export const DashBoardView = defineComponent({
           <NH1 class="!mb-0 !mt-0 font-light">欢迎回来</NH1>
         </div>
 
-        {/* 实时数据区 */}
         <section class="mb-8">
           <SectionTitle title="实时数据" />
           <NGrid xGap={12} yGap={12} cols="1 500:3">
@@ -368,7 +361,6 @@ export const DashBoardView = defineComponent({
           </NGrid>
         </section>
 
-        {/* 快速操作区 */}
         <section class="mb-8">
           <SectionTitle title="快速操作" />
           <div class="grid grid-cols-2 gap-x-4 gap-y-1 sm:grid-cols-4">
@@ -451,7 +443,6 @@ export const DashBoardView = defineComponent({
           </div>
         </section>
 
-        {/* 数据统计区 - 扁平网格 */}
         <section class="mb-8">
           <SectionTitle
             title="数据统计"
@@ -555,7 +546,6 @@ export const DashBoardView = defineComponent({
           </div>
         </section>
 
-        {/* 数据图表区 */}
         <section class="mb-8">
           <SectionTitle title="数据图表" />
           <NGrid xGap={16} yGap={16} cols="1 800:2">
@@ -580,7 +570,6 @@ export const DashBoardView = defineComponent({
           </NGrid>
         </section>
 
-        {/* 系统操作 */}
         <section class="mb-8">
           <SectionTitle title="系统操作" />
           <div class="grid grid-cols-2 gap-x-4 gap-y-1 sm:grid-cols-4 lg:grid-cols-6">

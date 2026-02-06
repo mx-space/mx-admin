@@ -1,7 +1,3 @@
-/**
- * Meta Preset Edit Modal
- * Meta 预设字段编辑模态框 - 创建/编辑预设
- */
 import {
   Plus as PlusIcon,
   Trash2 as Trash2Icon,
@@ -30,9 +26,6 @@ import { useMutation } from '@tanstack/vue-query'
 
 import { metaPresetsApi } from '~/api/meta-presets'
 
-/**
- * 字段类型选项
- */
 const fieldTypeOptions: { label: string; value: MetaFieldType }[] = [
   { label: '文本', value: 'text' },
   { label: '多行文本', value: 'textarea' },
@@ -46,23 +39,14 @@ const fieldTypeOptions: { label: string; value: MetaFieldType }[] = [
   { label: '对象', value: 'object' },
 ]
 
-/**
- * 作用域选项
- */
 const scopeOptions: { label: string; value: MetaPresetScope }[] = [
   { label: '博文', value: 'post' },
   { label: '笔记', value: 'note' },
   { label: '通用', value: 'both' },
 ]
 
-/**
- * 需要选项配置的字段类型
- */
 const typesWithOptions: MetaFieldType[] = ['select', 'multi-select', 'checkbox']
 
-/**
- * Form Field Component
- */
 const FormField = defineComponent({
   props: {
     label: { type: String, required: true },
@@ -150,14 +134,12 @@ export const MetaPresetModal = defineComponent({
         errors.type = '请选择字段类型'
       }
 
-      // 验证选项类型需要有选项
       if (typesWithOptions.includes(preset.type as MetaFieldType)) {
         if (!preset.options || preset.options.length === 0) {
           errors.options = '请至少添加一个选项'
         }
       }
 
-      // 验证 object 类型需要有子字段
       if (preset.type === 'object') {
         if (!preset.children || preset.children.length === 0) {
           errors.children = '请至少添加一个子字段'
@@ -191,7 +173,6 @@ export const MetaPresetModal = defineComponent({
       nextTick(() => resetPresetData())
     }
 
-    // 创建预设
     const createMutation = useMutation({
       mutationFn: (data: CreateMetaPresetDto) => metaPresetsApi.create(data),
       onSuccess: (data) => {
@@ -201,7 +182,6 @@ export const MetaPresetModal = defineComponent({
       },
     })
 
-    // 更新预设
     const updateMutation = useMutation({
       mutationFn: ({
         id,
@@ -239,7 +219,6 @@ export const MetaPresetModal = defineComponent({
       }
     }
 
-    // 添加选项
     const addOption = () => {
       if (!preset.options) {
         preset.options = []
@@ -251,7 +230,6 @@ export const MetaPresetModal = defineComponent({
       preset.options?.splice(index, 1)
     }
 
-    // 添加子字段
     const addChild = () => {
       if (!preset.children) {
         preset.children = []
@@ -283,7 +261,6 @@ export const MetaPresetModal = defineComponent({
           aria-labelledby="meta-preset-modal-title"
           onKeydown={handleKeydown}
         >
-          {/* Header */}
           <div class="flex items-center justify-between border-b border-neutral-200 px-5 py-4 dark:border-neutral-800">
             <h2
               id="meta-preset-modal-title"
@@ -301,7 +278,6 @@ export const MetaPresetModal = defineComponent({
             </button>
           </div>
 
-          {/* Body */}
           <div class="max-h-[calc(90vh-140px)] overflow-y-auto px-5 py-4">
             {loading.value ? (
               <div class="flex items-center justify-center py-12">
@@ -309,7 +285,6 @@ export const MetaPresetModal = defineComponent({
               </div>
             ) : (
               <>
-                {/* 基础信息 */}
                 <div class="grid grid-cols-2 gap-4">
                   <FormField label="字段 Key" required error={errors.key}>
                     <NInput
@@ -362,7 +337,6 @@ export const MetaPresetModal = defineComponent({
                   />
                 </FormField>
 
-                {/* 选项配置 - 仅 select/multi-select/checkbox 类型 */}
                 {typesWithOptions.includes(preset.type as MetaFieldType) && (
                   <FormField label="选项配置" required error={errors.options}>
                     <div class="space-y-2">
@@ -395,7 +369,6 @@ export const MetaPresetModal = defineComponent({
                       </NButton>
                     </div>
 
-                    {/* 允许自定义选项 */}
                     {(preset.type === 'select' ||
                       preset.type === 'multi-select') && (
                       <div class="mt-2 flex items-center gap-2">
@@ -412,7 +385,6 @@ export const MetaPresetModal = defineComponent({
                   </FormField>
                 )}
 
-                {/* 子字段配置 - 仅 object 类型 */}
                 {preset.type === 'object' && (
                   <FormField
                     label="子字段配置"
@@ -470,7 +442,6 @@ export const MetaPresetModal = defineComponent({
                   </FormField>
                 )}
 
-                {/* 启用状态 */}
                 <div class="flex items-center justify-between rounded-lg border border-neutral-200 bg-neutral-50 px-4 py-3 dark:border-neutral-700 dark:bg-neutral-800">
                   <div>
                     <span class="text-sm font-medium text-neutral-700 dark:text-neutral-200">
@@ -489,7 +460,6 @@ export const MetaPresetModal = defineComponent({
             )}
           </div>
 
-          {/* Footer */}
           <div class="flex items-center justify-end gap-2 border-t border-neutral-200 px-5 py-4 dark:border-neutral-800">
             <NButton onClick={handleClose}>取消</NButton>
             <NButton

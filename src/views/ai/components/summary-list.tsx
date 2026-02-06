@@ -1,7 +1,3 @@
-/**
- * AI Summary List Panel Component
- * AI 摘要文章列表面板 - 用于 MasterDetailLayout 左侧
- */
 import {
   FileText as FileTextIcon,
   Inbox as InboxIcon,
@@ -210,7 +206,6 @@ const SummaryListItem = defineComponent({
         ]}
         onClick={props.onSelect}
       >
-        {/* Title */}
         <div class="flex items-center gap-2">
           <RefIcon.value class="size-4 shrink-0 text-neutral-400" />
           <h3 class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
@@ -218,7 +213,6 @@ const SummaryListItem = defineComponent({
           </h3>
         </div>
 
-        {/* Meta */}
         <div class="mt-1.5 flex items-center gap-2 pl-6 text-xs text-neutral-400">
           <span class="rounded bg-neutral-100 px-1.5 py-0.5 dark:bg-neutral-800">
             {RefTypeLabels[props.article.type]}

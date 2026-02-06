@@ -45,8 +45,6 @@ export const UpdateDependencyButton = defineComponent({
     const modalShow = ref(false)
 
     const { dependencyGraph, fetchDependencyGraph } = useFetchDependencyGraph()
-    // 做了一下 cache
-
     const cleaner = watch(
       () => modalShow.value,
       () => {
@@ -129,7 +127,6 @@ export const UpdateDependencyButton = defineComponent({
                       const ClosureComponent = defineComponent({
                         setup() {
                           const $ref = ref<HTMLDivElement>()
-                          // FIXME maybe cost lots of memory
                           const isInView = useElementVisibility($ref)
 
                           const latestInfo = ref<NpmPKGInfo | null>(null)

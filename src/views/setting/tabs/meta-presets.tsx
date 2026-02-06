@@ -1,7 +1,3 @@
-/**
- * Meta Presets Management Tab
- * Meta 预设字段管理 - 设置页 Tab
- */
 import { ListPlus as ListPlusIcon, Plus as PlusIcon } from 'lucide-vue-next'
 import { NButton } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
@@ -149,7 +145,6 @@ export const TabMetaPresets = defineComponent({
           )}
         </SettingsSection>
 
-        {/* Modal */}
         <MetaPresetModal
           show={showModal.value}
           id={editId.value}
@@ -161,9 +156,6 @@ export const TabMetaPresets = defineComponent({
   },
 })
 
-/**
- * Empty State
- */
 const MetaPresetEmptyState = defineComponent({
   props: {
     onAdd: {
@@ -191,9 +183,6 @@ const MetaPresetEmptyState = defineComponent({
   },
 })
 
-/**
- * Loading Skeleton
- */
 const MetaPresetSkeleton = defineComponent({
   setup() {
     return () => (

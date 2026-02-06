@@ -1,7 +1,3 @@
-/**
- * AI Summary Page
- * AI 摘要页面 - Master-Detail 布局
- */
 import { computed, defineComponent, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type {
@@ -78,7 +74,6 @@ export default defineComponent({
 
     const refreshList = () => {
       pageRef.value = 1
-      // 不清空列表，等待新数据到达后由 watch 更新
       refetch()
     }
 
@@ -87,7 +82,6 @@ export default defineComponent({
       (value) => {
         if (!value) return
         pagerRef.value = value.pagination ?? null
-        // 只有当 API 返回了数据时才更新列表，避免重新获取期间清空列表
         if (value.data !== undefined) {
           if (pageRef.value === 1) {
             listData.value = value.data

@@ -10,7 +10,6 @@ export default defineComponent({
           Toast 测试
         </h1>
 
-        {/* 基础用法 */}
         <NCard title="基础用法" class="!rounded-xl">
           <div class="space-y-4">
             <div>
@@ -114,7 +113,6 @@ export default defineComponent({
           </div>
         </NCard>
 
-        {/* 带 Action 的通知 */}
         <NCard title="带 Action 按钮" class="!rounded-xl">
           <div class="space-y-4">
             <div>
@@ -251,7 +249,6 @@ export default defineComponent({
           </div>
         </NCard>
 
-        {/* 常见业务场景 */}
         <NCard title="常见业务场景" class="!rounded-xl">
           <div class="space-y-4">
             <div>

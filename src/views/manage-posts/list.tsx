@@ -51,7 +51,6 @@ import { parseDate } from '~/utils'
 import { HeaderActionButton } from '../../components/button/header-action-button'
 import { useLayout } from '../../layouts/content'
 
-// Mobile card item component
 const PostItem = defineComponent({
   name: 'PostItem',
   props: {
@@ -80,7 +79,6 @@ const PostItem = defineComponent({
     return () => (
       <div class="flex items-center gap-2 border-b border-neutral-200 px-3 py-2.5 transition-colors last:border-b-0 hover:bg-neutral-50 dark:border-neutral-800 dark:hover:bg-neutral-900/50">
         <div class="min-w-0 flex-1">
-          {/* Title row */}
           <div class="flex items-center gap-1.5">
             {row.value.pin && (
               <PhPushPin class="h-3 w-3 shrink-0 text-orange-400" />
@@ -93,7 +91,6 @@ const PostItem = defineComponent({
             </RouterLink>
           </div>
 
-          {/* Meta row - all in one line with consistent sizing */}
           <div class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
             {props.categoryName && (
               <span class="rounded bg-neutral-100 px-1 py-px text-xs text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">
@@ -129,7 +126,6 @@ const PostItem = defineComponent({
           </div>
         </div>
 
-        {/* Actions */}
         <div class="flex shrink-0 items-center">
           <a
             href={`${WEB_URL}/posts/${row.value.category?.slug}/${row.value.slug}`}
@@ -190,11 +186,8 @@ export const ManagePostListView = defineComponent({
   name: 'PostList',
   setup() {
     const queryClient = useQueryClient()
-    // 搜索关键词
     const searchKeyword = ref('')
     const debouncedSearch = debouncedRef(searchKeyword, 300)
-
-    // 分类筛选条件（支持多选）
     const categoryFilter = ref<string[] | undefined>(undefined)
 
     const {
@@ -209,7 +202,6 @@ export const ManagePostListView = defineComponent({
       queryKey: (params) => queryKeys.posts.list(params),
       queryFn: (params) => {
         const keyword = params.filters?.search
-        // 有搜索关键词时使用搜索 API
         if (keyword) {
           return searchApi.searchPosts({
             keyword,
@@ -217,7 +209,6 @@ export const ManagePostListView = defineComponent({
             size: params.size,
           })
         }
-        // 否则使用列表 API
         return postsApi.getList({
           page: params.page,
           size: params.size,
@@ -250,7 +241,6 @@ export const ManagePostListView = defineComponent({
       await categoryStore.fetch()
     })
 
-    // 删除 mutation
     const deleteMutation = useMutation({
       mutationFn: postsApi.delete,
       onSuccess: () => {
@@ -259,13 +249,12 @@ export const ManagePostListView = defineComponent({
       },
     })
 
-    // 更新发布状态 mutation
     const patchMutation = useMutation({
       mutationFn: ({ id, data }: { id: string; data: Partial<PostModel> }) =>
         postsApi.patch(id, data),
     })
 
-    const handleDelete = async (id: string) => {
+    const handleDelete = (id: string) => {
       deleteMutation.mutate(id)
     }
 
@@ -275,7 +264,6 @@ export const ManagePostListView = defineComponent({
           id,
           data: { isPublished: newStatus },
         })
-        // 乐观更新
         const item = data.value.find((i) => i.id === id)
         if (item) item.isPublished = newStatus
         toast.success(newStatus ? '已发布' : '已设为草稿')
@@ -283,10 +271,6 @@ export const ManagePostListView = defineComponent({
         toast.error('操作失败')
       }
     }
-
-    const fetchData = refresh
-
-    // Mobile card list view
     const CardList = defineComponent({
       setup() {
         return () => (
@@ -323,7 +307,6 @@ export const ManagePostListView = defineComponent({
               </div>
             )}
 
-            {/* Pagination */}
             {pager.value && pager.value.totalPage > 1 && (
               <div class="flex items-center justify-center gap-4 border-t border-neutral-200 py-4 dark:border-neutral-800">
                 <button
@@ -358,7 +341,6 @@ export const ManagePostListView = defineComponent({
       },
     })
 
-    // Desktop table view
     const DataTable = defineComponent({
       setup() {
         const categoryFilterOptions: ComputedRef<FilterOption[]> = computed(
@@ -563,7 +545,7 @@ export const ManagePostListView = defineComponent({
                 setPage(1)
               },
             }}
-            onFetchData={fetchData}
+            onFetchData={refresh}
             pager={pager as any}
             onUpdateCheckedRowKeys={(keys) => {
               checkedRowKeys.value = keys
@@ -647,7 +629,6 @@ export const ManagePostListView = defineComponent({
 
     return () => (
       <div class="flex flex-col gap-4">
-        {/* 搜索框 */}
         <div class="flex items-center gap-2">
           <NInput
             v-model:value={searchKeyword.value}

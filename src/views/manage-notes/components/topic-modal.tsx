@@ -1,7 +1,3 @@
-/**
- * Topic Edit Modal
- * 专栏编辑模态框 - 创建/编辑专栏
- */
 import { Upload as UploadIcon, X } from 'lucide-vue-next'
 import { NButton, NInput, NModal, NSpin } from 'naive-ui'
 import { defineComponent, nextTick, reactive, ref, watch } from 'vue'
@@ -14,9 +10,6 @@ import { useMutation } from '@tanstack/vue-query'
 import { topicsApi } from '~/api/topics'
 import { UploadWrapper } from '~/components/upload'
 
-/**
- * Form Field Component
- */
 const FormField = defineComponent({
   props: {
     label: { type: String, required: true },
@@ -128,7 +121,6 @@ export const TopicEditModal = defineComponent({
       nextTick(() => resetTopicData())
     }
 
-    // 创建专栏
     const createMutation = useMutation({
       mutationFn: (data: Partial<TopicModel>) => topicsApi.create(data as any),
       onSuccess: (data) => {
@@ -138,7 +130,6 @@ export const TopicEditModal = defineComponent({
       },
     })
 
-    // 更新专栏
     const updateMutation = useMutation({
       mutationFn: ({ id, data }: { id: string; data: Partial<TopicModel> }) =>
         topicsApi.update(id, data),
@@ -187,7 +178,6 @@ export const TopicEditModal = defineComponent({
           aria-labelledby="topic-modal-title"
           onKeydown={handleKeydown}
         >
-          {/* Header */}
           <div class="flex items-center justify-between border-b border-neutral-200 px-5 py-4 dark:border-neutral-800">
             <h2
               id="topic-modal-title"
@@ -205,7 +195,6 @@ export const TopicEditModal = defineComponent({
             </button>
           </div>
 
-          {/* Body */}
           <div class="px-5 py-4">
             {loading.value ? (
               <div class="flex items-center justify-center py-12">
@@ -297,7 +286,6 @@ export const TopicEditModal = defineComponent({
             )}
           </div>
 
-          {/* Footer */}
           <div class="flex items-center justify-end gap-2 border-t border-neutral-200 px-5 py-4 dark:border-neutral-800">
             <NButton onClick={handleClose}>取消</NButton>
             <NButton

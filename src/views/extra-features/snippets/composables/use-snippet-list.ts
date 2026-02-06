@@ -19,7 +19,6 @@ export function useSnippetList() {
     try {
       const data = await snippetsApi.getGroups({ size: 50 })
 
-      // Preserve expanded state for existing groups
       const existingExpandedState = new Map(
         groupsWithSnippets.value.map((g) => [g.reference, g.expanded]),
       )
@@ -60,7 +59,6 @@ export function useSnippetList() {
 
     group.expanded = !group.expanded
 
-    // Fetch snippets if expanding and not yet loaded
     if (group.expanded && group.snippets.length === 0) {
       await fetchGroupSnippets(reference)
     }
@@ -79,7 +77,6 @@ export function useSnippetList() {
       await snippetsApi.delete(snippet.id)
     }
 
-    // Remove from local list
     const group = groupsWithSnippets.value.find(
       (g) => g.reference === snippet.reference,
     )
@@ -91,7 +88,6 @@ export function useSnippetList() {
     return isBuiltFunction ? 'reset' : 'delete'
   }
 
-  // Get all snippets flattened (for search)
   const allSnippets = computed(() =>
     groupsWithSnippets.value.flatMap((g) => g.snippets),
   )

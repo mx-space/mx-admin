@@ -46,7 +46,6 @@ export const SnippetCard = defineComponent({
     )
     const isBuiltIn = computed(() => isFunction.value && props.snippet.builtIn)
 
-    // Get icon component based on snippet type
     const typeIcon = computed(() => {
       switch (props.snippet.type) {
         case SnippetType.JSON:
@@ -64,7 +63,6 @@ export const SnippetCard = defineComponent({
       }
     })
 
-    // Get icon color based on snippet type
     const typeIconColor = computed(() => {
       switch (props.snippet.type) {
         case SnippetType.JSON:
@@ -116,7 +114,6 @@ export const SnippetCard = defineComponent({
       const { snippet, selected, compact } = props
       const deleteText = isBuiltIn.value ? '重置' : '删除'
 
-      // Compact mode: single line, minimal info
       if (compact) {
         return (
           <div
@@ -132,7 +129,7 @@ export const SnippetCard = defineComponent({
             {(() => {
               const Icon = typeIcon.value
               return (
-                <Icon class={`h-3 w-3 flex-shrink-0 ${typeIconColor.value}`} />
+                <Icon class={`size-3 flex-shrink-0 ${typeIconColor.value}`} />
               )
             })()}
 
@@ -149,10 +146,9 @@ export const SnippetCard = defineComponent({
             </span>
 
             {snippet.private && (
-              <LockIcon class="h-3 w-3 flex-shrink-0 text-neutral-400" />
+              <LockIcon class="size-3 flex-shrink-0 text-neutral-400" />
             )}
 
-            {/* Hover delete button */}
             <NPopconfirm
               positiveText="取消"
               negativeText={deleteText}
@@ -164,7 +160,7 @@ export const SnippetCard = defineComponent({
                     class="rounded p-0.5 text-red-500 opacity-0 transition-opacity hover:bg-red-100 group-hover:opacity-100 dark:hover:bg-red-900/50"
                     onClick={(e: MouseEvent) => e.stopPropagation()}
                   >
-                    <TrashIcon class="h-3 w-3" />
+                    <TrashIcon class="size-3" />
                   </button>
                 ),
                 default: () => (
@@ -178,7 +174,6 @@ export const SnippetCard = defineComponent({
         )
       }
 
-      // Full mode: multi-line with all info
       return (
         <div
           class={[
@@ -190,14 +185,11 @@ export const SnippetCard = defineComponent({
           onDblclick={handleDoubleClick}
           title="双击打开访问地址"
         >
-          {/* Row 1: Name + Icons */}
           <div class="flex items-center gap-1.5">
             {(() => {
               const Icon = typeIcon.value
               return (
-                <Icon
-                  class={`h-3.5 w-3.5 flex-shrink-0 ${typeIconColor.value}`}
-                />
+                <Icon class={`size-3.5 flex-shrink-0 ${typeIconColor.value}`} />
               )
             })()}
 
@@ -214,11 +206,10 @@ export const SnippetCard = defineComponent({
             </span>
 
             {snippet.private && (
-              <LockIcon class="h-3 w-3 flex-shrink-0 text-neutral-400" />
+              <LockIcon class="size-3 flex-shrink-0 text-neutral-400" />
             )}
           </div>
 
-          {/* Row 2: Type + Method + Time */}
           <div class="mt-1 flex items-center gap-2 text-xs text-neutral-500 dark:text-neutral-400">
             <span class="rounded bg-neutral-100 px-1.5 py-0.5 dark:bg-neutral-700">
               {snippet.type.toUpperCase()}
@@ -238,7 +229,6 @@ export const SnippetCard = defineComponent({
             )}
           </div>
 
-          {/* Row 3: Comment (optional) */}
           {snippet.comment && (
             <div class="mt-1 truncate text-xs text-neutral-400 dark:text-neutral-500">
               {snippet.comment}
@@ -257,7 +247,7 @@ export const SnippetCard = defineComponent({
               onClick={handleExternalLink}
               title="在新窗口打开"
             >
-              <ExternalLinkIcon class="h-3.5 w-3.5 text-neutral-500" />
+              <ExternalLinkIcon class="size-3.5 text-neutral-500" />
             </button>
 
             <NPopconfirm
@@ -272,7 +262,7 @@ export const SnippetCard = defineComponent({
                     onClick={(e: MouseEvent) => e.stopPropagation()}
                     title={deleteText}
                   >
-                    <TrashIcon class="h-3.5 w-3.5" />
+                    <TrashIcon class="size-3.5" />
                   </button>
                 ),
                 default: () => (

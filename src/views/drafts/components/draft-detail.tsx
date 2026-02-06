@@ -94,7 +94,6 @@ const VersionListItem = defineComponent({
         ]}
         onClick={props.onClick}
       >
-        {/* 版本信息 */}
         <div class="min-w-0 flex-1">
           <div class="flex items-center gap-2">
             <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
@@ -148,9 +147,7 @@ const VersionListItem = defineComponent({
           </p>
         </div>
 
-        {/* 右侧：时间和恢复按钮 */}
         <div class="flex flex-shrink-0 items-center gap-2">
-          {/* 恢复按钮 */}
           {!props.item.isCurrent && props.onRestore && (
             <NPopconfirm
               positiveText="取消"
@@ -217,15 +214,11 @@ export const DraftDetail = defineComponent({
     const config = computed(() => refTypeConfig[props.draft.refType])
     const { isMobile: isInnerMobile } = useMasterDetailLayout()
 
-    // 内部面板状态：在移动端用于切换版本列表和 diff 预览
     const showDiffPanel = ref(false)
-
-    // 选中的版本（用于与当前版本对比）
     const selectedVersion = ref<number | null>(null)
     const selectedContent = ref<string>('')
     const isLoadingContent = ref(false)
 
-    // 获取版本历史
     const { data: historyData, isLoading: historyLoading } = useQuery({
       queryKey: ['drafts', 'history', () => props.draft.id],
       queryFn: () => draftsApi.getHistory(props.draft.id),
@@ -233,7 +226,6 @@ export const DraftDetail = defineComponent({
         Array.isArray(res) ? res : Array.isArray(res?.data) ? res.data : [],
     })
 
-    // 构建版本列表
     const versionList = computed<VersionItem[]>(() => {
       if (!historyData.value) return []
 
@@ -252,7 +244,6 @@ export const DraftDetail = defineComponent({
       }))
     })
 
-    // 加载版本内容
     const loadVersionContent = async (version: number): Promise<string> => {
       if (version === props.draft.version) {
         return props.draft.text
@@ -267,12 +258,10 @@ export const DraftDetail = defineComponent({
       }
     }
 
-    // 初始化：默认选中第二个版本（如果有的话）
     watch(
       [() => props.draft.id, versionList],
       async ([, list]) => {
         if (list.length >= 2) {
-          // 默认选中上一个版本
           const prevVersion = list[1]
           selectedVersion.value = prevVersion.version
 
@@ -287,10 +276,8 @@ export const DraftDetail = defineComponent({
       { immediate: true },
     )
 
-    // 点击版本
     const handleSelectVersion = async (version: number) => {
       if (selectedVersion.value === version) {
-        // 在移动端，如果点击已选中的版本，切换到 diff 面板
         if (isInnerMobile.value) {
           showDiffPanel.value = true
         }
@@ -301,18 +288,15 @@ export const DraftDetail = defineComponent({
       selectedContent.value = await loadVersionContent(version)
       isLoadingContent.value = false
 
-      // 在移动端，选中版本后自动切换到 diff 面板
       if (isInnerMobile.value) {
         showDiffPanel.value = true
       }
     }
 
-    // 返回版本列表（移动端）
     const handleBackToVersionList = () => {
       showDiffPanel.value = false
     }
 
-    // 恢复版本
     const restoreMutation = useMutation({
       mutationFn: (version: number) =>
         draftsApi.restoreVersion(props.draft.id, version),
@@ -336,7 +320,6 @@ export const DraftDetail = defineComponent({
       })
     }
 
-    // Diff 统计
     const diffStats = computed(() => {
       if (!selectedContent.value) return null
       const currentText = props.draft.text
@@ -344,17 +327,13 @@ export const DraftDetail = defineComponent({
       return { diff, isSame: currentText === selectedContent.value }
     })
 
-    // 当前版本
     const currentVersion = computed(() => versionList.value[0])
-
-    // 选中的版本信息
     const selectedVersionInfo = computed(() =>
       versionList.value.find((v) => v.version === selectedVersion.value),
     )
 
     return () => (
       <div class="flex h-full flex-col">
-        {/* 头部信息 */}
         <div class="flex h-12 flex-shrink-0 items-center justify-between border-b border-neutral-200 bg-white px-4 py-3 dark:border-neutral-800 dark:bg-neutral-900">
           <div class="flex items-center gap-3">
             {props.isMobile && props.onBack && (
@@ -408,7 +387,6 @@ export const DraftDetail = defineComponent({
           </div>
         </div>
 
-        {/* 版本历史区域 */}
         <div class="min-h-0 flex-1">
           {historyLoading.value ? (
             <div class="flex h-full items-center justify-center">
@@ -419,9 +397,7 @@ export const DraftDetail = defineComponent({
               <NEmpty description="暂无历史版本" />
             </div>
           ) : isInnerMobile.value ? (
-            // 移动端布局：滑动切换
             <div class="relative h-full w-full overflow-hidden">
-              {/* 版本列表面板 */}
               <div
                 class={[
                   'absolute inset-0 w-full transition-transform duration-300',
@@ -459,7 +435,6 @@ export const DraftDetail = defineComponent({
                 </div>
               </div>
 
-              {/* Diff 预览面板 */}
               <div
                 class={[
                   'absolute inset-0 w-full transition-transform duration-300',
@@ -467,7 +442,6 @@ export const DraftDetail = defineComponent({
                 ]}
               >
                 <div class="flex h-full flex-col bg-neutral-50 dark:bg-neutral-950">
-                  {/* Diff 头部 - 带返回按钮 */}
                   <div class="flex flex-shrink-0 items-center justify-between border-b border-neutral-200 bg-white px-4 py-2 dark:border-neutral-800 dark:bg-neutral-900">
                     <div class="flex items-center gap-2">
                       <NButton
@@ -501,7 +475,6 @@ export const DraftDetail = defineComponent({
                     )}
                   </div>
 
-                  {/* Diff 内容 */}
                   <div class="min-h-0 flex-1 overflow-hidden">
                     {isLoadingContent.value ? (
                       <div class="flex h-full items-center justify-center">
@@ -543,7 +516,6 @@ export const DraftDetail = defineComponent({
               </div>
             </div>
           ) : (
-            // 桌面端布局：Split Panel
             <NSplit
               direction="horizontal"
               defaultSize={'300px'}
@@ -585,7 +557,6 @@ export const DraftDetail = defineComponent({
                 ),
                 2: () => (
                   <div class="flex h-full flex-col bg-neutral-50 dark:bg-neutral-950">
-                    {/* Diff 头部 */}
                     <div class="flex h-10 flex-shrink-0 items-center justify-between border-b border-neutral-200 bg-white px-4 dark:border-neutral-800 dark:bg-neutral-900">
                       <div class="flex items-center gap-2 text-xs text-neutral-600 dark:text-neutral-400">
                         {selectedVersionInfo.value && (
@@ -607,7 +578,6 @@ export const DraftDetail = defineComponent({
                       )}
                     </div>
 
-                    {/* Diff 内容 */}
                     <div class="min-h-0 flex-1 overflow-hidden">
                       {isLoadingContent.value ? (
                         <div class="flex h-full items-center justify-center">

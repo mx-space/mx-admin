@@ -1,8 +1,3 @@
-/**
- * AI Translation Detail Panel Component
- * AI 翻译详情面板 - 用于 MasterDetailLayout 右侧
- * 采用分栏布局：左侧翻译列表，右侧编辑面板
- */
 import { format } from 'date-fns'
 import {
   ArrowLeft as ArrowLeftIcon,
@@ -275,7 +270,6 @@ export const TranslationDetailPanel = defineComponent({
     // 左侧内容：文章信息 + 翻译列表
     const ListContent = () => (
       <div class="flex h-full flex-col">
-        {/* Header */}
         <div class="flex h-12 shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
           <div class="flex items-center gap-3">
             {props.isMobile && props.onBack && (
@@ -301,7 +295,6 @@ export const TranslationDetailPanel = defineComponent({
           )}
         </div>
 
-        {/* Content */}
         <NScrollbar class="min-h-0 flex-1">
           {loading.value ? (
             <div class="flex h-full items-center justify-center">
@@ -309,7 +302,6 @@ export const TranslationDetailPanel = defineComponent({
             </div>
           ) : article.value ? (
             <div class="space-y-4 p-4">
-              {/* Article Info */}
               <div>
                 <RouterLink
                   to={`/${article.value.type.toLowerCase()}/edit?id=${props.articleId}`}
@@ -324,7 +316,6 @@ export const TranslationDetailPanel = defineComponent({
 
               <div class="h-px bg-neutral-100 dark:bg-neutral-800" />
 
-              {/* Translations */}
               <div>
                 <h4 class="mb-3 text-sm font-medium text-neutral-700 dark:text-neutral-300">
                   翻译列表
@@ -402,7 +393,6 @@ export const TranslationDetailPanel = defineComponent({
   },
 })
 
-/** 翻译列表项 */
 const TranslationListItem = defineComponent({
   props: {
     item: {
@@ -441,7 +431,6 @@ const TranslationListItem = defineComponent({
         ]}
         onClick={props.onEdit}
       >
-        {/* Header */}
         <div class="mb-1.5 flex items-center justify-between">
           <div class="flex items-center gap-2">
             <span class="rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-600 dark:bg-blue-950 dark:text-blue-400">
@@ -484,12 +473,10 @@ const TranslationListItem = defineComponent({
           </div>
         </div>
 
-        {/* Title */}
         <h5 class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
           {props.item.title}
         </h5>
 
-        {/* Meta */}
         <div class="mt-1 flex items-center gap-3 text-xs text-neutral-500 dark:text-neutral-400">
           <span class="flex items-center gap-1">
             <CalendarIcon class="size-3" />
@@ -507,7 +494,6 @@ const TranslationListItem = defineComponent({
   },
 })
 
-/** 翻译编辑面板 */
 const TranslationEditPanel = defineComponent({
   props: {
     translation: {
@@ -534,7 +520,6 @@ const TranslationEditPanel = defineComponent({
     const summaryRef = ref(props.translation.summary || '')
     const saving = ref(false)
 
-    // 当 translation 变化时重置表单
     watch(
       () => props.translation.id,
       () => {
@@ -570,7 +555,6 @@ const TranslationEditPanel = defineComponent({
 
     return () => (
       <div class="flex h-full flex-col">
-        {/* Header */}
         <div class="flex h-12 shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
           <div class="flex items-center gap-3">
             <button
@@ -606,10 +590,8 @@ const TranslationEditPanel = defineComponent({
           </div>
         </div>
 
-        {/* Content */}
         <NScrollbar class="min-h-0 flex-1">
           <div class="space-y-4 p-4">
-            {/* Title */}
             <div>
               <label class="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
                 标题
@@ -621,7 +603,6 @@ const TranslationEditPanel = defineComponent({
               />
             </div>
 
-            {/* Content */}
             <div>
               <label class="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
                 内容
@@ -635,7 +616,6 @@ const TranslationEditPanel = defineComponent({
               />
             </div>
 
-            {/* Summary */}
             <div>
               <label class="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
                 摘要
@@ -650,7 +630,6 @@ const TranslationEditPanel = defineComponent({
               />
             </div>
 
-            {/* Preview */}
             <div>
               <label class="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
                 预览
@@ -676,7 +655,6 @@ const TranslationEditPanel = defineComponent({
               </div>
             </div>
 
-            {/* Tags */}
             {props.translation.tags && props.translation.tags.length > 0 && (
               <div>
                 <label class="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
@@ -695,7 +673,6 @@ const TranslationEditPanel = defineComponent({
               </div>
             )}
 
-            {/* Meta Info */}
             <div class="rounded-lg bg-neutral-50 p-4 dark:bg-neutral-900">
               <h4 class="mb-3 text-sm font-medium text-neutral-700 dark:text-neutral-300">
                 元信息

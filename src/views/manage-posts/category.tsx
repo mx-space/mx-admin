@@ -43,19 +43,14 @@ import { CategoryStore } from '~/stores/category'
 
 export const CategoryView = defineComponent((_props) => {
   const categoryStore = useStoreRef(CategoryStore)
-  // 获取标签列表
   const { data: tagsData, isLoading: tagsLoading } = useTagsQuery()
   const tags = computed(() => tagsData.value ?? [])
 
-  // 选中的标签
   const checkedTag = ref('')
-
-  // 获取标签关联的文章
   const { data: tagPostsData, isLoading: tagPostsLoading } =
     usePostsByTagQuery(checkedTag)
   const checkedTagPosts = computed(() => tagPostsData.value ?? [])
 
-  // 分类列表加载
   const loading = ref(true)
   const fetchCategory = categoryStore.fetch
 
@@ -69,7 +64,6 @@ export const CategoryView = defineComponent((_props) => {
   const resetState = () => ({ name: '', slug: '' })
   const editCategoryState = ref<CategoryState>(resetState())
 
-  // 删除分类 mutation
   const deleteMutation = useMutation({
     mutationFn: categoriesApi.delete,
     onSuccess: async () => {
@@ -78,7 +72,6 @@ export const CategoryView = defineComponent((_props) => {
     },
   })
 
-  // 创建分类 mutation
   const createMutation = useMutation({
     mutationFn: categoriesApi.create,
     onSuccess: (category) => {
@@ -88,7 +81,6 @@ export const CategoryView = defineComponent((_props) => {
     },
   })
 
-  // 更新分类 mutation
   const updateMutation = useMutation({
     mutationFn: ({
       id,
@@ -126,7 +118,6 @@ export const CategoryView = defineComponent((_props) => {
 
   return () => (
     <div class="space-y-8">
-      {/* 分类区域 */}
       <section>
         <div class="mb-4 flex items-center gap-2">
           <FolderOpen class="size-5 text-neutral-500" aria-hidden="true" />
@@ -170,7 +161,6 @@ export const CategoryView = defineComponent((_props) => {
         )}
       </section>
 
-      {/* 标签区域 */}
       <section>
         <div class="mb-4 flex items-center gap-2">
           <TagIcon class="size-5 text-neutral-500" aria-hidden="true" />
@@ -201,7 +191,6 @@ export const CategoryView = defineComponent((_props) => {
           </div>
         )}
 
-        {/* 标签关联文章 */}
         {checkedTag.value && (
           <div class="mt-4">
             <h3 class="mb-3 text-sm font-medium text-neutral-600 dark:text-neutral-400">
@@ -240,7 +229,6 @@ export const CategoryView = defineComponent((_props) => {
         )}
       </section>
 
-      {/* 编辑 Modal */}
       <EditCategoryDialog
         show={showDialog}
         onSubmit={(state) => {
@@ -259,9 +247,6 @@ export const CategoryView = defineComponent((_props) => {
   )
 })
 
-/**
- * Category List Item
- */
 const CategoryListItem = defineComponent({
   props: {
     category: {
@@ -285,12 +270,10 @@ const CategoryListItem = defineComponent({
   setup(props) {
     return () => (
       <div class="group relative flex items-center gap-4 border-b border-neutral-100 px-4 py-3 transition-colors last:border-b-0 hover:bg-neutral-50 dark:border-neutral-800 dark:hover:bg-neutral-800/50">
-        {/* 图标 */}
         <div class="flex size-10 shrink-0 items-center justify-center rounded-lg bg-neutral-100 dark:bg-neutral-800">
           <FolderOpen class="size-5 text-neutral-500" aria-hidden="true" />
         </div>
 
-        {/* 内容 */}
         <div class="min-w-0 flex-1">
           <div class="flex items-center gap-2">
             <h3 class="truncate font-medium text-neutral-900 dark:text-neutral-100">
@@ -303,14 +286,12 @@ const CategoryListItem = defineComponent({
           </div>
         </div>
 
-        {/* 文章数 */}
         <div class="shrink-0 transition-opacity group-hover:opacity-0">
           <span class="rounded-full bg-neutral-100 px-2.5 py-1 text-xs font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">
             {props.category.count || 0} 篇
           </span>
         </div>
 
-        {/* 操作按钮 - 绝对定位，hover 时显示 */}
         <div class="absolute right-4 flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
           <NButton
             size="tiny"
@@ -357,9 +338,6 @@ const CategoryListItem = defineComponent({
   },
 })
 
-/**
- * Tag Chip Component
- */
 const TagChip = defineComponent({
   props: {
     tag: {
@@ -407,9 +385,6 @@ const TagChip = defineComponent({
   },
 })
 
-/**
- * Category Empty State
- */
 const CategoryEmptyState = defineComponent({
   props: {
     onAdd: {
@@ -437,9 +412,6 @@ const CategoryEmptyState = defineComponent({
   },
 })
 
-/**
- * Tag Empty State
- */
 const TagEmptyState = defineComponent({
   setup() {
     return () => (
@@ -458,9 +430,6 @@ const TagEmptyState = defineComponent({
   },
 })
 
-/**
- * Category List Skeleton
- */
 const CategoryListSkeleton = defineComponent({
   setup() {
     return () => (
@@ -482,9 +451,6 @@ const CategoryListSkeleton = defineComponent({
   },
 })
 
-/**
- * Tag List Skeleton
- */
 const TagListSkeleton = defineComponent({
   setup() {
     return () => (

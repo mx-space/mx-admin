@@ -103,7 +103,6 @@ const PostWriteView = defineComponent(() => {
 
   const router = useRouter()
 
-  // 从草稿恢复数据
   const applyDraft = (
     draft: DraftModel,
     target: PostReactiveType,
@@ -130,7 +129,6 @@ const PostWriteView = defineComponent(() => {
     }
   }
 
-  // 加载已发布文章
   const loadPublished = async (id: string) => {
     const payload = await postsApi.getById(id)
     const postData = payload as any
@@ -252,7 +250,6 @@ const PostWriteView = defineComponent(() => {
     postListState.refresh()
   })
 
-  // 设置 layout 状态
   setHeaderClass('pt-1')
   watchEffect(() => {
     setTitle(isEditing.value ? '修改文章' : '撰写新文章')
@@ -481,7 +478,6 @@ const PostWriteView = defineComponent(() => {
         />
       </TextBaseDrawer>
 
-      {/* Draft Recovery Modal (场景2) */}
       {recoveryModal.draft.value && recoveryModal.publishedContent.value && (
         <DraftRecoveryModal
           show={recoveryModal.show.value}
@@ -492,7 +488,6 @@ const PostWriteView = defineComponent(() => {
         />
       )}
 
-      {/* Draft List Modal (场景3) */}
       <DraftListModal
         show={listModal.show.value}
         onClose={listModal.onClose}

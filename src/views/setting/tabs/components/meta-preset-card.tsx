@@ -1,7 +1,3 @@
-/**
- * Meta Preset Card Component
- * Meta 预设字段列表项卡片
- */
 import {
   GripVertical as GripVerticalIcon,
   Lock as LockIcon,
@@ -17,9 +13,6 @@ import type {
 } from '~/models/meta-preset'
 import type { PropType } from 'vue'
 
-/**
- * 字段类型标签文本映射
- */
 const fieldTypeLabels: Record<MetaFieldType, string> = {
   text: '文本',
   textarea: '多行文本',
@@ -33,18 +26,12 @@ const fieldTypeLabels: Record<MetaFieldType, string> = {
   object: '对象',
 }
 
-/**
- * 作用域标签文本映射
- */
 const scopeLabels: Record<MetaPresetScope, string> = {
   post: '博文',
   note: '笔记',
   both: '通用',
 }
 
-/**
- * 作用域标签颜色映射
- */
 const scopeColors: Record<MetaPresetScope, 'info' | 'success' | 'warning'> = {
   post: 'info',
   note: 'success',
@@ -74,14 +61,12 @@ export const MetaPresetCard = defineComponent({
   setup(props) {
     return () => (
       <div class="group flex items-center gap-3 px-4 py-3 transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-900/50">
-        {/* 拖拽手柄 */}
         {!props.preset.isBuiltin && (
           <div class="shrink-0 cursor-grab text-neutral-300 dark:text-neutral-600">
             <GripVerticalIcon class="size-4" />
           </div>
         )}
 
-        {/* 内容 */}
         <div class="min-w-0 flex-1">
           <div class="flex flex-wrap items-center gap-2">
             <span class="font-medium text-neutral-900 dark:text-neutral-100">
@@ -116,16 +101,13 @@ export const MetaPresetCard = defineComponent({
           </div>
         </div>
 
-        {/* 操作区域 */}
         <div class="ml-auto flex shrink-0 items-center gap-2">
-          {/* 启用/禁用开关 */}
           <NSwitch
             size="small"
             value={props.preset.enabled}
             onUpdateValue={() => props.onToggleEnabled(props.preset)}
           />
 
-          {/* 编辑按钮 */}
           {!props.preset.isBuiltin && (
             <NButton
               size="tiny"
@@ -137,7 +119,6 @@ export const MetaPresetCard = defineComponent({
             </NButton>
           )}
 
-          {/* 删除按钮 */}
           {!props.preset.isBuiltin && (
             <NPopconfirm
               onPositiveClick={() => props.onDelete(props.preset.id)}

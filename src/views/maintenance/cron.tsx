@@ -1,8 +1,3 @@
-/**
- * Cron Task Page
- * 计划任务页面 - Master-Detail 布局
- */
-
 import {
   AlertCircle as AlertCircleIcon,
   AlertTriangle as AlertTriangleIcon,
@@ -101,14 +96,12 @@ export default defineComponent({
     const sizeRef = ref(50)
     const selectedTaskId = ref<string | null>(null)
 
-    // Fetch cron definitions
     const { data: definitionsData } = useQuery({
       queryKey: queryKeys.cronTask.definitions(),
       queryFn: () => cronTaskApi.getDefinitions(),
       staleTime: 60000,
     })
 
-    // Fetch tasks
     const { data, isPending, refetch } = useQuery({
       queryKey: computed(() =>
         queryKeys.cronTask.tasksList({
@@ -196,7 +189,6 @@ export default defineComponent({
       toast.success('已清理已完成的任务')
     }
 
-    // Setup layout actions
     const { setActions } = useLayout()
     watchEffect(() => {
       setActions(
@@ -254,7 +246,6 @@ export default defineComponent({
         {{
           list: () => (
             <div class="flex h-full flex-col">
-              {/* Cron Definitions Collapse */}
               <NCollapse class="border-b border-neutral-100 p-2 dark:border-neutral-800">
                 <NCollapseItem title="计划任务定义" name="definitions">
                   {{
@@ -278,7 +269,6 @@ export default defineComponent({
                 </NCollapseItem>
               </NCollapse>
 
-              {/* Filters */}
               <div class="flex shrink-0 flex-wrap items-center gap-2 border-b border-neutral-100 p-3 dark:border-neutral-800">
                 <NSelect
                   value={statusFilter.value}
@@ -309,7 +299,6 @@ export default defineComponent({
                 </span>
               </div>
 
-              {/* Task List */}
               <NScrollbar class="min-h-0 flex-1">
                 {isPending.value && tasks.value.length === 0 ? (
                   <div class="flex items-center justify-center py-16">
@@ -348,7 +337,6 @@ export default defineComponent({
   },
 })
 
-/** Cron 定义项 */
 const CronDefinitionItem = defineComponent({
   props: {
     definition: {
@@ -402,7 +390,6 @@ const CronDefinitionItem = defineComponent({
   },
 })
 
-/** 列表项组件 */
 const TaskListItem = defineComponent({
   props: {
     task: { type: Object as PropType<CronTask>, required: true },
@@ -447,7 +434,6 @@ const TaskListItem = defineComponent({
   },
 })
 
-/** 详情面板组件 */
 const TaskDetailPanel = defineComponent({
   props: {
     task: { type: Object as PropType<CronTask>, required: true },
@@ -498,7 +484,6 @@ const TaskDetailPanel = defineComponent({
     return () => (
       <NScrollbar class="h-full">
         <div class="p-4">
-          {/* Header */}
           <div class="mb-4 flex items-start justify-between">
             <div class="flex items-center gap-3">
               <StatusIcon.value />
@@ -526,7 +511,6 @@ const TaskDetailPanel = defineComponent({
             </div>
           </div>
 
-          {/* Progress */}
           {props.task.status === CronTaskStatus.Running &&
             props.task.progress !== undefined && (
               <div class="mb-4">
@@ -538,7 +522,6 @@ const TaskDetailPanel = defineComponent({
               </div>
             )}
 
-          {/* Error */}
           {props.task.error && (
             <div
               class="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950/50 dark:text-red-300"
@@ -549,7 +532,6 @@ const TaskDetailPanel = defineComponent({
             </div>
           )}
 
-          {/* Actions */}
           {(canCancel.value || canRetry.value || canDelete.value) && (
             <div class="mb-4 flex items-center gap-2">
               {canCancel.value && (
@@ -610,7 +592,6 @@ const TaskDetailPanel = defineComponent({
             </div>
           )}
 
-          {/* Result */}
           {props.task.result && (
             <div class="mb-4">
               <div class="mb-2 text-sm font-medium text-neutral-700 dark:text-neutral-300">
@@ -622,7 +603,6 @@ const TaskDetailPanel = defineComponent({
             </div>
           )}
 
-          {/* Logs */}
           {props.task.logs.length > 0 && (
             <div class="mb-4">
               <div class="mb-2 text-sm font-medium text-neutral-700 dark:text-neutral-300">
@@ -639,7 +619,6 @@ const TaskDetailPanel = defineComponent({
             </div>
           )}
 
-          {/* Metadata */}
           <div class="space-y-2 text-xs">
             <div class="flex items-center gap-2">
               <span class="text-neutral-500">任务 ID</span>
@@ -678,7 +657,6 @@ const TaskDetailPanel = defineComponent({
   },
 })
 
-/** 日志行 */
 const LogLine = defineComponent({
   props: {
     log: { type: Object as PropType<CronTaskLog>, required: true },

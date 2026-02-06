@@ -71,21 +71,18 @@ export default defineComponent({
 
     return () => (
       <div class={styles.container}>
-        {/* Stats Overview */}
         <StatsOverview
           count={count.value}
           todayIpCount={todayIp.value?.length || 0}
           loading={loading.value}
         />
 
-        {/* Charts Section */}
         <ChartsSection
           graphData={graphData.value}
           topPaths={topPaths.value}
           loading={loading.value}
         />
 
-        {/* Tabs Section */}
         <div class={styles.tabsContainer}>
           <NTabs type="line" animated>
             <NTabPane name="ip" tab="IP 记录">
@@ -240,7 +237,7 @@ const ChartsSection = defineComponent({
       if (!element || !weekData?.length) return
 
       if (charts.trend) {
-        charts.trend?.destroy()
+        charts.trend.destroy()
       }
 
       const textColor = getTextColor()
@@ -293,7 +290,7 @@ const ChartsSection = defineComponent({
       if (!element || !articles?.length) return
 
       if (charts.articles) {
-        charts.articles?.destroy()
+        charts.articles.destroy()
       }
 
       const textColor = getTextColor()
@@ -354,7 +351,7 @@ const ChartsSection = defineComponent({
       if (!element || !data?.categories?.length) return
 
       if (charts.traffic) {
-        charts.traffic?.destroy()
+        charts.traffic.destroy()
       }
 
       const textColor = getTextColor()
@@ -401,7 +398,7 @@ const ChartsSection = defineComponent({
       if (!element || !data?.devices?.length) return
 
       if (charts.device) {
-        charts.device?.destroy()
+        charts.device.destroy()
       }
 
       const textColor = getTextColor()
@@ -479,7 +476,6 @@ const ChartsSection = defineComponent({
 
     return () => (
       <div class={styles.chartsGrid}>
-        {/* Trend Chart */}
         <div class={styles.chartCard}>
           <div class={styles.chartHeader}>
             <h3 class={styles.chartTitle}>本周访问趋势</h3>
@@ -494,7 +490,6 @@ const ChartsSection = defineComponent({
           </div>
         </div>
 
-        {/* Top Articles Bar Chart */}
         <div class={styles.chartCard}>
           <div class={styles.chartHeader}>
             <h3 class={styles.chartTitle}>热门文章（近 14 天）</h3>
@@ -513,7 +508,6 @@ const ChartsSection = defineComponent({
           </div>
         </div>
 
-        {/* Traffic Source Pie Chart */}
         <div class={styles.chartCard}>
           <div class={styles.chartHeader}>
             <h3 class={styles.chartTitle}>流量来源</h3>
@@ -532,7 +526,6 @@ const ChartsSection = defineComponent({
           </div>
         </div>
 
-        {/* Device Distribution Chart */}
         <div class={styles.chartCard}>
           <div class={styles.chartHeader}>
             <h3 class={styles.chartTitle}>设备分布</h3>

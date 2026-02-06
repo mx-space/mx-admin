@@ -41,7 +41,6 @@ enum ActivityType {
   ReadDuration,
 }
 
-// 使用 API 返回的类型，避免类型转换
 type RefModel = PostModel | NoteModel | PageModel | RecentlyModel
 
 type ObjectsCollection = {
@@ -361,11 +360,9 @@ const ReadDurationItem = defineComponent({
         })
     }
 
-    // 获取 title，不同模型都有 title 属性
     const refTitle = computed(() => {
       const model = refModel.value
       if (!model) return ''
-      // PostModel, NoteModel, PageModel 都有 title
       return 'title' in model ? model.title : ''
     })
 
@@ -407,7 +404,6 @@ const ReadDurationItem = defineComponent({
           )}
         </div>
 
-        {/* Duration Bar */}
         <div class="mb-3">
           <div class="mb-1 flex items-center justify-between text-sm">
             <span class="flex items-center gap-1.5 text-neutral-500">

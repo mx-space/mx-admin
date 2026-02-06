@@ -50,21 +50,11 @@ export const EmailTab = defineComponent({
 
           await fetch()
         },
-        onPositiveClick() {
-          return
-        },
+        onPositiveClick() {},
         negativeText: '取消',
         positiveText: '确认',
       })
     }
-    // TODO
-    // const canSave = computed(
-    //   () =>
-    //     templateString.value === '' ||
-    //     modifiedTemplate.value === '' ||
-    //     templateType.value === modifiedTemplate.value,
-    // )
-
     useMountAndUnmount(() => {
       setHeaderButton(
         <>

@@ -106,7 +106,6 @@ const NoteWriteView = defineComponent(() => {
   const data = reactive<NoteReactiveType>(resetReactive())
   const nid = ref<number>()
 
-  // 从草稿恢复数据
   const applyDraft = (
     draft: DraftModel,
     target: NoteReactiveType,
@@ -138,7 +137,6 @@ const NoteWriteView = defineComponent(() => {
     }
   }
 
-  // 加载已发布手记
   const loadPublished = async (id: string) => {
     const noteData = await notesApi.getById(id, { single: true })
     if (noteData.topic) {
@@ -548,7 +546,6 @@ const NoteWriteView = defineComponent(() => {
         />
       </TextBaseDrawer>
 
-      {/* Draft Recovery Modal (场景2) */}
       {recoveryModal.draft.value && recoveryModal.publishedContent.value && (
         <DraftRecoveryModal
           show={recoveryModal.show.value}
@@ -559,7 +556,6 @@ const NoteWriteView = defineComponent(() => {
         />
       )}
 
-      {/* Draft List Modal (场景3) */}
       <DraftListModal
         show={listModal.show.value}
         onClose={listModal.onClose}

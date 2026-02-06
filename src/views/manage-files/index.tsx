@@ -134,9 +134,7 @@ export default defineComponent({
       />,
     )
 
-    const isImageType = computed(() =>
-      ['icon', 'avatar', 'image'].includes(type.value),
-    )
+    const isImageType = computed(() => currentConfig.value.acceptImage)
 
     return () => (
       <div class="flex h-full flex-col">

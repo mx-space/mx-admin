@@ -19,8 +19,8 @@ import {
   ref,
 } from 'vue'
 import { toast } from 'vue-sonner'
+import type { UserModel } from '~/models/user'
 import type { PropType } from 'vue'
-import type { UserModel } from '../../models/user'
 
 import { systemApi } from '~/api'
 import { showConfetti } from '~/utils/confetti'
@@ -28,7 +28,6 @@ import { checkIsInit } from '~/utils/is-init'
 
 const useDefaultConfigs = () => inject<any>('configs')
 
-// Shared input styles matching login page
 const inputClass =
   'h-[42px] w-full rounded-full border-0 bg-white/20 px-4 text-sm text-white backdrop-blur-md transition-all placeholder:text-white/60 focus-visible:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 disabled:cursor-not-allowed disabled:opacity-50'
 
@@ -69,7 +68,6 @@ export default defineComponent({
 
     return () => (
       <div class="flex min-h-screen flex-col items-center justify-center p-4">
-        {/* Step Indicators */}
         <div class="mb-8 flex items-center gap-3">
           {steps.map((s, i) => {
             const Icon = s.icon
@@ -105,7 +103,6 @@ export default defineComponent({
           })}
         </div>
 
-        {/* Title */}
         <h1 class="mb-2 text-xl font-medium tracking-wide text-white drop-shadow-lg">
           {steps[step.value].title}
         </h1>
@@ -120,7 +117,6 @@ export default defineComponent({
           }
         </p>
 
-        {/* Content Card */}
         <div class="w-full max-w-md">
           {isLoading.value ? (
             <div class="flex items-center justify-center py-12">
@@ -254,7 +250,6 @@ const Step1 = defineComponent({
           }}
         >
           <div class="space-y-4">
-            {/* 站点标题 */}
             <div>
               <label for="site-title" class={labelClass}>
                 站点标题 <span class="text-red-300">*</span>
@@ -272,7 +267,6 @@ const Step1 = defineComponent({
               />
             </div>
 
-            {/* 站点描述 */}
             <div>
               <label for="site-description" class={labelClass}>
                 站点描述 <span class="text-red-300">*</span>
@@ -290,7 +284,6 @@ const Step1 = defineComponent({
               />
             </div>
 
-            {/* 关键字 */}
             <div>
               <label class={labelClass}>关键字</label>
               <NDynamicTags
@@ -302,7 +295,6 @@ const Step1 = defineComponent({
               />
             </div>
 
-            {/* URL 设置 */}
             <div class="grid grid-cols-2 gap-3">
               <div>
                 <label for="web-url" class={labelClass}>
@@ -370,7 +362,6 @@ const Step1 = defineComponent({
             </div>
           </div>
 
-          {/* Actions */}
           <div class="mt-6 flex justify-between">
             <button
               type="button"
@@ -445,7 +436,6 @@ const Step2 = defineComponent({
           }}
         >
           <div class="space-y-4">
-            {/* 用户名 */}
             <div>
               <label for="username" class={labelClass}>
                 用户名（登录凭证）<span class="text-red-300">*</span>
@@ -463,7 +453,6 @@ const Step2 = defineComponent({
               />
             </div>
 
-            {/* 昵称 */}
             <div>
               <label for="nickname" class={labelClass}>
                 昵称
@@ -481,7 +470,6 @@ const Step2 = defineComponent({
               />
             </div>
 
-            {/* 邮箱 */}
             <div>
               <label for="email" class={labelClass}>
                 邮箱 <span class="text-red-300">*</span>
@@ -499,7 +487,6 @@ const Step2 = defineComponent({
               />
             </div>
 
-            {/* 密码 */}
             <div class="grid grid-cols-2 gap-3">
               <div>
                 <label for="password" class={labelClass}>
@@ -536,7 +523,6 @@ const Step2 = defineComponent({
               </div>
             </div>
 
-            {/* 可选信息 */}
             <div class="grid grid-cols-2 gap-3">
               <div>
                 <label for="personal-url" class={labelClass}>
@@ -573,7 +559,6 @@ const Step2 = defineComponent({
               </div>
             </div>
 
-            {/* 个人介绍 */}
             <div>
               <label for="introduce" class={labelClass}>
                 个人介绍
@@ -592,7 +577,6 @@ const Step2 = defineComponent({
             </div>
           </div>
 
-          {/* Actions */}
           <div class="mt-6 flex justify-between">
             <button
               type="button"

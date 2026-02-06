@@ -38,57 +38,51 @@ export const Card = defineComponent({
 
   setup(props: CardProps) {
     return () => (
-      <>
-        <NCard>
-          <NThing>
-            {{
-              header() {
-                return <Statistic label={props.label} value={props.value} />
-              },
-              ['header-extra']: function () {
-                return (
-                  <Icon class="text-4xl opacity-70">
-                    {typeof props.icon == 'function'
-                      ? props.icon()
-                      : props.icon}
-                  </Icon>
-                )
-              },
+      <NCard>
+        <NThing>
+          {{
+            header: () => <Statistic label={props.label} value={props.value} />,
+            'header-extra': () => (
+              <Icon class="text-4xl opacity-70">
+                {typeof props.icon === 'function' ? props.icon() : props.icon}
+              </Icon>
+            ),
+            action: () => {
+              if (!props.actions) return null
 
-              action() {
-                if (!props.actions) {
-                  return null
-                }
-                return (
-                  <NSpace size="medium" align="center">
-                    {props.actions.map((i) => {
-                      const Inner = () =>
-                        i.primary ? (
-                          <NButton round type="primary" onClick={i.onClick}>
-                            {i.name}
-                          </NButton>
-                        ) : (
-                          <NButton text onClick={i.onClick}>
-                            {i.name}
-                          </NButton>
-                        )
-                      return i.showBadage &&
-                        props.value &&
-                        props.value !== 'N/A' ? (
-                        <NBadge value={props.value} processing>
-                          <Inner />
-                        </NBadge>
+              return (
+                <NSpace size="medium" align="center">
+                  {props.actions.map((action) => {
+                    const ActionButton = () =>
+                      action.primary ? (
+                        <NButton round type="primary" onClick={action.onClick}>
+                          {action.name}
+                        </NButton>
                       ) : (
-                        <Inner />
+                        <NButton text onClick={action.onClick}>
+                          {action.name}
+                        </NButton>
                       )
-                    })}
-                  </NSpace>
-                )
-              },
-            }}
-          </NThing>
-        </NCard>
-      </>
+
+                    if (
+                      action.showBadage &&
+                      props.value &&
+                      props.value !== 'N/A'
+                    ) {
+                      return (
+                        <NBadge value={props.value} processing>
+                          <ActionButton />
+                        </NBadge>
+                      )
+                    }
+                    return <ActionButton />
+                  })}
+                </NSpace>
+              )
+            },
+          }}
+        </NThing>
+      </NCard>
     )
   },
 })

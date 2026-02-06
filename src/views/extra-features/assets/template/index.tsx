@@ -8,22 +8,20 @@ export default defineComponent({
   setup() {
     const tab = ref('1')
     return () => (
-      <>
-        <NTabs
-          value={tab.value}
-          size="medium"
-          onUpdateValue={(tabvalue) => {
-            tab.value = tabvalue
-          }}
-        >
-          <NTabPane name="1" tab="邮件模板">
-            <EmailTab />
-          </NTabPane>
-          <NTabPane name="2" tab="预览 Markdown 模板">
-            <MarkdownTab />
-          </NTabPane>
-        </NTabs>
-      </>
+      <NTabs
+        value={tab.value}
+        size="medium"
+        onUpdateValue={(tabvalue) => {
+          tab.value = tabvalue
+        }}
+      >
+        <NTabPane name="1" tab="邮件模板">
+          <EmailTab />
+        </NTabPane>
+        <NTabPane name="2" tab="预览 Markdown 模板">
+          <MarkdownTab />
+        </NTabPane>
+      </NTabs>
     )
   },
 })

@@ -1,7 +1,3 @@
-/**
- * Webhook Management Page
- * Webhook 管理页面 - Master-Detail 布局
- */
 import { cloneDeep } from 'es-toolkit/compat'
 import {
   ArrowLeft,
@@ -248,9 +244,6 @@ export default defineComponent({
   },
 })
 
-/**
- * Status Indicator
- */
 const StatusIndicator = defineComponent({
   props: {
     enabled: { type: Boolean, required: true },
@@ -272,9 +265,6 @@ const StatusIndicator = defineComponent({
   },
 })
 
-/**
- * Webhook List Panel (left side)
- */
 const WebhookListPanel = defineComponent({
   props: {
     data: { type: Array as PropType<WebhookModel[]>, required: true },
@@ -293,7 +283,6 @@ const WebhookListPanel = defineComponent({
 
     return () => (
       <div class="flex h-full flex-col">
-        {/* Header */}
         <div class="flex h-12 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
           <span class="text-base font-semibold text-neutral-900 dark:text-neutral-100">
             Webhooks
@@ -303,7 +292,6 @@ const WebhookListPanel = defineComponent({
           </span>
         </div>
 
-        {/* List */}
         <div class="min-h-0 flex-1">
           {props.loading ? (
             <div class="flex items-center justify-center py-24">
@@ -354,9 +342,6 @@ const WebhookListPanel = defineComponent({
   },
 })
 
-/**
- * Webhook Detail Panel (right side)
- */
 const WebhookDetailPanel = defineComponent({
   props: {
     webhook: { type: Object as PropType<WebhookModel>, required: true },
@@ -585,9 +570,6 @@ const DetailActionButton = defineComponent({
   },
 })
 
-/**
- * Detail Empty State
- */
 const WebhookDetailEmptyState = defineComponent({
   setup() {
     return () => (
@@ -606,9 +588,6 @@ const WebhookDetailEmptyState = defineComponent({
   },
 })
 
-/**
- * List Empty State
- */
 const WebhookListEmptyState = defineComponent({
   props: {
     onCreate: { type: Function as PropType<() => void>, required: true },
@@ -632,9 +611,6 @@ const WebhookListEmptyState = defineComponent({
   },
 })
 
-/**
- * Webhook Edit Drawer
- */
 const WebhookEditDrawer = defineComponent({
   props: {
     show: { type: Boolean, required: true },

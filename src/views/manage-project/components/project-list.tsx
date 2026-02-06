@@ -1,7 +1,3 @@
-/**
- * Project List Panel Component
- * 项目列表面板 - 用于 MasterDetailLayout 左侧
- */
 import { ExternalLink, Folder, Inbox as InboxIcon } from 'lucide-vue-next'
 import { NAvatar, NScrollbar } from 'naive-ui'
 import { computed, defineComponent } from 'vue'
@@ -121,7 +117,6 @@ const ProjectListItem = defineComponent({
         ]}
         onClick={props.onSelect}
       >
-        {/* Avatar */}
         <div class="shrink-0">
           {props.data.avatar ? (
             <NAvatar
@@ -138,7 +133,6 @@ const ProjectListItem = defineComponent({
           )}
         </div>
 
-        {/* Content */}
         <div class="min-w-0 flex-1">
           <div class="flex items-center gap-2">
             <h3 class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">

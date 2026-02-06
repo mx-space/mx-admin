@@ -59,11 +59,9 @@ export default defineComponent({
     const importing = ref(false)
     const exporting = ref(false)
     const showImportConfirm = ref(false)
-    // Computed
     const hasFiles = computed(() => fileList.value.length > 0)
     const hasParsedData = computed(() => parsedList.value.length > 0)
 
-    // Parse markdown files
     function parseMarkdown(strList: string[]) {
       const parser = new ParseMarkdownYAML(strList)
       return parser.start().map((i, index) => {
@@ -145,7 +143,6 @@ export default defineComponent({
       }
     }
 
-    // Import data with confirmation
     function handleImportClick(e: MouseEvent) {
       e.stopPropagation()
       e.preventDefault()
@@ -175,7 +172,6 @@ export default defineComponent({
       }
     }
 
-    // Export config
     const exportConfig = reactive({
       includeYAMLHeader: true,
       titleBigTitle: false,
@@ -203,7 +199,6 @@ export default defineComponent({
       }
     }
 
-    // Clear parsed data when files change
     const debouncedParse = debounce((files: UploadFileInfo[]) => {
       fileList.value = files
     }, 250)
@@ -216,7 +211,6 @@ export default defineComponent({
       }
     })
 
-    // Remove parsed item when file is removed
     function handleFileRemove(e: { file: UploadFileInfo }) {
       const name = e.file.name
       const index = parsedList.value.findIndex((i) => i.filename === name)
@@ -225,7 +219,6 @@ export default defineComponent({
       }
     }
 
-    // Table columns for parsed preview
     const previewColumns: DataTableColumns<ParsedItem> = [
       {
         title: '文件名',
@@ -283,13 +276,12 @@ export default defineComponent({
               }
             }}
           >
-            <Trash2 class="h-4 w-4" />
+            <Trash2 class="size-4" />
           </NButton>
         ),
       },
     ]
 
-    // Switch options for export
     const exportOptions = [
       {
         id: 'includeYAMLHeader',
@@ -315,18 +307,16 @@ export default defineComponent({
 
     return () => (
       <div class="space-y-6">
-        {/* Import Section */}
         <NCard
           title="从 Markdown 导入"
           class="overflow-hidden"
           headerExtra={() => (
             <div class="flex items-center gap-2">
-              <FileUp class="h-5 w-5 text-neutral-400" />
+              <FileUp class="size-5 text-neutral-400" />
             </div>
           )}
         >
           <div class="space-y-4">
-            {/* Import Type Select */}
             <div class="flex items-center gap-4">
               <label
                 id="import-type-label"
@@ -343,7 +333,6 @@ export default defineComponent({
               />
             </div>
 
-            {/* Upload Area */}
             <NUpload
               multiple
               accept=".md,.markdown"
@@ -352,7 +341,7 @@ export default defineComponent({
               showFileList={!hasParsedData.value}
             >
               <div class="flex w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-neutral-300 bg-neutral-50 px-6 py-8 transition-colors hover:border-blue-400 hover:bg-blue-50/50 dark:border-neutral-700 dark:bg-neutral-800/50 dark:hover:border-blue-500 dark:hover:bg-blue-900/20">
-                <Upload class="mb-3 h-10 w-10 text-neutral-400" />
+                <Upload class="mb-3 size-10 text-neutral-400" />
                 <p class="mb-1 text-sm font-medium text-neutral-700 dark:text-neutral-300">
                   点击或拖拽上传 Markdown 文件
                 </p>
@@ -362,12 +351,11 @@ export default defineComponent({
               </div>
             </NUpload>
 
-            {/* Parsed Preview Table */}
             {hasParsedData.value && (
               <div class="space-y-3">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center gap-2">
-                    <CheckCircle class="h-4 w-4 text-green-500" />
+                    <CheckCircle class="size-4 text-green-500" />
                     <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">
                       已解析 {parsedList.value.length} 个文件
                     </span>
@@ -395,7 +383,6 @@ export default defineComponent({
               </div>
             )}
 
-            {/* Parsing indicator */}
             {parsing.value && (
               <div class="flex items-center justify-center py-4">
                 <NSpin size="small" />
@@ -403,14 +390,13 @@ export default defineComponent({
               </div>
             )}
 
-            {/* Actions */}
             <div class="flex justify-end gap-2 border-t border-neutral-200 pt-4 dark:border-neutral-700">
               <NButton
                 onClick={handleImportClick}
                 type="primary"
                 disabled={!hasParsedData.value || importing.value}
                 loading={importing.value}
-                renderIcon={() => <FileText class="h-4 w-4" />}
+                renderIcon={() => <FileText class="size-4" />}
               >
                 导入{' '}
                 {hasParsedData.value
@@ -421,13 +407,12 @@ export default defineComponent({
           </div>
         </NCard>
 
-        {/* Export Section */}
         <NCard
           title="导出为 Markdown"
           class="overflow-hidden"
           headerExtra={() => (
             <div class="flex items-center gap-2">
-              <FileDown class="h-5 w-5 text-neutral-400" />
+              <FileDown class="size-5 text-neutral-400" />
             </div>
           )}
         >
@@ -436,7 +421,6 @@ export default defineComponent({
               导出所有博文和日记为 Markdown 文件（Hexo YAML 格式）
             </p>
 
-            {/* Export Options */}
             <div class="grid gap-3 sm:grid-cols-2">
               {exportOptions.map((option) => (
                 <label
@@ -463,14 +447,13 @@ export default defineComponent({
               ))}
             </div>
 
-            {/* Export Action */}
             <div class="flex justify-end border-t border-neutral-200 pt-4 dark:border-neutral-700">
               <NButton
                 type="primary"
                 onClick={handleExportMarkdown}
                 loading={exporting.value}
                 disabled={exporting.value}
-                renderIcon={() => <Download class="h-4 w-4" />}
+                renderIcon={() => <Download class="size-4" />}
               >
                 导出 Markdown 压缩包
               </NButton>
@@ -478,7 +461,6 @@ export default defineComponent({
           </div>
         </NCard>
 
-        {/* Import Confirmation Modal */}
         <NModal
           show={showImportConfirm.value}
           onUpdateShow={(v) => (showImportConfirm.value = v)}
@@ -488,7 +470,7 @@ export default defineComponent({
         >
           <div class="space-y-4">
             <div class="flex items-start gap-3">
-              <AlertCircle class="mt-0.5 h-5 w-5 flex-shrink-0 text-amber-500" />
+              <AlertCircle class="mt-0.5 size-5 flex-shrink-0 text-amber-500" />
               <div>
                 <p class="text-sm text-neutral-700 dark:text-neutral-300">
                   即将导入 <strong>{parsedList.value.length}</strong> 条数据到

@@ -62,7 +62,6 @@ export const DraftListItem = defineComponent({
       >
         <div class="flex items-center gap-3">
           <div class="min-w-0 flex-1">
-            {/* 标题行 */}
             <div class="flex items-center gap-2">
               <h4 class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
                 {props.data.title || '无标题'}
@@ -72,7 +71,6 @@ export const DraftListItem = defineComponent({
               </span>
             </div>
 
-            {/* 元信息 */}
             <div class="mt-1 flex items-center gap-2 text-xs">
               <span
                 class={[
@@ -97,7 +95,6 @@ export const DraftListItem = defineComponent({
             </div>
           </div>
 
-          {/* 时间放右边 */}
           <div class="flex-shrink-0 text-xs text-neutral-400 dark:text-neutral-500">
             <RelativeTime time={props.data.updated} />
           </div>

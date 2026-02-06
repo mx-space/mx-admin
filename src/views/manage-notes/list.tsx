@@ -41,7 +41,6 @@ import { formatNumber } from '~/utils/number'
 import { HeaderActionButton } from '../../components/button/header-action-button'
 import { useLayout } from '../../layouts/content'
 
-// Mobile card item component
 const NoteItem = defineComponent({
   name: 'NoteItem',
   props: {
@@ -71,7 +70,6 @@ const NoteItem = defineComponent({
     return () => (
       <div class="flex items-center gap-2 border-b border-neutral-200 px-3 py-2.5 transition-colors last:border-b-0 hover:bg-neutral-50 dark:border-neutral-800 dark:hover:bg-neutral-900/50">
         <div class="min-w-0 flex-1">
-          {/* Title row with badges */}
           <div class="flex items-center gap-1.5">
             <span class="shrink-0 font-mono text-xs text-neutral-400 dark:text-neutral-500">
               #{row.value.nid}
@@ -90,7 +88,6 @@ const NoteItem = defineComponent({
             </RouterLink>
           </div>
 
-          {/* Meta row - all in one line with consistent sizing */}
           <div class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
             {row.value.mood && (
               <span class="text-xs text-neutral-500 dark:text-neutral-400">
@@ -131,7 +128,6 @@ const NoteItem = defineComponent({
           </div>
         </div>
 
-        {/* Actions */}
         <div class="flex shrink-0 items-center">
           <a
             href={`${WEB_URL}/notes/${row.value.nid}`}
@@ -197,11 +193,8 @@ export const ManageNoteListView = defineComponent({
       () => ui.viewport.value.mobile || ui.viewport.value.pad,
     )
 
-    // 搜索关键词
     const searchKeyword = ref('')
     const debouncedSearch = debouncedRef(searchKeyword, 300)
-
-    // 筛选条件
     const dbQuery = ref<Record<string, boolean> | undefined>(undefined)
 
     const {
@@ -217,7 +210,6 @@ export const ManageNoteListView = defineComponent({
         queryKeys.notes.list({ ...params, dbQuery: params.filters?.dbQuery }),
       queryFn: (params) => {
         const keyword = params.filters?.search
-        // 有搜索关键词时使用搜索 API
         if (keyword) {
           return searchApi.searchNotes({
             keyword,
@@ -225,7 +217,6 @@ export const ManageNoteListView = defineComponent({
             size: params.size,
           }) as Promise<any>
         }
-        // 否则使用列表 API
         return notesApi.getList({
           page: params.page,
           size: params.size,
@@ -243,7 +234,6 @@ export const ManageNoteListView = defineComponent({
       }),
     })
 
-    // 删除 mutation
     const deleteMutation = useMutation({
       mutationFn: notesApi.delete,
       onSuccess: () => {
@@ -252,13 +242,11 @@ export const ManageNoteListView = defineComponent({
       },
     })
 
-    // 更新字段 mutation
     const patchMutation = useMutation({
       mutationFn: ({ id, data }: { id: string; data: Partial<NoteModel> }) =>
         notesApi.patch(id, data),
     })
 
-    // 更新发布状态 mutation
     const publishMutation = useMutation({
       mutationFn: ({ id, isPublished }: { id: string; isPublished: boolean }) =>
         notesApi.patchPublish(id, isPublished),
@@ -279,7 +267,6 @@ export const ManageNoteListView = defineComponent({
       publishMutation.mutate({ id, isPublished: newStatus })
     }
 
-    // Mobile card list view
     const CardList = defineComponent({
       setup() {
         return () => (
@@ -313,7 +300,6 @@ export const ManageNoteListView = defineComponent({
               </div>
             )}
 
-            {/* Pagination */}
             {pager.value && pager.value.totalPage > 1 && (
               <div class="flex items-center justify-center gap-4 border-t border-neutral-200 py-4 dark:border-neutral-800">
                 <button
@@ -348,7 +334,6 @@ export const ManageNoteListView = defineComponent({
       },
     })
 
-    // Desktop table view
     const DataTable = defineComponent({
       setup() {
         const columns = reactive<TableColumns<NoteModel>>([
@@ -453,29 +438,27 @@ export const ManageNoteListView = defineComponent({
             width: 200,
             render(row) {
               const { coordinates, location } = row
-              if (!location) {
-                return null
-              } else {
-                return (
-                  <NEllipsis class="max-w-[200px] truncate">
-                    {{
-                      tooltip() {
-                        return (
-                          <div class="">
-                            <p>{location}</p>
-                            <p>
-                              {coordinates?.longitude}, {coordinates?.latitude}
-                            </p>
-                          </div>
-                        )
-                      },
-                      default() {
-                        return location
-                      },
-                    }}
-                  </NEllipsis>
-                )
-              }
+              if (!location) return null
+
+              return (
+                <NEllipsis class="max-w-[200px] truncate">
+                  {{
+                    tooltip() {
+                      return (
+                        <div>
+                          <p>{location}</p>
+                          <p>
+                            {coordinates?.longitude}, {coordinates?.latitude}
+                          </p>
+                        </div>
+                      )
+                    },
+                    default() {
+                      return location
+                    },
+                  }}
+                </NEllipsis>
+              )
             },
           },
 
@@ -672,7 +655,6 @@ export const ManageNoteListView = defineComponent({
 
     return () => (
       <div class="flex flex-col gap-4">
-        {/* 搜索框 */}
         <div class="flex items-center gap-2">
           <NInput
             v-model:value={searchKeyword.value}

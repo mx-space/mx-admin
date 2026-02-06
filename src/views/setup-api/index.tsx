@@ -71,18 +71,15 @@ export default defineComponent({
 
     return () => (
       <div class="flex min-h-screen flex-col items-center justify-center p-4">
-        {/* Icon */}
         <div class="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-md">
           <Server class="h-10 w-10" aria-hidden="true" />
         </div>
 
-        {/* Title */}
         <h1 class="mb-2 text-xl font-medium tracking-wide text-white drop-shadow-lg">
           设置 API
         </h1>
         <p class="mb-8 text-sm text-white/70">配置后端服务地址</p>
 
-        {/* Form Card */}
         <div class="w-full max-w-md rounded-2xl border border-white/20 bg-white/10 p-6 backdrop-blur-xl">
           <form
             onSubmit={(e) => {
@@ -90,7 +87,6 @@ export default defineComponent({
               handleOk()
             }}
           >
-            {/* API URL */}
             <div class="mb-4">
               <label
                 for="api-url"
@@ -115,7 +111,6 @@ export default defineComponent({
               />
             </div>
 
-            {/* Gateway URL */}
             <div class="mb-4">
               <label
                 for="gateway-url"
@@ -140,7 +135,6 @@ export default defineComponent({
               />
             </div>
 
-            {/* Persist Toggle */}
             <div class="mb-6 flex items-center justify-between">
               <span class="text-sm text-white/90">持久化保存</span>
               <NSwitch
@@ -151,7 +145,6 @@ export default defineComponent({
               />
             </div>
 
-            {/* Actions */}
             <div class="flex gap-3">
               <button
                 type="button"
@@ -189,12 +182,10 @@ export default defineComponent({
   },
 })
 
-const transformFullUrl = (url: string) => {
+function transformFullUrl(url: string): string {
   if (!url) return ''
-
   if (url.startsWith('http')) return url
-  else {
-    const protocol = ['localhost', '127.0.0.1'].includes(url) ? 'http' : 'https'
-    return `${protocol}://${url}`
-  }
+
+  const protocol = ['localhost', '127.0.0.1'].includes(url) ? 'http' : 'https'
+  return `${protocol}://${url}`
 }

@@ -41,9 +41,7 @@ export default defineComponent({
               previewRef.value!.innerHTML = JSON.stringify(res, null, 2)
             })
         })
-      } catch {
-        // noop
-      }
+      } catch {}
     }
 
     const { setActions } = useLayout()

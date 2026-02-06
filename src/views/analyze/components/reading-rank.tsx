@@ -50,7 +50,6 @@ export const ReadingRank = defineComponent({
 
     return () => (
       <>
-        {/* Filter Section */}
         <div class={styles.filterSection}>
           <span class={styles.filterLabel}>
             <CalendarIcon class="mr-1.5 inline size-4" />
@@ -107,7 +106,6 @@ export const ReadingRank = defineComponent({
           </NDatePicker>
         </div>
 
-        {/* Ranking List */}
         {isPending.value ? (
           <div class={styles.rankingList}>
             {Array.from({ length: 5 }).map((_, i) => (
@@ -185,7 +183,6 @@ const RankingListItem = defineComponent({
 
     return () => (
       <div class={styles.rankingItem} role="listitem">
-        {/* Position Badge */}
         <div
           class={[
             styles.rankingPosition,
@@ -201,7 +198,6 @@ const RankingListItem = defineComponent({
           )}
         </div>
 
-        {/* Content */}
         <div class={styles.rankingContent}>
           <button
             type="button"
@@ -213,7 +209,6 @@ const RankingListItem = defineComponent({
             <ExternalLinkIcon class="ml-1 inline size-3 text-neutral-400 opacity-0 transition-opacity group-hover:opacity-100" />
           </button>
 
-          {/* Progress Bar */}
           <div class={styles.rankingBar}>
             <div
               class={styles.rankingBarFill}
@@ -222,7 +217,6 @@ const RankingListItem = defineComponent({
           </div>
         </div>
 
-        {/* Count */}
         <div class={styles.rankingCount}>
           <EyeIcon class="mr-1 inline size-4 text-neutral-400" />
           {props.item.count.toLocaleString()}

@@ -204,7 +204,6 @@ export const CommentDetail = defineComponent({
 
     return () => (
       <div class="flex h-full flex-col bg-white dark:bg-black">
-        {/* Header */}
         <div class="flex h-12 flex-shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
           <div class="flex items-center gap-3">
             {props.isMobile && props.onBack && (
@@ -261,10 +260,8 @@ export const CommentDetail = defineComponent({
           </div>
         </div>
 
-        {/* Content */}
         <NScrollbar ref={scrollbarRef} class="min-h-0 flex-1">
           <div class="mx-auto max-w-3xl space-y-8 p-6">
-            {/* Parent Context */}
             {isReply.value && (
               <div class="relative pl-6">
                 <div class="absolute left-0 top-0 h-full w-0.5 bg-neutral-200 dark:bg-neutral-800" />
@@ -285,9 +282,7 @@ export const CommentDetail = defineComponent({
               </div>
             )}
 
-            {/* Main Comment */}
             <div class="space-y-4">
-              {/* Author Header */}
               <div class="flex items-center gap-3">
                 <NAvatar
                   round
@@ -301,7 +296,7 @@ export const CommentDetail = defineComponent({
                       {props.comment.author}
                     </span>
                     {props.comment.isWhispers && (
-                      <span class="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-amber-800 dark:bg-amber-900/30 dark:text-amber-500">
+                      <span class="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium uppercase tracking-wider text-amber-800 dark:bg-amber-900/30 dark:text-amber-500">
                         悄悄话
                       </span>
                     )}
@@ -312,12 +307,10 @@ export const CommentDetail = defineComponent({
                 </div>
               </div>
 
-              {/* Comment Body */}
               <div class="prose prose-neutral dark:prose-invert max-w-none text-base leading-relaxed text-neutral-900 dark:text-neutral-100">
                 <CommentMarkdownRender text={props.comment.text} />
               </div>
 
-              {/* Reference Link */}
               {/* @ts-expect-error */}
               {props.comment.ref?.title && (
                 <div class="flex items-center gap-2 rounded-md border border-neutral-100 bg-neutral-50 px-3 py-2 text-sm text-neutral-600 transition-colors hover:bg-neutral-100 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800">
@@ -338,7 +331,6 @@ export const CommentDetail = defineComponent({
 
             <div class="h-px bg-neutral-100 dark:bg-neutral-800" />
 
-            {/* Metadata Grid */}
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <div class="flex flex-col gap-1">
                 <span class="text-xs font-medium text-neutral-500">
@@ -410,7 +402,6 @@ export const CommentDetail = defineComponent({
               )}
             </div>
 
-            {/* Local Replies */}
             {localReplies.value.length > 0 && (
               <div class="mt-8 space-y-6 border-t border-neutral-100 pt-8 dark:border-neutral-800">
                 <h3 class="text-xs font-medium uppercase tracking-wider text-neutral-500">
@@ -444,7 +435,6 @@ export const CommentDetail = defineComponent({
           </div>
         </NScrollbar>
 
-        {/* Reply Footer */}
         {!isTrash.value && (
           <div class="flex-shrink-0 border-t border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-black">
             <div class="mx-auto max-w-3xl">

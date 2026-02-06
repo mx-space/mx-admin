@@ -1,7 +1,3 @@
-/**
- * Project List Page
- * 项目列表页面 - Master-Detail 布局
- */
 import { Plus as PlusIcon } from 'lucide-vue-next'
 import { defineComponent, ref, watch, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'

@@ -35,7 +35,6 @@ import {
   SubscribeSayCreateBit,
 } from './constants'
 
-// 订阅类型标签
 const SubscribeTags = defineComponent({
   props: {
     subscribe: { type: Number, required: true },
@@ -77,7 +76,6 @@ const SubscribeTags = defineComponent({
   },
 })
 
-// 订阅者行组件
 const SubscriberRow = defineComponent({
   props: {
     email: { type: String, required: true },
@@ -98,7 +96,6 @@ const SubscriberRow = defineComponent({
         ]}
         onClick={() => props.onSelect?.(!props.selected)}
       >
-        {/* 复选框 */}
         <div onClick={(e) => e.stopPropagation()}>
           <NCheckbox
             checked={props.selected}
@@ -106,24 +103,20 @@ const SubscriberRow = defineComponent({
           />
         </div>
 
-        {/* 邮箱 */}
         <div class="min-w-0 flex-1">
           <div class="truncate text-sm text-neutral-800 dark:text-neutral-100">
             {props.email}
           </div>
         </div>
 
-        {/* 订阅类型标签 */}
         <div class="hidden shrink-0 sm:block">
           <SubscribeTags subscribe={props.subscribe} />
         </div>
 
-        {/* 时间 - hover 时隐藏 */}
         <div class="w-16 shrink-0 text-right text-sm tabular-nums text-neutral-400 transition-opacity group-hover:opacity-0">
           <RelativeTime time={props.created} />
         </div>
 
-        {/* 删除按钮 - hover 时显示 */}
         <div class="absolute right-4 opacity-0 transition-opacity group-hover:opacity-100">
           <NPopconfirm
             positiveText="取消"
@@ -148,7 +141,6 @@ const SubscriberRow = defineComponent({
   },
 })
 
-// 骨架屏
 const SubscriberSkeleton = defineComponent({
   setup() {
     return () => (
@@ -168,7 +160,6 @@ const SubscriberSkeleton = defineComponent({
   },
 })
 
-// 统计卡片
 const StatCard = defineComponent({
   props: {
     icon: { type: Object as PropType<VNode>, required: true },
@@ -180,24 +171,24 @@ const StatCard = defineComponent({
     },
   },
   setup(props) {
-    const styles = {
-      default: 'bg-neutral-50 dark:bg-neutral-800/50 text-neutral-400',
-      success: 'bg-green-50 dark:bg-green-950/30 text-green-500',
-      warning: 'bg-amber-50 dark:bg-amber-950/30 text-amber-500',
+    const bgStyles = {
+      default: 'bg-neutral-50 dark:bg-neutral-800/50',
+      success: 'bg-green-50 dark:bg-green-950/30',
+      warning: 'bg-amber-50 dark:bg-amber-950/30',
+    }
+    const iconStyles = {
+      default: 'text-neutral-400',
+      success: 'text-green-500',
+      warning: 'text-amber-500',
     }
     return () => (
       <div
         class={[
           'flex items-center gap-4 rounded-lg p-4',
-          styles[props.variant].split(' ').slice(0, 2).join(' '),
+          bgStyles[props.variant],
         ]}
       >
-        <div
-          class={[
-            'shrink-0 text-2xl',
-            styles[props.variant].split(' ').slice(2).join(' '),
-          ]}
-        >
+        <div class={['shrink-0 text-2xl', iconStyles[props.variant]]}>
           {props.icon}
         </div>
         <div class="min-w-0 flex-1">
@@ -239,7 +230,6 @@ export default defineComponent({
     const pagination = computed(() => listData.value?.pagination)
     const totalCount = computed(() => pagination.value?.total ?? 0)
 
-    // 过滤后的订阅者
     const filteredSubscribers = computed(() => {
       if (!searchQuery.value.trim()) return subscribers.value
       const query = searchQuery.value.toLowerCase()
@@ -248,7 +238,6 @@ export default defineComponent({
       )
     })
 
-    // 多选状态
     const selectedIds = ref<Set<string>>(new Set())
     const isDeleting = ref(false)
 

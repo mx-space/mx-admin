@@ -1,8 +1,3 @@
-/**
- * AI Summary Detail Panel Component
- * AI 摘要详情面板 - 用于 MasterDetailLayout 右侧
- * 采用分栏布局：左侧摘要列表，右侧编辑面板
- */
 import { format } from 'date-fns'
 import {
   ArrowLeft as ArrowLeftIcon,
@@ -197,7 +192,6 @@ export const SummaryDetailPanel = defineComponent({
     // 左侧内容：文章信息 + 摘要列表
     const ListContent = () => (
       <div class="flex h-full flex-col">
-        {/* Header */}
         <div class="flex h-12 shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
           <div class="flex items-center gap-3">
             {props.isMobile && props.onBack && (
@@ -223,7 +217,6 @@ export const SummaryDetailPanel = defineComponent({
           )}
         </div>
 
-        {/* Content */}
         <NScrollbar class="min-h-0 flex-1">
           {loading.value ? (
             <div class="flex h-full items-center justify-center">
@@ -231,7 +224,6 @@ export const SummaryDetailPanel = defineComponent({
             </div>
           ) : article.value ? (
             <div class="space-y-4 p-4">
-              {/* Article Info */}
               <div>
                 <RouterLink
                   to={`/${article.value.type.toLowerCase()}/edit?id=${props.articleId}`}
@@ -246,7 +238,6 @@ export const SummaryDetailPanel = defineComponent({
 
               <div class="h-px bg-neutral-100 dark:bg-neutral-800" />
 
-              {/* Summaries */}
               <div>
                 <h4 class="mb-3 text-sm font-medium text-neutral-700 dark:text-neutral-300">
                   摘要列表
@@ -320,7 +311,6 @@ export const SummaryDetailPanel = defineComponent({
   },
 })
 
-/** 摘要列表项 */
 const SummaryListItem = defineComponent({
   props: {
     item: {
@@ -351,7 +341,6 @@ const SummaryListItem = defineComponent({
         ]}
         onClick={props.onEdit}
       >
-        {/* Header */}
         <div class="mb-1.5 flex items-center justify-between">
           <div class="flex items-center gap-2">
             <span class="rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-600 dark:bg-blue-950 dark:text-blue-400">
@@ -384,7 +373,6 @@ const SummaryListItem = defineComponent({
           </div>
         </div>
 
-        {/* Content */}
         <p class="line-clamp-2 text-sm text-neutral-700 dark:text-neutral-300">
           {props.item.summary}
         </p>
@@ -393,7 +381,6 @@ const SummaryListItem = defineComponent({
   },
 })
 
-/** 摘要编辑面板 */
 const SummaryEditPanel = defineComponent({
   props: {
     summary: {
@@ -413,7 +400,6 @@ const SummaryEditPanel = defineComponent({
     const summaryRef = ref(props.summary.summary)
     const saving = ref(false)
 
-    // 当 summary 变化时重置表单
     watch(
       () => props.summary.id,
       () => {
@@ -441,7 +427,6 @@ const SummaryEditPanel = defineComponent({
 
     return () => (
       <div class="flex h-full flex-col">
-        {/* Header */}
         <div class="flex h-12 shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
           <div class="flex items-center gap-3">
             <button
@@ -477,10 +462,8 @@ const SummaryEditPanel = defineComponent({
           </div>
         </div>
 
-        {/* Content */}
         <NScrollbar class="min-h-0 flex-1">
           <div class="space-y-4 p-4">
-            {/* Summary */}
             <div>
               <label class="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
                 摘要内容
@@ -494,7 +477,6 @@ const SummaryEditPanel = defineComponent({
               />
             </div>
 
-            {/* Preview */}
             <div>
               <label class="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
                 预览
@@ -506,7 +488,6 @@ const SummaryEditPanel = defineComponent({
               </div>
             </div>
 
-            {/* Meta Info */}
             <div class="rounded-lg bg-neutral-50 p-4 dark:bg-neutral-900">
               <h4 class="mb-3 text-sm font-medium text-neutral-700 dark:text-neutral-300">
                 元信息

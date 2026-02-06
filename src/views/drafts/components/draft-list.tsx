@@ -55,7 +55,6 @@ export const DraftList = defineComponent({
 
     return () => (
       <div class="flex h-full flex-col">
-        {/* 头部筛选器 */}
         <div class="flex h-12 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
           <NPopover
             trigger="click"
@@ -97,7 +96,6 @@ export const DraftList = defineComponent({
           )}
         </div>
 
-        {/* 列表内容 */}
         <div class="min-h-0 flex-1">
           {props.loading ? (
             <div class="flex items-center justify-center py-24">

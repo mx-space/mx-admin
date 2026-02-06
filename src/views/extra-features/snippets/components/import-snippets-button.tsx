@@ -100,7 +100,6 @@ export const ImportSnippetButton = defineComponent({
               instance.destroy()
               props.onFinish()
             },
-            // FIXME 传一个 rootOnFinish 给 PTY 完事之后用
             onRootFinish: () => {
               props.onFinish()
             },
@@ -156,7 +155,7 @@ export const ImportSnippetButton = defineComponent({
                           {name_}
                         </NButton>
                         <a href={url} target="_blank" rel="noopener noreferrer">
-                          <ExternalLinkIcon class="ml-2 !h-4 !w-4" />
+                          <ExternalLinkIcon class="ml-2 !size-4" />
                         </a>
                       </div>
                     ))}
@@ -247,14 +246,6 @@ const ProcessView = defineComponent({
                 break
               }
               case 'schema': {
-                // const files = await GitHubSnippetRepo.fetchFileTree(
-                //   `${props.name}/schema`,
-                // )
-                // if (Array.isArray(files)) {
-                //   await Promise.all(files.map(async (file) => {}))
-                // }
-                // TODO
-
                 break
               }
             }

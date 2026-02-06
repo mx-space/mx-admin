@@ -20,7 +20,6 @@ import { DeleteConfirmButton } from '~/components/special-button/delete-confirm'
 import { useAIModelsQuery, useUpdateModelsCache } from '~/hooks/queries/use-ai'
 import { SettingsRow, SettingsSection } from '~/layouts/settings-layout'
 
-// Types
 enum AIProviderType {
   OpenAI = 'openai',
   OpenAICompatible = 'openai-compatible',
@@ -130,7 +129,6 @@ const getModelPlaceholderForType = (type: AIProviderType): string => {
   }
 }
 
-// Provider Row Component
 const AIProviderRow = defineComponent({
   props: {
     provider: {
@@ -231,7 +229,6 @@ const AIProviderRow = defineComponent({
 
     return () => (
       <div class="group">
-        {/* Header Row */}
         <div
           class="flex cursor-pointer items-center gap-3 px-4 py-3 transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-800/50"
           onClick={() => props.onToggle()}
@@ -287,7 +284,6 @@ const AIProviderRow = defineComponent({
           />
         </div>
 
-        {/* Expanded Content */}
         {props.expanded && (
           <div class="border-t border-neutral-100 bg-neutral-50/50 px-4 py-4 dark:border-neutral-800 dark:bg-neutral-800/30">
             <div class="grid gap-4 sm:grid-cols-2">
@@ -418,7 +414,6 @@ const AIProviderRow = defineComponent({
   },
 })
 
-// Model Assignment Row Component
 const AIModelAssignmentRow = defineComponent({
   props: {
     label: { type: String, required: true },
@@ -543,7 +538,6 @@ const AIModelAssignmentRow = defineComponent({
   },
 })
 
-// Translation Languages Input Component
 const TranslationLanguagesInput = defineComponent({
   props: {
     value: {
@@ -635,7 +629,6 @@ const TranslationLanguagesInput = defineComponent({
   },
 })
 
-// Main AI Config Section
 export const AIConfigSection = defineComponent({
   props: {
     value: {
@@ -656,7 +649,6 @@ export const AIConfigSection = defineComponent({
       set: (val) => props.onUpdate(val),
     })
 
-    // 使用 Query 获取模型列表（带持久化缓存）
     const hasEnabledProviders = computed(() =>
       config.value.providers?.some((p) => p.enabled),
     )
@@ -762,7 +754,6 @@ export const AIConfigSection = defineComponent({
 
     return () => (
       <div class="space-y-8">
-        {/* AI Providers */}
         <SettingsSection
           title="AI 服务商"
           description="配置 AI 服务提供商"
@@ -809,7 +800,6 @@ export const AIConfigSection = defineComponent({
           )}
         </SettingsSection>
 
-        {/* Model Assignment */}
         <SettingsSection
           title="模型分配"
           description="为不同功能分配 AI 模型"
@@ -852,7 +842,6 @@ export const AIConfigSection = defineComponent({
           />
         </SettingsSection>
 
-        {/* Feature Toggles */}
         <SettingsSection
           title="功能开关"
           description="AI 功能的启用与配置"
@@ -891,7 +880,6 @@ export const AIConfigSection = defineComponent({
           </SettingsRow>
         </SettingsSection>
 
-        {/* Translation Settings */}
         <SettingsSection
           title="AI 翻译"
           description="文章多语言翻译功能配置"

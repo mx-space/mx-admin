@@ -11,7 +11,6 @@ import { KVEditor } from '~/components/kv-editor'
 
 import { SnippetType } from '../../../../models/snippet'
 
-// 可折叠分组（仅用于 Secret 等需要折叠的部分）
 const CollapsibleSection = defineComponent({
   props: {
     title: { type: String, required: true },
@@ -32,7 +31,7 @@ const CollapsibleSection = defineComponent({
           </span>
           <ChevronDownIcon
             class={[
-              'h-4 w-4 text-neutral-400 transition-transform',
+              'size-4 text-neutral-400 transition-transform',
               isOpen.value && 'rotate-180',
             ]}
           />
@@ -47,7 +46,6 @@ const CollapsibleSection = defineComponent({
   },
 })
 
-// 表单项
 const FormField = defineComponent({
   props: {
     label: { type: String, required: true },
@@ -66,7 +64,7 @@ const FormField = defineComponent({
             <NTooltip>
               {{
                 trigger: () => (
-                  <InfoIcon class="h-3 w-3 cursor-help text-neutral-400" />
+                  <InfoIcon class="size-3 cursor-help text-neutral-400" />
                 ),
                 default: () => props.tooltip,
               }}
@@ -79,7 +77,6 @@ const FormField = defineComponent({
   },
 })
 
-// Switch 行
 const SwitchRow = defineComponent({
   props: {
     value: { type: Boolean, required: true },
@@ -150,17 +147,15 @@ export const SnippetMetaForm = defineComponent({
 
     return () => (
       <div class="space-y-4 p-1">
-        {/* 内置函数提示 */}
         {props.isBuiltFunction && (
           <div class="flex items-start gap-2 rounded-md bg-amber-50 px-3 py-2 dark:bg-amber-950/50">
-            <InfoIcon class="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-600 dark:text-amber-500" />
+            <InfoIcon class="mt-0.5 size-4 flex-shrink-0 text-amber-600 dark:text-amber-500" />
             <span class="text-xs text-amber-700 dark:text-amber-400">
               这是一个内置函数，无法修改元信息，但你可以自定义函数实现。
             </span>
           </div>
         )}
 
-        {/* 基础字段 */}
         <div class="grid grid-cols-2 gap-x-4 gap-y-4">
           <FormField label="名称" required>
             <NInput
@@ -214,7 +209,6 @@ export const SnippetMetaForm = defineComponent({
           )}
         </div>
 
-        {/* Schema（仅非函数类型） */}
         {!props.isFunctionType && (
           <FormField label="Schema" tooltip="JSON Schema 验证地址">
             <NInput
@@ -226,7 +220,6 @@ export const SnippetMetaForm = defineComponent({
           </FormField>
         )}
 
-        {/* 开关选项 */}
         <div class="space-y-3">
           <SwitchRow
             value={!props.data.private}
@@ -245,7 +238,6 @@ export const SnippetMetaForm = defineComponent({
           )}
         </div>
 
-        {/* 备注 */}
         <FormField label="备注">
           <NInput
             value={props.data.comment}
@@ -257,7 +249,6 @@ export const SnippetMetaForm = defineComponent({
           />
         </FormField>
 
-        {/* Secret 环境变量（可折叠） */}
         {props.isFunctionType && (
           <CollapsibleSection title="Secret 环境变量">
             <KVEditor

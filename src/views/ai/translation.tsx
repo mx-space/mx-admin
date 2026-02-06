@@ -1,7 +1,3 @@
-/**
- * AI Translation Page
- * AI 翻译页面 - Master-Detail 布局
- */
 import { computed, defineComponent, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type {
@@ -79,7 +75,6 @@ export default defineComponent({
 
     const refreshList = () => {
       pageRef.value = 1
-      // 不清空列表，等待新数据到达后由 watch 更新
       refetch()
     }
 
@@ -102,9 +97,7 @@ export default defineComponent({
           (g) => g.article.id === update.article.id,
         )
         if (idx === -1) {
-          // Only add when it's safe (first page), to avoid breaking pagination UX
           if (pageRef.value === 1) {
-            // Respect search filter when possible
             if (
               searchRef.value.trim().length === 0 ||
               update.article.title
@@ -138,7 +131,6 @@ export default defineComponent({
         return
       }
 
-      // remove
       const idx = listData.value.findIndex(
         (g) => g.article.id === update.articleId,
       )
@@ -159,7 +151,6 @@ export default defineComponent({
       (value) => {
         if (!value) return
         pagerRef.value = value.pagination ?? null
-        // 只有当 API 返回了数据时才更新列表，避免重新获取期间清空列表
         if (value.data !== undefined) {
           if (pageRef.value === 1) {
             listData.value = value.data

@@ -1,6 +1,3 @@
-/**
- * 最近 & 速记
- */
 import {
   Plus as AddIcon,
   FileText as ArticleIcon,
@@ -20,11 +17,11 @@ import type { RecentlyModel, RecentlyRefTypes } from '~/models/recently'
 import type { PropType } from 'vue'
 
 import { recentlyApi } from '~/api'
+import { HeaderActionButton } from '~/components/button/header-action-button'
 import { useShorthand } from '~/components/shorthand'
 import { RelativeTime } from '~/components/time/relative-time'
+import { useLayout } from '~/layouts/content'
 
-import { HeaderActionButton } from '../../components/button/header-action-button'
-import { useLayout } from '../../layouts/content'
 import styles from './index.module.css'
 
 const RefTypeIcons: Record<RecentlyRefTypes, typeof ArticleIcon> = {
@@ -69,12 +66,10 @@ const RecentlyItem = defineComponent({
 
     return () => (
       <article class={styles.card} aria-label="速记条目">
-        {/* 主内容区域 */}
         <div class={styles.content}>
           <p class={styles.text}>{props.item.content}</p>
         </div>
 
-        {/* 关联引用 */}
         {props.item.ref && props.item.refType && (
           <div class={styles.reference}>
             <a
@@ -92,10 +87,8 @@ const RecentlyItem = defineComponent({
           </div>
         )}
 
-        {/* 底部元信息 */}
         <footer class={styles.footer}>
           <div class={styles.meta}>
-            {/* 时间信息 */}
             <div class={styles.timeInfo}>
               <time
                 datetime={props.item.created}
@@ -113,7 +106,6 @@ const RecentlyItem = defineComponent({
               )}
             </div>
 
-            {/* 投票统计 */}
             <div
               class={styles.votes}
               aria-label={`投票统计: ${props.item.up} 赞, ${props.item.down} 踩`}
@@ -141,7 +133,6 @@ const RecentlyItem = defineComponent({
               )}
             </div>
 
-            {/* 评论数 */}
             {props.item.commentsIndex !== undefined &&
               props.item.commentsIndex > 0 && (
                 <div
@@ -154,7 +145,6 @@ const RecentlyItem = defineComponent({
               )}
           </div>
 
-          {/* 操作按钮 */}
           <div class={styles.actions} role="group" aria-label="操作">
             <NTooltip trigger="hover" placement="top">
               {{

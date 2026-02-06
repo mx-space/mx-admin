@@ -27,7 +27,7 @@ export const AISummaryDialog = defineComponent({
   },
   setup(props) {
     const token = useStorage('openai-token', '')
-    const base_url = useStorage('openai-base-url', 'https://api.openai.com/v1/')
+    const baseUrl = useStorage('openai-base-url', 'https://api.openai.com/v1/')
 
     const prompt = useStorage(
       'openai-prompt',
@@ -36,7 +36,7 @@ export const AISummaryDialog = defineComponent({
 CONCISE SUMMARY:`,
     )
     const model = useStorage('openai-model', 'gpt-3.5-turbo')
-    const default_models = [
+    const defaultModels = [
       {
         label: 'GPT 3.5 Turbo',
         value: 'gpt-3.5-turbo',
@@ -51,12 +51,12 @@ CONCISE SUMMARY:`,
       },
     ]
     const isOtherModel = ref(false)
-    isOtherModel.value = !default_models.some((m) => m.value === model.value)
+    isOtherModel.value = !defaultModels.some((m) => m.value === model.value)
     const isLoading = ref(false)
     const handleAskAI = async () => {
       const ai = new OpenAI({
         apiKey: token.value,
-        baseURL: base_url.value,
+        baseURL: baseUrl.value,
         dangerouslyAllowBrowser: true,
       })
 
@@ -150,9 +150,9 @@ CONCISE SUMMARY:`,
                       autocapitalize: 'off',
                     }}
                     showPasswordOn="click"
-                    value={base_url.value}
+                    value={baseUrl.value}
                     onUpdateValue={(val) => {
-                      base_url.value = val
+                      baseUrl.value = val
                     }}
                   />
                 )
@@ -173,7 +173,7 @@ CONCISE SUMMARY:`,
                     <NSelect
                       filterable
                       options={[
-                        ...default_models,
+                        ...defaultModels,
                         {
                           label: '其他',
                           value: '',

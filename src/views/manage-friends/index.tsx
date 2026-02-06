@@ -84,7 +84,6 @@ export default defineComponent({
     const editDialogShow = ref(false)
     const editDialogData = ref(resetEditData())
 
-    // 获取状态计数
     const { data: stateCountData, refetch: refetchStateCount } = useQuery({
       queryKey: queryKeys.links.stateCount(),
       queryFn: linksApi.getStateCount,
@@ -93,7 +92,6 @@ export default defineComponent({
       () => stateCountData.value || ({} as LinkStateCount),
     )
 
-    // 创建/更新友链 mutation
     const saveMutation = useMutation({
       mutationFn: async (editData: typeof editDialogData.value) => {
         const id = editData.id
@@ -115,7 +113,6 @@ export default defineComponent({
       },
     })
 
-    // 删除友链 mutation
     const deleteMutation = useMutation({
       mutationFn: linksApi.delete,
       onSuccess: () => {
@@ -125,7 +122,6 @@ export default defineComponent({
       },
     })
 
-    // 审核通过 mutation
     const auditPassMutation = useMutation({
       mutationFn: linksApi.auditPass,
       onSuccess: (_, id) => {
@@ -136,7 +132,6 @@ export default defineComponent({
       },
     })
 
-    // 审核并发送理由 mutation
     const auditWithReasonMutation = useMutation({
       mutationFn: ({
         id,
@@ -242,7 +237,6 @@ export default defineComponent({
 
     return () => (
       <>
-        {/* 筛选标签区 */}
         <section class="mb-4">
           <NTabs
             class="min-h-[30px]"
@@ -254,65 +248,61 @@ export default defineComponent({
               router.replace({ name: RouteName.Friend, query: { state: e } })
             }}
           >
-            <NTabPane
-              name={LinkState.Pass}
-              tab={() => (
-                <div class="flex items-center gap-2">
-                  <span>朋友们</span>
-                  <span class="rounded-full bg-neutral-100 px-2 py-0.5 text-xs text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">
-                    {stateCount.value.friends || 0}
-                  </span>
-                </div>
-              )}
-            />
-            <NTabPane
-              name={LinkState.Audit}
-              tab={() => (
-                <div class="flex items-center gap-2">
-                  <span>待审核</span>
-                  <span class="rounded-full bg-red-100 px-2 py-0.5 text-xs text-red-600 dark:bg-red-900/30 dark:text-red-400">
-                    {stateCount.value.audit || 0}
-                  </span>
-                </div>
-              )}
-            />
-            <NTabPane
-              name={LinkState.Outdate}
-              tab={() => (
-                <div class="flex items-center gap-2">
-                  <span>过时的</span>
-                  <span class="rounded-full bg-neutral-100 px-2 py-0.5 text-xs text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">
-                    {stateCount.value.outdate || 0}
-                  </span>
-                </div>
-              )}
-            />
-            <NTabPane
-              name={LinkState.Reject}
-              tab={() => (
-                <div class="flex items-center gap-2">
-                  <span>已拒绝</span>
-                  <span class="rounded-full bg-neutral-100 px-2 py-0.5 text-xs text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">
-                    {stateCount.value.reject || 0}
-                  </span>
-                </div>
-              )}
-            />
-            <NTabPane
-              name={LinkState.Banned}
-              tab={() => (
-                <div class="flex items-center gap-2">
-                  <span>封禁的</span>
-                  <span class="rounded-full bg-neutral-100 px-2 py-0.5 text-xs text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">
-                    {stateCount.value.banned || 0}
-                  </span>
-                </div>
-              )}
-            />
+            {[
+              {
+                state: LinkState.Pass,
+                label: '朋友们',
+                countKey: 'friends' as const,
+                highlight: false,
+              },
+              {
+                state: LinkState.Audit,
+                label: '待审核',
+                countKey: 'audit' as const,
+                highlight: true,
+              },
+              {
+                state: LinkState.Outdate,
+                label: '过时的',
+                countKey: 'outdate' as const,
+                highlight: false,
+              },
+              {
+                state: LinkState.Reject,
+                label: '已拒绝',
+                countKey: 'reject' as const,
+                highlight: false,
+              },
+              {
+                state: LinkState.Banned,
+                label: '封禁的',
+                countKey: 'banned' as const,
+                highlight: false,
+              },
+            ].map(({ state, label, countKey, highlight }) => (
+              <NTabPane
+                key={state}
+                name={state}
+                tab={() => (
+                  <div class="flex items-center gap-2">
+                    <span>{label}</span>
+                    <span
+                      class={[
+                        'rounded-full px-2 py-0.5 text-xs',
+                        highlight
+                          ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400'
+                          : 'bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400',
+                      ]}
+                    >
+                      {stateCount.value[countKey] || 0}
+                    </span>
+                  </div>
+                )}
+              />
+            ))}
           </NTabs>
         </section>
 
-        {/* 表格区 */}
         <section>
           <Table
             loading={loading.value}
@@ -485,8 +475,6 @@ export default defineComponent({
             pager={pager as any}
           />
         </section>
-
-        {/* Modal */}
 
         <NModal
           transformOrigin="center"

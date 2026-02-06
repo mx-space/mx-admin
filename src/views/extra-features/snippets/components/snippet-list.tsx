@@ -45,7 +45,6 @@ export const SnippetList = defineComponent({
   setup(props) {
     const searchQuery = ref('')
 
-    // Filter groups and snippets based on search
     const filteredGroups = computed(() => {
       if (!searchQuery.value.trim()) {
         return props.groups
@@ -78,7 +77,6 @@ export const SnippetList = defineComponent({
 
     return () => (
       <div class="flex h-full flex-col">
-        {/* Header: Search + Create */}
         <div class="flex h-12 flex-shrink-0 items-center gap-2 border-b border-neutral-200 p-2 dark:border-neutral-800">
           <NInput
             v-model:value={searchQuery.value}
@@ -88,19 +86,18 @@ export const SnippetList = defineComponent({
             class="flex-1"
           >
             {{
-              prefix: () => <SearchIcon class="h-3.5 w-3.5 text-neutral-400" />,
+              prefix: () => <SearchIcon class="size-3.5 text-neutral-400" />,
             }}
           </NInput>
           <button
-            class="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md bg-neutral-900 text-white transition-colors hover:bg-neutral-700 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
+            class="flex size-7 flex-shrink-0 items-center justify-center rounded-md bg-neutral-900 text-white transition-colors hover:bg-neutral-700 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
             onClick={() => props.onCreate?.()}
             title="新建片段"
           >
-            <PlusIcon class="h-4 w-4" />
+            <PlusIcon class="size-4" />
           </button>
         </div>
 
-        {/* Group Tree */}
         <div class="min-h-0 flex-1">
           {props.loading ? (
             <div class="flex h-full items-center justify-center">
@@ -114,7 +111,6 @@ export const SnippetList = defineComponent({
             <NScrollbar class="h-full">
               {filteredGroups.value.map((group) => (
                 <div key={group.reference}>
-                  {/* Group Header */}
                   <div
                     class={[
                       'flex cursor-pointer select-none items-center gap-1 px-2 py-1.5',
@@ -123,34 +119,29 @@ export const SnippetList = defineComponent({
                     ]}
                     onClick={() => handleGroupClick(group.reference)}
                   >
-                    {/* Chevron */}
-                    <span class="flex h-4 w-4 items-center justify-center">
+                    <span class="flex size-4 items-center justify-center">
                       {group.expanded ? (
-                        <ChevronDown class="h-3.5 w-3.5" />
+                        <ChevronDown class="size-3.5" />
                       ) : (
-                        <ChevronRight class="h-3.5 w-3.5" />
+                        <ChevronRight class="size-3.5" />
                       )}
                     </span>
 
-                    {/* Folder Icon */}
                     {group.expanded ? (
-                      <FolderOpen class="h-4 w-4 text-amber-500" />
+                      <FolderOpen class="size-4 text-amber-500" />
                     ) : (
-                      <Folder class="h-4 w-4 text-amber-500" />
+                      <Folder class="size-4 text-amber-500" />
                     )}
 
-                    {/* Group Name */}
                     <span class="flex-1 truncate font-medium">
                       {group.reference}
                     </span>
 
-                    {/* Count Badge */}
                     <span class="rounded bg-neutral-200 px-1.5 py-0.5 text-xs dark:bg-neutral-700">
                       {group.count}
                     </span>
                   </div>
 
-                  {/* Expanded Content */}
                   {group.expanded && (
                     <div class="pl-4">
                       {group.loading ? (

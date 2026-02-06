@@ -78,7 +78,6 @@ const PageWriteView = defineComponent(() => {
 
   const router = useRouter()
 
-  // 从草稿恢复数据
   const applyDraft = (
     draft: DraftModel,
     target: PageReactiveType,
@@ -96,7 +95,6 @@ const PageWriteView = defineComponent(() => {
     }
   }
 
-  // 加载已发布页面
   const loadPublished = async (id: string) => {
     const payload = await pagesApi.getById(id)
     parsePayloadIntoReactiveData(payload as PageModel)
@@ -145,32 +143,32 @@ const PageWriteView = defineComponent(() => {
     const { text, images } = await processLocalImages(data.text, data.images)
 
     const parseDataToPayload = () => {
-      try {
-        if (!data.title || data.title.trim().length == 0) {
-          throw '标题为空'
-        }
-        if (!data.slug) {
-          throw '路径为空'
-        }
-        return {
-          ...toRaw(data),
-          text,
-          images,
-          title: data.title.trim(),
-          slug: data.slug.trim(),
-        }
-      } catch (error) {
-        toast.error(error as any)
-        throw error
+      if (!data.title || data.title.trim().length === 0) {
+        toast.error('标题为空')
+        return null
+      }
+      if (!data.slug) {
+        toast.error('路径为空')
+        return null
+      }
+      return {
+        ...toRaw(data),
+        text,
+        images,
+        title: data.title.trim(),
+        slug: data.slug.trim(),
       }
     }
+
+    const payload = parseDataToPayload()
+    if (!payload) return
 
     const draftId = serverDraft.draftId.value
 
     if (actualRefId.value) {
       if (!isString(actualRefId.value)) return
       const result = await pagesApi.update(actualRefId.value, {
-        ...parseDataToPayload(),
+        ...payload,
         draftId,
       })
       data.text = result.text
@@ -179,7 +177,7 @@ const PageWriteView = defineComponent(() => {
       toast.success('修改成功')
     } else {
       const result = await pagesApi.create({
-        ...parseDataToPayload(),
+        ...payload,
         draftId,
       } as CreatePageData)
       data.text = result.text
@@ -191,7 +189,6 @@ const PageWriteView = defineComponent(() => {
     router.push({ name: RouteName.ListPage, hash: '|publish' })
   }
 
-  // 设置 layout 状态
   setHeaderClass('pt-1')
 
   watchEffect(() => {
@@ -302,7 +299,6 @@ const PageWriteView = defineComponent(() => {
         </FormField>
       </TextBaseDrawer>
 
-      {/* Draft Recovery Modal (场景2) */}
       {recoveryModal.draft.value && recoveryModal.publishedContent.value && (
         <DraftRecoveryModal
           show={recoveryModal.show.value}
@@ -313,7 +309,6 @@ const PageWriteView = defineComponent(() => {
         />
       )}
 
-      {/* Draft List Modal (场景3) */}
       <DraftListModal
         show={listModal.show.value}
         onClose={listModal.onClose}

@@ -86,7 +86,6 @@ export const CategoryPie = defineComponent({
       fetchData()
     })
 
-    // 数据变化或主题变化时重新渲染
     watch([() => data.value, isDark], () => {
       if (data.value.length > 0) {
         setTimeout(renderChart, 0)

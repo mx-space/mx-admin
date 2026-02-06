@@ -16,7 +16,6 @@ import {
 export function useSnippetEditor(selectedId: Ref<string | null>) {
   const editData = ref<SnippetModel>(new SnippetModel())
 
-  // Type to raw value mapping for format conversion
   const typeToValueMap = reactive<Record<SnippetType, string>>({
     [SnippetType.JSON]: JSON.stringify({ name: 'hello world' }, null, 2),
     [SnippetType.JSON5]: JSON5.stringify({ name: 'hello world' }, null, 2),
@@ -38,7 +37,6 @@ export function useSnippetEditor(selectedId: Ref<string | null>) {
       !!selectedId.value,
   )
 
-  // Watch type changes for format conversion
   watch(
     () => editData.value.type,
     (type, beforeType) => {
@@ -87,11 +85,9 @@ export function useSnippetEditor(selectedId: Ref<string | null>) {
     },
   )
 
-  // Fetch snippet data when ID changes
   const fetchSnippet = async (id: string) => {
     const data = await snippetsApi.getById(id)
 
-    // Normalize JSON formatting
     if (data.type === SnippetType.JSON) {
       data.raw = JSON.stringify(JSON5.parse(data.raw), null, 2)
     }
@@ -101,14 +97,12 @@ export function useSnippetEditor(selectedId: Ref<string | null>) {
     typeToValueMap[data.type] = data.raw
   }
 
-  // Reset to default state for new snippet
   const reset = (reference?: string) => {
     editData.value = new SnippetModel()
     if (reference) {
       editData.value.reference = reference
     }
 
-    // Reset typeToValueMap to defaults
     typeToValueMap[SnippetType.JSON] = JSON.stringify(
       { name: 'hello world' },
       null,
@@ -126,7 +120,6 @@ export function useSnippetEditor(selectedId: Ref<string | null>) {
     jsonFormatBeforeType = SnippetType.JSON
   }
 
-  // Save snippet (create or update)
   const save = async (): Promise<SnippetModel | null> => {
     const tinyJson = (text: string) => {
       try {
@@ -183,12 +176,10 @@ export function useSnippetEditor(selectedId: Ref<string | null>) {
     }
   }
 
-  // Update editor value for current type
   const updateEditorValue = (value: string) => {
     typeToValueMap[editData.value.type] = value
   }
 
-  // Get current editor value
   const editorValue = computed(() => typeToValueMap[editData.value.type])
 
   return {

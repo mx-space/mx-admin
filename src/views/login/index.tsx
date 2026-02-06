@@ -14,14 +14,13 @@ import { toast } from 'vue-sonner'
 import { useQuery } from '@tanstack/vue-query'
 
 import { userApi } from '~/api/user'
+import Avatar from '~/components/avatar'
 import { SESSION_WITH_LOGIN } from '~/constants/keys'
 import { queryKeys } from '~/hooks/queries/keys'
+import { useUserStore } from '~/stores/user'
 import { authClient } from '~/utils/authjs/auth'
 import { AuthnUtils } from '~/utils/authn'
-
-import Avatar from '../../components/avatar'
-import { useUserStore } from '../../stores/user'
-import { checkIsInit } from '../../utils/is-init'
+import { checkIsInit } from '~/utils/is-init'
 
 const GithubIcon = () => (
   <svg
@@ -165,21 +164,18 @@ export const LoginView = defineComponent({
 
       return (
         <div class="flex min-h-screen flex-col items-center justify-center p-4">
-          {/* Avatar */}
           <div class="relative mb-4">
             <div class="h-[120px] w-[120px] overflow-hidden rounded-full ring-4 ring-white/30 drop-shadow-2xl">
               <Avatar src={user.value?.avatar} size={120} />
             </div>
           </div>
 
-          {/* User Name */}
           <h1 class="mb-6 text-xl font-medium tracking-wide text-white drop-shadow-lg">
             {user.value?.name || user.value?.username || ''}
           </h1>
 
           {showPasswordInput && (
             <form onSubmit={handleLogin} class="w-full max-w-[280px]">
-              {/* Password Input - macOS style pill */}
               <div class="relative mb-4">
                 <label for="password-input" class="sr-only">
                   密码
@@ -197,7 +193,6 @@ export const LoginView = defineComponent({
                   disabled={isLoading.value}
                   class="h-[38px] w-full rounded-full border-0 bg-white/20 px-4 text-center text-sm text-white outline-none ring-0 backdrop-blur-md transition-all placeholder:text-white/60 disabled:cursor-not-allowed disabled:opacity-50"
                 />
-                {/* Submit on Enter - hidden button */}
                 <button type="submit" class="sr-only">
                   登录
                 </button>
@@ -214,7 +209,7 @@ export const LoginView = defineComponent({
                   aria-label="使用 Passkey 登录"
                   class="flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white/80 backdrop-blur-sm transition-all hover:bg-white/25 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
                 >
-                  <PassKeyIcon class="h-[18px] w-[18px]" aria-hidden="true" />
+                  <PassKeyIcon class="h-4.5 w-4.5" aria-hidden="true" />
                 </button>
               )}
 

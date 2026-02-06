@@ -1,7 +1,3 @@
-/**
- * Topic List Item Component
- * 专栏列表项组件 - 现代化列表设计
- */
 import { Hash, Pencil, Search, Trash2 } from 'lucide-vue-next'
 import { NButton, NPopconfirm } from 'naive-ui'
 import { defineComponent } from 'vue'
@@ -33,7 +29,6 @@ export const TopicListItem = defineComponent({
   setup(props) {
     return () => (
       <div class="group flex items-center gap-4 border-b border-neutral-200 px-4 py-4 transition-colors last:border-b-0 hover:bg-neutral-50 dark:border-neutral-800 dark:hover:bg-neutral-900/50">
-        {/* 图标 */}
         <div class="shrink-0">
           {props.topic.icon ? (
             <img
@@ -49,7 +44,6 @@ export const TopicListItem = defineComponent({
           )}
         </div>
 
-        {/* 内容 */}
         <div class="min-w-0 flex-1">
           <div class="flex min-w-0 items-center gap-2">
             <h3
@@ -75,7 +69,6 @@ export const TopicListItem = defineComponent({
           )}
         </div>
 
-        {/* 操作按钮 */}
         <div class="flex shrink-0 items-center gap-1">
           <NButton
             size="tiny"
@@ -123,9 +116,6 @@ export const TopicListItem = defineComponent({
   },
 })
 
-/**
- * Empty State for Topics
- */
 export const TopicEmptyState = defineComponent({
   name: 'TopicEmptyState',
   props: {
@@ -154,9 +144,6 @@ export const TopicEmptyState = defineComponent({
   },
 })
 
-/**
- * Loading Skeleton for Topic List
- */
 export const TopicListSkeleton = defineComponent({
   name: 'TopicListSkeleton',
   setup() {

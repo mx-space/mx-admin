@@ -4,14 +4,11 @@ import { defineComponent } from 'vue'
 const _Badge = defineComponent({
   props: { processing: Boolean, value: [String, Number] },
   setup(props, ctx) {
-    return () => (
-      <Fragment>
-        {props.value === 'N/A' ? (
-          ctx.slots
-        ) : (
-          <NBadge {...props}>{ctx.slots}</NBadge>
-        )}
-      </Fragment>
-    )
+    return () => {
+      if (props.value === 'N/A') {
+        return ctx.slots.default?.()
+      }
+      return <NBadge {...props}>{ctx.slots}</NBadge>
+    }
   },
 })

@@ -152,7 +152,6 @@ export const TrafficSource = defineComponent({
       fetchData()
     })
 
-    // 数据变化或主题变化时重新渲染
     watch(
       [() => data.value, isDark],
       () => {

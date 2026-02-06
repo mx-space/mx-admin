@@ -68,7 +68,7 @@ export default defineComponent({
       const replaceText =
         payload.value[event.value]?.replace(
           /({{(.*?)}})/g,
-          // @ts-ignore
+          // @ts-expect-error dynamic replacement
           (_match, _p1, p2) => {
             return generateFakeData(p2)
           },
@@ -82,49 +82,47 @@ export default defineComponent({
       })
     }
     return () => (
-      <>
-        <TwoColGridLayout>
-          <NGi span="12">
-            <NForm>
-              <NFormItem label="Type">
-                <NSelect
-                  tag
-                  filterable
-                  value={type.value}
-                  onUpdateValue={(val) => void (type.value = val)}
-                  options={['web', 'all', 'admin'].map((i) => ({
-                    value: i,
-                    label: i,
-                  }))}
-                />
-              </NFormItem>
-              <NFormItem label="Event">
-                <NSelect
-                  tag
-                  filterable
-                  value={event.value}
-                  onUpdateValue={(val) => void (event.value = val)}
-                  options={Object.keys(EventTypes).map((type) => ({
-                    value: type,
-                    label: type,
-                  }))}
-                />
-              </NFormItem>
-            </NForm>
+      <TwoColGridLayout>
+        <NGi span="12">
+          <NForm>
+            <NFormItem label="Type">
+              <NSelect
+                tag
+                filterable
+                value={type.value}
+                onUpdateValue={(val) => void (type.value = val)}
+                options={['web', 'all', 'admin'].map((i) => ({
+                  value: i,
+                  label: i,
+                }))}
+              />
+            </NFormItem>
+            <NFormItem label="Event">
+              <NSelect
+                tag
+                filterable
+                value={event.value}
+                onUpdateValue={(val) => void (event.value = val)}
+                options={Object.keys(EventTypes).map((key) => ({
+                  value: key,
+                  label: key,
+                }))}
+              />
+            </NFormItem>
+          </NForm>
 
-            <div>
-              <NButton type="primary" onClick={handleSend}>
-                测试
-              </NButton>
-            </div>
-          </NGi>
-          <NGi span="24">
-            <div class="relative h-[calc(100vh-20rem)]">
-              <div ref={editorRef} class="h-full" />
-            </div>
-          </NGi>
-        </TwoColGridLayout>
-      </>
+          <div>
+            <NButton type="primary" onClick={handleSend}>
+              测试
+            </NButton>
+          </div>
+        </NGi>
+        <NGi span="24">
+          <div class="relative h-[calc(100vh-20rem)]">
+            <div ref={editorRef} class="h-full" />
+          </div>
+        </NGi>
+      </TwoColGridLayout>
     )
   },
 })

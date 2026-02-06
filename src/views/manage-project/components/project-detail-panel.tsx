@@ -1,7 +1,3 @@
-/**
- * Project Detail Panel Component
- * 项目详情/编辑面板 - 用于 MasterDetailLayout 右侧
- */
 import {
   ArrowLeft as ArrowLeftIcon,
   Code2,
@@ -45,6 +41,55 @@ type ProjectFormData = {
   description: string
   avatar: string
   text: string
+}
+
+function pickImagesFromMarkdown(text: string): string[] {
+  const reg = /(?<=!\[.*]\()(.+)(?=\))/g
+  const images: string[] = []
+  for (const r of text.matchAll(reg)) {
+    images.push(r[0])
+  }
+  return images
+}
+
+function formDataToPayload(
+  formData: ProjectFormData,
+  opts?: { requireName?: boolean },
+): Partial<ProjectModel> {
+  if (
+    opts?.requireName &&
+    (!formData.name || formData.name.trim().length === 0)
+  ) {
+    throw '项目名称不能为空'
+  }
+  if (!formData.text || formData.text.trim().length === 0) {
+    throw '内容为空'
+  }
+  const raw = toRaw(formData)
+  const result: Record<string, any> = {}
+  for (const [key, value] of Object.entries(raw)) {
+    result[key] =
+      typeof value === 'undefined'
+        ? null
+        : typeof value === 'string' && value.length === 0
+          ? ''
+          : value
+  }
+  result.text = formData.text.trim()
+  return result as Partial<ProjectModel>
+}
+
+function applyGithubRepo(
+  formData: ProjectFormData,
+  data: IGithubRepo,
+  readme?: string | null,
+): void {
+  formData.description = data.description || ''
+  formData.projectUrl = data.html_url || ''
+  formData.previewUrl = data.homepage || ''
+  formData.images = pickImagesFromMarkdown(readme || '')
+  formData.name = data.name || ''
+  formData.text = readme || ''
 }
 
 const FormField = defineComponent({
@@ -140,24 +185,6 @@ export const ProjectDetailPanel = defineComponent({
       { immediate: true },
     )
 
-    const parseDataToPayload = (): Partial<ProjectModel> => {
-      if (!formData.text || formData.text.trim().length === 0) {
-        throw '内容为空'
-      }
-      const raw = toRaw(formData)
-      const result: Record<string, any> = {}
-      for (const [key, value] of Object.entries(raw)) {
-        result[key] =
-          typeof value === 'undefined'
-            ? null
-            : typeof value === 'string' && value.length === 0
-              ? ''
-              : value
-      }
-      result.text = formData.text.trim()
-      return result as Partial<ProjectModel>
-    }
-
     const updateMutation = useMutation({
       mutationFn: ({ id, data }: { id: string; data: any }) =>
         projectsApi.update(id, data),
@@ -172,7 +199,7 @@ export const ProjectDetailPanel = defineComponent({
     const handleSave = () => {
       if (!props.projectId) return
       try {
-        const payload = parseDataToPayload()
+        const payload = formDataToPayload(formData)
         updateMutation.mutate({ id: props.projectId, data: payload })
       } catch (error) {
         toast.error(error as any)
@@ -182,29 +209,6 @@ export const ProjectDetailPanel = defineComponent({
     const handleCancelEdit = () => {
       isEditing.value = false
       resetForm()
-    }
-
-    const handleParseFromGithub = (
-      data: IGithubRepo,
-      readme?: string | null,
-    ) => {
-      const { html_url, homepage, description } = data
-
-      const pickImagesFromMarkdown = (text: string) => {
-        const reg = /(?<=!\[.*]\()(.+)(?=\))/g
-        const images = [] as string[]
-        for (const r of text.matchAll(reg)) {
-          images.push(r[0])
-        }
-        return images
-      }
-
-      formData.description = description || ''
-      formData.projectUrl = html_url || ''
-      formData.previewUrl = homepage || ''
-      formData.images = pickImagesFromMarkdown(readme || '')
-      formData.name = data.name || ''
-      formData.text = readme || ''
     }
 
     const ActionButton = (p: {
@@ -230,7 +234,6 @@ export const ProjectDetailPanel = defineComponent({
 
     return () => (
       <div class="flex h-full flex-col bg-white dark:bg-black">
-        {/* Header */}
         <div class="flex h-12 flex-shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
           <div class="flex items-center gap-3">
             {props.isMobile && props.onBack && (
@@ -251,7 +254,9 @@ export const ProjectDetailPanel = defineComponent({
               {isEditing.value ? (
                 <>
                   <FetchGithubRepoButton
-                    onData={handleParseFromGithub}
+                    onData={(data, readme) =>
+                      applyGithubRepo(formData, data, readme)
+                    }
                     defaultValue={formData.projectUrl}
                   />
                   <ActionButton
@@ -303,7 +308,6 @@ export const ProjectDetailPanel = defineComponent({
           )}
         </div>
 
-        {/* Content */}
         <NScrollbar class="min-h-0 flex-1">
           {loading.value ? (
             <ProjectDetailSkeleton />
@@ -330,7 +334,6 @@ const ProjectDetailView = defineComponent({
   setup(props) {
     return () => (
       <div class="mx-auto max-w-3xl space-y-6 p-6">
-        {/* Header */}
         <div class="flex items-start gap-4">
           <div class="shrink-0">
             {props.project.avatar ? (
@@ -369,51 +372,38 @@ const ProjectDetailView = defineComponent({
           </div>
         </div>
 
-        {/* Links */}
-        {(props.project.projectUrl ||
-          props.project.previewUrl ||
-          props.project.docUrl) && (
-          <>
-            <div class="h-px bg-neutral-100 dark:bg-neutral-800" />
-            <div class="flex flex-wrap gap-2">
-              {props.project.projectUrl && (
-                <a
-                  href={props.project.projectUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="inline-flex items-center gap-1.5 rounded-md bg-neutral-100 px-3 py-1.5 text-sm text-neutral-700 transition-colors hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
-                >
-                  <Code2 class="size-4" />
-                  源码
-                </a>
-              )}
-              {props.project.previewUrl && (
-                <a
-                  href={props.project.previewUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="inline-flex items-center gap-1.5 rounded-md bg-neutral-100 px-3 py-1.5 text-sm text-neutral-700 transition-colors hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
-                >
-                  <ExternalLink class="size-4" />
-                  预览
-                </a>
-              )}
-              {props.project.docUrl && (
-                <a
-                  href={props.project.docUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="inline-flex items-center gap-1.5 rounded-md bg-neutral-100 px-3 py-1.5 text-sm text-neutral-700 transition-colors hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
-                >
-                  <ExternalLink class="size-4" />
-                  文档
-                </a>
-              )}
-            </div>
-          </>
-        )}
+        {(() => {
+          const links = [
+            { url: props.project.projectUrl, icon: Code2, label: '源码' },
+            {
+              url: props.project.previewUrl,
+              icon: ExternalLink,
+              label: '预览',
+            },
+            { url: props.project.docUrl, icon: ExternalLink, label: '文档' },
+          ].filter((l) => l.url)
+          if (links.length === 0) return null
+          return (
+            <>
+              <div class="h-px bg-neutral-100 dark:bg-neutral-800" />
+              <div class="flex flex-wrap gap-2">
+                {links.map(({ url, icon: Icon, label }) => (
+                  <a
+                    key={label}
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-1.5 rounded-md bg-neutral-100 px-3 py-1.5 text-sm text-neutral-700 transition-colors hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
+                  >
+                    <Icon class="size-4" />
+                    {label}
+                  </a>
+                ))}
+              </div>
+            </>
+          )
+        })()}
 
-        {/* Images */}
         {props.project.images && props.project.images.length > 0 && (
           <>
             <div class="h-px bg-neutral-100 dark:bg-neutral-800" />
@@ -443,7 +433,6 @@ const ProjectDetailView = defineComponent({
           </>
         )}
 
-        {/* Content */}
         {props.project.text && (
           <>
             <div class="h-px bg-neutral-100 dark:bg-neutral-800" />
@@ -600,27 +589,6 @@ export const ProjectCreatePanel = defineComponent({
       text: '',
     })
 
-    const parseDataToPayload = (): Partial<ProjectModel> => {
-      if (!formData.name || formData.name.trim().length === 0) {
-        throw '项目名称不能为空'
-      }
-      if (!formData.text || formData.text.trim().length === 0) {
-        throw '内容为空'
-      }
-      const raw = toRaw(formData)
-      const result: Record<string, any> = {}
-      for (const [key, value] of Object.entries(raw)) {
-        result[key] =
-          typeof value === 'undefined'
-            ? null
-            : typeof value === 'string' && value.length === 0
-              ? ''
-              : value
-      }
-      result.text = formData.text.trim()
-      return result as Partial<ProjectModel>
-    }
-
     const createMutation = useMutation({
       mutationFn: (data: any) => projectsApi.create(data),
       onSuccess: (data) => {
@@ -631,34 +599,11 @@ export const ProjectCreatePanel = defineComponent({
 
     const handleSave = () => {
       try {
-        const payload = parseDataToPayload()
+        const payload = formDataToPayload(formData, { requireName: true })
         createMutation.mutate(payload)
       } catch (error) {
         toast.error(error as any)
       }
-    }
-
-    const handleParseFromGithub = (
-      data: IGithubRepo,
-      readme?: string | null,
-    ) => {
-      const { html_url, homepage, description } = data
-
-      const pickImagesFromMarkdown = (text: string) => {
-        const reg = /(?<=!\[.*]\()(.+)(?=\))/g
-        const images = [] as string[]
-        for (const r of text.matchAll(reg)) {
-          images.push(r[0])
-        }
-        return images
-      }
-
-      formData.description = description || ''
-      formData.projectUrl = html_url || ''
-      formData.previewUrl = homepage || ''
-      formData.images = pickImagesFromMarkdown(readme || '')
-      formData.name = data.name || ''
-      formData.text = readme || ''
     }
 
     const handleBack = () => {
@@ -668,7 +613,6 @@ export const ProjectCreatePanel = defineComponent({
 
     return () => (
       <div class="flex h-full flex-col bg-white dark:bg-black">
-        {/* Header */}
         <div class="flex h-12 flex-shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
           <div class="flex items-center gap-3">
             {props.isMobile && (
@@ -686,7 +630,7 @@ export const ProjectCreatePanel = defineComponent({
 
           <div class="flex items-center gap-1">
             <FetchGithubRepoButton
-              onData={handleParseFromGithub}
+              onData={(data, readme) => applyGithubRepo(formData, data, readme)}
               defaultValue={formData.projectUrl}
             />
             <NButton size="small" onClick={props.onCancel}>
@@ -706,7 +650,6 @@ export const ProjectCreatePanel = defineComponent({
           </div>
         </div>
 
-        {/* Content */}
         <NScrollbar class="min-h-0 flex-1">
           <ProjectEditForm formData={formData} />
         </NScrollbar>

@@ -1,7 +1,3 @@
-/**
- * Topic Detail Drawer
- * 专栏详情抽屉 - 展示专栏信息和关联文章
- */
 import { ExternalLink, Hash, Pencil, Plus, X } from 'lucide-vue-next'
 import {
   NButton,
@@ -31,9 +27,6 @@ import { textToBigCharOrWord } from '~/utils/word'
 
 import { useMemoNoteList } from '../hooks/use-memo-note-list'
 
-/**
- * Topic Detail Drawer Component
- */
 export const TopicDetailDrawer = defineComponent({
   name: 'TopicDetailDrawer',
   props: {
@@ -88,7 +81,6 @@ export const TopicDetailDrawer = defineComponent({
       }
     }
 
-    // 从专栏移除文章
     const removeNoteMutation = useMutation({
       mutationFn: (noteId: string) => notesApi.patch(noteId, { topicId: null }),
       onSuccess: (_, noteId) => {
@@ -104,7 +96,6 @@ export const TopicDetailDrawer = defineComponent({
       removeNoteMutation.mutate(noteId)
     }
 
-    // 更新专栏图标
     const updateIconMutation = useMutation({
       mutationFn: ({ id, icon }: { id: string; icon: string }) =>
         topicsApi.patch(id, { icon }),
@@ -120,7 +111,6 @@ export const TopicDetailDrawer = defineComponent({
       updateIconMutation.mutate({ id: topic.value.id!, icon: iconUrl })
     }
 
-    // 当 show 或 topicId 变化时获取数据
     watch(
       () => [props.show, props.topicId],
       ([show, id]) => {
@@ -131,7 +121,6 @@ export const TopicDetailDrawer = defineComponent({
       { immediate: true },
     )
 
-    // 添加文章的状态
     const showAddNoteModal = ref(false)
 
     return () => (
@@ -173,10 +162,8 @@ export const TopicDetailDrawer = defineComponent({
                 <TopicDetailSkeleton />
               ) : topic.value ? (
                 <div class="px-5 py-4">
-                  {/* 专栏信息卡片 */}
                   <div class="mb-6 rounded-xl border border-neutral-200 bg-neutral-50/50 p-4 dark:border-neutral-800 dark:bg-neutral-900/50">
                     <div class="flex items-start gap-4">
-                      {/* 可上传图标 */}
                       <UploadWrapper
                         class="shrink-0"
                         type="icon"
@@ -219,7 +206,6 @@ export const TopicDetailDrawer = defineComponent({
                         </NUploadDragger>
                       </UploadWrapper>
 
-                      {/* 信息 */}
                       <div class="min-w-0 flex-1">
                         <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
                           {topic.value.name}
@@ -243,7 +229,6 @@ export const TopicDetailDrawer = defineComponent({
                     )}
                   </div>
 
-                  {/* 文章列表 */}
                   <div>
                     <div class="mb-3 flex items-center justify-between">
                       <h4 class="text-sm font-medium text-neutral-700 dark:text-neutral-300">
@@ -302,7 +287,6 @@ export const TopicDetailDrawer = defineComponent({
                           />
                         ))}
 
-                        {/* 分页 */}
                         {notePagination.value &&
                           notePagination.value.totalPage > 1 && (
                             <div class="flex justify-center gap-2 pt-4">
@@ -344,7 +328,6 @@ export const TopicDetailDrawer = defineComponent({
           }}
         </NDrawerContent>
 
-        {/* 添加文章 Modal */}
         {topic.value && (
           <AddNoteToTopicModal
             show={showAddNoteModal.value}
@@ -361,9 +344,6 @@ export const TopicDetailDrawer = defineComponent({
   },
 })
 
-/**
- * Note List Item
- */
 const NoteListItem = defineComponent({
   props: {
     note: {
@@ -445,9 +425,6 @@ const NoteListItem = defineComponent({
   },
 })
 
-/**
- * Add Note to Topic Modal
- */
 const AddNoteToTopicModal = defineComponent({
   props: {
     show: {
@@ -581,9 +558,6 @@ const AddNoteToTopicModal = defineComponent({
   },
 })
 
-/**
- * Skeleton Components
- */
 const TopicDetailSkeleton = defineComponent({
   setup() {
     return () => (

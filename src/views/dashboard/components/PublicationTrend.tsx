@@ -41,7 +41,6 @@ export const PublicationTrend = defineComponent({
         chart.destroy()
       }
 
-      // 转换数据为折线图需要的格式
       const chartData: { date: string; type: string; count: number }[] = []
       for (const item of data.value) {
         chartData.push({ date: item.date, type: '博文', count: item.posts })
@@ -111,7 +110,6 @@ export const PublicationTrend = defineComponent({
       fetchData()
     })
 
-    // 数据变化或主题变化时重新渲染
     watch([() => data.value, isDark], () => {
       if (data.value.length > 0) {
         setTimeout(renderChart, 0)

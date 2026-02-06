@@ -1,13 +1,9 @@
-/**
- * Say List Page
- * 一言列表页面 - 引用风格列表 + 模态框编辑
- */
 import { Plus as AddIcon } from 'lucide-vue-next'
 import { NPagination } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
-import type { SayModel } from '~/models/say'
+import type { SayWithMeta } from './components/say-list-item'
 
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
 
@@ -23,11 +19,6 @@ import {
   SayListItem,
   SayListSkeleton,
 } from './components/say-list-item'
-
-interface SayWithMeta extends SayModel {
-  created?: string
-  modified?: string
-}
 
 const ManageSayListView = defineComponent({
   name: 'SayList',
@@ -46,7 +37,6 @@ const ManageSayListView = defineComponent({
       pageSize: 20,
     })
 
-    // 删除 mutation
     const deleteMutation = useMutation({
       mutationFn: saysApi.delete,
       onSuccess: () => {
@@ -55,7 +45,6 @@ const ManageSayListView = defineComponent({
       },
     })
 
-    // 模态框状态
     const showModal = ref(false)
     const editingSay = ref<SayWithMeta | null>(null)
 
@@ -75,12 +64,11 @@ const ManageSayListView = defineComponent({
     }
 
     const handleSuccess = () => {
-      // 刷新列表
       queryClient.invalidateQueries({ queryKey: queryKeys.says.all })
       handleCloseModal()
     }
 
-    const handleDelete = async (id: string) => {
+    const handleDelete = (id: string) => {
       deleteMutation.mutate(id)
     }
 
@@ -96,17 +84,13 @@ const ManageSayListView = defineComponent({
 
     return () => (
       <div class="space-y-4">
-        {/* 内容区域 */}
         {isLoading.value && data.value.length === 0 ? (
-          // 加载骨架屏
           <div class="overflow-hidden rounded-lg border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
             <SayListSkeleton />
           </div>
         ) : data.value.length === 0 ? (
-          // 空状态
           <SayEmptyState onCreate={handleCreate} />
         ) : (
-          // 列表
           <div class="overflow-hidden rounded-lg border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
             {data.value.map((say) => (
               <SayListItem
@@ -119,7 +103,6 @@ const ManageSayListView = defineComponent({
           </div>
         )}
 
-        {/* 分页 */}
         {pager.value && pager.value.totalPage > 1 && (
           <div class="flex justify-center">
             <NPagination
@@ -137,7 +120,6 @@ const ManageSayListView = defineComponent({
           </div>
         )}
 
-        {/* 编辑/创建模态框 */}
         <SayEditModal
           show={showModal.value}
           say={editingSay.value}

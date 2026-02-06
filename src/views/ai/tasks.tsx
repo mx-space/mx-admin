@@ -1,8 +1,3 @@
-/**
- * AI Tasks Page
- * AI 任务队列页面 - Master-Detail 布局
- */
-
 import {
   AlertCircle as AlertCircleIcon,
   AlertTriangle as AlertTriangleIcon,
@@ -152,10 +147,6 @@ export default defineComponent({
       { label: '全量翻译', value: AITaskType.TranslationAll },
     ]
 
-    const handleRefresh = () => {
-      refetch()
-    }
-
     const handleCancelTask = async (taskId: string) => {
       await aiApi.cancelTask(taskId)
       queryClient.invalidateQueries({ queryKey: queryKeys.ai.tasks() })
@@ -177,7 +168,6 @@ export default defineComponent({
       toast.success('已清理已完成的任务')
     }
 
-    // Setup layout actions
     const { setActions } = useLayout()
     watchEffect(() => {
       setActions(
@@ -197,7 +187,7 @@ export default defineComponent({
               )
             }
             name="刷新"
-            onClick={handleRefresh}
+            onClick={() => refetch()}
           />
         </div>,
       )
@@ -235,7 +225,6 @@ export default defineComponent({
         {{
           list: () => (
             <div class="flex h-full flex-col">
-              {/* Filters */}
               <div class="flex shrink-0 flex-wrap items-center gap-2 border-b border-neutral-100 p-3 dark:border-neutral-800">
                 <NSelect
                   value={statusFilter.value}
@@ -266,7 +255,6 @@ export default defineComponent({
                 </span>
               </div>
 
-              {/* Task List */}
               <NScrollbar class="min-h-0 flex-1">
                 {isPending.value && tasks.value.length === 0 ? (
                   <div class="flex items-center justify-center py-16">
@@ -305,7 +293,6 @@ export default defineComponent({
   },
 })
 
-/** 列表项组件 */
 const TaskListItem = defineComponent({
   props: {
     task: { type: Object as PropType<AITask>, required: true },
@@ -319,14 +306,12 @@ const TaskListItem = defineComponent({
         props.task.type === AITaskType.TranslationAll,
     )
 
-    // For batch tasks, check if sub-tasks are still running
     const hasActiveSubTasks = computed(() => {
       if (!isBatchTask.value || !props.task.subTaskStats) return false
       const stats = props.task.subTaskStats
       return stats.pending > 0 || stats.running > 0
     })
 
-    // Effective status considers sub-task progress for batch tasks
     const effectiveStatus = computed(() => {
       if (
         isBatchTask.value &&
@@ -364,7 +349,6 @@ const TaskListItem = defineComponent({
       return '任务'
     })
 
-    // Status label for batch tasks with active sub-tasks
     const statusLabel = computed(() => {
       if (hasActiveSubTasks.value && props.task.subTaskStats) {
         const stats = props.task.subTaskStats
@@ -416,7 +400,6 @@ const TaskListItem = defineComponent({
   },
 })
 
-/** 详情面板组件 */
 const TaskDetailPanel = defineComponent({
   props: {
     task: { type: Object as PropType<AITask>, required: true },
@@ -442,10 +425,8 @@ const TaskDetailPanel = defineComponent({
         props.task.type === AITaskType.TranslationAll,
     )
 
-    // For batch tasks, check if sub-tasks are still running
     const hasActiveSubTasks = computed(() => {
       if (!isBatchTask.value) return false
-      // Use loaded sub-tasks stats if available, otherwise use backend stats
       const stats = subTasksLoaded.value
         ? {
             pending: subTasks.value.filter(
@@ -460,7 +441,6 @@ const TaskDetailPanel = defineComponent({
       return stats.pending > 0 || stats.running > 0
     })
 
-    // Effective status considers sub-task progress for batch tasks
     const effectiveStatus = computed(() => {
       if (
         isBatchTask.value &&
@@ -574,18 +554,14 @@ const TaskDetailPanel = defineComponent({
       }
     })
 
-    // Auto-load sub-tasks for batch tasks
     onMounted(() => {
       if (isBatchTask.value) loadSubTasks(true)
     })
 
-    // Check if we should keep polling
     const shouldPoll = computed(() => {
-      // Poll if there are pending/running sub-tasks
       if (subTaskStats.value.pending > 0 || subTaskStats.value.running > 0) {
         return true
       }
-      // Also poll if selected sub-task is running
       if (
         selectedSubTask.value &&
         selectedSubTask.value.status === AITaskStatus.Running
@@ -595,7 +571,6 @@ const TaskDetailPanel = defineComponent({
       return false
     })
 
-    // Poll sub-tasks when there are active ones or when viewing a running sub-task
     let pollInterval: ReturnType<typeof setInterval> | null = null
     const startPolling = () => {
       if (pollInterval) return
@@ -626,19 +601,15 @@ const TaskDetailPanel = defineComponent({
       },
     )
 
-    // Start polling when sub-tasks are loaded and there are active ones
     watch(subTasksLoaded, (loaded) => {
       if (loaded && shouldPoll.value) {
         startPolling()
       }
     })
 
-    // When selecting a sub-task, refresh and potentially start polling
     watch(selectedSubTaskId, (newId) => {
       if (newId && subTasksLoaded.value) {
-        // Refresh sub-tasks when selecting one
         loadSubTasks(true)
-        // Start polling if the selected sub-task is running
         if (shouldPoll.value && !pollInterval) {
           startPolling()
         }
@@ -650,7 +621,6 @@ const TaskDetailPanel = defineComponent({
     return () => (
       <NScrollbar class="h-full">
         <div class="p-4">
-          {/* Header */}
           <div class="mb-4 flex items-start justify-between">
             <div class="flex items-center gap-3">
               <StatusIcon.value />
@@ -684,7 +654,6 @@ const TaskDetailPanel = defineComponent({
             </div>
           </div>
 
-          {/* Progress for batch tasks */}
           {isBatchTask.value &&
             subTasksLoaded.value &&
             subTaskStats.value.total > 0 && (
@@ -718,7 +687,6 @@ const TaskDetailPanel = defineComponent({
               </div>
             )}
 
-          {/* Token progress for non-batch running tasks */}
           {!isBatchTask.value &&
             props.task.status === AITaskStatus.Running &&
             props.task.tokensGenerated !== undefined &&
@@ -738,7 +706,6 @@ const TaskDetailPanel = defineComponent({
               </div>
             )}
 
-          {/* Error */}
           {props.task.error && (
             <div
               class="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950/50 dark:text-red-300"
@@ -749,7 +716,6 @@ const TaskDetailPanel = defineComponent({
             </div>
           )}
 
-          {/* Actions */}
           {(canCancel.value || canRetry.value || canDelete.value) && (
             <div class="mb-4 flex items-center gap-2">
               {canCancel.value && (
@@ -810,7 +776,6 @@ const TaskDetailPanel = defineComponent({
             </div>
           )}
 
-          {/* Sub-tasks for batch */}
           {isBatchTask.value && (
             <div class="mb-4">
               <button
@@ -918,7 +883,6 @@ const TaskDetailPanel = defineComponent({
             </div>
           )}
 
-          {/* Result */}
           {props.task.result && (
             <div class="mb-4">
               <div class="mb-2 text-sm font-medium text-neutral-700 dark:text-neutral-300">
@@ -930,7 +894,6 @@ const TaskDetailPanel = defineComponent({
             </div>
           )}
 
-          {/* Logs */}
           {props.task.logs.length > 0 && (
             <div class="mb-4">
               <div class="mb-2 text-sm font-medium text-neutral-700 dark:text-neutral-300">
@@ -947,7 +910,6 @@ const TaskDetailPanel = defineComponent({
             </div>
           )}
 
-          {/* Metadata */}
           <div class="space-y-2 text-xs">
             <div class="flex items-center gap-2">
               <span class="text-neutral-500">任务 ID</span>
@@ -997,7 +959,6 @@ const TaskDetailPanel = defineComponent({
   },
 })
 
-/** 子任务项 */
 const SubTaskItem = defineComponent({
   props: {
     task: { type: Object as PropType<AITask>, required: true },
@@ -1041,7 +1002,6 @@ const SubTaskItem = defineComponent({
   },
 })
 
-/** 子任务详情面板 */
 const SubTaskDetailPanel = defineComponent({
   props: {
     task: { type: Object as PropType<AITask>, required: true },
@@ -1088,7 +1048,6 @@ const SubTaskDetailPanel = defineComponent({
     return () => (
       <NScrollbar class="h-full">
         <div class="p-3">
-          {/* Mobile back button */}
           {isMobile.value && props.onBack && (
             <div class="mb-3">
               <button
@@ -1102,7 +1061,6 @@ const SubTaskDetailPanel = defineComponent({
             </div>
           )}
 
-          {/* Header */}
           <div class="mb-3 flex items-start gap-2">
             <StatusIcon.value />
             <div class="min-w-0 flex-1">
@@ -1118,7 +1076,6 @@ const SubTaskDetailPanel = defineComponent({
             </NTag>
           </div>
 
-          {/* Retry button */}
           {canRetry.value && (
             <div class="mb-3">
               <NButton
@@ -1135,7 +1092,6 @@ const SubTaskDetailPanel = defineComponent({
             </div>
           )}
 
-          {/* Progress */}
           {props.task.status === AITaskStatus.Running &&
             props.task.tokensGenerated !== undefined &&
             props.task.tokensGenerated > 0 && (
@@ -1151,7 +1107,6 @@ const SubTaskDetailPanel = defineComponent({
               </div>
             )}
 
-          {/* Error */}
           {props.task.error && (
             <div
               class="mb-3 rounded bg-red-50 p-2 text-xs text-red-700 dark:bg-red-950/50 dark:text-red-300"
@@ -1161,7 +1116,6 @@ const SubTaskDetailPanel = defineComponent({
             </div>
           )}
 
-          {/* Result */}
           {props.task.result && (
             <div class="mb-3">
               <div class="mb-1 text-xs font-medium text-neutral-600 dark:text-neutral-400">
@@ -1173,7 +1127,6 @@ const SubTaskDetailPanel = defineComponent({
             </div>
           )}
 
-          {/* Logs */}
           {props.task.logs.length > 0 && (
             <div class="mb-3">
               <div class="mb-1 text-xs font-medium text-neutral-600 dark:text-neutral-400">
@@ -1190,11 +1143,10 @@ const SubTaskDetailPanel = defineComponent({
             </div>
           )}
 
-          {/* Metadata */}
           <div class="space-y-1 text-xs">
             <div class="flex items-center gap-2">
               <span class="text-neutral-400">ID</span>
-              <code class="truncate rounded bg-neutral-100 px-1 py-0.5 font-mono text-[10px] dark:bg-neutral-800">
+              <code class="truncate rounded bg-neutral-100 px-1 py-0.5 font-mono text-xs dark:bg-neutral-800">
                 {props.task.id}
               </code>
             </div>
@@ -1221,7 +1173,6 @@ const SubTaskDetailPanel = defineComponent({
   },
 })
 
-/** 日志行 */
 const LogLine = defineComponent({
   props: {
     log: { type: Object as PropType<AITaskLog>, required: true },

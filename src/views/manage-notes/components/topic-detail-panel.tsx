@@ -1,7 +1,3 @@
-/**
- * Topic Detail Panel Component
- * 专栏详情面板 - 用于 MasterDetailLayout 右侧
- */
 import {
   ArrowLeft as ArrowLeftIcon,
   ExternalLink,
@@ -166,7 +162,6 @@ export const TopicDetailPanel = defineComponent({
 
     return () => (
       <div class="flex h-full flex-col bg-white dark:bg-black">
-        {/* Header */}
         <div class="flex h-12 flex-shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
           <div class="flex items-center gap-3">
             {props.isMobile && props.onBack && (
@@ -212,16 +207,13 @@ export const TopicDetailPanel = defineComponent({
           )}
         </div>
 
-        {/* Content */}
         <NScrollbar class="min-h-0 flex-1">
           {loadingTopic.value ? (
             <TopicDetailSkeleton />
           ) : topic.value ? (
             <div class="mx-auto max-w-3xl space-y-6 p-6">
-              {/* 专栏信息 */}
               <div class="space-y-4">
                 <div class="flex items-center gap-4">
-                  {/* 可上传图标 */}
                   <div class="shrink-0">
                     <UploadWrapper
                       class="!w-auto"
@@ -266,7 +258,6 @@ export const TopicDetailPanel = defineComponent({
                     </UploadWrapper>
                   </div>
 
-                  {/* 信息 */}
                   <div class="min-w-0 flex-1 overflow-hidden">
                     <h3 class="truncate text-lg font-semibold text-neutral-900 dark:text-neutral-100">
                       {topic.value.name}
@@ -292,7 +283,6 @@ export const TopicDetailPanel = defineComponent({
 
               <div class="h-px bg-neutral-100 dark:bg-neutral-800" />
 
-              {/* 文章列表 */}
               <div>
                 <div class="mb-3 flex items-center justify-between">
                   <h4 class="text-sm font-medium text-neutral-700 dark:text-neutral-300">
@@ -368,7 +358,6 @@ export const TopicDetailPanel = defineComponent({
           ) : null}
         </NScrollbar>
 
-        {/* 添加文章 Modal */}
         {topic.value && (
           <AddNoteToTopicModal
             show={showAddNoteModal.value}
@@ -387,9 +376,6 @@ export const TopicDetailPanel = defineComponent({
   },
 })
 
-/**
- * Topic Empty State for Detail Panel
- */
 export const TopicDetailEmptyState = defineComponent({
   name: 'TopicDetailEmptyState',
   setup() {
@@ -409,9 +395,6 @@ export const TopicDetailEmptyState = defineComponent({
   },
 })
 
-/**
- * Note List Item
- */
 const NoteListItem = defineComponent({
   props: {
     note: {
@@ -481,9 +464,6 @@ const NoteListItem = defineComponent({
   },
 })
 
-/**
- * Add Note to Topic Modal
- */
 const AddNoteToTopicModal = defineComponent({
   props: {
     show: {
@@ -596,9 +576,6 @@ const AddNoteToTopicModal = defineComponent({
   },
 })
 
-/**
- * Skeleton Components
- */
 const TopicDetailSkeleton = defineComponent({
   setup() {
     return () => (
