@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [6.0.2](https://github.com/mx-space/admin-vue3/compare/v6.0.1...v6.0.2) (2026-02-06)
+
+
+### Bug Fixes
+
+* enhance shell output handling and update panel reload logic ([d86bb3b](https://github.com/mx-space/admin-vue3/commit/d86bb3b28e907c9cdcc6242943090aa0faed2536))
+
+
+
 ## [6.0.1](https://github.com/mx-space/admin-vue3/compare/v6.0.0...v6.0.1) (2026-02-06)
 
 
