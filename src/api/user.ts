@@ -1,5 +1,6 @@
 import type { UserModel } from '~/models/user'
 
+import { authClient } from '~/utils/authjs/auth'
 import { request } from '~/utils/request'
 
 export interface LoginData {
@@ -8,11 +9,20 @@ export interface LoginData {
 }
 
 export interface LoginResponse {
-  token: string
-  expiresIn: number
+  token?: string
+  user?: {
+    id: string
+    email: string
+    name: string
+    image?: string | null
+    emailVerified: boolean
+    createdAt: string | Date
+    updatedAt: string | Date
+    role?: 'reader' | 'owner'
+  }
 }
 
-export interface UpdateUserData {
+export interface UpdateOwnerData {
   name?: string
   username?: string
   mail?: string
@@ -20,69 +30,102 @@ export interface UpdateUserData {
   avatar?: string
   introduce?: string
   socialIds?: Record<string, string | number>
-  password?: string
-}
-
-export interface ChangePasswordData {
-  oldPassword: string
-  newPassword: string
 }
 
 export interface Session {
   id: string
+  token: string
   ua: string
   ip: string
   lastActiveAt: string
   current?: boolean
 }
 
+export interface AllowLoginResponse {
+  password: boolean
+  passkey: boolean
+  github?: boolean
+  google?: boolean
+  [key: string]: boolean | undefined
+}
+
 export const userApi = {
-  // 获取当前用户信息
-  getMaster: () => request.get<UserModel>('/master'),
+  // 获取当前 Owner 信息
+  getOwner: () => request.get<UserModel>('/owner'),
 
   // 检查是否已登录
-  checkLogged: () => request.get<{ ok: number }>('/master/check_logged'),
+  checkLogged: () => request.get<{ ok: number }>('/owner/check_logged'),
 
-  // 登录
-  login: (data: LoginData) =>
-    request.post<LoginResponse>('/master/login', { data }),
+  // 用户名密码登录（Cookie Session，不返回 JWT）
+  loginWithPassword: async (data: LoginData) => {
+    const result = await authClient.signIn.username({
+      username: data.username,
+      password: data.password,
+    })
 
-  // 通过 Token 刷新登录
-  loginWithToken: () => request.put<{ token: string }>('/master/login'),
+    if (result.error) {
+      throw new Error(result.error.message || '登录失败')
+    }
 
-  // 检查是否可登录
-  checkAllowLogin: () =>
-    request.get<{ allowPassword: boolean; allowPasskey: boolean }>(
-      '/user/allow-login',
-    ),
+    return result.data as LoginResponse
+  },
 
-  // 获取允许的登录方式（别名）
-  getAllowLogin: () =>
-    request.get<{
-      password: boolean
-      passkey: boolean
-      github: boolean
-      google: boolean
-    }>('/user/allow-login'),
+  // 获取允许的登录方式
+  getAllowLogin: () => request.get<AllowLoginResponse>('/owner/allow-login'),
 
-  // 更新用户信息
-  updateMaster: (data: UpdateUserData) =>
-    request.patch<UserModel>('/master', { data }),
+  // 更新 Owner 信息
+  updateOwner: (data: UpdateOwnerData) =>
+    request.patch<UserModel>('/owner', { data }),
 
-  // 修改密码
-  changePassword: (data: ChangePasswordData) =>
-    request.patch<void>('/master/password', { data }),
+  // 登出当前会话
+  logout: async () => {
+    const result = await authClient.signOut()
+    if (result.error) {
+      throw new Error(result.error.message || '登出失败')
+    }
+  },
 
-  // 登出
-  logout: (params?: { all?: boolean }) =>
-    request.post<void>('/user/logout', { params }),
+  // 获取会话列表（Better Auth）
+  getSessions: async () => {
+    const [sessionsResult, currentResult] = await Promise.all([
+      authClient.listSessions(),
+      authClient.getSession(),
+    ])
 
-  // 获取会话列表
-  getSessions: () => request.get<Session[]>('/user/session'),
+    if (sessionsResult.error) {
+      throw new Error(sessionsResult.error.message || '获取会话失败')
+    }
+
+    const currentToken = currentResult.data?.session?.token
+
+    return (sessionsResult.data || []).map((session: any) => {
+      const token = session.token || session.id
+      return {
+        id: token,
+        token,
+        ua: session.userAgent || '',
+        ip: session.ipAddress || '',
+        lastActiveAt: new Date(
+          session.updatedAt || session.createdAt || Date.now(),
+        ).toISOString(),
+        current: currentToken ? token === currentToken : false,
+      }
+    }) as Session[]
+  },
 
   // 删除指定会话
-  deleteSession: (id: string) => request.delete<void>(`/user/session/${id}`),
+  deleteSession: async (token: string) => {
+    const result = await authClient.revokeSession({ token })
+    if (result.error) {
+      throw new Error(result.error.message || '删除会话失败')
+    }
+  },
 
   // 删除所有其他会话
-  deleteAllSessions: () => request.delete<void>('/user/session/all'),
+  deleteAllSessions: async () => {
+    const result = await authClient.revokeOtherSessions()
+    if (result.error) {
+      throw new Error(result.error.message || '删除会话失败')
+    }
+  },
 }

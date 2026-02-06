@@ -41,16 +41,16 @@ export const TabUser = defineComponent(() => {
   const loading = ref(true)
   let origin: UserModel
 
-  async function fetchMaster() {
+  async function fetchOwner() {
     loading.value = true
-    const response = await userApi.getMaster()
+    const response = await userApi.getOwner()
     data.value = response
     origin = cloneDeep(response)
     loading.value = false
   }
 
   onMounted(async () => {
-    await fetchMaster()
+    await fetchOwner()
   })
   const diff = computed(() => deepDiff(origin, data.value))
   const hasChanges = computed(() => !isEmpty(diff.value))
@@ -58,10 +58,10 @@ export const TabUser = defineComponent(() => {
   const { setActions: setHeaderButton } = useLayout()
 
   const updateMutation = useMutation({
-    mutationFn: userApi.updateMaster,
+    mutationFn: userApi.updateOwner,
     onSuccess: async () => {
       toast.success('保存成功')
-      await fetchMaster()
+      await fetchOwner()
     },
   })
 

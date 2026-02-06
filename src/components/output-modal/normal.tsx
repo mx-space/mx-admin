@@ -5,8 +5,6 @@ import { NCard, NModal } from 'naive-ui'
 import { defineComponent, ref, watch } from 'vue'
 import { toast } from 'vue-sonner'
 
-import { getToken } from '~/utils'
-
 const ansi_up = new AnsiUp()
 export const ShellOutputNormal = defineComponent({
   props: {
@@ -25,9 +23,7 @@ export const ShellOutputNormal = defineComponent({
       run(ssePath: string, onFinish?: () => any) {
         logViewOpen.value = true
         const event = new EventSourcePolyfill(ssePath, {
-          headers: {
-            Authorization: getToken()!,
-          },
+          withCredentials: true,
         })
 
         event.onmessage = (e) => {

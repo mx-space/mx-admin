@@ -54,7 +54,7 @@ const ReaderItem = defineComponent({
               <span class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
                 {reader.name}
               </span>
-              {reader.isOwner && (
+              {reader.role === 'owner' && (
                 <NTooltip>
                   {{
                     trigger: () => (

@@ -53,7 +53,6 @@ const GoogleIcon = () => (
 export const LoginView = defineComponent({
   setup() {
     const userStore = useUserStore()
-    const { updateToken } = userStore
     const { user } = storeToRefs(userStore)
 
     const router = useRouter()
@@ -83,8 +82,7 @@ export const LoginView = defineComponent({
       })
     })
 
-    const postSuccessfulLogin = (token: string) => {
-      updateToken(token)
+    const postSuccessfulLogin = () => {
       router.push(
         route.query.from ? decodeURI(route.query.from as string) : '/dashboard',
       )
@@ -106,7 +104,7 @@ export const LoginView = defineComponent({
           toast.error('验证失败')
           return
         }
-        postSuccessfulLogin(res.token!)
+        postSuccessfulLogin()
       } catch {
         toast.error('Passkey 验证失败')
       }
@@ -127,21 +125,20 @@ export const LoginView = defineComponent({
       if (isLoading.value) return
 
       try {
-        if (!user.value || !user.value.username) {
-          toast.error('主人信息无法获取')
+        const username = user.value?.username || user.value?.handle
+        if (!username) {
+          toast.error('主人用户名无法获取')
           return
         }
 
         isLoading.value = true
 
-        const res = await userApi.login({
-          username: user.value?.username!,
+        await userApi.loginWithPassword({
+          username,
           password: password.value,
         })
 
-        if (res.token) {
-          postSuccessfulLogin(res.token)
-        }
+        postSuccessfulLogin()
       } catch {
         toast.error('登录失败')
       } finally {

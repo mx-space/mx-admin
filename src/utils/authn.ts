@@ -1,73 +1,37 @@
 import { toast } from 'vue-sonner'
-import type {
-  AuthenticationResponseJSON,
-  RegistrationResponseJSON,
-} from '@simplewebauthn/browser'
 
-import { startAuthentication, startRegistration } from '@simplewebauthn/browser'
-
-import { authApi } from '~/api'
+import { authClient } from '~/utils/authjs/auth'
 
 class AuthnUtilsStatic {
   async createPassKey(name: string) {
-    const registrationOptions = await authApi.startPasskeyRegister()
-    let attResp: RegistrationResponseJSON
     try {
-      // Pass the options to the authenticator and wait for a response
-      attResp = await startRegistration(registrationOptions)
+      const result = await authClient.passkey.addPasskey({ name })
+      if (result.error) {
+        toast.error(result.error.message || '注册 Passkey 失败')
+        return
+      }
+      toast.success('Passkey 注册成功')
     } catch (error: any) {
-      // Some basic error handling
       if (error.name === 'InvalidStateError') {
-        toast.error(
-          'Error: Authenticator was probably already registered by user',
-        )
+        toast.error('该 Passkey 已经注册过了')
       } else {
-        toast.error(error.message)
+        toast.error(error.message || '注册 Passkey 失败')
       }
-      return
-    }
-
-    try {
-      Object.assign(attResp, {
-        name,
-      })
-      const verificationResp = await authApi.verifyPasskeyRegister(attResp)
-      if (verificationResp.verified) {
-        toast.success('Successfully registered authenticator')
-      } else {
-        toast.error('Error: Could not verify authenticator')
-      }
-    } catch {
-      toast.error('Error: Could not verify authenticator')
     }
   }
 
-  async validate(test?: boolean) {
-    const registrationOptions = await authApi.startPasskeyAuth()
-    let attResp: AuthenticationResponseJSON
+  async validate(_test?: boolean) {
     try {
-      // Pass the options to the authenticator and wait for a response
-      attResp = await startAuthentication(registrationOptions)
-    } catch (error: any) {
-      // Some basic error handling
-
-      toast.error(error.message)
-      return
-    }
-
-    if (test) {
-      Object.assign(attResp, { test: true })
-    }
-    try {
-      const verificationResp = await authApi.verifyPasskeyAuth(attResp)
-      if (verificationResp.verified) {
-        toast.success('Successfully authentication by passkey')
-      } else {
-        toast.error('Error: Could not verify authenticator')
+      const result = await authClient.signIn.passkey()
+      if (result.error) {
+        toast.error(result.error.message || 'Passkey 验证失败')
+        return null
       }
-      return verificationResp
+      toast.success('Passkey 验证成功')
+      return { verified: true }
     } catch (error: any) {
-      toast.error(error.message)
+      toast.error(error.message || 'Passkey 验证失败')
+      return null
     }
   }
 }

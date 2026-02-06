@@ -5,7 +5,6 @@ import type { NotificationTypes } from './types'
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { GATEWAY_URL } from '~/constants/env'
 import { router } from '~/router'
-import { getToken } from '~/utils/auth'
 import { bus } from '~/utils/event-bus'
 import { BrowserNotification } from '~/utils/notification'
 
@@ -28,18 +27,12 @@ export class SocketClient {
       return
     }
     this.destory()
-    const token = getToken()
 
-    if (!token) {
-      return
-    }
     this._socket = io(`${GATEWAY_URL}/admin`, {
       timeout: 10000,
       transports: ['websocket'],
       forceNew: true,
-      query: {
-        token: token.replace(/^bearer\s/, ''),
-      },
+      withCredentials: true,
     })
 
     this.socket.on(

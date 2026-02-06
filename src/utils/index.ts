@@ -2,7 +2,6 @@ import { isEqual, isObject } from 'es-toolkit/compat'
 import transform from 'lodash.transform'
 import { toRaw } from 'vue'
 
-export * from './auth'
 export * from './build-menus'
 export * from './time'
 export * from './version'

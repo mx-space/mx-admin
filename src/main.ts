@@ -14,9 +14,6 @@ import App from './App'
 import './index.css'
 
 import { router } from './router'
-import { attachTokenFromQuery } from './utils'
-
-attachTokenFromQuery()
 
 const app = createApp(App)
 

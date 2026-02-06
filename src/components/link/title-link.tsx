@@ -11,7 +11,6 @@ import { WEB_URL } from '~/constants/env'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { RouteName } from '~/router/name'
 import { UIStore } from '~/stores/ui'
-import { getToken } from '~/utils'
 import { buildMarkdownRenderUrl } from '~/utils/endpoint'
 
 export const TableTitleLink = defineComponent({
@@ -70,10 +69,7 @@ export const TableTitleLink = defineComponent({
             tag="a"
             class="ml-2 flex cursor-pointer items-center"
             // @ts-expect-error
-            href={
-              fullExternalLinkTo.value +
-              (props.withToken ? `?token=${getToken()}` : '')
-            }
+            href={fullExternalLinkTo.value}
             target="_blank"
             type="primary"
             onClick={(e) => e.stopPropagation()}

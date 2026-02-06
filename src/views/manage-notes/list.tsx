@@ -36,7 +36,6 @@ import { queryKeys } from '~/hooks/queries/keys'
 import { useDataTable } from '~/hooks/use-data-table'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { UIStore } from '~/stores/ui'
-import { getToken } from '~/utils'
 import { formatNumber } from '~/utils/number'
 
 import { HeaderActionButton } from '../../components/button/header-action-button'
@@ -135,7 +134,7 @@ const NoteItem = defineComponent({
         {/* Actions */}
         <div class="flex shrink-0 items-center">
           <a
-            href={`${WEB_URL}/notes/${row.value.nid}${isUnpublished.value || isSecret.value ? `?token=${getToken()}` : ''}`}
+            href={`${WEB_URL}/notes/${row.value.nid}`}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="在新窗口打开日记"

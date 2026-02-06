@@ -34,7 +34,6 @@ import { filesApi } from '~/api'
 import { HeaderActionButton } from '~/components/button/header-action-button'
 import { API_URL } from '~/constants/env'
 import { useLayout } from '~/layouts/content'
-import { getToken } from '~/utils'
 
 type FileType = 'file' | 'icon' | 'image' | 'avatar'
 
@@ -233,9 +232,7 @@ export default defineComponent({
           >
             <NUpload
               class="flex w-full flex-col items-center"
-              headers={{
-                authorization: getToken() || '',
-              }}
+              withCredentials
               action={`${API_URL}/files/upload?type=${type.value}`}
               directory-dnd
               multiple

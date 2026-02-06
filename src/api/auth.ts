@@ -1,6 +1,6 @@
-import type { AuthnModel } from '~/models/authn'
 import type { TokenModel } from '~/models/token'
 
+import { authClient } from '~/utils/authjs/auth'
 import { request } from '~/utils/request'
 
 export interface CreateTokenData {
@@ -8,15 +8,12 @@ export interface CreateTokenData {
   expired?: Date | string
 }
 
-export interface PasskeyRegisterResponse {
-  verified?: boolean
-  [key: string]: any
-}
-
-export interface PasskeyAuthResponse {
-  verified?: boolean
-  token?: string
-  [key: string]: any
+export interface PasskeyItem {
+  id: string
+  name?: string
+  credentialID: string
+  publicKey: string
+  createdAt: string
 }
 
 export const authApi = {
@@ -37,29 +34,30 @@ export const authApi = {
   deleteToken: (id: string) =>
     request.delete<void>('/auth/token', { params: { id } }),
 
-  // === Passkey 管理 ===
+  // === Passkey 管理（使用 Better Auth 客户端）===
 
   // 获取 Passkey 列表
-  getPasskeys: () => request.get<AuthnModel[]>('/passkey/items'),
+  getPasskeys: async () => {
+    const result = await authClient.passkey.listUserPasskeys()
+    if (result.error) {
+      throw new Error(result.error.message)
+    }
+    return (result.data || []).map((p: any) => ({
+      id: p.id,
+      name: p.name,
+      credentialID: p.id,
+      publicKey: p.publicKey,
+      createdAt: p.createdAt,
+    }))
+  },
 
   // 删除 Passkey
-  deletePasskey: (id: string) => request.delete<void>(`/passkey/${id}`),
-
-  // 开始注册 Passkey
-  startPasskeyRegister: () => request.post<any>('/passkey/register'),
-
-  // 验证 Passkey 注册
-  verifyPasskeyRegister: (data: any) =>
-    request.post<PasskeyRegisterResponse>('/passkey/register/verify', { data }),
-
-  // 开始 Passkey 认证
-  startPasskeyAuth: () => request.post<any>('/passkey/authentication'),
-
-  // 验证 Passkey 认证
-  verifyPasskeyAuth: (data: any) =>
-    request.post<PasskeyAuthResponse>('/passkey/authentication/verify', {
-      data,
-    }),
+  deletePasskey: async (id: string) => {
+    const result = await authClient.passkey.deletePasskey({ id })
+    if (result.error) {
+      throw new Error(result.error.message)
+    }
+  },
 
   // === 第三方认证 ===
 

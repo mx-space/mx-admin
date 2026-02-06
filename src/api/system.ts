@@ -24,7 +24,7 @@ export interface PtyRecord {
   data: any
 }
 
-export interface RegisterUserData {
+export interface CreateOwnerData {
   username: string
   password: string
   name?: string
@@ -65,9 +65,9 @@ export const systemApi = {
   restoreFromBackup: (formData: FormData, timeout?: number) =>
     request.post<void>('/init/restore', { data: formData, timeout }),
 
-  // 注册用户
-  registerUser: (data: RegisterUserData) =>
-    request.post<void>('/user/register', { data }),
+  // 创建站点主人
+  createOwner: (data: CreateOwnerData) =>
+    request.post<void>('/init/owner', { data }),
 
   // === Debug ===
 

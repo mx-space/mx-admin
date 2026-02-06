@@ -1,14 +1,8 @@
 import { NButton } from 'naive-ui'
 import { defineComponent } from 'vue'
 import { toast } from 'vue-sonner'
-import type {
-  AuthenticationResponseJSON,
-  RegistrationResponseJSON,
-} from '@simplewebauthn/browser'
 
-import { startAuthentication, startRegistration } from '@simplewebauthn/browser'
-
-import { authApi } from '~/api'
+import { authClient } from '~/utils/authjs/auth'
 
 export default defineComponent({
   setup() {
@@ -17,36 +11,20 @@ export default defineComponent({
         <>
           <NButton
             onClick={async () => {
-              const registrationOptions = await authApi.startPasskeyRegister()
-              let attResp: RegistrationResponseJSON
               try {
-                // Pass the options to the authenticator and wait for a response
-                attResp = await startRegistration(registrationOptions)
+                const name = `test-${(Math.random() * 100) | 0}`
+                const result = await authClient.passkey.addPasskey({ name })
+                if (result.error) {
+                  toast.error(result.error.message || '注册失败')
+                } else {
+                  toast.success('Passkey 注册成功')
+                }
               } catch (error: any) {
-                // Some basic error handling
                 if (error.name === 'InvalidStateError') {
-                  toast.error(
-                    'Error: Authenticator was probably already registered by user',
-                  )
+                  toast.error('该 Passkey 已经注册过了')
                 } else {
-                  toast.error(error.message)
+                  toast.error(error.message || '注册失败')
                 }
-                return
-              }
-
-              try {
-                Object.assign(attResp, {
-                  name: `test-1${(Math.random() * 100) | 0}`,
-                })
-                const verificationResp =
-                  await authApi.verifyPasskeyRegister(attResp)
-                if (verificationResp.verified) {
-                  toast.success('Successfully registered authenticator')
-                } else {
-                  toast.error('Error: Could not verify authenticator')
-                }
-              } catch {
-                toast.error('Error: Could not verify authenticator')
               }
             }}
           >
@@ -55,28 +33,15 @@ export default defineComponent({
 
           <NButton
             onClick={async () => {
-              const registrationOptions = await authApi.startPasskeyAuth()
-              let attResp: AuthenticationResponseJSON
               try {
-                // Pass the options to the authenticator and wait for a response
-                attResp = await startAuthentication(registrationOptions)
-              } catch (error: any) {
-                // Some basic error handling
-
-                toast.error(error.message)
-                return
-              }
-
-              try {
-                const verificationResp =
-                  await authApi.verifyPasskeyAuth(attResp)
-                if (verificationResp.token) {
-                  toast.success('Successfully registered authenticator')
+                const result = await authClient.signIn.passkey()
+                if (result.error) {
+                  toast.error(result.error.message || '认证失败')
                 } else {
-                  toast.error('Error: Could not verify authenticator')
+                  toast.success('Passkey 认证成功')
                 }
               } catch (error: any) {
-                toast.error(error.message)
+                toast.error(error.message || '认证失败')
               }
             }}
           >

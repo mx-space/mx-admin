@@ -15,7 +15,6 @@ import type { SnippetModel } from '../../../../models/snippet'
 
 import { RelativeTime } from '~/components/time/relative-time'
 import { API_URL } from '~/constants/env'
-import { getToken } from '~/utils/auth'
 
 import { SnippetType } from '../../../../models/snippet'
 
@@ -89,7 +88,7 @@ export const SnippetCard = defineComponent({
         s.type === SnippetType.Function
           ? `/serverless/${s.reference}/${s.name}`
           : `/${s.reference}/${s.name}`
-      return `${API_URL}${path}${s.private ? `?token=${getToken()}` : ''}`
+      return `${API_URL}${path}`
     })
 
     const handleClick = () => {

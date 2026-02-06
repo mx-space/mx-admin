@@ -26,8 +26,6 @@ import { systemApi } from '~/api'
 import { showConfetti } from '~/utils/confetti'
 import { checkIsInit } from '~/utils/is-init'
 
-import { getToken, removeToken } from '../../utils'
-
 const useDefaultConfigs = () => inject<any>('configs')
 
 // Shared input styles matching login page
@@ -46,9 +44,6 @@ export default defineComponent({
   setup() {
     onBeforeMount(async () => {
       await checkIsInit()
-      if (getToken()) {
-        removeToken()
-      }
     })
 
     const defaultConfigs = reactive<any>({})
@@ -426,11 +421,11 @@ const Step2 = defineComponent({
             user[key] = undefined
           }
         }
-        await systemApi.registerUser({
+        await systemApi.createOwner({
           username: user.username,
           password: user.password,
           name: user.name,
-          mail: user.mail,
+          mail: user.mail || '',
           url: user.url,
           avatar: user.avatar,
           introduce: user.introduce,

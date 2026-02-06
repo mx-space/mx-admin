@@ -25,11 +25,11 @@ export const commentsApi = {
 
   // 回复评论（普通）
   reply: (id: string, data: ReplyCommentData) =>
-    request.post<CommentModel>(`/comments/master/reply/${id}`, { data }),
+    request.post<CommentModel>(`/comments/owner/reply/${id}`, { data }),
 
   // 主人回复评论（只需 text）
-  masterReply: (id: string, text: string) =>
-    request.post<CommentModel>(`/comments/master/reply/${id}`, {
+  ownerReply: (id: string, text: string) =>
+    request.post<CommentModel>(`/comments/owner/reply/${id}`, {
       data: { text },
     }),
 

@@ -10,7 +10,7 @@ export interface ReaderModel {
   email: string
   image: string
   handle?: string
-  isOwner: boolean
+  role: 'reader' | 'owner'
 }
 
 export interface GetReadersParams {

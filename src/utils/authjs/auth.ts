@@ -1,4 +1,7 @@
 import { createAuthClient } from 'better-auth/client'
+import { usernameClient } from 'better-auth/client/plugins'
+
+import { passkeyClient } from '@better-auth/passkey/client'
 
 import { API_URL } from '~/constants/env'
 
@@ -7,6 +10,7 @@ export const authClient = createAuthClient({
   fetchOptions: {
     credentials: 'include',
   },
+  plugins: [passkeyClient(), usernameClient()],
 })
 
 export type AuthSocialProviders =

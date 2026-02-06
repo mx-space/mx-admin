@@ -6,7 +6,6 @@ import { simpleCamelcaseKeys } from '@mx-space/api-client'
 import { API_URL } from '~/constants/env'
 
 import { router } from '../router/router'
-import { getToken } from './auth'
 import { uuid } from './index'
 
 export class SystemError extends Error {
@@ -38,12 +37,7 @@ export const $api = ofetch.create({
   credentials: 'include',
 
   onRequest({ options }) {
-    const token = getToken()
     const headers = new Headers(options.headers)
-
-    if (token) {
-      headers.set('Authorization', token)
-    }
     headers.set('x-uuid', _uuid)
 
     // GET 请求添加时间戳防缓存

@@ -58,7 +58,7 @@ import { RelativeTime } from '~/components/time/relative-time'
 import { queryKeys } from '~/hooks/queries/keys'
 import { SettingsSection } from '~/layouts/settings-layout'
 import { RouteName } from '~/router/name'
-import { parseDate, removeToken } from '~/utils'
+import { parseDate } from '~/utils'
 import { authClient } from '~/utils/authjs/auth'
 import { getSession } from '~/utils/authjs/session'
 import { AuthnUtils } from '~/utils/authn'
@@ -207,8 +207,6 @@ const SessionSection = defineComponent(() => {
   const handleKick = async (current: boolean, id?: string) => {
     if (current) {
       await userApi.logout()
-      removeToken()
-      await authClient.signOut()
       window.location.reload()
     } else {
       await userApi.deleteSession(id!)
@@ -398,38 +396,54 @@ const SessionSkeleton = defineComponent(() => {
 
 const ResetPass = defineComponent(() => {
   const resetPassword = reactive({
-    password: '',
+    currentPassword: '',
+    newPassword: '',
     reenteredPassword: '',
   })
   const formRef = ref<typeof NForm>()
   const router = useRouter()
   const showModal = ref(false)
+  const isSubmitting = ref(false)
 
   const resetForm = () => {
-    resetPassword.password = ''
+    resetPassword.currentPassword = ''
+    resetPassword.newPassword = ''
     resetPassword.reenteredPassword = ''
   }
 
   const reset = async () => {
-    if (!formRef.value) {
+    if (!formRef.value || isSubmitting.value) {
       return
     }
 
     formRef.value.validate(async (err: any) => {
       if (!err) {
-        await userApi.updateMaster({
-          password: resetPassword.password,
-        })
-        toast.success('密码修改成功，请重新登录')
-        showModal.value = false
-        removeToken()
-        router.push({ name: RouteName.Login })
+        isSubmitting.value = true
+        try {
+          const result = await authClient.changePassword({
+            currentPassword: resetPassword.currentPassword,
+            newPassword: resetPassword.newPassword,
+            revokeOtherSessions: true,
+          })
+          if (result.error) {
+            toast.error(result.error.message || '密码修改失败')
+            return
+          }
+          toast.success('密码修改成功，请重新登录')
+          showModal.value = false
+          await authClient.signOut()
+          router.push({ name: RouteName.Login })
+        } catch (error: any) {
+          toast.error(error.message || '密码修改失败')
+        } finally {
+          isSubmitting.value = false
+        }
       }
     })
   }
 
   function validatePasswordSame(_rule: any, value: string) {
-    return value === resetPassword.password
+    return value === resetPassword.newPassword
   }
 
   return () => (
@@ -476,16 +490,22 @@ const ResetPass = defineComponent(() => {
             labelPlacement="top"
             showRequireMark={false}
             rules={{
-              password: [
+              currentPassword: [
                 {
                   required: true,
-                  message: '请输入密码',
+                  message: '请输入当前密码',
+                },
+              ],
+              newPassword: [
+                {
+                  required: true,
+                  message: '请输入新密码',
                 },
               ],
               reenteredPassword: [
                 {
                   required: true,
-                  message: '请再次输入密码',
+                  message: '请再次输入新密码',
                   trigger: ['input', 'blur'],
                 },
                 {
@@ -496,17 +516,27 @@ const ResetPass = defineComponent(() => {
               ],
             }}
           >
-            <NFormItem label="新密码" path="password">
+            <NFormItem label="当前密码" path="currentPassword">
               <NInput
                 {...autosizeableProps}
-                value={resetPassword.password}
-                onInput={(e) => void (resetPassword.password = e)}
+                value={resetPassword.currentPassword}
+                onInput={(e) => void (resetPassword.currentPassword = e)}
+                type="password"
+                showPasswordOn="click"
+                placeholder="输入当前密码"
+              />
+            </NFormItem>
+            <NFormItem label="新密码" path="newPassword">
+              <NInput
+                {...autosizeableProps}
+                value={resetPassword.newPassword}
+                onInput={(e) => void (resetPassword.newPassword = e)}
                 type="password"
                 showPasswordOn="click"
                 placeholder="输入新密码"
               />
             </NFormItem>
-            <NFormItem label="确认密码" path="reenteredPassword">
+            <NFormItem label="确认新密码" path="reenteredPassword">
               <NInput
                 {...autosizeableProps}
                 value={resetPassword.reenteredPassword}
@@ -522,7 +552,11 @@ const ResetPass = defineComponent(() => {
             <NButton onClick={() => void (showModal.value = false)}>
               取消
             </NButton>
-            <NButton onClick={reset} type="primary">
+            <NButton
+              onClick={reset}
+              type="primary"
+              loading={isSubmitting.value}
+            >
               <ShieldIcon class="mr-1 size-4" />
               确认修改
             </NButton>

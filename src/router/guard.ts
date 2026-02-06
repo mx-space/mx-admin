@@ -2,10 +2,7 @@ import QProgress from 'qier-progress'
 
 import { userApi } from '~/api/user'
 import { API_URL, GATEWAY_URL } from '~/constants/env'
-import { SESSION_WITH_LOGIN } from '~/constants/keys'
 import { LayoutStore } from '~/stores/layout'
-import { getTokenIsUpstream } from '~/stores/user'
-import { removeToken, setToken } from '~/utils/auth'
 import { checkIsInit } from '~/utils/is-init'
 
 import { configs } from '../configs'
@@ -14,7 +11,6 @@ import { router } from './router'
 export const progress = new QProgress({ colorful: false, color: '#1a9cf3' })
 const title = configs.title
 
-let loginWithTokenOnce = false
 let lastCheckedLogAt = 0
 
 router.beforeEach(async (to) => {
@@ -36,11 +32,7 @@ router.beforeEach(async (to) => {
   // guard for setup route
 
   if (to.path === '/setup') {
-    // if (__DEV__) {
-    //   return
-    // }
     const isInit = await checkIsInit()
-    // console.log('[isInit]', isInit)
     if (isInit) {
       return '/'
     }
@@ -61,29 +53,6 @@ router.beforeEach(async (to) => {
       import('~/socket').then((mo) => {
         mo.socket.initIO()
       })
-
-      const sessionWithLogin = sessionStorage.getItem(SESSION_WITH_LOGIN)
-      if (sessionWithLogin) return
-      // login with token only
-      if (loginWithTokenOnce || getTokenIsUpstream()) {
-        return
-      } else {
-        await userApi
-          .loginWithToken()
-          .then((res) => {
-            loginWithTokenOnce = true
-            removeToken()
-            setToken(res.token)
-
-            import('~/socket').then((mo) => {
-              mo.socket.initIO()
-            })
-          })
-          .catch(() => {
-            console.error('登陆失败')
-            location.reload()
-          })
-      }
     }
   }
 })

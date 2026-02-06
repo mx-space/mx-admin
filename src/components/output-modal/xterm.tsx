@@ -6,7 +6,6 @@ import type { Terminal } from '@xterm/xterm'
 
 // 展示 Shell 输出的 xterm
 import { Xterm } from '~/components/xterm'
-import { getToken } from '~/utils'
 
 export const ShellOutputXterm = defineComponent({
   setup(_, { expose }) {
@@ -34,9 +33,7 @@ export const ShellOutputXterm = defineComponent({
       run(ssePath: string, onFinish?: () => any) {
         logViewOpen.value = true
         const event = new EventSourcePolyfill(ssePath, {
-          headers: {
-            Authorization: getToken()!,
-          },
+          withCredentials: true,
         })
 
         event.onmessage = (e) => {

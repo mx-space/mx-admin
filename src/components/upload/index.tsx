@@ -6,7 +6,6 @@ import type { OnError } from 'naive-ui/es/upload/src/interface'
 import type { PropType } from 'vue'
 
 import { API_URL } from '~/constants/env'
-import { getToken } from '~/utils'
 
 export const UploadWrapper = defineComponent({
   props: {
@@ -27,9 +26,7 @@ export const UploadWrapper = defineComponent({
 
       return (
         <NUpload
-          headers={{
-            authorization: getToken() || '',
-          }}
+          withCredentials
           showFileList={false}
           accept="image/*"
           action={`${API_URL}/files/upload?type=${type}`}
