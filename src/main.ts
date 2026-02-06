@@ -20,7 +20,17 @@ const app = createApp(App)
 app.use(router)
 app.use(piniaStore)
 app.use(VueQueryPlugin, { queryClient })
-app.mount('#app')
+
+// Fade out initial loader before mounting
+const loader = document.getElementById('initial-loader')
+if (loader) {
+  loader.classList.add('fade-out')
+  setTimeout(() => {
+    app.mount('#app')
+  }, 200)
+} else {
+  app.mount('#app')
+}
 
 if (__DEV__) {
   window.app = app
