@@ -303,7 +303,11 @@ const ChartsSection = defineComponent({
       })
       charts.articles = chart
 
-      const data = articles.map((item, index) => ({
+      const sortedArticles = [...articles]
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 5)
+
+      const data = sortedArticles.map((item, index) => ({
         title: item.ref?.title || '未知标题',
         count: item.count,
         rank: index + 1,
@@ -315,7 +319,7 @@ const ChartsSection = defineComponent({
         encode: { x: 'title', y: 'count', color: 'rank' },
         coordinate: { transform: [{ type: 'transpose' }] },
         scale: {
-          x: { domain: data.map((d) => d.title).reverse() },
+          x: { domain: data.map((d) => d.title) },
           color: {
             range: ['#f59e0b', '#fbbf24', '#fcd34d', '#a3a3a3', '#d4d4d4'],
           },
