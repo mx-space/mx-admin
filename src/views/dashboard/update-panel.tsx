@@ -8,7 +8,11 @@ export const UpdatePanel = defineComponent({
   setup(_) {
     const $shellRef = ref<any>()
     const handleUpdate = () => {
-      $shellRef.value.run(`${API_URL}/update/upgrade/dashboard`)
+      $shellRef.value.run(`${API_URL}/update/upgrade/dashboard`, () => {
+        setTimeout(() => {
+          window.location.reload()
+        }, 1500)
+      })
     }
 
     const portal = usePortalElement()

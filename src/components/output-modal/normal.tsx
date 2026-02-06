@@ -48,7 +48,8 @@ export const ShellOutputNormal = defineComponent({
           if (e?.data) {
             toast.error(e.data)
           } else {
-            console.error(e)
+            shellOutput.value += '\nDone.\n'
+            onFinish?.()
           }
         }
       },
