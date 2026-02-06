@@ -1,5 +1,14 @@
 # CHANGELOG
 
+# [6.0.0](https://github.com/mx-space/admin-vue3/compare/v5.11.0...v6.0.0) (2026-02-06)
+
+
+### Features
+
+* optimize reading rank with lightweight top readings API and UI improvements ([9dee6ff](https://github.com/mx-space/admin-vue3/commit/9dee6ffa4463c238fdc78aaa540438ef450f97ed))
+
+
+
 # [5.11.0](https://github.com/mx-space/admin-vue3/compare/v5.10.3...v5.11.0) (2026-02-04)
 
 
