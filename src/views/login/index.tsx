@@ -202,48 +202,44 @@ export const LoginView = defineComponent({
                   登录
                 </button>
               </div>
-
-              {/* Alternative Auth Methods */}
-              {hasAlternativeAuth && (
-                <div class="mt-6 flex justify-center gap-4">
-                  {settings.value?.passkey && (
-                    <button
-                      type="button"
-                      onClick={passkeyAuth}
-                      aria-label="使用 Passkey 登录"
-                      class="flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white/80 backdrop-blur-sm transition-all hover:bg-white/25 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
-                    >
-                      <PassKeyIcon
-                        class="h-[18px] w-[18px]"
-                        aria-hidden="true"
-                      />
-                    </button>
-                  )}
-
-                  {settings.value?.github && (
-                    <button
-                      type="button"
-                      onClick={() => handleSocialLogin('github')}
-                      aria-label="使用 GitHub 登录"
-                      class="flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white/80 backdrop-blur-sm transition-all hover:bg-white/25 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
-                    >
-                      <GithubIcon />
-                    </button>
-                  )}
-
-                  {settings.value?.google && (
-                    <button
-                      type="button"
-                      onClick={() => handleSocialLogin('google')}
-                      aria-label="使用 Google 登录"
-                      class="flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white/80 backdrop-blur-sm transition-all hover:bg-white/25 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
-                    >
-                      <GoogleIcon />
-                    </button>
-                  )}
-                </div>
-              )}
             </form>
+          )}
+
+          {hasAlternativeAuth && (
+            <div class="mt-6 flex justify-center gap-4">
+              {settings.value?.passkey && (
+                <button
+                  type="button"
+                  onClick={passkeyAuth}
+                  aria-label="使用 Passkey 登录"
+                  class="flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white/80 backdrop-blur-sm transition-all hover:bg-white/25 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+                >
+                  <PassKeyIcon class="h-[18px] w-[18px]" aria-hidden="true" />
+                </button>
+              )}
+
+              {settings.value?.github && (
+                <button
+                  type="button"
+                  onClick={() => handleSocialLogin('github')}
+                  aria-label="使用 GitHub 登录"
+                  class="flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white/80 backdrop-blur-sm transition-all hover:bg-white/25 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+                >
+                  <GithubIcon />
+                </button>
+              )}
+
+              {settings.value?.google && (
+                <button
+                  type="button"
+                  onClick={() => handleSocialLogin('google')}
+                  aria-label="使用 Google 登录"
+                  class="flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white/80 backdrop-blur-sm transition-all hover:bg-white/25 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+                >
+                  <GoogleIcon />
+                </button>
+              )}
+            </div>
           )}
         </div>
       )
