@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [6.0.4](https://github.com/mx-space/admin-vue3/compare/v6.0.3...v6.0.4) (2026-02-06)
+
+
+### Features
+
+* add initial loading state and theme initialization ([9a6757e](https://github.com/mx-space/admin-vue3/commit/9a6757e7fe9b0c96bad8ed2d6c5d32592588a6ed))
+
+
+
 ## [6.0.3](https://github.com/mx-space/admin-vue3/compare/v6.0.2...v6.0.3) (2026-02-06)
 
 
