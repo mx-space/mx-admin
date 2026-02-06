@@ -293,23 +293,15 @@
 
 /* Ranking List */
 .rankingList {
-  @apply flex flex-col gap-3;
+  @apply flex flex-col gap-0;
 }
 
 .rankingItem {
-  @apply flex items-center gap-4 rounded-xl border border-neutral-200 bg-white p-4 transition-shadow;
-
-  &:hover {
-    @apply shadow-md;
-  }
-
-  :global(.dark) & {
-    @apply border-neutral-800 bg-neutral-900;
-  }
+  @apply flex items-center gap-3 px-2 py-2;
 }
 
 .rankingPosition {
-  @apply flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold;
+  @apply flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-semibold;
 }
 
 .rankingPositionTop {

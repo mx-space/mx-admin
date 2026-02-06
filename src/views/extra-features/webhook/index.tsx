@@ -1,22 +1,26 @@
+/**
+ * Webhook Management Page
+ * Webhook 管理页面 - Master-Detail 布局
+ */
 import { cloneDeep } from 'es-toolkit/compat'
 import {
-  Check as CheckIcon,
-  ChevronRight as ChevronRightIcon,
+  ArrowLeft,
+  Calendar,
   ExternalLink as ExternalLinkIcon,
+  Globe,
   Pencil as PencilIcon,
   Play as PlayIcon,
   Plus as PlusIcon,
   RefreshCw as RefreshIcon,
+  Shield,
   Trash2 as TrashIcon,
   Webhook as WebhookIcon,
-  X as XIcon,
 } from 'lucide-vue-next'
 import {
   NButton,
   NCheckbox,
   NDrawer,
   NDrawerContent,
-  NEmpty,
   NForm,
   NFormItem,
   NGi,
@@ -24,10 +28,10 @@ import {
   NInput,
   NLayoutContent,
   NPopconfirm,
-  NSelect,
-  NSkeleton,
+  NScrollbar,
   NSwitch,
   NTag,
+  NTooltip,
 } from 'naive-ui'
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue'
 import { toast } from 'vue-sonner'
@@ -38,56 +42,229 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 
 import { webhooksApi } from '~/api/webhooks'
 import { HeaderActionButton } from '~/components/button/header-action-button'
+import { MasterDetailLayout, useMasterDetailLayout } from '~/components/layout'
 import { queryKeys } from '~/hooks/queries/keys'
 import { useLayout } from '~/layouts/content'
 import { EventScope } from '~/models/wehbook'
 
-// 分区标题组件
-const SectionTitle = defineComponent({
-  props: {
-    title: { type: String, required: true },
-  },
-  setup(props, { slots }) {
+const getScopeText = (scope: number) => {
+  const scopes: string[] = []
+  if ((scope & EventScope.TO_VISITOR) === EventScope.TO_VISITOR)
+    scopes.push('访客')
+  if ((scope & EventScope.TO_ADMIN) === EventScope.TO_ADMIN)
+    scopes.push('管理员')
+  if ((scope & EventScope.TO_SYSTEM) === EventScope.TO_SYSTEM)
+    scopes.push('系统')
+  return scopes.join(', ') || '未指定'
+}
+
+const getEventColor = (event: string) => {
+  if (event === 'all') return 'info' as const
+  if (event.includes('create')) return 'success' as const
+  if (event.includes('update')) return 'warning' as const
+  if (event.includes('delete')) return 'error' as const
+  return 'default' as const
+}
+
+export default defineComponent({
+  setup() {
+    const queryClient = useQueryClient()
+    const { setActions } = useLayout()
+    const { isMobile } = useMasterDetailLayout()
+
+    const {
+      data: webhooksData,
+      isLoading,
+      refetch,
+    } = useQuery({
+      queryKey: queryKeys.webhooks.list(),
+      queryFn: () => webhooksApi.getList(),
+    })
+
+    const webhooks = computed(() => webhooksData.value ?? [])
+
+    const selectedId = ref<string | null>(null)
+    const showDetailOnMobile = ref(false)
+
+    const selectedWebhook = computed(() =>
+      webhooks.value.find((w) => w.id === selectedId.value),
+    )
+
+    const createMutation = useMutation({
+      mutationFn: webhooksApi.create,
+      onSuccess: () => {
+        toast.success('Webhook 创建成功')
+        queryClient.invalidateQueries({ queryKey: queryKeys.webhooks.all })
+        drawerVisible.value = false
+        editingWebhook.value = undefined
+      },
+    })
+
+    const updateMutation = useMutation({
+      mutationFn: ({ id, data }: { id: string; data: Partial<WebhookModel> }) =>
+        webhooksApi.update(id, data),
+      onSuccess: () => {
+        toast.success('Webhook 更新成功')
+        queryClient.invalidateQueries({ queryKey: queryKeys.webhooks.all })
+        drawerVisible.value = false
+        editingWebhook.value = undefined
+      },
+    })
+
+    const deleteMutation = useMutation({
+      mutationFn: webhooksApi.delete,
+      onSuccess: () => {
+        toast.success('Webhook 已删除')
+        queryClient.invalidateQueries({ queryKey: queryKeys.webhooks.all })
+      },
+    })
+
+    const testMutation = useMutation({
+      mutationFn: ({ id, event }: { id: string; event: string }) =>
+        webhooksApi.test(id, event),
+      onSuccess: () => {
+        toast.success('测试请求已发送')
+      },
+      onError: () => {
+        toast.error('测试请求发送失败')
+      },
+    })
+
+    const drawerVisible = ref(false)
+    const editingWebhook = ref<WebhookModel | undefined>()
+
+    const handleCreate = () => {
+      editingWebhook.value = undefined
+      drawerVisible.value = true
+    }
+
+    const handleEdit = (webhook: WebhookModel) => {
+      editingWebhook.value = webhook
+      drawerVisible.value = true
+    }
+
+    const handleSubmit = (data: Partial<WebhookModel>) => {
+      if (editingWebhook.value?.id) {
+        const submitData = { ...data }
+        if (!submitData.secret) {
+          delete submitData.secret
+        }
+        updateMutation.mutate({
+          id: editingWebhook.value.id,
+          data: submitData,
+        })
+      } else {
+        createMutation.mutate(data as any)
+      }
+    }
+
+    const handleDelete = (id: string) => {
+      deleteMutation.mutate(id)
+      if (selectedId.value === id) {
+        selectedId.value = null
+        showDetailOnMobile.value = false
+      }
+    }
+
+    const handleTest = (id: string, event: string) => {
+      testMutation.mutate({ id, event })
+    }
+
+    const handleSelect = (webhook: WebhookModel) => {
+      selectedId.value = webhook.id
+      if (isMobile.value) {
+        showDetailOnMobile.value = true
+      }
+    }
+
+    const handleBack = () => {
+      showDetailOnMobile.value = false
+    }
+
+    watchEffect(() => {
+      setActions(
+        <>
+          <HeaderActionButton
+            icon={<RefreshIcon />}
+            onClick={() => refetch()}
+            name="刷新"
+          />
+          <HeaderActionButton
+            icon={<PlusIcon />}
+            onClick={handleCreate}
+            name="添加 Webhook"
+            variant="primary"
+          />
+        </>,
+      )
+    })
+
     return () => (
-      <div class="mb-4">
-        <div class="flex items-center justify-between">
-          <h3 class="text-base font-medium text-neutral-700 dark:text-neutral-300">
-            {props.title}
-          </h3>
-          {slots.extra?.()}
-        </div>
-        <div class="mt-2 h-px bg-neutral-200 dark:bg-neutral-700" />
-      </div>
+      <>
+        <MasterDetailLayout
+          showDetailOnMobile={showDetailOnMobile.value}
+          defaultSize={0.35}
+          min={0.25}
+          max={0.45}
+        >
+          {{
+            list: () => (
+              <WebhookListPanel
+                data={webhooks.value}
+                loading={isLoading.value}
+                selectedId={selectedId.value}
+                onSelect={handleSelect}
+                onCreate={handleCreate}
+              />
+            ),
+            detail: () =>
+              selectedWebhook.value ? (
+                <WebhookDetailPanel
+                  webhook={selectedWebhook.value}
+                  isMobile={isMobile.value}
+                  onBack={handleBack}
+                  onEdit={() => handleEdit(selectedWebhook.value!)}
+                  onDelete={() => handleDelete(selectedWebhook.value!.id)}
+                  onTest={(event) =>
+                    handleTest(selectedWebhook.value!.id, event)
+                  }
+                />
+              ) : null,
+            empty: () => <WebhookDetailEmptyState />,
+          }}
+        </MasterDetailLayout>
+
+        <WebhookEditDrawer
+          show={drawerVisible.value}
+          formData={editingWebhook.value}
+          onClose={() => {
+            drawerVisible.value = false
+            editingWebhook.value = undefined
+          }}
+          onSubmit={handleSubmit}
+        />
+      </>
     )
   },
 })
 
-// 状态指示器
+/**
+ * Status Indicator
+ */
 const StatusIndicator = defineComponent({
   props: {
     enabled: { type: Boolean, required: true },
-    size: { type: String as PropType<'sm' | 'md'>, default: 'md' },
   },
   setup(props) {
-    const sizeClasses = {
-      sm: 'size-2',
-      md: 'size-2.5',
-    }
     return () => (
       <div class="relative flex shrink-0 items-center justify-center">
         {props.enabled && (
-          <span
-            class={[
-              'absolute inline-flex animate-ping rounded-full bg-green-400 opacity-75',
-              sizeClasses[props.size],
-            ]}
-          />
+          <span class="absolute inline-flex size-2 animate-ping rounded-full bg-green-400 opacity-75" />
         )}
         <span
           class={[
-            'relative inline-flex rounded-full',
+            'relative inline-flex size-2 rounded-full',
             props.enabled ? 'bg-green-500' : 'bg-neutral-400',
-            sizeClasses[props.size],
           ]}
         />
       </div>
@@ -95,55 +272,96 @@ const StatusIndicator = defineComponent({
   },
 })
 
-// 统计卡片组件
-const StatCard = defineComponent({
+/**
+ * Webhook List Panel (left side)
+ */
+const WebhookListPanel = defineComponent({
   props: {
-    icon: { type: Object as PropType<VNode>, required: true },
-    label: { type: String, required: true },
-    value: { type: [String, Number], required: true },
-    variant: {
-      type: String as PropType<'default' | 'success' | 'warning'>,
-      default: 'default',
+    data: { type: Array as PropType<WebhookModel[]>, required: true },
+    loading: { type: Boolean, default: false },
+    selectedId: { type: String as PropType<string | null>, default: null },
+    onSelect: {
+      type: Function as PropType<(webhook: WebhookModel) => void>,
+      required: true,
     },
+    onCreate: { type: Function as PropType<() => void>, required: true },
   },
   setup(props) {
-    const variantStyles = {
-      default: 'bg-neutral-50 dark:bg-neutral-800/50',
-      success: 'bg-green-50 dark:bg-green-950/30',
-      warning: 'bg-amber-50 dark:bg-amber-950/30',
-    }
-    const iconStyles = {
-      default: 'text-neutral-400',
-      success: 'text-green-500',
-      warning: 'text-amber-500',
-    }
+    const enabledCount = computed(
+      () => props.data.filter((w) => w.enabled).length,
+    )
+
     return () => (
-      <div
-        class={[
-          'flex items-center gap-4 rounded-lg p-4',
-          variantStyles[props.variant],
-        ]}
-      >
-        <div class={['shrink-0 text-2xl', iconStyles[props.variant]]}>
-          {props.icon}
+      <div class="flex h-full flex-col">
+        {/* Header */}
+        <div class="flex h-12 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
+          <span class="text-base font-semibold text-neutral-900 dark:text-neutral-100">
+            Webhooks
+          </span>
+          <span class="text-xs text-neutral-400">
+            {enabledCount.value}/{props.data.length} 启用
+          </span>
         </div>
-        <div class="min-w-0 flex-1">
-          <div class="text-2xl font-semibold tabular-nums">
-            {typeof props.value === 'number'
-              ? Intl.NumberFormat('zh-CN').format(props.value)
-              : props.value}
-          </div>
-          <div class="text-xs text-neutral-500">{props.label}</div>
+
+        {/* List */}
+        <div class="min-h-0 flex-1">
+          {props.loading ? (
+            <div class="flex items-center justify-center py-24">
+              <div class="size-6 animate-spin rounded-full border-2 border-neutral-300 border-t-neutral-900 dark:border-neutral-700 dark:border-t-white" />
+            </div>
+          ) : props.data.length === 0 ? (
+            <WebhookListEmptyState onCreate={props.onCreate} />
+          ) : (
+            <NScrollbar class="h-full">
+              {props.data.map((webhook) => (
+                <div
+                  key={webhook.id}
+                  class={[
+                    'flex cursor-pointer items-center gap-3 border-b border-neutral-100 px-4 py-3',
+                    'transition-colors last:border-b-0 dark:border-neutral-800/50',
+                    props.selectedId === webhook.id
+                      ? 'bg-neutral-100 dark:bg-neutral-800'
+                      : 'hover:bg-neutral-50 dark:hover:bg-neutral-800/30',
+                  ]}
+                  onClick={() => props.onSelect(webhook)}
+                >
+                  <StatusIndicator enabled={webhook.enabled} />
+                  <div class="min-w-0 flex-1">
+                    <div class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                      {webhook.payloadUrl || webhook.url}
+                    </div>
+                    <div class="mt-0.5 flex items-center gap-2 text-xs text-neutral-400 dark:text-neutral-500">
+                      <span>{webhook.events.length} 个事件</span>
+                      <span>·</span>
+                      <span>{getScopeText(webhook.scope)}</span>
+                    </div>
+                  </div>
+                  <NTag
+                    size="small"
+                    type={webhook.enabled ? 'success' : 'default'}
+                    bordered={false}
+                    round
+                  >
+                    {webhook.enabled ? '启用' : '禁用'}
+                  </NTag>
+                </div>
+              ))}
+            </NScrollbar>
+          )}
         </div>
       </div>
     )
   },
 })
 
-// Webhook 卡片组件
-const WebhookCard = defineComponent({
+/**
+ * Webhook Detail Panel (right side)
+ */
+const WebhookDetailPanel = defineComponent({
   props: {
     webhook: { type: Object as PropType<WebhookModel>, required: true },
+    isMobile: { type: Boolean, default: false },
+    onBack: { type: Function as PropType<() => void>, required: true },
     onEdit: { type: Function as PropType<() => void>, required: true },
     onDelete: { type: Function as PropType<() => void>, required: true },
     onTest: {
@@ -152,65 +370,128 @@ const WebhookCard = defineComponent({
     },
   },
   setup(props) {
-    const isExpanded = ref(false)
-
-    // 事件标签颜色映射
-    const getEventColor = (event: string) => {
-      if (event === 'all') return 'info'
-      if (event.includes('create')) return 'success'
-      if (event.includes('update')) return 'warning'
-      if (event.includes('delete')) return 'error'
-      return 'default'
-    }
-
-    // Scope 文本映射
-    const getScopeText = (scope: number) => {
-      const scopes: string[] = []
-      if ((scope & EventScope.TO_VISITOR) === EventScope.TO_VISITOR)
-        scopes.push('访客')
-      if ((scope & EventScope.TO_ADMIN) === EventScope.TO_ADMIN)
-        scopes.push('管理员')
-      if ((scope & EventScope.TO_SYSTEM) === EventScope.TO_SYSTEM)
-        scopes.push('系统')
-      return scopes.join(', ') || '未指定'
-    }
-
     return () => (
-      <div class="overflow-hidden rounded-lg border border-neutral-200 bg-white transition-all hover:border-neutral-300 dark:border-neutral-700 dark:bg-neutral-800/50 dark:hover:border-neutral-600">
-        {/* 主要内容区 */}
-        <div class="p-4">
-          <div class="flex items-start gap-4">
-            {/* 状态和图标 */}
-            <div class="relative mt-1 flex shrink-0 items-center justify-center">
-              <div class="flex size-10 items-center justify-center rounded-lg bg-neutral-100 dark:bg-neutral-700">
-                <WebhookIcon class="size-5 text-neutral-500 dark:text-neutral-400" />
+      <div class="flex h-full flex-col bg-white dark:bg-black">
+        {/* Header */}
+        <div class="flex h-12 shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
+          <div class="flex items-center gap-3">
+            {props.isMobile && (
+              <button
+                onClick={props.onBack}
+                class="-ml-2 flex size-8 items-center justify-center rounded-md text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+              >
+                <ArrowLeft class="size-5" />
+              </button>
+            )}
+            <h2 class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+              Webhook 详情
+            </h2>
+          </div>
+          <div class="flex items-center gap-1">
+            <DetailActionButton
+              icon={PencilIcon}
+              label="编辑"
+              onClick={props.onEdit}
+            />
+            <NPopconfirm
+              positiveText="取消"
+              negativeText="删除"
+              onNegativeClick={props.onDelete}
+            >
+              {{
+                trigger: () => (
+                  <DetailActionButton icon={TrashIcon} label="删除" danger />
+                ),
+                default: () => (
+                  <span class="max-w-48">确定要删除此 Webhook 吗？</span>
+                ),
+              }}
+            </NPopconfirm>
+          </div>
+        </div>
+
+        {/* Content */}
+        <NScrollbar class="min-h-0 flex-1">
+          <div class="mx-auto max-w-3xl space-y-6 p-6">
+            {/* Webhook Header */}
+            <div class="flex items-start gap-4">
+              <div class="relative shrink-0">
+                <div class="flex size-14 items-center justify-center rounded-2xl bg-neutral-100 dark:bg-neutral-800">
+                  <WebhookIcon class="size-7 text-neutral-500 dark:text-neutral-400" />
+                </div>
+                <div class="absolute -bottom-1 -right-1">
+                  <div class="rounded-full border-2 border-white bg-white dark:border-black dark:bg-black">
+                    <StatusIndicator enabled={props.webhook.enabled} />
+                  </div>
+                </div>
               </div>
-              <div class="absolute -bottom-1 -right-1">
-                <StatusIndicator enabled={props.webhook.enabled} size="sm" />
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2">
+                  <span class="truncate text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+                    {props.webhook.payloadUrl || props.webhook.url}
+                  </span>
+                  <a
+                    href={props.webhook.payloadUrl || props.webhook.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="shrink-0 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300"
+                  >
+                    <ExternalLinkIcon class="size-4" />
+                  </a>
+                </div>
+                <div class="mt-1 flex items-center gap-3 text-sm text-neutral-500 dark:text-neutral-400">
+                  <NTag
+                    size="small"
+                    type={props.webhook.enabled ? 'success' : 'default'}
+                    bordered={false}
+                    round
+                  >
+                    {props.webhook.enabled ? '已启用' : '已禁用'}
+                  </NTag>
+                  <span>{getScopeText(props.webhook.scope)}</span>
+                </div>
               </div>
             </div>
 
-            {/* 信息区 */}
-            <div class="min-w-0 flex-1">
-              <div class="flex items-center gap-2">
-                <span class="truncate font-medium text-neutral-800 dark:text-neutral-200">
-                  {props.webhook.payloadUrl || props.webhook.url}
-                </span>
-                <a
-                  href={props.webhook.payloadUrl || props.webhook.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="shrink-0 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300"
-                  onClick={(e) => e.stopPropagation()}
-                  aria-label="在新标签页打开"
-                >
-                  <ExternalLinkIcon class="size-4" />
-                </a>
-              </div>
+            {/* Info Cards */}
+            <div class="grid grid-cols-2 gap-4">
+              <InfoCard
+                icon={<Globe class="size-4" />}
+                label="触发范围"
+                value={getScopeText(props.webhook.scope)}
+              />
+              <InfoCard
+                icon={<Shield class="size-4" />}
+                label="Secret"
+                value={props.webhook.secret ? '已配置' : '未配置'}
+              />
+              {props.webhook.created && (
+                <InfoCard
+                  icon={<Calendar class="size-4" />}
+                  label="创建时间"
+                  value={new Date(props.webhook.created).toLocaleString(
+                    'zh-CN',
+                  )}
+                />
+              )}
+              {props.webhook.updated && (
+                <InfoCard
+                  icon={<RefreshIcon class="size-4" />}
+                  label="更新时间"
+                  value={new Date(props.webhook.updated).toLocaleString(
+                    'zh-CN',
+                  )}
+                />
+              )}
+            </div>
 
-              {/* 事件标签 */}
-              <div class="mt-2 flex flex-wrap gap-1.5">
-                {props.webhook.events.slice(0, 5).map((event) => (
+            {/* Events */}
+            <div class="space-y-3">
+              <h4 class="text-sm font-medium text-neutral-500 dark:text-neutral-400">
+                触发事件 ({props.webhook.events.length})
+              </h4>
+              <div class="flex flex-wrap gap-2">
+                {props.webhook.events.map((event) => (
                   <NTag
                     key={event}
                     size="small"
@@ -221,135 +502,139 @@ const WebhookCard = defineComponent({
                     {event}
                   </NTag>
                 ))}
-                {props.webhook.events.length > 5 && (
-                  <NTag size="small" round bordered={false}>
-                    +{props.webhook.events.length - 5}
-                  </NTag>
-                )}
               </div>
+            </div>
 
-              {/* 元信息 */}
-              <div class="mt-2 flex items-center gap-4 text-xs text-neutral-500">
-                <span>Scope: {getScopeText(props.webhook.scope)}</span>
-                <span>
-                  状态:{' '}
-                  <span
-                    class={
-                      props.webhook.enabled
-                        ? 'text-green-600 dark:text-green-400'
-                        : 'text-neutral-500'
-                    }
+            {/* Test */}
+            <div class="space-y-3">
+              <h4 class="text-sm font-medium text-neutral-500 dark:text-neutral-400">
+                发送测试
+              </h4>
+              <div class="flex flex-wrap gap-2">
+                {props.webhook.events.map((event) => (
+                  <NButton
+                    key={event}
+                    size="small"
+                    quaternary
+                    onClick={() => props.onTest(event)}
                   >
-                    {props.webhook.enabled ? '启用' : '禁用'}
-                  </span>
-                </span>
+                    {{
+                      icon: () => <PlayIcon class="size-3.5" />,
+                      default: () => event,
+                    }}
+                  </NButton>
+                ))}
               </div>
             </div>
-
-            {/* 操作按钮 */}
-            <div class="flex shrink-0 items-center gap-1">
-              <button
-                class="rounded-lg p-2 text-neutral-400 transition-colors hover:bg-blue-50 hover:text-blue-500 dark:hover:bg-blue-950/50"
-                onClick={props.onEdit}
-                aria-label="编辑"
-              >
-                <PencilIcon class="size-4" />
-              </button>
-              <NPopconfirm
-                positiveText="取消"
-                negativeText="删除"
-                onNegativeClick={props.onDelete}
-              >
-                {{
-                  trigger: () => (
-                    <button
-                      class="rounded-lg p-2 text-neutral-400 transition-colors hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-950/50"
-                      aria-label="删除"
-                    >
-                      <TrashIcon class="size-4" />
-                    </button>
-                  ),
-                  default: () => (
-                    <span class="max-w-48">确定要删除此 Webhook 吗？</span>
-                  ),
-                }}
-              </NPopconfirm>
-            </div>
           </div>
+        </NScrollbar>
+      </div>
+    )
+  },
+})
+
+const InfoCard = defineComponent({
+  props: {
+    icon: { type: Object as PropType<VNode>, required: true },
+    label: { type: String, required: true },
+    value: { type: String, required: true },
+  },
+  setup(props) {
+    return () => (
+      <div class="rounded-xl border border-neutral-200 p-4 dark:border-neutral-800">
+        <div class="mb-2 flex items-center gap-2 text-neutral-400 dark:text-neutral-500">
+          {props.icon}
+          <span class="text-xs">{props.label}</span>
         </div>
-
-        {/* 展开/测试区 */}
-        <div class="border-t border-neutral-100 bg-neutral-50/50 px-4 py-2 dark:border-neutral-700 dark:bg-neutral-800/30">
-          <div class="flex items-center justify-between">
-            <button
-              class="flex items-center gap-1 text-xs text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300"
-              onClick={() => (isExpanded.value = !isExpanded.value)}
-            >
-              <ChevronRightIcon
-                class={[
-                  'size-4 transition-transform',
-                  isExpanded.value && 'rotate-90',
-                ]}
-              />
-              {isExpanded.value ? '收起详情' : '展开详情'}
-            </button>
-            <NSelect
-              size="tiny"
-              placeholder="选择事件测试"
-              options={props.webhook.events.map((e) => ({
-                label: e,
-                value: e,
-              }))}
-              style={{ width: '150px' }}
-              onUpdateValue={(event: string) => props.onTest(event)}
-              v-slots={{
-                action: () => (
-                  <div class="flex items-center gap-1 text-xs text-neutral-500">
-                    <PlayIcon class="size-3" />
-                    发送测试
-                  </div>
-                ),
-              }}
-            />
-          </div>
-
-          {/* 展开的详细信息 */}
-          {isExpanded.value && (
-            <div class="mt-3 space-y-2 text-xs">
-              <div class="flex gap-2">
-                <span class="shrink-0 text-neutral-500">全部事件:</span>
-                <div class="flex flex-wrap gap-1">
-                  {props.webhook.events.map((event) => (
-                    <span
-                      key={event}
-                      class="rounded bg-neutral-100 px-1.5 py-0.5 dark:bg-neutral-700"
-                    >
-                      {event}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              {props.webhook.created && (
-                <div class="text-neutral-500">
-                  创建时间:{' '}
-                  {new Date(props.webhook.created).toLocaleString('zh-CN')}
-                </div>
-              )}
-              {props.webhook.updated && (
-                <div class="text-neutral-500">
-                  更新时间:{' '}
-                  {new Date(props.webhook.updated).toLocaleString('zh-CN')}
-                </div>
-              )}
-            </div>
-          )}
+        <div class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+          {props.value}
         </div>
       </div>
     )
   },
 })
 
-// Webhook 编辑表单
+const DetailActionButton = defineComponent({
+  props: {
+    icon: { type: Object as PropType<any>, required: true },
+    label: { type: String, required: true },
+    danger: { type: Boolean, default: false },
+    onClick: { type: Function as PropType<() => void> },
+  },
+  setup(props) {
+    return () => (
+      <NTooltip>
+        {{
+          trigger: () => (
+            <button
+              onClick={props.onClick}
+              class={[
+                'flex size-8 items-center justify-center rounded-md transition-colors',
+                props.danger
+                  ? 'text-neutral-500 hover:bg-red-50 hover:text-red-600 dark:text-neutral-400 dark:hover:bg-red-900/20 dark:hover:text-red-500'
+                  : 'text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100',
+              ]}
+            >
+              <props.icon class="size-4" />
+            </button>
+          ),
+          default: () => props.label,
+        }}
+      </NTooltip>
+    )
+  },
+})
+
+/**
+ * Detail Empty State
+ */
+const WebhookDetailEmptyState = defineComponent({
+  setup() {
+    return () => (
+      <div class="flex h-full flex-col items-center justify-center bg-neutral-50 text-center dark:bg-neutral-950">
+        <div class="mb-4 flex size-16 items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800">
+          <WebhookIcon class="size-8 text-neutral-400" />
+        </div>
+        <h3 class="mb-1 text-base font-medium text-neutral-900 dark:text-neutral-100">
+          选择一个 Webhook
+        </h3>
+        <p class="text-sm text-neutral-500 dark:text-neutral-400">
+          从左侧列表选择查看详情
+        </p>
+      </div>
+    )
+  },
+})
+
+/**
+ * List Empty State
+ */
+const WebhookListEmptyState = defineComponent({
+  props: {
+    onCreate: { type: Function as PropType<() => void>, required: true },
+  },
+  setup(props) {
+    return () => (
+      <div class="flex flex-col items-center justify-center py-24 text-center">
+        <WebhookIcon class="mb-4 size-10 text-neutral-300 dark:text-neutral-700" />
+        <p class="text-sm text-neutral-500">暂无 Webhook</p>
+        <p class="mb-4 mt-1 text-xs text-neutral-400">
+          创建 Webhook 以接收事件推送
+        </p>
+        <NButton size="small" type="primary" onClick={props.onCreate}>
+          {{
+            icon: () => <PlusIcon class="size-3.5" />,
+            default: () => '创建 Webhook',
+          }}
+        </NButton>
+      </div>
+    )
+  },
+})
+
+/**
+ * Webhook Edit Drawer
+ */
 const WebhookEditDrawer = defineComponent({
   props: {
     show: { type: Boolean, required: true },
@@ -369,7 +654,6 @@ const WebhookEditDrawer = defineComponent({
       scope: EventScope.TO_SYSTEM,
     })
 
-    // 获取可用事件列表
     const { data: eventsData } = useQuery({
       queryKey: queryKeys.webhooks.events(),
       queryFn: () => webhooksApi.getEvents(),
@@ -377,7 +661,6 @@ const WebhookEditDrawer = defineComponent({
 
     const availableEvents = computed(() => eventsData.value ?? [])
 
-    // 当表单数据变化时同步
     watch(
       () => props.formData,
       (newData) => {
@@ -413,7 +696,6 @@ const WebhookEditDrawer = defineComponent({
         >
           <div class="space-y-6">
             <NForm labelPlacement="top">
-              {/* Payload URL */}
               <NFormItem label="Payload URL" required>
                 <NInput
                   value={localFormData.value.payloadUrl}
@@ -422,7 +704,6 @@ const WebhookEditDrawer = defineComponent({
                 />
               </NFormItem>
 
-              {/* Secret */}
               <NFormItem label="Secret">
                 <NInput
                   value={localFormData.value.secret}
@@ -433,7 +714,6 @@ const WebhookEditDrawer = defineComponent({
                 />
               </NFormItem>
 
-              {/* Events */}
               <NFormItem label="触发事件" required>
                 <NLayoutContent
                   nativeScrollbar={false}
@@ -481,7 +761,6 @@ const WebhookEditDrawer = defineComponent({
                 </NLayoutContent>
               </NFormItem>
 
-              {/* Scope */}
               <NFormItem label="触发范围">
                 <div class="flex flex-wrap gap-3">
                   {(
@@ -518,23 +797,16 @@ const WebhookEditDrawer = defineComponent({
                 </div>
               </NFormItem>
 
-              {/* Enabled */}
               <NFormItem label="启用状态">
                 <div class="flex items-center gap-3">
                   <NSwitch
                     value={localFormData.value.enabled}
                     onUpdateValue={(v) => (localFormData.value.enabled = v)}
                   />
-                  <span class="text-sm text-neutral-600 dark:text-neutral-400">
-                    {localFormData.value.enabled
-                      ? '已启用，将接收事件推送'
-                      : '已禁用，暂停接收事件'}
-                  </span>
                 </div>
               </NFormItem>
             </NForm>
 
-            {/* 提交按钮 */}
             <div class="flex justify-end gap-3">
               <NButton onClick={props.onClose}>取消</NButton>
               <NButton type="primary" onClick={handleSubmit}>
@@ -544,239 +816,6 @@ const WebhookEditDrawer = defineComponent({
           </div>
         </NDrawerContent>
       </NDrawer>
-    )
-  },
-})
-
-// 骨架屏
-const WebhookSkeleton = defineComponent({
-  setup() {
-    return () => (
-      <div class="rounded-lg border border-neutral-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-800/50">
-        <div class="flex items-start gap-4">
-          <NSkeleton width={40} height={40} />
-          <div class="flex-1 space-y-3">
-            <NSkeleton text width="70%" />
-            <div class="flex gap-2">
-              <NSkeleton text width={60} />
-              <NSkeleton text width={60} />
-              <NSkeleton text width={60} />
-            </div>
-            <NSkeleton text width="40%" />
-          </div>
-        </div>
-      </div>
-    )
-  },
-})
-
-export default defineComponent({
-  setup() {
-    const queryClient = useQueryClient()
-
-    // 获取 Webhook 列表
-    const {
-      data: webhooksData,
-      isLoading,
-      refetch,
-    } = useQuery({
-      queryKey: queryKeys.webhooks.list(),
-      queryFn: () => webhooksApi.getList(),
-    })
-
-    const webhooks = computed(() => webhooksData.value ?? [])
-    const enabledCount = computed(
-      () => webhooks.value.filter((w) => w.enabled).length,
-    )
-
-    // 创建 Webhook
-    const createMutation = useMutation({
-      mutationFn: webhooksApi.create,
-      onSuccess: () => {
-        toast.success('Webhook 创建成功')
-        queryClient.invalidateQueries({ queryKey: queryKeys.webhooks.all })
-        drawerVisible.value = false
-        editingWebhook.value = undefined
-      },
-    })
-
-    // 更新 Webhook
-    const updateMutation = useMutation({
-      mutationFn: ({ id, data }: { id: string; data: Partial<WebhookModel> }) =>
-        webhooksApi.update(id, data),
-      onSuccess: () => {
-        toast.success('Webhook 更新成功')
-        queryClient.invalidateQueries({ queryKey: queryKeys.webhooks.all })
-        drawerVisible.value = false
-        editingWebhook.value = undefined
-      },
-    })
-
-    // 删除 Webhook
-    const deleteMutation = useMutation({
-      mutationFn: webhooksApi.delete,
-      onSuccess: () => {
-        toast.success('Webhook 已删除')
-        queryClient.invalidateQueries({ queryKey: queryKeys.webhooks.all })
-      },
-    })
-
-    // 测试 Webhook
-    const testMutation = useMutation({
-      mutationFn: ({ id, event }: { id: string; event: string }) =>
-        webhooksApi.test(id, event),
-      onSuccess: () => {
-        toast.success('测试请求已发送')
-      },
-      onError: () => {
-        toast.error('测试请求发送失败')
-      },
-    })
-
-    // Drawer 状态
-    const drawerVisible = ref(false)
-    const editingWebhook = ref<WebhookModel | undefined>()
-
-    const handleCreate = () => {
-      editingWebhook.value = undefined
-      drawerVisible.value = true
-    }
-
-    const handleEdit = (webhook: WebhookModel) => {
-      editingWebhook.value = webhook
-      drawerVisible.value = true
-    }
-
-    const handleSubmit = (data: Partial<WebhookModel>) => {
-      if (editingWebhook.value?.id) {
-        const submitData = { ...data }
-        if (!submitData.secret) {
-          delete submitData.secret
-        }
-        updateMutation.mutate({ id: editingWebhook.value.id, data: submitData })
-      } else {
-        createMutation.mutate(data as any)
-      }
-    }
-
-    const handleDelete = (id: string) => {
-      deleteMutation.mutate(id)
-    }
-
-    const handleTest = (id: string, event: string) => {
-      testMutation.mutate({ id, event })
-    }
-
-    // 设置头部操作按钮
-    const { setActions } = useLayout()
-    watchEffect(() => {
-      setActions(
-        <>
-          <HeaderActionButton
-            icon={<RefreshIcon />}
-            onClick={() => refetch()}
-            name="刷新"
-          />
-          <HeaderActionButton
-            icon={<PlusIcon />}
-            onClick={handleCreate}
-            name="添加 Webhook"
-            variant="primary"
-          />
-        </>,
-      )
-    })
-
-    return () => (
-      <div class="space-y-8">
-        {/* 概览统计 */}
-        <section>
-          <SectionTitle title="概览" />
-          <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <StatCard
-              icon={<WebhookIcon />}
-              label="总 Webhook 数"
-              value={webhooks.value.length}
-              variant="default"
-            />
-            <StatCard
-              icon={<CheckIcon />}
-              label="已启用"
-              value={enabledCount.value}
-              variant="success"
-            />
-            <StatCard
-              icon={<XIcon />}
-              label="已禁用"
-              value={webhooks.value.length - enabledCount.value}
-              variant={
-                webhooks.value.length - enabledCount.value > 0
-                  ? 'warning'
-                  : 'default'
-              }
-            />
-          </div>
-        </section>
-
-        {/* Webhook 列表 */}
-        <section>
-          <SectionTitle title="Webhook 列表">
-            {{
-              extra: () => (
-                <span class="text-sm text-neutral-500">
-                  共 {webhooks.value.length} 个 Webhook
-                </span>
-              ),
-            }}
-          </SectionTitle>
-
-          {isLoading.value ? (
-            <div class="space-y-3">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <WebhookSkeleton key={i} />
-              ))}
-            </div>
-          ) : webhooks.value.length === 0 ? (
-            <div class="rounded-lg border border-dashed border-neutral-200 py-16 dark:border-neutral-700">
-              <NEmpty description="暂无 Webhook">
-                {{
-                  extra: () => (
-                    <div class="mt-4">
-                      <NButton type="primary" onClick={handleCreate}>
-                        <PlusIcon class="mr-2 size-4" />
-                        创建第一个 Webhook
-                      </NButton>
-                    </div>
-                  ),
-                }}
-              </NEmpty>
-            </div>
-          ) : (
-            <div class="space-y-3">
-              {webhooks.value.map((webhook) => (
-                <WebhookCard
-                  key={webhook.id}
-                  webhook={webhook}
-                  onEdit={() => handleEdit(webhook)}
-                  onDelete={() => handleDelete(webhook.id)}
-                  onTest={(event) => handleTest(webhook.id, event)}
-                />
-              ))}
-            </div>
-          )}
-        </section>
-
-        {/* 编辑 Drawer */}
-        <WebhookEditDrawer
-          show={drawerVisible.value}
-          formData={editingWebhook.value}
-          onClose={() => {
-            drawerVisible.value = false
-            editingWebhook.value = undefined
-          }}
-          onSubmit={handleSubmit}
-        />
-      </div>
     )
   },
 })

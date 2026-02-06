@@ -158,11 +158,11 @@ const StatsOverview = defineComponent({
       <div class={styles.statsGrid} role="region" aria-label="访问统计概览">
         {props.loading
           ? Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} class={styles.statCard}>
-                <NSkeleton
-                  text
-                  style={{ width: '80px', marginBottom: '8px' }}
-                />
+              <div
+                key={i}
+                class={[styles.statCard, 'flex items-center justify-between']}
+              >
+                <NSkeleton text style={{ width: '120px' }} />
                 <NSkeleton text style={{ width: '60px', height: '28px' }} />
               </div>
             ))
@@ -219,7 +219,7 @@ const ChartsSection = defineComponent({
       chartsLoading.value = true
       try {
         const [articlesRes, trafficRes, deviceRes] = await Promise.all([
-          activityApi.getReadingRank(),
+          activityApi.getTopReadings(),
           analyzeApi.getTrafficSource(),
           analyzeApi.getDeviceDistribution(),
         ])
@@ -263,8 +263,8 @@ const ChartsSection = defineComponent({
           value: { domainMin: 0, nice: true },
         },
         axis: {
-          x: { labelFill: textColor, titleFill: textColor },
-          y: { labelFill: textColor, titleFill: textColor },
+          x: { title: false, labelFill: textColor },
+          y: { title: false, labelFill: textColor },
         },
         legend: { color: { itemLabelFill: textColor } },
         interaction: {
@@ -306,13 +306,11 @@ const ChartsSection = defineComponent({
       })
       charts.articles = chart
 
-      const data = articles
-        .map((item, index) => ({
-          title: item.ref?.title || '未知标题',
-          count: item.count,
-          rank: index + 1,
-        }))
-        .reverse()
+      const data = articles.map((item, index) => ({
+        title: item.ref?.title || '未知标题',
+        count: item.count,
+        rank: index + 1,
+      }))
 
       chart.options({
         type: 'interval',
@@ -320,6 +318,7 @@ const ChartsSection = defineComponent({
         encode: { x: 'title', y: 'count', color: 'rank' },
         coordinate: { transform: [{ type: 'transpose' }] },
         scale: {
+          x: { domain: data.map((d) => d.title).reverse() },
           color: {
             range: ['#f59e0b', '#fbbf24', '#fcd34d', '#a3a3a3', '#d4d4d4'],
           },
@@ -362,7 +361,8 @@ const ChartsSection = defineComponent({
       const chart = new Chart({
         container: element,
         autoFit: true,
-        height: 250,
+        height: 280,
+        paddingBottom: 40,
       })
       charts.traffic = chart
 
@@ -408,7 +408,8 @@ const ChartsSection = defineComponent({
       const chart = new Chart({
         container: element,
         autoFit: true,
-        height: 250,
+        height: 280,
+        paddingBottom: 40,
       })
       charts.device = chart
 
@@ -496,7 +497,7 @@ const ChartsSection = defineComponent({
         {/* Top Articles Bar Chart */}
         <div class={styles.chartCard}>
           <div class={styles.chartHeader}>
-            <h3 class={styles.chartTitle}>热门文章</h3>
+            <h3 class={styles.chartTitle}>热门文章（近 14 天）</h3>
             <span class={styles.chartSubtitle}>阅读量 Top 5</span>
           </div>
           <div class={styles.chartContainer}>

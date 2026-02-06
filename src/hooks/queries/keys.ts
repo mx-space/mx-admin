@@ -150,8 +150,9 @@ export const queryKeys = {
     all: ['activity'] as const,
     lists: () => [...queryKeys.activity.all, 'list'] as const,
     list: (params?: object) => [...queryKeys.activity.lists(), params] as const,
-    readingRank: (type?: string) =>
-      [...queryKeys.activity.all, 'reading-rank', type] as const,
+    readingRank: (range?: [number, number]) =>
+      [...queryKeys.activity.all, 'reading-rank', range] as const,
+    topReadings: () => [...queryKeys.activity.all, 'top-readings'] as const,
     recently: (params?: object) =>
       [...queryKeys.activity.all, 'recently', params] as const,
   },

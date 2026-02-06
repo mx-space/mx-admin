@@ -62,8 +62,12 @@ export const activityApi = {
   getList: (params?: GetActivityParams) =>
     request.get<ActivityListResponse>('/activity', { params }),
 
+  // 获取阅读排行（轻量接口，带缓存）
+  getTopReadings: (params?: { top?: number; days?: number }) =>
+    request.get<ReadingRankItem[]>('/activity/reading/top', { params }),
+
   // 获取阅读排行
-  getReadingRank: (params?: { type?: string }) =>
+  getReadingRank: (params?: { start?: number; end?: number; limit?: number }) =>
     request.get<ReadingRankItem[]>('/activity/reading/rank', { params }),
 
   // 获取最近动态列表

@@ -1,6 +1,5 @@
 import { add } from 'date-fns'
 import {
-  BookOpen as BookOpenIcon,
   Calendar as CalendarIcon,
   Crown as CrownIcon,
   ExternalLink as ExternalLinkIcon,
@@ -8,7 +7,7 @@ import {
   TrendingUp as TrendingUpIcon,
 } from 'lucide-vue-next'
 import { NButton, NDatePicker, NSkeleton, NSpace } from 'naive-ui'
-import { computed, defineComponent, ref, watch } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import type {
   NoteModel,
   PageModel,
@@ -37,16 +36,14 @@ export const ReadingRank = defineComponent({
       number,
     ])
 
-    const { data, isPending, refetch } = useQuery({
-      queryKey: queryKeys.activity.readingRank(),
-      queryFn: () => activityApi.getReadingRank(),
+    const { data, isPending } = useQuery({
+      queryKey: computed(() => queryKeys.activity.readingRank(dateRange.value)),
+      queryFn: () =>
+        activityApi.getReadingRank({
+          start: dateRange.value[0],
+          end: dateRange.value[1],
+        }),
     })
-
-    watch(dateRange, () => {
-      refetch()
-    })
-
-    const loading = computed(() => isPending.value)
     const maxCount = computed(() =>
       Math.max(...(data.value?.map((item) => item.count) || [1]), 1),
     )
@@ -111,21 +108,19 @@ export const ReadingRank = defineComponent({
         </div>
 
         {/* Ranking List */}
-        {loading.value ? (
+        {isPending.value ? (
           <div class={styles.rankingList}>
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} class={styles.skeleton}>
-                <div class="flex items-center gap-4">
-                  <NSkeleton circle style={{ width: '32px', height: '32px' }} />
-                  <div class="flex-1">
-                    <NSkeleton
-                      text
-                      style={{ width: '200px', marginBottom: '8px' }}
-                    />
-                    <NSkeleton text style={{ width: '100%', height: '6px' }} />
-                  </div>
-                  <NSkeleton text style={{ width: '40px' }} />
+              <div key={i} class="flex items-center gap-3 px-2 py-2">
+                <NSkeleton circle style={{ width: '24px', height: '24px' }} />
+                <div class="flex-1">
+                  <NSkeleton
+                    text
+                    style={{ width: '180px', marginBottom: '4px' }}
+                  />
+                  <NSkeleton text style={{ width: '100%', height: '4px' }} />
                 </div>
+                <NSkeleton text style={{ width: '36px' }} />
               </div>
             ))}
           </div>
@@ -214,9 +209,6 @@ const RankingListItem = defineComponent({
             onClick={handleOpenArticle}
             aria-label={`查看文章: ${(props.item.ref as any).title}`}
           >
-            <span class="mr-1.5 inline-flex items-center gap-1">
-              <BookOpenIcon class="size-3.5 text-neutral-400" />
-            </span>
             {(props.item.ref as any).title}
             <ExternalLinkIcon class="ml-1 inline size-3 text-neutral-400 opacity-0 transition-opacity group-hover:opacity-100" />
           </button>
