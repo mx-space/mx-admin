@@ -203,7 +203,7 @@ export const CommentDetail = defineComponent({
     )
 
     return () => (
-      <div class="flex h-full flex-col bg-white dark:bg-black">
+      <div class="flex h-full flex-col">
         <div class="flex h-12 flex-shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
           <div class="flex items-center gap-3">
             {props.isMobile && props.onBack && (
@@ -436,9 +436,9 @@ export const CommentDetail = defineComponent({
         </NScrollbar>
 
         {!isTrash.value && (
-          <div class="flex-shrink-0 border-t border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-black">
+          <div class="flex-shrink-0 border-t border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900">
             <div class="mx-auto max-w-3xl">
-              <div class="relative overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-sm focus-within:border-neutral-400 focus-within:ring-1 focus-within:ring-neutral-400 dark:border-neutral-800 dark:bg-black dark:focus-within:border-neutral-700 dark:focus-within:ring-neutral-700">
+              <div class="relative overflow-hidden rounded-lg border border-neutral-200 bg-white shadow-sm focus-within:border-neutral-400 focus-within:ring-1 focus-within:ring-neutral-400 dark:border-neutral-800 dark:bg-neutral-900 dark:focus-within:border-neutral-700 dark:focus-within:ring-neutral-700">
                 <NInput
                   ref={replyInputRef}
                   value={replyText.value}
@@ -493,11 +493,10 @@ export const CommentDetail = defineComponent({
                     <NButton
                       type="primary"
                       size="tiny"
-                      color="black"
                       onClick={handleReplySubmit}
                       loading={props.replyLoading}
                       disabled={!replyText.value.trim()}
-                      class="px-4"
+                      class="px-2"
                     >
                       发送回复
                     </NButton>

@@ -93,7 +93,7 @@ export const SplitPanelLayout = defineComponent({
       >
         {{
           1: () => (
-            <div class="h-full overflow-hidden border-r border-neutral-200 bg-white dark:border-neutral-800 dark:bg-black">
+            <div class="h-full overflow-hidden border-r border-neutral-200 dark:border-neutral-800">
               {slots.list?.()}
             </div>
           ),

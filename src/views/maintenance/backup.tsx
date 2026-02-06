@@ -404,7 +404,7 @@ const BackupDetailPanel = defineComponent({
   },
   setup(props) {
     return () => (
-      <div class="flex h-full flex-col bg-white dark:bg-black">
+      <div class="flex h-full flex-col">
         <div class="flex h-12 shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
           <div class="flex items-center gap-3">
             {props.isMobile && (

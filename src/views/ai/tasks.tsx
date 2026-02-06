@@ -866,7 +866,7 @@ const TaskDetailPanel = defineComponent({
                           />
                         ) : null,
                       empty: () => (
-                        <div class="flex h-full flex-col items-center justify-center bg-neutral-50 dark:bg-neutral-900">
+                        <div class="flex h-full flex-col items-center justify-center">
                           <ListTodoIcon
                             class="mb-2 size-8 text-neutral-300 dark:text-neutral-600"
                             aria-hidden="true"

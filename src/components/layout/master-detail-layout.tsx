@@ -41,7 +41,7 @@ export const MasterDetailLayout = defineComponent({
     },
     detailBgClass: {
       type: String,
-      default: 'bg-neutral-50 dark:bg-neutral-950',
+      default: 'bg-white dark:bg-neutral-900',
     },
     onMobileBack: {
       type: Function as PropType<() => void>,
@@ -60,7 +60,7 @@ export const MasterDetailLayout = defineComponent({
       layout.contentPadding.value = false
       layout.contentMinFullHeight.value = true
       setHeaderClass(
-        'md:px-4 border-b border-neutral-100 dark:border-neutral-900',
+        'md:px-4 border-b border-neutral-200 dark:border-neutral-800',
       )
     })
 

@@ -7,7 +7,6 @@
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │  Header (h-16)                                              │
-│  border-b border-neutral-100 dark:border-neutral-900        │
 ├───────────────────┬─────────────────────────────────────────┤
 │                   │                                         │
 │   List Panel      │         Detail Panel                    │
@@ -49,14 +48,14 @@ const { isMobile } = useMasterDetailLayout()
 
 ### Props
 
-| Prop | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `showDetailOnMobile` | `boolean` | `false` | 移动端是否显示详情面板 |
-| `defaultSize` | `number` | `0.3` | 列表面板默认宽度比例 |
-| `min` | `number` | `0.2` | 最小宽度比例 |
-| `max` | `number` | `0.4` | 最大宽度比例 |
-| `listBgClass` | `string` | `'bg-white dark:bg-neutral-900'` | 列表面板背景 |
-| `detailBgClass` | `string` | `'bg-neutral-50 dark:bg-neutral-950'` | 详情面板背景 |
+| Prop                 | 类型      | 默认值                                | 说明                   |
+| -------------------- | --------- | ------------------------------------- | ---------------------- |
+| `showDetailOnMobile` | `boolean` | `false`                               | 移动端是否显示详情面板 |
+| `defaultSize`        | `number`  | `0.3`                                 | 列表面板默认宽度比例   |
+| `min`                | `number`  | `0.2`                                 | 最小宽度比例           |
+| `max`                | `number`  | `0.4`                                 | 最大宽度比例           |
+| `listBgClass`        | `string`  | `'bg-white dark:bg-neutral-900'`      | 列表面板背景           |
+| `detailBgClass`      | `string`  | `'bg-neutral-50 dark:bg-neutral-950'` | 详情面板背景           |
 
 ### Slots
 
@@ -176,7 +175,7 @@ const { isMobile } = useMasterDetailLayout()
 
 ```tsx
 // 容器
-<div class="flex h-full flex-col bg-white dark:bg-black">
+<div class="flex h-full flex-col">
 
 // 头部
 <div class="flex h-12 flex-shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
@@ -254,15 +253,11 @@ class="hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:te
 <div class="group flex items-center justify-between border-b border-neutral-100 px-0 py-2.5 transition-colors last:border-b-0 hover:bg-neutral-50 dark:border-neutral-800/50 dark:hover:bg-neutral-800/30">
   <div class="min-w-0 flex-1">
     <div class="flex items-center gap-2">
-      <span class="shrink-0 font-mono text-xs text-neutral-400">
-        #123
-      </span>
+      <span class="shrink-0 font-mono text-xs text-neutral-400">#123</span>
       <span class="truncate text-sm text-neutral-900 dark:text-neutral-100">
         标题
       </span>
-      <span class="shrink-0 text-xs text-neutral-400">
-        时间
-      </span>
+      <span class="shrink-0 text-xs text-neutral-400">时间</span>
     </div>
   </div>
   <div class="flex shrink-0 items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
@@ -275,28 +270,30 @@ class="hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:te
 
 ## 颜色规范
 
-| 用途 | Light | Dark |
-|------|-------|------|
-| 列表面板背景 | `bg-white` | `dark:bg-neutral-900` |
-| 详情面板背景 | `bg-neutral-50` | `dark:bg-neutral-950` |
-| 边框 | `border-neutral-200` | `dark:border-neutral-800` |
-| 次要边框 | `border-neutral-100` | `dark:border-neutral-800/50` |
-| 选中项背景 | `bg-neutral-100` | `dark:bg-neutral-800` |
-| 悬停背景 | `hover:bg-neutral-50` | `dark:hover:bg-neutral-800/30` |
-| 主要文字 | `text-neutral-900` | `dark:text-neutral-100` |
-| 次要文字 | `text-neutral-500` | `dark:text-neutral-400` |
-| 辅助文字 | `text-neutral-400` | `dark:text-neutral-500` |
+| 用途         | Light                 | Dark                           |
+| ------------ | --------------------- | ------------------------------ |
+| 列表面板背景 | `bg-white`            | `dark:bg-neutral-900`          |
+| 详情面板背景 | `bg-neutral-50`       | `dark:bg-neutral-950`          |
+| 边框         | `border-neutral-200`  | `dark:border-neutral-800`      |
+| 次要边框     | `border-neutral-100`  | `dark:border-neutral-800/50`   |
+| 选中项背景   | `bg-neutral-100`      | `dark:bg-neutral-800`          |
+| 悬停背景     | `hover:bg-neutral-50` | `dark:hover:bg-neutral-800/30` |
+| 主要文字     | `text-neutral-900`    | `dark:text-neutral-100`        |
+| 次要文字     | `text-neutral-500`    | `dark:text-neutral-400`        |
+| 辅助文字     | `text-neutral-400`    | `dark:text-neutral-500`        |
 
 ---
 
 ## 响应式行为
 
 ### Desktop (≥1024px)
+
 - 使用 `NSplit` 分栏布局
 - 列表和详情同时显示
 - 可拖拽调整比例
 
 ### Mobile/Tablet (<1024px)
+
 - 全屏切换模式
 - 默认显示列表
 - 选中项目后滑动切换到详情

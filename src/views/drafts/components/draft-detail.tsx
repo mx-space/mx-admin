@@ -481,7 +481,7 @@ export const DraftDetail = defineComponent({
                         <NSpin />
                       </div>
                     ) : diffStats.value?.isSame ? (
-                      <div class="flex h-full flex-col items-center justify-center gap-3 bg-white p-4 dark:bg-neutral-900">
+                      <div class="flex h-full flex-col items-center justify-center gap-3 p-4">
                         <div class="flex size-12 items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800">
                           <GitCompare class="size-6 text-neutral-500 dark:text-neutral-400" />
                         </div>
@@ -593,7 +593,7 @@ export const DraftDetail = defineComponent({
                           </p>
                         </div>
                       ) : diffStats.value?.isSame ? (
-                        <div class="flex h-full flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-neutral-300 bg-white dark:border-neutral-700 dark:bg-neutral-900">
+                        <div class="flex h-full flex-col items-center justify-center gap-3">
                           <div class="flex size-12 items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800">
                             <GitCompare class="size-6 text-neutral-500 dark:text-neutral-400" />
                           </div>

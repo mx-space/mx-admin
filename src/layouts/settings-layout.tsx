@@ -18,7 +18,7 @@ export const SettingsDetailPanel = defineComponent({
     const { isMobile } = useMasterDetailLayout()
 
     return () => (
-      <div class="flex h-full flex-col bg-white dark:bg-black">
+      <div class="flex h-full flex-col">
         {/* Header */}
         <div class="flex h-12 flex-shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
           <div class="flex items-center gap-3">

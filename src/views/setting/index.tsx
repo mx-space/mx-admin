@@ -169,7 +169,7 @@ export default defineComponent({
 
       if (activeGroupKey.value === 'account') {
         return (
-          <div class="flex h-full flex-col bg-white dark:bg-black">
+          <div class="flex h-full flex-col">
             <div class="flex h-12 shrink-0 items-center border-b border-neutral-200 px-4 dark:border-neutral-800">
               <h2 class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
                 {activeGroupTitle.value}
@@ -205,8 +205,6 @@ export default defineComponent({
         defaultSize={'250px'}
         min={'200px'}
         max={'400px'}
-        listBgClass="bg-white dark:bg-neutral-900"
-        detailBgClass="bg-neutral-50 dark:bg-neutral-950"
       >
         {{
           list: () => (

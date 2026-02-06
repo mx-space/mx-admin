@@ -99,10 +99,7 @@ export const FilePreview = defineComponent({
     })
 
     return () => (
-      <div
-        ref={containerRef}
-        class="h-full overflow-auto bg-neutral-50 dark:bg-neutral-900"
-      >
+      <div ref={containerRef} class="h-full overflow-auto">
         {isLoading.value && (
           <div class="flex h-full items-center justify-center text-neutral-400">
             加载中...
