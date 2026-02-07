@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [6.0.5](https://github.com/mx-space/admin-vue3/compare/v6.0.4...v6.0.5) (2026-02-07)
+
+
+### Features
+
+* add serverless API integration and logging features ([629c40e](https://github.com/mx-space/admin-vue3/commit/629c40ec70e4e5a1358a79d808709c949e0b13a8))
+
+
+
 ## [6.0.4](https://github.com/mx-space/admin-vue3/compare/v6.0.3...v6.0.4) (2026-02-06)
 
 
