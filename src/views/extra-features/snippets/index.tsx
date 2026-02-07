@@ -1,25 +1,35 @@
 import {
   ArrowLeft as ArrowLeftIcon,
   CircleCheck as CheckCircleIcon,
+  Code as CodeIcon,
+  ScrollText as LogIcon,
   Plus as PlusIcon,
   Settings as SettingsIcon,
 } from 'lucide-vue-next'
-import { NButton, NModal, NPopover } from 'naive-ui'
-import { defineComponent, onMounted, ref, watch } from 'vue'
+import { NButton, NDrawer, NDrawerContent, NModal, NPopover } from 'naive-ui'
+import { codeToHtml } from 'shiki'
+import { computed, defineComponent, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
+import type { PropType } from 'vue'
 import type { SnippetModel } from '../../../models/snippet'
 
+import { useQuery } from '@tanstack/vue-query'
+
+import { serverlessApi } from '~/api/serverless'
 import { HeaderActionButton } from '~/components/button/header-action-button'
 import {
   MasterDetailLayout,
   useMasterDetailLayout,
 } from '~/components/layout/master-detail-layout'
 import { useMountAndUnmount } from '~/hooks/use-lifecycle'
+import { useStoreRef } from '~/hooks/use-store-ref'
 import { useLayout } from '~/layouts/content'
+import { UIStore } from '~/stores/ui'
 
 import { SnippetTypeToLanguage } from '../../../models/snippet'
 import { CodeEditorForSnippet } from './components/code-editor'
+import { FnLogDrawer } from './components/fn-log-drawer'
 import { ImportSnippetButton } from './components/import-snippets-button'
 import { InstallDependencyButton } from './components/install-dep-button'
 import { SnippetEmptyState } from './components/snippet-empty-state'
@@ -40,6 +50,8 @@ export default defineComponent({
     const selectedId = ref<string | null>(null)
     const showDetailOnMobile = ref(false)
     const showCreateModal = ref(false)
+    const showLogDrawer = ref(false)
+    const showCompiledDrawer = ref(false)
 
     const {
       groupsWithSnippets,
@@ -209,6 +221,25 @@ export default defineComponent({
           </div>
 
           <div class="flex items-center gap-1">
+            {isFunctionType.value && !isNew.value && (
+              <>
+                <button
+                  class="flex size-8 items-center justify-center rounded-md text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+                  onClick={() => (showCompiledDrawer.value = true)}
+                  title="查看编译产物"
+                >
+                  <CodeIcon class="size-4" />
+                </button>
+                <button
+                  class="flex size-8 items-center justify-center rounded-md text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+                  onClick={() => (showLogDrawer.value = true)}
+                  title="调用日志"
+                >
+                  <LogIcon class="size-4" />
+                </button>
+              </>
+            )}
+
             <NPopover trigger="click" placement="bottom-end" showArrow={false}>
               {{
                 trigger: () => (
@@ -292,7 +323,94 @@ export default defineComponent({
           }}
         </MasterDetailLayout>
         <CreateModal />
+
+        {isFunctionType.value && !isNew.value && selectedId.value && (
+          <>
+            <FnLogDrawer
+              show={showLogDrawer.value}
+              id={selectedId.value}
+              onClose={() => (showLogDrawer.value = false)}
+            />
+            <CompiledCodeDrawer
+              show={showCompiledDrawer.value}
+              id={selectedId.value}
+              onClose={() => (showCompiledDrawer.value = false)}
+            />
+          </>
+        )}
       </>
+    )
+  },
+})
+
+const CompiledCodeDrawer = defineComponent({
+  props: {
+    show: { type: Boolean, required: true },
+    id: { type: String, required: true },
+    onClose: { type: Function as PropType<() => void>, required: true },
+  },
+  setup(props) {
+    const { data, isLoading } = useQuery({
+      queryKey: computed(() => ['serverless', 'compiled', props.id]),
+      queryFn: () => serverlessApi.getCompiledCode(props.id),
+      enabled: computed(() => props.show && !!props.id),
+    })
+
+    const highlightedHtml = ref('')
+    const { isDark } = useStoreRef(UIStore)
+
+    watch(
+      () => [props.show, data.value, isDark.value] as const,
+      async ([show, code]) => {
+        if (!show || !code) {
+          highlightedHtml.value = ''
+          return
+        }
+        try {
+          highlightedHtml.value = await codeToHtml(code, {
+            lang: 'javascript',
+            theme: isDark.value ? 'github-dark' : 'github-light',
+          })
+        } catch {
+          const escaped = code
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+          highlightedHtml.value = `<pre class="overflow-auto whitespace-pre-wrap break-all rounded-lg bg-neutral-950 p-4 font-mono text-xs text-neutral-300">${escaped}</pre>`
+        }
+      },
+      { immediate: true },
+    )
+
+    return () => (
+      <NDrawer
+        show={props.show}
+        onUpdateShow={(show) => !show && props.onClose()}
+        width={600}
+        placement="right"
+      >
+        <NDrawerContent title="编译产物" closable>
+          {isLoading.value ? (
+            <div class="flex items-center justify-center py-24">
+              <div class="size-6 animate-spin rounded-full border-2 border-neutral-300 border-t-neutral-900 dark:border-neutral-700 dark:border-t-white" />
+            </div>
+          ) : data.value ? (
+            highlightedHtml.value ? (
+              <div
+                class="overflow-auto rounded-lg [&_pre]:!m-0 [&_pre]:!p-4 [&_pre]:!text-xs"
+                v-html={highlightedHtml.value}
+              />
+            ) : (
+              <pre class="overflow-auto whitespace-pre-wrap break-all rounded-lg bg-neutral-950 p-4 font-mono text-xs text-neutral-300">
+                {data.value}
+              </pre>
+            )
+          ) : (
+            <p class="text-sm text-neutral-400">暂无编译产物</p>
+          )}
+        </NDrawerContent>
+      </NDrawer>
     )
   },
 })

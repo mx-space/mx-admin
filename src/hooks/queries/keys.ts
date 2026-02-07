@@ -210,6 +210,15 @@ export const queryKeys = {
     init: () => [...queryKeys.system.all, 'init'] as const,
   },
 
+  // === Serverless ===
+  serverless: {
+    all: ['serverless'] as const,
+    logs: (id: string, params?: object) =>
+      [...queryKeys.serverless.all, 'logs', id, params] as const,
+    logDetail: (id: string) =>
+      [...queryKeys.serverless.all, 'log', id] as const,
+  },
+
   // === Webhook ===
   webhooks: {
     all: ['webhooks'] as const,

@@ -19,16 +19,22 @@ export function useSnippetList() {
     try {
       const data = await snippetsApi.getGroups({ size: 50 })
 
-      const existingExpandedState = new Map(
-        groupsWithSnippets.value.map((g) => [g.reference, g.expanded]),
+      const existingState = new Map(
+        groupsWithSnippets.value.map((g) => [
+          g.reference,
+          { expanded: g.expanded, snippets: g.snippets },
+        ]),
       )
 
-      groupsWithSnippets.value = data.data.map((group) => ({
-        ...group,
-        snippets: [],
-        expanded: existingExpandedState.get(group.reference) ?? false,
-        loading: false,
-      }))
+      groupsWithSnippets.value = data.data.map((group) => {
+        const prev = existingState.get(group.reference)
+        return {
+          ...group,
+          snippets: prev?.snippets ?? [],
+          expanded: prev?.expanded ?? false,
+          loading: false,
+        }
+      })
     } finally {
       loading.value = false
     }
