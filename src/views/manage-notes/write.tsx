@@ -215,7 +215,16 @@ const NoteWriteView = defineComponent(() => {
   const { processLocalImages } = useS3Upload()
 
   const handleSubmit = async () => {
-    const { text, images } = await processLocalImages(data.text, data.images)
+    let text = data.text
+    let images = data.images
+    try {
+      const processed = await processLocalImages(data.text, data.images)
+      text = processed.text
+      images = processed.images
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : '图片同步失败')
+      return
+    }
 
     const parseDataToPayload = () => {
       return {

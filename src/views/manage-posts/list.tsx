@@ -2,8 +2,6 @@ import {
   Plus as AddIcon,
   Book as BookIcon,
   ExternalLink,
-  Eye as EyeIcon,
-  EyeOff as EyeOffIcon,
   Pencil,
   Pin as PhPushPin,
   Search as SearchIcon,
@@ -62,12 +60,6 @@ const PostItem = defineComponent({
       type: Function as PropType<(id: string) => void>,
       required: true,
     },
-    onTogglePublish: {
-      type: Function as PropType<
-        (id: string, status: boolean) => Promise<void>
-      >,
-      required: true,
-    },
     categoryName: {
       type: String,
       default: '',
@@ -121,7 +113,6 @@ const PostItem = defineComponent({
             <StatusToggle
               isPublished={row.value.isPublished ?? false}
               size="small"
-              onToggle={(status) => props.onTogglePublish(row.value.id, status)}
             />
           </div>
         </div>
@@ -249,27 +240,8 @@ export const ManagePostListView = defineComponent({
       },
     })
 
-    const patchMutation = useMutation({
-      mutationFn: ({ id, data }: { id: string; data: Partial<PostModel> }) =>
-        postsApi.patch(id, data),
-    })
-
     const handleDelete = (id: string) => {
       deleteMutation.mutate(id)
-    }
-
-    const handleTogglePublish = async (id: string, newStatus: boolean) => {
-      try {
-        await patchMutation.mutateAsync({
-          id,
-          data: { isPublished: newStatus },
-        })
-        const item = data.value.find((i) => i.id === id)
-        if (item) item.isPublished = newStatus
-        toast.success(newStatus ? '已发布' : '已设为草稿')
-      } catch {
-        toast.error('操作失败')
-      }
     }
     const CardList = defineComponent({
       setup() {
@@ -301,7 +273,6 @@ export const ManagePostListView = defineComponent({
                       categoryStore.map.value?.get(item.categoryId)?.name ?? ''
                     }
                     onDelete={handleDelete}
-                    onTogglePublish={handleTogglePublish}
                   />
                 ))}
               </div>
@@ -489,14 +460,7 @@ export const ManagePostListView = defineComponent({
             key: 'isPublished',
             width: 120,
             render(row) {
-              return (
-                <StatusToggle
-                  isPublished={row.isPublished ?? false}
-                  onToggle={(newStatus) =>
-                    handleTogglePublish(row.id, newStatus)
-                  }
-                />
-              )
+              return <StatusToggle isPublished={row.isPublished ?? false} />
             },
           },
           {
@@ -581,47 +545,6 @@ export const ManagePostListView = defineComponent({
             }}
           />
 
-          <HeaderActionButton
-            name="批量发布"
-            disabled={checkedRowKeys.value.length === 0}
-            icon={<EyeIcon />}
-            variant="success"
-            onClick={async () => {
-              try {
-                await Promise.all(
-                  checkedRowKeys.value.map((id) =>
-                    postsApi.patch(id as string, { isPublished: true }),
-                  ),
-                )
-                toast.success('批量发布成功')
-                queryClient.invalidateQueries({ queryKey: queryKeys.posts.all })
-                checkedRowKeys.value = []
-              } catch (_error) {
-                toast.error('批量发布失败')
-              }
-            }}
-          />
-
-          <HeaderActionButton
-            name="批量设为草稿"
-            disabled={checkedRowKeys.value.length === 0}
-            icon={<EyeOffIcon />}
-            variant="warning"
-            onClick={async () => {
-              try {
-                await Promise.all(
-                  checkedRowKeys.value.map((id) =>
-                    postsApi.patch(id as string, { isPublished: false }),
-                  ),
-                )
-                toast.success('批量设置草稿成功')
-                queryClient.invalidateQueries({ queryKey: queryKeys.posts.all })
-                checkedRowKeys.value = []
-              } catch (_error) {
-                toast.error('批量设置草稿失败')
-              }
-            }}
-          />
           <HeaderActionButton to={'/posts/edit'} icon={<AddIcon />} />
         </>,
       )

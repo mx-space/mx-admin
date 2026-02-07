@@ -3,6 +3,11 @@ import type { Image } from '~/models/base'
 import { filesApi } from '~/api/files'
 import { useUploadQueue } from '~/components/upload-queue'
 import { API_URL } from '~/constants/env'
+import {
+  hasUploadedLocalImageUrl,
+  isLocalObjectImageUrl,
+  recordUploadedLocalImageUrl,
+} from '~/utils/local-image-url'
 
 const BATCH_SIZE = 3
 
@@ -18,25 +23,25 @@ function extractFileName(url: string): string {
 }
 
 function isLocalApiUrl(url: string): boolean {
-  if (!API_URL) return false
-  try {
-    const apiOrigin = new URL(API_URL).origin
-    const urlOrigin = new URL(url).origin
-    return urlOrigin === apiOrigin
-  } catch {
-    return false
-  }
+  return isLocalObjectImageUrl(url, API_URL)
 }
 
 function extractImageUrls(text: string): string[] {
-  const markdownImageRegex = /!\[.*?\]\((https?:\/\/[^)]+)\)/g
-  const htmlImageRegex = /<img[^>]+src=["'](https?:\/\/[^"']+)["'][^>]*>/gi
+  const markdownImageRegex = /!\[[^\]]*\]\(([^)]+)\)/g
+  const htmlImageRegex = /<img[^>]+src=["']([^"']+)["'][^>]*>/gi
   const urls: string[] = []
 
   let match: RegExpExecArray | null
   while ((match = markdownImageRegex.exec(text)) !== null) {
-    urls.push(match[1])
+    const rawValue = match[1]?.trim()
+    if (!rawValue) continue
+
+    const urlPart = rawValue.split(/\s+/)[0]?.replace(/^<|>$/g, '')
+    if (urlPart) {
+      urls.push(urlPart)
+    }
   }
+
   while ((match = htmlImageRegex.exec(text)) !== null) {
     urls.push(match[1])
   }
@@ -49,14 +54,20 @@ export function useS3Upload() {
 
   async function processLocalImages(
     text: string,
-    images: Image[],
+    images: Image[] = [],
   ): Promise<{ text: string; images: Image[] }> {
     const validImages = images.filter((img) => img?.src)
     const textImageUrls = extractImageUrls(text)
     const imageFieldUrls = validImages.map((img) => img.src)
 
     const allUrls = [...textImageUrls, ...imageFieldUrls]
-    const localUrls = [...new Set(allUrls.filter(isLocalApiUrl))]
+    const localUrls = [
+      ...new Set(
+        allUrls.filter(
+          (url) => hasUploadedLocalImageUrl(url) || isLocalApiUrl(url),
+        ),
+      ),
+    ]
 
     if (localUrls.length === 0) {
       return { text, images: validImages }
@@ -68,8 +79,10 @@ export function useS3Upload() {
       if (!config.enable || !config.syncOnPublish) {
         return { text, images: validImages }
       }
-    } catch {
-      return { text, images: validImages }
+    } catch (error) {
+      throw new Error(
+        error instanceof Error ? error.message : '无法检查图床配置，请稍后重试',
+      )
     }
 
     const tasks = localUrls.map((url, index) => ({
@@ -81,6 +94,7 @@ export function useS3Upload() {
     queue.addTasks(tasks)
 
     const urlMapping = new Map<string, string>()
+    let hasFailedUpload = false
 
     for (let i = 0; i < tasks.length; i += BATCH_SIZE) {
       const batch = tasks.slice(i, i + BATCH_SIZE)
@@ -99,11 +113,13 @@ export function useS3Upload() {
 
           if (result.s3Url) {
             urlMapping.set(result.originalUrl, result.s3Url)
+            recordUploadedLocalImageUrl(result.s3Url)
             queue.updateTask(task.id, {
               status: 'success',
               s3Url: result.s3Url,
             })
           } else {
+            hasFailedUpload = true
             queue.updateTask(task.id, {
               status: 'error',
               error: result.error || '上传失败',
@@ -111,6 +127,7 @@ export function useS3Upload() {
           }
         }
       } catch (error) {
+        hasFailedUpload = true
         batch.forEach((task) => {
           queue.updateTask(task.id, {
             status: 'error',
@@ -118,6 +135,10 @@ export function useS3Upload() {
           })
         })
       }
+    }
+
+    if (hasFailedUpload) {
+      throw new Error('部分图片同步到 S3 失败，请修复后重试发布')
     }
 
     let processedText = text

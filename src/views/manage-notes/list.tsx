@@ -3,8 +3,6 @@ import {
   Bookmark as BookmarkIcon,
   ExternalLink,
   EyeOff as EyeHideIcon,
-  Eye as EyeIcon,
-  EyeOff as EyeOffIcon,
   Heart as HeartIcon,
   MapPin,
   Pencil,
@@ -50,12 +48,6 @@ const NoteItem = defineComponent({
     },
     onDelete: {
       type: Function as PropType<(id: string) => void>,
-      required: true,
-    },
-    onTogglePublish: {
-      type: Function as PropType<
-        (id: string, status: boolean) => Promise<void>
-      >,
       required: true,
     },
   },
@@ -123,7 +115,6 @@ const NoteItem = defineComponent({
             <StatusToggle
               isPublished={row.value.isPublished ?? false}
               size="small"
-              onToggle={(status) => props.onTogglePublish(row.value.id, status)}
             />
           </div>
         </div>
@@ -247,24 +238,8 @@ export const ManageNoteListView = defineComponent({
         notesApi.patch(id, data),
     })
 
-    const publishMutation = useMutation({
-      mutationFn: ({ id, isPublished }: { id: string; isPublished: boolean }) =>
-        notesApi.patchPublish(id, isPublished),
-      onSuccess: (_, { isPublished }) => {
-        toast.success(isPublished ? '已发布' : '已设为草稿')
-        queryClient.invalidateQueries({ queryKey: queryKeys.notes.all })
-      },
-      onError: () => {
-        toast.error('操作失败')
-      },
-    })
-
     const handleDelete = (id: string) => {
       deleteMutation.mutate(id)
-    }
-
-    const handleTogglePublish = async (id: string, newStatus: boolean) => {
-      publishMutation.mutate({ id, isPublished: newStatus })
     }
 
     const CardList = defineComponent({
@@ -290,12 +265,7 @@ export const ManageNoteListView = defineComponent({
             ) : (
               <div>
                 {data.value.map((item) => (
-                  <NoteItem
-                    key={item.id}
-                    data={item}
-                    onDelete={handleDelete}
-                    onTogglePublish={handleTogglePublish}
-                  />
+                  <NoteItem key={item.id} data={item} onDelete={handleDelete} />
                 ))}
               </div>
             )}
@@ -510,14 +480,7 @@ export const ManageNoteListView = defineComponent({
             key: 'isPublished',
             width: 120,
             render(row) {
-              return (
-                <StatusToggle
-                  isPublished={row.isPublished ?? false}
-                  onToggle={(newStatus) =>
-                    handleTogglePublish(row.id, newStatus)
-                  }
-                />
-              )
+              return <StatusToggle isPublished={row.isPublished ?? false} />
             },
           },
           {
@@ -607,47 +570,6 @@ export const ManageNoteListView = defineComponent({
             }}
           />
 
-          <HeaderActionButton
-            name="批量发布"
-            disabled={checkedRowKeys.value.length === 0}
-            icon={<EyeIcon />}
-            variant="success"
-            onClick={async () => {
-              try {
-                await Promise.all(
-                  checkedRowKeys.value.map((id) =>
-                    notesApi.patchPublish(id as string, true),
-                  ),
-                )
-                toast.success('批量发布成功')
-                queryClient.invalidateQueries({ queryKey: queryKeys.notes.all })
-                checkedRowKeys.value = []
-              } catch (_error) {
-                toast.error('批量发布失败')
-              }
-            }}
-          />
-
-          <HeaderActionButton
-            name="批量设为草稿"
-            disabled={checkedRowKeys.value.length === 0}
-            icon={<EyeOffIcon />}
-            variant="warning"
-            onClick={async () => {
-              try {
-                await Promise.all(
-                  checkedRowKeys.value.map((id) =>
-                    notesApi.patchPublish(id as string, false),
-                  ),
-                )
-                toast.success('批量设置草稿成功')
-                queryClient.invalidateQueries({ queryKey: queryKeys.notes.all })
-                checkedRowKeys.value = []
-              } catch (_error) {
-                toast.error('批量设置草稿失败')
-              }
-            }}
-          />
           <HeaderActionButton to={'/notes/edit'} icon={<PlusIcon />} />
         </>,
       )
