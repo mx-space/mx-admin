@@ -1,8 +1,8 @@
 import { defineComponent, ref, watch } from 'vue'
 import type { PropType } from 'vue'
 
-import { FunctionCodeEditor } from '~/components/function-editor'
-import { usePropsValueToRef } from '~/hooks/use-async-monaco'
+import { FunctionCodeEditor } from '~/components/monaco-editor'
+import { usePropsValueToRef } from '~/hooks/use-props-value-to-ref'
 
 export const CodeEditorForSnippet = defineComponent({
   props: {

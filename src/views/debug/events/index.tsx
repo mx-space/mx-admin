@@ -4,10 +4,8 @@ import { defineComponent, ref, watch } from 'vue'
 import { useLocalStorage } from '@vueuse/core'
 
 import { systemApi } from '~/api'
-import {
-  useAsyncLoadMonaco,
-  usePropsValueToRef,
-} from '~/hooks/use-async-monaco'
+import { useAsyncLoadMonaco } from '~/components/monaco-editor'
+import { usePropsValueToRef } from '~/hooks/use-props-value-to-ref'
 import { TwoColGridLayout } from '~/layouts/two-col'
 import { EventTypes } from '~/socket/types'
 

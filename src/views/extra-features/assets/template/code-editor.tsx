@@ -1,11 +1,9 @@
 import { defineComponent, ref } from 'vue'
 import type { PropType } from 'vue'
 
+import { useAsyncLoadMonaco } from '~/components/monaco-editor'
 import { CenterSpin } from '~/components/spin'
-import {
-  useAsyncLoadMonaco,
-  usePropsValueToRef,
-} from '~/hooks/use-async-monaco'
+import { usePropsValueToRef } from '~/hooks/use-props-value-to-ref'
 
 export const CodeEditorForTemplateEditing = defineComponent({
   props: {

@@ -7,7 +7,7 @@ import { useLocalStorage } from '@vueuse/core'
 
 import { debugApi } from '~/api'
 import { HeaderActionButton } from '~/components/button/header-action-button'
-import { FunctionCodeEditor } from '~/components/function-editor'
+import { FunctionCodeEditor } from '~/components/monaco-editor'
 import { useLayout } from '~/layouts/content'
 import { TwoColGridLayout } from '~/layouts/two-col'
 import { defaultServerlessFunction } from '~/models/snippet'

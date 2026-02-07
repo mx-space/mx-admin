@@ -2,8 +2,8 @@ import { defineComponent, h, onMounted, ref, watch } from 'vue'
 import type { PropType, Ref } from 'vue'
 
 import { systemApi } from '~/api'
-import { useAsyncLoadMonaco } from '~/hooks/use-async-monaco'
 
+import { useAsyncLoadMonaco } from './use-async-load-monaco'
 import { createDebouncedATA, initATA } from './use-ata'
 
 export const FunctionCodeEditor = defineComponent({

@@ -10,25 +10,13 @@ import {
 import type { editor, IKeyboardEvent } from 'monaco-editor'
 import type { Ref } from 'vue'
 
-import { useDefineMyThemes } from '~/components/editor/monaco/use-define-theme'
 import { CenterSpin } from '~/components/spin'
+import { useSaveConfirm } from '~/hooks/use-save-confirm'
+import { useStoreRef } from '~/hooks/use-store-ref'
 import { UIStore } from '~/stores/ui'
 
-import { useSaveConfirm } from './use-save-confirm'
-import { useStoreRef } from './use-store-ref'
+import { useDefineMyThemes } from './use-define-theme'
 
-export const usePropsValueToRef = <T extends { value: string }>(props: T) => {
-  const value = ref(props.value)
-  watch(
-    () => props.value,
-    (n) => {
-      value.value = n
-    },
-  )
-  return value
-}
-
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const useAsyncLoadMonaco = (
   editorRef: Ref<any>,
   value: Ref<string>,
