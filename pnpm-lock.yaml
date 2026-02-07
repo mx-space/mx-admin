@@ -71,6 +71,9 @@ importers:
       '@types/canvas-confetti':
         specifier: 1.9.0
         version: 1.9.0
+      '@typescript/ata':
+        specifier: 0.9.8
+        version: 0.9.8(typescript@5.9.3)
       '@vicons/utils':
         specifier: 0.1.4
         version: 0.1.4(vue@3.5.27(typescript@5.9.3))
@@ -149,9 +152,6 @@ importers:
       monaco-editor:
         specifier: 0.55.1
         version: 0.55.1
-      monaco-editor-auto-typings:
-        specifier: 0.4.6
-        version: 0.4.6(monaco-editor@0.55.1)
       naive-ui:
         specifier: 2.43.2
         version: 2.43.2(vue@3.5.27(typescript@5.9.3))
@@ -1693,6 +1693,11 @@ packages:
   '@types/web-bluetooth@0.0.21':
     resolution: {integrity: sha512-oIQLCGWtcFZy2JW77j9k8nHzAOpqMHLQejDA48XXMWH6tjCQHz5RCFz1bzsmROyL6PUm+LLnUiI4BCn221inxA==}
 
+  '@typescript/ata@0.9.8':
+    resolution: {integrity: sha512-+M815CeDRJS5H5ciWfhFCKp25nNfF+LFWawWAaBhNlquFb2wS5IIMDI+2bKWN3GuU6mpj+FzySsOD29M4nG8Xg==}
+    peerDependencies:
+      typescript: '>=4.4.4'
+
   '@ungap/structured-clone@1.3.0':
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
 
@@ -2907,11 +2912,6 @@ packages:
 
   mlly@1.8.0:
     resolution: {integrity: sha512-l8D9ODSRWLe2KHJSifWGwBqpTZXIXTeo8mlKjY+E2HAakaTeNpqAyBZ8GSqLzHgw4XmHmC8whvpjJNMbFZN7/g==}
-
-  monaco-editor-auto-typings@0.4.6:
-    resolution: {integrity: sha512-yN6yP2oQJkpyZtUyi5qT9AjZLILrTZWOFny7Km2yNiPMPqOWq/znkTS4b5Yk1sHumSaLJUw5m1EPKiopRqtEpA==}
-    peerDependencies:
-      monaco-editor: '*'
 
   monaco-editor@0.55.1:
     resolution: {integrity: sha512-jz4x+TJNFHwHtwuV9vA9rMujcZRb0CEilTEwG2rRSpe/A7Jdkuj8xPKttCgOh+v/lkHy7HsZ64oj+q3xoAFl9A==}
@@ -5635,6 +5635,10 @@ snapshots:
 
   '@types/web-bluetooth@0.0.21': {}
 
+  '@typescript/ata@0.9.8(typescript@5.9.3)':
+    dependencies:
+      typescript: 5.9.3
+
   '@ungap/structured-clone@1.3.0': {}
 
   '@unocss/astro@66.6.0(vite@8.0.0-beta.10(jiti@2.6.1)(yaml@2.8.2))':
@@ -6812,10 +6816,6 @@ snapshots:
       pathe: 2.0.3
       pkg-types: 1.3.1
       ufo: 1.6.3
-
-  monaco-editor-auto-typings@0.4.6(monaco-editor@0.55.1):
-    dependencies:
-      monaco-editor: 0.55.1
 
   monaco-editor@0.55.1:
     dependencies:

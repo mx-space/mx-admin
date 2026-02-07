@@ -1,4 +1,3 @@
-import { AutoTypings, LocalStorageCache } from 'monaco-editor-auto-typings'
 import {
   defineComponent,
   h,
@@ -9,7 +8,6 @@ import {
   watch,
 } from 'vue'
 import type { editor, IKeyboardEvent } from 'monaco-editor'
-import type { AutoTypingsCore } from 'monaco-editor-auto-typings/lib/AutoTypingsCore'
 import type { Ref } from 'vue'
 
 import { useDefineMyThemes } from '~/components/editor/monaco/use-define-theme'
@@ -89,7 +87,6 @@ export const useAsyncLoadMonaco = (
   )
 
   let editorModelMemo: editor.ITextModel | null = null
-  let typingCore: Promise<AutoTypingsCore | null>
 
   onMounted(() => {
     import('monaco-editor').then((module) => {
@@ -105,7 +102,14 @@ export const useAsyncLoadMonaco = (
         fontSize: 14,
       }
       if (options.language === 'typescript') {
-        const editorModel = module.editor.createModel(value.value, 'typescript')
+        const modelUri = module.Uri.parse(`file:///main.tsx`)
+        const existing = module.editor.getModel(modelUri)
+        existing?.dispose()
+        const editorModel = module.editor.createModel(
+          value.value,
+          'typescript',
+          modelUri,
+        )
         Object.assign(options, {
           model: editorModel,
         })
@@ -114,13 +118,6 @@ export const useAsyncLoadMonaco = (
       }
 
       monaco.editor = module.editor.create(editorRef.value, options)
-      typingCore = AutoTypings.create(monaco.editor, {
-        sourceCache: new LocalStorageCache(), // Cache loaded sources in localStorage. May be omitted
-        preloadPackages: true,
-        versions: {
-          '@types/node': '^18',
-        },
-      })
 
       monaco.module = module
       ;['onKeyDown', 'onDidPaste', 'onDidBlurEditorText'].forEach(
@@ -176,9 +173,6 @@ export const useAsyncLoadMonaco = (
     monaco.editor = null
     // @ts-expect-error
     monaco.module = null
-    await typingCore.then((core) => {
-      core?.dispose()
-    })
 
     editorModelMemo?.dispose()
   })
