@@ -45,12 +45,12 @@ export const EmailTab = defineComponent({
       modal.warning({
         title: '确认重置？',
         content: '重置后，模板将被恢复为默认模板',
-        async onNegativeClick() {
+        async onPositiveClick() {
           await optionsApi.deleteEmailTemplate({ type: templateType.value })
 
           await fetch()
         },
-        onPositiveClick() {},
+
         negativeText: '取消',
         positiveText: '确认',
       })
