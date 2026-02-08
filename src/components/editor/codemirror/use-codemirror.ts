@@ -31,6 +31,7 @@ interface Props {
   initialDoc: string
   onChange?: (state: EditorState) => void
   onArrowUpAtFirstLine?: () => void
+  enableEditorStore?: boolean
 }
 
 export const useCodeMirror = <T extends Element>(
@@ -38,7 +39,8 @@ export const useCodeMirror = <T extends Element>(
 ): [Ref<T | undefined>, Ref<EditorView | undefined>] => {
   const refContainer = ref<T>()
   const editorView = ref<EditorView>()
-  const editorStore = useEditorStore()
+  const editorStore =
+    props.enableEditorStore === false ? null : useEditorStore()
   const { general } = useEditorConfig()
   const { onChange, onArrowUpAtFirstLine } = props
   let cleanupDebugListeners: (() => void) | null = null
@@ -294,14 +296,14 @@ export const useCodeMirror = <T extends Element>(
         }
       }
 
-      if (imageFiles.length > 0) {
+      if (imageFiles.length > 0 && editorStore) {
         event.preventDefault()
         imageFiles.forEach((file) => editorStore.uploadImageFile(file))
       }
     }
 
     // 设置 store
-    editorStore.setEditorView(view)
+    editorStore?.setEditorView(view)
 
     view.dom.addEventListener('paste', handlePaste)
 
@@ -319,7 +321,7 @@ export const useCodeMirror = <T extends Element>(
     cleanupDebugListeners?.()
     editorView.value?.destroy()
     // 清理 store
-    editorStore.setEditorView(undefined)
+    editorStore?.setEditorView(undefined)
   })
 
   return [refContainer, editorView]

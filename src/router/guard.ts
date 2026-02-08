@@ -12,8 +12,13 @@ export const progress = new QProgress({ colorful: false, color: '#1a9cf3' })
 const title = configs.title
 
 let lastCheckedLogAt = 0
+let layoutMutationSnapshotAtNavigation: ReturnType<
+  ReturnType<typeof LayoutStore>['getMutationSnapshot']
+> | null = null
 
 router.beforeEach(async (to) => {
+  layoutMutationSnapshotAtNavigation = LayoutStore().getMutationSnapshot()
+
   if (to.path === '/setup-api') {
     return
   }
@@ -62,9 +67,14 @@ router.afterEach((to, from) => {
   progress.finish()
   // 跨页面（route.name 变化）时重置 layout store，清除旧 VNode 引用
   // 同一页面内的参数/查询变化不重置，以保留 header actions 等状态
-  // 注意：必须在 afterEach 中调用，而不是 beforeEach，否则组件还在渲染时 VNode 就被清空会导致错误
+  // 注意：使用导航前快照 + microtask，仅重置未被新页面覆盖的字段，避免 setActions 与 reset 竞态
   if (to.name !== from.name) {
-    LayoutStore().reset()
+    const layoutStore = LayoutStore()
+    const mutationSnapshot =
+      layoutMutationSnapshotAtNavigation ?? layoutStore.getMutationSnapshot()
+    queueMicrotask(() => {
+      layoutStore.resetIfUnchanged(mutationSnapshot)
+    })
   }
 })
 

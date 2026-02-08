@@ -12,6 +12,10 @@ export const useSaveConfirm = (
   comparedFn: () => boolean,
   message = '文章未保存是否确定离开？',
 ): void => {
+  if (!enable) {
+    return
+  }
+
   const beforeUnloadHandler = (event) => {
     if (comparedFn()) {
       return

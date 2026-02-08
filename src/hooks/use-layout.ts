@@ -45,11 +45,6 @@ export const useLayout = () => {
       layout.hideHeader.value = hide
     },
 
-    /** 设置 footer 操作按钮（如编辑页的设置按钮） */
-    setFooterActions: (el: VNode | null) => {
-      layout.footerActions.value = el
-    },
-
     /** 设置自定义 header class */
     setHeaderClass: (cls: string | null) => {
       layout.headerClass.value = cls
@@ -68,16 +63,6 @@ export const useLayout = () => {
     /** 设置内容区域是否强制 min-h-full（需要撑满高度时设为 true） */
     setContentMinFullHeight: (isFull: boolean) => {
       layout.contentMinFullHeight.value = isFull
-    },
-
-    /** 添加浮动按钮，返回用于删除的 key */
-    addFloatButton: (button: VNode): symbol => {
-      return layout.addFloatButton(button)
-    },
-
-    /** 移除浮动按钮 */
-    removeFloatButton: (key: symbol) => {
-      layout.removeFloatButton(key)
     },
   }
 }

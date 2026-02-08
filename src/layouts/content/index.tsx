@@ -38,9 +38,6 @@ export const ContentLayout = defineComponent({
     headerClass: {
       type: String,
     },
-    footerButtonElement: {
-      type: Object as PropType<VNode | null>,
-    },
   },
   setup(props, { slots }) {
     const layout = useStoreRef(LayoutStore)
@@ -64,9 +61,6 @@ export const ContentLayout = defineComponent({
         }
         if (props.headerClass !== undefined) {
           layout.headerClass.value = props.headerClass
-        }
-        if (props.footerButtonElement !== undefined) {
-          layout.footerActions.value = props.footerButtonElement
         }
       })
 
@@ -98,10 +92,6 @@ export const ContentLayout = defineComponent({
 
     const headerActions = computed(
       () => props.actionsElement ?? layout.headerActions.value,
-    )
-
-    const footerActions = computed(
-      () => props.footerButtonElement ?? layout.footerActions.value,
     )
 
     const headerClassName = computed(
@@ -176,31 +166,6 @@ export const ContentLayout = defineComponent({
         >
           {slots.default?.()}
         </NLayoutContent>
-
-        {/* Footer Actions & Float Buttons - Vercel-style FAB */}
-        {(footerActions.value || layout.floatButtons.value.size > 0) && (
-          <footer
-            class={[
-              'fixed bottom-6 right-6 z-50',
-              'flex items-center gap-2',
-              // Vercel-style glass container
-              'rounded-full px-1.5 py-1.5',
-              'bg-white/80 dark:bg-neutral-900/80',
-              'backdrop-blur-xl backdrop-saturate-150',
-              // Refined border
-              'border border-neutral-200/60 dark:border-neutral-700/60',
-              'ring-1 ring-black/[0.03] dark:ring-white/[0.03]',
-              // Layered shadow for depth
-              'shadow-[0_0_0_1px_rgba(0,0,0,0.02),0_2px_4px_rgba(0,0,0,0.04),0_8px_16px_rgba(0,0,0,0.06)]',
-              'dark:shadow-[0_0_0_1px_rgba(255,255,255,0.02),0_2px_8px_rgba(0,0,0,0.3),0_8px_24px_rgba(0,0,0,0.4)]',
-              // Smooth entrance animation
-              'animate-in fade-in slide-in-from-bottom-2 duration-300',
-            ]}
-          >
-            {footerActions.value}
-            {Array.from(layout.floatButtons.value.values())}
-          </footer>
-        )}
       </div>
     )
   },

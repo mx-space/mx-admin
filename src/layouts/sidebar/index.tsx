@@ -1,12 +1,11 @@
-import { computed, defineComponent, onUnmounted, watch, watchEffect } from 'vue'
-import { RouterLink, useRoute } from 'vue-router'
+import { computed, defineComponent, onUnmounted, watchEffect } from 'vue'
+import { RouterLink } from 'vue-router'
 import type { CSSProperties } from 'vue'
 
 import { KBarWrapper } from '~/components/k-bar'
 import { API_URL, GATEWAY_URL } from '~/constants/env'
 import { ContentLayout } from '~/layouts/content'
 import $RouterView from '~/layouts/router-view'
-import { LayoutStore } from '~/stores/layout'
 
 import { Sidebar } from '../../components/sidebar'
 import { useStoreRef } from '../../hooks/use-store-ref'
@@ -18,17 +17,6 @@ export const SidebarLayout = defineComponent({
 
   setup() {
     const ui = useStoreRef(UIStore)
-    const route = useRoute()
-    const layoutStore = LayoutStore()
-
-    // 跨页面（route.name 变化）时重置 layout store 状态
-    // 同一页面内的参数/查询变化不重置，以保留 header actions 等状态
-    watch(
-      () => route.name,
-      () => {
-        layoutStore.reset()
-      },
-    )
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.metaKey && e.key.toLowerCase() === 'b') {

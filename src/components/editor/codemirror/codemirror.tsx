@@ -22,8 +22,10 @@ import {
 } from './extension'
 import { ImageEditPopover } from './ImageEditPopover'
 import { useCodeMirror } from './use-codemirror'
+import { blockRangesField } from './wysiwyg-block-registry'
 import { blockquoteWysiwygExtension } from './wysiwyg-blockquote'
 import { codeBlockWysiwygExtension } from './wysiwyg-codeblock'
+import { detailsWysiwygExtension } from './wysiwyg-details'
 import { dividerWysiwygExtension } from './wysiwyg-divider'
 import { headingWysiwygExtension } from './wysiwyg-heading'
 import { inlineWysiwygExtension } from './wysiwyg-inline'
@@ -46,6 +48,10 @@ export const CodemirrorEditor = defineComponent({
     className: {
       type: String,
     },
+    embedded: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup(props, { expose }) {
     const [refContainer, editorView] = useCodeMirror({
@@ -55,6 +61,7 @@ export const CodemirrorEditor = defineComponent({
         props.onStateChange?.(state)
       },
       onArrowUpAtFirstLine: props.onArrowUpAtFirstLine,
+      enableEditorStore: !props.embedded,
     })
 
     watch(
@@ -80,14 +87,16 @@ export const CodemirrorEditor = defineComponent({
         const isWysiwyg = (renderMode ?? 'plain') === 'wysiwyg'
         const extensions = isWysiwyg
           ? [
+              blockRangesField,
+
               ...dividerWysiwygExtension,
               ...headingWysiwygExtension,
               ...listWysiwygExtension,
               ...blockquoteWysiwygExtension,
+              ...detailsWysiwygExtension,
               ...mathWysiwygExtension,
               ...inlineWysiwygExtension,
               ...codeBlockWysiwygExtension,
-              // ...emptyLineWysiwygExtension,
               wysiwygMeasureExtension,
             ]
           : []
@@ -107,13 +116,15 @@ export const CodemirrorEditor = defineComponent({
         })
         view.requestMeasure()
 
-        requestAnimationFrame(() => {
-          view.dispatch({
-            effects: EditorView.scrollIntoView(selectionHead, {
-              y: 'center',
-            }),
+        if (!props.embedded) {
+          requestAnimationFrame(() => {
+            view.dispatch({
+              effects: EditorView.scrollIntoView(selectionHead, {
+                y: 'center',
+              }),
+            })
           })
-        })
+        }
 
         if (hadFocus) {
           requestAnimationFrame(() => view.focus())
@@ -142,7 +153,7 @@ export const CodemirrorEditor = defineComponent({
     const memoedText = props.text
 
     useSaveConfirm(
-      props.unSaveConfirm,
+      props.unSaveConfirm && !props.embedded,
       () =>
         props.saveConfirmFn?.() ??
         memoedText === editorView.value?.state.doc.toString(),
@@ -155,6 +166,7 @@ export const CodemirrorEditor = defineComponent({
     const handleContainerPointerDown = (e: PointerEvent) => {
       const view = editorView.value
       if (!view) return
+      if (props.embedded) return
 
       const isWysiwyg = (props.renderMode ?? 'plain') === 'wysiwyg'
       if (!isWysiwyg) return
@@ -179,24 +191,28 @@ export const CodemirrorEditor = defineComponent({
 
     return () => (
       <div
-        class="relative flex h-full flex-col"
+        class={props.embedded ? 'relative' : 'relative flex h-full flex-col'}
         onPointerdown={handleContainerPointerDown}
       >
         <div
-          class={[styles.editor, props.className, 'flex-1 overflow-auto']}
+          class={[
+            styles.editor,
+            props.className,
+            props.embedded ? '' : 'flex-1 overflow-auto',
+          ]}
           ref={refContainer}
         />
-        {/* 浮动工具栏 */}
-        <FloatingToolbar
-          editorView={editorView.value}
-          visible={hasSelection.value}
-          position={position.value}
-        />
-        {(props.renderMode ?? 'plain') === 'wysiwyg' && (
+        {!props.embedded && (
+          <FloatingToolbar
+            editorView={editorView.value}
+            visible={hasSelection.value}
+            position={position.value}
+          />
+        )}
+        {!props.embedded && (props.renderMode ?? 'plain') === 'wysiwyg' && (
           <SlashMenu editorView={editorView.value} />
         )}
-        {/* 图片编辑 Popover 单例 */}
-        <ImageEditPopover />
+        {!props.embedded && <ImageEditPopover />}
       </div>
     )
   },

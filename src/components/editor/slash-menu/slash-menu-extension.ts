@@ -1,6 +1,6 @@
 import { Annotation, StateEffect, StateField } from '@codemirror/state'
 
-import { isLineInsideCodeBlock } from '../codemirror/wysiwyg-codeblock'
+import { isLineInBlock } from '../codemirror/wysiwyg-block-registry'
 
 export interface SlashMenuState {
   active: boolean
@@ -82,7 +82,7 @@ export const slashMenuStateField = StateField.define<SlashMenuState>({
       const isWhitespaceBefore = offsetInLine > 0 && /\s/.test(prevChar)
 
       if (!isLineStart && !isWhitespaceBefore) return next
-      if (isLineInsideCodeBlock(doc, line.number)) return next
+      if (isLineInBlock(tr.state, line.number)) return next
 
       return {
         active: true,

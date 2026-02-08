@@ -1,5 +1,6 @@
 import {
   Bold,
+  ChevronDown,
   Code,
   Code2,
   Heading1,
@@ -68,6 +69,27 @@ const insertTable = (view: EditorView): boolean => {
   view.dispatch({
     changes: { from: insertPos, to: insertPos, insert },
     selection: { anchor: insertPos + cursorOffset },
+  })
+
+  view.focus()
+  return true
+}
+
+const insertDetails = (view: EditorView): boolean => {
+  const { state } = view
+  const { from } = state.selection.main
+  const line = state.doc.lineAt(from)
+  const insertPos = line.to
+  const needsNewline = line.text.length > 0
+  const insert = `${needsNewline ? '\n' : ''}<details>\n<summary>摘要</summary>\n\n内容\n\n</details>\n`
+  const summaryOffset = insert.indexOf('摘要')
+
+  view.dispatch({
+    changes: { from: insertPos, to: insertPos, insert },
+    selection: {
+      anchor: insertPos + summaryOffset,
+      head: insertPos + summaryOffset + 2,
+    },
   })
 
   view.focus()
@@ -242,6 +264,14 @@ export const slashMenuGroups: SlashMenuGroup[] = [
         icon: Minus,
         keywords: ['hr', 'divider'],
         command: commands.horizontalRule,
+      },
+      {
+        id: 'details',
+        label: '折叠块',
+        description: '可折叠的内容区域',
+        icon: ChevronDown,
+        keywords: ['details', 'summary', 'collapse', 'toggle', '折叠'],
+        command: insertDetails,
       },
     ],
   },

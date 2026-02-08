@@ -120,7 +120,7 @@ class BlockquoteMarkerWidget extends WidgetType {
   }
 
   ignoreEvent(): boolean {
-    return false
+    return true
   }
 }
 
@@ -160,7 +160,7 @@ class AlertMarkerWidget extends WidgetType {
   }
 
   ignoreEvent(): boolean {
-    return false
+    return true
   }
 }
 

@@ -46,9 +46,12 @@ const PageItem = defineComponent({
 
           <div class="min-w-0 flex-1">
             <div class="flex items-center gap-4">
-              <span class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
+              <RouterLink
+                to={`/pages/edit?id=${row.id}`}
+                class="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100"
+              >
                 {row.title}
-              </span>
+              </RouterLink>
             </div>
             <div class="mt-0.5 flex items-center gap-3">
               <span class="text-xs text-neutral-500 dark:text-neutral-400">

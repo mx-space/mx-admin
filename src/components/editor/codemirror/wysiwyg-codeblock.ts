@@ -18,6 +18,10 @@ import { Decoration, EditorView, keymap, WidgetType } from '@codemirror/view'
 import { githubLight } from '@ddietr/codemirror-themes/theme/github-light'
 
 import { languageSvgIcons } from './language-icons'
+import {
+  blockDetectorFacet,
+  isHiddenSeparatorLine,
+} from './wysiwyg-block-registry'
 
 const codeBlockStartRegex = /^```(?!`)(.*)$/
 const codeBlockEndRegex = /^```\s*$/
@@ -275,7 +279,8 @@ class CodeBlockElement extends LitElement {
     }
 
     .codeblock-editor .cm-scroller {
-      font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+      font-family:
+        ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
         'Liberation Mono', monospace;
       font-size: 0.9em;
       line-height: 1.5;
@@ -1325,19 +1330,6 @@ const isCursorInCodeBlock = (state: EditorState, block: CodeBlock): boolean => {
   return from <= block.endTo && to >= block.startFrom
 }
 
-const isHiddenSeparatorLine = (
-  state: EditorState,
-  lineNumber: number,
-): boolean => {
-  const doc = state.doc
-  if (lineNumber < 1 || lineNumber > doc.lines) return false
-  const line = doc.line(lineNumber)
-  if (line.text.trim() !== '') return false
-  if (lineNumber === 1) return false
-  const prevLine = doc.line(lineNumber - 1)
-  return prevLine.text.trim() !== ''
-}
-
 // Detect dark mode
 const isDarkMode = (): boolean => {
   return document.documentElement.classList.contains('dark')
@@ -1559,7 +1551,22 @@ const codeBlockWysiwygKeymap = Prec.highest(
   ]),
 )
 
+const codeBlockDetector = blockDetectorFacet.of({
+  type: 'codeblock',
+  priority: 100,
+  detect: (state) => {
+    const blocks = findCodeBlocks(state)
+    return blocks.map((b) => ({
+      from: b.startFrom,
+      to: b.endTo,
+      startLine: b.startLine,
+      endLine: b.endLine,
+    }))
+  },
+})
+
 export const codeBlockWysiwygExtension = [
+  codeBlockDetector,
   codeBlockWysiwygField,
   autoCloseCodeBlockFilter,
   autoCloseCodeBlockFocus,
