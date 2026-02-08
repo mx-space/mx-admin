@@ -36,7 +36,10 @@ export const optionsApi = {
 
   // 获取邮件模板
   getEmailTemplate: (params: { type: string }) =>
-    request.get<EmailTemplateResponse>('/options/email/template', { params }),
+    request.get<EmailTemplateResponse>('/options/email/template', {
+      params,
+      bypassTransform: true,
+    }),
 
   // 更新邮件模板
   updateEmailTemplate: (params: { type: string }, data: { source: string }) =>
