@@ -669,8 +669,6 @@ const CategoryDetailPanel = defineComponent({
                   </div>
                   <div class="mt-2 flex items-center gap-3 text-xs text-neutral-500 dark:text-neutral-400">
                     <span>{props.category.count} 篇文章</span>
-                    <span>·</span>
-                    <RelativeTime time={props.category.modified} />
                   </div>
                 </div>
               </div>
