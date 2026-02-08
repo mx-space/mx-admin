@@ -4,8 +4,8 @@ import type { EditorView } from '@codemirror/view'
 import { StateEffect } from '@codemirror/state'
 import { WidgetType } from '@codemirror/view'
 
-import { showImagePopover } from './image-popover-state'
-import { getPendingUpload, isPendingUploadId } from './upload-store'
+import { showImagePopover } from '../image-popover-state'
+import { getPendingUpload, isPendingUploadId } from '../upload-store'
 
 const DEFAULT_ESTIMATED_IMAGE_HEIGHT = 240
 const imageHeightCache = new Map<string, number>()
@@ -184,7 +184,8 @@ class ImageElement extends LitElement {
     }
 
     .error-url {
-      font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+      font-family:
+        ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
         'Liberation Mono', monospace;
       font-size: 0.75rem;
       line-height: 1.4;

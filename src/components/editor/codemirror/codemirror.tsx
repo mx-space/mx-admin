@@ -22,16 +22,7 @@ import {
 } from './extension'
 import { ImageEditPopover } from './ImageEditPopover'
 import { useCodeMirror } from './use-codemirror'
-import { blockRangesField } from './wysiwyg-block-registry'
-import { blockquoteWysiwygExtension } from './wysiwyg-blockquote'
-import { codeBlockWysiwygExtension } from './wysiwyg-codeblock'
-import { detailsWysiwygExtension } from './wysiwyg-details'
-import { dividerWysiwygExtension } from './wysiwyg-divider'
-import { headingWysiwygExtension } from './wysiwyg-heading'
-import { inlineWysiwygExtension } from './wysiwyg-inline'
-import { listWysiwygExtension } from './wysiwyg-list'
-import { mathWysiwygExtension } from './wysiwyg-math'
-import { wysiwygMeasureExtension } from './wysiwyg-measure'
+import { wysiwygExtensions } from './wysiwyg'
 
 export const CodemirrorEditor = defineComponent({
   name: 'CodemirrorEditor',
@@ -85,21 +76,7 @@ export const CodemirrorEditor = defineComponent({
 
         const hadFocus = view.hasFocus
         const isWysiwyg = (renderMode ?? 'plain') === 'wysiwyg'
-        const extensions = isWysiwyg
-          ? [
-              blockRangesField,
-
-              ...dividerWysiwygExtension,
-              ...headingWysiwygExtension,
-              ...listWysiwygExtension,
-              ...blockquoteWysiwygExtension,
-              ...detailsWysiwygExtension,
-              ...mathWysiwygExtension,
-              ...inlineWysiwygExtension,
-              ...codeBlockWysiwygExtension,
-              wysiwygMeasureExtension,
-            ]
-          : []
+        const extensions = isWysiwyg ? wysiwygExtensions : []
 
         const selectionHead = view.state.selection.main.head
 

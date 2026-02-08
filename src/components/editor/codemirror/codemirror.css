@@ -262,22 +262,11 @@
     margin: 0;
   }
 
-  .cm-line.cm-wysiwyg-line-break-line {
-    color: transparent;
-    user-select: none;
-    position: relative;
-    white-space: pre;
-  }
-
-  .cm-line.cm-wysiwyg-line-break-line::before {
-    content: '↵';
+  .cm-wysiwyg-line-break-icon {
     font-size: 0.95rem;
     line-height: 1;
-    color: color-mix(in srgb, currentColor 55%, transparent);
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
+    opacity: 0.4;
+    user-select: none;
     pointer-events: none;
   }
 

@@ -5,7 +5,7 @@ import type { DecorationSet } from '@codemirror/view'
 import { StateField } from '@codemirror/state'
 import { Decoration, EditorView, WidgetType } from '@codemirror/view'
 
-import { imageHeightChangedEffect, ImageWidget } from './wysiwyg-image'
+import { imageHeightChangedEffect, ImageWidget } from './image'
 
 // Hidden marker widget - displays nothing
 class HiddenMarkerWidget extends WidgetType {

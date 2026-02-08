@@ -17,11 +17,8 @@ import { oneDark } from '@codemirror/theme-one-dark'
 import { Decoration, EditorView, keymap, WidgetType } from '@codemirror/view'
 import { githubLight } from '@ddietr/codemirror-themes/theme/github-light'
 
-import { languageSvgIcons } from './language-icons'
-import {
-  blockDetectorFacet,
-  isHiddenSeparatorLine,
-} from './wysiwyg-block-registry'
+import { languageSvgIcons } from '../language-icons'
+import { blockDetectorFacet, isHiddenSeparatorLine } from './block-registry'
 
 const codeBlockStartRegex = /^```(?!`)(.*)$/
 const codeBlockEndRegex = /^```\s*$/

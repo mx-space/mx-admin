@@ -34,6 +34,7 @@ export const SlashMenu = defineComponent({
       groupedItems,
       flatItems,
       activeIndex,
+      isKeyboardNav,
       executeItem,
       closeMenu,
       syncFromEditor,
@@ -98,6 +99,9 @@ export const SlashMenu = defineComponent({
                 top: `${position.value.y}px`,
               }}
               onMousedown={(event) => event.preventDefault()}
+              onMousemove={() => {
+                isKeyboardNav.value = false
+              }}
             >
               {/* Header */}
               <div
@@ -171,6 +175,7 @@ export const SlashMenu = defineComponent({
                             ]}
                             onClick={() => executeItem(item)}
                             onMouseenter={() => {
+                              if (isKeyboardNav.value) return
                               if (index >= 0) {
                                 activeIndex.value = index
                               }

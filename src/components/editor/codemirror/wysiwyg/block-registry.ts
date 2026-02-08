@@ -76,13 +76,6 @@ export function isLineInBlock(
   return false
 }
 
-export function getBlockRangesOfType(
-  state: EditorState,
-  type: string,
-): BlockRange[] {
-  return state.field(blockRangesField).filter((r) => r.type === type)
-}
-
 export const isHiddenSeparatorLine = (
   state: EditorState,
   lineNumber: number,

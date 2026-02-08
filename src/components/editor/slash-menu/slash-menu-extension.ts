@@ -1,6 +1,6 @@
 import { Annotation, StateEffect, StateField } from '@codemirror/state'
 
-import { isLineInBlock } from '../codemirror/wysiwyg-block-registry'
+import { isLineInBlock } from '../codemirror/wysiwyg'
 
 export interface SlashMenuState {
   active: boolean

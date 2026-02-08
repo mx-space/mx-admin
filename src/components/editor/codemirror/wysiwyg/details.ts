@@ -1,15 +1,11 @@
-import type { Range } from '@codemirror/state'
-import type { EditorState } from '@codemirror/state'
+import type { EditorState, Range } from '@codemirror/state'
 import type { DecorationSet } from '@codemirror/view'
 import type { App } from 'vue'
 
 import { Prec, StateField } from '@codemirror/state'
 import { Decoration, EditorView, keymap, WidgetType } from '@codemirror/view'
 
-import {
-  blockDetectorFacet,
-  isHiddenSeparatorLine,
-} from './wysiwyg-block-registry'
+import { blockDetectorFacet, isHiddenSeparatorLine } from './block-registry'
 
 const detailsOpenPattern = /^\s*<details(\s+open)?\s*>\s*$/i
 const summaryOpenPattern = /^\s*<summary>\s*$/i
@@ -391,7 +387,7 @@ async function mountInnerEditor(
   const [{ createApp, h, ref, onMounted }] = await Promise.all([import('vue')])
 
   // Dynamically import to avoid circular dependency
-  const { CodemirrorEditor } = await import('./codemirror')
+  const { CodemirrorEditor } = await import('../codemirror')
 
   const contentRef = ref(state.content)
   const syncingRef = ref(false)

@@ -39,6 +39,7 @@ export function useSlashMenu(editorView: Ref<EditorView | undefined>) {
   const position = ref<SlashMenuPosition | null>(null)
   const query = ref('')
   const activeIndex = ref(0)
+  const isKeyboardNav = ref(false)
   const scrollerRef = ref<HTMLElement | null>(null)
 
   const fuse = new Fuse(slashMenuItems, {
@@ -161,6 +162,7 @@ export function useSlashMenu(editorView: Ref<EditorView | undefined>) {
     if (items.length === 0) return
     const total = items.length
     const next = (activeIndex.value + delta + total) % total
+    isKeyboardNav.value = true
     activeIndex.value = next
   }
 
@@ -189,24 +191,28 @@ export function useSlashMenu(editorView: Ref<EditorView | undefined>) {
 
         if (event.key === 'ArrowDown') {
           event.preventDefault()
+          event.stopPropagation()
           moveActive(1)
           return
         }
 
         if (event.key === 'ArrowUp') {
           event.preventDefault()
+          event.stopPropagation()
           moveActive(-1)
           return
         }
 
         if (event.key === 'Enter') {
           event.preventDefault()
+          event.stopPropagation()
           selectActiveItem()
           return
         }
 
         if (event.key === 'Escape') {
           event.preventDefault()
+          event.stopPropagation()
           closeMenu()
         }
       }
@@ -224,7 +230,7 @@ export function useSlashMenu(editorView: Ref<EditorView | undefined>) {
       view.dom.addEventListener('keyup', handleInput)
       view.dom.addEventListener('mouseup', handleInput)
       view.dom.addEventListener('compositionend', handleInput)
-      view.dom.addEventListener('keydown', handleKeydown)
+      view.dom.addEventListener('keydown', handleKeydown, { capture: true })
       scroller.addEventListener('scroll', handleScroll, { passive: true })
 
       syncFromEditor()
@@ -234,7 +240,9 @@ export function useSlashMenu(editorView: Ref<EditorView | undefined>) {
         view.dom.removeEventListener('keyup', handleInput)
         view.dom.removeEventListener('mouseup', handleInput)
         view.dom.removeEventListener('compositionend', handleInput)
-        view.dom.removeEventListener('keydown', handleKeydown)
+        view.dom.removeEventListener('keydown', handleKeydown, {
+          capture: true,
+        })
         scroller.removeEventListener('scroll', handleScroll)
       })
     },
@@ -256,6 +264,7 @@ export function useSlashMenu(editorView: Ref<EditorView | undefined>) {
     groupedItems,
     flatItems,
     activeIndex,
+    isKeyboardNav,
     moveActive,
     executeItem,
     selectActiveItem,

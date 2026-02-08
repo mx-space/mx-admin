@@ -1,9 +1,24 @@
 import type { EditorState, Range } from '@codemirror/state'
 import type { DecorationSet, EditorView } from '@codemirror/view'
 
-import { Decoration, ViewPlugin } from '@codemirror/view'
+import { Decoration, ViewPlugin, WidgetType } from '@codemirror/view'
 
-import { isLineBreakTagLine, isLineInBlock } from './wysiwyg-block-registry'
+import { isLineBreakTagLine, isLineInBlock } from './block-registry'
+
+class LineBreakWidget extends WidgetType {
+  toDOM(): HTMLElement {
+    const span = document.createElement('span')
+    span.className = 'cm-wysiwyg-line-break-icon'
+    span.textContent = '↵'
+    return span
+  }
+
+  ignoreEvent(): boolean {
+    return false
+  }
+}
+
+const lineBreakWidget = new LineBreakWidget()
 
 const buildLineBreakDecorations = (state: EditorState): DecorationSet => {
   const decorations: Range<Decoration>[] = []
@@ -18,9 +33,9 @@ const buildLineBreakDecorations = (state: EditorState): DecorationSet => {
     if (cursorOnLine) continue
 
     decorations.push(
-      Decoration.line({
-        class: 'cm-wysiwyg-line-break-line',
-      }).range(line.from),
+      Decoration.replace({
+        widget: lineBreakWidget,
+      }).range(line.from, line.to),
     )
   }
 
