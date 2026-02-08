@@ -84,8 +84,8 @@ export const SnippetCard = defineComponent({
       const s = props.snippet
       const path =
         s.type === SnippetType.Function
-          ? `/serverless/${s.reference}/${s.name}`
-          : `/${s.reference}/${s.name}`
+          ? `/fn/${s.reference}/${s.name}`
+          : `/snippets/${s.reference}/${s.name}`
       return `${API_URL}${path}`
     })
 
