@@ -1,5 +1,24 @@
 # CHANGELOG
 
+## [6.0.6](https://github.com/mx-space/admin-vue3/compare/v6.0.5...v6.0.6) (2026-02-08)
+
+
+### Bug Fixes
+
+* correct modal button callback for email template reset ([371a65b](https://github.com/mx-space/admin-vue3/commit/371a65b1130ad3de7e26481cde9bb0f32b2f9f84))
+* update email template request to bypass transformation ([e63087e](https://github.com/mx-space/admin-vue3/commit/e63087e1a52022f0e7085c932c4a2c755078687a))
+* update snippet card routing paths for improved clarity ([d798994](https://github.com/mx-space/admin-vue3/commit/d798994fbbc75287c5d033605d4464ea2355d814))
+
+
+### Features
+
+* add custom path support for snippets ([50a2c57](https://github.com/mx-space/admin-vue3/commit/50a2c57bc36e2c220f036aa9789e2e34a6cec106))
+* enhance image upload handling and status toggle functionality ([3c8c59a](https://github.com/mx-space/admin-vue3/commit/3c8c59a07fa0c2589d5da1502135a224fb9e0b56))
+* enhance WYSIWYG editor with new block features and styling ([2add82a](https://github.com/mx-space/admin-vue3/commit/2add82a32a434793449c5c615fa279a747ad599b))
+* implement collapsible details block in WYSIWYG editor ([8aca7bc](https://github.com/mx-space/admin-vue3/commit/8aca7bc03aa64f9bb9d967c945931a5dac3eeb18))
+
+
+
 ## [6.0.5](https://github.com/mx-space/admin-vue3/compare/v6.0.4...v6.0.5) (2026-02-07)
 
 
