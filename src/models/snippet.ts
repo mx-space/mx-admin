@@ -35,5 +35,7 @@ export class SnippetModel extends BaseModel {
   method?: string
   secret?: Record<string, any>
 
+  customPath?: string
+
   builtIn = false
 }

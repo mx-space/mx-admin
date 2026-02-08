@@ -177,6 +177,18 @@ export const SnippetMetaForm = defineComponent({
             />
           </FormField>
 
+          <FormField
+            label="自定义路径"
+            tooltip="设置后可通过 /s/{customPath} 访问，留空使用 /{reference}/{name}"
+          >
+            <NInput
+              value={props.data.customPath}
+              onUpdateValue={(v) => updateField('customPath', v || undefined)}
+              placeholder="如 my-api/config"
+              size="small"
+            />
+          </FormField>
+
           <FormField label="类型">
             <NSelect
               value={props.data.type}

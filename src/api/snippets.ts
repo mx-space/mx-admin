@@ -22,6 +22,7 @@ export interface CreateSnippetData {
   enable?: boolean
   method?: string
   secret?: Record<string, any>
+  customPath?: string
 }
 
 export interface UpdateSnippetData extends Partial<CreateSnippetData> {}

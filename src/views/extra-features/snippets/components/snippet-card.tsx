@@ -82,6 +82,7 @@ export const SnippetCard = defineComponent({
 
     const snippetUrl = computed(() => {
       const s = props.snippet
+      if (s.customPath) return `${API_URL}/s/${s.customPath}`
       const path =
         s.type === SnippetType.Function
           ? `/fn/${s.reference}/${s.name}`
