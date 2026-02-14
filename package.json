@@ -43,7 +43,7 @@
     "@emoji-mart/data": "1.2.1",
     "@lezer/highlight": "1.2.3",
     "@mx-space/api-client": "1.21.2",
-    "@pierre/diffs": "1.0.8",
+    "@pierre/diffs": "1.0.11",
     "@simplewebauthn/browser": "13.2.2",
     "@tanstack/query-async-storage-persister": "5.90.22",
     "@tanstack/query-persist-client-core": "5.91.19",
