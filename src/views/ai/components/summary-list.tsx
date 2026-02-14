@@ -3,15 +3,16 @@ import {
   Inbox as InboxIcon,
   LoaderIcon,
   Search as SearchIcon,
-  Sparkles as SparklesIcon,
   StickyNote as StickyNoteIcon,
 } from 'lucide-vue-next'
-import { NInput, NScrollbar } from 'naive-ui'
+import { NScrollbar } from 'naive-ui'
 import { computed, defineComponent, ref, watch } from 'vue'
 import type { ArticleInfo, GroupedSummaryData } from '~/api/ai'
 import type { PropType } from 'vue'
 
 import { refDebounced } from '@vueuse/core'
+
+import { BorderlessInput } from '~/components/input/borderless-input'
 
 type ArticleRefType = ArticleInfo['type']
 
@@ -72,7 +73,6 @@ export const SummaryList = defineComponent({
     },
   },
   setup(props) {
-    const totalCount = computed(() => props.pager?.total ?? props.data.length)
     const searchInputValue = ref('')
     const debouncedSearch = refDebounced(searchInputValue, 300)
 
@@ -97,20 +97,9 @@ export const SummaryList = defineComponent({
 
     return () => (
       <div class="flex h-full flex-col">
-        <div class="flex h-12 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
-          <span class="flex items-center gap-1.5 text-base font-semibold text-neutral-900 dark:text-neutral-100">
-            <SparklesIcon class="h-4 w-4" />
-            AI 摘要
-          </span>
-          {totalCount.value > 0 && (
-            <span class="text-xs text-neutral-400">
-              {totalCount.value} 篇文章
-            </span>
-          )}
-        </div>
-
-        <div class="flex flex-shrink-0 flex-col gap-2 border-b border-neutral-100 px-4 py-2 dark:border-neutral-800/50">
-          <NInput
+        <div class="flex h-12 flex-shrink-0 items-center gap-2 border-b border-neutral-200 px-4 py-2 dark:border-neutral-800">
+          <BorderlessInput
+            class="-mx-4 flex-1"
             value={searchInputValue.value}
             onUpdateValue={(val) => (searchInputValue.value = val)}
             placeholder="输入文章标题关键词"
@@ -125,7 +114,7 @@ export const SummaryList = defineComponent({
             {{
               prefix: () => <SearchIcon class="size-4 text-neutral-400" />,
             }}
-          </NInput>
+          </BorderlessInput>
         </div>
 
         <div class="min-h-0 flex-1">
