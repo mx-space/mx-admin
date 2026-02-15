@@ -9,6 +9,7 @@ export enum CronTaskType {
   PushToBingSearch = 'cron:push-to-bing-search',
   DeleteExpiredJWT = 'cron:delete-expired-jwt',
   CleanupOrphanImages = 'cron:cleanup-orphan-images',
+  SyncPublishedImagesToS3 = 'cron:sync-published-images-to-s3',
 }
 
 export enum CronTaskStatus {
@@ -95,6 +96,5 @@ export const cronTaskApi = {
     status?: CronTaskStatus
     type?: CronTaskType
     before: number
-  }) =>
-    request.delete<{ deleted: number }>('/cron-task/tasks', { data: params }),
+  }) => request.delete<{ deleted: number }>('/cron-task/tasks', { params }),
 }
