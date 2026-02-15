@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## [6.0.7](https://github.com/mx-space/admin-vue3/compare/v6.0.6...v6.0.7) (2026-02-14)
+
+
+### Bug Fixes
+
+* remove unnecessary elements from category detail panel ([d923b79](https://github.com/mx-space/admin-vue3/commit/d923b79860d5b76a379647cf52dcdb6b89cb08d2))
+
+
+### Features
+
+* enhance category management view with new features ([b8cb7f6](https://github.com/mx-space/admin-vue3/commit/b8cb7f68839f35f2059485163de627bda48893bb))
+
+
+
 ## [6.0.6](https://github.com/mx-space/admin-vue3/compare/v6.0.5...v6.0.6) (2026-02-08)
 
 

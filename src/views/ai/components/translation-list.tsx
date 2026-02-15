@@ -1,18 +1,19 @@
 import {
   FileText as FileTextIcon,
   Inbox as InboxIcon,
-  Languages as LanguagesIcon,
   LoaderIcon,
   Plus as PlusIcon,
   Search as SearchIcon,
   StickyNote as StickyNoteIcon,
 } from 'lucide-vue-next'
-import { NButton, NInput, NScrollbar, NTooltip } from 'naive-ui'
+import { NButton, NScrollbar, NTooltip } from 'naive-ui'
 import { computed, defineComponent, ref, watch } from 'vue'
 import type { ArticleInfo, GroupedTranslationData } from '~/api/ai'
 import type { PropType } from 'vue'
 
 import { refDebounced } from '@vueuse/core'
+
+import { BorderlessInput } from '~/components/input/borderless-input'
 
 import { ArticleSelectorModal } from './article-selector-modal'
 
@@ -78,7 +79,6 @@ export const TranslationList = defineComponent({
     },
   },
   setup(props) {
-    const totalCount = computed(() => props.pager?.total ?? props.data.length)
     const showBatchModal = ref(false)
     const searchInputValue = ref('')
     const debouncedSearch = refDebounced(searchInputValue, 300)
@@ -108,43 +108,15 @@ export const TranslationList = defineComponent({
 
     return () => (
       <div class="flex h-full flex-col">
-        <div class="flex h-12 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
-          <span class="flex items-center gap-1.5 text-base font-semibold text-neutral-900 dark:text-neutral-100">
-            <LanguagesIcon class="h-4 w-4" />
-            AI 翻译
-          </span>
-          <div class="flex items-center gap-2">
-            {totalCount.value > 0 && (
-              <span class="text-xs text-neutral-400">
-                {totalCount.value} 篇
-              </span>
-            )}
-            <NTooltip>
-              {{
-                trigger: () => (
-                  <NButton
-                    size="tiny"
-                    quaternary
-                    circle
-                    onClick={() => (showBatchModal.value = true)}
-                  >
-                    <PlusIcon class="size-4" />
-                  </NButton>
-                ),
-                default: () => '批量生成翻译',
-              }}
-            </NTooltip>
-          </div>
-        </div>
-
         <ArticleSelectorModal
           show={showBatchModal.value}
           onClose={() => (showBatchModal.value = false)}
           onSuccess={handleBatchSuccess}
         />
 
-        <div class="flex flex-shrink-0 flex-col gap-2 border-b border-neutral-100 px-4 py-2 dark:border-neutral-800/50">
-          <NInput
+        <div class="flex h-12 flex-shrink-0 items-center gap-2 border-b border-neutral-200 px-4 py-2 dark:border-neutral-800">
+          <BorderlessInput
+            class="-mx-4 flex-1"
             value={searchInputValue.value}
             onUpdateValue={(val) => (searchInputValue.value = val)}
             placeholder="输入文章标题关键词"
@@ -159,7 +131,23 @@ export const TranslationList = defineComponent({
             {{
               prefix: () => <SearchIcon class="size-4 text-neutral-400" />,
             }}
-          </NInput>
+          </BorderlessInput>
+
+          <NTooltip>
+            {{
+              trigger: () => (
+                <NButton
+                  size="tiny"
+                  quaternary
+                  circle
+                  onClick={() => (showBatchModal.value = true)}
+                >
+                  <PlusIcon class="size-4" />
+                </NButton>
+              ),
+              default: () => '批量生成翻译',
+            }}
+          </NTooltip>
         </div>
 
         <div class="min-h-0 flex-1">
