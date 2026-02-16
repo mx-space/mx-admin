@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## [6.0.8](https://github.com/mx-space/admin-vue3/compare/v6.0.7...v6.0.8) (2026-02-16)
+
+
+### Bug Fixes
+
+* optimize mobile header layout for write views ([807e74a](https://github.com/mx-space/admin-vue3/commit/807e74aaaedde97efd82c190056991d1d8a39823))
+
+
+### Features
+
+* add new cron task for syncing published images to S3 ([fd95b5c](https://github.com/mx-space/admin-vue3/commit/fd95b5ca415fd5c1d7f09ce7120186416de4c397))
+
+
+
 ## [6.0.7](https://github.com/mx-space/admin-vue3/compare/v6.0.6...v6.0.7) (2026-02-14)
 
 
