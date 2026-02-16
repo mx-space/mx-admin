@@ -127,11 +127,11 @@ export const ContentLayout = defineComponent({
               headerClassName.value,
             ]}
           >
-            <div class="flex items-center gap-3">
+            <div class="flex min-w-0 items-center gap-3">
               {/* 展开 Sidebar / 打开菜单 按钮 */}
               {(isMobile.value || ui.sidebarCollapse.value) && (
                 <button
-                  class="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--sidebar-text)] transition-colors hover:bg-[var(--sidebar-hover-bg)] hover:text-[var(--sidebar-text-active)]"
+                  class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[var(--sidebar-text)] transition-colors hover:bg-[var(--sidebar-hover-bg)] hover:text-[var(--sidebar-text-active)]"
                   onClick={() => (ui.sidebarCollapse.value = false)}
                   title={isMobile.value ? '打开菜单' : '展开侧边栏 (⌘B)'}
                 >
@@ -142,17 +142,17 @@ export const ContentLayout = defineComponent({
                   )}
                 </button>
               )}
-              <h1 class="text-lg font-semibold text-[var(--sidebar-text-active)]">
+              <h1 class="shrink-0 text-lg font-semibold text-[var(--sidebar-text-active)]">
                 {pageTitle.value}
               </h1>
               {/* Header 副标题/元信息 */}
               {headerSubtitle.value && (
-                <div class="ml-2 border-l border-neutral-200 pl-3 dark:border-neutral-700">
+                <div class="ml-2 min-w-0 truncate border-l border-neutral-200 pl-3 dark:border-neutral-700">
                   {headerSubtitle.value}
                 </div>
               )}
             </div>
-            <div class="flex items-center gap-1.5">
+            <div class="flex shrink-0 items-center gap-1.5">
               {headerActions.value ?? slots.actions?.()}
             </div>
           </header>

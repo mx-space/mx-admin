@@ -47,6 +47,7 @@ import { useWriteDraft } from '~/hooks/use-write-draft'
 import { useLayout } from '~/layouts/content'
 import { DraftRefType } from '~/models/draft'
 import { CategoryStore } from '~/stores/category'
+import { UIStore } from '~/stores/ui'
 
 import { useMemoPostList } from './hooks/use-memo-post-list'
 
@@ -74,6 +75,10 @@ const PostWriteView = defineComponent(() => {
   setContentPadding(false)
 
   const categoryStore = useStoreRef(CategoryStore)
+  const uiStore = useStoreRef(UIStore)
+  const isMobile = computed(
+    () => uiStore.viewport.value.mobile || uiStore.viewport.value.pad,
+  )
   onMounted(async () => {
     await categoryStore.fetch()
   })
@@ -272,16 +277,18 @@ const PostWriteView = defineComponent(() => {
 
     setActions(
       <>
-        <ParseContentButton
-          data={data}
-          onHandleYamlParsedMeta={(meta) => {
-            const { title, slug, ...rest } = meta
-            data.title = title ?? data.title
-            data.slug = slug ?? data.slug
-            data.meta = { ...rest }
-          }}
-        />
-        <HeaderPreviewButton iframe data={data} />
+        {!isMobile.value && (
+          <ParseContentButton
+            data={data}
+            onHandleYamlParsedMeta={(meta) => {
+              const { title, slug, ...rest } = meta
+              data.title = title ?? data.title
+              data.slug = slug ?? data.slug
+              data.meta = { ...rest }
+            }}
+          />
+        )}
+        {!isMobile.value && <HeaderPreviewButton iframe data={data} />}
         <HeaderActionButton
           icon={<SlidersHIcon />}
           name="文章设置"

@@ -49,9 +49,11 @@ import { WEB_URL } from '~/constants/env'
 import { MOOD_SET, WEATHER_SET } from '~/constants/note'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
 import { useS3Upload } from '~/hooks/use-s3-upload'
+import { useStoreRef } from '~/hooks/use-store-ref'
 import { useWriteDraft } from '~/hooks/use-write-draft'
 import { useLayout } from '~/layouts/content'
 import { DraftRefType } from '~/models/draft'
+import { UIStore } from '~/stores/ui'
 import { getDayOfYear } from '~/utils/time'
 
 type NoteReactiveType = {
@@ -80,6 +82,10 @@ const useNoteTopic = () => {
 const NoteWriteView = defineComponent(() => {
   const defaultTitle = ref('新建日记')
   const router = useRouter()
+  const uiStore = useStoreRef(UIStore)
+  const isMobile = computed(
+    () => uiStore.viewport.value.mobile || uiStore.viewport.value.pad,
+  )
 
   const resetReactive: () => NoteReactiveType = () => ({
     text: '',
@@ -297,17 +303,19 @@ const NoteWriteView = defineComponent(() => {
 
   setActions(
     <>
-      <ParseContentButton
-        data={data}
-        onHandleYamlParsedMeta={(meta) => {
-          const { title, mood, weather, ...rest } = meta
-          data.title = title ?? data.title
-          data.mood = mood ?? data.mood
-          data.weather = weather ?? data.weather
-          data.meta = { ...rest }
-        }}
-      />
-      <HeaderPreviewButton data={data} iframe />
+      {!isMobile.value && (
+        <ParseContentButton
+          data={data}
+          onHandleYamlParsedMeta={(meta) => {
+            const { title, mood, weather, ...rest } = meta
+            data.title = title ?? data.title
+            data.mood = mood ?? data.mood
+            data.weather = weather ?? data.weather
+            data.meta = { ...rest }
+          }}
+        />
+      )}
+      {!isMobile.value && <HeaderPreviewButton data={data} iframe />}
       <HeaderActionButton
         icon={<SlidersHIcon />}
         name="日记设置"

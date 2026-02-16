@@ -38,10 +38,12 @@ import { HeaderPreviewButton } from '~/components/special-button/preview'
 import { WEB_URL } from '~/constants/env'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
 import { useS3Upload } from '~/hooks/use-s3-upload'
+import { useStoreRef } from '~/hooks/use-store-ref'
 import { useWriteDraft } from '~/hooks/use-write-draft'
 import { useLayout } from '~/layouts/content'
 import { DraftRefType } from '~/models/draft'
 import { RouteName } from '~/router/name'
+import { UIStore } from '~/stores/ui'
 
 type PageReactiveType = WriteBaseType & {
   subtitle: string
@@ -50,6 +52,11 @@ type PageReactiveType = WriteBaseType & {
 }
 
 const PageWriteView = defineComponent(() => {
+  const uiStore = useStoreRef(UIStore)
+  const isMobile = computed(
+    () => uiStore.viewport.value.mobile || uiStore.viewport.value.pad,
+  )
+
   const {
     setTitle,
     setHeaderClass,
@@ -213,17 +220,19 @@ const PageWriteView = defineComponent(() => {
 
   setActions(
     <>
-      <ParseContentButton
-        data={data}
-        onHandleYamlParsedMeta={(meta) => {
-          const { title, slug, subtitle, ...rest } = meta
-          data.title = title ?? data.title
-          data.slug = slug ?? data.slug
-          data.subtitle = subtitle ?? data.subtitle
-          data.meta = { ...rest }
-        }}
-      />
-      <HeaderPreviewButton iframe data={data} />
+      {!isMobile.value && (
+        <ParseContentButton
+          data={data}
+          onHandleYamlParsedMeta={(meta) => {
+            const { title, slug, subtitle, ...rest } = meta
+            data.title = title ?? data.title
+            data.slug = slug ?? data.slug
+            data.subtitle = subtitle ?? data.subtitle
+            data.meta = { ...rest }
+          }}
+        />
+      )}
+      {!isMobile.value && <HeaderPreviewButton iframe data={data} />}
       <HeaderActionButton
         icon={<SlidersHIcon />}
         name="页面设置"

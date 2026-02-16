@@ -98,7 +98,7 @@ export const DraftSaveIndicator = defineComponent({
       const isSaving = props.isSaving.value
 
       return (
-        <div class="flex items-center gap-1.5 text-sm text-neutral-500 dark:text-neutral-400">
+        <div class="flex items-center gap-1.5 whitespace-nowrap text-sm text-neutral-500 dark:text-neutral-400">
           {isSaving ? (
             <>
               <LoaderIcon size={14} class="animate-spin" />
