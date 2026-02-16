@@ -3,6 +3,7 @@ import { NScrollbar } from 'naive-ui'
 import { defineComponent, onMounted, ref } from 'vue'
 
 import { aggregateApi } from '~/api/aggregate'
+import { WEB_URL } from '~/constants/env'
 
 import { ChartCard } from './ChartCard'
 
@@ -57,7 +58,7 @@ export const TopArticles = defineComponent({
                 key={item.id}
                 href={
                   item.category
-                    ? `/posts/${item.category.slug}/${item.slug}`
+                    ? `${WEB_URL}/posts/${item.category.slug}/${item.slug}`
                     : '#'
                 }
                 target="_blank"
