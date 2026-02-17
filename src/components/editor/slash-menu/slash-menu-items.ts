@@ -38,6 +38,8 @@ import {
   User,
   Zap,
 } from 'lucide-vue-next'
+import { NButton, NInput, NSelect } from 'naive-ui'
+import { h, ref } from 'vue'
 import type { EditorView } from '@codemirror/view'
 import type { Component } from 'vue'
 
@@ -58,19 +60,160 @@ export interface SlashMenuGroup {
   items: SlashMenuItem[]
 }
 
+// 对话框辅助函数
+const showInputDialog = (
+  title: string,
+  placeholder: string,
+  defaultValue = '',
+  onConfirm: (value: string) => void,
+) => {
+  const inputValue = ref(defaultValue)
+  const $dialog = window.dialog.create({
+    title,
+    content: () =>
+      h(NInput, {
+        value: inputValue.value,
+        placeholder,
+        autofocus: true,
+        onUpdateValue: (v: string) => {
+          inputValue.value = v
+        },
+        onKeydown: (e: KeyboardEvent) => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault()
+            $dialog.destroy()
+            onConfirm(inputValue.value)
+          }
+        },
+      }),
+    action: () =>
+      h('div', { class: 'flex gap-2 justify-end' }, [
+        h(
+          NButton,
+          {
+            onClick: () => $dialog.destroy(),
+          },
+          { default: () => '取消' },
+        ),
+        h(
+          NButton,
+          {
+            type: 'primary',
+            onClick: () => {
+              $dialog.destroy()
+              onConfirm(inputValue.value)
+            },
+          },
+          { default: () => '确定' },
+        ),
+      ]),
+  })
+}
+
+const showTextareaDialog = (
+  title: string,
+  placeholder: string,
+  defaultValue = '',
+  onConfirm: (value: string) => void,
+) => {
+  const inputValue = ref(defaultValue)
+  const $dialog = window.dialog.create({
+    title,
+    content: () =>
+      h(NInput, {
+        value: inputValue.value,
+        placeholder,
+        type: 'textarea',
+        rows: 4,
+        autofocus: true,
+        onUpdateValue: (v: string) => {
+          inputValue.value = v
+        },
+      }),
+    action: () =>
+      h('div', { class: 'flex gap-2 justify-end' }, [
+        h(
+          NButton,
+          {
+            onClick: () => $dialog.destroy(),
+          },
+          { default: () => '取消' },
+        ),
+        h(
+          NButton,
+          {
+            type: 'primary',
+            onClick: () => {
+              $dialog.destroy()
+              onConfirm(inputValue.value)
+            },
+          },
+          { default: () => '确定' },
+        ),
+      ]),
+  })
+}
+
+const showSelectDialog = (
+  title: string,
+  options: { label: string; value: string }[],
+  defaultValue: string,
+  onConfirm: (value: string) => void,
+) => {
+  const selectedValue = ref(defaultValue)
+  const $dialog = window.dialog.create({
+    title,
+    content: () =>
+      h(NSelect, {
+        value: selectedValue.value,
+        options,
+        onUpdateValue: (v: string) => {
+          selectedValue.value = v
+        },
+      }),
+    action: () =>
+      h('div', { class: 'flex gap-2 justify-end' }, [
+        h(
+          NButton,
+          {
+            onClick: () => $dialog.destroy(),
+          },
+          { default: () => '取消' },
+        ),
+        h(
+          NButton,
+          {
+            type: 'primary',
+            onClick: () => {
+              $dialog.destroy()
+              onConfirm(selectedValue.value)
+            },
+          },
+          { default: () => '确定' },
+        ),
+      ]),
+  })
+}
+
 const insertImage = (view: EditorView): boolean => {
   const { state } = view
   const { from, to } = state.selection.main
   const selectedText = state.sliceDoc(from, to)
-  const alt = selectedText || '图片描述'
-  const insert = `![${alt}](https://)`
 
-  view.dispatch({
-    changes: { from, to, insert },
-    selection: { anchor: from + insert.length - 1 },
+  showInputDialog('插入图片', '输入图片地址 (https://...)', '', (url) => {
+    if (!url) return
+
+    const alt = selectedText || '图片描述'
+    const insert = `![${alt}](${url})`
+
+    view.dispatch({
+      changes: { from, to, insert },
+      selection: { anchor: from + insert.length },
+    })
+
+    view.focus()
   })
 
-  view.focus()
   return true
 }
 
@@ -156,18 +299,31 @@ const insertSpoiler = (view: EditorView): boolean => {
   const { state } = view
   const { from, to } = state.selection.main
   const selectedText = state.sliceDoc(from, to)
-  const content = selectedText || '剧透内容'
-  const insert = `||${content}||`
 
-  view.dispatch({
-    changes: { from, to, insert },
-    selection:
-      selectedText.length > 0
-        ? { anchor: from + insert.length }
-        : { anchor: from + 2, head: from + 2 + content.length },
-  })
+  if (selectedText) {
+    // 如果有选中文本，直接包裹
+    const insert = `||${selectedText}||`
+    view.dispatch({
+      changes: { from, to, insert },
+      selection: { anchor: from + insert.length },
+    })
+    view.focus()
+  } else {
+    // 否则显示输入对话框
+    showInputDialog('插入剧透文本', '输入需要隐藏的内容', '', (content) => {
+      if (!content.trim()) return
 
-  view.focus()
+      const insert = `||${content}||`
+
+      view.dispatch({
+        changes: { from, to, insert },
+        selection: { anchor: from + insert.length },
+      })
+
+      view.focus()
+    })
+  }
+
   return true
 }
 
@@ -177,41 +333,78 @@ const insertMention =
     const { state } = view
     const { from, to } = state.selection.main
     const selectedText = state.sliceDoc(from, to)
-    const handle = selectedText || 'username'
-    const insert = `{${platform}@${handle}}`
 
-    view.dispatch({
-      changes: { from, to, insert },
-      selection:
-        selectedText.length > 0
-          ? { anchor: from + insert.length }
-          : {
-              anchor: from + platform.length + 2,
-              head: from + platform.length + 2 + handle.length,
-            },
-    })
+    const platformNames = {
+      GH: 'GitHub',
+      TW: 'Twitter',
+      TG: 'Telegram',
+    }
 
-    view.focus()
+    showInputDialog(
+      `插入 ${platformNames[platform]} 提及`,
+      '输入用户名',
+      selectedText || '',
+      (handle) => {
+        if (!handle.trim()) return
+
+        const insert = `{${platform}@${handle.trim()}}`
+
+        view.dispatch({
+          changes: { from, to, insert },
+          selection: { anchor: from + insert.length },
+        })
+
+        view.focus()
+      },
+    )
+
     return true
   }
 
 const insertContainer =
-  (type: string, placeholder = '在此输入内容') =>
+  (defaultType: string, placeholder = '在此输入内容') =>
   (view: EditorView): boolean => {
     const { state } = view
     const { from } = state.selection.main
     const line = state.doc.lineAt(from)
     const insertPos = line.to
     const needsNewline = line.text.length > 0
-    const insert = `${needsNewline ? '\n' : ''}::: ${type}\n${placeholder}\n:::\n\n`
-    const cursorOffset = insert.indexOf(placeholder)
 
-    view.dispatch({
-      changes: { from: insertPos, to: insertPos, insert },
-      selection: { anchor: insertPos + cursorOffset },
-    })
+    // 如果是 banner 类型，让用户选择样式
+    if (defaultType.startsWith('banner')) {
+      showSelectDialog(
+        '选择 Banner 样式',
+        [
+          { label: 'Error (错误)', value: 'banner {error}' },
+          { label: 'Warning (警告)', value: 'banner {warning}' },
+          { label: 'Info (信息)', value: 'banner {info}' },
+          { label: 'Success (成功)', value: 'banner {success}' },
+        ],
+        'banner {error}',
+        (type) => {
+          const insert = `${needsNewline ? '\n' : ''}::: ${type}\n${placeholder}\n:::\n\n`
+          const cursorOffset = insert.indexOf(placeholder)
 
-    view.focus()
+          view.dispatch({
+            changes: { from: insertPos, to: insertPos, insert },
+            selection: { anchor: insertPos + cursorOffset },
+          })
+
+          view.focus()
+        },
+      )
+    } else {
+      const insert = `${needsNewline ? '\n' : ''}::: ${defaultType}\n${placeholder}\n:::\n\n`
+      const cursorOffset = insert.indexOf(placeholder)
+
+      view.dispatch({
+        changes: { from: insertPos, to: insertPos, insert },
+        selection: { anchor: insertPos + cursorOffset },
+      })
+
+      view.focus()
+    }
+
     return true
   }
 
@@ -221,15 +414,25 @@ const insertGallery = (view: EditorView): boolean => {
   const line = state.doc.lineAt(from)
   const insertPos = line.to
   const needsNewline = line.text.length > 0
-  const insert = `${needsNewline ? '\n' : ''}::: gallery\nhttps://example.com/image1.jpg\nhttps://example.com/image2.jpg\n:::\n\n`
-  const cursorOffset = insert.indexOf('https://example.com/image1.jpg')
 
-  view.dispatch({
-    changes: { from: insertPos, to: insertPos, insert },
-    selection: { anchor: insertPos + cursorOffset },
-  })
+  showTextareaDialog(
+    '插入画廊',
+    '输入图片地址（每行一个）',
+    'https://example.com/image1.jpg\nhttps://example.com/image2.jpg',
+    (urls) => {
+      if (!urls.trim()) return
 
-  view.focus()
+      const insert = `${needsNewline ? '\n' : ''}::: gallery\n${urls.trim()}\n:::\n\n`
+
+      view.dispatch({
+        changes: { from: insertPos, to: insertPos, insert },
+        selection: { anchor: insertPos + insert.length },
+      })
+
+      view.focus()
+    },
+  )
+
   return true
 }
 
@@ -239,15 +442,25 @@ const insertGrid = (view: EditorView): boolean => {
   const line = state.doc.lineAt(from)
   const insertPos = line.to
   const needsNewline = line.text.length > 0
-  const insert = `${needsNewline ? '\n' : ''}::: grid {cols=3,gap=4}\n内容1\n\n内容2\n\n内容3\n:::\n\n`
-  const cursorOffset = insert.indexOf('内容1')
 
-  view.dispatch({
-    changes: { from: insertPos, to: insertPos, insert },
-    selection: { anchor: insertPos + cursorOffset },
-  })
+  showInputDialog(
+    '插入网格布局',
+    '输入配置 (如: cols=3,gap=4)',
+    'cols=3,gap=4',
+    (config) => {
+      const finalConfig = config.trim() || 'cols=3,gap=4'
+      const insert = `${needsNewline ? '\n' : ''}::: grid {${finalConfig}}\n内容1\n\n内容2\n\n内容3\n:::\n\n`
+      const cursorOffset = insert.indexOf('内容1')
 
-  view.focus()
+      view.dispatch({
+        changes: { from: insertPos, to: insertPos, insert },
+        selection: { anchor: insertPos + cursorOffset },
+      })
+
+      view.focus()
+    },
+  )
+
   return true
 }
 
@@ -257,18 +470,25 @@ const insertLinkCard = (view: EditorView): boolean => {
   const line = state.doc.lineAt(from)
   const insertPos = line.to
   const needsNewline = line.text.length > 0
-  const insert = `${needsNewline ? '\n' : ''}<LinkCard source="gh" id="username/repo">\n\n`
-  const cursorOffset = insert.indexOf('username/repo')
 
-  view.dispatch({
-    changes: { from: insertPos, to: insertPos, insert },
-    selection: {
-      anchor: insertPos + cursorOffset,
-      head: insertPos + cursorOffset + 'username/repo'.length,
+  showInputDialog(
+    '插入链接卡片',
+    '输入 GitHub 仓库 (如: username/repo)',
+    '',
+    (repo) => {
+      if (!repo.trim()) return
+
+      const insert = `${needsNewline ? '\n' : ''}<LinkCard source="gh" id="${repo.trim()}">\n\n`
+
+      view.dispatch({
+        changes: { from: insertPos, to: insertPos, insert },
+        selection: { anchor: insertPos + insert.length },
+      })
+
+      view.focus()
     },
-  })
+  )
 
-  view.focus()
   return true
 }
 
@@ -296,15 +516,25 @@ const insertReactComponent = (view: EditorView): boolean => {
   const line = state.doc.lineAt(from)
   const insertPos = line.to
   const needsNewline = line.text.length > 0
-  const insert = `${needsNewline ? '\n' : ''}\`\`\`component\nimport=https://cdn.example.com/component.js\nname=Component.Name\n\`\`\`\n\n`
-  const cursorOffset = insert.indexOf('https://cdn.example.com/component.js')
 
-  view.dispatch({
-    changes: { from: insertPos, to: insertPos, insert },
-    selection: { anchor: insertPos + cursorOffset },
-  })
+  showTextareaDialog(
+    '插入 React 组件',
+    '输入组件配置（import 和 name）',
+    'import=https://cdn.example.com/component.js\nname=Component.Name',
+    (config) => {
+      if (!config.trim()) return
 
-  view.focus()
+      const insert = `${needsNewline ? '\n' : ''}\`\`\`component\n${config.trim()}\n\`\`\`\n\n`
+
+      view.dispatch({
+        changes: { from: insertPos, to: insertPos, insert },
+        selection: { anchor: insertPos + insert.length },
+      })
+
+      view.focus()
+    },
+  )
+
   return true
 }
 
@@ -349,14 +579,25 @@ const insertInsertMark = (view: EditorView): boolean => {
 const insertFootnote = (view: EditorView): boolean => {
   const { state } = view
   const { from, to } = state.selection.main
-  const insert = `[^1]`
 
-  view.dispatch({
-    changes: { from, to, insert },
-    selection: { anchor: from + 2, head: from + 3 },
-  })
+  showInputDialog(
+    '插入脚注',
+    '输入脚注标识符 (如: 1, note1)',
+    '1',
+    (identifier) => {
+      if (!identifier.trim()) return
 
-  view.focus()
+      const insert = `[^${identifier.trim()}]`
+
+      view.dispatch({
+        changes: { from, to, insert },
+        selection: { anchor: from + insert.length },
+      })
+
+      view.focus()
+    },
+  )
+
   return true
 }
 
