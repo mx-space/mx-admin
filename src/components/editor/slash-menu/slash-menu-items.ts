@@ -1,25 +1,42 @@
 import {
+  AlertCircle,
+  AlertTriangle,
   Bold,
   ChevronDown,
   Code,
   Code2,
+  Flag,
+  Grid3x3,
+  Hash,
   Heading1,
   Heading2,
   Heading3,
   Heading4,
   Heading5,
   Heading6,
+  Highlighter,
   Image,
+  Images,
+  Info,
   Italic,
+  Lightbulb,
   Link,
+  Link2,
   List,
   ListChecks,
   ListOrdered,
+  MessageSquare,
   Minus,
+  Paintbrush,
+  Plus,
   Quote,
+  ShieldAlert,
   Sigma,
+  Sparkles,
   Strikethrough,
   Table,
+  User,
+  Zap,
 } from 'lucide-vue-next'
 import type { EditorView } from '@codemirror/view'
 import type { Component } from 'vue'
@@ -108,6 +125,235 @@ const insertMathBlock = (view: EditorView): boolean => {
   view.dispatch({
     changes: { from: insertPos, to: insertPos, insert },
     selection: { anchor: insertPos + cursorOffset },
+  })
+
+  view.focus()
+  return true
+}
+
+// Shiroi 扩展语法
+const insertAlert =
+  (type: 'NOTE' | 'TIP' | 'IMPORTANT' | 'WARNING' | 'CAUTION') =>
+  (view: EditorView): boolean => {
+    const { state } = view
+    const { from } = state.selection.main
+    const line = state.doc.lineAt(from)
+    const insertPos = line.to
+    const needsNewline = line.text.length > 0
+    const insert = `${needsNewline ? '\n' : ''}> [!${type}]\n> 在此输入内容\n\n`
+    const cursorOffset = insert.indexOf('在此输入内容')
+
+    view.dispatch({
+      changes: { from: insertPos, to: insertPos, insert },
+      selection: { anchor: insertPos + cursorOffset },
+    })
+
+    view.focus()
+    return true
+  }
+
+const insertSpoiler = (view: EditorView): boolean => {
+  const { state } = view
+  const { from, to } = state.selection.main
+  const selectedText = state.sliceDoc(from, to)
+  const content = selectedText || '剧透内容'
+  const insert = `||${content}||`
+
+  view.dispatch({
+    changes: { from, to, insert },
+    selection:
+      selectedText.length > 0
+        ? { anchor: from + insert.length }
+        : { anchor: from + 2, head: from + 2 + content.length },
+  })
+
+  view.focus()
+  return true
+}
+
+const insertMention =
+  (platform: 'GH' | 'TW' | 'TG') =>
+  (view: EditorView): boolean => {
+    const { state } = view
+    const { from, to } = state.selection.main
+    const selectedText = state.sliceDoc(from, to)
+    const handle = selectedText || 'username'
+    const insert = `{${platform}@${handle}}`
+
+    view.dispatch({
+      changes: { from, to, insert },
+      selection:
+        selectedText.length > 0
+          ? { anchor: from + insert.length }
+          : {
+              anchor: from + platform.length + 2,
+              head: from + platform.length + 2 + handle.length,
+            },
+    })
+
+    view.focus()
+    return true
+  }
+
+const insertContainer =
+  (type: string, placeholder = '在此输入内容') =>
+  (view: EditorView): boolean => {
+    const { state } = view
+    const { from } = state.selection.main
+    const line = state.doc.lineAt(from)
+    const insertPos = line.to
+    const needsNewline = line.text.length > 0
+    const insert = `${needsNewline ? '\n' : ''}::: ${type}\n${placeholder}\n:::\n\n`
+    const cursorOffset = insert.indexOf(placeholder)
+
+    view.dispatch({
+      changes: { from: insertPos, to: insertPos, insert },
+      selection: { anchor: insertPos + cursorOffset },
+    })
+
+    view.focus()
+    return true
+  }
+
+const insertGallery = (view: EditorView): boolean => {
+  const { state } = view
+  const { from } = state.selection.main
+  const line = state.doc.lineAt(from)
+  const insertPos = line.to
+  const needsNewline = line.text.length > 0
+  const insert = `${needsNewline ? '\n' : ''}::: gallery\nhttps://example.com/image1.jpg\nhttps://example.com/image2.jpg\n:::\n\n`
+  const cursorOffset = insert.indexOf('https://example.com/image1.jpg')
+
+  view.dispatch({
+    changes: { from: insertPos, to: insertPos, insert },
+    selection: { anchor: insertPos + cursorOffset },
+  })
+
+  view.focus()
+  return true
+}
+
+const insertGrid = (view: EditorView): boolean => {
+  const { state } = view
+  const { from } = state.selection.main
+  const line = state.doc.lineAt(from)
+  const insertPos = line.to
+  const needsNewline = line.text.length > 0
+  const insert = `${needsNewline ? '\n' : ''}::: grid {cols=3,gap=4}\n内容1\n\n内容2\n\n内容3\n:::\n\n`
+  const cursorOffset = insert.indexOf('内容1')
+
+  view.dispatch({
+    changes: { from: insertPos, to: insertPos, insert },
+    selection: { anchor: insertPos + cursorOffset },
+  })
+
+  view.focus()
+  return true
+}
+
+const insertLinkCard = (view: EditorView): boolean => {
+  const { state } = view
+  const { from } = state.selection.main
+  const line = state.doc.lineAt(from)
+  const insertPos = line.to
+  const needsNewline = line.text.length > 0
+  const insert = `${needsNewline ? '\n' : ''}<LinkCard source="gh" id="username/repo">\n\n`
+  const cursorOffset = insert.indexOf('username/repo')
+
+  view.dispatch({
+    changes: { from: insertPos, to: insertPos, insert },
+    selection: {
+      anchor: insertPos + cursorOffset,
+      head: insertPos + cursorOffset + 'username/repo'.length,
+    },
+  })
+
+  view.focus()
+  return true
+}
+
+const insertExcalidraw = (view: EditorView): boolean => {
+  const { state } = view
+  const { from } = state.selection.main
+  const line = state.doc.lineAt(from)
+  const insertPos = line.to
+  const needsNewline = line.text.length > 0
+  const insert = `${needsNewline ? '\n' : ''}\`\`\`excalidraw\n{}\n\`\`\`\n\n`
+  const cursorOffset = insert.indexOf('{}') + 1
+
+  view.dispatch({
+    changes: { from: insertPos, to: insertPos, insert },
+    selection: { anchor: insertPos + cursorOffset },
+  })
+
+  view.focus()
+  return true
+}
+
+const insertReactComponent = (view: EditorView): boolean => {
+  const { state } = view
+  const { from } = state.selection.main
+  const line = state.doc.lineAt(from)
+  const insertPos = line.to
+  const needsNewline = line.text.length > 0
+  const insert = `${needsNewline ? '\n' : ''}\`\`\`component\nimport=https://cdn.example.com/component.js\nname=Component.Name\n\`\`\`\n\n`
+  const cursorOffset = insert.indexOf('https://cdn.example.com/component.js')
+
+  view.dispatch({
+    changes: { from: insertPos, to: insertPos, insert },
+    selection: { anchor: insertPos + cursorOffset },
+  })
+
+  view.focus()
+  return true
+}
+
+const insertMark = (view: EditorView): boolean => {
+  const { state } = view
+  const { from, to } = state.selection.main
+  const selectedText = state.sliceDoc(from, to)
+  const content = selectedText || '高亮文本'
+  const insert = `==${content}==`
+
+  view.dispatch({
+    changes: { from, to, insert },
+    selection:
+      selectedText.length > 0
+        ? { anchor: from + insert.length }
+        : { anchor: from + 2, head: from + 2 + content.length },
+  })
+
+  view.focus()
+  return true
+}
+
+const insertInsertMark = (view: EditorView): boolean => {
+  const { state } = view
+  const { from, to } = state.selection.main
+  const selectedText = state.sliceDoc(from, to)
+  const content = selectedText || '插入文本'
+  const insert = `++${content}++`
+
+  view.dispatch({
+    changes: { from, to, insert },
+    selection:
+      selectedText.length > 0
+        ? { anchor: from + insert.length }
+        : { anchor: from + 2, head: from + 2 + content.length },
+  })
+
+  view.focus()
+  return true
+}
+
+const insertFootnote = (view: EditorView): boolean => {
+  const { state } = view
+  const { from, to } = state.selection.main
+  const insert = `[^1]`
+
+  view.dispatch({
+    changes: { from, to, insert },
+    selection: { anchor: from + 2, head: from + 3 },
   })
 
   view.focus()
@@ -310,6 +556,176 @@ export const slashMenuGroups: SlashMenuGroup[] = [
         icon: Sigma,
         keywords: ['math', 'formula', 'latex'],
         command: insertMathBlock,
+      },
+    ],
+  },
+  {
+    id: 'shiroi-alerts',
+    label: 'Shiroi 提示块',
+    items: [
+      {
+        id: 'alert-note',
+        label: 'Note 提示',
+        description: '>[!NOTE] 提示信息',
+        icon: Info,
+        keywords: ['note', 'info', 'alert', '提示'],
+        command: insertAlert('NOTE'),
+      },
+      {
+        id: 'alert-tip',
+        label: 'Tip 建议',
+        description: '>[!TIP] 有用的建议',
+        icon: Lightbulb,
+        keywords: ['tip', 'hint', 'alert', '建议', '提示'],
+        command: insertAlert('TIP'),
+      },
+      {
+        id: 'alert-important',
+        label: 'Important 重要',
+        description: '>[!IMPORTANT] 重要信息',
+        icon: AlertCircle,
+        keywords: ['important', 'alert', '重要'],
+        command: insertAlert('IMPORTANT'),
+      },
+      {
+        id: 'alert-warning',
+        label: 'Warning 警告',
+        description: '>[!WARNING] 警告信息',
+        icon: AlertTriangle,
+        keywords: ['warning', 'alert', '警告'],
+        command: insertAlert('WARNING'),
+      },
+      {
+        id: 'alert-caution',
+        label: 'Caution 注意',
+        description: '>[!CAUTION] 需要注意',
+        icon: ShieldAlert,
+        keywords: ['caution', 'danger', 'alert', '注意', '危险'],
+        command: insertAlert('CAUTION'),
+      },
+    ],
+  },
+  {
+    id: 'shiroi-inline',
+    label: 'Shiroi 行内语法',
+    items: [
+      {
+        id: 'spoiler',
+        label: '剧透文本',
+        description: '||隐藏的内容||',
+        icon: MessageSquare,
+        keywords: ['spoiler', 'hidden', '剧透', '隐藏'],
+        command: insertSpoiler,
+      },
+      {
+        id: 'mention-github',
+        label: 'GitHub 提及',
+        description: '{GH@username}',
+        icon: User,
+        keywords: ['mention', 'github', 'gh', '@', '提及'],
+        command: insertMention('GH'),
+      },
+      {
+        id: 'mention-twitter',
+        label: 'Twitter 提及',
+        description: '{TW@username}',
+        icon: User,
+        keywords: ['mention', 'twitter', 'tw', '@', '提及'],
+        command: insertMention('TW'),
+      },
+      {
+        id: 'mention-telegram',
+        label: 'Telegram 提及',
+        description: '{TG@username}',
+        icon: User,
+        keywords: ['mention', 'telegram', 'tg', '@', '提及'],
+        command: insertMention('TG'),
+      },
+      {
+        id: 'mark',
+        label: '高亮标记',
+        description: '==高亮文本==',
+        icon: Highlighter,
+        keywords: ['mark', 'highlight', '高亮', '标记'],
+        command: insertMark,
+      },
+      {
+        id: 'insert',
+        label: '插入标记',
+        description: '++插入文本++',
+        icon: Plus,
+        keywords: ['insert', 'add', '插入', '添加'],
+        command: insertInsertMark,
+      },
+      {
+        id: 'footnote',
+        label: '脚注',
+        description: '[^1]',
+        icon: Hash,
+        keywords: ['footnote', 'reference', '脚注', '引用'],
+        command: insertFootnote,
+      },
+    ],
+  },
+  {
+    id: 'shiroi-advanced',
+    label: 'Shiroi 高级块',
+    items: [
+      {
+        id: 'container-warning',
+        label: 'Container 警告',
+        description: '::: warning',
+        icon: Flag,
+        keywords: ['container', 'warning', '容器', '警告'],
+        command: insertContainer('warning'),
+      },
+      {
+        id: 'container-banner',
+        label: 'Banner 横幅',
+        description: '::: banner {error}',
+        icon: Zap,
+        keywords: ['banner', 'container', '横幅', '容器'],
+        command: insertContainer('banner {error}'),
+      },
+      {
+        id: 'gallery',
+        label: 'Gallery 画廊',
+        description: '::: gallery 图片集',
+        icon: Images,
+        keywords: ['gallery', 'images', '画廊', '图片集'],
+        command: insertGallery,
+      },
+      {
+        id: 'grid',
+        label: 'Grid 网格',
+        description: '::: grid 网格布局',
+        icon: Grid3x3,
+        keywords: ['grid', 'layout', '网格', '布局'],
+        command: insertGrid,
+      },
+      {
+        id: 'linkcard',
+        label: 'LinkCard 链接卡片',
+        description: '<LinkCard> 卡片',
+        icon: Link2,
+        keywords: ['linkcard', 'card', 'link', '链接卡片', '卡片'],
+        command: insertLinkCard,
+      },
+      {
+        id: 'excalidraw',
+        label: 'Excalidraw 手绘',
+        description: '```excalidraw 手绘图',
+        icon: Paintbrush,
+        keywords: ['excalidraw', 'draw', 'whiteboard', '手绘', '画板'],
+        command: insertExcalidraw,
+      },
+      {
+        id: 'react-component',
+        label: 'React 组件',
+        description: '```component 远程组件',
+        icon: Sparkles,
+        keywords: ['component', 'react', 'remote', '组件', '远程'],
+        command: insertReactComponent,
       },
     ],
   },
