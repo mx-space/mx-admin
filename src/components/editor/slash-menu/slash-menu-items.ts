@@ -1,26 +1,48 @@
 import {
+  AlertCircle,
+  AlertTriangle,
   Bold,
   ChevronDown,
   Code,
   Code2,
+  Flag,
+  GitBranch,
+  Grid3x3,
+  Hash,
   Heading1,
   Heading2,
   Heading3,
   Heading4,
   Heading5,
   Heading6,
+  Highlighter,
   Image,
+  Images,
+  Info,
   Italic,
+  Layers,
+  Lightbulb,
   Link,
+  Link2,
   List,
   ListChecks,
   ListOrdered,
+  MessageSquare,
   Minus,
+  Paintbrush,
+  Plus,
   Quote,
+  ShieldAlert,
   Sigma,
+  Sparkles,
   Strikethrough,
   Table,
+  User,
+  Workflow,
+  Zap,
 } from 'lucide-vue-next'
+import { NButton, NInput, NSelect } from 'naive-ui'
+import { h, ref } from 'vue'
 import type { EditorView } from '@codemirror/view'
 import type { Component } from 'vue'
 
@@ -41,19 +63,160 @@ export interface SlashMenuGroup {
   items: SlashMenuItem[]
 }
 
+// 对话框辅助函数
+const showInputDialog = (
+  title: string,
+  placeholder: string,
+  defaultValue = '',
+  onConfirm: (value: string) => void,
+) => {
+  const inputValue = ref(defaultValue)
+  const $dialog = window.dialog.create({
+    title,
+    content: () =>
+      h(NInput, {
+        value: inputValue.value,
+        placeholder,
+        autofocus: true,
+        onUpdateValue: (v: string) => {
+          inputValue.value = v
+        },
+        onKeydown: (e: KeyboardEvent) => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault()
+            $dialog.destroy()
+            onConfirm(inputValue.value)
+          }
+        },
+      }),
+    action: () =>
+      h('div', { class: 'flex gap-2 justify-end' }, [
+        h(
+          NButton,
+          {
+            onClick: () => $dialog.destroy(),
+          },
+          { default: () => '取消' },
+        ),
+        h(
+          NButton,
+          {
+            type: 'primary',
+            onClick: () => {
+              $dialog.destroy()
+              onConfirm(inputValue.value)
+            },
+          },
+          { default: () => '确定' },
+        ),
+      ]),
+  })
+}
+
+const showTextareaDialog = (
+  title: string,
+  placeholder: string,
+  defaultValue = '',
+  onConfirm: (value: string) => void,
+) => {
+  const inputValue = ref(defaultValue)
+  const $dialog = window.dialog.create({
+    title,
+    content: () =>
+      h(NInput, {
+        value: inputValue.value,
+        placeholder,
+        type: 'textarea',
+        rows: 4,
+        autofocus: true,
+        onUpdateValue: (v: string) => {
+          inputValue.value = v
+        },
+      }),
+    action: () =>
+      h('div', { class: 'flex gap-2 justify-end' }, [
+        h(
+          NButton,
+          {
+            onClick: () => $dialog.destroy(),
+          },
+          { default: () => '取消' },
+        ),
+        h(
+          NButton,
+          {
+            type: 'primary',
+            onClick: () => {
+              $dialog.destroy()
+              onConfirm(inputValue.value)
+            },
+          },
+          { default: () => '确定' },
+        ),
+      ]),
+  })
+}
+
+const showSelectDialog = (
+  title: string,
+  options: { label: string; value: string }[],
+  defaultValue: string,
+  onConfirm: (value: string) => void,
+) => {
+  const selectedValue = ref(defaultValue)
+  const $dialog = window.dialog.create({
+    title,
+    content: () =>
+      h(NSelect, {
+        value: selectedValue.value,
+        options,
+        onUpdateValue: (v: string) => {
+          selectedValue.value = v
+        },
+      }),
+    action: () =>
+      h('div', { class: 'flex gap-2 justify-end' }, [
+        h(
+          NButton,
+          {
+            onClick: () => $dialog.destroy(),
+          },
+          { default: () => '取消' },
+        ),
+        h(
+          NButton,
+          {
+            type: 'primary',
+            onClick: () => {
+              $dialog.destroy()
+              onConfirm(selectedValue.value)
+            },
+          },
+          { default: () => '确定' },
+        ),
+      ]),
+  })
+}
+
 const insertImage = (view: EditorView): boolean => {
   const { state } = view
   const { from, to } = state.selection.main
   const selectedText = state.sliceDoc(from, to)
-  const alt = selectedText || '图片描述'
-  const insert = `![${alt}](https://)`
 
-  view.dispatch({
-    changes: { from, to, insert },
-    selection: { anchor: from + insert.length - 1 },
+  showInputDialog('插入图片', '输入图片地址 (https://...)', '', (url) => {
+    if (!url) return
+
+    const alt = selectedText || '图片描述'
+    const insert = `![${alt}](${url})`
+
+    view.dispatch({
+      changes: { from, to, insert },
+      selection: { anchor: from + insert.length },
+    })
+
+    view.focus()
   })
 
-  view.focus()
   return true
 }
 
@@ -114,17 +277,451 @@ const insertMathBlock = (view: EditorView): boolean => {
   return true
 }
 
+// Shiroi 扩展语法
+const insertAlert =
+  (type: 'NOTE' | 'TIP' | 'IMPORTANT' | 'WARNING' | 'CAUTION') =>
+  (view: EditorView): boolean => {
+    const { state } = view
+    const { from } = state.selection.main
+    const line = state.doc.lineAt(from)
+    const insertPos = line.to
+    const needsNewline = line.text.length > 0
+    const insert = `${needsNewline ? '\n' : ''}> [!${type}]\n> 在此输入内容\n\n`
+    const cursorOffset = insert.indexOf('在此输入内容')
+
+    view.dispatch({
+      changes: { from: insertPos, to: insertPos, insert },
+      selection: { anchor: insertPos + cursorOffset },
+    })
+
+    view.focus()
+    return true
+  }
+
+const insertSpoiler = (view: EditorView): boolean => {
+  const { state } = view
+  const { from, to } = state.selection.main
+  const selectedText = state.sliceDoc(from, to)
+
+  if (selectedText) {
+    // 如果有选中文本，直接包裹
+    const insert = `||${selectedText}||`
+    view.dispatch({
+      changes: { from, to, insert },
+      selection: { anchor: from + insert.length },
+    })
+    view.focus()
+  } else {
+    // 否则显示输入对话框
+    showInputDialog('插入剧透文本', '输入需要隐藏的内容', '', (content) => {
+      if (!content.trim()) return
+
+      const insert = `||${content}||`
+
+      view.dispatch({
+        changes: { from, to, insert },
+        selection: { anchor: from + insert.length },
+      })
+
+      view.focus()
+    })
+  }
+
+  return true
+}
+
+const insertMention =
+  (platform: 'GH' | 'TW' | 'TG') =>
+  (view: EditorView): boolean => {
+    const { state } = view
+    const { from, to } = state.selection.main
+    const selectedText = state.sliceDoc(from, to)
+
+    const platformNames = {
+      GH: 'GitHub',
+      TW: 'Twitter',
+      TG: 'Telegram',
+    }
+
+    showInputDialog(
+      `插入 ${platformNames[platform]} 提及`,
+      '输入用户名',
+      selectedText || '',
+      (handle) => {
+        if (!handle.trim()) return
+
+        const insert = `{${platform}@${handle.trim()}}`
+
+        view.dispatch({
+          changes: { from, to, insert },
+          selection: { anchor: from + insert.length },
+        })
+
+        view.focus()
+      },
+    )
+
+    return true
+  }
+
+const insertContainer =
+  (defaultType: string, placeholder = '在此输入内容') =>
+  (view: EditorView): boolean => {
+    const { state } = view
+    const { from } = state.selection.main
+    const line = state.doc.lineAt(from)
+    const insertPos = line.to
+    const needsNewline = line.text.length > 0
+
+    // 如果是 banner 类型，让用户选择样式
+    if (defaultType.startsWith('banner')) {
+      showSelectDialog(
+        '选择 Banner 样式',
+        [
+          { label: 'Error (错误)', value: 'banner {error}' },
+          { label: 'Warning (警告)', value: 'banner {warning}' },
+          { label: 'Info (信息)', value: 'banner {info}' },
+          { label: 'Success (成功)', value: 'banner {success}' },
+        ],
+        'banner {error}',
+        (type) => {
+          const insert = `${needsNewline ? '\n' : ''}::: ${type}\n${placeholder}\n:::\n\n`
+          const cursorOffset = insert.indexOf(placeholder)
+
+          view.dispatch({
+            changes: { from: insertPos, to: insertPos, insert },
+            selection: { anchor: insertPos + cursorOffset },
+          })
+
+          view.focus()
+        },
+      )
+    } else {
+      const insert = `${needsNewline ? '\n' : ''}::: ${defaultType}\n${placeholder}\n:::\n\n`
+      const cursorOffset = insert.indexOf(placeholder)
+
+      view.dispatch({
+        changes: { from: insertPos, to: insertPos, insert },
+        selection: { anchor: insertPos + cursorOffset },
+      })
+
+      view.focus()
+    }
+
+    return true
+  }
+
+const insertGallery = (view: EditorView): boolean => {
+  const { state } = view
+  const { from } = state.selection.main
+  const line = state.doc.lineAt(from)
+  const insertPos = line.to
+  const needsNewline = line.text.length > 0
+
+  showTextareaDialog(
+    '插入画廊',
+    '输入图片地址（每行一个）',
+    'https://example.com/image1.jpg\nhttps://example.com/image2.jpg',
+    (urls) => {
+      if (!urls.trim()) return
+
+      const insert = `${needsNewline ? '\n' : ''}::: gallery\n${urls.trim()}\n:::\n\n`
+
+      view.dispatch({
+        changes: { from: insertPos, to: insertPos, insert },
+        selection: { anchor: insertPos + insert.length },
+      })
+
+      view.focus()
+    },
+  )
+
+  return true
+}
+
+const insertGrid = (view: EditorView): boolean => {
+  const { state } = view
+  const { from } = state.selection.main
+  const line = state.doc.lineAt(from)
+  const insertPos = line.to
+  const needsNewline = line.text.length > 0
+
+  showInputDialog(
+    '插入网格布局',
+    '输入配置 (如: cols=3,gap=4)',
+    'cols=3,gap=4',
+    (config) => {
+      const finalConfig = config.trim() || 'cols=3,gap=4'
+      const insert = `${needsNewline ? '\n' : ''}::: grid {${finalConfig}}\n内容1\n\n内容2\n\n内容3\n:::\n\n`
+      const cursorOffset = insert.indexOf('内容1')
+
+      view.dispatch({
+        changes: { from: insertPos, to: insertPos, insert },
+        selection: { anchor: insertPos + cursorOffset },
+      })
+
+      view.focus()
+    },
+  )
+
+  return true
+}
+
+const insertLinkCard = (view: EditorView): boolean => {
+  const { state } = view
+  const { from } = state.selection.main
+  const line = state.doc.lineAt(from)
+  const insertPos = line.to
+  const needsNewline = line.text.length > 0
+
+  showInputDialog(
+    '插入链接卡片',
+    '输入 GitHub 仓库 (如: username/repo)',
+    '',
+    (repo) => {
+      if (!repo.trim()) return
+
+      const insert = `${needsNewline ? '\n' : ''}<LinkCard source="gh" id="${repo.trim()}">\n\n`
+
+      view.dispatch({
+        changes: { from: insertPos, to: insertPos, insert },
+        selection: { anchor: insertPos + insert.length },
+      })
+
+      view.focus()
+    },
+  )
+
+  return true
+}
+
+const insertExcalidraw = (view: EditorView): boolean => {
+  const { state } = view
+  const { from } = state.selection.main
+  const line = state.doc.lineAt(from)
+  const insertPos = line.to
+  const needsNewline = line.text.length > 0
+  const insert = `${needsNewline ? '\n' : ''}\`\`\`excalidraw\n{}\n\`\`\`\n\n`
+  const cursorOffset = insert.indexOf('{}') + 1
+
+  view.dispatch({
+    changes: { from: insertPos, to: insertPos, insert },
+    selection: { anchor: insertPos + cursorOffset },
+  })
+
+  view.focus()
+  return true
+}
+
+const insertReactComponent = (view: EditorView): boolean => {
+  const { state } = view
+  const { from } = state.selection.main
+  const line = state.doc.lineAt(from)
+  const insertPos = line.to
+  const needsNewline = line.text.length > 0
+
+  showTextareaDialog(
+    '插入 React 组件',
+    '输入组件配置（import 和 name）',
+    'import=https://cdn.example.com/component.js\nname=Component.Name',
+    (config) => {
+      if (!config.trim()) return
+
+      const insert = `${needsNewline ? '\n' : ''}\`\`\`component\n${config.trim()}\n\`\`\`\n\n`
+
+      view.dispatch({
+        changes: { from: insertPos, to: insertPos, insert },
+        selection: { anchor: insertPos + insert.length },
+      })
+
+      view.focus()
+    },
+  )
+
+  return true
+}
+
+const insertMark = (view: EditorView): boolean => {
+  const { state } = view
+  const { from, to } = state.selection.main
+  const selectedText = state.sliceDoc(from, to)
+  const content = selectedText || '高亮文本'
+  const insert = `==${content}==`
+
+  view.dispatch({
+    changes: { from, to, insert },
+    selection:
+      selectedText.length > 0
+        ? { anchor: from + insert.length }
+        : { anchor: from + 2, head: from + 2 + content.length },
+  })
+
+  view.focus()
+  return true
+}
+
+const insertInsertMark = (view: EditorView): boolean => {
+  const { state } = view
+  const { from, to } = state.selection.main
+  const selectedText = state.sliceDoc(from, to)
+  const content = selectedText || '插入文本'
+  const insert = `++${content}++`
+
+  view.dispatch({
+    changes: { from, to, insert },
+    selection:
+      selectedText.length > 0
+        ? { anchor: from + insert.length }
+        : { anchor: from + 2, head: from + 2 + content.length },
+  })
+
+  view.focus()
+  return true
+}
+
+const insertFootnote = (view: EditorView): boolean => {
+  const { state } = view
+  const { from, to } = state.selection.main
+
+  showInputDialog(
+    '插入脚注',
+    '输入脚注标识符 (如: 1, note1)',
+    '1',
+    (identifier) => {
+      if (!identifier.trim()) return
+
+      const insert = `[^${identifier.trim()}]`
+
+      view.dispatch({
+        changes: { from, to, insert },
+        selection: { anchor: from + insert.length },
+      })
+
+      view.focus()
+    },
+  )
+
+  return true
+}
+
+const insertMasonry = (view: EditorView): boolean => {
+  const { state } = view
+  const { from } = state.selection.main
+  const line = state.doc.lineAt(from)
+  const insertPos = line.to
+  const needsNewline = line.text.length > 0
+
+  showTextareaDialog(
+    '插入瀑布流布局',
+    '输入图片地址（每行一个）',
+    'https://example.com/image1.jpg\nhttps://example.com/image2.jpg',
+    (urls) => {
+      if (!urls.trim()) return
+
+      const insert = `${needsNewline ? '\n' : ''}::: masonry\n${urls.trim()}\n:::\n\n`
+
+      view.dispatch({
+        changes: { from: insertPos, to: insertPos, insert },
+        selection: { anchor: insertPos + insert.length },
+      })
+
+      view.focus()
+    },
+  )
+
+  return true
+}
+
+const insertTabs = (view: EditorView): boolean => {
+  const { state } = view
+  const { from } = state.selection.main
+  const line = state.doc.lineAt(from)
+  const insertPos = line.to
+  const needsNewline = line.text.length > 0
+  const insert = `${needsNewline ? '\n' : ''}<Tabs>\n<tab label="标签1" active>\n\n内容1\n\n</tab>\n<tab label="标签2">\n\n内容2\n\n</tab>\n</Tabs>\n\n`
+  const cursorOffset = insert.indexOf('标签1')
+
+  view.dispatch({
+    changes: { from: insertPos, to: insertPos, insert },
+    selection: {
+      anchor: insertPos + cursorOffset,
+      head: insertPos + cursorOffset + 3,
+    },
+  })
+
+  view.focus()
+  return true
+}
+
+const insertMermaidFlowchart = (view: EditorView): boolean => {
+  const { state } = view
+  const { from } = state.selection.main
+  const line = state.doc.lineAt(from)
+  const insertPos = line.to
+  const needsNewline = line.text.length > 0
+  const insert = `${needsNewline ? '\n' : ''}\`\`\`mermaid\nflowchart TD\n    A[开始] --> B{判断}\n    B -->|是| C[结束]\n    B -->|否| D[继续]\n\`\`\`\n\n`
+  const cursorOffset = insert.indexOf('A[开始]')
+
+  view.dispatch({
+    changes: { from: insertPos, to: insertPos, insert },
+    selection: { anchor: insertPos + cursorOffset },
+  })
+
+  view.focus()
+  return true
+}
+
+const insertMermaidSequence = (view: EditorView): boolean => {
+  const { state } = view
+  const { from } = state.selection.main
+  const line = state.doc.lineAt(from)
+  const insertPos = line.to
+  const needsNewline = line.text.length > 0
+  const insert = `${needsNewline ? '\n' : ''}\`\`\`mermaid\nsequenceDiagram\n    participant A\n    participant B\n    A->>B: 请求\n    B->>A: 响应\n\`\`\`\n\n`
+  const cursorOffset = insert.indexOf('participant A')
+
+  view.dispatch({
+    changes: { from: insertPos, to: insertPos, insert },
+    selection: { anchor: insertPos + cursorOffset },
+  })
+
+  view.focus()
+  return true
+}
+
+const insertDefinitionList = (view: EditorView): boolean => {
+  const { state } = view
+  const { from } = state.selection.main
+  const line = state.doc.lineAt(from)
+  const insertPos = line.to
+  const needsNewline = line.text.length > 0
+  const insert = `${needsNewline ? '\n' : ''}术语 1\n: 定义 1\n\n术语 2\n: 定义 2\n\n`
+  const cursorOffset = insert.indexOf('术语 1')
+
+  view.dispatch({
+    changes: { from: insertPos, to: insertPos, insert },
+    selection: {
+      anchor: insertPos + cursorOffset,
+      head: insertPos + cursorOffset + 4,
+    },
+  })
+
+  view.focus()
+  return true
+}
+
 export const slashMenuGroups: SlashMenuGroup[] = [
   {
-    id: 'heading',
-    label: '标题',
+    id: 'basic',
+    label: '基础格式',
     items: [
+      // 标题 - 只保留常用的前3级
       {
         id: 'heading-1',
         label: '标题 1',
         description: '大标题',
         icon: Heading1,
-        keywords: ['h1', '一级标题'],
+        keywords: ['h1', '一级标题', 'heading'],
         command: (view) => setHeadingLevel(view, 1),
       },
       {
@@ -132,7 +729,7 @@ export const slashMenuGroups: SlashMenuGroup[] = [
         label: '标题 2',
         description: '中标题',
         icon: Heading2,
-        keywords: ['h2', '二级标题'],
+        keywords: ['h2', '二级标题', 'heading'],
         command: (view) => setHeadingLevel(view, 2),
       },
       {
@@ -140,176 +737,385 @@ export const slashMenuGroups: SlashMenuGroup[] = [
         label: '标题 3',
         description: '小标题',
         icon: Heading3,
-        keywords: ['h3', '三级标题'],
+        keywords: ['h3', '三级标题', 'heading'],
         command: (view) => setHeadingLevel(view, 3),
       },
-      {
-        id: 'heading-4',
-        label: '标题 4',
-        description: '四级标题',
-        icon: Heading4,
-        keywords: ['h4', '四级标题'],
-        command: (view) => setHeadingLevel(view, 4),
-      },
-      {
-        id: 'heading-5',
-        label: '标题 5',
-        description: '五级标题',
-        icon: Heading5,
-        keywords: ['h5', '五级标题'],
-        command: (view) => setHeadingLevel(view, 5),
-      },
-      {
-        id: 'heading-6',
-        label: '标题 6',
-        description: '六级标题',
-        icon: Heading6,
-        keywords: ['h6', '六级标题'],
-        command: (view) => setHeadingLevel(view, 6),
-      },
-    ],
-  },
-  {
-    id: 'text',
-    label: '文本格式',
-    items: [
+      // 文本格式
       {
         id: 'bold',
         label: '粗体',
-        description: '加粗文字',
+        description: '**加粗文字**',
         icon: Bold,
-        keywords: ['bold', 'strong'],
+        keywords: ['bold', 'strong', '粗体'],
         command: commands.bold,
       },
       {
         id: 'italic',
         label: '斜体',
-        description: '倾斜文字',
+        description: '*倾斜文字*',
         icon: Italic,
-        keywords: ['italic', 'em'],
+        keywords: ['italic', 'em', '斜体'],
         command: commands.italic,
       },
       {
         id: 'strikethrough',
         label: '删除线',
-        description: '划掉文字',
+        description: '~~划掉文字~~',
         icon: Strikethrough,
-        keywords: ['delete', 'strike'],
+        keywords: ['delete', 'strike', '删除线'],
         command: commands.strikethrough,
       },
       {
         id: 'inline-code',
         label: '行内代码',
-        description: '内联代码片段',
+        description: '`代码片段`',
         icon: Code,
-        keywords: ['code', 'inline'],
+        keywords: ['code', 'inline', '行内代码'],
         command: commands.inlineCode,
       },
-    ],
-  },
-  {
-    id: 'list',
-    label: '列表',
-    items: [
+      // 列表
       {
         id: 'bullet-list',
         label: '无序列表',
-        description: '项目符号列表',
+        description: '- 项目符号',
         icon: List,
-        keywords: ['ul', 'bullet'],
+        keywords: ['ul', 'bullet', '无序列表'],
         command: commands.bulletList,
       },
       {
         id: 'ordered-list',
         label: '有序列表',
-        description: '编号列表',
+        description: '1. 编号列表',
         icon: ListOrdered,
-        keywords: ['ol', 'number'],
+        keywords: ['ol', 'number', '有序列表'],
         command: commands.orderedList,
       },
       {
         id: 'task-list',
         label: '任务列表',
-        description: '待办事项',
+        description: '- [ ] 待办事项',
         icon: ListChecks,
-        keywords: ['todo', 'task'],
+        keywords: ['todo', 'task', '任务', '待办'],
         command: commands.taskList,
       },
     ],
   },
   {
-    id: 'block',
-    label: '块元素',
+    id: 'advanced-heading',
+    label: '更多标题',
+    items: [
+      {
+        id: 'heading-4',
+        label: '标题 4',
+        description: '#### 四级标题',
+        icon: Heading4,
+        keywords: ['h4', '四级标题', 'heading'],
+        command: (view) => setHeadingLevel(view, 4),
+      },
+      {
+        id: 'heading-5',
+        label: '标题 5',
+        description: '##### 五级标题',
+        icon: Heading5,
+        keywords: ['h5', '五级标题', 'heading'],
+        command: (view) => setHeadingLevel(view, 5),
+      },
+      {
+        id: 'heading-6',
+        label: '标题 6',
+        description: '###### 六级标题',
+        icon: Heading6,
+        keywords: ['h6', '六级标题', 'heading'],
+        command: (view) => setHeadingLevel(view, 6),
+      },
+    ],
+  },
+  {
+    id: 'block-media',
+    label: '块与媒体',
     items: [
       {
         id: 'code-block',
         label: '代码块',
-        description: '多行代码',
+        description: '```code 多行代码',
         icon: Code2,
-        keywords: ['code', 'block'],
+        keywords: ['code', 'block', '代码块'],
         command: commands.codeBlock,
       },
       {
         id: 'quote',
         label: '引用',
-        description: '引用文本',
+        description: '> 引用文本',
         icon: Quote,
-        keywords: ['blockquote', 'quote'],
+        keywords: ['blockquote', 'quote', '引用'],
         command: commands.quote,
       },
       {
-        id: 'divider',
-        label: '分隔线',
-        description: '水平分隔',
-        icon: Minus,
-        keywords: ['hr', 'divider'],
-        command: commands.horizontalRule,
-      },
-      {
-        id: 'details',
-        label: '折叠块',
-        description: '可折叠的内容区域',
-        icon: ChevronDown,
-        keywords: ['details', 'summary', 'collapse', 'toggle', '折叠'],
-        command: insertDetails,
-      },
-    ],
-  },
-  {
-    id: 'media',
-    label: '媒体与嵌入',
-    items: [
-      {
         id: 'link',
         label: '链接',
-        description: '添加超链接',
+        description: '[文字](url)',
         icon: Link,
-        keywords: ['link', 'url'],
+        keywords: ['link', 'url', '链接'],
         command: commands.link,
       },
       {
         id: 'image',
         label: '图片',
-        description: '插入图片',
+        description: '![描述](url)',
         icon: Image,
-        keywords: ['image', 'img'],
+        keywords: ['image', 'img', '图片'],
         command: insertImage,
       },
       {
         id: 'table',
         label: '表格',
-        description: '插入表格',
+        description: '| 列1 | 列2 |',
         icon: Table,
-        keywords: ['table', 'grid'],
+        keywords: ['table', 'grid', '表格'],
         command: insertTable,
+      },
+      {
+        id: 'divider',
+        label: '分隔线',
+        description: '--- 水平分隔',
+        icon: Minus,
+        keywords: ['hr', 'divider', '分隔线'],
+        command: commands.horizontalRule,
+      },
+      {
+        id: 'details',
+        label: '折叠块',
+        description: '<details> 折叠内容',
+        icon: ChevronDown,
+        keywords: ['details', 'summary', 'collapse', 'toggle', '折叠'],
+        command: insertDetails,
       },
       {
         id: 'math',
         label: '数学公式',
-        description: 'LaTeX 公式',
+        description: '$$ LaTeX 公式',
         icon: Sigma,
-        keywords: ['math', 'formula', 'latex'],
+        keywords: ['math', 'formula', 'latex', '数学', '公式'],
         command: insertMathBlock,
+      },
+    ],
+  },
+  {
+    id: 'shiroi-alerts',
+    label: '提示块',
+    items: [
+      {
+        id: 'alert-note',
+        label: 'Note',
+        description: '> [!NOTE] 提示信息',
+        icon: Info,
+        keywords: ['note', 'info', 'alert', '提示'],
+        command: insertAlert('NOTE'),
+      },
+      {
+        id: 'alert-tip',
+        label: 'Tip',
+        description: '> [!TIP] 有用建议',
+        icon: Lightbulb,
+        keywords: ['tip', 'hint', 'alert', '建议'],
+        command: insertAlert('TIP'),
+      },
+      {
+        id: 'alert-important',
+        label: 'Important',
+        description: '> [!IMPORTANT] 重要',
+        icon: AlertCircle,
+        keywords: ['important', 'alert', '重要'],
+        command: insertAlert('IMPORTANT'),
+      },
+      {
+        id: 'alert-warning',
+        label: 'Warning',
+        description: '> [!WARNING] 警告',
+        icon: AlertTriangle,
+        keywords: ['warning', 'alert', '警告'],
+        command: insertAlert('WARNING'),
+      },
+      {
+        id: 'alert-caution',
+        label: 'Caution',
+        description: '> [!CAUTION] 危险',
+        icon: ShieldAlert,
+        keywords: ['caution', 'danger', 'alert', '注意', '危险'],
+        command: insertAlert('CAUTION'),
+      },
+    ],
+  },
+  {
+    id: 'shiroi-extensions',
+    label: 'Shiroi 扩展',
+    items: [
+      // 常用扩展
+      {
+        id: 'mark',
+        label: '高亮标记',
+        description: '==高亮文本==',
+        icon: Highlighter,
+        keywords: ['mark', 'highlight', '高亮'],
+        command: insertMark,
+      },
+      {
+        id: 'spoiler',
+        label: '剧透文本',
+        description: '||隐藏内容||',
+        icon: MessageSquare,
+        keywords: ['spoiler', 'hidden', '剧透', '隐藏'],
+        command: insertSpoiler,
+      },
+      {
+        id: 'footnote',
+        label: '脚注',
+        description: '[^1] 脚注引用',
+        icon: Hash,
+        keywords: ['footnote', 'reference', '脚注'],
+        command: insertFootnote,
+      },
+      // 容器
+      {
+        id: 'container-banner',
+        label: 'Banner 横幅',
+        description: '::: banner 提示横幅',
+        icon: Zap,
+        keywords: ['banner', 'container', '横幅'],
+        command: insertContainer('banner {error}'),
+      },
+      {
+        id: 'gallery',
+        label: 'Gallery 画廊',
+        description: '::: gallery 图片集',
+        icon: Images,
+        keywords: ['gallery', 'images', '画廊'],
+        command: insertGallery,
+      },
+      {
+        id: 'grid',
+        label: 'Grid 网格',
+        description: '::: grid 网格布局',
+        icon: Grid3x3,
+        keywords: ['grid', 'layout', '网格'],
+        command: insertGrid,
+      },
+      {
+        id: 'masonry',
+        label: 'Masonry 瀑布流',
+        description: '::: masonry 瀑布流',
+        icon: Layers,
+        keywords: ['masonry', 'waterfall', '瀑布流'],
+        command: insertMasonry,
+      },
+      {
+        id: 'tabs',
+        label: 'Tabs 标签页',
+        description: '<Tabs> 选项卡',
+        icon: ChevronDown,
+        keywords: ['tabs', 'tab', '标签页'],
+        command: insertTabs,
+      },
+      // 组件
+      {
+        id: 'linkcard',
+        label: 'LinkCard 卡片',
+        description: '<LinkCard> 链接卡片',
+        icon: Link2,
+        keywords: ['linkcard', 'card', '卡片'],
+        command: insertLinkCard,
+      },
+      {
+        id: 'excalidraw',
+        label: 'Excalidraw 手绘',
+        description: '```excalidraw 画板',
+        icon: Paintbrush,
+        keywords: ['excalidraw', 'draw', '手绘'],
+        command: insertExcalidraw,
+      },
+    ],
+  },
+  {
+    id: 'shiroi-more',
+    label: '更多扩展',
+    items: [
+      {
+        id: 'insert',
+        label: '插入标记',
+        description: '++插入文本++',
+        icon: Plus,
+        keywords: ['insert', 'add', '插入'],
+        command: insertInsertMark,
+      },
+      {
+        id: 'mention-github',
+        label: 'GitHub 提及',
+        description: '{GH@username}',
+        icon: User,
+        keywords: ['mention', 'github', 'gh', '@'],
+        command: insertMention('GH'),
+      },
+      {
+        id: 'mention-twitter',
+        label: 'Twitter 提及',
+        description: '{TW@username}',
+        icon: User,
+        keywords: ['mention', 'twitter', 'tw', '@'],
+        command: insertMention('TW'),
+      },
+      {
+        id: 'mention-telegram',
+        label: 'Telegram 提及',
+        description: '{TG@username}',
+        icon: User,
+        keywords: ['mention', 'telegram', 'tg', '@'],
+        command: insertMention('TG'),
+      },
+      {
+        id: 'container-warning',
+        label: 'Container 警告',
+        description: '::: warning 警告容器',
+        icon: Flag,
+        keywords: ['container', 'warning', '容器'],
+        command: insertContainer('warning'),
+      },
+      {
+        id: 'react-component',
+        label: 'React 组件',
+        description: '```component 远程组件',
+        icon: Sparkles,
+        keywords: ['component', 'react', '组件'],
+        command: insertReactComponent,
+      },
+      {
+        id: 'definition-list',
+        label: '定义列表',
+        description: '术语 : 定义',
+        icon: List,
+        keywords: ['definition', 'list', '定义'],
+        command: insertDefinitionList,
+      },
+    ],
+  },
+  {
+    id: 'diagrams',
+    label: '图表',
+    items: [
+      {
+        id: 'mermaid-flowchart',
+        label: '流程图',
+        description: 'Mermaid 流程图',
+        icon: Workflow,
+        keywords: ['mermaid', 'flowchart', 'diagram', '流程图'],
+        command: insertMermaidFlowchart,
+      },
+      {
+        id: 'mermaid-sequence',
+        label: '时序图',
+        description: 'Mermaid 序列图',
+        icon: GitBranch,
+        keywords: ['mermaid', 'sequence', 'diagram', '时序图'],
+        command: insertMermaidSequence,
       },
     ],
   },

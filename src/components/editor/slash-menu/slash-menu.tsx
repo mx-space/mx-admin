@@ -27,6 +27,7 @@ export const SlashMenu = defineComponent({
   setup(props) {
     const menuRef = ref<HTMLDivElement | null>(null)
     const itemRefs = ref<Map<string, HTMLButtonElement>>(new Map())
+    const adjustedPosition = ref(false)
     const {
       isOpen,
       position,
@@ -39,6 +40,55 @@ export const SlashMenu = defineComponent({
       closeMenu,
       syncFromEditor,
     } = useSlashMenu(toRef(props, 'editorView'))
+
+    // 监听弹窗显示后调整位置
+    watch([() => isOpen.value, () => position.value], ([visible, pos]) => {
+      if (visible && pos && !adjustedPosition.value) {
+        nextTick(() => {
+          if (!menuRef.value || !position.value) return
+
+          const menuRect = menuRef.value.getBoundingClientRect()
+          const viewportHeight = window.innerHeight
+          const viewportWidth = window.innerWidth
+          const padding = 8
+
+          let needsUpdate = false
+          let newX = position.value.x
+          let newY = position.value.y
+
+          // 检查右边界
+          if (menuRect.right > viewportWidth - padding) {
+            newX = viewportWidth - menuRect.width - padding
+            needsUpdate = true
+          }
+
+          // 检查底部边界
+          if (menuRect.bottom > viewportHeight - padding) {
+            newY = viewportHeight - menuRect.height - padding
+            needsUpdate = true
+          }
+
+          // 检查顶部边界
+          if (newY < padding) {
+            newY = padding
+            needsUpdate = true
+          }
+
+          // 检查左边界
+          if (newX < padding) {
+            newX = padding
+            needsUpdate = true
+          }
+
+          if (needsUpdate) {
+            adjustedPosition.value = true
+            position.value = { x: newX, y: newY }
+          }
+        })
+      } else if (!visible) {
+        adjustedPosition.value = false
+      }
+    })
 
     const handleDocumentPointerDown = (event: PointerEvent) => {
       if (!isOpen.value) return
