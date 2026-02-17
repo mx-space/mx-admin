@@ -98,7 +98,7 @@
     "zod": "4.3.6"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.13",
+    "@biomejs/biome": "2.4.2",
     "@innei/prettier": "1.0.0",
     "@types/ejs": "3.1.5",
     "@types/event-source-polyfill": "1.0.5",
