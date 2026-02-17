@@ -6,6 +6,7 @@ import {
   Code,
   Code2,
   Flag,
+  GitBranch,
   Grid3x3,
   Hash,
   Heading1,
@@ -19,6 +20,7 @@ import {
   Images,
   Info,
   Italic,
+  Layers,
   Lightbulb,
   Link,
   Link2,
@@ -35,7 +37,9 @@ import {
   Sparkles,
   Strikethrough,
   Table,
+  Tabs,
   User,
+  Workflow,
   Zap,
 } from 'lucide-vue-next'
 import { NButton, NInput, NSelect } from 'naive-ui'
@@ -601,6 +605,112 @@ const insertFootnote = (view: EditorView): boolean => {
   return true
 }
 
+const insertMasonry = (view: EditorView): boolean => {
+  const { state } = view
+  const { from } = state.selection.main
+  const line = state.doc.lineAt(from)
+  const insertPos = line.to
+  const needsNewline = line.text.length > 0
+
+  showTextareaDialog(
+    '插入瀑布流布局',
+    '输入图片地址（每行一个）',
+    'https://example.com/image1.jpg\nhttps://example.com/image2.jpg',
+    (urls) => {
+      if (!urls.trim()) return
+
+      const insert = `${needsNewline ? '\n' : ''}::: masonry\n${urls.trim()}\n:::\n\n`
+
+      view.dispatch({
+        changes: { from: insertPos, to: insertPos, insert },
+        selection: { anchor: insertPos + insert.length },
+      })
+
+      view.focus()
+    },
+  )
+
+  return true
+}
+
+const insertTabs = (view: EditorView): boolean => {
+  const { state } = view
+  const { from } = state.selection.main
+  const line = state.doc.lineAt(from)
+  const insertPos = line.to
+  const needsNewline = line.text.length > 0
+  const insert = `${needsNewline ? '\n' : ''}<Tabs>\n<tab label="标签1" active>\n\n内容1\n\n</tab>\n<tab label="标签2">\n\n内容2\n\n</tab>\n</Tabs>\n\n`
+  const cursorOffset = insert.indexOf('标签1')
+
+  view.dispatch({
+    changes: { from: insertPos, to: insertPos, insert },
+    selection: {
+      anchor: insertPos + cursorOffset,
+      head: insertPos + cursorOffset + 3,
+    },
+  })
+
+  view.focus()
+  return true
+}
+
+const insertMermaidFlowchart = (view: EditorView): boolean => {
+  const { state } = view
+  const { from } = state.selection.main
+  const line = state.doc.lineAt(from)
+  const insertPos = line.to
+  const needsNewline = line.text.length > 0
+  const insert = `${needsNewline ? '\n' : ''}\`\`\`mermaid\nflowchart TD\n    A[开始] --> B{判断}\n    B -->|是| C[结束]\n    B -->|否| D[继续]\n\`\`\`\n\n`
+  const cursorOffset = insert.indexOf('A[开始]')
+
+  view.dispatch({
+    changes: { from: insertPos, to: insertPos, insert },
+    selection: { anchor: insertPos + cursorOffset },
+  })
+
+  view.focus()
+  return true
+}
+
+const insertMermaidSequence = (view: EditorView): boolean => {
+  const { state } = view
+  const { from } = state.selection.main
+  const line = state.doc.lineAt(from)
+  const insertPos = line.to
+  const needsNewline = line.text.length > 0
+  const insert = `${needsNewline ? '\n' : ''}\`\`\`mermaid\nsequenceDiagram\n    participant A\n    participant B\n    A->>B: 请求\n    B->>A: 响应\n\`\`\`\n\n`
+  const cursorOffset = insert.indexOf('participant A')
+
+  view.dispatch({
+    changes: { from: insertPos, to: insertPos, insert },
+    selection: { anchor: insertPos + cursorOffset },
+  })
+
+  view.focus()
+  return true
+}
+
+const insertDefinitionList = (view: EditorView): boolean => {
+  const { state } = view
+  const { from } = state.selection.main
+  const line = state.doc.lineAt(from)
+  const insertPos = line.to
+  const needsNewline = line.text.length > 0
+  const insert = `${needsNewline ? '\n' : ''}术语 1\n: 定义 1\n\n术语 2\n: 定义 2\n\n`
+  const cursorOffset = insert.indexOf('术语 1')
+
+  view.dispatch({
+    changes: { from: insertPos, to: insertPos, insert },
+    selection: {
+      anchor: insertPos + cursorOffset,
+      head: insertPos + cursorOffset + 4,
+    },
+  })
+
+  view.focus()
+  return true
+}
+
 export const slashMenuGroups: SlashMenuGroup[] = [
   {
     id: 'heading',
@@ -967,6 +1077,58 @@ export const slashMenuGroups: SlashMenuGroup[] = [
         icon: Sparkles,
         keywords: ['component', 'react', 'remote', '组件', '远程'],
         command: insertReactComponent,
+      },
+      {
+        id: 'masonry',
+        label: 'Masonry 瀑布流',
+        description: '::: masonry 瀑布流布局',
+        icon: Layers,
+        keywords: ['masonry', 'waterfall', '瀑布流', '图片'],
+        command: insertMasonry,
+      },
+      {
+        id: 'tabs',
+        label: 'Tabs 标签页',
+        description: '<Tabs> 标签页',
+        icon: Tabs,
+        keywords: ['tabs', 'tab', '标签页', '选项卡'],
+        command: insertTabs,
+      },
+    ],
+  },
+  {
+    id: 'mermaid',
+    label: 'Mermaid 图表',
+    items: [
+      {
+        id: 'mermaid-flowchart',
+        label: 'Mermaid 流程图',
+        description: '```mermaid flowchart',
+        icon: Workflow,
+        keywords: ['mermaid', 'flowchart', 'diagram', '流程图', '图表'],
+        command: insertMermaidFlowchart,
+      },
+      {
+        id: 'mermaid-sequence',
+        label: 'Mermaid 时序图',
+        description: '```mermaid sequenceDiagram',
+        icon: GitBranch,
+        keywords: ['mermaid', 'sequence', 'diagram', '时序图', '序列图'],
+        command: insertMermaidSequence,
+      },
+    ],
+  },
+  {
+    id: 'other',
+    label: '其他',
+    items: [
+      {
+        id: 'definition-list',
+        label: '定义列表',
+        description: '术语与定义',
+        icon: List,
+        keywords: ['definition', 'list', 'term', '定义', '术语'],
+        command: insertDefinitionList,
       },
     ],
   },
