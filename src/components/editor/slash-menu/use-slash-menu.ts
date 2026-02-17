@@ -112,11 +112,33 @@ export function useSlashMenu(editorView: Ref<EditorView | undefined>) {
       return
     }
 
-    isOpen.value = true
-    position.value = {
-      x: coords.left,
-      y: coords.bottom + 4,
+    // 计算弹窗位置，避免超出视口
+    const menuHeight = 380 // max-h-[380px]
+    const menuWidth = 320 // max-w-[320px]
+    const padding = 8
+    const viewportHeight = window.innerHeight
+    const viewportWidth = window.innerWidth
+
+    // 默认显示在光标下方
+    let x = coords.left
+    let y = coords.bottom + 4
+
+    // 检查是否超出右边界，如果超出则靠右对齐
+    if (x + menuWidth > viewportWidth - padding) {
+      x = viewportWidth - menuWidth - padding
     }
+
+    // 检查是否超出底部，如果超出则显示在光标上方
+    if (y + menuHeight > viewportHeight - padding) {
+      y = coords.top - menuHeight - 4
+      // 如果上方空间也不够，则尽量靠上显示
+      if (y < padding) {
+        y = padding
+      }
+    }
+
+    isOpen.value = true
+    position.value = { x, y }
     query.value = state.query
   }
 
