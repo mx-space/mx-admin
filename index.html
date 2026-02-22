@@ -7,6 +7,27 @@
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"
     />
+    <script>
+      // Minimal Prism mock for @lexical/code (must be set before modules load)
+      window.Prism = {
+        highlight: function(text) { return text; },
+        languages: {
+          extend: function() { return {}; },
+          insertBefore: function() { return {}; },
+          diff: {}
+        },
+        tokenize: function(text) { return [text]; },
+        hooks: {
+          add: function() {},
+          run: function() {}
+        },
+        Token: function(type, content, alias) {
+          this.type = type;
+          this.content = content;
+          this.alias = alias;
+        }
+      };
+    </script>
     <script type="module">
       import favicon from './favicon.png'
 

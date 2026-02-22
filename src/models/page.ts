@@ -25,6 +25,9 @@ export interface PageModel {
   /** Text */
   text: string
 
+  contentFormat?: 'markdown' | 'lexical'
+  content?: string
+
   /** Type (MD | html | frame) */
   type?: EnumPageType
 

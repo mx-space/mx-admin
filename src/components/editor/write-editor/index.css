@@ -90,3 +90,31 @@
 .write-editor-wrapper:has(.cm-wysiwyg-mode) :deep(.cm-scroller) {
   padding: 0 0 2rem;
 }
+
+/* ========================================
+   Rich Editor Mode Styles
+   ======================================== */
+
+.write-editor-wrapper.rich-editor-mode .write-editor-header {
+  max-width: var(--wysiwyg-content-width);
+  margin: 0 auto;
+  width: 100%;
+  padding: 0;
+  padding-left: 12px;
+}
+
+.write-editor-wrapper.rich-editor-mode .write-editor-header input {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.write-editor-wrapper.rich-editor-mode .write-editor-subtitle {
+  padding-left: 0;
+}
+
+.write-editor-wrapper.rich-editor-mode .write-editor-content {
+  max-width: var(--wysiwyg-content-width);
+  margin: 0 auto;
+  width: 100%;
+  padding-top: 2rem;
+}

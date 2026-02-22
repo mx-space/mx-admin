@@ -19,7 +19,7 @@ import { toast } from 'vue-sonner'
 import type { CreatePageData } from '~/api/pages'
 import type { DraftModel } from '~/models/draft'
 import type { PageModel } from '~/models/page'
-import type { WriteBaseType } from '~/shared/types/base'
+import type { ContentFormat, WriteBaseType } from '~/shared/types/base'
 
 import { pagesApi } from '~/api/pages'
 import { HeaderActionButton } from '~/components/button/header-action-button'
@@ -49,6 +49,8 @@ type PageReactiveType = WriteBaseType & {
   subtitle: string
   slug: string
   order: number
+  contentFormat: ContentFormat
+  content: string
 }
 
 const PageWriteView = defineComponent(() => {
@@ -77,6 +79,8 @@ const PageWriteView = defineComponent(() => {
     id: undefined,
     images: [],
     meta: undefined,
+    contentFormat: 'markdown' as ContentFormat,
+    content: '',
   })
 
   const parsePayloadIntoReactiveData = (payload: PageModel) =>
@@ -92,6 +96,8 @@ const PageWriteView = defineComponent(() => {
   ) => {
     target.title = draft.title
     target.text = draft.text
+    target.contentFormat = draft.contentFormat || 'markdown'
+    target.content = draft.content || ''
     target.images = draft.images || []
     target.meta = draft.meta
     if (draft.typeSpecificData) {
@@ -105,6 +111,8 @@ const PageWriteView = defineComponent(() => {
   const loadPublished = async (id: string) => {
     const payload = await pagesApi.getById(id)
     parsePayloadIntoReactiveData(payload as PageModel)
+    data.contentFormat = (payload as any).contentFormat || 'markdown'
+    data.content = (payload as any).content || ''
   }
 
   const {
@@ -122,6 +130,8 @@ const PageWriteView = defineComponent(() => {
     getData: () => ({
       title: data.title,
       text: data.text,
+      contentFormat: data.contentFormat,
+      content: data.content,
       images: data.images,
       meta: data.meta,
       typeSpecificData: {
@@ -173,6 +183,8 @@ const PageWriteView = defineComponent(() => {
         images,
         title: data.title.trim(),
         slug: data.slug.trim(),
+        contentFormat: data.contentFormat,
+        content: data.contentFormat === 'lexical' ? data.content : undefined,
       }
     }
 
@@ -263,6 +275,14 @@ const PageWriteView = defineComponent(() => {
         text={data.text}
         onChange={(v) => {
           data.text = v
+        }}
+        contentFormat={data.contentFormat}
+        onContentFormatChange={(v) => {
+          data.contentFormat = v
+        }}
+        richContent={data.content ? JSON.parse(data.content) : undefined}
+        onRichContentChange={(v) => {
+          data.content = JSON.stringify(v)
         }}
         saveConfirmFn={serverDraft.checkIsSynced}
         subtitleSlot={() => (

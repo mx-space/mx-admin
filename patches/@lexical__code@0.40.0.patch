@@ -1,0 +1,64 @@
+diff --git a/LexicalCode.dev.mjs b/LexicalCode.dev.mjs
+index 345e192ff3d7e5caa0478b6a8fc564960f298c28..0aaffa5c86a20ba68c9c9d7b5ee515869eb44d18 100644
+--- a/LexicalCode.dev.mjs
++++ b/LexicalCode.dev.mjs
+@@ -8,22 +8,23 @@
+ 
+ import { isHTMLElement, addClassNamesToElement, removeClassNamesFromElement, $getAdjacentCaret, mergeRegister } from '@lexical/utils';
+ import { ElementNode, $createParagraphNode, $isTextNode, $isTabNode, $createTabNode, $createLineBreakNode, $create, TextNode, $applyNodeReplacement, $getSiblingCaret, getTextDirection, $isElementNode, $isLineBreakNode, defineExtension, $createTextNode, $getNodeByKey, $getSelection, $isRangeSelection, $createPoint, INDENT_CONTENT_COMMAND, OUTDENT_CONTENT_COMMAND, INSERT_TAB_COMMAND, $setSelectionFromCaretRange, $getCaretRangeInDirection, $getCaretRange, $getTextPointCaret, $normalizeCaret, KEY_ARROW_UP_COMMAND, MOVE_TO_START, KEY_TAB_COMMAND, COMMAND_PRIORITY_LOW, $insertNodes, KEY_ARROW_DOWN_COMMAND, MOVE_TO_END } from 'lexical';
+-import 'prismjs';
+-import 'prismjs/components/prism-clike.js';
+-import 'prismjs/components/prism-javascript.js';
+-import 'prismjs/components/prism-markup.js';
+-import 'prismjs/components/prism-markdown.js';
+-import 'prismjs/components/prism-c.js';
+-import 'prismjs/components/prism-css.js';
+-import 'prismjs/components/prism-objectivec.js';
+-import 'prismjs/components/prism-sql.js';
+-import 'prismjs/components/prism-powershell.js';
+-import 'prismjs/components/prism-python.js';
+-import 'prismjs/components/prism-rust.js';
+-import 'prismjs/components/prism-swift.js';
+-import 'prismjs/components/prism-typescript.js';
+-import 'prismjs/components/prism-java.js';
+-import 'prismjs/components/prism-cpp.js';
++// Patched: Removed prismjs imports - relying on global window.Prism
++// import 'prismjs';
++// import 'prismjs/components/prism-clike.js';
++// import 'prismjs/components/prism-javascript.js';
++// import 'prismjs/components/prism-markup.js';
++// import 'prismjs/components/prism-markdown.js';
++// import 'prismjs/components/prism-c.js';
++// import 'prismjs/components/prism-css.js';
++// import 'prismjs/components/prism-objectivec.js';
++// import 'prismjs/components/prism-sql.js';
++// import 'prismjs/components/prism-powershell.js';
++// import 'prismjs/components/prism-python.js';
++// import 'prismjs/components/prism-rust.js';
++// import 'prismjs/components/prism-swift.js';
++// import 'prismjs/components/prism-typescript.js';
++// import 'prismjs/components/prism-java.js';
++// import 'prismjs/components/prism-cpp.js';
+ 
+ /**
+  * Copyright (c) Meta Platforms, Inc. and affiliates.
+@@ -681,6 +682,9 @@ const CodeExtension = defineExtension({
+   nodes: () => [CodeNode, CodeHighlightNode]
+ });
+ 
++// Patched: Get Prism from global before using it
++const Prism = globalThis.Prism || window.Prism;
++
+ (function (Prism) {
+ 
+ 	Prism.languages.diff = {
+@@ -754,7 +758,8 @@ const CodeExtension = defineExtension({
+  *
+  */
+ 
+-const Prism$1 = globalThis.Prism || window.Prism;
++// Patched: Reuse Prism from above instead of redefining
++const Prism$1 = Prism;
+ const CODE_LANGUAGE_FRIENDLY_NAME_MAP = {
+   c: 'C',
+   clike: 'C-like',

@@ -9,6 +9,8 @@ export interface NoteModel {
   }
   title: string
   text: string
+  contentFormat?: 'markdown' | 'lexical'
+  content?: string
   mood?: string
   weather?: string
   bookmark?: boolean

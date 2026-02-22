@@ -22,6 +22,8 @@ export interface CreateDraftData {
   refId?: string
   title?: string
   text?: string
+  contentFormat?: 'markdown' | 'lexical'
+  content?: string
   images?: Image[]
   meta?: Record<string, any>
   typeSpecificData?: TypeSpecificData

@@ -19,7 +19,7 @@ import { toast } from 'vue-sonner'
 import type { CategoryModel } from '~/models/category'
 import type { DraftModel } from '~/models/draft'
 import type { PostModel } from '~/models/post'
-import type { WriteBaseType } from '~/shared/types/base'
+import type { ContentFormat, WriteBaseType } from '~/shared/types/base'
 import type { SelectMixedOption } from 'naive-ui/lib/select/src/interface'
 
 import { categoriesApi } from '~/api/categories'
@@ -61,6 +61,8 @@ type PostReactiveType = WriteBaseType & {
   pin: boolean
   relatedId: string[]
   isPublished: boolean
+  contentFormat: ContentFormat
+  content: string
 }
 
 const PostWriteView = defineComponent(() => {
@@ -100,6 +102,8 @@ const PostWriteView = defineComponent(() => {
     relatedId: [],
     created: undefined,
     isPublished: true,
+    contentFormat: 'markdown' as ContentFormat,
+    content: '',
   })
 
   const postListState = useMemoPostList()
@@ -115,6 +119,8 @@ const PostWriteView = defineComponent(() => {
   ) => {
     target.title = draft.title
     target.text = draft.text
+    target.contentFormat = draft.contentFormat || 'markdown'
+    target.content = draft.content || ''
     target.images = draft.images || []
     target.meta = draft.meta
     if (draft.typeSpecificData) {
@@ -140,6 +146,8 @@ const PostWriteView = defineComponent(() => {
     postData.relatedId = postData.related?.map((r: any) => r.id) || []
     postListState.append(postData.related)
     parsePayloadIntoReactiveData(postData as PostModel)
+    data.contentFormat = postData.contentFormat || 'markdown'
+    data.content = postData.content || ''
   }
 
   const {
@@ -157,6 +165,8 @@ const PostWriteView = defineComponent(() => {
     getData: () => ({
       title: data.title,
       text: data.text,
+      contentFormat: data.contentFormat,
+      content: data.content,
       images: data.images,
       meta: data.meta,
       typeSpecificData: {
@@ -222,6 +232,8 @@ const PostWriteView = defineComponent(() => {
       summary: data.summary?.trim() || null,
       pin: data.pin ? new Date().toISOString() : null,
       draftId: serverDraft.draftId.value,
+      contentFormat: data.contentFormat,
+      content: data.contentFormat === 'lexical' ? data.content : undefined,
     }
 
     if (actualRefId.value) {
@@ -318,6 +330,14 @@ const PostWriteView = defineComponent(() => {
         text={data.text}
         onChange={(v) => {
           data.text = v
+        }}
+        contentFormat={data.contentFormat}
+        onContentFormatChange={(v) => {
+          data.contentFormat = v
+        }}
+        richContent={data.content ? JSON.parse(data.content) : undefined}
+        onRichContentChange={(v) => {
+          data.content = JSON.stringify(v)
         }}
         saveConfirmFn={serverDraft.checkIsSynced}
         subtitleSlot={() => (

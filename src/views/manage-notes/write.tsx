@@ -24,7 +24,7 @@ import type { TopicModel } from '@mx-space/api-client'
 import type { CreateNoteData } from '~/api/notes'
 import type { DraftModel } from '~/models/draft'
 import type { Coordinate, NoteModel } from '~/models/note'
-import type { WriteBaseType } from '~/shared/types/base'
+import type { ContentFormat, WriteBaseType } from '~/shared/types/base'
 
 import { notesApi } from '~/api/notes'
 import { topicsApi } from '~/api/topics'
@@ -66,6 +66,8 @@ type NoteReactiveType = {
   location: null | string
   coordinates: null | Coordinate
   topicId: string | null | undefined
+  contentFormat: ContentFormat
+  content: string
 } & WriteBaseType
 
 const useNoteTopic = () => {
@@ -105,6 +107,8 @@ const NoteWriteView = defineComponent(() => {
     images: [],
     meta: undefined,
     created: undefined,
+    contentFormat: 'markdown' as ContentFormat,
+    content: '',
   })
 
   const parsePayloadIntoReactiveData = (payload: NoteModel) =>
@@ -119,6 +123,8 @@ const NoteWriteView = defineComponent(() => {
   ) => {
     target.title = draft.title
     target.text = draft.text
+    target.contentFormat = draft.contentFormat || 'markdown'
+    target.content = draft.content || ''
     target.images = draft.images || []
     target.meta = draft.meta
     if (draft.typeSpecificData) {
@@ -154,6 +160,8 @@ const NoteWriteView = defineComponent(() => {
     defaultTitle.value = `记录 ${created.getFullYear()} 年第 ${getDayOfYear(created)} 天`
 
     parsePayloadIntoReactiveData(noteData as NoteModel)
+    data.contentFormat = (noteData as any).contentFormat || 'markdown'
+    data.content = (noteData as any).content || ''
   }
 
   const {
@@ -171,6 +179,8 @@ const NoteWriteView = defineComponent(() => {
     getData: () => ({
       title: data.title,
       text: data.text,
+      contentFormat: data.contentFormat,
+      content: data.content,
       images: data.images,
       meta: data.meta,
       typeSpecificData: {
@@ -246,6 +256,8 @@ const NoteWriteView = defineComponent(() => {
               return +date - Date.now() <= 0 ? null : date
             })()
           : null,
+        contentFormat: data.contentFormat,
+        content: data.contentFormat === 'lexical' ? data.content : undefined,
       }
     }
 
@@ -346,6 +358,14 @@ const NoteWriteView = defineComponent(() => {
         text={data.text}
         onChange={(v) => {
           data.text = v
+        }}
+        contentFormat={data.contentFormat}
+        onContentFormatChange={(v) => {
+          data.contentFormat = v
+        }}
+        richContent={data.content ? JSON.parse(data.content) : undefined}
+        onRichContentChange={(v) => {
+          data.content = JSON.stringify(v)
         }}
         saveConfirmFn={serverDraft.checkIsSynced}
         subtitleSlot={() => (

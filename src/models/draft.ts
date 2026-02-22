@@ -10,6 +10,8 @@ export interface DraftHistoryModel {
   version: number
   title: string
   text: string
+  contentFormat?: 'markdown' | 'lexical'
+  content?: string
   typeSpecificData?: Record<string, any>
   savedAt: string
 }
@@ -20,6 +22,8 @@ export interface DraftModel {
   refId?: string
   title: string
   text: string
+  contentFormat?: 'markdown' | 'lexical'
+  content?: string
   images?: Image[]
   meta?: Record<string, any>
   typeSpecificData?: Record<string, any>

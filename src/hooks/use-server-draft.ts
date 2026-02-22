@@ -7,6 +7,8 @@ import { draftsApi } from '~/api'
 export interface DraftData {
   title: string
   text: string
+  contentFormat?: 'markdown' | 'lexical'
+  content?: string
   images?: any[]
   meta?: Record<string, any>
   typeSpecificData: TypeSpecificData
@@ -53,6 +55,8 @@ export const useServerDraft = (
     return (
       current.title !== memoPreviousData.title ||
       current.text !== memoPreviousData.text ||
+      current.contentFormat !== memoPreviousData.contentFormat ||
+      current.content !== memoPreviousData.content ||
       JSON.stringify(current.typeSpecificData) !==
         JSON.stringify(memoPreviousData.typeSpecificData)
     )
@@ -88,6 +92,8 @@ export const useServerDraft = (
         response = await draftsApi.update(draftId.value, {
           title,
           text: data.text,
+          contentFormat: data.contentFormat,
+          content: data.content,
           images: validImages,
           meta: data.meta,
           typeSpecificData: data.typeSpecificData,
@@ -99,6 +105,8 @@ export const useServerDraft = (
           refId: currentRefId.value,
           title,
           text: data.text,
+          contentFormat: data.contentFormat,
+          content: data.content,
           images: validImages,
           meta: data.meta,
           typeSpecificData: data.typeSpecificData,
@@ -134,6 +142,8 @@ export const useServerDraft = (
         memoPreviousData = {
           title: draft.title,
           text: draft.text,
+          contentFormat: draft.contentFormat,
+          content: draft.content,
           images: draft.images,
           meta: draft.meta,
           typeSpecificData: draft.typeSpecificData || {},
@@ -163,6 +173,8 @@ export const useServerDraft = (
         memoPreviousData = {
           title: draft.title,
           text: draft.text,
+          contentFormat: draft.contentFormat,
+          content: draft.content,
           images: draft.images,
           meta: draft.meta,
           typeSpecificData: draft.typeSpecificData || {},
