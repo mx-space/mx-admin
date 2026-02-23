@@ -6,10 +6,19 @@ import type { Root } from 'react-dom/client'
 import type { PropType } from 'vue'
 
 import { RichDiff } from '@haklex/rich-diff'
+import {
+  codeSnippetNodes,
+  embedNodes,
+  enhancedRendererConfig,
+  galleryNodes,
+  TldrawNode,
+} from '@haklex/rich-kit-shiro'
 
 import '@haklex/rich-diff/style.css'
 
 import { useUIStore } from '~/stores/ui'
+
+const extraNodes = [TldrawNode, ...embedNodes, ...galleryNodes, ...codeSnippetNodes]
 
 export const RichDiffBridge = defineComponent({
   props: {
@@ -37,6 +46,8 @@ export const RichDiffBridge = defineComponent({
           variant: props.variant,
           theme,
           className: props.className,
+          extraNodes,
+          rendererConfig: enhancedRendererConfig,
         }),
       )
     }

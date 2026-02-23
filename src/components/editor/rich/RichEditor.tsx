@@ -57,6 +57,7 @@ export const RichEditor = defineComponent({
     const containerRef = ref<HTMLDivElement>()
     let root: Root | null = null
     let editorInstance: LexicalEditor | null = null
+    let unmounting = false
 
     const buildEditorProps = (
       resolvedTheme: 'dark' | 'light',
@@ -86,6 +87,7 @@ export const RichEditor = defineComponent({
         createElement(ShiroEditorReact, {
           editorProps: buildEditorProps(resolvedTheme),
           onChange: (value: SerializedEditorState) => {
+            if (unmounting) return
             emit('change', value)
             if (editorInstance) {
               editorInstance.read(() => {
@@ -135,6 +137,7 @@ export const RichEditor = defineComponent({
     })
 
     onBeforeUnmount(() => {
+      unmounting = true
       root?.unmount()
       root = null
       editorInstance = null

@@ -1,19 +1,42 @@
+import { diff as jsonDiff } from 'jsondiffpatch'
 import { GitCompare, X } from 'lucide-vue-next'
 import { NButton, NModal, NScrollbar, NSpin, NSplit } from 'naive-ui'
-import { computed, defineComponent, ref, watch } from 'vue'
+import { computed, defineComponent, onBeforeUnmount, ref, watch } from 'vue'
 import type { DraftModel } from '~/models/draft'
 import type { PropType } from 'vue'
 
 import { useQuery } from '@tanstack/vue-query'
 
 import { draftsApi } from '~/api/drafts'
+import { RichDiffBridge } from '~/components/editor/rich/RichDiffBridge'
 
 import { DiffPreview } from './diff-preview'
 import { VersionListItem } from './version-list-item'
 
+function countDeltaOps(delta: any): { added: number; removed: number } {
+  let added = 0
+  let removed = 0
+  if (!delta || typeof delta !== 'object') return { added, removed }
+  for (const key of Object.keys(delta)) {
+    if (key === '_t') continue
+    const val = delta[key]
+    if (Array.isArray(val)) {
+      if (val.length === 1) added++
+      else if (val.length === 3 && val[2] === 0) removed++
+    } else if (typeof val === 'object') {
+      const sub = countDeltaOps(val)
+      added += sub.added
+      removed += sub.removed
+    }
+  }
+  return { added, removed }
+}
+
 export interface PublishedContent {
   title: string
   text: string
+  contentFormat?: 'markdown' | 'lexical'
+  content?: string
   updated: string
 }
 
@@ -45,9 +68,65 @@ export const DraftRecoveryModal = defineComponent({
   },
   setup(props) {
     const selectedVersion = ref<number | 'published'>('published')
-    const selectedVersionContent = ref<{ title: string; text: string } | null>(
-      null,
-    )
+    const selectedVersionContent = ref<{
+      title: string
+      text: string
+      contentFormat?: 'markdown' | 'lexical'
+      content?: string
+    } | null>(null)
+
+    type VersionContent = { text: string; content?: string; contentFormat?: 'markdown' | 'lexical' }
+    const versionContentCache = ref(new Map<number | 'published', VersionContent>())
+
+    // Pre-computed diff stats via frame-budgeted batch processing
+    const precomputedDiffStats = ref(new Map<number, { added: number; removed: number }>())
+    let diffQueue: Array<{ version: number; content: VersionContent }> = []
+    let rafId: number | null = null
+    let batchGeneration = 0
+
+    const flushDiffQueue = () => {
+      const BUDGET = 8
+      const start = performance.now()
+      const updates = new Map(precomputedDiffStats.value)
+      let dirty = false
+
+      while (diffQueue.length > 0 && performance.now() - start < BUDGET) {
+        const { version, content } = diffQueue.shift()!
+        const stats = calcDiffStats(
+          props.publishedContent.text ?? '',
+          content.text ?? '',
+          props.publishedContent.content,
+          content.content,
+          content.contentFormat,
+        )
+        updates.set(version, stats)
+        dirty = true
+      }
+
+      if (dirty) precomputedDiffStats.value = updates
+      if (diffQueue.length > 0) {
+        rafId = requestAnimationFrame(flushDiffQueue)
+      } else {
+        rafId = null
+      }
+    }
+
+    const enqueueDiff = (version: number, content: VersionContent) => {
+      diffQueue.push({ version, content })
+      if (rafId === null) {
+        rafId = requestAnimationFrame(flushDiffQueue)
+      }
+    }
+
+    const cancelBatch = () => {
+      diffQueue = []
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId)
+        rafId = null
+      }
+    }
+
+    onBeforeUnmount(cancelBatch)
 
     // Get draft history
     const { data: historyData, isLoading: historyLoading } = useQuery({
@@ -112,10 +191,73 @@ export const DraftRecoveryModal = defineComponent({
           selectedVersionContent.value = {
             title: props.draft.title,
             text: props.draft.text,
+            contentFormat: props.draft.contentFormat,
+            content: props.draft.content,
           }
+          // Seed cache with current draft
+          versionContentCache.value.set(props.draft.version, {
+            text: props.draft.text,
+            content: props.draft.content,
+            contentFormat: props.draft.contentFormat,
+          })
+        } else {
+          cancelBatch()
         }
       },
       { immediate: true },
+    )
+
+    // Proactively fetch all version contents and batch-compute diffs
+    watch(
+      [() => historyData.value, () => props.show],
+      ([history, show]) => {
+        batchGeneration++
+        const gen = batchGeneration
+        cancelBatch()
+        precomputedDiffStats.value = new Map()
+
+        if (!show || !history?.length) return
+
+        // Current draft already available
+        enqueueDiff(props.draft.version, {
+          text: props.draft.text,
+          content: props.draft.content,
+          contentFormat: props.draft.contentFormat,
+        })
+
+        // Fetch history versions with concurrency limit
+        const versions = history
+          .filter((item: any) => item.version !== props.draft.version)
+          .sort((a: any, b: any) => b.version - a.version)
+
+        const CONCURRENCY = 3
+        let idx = 0
+        const fetchNext = async (): Promise<void> => {
+          while (idx < versions.length) {
+            if (gen !== batchGeneration) return
+            const item = versions[idx++]
+            try {
+              const data = await draftsApi.getHistoryVersion(props.draft.id, item.version)
+              if (gen !== batchGeneration) return
+              const content: VersionContent = {
+                text: data.text,
+                content: data.content,
+                contentFormat: data.contentFormat,
+              }
+              const cache = new Map(versionContentCache.value)
+              cache.set(item.version, content)
+              versionContentCache.value = cache
+              enqueueDiff(item.version, content)
+            } catch {
+              // skip failed versions
+            }
+          }
+        }
+
+        Promise.all(
+          Array.from({ length: Math.min(CONCURRENCY, versions.length) }, () => fetchNext()),
+        )
+      },
     )
 
     // Load version content when selection changes
@@ -130,14 +272,29 @@ export const DraftRecoveryModal = defineComponent({
         selectedVersionContent.value = {
           title: props.publishedContent.title,
           text: props.publishedContent.text,
+          contentFormat: props.publishedContent.contentFormat,
+          content: props.publishedContent.content,
         }
       } else if (version === 'current') {
         selectedVersionContent.value = {
           title: props.draft.title,
           text: props.draft.text,
+          contentFormat: props.draft.contentFormat,
+          content: props.draft.content,
         }
       } else {
-        // Load specific history version
+        // Use cache if already fetched by batch loader
+        const cached = versionContentCache.value.get(version)
+        if (cached) {
+          const historyItem = historyData.value?.find((h: any) => h.version === version)
+          selectedVersionContent.value = {
+            title: historyItem?.title ?? '',
+            text: cached.text,
+            contentFormat: cached.contentFormat,
+            content: cached.content,
+          }
+          return
+        }
         try {
           const versionData = await draftsApi.getHistoryVersion(
             props.draft.id,
@@ -146,15 +303,36 @@ export const DraftRecoveryModal = defineComponent({
           selectedVersionContent.value = {
             title: versionData.title,
             text: versionData.text,
+            contentFormat: versionData.contentFormat,
+            content: versionData.content,
           }
+          const cache = new Map(versionContentCache.value)
+          cache.set(version, {
+            text: versionData.text,
+            content: versionData.content,
+            contentFormat: versionData.contentFormat,
+          })
+          versionContentCache.value = cache
         } catch (error) {
           console.error('Failed to load version:', error)
         }
       }
     }
 
-    // Calculate diff stats (word count changes)
-    const calcDiffStats = (oldText: string, newText: string) => {
+    const calcDiffStats = (
+      oldText: string,
+      newText: string,
+      oldContent?: string,
+      newContent?: string,
+      format?: 'markdown' | 'lexical',
+    ) => {
+      if (format === 'lexical' && oldContent && newContent) {
+        try {
+          const oldJson = JSON.parse(oldContent)
+          const newJson = JSON.parse(newContent)
+          return countDeltaOps(jsonDiff(oldJson, newJson))
+        } catch {}
+      }
       const oldLen = oldText.length
       const newLen = newText.length
       return {
@@ -163,11 +341,37 @@ export const DraftRecoveryModal = defineComponent({
       }
     }
 
-    // Diff stats for current selection
+    const isRichMode = computed(() => {
+      return (
+        selectedVersionContent.value?.contentFormat === 'lexical' &&
+        !!selectedVersionContent.value.content &&
+        !!props.publishedContent.content
+      )
+    })
+
     const diffStats = computed(() => {
       if (!selectedVersionContent.value) return null
-      const currentText = selectedVersionContent.value.text
-      const publishedText = props.publishedContent.text
+
+      if (isRichMode.value) {
+        try {
+          const oldJson = JSON.parse(props.publishedContent.content!)
+          const newJson = JSON.parse(selectedVersionContent.value.content!)
+          const delta = jsonDiff(oldJson, newJson)
+          if (!delta) return { diff: 0, isSame: true }
+          const ops = countDeltaOps(delta)
+          return {
+            diff: ops.added - ops.removed,
+            isSame: false,
+            added: ops.added,
+            removed: ops.removed,
+          }
+        } catch {
+          return { diff: 0, isSame: true }
+        }
+      }
+
+      const currentText = selectedVersionContent.value.text ?? ''
+      const publishedText = props.publishedContent.text ?? ''
       const diff = currentText.length - publishedText.length
       return { diff, isSame: currentText === publishedText }
     })
@@ -292,17 +496,11 @@ export const DraftRecoveryModal = defineComponent({
                               }
                               isCurrent={item.isCurrent}
                               isFullSnapshot={item.isFullSnapshot}
-                              diffStats={
-                                item.version !== 'published'
-                                  ? calcDiffStats(
-                                      props.publishedContent.text,
-                                      item.version === 'current'
-                                        ? props.draft.text
-                                        : selectedVersionContent.value?.text ||
-                                            props.draft.text,
-                                    )
-                                  : undefined
-                              }
+                              diffStats={(() => {
+                                if (item.version === 'published') return undefined
+                                const vKey = item.version === 'current' ? props.draft.version : item.version as number
+                                return precomputedDiffStats.value.get(vKey)
+                              })()}
                               onClick={() => handleSelectVersion(item.version)}
                             />
                           ))}
@@ -322,10 +520,29 @@ export const DraftRecoveryModal = defineComponent({
 
                         {diffStats.value && !diffStats.value.isSame && (
                           <div class="text-xs text-neutral-500">
-                            {diffStats.value.diff > 0
-                              ? `+${diffStats.value.diff}`
-                              : diffStats.value.diff}{' '}
-                            字
+                            {isRichMode.value && diffStats.value.added != null
+                              ? [
+                                  diffStats.value.added > 0 && (
+                                    <span class="text-green-600">
+                                      +{diffStats.value.added}
+                                    </span>
+                                  ),
+                                  diffStats.value.added > 0 &&
+                                    diffStats.value.removed! > 0 &&
+                                    ' / ',
+                                  diffStats.value.removed! > 0 && (
+                                    <span class="text-red-600">
+                                      -{diffStats.value.removed}
+                                    </span>
+                                  ),
+                                  ' 节点',
+                                ]
+                              : [
+                                  diffStats.value.diff > 0
+                                    ? `+${diffStats.value.diff}`
+                                    : diffStats.value.diff,
+                                  ' 字',
+                                ]}
                           </div>
                         )}
                       </div>
@@ -347,16 +564,30 @@ export const DraftRecoveryModal = defineComponent({
                                 </p>
                               </div>
                             </div>
+                          ) : isRichMode.value ? (
+                            <div class="h-full overflow-hidden">
+                              <RichDiffBridge
+                                variant="comment"
+                                className="!rounded-none !border-0"
+                                oldValue={JSON.parse(
+                                  props.publishedContent.content!,
+                                )}
+                                newValue={JSON.parse(
+                                  selectedVersionContent.value.content!,
+                                )}
+                              />
+                            </div>
                           ) : (
                             <div class="h-full overflow-hidden">
                               <DiffPreview
                                 oldFile={{
                                   name: 'published.md',
-                                  contents: props.publishedContent.text,
+                                  contents: props.publishedContent.text ?? '',
                                 }}
                                 newFile={{
                                   name: 'draft.md',
-                                  contents: selectedVersionContent.value.text,
+                                  contents:
+                                    selectedVersionContent.value.text ?? '',
                                 }}
                               />
                             </div>

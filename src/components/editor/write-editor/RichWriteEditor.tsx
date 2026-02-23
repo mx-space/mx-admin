@@ -1,4 +1,4 @@
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, ref, watch } from 'vue'
 import type { ContentFormat } from '~/shared/types/base'
 import type { SerializedEditorState } from 'lexical'
 import type { PropType, VNode } from 'vue'
@@ -53,7 +53,21 @@ export const RichWriteEditor = defineComponent({
     },
   },
   setup(props) {
-    const hasContent = computed(() => !!props.richContent)
+    const currentText = ref('')
+    const hasContent = computed(() => currentText.value.trim().length > 0)
+
+    const editorKey = ref(0)
+    let lastEmittedJson = ''
+
+    watch(
+      () => props.richContent,
+      (val) => {
+        const json = val ? JSON.stringify(val) : ''
+        if (json !== lastEmittedJson) {
+          editorKey.value++
+        }
+      },
+    )
 
     return () => (
       <WriteEditorBase
@@ -68,14 +82,17 @@ export const RichWriteEditor = defineComponent({
         hasContent={hasContent.value}
       >
         <RichEditor
+          key={editorKey.value}
           class="h-full w-full"
           initialValue={props.richContent}
           variant="article"
           autoFocus={props.autoFocus === 'content'}
           onChange={(value: SerializedEditorState) => {
+            lastEmittedJson = JSON.stringify(value)
             props.onRichContentChange?.(value)
           }}
           onTextChange={(text: string) => {
+            currentText.value = text
             props.onTextChange?.(text)
           }}
         />

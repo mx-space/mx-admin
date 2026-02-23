@@ -144,6 +144,8 @@ export function useWriteDraft<T>(data: T, options: UseWriteDraftOptions<T>) {
       const publishedContent: PublishedContent = {
         title: currentData.title,
         text: currentData.text,
+        contentFormat: currentData.contentFormat,
+        content: currentData.content,
         updated: new Date().toISOString(),
       }
 
