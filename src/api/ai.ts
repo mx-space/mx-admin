@@ -1,3 +1,5 @@
+import type { ContentFormat } from '~/shared/types/base'
+
 import { request } from '~/utils/request'
 
 // AI Writer 类型
@@ -78,6 +80,8 @@ export interface AITranslation {
   tags?: string[]
   aiModel?: string
   aiProvider?: string
+  contentFormat?: ContentFormat
+  content?: string
 }
 
 export interface GroupedTranslationData {
@@ -280,7 +284,13 @@ export const aiApi = {
   // 更新翻译
   updateTranslation: (
     id: string,
-    data: { title?: string; text?: string; summary?: string; tags?: string[] },
+    data: {
+      title?: string
+      text?: string
+      summary?: string
+      tags?: string[]
+      content?: string
+    },
   ) => request.patch<AITranslation>(`/ai/translations/${id}`, { data }),
 
   // 生成翻译（创建任务）

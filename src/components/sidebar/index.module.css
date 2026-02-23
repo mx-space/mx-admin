@@ -62,14 +62,25 @@
 .user-avatar-btn {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 4px;
-  border-radius: 50%;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: 8px;
   transition: all 0.15s;
+  min-width: 0;
 
   &:hover {
     background: var(--sidebar-hover-bg);
   }
+}
+
+.user-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  color: var(--sidebar-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Header 按钮组 */

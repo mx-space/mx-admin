@@ -18,12 +18,20 @@ import { computed, defineComponent, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import { toast } from 'vue-sonner'
 import type { AITranslation, ArticleInfo } from '~/api/ai'
+import type { SerializedEditorState } from 'lexical'
 import type { PropType } from 'vue'
+
+import { createThemeStyle } from '@haklex/rich-style-token'
 
 import { aiApi, AITaskType } from '~/api/ai'
 import { useAiTaskQueue } from '~/components/ai-task-queue'
+import { RichEditor } from '~/components/editor/rich/RichEditor'
 import { SplitPanelEmptyState, SplitPanelLayout } from '~/components/layout'
 import { MarkdownRender } from '~/components/markdown/markdown-render'
+
+const richEditorStyleOverride = createThemeStyle({
+  layout: { maxWidth: '100%' },
+})
 
 type ArticleRefType = ArticleInfo['type']
 
@@ -222,13 +230,21 @@ export const TranslationDetailPanel = defineComponent({
 
     const handleSaveEdit = (
       id: string,
-      updates: { title: string; text: string; summary?: string },
+      updates: {
+        title: string
+        text: string
+        summary?: string
+        content?: string
+      },
     ) => {
       const idx = translations.value.findIndex((t) => t.id === id)
       if (idx !== -1) {
         translations.value[idx].title = updates.title
         translations.value[idx].text = updates.text
         translations.value[idx].summary = updates.summary
+        if (updates.content !== undefined) {
+          translations.value[idx].content = updates.content
+        }
       }
     }
 
@@ -504,7 +520,12 @@ const TranslationEditPanel = defineComponent({
       type: Function as PropType<
         (
           id: string,
-          updates: { title: string; text: string; summary?: string },
+          updates: {
+            title: string
+            text: string
+            summary?: string
+            content?: string
+          },
         ) => void
       >,
       required: true,
@@ -515,10 +536,19 @@ const TranslationEditPanel = defineComponent({
     },
   },
   setup(props) {
+    const isLexical = computed(
+      () => props.translation.contentFormat === 'lexical',
+    )
+
     const titleRef = ref(props.translation.title)
     const textRef = ref(props.translation.text)
     const summaryRef = ref(props.translation.summary || '')
     const saving = ref(false)
+
+    const richContentRef = ref<SerializedEditorState | undefined>(
+      parseRichContent(props.translation.content),
+    )
+    const editorKey = ref(0)
 
     watch(
       () => props.translation.id,
@@ -526,31 +556,81 @@ const TranslationEditPanel = defineComponent({
         titleRef.value = props.translation.title
         textRef.value = props.translation.text
         summaryRef.value = props.translation.summary || ''
+        richContentRef.value = parseRichContent(props.translation.content)
+        editorKey.value++
       },
     )
 
     const handleSave = async () => {
-      if (!titleRef.value || !textRef.value) {
-        toast.warning('标题和内容不能为空')
+      if (!titleRef.value) {
+        toast.warning('标题不能为空')
+        return
+      }
+      if (!isLexical.value && !textRef.value) {
+        toast.warning('内容不能为空')
         return
       }
       saving.value = true
       try {
-        await aiApi.updateTranslation(props.translation.id, {
+        const payload: Parameters<typeof aiApi.updateTranslation>[1] = {
           title: titleRef.value,
-          text: textRef.value,
           summary: summaryRef.value || undefined,
-        })
+        }
+
+        if (isLexical.value) {
+          payload.content = richContentRef.value
+            ? JSON.stringify(richContentRef.value)
+            : undefined
+        } else {
+          payload.text = textRef.value
+        }
+
+        await aiApi.updateTranslation(props.translation.id, payload)
         props.onSave(props.translation.id, {
           title: titleRef.value,
           text: textRef.value,
           summary: summaryRef.value || undefined,
+          content: isLexical.value
+            ? JSON.stringify(richContentRef.value)
+            : undefined,
         })
         toast.success('保存成功')
         props.onClose()
       } finally {
         saving.value = false
       }
+    }
+
+    const ContentEditor = () => {
+      if (isLexical.value) {
+        return (
+          <div class="min-h-[400px] overflow-hidden rounded-lg border border-neutral-200 dark:border-neutral-800">
+            <RichEditor
+              key={editorKey.value}
+              class="h-full min-h-[400px] w-full"
+              editorStyle={richEditorStyleOverride}
+              initialValue={richContentRef.value}
+              variant="article"
+              onChange={(value: SerializedEditorState) => {
+                richContentRef.value = value
+              }}
+              onTextChange={(text: string) => {
+                textRef.value = text
+              }}
+            />
+          </div>
+        )
+      }
+
+      return (
+        <NInput
+          value={textRef.value}
+          onUpdateValue={(v) => (textRef.value = v)}
+          type="textarea"
+          rows={12}
+          placeholder="翻译内容"
+        />
+      )
     }
 
     return () => (
@@ -568,9 +648,16 @@ const TranslationEditPanel = defineComponent({
               <h2 class="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
                 编辑翻译
               </h2>
-              <span class="text-xs text-neutral-500">
-                {props.translation.lang.toUpperCase()}
-              </span>
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-neutral-500">
+                  {props.translation.lang.toUpperCase()}
+                </span>
+                {isLexical.value && (
+                  <span class="rounded bg-violet-50 px-1.5 py-0.5 text-xs text-violet-600 dark:bg-violet-950 dark:text-violet-400">
+                    Lexical
+                  </span>
+                )}
+              </div>
             </div>
           </div>
           <div class="flex items-center gap-2">
@@ -607,13 +694,7 @@ const TranslationEditPanel = defineComponent({
               <label class="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
                 内容
               </label>
-              <NInput
-                value={textRef.value}
-                onUpdateValue={(v) => (textRef.value = v)}
-                type="textarea"
-                rows={12}
-                placeholder="翻译内容"
-              />
+              <ContentEditor />
             </div>
 
             <div>
@@ -630,30 +711,32 @@ const TranslationEditPanel = defineComponent({
               />
             </div>
 
-            <div>
-              <label class="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                预览
-              </label>
-              <div class="rounded-lg border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-900">
-                <h3 class="mb-3 text-base font-semibold text-neutral-900 dark:text-neutral-100">
-                  {titleRef.value || '无标题'}
-                </h3>
-                <MarkdownRender
-                  text={textRef.value || '无内容'}
-                  class="text-sm leading-relaxed text-neutral-700 dark:text-neutral-300"
-                />
-                {summaryRef.value && (
-                  <div class="mt-4 border-t border-neutral-200 pt-3 dark:border-neutral-700">
-                    <span class="text-xs font-medium text-neutral-500">
-                      摘要
-                    </span>
-                    <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
-                      {summaryRef.value}
-                    </p>
-                  </div>
-                )}
+            {!isLexical.value && (
+              <div>
+                <label class="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                  预览
+                </label>
+                <div class="rounded-lg border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-900">
+                  <h3 class="mb-3 text-base font-semibold text-neutral-900 dark:text-neutral-100">
+                    {titleRef.value || '无标题'}
+                  </h3>
+                  <MarkdownRender
+                    text={textRef.value || '无内容'}
+                    class="text-sm leading-relaxed text-neutral-700 dark:text-neutral-300"
+                  />
+                  {summaryRef.value && (
+                    <div class="mt-4 border-t border-neutral-200 pt-3 dark:border-neutral-700">
+                      <span class="text-xs font-medium text-neutral-500">
+                        摘要
+                      </span>
+                      <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
+                        {summaryRef.value}
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
 
             {props.translation.tags && props.translation.tags.length > 0 && (
               <div>
@@ -717,6 +800,17 @@ const TranslationEditPanel = defineComponent({
     )
   },
 })
+
+function parseRichContent(
+  content: string | undefined,
+): SerializedEditorState | undefined {
+  if (!content) return undefined
+  try {
+    return JSON.parse(content) as SerializedEditorState
+  } catch {
+    return undefined
+  }
+}
 
 export const TranslationDetailEmptyState = defineComponent({
   name: 'TranslationDetailEmptyState',

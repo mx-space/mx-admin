@@ -6,7 +6,7 @@ import {
   PanelLeftClose,
   Sun,
 } from 'lucide-vue-next'
-import { NDropdown, NLayoutContent } from 'naive-ui'
+import { NAvatar, NDropdown, NLayoutContent } from 'naive-ui'
 import {
   computed,
   defineComponent,
@@ -293,11 +293,14 @@ export const Sidebar = defineComponent({
                   class={styles['user-avatar-btn']}
                   title={user.value?.name || 'User'}
                 >
-                  <Avatar
+                  <NAvatar
                     src={user.value?.avatar}
-                    size={32}
-                    class="rounded-full"
+                    size={20}
+                    class="!rounded-lg"
                   />
+                  <span class={styles['user-name']}>
+                    {user.value?.name || 'User'}
+                  </span>
                 </button>
               </NDropdown>
 
