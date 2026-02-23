@@ -46,6 +46,7 @@ export const RichEditor = defineComponent({
     debounceMs: Number,
     selfHostnames: Array as PropType<string[]>,
     extraNodes: Array as PropType<Array<Klass<LexicalNode>>>,
+    editorStyle: Object as PropType<Record<string, string>>,
   },
   emits: {
     change: (_value: SerializedEditorState) => true,
@@ -78,6 +79,7 @@ export const RichEditor = defineComponent({
         editorProps.selfHostnames = props.selfHostnames
       if (props.extraNodes !== undefined)
         editorProps.extraNodes = props.extraNodes
+      if (props.editorStyle !== undefined) editorProps.style = props.editorStyle
       return editorProps as any
     }
 
@@ -131,6 +133,7 @@ export const RichEditor = defineComponent({
           props.debounceMs,
           props.selfHostnames,
           props.extraNodes,
+          props.editorStyle,
         ],
         () => renderReact(resolveTheme()),
       )

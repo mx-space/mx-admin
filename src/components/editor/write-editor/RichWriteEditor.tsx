@@ -2,9 +2,14 @@ import { computed, defineComponent, ref, watch } from 'vue'
 import type { ContentFormat } from '~/shared/types/base'
 import type { SerializedEditorState } from 'lexical'
 import type { PropType, VNode } from 'vue'
+import type { WriteEditorVariant } from './types'
+
+import { createThemeStyle } from '@haklex/rich-style-token'
 
 import { RichEditor } from '../rich/RichEditor'
 import { WriteEditorBase } from './WriteEditorBase'
+
+const editorStyleOverride = createThemeStyle({ layout: { maxWidth: '100%' } })
 
 export const RichWriteEditor = defineComponent({
   name: 'RichWriteEditor',
@@ -51,6 +56,10 @@ export const RichWriteEditor = defineComponent({
     saveConfirmFn: {
       type: Function as PropType<() => boolean>,
     },
+    variant: {
+      type: String as PropType<WriteEditorVariant>,
+      default: 'post',
+    },
   },
   setup(props) {
     const currentText = ref('')
@@ -84,8 +93,9 @@ export const RichWriteEditor = defineComponent({
         <RichEditor
           key={editorKey.value}
           class="h-full w-full"
+          editorStyle={editorStyleOverride}
           initialValue={props.richContent}
-          variant="article"
+          variant={props.variant === 'note' ? 'note' : 'article'}
           autoFocus={props.autoFocus === 'content'}
           onChange={(value: SerializedEditorState) => {
             lastEmittedJson = JSON.stringify(value)

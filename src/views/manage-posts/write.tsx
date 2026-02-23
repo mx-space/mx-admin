@@ -340,6 +340,7 @@ const PostWriteView = defineComponent(() => {
           data.content = JSON.stringify(v)
         }}
         saveConfirmFn={serverDraft.checkIsSynced}
+        variant="post"
         subtitleSlot={() => (
           <SlugInput
             prefix={`${WEB_URL}/posts/${category.value.slug}/`}

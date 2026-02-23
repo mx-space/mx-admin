@@ -75,11 +75,19 @@ export const DraftRecoveryModal = defineComponent({
       content?: string
     } | null>(null)
 
-    type VersionContent = { text: string; content?: string; contentFormat?: 'markdown' | 'lexical' }
-    const versionContentCache = ref(new Map<number | 'published', VersionContent>())
+    type VersionContent = {
+      text: string
+      content?: string
+      contentFormat?: 'markdown' | 'lexical'
+    }
+    const versionContentCache = ref(
+      new Map<number | 'published', VersionContent>(),
+    )
 
     // Pre-computed diff stats via frame-budgeted batch processing
-    const precomputedDiffStats = ref(new Map<number, { added: number; removed: number }>())
+    const precomputedDiffStats = ref(
+      new Map<number, { added: number; removed: number }>(),
+    )
     let diffQueue: Array<{ version: number; content: VersionContent }> = []
     let rafId: number | null = null
     let batchGeneration = 0
@@ -208,57 +216,59 @@ export const DraftRecoveryModal = defineComponent({
     )
 
     // Proactively fetch all version contents and batch-compute diffs
-    watch(
-      [() => historyData.value, () => props.show],
-      ([history, show]) => {
-        batchGeneration++
-        const gen = batchGeneration
-        cancelBatch()
-        precomputedDiffStats.value = new Map()
+    watch([() => historyData.value, () => props.show], ([history, show]) => {
+      batchGeneration++
+      const gen = batchGeneration
+      cancelBatch()
+      precomputedDiffStats.value = new Map()
 
-        if (!show || !history?.length) return
+      if (!show || !history?.length) return
 
-        // Current draft already available
-        enqueueDiff(props.draft.version, {
-          text: props.draft.text,
-          content: props.draft.content,
-          contentFormat: props.draft.contentFormat,
-        })
+      // Current draft already available
+      enqueueDiff(props.draft.version, {
+        text: props.draft.text,
+        content: props.draft.content,
+        contentFormat: props.draft.contentFormat,
+      })
 
-        // Fetch history versions with concurrency limit
-        const versions = history
-          .filter((item: any) => item.version !== props.draft.version)
-          .sort((a: any, b: any) => b.version - a.version)
+      // Fetch history versions with concurrency limit
+      const versions = history
+        .filter((item: any) => item.version !== props.draft.version)
+        .sort((a: any, b: any) => b.version - a.version)
 
-        const CONCURRENCY = 3
-        let idx = 0
-        const fetchNext = async (): Promise<void> => {
-          while (idx < versions.length) {
+      const CONCURRENCY = 3
+      let idx = 0
+      const fetchNext = async (): Promise<void> => {
+        while (idx < versions.length) {
+          if (gen !== batchGeneration) return
+          const item = versions[idx++]
+          try {
+            const data = await draftsApi.getHistoryVersion(
+              props.draft.id,
+              item.version,
+            )
             if (gen !== batchGeneration) return
-            const item = versions[idx++]
-            try {
-              const data = await draftsApi.getHistoryVersion(props.draft.id, item.version)
-              if (gen !== batchGeneration) return
-              const content: VersionContent = {
-                text: data.text,
-                content: data.content,
-                contentFormat: data.contentFormat,
-              }
-              const cache = new Map(versionContentCache.value)
-              cache.set(item.version, content)
-              versionContentCache.value = cache
-              enqueueDiff(item.version, content)
-            } catch {
-              // skip failed versions
+            const content: VersionContent = {
+              text: data.text,
+              content: data.content,
+              contentFormat: data.contentFormat,
             }
+            const cache = new Map(versionContentCache.value)
+            cache.set(item.version, content)
+            versionContentCache.value = cache
+            enqueueDiff(item.version, content)
+          } catch {
+            // skip failed versions
           }
         }
+      }
 
-        Promise.all(
-          Array.from({ length: Math.min(CONCURRENCY, versions.length) }, () => fetchNext()),
-        )
-      },
-    )
+      Promise.all(
+        Array.from({ length: Math.min(CONCURRENCY, versions.length) }, () =>
+          fetchNext(),
+        ),
+      )
+    })
 
     // Load version content when selection changes
     const handleSelectVersion = async (
@@ -286,7 +296,9 @@ export const DraftRecoveryModal = defineComponent({
         // Use cache if already fetched by batch loader
         const cached = versionContentCache.value.get(version)
         if (cached) {
-          const historyItem = historyData.value?.find((h: any) => h.version === version)
+          const historyItem = historyData.value?.find(
+            (h: any) => h.version === version,
+          )
           selectedVersionContent.value = {
             title: historyItem?.title ?? '',
             text: cached.text,
@@ -497,8 +509,12 @@ export const DraftRecoveryModal = defineComponent({
                               isCurrent={item.isCurrent}
                               isFullSnapshot={item.isFullSnapshot}
                               diffStats={(() => {
-                                if (item.version === 'published') return undefined
-                                const vKey = item.version === 'current' ? props.draft.version : item.version as number
+                                if (item.version === 'published')
+                                  return undefined
+                                const vKey =
+                                  item.version === 'current'
+                                    ? props.draft.version
+                                    : (item.version as number)
                                 return precomputedDiffStats.value.get(vKey)
                               })()}
                               onClick={() => handleSelectVersion(item.version)}

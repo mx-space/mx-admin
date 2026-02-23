@@ -18,7 +18,12 @@ import '@haklex/rich-diff/style.css'
 
 import { useUIStore } from '~/stores/ui'
 
-const extraNodes = [TldrawNode, ...embedNodes, ...galleryNodes, ...codeSnippetNodes]
+const extraNodes = [
+  TldrawNode,
+  ...embedNodes,
+  ...galleryNodes,
+  ...codeSnippetNodes,
+]
 
 export const RichDiffBridge = defineComponent({
   props: {

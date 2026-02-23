@@ -285,6 +285,7 @@ const PageWriteView = defineComponent(() => {
           data.content = JSON.stringify(v)
         }}
         saveConfirmFn={serverDraft.checkIsSynced}
+        variant="post"
         subtitleSlot={() => (
           <div class="space-y-2">
             <SlugInput

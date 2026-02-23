@@ -368,6 +368,7 @@ const NoteWriteView = defineComponent(() => {
           data.content = JSON.stringify(v)
         }}
         saveConfirmFn={serverDraft.checkIsSynced}
+        variant="note"
         subtitleSlot={() => (
           <div class="flex items-center gap-2 text-sm text-neutral-500">
             <span>{`${WEB_URL}/notes/${nid.value ?? ''}`}</span>

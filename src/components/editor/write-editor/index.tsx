@@ -6,6 +6,7 @@ import { defineComponent } from 'vue'
 import type { ContentFormat } from '~/shared/types/base'
 import type { SerializedEditorState } from 'lexical'
 import type { PropType, VNode } from 'vue'
+import type { WriteEditorVariant } from './types'
 
 import { editorBaseProps } from '../universal/props'
 import { MarkdownWriteEditor } from './MarkdownWriteEditor'
@@ -14,6 +15,7 @@ import { RichWriteEditor } from './RichWriteEditor'
 export { MarkdownWriteEditor } from './MarkdownWriteEditor'
 export { RichWriteEditor } from './RichWriteEditor'
 export { WriteEditorBase } from './WriteEditorBase'
+export type { WriteEditorVariant } from './types'
 
 export const WriteEditor = defineComponent({
   name: 'WriteEditor',
@@ -55,6 +57,10 @@ export const WriteEditor = defineComponent({
     onRichContentChange: {
       type: Function as PropType<(value: SerializedEditorState) => void>,
     },
+    variant: {
+      type: String as PropType<WriteEditorVariant>,
+      default: 'post',
+    },
   },
   setup(props) {
     return () => {
@@ -73,6 +79,7 @@ export const WriteEditor = defineComponent({
             onRichContentChange={props.onRichContentChange}
             onTextChange={props.onChange}
             saveConfirmFn={props.saveConfirmFn}
+            variant={props.variant}
           />
         )
       }
