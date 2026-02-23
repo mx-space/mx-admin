@@ -9,6 +9,7 @@ import type { PluginOption } from 'vite'
 
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
+import VueInspector from 'vite-plugin-vue-inspector'
 
 import PKG from './package.json'
 
@@ -25,6 +26,15 @@ export default ({ mode }) => {
       vue({}),
       vueJsx(),
       tsconfigPaths(),
+
+      ...(isDev
+        ? [
+            VueInspector({
+              toggleButtonVisibility: 'always',
+              launchEditor: 'cursor',
+            }),
+          ]
+        : []),
 
       checker({
         enableBuild: true,
