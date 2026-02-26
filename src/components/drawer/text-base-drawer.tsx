@@ -144,16 +144,18 @@ export const TextBaseDrawer = defineComponent({
               />
             </FormField>
 
-            <ImageDetailSection
-              text={props.data.text}
-              images={props.data.images}
-              extraImages={
-                props.data.meta?.cover ? [props.data.meta.cover] : undefined
-              }
-              onChange={(images) => {
-                props.data.images = images
-              }}
-            />
+            {props.data.contentFormat !== 'lexical' && (
+              <ImageDetailSection
+                text={props.data.text}
+                images={props.data.images}
+                extraImages={
+                  props.data.meta?.cover ? [props.data.meta.cover] : undefined
+                }
+                onChange={(images) => {
+                  props.data.images = images
+                }}
+              />
+            )}
 
             {/* 附加字段 */}
             <SectionTitle icon={BracesIcon}>附加字段</SectionTitle>

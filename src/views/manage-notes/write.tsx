@@ -48,7 +48,6 @@ import { HeaderPreviewButton } from '~/components/special-button/preview'
 import { WEB_URL } from '~/constants/env'
 import { MOOD_SET, WEATHER_SET } from '~/constants/note'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
-import { useS3Upload } from '~/hooks/use-s3-upload'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { useWriteDraft } from '~/hooks/use-write-draft'
 import { useLayout } from '~/layouts/content'
@@ -228,25 +227,11 @@ const NoteWriteView = defineComponent(() => {
 
   const drawerShow = ref(false)
   const enablePassword = computed(() => typeof data.password === 'string')
-  const { processLocalImages } = useS3Upload()
 
   const handleSubmit = async () => {
-    let text = data.text
-    let images = data.images
-    try {
-      const processed = await processLocalImages(data.text, data.images)
-      text = processed.text
-      images = processed.images
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : '图片同步失败')
-      return
-    }
-
     const parseDataToPayload = () => {
       return {
         ...toRaw(data),
-        text,
-        images,
         title: data.title?.trim() || defaultTitle.value,
         password:
           data.password && data.password.length > 0 ? data.password : null,

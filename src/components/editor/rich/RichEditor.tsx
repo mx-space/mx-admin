@@ -1,7 +1,7 @@
 import { createElement } from 'react'
 import { createRoot } from 'react-dom/client'
 import { defineComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import type { RichEditorVariant } from '@haklex/rich-editor'
+import type { ImageUploadFn, RichEditorVariant } from '@haklex/rich-editor'
 import type { ShiroEditorProps } from '@haklex/rich-kit-shiro'
 import type {
   Klass,
@@ -12,6 +12,7 @@ import type {
 import type { Root } from 'react-dom/client'
 import type { PropType } from 'vue'
 
+import { DialogStackProvider } from '@haklex/rich-editor-ui'
 import { ShiroEditor } from '@haklex/rich-kit-shiro'
 import { $convertToMarkdownString, TRANSFORMERS } from '@lexical/markdown'
 
@@ -26,12 +27,16 @@ const ShiroEditorReact = (props: {
   onSubmit?: () => void
   onEditorReady?: (editor: LexicalEditor | null) => void
 }) => {
-  return createElement(ShiroEditor, {
-    ...props.editorProps,
-    onChange: props.onChange,
-    onSubmit: props.onSubmit,
-    onEditorReady: props.onEditorReady,
-  })
+  return createElement(
+    DialogStackProvider,
+    null,
+    createElement(ShiroEditor, {
+      ...props.editorProps,
+      onChange: props.onChange,
+      onSubmit: props.onSubmit,
+      onEditorReady: props.onEditorReady,
+    }),
+  )
 }
 
 export const RichEditor = defineComponent({
@@ -47,6 +52,7 @@ export const RichEditor = defineComponent({
     selfHostnames: Array as PropType<string[]>,
     extraNodes: Array as PropType<Array<Klass<LexicalNode>>>,
     editorStyle: Object as PropType<Record<string, string>>,
+    imageUpload: Function as PropType<ImageUploadFn>,
   },
   emits: {
     change: (_value: SerializedEditorState) => true,
@@ -80,6 +86,8 @@ export const RichEditor = defineComponent({
       if (props.extraNodes !== undefined)
         editorProps.extraNodes = props.extraNodes
       if (props.editorStyle !== undefined) editorProps.style = props.editorStyle
+      if (props.imageUpload !== undefined)
+        editorProps.imageUpload = props.imageUpload
       return editorProps as any
     }
 
@@ -134,6 +142,7 @@ export const RichEditor = defineComponent({
           props.selfHostnames,
           props.extraNodes,
           props.editorStyle,
+          props.imageUpload,
         ],
         () => renderReact(resolveTheme()),
       )

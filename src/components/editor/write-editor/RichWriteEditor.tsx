@@ -6,10 +6,23 @@ import type { WriteEditorVariant } from './types'
 
 import { createThemeStyle } from '@haklex/rich-style-token'
 
+import { filesApi } from '~/api/files'
+
 import { RichEditor } from '../rich/RichEditor'
 import { WriteEditorBase } from './WriteEditorBase'
 
-const editorStyleOverride = createThemeStyle({ layout: { maxWidth: '100%' } })
+const imageUpload = async (file: File) => {
+  const result = await filesApi.upload(file, 'image')
+  return { src: result.url }
+}
+
+const editorStyleOverride = createThemeStyle({
+  layout: { maxWidth: '100%' },
+  typography: {
+    fontMono:
+      '"Cascadia Code", "Fira Code", "JetBrains Mono", "SF Mono", SFMono-Regular, ui-monospace, "DejaVu Sans Mono", Menlo, Consolas, monospace',
+  },
+})
 
 export const RichWriteEditor = defineComponent({
   name: 'RichWriteEditor',
@@ -97,6 +110,7 @@ export const RichWriteEditor = defineComponent({
           initialValue={props.richContent}
           variant={props.variant === 'note' ? 'note' : 'article'}
           autoFocus={props.autoFocus === 'content'}
+          imageUpload={imageUpload}
           onChange={(value: SerializedEditorState) => {
             lastEmittedJson = JSON.stringify(value)
             props.onRichContentChange?.(value)

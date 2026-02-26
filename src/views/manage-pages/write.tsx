@@ -37,7 +37,6 @@ import { ParseContentButton } from '~/components/special-button/parse-content'
 import { HeaderPreviewButton } from '~/components/special-button/preview'
 import { WEB_URL } from '~/constants/env'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
-import { useS3Upload } from '~/hooks/use-s3-upload'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { useWriteDraft } from '~/hooks/use-write-draft'
 import { useLayout } from '~/layouts/content'
@@ -154,20 +153,8 @@ const PageWriteView = defineComponent(() => {
   })
 
   const drawerShow = ref(false)
-  const { processLocalImages } = useS3Upload()
 
   const handleSubmit = async () => {
-    let text = data.text
-    let images = data.images
-    try {
-      const processed = await processLocalImages(data.text, data.images)
-      text = processed.text
-      images = processed.images
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : '图片同步失败')
-      return
-    }
-
     const parseDataToPayload = () => {
       if (!data.title || data.title.trim().length === 0) {
         toast.error('标题为空')
@@ -179,8 +166,6 @@ const PageWriteView = defineComponent(() => {
       }
       return {
         ...toRaw(data),
-        text,
-        images,
         title: data.title.trim(),
         slug: data.slug.trim(),
         contentFormat: data.contentFormat,

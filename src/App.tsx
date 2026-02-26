@@ -15,7 +15,6 @@ import { Toaster } from 'vue-sonner'
 import type { VNode } from 'vue'
 
 import { AiTaskQueue } from '~/components/ai-task-queue'
-import { UploadQueue } from '~/components/upload-queue'
 import { PortalInjectKey } from '~/hooks/use-portal-element'
 
 import { useUIStore } from './stores/ui'
@@ -99,7 +98,6 @@ const App = defineComponent({
               <Root />
             </NElement>
             <AiTaskQueue />
-            <UploadQueue />
           </NDialogProvider>
         </NConfigProvider>
       )

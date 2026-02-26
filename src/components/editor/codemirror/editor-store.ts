@@ -4,7 +4,6 @@ import { toast } from 'vue-sonner'
 import type { EditorView } from '@codemirror/view'
 
 import { filesApi } from '~/api/files'
-import { recordUploadedLocalImageUrl } from '~/utils/local-image-url'
 
 import {
   addPendingUpload,
@@ -58,7 +57,6 @@ export const useEditorStore = defineStore('codemirror-editor', () => {
 
     try {
       const result = await filesApi.upload(file, 'image')
-      recordUploadedLocalImageUrl(result.url)
 
       const currentDoc = view.state.doc.toString()
       const placeholderIndex = currentDoc.indexOf(placeholder)
