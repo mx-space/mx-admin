@@ -26,6 +26,7 @@ import { HeaderActionButton } from '~/components/button/header-action-button'
 import { DraftListModal } from '~/components/draft/draft-list-modal'
 import { DraftRecoveryModal } from '~/components/draft/draft-recovery-modal'
 import { DraftSaveIndicator } from '~/components/draft/draft-save-indicator'
+import { LexicalDebugButton } from '~/components/drawer/lexical-debug-drawer'
 import {
   FormField,
   SectionTitle,
@@ -217,18 +218,21 @@ const PageWriteView = defineComponent(() => {
 
   setActions(
     <>
-      {!isMobile.value && (
-        <ParseContentButton
-          data={data}
-          onHandleYamlParsedMeta={(meta) => {
-            const { title, slug, subtitle, ...rest } = meta
-            data.title = title ?? data.title
-            data.slug = slug ?? data.slug
-            data.subtitle = subtitle ?? data.subtitle
-            data.meta = { ...rest }
-          }}
-        />
-      )}
+      {!isMobile.value &&
+        (data.contentFormat === 'lexical' ? (
+          <LexicalDebugButton content={data.content} />
+        ) : (
+          <ParseContentButton
+            data={data}
+            onHandleYamlParsedMeta={(meta) => {
+              const { title, slug, subtitle, ...rest } = meta
+              data.title = title ?? data.title
+              data.slug = slug ?? data.slug
+              data.subtitle = subtitle ?? data.subtitle
+              data.meta = { ...rest }
+            }}
+          />
+        ))}
       {!isMobile.value && <HeaderPreviewButton iframe data={data} />}
       <HeaderActionButton
         icon={<SlidersHIcon />}
