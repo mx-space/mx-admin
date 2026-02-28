@@ -3,6 +3,7 @@
  * 提供 Title、Subtitle slot、字体设置、滚动容器
  * 具体编辑器内容由 default slot 传入
  */
+import { FileCode2, Pencil } from 'lucide-vue-next'
 import { NElement, NTooltip } from 'naive-ui'
 import {
   computed,
@@ -110,9 +111,26 @@ export const WriteEditorBase = defineComponent({
       return props.subtitleSlot || slots.subtitle?.()
     })
 
-    const handleToggleFormat = () => {
-      if (props.hasContent || !props.onContentFormatChange) return
+    const isMarkdownWysiwygMode = computed(
+      () => general.setting.renderMode === 'wysiwyg',
+    )
+
+    const canSwitchEditorType = computed(
+      () => !props.hasContent && !!props.onContentFormatChange,
+    )
+    const canSwitchMarkdownRenderMode = computed(
+      () => props.hasContent && !isRichMode.value,
+    )
+
+    const handleToggleEditorType = () => {
+      if (!props.onContentFormatChange) return
       props.onContentFormatChange(isRichMode.value ? 'markdown' : 'lexical')
+    }
+
+    const handleToggleMarkdownRenderMode = () => {
+      general.setting.renderMode = isMarkdownWysiwygMode.value
+        ? 'plain'
+        : 'wysiwyg'
     }
 
     return () => {
@@ -145,27 +163,58 @@ export const WriteEditorBase = defineComponent({
                   class="flex-1"
                 />
 
-                {props.onContentFormatChange && (
+                {canSwitchEditorType.value && (
                   <NTooltip>
                     {{
                       trigger: () => (
                         <button
-                          class={[
-                            'flex-shrink-0 rounded-md border px-2 py-1 text-xs transition-colors',
-                            props.hasContent
-                              ? 'cursor-not-allowed border-neutral-200 text-neutral-300 dark:border-neutral-700 dark:text-neutral-600'
-                              : 'cursor-pointer border-neutral-300 text-neutral-600 hover:border-neutral-400 hover:text-neutral-800 dark:border-neutral-600 dark:text-neutral-400 dark:hover:border-neutral-500 dark:hover:text-neutral-200',
-                          ]}
-                          disabled={props.hasContent}
-                          onClick={handleToggleFormat}
+                          class="flex-shrink-0 cursor-pointer rounded-md border border-neutral-300 p-1.5 text-neutral-600 transition-colors hover:border-neutral-400 hover:text-neutral-800 dark:border-neutral-600 dark:text-neutral-400 dark:hover:border-neutral-500 dark:hover:text-neutral-200"
+                          onClick={handleToggleEditorType}
+                          aria-label={
+                            isRichMode.value
+                              ? '切换到 Markdown 编辑器'
+                              : '切换到 Rich 编辑器'
+                          }
                         >
-                          {isRichMode.value ? 'Rich' : 'Markdown'}
+                          {isRichMode.value ? (
+                            <FileCode2 class="h-3.5 w-3.5" />
+                          ) : (
+                            <Pencil class="h-3.5 w-3.5" />
+                          )}
                         </button>
                       ),
                       default: () =>
-                        props.hasContent
-                          ? '已有内容，无法切换编辑器'
-                          : `切换至${isRichMode.value ? 'Markdown' : 'Rich'} 编辑器`,
+                        isRichMode.value
+                          ? '切换到 Markdown 编辑器'
+                          : '切换到 Rich 编辑器',
+                    }}
+                  </NTooltip>
+                )}
+
+                {canSwitchMarkdownRenderMode.value && (
+                  <NTooltip>
+                    {{
+                      trigger: () => (
+                        <button
+                          class="flex-shrink-0 cursor-pointer rounded-md border border-neutral-300 p-1.5 text-neutral-600 transition-colors hover:border-neutral-400 hover:text-neutral-800 dark:border-neutral-600 dark:text-neutral-400 dark:hover:border-neutral-500 dark:hover:text-neutral-200"
+                          onClick={handleToggleMarkdownRenderMode}
+                          aria-label={
+                            isMarkdownWysiwygMode.value
+                              ? '切换至源代码模式'
+                              : '切换至所见即所得模式'
+                          }
+                        >
+                          {isMarkdownWysiwygMode.value ? (
+                            <FileCode2 class="h-3.5 w-3.5" />
+                          ) : (
+                            <Pencil class="h-3.5 w-3.5" />
+                          )}
+                        </button>
+                      ),
+                      default: () =>
+                        isMarkdownWysiwygMode.value
+                          ? '切换至源代码模式'
+                          : '切换至所见即所得模式',
                     }}
                   </NTooltip>
                 )}
