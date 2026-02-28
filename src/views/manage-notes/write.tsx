@@ -49,6 +49,7 @@ import { HeaderPreviewButton } from '~/components/special-button/preview'
 import { WEB_URL } from '~/constants/env'
 import { MOOD_SET, WEATHER_SET } from '~/constants/note'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
+import { usePreferredContentFormat } from '~/hooks/use-preferred-content-format'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { useWriteDraft } from '~/hooks/use-write-draft'
 import { useLayout } from '~/layouts/content'
@@ -85,6 +86,8 @@ const NoteWriteView = defineComponent(() => {
   const defaultTitle = ref('新建日记')
   const router = useRouter()
   const uiStore = useStoreRef(UIStore)
+  const { preferredContentFormat, setPreferredContentFormat } =
+    usePreferredContentFormat()
   const isMobile = computed(
     () => uiStore.viewport.value.mobile || uiStore.viewport.value.pad,
   )
@@ -107,7 +110,7 @@ const NoteWriteView = defineComponent(() => {
     images: [],
     meta: undefined,
     created: undefined,
-    contentFormat: 'markdown' as ContentFormat,
+    contentFormat: preferredContentFormat.value,
     content: '',
   })
 
@@ -356,6 +359,7 @@ const NoteWriteView = defineComponent(() => {
         contentFormat={data.contentFormat}
         onContentFormatChange={(v) => {
           data.contentFormat = v
+          setPreferredContentFormat(v)
         }}
         richContent={data.content ? JSON.parse(data.content) : undefined}
         onRichContentChange={(v) => {

@@ -42,6 +42,7 @@ import { ParseContentButton } from '~/components/special-button/parse-content'
 import { HeaderPreviewButton } from '~/components/special-button/preview'
 import { WEB_URL } from '~/constants/env'
 import { useParsePayloadIntoData } from '~/hooks/use-parse-payload'
+import { usePreferredContentFormat } from '~/hooks/use-preferred-content-format'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { useWriteDraft } from '~/hooks/use-write-draft'
 import { useLayout } from '~/layouts/content'
@@ -81,6 +82,9 @@ const PostWriteView = defineComponent(() => {
   const isMobile = computed(
     () => uiStore.viewport.value.mobile || uiStore.viewport.value.pad,
   )
+  const { preferredContentFormat, setPreferredContentFormat } =
+    usePreferredContentFormat()
+
   onMounted(async () => {
     await categoryStore.fetch()
   })
@@ -102,7 +106,7 @@ const PostWriteView = defineComponent(() => {
     relatedId: [],
     created: undefined,
     isPublished: true,
-    contentFormat: 'markdown' as ContentFormat,
+    contentFormat: preferredContentFormat.value,
     content: '',
   })
 
@@ -337,6 +341,7 @@ const PostWriteView = defineComponent(() => {
         contentFormat={data.contentFormat}
         onContentFormatChange={(v) => {
           data.contentFormat = v
+          setPreferredContentFormat(v)
         }}
         richContent={data.content ? JSON.parse(data.content) : undefined}
         onRichContentChange={(v) => {
