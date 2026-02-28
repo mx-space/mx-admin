@@ -27,15 +27,15 @@ export const SplitPanelLayout = defineComponent({
       default: false,
     },
     defaultSize: {
-      type: Number,
+      type: [Number, String],
       default: 0.5,
     },
     min: {
-      type: Number,
+      type: [Number, String],
       default: 0.3,
     },
     max: {
-      type: Number,
+      type: [Number, String],
       default: 0.7,
     },
     /** 强制使用移动端布局 */

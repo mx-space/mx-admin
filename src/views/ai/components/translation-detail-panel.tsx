@@ -392,7 +392,13 @@ export const TranslationDetailPanel = defineComponent({
     }
 
     return () => (
-      <SplitPanelLayout showPanel={hasPanel.value} forceMobile={props.isMobile}>
+      <SplitPanelLayout
+        showPanel={hasPanel.value}
+        forceMobile={props.isMobile}
+        defaultSize="350px"
+        min="300px"
+        max="400px"
+      >
         {{
           list: ListContent,
           panel: PanelContent,
@@ -644,11 +650,11 @@ const TranslationEditPanel = defineComponent({
             >
               <ArrowLeftIcon class="size-5" />
             </button>
-            <div>
+            <div class={['flex items-center gap-2']}>
               <h2 class="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
                 编辑翻译
               </h2>
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-1">
                 <span class="text-xs text-neutral-500">
                   {props.translation.lang.toUpperCase()}
                 </span>
