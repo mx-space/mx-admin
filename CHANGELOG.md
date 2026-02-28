@@ -1,5 +1,22 @@
 # CHANGELOG
 
+# [6.1.0](https://github.com/mx-space/admin-vue3/compare/v6.0.8...v6.1.0) (2026-02-28)
+
+
+### Features
+
+* add vite-plugin-vue-inspector for enhanced development experience ([f42c8d8](https://github.com/mx-space/admin-vue3/commit/f42c8d8e861ff486889dbf04670c9981da48dc55))
+* enhance AI translation functionality and sidebar UI ([9076dc9](https://github.com/mx-space/admin-vue3/commit/9076dc93f223dca5a14ad4a0c061c10264e4f0fe))
+* enhance error handling and validation in query and request layers ([4da9d6b](https://github.com/mx-space/admin-vue3/commit/4da9d6bb12b7cab930cf47c6608e6a98cbaf7b4a))
+* integrate preferred content format in note, page, and post writing views ([58b2125](https://github.com/mx-space/admin-vue3/commit/58b2125fa81a4eb9375d326648650fcfe1dbaeb8))
+* integrate rich text editor and markdown support in WriteEditor ([5f00291](https://github.com/mx-space/admin-vue3/commit/5f002914550685d96f15cdec299e870115cde550))
+* update dependencies and enhance draft recovery modal functionality ([e09e6d1](https://github.com/mx-space/admin-vue3/commit/e09e6d12f1d97d9b884960d87e917e4585ad3592))
+* update dependencies and introduce LexicalDebugButton for enhanced debugging ([11e3764](https://github.com/mx-space/admin-vue3/commit/11e37648c698656aaaac7cb83859d9142e003885))
+* update SplitPanelLayout to accept string values for size properties ([40f848e](https://github.com/mx-space/admin-vue3/commit/40f848e86f56749ff12445a90bfd0421551cd5d6))
+* upgrade [@haklex](https://github.com/haklex) packages and enhance editor functionality ([092200d](https://github.com/mx-space/admin-vue3/commit/092200daebab1c115119e374e5f59b6a46dc7d4c))
+
+
+
 ## [6.0.8](https://github.com/mx-space/admin-vue3/compare/v6.0.7...v6.0.8) (2026-02-16)
 
 
