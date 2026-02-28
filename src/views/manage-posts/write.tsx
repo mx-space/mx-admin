@@ -212,8 +212,22 @@ const PostWriteView = defineComponent(() => {
   const drawerShow = ref(false)
 
   const handleSubmit = async () => {
+    if (!data.title || data.title.trim().length === 0) {
+      toast.error('标题为空')
+      return
+    }
+    if (!data.slug || data.slug.trim().length === 0) {
+      toast.error('路径为空')
+      return
+    }
+    if (!category.value.id) {
+      toast.error('请选择分类')
+      return
+    }
+
     const payload = {
       ...data,
+      title: data.title.trim(),
       categoryId: category.value.id,
       summary: data.summary?.trim() || null,
       pin: data.pin ? new Date().toISOString() : null,

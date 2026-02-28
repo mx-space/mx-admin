@@ -6,19 +6,8 @@ import { QueryClient } from '@tanstack/vue-query'
 
 import { BusinessError } from '~/utils/request'
 
-// 全局错误处理
+// 全局错误处理（toast 已由 request 层统一处理，此处仅做日志）
 const handleQueryError = (error: unknown) => {
-  const Message = window.message
-
-  // 仅处理业务错误
-  if (error instanceof BusinessError) {
-    const messages = error.message.split(', ')
-    messages.forEach((msg) => {
-      Message.error(msg)
-    })
-  }
-
-  // 在开发环境打印错误
   if (import.meta.env.DEV) {
     console.error('[Vue Query Error]', error)
   }

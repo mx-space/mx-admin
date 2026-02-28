@@ -230,6 +230,11 @@ const NoteWriteView = defineComponent(() => {
   const enablePassword = computed(() => typeof data.password === 'string')
 
   const handleSubmit = async () => {
+    if (!data.title || data.title.trim().length === 0) {
+      toast.error('标题为空')
+      return
+    }
+
     const parseDataToPayload = () => {
       return {
         ...toRaw(data),

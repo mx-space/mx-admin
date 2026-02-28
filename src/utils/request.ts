@@ -1,4 +1,5 @@
 import { ofetch } from 'ofetch'
+import { toast } from 'vue-sonner'
 import type { FetchOptions } from 'ofetch'
 
 import { simpleCamelcaseKeys } from '@mx-space/api-client'
@@ -52,10 +53,8 @@ export const $api = ofetch.create({
   },
 
   onResponseError({ response }) {
-    const Message = window.message
-
     if (!response) {
-      Message.error('网络错误')
+      toast.error('网络错误')
       throw new SystemError('网络错误')
     }
 
@@ -69,12 +68,14 @@ export const $api = ofetch.create({
     }
 
     if (status >= 500) {
-      Message.error('服务器错误，请稍后重试')
+      toast.error('服务器错误，请稍后重试')
       throw new SystemError('服务器错误', status)
     }
 
     const data = response._data
     const message = data?.message || '请求失败'
+    const displayMsg = Array.isArray(message) ? message.join(', ') : message
+    toast.error(displayMsg)
     throw new BusinessError(message, status, data)
   },
 })
