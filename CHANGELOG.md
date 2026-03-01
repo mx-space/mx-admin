@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [6.1.2](https://github.com/mx-space/admin-vue3/compare/v6.1.1...v6.1.2) (2026-03-01)
+
+
+### Bug Fixes
+
+* add webhook dispatch list ([3fbac71](https://github.com/mx-space/admin-vue3/commit/3fbac71ab51ecfec48f3aaff3516b3acab61dbf3))
+
+
+
 ## [6.1.1](https://github.com/mx-space/admin-vue3/compare/v6.1.0...v6.1.1) (2026-03-01)
 
 
