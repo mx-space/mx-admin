@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## [6.1.1](https://github.com/mx-space/admin-vue3/compare/v6.1.0...v6.1.1) (2026-03-01)
+
+
+### Bug Fixes
+
+* lexical editor debug editor ([7f5f37e](https://github.com/mx-space/admin-vue3/commit/7f5f37e3241ceacc7107052a46afb379aa2c7723))
+
+
+### Features
+
+* **ai-tasks:** show failed languages and smart retry label for partial-failed tasks ([ee77538](https://github.com/mx-space/admin-vue3/commit/ee775381cb98bcf684222facb1e662d6b5539ce3))
+* enhance RichEditor and RichWriteEditor with focus functionality ([0fee4d9](https://github.com/mx-space/admin-vue3/commit/0fee4d9b242a70fbd1136ceb013c7e48d8ec7207))
+
+
+
 # [6.1.0](https://github.com/mx-space/admin-vue3/compare/v6.0.8...v6.1.0) (2026-02-28)
 
 
