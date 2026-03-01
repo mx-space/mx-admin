@@ -35,16 +35,8 @@ export const LexicalDebugButton = defineComponent({
   },
 })
 
-const LexicalDebugDrawer = defineComponent({
+const LexicalDebugDrawerContent = defineComponent({
   props: {
-    show: {
-      type: Boolean,
-      required: true,
-    },
-    onUpdateShow: {
-      type: Function as PropType<(s: boolean) => void>,
-      required: true,
-    },
     content: {
       type: String,
       required: true,
@@ -67,6 +59,30 @@ const LexicalDebugDrawer = defineComponent({
     })
 
     return () => (
+      <div ref={htmlRef} class="h-full min-h-[calc(100vh-100px)]">
+        <editor.Snip />
+      </div>
+    )
+  },
+})
+
+const LexicalDebugDrawer = defineComponent({
+  props: {
+    show: {
+      type: Boolean,
+      required: true,
+    },
+    onUpdateShow: {
+      type: Function as PropType<(s: boolean) => void>,
+      required: true,
+    },
+    content: {
+      type: String,
+      required: true,
+    },
+  },
+  setup(props) {
+    return () => (
       <NDrawer
         show={props.show}
         width={600}
@@ -80,9 +96,7 @@ const LexicalDebugDrawer = defineComponent({
           nativeScrollbar={false}
           class="h-full min-h-full"
         >
-          <div ref={htmlRef} class="h-full min-h-[calc(100vh-100px)]">
-            <editor.Snip />
-          </div>
+          {props.show && <LexicalDebugDrawerContent content={props.content} />}
         </NDrawerContent>
       </NDrawer>
     )

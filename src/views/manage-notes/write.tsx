@@ -305,41 +305,41 @@ const NoteWriteView = defineComponent(() => {
         lastSavedTime={serverDraft.lastSavedTime}
       />,
     )
-  })
 
-  setActions(
-    <>
-      {!isMobile.value &&
-        (data.contentFormat === 'lexical' ? (
-          <LexicalDebugButton content={data.content} />
-        ) : (
-          <ParseContentButton
-            data={data}
-            onHandleYamlParsedMeta={(meta) => {
-              const { title, mood, weather, ...rest } = meta
-              data.title = title ?? data.title
-              data.mood = mood ?? data.mood
-              data.weather = weather ?? data.weather
-              data.meta = { ...rest }
-            }}
-          />
-        ))}
-      {!isMobile.value && <HeaderPreviewButton data={data} iframe />}
-      <HeaderActionButton
-        icon={<SlidersHIcon />}
-        name="日记设置"
-        onClick={() => {
-          drawerShow.value = true
-        }}
-      />
-      <HeaderActionButton
-        icon={<TelegramPlaneIcon />}
-        name="发布"
-        variant="primary"
-        onClick={handleSubmit}
-      />
-    </>,
-  )
+    setActions(
+      <>
+        {!isMobile.value &&
+          (data.contentFormat === 'lexical' ? (
+            <LexicalDebugButton content={data.content} />
+          ) : (
+            <ParseContentButton
+              data={data}
+              onHandleYamlParsedMeta={(meta) => {
+                const { title, mood, weather, ...rest } = meta
+                data.title = title ?? data.title
+                data.mood = mood ?? data.mood
+                data.weather = weather ?? data.weather
+                data.meta = { ...rest }
+              }}
+            />
+          ))}
+        {!isMobile.value && <HeaderPreviewButton data={data} iframe />}
+        <HeaderActionButton
+          icon={<SlidersHIcon />}
+          name="日记设置"
+          onClick={() => {
+            drawerShow.value = true
+          }}
+        />
+        <HeaderActionButton
+          icon={<TelegramPlaneIcon />}
+          name="发布"
+          variant="primary"
+          onClick={handleSubmit}
+        />
+      </>,
+    )
+  })
 
   return () => (
     <>
