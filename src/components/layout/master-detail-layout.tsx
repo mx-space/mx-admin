@@ -1,4 +1,3 @@
-import { NSplit } from 'naive-ui'
 import { computed, defineComponent, watchEffect } from 'vue'
 import type { PropType } from 'vue'
 
@@ -6,6 +5,8 @@ import { useStoreRef } from '~/hooks/use-store-ref'
 import { useLayout } from '~/layouts/content'
 import { LayoutStore } from '~/stores/layout'
 import { UIStore } from '~/stores/ui'
+
+import { SplitPanel } from './split-panel'
 
 export interface MasterDetailLayoutProps {
   showDetailOnMobile?: boolean
@@ -64,45 +65,32 @@ export const MasterDetailLayout = defineComponent({
       )
     })
 
-    const ResizeTrigger = () => (
-      <div class="group relative h-full w-0 cursor-col-resize">
-        <div class="absolute left-1/2 top-1/2 h-8 w-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-neutral-300 transition-colors group-hover:bg-neutral-400 dark:bg-neutral-700 dark:group-hover:bg-neutral-600" />
-      </div>
-    )
-
     const DesktopLayout = () => (
       <div class="absolute inset-0 overflow-hidden">
-        <NSplit
+        <SplitPanel
           direction="horizontal"
           defaultSize={props.defaultSize}
           min={props.min}
           max={props.max}
           class="h-full"
         >
-          {{
-            1: () => (
-              <div
-                class={[
-                  'h-full overflow-hidden border-r border-neutral-200 dark:border-neutral-800',
-                  props.listBgClass,
-                ]}
-              >
-                {slots.list?.()}
-              </div>
-            ),
-            2: () => (
-              <div
-                class={[
-                  'h-full min-w-0 flex-1 overflow-hidden',
-                  props.detailBgClass,
-                ]}
-              >
-                {slots.detail?.() ?? slots.empty?.()}
-              </div>
-            ),
-            'resize-trigger': ResizeTrigger,
-          }}
-        </NSplit>
+          <div
+            class={[
+              'h-full overflow-hidden border-r border-neutral-200 dark:border-neutral-800',
+              props.listBgClass,
+            ]}
+          >
+            {slots.list?.()}
+          </div>
+          <div
+            class={[
+              'h-full min-w-0 flex-1 overflow-hidden',
+              props.detailBgClass,
+            ]}
+          >
+            {slots.detail?.() ?? slots.empty?.()}
+          </div>
+        </SplitPanel>
       </div>
     )
 

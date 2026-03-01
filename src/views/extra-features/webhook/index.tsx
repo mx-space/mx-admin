@@ -2,6 +2,7 @@ import { cloneDeep } from 'es-toolkit/compat'
 import {
   ArrowLeft,
   Calendar,
+  ChevronRight,
   ExternalLink as ExternalLinkIcon,
   Globe,
   Pencil as PencilIcon,
@@ -23,6 +24,7 @@ import {
   NGrid,
   NInput,
   NLayoutContent,
+  NPagination,
   NPopconfirm,
   NScrollbar,
   NSwitch,
@@ -31,14 +33,23 @@ import {
 } from 'naive-ui'
 import { computed, defineComponent, ref, watch, watchEffect } from 'vue'
 import { toast } from 'vue-sonner'
-import type { WebhookModel } from '~/api/webhooks'
-import type { PropType, VNode } from 'vue'
+import type { WebhookEventRecord, WebhookModel } from '~/api/webhooks'
+import type { ComputedRef, PropType, VNode } from 'vue'
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/vue-query'
 
 import { webhooksApi } from '~/api/webhooks'
 import { HeaderActionButton } from '~/components/button/header-action-button'
-import { MasterDetailLayout, useMasterDetailLayout } from '~/components/layout'
+import {
+  MasterDetailLayout,
+  SplitPanel,
+  useMasterDetailLayout,
+} from '~/components/layout'
 import { queryKeys } from '~/hooks/queries/keys'
 import { useLayout } from '~/layouts/content'
 import { EventScope } from '~/models/wehbook'
@@ -199,9 +210,9 @@ export default defineComponent({
       <>
         <MasterDetailLayout
           showDetailOnMobile={showDetailOnMobile.value}
-          defaultSize={0.35}
-          min={0.25}
-          max={0.45}
+          defaultSize="350px"
+          min="300px"
+          max="400px"
         >
           {{
             list: () => (
@@ -215,16 +226,25 @@ export default defineComponent({
             ),
             detail: () =>
               selectedWebhook.value ? (
-                <WebhookDetailPanel
-                  webhook={selectedWebhook.value}
-                  isMobile={isMobile.value}
-                  onBack={handleBack}
-                  onEdit={() => handleEdit(selectedWebhook.value!)}
-                  onDelete={() => handleDelete(selectedWebhook.value!.id)}
-                  onTest={(event) =>
-                    handleTest(selectedWebhook.value!.id, event)
-                  }
-                />
+                <SplitPanel
+                  direction="horizontal"
+                  defaultSize={0.55}
+                  min={0.35}
+                  max={0.75}
+                  class="h-full"
+                >
+                  <WebhookDetailPanel
+                    webhook={selectedWebhook.value!}
+                    isMobile={isMobile.value}
+                    onBack={handleBack}
+                    onEdit={() => handleEdit(selectedWebhook.value!)}
+                    onDelete={() => handleDelete(selectedWebhook.value!.id)}
+                    onTest={(event) =>
+                      handleTest(selectedWebhook.value!.id, event)
+                    }
+                  />
+                  <WebhookDispatchPanel webhookId={selectedWebhook.value!.id} />
+                </SplitPanel>
               ) : null,
             empty: () => <WebhookDetailEmptyState />,
           }}
@@ -792,6 +812,202 @@ const WebhookEditDrawer = defineComponent({
           </div>
         </NDrawerContent>
       </NDrawer>
+    )
+  },
+})
+
+const WebhookDispatchPanel = defineComponent({
+  props: {
+    webhookId: { type: String, required: true },
+  },
+  setup(props) {
+    const queryClient = useQueryClient()
+    const page = ref(1)
+    const size = 20
+    const expandedId = ref<string | null>(null)
+
+    const { data: dispatchData, isLoading } = useQuery({
+      queryKey: computed(() => [
+        ...queryKeys.webhooks.dispatches(props.webhookId),
+        page.value,
+      ]),
+      queryFn: () =>
+        webhooksApi.getDispatches(props.webhookId, {
+          page: page.value,
+          size,
+        }),
+      placeholderData: keepPreviousData,
+    })
+
+    const dispatches = computed(
+      () => (dispatchData.value as any)?.data ?? [],
+    ) as ComputedRef<WebhookEventRecord[]>
+    const pagination = computed(() => (dispatchData.value as any)?.pagination)
+
+    const redispatchMutation = useMutation({
+      mutationFn: (eventId: string) =>
+        webhooksApi.redispatch(props.webhookId, eventId),
+      onSuccess: () => {
+        toast.success('已重新推送')
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.webhooks.dispatches(props.webhookId),
+        })
+      },
+      onError: () => {
+        toast.error('重新推送失败')
+      },
+    })
+
+    watch(
+      () => props.webhookId,
+      () => {
+        page.value = 1
+        expandedId.value = null
+      },
+    )
+
+    return () => (
+      <div class="flex h-full flex-col">
+        <div class="flex h-12 shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
+          <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+            推送记录
+          </span>
+          {pagination.value && (
+            <span class="text-xs text-neutral-400">
+              共 {pagination.value.total} 条
+            </span>
+          )}
+        </div>
+
+        <NScrollbar class="min-h-0 flex-1">
+          {isLoading.value ? (
+            <div class="flex items-center justify-center py-24">
+              <div class="size-6 animate-spin rounded-full border-2 border-neutral-300 border-t-neutral-900 dark:border-neutral-700 dark:border-t-white" />
+            </div>
+          ) : dispatches.value.length === 0 ? (
+            <div class="flex flex-col items-center justify-center py-24 text-center">
+              <span class="text-sm text-neutral-400">暂无推送记录</span>
+            </div>
+          ) : (
+            dispatches.value.map((dispatch) => (
+              <div key={dispatch.id}>
+                <div
+                  class="flex cursor-pointer items-center gap-3 border-b border-neutral-100 px-4 py-3 transition-colors hover:bg-neutral-50 dark:border-neutral-800/50 dark:hover:bg-neutral-800/30"
+                  onClick={() =>
+                    (expandedId.value =
+                      expandedId.value === dispatch.id ? null : dispatch.id)
+                  }
+                >
+                  <ChevronRight
+                    class={[
+                      'size-3.5 shrink-0 text-neutral-400 transition-transform',
+                      expandedId.value === dispatch.id && 'rotate-90',
+                    ]}
+                  />
+                  <StatusIndicator enabled={dispatch.success} />
+                  <div class="min-w-0 flex-1">
+                    <NTag
+                      size="small"
+                      type={getEventColor(dispatch.event)}
+                      bordered={false}
+                      round
+                    >
+                      {dispatch.event}
+                    </NTag>
+                  </div>
+                  <NTag
+                    size="small"
+                    type={dispatch.success ? 'success' : 'error'}
+                    bordered={false}
+                  >
+                    {dispatch.status}
+                  </NTag>
+                  <span class="shrink-0 text-xs text-neutral-400">
+                    {new Date(dispatch.timestamp).toLocaleString('zh-CN')}
+                  </span>
+                </div>
+
+                {expandedId.value === dispatch.id && (
+                  <div class="border-b border-neutral-100 bg-neutral-50 px-4 py-3 dark:border-neutral-800/50 dark:bg-neutral-900/50">
+                    <div class="mb-3 flex justify-end">
+                      <NButton
+                        size="tiny"
+                        quaternary
+                        type="primary"
+                        loading={redispatchMutation.isPending.value}
+                        onClick={(e: Event) => {
+                          e.stopPropagation()
+                          redispatchMutation.mutate(dispatch.id)
+                        }}
+                      >
+                        {{
+                          icon: () => <RefreshIcon class="size-3" />,
+                          default: () => '重新推送',
+                        }}
+                      </NButton>
+                    </div>
+                    <div class="space-y-2">
+                      <DispatchDetailBlock
+                        label="Payload"
+                        content={dispatch.payload}
+                      />
+                      <DispatchDetailBlock
+                        label="Response"
+                        content={dispatch.response}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))
+          )}
+        </NScrollbar>
+
+        {pagination.value && pagination.value.totalPage > 1 && (
+          <div class="flex shrink-0 items-center justify-center border-t border-neutral-200 py-2 dark:border-neutral-800">
+            <NPagination
+              page={page.value}
+              pageCount={pagination.value.totalPage}
+              onUpdatePage={(p: number) => (page.value = p)}
+              size="small"
+            />
+          </div>
+        )}
+      </div>
+    )
+  },
+})
+
+const DispatchDetailBlock = defineComponent({
+  props: {
+    label: { type: String, required: true },
+    content: {
+      type: [Object, String, Array, Number, Boolean] as PropType<any>,
+      default: null,
+    },
+  },
+  setup(props) {
+    const formatted = computed(() => {
+      if (!props.content) return ''
+      if (typeof props.content === 'string') {
+        try {
+          return JSON.stringify(JSON.parse(props.content), null, 2)
+        } catch {
+          return props.content
+        }
+      }
+      return JSON.stringify(props.content, null, 2)
+    })
+
+    return () => (
+      <div>
+        <div class="mb-1 text-xs font-medium text-neutral-500">
+          {props.label}
+        </div>
+        <pre class="max-h-48 overflow-auto rounded-lg bg-neutral-100 p-2 text-xs text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
+          {formatted.value || '-'}
+        </pre>
+      </div>
     )
   },
 })

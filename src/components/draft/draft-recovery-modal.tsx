@@ -1,6 +1,6 @@
 import { diff as jsonDiff } from 'jsondiffpatch'
 import { GitCompare, X } from 'lucide-vue-next'
-import { NButton, NModal, NScrollbar, NSpin, NSplit } from 'naive-ui'
+import { NButton, NModal, NScrollbar, NSpin } from 'naive-ui'
 import { computed, defineComponent, onBeforeUnmount, ref, watch } from 'vue'
 import type { DraftModel } from '~/models/draft'
 import type { PropType } from 'vue'
@@ -9,6 +9,7 @@ import { useQuery } from '@tanstack/vue-query'
 
 import { draftsApi } from '~/api/drafts'
 import { RichDiffBridge } from '~/components/editor/rich/RichDiffBridge'
+import { SplitPanel } from '~/components/layout'
 
 import { DiffPreview } from './diff-preview'
 import { VersionListItem } from './version-list-item'
@@ -464,165 +465,151 @@ export const DraftRecoveryModal = defineComponent({
                 <NSpin size="large" />
               </div>
             ) : (
-              <NSplit
+              <SplitPanel
                 direction="horizontal"
                 defaultSize={0.3}
                 min={0.25}
                 max={0.4}
                 class="h-full"
               >
-                {{
-                  1: () => (
-                    <div class="flex h-full flex-col border-r border-neutral-200 dark:border-neutral-800">
-                      {/* Version list header */}
-                      <div class="flex items-center gap-2 border-b border-neutral-200 px-4 py-2.5 dark:border-neutral-800">
-                        <GitCompare class="size-4 text-neutral-500" />
-                        <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                          版本列表
-                        </span>
-                        <span class="text-xs text-neutral-400">
-                          ({versionList.value.length})
-                        </span>
-                      </div>
+                <div class="flex h-full flex-col border-r border-neutral-200 dark:border-neutral-800">
+                  {/* Version list header */}
+                  <div class="flex items-center gap-2 border-b border-neutral-200 px-4 py-2.5 dark:border-neutral-800">
+                    <GitCompare class="size-4 text-neutral-500" />
+                    <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                      版本列表
+                    </span>
+                    <span class="text-xs text-neutral-400">
+                      ({versionList.value.length})
+                    </span>
+                  </div>
 
-                      {/* Version list */}
-                      <NScrollbar class="flex-1">
-                        <div class="divide-y divide-neutral-100 dark:divide-neutral-800">
-                          {versionList.value.map((item) => (
-                            <VersionListItem
-                              key={
-                                item.version === 'published'
-                                  ? 'published'
-                                  : item.version === 'current'
-                                    ? 'current'
-                                    : item.version
-                              }
-                              version={item.version}
-                              title={item.title}
-                              savedAt={item.savedAt}
-                              isSelected={
-                                item.version === 'current'
-                                  ? selectedVersion.value ===
-                                    props.draft.version
-                                  : selectedVersion.value === item.version
-                              }
-                              isCurrent={item.isCurrent}
-                              isFullSnapshot={item.isFullSnapshot}
-                              diffStats={(() => {
-                                if (item.version === 'published')
-                                  return undefined
-                                const vKey =
-                                  item.version === 'current'
-                                    ? props.draft.version
-                                    : (item.version as number)
-                                return precomputedDiffStats.value.get(vKey)
-                              })()}
-                              onClick={() => handleSelectVersion(item.version)}
-                            />
-                          ))}
-                        </div>
-                      </NScrollbar>
+                  {/* Version list */}
+                  <NScrollbar class="flex-1">
+                    <div class="divide-y divide-neutral-100 dark:divide-neutral-800">
+                      {versionList.value.map((item) => (
+                        <VersionListItem
+                          key={
+                            item.version === 'published'
+                              ? 'published'
+                              : item.version === 'current'
+                                ? 'current'
+                                : item.version
+                          }
+                          version={item.version}
+                          title={item.title}
+                          savedAt={item.savedAt}
+                          isSelected={
+                            item.version === 'current'
+                              ? selectedVersion.value === props.draft.version
+                              : selectedVersion.value === item.version
+                          }
+                          isCurrent={item.isCurrent}
+                          isFullSnapshot={item.isFullSnapshot}
+                          diffStats={(() => {
+                            if (item.version === 'published') return undefined
+                            const vKey =
+                              item.version === 'current'
+                                ? props.draft.version
+                                : (item.version as number)
+                            return precomputedDiffStats.value.get(vKey)
+                          })()}
+                          onClick={() => handleSelectVersion(item.version)}
+                        />
+                      ))}
                     </div>
-                  ),
-                  2: () => (
-                    <div class="flex h-full flex-col bg-neutral-50 dark:bg-neutral-950">
-                      {/* Diff header */}
-                      <div class="flex flex-shrink-0 items-center justify-between border-b border-neutral-200 bg-white px-4 py-2.5 dark:border-neutral-800 dark:bg-neutral-900">
-                        <div class="flex items-center gap-2 text-xs text-neutral-600 dark:text-neutral-400">
-                          <span>已发布</span>
-                          <span class="text-neutral-400">→</span>
-                          <span>{selectedVersionLabel.value}</span>
-                        </div>
+                  </NScrollbar>
+                </div>
+                <div class="flex h-full flex-col bg-neutral-50 dark:bg-neutral-950">
+                  {/* Diff header */}
+                  <div class="flex flex-shrink-0 items-center justify-between border-b border-neutral-200 bg-white px-4 py-2.5 dark:border-neutral-800 dark:bg-neutral-900">
+                    <div class="flex items-center gap-2 text-xs text-neutral-600 dark:text-neutral-400">
+                      <span>已发布</span>
+                      <span class="text-neutral-400">→</span>
+                      <span>{selectedVersionLabel.value}</span>
+                    </div>
 
-                        {diffStats.value && !diffStats.value.isSame && (
-                          <div class="text-xs text-neutral-500">
-                            {isRichMode.value && diffStats.value.added != null
-                              ? [
-                                  diffStats.value.added > 0 && (
-                                    <span class="text-green-600">
-                                      +{diffStats.value.added}
-                                    </span>
-                                  ),
-                                  diffStats.value.added > 0 &&
-                                    diffStats.value.removed! > 0 &&
-                                    ' / ',
-                                  diffStats.value.removed! > 0 && (
-                                    <span class="text-red-600">
-                                      -{diffStats.value.removed}
-                                    </span>
-                                  ),
-                                  ' 节点',
-                                ]
-                              : [
-                                  diffStats.value.diff > 0
-                                    ? `+${diffStats.value.diff}`
-                                    : diffStats.value.diff,
-                                  ' 字',
-                                ]}
+                    {diffStats.value && !diffStats.value.isSame && (
+                      <div class="text-xs text-neutral-500">
+                        {isRichMode.value && diffStats.value.added != null
+                          ? [
+                              diffStats.value.added > 0 && (
+                                <span class="text-green-600">
+                                  +{diffStats.value.added}
+                                </span>
+                              ),
+                              diffStats.value.added > 0 &&
+                                diffStats.value.removed! > 0 &&
+                                ' / ',
+                              diffStats.value.removed! > 0 && (
+                                <span class="text-red-600">
+                                  -{diffStats.value.removed}
+                                </span>
+                              ),
+                              ' 节点',
+                            ]
+                          : [
+                              diffStats.value.diff > 0
+                                ? `+${diffStats.value.diff}`
+                                : diffStats.value.diff,
+                              ' 字',
+                            ]}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Diff content */}
+                  <div class="min-h-0 flex-1 overflow-hidden">
+                    {selectedVersionContent.value ? (
+                      diffStats.value?.isSame ? (
+                        <div class="flex h-full flex-col items-center justify-center gap-3 bg-white dark:bg-neutral-900">
+                          <div class="flex size-12 items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800">
+                            <GitCompare class="size-6 text-neutral-500 dark:text-neutral-400" />
                           </div>
-                        )}
-                      </div>
-
-                      {/* Diff content */}
-                      <div class="min-h-0 flex-1 overflow-hidden">
-                        {selectedVersionContent.value ? (
-                          diffStats.value?.isSame ? (
-                            <div class="flex h-full flex-col items-center justify-center gap-3 bg-white dark:bg-neutral-900">
-                              <div class="flex size-12 items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800">
-                                <GitCompare class="size-6 text-neutral-500 dark:text-neutral-400" />
-                              </div>
-                              <div class="text-center">
-                                <p class="text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                                  与已发布版本内容相同
-                                </p>
-                                <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
-                                  选择其他版本进行对比
-                                </p>
-                              </div>
-                            </div>
-                          ) : isRichMode.value ? (
-                            <div class="h-full overflow-hidden">
-                              <RichDiffBridge
-                                variant="comment"
-                                className="!rounded-none !border-0"
-                                oldValue={JSON.parse(
-                                  props.publishedContent.content!,
-                                )}
-                                newValue={JSON.parse(
-                                  selectedVersionContent.value.content!,
-                                )}
-                              />
-                            </div>
-                          ) : (
-                            <div class="h-full overflow-hidden">
-                              <DiffPreview
-                                oldFile={{
-                                  name: 'published.md',
-                                  contents: props.publishedContent.text ?? '',
-                                }}
-                                newFile={{
-                                  name: 'draft.md',
-                                  contents:
-                                    selectedVersionContent.value.text ?? '',
-                                }}
-                              />
-                            </div>
-                          )
-                        ) : (
-                          <div class="flex h-full items-center justify-center rounded-lg border border-dashed border-neutral-300 bg-white text-neutral-400 dark:border-neutral-700 dark:bg-neutral-900">
-                            选择一个版本查看差异
+                          <div class="text-center">
+                            <p class="text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                              与已发布版本内容相同
+                            </p>
+                            <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+                              选择其他版本进行对比
+                            </p>
                           </div>
-                        )}
+                        </div>
+                      ) : isRichMode.value ? (
+                        <div class="h-full overflow-hidden">
+                          <RichDiffBridge
+                            variant="comment"
+                            className="!rounded-none !border-0"
+                            oldValue={JSON.parse(
+                              props.publishedContent.content!,
+                            )}
+                            newValue={JSON.parse(
+                              selectedVersionContent.value.content!,
+                            )}
+                          />
+                        </div>
+                      ) : (
+                        <div class="h-full overflow-hidden">
+                          <DiffPreview
+                            oldFile={{
+                              name: 'published.md',
+                              contents: props.publishedContent.text ?? '',
+                            }}
+                            newFile={{
+                              name: 'draft.md',
+                              contents: selectedVersionContent.value.text ?? '',
+                            }}
+                          />
+                        </div>
+                      )
+                    ) : (
+                      <div class="flex h-full items-center justify-center rounded-lg border border-dashed border-neutral-300 bg-white text-neutral-400 dark:border-neutral-700 dark:bg-neutral-900">
+                        选择一个版本查看差异
                       </div>
-                    </div>
-                  ),
-                  'resize-trigger': () => (
-                    <div class="group relative h-full w-0 cursor-col-resize">
-                      <div class="absolute left-1/2 top-1/2 h-8 w-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-neutral-300 transition-colors group-hover:bg-neutral-400 dark:bg-neutral-700 dark:group-hover:bg-neutral-600" />
-                    </div>
-                  ),
-                }}
-              </NSplit>
+                    )}
+                  </div>
+                </div>
+              </SplitPanel>
             )}
           </div>
 

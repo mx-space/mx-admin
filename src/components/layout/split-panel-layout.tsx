@@ -2,11 +2,11 @@
  * Split Panel Layout Component
  * 分栏面板布局 - 支持左右分栏、Resizable、移动端全屏切换
  */
-import { NSplit } from 'naive-ui'
 import { computed, defineComponent } from 'vue'
 import type { PropType, VNode } from 'vue'
 
 import { useMasterDetailLayout } from './master-detail-layout'
+import { SplitPanel } from './split-panel'
 
 export interface SplitPanelLayoutProps {
   /** 是否显示右侧面板（移动端用于控制滑动） */
@@ -50,13 +50,6 @@ export const SplitPanelLayout = defineComponent({
       () => props.forceMobile || layoutIsMobile.value,
     )
 
-    // Resize trigger
-    const ResizeTrigger = () => (
-      <div class="group relative h-full w-0 cursor-col-resize">
-        <div class="absolute left-1/2 top-1/2 h-8 w-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-neutral-300 transition-colors group-hover:bg-neutral-400 dark:bg-neutral-700 dark:group-hover:bg-neutral-600" />
-      </div>
-    )
-
     // 移动端布局：全屏切换
     const MobileLayout = () => (
       <div class="relative h-full overflow-hidden">
@@ -84,27 +77,20 @@ export const SplitPanelLayout = defineComponent({
 
     // 桌面端布局：分栏 + Resizable
     const DesktopLayout = () => (
-      <NSplit
+      <SplitPanel
         direction="horizontal"
         defaultSize={props.defaultSize}
         min={props.min}
         max={props.max}
         class="h-full"
       >
-        {{
-          1: () => (
-            <div class="h-full overflow-hidden border-r border-neutral-200 dark:border-neutral-800">
-              {slots.list?.()}
-            </div>
-          ),
-          2: () => (
-            <div class="h-full min-w-0 flex-1 overflow-hidden">
-              {props.showPanel ? slots.panel?.() : slots.empty?.()}
-            </div>
-          ),
-          'resize-trigger': ResizeTrigger,
-        }}
-      </NSplit>
+        <div class="h-full overflow-hidden border-r border-neutral-200 dark:border-neutral-800">
+          {slots.list?.()}
+        </div>
+        <div class="h-full min-w-0 flex-1 overflow-hidden">
+          {props.showPanel ? slots.panel?.() : slots.empty?.()}
+        </div>
+      </SplitPanel>
     )
 
     return () => (isMobileView.value ? <MobileLayout /> : <DesktopLayout />)

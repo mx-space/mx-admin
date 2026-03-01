@@ -1,3 +1,5 @@
+import type { PaginateResult } from '~/models/base'
+
 import { request } from '~/utils/request'
 
 export interface WebhookModel {
@@ -23,6 +25,18 @@ export interface CreateWebhookData {
 
 export interface UpdateWebhookData extends Partial<CreateWebhookData> {}
 
+export interface WebhookEventRecord {
+  id: string
+  event: string
+  headers: Record<string, string>
+  payload: unknown
+  response: unknown
+  success: boolean
+  status: number
+  hookId: string
+  timestamp: string
+}
+
 export const webhooksApi = {
   // 获取 Webhook 列表
   getList: () => request.get<WebhookModel[]>('/webhooks'),
@@ -44,4 +58,14 @@ export const webhooksApi = {
   // 测试 Webhook
   test: (id: string, event: string) =>
     request.post<void>(`/webhooks/${id}/test`, { data: { event } }),
+
+  // 获取 Webhook 推送记录
+  getDispatches: (id: string, params?: { page?: number; size?: number }) =>
+    request.get<PaginateResult<WebhookEventRecord>>(`/webhooks/${id}`, {
+      params: { page: params?.page ?? 1, size: params?.size ?? 20 },
+    }),
+
+  // 重新推送
+  redispatch: (hookId: string, eventId: string) =>
+    request.post<void>(`/webhooks/${hookId}/redispatch/${eventId}`),
 }

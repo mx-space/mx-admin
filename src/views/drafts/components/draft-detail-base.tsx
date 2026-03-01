@@ -14,7 +14,6 @@ import {
   NPopconfirm,
   NScrollbar,
   NSpin,
-  NSplit,
   NTooltip,
 } from 'naive-ui'
 import { computed, defineComponent, ref, watch } from 'vue'
@@ -26,7 +25,7 @@ import type { PropType, VNode } from 'vue'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 
 import { draftsApi } from '~/api/drafts'
-import { useMasterDetailLayout } from '~/components/layout'
+import { SplitPanel, useMasterDetailLayout } from '~/components/layout'
 import { RelativeTime } from '~/components/time/relative-time'
 import { DraftRefType } from '~/models/draft'
 import { RouteName } from '~/router/name'
@@ -593,34 +592,24 @@ export const DraftDetailBase = defineComponent({
               </div>
             </div>
           ) : (
-            <NSplit
+            <SplitPanel
               direction="horizontal"
               defaultSize={'300px'}
               min={'200px'}
               max={'300px'}
+              resizeTriggerClass="z-[10]"
               class="h-full"
             >
-              {{
-                1: () => (
-                  <div class="flex h-full flex-col border-r border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
-                    {renderVersionList()}
-                  </div>
-                ),
-                2: () => (
-                  <div class="flex h-full flex-col bg-neutral-50 dark:bg-neutral-950">
-                    {renderDiffHeader(false)}
-                    <div class="min-h-0 flex-1 overflow-hidden">
-                      {renderDiffContent(true)}
-                    </div>
-                  </div>
-                ),
-                'resize-trigger': () => (
-                  <div class="group relative h-full w-0 cursor-col-resize">
-                    <div class="absolute left-1/2 top-1/2 z-[10] h-8 w-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-neutral-300 transition-colors group-hover:bg-neutral-400 dark:bg-neutral-700 dark:group-hover:bg-neutral-600" />
-                  </div>
-                ),
-              }}
-            </NSplit>
+              <div class="flex h-full flex-col border-r border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
+                {renderVersionList()}
+              </div>
+              <div class="flex h-full flex-col bg-neutral-50 dark:bg-neutral-950">
+                {renderDiffHeader(false)}
+                <div class="min-h-0 flex-1 overflow-hidden">
+                  {renderDiffContent(true)}
+                </div>
+              </div>
+            </SplitPanel>
           )}
         </div>
       </div>
