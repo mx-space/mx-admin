@@ -225,7 +225,14 @@ export const WriteEditorBase = defineComponent({
               )}
             </div>
 
-            <div class="write-editor-content">{slots.default?.()}</div>
+            <div
+              class="write-editor-content"
+              onClick={() => {
+                props.onAutoFocusContent?.()
+              }}
+            >
+              {slots.default?.()}
+            </div>
           </div>
         </NElement>
       )

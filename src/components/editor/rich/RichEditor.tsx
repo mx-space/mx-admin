@@ -60,7 +60,7 @@ export const RichEditor = defineComponent({
     submit: () => true,
     editorReady: (_editor: LexicalEditor | null) => true,
   },
-  setup(props, { emit }) {
+  setup(props, { emit, expose }) {
     const containerRef = ref<HTMLDivElement>()
     let root: Root | null = null
     let editorInstance: LexicalEditor | null = null
@@ -153,6 +153,10 @@ export const RichEditor = defineComponent({
       root?.unmount()
       root = null
       editorInstance = null
+    })
+
+    expose({
+      focus: () => editorInstance?.focus(),
     })
 
     return () => <div class="h-full w-full" ref={containerRef} />

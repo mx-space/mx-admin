@@ -75,6 +75,7 @@ export const RichWriteEditor = defineComponent({
     },
   },
   setup(props) {
+    const richEditorRef = ref<{ focus: () => void }>()
     const currentText = ref('')
     const hasContent = computed(() => currentText.value.trim().length > 0)
 
@@ -102,8 +103,10 @@ export const RichWriteEditor = defineComponent({
         contentFormat={props.contentFormat}
         onContentFormatChange={props.onContentFormatChange}
         hasContent={hasContent.value}
+        onAutoFocusContent={() => richEditorRef.value?.focus()}
       >
         <RichEditor
+          ref={richEditorRef}
           key={editorKey.value}
           class="h-full w-full"
           editorStyle={editorStyleOverride}
