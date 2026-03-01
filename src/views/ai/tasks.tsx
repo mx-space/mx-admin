@@ -475,6 +475,31 @@ const TaskDetailPanel = defineComponent({
         props.task.status === AITaskStatus.Cancelled,
     )
 
+    const failedLanguages = computed(() => {
+      if (
+        props.task.status !== AITaskStatus.PartialFailed ||
+        props.task.type !== AITaskType.Translation
+      )
+        return null
+      const payload = props.task.payload
+      const result = props.task.result as
+        | {
+            translations?: Array<{ lang: string }>
+          }
+        | undefined
+      const targetLangs = (payload.targetLanguages as string[]) || []
+      const successLangs = new Set(
+        result?.translations?.map((t) => t.lang) || [],
+      )
+      return targetLangs.filter((lang) => !successLangs.has(lang))
+    })
+
+    const retryButtonLabel = computed(() =>
+      failedLanguages.value && failedLanguages.value.length > 0
+        ? '重试失败项'
+        : '重试任务',
+    )
+
     const handleRetryTask = async () => {
       try {
         const result = await aiApi.retryTask(props.task.id)
@@ -716,6 +741,21 @@ const TaskDetailPanel = defineComponent({
             </div>
           )}
 
+          {failedLanguages.value && failedLanguages.value.length > 0 && (
+            <div class="mb-4 rounded-lg bg-yellow-50 p-3 dark:bg-yellow-950/50">
+              <div class="mb-1.5 text-sm font-medium text-yellow-800 dark:text-yellow-200">
+                失败语言
+              </div>
+              <div class="flex flex-wrap gap-1.5">
+                {failedLanguages.value.map((lang) => (
+                  <NTag key={lang} size="small" type="warning">
+                    {lang}
+                  </NTag>
+                ))}
+              </div>
+            </div>
+          )}
+
           {(canCancel.value || canRetry.value || canDelete.value) && (
             <div class="mb-4 flex items-center gap-2">
               {canCancel.value && (
@@ -748,7 +788,7 @@ const TaskDetailPanel = defineComponent({
                 >
                   {{
                     icon: () => <RetryIcon class="size-4" aria-hidden="true" />,
-                    default: () => '重试任务',
+                    default: () => retryButtonLabel.value,
                   }}
                 </NButton>
               )}
@@ -1030,6 +1070,31 @@ const SubTaskDetailPanel = defineComponent({
         props.task.status === AITaskStatus.Cancelled,
     )
 
+    const subTaskFailedLanguages = computed(() => {
+      if (
+        props.task.status !== AITaskStatus.PartialFailed ||
+        props.task.type !== AITaskType.Translation
+      )
+        return null
+      const payload = props.task.payload
+      const result = props.task.result as
+        | {
+            translations?: Array<{ lang: string }>
+          }
+        | undefined
+      const targetLangs = (payload.targetLanguages as string[]) || []
+      const successLangs = new Set(
+        result?.translations?.map((t) => t.lang) || [],
+      )
+      return targetLangs.filter((lang) => !successLangs.has(lang))
+    })
+
+    const subRetryLabel = computed(() =>
+      subTaskFailedLanguages.value && subTaskFailedLanguages.value.length > 0
+        ? '重试失败项'
+        : '重试',
+    )
+
     const handleRetry = async () => {
       try {
         const result = await aiApi.retryTask(props.task.id)
@@ -1076,6 +1141,22 @@ const SubTaskDetailPanel = defineComponent({
             </NTag>
           </div>
 
+          {subTaskFailedLanguages.value &&
+            subTaskFailedLanguages.value.length > 0 && (
+              <div class="mb-3 rounded bg-yellow-50 p-2 dark:bg-yellow-950/50">
+                <div class="mb-1 text-xs font-medium text-yellow-800 dark:text-yellow-200">
+                  失败语言
+                </div>
+                <div class="flex flex-wrap gap-1">
+                  {subTaskFailedLanguages.value.map((lang) => (
+                    <NTag key={lang} size="tiny" type="warning">
+                      {lang}
+                    </NTag>
+                  ))}
+                </div>
+              </div>
+            )}
+
           {canRetry.value && (
             <div class="mb-3">
               <NButton
@@ -1086,7 +1167,7 @@ const SubTaskDetailPanel = defineComponent({
               >
                 {{
                   icon: () => <RetryIcon class="size-3" aria-hidden="true" />,
-                  default: () => '重试',
+                  default: () => subRetryLabel.value,
                 }}
               </NButton>
             </div>
