@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [6.1.4](https://github.com/mx-space/admin-vue3/compare/v6.1.3...v6.1.4) (2026-03-02)
+
+
+### Bug Fixes
+
+* analyze activity tab data fetch ([20dd445](https://github.com/mx-space/admin-vue3/commit/20dd445c18f3a506a9cb34149f6d945b8dbc6562))
+
+
+
 ## [6.1.3](https://github.com/mx-space/admin-vue3/compare/v6.1.2...v6.1.3) (2026-03-02)
 
 
