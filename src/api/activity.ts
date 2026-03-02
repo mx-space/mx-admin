@@ -48,6 +48,7 @@ export interface ReadingRankItem {
 export interface GetActivityParams {
   page?: number
   size?: number
+  type?: number
   before?: string
   after?: string
 }

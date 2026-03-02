@@ -75,12 +75,14 @@ const mapDataToCollection = <T extends keyof Omit<ObjectsCollection, 'all'>>(
 export const GuestActivity = defineComponent({
   setup() {
     const tabValue = ref(ActivityType.Like)
+    const listRef = ref<HTMLElement>()
 
     const { data, pager, fetchDataFn } = useDataTableFetch(
       (list, pager) => async (page, size) => {
         const res = await activityApi.getList({
           page: typeof page === 'number' ? page : undefined,
           size,
+          type: tabValue.value,
         })
 
         list.value = res.data
@@ -113,7 +115,12 @@ export const GuestActivity = defineComponent({
           <NTabs
             onUpdateValue={(value) => {
               tabValue.value = value
-              fetchDataFn()
+              const el = listRef.value
+              if (el) el.style.minHeight = `${el.offsetHeight}px`
+              data.value = []
+              fetchDataFn().finally(() => {
+                if (el) el.style.minHeight = ''
+              })
             }}
             value={tabValue.value}
             type="line"
@@ -126,11 +133,21 @@ export const GuestActivity = defineComponent({
             </NTabPane>
           </NTabs>
 
-          {tabValue.value === ActivityType.Like ? (
-            <LikeActivityList data={data} pager={pager} onFetch={fetchDataFn} />
-          ) : (
-            <ReadDurationList data={data} pager={pager} onFetch={fetchDataFn} />
-          )}
+          <div ref={listRef}>
+            {tabValue.value === ActivityType.Like ? (
+              <LikeActivityList
+                data={data}
+                pager={pager}
+                onFetch={fetchDataFn}
+              />
+            ) : (
+              <ReadDurationList
+                data={data}
+                pager={pager}
+                onFetch={fetchDataFn}
+              />
+            )}
+          </div>
         </>
       )
     }
