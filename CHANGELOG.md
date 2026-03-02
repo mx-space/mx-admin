@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [6.1.5](https://github.com/mx-space/admin-vue3/compare/v6.1.4...v6.1.5) (2026-03-02)
+
+
+### Features
+
+* **editor:** integrate excalidraw with server file upload/update ([cfeef53](https://github.com/mx-space/admin-vue3/commit/cfeef531beadc345b9c8e116281f7849165e147e))
+
+
+
 ## [6.1.4](https://github.com/mx-space/admin-vue3/compare/v6.1.3...v6.1.4) (2026-03-02)
 
 
