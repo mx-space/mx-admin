@@ -58,6 +58,15 @@ export const filesApi = {
     })
   },
 
+  // 更新已有文件（覆盖内容，保持文件名不变）
+  update: (type: string, name: string, file: File) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    return request.put<UploadResponse>(`/files/${type}/${name}`, {
+      data: formData,
+    })
+  },
+
   // 按类型和名称删除文件
   deleteByTypeAndName: (type: string, name: string) =>
     request.delete<void>(`/files/${type}/${name}`),

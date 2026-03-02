@@ -10,8 +10,8 @@ import {
   codeSnippetNodes,
   embedNodes,
   enhancedRendererConfig,
+  ExcalidrawNode,
   galleryNodes,
-  TldrawNode,
 } from '@haklex/rich-kit-shiro'
 
 import '@haklex/rich-diff/style.css'
@@ -19,7 +19,7 @@ import '@haklex/rich-diff/style.css'
 import { useUIStore } from '~/stores/ui'
 
 const extraNodes = [
-  TldrawNode,
+  ExcalidrawNode,
   ...embedNodes,
   ...galleryNodes,
   ...codeSnippetNodes,

@@ -13,12 +13,36 @@ import type { Root } from 'react-dom/client'
 import type { PropType } from 'vue'
 
 import { DialogStackProvider } from '@haklex/rich-editor-ui'
-import { ShiroEditor } from '@haklex/rich-kit-shiro'
+import { ExcalidrawConfigProvider, ShiroEditor } from '@haklex/rich-kit-shiro'
 import { $convertToMarkdownString, TRANSFORMERS } from '@lexical/markdown'
 
 import '@haklex/rich-kit-shiro/style.css'
 
+import { filesApi } from '~/api/files'
+import { API_URL } from '~/constants/env'
 import { useUIStore } from '~/stores/ui'
+
+const saveExcalidrawSnapshot = async (
+  snapshot: object,
+  existingRef?: string,
+): Promise<string> => {
+  const blob = new Blob([JSON.stringify(snapshot)], {
+    type: 'application/json',
+  })
+  const file = new File([blob], 'snapshot.excalidraw', {
+    type: 'application/json',
+  })
+
+  // 已有文件则原地更新，否则创建新文件
+  if (existingRef?.startsWith('ref:file/')) {
+    const name = existingRef.slice(9)
+    const result = await filesApi.update('file', name, file)
+    return `ref:file/${result.name}`
+  }
+
+  const result = await filesApi.upload(file, 'file')
+  return `ref:file/${result.name}`
+}
 
 // React wrapper: syncs Vue-driven props and emits callbacks back
 const ShiroEditorReact = (props: {
@@ -30,12 +54,16 @@ const ShiroEditorReact = (props: {
   return createElement(
     DialogStackProvider,
     null,
-    createElement(ShiroEditor, {
-      ...props.editorProps,
-      onChange: props.onChange,
-      onSubmit: props.onSubmit,
-      onEditorReady: props.onEditorReady,
-    }),
+    createElement(
+      ExcalidrawConfigProvider,
+      { saveSnapshot: saveExcalidrawSnapshot, apiUrl: API_URL },
+      createElement(ShiroEditor, {
+        ...props.editorProps,
+        onChange: props.onChange,
+        onSubmit: props.onSubmit,
+        onEditorReady: props.onEditorReady,
+      }),
+    ),
   )
 }
 
