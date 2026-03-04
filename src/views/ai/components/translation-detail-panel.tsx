@@ -614,7 +614,7 @@ const TranslationEditPanel = defineComponent({
             <RichEditor
               key={editorKey.value}
               class="h-full min-h-[400px] w-full"
-              editorStyle={richEditorStyleOverride}
+              editorStyle={richEditorStyleOverride as Record<string, string | number>}
               initialValue={richContentRef.value}
               variant="article"
               onChange={(value: SerializedEditorState) => {

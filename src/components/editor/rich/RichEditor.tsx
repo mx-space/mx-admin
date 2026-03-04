@@ -14,9 +14,11 @@ import type { PropType } from 'vue'
 
 import { DialogStackProvider } from '@haklex/rich-editor-ui'
 import { ExcalidrawConfigProvider, ShiroEditor } from '@haklex/rich-kit-shiro'
+import { ToolbarPlugin } from '@haklex/rich-plugin-toolbar'
 import { $convertToMarkdownString, TRANSFORMERS } from '@lexical/markdown'
 
 import '@haklex/rich-kit-shiro/style.css'
+import '@haklex/rich-plugin-toolbar/style.css'
 
 import { filesApi } from '~/api/files'
 import { API_URL } from '~/constants/env'
@@ -56,13 +58,17 @@ const ShiroEditorReact = (props: {
     null,
     createElement(
       ExcalidrawConfigProvider,
-      { saveSnapshot: saveExcalidrawSnapshot, apiUrl: API_URL },
-      createElement(ShiroEditor, {
+      {
+        saveSnapshot: saveExcalidrawSnapshot,
+        apiUrl: API_URL,
+        children: createElement(ShiroEditor, {
         ...props.editorProps,
+        header: createElement(ToolbarPlugin),
         onChange: props.onChange,
         onSubmit: props.onSubmit,
         onEditorReady: props.onEditorReady,
       }),
+      },
     ),
   )
 }
@@ -79,7 +85,7 @@ export const RichEditor = defineComponent({
     debounceMs: Number,
     selfHostnames: Array as PropType<string[]>,
     extraNodes: Array as PropType<Array<Klass<LexicalNode>>>,
-    editorStyle: Object as PropType<Record<string, string>>,
+    editorStyle: Object as PropType<Record<string, string | number>>,
     imageUpload: Function as PropType<ImageUploadFn>,
   },
   emits: {

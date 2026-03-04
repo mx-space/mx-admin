@@ -108,8 +108,8 @@ export const RichWriteEditor = defineComponent({
         <RichEditor
           ref={richEditorRef}
           key={editorKey.value}
-          class="h-full w-full"
-          editorStyle={editorStyleOverride}
+          class="mt-8 h-full w-full"
+          editorStyle={editorStyleOverride as Record<string, string | number>}
           initialValue={props.richContent}
           variant={props.variant === 'note' ? 'note' : 'article'}
           autoFocus={props.autoFocus === 'content'}
