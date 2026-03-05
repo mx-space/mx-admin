@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [6.1.7](https://github.com/mx-space/admin-vue3/compare/v6.1.6...v6.1.7) (2026-03-05)
+
+
+### Features
+
+* **editor:** enhance rich editor toolbar behavior ([3883fb7](https://github.com/mx-space/admin-vue3/commit/3883fb7fddcd0d752291c19a19ecf5d81e894832))
+
+
+
 ## [6.1.6](https://github.com/mx-space/admin-vue3/compare/v6.1.5...v6.1.6) (2026-03-04)
 
 
