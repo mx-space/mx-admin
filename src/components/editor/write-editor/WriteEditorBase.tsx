@@ -71,6 +71,22 @@ export const WriteEditorBase = defineComponent({
     const scrollContainerRef = ref<HTMLElement>()
     const { general, destory } = useEditorConfig()
     const titleInputRef = ref<{ focus: () => void }>()
+    const stickyDetectorRef = ref<HTMLElement>()
+    const isToolbarStuck = ref(false)
+
+    onMounted(() => {
+      const el = stickyDetectorRef.value
+      if (!el) return
+      const scrollRoot = el.closest('.n-scrollbar-container') as Element | null
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          isToolbarStuck.value = !entry.isIntersecting
+        },
+        { root: scrollRoot, threshold: 0 },
+      )
+      observer.observe(el)
+      onUnmounted(() => observer.disconnect())
+    })
 
     onUnmounted(() => {
       destory()
@@ -149,6 +165,7 @@ export const WriteEditorBase = defineComponent({
           class={[
             'write-editor-wrapper min-h-[100dvh]',
             isRichMode.value && 'rich-editor-mode',
+            isToolbarStuck.value && 'toolbar-stuck',
           ]}
         >
           <div ref={scrollContainerRef} class="write-editor-scroll-container">
@@ -224,6 +241,8 @@ export const WriteEditorBase = defineComponent({
                 <div class="write-editor-subtitle">{subtitleContent.value}</div>
               )}
             </div>
+
+            <div ref={stickyDetectorRef} class="h-0 w-full" aria-hidden />
 
             <div
               class="write-editor-content"
