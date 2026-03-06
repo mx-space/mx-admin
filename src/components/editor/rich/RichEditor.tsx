@@ -2,6 +2,7 @@ import { createElement } from 'react'
 import { createRoot } from 'react-dom/client'
 import { defineComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { ImageUploadFn, RichEditorVariant } from '@haklex/rich-editor'
+import type { NestedDocDialogEditorProps } from '@haklex/rich-ext-nested-doc'
 import type { ShiroEditorProps } from '@haklex/rich-kit-shiro'
 import type {
   Klass,
@@ -13,12 +14,18 @@ import type { Root } from 'react-dom/client'
 import type { PropType } from 'vue'
 
 import { DialogStackProvider } from '@haklex/rich-editor-ui'
+import {
+  NestedDocDialogEditorProvider,
+  nestedDocEditNodes,
+  NestedDocPlugin,
+} from '@haklex/rich-ext-nested-doc'
 import { ExcalidrawConfigProvider, ShiroEditor } from '@haklex/rich-kit-shiro'
 import { ToolbarPlugin } from '@haklex/rich-plugin-toolbar'
 import { $convertToMarkdownString, TRANSFORMERS } from '@lexical/markdown'
 
 import '@haklex/rich-kit-shiro/style.css'
 import '@haklex/rich-plugin-toolbar/style.css'
+import '@haklex/rich-ext-nested-doc/style.css'
 
 import { filesApi } from '~/api/files'
 import { API_URL } from '~/constants/env'
@@ -46,6 +53,18 @@ const saveExcalidrawSnapshot = async (
   return `ref:file/${result.name}`
 }
 
+function NestedDocDialogEditor({
+  initialValue,
+  onEditorReady,
+}: NestedDocDialogEditorProps) {
+  return createElement(ShiroEditor, {
+    initialValue,
+    onEditorReady,
+    extraNodes: nestedDocEditNodes,
+    header: createElement(ToolbarPlugin),
+  })
+}
+
 // React wrapper: syncs Vue-driven props and emits callbacks back
 const ShiroEditorReact = (props: {
   editorProps: Omit<ShiroEditorProps, 'onChange' | 'onSubmit' | 'onEditorReady'>
@@ -54,21 +73,33 @@ const ShiroEditorReact = (props: {
   onEditorReady?: (editor: LexicalEditor | null) => void
 }) => {
   return createElement(
-    DialogStackProvider,
-    null,
+    NestedDocDialogEditorProvider,
+    { value: NestedDocDialogEditor },
     createElement(
-      ExcalidrawConfigProvider,
-      {
-        saveSnapshot: saveExcalidrawSnapshot,
-        apiUrl: API_URL,
-        children: createElement(ShiroEditor, {
-        ...props.editorProps,
-        header: createElement(ToolbarPlugin),
-        onChange: props.onChange,
-        onSubmit: props.onSubmit,
-        onEditorReady: props.onEditorReady,
-      }),
-      },
+      DialogStackProvider,
+      null,
+      createElement(
+        ExcalidrawConfigProvider,
+        {
+          saveSnapshot: saveExcalidrawSnapshot,
+          apiUrl: API_URL,
+        },
+        createElement(
+          ShiroEditor,
+          {
+            ...props.editorProps,
+            extraNodes: [
+              ...(props.editorProps.extraNodes || []),
+              ...nestedDocEditNodes,
+            ],
+            header: createElement(ToolbarPlugin),
+            onChange: props.onChange,
+            onSubmit: props.onSubmit,
+            onEditorReady: props.onEditorReady,
+          },
+          createElement(NestedDocPlugin),
+        ),
+      ),
     ),
   )
 }

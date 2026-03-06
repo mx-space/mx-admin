@@ -6,6 +6,7 @@ import type { Root } from 'react-dom/client'
 import type { PropType } from 'vue'
 
 import { RichDiff } from '@haklex/rich-diff'
+import { nestedDocNodes } from '@haklex/rich-ext-nested-doc/static'
 import {
   codeSnippetNodes,
   embedNodes,
@@ -23,6 +24,7 @@ const extraNodes = [
   ...embedNodes,
   ...galleryNodes,
   ...codeSnippetNodes,
+  ...nestedDocNodes,
 ]
 
 export const RichDiffBridge = defineComponent({
