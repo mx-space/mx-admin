@@ -98,4 +98,13 @@ See `docs/typography.md` for full guidelines.
 
 ## Related Projects
 
-- **mx-core** - Backend API server (NestJS + MongoDB), located at `../mx-core`
+- **mx-core** — Backend API server (NestJS + MongoDB), located at `../mx-core`
+- **Shiroi** — Next.js frontend (blog), located at `../Shiroi`
+- **haklex** — Rich editor packages (`@haklex/*`), located at `../haklex` (standalone) or `../Shiroi/haklex` (original host)
+
+### Rich Editor Integration (React-in-Vue)
+
+admin-vue3 is a Vue 3 project but embeds the React-based haklex editor via a bridge pattern in `src/components/editor/rich/RichEditor.tsx`:
+- Uses `createRoot()` from `react-dom/client` inside Vue `defineComponent` to mount `ShiroEditor`
+- Imports: `@haklex/rich-kit-shiro` (editor + renderers), `@haklex/rich-plugin-toolbar`, `@haklex/rich-editor-ui`, `@haklex/rich-diff`, `@haklex/rich-ext-nested-doc`, `@haklex/rich-style-token`
+- All `@haklex/*` packages are pinned npm versions (not workspace links). After haklex releases, update versions here.
