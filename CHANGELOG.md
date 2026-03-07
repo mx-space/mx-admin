@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [6.1.8](https://github.com/mx-space/admin-vue3/compare/v6.1.7...v6.1.8) (2026-03-07)
+
+
+### Features
+
+* integrate @haklex/rich-ext-nested-doc extension ([4ceecdc](https://github.com/mx-space/admin-vue3/commit/4ceecdc2e93251873ff5be1b731218ea225dd363))
+
+
+
 ## [6.1.7](https://github.com/mx-space/admin-vue3/compare/v6.1.6...v6.1.7) (2026-03-05)
 
 
