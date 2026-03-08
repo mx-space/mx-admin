@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [6.1.9](https://github.com/mx-space/admin-vue3/compare/v6.1.8...v6.1.9) (2026-03-08)
+
+
+### Bug Fixes
+
+* adjust z-index for sidebar overlay ([4d7d19d](https://github.com/mx-space/admin-vue3/commit/4d7d19d2926a55d0e58a1b5283db937841068e54))
+
+
+
 ## [6.1.8](https://github.com/mx-space/admin-vue3/compare/v6.1.7...v6.1.8) (2026-03-07)
 
 
