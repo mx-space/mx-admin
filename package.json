@@ -48,6 +48,7 @@
     "@haklex/rich-kit-shiro": "0.0.70",
     "@haklex/rich-plugin-toolbar": "0.0.70",
     "@haklex/rich-style-token": "0.0.70",
+    "@lexical/code": "npm:lexical-code-no-prism@^0.41.0",
     "@lexical/markdown": "0.41.0",
     "@lexical/react": "0.41.0",
     "@lezer/highlight": "1.2.3",
@@ -141,5 +142,10 @@
     "vite-plugin-vue-inspector": "5.3.2",
     "vite-tsconfig-paths": "6.0.5"
   },
-  "packageManager": "pnpm@10.28.2"
+  "packageManager": "pnpm@10.28.2",
+  "pnpm": {
+    "overrides": {
+      "@lexical/code": "npm:lexical-code-no-prism@^0.41.0"
+    }
+  }
 }

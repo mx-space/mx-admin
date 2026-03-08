@@ -214,6 +214,40 @@ export interface AICommentReviewTestResponse {
   reason?: string
 }
 
+// Translation Entry (词表) 类型
+export type TranslationEntryKeyPath =
+  | 'category.name'
+  | 'topic.name'
+  | 'topic.introduce'
+  | 'note.mood'
+  | 'note.weather'
+
+export interface TranslationEntry {
+  id: string
+  created: string
+  keyPath: TranslationEntryKeyPath
+  lang: string
+  keyType: 'entity' | 'dict'
+  lookupKey: string
+  sourceText: string
+  translatedText: string
+  sourceUpdatedAt?: string
+}
+
+export interface TranslationEntriesResponse {
+  data: TranslationEntry[]
+  pagination: {
+    total: number
+    page: number
+    size: number
+  }
+}
+
+export interface GenerateEntriesResponse {
+  created: number
+  skipped: number
+}
+
 export const aiApi = {
   // AI 评论审核测试
   testCommentReview: (data: AICommentReviewTestData) =>
@@ -349,4 +383,30 @@ export const aiApi = {
   // 取消组内所有任务
   cancelTasksByGroupId: (groupId: string) =>
     request.delete<{ cancelled: number }>(`/ai/tasks/group/${groupId}`),
+
+  // === Translation Entries (词表) ===
+
+  getTranslationEntries: (params?: {
+    keyPath?: TranslationEntryKeyPath
+    lang?: string
+    page?: number
+    size?: number
+  }) =>
+    request.get<TranslationEntriesResponse>('/ai/translations/entries', {
+      params,
+    }),
+
+  generateTranslationEntries: (data?: {
+    keyPaths?: TranslationEntryKeyPath[]
+    targetLanguages?: string[]
+  }) =>
+    request.post<GenerateEntriesResponse>('/ai/translations/entries/generate', {
+      data,
+    }),
+
+  updateTranslationEntry: (id: string, data: { translatedText: string }) =>
+    request.patch<TranslationEntry>(`/ai/translations/entries/${id}`, { data }),
+
+  deleteTranslationEntry: (id: string) =>
+    request.delete<void>(`/ai/translations/entries/${id}`),
 }

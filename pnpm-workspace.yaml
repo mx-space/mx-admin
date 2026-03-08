@@ -1,5 +1,2 @@
 packages:
   - '.'
-
-patchedDependencies:
-  '@lexical/code@0.41.0': patches/@lexical__code@0.41.0.patch

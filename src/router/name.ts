@@ -45,6 +45,7 @@ export enum RouteName {
   AiSummary = 'ai-summary',
   AiTranslation = 'ai-translation',
   AiTasks = 'ai-tasks',
+  AiTranslationEntries = 'ai-translation-entries',
 
   Maintain = 'maintain',
   Other = 'other',

@@ -175,6 +175,10 @@ export const queryKeys = {
     tasksList: (params?: object) =>
       [...queryKeys.ai.tasks(), 'list', params] as const,
     task: (taskId: string) => [...queryKeys.ai.tasks(), taskId] as const,
+    translationEntries: () =>
+      [...queryKeys.ai.all, 'translation-entries'] as const,
+    translationEntriesList: (params?: object) =>
+      [...queryKeys.ai.translationEntries(), 'list', params] as const,
   },
 
   // === Cron Task ===
