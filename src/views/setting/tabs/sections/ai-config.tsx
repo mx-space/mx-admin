@@ -50,7 +50,7 @@ interface AIConfig {
   translationModel?: AIModelAssignment
   enableSummary: boolean
   enableAutoGenerateSummary: boolean
-  aiSummaryTargetLanguage: string
+  summaryTargetLanguages?: string[]
   enableTranslation?: boolean
   enableAutoGenerateTranslation?: boolean
   translationTargetLanguages?: string[]
@@ -867,15 +867,14 @@ export const AIConfigSection = defineComponent({
             />
           </SettingsRow>
 
-          <SettingsRow title="摘要目标语言">
-            <NInput
-              value={config.value.aiSummaryTargetLanguage}
-              onUpdateValue={(v: string) =>
-                updateConfig({ aiSummaryTargetLanguage: v })
-              }
-              placeholder="auto 或 ISO 639-1 语言代码"
-              class="max-w-[200px]"
-              size="small"
+          <SettingsRow
+            title="摘要目标语言"
+            description="自动生成摘要的目标语言列表，使用 ISO 639-1 语言代码"
+          >
+            <TranslationLanguagesInput
+              value={config.value.summaryTargetLanguages || []}
+              onUpdate={(v) => updateConfig({ summaryTargetLanguages: v })}
+              disabled={!config.value.enableSummary}
             />
           </SettingsRow>
         </SettingsSection>

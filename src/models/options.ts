@@ -117,7 +117,7 @@ export module MxServerOptions {
     commentReviewModel?: AIModelAssignment
     enableSummary: boolean
     enableAutoGenerateSummary: boolean
-    aiSummaryTargetLanguage: string
+    summaryTargetLanguages: string[]
   }
 
   export interface ModelInfo {
