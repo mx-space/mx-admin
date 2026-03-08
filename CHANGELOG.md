@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [6.2.1](https://github.com/mx-space/admin-vue3/compare/v6.2.0...v6.2.1) (2026-03-08)
+
+
+### Features
+
+* **ai:** add translation entries management ([b71e926](https://github.com/mx-space/admin-vue3/commit/b71e92636274116d65547853945327aa42ccbed8))
+
+
+
 # [6.2.0](https://github.com/mx-space/admin-vue3/compare/v6.1.9...v6.2.0) (2026-03-08)
 
 
