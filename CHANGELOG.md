@@ -1,5 +1,14 @@
 # CHANGELOG
 
+# [6.3.0](https://github.com/mx-space/admin-vue3/compare/v6.2.3...v6.3.0) (2026-03-13)
+
+
+### Features
+
+* **note:** expose slug in admin and fix type errors ([e8dc9b0](https://github.com/mx-space/admin-vue3/commit/e8dc9b05a2578dfa77ea9d7c2cfc6cc869a25d6a))
+
+
+
 ## [6.2.3](https://github.com/mx-space/admin-vue3/compare/v6.2.2...v6.2.3) (2026-03-13)
 
 
