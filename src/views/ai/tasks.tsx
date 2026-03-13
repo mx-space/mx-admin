@@ -53,6 +53,7 @@ const TaskTypeLabels: Record<AITaskType, string> = {
   [AITaskType.Translation]: '翻译',
   [AITaskType.TranslationBatch]: '批量翻译',
   [AITaskType.TranslationAll]: '全量翻译',
+  [AITaskType.SlugBackfill]: 'Slug 回填',
 }
 
 const TaskStatusLabels: Record<AITaskStatus, string> = {
@@ -145,6 +146,7 @@ export default defineComponent({
       { label: '翻译', value: AITaskType.Translation },
       { label: '批量翻译', value: AITaskType.TranslationBatch },
       { label: '全量翻译', value: AITaskType.TranslationAll },
+      { label: 'Slug 回填', value: AITaskType.SlugBackfill },
     ]
 
     const handleCancelTask = async (taskId: string) => {

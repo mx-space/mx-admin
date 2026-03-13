@@ -140,6 +140,7 @@ export enum AITaskType {
   Translation = 'ai:translation',
   TranslationBatch = 'ai:translation:batch',
   TranslationAll = 'ai:translation:all',
+  SlugBackfill = 'ai:slug:backfill',
 }
 
 export enum AITaskStatus {
@@ -409,4 +410,15 @@ export const aiApi = {
 
   deleteTranslationEntry: (id: string) =>
     request.delete<void>(`/ai/translations/entries/${id}`),
+
+  // === Slug Backfill ===
+
+  getSlugBackfillStatus: () =>
+    request.get<{
+      count: number
+      notes: Array<{ _id: string; title: string; nid: number }>
+    }>('/ai/writer/backfill-slugs/status'),
+
+  createSlugBackfillTask: () =>
+    request.post<CreateTaskResponse>('/ai/writer/backfill-slugs'),
 }

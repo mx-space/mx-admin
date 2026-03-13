@@ -20,6 +20,7 @@ import {
   FunctionSquare as FunctionIcon,
   Image as ImageIcon,
   Languages as LanguagesIcon,
+  Link as LinkIcon,
   ListTodo as ListTodoIcon,
   FileCode2 as MarkdownIcon,
   Hammer as MidHammer,
@@ -346,6 +347,15 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           icon: <ListTodoIcon />,
         },
         component: () => import('../views/ai/tasks'),
+      },
+      {
+        path: 'slug-backfill',
+        name: RouteName.AiSlugBackfill,
+        meta: {
+          title: 'Slug 回填',
+          icon: <LinkIcon />,
+        },
+        component: () => import('../views/ai/slug-backfill'),
       },
     ],
   },
