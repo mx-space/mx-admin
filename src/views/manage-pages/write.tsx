@@ -11,6 +11,7 @@ import {
   onMounted,
   reactive,
   ref,
+  shallowRef,
   toRaw,
   watchEffect,
 } from 'vue'
@@ -20,6 +21,7 @@ import type { CreatePageData } from '~/api/pages'
 import type { DraftModel } from '~/models/draft'
 import type { PageModel } from '~/models/page'
 import type { ContentFormat, WriteBaseType } from '~/shared/types/base'
+import type { LexicalEditor } from 'lexical'
 
 import { pagesApi } from '~/api/pages'
 import { HeaderActionButton } from '~/components/button/header-action-button'
@@ -89,6 +91,7 @@ const PageWriteView = defineComponent(() => {
   const parsePayloadIntoReactiveData = (payload: PageModel) =>
     useParsePayloadIntoData(data)(payload)
   const data = reactive<PageReactiveType>(resetReactive())
+  const lexicalEditor = shallowRef<LexicalEditor | null>(null)
 
   const router = useRouter()
 
@@ -277,6 +280,9 @@ const PageWriteView = defineComponent(() => {
         onRichContentChange={(v) => {
           data.content = JSON.stringify(v)
         }}
+        onRichEditorReady={(editor) => {
+          lexicalEditor.value = editor
+        }}
         saveConfirmFn={serverDraft.checkIsSynced}
         variant="post"
         subtitleSlot={() => (
@@ -314,6 +320,7 @@ const PageWriteView = defineComponent(() => {
         }}
         data={data}
         show={drawerShow.value}
+        lexicalEditor={lexicalEditor.value}
       >
         <SectionTitle icon={FileTextIcon}>页面选项</SectionTitle>
 

@@ -197,7 +197,6 @@ export const RichEditor = defineComponent({
         () => [
           props.theme,
           uiStore.isDark,
-          props.initialValue,
           props.placeholder,
           props.variant,
           props.autoFocus,

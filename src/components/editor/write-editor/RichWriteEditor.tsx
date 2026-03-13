@@ -1,6 +1,6 @@
 import { computed, defineComponent, ref, watch } from 'vue'
 import type { ContentFormat } from '~/shared/types/base'
-import type { SerializedEditorState } from 'lexical'
+import type { LexicalEditor, SerializedEditorState } from 'lexical'
 import type { PropType, VNode } from 'vue'
 import type { WriteEditorVariant } from './types'
 
@@ -63,6 +63,9 @@ export const RichWriteEditor = defineComponent({
     onRichContentChange: {
       type: Function as PropType<(value: SerializedEditorState) => void>,
     },
+    onRichEditorReady: {
+      type: Function as PropType<(editor: LexicalEditor | null) => void>,
+    },
     onTextChange: {
       type: Function as PropType<(value: string) => void>,
     },
@@ -87,6 +90,7 @@ export const RichWriteEditor = defineComponent({
       (val) => {
         const json = val ? JSON.stringify(val) : ''
         if (json !== lastEmittedJson) {
+          lastEmittedJson = json
           editorKey.value++
         }
       },
@@ -117,6 +121,9 @@ export const RichWriteEditor = defineComponent({
           onChange={(value: SerializedEditorState) => {
             lastEmittedJson = JSON.stringify(value)
             props.onRichContentChange?.(value)
+          }}
+          onEditorReady={(editor: LexicalEditor | null) => {
+            props.onRichEditorReady?.(editor)
           }}
           onTextChange={(text: string) => {
             currentText.value = text

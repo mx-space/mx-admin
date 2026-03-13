@@ -4,7 +4,7 @@
  */
 import { defineComponent } from 'vue'
 import type { ContentFormat } from '~/shared/types/base'
-import type { SerializedEditorState } from 'lexical'
+import type { LexicalEditor, SerializedEditorState } from 'lexical'
 import type { PropType, VNode } from 'vue'
 import type { WriteEditorVariant } from './types'
 
@@ -57,6 +57,9 @@ export const WriteEditor = defineComponent({
     onRichContentChange: {
       type: Function as PropType<(value: SerializedEditorState) => void>,
     },
+    onRichEditorReady: {
+      type: Function as PropType<(editor: LexicalEditor | null) => void>,
+    },
     variant: {
       type: String as PropType<WriteEditorVariant>,
       default: 'post',
@@ -77,6 +80,7 @@ export const WriteEditor = defineComponent({
             onContentFormatChange={props.onContentFormatChange}
             richContent={props.richContent}
             onRichContentChange={props.onRichContentChange}
+            onRichEditorReady={props.onRichEditorReady}
             onTextChange={props.onChange}
             saveConfirmFn={props.saveConfirmFn}
             variant={props.variant}

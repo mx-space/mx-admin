@@ -13,10 +13,12 @@ import isURL from 'validator/lib/isURL'
 import { defineComponent, h, ref } from 'vue'
 import type { Image } from '@mx-space/api-client'
 import type { MetaPresetScope } from '~/models/meta-preset'
+import type { LexicalEditor } from 'lexical'
 import type { SelectOption } from 'naive-ui'
 import type { PropType, VNode } from 'vue'
 
 import { ImageDetailSection } from './components/image-detail-section'
+import { LexicalImageDetailSection } from './components/lexical-image-detail-section'
 import { MetaPresetSection } from './components/meta-preset-section'
 import { FormField, SectionTitle, SwitchRow } from './components/ui'
 
@@ -63,6 +65,11 @@ export const TextBaseDrawer = defineComponent({
     scope: {
       type: String as PropType<MetaPresetScope>,
       default: 'both',
+    },
+    lexicalEditor: {
+      type: Object as PropType<LexicalEditor | null>,
+      required: false,
+      default: null,
     },
   },
   setup(props, { slots }) {
@@ -144,7 +151,7 @@ export const TextBaseDrawer = defineComponent({
               />
             </FormField>
 
-            {props.data.contentFormat !== 'lexical' && (
+            {props.data.contentFormat !== 'lexical' ? (
               <ImageDetailSection
                 text={props.data.text}
                 images={props.data.images}
@@ -154,6 +161,11 @@ export const TextBaseDrawer = defineComponent({
                 onChange={(images) => {
                   props.data.images = images
                 }}
+              />
+            ) : (
+              <LexicalImageDetailSection
+                content={props.data.content || ''}
+                editor={props.lexicalEditor}
               />
             )}
 

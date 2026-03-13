@@ -2,6 +2,8 @@
 
 import { encode } from 'blurhash'
 
+import { computeImageMeta } from '@haklex/rich-editor/renderers'
+
 export function getDominantColor(imageObject: HTMLImageElement) {
   const canvas = document.createElement('canvas'),
     ctx = canvas.getContext('2d')!
@@ -112,4 +114,27 @@ export const encodeImageToBlurhashWebgl = (image: HTMLImageElement) => {
   const resizedImageData = resizedCtx.getImageData(0, 0, 32, 32)
 
   return encode(resizedImageData.data, 32, 32, 4, 4)
+}
+
+export const encodeImageToThumbhash = async (image: HTMLImageElement) => {
+  const canvas = document.createElement('canvas')
+  canvas.width = image.naturalWidth
+  canvas.height = image.naturalHeight
+
+  const context = canvas.getContext('2d')!
+  context.drawImage(image, 0, 0)
+
+  const blob = await new Promise<Blob>((resolve, reject) => {
+    canvas.toBlob((nextBlob) => {
+      if (nextBlob) {
+        resolve(nextBlob)
+        return
+      }
+      reject(new Error('Failed to encode image thumbhash'))
+    })
+  })
+
+  const file = new File([blob], 'image.png', { type: blob.type || 'image/png' })
+  const { thumbhash } = await computeImageMeta(file)
+  return thumbhash
 }

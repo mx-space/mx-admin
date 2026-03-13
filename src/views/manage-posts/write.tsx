@@ -12,6 +12,7 @@ import {
   onMounted,
   reactive,
   ref,
+  shallowRef,
   watchEffect,
 } from 'vue'
 import { useRouter } from 'vue-router'
@@ -20,6 +21,7 @@ import type { CategoryModel } from '~/models/category'
 import type { DraftModel } from '~/models/draft'
 import type { PostModel } from '~/models/post'
 import type { ContentFormat, WriteBaseType } from '~/shared/types/base'
+import type { LexicalEditor } from 'lexical'
 import type { SelectMixedOption } from 'naive-ui/lib/select/src/interface'
 
 import { categoriesApi } from '~/api/categories'
@@ -112,6 +114,7 @@ const PostWriteView = defineComponent(() => {
 
   const postListState = useMemoPostList()
   const data = reactive<PostReactiveType>(resetReactive())
+  const lexicalEditor = shallowRef<LexicalEditor | null>(null)
   const parsePayloadIntoReactiveData = useParsePayloadIntoData(data)
 
   const router = useRouter()
@@ -347,6 +350,9 @@ const PostWriteView = defineComponent(() => {
         onRichContentChange={(v) => {
           data.content = JSON.stringify(v)
         }}
+        onRichEditorReady={(editor) => {
+          lexicalEditor.value = editor
+        }}
         saveConfirmFn={serverDraft.checkIsSynced}
         variant="post"
         subtitleSlot={() => (
@@ -373,6 +379,7 @@ const PostWriteView = defineComponent(() => {
           drawerShow.value = s
         }}
         data={data}
+        lexicalEditor={lexicalEditor.value}
       >
         <SectionTitle icon={FolderIcon}>分类与标签</SectionTitle>
 

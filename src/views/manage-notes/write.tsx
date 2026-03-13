@@ -15,6 +15,7 @@ import {
   onMounted,
   reactive,
   ref,
+  shallowRef,
   toRaw,
   watchEffect,
 } from 'vue'
@@ -25,6 +26,7 @@ import type { CreateNoteData } from '~/api/notes'
 import type { DraftModel } from '~/models/draft'
 import type { Coordinate, NoteModel } from '~/models/note'
 import type { ContentFormat, WriteBaseType } from '~/shared/types/base'
+import type { LexicalEditor } from 'lexical'
 
 import { notesApi } from '~/api/notes'
 import { topicsApi } from '~/api/topics'
@@ -117,6 +119,7 @@ const NoteWriteView = defineComponent(() => {
   const parsePayloadIntoReactiveData = (payload: NoteModel) =>
     useParsePayloadIntoData(data)(payload)
   const data = reactive<NoteReactiveType>(resetReactive())
+  const lexicalEditor = shallowRef<LexicalEditor | null>(null)
   const nid = ref<number>()
 
   const applyDraft = (
@@ -365,6 +368,9 @@ const NoteWriteView = defineComponent(() => {
         onRichContentChange={(v) => {
           data.content = JSON.stringify(v)
         }}
+        onRichEditorReady={(editor) => {
+          lexicalEditor.value = editor
+        }}
         saveConfirmFn={serverDraft.checkIsSynced}
         variant="note"
         subtitleSlot={() => (
@@ -383,6 +389,7 @@ const NoteWriteView = defineComponent(() => {
         onUpdateShow={(s) => {
           drawerShow.value = s
         }}
+        lexicalEditor={lexicalEditor.value}
       >
         <SectionTitle icon={BookmarkIcon}>日记信息</SectionTitle>
 
