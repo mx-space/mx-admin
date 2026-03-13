@@ -19,6 +19,7 @@ export interface NoteModel {
   publicAt?: Date
   password?: string | null
   nid: number
+  slug?: string
   hide: boolean
 
   location?: string

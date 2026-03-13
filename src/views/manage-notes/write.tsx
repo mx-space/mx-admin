@@ -1,5 +1,7 @@
+import type { TopicModel } from '@mx-space/api-client'
 import { add } from 'date-fns'
 import { isString } from 'es-toolkit/compat'
+import type { LexicalEditor } from 'lexical'
 import {
   BookmarkIcon,
   MapPinIcon,
@@ -21,13 +23,7 @@ import {
 } from 'vue'
 import { useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
-import type { TopicModel } from '@mx-space/api-client'
 import type { CreateNoteData } from '~/api/notes'
-import type { DraftModel } from '~/models/draft'
-import type { Coordinate, NoteModel } from '~/models/note'
-import type { ContentFormat, WriteBaseType } from '~/shared/types/base'
-import type { LexicalEditor } from 'lexical'
-
 import { notesApi } from '~/api/notes'
 import { topicsApi } from '~/api/topics'
 import { AiHelperButton } from '~/components/ai/ai-helper'
@@ -44,6 +40,7 @@ import {
   TextBaseDrawer,
 } from '~/components/drawer/text-base-drawer'
 import { WriteEditor } from '~/components/editor/write-editor'
+import { SlugInput } from '~/components/editor/write-editor/slug-input'
 import { GetLocationButton } from '~/components/location/get-location-button'
 import { SearchLocationButton } from '~/components/location/search-button'
 import { ParseContentButton } from '~/components/special-button/parse-content'
@@ -55,11 +52,15 @@ import { usePreferredContentFormat } from '~/hooks/use-preferred-content-format'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { useWriteDraft } from '~/hooks/use-write-draft'
 import { useLayout } from '~/layouts/content'
+import type { DraftModel } from '~/models/draft'
 import { DraftRefType } from '~/models/draft'
+import type { Coordinate, NoteModel } from '~/models/note'
+import type { ContentFormat, WriteBaseType } from '~/shared/types/base'
 import { UIStore } from '~/stores/ui'
 import { getDayOfYear } from '~/utils/time'
 
 type NoteReactiveType = {
+  slug: string
   mood: string
   weather: string
   password: string | null
@@ -84,6 +85,17 @@ const useNoteTopic = () => {
   return { topics, fetchTopic }
 }
 
+const buildNotePublicPath = (
+  note: Pick<NoteReactiveType, 'slug' | 'created'> & { nid?: number },
+) => {
+  if (note.slug) {
+    const date = note.created ? new Date(note.created) : new Date()
+    return `/notes/${date.getUTCFullYear()}/${date.getUTCMonth() + 1}/${date.getUTCDate()}/${note.slug}`
+  }
+
+  return note.nid ? `/notes/${note.nid}` : ''
+}
+
 const NoteWriteView = defineComponent(() => {
   const defaultTitle = ref('新建日记')
   const router = useRouter()
@@ -97,6 +109,7 @@ const NoteWriteView = defineComponent(() => {
   const resetReactive: () => NoteReactiveType = () => ({
     text: '',
     title: '',
+    slug: '',
     bookmark: false,
     mood: '',
     password: null,
@@ -135,6 +148,7 @@ const NoteWriteView = defineComponent(() => {
     target.meta = draft.meta
     if (draft.typeSpecificData) {
       const specific = draft.typeSpecificData
+      target.slug = specific.slug || (isPartial ? target.slug : '')
       target.mood = specific.mood || (isPartial ? target.mood : '')
       target.weather = specific.weather || (isPartial ? target.weather : '')
       target.password =
@@ -198,6 +212,7 @@ const NoteWriteView = defineComponent(() => {
         location: data.location,
         coordinates: data.coordinates,
         topicId: data.topicId,
+        slug: data.slug,
         isPublished: data.isPublished,
       },
     }),
@@ -245,6 +260,7 @@ const NoteWriteView = defineComponent(() => {
       return {
         ...toRaw(data),
         title: data.title?.trim() || defaultTitle.value,
+        slug: data.slug.trim() || undefined,
         password:
           data.password && data.password.length > 0 ? data.password : null,
         publicAt: data.publicAt
@@ -375,7 +391,7 @@ const NoteWriteView = defineComponent(() => {
         variant="note"
         subtitleSlot={() => (
           <div class="flex items-center gap-2 text-sm text-neutral-500">
-            <span>{`${WEB_URL}/notes/${nid.value ?? ''}`}</span>
+            <span>{`${WEB_URL}${buildNotePublicPath({ ...data, nid: nid.value })}`}</span>
             {data.text.length > 0 && <AiHelperButton reactiveData={data} />}
           </div>
         )}
@@ -392,6 +408,23 @@ const NoteWriteView = defineComponent(() => {
         lexicalEditor={lexicalEditor.value}
       >
         <SectionTitle icon={BookmarkIcon}>日记信息</SectionTitle>
+
+        <FormField
+          label="Slug"
+          description="用于 SEO 路径，留空则使用旧 nid 路径"
+        >
+          <SlugInput
+            prefix={`${WEB_URL}/notes/${(() => {
+              const date = data.created ? new Date(data.created) : new Date()
+              return `${date.getUTCFullYear()}/${date.getUTCMonth() + 1}/${date.getUTCDate()}/`
+            })()}`}
+            value={data.slug}
+            onChange={(value) => {
+              data.slug = value
+            }}
+            placeholder="note-slug"
+          />
+        </FormField>
 
         <div class="grid grid-cols-2 gap-3">
           <FormField label="心情" required>

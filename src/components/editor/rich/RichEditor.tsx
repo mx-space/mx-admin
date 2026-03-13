@@ -1,27 +1,26 @@
-import { createElement } from 'react'
-import { createRoot } from 'react-dom/client'
-import { defineComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import type { ImageUploadFn, RichEditorVariant } from '@haklex/rich-editor'
+import type { RichEditorVariant } from '@haklex/rich-editor'
+import { DialogStackProvider } from '@haklex/rich-editor-ui'
 import type { NestedDocDialogEditorProps } from '@haklex/rich-ext-nested-doc'
+import {
+  NestedDocDialogEditorProvider,
+  NestedDocPlugin,
+  nestedDocEditNodes,
+} from '@haklex/rich-ext-nested-doc'
 import type { ShiroEditorProps } from '@haklex/rich-kit-shiro'
+import { ExcalidrawConfigProvider, ShiroEditor } from '@haklex/rich-kit-shiro'
+import { ToolbarPlugin } from '@haklex/rich-plugin-toolbar'
+import { $convertToMarkdownString, TRANSFORMERS } from '@lexical/markdown'
 import type {
   Klass,
   LexicalEditor,
   LexicalNode,
   SerializedEditorState,
 } from 'lexical'
+import { createElement } from 'react'
 import type { Root } from 'react-dom/client'
+import { createRoot } from 'react-dom/client'
 import type { PropType } from 'vue'
-
-import { DialogStackProvider } from '@haklex/rich-editor-ui'
-import {
-  NestedDocDialogEditorProvider,
-  nestedDocEditNodes,
-  NestedDocPlugin,
-} from '@haklex/rich-ext-nested-doc'
-import { ExcalidrawConfigProvider, ShiroEditor } from '@haklex/rich-kit-shiro'
-import { ToolbarPlugin } from '@haklex/rich-plugin-toolbar'
-import { $convertToMarkdownString, TRANSFORMERS } from '@lexical/markdown'
+import { defineComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 import '@haklex/rich-kit-shiro/style.css'
 import '@haklex/rich-plugin-toolbar/style.css'
@@ -117,7 +116,7 @@ export const RichEditor = defineComponent({
     selfHostnames: Array as PropType<string[]>,
     extraNodes: Array as PropType<Array<Klass<LexicalNode>>>,
     editorStyle: Object as PropType<Record<string, string | number>>,
-    imageUpload: Function as PropType<ImageUploadFn>,
+    imageUpload: Function as PropType<ShiroEditorProps['imageUpload']>,
   },
   emits: {
     change: (_value: SerializedEditorState) => true,

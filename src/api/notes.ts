@@ -15,6 +15,7 @@ export interface GetNotesParams {
 export interface CreateNoteData {
   title: string
   text: string
+  slug?: string
   mood?: string
   weather?: string
   password?: string | null
@@ -34,6 +35,7 @@ export interface UpdateNoteData extends Partial<CreateNoteData> {}
 // 用于 patch 操作的数据类型，允许将某些字段设为 null
 export interface PatchNoteData {
   topicId?: string | null
+  slug?: string
   [key: string]: unknown
 }
 

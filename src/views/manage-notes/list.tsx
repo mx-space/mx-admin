@@ -1,3 +1,5 @@
+import { useMutation, useQueryClient } from '@tanstack/vue-query'
+import { debouncedRef } from '@vueuse/core'
 import {
   Book as BookIcon,
   Bookmark as BookmarkIcon,
@@ -11,15 +13,11 @@ import {
   Trash2,
 } from 'lucide-vue-next'
 import { NButton, NEllipsis, NInput, NPopconfirm, NSpace } from 'naive-ui'
+import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
+import type { PropType } from 'vue'
 import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
 import { RouterLink } from 'vue-router'
 import { toast } from 'vue-sonner'
-import type { NoteModel } from '~/models/note'
-import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
-import type { PropType } from 'vue'
-
-import { useMutation, useQueryClient } from '@tanstack/vue-query'
-import { debouncedRef } from '@vueuse/core'
 
 import { notesApi } from '~/api/notes'
 import { searchApi } from '~/api/search'
@@ -33,11 +31,23 @@ import { WEB_URL } from '~/constants/env'
 import { queryKeys } from '~/hooks/queries/keys'
 import { useDataTable } from '~/hooks/use-data-table'
 import { useStoreRef } from '~/hooks/use-store-ref'
+import type { NoteModel } from '~/models/note'
 import { UIStore } from '~/stores/ui'
 import { formatNumber } from '~/utils/number'
 
 import { HeaderActionButton } from '../../components/button/header-action-button'
 import { useLayout } from '../../layouts/content'
+
+const buildNotePublicPath = (
+  note: Pick<NoteModel, 'nid' | 'slug' | 'created'>,
+) => {
+  if (note.slug) {
+    const date = new Date(note.created)
+    return `/notes/${date.getUTCFullYear()}/${date.getUTCMonth() + 1}/${date.getUTCDate()}/${note.slug}`
+  }
+
+  return `/notes/${note.nid}`
+}
 
 const NoteItem = defineComponent({
   name: 'NoteItem',
@@ -97,6 +107,9 @@ const NoteItem = defineComponent({
                 {row.value.location}
               </span>
             )}
+            <span class="font-mono text-xs text-neutral-400 dark:text-neutral-500">
+              {row.value.slug || '—'}
+            </span>
             <span class="flex items-center gap-0.5 text-xs text-neutral-400 dark:text-neutral-500">
               <BookIcon class="h-2.5 w-2.5" />
               {formatNumber(row.value.count?.read || 0)}
@@ -121,7 +134,7 @@ const NoteItem = defineComponent({
 
         <div class="flex shrink-0 items-center">
           <a
-            href={`${WEB_URL}/notes/${row.value.nid}`}
+            href={`${WEB_URL}${buildNotePublicPath(row.value)}`}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="在新窗口打开日记"
@@ -212,7 +225,7 @@ export const ManageNoteListView = defineComponent({
           page: params.page,
           size: params.size,
           select:
-            'title _id nid id created modified mood weather publicAt bookmark coordinates location count meta isPublished',
+            'title _id nid id slug created modified mood weather publicAt bookmark coordinates location count meta isPublished',
           sortBy: params.sortBy || undefined,
           sortOrder: params.sortOrder || undefined,
           db_query: params.filters?.dbQuery,
@@ -340,7 +353,7 @@ export const ManageNoteListView = defineComponent({
                 <TableTitleLink
                   inPageTo={`/notes/edit?id=${row.id}`}
                   title={row.title}
-                  externalLinkTo={`/notes/${row.nid}`}
+                  externalLinkTo={buildNotePublicPath(row)}
                   id={row.id}
                   withToken={isUnpublished || isSecret}
                 >
@@ -380,6 +393,14 @@ export const ManageNoteListView = defineComponent({
                   placeholder="心情"
                 />
               )
+            },
+          },
+          {
+            title: 'Slug',
+            key: 'slug',
+            width: 220,
+            render(row) {
+              return <span class="font-mono text-xs">{row.slug || '—'}</span>
             },
           },
           {

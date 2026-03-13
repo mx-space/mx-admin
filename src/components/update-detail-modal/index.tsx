@@ -6,13 +6,7 @@ import { getReleaseDetails } from '../../external/api/github-check-update'
 
 import './markdown-styles.css'
 
-interface ReleaseDetails {
-  name: string
-  body: string
-  html_url: string
-  published_at: string
-  tag_name: string
-}
+type ReleaseDetails = Awaited<ReturnType<typeof getReleaseDetails>>
 
 export const UpdateDetailModal = defineComponent({
   props: {
@@ -36,8 +30,8 @@ export const UpdateDetailModal = defineComponent({
       try {
         const details = await getReleaseDetails(props.repo, props.version)
         releaseDetails.value = details
-      } catch (error) {
-        console.error('获取发布详情失败:', error)
+      } catch {
+        // Ignore transient GitHub API failures and keep the modal in fallback state.
       } finally {
         loading.value = false
       }
@@ -59,7 +53,10 @@ export const UpdateDetailModal = defineComponent({
       }
     }
 
-    const formatDate = (dateString: string) => {
+    const formatDate = (dateString: string | null) => {
+      if (!dateString) {
+        return '未知时间'
+      }
       return new Date(dateString).toLocaleString('zh-CN')
     }
 
@@ -118,8 +115,7 @@ export const UpdateDetailModal = defineComponent({
         const htmlString =
           typeof result === 'string' ? result : markdown.replace(/\n/g, '<br>')
         return sanitizeHtml(htmlString)
-      } catch (error) {
-        console.error('Markdown 渲染失败:', error)
+      } catch {
         // 降级到简单的文本显示
         return markdown.replace(/\n/g, '<br>')
       }
