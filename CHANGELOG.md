@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [6.2.3](https://github.com/mx-space/admin-vue3/compare/v6.2.2...v6.2.3) (2026-03-13)
+
+
+### Features
+
+* **editor:** integrate Lexical editor support in various components ([0ba53a2](https://github.com/mx-space/admin-vue3/commit/0ba53a2ac1ef42b89e1c9a3a99f10c9244c76d55))
+
+
+
 ## [6.2.2](https://github.com/mx-space/admin-vue3/compare/v6.2.1...v6.2.2) (2026-03-09)
 
 
