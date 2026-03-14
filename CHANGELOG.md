@@ -1,5 +1,19 @@
 # CHANGELOG
 
+# [6.4.0](https://github.com/mx-space/admin-vue3/compare/v6.3.0...v6.4.0) (2026-03-14)
+
+
+### Bug Fixes
+
+* support flat comments in admin ([6d24402](https://github.com/mx-space/admin-vue3/commit/6d244026cb565e57690e12828880dfac6340d1b3))
+
+
+### Features
+
+* **ai:** add slug backfill page and task type support ([5de47bd](https://github.com/mx-space/admin-vue3/commit/5de47bd5fe3f07f069a4873ac208da89e5cbe9ef))
+
+
+
 # [6.3.0](https://github.com/mx-space/admin-vue3/compare/v6.2.3...v6.3.0) (2026-03-13)
 
 
