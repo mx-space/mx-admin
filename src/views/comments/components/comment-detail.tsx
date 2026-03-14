@@ -34,6 +34,13 @@ import { useUserStore } from '~/stores/user'
 
 import { CommentMarkdownRender } from '../markdown-render'
 
+const getParentCommentPreview = (parent: CommentModel['parentCommentId']) => {
+  if (!parent || typeof parent === 'string') {
+    return null
+  }
+  return parent
+}
+
 const getReferenceLink = (row: CommentModel) => {
   const ref = (row as any).ref
   switch (row.refType) {
@@ -102,8 +109,22 @@ export const CommentDetail = defineComponent({
     const user = computed(() => userStore.user)
 
     const link = computed(() => getReferenceLink(props.comment))
-    const isReply = computed(() => !!(props.comment as any).parent)
+    const isReply = computed(() => !!props.comment.parentCommentId)
     const isTrash = computed(() => props.currentTab === 2)
+    const commentBody = computed(() =>
+      props.comment.isDeleted ? '该评论已删除' : props.comment.text,
+    )
+    const parentComment = computed(() =>
+      getParentCommentPreview(props.comment.parentCommentId),
+    )
+    const parentCommentBody = computed(() => {
+      if (!parentComment.value) {
+        return ''
+      }
+      return parentComment.value.isDeleted
+        ? '该评论已删除'
+        : parentComment.value.text
+    })
 
     const deviceInfo = computed(() => {
       const ua = props.comment.agent?.toLowerCase() || ''
@@ -181,6 +202,8 @@ export const CommentDetail = defineComponent({
       }
     }
 
+    const noop = () => void 0
+
     const ActionButton = (p: {
       icon: any
       onClick: () => void
@@ -249,7 +272,7 @@ export const CommentDetail = defineComponent({
                     <ActionButton
                       icon={TrashIcon}
                       label="删除"
-                      onClick={() => {}}
+                      onClick={noop}
                       class="hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-500"
                     />
                   </div>
@@ -268,17 +291,27 @@ export const CommentDetail = defineComponent({
                 <div class="mb-2 flex items-center gap-2 text-xs text-neutral-500">
                   <TurnRightIcon class="h-3 w-3" />
                   <span>
-                    回复{' '}
-                    <strong class="font-medium text-neutral-900 dark:text-neutral-100">
-                      @{(props.comment as any).parent.author}
-                    </strong>
+                    回复
+                    {parentComment.value ? (
+                      <strong class="ml-1 font-medium text-neutral-900 dark:text-neutral-100">
+                        @{parentComment.value.author}
+                      </strong>
+                    ) : (
+                      <strong class="ml-1 font-medium text-neutral-900 dark:text-neutral-100">
+                        上级评论
+                      </strong>
+                    )}
                   </span>
                 </div>
-                <div class="line-clamp-2 text-sm text-neutral-600 dark:text-neutral-400">
-                  <CommentMarkdownRender
-                    text={(props.comment as any).parent.text}
-                  />
-                </div>
+                {parentComment.value ? (
+                  <div class="line-clamp-2 text-sm text-neutral-600 dark:text-neutral-400">
+                    <CommentMarkdownRender text={parentCommentBody.value} />
+                  </div>
+                ) : (
+                  <div class="text-sm text-neutral-600 dark:text-neutral-400">
+                    上级评论 ID: {String(props.comment.parentCommentId)}
+                  </div>
+                )}
               </div>
             )}
 
@@ -308,10 +341,9 @@ export const CommentDetail = defineComponent({
               </div>
 
               <div class="prose prose-neutral dark:prose-invert max-w-none text-base leading-relaxed text-neutral-900 dark:text-neutral-100">
-                <CommentMarkdownRender text={props.comment.text} />
+                <CommentMarkdownRender text={commentBody.value} />
               </div>
 
-              {/* @ts-expect-error */}
               {props.comment.ref?.title && (
                 <div class="flex items-center gap-2 rounded-md border border-neutral-100 bg-neutral-50 px-3 py-2 text-sm text-neutral-600 transition-colors hover:bg-neutral-100 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800">
                   <span class="text-neutral-400">来源:</span>
@@ -321,7 +353,6 @@ export const CommentDetail = defineComponent({
                     class="truncate font-medium hover:underline"
                     rel="noreferrer"
                   >
-                    {/* @ts-expect-error */}
                     {props.comment.ref.title}
                   </a>
                   <ChevronRightIcon class="ml-auto h-4 w-4 text-neutral-400" />
@@ -336,37 +367,45 @@ export const CommentDetail = defineComponent({
                 <span class="text-xs font-medium text-neutral-500">
                   IP 地址
                 </span>
-                <div class="flex items-center gap-2">
-                  <IpInfoPopover
-                    ip={props.comment.ip}
-                    trigger="click"
-                    triggerEl={
-                      <button class="flex items-center gap-1.5 text-sm text-neutral-900 hover:underline dark:text-neutral-100">
-                        <MapPinIcon class="h-3.5 w-3.5 text-neutral-400" />
-                        <span>{props.comment.ip}</span>
-                      </button>
-                    }
-                  />
-                </div>
+                {props.comment.ip ? (
+                  <div class="flex items-center gap-2">
+                    <IpInfoPopover
+                      ip={props.comment.ip}
+                      trigger="click"
+                      triggerEl={
+                        <button class="flex items-center gap-1.5 text-sm text-neutral-900 hover:underline dark:text-neutral-100">
+                          <MapPinIcon class="h-3.5 w-3.5 text-neutral-400" />
+                          <span>{props.comment.ip}</span>
+                        </button>
+                      }
+                    />
+                  </div>
+                ) : (
+                  <span class="text-sm text-neutral-400">未知</span>
+                )}
               </div>
 
               <div class="flex flex-col gap-1">
                 <span class="text-xs font-medium text-neutral-500">
                   访问设备
                 </span>
-                <NTooltip trigger="hover">
-                  {{
-                    trigger: () => (
-                      <div class="flex items-center gap-1.5 text-sm text-neutral-900 dark:text-neutral-100">
-                        <span class="text-neutral-400">
-                          {deviceInfo.value.icon}
-                        </span>
-                        <span class="truncate">{deviceInfo.value.label}</span>
-                      </div>
-                    ),
-                    default: () => deviceInfo.value.full,
-                  }}
-                </NTooltip>
+                {props.comment.agent ? (
+                  <NTooltip trigger="hover">
+                    {{
+                      trigger: () => (
+                        <div class="flex items-center gap-1.5 text-sm text-neutral-900 dark:text-neutral-100">
+                          <span class="text-neutral-400">
+                            {deviceInfo.value.icon}
+                          </span>
+                          <span class="truncate">{deviceInfo.value.label}</span>
+                        </div>
+                      ),
+                      default: () => deviceInfo.value.full,
+                    }}
+                  </NTooltip>
+                ) : (
+                  <span class="text-sm text-neutral-400">未知</span>
+                )}
               </div>
 
               {props.comment.mail && (

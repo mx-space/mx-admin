@@ -31,7 +31,10 @@ export const CommentListItem = defineComponent({
   },
   setup(props) {
     const comment = computed(() => props.data)
-    const isReply = computed(() => !!(comment.value as any).parent)
+    const isReply = computed(() => !!comment.value.parentCommentId)
+    const previewText = computed(() =>
+      comment.value.isDeleted ? '该评论已删除' : comment.value.text,
+    )
 
     const handleClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement
@@ -85,7 +88,7 @@ export const CommentListItem = defineComponent({
             </span>
           </div>
           <p class="mt-0.5 line-clamp-2 text-sm text-neutral-600 dark:text-neutral-400">
-            {comment.value.text}
+            {previewText.value}
           </p>
           {comment.value.isWhispers && (
             <span class="mt-1 inline-flex items-center rounded-full bg-yellow-100 px-1.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-500">

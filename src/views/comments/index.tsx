@@ -68,13 +68,7 @@ const ManageComment = defineComponent(() => {
         size: params.size,
         state: params.filters?.state ?? 0,
       })
-      return {
-        data: response.data.map((data) => {
-          Reflect.deleteProperty(data, 'children')
-          return data
-        }),
-        pagination: response.pagination,
-      }
+      return response
     },
     pageSize: 20,
     filters: () => ({ state: tabValue.value }),
