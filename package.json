@@ -41,16 +41,16 @@
     "@codemirror/view": "6.39.11",
     "@ddietr/codemirror-themes": "1.5.2",
     "@emoji-mart/data": "1.2.1",
-    "@haklex/rich-diff": "0.0.86",
-    "@haklex/rich-ext-nested-doc": "0.0.86",
-    "@haklex/rich-editor": "0.0.86",
-    "@haklex/rich-editor-ui": "0.0.86",
-    "@haklex/rich-kit-shiro": "0.0.86",
-    "@haklex/rich-plugin-toolbar": "0.0.86",
-    "@haklex/rich-style-token": "0.0.86",
-    "@lexical/code": "npm:lexical-code-no-prism@^0.41.0",
-    "@lexical/markdown": "0.41.0",
-    "@lexical/react": "0.41.0",
+    "@haklex/rich-diff": "0.0.87",
+    "@haklex/rich-ext-nested-doc": "0.0.87",
+    "@haklex/rich-editor": "0.0.87",
+    "@haklex/rich-editor-ui": "0.0.87",
+    "@haklex/rich-kit-shiro": "0.0.87",
+    "@haklex/rich-plugin-toolbar": "0.0.87",
+    "@haklex/rich-style-token": "0.0.87",
+    "@lexical/code-core": "^0.42.0",
+    "@lexical/markdown": "^0.42.0",
+    "@lexical/react": "^0.42.0",
     "@lezer/highlight": "1.2.3",
     "@mx-space/api-client": "1.21.2",
     "@pierre/diffs": "1.0.8",
@@ -81,7 +81,7 @@
     "json5": "2.2.3",
     "jsondiffpatch": "0.7.3",
     "katex": "0.16.28",
-    "lexical": "0.41.0",
+    "lexical": "^0.42.0",
     "lit": "3.3.2",
     "lodash.transform": "4.6.0",
     "lucide-vue-next": "0.563.0",
@@ -142,10 +142,5 @@
     "vite-plugin-vue-inspector": "5.3.2",
     "vite-tsconfig-paths": "6.0.5"
   },
-  "packageManager": "pnpm@10.28.2",
-  "pnpm": {
-    "overrides": {
-      "@lexical/code": "npm:lexical-code-no-prism@^0.41.0"
-    }
-  }
+  "packageManager": "pnpm@10.28.2"
 }
