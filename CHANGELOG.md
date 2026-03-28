@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [6.4.1](https://github.com/mx-space/admin-vue3/compare/v6.4.0...v6.4.1) (2026-03-28)
+
+
+### Features
+
+* **ai:** add optional subtitle field to translation interfaces and components ([45dfee8](https://github.com/mx-space/admin-vue3/commit/45dfee819264665f490fe9de2a9425cccd7b5f93))
+
+
+
 # [6.4.0](https://github.com/mx-space/admin-vue3/compare/v6.3.0...v6.4.0) (2026-03-14)
 
 
