@@ -232,6 +232,7 @@ export const TranslationDetailPanel = defineComponent({
       id: string,
       updates: {
         title: string
+        subtitle?: string
         text: string
         summary?: string
         content?: string
@@ -240,6 +241,7 @@ export const TranslationDetailPanel = defineComponent({
       const idx = translations.value.findIndex((t) => t.id === id)
       if (idx !== -1) {
         translations.value[idx].title = updates.title
+        translations.value[idx].subtitle = updates.subtitle
         translations.value[idx].text = updates.text
         translations.value[idx].summary = updates.summary
         if (updates.content !== undefined) {
@@ -528,6 +530,7 @@ const TranslationEditPanel = defineComponent({
           id: string,
           updates: {
             title: string
+            subtitle?: string
             text: string
             summary?: string
             content?: string
@@ -547,6 +550,7 @@ const TranslationEditPanel = defineComponent({
     )
 
     const titleRef = ref(props.translation.title)
+    const subtitleRef = ref(props.translation.subtitle || '')
     const textRef = ref(props.translation.text)
     const summaryRef = ref(props.translation.summary || '')
     const saving = ref(false)
@@ -560,6 +564,7 @@ const TranslationEditPanel = defineComponent({
       () => props.translation.id,
       () => {
         titleRef.value = props.translation.title
+        subtitleRef.value = props.translation.subtitle || ''
         textRef.value = props.translation.text
         summaryRef.value = props.translation.summary || ''
         richContentRef.value = parseRichContent(props.translation.content)
@@ -580,6 +585,7 @@ const TranslationEditPanel = defineComponent({
       try {
         const payload: Parameters<typeof aiApi.updateTranslation>[1] = {
           title: titleRef.value,
+          subtitle: subtitleRef.value || undefined,
           summary: summaryRef.value || undefined,
         }
 
@@ -594,6 +600,7 @@ const TranslationEditPanel = defineComponent({
         await aiApi.updateTranslation(props.translation.id, payload)
         props.onSave(props.translation.id, {
           title: titleRef.value,
+          subtitle: subtitleRef.value || undefined,
           text: textRef.value,
           summary: summaryRef.value || undefined,
           content: isLexical.value
@@ -614,7 +621,9 @@ const TranslationEditPanel = defineComponent({
             <RichEditor
               key={editorKey.value}
               class="h-full min-h-[400px] w-full"
-              editorStyle={richEditorStyleOverride as Record<string, string | number>}
+              editorStyle={
+                richEditorStyleOverride as Record<string, string | number>
+              }
               initialValue={richContentRef.value}
               variant="article"
               onChange={(value: SerializedEditorState) => {
@@ -693,6 +702,18 @@ const TranslationEditPanel = defineComponent({
                 value={titleRef.value}
                 onUpdateValue={(v) => (titleRef.value = v)}
                 placeholder="翻译标题"
+              />
+            </div>
+
+            <div>
+              <label class="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                副标题
+                <span class="ml-1 text-xs text-neutral-400">（可选）</span>
+              </label>
+              <NInput
+                value={subtitleRef.value}
+                onUpdateValue={(v) => (subtitleRef.value = v)}
+                placeholder="翻译副标题"
               />
             </div>
 

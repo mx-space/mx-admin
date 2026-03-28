@@ -75,6 +75,7 @@ export interface AITranslation {
   lang: string
   sourceLang: string
   title: string
+  subtitle?: string
   text: string
   summary?: string
   tags?: string[]
@@ -321,6 +322,7 @@ export const aiApi = {
     id: string,
     data: {
       title?: string
+      subtitle?: string
       text?: string
       summary?: string
       tags?: string[]
