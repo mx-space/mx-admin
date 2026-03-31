@@ -16,7 +16,8 @@ import {
   NSpin,
   NTooltip,
 } from 'naive-ui'
-import { computed, defineComponent, ref, watch } from 'vue'
+import { storeToRefs } from 'pinia'
+import { computed, defineComponent, onBeforeUnmount, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
 import type { DraftHistoryListItem, DraftModel } from '~/models/draft'
@@ -31,6 +32,7 @@ import { SplitPanel, useMasterDetailLayout } from '~/components/layout'
 import { RelativeTime } from '~/components/time/relative-time'
 import { DraftRefType } from '~/models/draft'
 import { RouteName } from '~/router/name'
+import { useUIStore } from '~/stores/ui'
 
 function tryParseLexicalState(raw: string): SerializedEditorState | null {
   if (!raw?.trim()) return null
@@ -51,9 +53,43 @@ type DraftDiffStats =
   | {
       kind: 'lexical'
       isSame: boolean
-      chars: { added: number; removed: number }
+      words: { added: number; removed: number }
     }
   | { kind: 'text'; isSame: boolean; diff: number }
+
+function computeDiffAgainstCurrent(
+  historyText: string,
+  historyRich: string,
+  currentText: string,
+  currentRich: string,
+  contentFormat: DraftModel['contentFormat'] | undefined,
+): DraftDiffStats | null {
+  const useLexical =
+    contentFormat === 'lexical' && Boolean(historyRich && currentRich)
+
+  if (useLexical) {
+    const oldState = tryParseLexicalState(historyRich)
+    const newState = tryParseLexicalState(currentRich)
+    if (oldState && newState) {
+      const stats = computeDeltaStats(oldState, newState)
+      const isSame =
+        stats.chars.added === 0 &&
+        stats.chars.removed === 0 &&
+        stats.words.added === 0 &&
+        stats.words.removed === 0
+      return { kind: 'lexical', isSame, words: stats.words }
+    }
+  }
+
+  if (!historyText && !historyRich) return null
+
+  const diff = currentText.length - historyText.length
+  return {
+    kind: 'text',
+    isSame: currentText === historyText,
+    diff,
+  }
+}
 
 export const refTypeConfig = {
   [DraftRefType.Post]: {
@@ -114,12 +150,28 @@ export const VersionListItem = defineComponent({
       type: Boolean,
       default: false,
     },
+    diffStats: {
+      type: Object as PropType<DraftDiffStats | null | undefined>,
+      default: undefined,
+    },
   },
   setup(props) {
+    const { isDark } = storeToRefs(useUIStore())
+    const revertOverlayBg = computed(() => {
+      if (props.isSelected) {
+        return isDark.value
+          ? 'linear-gradient(90deg, transparent 0%, transparent 10%, rgb(10 10 10) 36%, rgb(10 10 10) 100%)'
+          : 'linear-gradient(90deg, transparent 0%, transparent 10%, rgb(212 212 212) 36%, rgb(212 212 212) 100%)'
+      }
+      return isDark.value
+        ? 'linear-gradient(90deg, transparent 0%, transparent 14%, rgb(10 10 10 / 0.55) 32%, rgb(10 10 10 / 0.97) 100%)'
+        : 'linear-gradient(90deg, transparent 0%, transparent 14%, rgb(235 235 235) 40%, rgb(235 235 235) 100%)'
+    })
+
     return () => (
       <div
         class={[
-          'group flex cursor-pointer items-center gap-3 px-4 py-2.5 transition-colors',
+          'group relative flex cursor-pointer items-center gap-3 px-4 py-2.5 transition-colors',
           props.isSelected
             ? 'bg-neutral-100 dark:bg-neutral-800'
             : 'hover:bg-neutral-50 dark:hover:bg-neutral-800/30',
@@ -127,7 +179,7 @@ export const VersionListItem = defineComponent({
         onClick={props.onClick}
       >
         <div class="min-w-0 flex-1">
-          <div class="flex items-center gap-2">
+          <div class="flex w-full min-w-0 flex-wrap items-center gap-2">
             <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
               v{props.item.version}
             </span>
@@ -179,43 +231,101 @@ export const VersionListItem = defineComponent({
           </p>
         </div>
 
-        <div class="flex flex-shrink-0 items-center gap-2">
-          {!props.item.isCurrent && props.onRestore && (
-            <NPopconfirm
-              positiveText="取消"
-              negativeText="恢复"
-              onNegativeClick={props.onRestore}
-            >
-              {{
-                trigger: () => (
-                  <NTooltip>
-                    {{
-                      trigger: () => (
-                        <NButton
-                          size="tiny"
-                          quaternary
-                          loading={props.restoreLoading}
-                          class="opacity-0 group-hover:opacity-100"
-                          onClick={(e: MouseEvent) => e.stopPropagation()}
-                        >
-                          {{
-                            icon: () => (
-                              <RotateCcw class="h-3.5 w-3.5 text-neutral-500" />
-                            ),
-                          }}
-                        </NButton>
-                      ),
-                      default: () => '恢复此版本',
-                    }}
-                  </NTooltip>
-                ),
-                default: () => (
-                  <span>确定要恢复到版本 {props.item.version}？</span>
-                ),
-              }}
-            </NPopconfirm>
+        <div class="relative z-0 ml-auto flex min-h-6 min-w-0 shrink-0 items-center">
+          {props.diffStats != null && (
+            <span class="flex items-center justify-end gap-1 whitespace-nowrap text-right text-xs tabular-nums">
+              {props.diffStats.isSame ? (
+                <span class="text-neutral-500 dark:text-neutral-400">
+                  与当前相同
+                </span>
+              ) : props.diffStats.kind === 'lexical' ? (
+                <>
+                  {props.diffStats.words.added > 0 && (
+                    <span class="text-green-600 dark:text-green-400">
+                      +{props.diffStats.words.added}
+                    </span>
+                  )}
+                  {props.diffStats.words.added > 0 &&
+                    props.diffStats.words.removed > 0 && (
+                      <span class="text-neutral-400">/</span>
+                    )}
+                  {props.diffStats.words.removed > 0 && (
+                    <span class="text-red-600 dark:text-red-400">
+                      -{props.diffStats.words.removed}
+                    </span>
+                  )}
+                  <span class="text-neutral-500 dark:text-neutral-400">词</span>
+                </>
+              ) : (
+                <>
+                  <span
+                    class={
+                      props.diffStats.diff > 0
+                        ? 'text-green-600 dark:text-green-400'
+                        : 'text-red-600 dark:text-red-400'
+                    }
+                  >
+                    {props.diffStats.diff > 0
+                      ? `+${props.diffStats.diff}`
+                      : props.diffStats.diff}{' '}
+                  </span>
+                  <span class="text-neutral-500 dark:text-neutral-400">字</span>
+                </>
+              )}
+            </span>
           )}
         </div>
+        {!props.item.isCurrent && props.onRestore && (
+          <>
+            <div
+              aria-hidden
+              style={{ backgroundImage: revertOverlayBg.value }}
+              class={[
+                'pointer-events-none absolute bottom-0 right-0 top-0 z-[1] w-[6.25rem] opacity-0 transition-opacity duration-150',
+                'group-hover:opacity-100',
+              ]}
+            />
+            <div
+              class={[
+                'pointer-events-none absolute bottom-0 right-0 top-0 z-[2] flex items-center justify-end pr-2 opacity-0 transition-opacity duration-150',
+                'group-hover:pointer-events-auto group-hover:opacity-100',
+              ]}
+            >
+              <NPopconfirm
+                positiveText="取消"
+                negativeText="恢复"
+                onNegativeClick={props.onRestore}
+              >
+                {{
+                  trigger: () => (
+                    <NTooltip>
+                      {{
+                        trigger: () => (
+                          <NButton
+                            size="tiny"
+                            quaternary
+                            loading={props.restoreLoading}
+                            onClick={(e: MouseEvent) => e.stopPropagation()}
+                          >
+                            {{
+                              icon: () => (
+                                <RotateCcw class="h-3.5 w-3.5 text-neutral-500" />
+                              ),
+                            }}
+                          </NButton>
+                        ),
+                        default: () => '恢复此版本',
+                      }}
+                    </NTooltip>
+                  ),
+                  default: () => (
+                    <span>确定要恢复到版本 {props.item.version}？</span>
+                  ),
+                }}
+              </NPopconfirm>
+            </div>
+          </>
+        )}
       </div>
     )
   },
@@ -256,6 +366,61 @@ export const DraftDetailBase = defineComponent({
     const selectedRichContent = ref<string>('')
     const isLoadingContent = ref(false)
 
+    const versionContentCache = ref(
+      new Map<number, { text: string; content?: string }>(),
+    )
+    const precomputedRowDiffs = ref(new Map<number, DraftDiffStats>())
+    type QueuedRowDiff = { version: number; text: string; content: string }
+    let diffQueue: QueuedRowDiff[] = []
+    let diffRafId: number | null = null
+    let prefetchGeneration = 0
+
+    const flushRowDiffQueue = () => {
+      const BUDGET_MS = 8
+      const start = performance.now()
+      const updates = new Map(precomputedRowDiffs.value)
+      let dirty = false
+
+      while (diffQueue.length > 0 && performance.now() - start < BUDGET_MS) {
+        const { version, text, content } = diffQueue.shift()!
+        const stats = computeDiffAgainstCurrent(
+          text,
+          content,
+          props.draft.text,
+          props.draft.content || '',
+          props.draft.contentFormat,
+        )
+        if (stats) {
+          updates.set(version, stats)
+          dirty = true
+        }
+      }
+
+      if (dirty) precomputedRowDiffs.value = updates
+      if (diffQueue.length > 0) {
+        diffRafId = requestAnimationFrame(flushRowDiffQueue)
+      } else {
+        diffRafId = null
+      }
+    }
+
+    const enqueueRowDiff = (version: number, text: string, content: string) => {
+      diffQueue.push({ version, text, content })
+      if (diffRafId === null) {
+        diffRafId = requestAnimationFrame(flushRowDiffQueue)
+      }
+    }
+
+    const cancelRowDiffBatch = () => {
+      diffQueue = []
+      if (diffRafId !== null) {
+        cancelAnimationFrame(diffRafId)
+        diffRafId = null
+      }
+    }
+
+    onBeforeUnmount(cancelRowDiffBatch)
+
     const { data: historyData, isLoading: historyLoading } = useQuery({
       queryKey: ['drafts', 'history', () => props.draft.id],
       queryFn: () => draftsApi.getHistory(props.draft.id),
@@ -281,6 +446,79 @@ export const DraftDetailBase = defineComponent({
       }))
     })
 
+    watch(
+      [historyData, () => props.draft.id],
+      () => {
+        prefetchGeneration++
+        const gen = prefetchGeneration
+        cancelRowDiffBatch()
+        precomputedRowDiffs.value = new Map()
+        const cache = new Map<number, { text: string; content?: string }>()
+        cache.set(props.draft.version, {
+          text: props.draft.text,
+          content: props.draft.content,
+        })
+        versionContentCache.value = cache
+
+        const list = historyData.value as DraftHistoryListItem[] | undefined
+        if (!list?.length) return
+
+        const sorted = [...list].sort((a, b) => b.version - a.version)
+        const toFetch = sorted.filter((h) => h.version !== props.draft.version)
+
+        const CONCURRENCY = 3
+        let idx = 0
+        const fetchNext = async (): Promise<void> => {
+          while (idx < toFetch.length) {
+            if (gen !== prefetchGeneration) return
+            const item = toFetch[idx++]
+            try {
+              const data = await draftsApi.getHistoryVersion(
+                props.draft.id,
+                item.version,
+              )
+              if (gen !== prefetchGeneration) return
+              const entry = { text: data.text, content: data.content }
+              const next = new Map(versionContentCache.value)
+              next.set(item.version, entry)
+              versionContentCache.value = next
+              enqueueRowDiff(item.version, entry.text, entry.content || '')
+            } catch {
+              // skip failed versions
+            }
+          }
+        }
+
+        void Promise.all(
+          Array.from({ length: Math.min(CONCURRENCY, toFetch.length) }, () =>
+            fetchNext(),
+          ),
+        )
+      },
+      { immediate: true },
+    )
+
+    watch(
+      [
+        () => props.draft.text,
+        () => props.draft.content,
+        () => props.draft.contentFormat,
+      ],
+      () => {
+        cancelRowDiffBatch()
+        precomputedRowDiffs.value = new Map()
+        const cache = versionContentCache.value
+        cache.set(props.draft.version, {
+          text: props.draft.text,
+          content: props.draft.content,
+        })
+        for (const [version, entry] of cache) {
+          if (version === props.draft.version) continue
+          enqueueRowDiff(version, entry.text, entry.content || '')
+        }
+      },
+    )
+
     const loadVersionContent = async (
       version: number,
     ): Promise<{ text: string; content?: string }> => {
@@ -288,9 +526,16 @@ export const DraftDetailBase = defineComponent({
         return { text: props.draft.text, content: props.draft.content }
       }
 
+      const cached = versionContentCache.value.get(version)
+      if (cached) return cached
+
       try {
         const data = await draftsApi.getHistoryVersion(props.draft.id, version)
-        return { text: data.text, content: data.content }
+        const entry = { text: data.text, content: data.content }
+        const next = new Map(versionContentCache.value)
+        next.set(version, entry)
+        versionContentCache.value = next
+        return entry
       } catch (error) {
         console.error('Failed to load version:', error)
         return { text: '' }
@@ -366,37 +611,13 @@ export const DraftDetailBase = defineComponent({
 
     const diffStats = computed((): DraftDiffStats | null => {
       if (selectedVersion.value == null) return null
-
-      const currentRich = props.draft.content || ''
-      const useLexical =
-        props.draft.contentFormat === 'lexical' &&
-        Boolean(selectedRichContent.value && currentRich)
-
-      if (useLexical) {
-        const oldState = tryParseLexicalState(selectedRichContent.value)
-        const newState = tryParseLexicalState(currentRich)
-        if (oldState && newState) {
-          const stats = computeDeltaStats(oldState, newState)
-          const isSame =
-            stats.chars.added === 0 &&
-            stats.chars.removed === 0 &&
-            stats.words.added === 0 &&
-            stats.words.removed === 0 &&
-            stats.lines.added === 0 &&
-            stats.lines.removed === 0
-          return { kind: 'lexical', isSame, chars: stats.chars }
-        }
-      }
-
-      if (!selectedContent.value && !selectedRichContent.value) return null
-
-      const currentText = props.draft.text
-      const diff = currentText.length - selectedContent.value.length
-      return {
-        kind: 'text',
-        isSame: currentText === selectedContent.value,
-        diff,
-      }
+      return computeDiffAgainstCurrent(
+        selectedContent.value,
+        selectedRichContent.value,
+        props.draft.text,
+        props.draft.content || '',
+        props.draft.contentFormat,
+      )
     })
 
     const currentVersion = computed(() => versionList.value[0])
@@ -422,6 +643,14 @@ export const DraftDetailBase = defineComponent({
                 key={item.version}
                 item={item}
                 isSelected={selectedVersion.value === item.version}
+                diffStats={
+                  item.isCurrent
+                    ? undefined
+                    : (precomputedRowDiffs.value.get(item.version) ??
+                      (selectedVersion.value === item.version
+                        ? diffStats.value
+                        : undefined))
+                }
                 onClick={() => handleSelectVersion(item.version)}
                 onRestore={
                   item.isCurrent ? undefined : () => handleRestore(item.version)
@@ -469,17 +698,17 @@ export const DraftDetailBase = defineComponent({
           <div class="text-xs text-neutral-500">
             {diffStats.value.kind === 'lexical' ? (
               <>
-                {diffStats.value.chars.added > 0
-                  ? `+${diffStats.value.chars.added}`
+                {diffStats.value.words.added > 0
+                  ? `+${diffStats.value.words.added}`
                   : ''}
-                {diffStats.value.chars.added > 0 &&
-                diffStats.value.chars.removed > 0
+                {diffStats.value.words.added > 0 &&
+                diffStats.value.words.removed > 0
                   ? ' / '
                   : ''}
-                {diffStats.value.chars.removed > 0
-                  ? `-${diffStats.value.chars.removed}`
+                {diffStats.value.words.removed > 0
+                  ? `-${diffStats.value.words.removed}`
                   : ''}{' '}
-                字
+                词
               </>
             ) : (
               <>

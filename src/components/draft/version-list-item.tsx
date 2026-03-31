@@ -6,6 +6,8 @@ import { RelativeTime } from '~/components/time/relative-time'
 export interface DiffStats {
   added: number
   removed: number
+  /** 与 `calcDiffStats` 一致：`词` 来自 Lexical，`字` 来自纯文本长度差 */
+  unit: '词' | '字'
 }
 
 export const VersionListItem = defineComponent({
@@ -68,7 +70,7 @@ export const VersionListItem = defineComponent({
         <div class="flex items-center gap-3">
           <div class="min-w-0 flex-1">
             {/* 版本标签行 */}
-            <div class="flex items-center gap-2">
+            <div class="flex w-full min-w-0 flex-wrap items-center gap-2">
               <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
                 {getVersionLabel()}
               </span>
@@ -100,6 +102,20 @@ export const VersionListItem = defineComponent({
                     {props.isFullSnapshot ? '全量' : '增量'}
                   </span>
                 )}
+              {props.diffStats &&
+                (props.diffStats.added > 0 || props.diffStats.removed > 0) && (
+                  <span class="ml-auto flex shrink-0 items-center gap-1 text-xs">
+                    <span class="text-green-600 dark:text-green-400">
+                      +{props.diffStats.added}
+                    </span>
+                    <span class="text-red-600 dark:text-red-400">
+                      -{props.diffStats.removed}
+                    </span>
+                    <span class="text-neutral-500 dark:text-neutral-400">
+                      {props.diffStats.unit}
+                    </span>
+                  </span>
+                )}
             </div>
 
             {/* 标题 */}
@@ -108,22 +124,11 @@ export const VersionListItem = defineComponent({
             </p>
           </div>
 
-          {/* 右侧：时间和差异统计 */}
+          {/* 右侧：时间 */}
           <div class="flex flex-shrink-0 flex-col items-end gap-0.5">
             <span class="text-xs text-neutral-400 dark:text-neutral-500">
               <RelativeTime time={props.savedAt} showPopoverInfoAbsoluteTime />
             </span>
-
-            {props.diffStats && (
-              <span class="flex items-center gap-1 text-xs">
-                <span class="text-green-600 dark:text-green-400">
-                  +{props.diffStats.added}
-                </span>
-                <span class="text-red-600 dark:text-red-400">
-                  -{props.diffStats.removed}
-                </span>
-              </span>
-            )}
           </div>
         </div>
       </div>

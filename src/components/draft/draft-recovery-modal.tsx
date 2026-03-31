@@ -1,10 +1,11 @@
-import { diff as jsonDiff } from 'jsondiffpatch'
 import { GitCompare, X } from 'lucide-vue-next'
 import { NButton, NModal, NScrollbar, NSpin } from 'naive-ui'
 import { computed, defineComponent, onBeforeUnmount, ref, watch } from 'vue'
 import type { DraftModel } from '~/models/draft'
+import type { SerializedEditorState } from 'lexical'
 import type { PropType } from 'vue'
 
+import { computeDeltaStats } from '@haklex/rich-diff'
 import { useQuery } from '@tanstack/vue-query'
 
 import { draftsApi } from '~/api/drafts'
@@ -14,23 +15,19 @@ import { SplitPanel } from '~/components/layout'
 import { DiffPreview } from './diff-preview'
 import { VersionListItem } from './version-list-item'
 
-function countDeltaOps(delta: any): { added: number; removed: number } {
-  let added = 0
-  let removed = 0
-  if (!delta || typeof delta !== 'object') return { added, removed }
-  for (const key of Object.keys(delta)) {
-    if (key === '_t') continue
-    const val = delta[key]
-    if (Array.isArray(val)) {
-      if (val.length === 1) added++
-      else if (val.length === 3 && val[2] === 0) removed++
-    } else if (typeof val === 'object') {
-      const sub = countDeltaOps(val)
-      added += sub.added
-      removed += sub.removed
-    }
+function tryParseLexicalState(raw: string): SerializedEditorState | null {
+  if (!raw?.trim()) return null
+  try {
+    const v = JSON.parse(raw) as unknown
+    if (!v || typeof v !== 'object') return null
+    const root = (v as { root?: unknown }).root
+    if (!root || typeof root !== 'object') return null
+    const children = (root as { children?: unknown }).children
+    if (!Array.isArray(children)) return null
+    return v as SerializedEditorState
+  } catch {
+    return null
   }
-  return { added, removed }
 }
 
 export interface PublishedContent {
@@ -85,10 +82,10 @@ export const DraftRecoveryModal = defineComponent({
       new Map<number | 'published', VersionContent>(),
     )
 
+    type RowDiffStats = { added: number; removed: number; unit: '词' | '字' }
+
     // Pre-computed diff stats via frame-budgeted batch processing
-    const precomputedDiffStats = ref(
-      new Map<number, { added: number; removed: number }>(),
-    )
+    const precomputedDiffStats = ref(new Map<number, RowDiffStats>())
     let diffQueue: Array<{ version: number; content: VersionContent }> = []
     let rafId: number | null = null
     let batchGeneration = 0
@@ -106,7 +103,6 @@ export const DraftRecoveryModal = defineComponent({
           content.text ?? '',
           props.publishedContent.content,
           content.content,
-          content.contentFormat,
         )
         updates.set(version, stats)
         dirty = true
@@ -337,50 +333,62 @@ export const DraftRecoveryModal = defineComponent({
       newText: string,
       oldContent?: string,
       newContent?: string,
-      format?: 'markdown' | 'lexical',
-    ) => {
-      if (format === 'lexical' && oldContent && newContent) {
-        try {
-          const oldJson = JSON.parse(oldContent)
-          const newJson = JSON.parse(newContent)
-          return countDeltaOps(jsonDiff(oldJson, newJson))
-        } catch {}
+    ): RowDiffStats => {
+      const oc = oldContent?.trim()
+      const nc = newContent?.trim()
+      if (oc && nc) {
+        const oldState = tryParseLexicalState(oc)
+        const newState = tryParseLexicalState(nc)
+        if (oldState && newState) {
+          const stats = computeDeltaStats(oldState, newState)
+          return {
+            added: stats.words.added,
+            removed: stats.words.removed,
+            unit: '词',
+          }
+        }
       }
       const oldLen = oldText.length
       const newLen = newText.length
       return {
         added: Math.max(0, newLen - oldLen),
         removed: Math.max(0, oldLen - newLen),
+        unit: '字',
       }
     }
 
     const isRichMode = computed(() => {
-      return (
-        selectedVersionContent.value?.contentFormat === 'lexical' &&
-        !!selectedVersionContent.value.content &&
-        !!props.publishedContent.content
-      )
+      const pub = props.publishedContent.content
+      const sel = selectedVersionContent.value?.content
+      if (!pub?.trim() || !sel?.trim()) return false
+      return !!(tryParseLexicalState(pub) && tryParseLexicalState(sel))
     })
 
     const diffStats = computed(() => {
       if (!selectedVersionContent.value) return null
 
       if (isRichMode.value) {
-        try {
-          const oldJson = JSON.parse(props.publishedContent.content!)
-          const newJson = JSON.parse(selectedVersionContent.value.content!)
-          const delta = jsonDiff(oldJson, newJson)
-          if (!delta) return { diff: 0, isSame: true }
-          const ops = countDeltaOps(delta)
-          return {
-            diff: ops.added - ops.removed,
-            isSame: false,
-            added: ops.added,
-            removed: ops.removed,
+        const oldState = tryParseLexicalState(props.publishedContent.content!)
+        const newState = tryParseLexicalState(
+          selectedVersionContent.value.content!,
+        )
+        if (oldState && newState) {
+          const stats = computeDeltaStats(oldState, newState)
+          const isSame =
+            stats.chars.added === 0 &&
+            stats.chars.removed === 0 &&
+            stats.words.added === 0 &&
+            stats.words.removed === 0
+          if (isSame) {
+            return { isSame: true, added: 0, removed: 0 }
           }
-        } catch {
-          return { diff: 0, isSame: true }
+          return {
+            isSame: false,
+            added: stats.words.added,
+            removed: stats.words.removed,
+          }
         }
+        return { isSame: true, added: 0, removed: 0 }
       }
 
       const currentText = selectedVersionContent.value.text ?? ''
@@ -546,12 +554,16 @@ export const DraftRecoveryModal = defineComponent({
                                   -{diffStats.value.removed}
                                 </span>
                               ),
-                              ' 节点',
+                              ' 词',
                             ]
                           : [
-                              diffStats.value.diff > 0
-                                ? `+${diffStats.value.diff}`
-                                : diffStats.value.diff,
+                              (() => {
+                                const d =
+                                  'diff' in diffStats.value
+                                    ? (diffStats.value.diff ?? 0)
+                                    : 0
+                                return d > 0 ? `+${d}` : d
+                              })(),
                               ' 字',
                             ]}
                       </div>
