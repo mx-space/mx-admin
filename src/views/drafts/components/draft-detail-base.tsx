@@ -20,8 +20,10 @@ import { computed, defineComponent, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
 import type { DraftHistoryListItem, DraftModel } from '~/models/draft'
+import type { SerializedEditorState } from 'lexical'
 import type { PropType, VNode } from 'vue'
 
+import { computeDeltaStats } from '@haklex/rich-diff'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/vue-query'
 
 import { draftsApi } from '~/api/drafts'
@@ -29,6 +31,29 @@ import { SplitPanel, useMasterDetailLayout } from '~/components/layout'
 import { RelativeTime } from '~/components/time/relative-time'
 import { DraftRefType } from '~/models/draft'
 import { RouteName } from '~/router/name'
+
+function tryParseLexicalState(raw: string): SerializedEditorState | null {
+  if (!raw?.trim()) return null
+  try {
+    const v = JSON.parse(raw) as unknown
+    if (!v || typeof v !== 'object') return null
+    const root = (v as { root?: unknown }).root
+    if (!root || typeof root !== 'object') return null
+    const children = (root as { children?: unknown }).children
+    if (!Array.isArray(children)) return null
+    return v as SerializedEditorState
+  } catch {
+    return null
+  }
+}
+
+type DraftDiffStats =
+  | {
+      kind: 'lexical'
+      isSame: boolean
+      chars: { added: number; removed: number }
+    }
+  | { kind: 'text'; isSame: boolean; diff: number }
 
 export const refTypeConfig = {
   [DraftRefType.Post]: {
@@ -339,11 +364,39 @@ export const DraftDetailBase = defineComponent({
       })
     }
 
-    const diffStats = computed(() => {
-      if (!selectedContent.value) return null
+    const diffStats = computed((): DraftDiffStats | null => {
+      if (selectedVersion.value == null) return null
+
+      const currentRich = props.draft.content || ''
+      const useLexical =
+        props.draft.contentFormat === 'lexical' &&
+        Boolean(selectedRichContent.value && currentRich)
+
+      if (useLexical) {
+        const oldState = tryParseLexicalState(selectedRichContent.value)
+        const newState = tryParseLexicalState(currentRich)
+        if (oldState && newState) {
+          const stats = computeDeltaStats(oldState, newState)
+          const isSame =
+            stats.chars.added === 0 &&
+            stats.chars.removed === 0 &&
+            stats.words.added === 0 &&
+            stats.words.removed === 0 &&
+            stats.lines.added === 0 &&
+            stats.lines.removed === 0
+          return { kind: 'lexical', isSame, chars: stats.chars }
+        }
+      }
+
+      if (!selectedContent.value && !selectedRichContent.value) return null
+
       const currentText = props.draft.text
       const diff = currentText.length - selectedContent.value.length
-      return { diff, isSame: currentText === selectedContent.value }
+      return {
+        kind: 'text',
+        isSame: currentText === selectedContent.value,
+        diff,
+      }
     })
 
     const currentVersion = computed(() => versionList.value[0])
@@ -414,10 +467,28 @@ export const DraftDetailBase = defineComponent({
 
         {diffStats.value && !diffStats.value.isSame && (
           <div class="text-xs text-neutral-500">
-            {diffStats.value.diff > 0
-              ? `+${diffStats.value.diff}`
-              : diffStats.value.diff}{' '}
-            字
+            {diffStats.value.kind === 'lexical' ? (
+              <>
+                {diffStats.value.chars.added > 0
+                  ? `+${diffStats.value.chars.added}`
+                  : ''}
+                {diffStats.value.chars.added > 0 &&
+                diffStats.value.chars.removed > 0
+                  ? ' / '
+                  : ''}
+                {diffStats.value.chars.removed > 0
+                  ? `-${diffStats.value.chars.removed}`
+                  : ''}{' '}
+                字
+              </>
+            ) : (
+              <>
+                {diffStats.value.diff > 0
+                  ? `+${diffStats.value.diff}`
+                  : diffStats.value.diff}{' '}
+                字
+              </>
+            )}
           </div>
         )}
       </div>
