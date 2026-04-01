@@ -89,7 +89,7 @@ const ManageComment = defineComponent(() => {
 
   const replyMutation = useMutation({
     mutationFn: ({ id, text }: { id: string; text: string }) =>
-      commentsApi.ownerReply(id, text),
+      commentsApi.readerReply(id, text),
     onSuccess: () => {
       toast.success('回复成功')
       queryClient.invalidateQueries({ queryKey: queryKeys.comments.all })
