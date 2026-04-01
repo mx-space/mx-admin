@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## [6.4.2](https://github.com/mx-space/admin-vue3/compare/v6.4.1...v6.4.2) (2026-04-01)
+
+
+### Bug Fixes
+
+* **drafts:** use computeDeltaStats for Lexical version diff header ([a8a6dd1](https://github.com/mx-space/admin-vue3/commit/a8a6dd1e417c52faf4fd37ac68666371049c1015))
+* reply ([cee88cb](https://github.com/mx-space/admin-vue3/commit/cee88cbd504039ce9ca9823b503e5ee53dfcc598))
+
+
+
 ## [6.4.1](https://github.com/mx-space/admin-vue3/compare/v6.4.0...v6.4.1) (2026-03-28)
 
 
