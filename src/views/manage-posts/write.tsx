@@ -1,5 +1,6 @@
 import { isString } from 'es-toolkit/compat'
 import {
+  Bot,
   FolderIcon,
   SlidersHorizontal as SlidersHIcon,
   Send as TelegramPlaneIcon,
@@ -17,6 +18,8 @@ import {
 } from 'vue'
 import { useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
+import type { ProviderGroup, SelectedModel } from '@haklex/rich-agent-chat'
+import type { ProviderModelsResponse } from '~/api/ai'
 import type { CategoryModel } from '~/models/category'
 import type { DraftModel } from '~/models/draft'
 import type { PostModel } from '~/models/post'
@@ -24,6 +27,7 @@ import type { ContentFormat, WriteBaseType } from '~/shared/types/base'
 import type { LexicalEditor } from 'lexical'
 import type { SelectMixedOption } from 'naive-ui/lib/select/src/interface'
 
+import { aiApi } from '~/api/ai'
 import { categoriesApi } from '~/api/categories'
 import { postsApi } from '~/api/posts'
 import { AiHelperButton } from '~/components/ai/ai-helper'
@@ -53,6 +57,16 @@ import { CategoryStore } from '~/stores/category'
 import { UIStore } from '~/stores/ui'
 
 import { useMemoPostList } from './hooks/use-memo-post-list'
+
+function toProviderGroups(response: ProviderModelsResponse[]): ProviderGroup[] {
+  return response.map((p) => ({
+    id: p.providerId,
+    name: p.providerName,
+    providerType:
+      p.providerType === 'anthropic' ? 'claude' : 'openai-compatible',
+    models: p.models.map((m) => ({ id: m.id, displayName: m.name || m.id })),
+  }))
+}
 
 type PostReactiveType = WriteBaseType & {
   slug: string
@@ -87,8 +101,18 @@ const PostWriteView = defineComponent(() => {
   const { preferredContentFormat, setPreferredContentFormat } =
     usePreferredContentFormat()
 
+  const agentVisible = ref(false)
+  const selectedModel = ref<SelectedModel | null>(null)
+  const providerGroups = ref<ProviderGroup[]>([])
+
   onMounted(async () => {
     await categoryStore.fetch()
+    aiApi
+      .getModels()
+      .then((res) => {
+        providerGroups.value = toProviderGroups(res)
+      })
+      .catch(() => {})
   })
 
   const resetReactive: () => PostReactiveType = () => ({
@@ -311,6 +335,15 @@ const PostWriteView = defineComponent(() => {
             />
           ))}
         {!isMobile.value && <HeaderPreviewButton iframe data={data} />}
+        {data.contentFormat === 'lexical' && (
+          <HeaderActionButton
+            icon={<Bot />}
+            name="AI 助手"
+            onClick={() => {
+              agentVisible.value = !agentVisible.value
+            }}
+          />
+        )}
         <HeaderActionButton
           icon={<SlidersHIcon />}
           name="文章设置"
@@ -355,6 +388,13 @@ const PostWriteView = defineComponent(() => {
         }}
         saveConfirmFn={serverDraft.checkIsSynced}
         variant="post"
+        agentEnabled={data.contentFormat === 'lexical'}
+        agentVisible={agentVisible.value}
+        providerGroups={providerGroups.value}
+        selectedModel={selectedModel.value}
+        onSelectModel={(model) => {
+          selectedModel.value = model
+        }}
         subtitleSlot={() => (
           <SlugInput
             prefix={`${WEB_URL}/posts/${category.value.slug}/`}

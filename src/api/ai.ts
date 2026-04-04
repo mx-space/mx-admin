@@ -116,8 +116,11 @@ export interface ProviderModel {
 }
 
 export interface ProviderModelsResponse {
-  provider: string
+  providerId: string
+  providerName: string
+  providerType: string
   models: ProviderModel[]
+  error?: string
 }
 
 export interface AITestData {

@@ -20,7 +20,7 @@ export const useAIModelsQuery = (enabled?: MaybeRefOrGetter<boolean>) => {
       const result: Record<string, ProviderModel[]> = {}
       for (const providerData of response) {
         if (providerData.models) {
-          result[providerData.provider] = providerData.models
+          result[providerData.providerId] = providerData.models
         }
       }
       return result
