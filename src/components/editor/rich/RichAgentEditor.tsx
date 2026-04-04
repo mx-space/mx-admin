@@ -24,7 +24,6 @@ import {
 import {
   NestedDocDialogEditorProvider,
   nestedDocEditNodes,
-  NestedDocPlugin,
 } from '@haklex/rich-ext-nested-doc'
 import { ExcalidrawConfigProvider, ShiroEditor } from '@haklex/rich-kit-shiro'
 import { ToolbarPlugin } from '@haklex/rich-plugin-toolbar'
@@ -46,7 +45,7 @@ function createAdminTransport(providerId: string): TransportAdapter {
 }
 
 function mapProviderType(type: string): 'claude' | 'openai-compatible' {
-  if (type === 'anthropic') return 'claude'
+  if (type === 'anthropic' || type === 'claude') return 'claude'
   return 'openai-compatible'
 }
 
@@ -242,7 +241,6 @@ export function RichAgentEditor({
                 onSubmit={onSubmit}
                 onEditorReady={handleEditorReady}
               >
-                <NestedDocPlugin />
                 <DiffReviewOverlayPlugin store={store} />
                 <AgentLoopCapture
                   editorRef={editorRef}
