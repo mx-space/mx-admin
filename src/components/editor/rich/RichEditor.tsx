@@ -1,27 +1,32 @@
+import { createElement } from 'react'
+import { createRoot } from 'react-dom/client'
+import { defineComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import type { ProviderGroup, SelectedModel } from '@haklex/rich-agent-chat'
+import type { ChatBubble } from '@haklex/rich-agent-core'
 import type { RichEditorVariant } from '@haklex/rich-editor'
-import { DialogStackProvider } from '@haklex/rich-editor-ui'
 import type { NestedDocDialogEditorProps } from '@haklex/rich-ext-nested-doc'
-import {
-  NestedDocDialogEditorProvider,
-  NestedDocPlugin,
-  nestedDocEditNodes,
-} from '@haklex/rich-ext-nested-doc'
 import type { ShiroEditorProps } from '@haklex/rich-kit-shiro'
-import { ExcalidrawConfigProvider, ShiroEditor } from '@haklex/rich-kit-shiro'
-import { ToolbarPlugin } from '@haklex/rich-plugin-toolbar'
-import { $convertToMarkdownString, TRANSFORMERS } from '@lexical/markdown'
 import type {
   Klass,
   LexicalEditor,
   LexicalNode,
   SerializedEditorState,
 } from 'lexical'
-import { createElement } from 'react'
 import type { Root } from 'react-dom/client'
-import { createRoot } from 'react-dom/client'
 import type { PropType } from 'vue'
-import { defineComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
+import { DialogStackProvider } from '@haklex/rich-editor-ui'
+import {
+  NestedDocDialogEditorProvider,
+  nestedDocEditNodes,
+  NestedDocPlugin,
+} from '@haklex/rich-ext-nested-doc'
+import { ExcalidrawConfigProvider, ShiroEditor } from '@haklex/rich-kit-shiro'
+import { ToolbarPlugin } from '@haklex/rich-plugin-toolbar'
+import { $convertToMarkdownString, TRANSFORMERS } from '@lexical/markdown'
+
+import '@haklex/rich-agent-chat/style.css'
+import '@haklex/rich-ext-ai-agent/style.css'
 import '@haklex/rich-kit-shiro/style.css'
 import '@haklex/rich-plugin-toolbar/style.css'
 import '@haklex/rich-ext-nested-doc/style.css'
@@ -29,6 +34,8 @@ import '@haklex/rich-ext-nested-doc/style.css'
 import { filesApi } from '~/api/files'
 import { API_URL } from '~/constants/env'
 import { useUIStore } from '~/stores/ui'
+
+import { RichAgentEditor } from './RichAgentEditor'
 
 const saveExcalidrawSnapshot = async (
   snapshot: object,
@@ -117,6 +124,12 @@ export const RichEditor = defineComponent({
     extraNodes: Array as PropType<Array<Klass<LexicalNode>>>,
     editorStyle: Object as PropType<Record<string, string | number>>,
     imageUpload: Function as PropType<ShiroEditorProps['imageUpload']>,
+    agentEnabled: { type: Boolean, default: false },
+    agentVisible: { type: Boolean, default: false },
+    providerGroups: Array as PropType<ProviderGroup[]>,
+    selectedModel: Object as PropType<SelectedModel | null>,
+    onSelectModel: Function as PropType<(model: SelectedModel) => void>,
+    initialBubbles: Array as PropType<ChatBubble[]>,
   },
   emits: {
     change: (_value: SerializedEditorState) => true,
@@ -155,32 +168,57 @@ export const RichEditor = defineComponent({
       return editorProps as any
     }
 
+    const handleChange = (value: SerializedEditorState) => {
+      if (unmounting) return
+      emit('change', value)
+      if (editorInstance) {
+        editorInstance.read(() => {
+          emit('textChange', $convertToMarkdownString(TRANSFORMERS))
+        })
+      }
+    }
+
+    const handleSubmit = () => emit('submit')
+
+    const handleEditorReady = (editor: LexicalEditor | null) => {
+      editorInstance = editor
+      emit('editorReady', editor)
+      if (editor) {
+        editor.read(() => {
+          emit('textChange', $convertToMarkdownString(TRANSFORMERS))
+        })
+      }
+    }
+
     const renderReact = (resolvedTheme: 'dark' | 'light') => {
       if (!root) return
-      root.render(
-        createElement(ShiroEditorReact, {
-          editorProps: buildEditorProps(resolvedTheme),
-          onChange: (value: SerializedEditorState) => {
-            if (unmounting) return
-            emit('change', value)
-            if (editorInstance) {
-              editorInstance.read(() => {
-                emit('textChange', $convertToMarkdownString(TRANSFORMERS))
-              })
-            }
-          },
-          onSubmit: () => emit('submit'),
-          onEditorReady: (editor: LexicalEditor | null) => {
-            editorInstance = editor
-            emit('editorReady', editor)
-            if (editor) {
-              editor.read(() => {
-                emit('textChange', $convertToMarkdownString(TRANSFORMERS))
-              })
-            }
-          },
-        }),
-      )
+      const editorProps = buildEditorProps(resolvedTheme)
+
+      if (props.agentEnabled) {
+        root.render(
+          createElement(RichAgentEditor, {
+            editorProps,
+            editorChildren: createElement(NestedDocPlugin),
+            onChange: handleChange,
+            onSubmit: handleSubmit,
+            onEditorReady: handleEditorReady,
+            providerGroups: props.providerGroups ?? [],
+            selectedModel: props.selectedModel ?? null,
+            onSelectModel: props.onSelectModel ?? (() => {}),
+            agentVisible: props.agentVisible,
+            initialBubbles: props.initialBubbles,
+          }),
+        )
+      } else {
+        root.render(
+          createElement(ShiroEditorReact, {
+            editorProps,
+            onChange: handleChange,
+            onSubmit: handleSubmit,
+            onEditorReady: handleEditorReady,
+          }),
+        )
+      }
     }
 
     onMounted(() => {
@@ -206,6 +244,12 @@ export const RichEditor = defineComponent({
           props.extraNodes,
           props.editorStyle,
           props.imageUpload,
+          props.agentEnabled,
+          props.agentVisible,
+          props.providerGroups,
+          props.selectedModel,
+          props.onSelectModel,
+          props.initialBubbles,
         ],
         () => renderReact(resolveTheme()),
       )

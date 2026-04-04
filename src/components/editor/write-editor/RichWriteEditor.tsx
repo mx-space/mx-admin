@@ -1,4 +1,6 @@
 import { computed, defineComponent, ref, watch } from 'vue'
+import type { ProviderGroup, SelectedModel } from '@haklex/rich-agent-chat'
+import type { ChatBubble } from '@haklex/rich-agent-core'
 import type { ContentFormat } from '~/shared/types/base'
 import type { LexicalEditor, SerializedEditorState } from 'lexical'
 import type { PropType, VNode } from 'vue'
@@ -76,6 +78,12 @@ export const RichWriteEditor = defineComponent({
       type: String as PropType<WriteEditorVariant>,
       default: 'post',
     },
+    agentEnabled: { type: Boolean, default: false },
+    agentVisible: { type: Boolean, default: false },
+    providerGroups: Array as PropType<ProviderGroup[]>,
+    selectedModel: Object as PropType<SelectedModel | null>,
+    onSelectModel: Function as PropType<(model: SelectedModel) => void>,
+    initialBubbles: Array as PropType<ChatBubble[]>,
   },
   setup(props) {
     const richEditorRef = ref<{ focus: () => void }>()
@@ -118,6 +126,12 @@ export const RichWriteEditor = defineComponent({
           variant={props.variant === 'note' ? 'note' : 'article'}
           autoFocus={props.autoFocus === 'content'}
           imageUpload={imageUpload}
+          agentEnabled={props.agentEnabled}
+          agentVisible={props.agentVisible}
+          providerGroups={props.providerGroups}
+          selectedModel={props.selectedModel}
+          onSelectModel={props.onSelectModel}
+          initialBubbles={props.initialBubbles}
           onChange={(value: SerializedEditorState) => {
             lastEmittedJson = JSON.stringify(value)
             props.onRichContentChange?.(value)
