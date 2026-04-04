@@ -235,60 +235,76 @@ export function RichAgentEditor({
     [onEditorReady],
   )
 
-  return (
-    <div style={{ display: 'flex', flexDirection: 'row', height: '100%' }}>
-      <div style={{ flex: 1, minWidth: 0, overflow: 'auto' }}>
-        <NestedDocDialogEditorProvider value={NestedDocDialogEditor}>
-          <DialogStackProvider>
-            <ExcalidrawConfigProvider
-              saveSnapshot={saveExcalidrawSnapshot}
-              apiUrl={API_URL}
-            >
-              <ShiroEditor
-                {...editorProps}
-                extraNodes={[
-                  ...(editorProps.extraNodes || []),
-                  ...nestedDocEditNodes,
-                ]}
-                header={createElement(ToolbarPlugin)}
-                onChange={onChange}
-                onSubmit={onSubmit}
-                onEditorReady={handleEditorReady}
-              >
-                <DiffReviewOverlayPlugin store={store} />
-                <AgentLoopCapture
-                  editorRef={editorRef}
-                  loopRef={agentLoopRef}
-                  provider={provider}
-                  store={store}
-                />
-                {editorChildren}
-              </ShiroEditor>
-            </ExcalidrawConfigProvider>
-          </DialogStackProvider>
-        </NestedDocDialogEditorProvider>
-      </div>
-      {agentVisible && (
-        <div style={{ width: 420, flexShrink: 0, overflow: 'auto' }}>
-          <PortalThemeProvider
-            className={getVariantClass('article')}
-            theme={editorProps.theme ?? 'light'}
-          >
-            <ChatPanel
-              providerGroups={providerGroups}
-              selectedModel={selectedModel}
-              store={store}
-              onAbort={handleAbort}
-              onAcceptBatch={handleAcceptBatch}
-              onRejectBatch={handleRejectBatch}
-              onRetry={handleRetry}
-              onSelectModel={onSelectModel}
-              onSend={handleSend}
-            />
-          </PortalThemeProvider>
-        </div>
-      )}
-    </div>
+  // All createElement — .tsx in Vue project compiles JSX as Vue VNodes, not React elements
+  const editorPane = createElement(
+    'div',
+    { style: { flex: 1, minWidth: 0, overflow: 'auto' } },
+    createElement(
+      NestedDocDialogEditorProvider,
+      { value: NestedDocDialogEditor },
+      createElement(
+        DialogStackProvider,
+        null,
+        createElement(
+          ExcalidrawConfigProvider,
+          { saveSnapshot: saveExcalidrawSnapshot, apiUrl: API_URL },
+          createElement(
+            ShiroEditor,
+            {
+              ...editorProps,
+              extraNodes: [
+                ...(editorProps.extraNodes || []),
+                ...nestedDocEditNodes,
+              ],
+              header: createElement(ToolbarPlugin),
+              onChange,
+              onSubmit,
+              onEditorReady: handleEditorReady,
+            },
+            createElement(DiffReviewOverlayPlugin, { store }),
+            createElement(AgentLoopCapture, {
+              editorRef,
+              loopRef: agentLoopRef,
+              provider,
+              store,
+            }),
+            editorChildren,
+          ),
+        ),
+      ),
+    ),
+  )
+
+  const chatPane = agentVisible
+    ? createElement(
+        'div',
+        { style: { width: 420, flexShrink: 0, overflow: 'auto' } },
+        createElement(
+          PortalThemeProvider,
+          {
+            className: getVariantClass('article'),
+            theme: editorProps.theme ?? 'light',
+          },
+          createElement(ChatPanel, {
+            providerGroups,
+            selectedModel,
+            store,
+            onAbort: handleAbort,
+            onAcceptBatch: handleAcceptBatch,
+            onRejectBatch: handleRejectBatch,
+            onRetry: handleRetry,
+            onSelectModel,
+            onSend: handleSend,
+          }),
+        ),
+      )
+    : null
+
+  return createElement(
+    'div',
+    { style: { display: 'flex', flexDirection: 'row', height: '100%' } },
+    editorPane,
+    chatPane,
   )
 }
 
@@ -307,14 +323,12 @@ function AgentLoopCapture({
     loopRef.current = null
     return null
   }
-  return (
-    <AgentLoopCaptureInner
-      editorRef={editorRef}
-      loopRef={loopRef}
-      provider={provider}
-      store={store}
-    />
-  )
+  return createElement(AgentLoopCaptureInner, {
+    editorRef,
+    loopRef,
+    provider,
+    store,
+  })
 }
 
 function AgentLoopCaptureInner({
