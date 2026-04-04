@@ -118,6 +118,7 @@ export const RichWriteEditor = defineComponent({
         onContentFormatChange={props.onContentFormatChange}
         hasContent={hasContent.value}
         onAutoFocusContent={() => richEditorRef.value?.focus()}
+        agentVisible={props.agentVisible}
       >
         <RichEditor
           ref={richEditorRef}

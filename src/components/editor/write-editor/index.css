@@ -123,6 +123,46 @@
   height: auto;
 }
 
+/* ========================================
+   Agent Visible Mode
+   When agent chat panel is shown, switch from
+   "scrolling page" to "fixed viewport + split panels"
+   ======================================== */
+
+/* Ancestor: stop Naive UI scrollbar from scrolling */
+.n-scrollbar-container:has(.agent-visible) {
+  overflow: hidden !important;
+}
+
+.n-scrollbar-container:has(.agent-visible) > .n-scrollbar-content {
+  height: 100%;
+  overflow: hidden;
+}
+
+.write-editor-wrapper.agent-visible {
+  height: 100%;
+  min-height: 0 !important;
+  overflow: hidden;
+}
+
+.write-editor-wrapper.agent-visible .write-editor-scroll-container {
+  min-height: 0;
+  overflow: visible;
+}
+
+.write-editor-wrapper.agent-visible .write-editor-content {
+  flex: 1;
+  min-height: 0;
+  max-width: none;
+  padding-bottom: 0;
+}
+
+.write-editor-wrapper.agent-visible .write-editor-content > div {
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+}
+
 /* Rich editor toolbar: hide shadow when not sticky */
 .write-editor-wrapper.rich-editor-mode [role='toolbar'] {
   box-shadow: none;

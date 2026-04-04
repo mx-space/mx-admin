@@ -2,7 +2,7 @@ import { computed, defineComponent } from 'vue'
 import type { ReviewBatch, ReviewBatchStatus } from '@haklex/rich-agent-core'
 import type { PropType } from 'vue'
 
-import { computeDiff } from '@haklex/rich-diff-core'
+import { computeDiff } from '@haklex/rich-diff'
 
 const STATUS_LABEL: Record<ReviewBatchStatus, string | undefined> = {
   pending: undefined,

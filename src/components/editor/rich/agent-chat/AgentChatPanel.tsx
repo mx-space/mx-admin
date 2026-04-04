@@ -1,5 +1,5 @@
 import { computed, defineComponent } from 'vue'
-import type { AgentStore, ReviewBatch } from '@haklex/rich-agent-core'
+import type { ReviewBatch } from '@haklex/rich-agent-core'
 import type { PropType } from 'vue'
 import type { ProviderGroup, SelectedModel } from './ModelSelector'
 
@@ -8,7 +8,7 @@ import { agentStoreSelectors } from '@haklex/rich-agent-core'
 import { ChatInput } from './ChatInput'
 import { ChatMessageList } from './ChatMessageList'
 import {
-  provideAgentStore,
+  useAgentStore,
   useAgentStoreSelector,
 } from './composables/use-agent-store'
 import { ModelSelector } from './ModelSelector'
@@ -16,7 +16,6 @@ import { ModelSelector } from './ModelSelector'
 export const AgentChatPanel = defineComponent({
   name: 'AgentChatPanel',
   props: {
-    store: { type: Object as PropType<AgentStore>, required: true },
     providerGroups: {
       type: Array as PropType<ProviderGroup[]>,
       required: true,
@@ -35,8 +34,7 @@ export const AgentChatPanel = defineComponent({
     'retry',
   ],
   setup(props, { emit }) {
-    provideAgentStore(props.store)
-
+    const store = useAgentStore()
     const bubbles = useAgentStoreSelector(agentStoreSelectors.bubbles)
     const status = useAgentStoreSelector(agentStoreSelectors.status)
     const reviewState = useAgentStoreSelector(agentStoreSelectors.reviewState)
@@ -53,7 +51,7 @@ export const AgentChatPanel = defineComponent({
     }
 
     function handleSend(message: string) {
-      props.store.getState().addBubble({ type: 'user', content: message })
+      store.getState().addBubble({ type: 'user', content: message })
       emit('send', message)
     }
 

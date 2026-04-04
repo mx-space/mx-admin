@@ -90,7 +90,7 @@ export const SplitPanel = defineComponent({
           style={dragging.value ? { cursor: 'col-resize' } : undefined}
         >
           <div
-            class="min-w-0 overflow-hidden"
+            class="h-full min-w-0 overflow-hidden"
             style={{ width: leftW, flexShrink: 0 }}
           >
             {slots.left?.()}
@@ -115,7 +115,10 @@ export const SplitPanel = defineComponent({
             />
           </div>
           {!isCollapsed && (
-            <div class="min-w-0 overflow-hidden" style={{ width: rightW }}>
+            <div
+              class="h-full min-w-0 overflow-hidden"
+              style={{ width: rightW }}
+            >
               {slots.right?.()}
             </div>
           )}

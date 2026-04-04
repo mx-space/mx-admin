@@ -7,6 +7,7 @@ import {
   onBeforeUnmount,
   onMounted,
   ref,
+  Teleport,
   toRef,
   watch,
 } from 'vue'
@@ -52,9 +53,9 @@ import { filesApi } from '~/api/files'
 import { API_URL } from '~/constants/env'
 import { useUIStore } from '~/stores/ui'
 
-import { SplitPanel } from '../../ui/SplitPanel'
 import { AgentChatPanel } from './agent-chat/AgentChatPanel'
 import { useAgentSetup } from './agent-chat/composables/use-agent-loop'
+import { provideAgentStore } from './agent-chat/composables/use-agent-store'
 import { useConversationSync } from './agent-chat/composables/use-conversation-sync'
 
 const saveExcalidrawSnapshot = async (
@@ -98,6 +99,32 @@ function $findBlockByBlockId(blockId: string): LexicalNode | null {
     }
   }
   return null
+}
+
+// Tool calls emit serialized nodes whose `$.blockId` was guessed by the LLM.
+// `$parseSerializedNode` would register that value under an anonymous StateConfig,
+// and then BlockIdPlugin re-setting the real blockIdState triggers a
+// "State key collision 'blockId'" error. Strip it and let the plugin re-assign.
+function stripBlockIdFromSerialized<
+  T extends { $?: Record<string, unknown>; children?: unknown[] },
+>(node: T): T {
+  if (!node || typeof node !== 'object') return node
+  const next = { ...node } as T & {
+    $?: Record<string, unknown>
+    children?: unknown[]
+  }
+  if (next.$ && typeof next.$ === 'object') {
+    const rest = { ...next.$ }
+    delete rest.blockId
+    if (Object.keys(rest).length === 0) delete next.$
+    else next.$ = rest
+  }
+  if (Array.isArray(next.children)) {
+    next.children = next.children.map((c) =>
+      stripBlockIdFromSerialized(c as any),
+    )
+  }
+  return next
 }
 
 // React component that captures the agent loop and editor refs
@@ -246,23 +273,15 @@ export const RichEditorWithAgent = defineComponent({
       selectedModel: toRef(props, 'selectedModel') as any,
       initialBubbles: props.initialBubbles,
     })
+    provideAgentStore(store)
 
     useConversationSync({
       store,
       refId: props.refId,
       refType: props.refType ?? 'post',
-      model: props.selectedModel?.modelId ?? '',
-      providerId: props.selectedModel?.providerId ?? '',
+      getModel: () => props.selectedModel?.modelId ?? '',
+      getProviderId: () => props.selectedModel?.providerId ?? '',
     })
-
-    const collapsed = ref(!props.agentVisible)
-
-    watch(
-      () => props.agentVisible,
-      (visible) => {
-        collapsed.value = !visible
-      },
-    )
 
     const buildEditorProps = (
       resolvedTheme: 'dark' | 'light',
@@ -321,7 +340,9 @@ export const RichEditorWithAgent = defineComponent({
       if (!agentLoop) return
       agentLoop.run(message).catch((err: unknown) => {
         if ((err as Error).name === 'AbortError') return
-        store.getState().addBubble({ type: 'error', message: String(err) })
+        const msg = err instanceof Error ? err.message : String(err)
+        store.getState().addBubble({ type: 'error', message: msg })
+        store.getState().setStatus('idle')
       })
     }
 
@@ -347,7 +368,9 @@ export const RichEditorWithAgent = defineComponent({
           const { op } = entry
           if (op.op === 'insert') {
             if (!op.node?.type) continue
-            const newNode = $parseSerializedNode(op.node)
+            const newNode = $parseSerializedNode(
+              stripBlockIdFromSerialized(op.node),
+            )
             if (op.position.type === 'root') {
               const idx = op.position.index ?? root.getChildrenSize()
               const children = root.getChildren()
@@ -363,7 +386,9 @@ export const RichEditorWithAgent = defineComponent({
             if (!op.node?.type) continue
             const target = $findBlockByBlockId(op.blockId)
             if (!target) continue
-            target.replace($parseSerializedNode(op.node))
+            target.replace(
+              $parseSerializedNode(stripBlockIdFromSerialized(op.node)),
+            )
           } else if (op.op === 'delete') {
             const target = $findBlockByBlockId(op.blockId)
             if (!target) continue
@@ -438,23 +463,11 @@ export const RichEditorWithAgent = defineComponent({
     })
 
     return () => (
-      <SplitPanel
-        defaultRatio={0.6}
-        minLeft={400}
-        minRight={300}
-        collapsed={collapsed.value}
-        onUpdate:collapsed={(val: boolean) => {
-          collapsed.value = val
-        }}
-        storageKey="rich-editor-agent"
-      >
-        {{
-          left: () => (
-            <div class="h-full w-full overflow-auto" ref={editorContainerRef} />
-          ),
-          right: () => (
+      <>
+        <div class="h-full w-full" ref={editorContainerRef} />
+        {props.agentVisible && (
+          <Teleport to="#agent-chat-portal" defer>
             <AgentChatPanel
-              store={store}
               providerGroups={props.providerGroups ?? []}
               selectedModel={props.selectedModel ?? null}
               onSend={handleSend}
@@ -466,9 +479,9 @@ export const RichEditorWithAgent = defineComponent({
                 props.onSelectModel?.(model)
               }
             />
-          ),
-        }}
-      </SplitPanel>
+          </Teleport>
+        )}
+      </>
     )
   },
 })

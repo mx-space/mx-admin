@@ -7,16 +7,16 @@ interface ConversationSyncOptions {
   store: AgentStore
   refId: string | undefined
   refType: 'post' | 'note' | 'page'
-  model: string
-  providerId: string
+  getModel: () => string
+  getProviderId: () => string
 }
 
 export function useConversationSync({
   store,
   refId,
   refType,
-  model,
-  providerId,
+  getModel,
+  getProviderId,
 }: ConversationSyncOptions) {
   let conversationId: string | null = null
   let lastSyncedLength = 0
@@ -40,7 +40,7 @@ export function useConversationSync({
     const newBubbles = state.bubbles.slice(lastSyncedLength)
     lastSyncedLength = state.bubbles.length
 
-    appendBubbles(newBubbles, refId, refType, model, providerId)
+    appendBubbles(newBubbles, refId, refType, getModel(), getProviderId())
   })
 
   onUnmounted(unsubscribe)
