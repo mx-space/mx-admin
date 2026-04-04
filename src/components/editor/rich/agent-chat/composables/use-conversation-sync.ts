@@ -1,5 +1,5 @@
-import type { AgentStore, ChatBubble } from '@haklex/rich-agent-core'
 import { onUnmounted } from 'vue'
+import type { AgentStore, ChatBubble } from '@haklex/rich-agent-core'
 
 import { API_URL } from '~/constants/env'
 
