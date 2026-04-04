@@ -1,9 +1,8 @@
-import type { TopicModel } from '@mx-space/api-client'
 import { add } from 'date-fns'
 import { isString } from 'es-toolkit/compat'
-import type { LexicalEditor } from 'lexical'
 import {
   BookmarkIcon,
+  Bot,
   MapPinIcon,
   SlidersHorizontal as SlidersHIcon,
   Send as TelegramPlaneIcon,
@@ -23,7 +22,16 @@ import {
 } from 'vue'
 import { useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
+import type { ProviderGroup, SelectedModel } from '@haklex/rich-agent-chat'
+import type { TopicModel } from '@mx-space/api-client'
+import type { ProviderModelsResponse } from '~/api/ai'
 import type { CreateNoteData } from '~/api/notes'
+import type { DraftModel } from '~/models/draft'
+import type { Coordinate, NoteModel } from '~/models/note'
+import type { ContentFormat, WriteBaseType } from '~/shared/types/base'
+import type { LexicalEditor } from 'lexical'
+
+import { aiApi } from '~/api/ai'
 import { notesApi } from '~/api/notes'
 import { topicsApi } from '~/api/topics'
 import { AiHelperButton } from '~/components/ai/ai-helper'
@@ -52,12 +60,19 @@ import { usePreferredContentFormat } from '~/hooks/use-preferred-content-format'
 import { useStoreRef } from '~/hooks/use-store-ref'
 import { useWriteDraft } from '~/hooks/use-write-draft'
 import { useLayout } from '~/layouts/content'
-import type { DraftModel } from '~/models/draft'
 import { DraftRefType } from '~/models/draft'
-import type { Coordinate, NoteModel } from '~/models/note'
-import type { ContentFormat, WriteBaseType } from '~/shared/types/base'
 import { UIStore } from '~/stores/ui'
 import { getDayOfYear } from '~/utils/time'
+
+function toProviderGroups(response: ProviderModelsResponse[]): ProviderGroup[] {
+  return response.map((p) => ({
+    id: p.providerId,
+    name: p.providerName,
+    providerType:
+      p.providerType === 'anthropic' ? 'claude' : 'openai-compatible',
+    models: p.models.map((m) => ({ id: m.id, displayName: m.name || m.id })),
+  }))
+}
 
 type NoteReactiveType = {
   slug: string
@@ -105,6 +120,10 @@ const NoteWriteView = defineComponent(() => {
   const isMobile = computed(
     () => uiStore.viewport.value.mobile || uiStore.viewport.value.pad,
   )
+
+  const agentVisible = ref(false)
+  const selectedModel = ref<SelectedModel | null>(null)
+  const providerGroups = ref<ProviderGroup[]>([])
 
   const resetReactive: () => NoteReactiveType = () => ({
     text: '',
@@ -241,6 +260,12 @@ const NoteWriteView = defineComponent(() => {
   onMounted(() => {
     initialize()
     window.addEventListener('keydown', handleKeyDown)
+    aiApi
+      .getModels()
+      .then((res) => {
+        providerGroups.value = toProviderGroups(res)
+      })
+      .catch(() => {})
   })
 
   onBeforeUnmount(() => {
@@ -343,6 +368,15 @@ const NoteWriteView = defineComponent(() => {
             />
           ))}
         {!isMobile.value && <HeaderPreviewButton data={data} iframe />}
+        {data.contentFormat === 'lexical' && (
+          <HeaderActionButton
+            icon={<Bot />}
+            name="AI 助手"
+            onClick={() => {
+              agentVisible.value = !agentVisible.value
+            }}
+          />
+        )}
         <HeaderActionButton
           icon={<SlidersHIcon />}
           name="日记设置"
@@ -389,6 +423,13 @@ const NoteWriteView = defineComponent(() => {
         }}
         saveConfirmFn={serverDraft.checkIsSynced}
         variant="note"
+        agentEnabled={data.contentFormat === 'lexical'}
+        agentVisible={agentVisible.value}
+        providerGroups={providerGroups.value}
+        selectedModel={selectedModel.value}
+        onSelectModel={(model) => {
+          selectedModel.value = model
+        }}
         subtitleSlot={() => (
           <div class="flex items-center gap-2 text-sm text-neutral-500">
             <span>{`${WEB_URL}${buildNotePublicPath({ ...data, nid: nid.value })}`}</span>
