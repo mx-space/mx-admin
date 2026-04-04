@@ -130,6 +130,8 @@ export const RichEditor = defineComponent({
     selectedModel: Object as PropType<SelectedModel | null>,
     onSelectModel: Function as PropType<(model: SelectedModel) => void>,
     initialBubbles: Array as PropType<ChatBubble[]>,
+    refId: String,
+    refType: String as PropType<'post' | 'note' | 'page'>,
   },
   emits: {
     change: (_value: SerializedEditorState) => true,
@@ -207,6 +209,8 @@ export const RichEditor = defineComponent({
             onSelectModel: props.onSelectModel ?? (() => {}),
             agentVisible: props.agentVisible,
             initialBubbles: props.initialBubbles,
+            refId: props.refId,
+            refType: props.refType,
           }),
         )
       } else {
@@ -250,6 +254,8 @@ export const RichEditor = defineComponent({
           props.selectedModel,
           props.onSelectModel,
           props.initialBubbles,
+          props.refId,
+          props.refType,
         ],
         () => renderReact(resolveTheme()),
       )

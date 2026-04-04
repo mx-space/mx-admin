@@ -32,6 +32,8 @@ import { PortalThemeProvider } from '@haklex/rich-style-token'
 import { filesApi } from '~/api/files'
 import { API_URL } from '~/constants/env'
 
+import { useConversationSync } from './useConversationSync'
+
 function createAdminTransport(providerId: string): TransportAdapter {
   return async (messages, tools, model, signal) => {
     return fetch(`${API_URL}/ai/agent/chat`, {
@@ -103,6 +105,8 @@ interface RichAgentEditorProps {
   onSelectModel: (model: SelectedModel) => void
   agentVisible: boolean
   initialBubbles?: ChatBubble[]
+  refId?: string
+  refType?: 'post' | 'note' | 'page'
 }
 
 export function RichAgentEditor({
@@ -116,12 +120,22 @@ export function RichAgentEditor({
   onSelectModel,
   agentVisible,
   initialBubbles,
+  refId,
+  refType,
 }: RichAgentEditorProps) {
   const store = useMemo(
     () => createAgentStore(initialBubbles),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   )
+
+  useConversationSync({
+    store,
+    refId,
+    refType: refType ?? 'post',
+    model: selectedModel?.modelId ?? '',
+    providerId: selectedModel?.providerId ?? '',
+  })
 
   const agentLoopRef = useRef<ReturnType<typeof useAgentLoop> | null>(null)
   const editorRef = useRef<LexicalEditor | null>(null)

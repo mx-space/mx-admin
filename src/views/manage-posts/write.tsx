@@ -395,6 +395,8 @@ const PostWriteView = defineComponent(() => {
         onSelectModel={(model) => {
           selectedModel.value = model
         }}
+        refId={actualRefId.value || data.id}
+        refType="post"
         subtitleSlot={() => (
           <SlugInput
             prefix={`${WEB_URL}/posts/${category.value.slug}/`}

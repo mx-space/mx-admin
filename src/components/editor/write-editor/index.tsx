@@ -72,6 +72,8 @@ export const WriteEditor = defineComponent({
     selectedModel: Object as PropType<SelectedModel | null>,
     onSelectModel: Function as PropType<(model: SelectedModel) => void>,
     initialBubbles: Array as PropType<ChatBubble[]>,
+    refId: String,
+    refType: String as PropType<'post' | 'note' | 'page'>,
   },
   setup(props) {
     return () => {
@@ -98,6 +100,8 @@ export const WriteEditor = defineComponent({
             selectedModel={props.selectedModel}
             onSelectModel={props.onSelectModel}
             initialBubbles={props.initialBubbles}
+            refId={props.refId}
+            refType={props.refType}
           />
         )
       }

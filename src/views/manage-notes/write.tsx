@@ -430,6 +430,8 @@ const NoteWriteView = defineComponent(() => {
         onSelectModel={(model) => {
           selectedModel.value = model
         }}
+        refId={actualRefId.value || data.id}
+        refType="note"
         subtitleSlot={() => (
           <div class="flex items-center gap-2 text-sm text-neutral-500">
             <span>{`${WEB_URL}${buildNotePublicPath({ ...data, nid: nid.value })}`}</span>

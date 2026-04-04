@@ -84,6 +84,8 @@ export const RichWriteEditor = defineComponent({
     selectedModel: Object as PropType<SelectedModel | null>,
     onSelectModel: Function as PropType<(model: SelectedModel) => void>,
     initialBubbles: Array as PropType<ChatBubble[]>,
+    refId: String,
+    refType: String as PropType<'post' | 'note' | 'page'>,
   },
   setup(props) {
     const richEditorRef = ref<{ focus: () => void }>()
@@ -132,6 +134,8 @@ export const RichWriteEditor = defineComponent({
           selectedModel={props.selectedModel}
           onSelectModel={props.onSelectModel}
           initialBubbles={props.initialBubbles}
+          refId={props.refId}
+          refType={props.refType}
           onChange={(value: SerializedEditorState) => {
             lastEmittedJson = JSON.stringify(value)
             props.onRichContentChange?.(value)
