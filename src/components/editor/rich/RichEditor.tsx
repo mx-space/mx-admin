@@ -25,7 +25,6 @@ import { ExcalidrawConfigProvider, ShiroEditor } from '@haklex/rich-kit-shiro'
 import { ToolbarPlugin } from '@haklex/rich-plugin-toolbar'
 import { $convertToMarkdownString, TRANSFORMERS } from '@lexical/markdown'
 
-import '@haklex/rich-agent-chat/style.css'
 import '@haklex/rich-ext-ai-agent/style.css'
 import '@haklex/rich-kit-shiro/style.css'
 import '@haklex/rich-plugin-toolbar/style.css'
@@ -35,7 +34,7 @@ import { filesApi } from '~/api/files'
 import { API_URL } from '~/constants/env'
 import { useUIStore } from '~/stores/ui'
 
-import { RichAgentEditor } from './RichAgentEditor'
+import { RichEditorWithAgent } from './RichEditorWithAgent'
 
 const saveExcalidrawSnapshot = async (
   snapshot: object,
@@ -141,6 +140,7 @@ export const RichEditor = defineComponent({
   },
   setup(props, { emit, expose }) {
     const containerRef = ref<HTMLDivElement>()
+    const agentRef = ref<InstanceType<typeof RichEditorWithAgent>>()
     let root: Root | null = null
     let editorInstance: LexicalEditor | null = null
     let unmounting = false
@@ -196,36 +196,19 @@ export const RichEditor = defineComponent({
       if (!root) return
       const editorProps = buildEditorProps(resolvedTheme)
 
-      if (props.agentEnabled) {
-        root.render(
-          createElement(RichAgentEditor, {
-            editorProps,
-            editorChildren: createElement(NestedDocPlugin),
-            onChange: handleChange,
-            onSubmit: handleSubmit,
-            onEditorReady: handleEditorReady,
-            providerGroups: props.providerGroups ?? [],
-            selectedModel: props.selectedModel ?? null,
-            onSelectModel: props.onSelectModel ?? (() => {}),
-            agentVisible: props.agentVisible,
-            initialBubbles: props.initialBubbles,
-            refId: props.refId,
-            refType: props.refType,
-          }),
-        )
-      } else {
-        root.render(
-          createElement(ShiroEditorReact, {
-            editorProps,
-            onChange: handleChange,
-            onSubmit: handleSubmit,
-            onEditorReady: handleEditorReady,
-          }),
-        )
-      }
+      root.render(
+        createElement(ShiroEditorReact, {
+          editorProps,
+          onChange: handleChange,
+          onSubmit: handleSubmit,
+          onEditorReady: handleEditorReady,
+        }),
+      )
     }
 
     onMounted(() => {
+      if (props.agentEnabled) return
+
       root = createRoot(containerRef.value!)
 
       const uiStore = useUIStore()
@@ -248,14 +231,6 @@ export const RichEditor = defineComponent({
           props.extraNodes,
           props.editorStyle,
           props.imageUpload,
-          props.agentEnabled,
-          props.agentVisible,
-          props.providerGroups,
-          props.selectedModel,
-          props.onSelectModel,
-          props.initialBubbles,
-          props.refId,
-          props.refType,
         ],
         () => renderReact(resolveTheme()),
       )
@@ -269,8 +244,48 @@ export const RichEditor = defineComponent({
     })
 
     expose({
-      focus: () => editorInstance?.focus(),
+      focus: () => {
+        if (props.agentEnabled) {
+          ;(agentRef.value as any)?.focus()
+        } else {
+          editorInstance?.focus()
+        }
+      },
     })
+
+    if (props.agentEnabled) {
+      return () => (
+        <RichEditorWithAgent
+          ref={agentRef}
+          initialValue={props.initialValue}
+          theme={props.theme}
+          placeholder={props.placeholder}
+          variant={props.variant}
+          autoFocus={props.autoFocus}
+          className={props.className}
+          contentClassName={props.contentClassName}
+          debounceMs={props.debounceMs}
+          selfHostnames={props.selfHostnames}
+          extraNodes={props.extraNodes}
+          editorStyle={props.editorStyle}
+          imageUpload={props.imageUpload}
+          agentVisible={props.agentVisible}
+          providerGroups={props.providerGroups}
+          selectedModel={props.selectedModel}
+          onSelectModel={props.onSelectModel}
+          initialBubbles={props.initialBubbles}
+          refId={props.refId}
+          refType={props.refType}
+          onChange={(v: SerializedEditorState) => emit('change', v)}
+          onSubmit={handleSubmit}
+          onEditorReady={(e: LexicalEditor | null) => {
+            editorInstance = e
+            emit('editorReady', e)
+          }}
+          onTextChange={(text: string) => emit('textChange', text)}
+        />
+      )
+    }
 
     return () => <div class="h-full w-full" ref={containerRef} />
   },
