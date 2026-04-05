@@ -18,7 +18,7 @@ import {
 } from 'vue'
 import { useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
-import type { ProviderGroup, SelectedModel } from '@haklex/rich-agent-chat'
+import type { ProviderGroup } from '@haklex/rich-agent-chat'
 import type { ProviderModelsResponse } from '~/api/ai'
 import type { CategoryModel } from '~/models/category'
 import type { DraftModel } from '~/models/draft'
@@ -42,6 +42,7 @@ import {
   SwitchRow,
   TextBaseDrawer,
 } from '~/components/drawer/text-base-drawer'
+import { useAgentSelectedModel } from '~/components/editor/rich/agent-chat/composables/use-agent-selected-model'
 import { WriteEditor } from '~/components/editor/write-editor'
 import { SlugInput } from '~/components/editor/write-editor/slug-input'
 import { ParseContentButton } from '~/components/special-button/parse-content'
@@ -102,8 +103,8 @@ const PostWriteView = defineComponent(() => {
     usePreferredContentFormat()
 
   const agentVisible = ref(false)
-  const selectedModel = ref<SelectedModel | null>(null)
   const providerGroups = ref<ProviderGroup[]>([])
+  const { selectedModel } = useAgentSelectedModel(providerGroups)
 
   onMounted(async () => {
     await categoryStore.fetch()

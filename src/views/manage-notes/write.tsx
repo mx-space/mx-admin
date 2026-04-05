@@ -22,7 +22,7 @@ import {
 } from 'vue'
 import { useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
-import type { ProviderGroup, SelectedModel } from '@haklex/rich-agent-chat'
+import type { ProviderGroup } from '@haklex/rich-agent-chat'
 import type { TopicModel } from '@mx-space/api-client'
 import type { ProviderModelsResponse } from '~/api/ai'
 import type { CreateNoteData } from '~/api/notes'
@@ -47,6 +47,7 @@ import {
   SwitchRow,
   TextBaseDrawer,
 } from '~/components/drawer/text-base-drawer'
+import { useAgentSelectedModel } from '~/components/editor/rich/agent-chat/composables/use-agent-selected-model'
 import { WriteEditor } from '~/components/editor/write-editor'
 import { SlugInput } from '~/components/editor/write-editor/slug-input'
 import { GetLocationButton } from '~/components/location/get-location-button'
@@ -122,8 +123,8 @@ const NoteWriteView = defineComponent(() => {
   )
 
   const agentVisible = ref(false)
-  const selectedModel = ref<SelectedModel | null>(null)
   const providerGroups = ref<ProviderGroup[]>([])
+  const { selectedModel } = useAgentSelectedModel(providerGroups)
 
   const resetReactive: () => NoteReactiveType = () => ({
     text: '',

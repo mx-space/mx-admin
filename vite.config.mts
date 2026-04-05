@@ -1,11 +1,7 @@
 import UnoCSS from 'unocss/vite'
 
-import { defineConfig, loadEnv } from 'vite'
+import { defineConfig, loadEnv, type PluginOption } from 'vite'
 import { checker } from 'vite-plugin-checker'
-
-
-import tsconfigPaths from 'vite-tsconfig-paths'
-import type { PluginOption } from 'vite'
 
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
@@ -25,7 +21,6 @@ export default ({ mode }) => {
       UnoCSS(),
       vue({}),
       vueJsx(),
-      tsconfigPaths(),
 
       ...(isDev
         ? [
@@ -51,6 +46,7 @@ export default ({ mode }) => {
     ],
 
     resolve: {
+      tsconfigPaths: true,
       alias: {
         path: 'path-browserify',
         os: 'os-browserify',

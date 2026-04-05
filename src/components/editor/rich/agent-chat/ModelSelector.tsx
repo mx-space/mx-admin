@@ -1,6 +1,6 @@
-import { ChevronDown } from 'lucide-vue-next'
+import { ChevronDown, Search } from 'lucide-vue-next'
 import { NPopselect } from 'naive-ui'
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, nextTick, ref, watch } from 'vue'
 import type { PropType } from 'vue'
 
 export interface ProviderGroup {
@@ -30,17 +30,44 @@ export const ModelSelector = defineComponent({
   },
   emits: ['selectModel'],
   setup(props, { emit }) {
-    const options = computed(() =>
-      props.providerGroups.map((group) => ({
-        type: 'group' as const,
-        label: group.name,
-        key: group.id,
-        children: group.models.map((m) => ({
-          label: m.displayName,
-          value: `${group.id}::${m.id}`,
-        })),
-      })),
-    )
+    const searchQuery = ref('')
+    const showPopselect = ref<boolean | undefined>(undefined)
+    const inputRef = ref<HTMLInputElement | null>(null)
+
+    const filteredOptions = computed(() => {
+      const query = searchQuery.value.toLowerCase().trim()
+      if (!query) {
+        return props.providerGroups.map((group) => ({
+          type: 'group' as const,
+          label: group.name,
+          key: group.id,
+          children: group.models.map((m) => ({
+            label: m.displayName,
+            value: `${group.id}::${m.id}`,
+          })),
+        }))
+      }
+
+      return props.providerGroups
+        .map((group) => {
+          const matched = group.models.filter(
+            (m) =>
+              m.displayName.toLowerCase().includes(query) ||
+              m.id.toLowerCase().includes(query),
+          )
+          if (matched.length === 0) return null
+          return {
+            type: 'group' as const,
+            label: group.name,
+            key: group.id,
+            children: matched.map((m) => ({
+              label: m.displayName,
+              value: `${group.id}::${m.id}`,
+            })),
+          }
+        })
+        .filter(Boolean) as any[]
+    })
 
     const selectedValue = computed(() =>
       props.selectedModel
@@ -66,23 +93,63 @@ export const ModelSelector = defineComponent({
         providerId,
         providerType: group.providerType,
       })
+      showPopselect.value = false
+      searchQuery.value = ''
     }
+
+    watch(showPopselect, (val) => {
+      if (val) {
+        nextTick(() => {
+          inputRef.value?.focus()
+        })
+      } else {
+        searchQuery.value = ''
+      }
+    })
 
     return () => (
       <NPopselect
-        options={options.value}
+        options={filteredOptions.value}
         value={selectedValue.value}
         scrollable
+        virtualScroll
         size="small"
+        width={280}
+        show={showPopselect.value}
+        onUpdateShow={(val: boolean) => {
+          showPopselect.value = val
+        }}
         onUpdateValue={handleUpdate}
       >
-        <button
-          class="inline-flex cursor-pointer items-center gap-1 rounded-md border-none bg-transparent px-2 py-1 text-xs text-neutral-500 transition-colors hover:text-neutral-700 dark:hover:text-neutral-300"
-          type="button"
-        >
-          <span class="max-w-[160px] truncate">{selectedLabel.value}</span>
-          <ChevronDown size={12} />
-        </button>
+        {{
+          header: () => (
+            <div class="flex items-center gap-1.5">
+              <Search size={14} class="shrink-0 text-neutral-400" />
+              <input
+                ref={(el: any) => {
+                  if (el) {
+                    inputRef.value = el
+                  }
+                }}
+                value={searchQuery.value}
+                onInput={(e: Event) => {
+                  searchQuery.value = (e.target as HTMLInputElement).value
+                }}
+                placeholder="Search models..."
+                class="w-full border-none bg-transparent text-xs text-neutral-700 outline-none placeholder:text-neutral-400 dark:text-neutral-200 dark:placeholder:text-neutral-500"
+              />
+            </div>
+          ),
+          default: () => (
+            <button
+              class="inline-flex cursor-pointer items-center gap-1 rounded-md border-none bg-transparent px-2 py-1 text-xs text-neutral-500 transition-colors hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200"
+              type="button"
+            >
+              <span class="max-w-[160px] truncate">{selectedLabel.value}</span>
+              <ChevronDown size={12} />
+            </button>
+          ),
+        }}
       </NPopselect>
     )
   },
