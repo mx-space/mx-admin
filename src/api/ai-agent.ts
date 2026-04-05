@@ -9,7 +9,10 @@ export interface AgentConversation {
   providerId: string
   created: string
   updated: string
+  messageCount: number
   messages?: Record<string, unknown>[]
+  reviewState?: Record<string, unknown>
+  diffState?: Record<string, unknown>
 }
 
 export const aiAgentApi = {
@@ -19,6 +22,7 @@ export const aiAgentApi = {
     model: string
     providerId: string
     title?: string
+    messages?: Record<string, unknown>[]
   }) => request.post<AgentConversation>('/ai/agent/conversations', { data }),
 
   listConversations: (refId: string, refType: string) =>
@@ -33,6 +37,21 @@ export const aiAgentApi = {
     request.patch<AgentConversation>(`/ai/agent/conversations/${id}/messages`, {
       data: { messages },
     }),
+
+  replaceMessages: (id: string, messages: Record<string, unknown>[]) =>
+    request.put<AgentConversation>(`/ai/agent/conversations/${id}/messages`, {
+      data: { messages },
+    }),
+
+  updateConversation: (
+    id: string,
+    data: {
+      title?: string
+      reviewState?: Record<string, unknown> | null
+      diffState?: Record<string, unknown> | null
+    },
+  ) =>
+    request.patch<AgentConversation>(`/ai/agent/conversations/${id}`, { data }),
 
   deleteConversation: (id: string) =>
     request.delete<void>(`/ai/agent/conversations/${id}`),

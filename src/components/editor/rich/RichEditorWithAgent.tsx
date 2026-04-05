@@ -27,7 +27,7 @@ import type {
   SerializedEditorState,
 } from 'lexical'
 import type { Root } from 'react-dom/client'
-import type { PropType } from 'vue'
+import type { PropType, Ref } from 'vue'
 
 import { blockIdState } from '@haklex/rich-editor'
 import { DialogStackProvider } from '@haklex/rich-editor-ui'
@@ -57,7 +57,7 @@ import { AgentChatPanel } from './agent-chat/AgentChatPanel'
 import { useAgentSetup } from './agent-chat/composables/use-agent-loop'
 import { useReapply } from './agent-chat/composables/use-agent-reapply'
 import { provideAgentStore } from './agent-chat/composables/use-agent-store'
-import { useConversationSync } from './agent-chat/composables/use-conversation-sync'
+import { useSessionManager } from './agent-chat/composables/use-session-manager'
 
 const saveExcalidrawSnapshot = async (
   snapshot: object,
@@ -276,6 +276,13 @@ export const RichEditorWithAgent = defineComponent({
     })
     provideAgentStore(store)
 
+    function realAbort() {
+      if (agentLoop) {
+        agentLoop.abort()
+      }
+      abort()
+    }
+
     const reapply = useReapply({
       getEditor: () => editorInstance,
       getReviewBatch: (batchId: string) => {
@@ -286,12 +293,13 @@ export const RichEditorWithAgent = defineComponent({
       },
     })
 
-    useConversationSync({
+    const sessionManager = useSessionManager({
       store,
-      refId: props.refId,
+      refId: toRef(props, 'refId') as Ref<string | undefined>,
       refType: props.refType ?? 'post',
       getModel: () => props.selectedModel?.modelId ?? '',
       getProviderId: () => props.selectedModel?.providerId ?? '',
+      abortFn: realAbort,
     })
 
     const buildEditorProps = (
@@ -357,7 +365,7 @@ export const RichEditorWithAgent = defineComponent({
       })
     }
 
-    const handleAbort = () => abort()
+    const handleAbort = () => realAbort()
 
     const handleRetry = () => {
       const msg = retry()
@@ -483,6 +491,11 @@ export const RichEditorWithAgent = defineComponent({
               selectedModel={props.selectedModel ?? null}
               replayState={reapply.state}
               isReplayableItem={reapply.isReplayableItem}
+              sessions={sessionManager.sessions.value}
+              activeSessionId={sessionManager.activeSessionId.value}
+              isSessionLoading={sessionManager.isLoading.value}
+              isHydrating={sessionManager.isHydrating.value}
+              loadError={sessionManager.loadError.value}
               onSend={handleSend}
               onAbort={handleAbort}
               onRetry={handleRetry}
@@ -500,6 +513,13 @@ export const RichEditorWithAgent = defineComponent({
               onSelectModel={(model: SelectedModel) =>
                 props.onSelectModel?.(model)
               }
+              onSwitchSession={(id: string) => sessionManager.switchSession(id)}
+              onCreateSession={() => sessionManager.createSession()}
+              onDeleteSession={(id: string) => sessionManager.deleteSession(id)}
+              onRenameSession={(id: string, title: string) =>
+                sessionManager.renameSession(id, title)
+              }
+              onRetryLoad={() => sessionManager.loadSessions()}
             />
           </Teleport>
         )}
