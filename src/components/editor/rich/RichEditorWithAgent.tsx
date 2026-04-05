@@ -29,8 +29,8 @@ import type {
 import type { Root } from 'react-dom/client'
 import type { PropType } from 'vue'
 
+import { blockIdState } from '@haklex/rich-editor'
 import { DialogStackProvider } from '@haklex/rich-editor-ui'
-import { blockIdState } from '@haklex/rich-editor/plugins'
 import {
   DiffReviewOverlayPlugin,
   useAgentLoop,
@@ -55,6 +55,7 @@ import { useUIStore } from '~/stores/ui'
 
 import { AgentChatPanel } from './agent-chat/AgentChatPanel'
 import { useAgentSetup } from './agent-chat/composables/use-agent-loop'
+import { useReapply } from './agent-chat/composables/use-agent-reapply'
 import { provideAgentStore } from './agent-chat/composables/use-agent-store'
 import { useConversationSync } from './agent-chat/composables/use-conversation-sync'
 
@@ -275,6 +276,16 @@ export const RichEditorWithAgent = defineComponent({
     })
     provideAgentStore(store)
 
+    const reapply = useReapply({
+      getEditor: () => editorInstance,
+      getReviewBatch: (batchId: string) => {
+        const reviewState = store.getState().reviewState
+        return reviewState?.batches.find(
+          (b: { id: string }) => b.id === batchId,
+        )
+      },
+    })
+
     useConversationSync({
       store,
       refId: props.refId,
@@ -470,11 +481,22 @@ export const RichEditorWithAgent = defineComponent({
             <AgentChatPanel
               providerGroups={props.providerGroups ?? []}
               selectedModel={props.selectedModel ?? null}
+              replayState={reapply.state}
+              isReplayableItem={reapply.isReplayableItem}
               onSend={handleSend}
               onAbort={handleAbort}
               onRetry={handleRetry}
               onAcceptBatch={handleAcceptBatch}
               onRejectBatch={handleRejectBatch}
+              onReapplyItem={(_itemId: string, item: any) =>
+                reapply.applyReplayItem(item)
+              }
+              onReapplyGroup={(groupId: string, items: any[]) =>
+                reapply.applyReplayGroup(groupId, items)
+              }
+              onReapplyBatch={(batchId: string) =>
+                reapply.applyReplayBatch(batchId)
+              }
               onSelectModel={(model: SelectedModel) =>
                 props.onSelectModel?.(model)
               }

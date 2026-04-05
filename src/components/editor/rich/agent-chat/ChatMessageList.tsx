@@ -5,6 +5,7 @@ import type {
   ToolCallGroupItem,
 } from '@haklex/rich-agent-core'
 import type { PropType } from 'vue'
+import type { ReplayStateMap } from './composables/use-agent-reapply'
 
 import { DiffReviewBubble } from './bubbles/DiffReviewBubble'
 import { DiffSummaryBubble } from './bubbles/DiffSummaryBubble'
@@ -95,8 +96,23 @@ export const ChatMessageList = defineComponent({
       type: Function as PropType<(batchId: string) => ReviewBatch | undefined>,
       default: undefined,
     },
+    replayState: {
+      type: Object as PropType<ReplayStateMap>,
+      default: () => ({}),
+    },
+    isReplayableItem: {
+      type: Function as PropType<(item: ToolCallGroupItem) => boolean>,
+      default: undefined,
+    },
   },
-  emits: ['acceptBatch', 'rejectBatch', 'retry'],
+  emits: [
+    'acceptBatch',
+    'rejectBatch',
+    'retry',
+    'reapplyItem',
+    'reapplyGroup',
+    'reapplyBatch',
+  ],
   setup(props, { emit }) {
     const scrollRef = ref<HTMLDivElement>()
     let userScrolledUp = false
@@ -130,7 +146,7 @@ export const ChatMessageList = defineComponent({
       return (
         <div
           ref={scrollRef}
-          class="px-4.5 flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto pb-6 pt-5"
+          class="px-4.5 flex min-h-0 min-w-0 flex-1 flex-col gap-5 overflow-y-auto overflow-x-hidden pb-6 pt-5"
           onScroll={handleScroll}
         >
           {merged.map((item, i) => {
@@ -170,7 +186,23 @@ export const ChatMessageList = defineComponent({
                   />
                 )
               case 'tool_call_group_view':
-                return <ToolCallGroup key={i} id={item.id} items={item.items} />
+                return (
+                  <ToolCallGroup
+                    key={i}
+                    id={item.id}
+                    items={item.items}
+                    replayState={props.replayState}
+                    isReplayableItem={props.isReplayableItem}
+                    onReapplyItem={(
+                      itemId: string,
+                      tcItem: ToolCallGroupItem,
+                    ) => emit('reapplyItem', itemId, tcItem)}
+                    onReapplyGroup={(
+                      groupId: string,
+                      tcItems: ToolCallGroupItem[],
+                    ) => emit('reapplyGroup', groupId, tcItems)}
+                  />
+                )
               case 'error':
                 return (
                   <ErrorBubble
@@ -195,8 +227,10 @@ export const ChatMessageList = defineComponent({
                   <DiffReviewBubble
                     key={i}
                     batch={batch}
+                    replayState={props.replayState}
                     onAccept={(id: string) => emit('acceptBatch', id)}
                     onReject={(id: string) => emit('rejectBatch', id)}
+                    onReapplyBatch={(id: string) => emit('reapplyBatch', id)}
                   />
                 )
               }

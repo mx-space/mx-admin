@@ -1,6 +1,7 @@
 import { computed, defineComponent } from 'vue'
-import type { ReviewBatch } from '@haklex/rich-agent-core'
+import type { ReviewBatch, ToolCallGroupItem } from '@haklex/rich-agent-core'
 import type { PropType } from 'vue'
+import type { ReplayStateMap } from './composables/use-agent-reapply'
 import type { ProviderGroup, SelectedModel } from './ModelSelector'
 
 import { agentStoreSelectors } from '@haklex/rich-agent-core'
@@ -24,6 +25,14 @@ export const AgentChatPanel = defineComponent({
       type: Object as PropType<SelectedModel | null>,
       default: null,
     },
+    replayState: {
+      type: Object as PropType<ReplayStateMap>,
+      default: () => ({}),
+    },
+    isReplayableItem: {
+      type: Function as PropType<(item: ToolCallGroupItem) => boolean>,
+      default: undefined,
+    },
   },
   emits: [
     'send',
@@ -32,6 +41,9 @@ export const AgentChatPanel = defineComponent({
     'acceptBatch',
     'rejectBatch',
     'retry',
+    'reapplyItem',
+    'reapplyGroup',
+    'reapplyBatch',
   ],
   setup(props, { emit }) {
     const store = useAgentStore()
@@ -60,8 +72,17 @@ export const AgentChatPanel = defineComponent({
         <ChatMessageList
           bubbles={bubbles.value}
           getBatch={getBatch}
+          replayState={props.replayState}
+          isReplayableItem={props.isReplayableItem}
           onAcceptBatch={(id: string) => emit('acceptBatch', id)}
           onRejectBatch={(id: string) => emit('rejectBatch', id)}
+          onReapplyItem={(itemId: string, item: ToolCallGroupItem) =>
+            emit('reapplyItem', itemId, item)
+          }
+          onReapplyGroup={(groupId: string, items: ToolCallGroupItem[]) =>
+            emit('reapplyGroup', groupId, items)
+          }
+          onReapplyBatch={(batchId: string) => emit('reapplyBatch', batchId)}
           onRetry={() => emit('retry')}
         />
         <ChatInput
