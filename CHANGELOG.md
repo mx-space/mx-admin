@@ -1,5 +1,44 @@
 # CHANGELOG
 
+# [6.5.0](https://github.com/mx-space/admin-vue3/compare/v6.4.2...v6.5.0) (2026-04-05)
+
+
+### Bug Fixes
+
+* **agent:** add conversation history context and sticky diff review bar ([f27ed3e](https://github.com/mx-space/admin-vue3/commit/f27ed3e8866eae2c46e044d6e018e0cd6c9a61e8))
+* **editor:** preserve insert order in accept batch handler ([f3514d9](https://github.com/mx-space/admin-vue3/commit/f3514d9b79ee02b46eaf3eb06cabf5369a5021f9))
+* mapProviderType double-mapping bug and NestedDocPlugin duplication ([3a0ffdd](https://github.com/mx-space/admin-vue3/commit/3a0ffddfd7d57f07bd4d82461b3e61f4738ccff7))
+* **reapply:** collapse tool call groups by default ([646a30b](https://github.com/mx-space/admin-vue3/commit/646a30b29c5a49c18d019f9f64e1b16ad21d777f))
+* **reapply:** use consistent total count in group replay summary ([cb70ccb](https://github.com/mx-space/admin-vue3/commit/cb70ccb84d777ea719bb4f9439701c4c511810c6))
+* use createElement instead of JSX to avoid Vue VNode in React tree ([8ecd614](https://github.com/mx-space/admin-vue3/commit/8ecd61445b5b2789d4d03ecc4c9b4e7afd69cd5c))
+
+
+### Features
+
+* add agent API client and RichAgentEditor component ([b75f43e](https://github.com/mx-space/admin-vue3/commit/b75f43e780fc4322921d15d859b0d8f42d001a83))
+* add agent chat re-apply interaction for tool calls, groups, and diff batches ([37bb07a](https://github.com/mx-space/admin-vue3/commit/37bb07a3c09c4747050e494be1412ecbc6ef647a))
+* add AgentChatPanel root Vue component ([17a2f85](https://github.com/mx-space/admin-vue3/commit/17a2f85e3f6e3578fe4469f5d3281af57ecbb867))
+* add conversation sync for agent chat persistence ([a428d36](https://github.com/mx-space/admin-vue3/commit/a428d36554849d593f4c3e8152ed21b4352ce15e))
+* add SplitPanel reusable layout component ([7dd55bc](https://github.com/mx-space/admin-vue3/commit/7dd55bc90c0eac2e4ef24ce4fb4e15f3d842cbe0))
+* add useAgentSetup Vue composable for store + provider ([478c9ea](https://github.com/mx-space/admin-vue3/commit/478c9eafa66b416fd3444c02f255495cd7a8729a))
+* add useAgentStore composable (Zustand → Vue bridge) ([5800f08](https://github.com/mx-space/admin-vue3/commit/5800f085e88215f857f0f53b7beeafcadcda6970))
+* add Vue agent chat bubble components ([a4ac1d9](https://github.com/mx-space/admin-vue3/commit/a4ac1d9762277ac9a0ed528fffd0956754e0f916))
+* add Vue ChatInput component with auto-resize ([9feed81](https://github.com/mx-space/admin-vue3/commit/9feed81b4de6c4f1efb0c82180487d270626cfaf))
+* add Vue ChatMessageList with bubble merge logic ([d5ea259](https://github.com/mx-space/admin-vue3/commit/d5ea2599748dcfc1c40dd3b9d1b5f3fbe4433631))
+* add Vue ModelSelector with NPopselect ([2708f1f](https://github.com/mx-space/admin-vue3/commit/2708f1f3069b3ed9966806c4a51b98295608ab35))
+* **agent-chat:** add multi-session history with switcher UI ([d720638](https://github.com/mx-space/admin-vue3/commit/d72063858b6f17576629e9a3efe55946966a7234))
+* integrate SplitPanel + Vue AgentChatPanel into editor ([b344deb](https://github.com/mx-space/admin-vue3/commit/b344deb22468e8d4c7e63b9769e472c2c253a74c))
+* port useConversationSync to Vue composable ([3f672e7](https://github.com/mx-space/admin-vue3/commit/3f672e714c3bdff35f2d505adf9c57fdcb7d32b7))
+* **reapply:** add Re-apply UI to ToolCall, ToolCallGroup, and DiffReviewBubble ([4c09bdc](https://github.com/mx-space/admin-vue3/commit/4c09bdc942b8f62eba8326da83294d7edd9fef77))
+* **reapply:** add replay composable with types, state, and orchestration ([b48e6ac](https://github.com/mx-space/admin-vue3/commit/b48e6acb9a678d269b2b7fe4437c2a5342c14dac))
+* **reapply:** wire replay composable and thread props through component tree ([4c61848](https://github.com/mx-space/admin-vue3/commit/4c6184815fe4374cdc7d9ff92323a80e57bbbaa7))
+* update agent chat integration with new components and error handling ([574ae3b](https://github.com/mx-space/admin-vue3/commit/574ae3b81360428f57cf745ec7a13030d93efd39))
+* wire agent mode through editor component chain ([5946160](https://github.com/mx-space/admin-vue3/commit/5946160dbb9fd5275ea0f9adf14c9f8fef02927f))
+* wire AI agent panel into note editor ([33c2d8c](https://github.com/mx-space/admin-vue3/commit/33c2d8c5264b4a9971e2b7229c42031d0bc1e9b4))
+* wire AI agent panel into post editor ([2868a6c](https://github.com/mx-space/admin-vue3/commit/2868a6c46e62d8a0b66ad030b5b3281d9c6c6037))
+
+
+
 ## [6.4.2](https://github.com/mx-space/admin-vue3/compare/v6.4.1...v6.4.2) (2026-04-01)
 
 
