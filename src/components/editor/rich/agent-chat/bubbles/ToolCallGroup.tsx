@@ -57,7 +57,7 @@ export const ToolCallGroup = defineComponent({
   props: {
     id: { type: String, required: true },
     items: { type: Array as PropType<ToolCallGroupItem[]>, required: true },
-    defaultExpanded: { type: Boolean, default: true },
+    defaultExpanded: { type: Boolean, default: false },
     replayState: {
       type: Object as PropType<ReplayStateMap>,
       default: () => ({}),
