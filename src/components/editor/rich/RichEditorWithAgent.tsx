@@ -383,6 +383,7 @@ export const RichEditorWithAgent = defineComponent({
       const editor = editorInstance
       editor.update(() => {
         const root = $getRoot()
+        const lastInserted = new Map<string, LexicalNode>()
         for (const entry of batch.entries) {
           const { op } = entry
           if (op.op === 'insert') {
@@ -396,10 +397,17 @@ export const RichEditorWithAgent = defineComponent({
               if (idx >= children.length) root.append(newNode)
               else children[idx].insertBefore(newNode)
             } else {
-              const target = $findBlockByBlockId(op.position.blockId)
-              if (!target) continue
-              if (op.position.type === 'after') target.insertAfter(newNode)
-              else target.insertBefore(newNode)
+              const anchorKey = `${op.position.type}:${op.position.blockId}`
+              const prev = lastInserted.get(anchorKey)
+              if (prev) {
+                prev.insertAfter(newNode)
+              } else {
+                const target = $findBlockByBlockId(op.position.blockId)
+                if (!target) continue
+                if (op.position.type === 'after') target.insertAfter(newNode)
+                else target.insertBefore(newNode)
+              }
+              lastInserted.set(anchorKey, newNode)
             }
           } else if (op.op === 'replace') {
             if (!op.node?.type) continue
