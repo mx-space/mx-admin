@@ -12,27 +12,29 @@
 
 ## File Structure
 
-| File | Action | Responsibility |
-|------|--------|---------------|
-| `mx-core: .../ai-agent/ai-agent-conversation.model.ts` | **Modify** | Add `reviewState`, `diffState`, `messageCount` fields |
-| `mx-core: .../ai-agent/ai-agent.schema.ts` | **Modify** | Add `UpdateConversationSchema` + DTO, `ReplaceMessagesSchema` + DTO |
-| `mx-core: .../ai-agent/ai-agent-conversation.service.ts` | **Modify** | Add `updateById`, `replaceMessages` methods; title generation in `appendMessages`; `messageCount` in `listByRef` |
-| `mx-core: .../ai-agent/ai-agent.controller.ts` | **Modify** | Add `PATCH /conversations/:id`, `PUT /conversations/:id/messages` endpoints |
-| `admin-vue3: src/api/ai-agent.ts` | **Modify** | Add `updateConversation`, `replaceMessages`; update `AgentConversation` type with `messageCount` |
-| `admin-vue3: src/components/.../composables/use-session-manager.ts` | **Create** | Session list, switching, hydration, lazy creation with first message, session-scoped debounced full-replacement sync, deletion, rename, error state |
-| `admin-vue3: src/components/.../composables/use-conversation-sync.ts` | **Delete** | Replaced by session manager |
-| `admin-vue3: src/components/.../agent-chat/SessionHeader.tsx` | **Create** | Session switcher dropdown, rename, new/delete buttons, loadError + retry UI |
-| `admin-vue3: src/components/.../agent-chat/AgentChatPanel.tsx` | **Modify** | Insert `SessionHeader`, accept session + error props |
-| `admin-vue3: src/components/.../rich/RichEditorWithAgent.tsx` | **Modify** | Replace `useConversationSync` with `useSessionManager`; expose `agentLoop.abort()` as real abort; pass session state |
+
+| File                                                                  | Action     | Responsibility                                                                                                                                      |
+| --------------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `mx-core: .../ai-agent/ai-agent-conversation.model.ts`                | **Modify** | Add `reviewState`, `diffState`, `messageCount` fields                                                                                               |
+| `mx-core: .../ai-agent/ai-agent.schema.ts`                            | **Modify** | Add `UpdateConversationSchema` + DTO, `ReplaceMessagesSchema` + DTO                                                                                 |
+| `mx-core: .../ai-agent/ai-agent-conversation.service.ts`              | **Modify** | Add `updateById`, `replaceMessages` methods; title generation in `appendMessages`; `messageCount` in `listByRef`                                    |
+| `mx-core: .../ai-agent/ai-agent.controller.ts`                        | **Modify** | Add `PATCH /conversations/:id`, `PUT /conversations/:id/messages` endpoints                                                                         |
+| `admin-vue3: src/api/ai-agent.ts`                                     | **Modify** | Add `updateConversation`, `replaceMessages`; update `AgentConversation` type with `messageCount`                                                    |
+| `admin-vue3: src/components/.../composables/use-session-manager.ts`   | **Create** | Session list, switching, hydration, lazy creation with first message, session-scoped debounced full-replacement sync, deletion, rename, error state |
+| `admin-vue3: src/components/.../composables/use-conversation-sync.ts` | **Delete** | Replaced by session manager                                                                                                                         |
+| `admin-vue3: src/components/.../agent-chat/SessionHeader.tsx`         | **Create** | Session switcher dropdown, rename, new/delete buttons, loadError + retry UI                                                                         |
+| `admin-vue3: src/components/.../agent-chat/AgentChatPanel.tsx`        | **Modify** | Insert `SessionHeader`, accept session + error props                                                                                                |
+| `admin-vue3: src/components/.../rich/RichEditorWithAgent.tsx`         | **Modify** | Replace `useConversationSync` with `useSessionManager`; expose `agentLoop.abort()` as real abort; pass session state                                |
+
 
 ---
 
 ### Task 1: Backend — Add `reviewState`, `diffState`, and `messageCount` fields to model
 
 **Files:**
-- Modify: `mx-core/apps/core/src/modules/ai/ai-agent/ai-agent-conversation.model.ts`
 
-- [ ] **Step 1: Add the new fields to `AIAgentConversationModel`**
+- Modify: `mx-core/apps/core/src/modules/ai/ai-agent/ai-agent-conversation.model.ts`
+- **Step 1: Add the new fields to `AIAgentConversationModel`**
 
 The full file after this change:
 
@@ -98,9 +100,9 @@ export class AIAgentConversationModel extends BaseModel {
 ### Task 2: Backend — Add `UpdateConversationSchema`, `ReplaceMessagesSchema`, and DTOs
 
 **Files:**
-- Modify: `mx-core/apps/core/src/modules/ai/ai-agent/ai-agent.schema.ts`
 
-- [ ] **Step 1: Add the Zod schemas and DTO classes after `AppendMessagesDto`**
+- Modify: `mx-core/apps/core/src/modules/ai/ai-agent/ai-agent.schema.ts`
+- **Step 1: Add the Zod schemas and DTO classes after `AppendMessagesDto`**
 
 The full file after this change:
 
@@ -175,9 +177,9 @@ export class ChatProxyDto extends createZodDto(ChatProxySchema) {}
 ### Task 3: Backend — Add `updateById` and `replaceMessages` service methods + title generation
 
 **Files:**
-- Modify: `mx-core/apps/core/src/modules/ai/ai-agent/ai-agent-conversation.service.ts`
 
-- [ ] **Step 1: Inject `AiAgentChatService` into the constructor**
+- Modify: `mx-core/apps/core/src/modules/ai/ai-agent/ai-agent-conversation.service.ts`
+- **Step 1: Inject `AiAgentChatService` into the constructor**
 
 Add the import and update the constructor:
 
@@ -193,7 +195,7 @@ import { AiAgentChatService } from './ai-agent-chat.service'
   ) {}
 ```
 
-- [ ] **Step 2: Update `create` to set `messageCount` from initial messages**
+- **Step 2: Update `create` to set `messageCount` from initial messages**
 
 Replace the existing `create` method:
 
@@ -213,7 +215,7 @@ Replace the existing `create` method:
   }
 ```
 
-- [ ] **Step 3: Update `listByRef` to include `messageCount` in the projection**
+- **Step 3: Update `listByRef` to include `messageCount` in the projection**
 
 The existing `listByRef` already excludes `messages` with `{ messages: 0 }`. Since `messageCount` is a top-level stored field, it is included by default. No change needed — but verify this is the case. The current code:
 
@@ -228,7 +230,7 @@ The existing `listByRef` already excludes `messages` with `{ messages: 0 }`. Sin
 
 This already returns `messageCount` since only `messages` (the array body) is excluded.
 
-- [ ] **Step 4: Update `appendMessages` to increment `messageCount` and trigger title generation**
+- **Step 4: Update `appendMessages` to increment `messageCount` and trigger title generation**
 
 Replace the existing `appendMessages` method:
 
@@ -262,7 +264,7 @@ Replace the existing `appendMessages` method:
   }
 ```
 
-- [ ] **Step 5: Add `replaceMessages` method (full replacement for mutation-aware sync)**
+- **Step 5: Add `replaceMessages` method (full replacement for mutation-aware sync)**
 
 Add after `appendMessages`:
 
@@ -289,7 +291,7 @@ Add after `appendMessages`:
   }
 ```
 
-- [ ] **Step 6: Add `updateById` method**
+- **Step 6: Add `updateById` method**
 
 Add after `replaceMessages`:
 
@@ -322,7 +324,7 @@ Add after `replaceMessages`:
   }
 ```
 
-- [ ] **Step 7: Add `generateTitle` private method**
+- **Step 7: Add `generateTitle` private method**
 
 Add at the bottom of the class:
 
@@ -613,9 +615,9 @@ export class AiAgentConversationService {
 ### Task 4: Backend — Add `PATCH /conversations/:id` and `PUT /conversations/:id/messages` controller endpoints
 
 **Files:**
-- Modify: `mx-core/apps/core/src/modules/ai/ai-agent/ai-agent.controller.ts`
 
-- [ ] **Step 1: Import the new DTOs**
+- Modify: `mx-core/apps/core/src/modules/ai/ai-agent/ai-agent.controller.ts`
+- **Step 1: Import the new DTOs**
 
 Update the import from `./ai-agent.schema` to include all new DTOs:
 
@@ -647,7 +649,7 @@ import {
 } from '@nestjs/common'
 ```
 
-- [ ] **Step 2: Add the `PATCH /conversations/:id` endpoint**
+- **Step 2: Add the `PATCH /conversations/:id` endpoint**
 
 Add after `getConversation` and before `appendMessages`:
 
@@ -662,7 +664,7 @@ Add after `getConversation` and before `appendMessages`:
   }
 ```
 
-- [ ] **Step 3: Add the `PUT /conversations/:id/messages` endpoint**
+- **Step 3: Add the `PUT /conversations/:id/messages` endpoint**
 
 Add after the `appendMessages` method:
 
@@ -741,9 +743,9 @@ The Conversation CRUD section of the controller after all changes:
 ### Task 5: Frontend — Update API client
 
 **Files:**
-- Modify: `src/api/ai-agent.ts`
 
-- [ ] **Step 1: Add `messageCount` to the interface, add `updateConversation` and `replaceMessages` methods**
+- Modify: `src/api/ai-agent.ts`
+- **Step 1: Add `messageCount` to the interface, add `updateConversation` and `replaceMessages` methods**
 
 Full file replacement:
 
@@ -816,9 +818,9 @@ export const aiAgentApi = {
 ### Task 6: Frontend — Create `use-session-manager.ts` — types and reactive state
 
 **Files:**
-- Create: `src/components/editor/rich/agent-chat/composables/use-session-manager.ts`
 
-- [ ] **Step 1: Create file with imports, types, and the composable skeleton**
+- Create: `src/components/editor/rich/agent-chat/composables/use-session-manager.ts`
+- **Step 1: Create file with imports, types, and the composable skeleton**
 
 ```typescript
 import { onUnmounted, ref, watch } from 'vue'
@@ -861,9 +863,9 @@ function toSessionMeta(conv: AgentConversation): SessionMeta {
 ### Task 7: Frontend — Session manager — `loadSessions` and `switchSession`
 
 **Files:**
-- Modify: `src/components/editor/rich/agent-chat/composables/use-session-manager.ts`
 
-- [ ] **Step 1: Add the main `useSessionManager` function with state, `loadSessions`, and `switchSession`**
+- Modify: `src/components/editor/rich/agent-chat/composables/use-session-manager.ts`
+- **Step 1: Add the main `useSessionManager` function with state, `loadSessions`, and `switchSession`**
 
 Append to the file created in Task 6:
 
@@ -964,9 +966,9 @@ export function useSessionManager(options: SessionManagerOptions) {
 ### Task 8: Frontend — Session manager — `createSession` and `deleteSession`
 
 **Files:**
-- Modify: `src/components/editor/rich/agent-chat/composables/use-session-manager.ts`
 
-- [ ] **Step 1: Add `createSession` and `deleteSession` methods**
+- Modify: `src/components/editor/rich/agent-chat/composables/use-session-manager.ts`
+- **Step 1: Add `createSession` and `deleteSession` methods**
 
 Append inside the `useSessionManager` function (before the return):
 
@@ -1011,9 +1013,9 @@ Append inside the `useSessionManager` function (before the return):
 ### Task 9: Frontend — Session manager — `renameSession`
 
 **Files:**
-- Modify: `src/components/editor/rich/agent-chat/composables/use-session-manager.ts`
 
-- [ ] **Step 1: Add `renameSession` method**
+- Modify: `src/components/editor/rich/agent-chat/composables/use-session-manager.ts`
+- **Step 1: Add `renameSession` method**
 
 Append inside the `useSessionManager` function:
 
@@ -1032,9 +1034,9 @@ Append inside the `useSessionManager` function:
 ### Task 10: Frontend — Session manager — session-scoped sync with full message replacement
 
 **Files:**
-- Modify: `src/components/editor/rich/agent-chat/composables/use-session-manager.ts`
 
-- [ ] **Step 1: Add the session-scoped `syncMessages`, `scheduleSyncMessages`, `flushPendingSync`, and `scheduleDiffSync` functions**
+- Modify: `src/components/editor/rich/agent-chat/composables/use-session-manager.ts`
+- **Step 1: Add the session-scoped `syncMessages`, `scheduleSyncMessages`, `flushPendingSync`, and `scheduleDiffSync` functions**
 
 Append inside the `useSessionManager` function:
 
@@ -1089,7 +1091,7 @@ Append inside the `useSessionManager` function:
   }
 ```
 
-- [ ] **Step 2: Add the store subscription with lazy creation including first message**
+- **Step 2: Add the store subscription with lazy creation including first message**
 
 ```typescript
   const unsubscribe = store.subscribe((state) => {
@@ -1165,11 +1167,8 @@ Append inside the `useSessionManager` function:
 **Key design decisions for this subscription:**
 
 1. **Full replacement via PUT** instead of append-only: `@haklex/rich-agent-core` mutates bubbles in-place via `updateLastBubble`, `updateToolCallItem`, and `store.setState({ bubbles: nextBubbles })`. An append-only sync (`state.bubbles.slice(lastSyncedLength)`) misses these mutations, causing restored sessions to have truncated assistant messages and incomplete tool calls. Debounced full replacement catches all mutations.
-
 2. **Session-scoped sync**: `scheduleSyncMessages` captures `activeSessionId` at schedule time. If the user switches sessions before the timer fires, the timer checks `activeSessionId === capturedId` and discards stale writes. `flushPendingSync()` is called before `switchSession` and `deleteSession` to ensure pending writes land on the correct session.
-
 3. **Lazy creation includes first message**: `POST /conversations` includes `messages: [firstBubble]` rather than creating empty then appending, matching the spec.
-
 4. **Delayed `loadSessions` for title pickup**: After lazy creation, a 5-second delayed `loadSessions()` picks up the server-generated title from `generateTitle` (which runs asynchronously in `appendMessages`).
 
 ---
@@ -1177,9 +1176,9 @@ Append inside the `useSessionManager` function:
 ### Task 11: Frontend — Session manager — `refId` watcher and return value
 
 **Files:**
-- Modify: `src/components/editor/rich/agent-chat/composables/use-session-manager.ts`
 
-- [ ] **Step 1: Add refId watcher with full reset on change, and the return statement**
+- Modify: `src/components/editor/rich/agent-chat/composables/use-session-manager.ts`
+- **Step 1: Add refId watcher with full reset on change, and the return statement**
 
 Append at the end of the `useSessionManager` function:
 
@@ -1227,9 +1226,9 @@ Append at the end of the `useSessionManager` function:
 ### Task 12: Frontend — Create `SessionHeader.tsx` — component shell and layout
 
 **Files:**
-- Create: `src/components/editor/rich/agent-chat/SessionHeader.tsx`
 
-- [ ] **Step 1: Create the component with imports and props definition**
+- Create: `src/components/editor/rich/agent-chat/SessionHeader.tsx`
+- **Step 1: Create the component with imports and props definition**
 
 ```tsx
 import { ChevronDown, Plus, RefreshCw, Trash2 } from 'lucide-vue-next'
@@ -1454,9 +1453,9 @@ export const SessionHeader = defineComponent({
 ### Task 13: Frontend — Integrate `SessionHeader` into `AgentChatPanel`
 
 **Files:**
-- Modify: `src/components/editor/rich/agent-chat/AgentChatPanel.tsx`
 
-- [ ] **Step 1: Add imports for SessionHeader and its types**
+- Modify: `src/components/editor/rich/agent-chat/AgentChatPanel.tsx`
+- **Step 1: Add imports for SessionHeader and its types**
 
 Add after the existing imports:
 
@@ -1465,13 +1464,13 @@ import { SessionHeader } from './SessionHeader'
 import type { SessionMeta } from './composables/use-session-manager'
 ```
 
-- [ ] **Step 2: Add `NSpin` import**
+- **Step 2: Add `NSpin` import**
 
 ```typescript
 import { NSpin } from 'naive-ui'
 ```
 
-- [ ] **Step 3: Add session-related props**
+- **Step 3: Add session-related props**
 
 Add these props to the `props` object (after `isReplayableItem`):
 
@@ -1498,7 +1497,7 @@ Add these props to the `props` object (after `isReplayableItem`):
     },
 ```
 
-- [ ] **Step 4: Add session-related emits**
+- **Step 4: Add session-related emits**
 
 Add to the `emits` array:
 
@@ -1510,7 +1509,7 @@ Add to the `emits` array:
     'retryLoad',
 ```
 
-- [ ] **Step 5: Insert SessionHeader into the render function and add hydrating overlay**
+- **Step 5: Insert SessionHeader into the render function and add hydrating overlay**
 
 Replace the return JSX in the `setup` function with:
 
@@ -1750,16 +1749,18 @@ export const AgentChatPanel = defineComponent({
 ### Task 14: Frontend — Wire `useSessionManager` into `RichEditorWithAgent` with real abort
 
 **Files:**
-- Modify: `src/components/editor/rich/RichEditorWithAgent.tsx`
 
-- [ ] **Step 1: Replace the `useConversationSync` import with `useSessionManager`**
+- Modify: `src/components/editor/rich/RichEditorWithAgent.tsx`
+- **Step 1: Replace the `useConversationSync` import with `useSessionManager`**
 
 Remove line:
+
 ```typescript
 import { useConversationSync } from './agent-chat/composables/use-conversation-sync'
 ```
 
 Add:
+
 ```typescript
 import { useSessionManager } from './agent-chat/composables/use-session-manager'
 ```
@@ -1779,7 +1780,7 @@ import {
 import type { Ref } from 'vue'
 ```
 
-- [ ] **Step 2: Create the real abort function that calls `agentLoop.abort()`**
+- **Step 2: Create the real abort function that calls `agentLoop.abort()`**
 
 After the `useAgentSetup` call and `provideAgentStore(store)` (line 277), add:
 
@@ -1794,7 +1795,7 @@ After the `useAgentSetup` call and `provideAgentStore(store)` (line 277), add:
 
 This ensures the actual SSE transport abort from `@haklex/rich-ext-ai-agent`'s `useAgentLoop` is called, not just the local `abortController` which is disconnected from the real transport.
 
-- [ ] **Step 3: Replace the `useConversationSync` call with `useSessionManager`**
+- **Step 3: Replace the `useConversationSync` call with `useSessionManager`**
 
 Remove the `useConversationSync({ ... })` block (lines 289-295) and replace with:
 
@@ -1809,7 +1810,7 @@ Remove the `useConversationSync({ ... })` block (lines 289-295) and replace with
     })
 ```
 
-- [ ] **Step 4: Update `handleAbort` to use `realAbort`**
+- **Step 4: Update `handleAbort` to use `realAbort`**
 
 Replace the existing `handleAbort`:
 
@@ -1817,7 +1818,7 @@ Replace the existing `handleAbort`:
     const handleAbort = () => realAbort()
 ```
 
-- [ ] **Step 5: Pass session props to `AgentChatPanel` in the render function**
+- **Step 5: Pass session props to `AgentChatPanel` in the render function**
 
 Update the `<AgentChatPanel>` JSX in the render function to include session props:
 
@@ -1872,15 +1873,15 @@ Update the `<AgentChatPanel>` JSX in the render function to include session prop
 ### Task 15: Frontend — Delete `use-conversation-sync.ts`
 
 **Files:**
-- Delete: `src/components/editor/rich/agent-chat/composables/use-conversation-sync.ts`
 
-- [ ] **Step 1: Delete the file**
+- Delete: `src/components/editor/rich/agent-chat/composables/use-conversation-sync.ts`
+- **Step 1: Delete the file**
 
 ```bash
 rm src/components/editor/rich/agent-chat/composables/use-conversation-sync.ts
 ```
 
-- [ ] **Step 2: Search for any remaining imports and remove them**
+- **Step 2: Search for any remaining imports and remove them**
 
 Verify no other files reference `use-conversation-sync`:
 
@@ -1898,7 +1899,7 @@ Expected: no results (the only import was in `RichEditorWithAgent.tsx`, already 
 
 ### Task 16: Final type-check and validation
 
-- [ ] **Step 1: Run full type check on admin-vue3**
+- **Step 1: Run full type check on admin-vue3**
 
 ```bash
 cd /Users/innei/git/innei-repo/admin-vue3 && npx tsc --noEmit
@@ -1906,7 +1907,7 @@ cd /Users/innei/git/innei-repo/admin-vue3 && npx tsc --noEmit
 
 Expected: clean output with zero errors.
 
-- [ ] **Step 2: Run lint**
+- **Step 2: Run lint**
 
 ```bash
 cd /Users/innei/git/innei-repo/admin-vue3 && pnpm lint
@@ -1914,7 +1915,7 @@ cd /Users/innei/git/innei-repo/admin-vue3 && pnpm lint
 
 Fix any lint errors if found.
 
-- [ ] **Step 3: Verify backend compiles**
+- **Step 3: Verify backend compiles**
 
 ```bash
 cd /Users/innei/git/innei-repo/mx-core && npx tsc --noEmit
@@ -1928,53 +1929,60 @@ Expected: clean output.
 
 ## Critical Issues Addressed
 
-| # | Issue | Root Cause | Fix |
-|---|-------|-----------|-----|
-| 1 | **Abort path is a no-op** | `useAgentSetup().abort()` only sets status to idle via a disconnected `abortController`; the real abort is `agentLoop.abort()` from `useAgentLoop()` in the React component | Task 14 Step 2: `realAbort()` calls `agentLoop.abort()` (captured via `handleAgentLoopReady`), then falls through to the local `abort()`. Session manager receives `abortFn: realAbort` instead of the broken `abort`. |
-| 2 | **Append-only sync misses in-place mutations** | `@haklex/rich-agent-core` mutates bubbles via `updateLastBubble`, `updateToolCallItem`, `store.setState({ bubbles })` — `slice(lastSyncedLength)` misses these | Task 2 Step 1: `ReplaceMessagesSchema` + DTO. Task 3 Step 5: `replaceMessages` service. Task 4 Step 3: `PUT /conversations/:id/messages` endpoint. Task 5: `replaceMessages` API client. Task 10: subscription uses debounced full replacement via `PUT` instead of append-only. |
-| 3 | **Debounced sync not session-scoped** | Timer fires after session switch, writing old state to new session | Task 10 Step 1: `scheduleSyncMessages` captures `activeSessionId` at schedule time; `flushPendingSync()` called in `switchSession`, `deleteSession`, `createSession`, `onUnmounted`, and `refId` watcher. |
+
+| #   | Issue                                          | Root Cause                                                                                                                                                                  | Fix                                                                                                                                                                                                                                                                              |
+| --- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Abort path is a no-op**                      | `useAgentSetup().abort()` only sets status to idle via a disconnected `abortController`; the real abort is `agentLoop.abort()` from `useAgentLoop()` in the React component | Task 14 Step 2: `realAbort()` calls `agentLoop.abort()` (captured via `handleAgentLoopReady`), then falls through to the local `abort()`. Session manager receives `abortFn: realAbort` instead of the broken `abort`.                                                           |
+| 2   | **Append-only sync misses in-place mutations** | `@haklex/rich-agent-core` mutates bubbles via `updateLastBubble`, `updateToolCallItem`, `store.setState({ bubbles })` — `slice(lastSyncedLength)` misses these              | Task 2 Step 1: `ReplaceMessagesSchema` + DTO. Task 3 Step 5: `replaceMessages` service. Task 4 Step 3: `PUT /conversations/:id/messages` endpoint. Task 5: `replaceMessages` API client. Task 10: subscription uses debounced full replacement via `PUT` instead of append-only. |
+| 3   | **Debounced sync not session-scoped**          | Timer fires after session switch, writing old state to new session                                                                                                          | Task 10 Step 1: `scheduleSyncMessages` captures `activeSessionId` at schedule time; `flushPendingSync()` called in `switchSession`, `deleteSession`, `createSession`, `onUnmounted`, and `refId` watcher.                                                                        |
+
 
 ## Warnings Addressed
 
-| # | Warning | Fix |
-|---|---------|-----|
-| 4 | **`messageCount` not available in list** | Task 1: `messageCount` stored field on model. Task 3 Steps 2/4/5: maintained on `create`, `appendMessages` (`$inc`), `replaceMessages`. Task 5: `messageCount` in `AgentConversation` interface. Task 6: `toSessionMeta` reads `conv.messageCount`. |
-| 5 | **AI title not visible after generation** | Task 10 Step 2: after lazy creation, `setTimeout(() => loadSessions(), 5000)` picks up the server-generated title. |
-| 6 | **`refId` watcher incomplete** | Task 11: watcher checks `newId !== oldId`; when `oldId` exists (value→different value), does full reset: `flushPendingSync`, clear `sessions`, `activeSessionId`, `isPendingCreation`, `store.getState().reset()`, increment `sessionEpoch`. |
-| 7 | **Error states missing** | Task 7: `loadError: Ref<boolean>` in session manager. Task 12: `SessionHeader` shows "加载失败，点击重试" when `loadError` is true with `RefreshCw` icon. Task 7: hydration failure shows toast via `useMessage()` from Naive UI. |
-| 8 | **Lazy create with first message** | Task 10 Step 2: subscription creates with `messages: currentBubbles` (the full bubbles array at creation time) instead of creating empty then appending. Matches spec requirement: "POST should include the first message". |
+
+| #   | Warning                                   | Fix                                                                                                                                                                                                                                                 |
+| --- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 4   | `**messageCount` not available in list**  | Task 1: `messageCount` stored field on model. Task 3 Steps 2/4/5: maintained on `create`, `appendMessages` (`$inc`), `replaceMessages`. Task 5: `messageCount` in `AgentConversation` interface. Task 6: `toSessionMeta` reads `conv.messageCount`. |
+| 5   | **AI title not visible after generation** | Task 10 Step 2: after lazy creation, `setTimeout(() => loadSessions(), 5000)` picks up the server-generated title.                                                                                                                                  |
+| 6   | `**refId` watcher incomplete**            | Task 11: watcher checks `newId !== oldId`; when `oldId` exists (value→different value), does full reset: `flushPendingSync`, clear `sessions`, `activeSessionId`, `isPendingCreation`, `store.getState().reset()`, increment `sessionEpoch`.        |
+| 7   | **Error states missing**                  | Task 7: `loadError: Ref<boolean>` in session manager. Task 12: `SessionHeader` shows "加载失败，点击重试" when `loadError` is true with `RefreshCw` icon. Task 7: hydration failure shows toast via `useMessage()` from Naive UI.                            |
+| 8   | **Lazy create with first message**        | Task 10 Step 2: subscription creates with `messages: currentBubbles` (the full bubbles array at creation time) instead of creating empty then appending. Matches spec requirement: "POST should include the first message".                         |
+
 
 ## Spec Coverage Checklist
 
-| Requirement | Task(s) |
-|------------|---------|
-| Multiple independent sessions per article | Tasks 6-11 (session manager), Task 12 (session list UI) |
-| Historical session can be continued | Task 7 (`switchSession` hydration) |
-| Full restore — messages + reviewState + diffState | Task 1 (schema), Task 7 (hydration), Task 10 (sync) |
-| Header bar with dropdown session switcher | Task 12 (SessionHeader), Task 13 (AgentChatPanel integration) |
-| Restore most recent session on open | Task 7 (`loadSessions` → `switchSession(list[0].id)`) |
-| Manual "+" to create new | Task 8 (`createSession`), Task 12 (Plus button) |
-| AI-generated session titles | Task 3 Step 7 (`generateTitle` in `appendMessages`) |
-| User can manually edit titles | Task 9 (`renameSession`), Task 12 (double-click inline edit) |
-| Sessions can be deleted | Task 8 (`deleteSession`), Task 12 (trash + popconfirm) |
-| PATCH endpoint for metadata | Task 2 (schema), Task 3 Step 6 (service), Task 4 Step 2 (controller) |
-| PUT endpoint for full message replacement | Task 2 (schema), Task 3 Step 5 (service), Task 4 Step 3 (controller) |
-| Frontend API client update | Task 5 |
-| Lazy session creation with first message | Task 10 Step 2 (subscription creates on first message with messages included) |
-| refId watch for new articles + full reset on change | Task 11 (refId watcher with old→new reset) |
-| Sync guards (isHydrating, sessionEpoch) | Tasks 7, 10 |
-| Session-scoped debounced full-replacement sync | Task 10 (`scheduleSyncMessages` + `flushPendingSync`) |
-| Debounced reviewState/diffState sync | Task 10 (`scheduleDiffSync`) |
-| Hydrating loading state | Task 13 (`isHydrating` → NSpin) |
-| Error handling — silent sync failure | Task 10 (catch blocks on `replaceMessages` and `updateConversation`) |
-| Error handling — load failure retry | Task 7 (`loadError`), Task 12 (retry UI) |
-| Error handling — hydration failure toast | Task 7 (`message.error('会话恢复失败')`) |
-| Delete active → switch to next | Task 8 (`deleteSession` logic) |
-| Delete non-active → remove from list only | Task 8 |
-| Dropdown sorted by updated desc | Task 12 (`sortedSessions` computed) |
-| Empty state text | Task 12 ("暂无历史对话") |
-| `messageCount` from backend | Task 1 (stored field), Task 3 (maintained), Task 5 (in API type), Task 6 (`toSessionMeta`) |
-| Real abort via agentLoop.abort() | Task 14 (`realAbort` calls `agentLoop.abort()`) |
-| Dark mode support via neutral palette | Task 12 (all classes use `neutral-*`, dark: variants) |
-| `use-conversation-sync.ts` replaced | Task 14 (import swap), Task 15 (file delete) |
-| Delayed title pickup after generation | Task 10 Step 2 (`setTimeout(() => loadSessions(), 5000)`) |
+
+| Requirement                                         | Task(s)                                                                                    |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Multiple independent sessions per article           | Tasks 6-11 (session manager), Task 12 (session list UI)                                    |
+| Historical session can be continued                 | Task 7 (`switchSession` hydration)                                                         |
+| Full restore — messages + reviewState + diffState   | Task 1 (schema), Task 7 (hydration), Task 10 (sync)                                        |
+| Header bar with dropdown session switcher           | Task 12 (SessionHeader), Task 13 (AgentChatPanel integration)                              |
+| Restore most recent session on open                 | Task 7 (`loadSessions` → `switchSession(list[0].id)`)                                      |
+| Manual "+" to create new                            | Task 8 (`createSession`), Task 12 (Plus button)                                            |
+| AI-generated session titles                         | Task 3 Step 7 (`generateTitle` in `appendMessages`)                                        |
+| User can manually edit titles                       | Task 9 (`renameSession`), Task 12 (double-click inline edit)                               |
+| Sessions can be deleted                             | Task 8 (`deleteSession`), Task 12 (trash + popconfirm)                                     |
+| PATCH endpoint for metadata                         | Task 2 (schema), Task 3 Step 6 (service), Task 4 Step 2 (controller)                       |
+| PUT endpoint for full message replacement           | Task 2 (schema), Task 3 Step 5 (service), Task 4 Step 3 (controller)                       |
+| Frontend API client update                          | Task 5                                                                                     |
+| Lazy session creation with first message            | Task 10 Step 2 (subscription creates on first message with messages included)              |
+| refId watch for new articles + full reset on change | Task 11 (refId watcher with old→new reset)                                                 |
+| Sync guards (isHydrating, sessionEpoch)             | Tasks 7, 10                                                                                |
+| Session-scoped debounced full-replacement sync      | Task 10 (`scheduleSyncMessages` + `flushPendingSync`)                                      |
+| Debounced reviewState/diffState sync                | Task 10 (`scheduleDiffSync`)                                                               |
+| Hydrating loading state                             | Task 13 (`isHydrating` → NSpin)                                                            |
+| Error handling — silent sync failure                | Task 10 (catch blocks on `replaceMessages` and `updateConversation`)                       |
+| Error handling — load failure retry                 | Task 7 (`loadError`), Task 12 (retry UI)                                                   |
+| Error handling — hydration failure toast            | Task 7 (`message.error('会话恢复失败')`)                                                         |
+| Delete active → switch to next                      | Task 8 (`deleteSession` logic)                                                             |
+| Delete non-active → remove from list only           | Task 8                                                                                     |
+| Dropdown sorted by updated desc                     | Task 12 (`sortedSessions` computed)                                                        |
+| Empty state text                                    | Task 12 ("暂无历史对话")                                                                         |
+| `messageCount` from backend                         | Task 1 (stored field), Task 3 (maintained), Task 5 (in API type), Task 6 (`toSessionMeta`) |
+| Real abort via agentLoop.abort()                    | Task 14 (`realAbort` calls `agentLoop.abort()`)                                            |
+| Dark mode support via neutral palette               | Task 12 (all classes use `neutral-`*, dark: variants)                                      |
+| `use-conversation-sync.ts` replaced                 | Task 14 (import swap), Task 15 (file delete)                                               |
+| Delayed title pickup after generation               | Task 10 Step 2 (`setTimeout(() => loadSessions(), 5000)`)                                  |
+
+
