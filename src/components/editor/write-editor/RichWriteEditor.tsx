@@ -93,7 +93,9 @@ export const RichWriteEditor = defineComponent({
     const hasContent = computed(() => currentText.value.trim().length > 0)
 
     const editorKey = ref(0)
-    let lastEmittedJson = ''
+    let lastEmittedJson = props.richContent
+      ? JSON.stringify(props.richContent)
+      : ''
 
     watch(
       () => props.richContent,

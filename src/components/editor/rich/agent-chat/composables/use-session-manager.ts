@@ -48,6 +48,7 @@ export function useSessionManager(options: SessionManagerOptions) {
   let sessionEpoch = 0
   let pendingSync: { sessionId: string; cancel: () => void } | null = null
   let diffSyncTimer: ReturnType<typeof setTimeout> | null = null
+  let titlePollTimer: ReturnType<typeof setTimeout> | null = null
 
   async function loadSessions() {
     const id = refId.value
@@ -172,7 +173,18 @@ export function useSessionManager(options: SessionManagerOptions) {
     const bubbles = store.getState().bubbles
     if (bubbles.length === 0) return
     const messages = bubbles as unknown as Record<string, unknown>[]
-    aiAgentApi.replaceMessages(sessionId, messages).catch(() => {})
+    aiAgentApi
+      .replaceMessages(sessionId, messages)
+      .then(() => {
+        const meta = sessions.value.find((s) => s.id === sessionId)
+        if (meta && !meta.title && !titlePollTimer) {
+          titlePollTimer = setTimeout(() => {
+            titlePollTimer = null
+            loadSessions()
+          }, 6000)
+        }
+      })
+      .catch(() => {})
   }
 
   function scheduleSyncMessages() {
@@ -286,6 +298,7 @@ export function useSessionManager(options: SessionManagerOptions) {
     flushPendingSync()
     unsubscribe()
     if (diffSyncTimer) clearTimeout(diffSyncTimer)
+    if (titlePollTimer) clearTimeout(titlePollTimer)
   })
 
   watch(
