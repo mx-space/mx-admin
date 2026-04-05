@@ -281,7 +281,7 @@ export function useReapply(options: UseReapplyOptions) {
           succeeded: 0,
           conflicted: 0,
           failed: 0,
-          total: items.length,
+          total: 0,
         },
       }
       setEntry(key, entry)

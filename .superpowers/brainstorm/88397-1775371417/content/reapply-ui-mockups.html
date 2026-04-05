@@ -1,0 +1,503 @@
+<style>
+  .hero-note {
+    margin-bottom: 1.25rem;
+    color: var(--text-secondary);
+    max-width: 900px;
+  }
+  .ux-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+  @media (max-width: 1100px) {
+    .ux-cards {
+      grid-template-columns: 1fr;
+    }
+  }
+  .ux-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  }
+  .ux-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .ux-card.selected {
+    border-color: var(--selected-border);
+    box-shadow: 0 0 0 2px var(--selected-border), 0 16px 40px rgba(0, 0, 0, 0.12);
+  }
+  .ux-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(120,120,128,0.06), transparent);
+  }
+  .ux-kicker {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .ux-badge {
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    border-radius: 999px;
+    padding: 0.18rem 0.5rem;
+    font-size: 0.74rem;
+  }
+  .ux-badge.recommended {
+    border-color: rgba(10, 132, 255, 0.35);
+    color: var(--accent);
+    background: rgba(10, 132, 255, 0.08);
+  }
+  .ux-body {
+    padding: 1rem;
+  }
+  .ux-title {
+    font-size: 1rem;
+    font-weight: 650;
+    margin-bottom: 0.3rem;
+  }
+  .ux-copy {
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    margin-bottom: 1rem;
+  }
+  .panel {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--bg-primary);
+    overflow: hidden;
+    min-height: 360px;
+  }
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.7rem 0.85rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-secondary);
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+  }
+  .dots {
+    display: flex;
+    gap: 0.35rem;
+  }
+  .dot {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 999px;
+    background: var(--bg-tertiary);
+  }
+  .chat-area {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 0.85rem;
+  }
+  .assistant-bubble {
+    align-self: flex-start;
+    max-width: 82%;
+    padding: 0.7rem 0.85rem;
+    border-radius: 14px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    font-size: 0.82rem;
+    color: var(--text-primary);
+  }
+  .tool-group {
+    border: 1px dashed rgba(160, 120, 220, 0.6);
+    border-radius: 14px;
+    background: rgba(170, 140, 255, 0.05);
+    padding: 0.7rem;
+  }
+  .tool-group-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.55rem;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+  }
+  .mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .tool-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.48rem 0.55rem;
+    border-radius: 10px;
+    background: var(--bg-secondary);
+    border: 1px solid rgba(127, 127, 127, 0.08);
+    margin-bottom: 0.42rem;
+    font-size: 0.8rem;
+  }
+  .tool-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+  }
+  .status-check {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(52, 199, 89, 0.14);
+    color: #1f9f46;
+    font-size: 0.7rem;
+    flex-shrink: 0;
+  }
+  .tool-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
+  }
+  .tool-meta {
+    color: var(--text-tertiary);
+    font-size: 0.74rem;
+    flex-shrink: 0;
+  }
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .ghost-btn, .solid-btn, .danger-btn {
+    border-radius: 999px;
+    padding: 0.22rem 0.55rem;
+    font-size: 0.72rem;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-secondary);
+  }
+  .solid-btn {
+    border-color: rgba(10, 132, 255, 0.35);
+    background: rgba(10, 132, 255, 0.1);
+    color: var(--accent);
+  }
+  .danger-btn {
+    border-color: rgba(255, 59, 48, 0.24);
+    background: rgba(255, 59, 48, 0.08);
+    color: var(--error);
+  }
+  .hover-note {
+    margin-top: 0.55rem;
+    padding: 0.5rem 0.65rem;
+    border-radius: 10px;
+    background: rgba(10, 132, 255, 0.08);
+    color: var(--accent);
+    font-size: 0.75rem;
+  }
+  .tray {
+    margin-top: 0.75rem;
+    border: 1px solid rgba(10, 132, 255, 0.18);
+    background: rgba(10, 132, 255, 0.06);
+    border-radius: 12px;
+    padding: 0.65rem;
+  }
+  .tray-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.45rem;
+    font-size: 0.77rem;
+    color: var(--text-secondary);
+  }
+  .tray-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.45rem 0.5rem;
+    background: var(--bg-secondary);
+    border: 1px solid rgba(127,127,127,0.08);
+    border-radius: 10px;
+    margin-bottom: 0.35rem;
+    font-size: 0.78rem;
+  }
+  .conflict {
+    margin-top: 0.7rem;
+    border: 1px solid rgba(255, 159, 10, 0.28);
+    background: rgba(255, 159, 10, 0.1);
+    color: #b06b00;
+    border-radius: 12px;
+    padding: 0.65rem;
+    font-size: 0.76rem;
+  }
+  .diff-batch {
+    margin-top: 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--bg-secondary);
+  }
+  .diff-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.55rem 0.7rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.76rem;
+    background: rgba(120, 120, 128, 0.06);
+  }
+  .diff-row {
+    padding: 0.45rem 0.7rem;
+    font-size: 0.75rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .diff-row.add {
+    background: rgba(52, 199, 89, 0.08);
+    color: #1f9f46;
+  }
+  .diff-row.remove {
+    background: rgba(255, 59, 48, 0.06);
+    color: #b42318;
+    text-decoration: line-through;
+  }
+  .footer-note {
+    margin-top: 1rem;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+  }
+</style>
+
+<h2>`re-apply` UI/UX 方向</h2>
+<p class="hero-note">这次不是文字方案，而是把它放回真实聊天上下文里看。重点看三件事：按钮放在哪、整组和单条怎么协同、冲突时用户有没有“先看再执行”的安全感。</p>
+
+<div class="ux-cards">
+  <div class="ux-card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="ux-top">
+      <div class="ux-kicker">Option A</div>
+      <div class="ux-badge">Fastest</div>
+    </div>
+    <div class="ux-body">
+      <div class="ux-title">Hover 直接重放</div>
+      <div class="ux-copy">把 `Re-apply` 做成 hover action，单条和整组都能在原位直接点。</div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+          <div>Agent Chat</div>
+        </div>
+        <div class="chat-area">
+          <div class="assistant-bubble">I translated the selected blocks and executed 18 replacement tools.</div>
+
+          <div class="tool-group">
+            <div class="tool-group-head">
+              <span class="mono">Executed 18 tasks</span>
+              <div class="actions">
+                <button class="ghost-btn">Copy</button>
+                <button class="solid-btn">Re-apply all</button>
+              </div>
+            </div>
+
+            <div class="tool-line">
+              <div class="tool-left">
+                <span class="status-check">✓</span>
+                <span class="tool-name mono">replace_intro_block</span>
+              </div>
+              <div class="actions">
+                <span class="tool-meta">2ms</span>
+                <button class="solid-btn">Re-apply</button>
+              </div>
+            </div>
+
+            <div class="tool-line">
+              <div class="tool-left">
+                <span class="status-check">✓</span>
+                <span class="tool-name mono">replace_note_07</span>
+              </div>
+              <div class="actions">
+                <span class="tool-meta">4ms</span>
+                <button class="solid-btn">Re-apply</button>
+              </div>
+            </div>
+
+            <div class="tool-line">
+              <div class="tool-left">
+                <span class="status-check">✓</span>
+                <span class="tool-name mono">replace_note_08</span>
+              </div>
+              <div class="actions">
+                <span class="tool-meta">8ms</span>
+                <button class="solid-btn">Re-apply</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="hover-note">优点是顺手，缺点是整组重放和单条重放都像“危险快捷键”。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ux-card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="ux-top">
+      <div class="ux-kicker">Option B</div>
+      <div class="ux-badge recommended">Recommended</div>
+    </div>
+    <div class="ux-body">
+      <div class="ux-title">加到 Re-apply Tray</div>
+      <div class="ux-copy">点击后先进入一个轻量 tray，用户可以混合单条、整组、diff batch，再统一执行。</div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+          <div>Agent Chat</div>
+        </div>
+        <div class="chat-area">
+          <div class="assistant-bubble">18 tools completed. 3 of them are safe to replay, 1 review batch can be re-applied.</div>
+
+          <div class="tool-group">
+            <div class="tool-group-head">
+              <span class="mono">Executed 18 tasks</span>
+              <div class="actions">
+                <button class="ghost-btn">Copy</button>
+                <button class="ghost-btn">Queue all</button>
+              </div>
+            </div>
+
+            <div class="tool-line">
+              <div class="tool-left">
+                <span class="status-check">✓</span>
+                <span class="tool-name mono">replace_intro_block</span>
+              </div>
+              <div class="actions">
+                <span class="tool-meta">2ms</span>
+                <button class="solid-btn">Add</button>
+              </div>
+            </div>
+
+            <div class="tool-line">
+              <div class="tool-left">
+                <span class="status-check">✓</span>
+                <span class="tool-name mono">replace_note_07</span>
+              </div>
+              <div class="actions">
+                <span class="tool-meta">4ms</span>
+                <button class="solid-btn">Add</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="diff-batch">
+            <div class="diff-head">
+              <span>3 changes pending</span>
+              <div class="actions">
+                <button class="ghost-btn">Accept</button>
+                <button class="danger-btn">Reject</button>
+                <button class="solid-btn">Queue batch</button>
+              </div>
+            </div>
+            <div class="diff-row remove">- English paragraph block</div>
+            <div class="diff-row add">+ Japanese translated paragraph</div>
+          </div>
+
+          <div class="tray">
+            <div class="tray-head">
+              <span>Re-apply tray · 3 queued</span>
+              <div class="actions">
+                <button class="ghost-btn">Clear</button>
+                <button class="solid-btn">Apply all</button>
+              </div>
+            </div>
+            <div class="tray-item">
+              <span class="mono">replace_intro_block</span>
+              <span class="ux-badge">safe</span>
+            </div>
+            <div class="tray-item">
+              <span class="mono">replace_note_07</span>
+              <span class="ux-badge">safe</span>
+            </div>
+            <div class="tray-item">
+              <span>Review batch #12</span>
+              <span class="ux-badge">needs check</span>
+            </div>
+          </div>
+
+          <div class="conflict">Conflict preview: block `note_07` changed since last run. Keep in tray, inspect, or apply with fallback.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ux-card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="ux-top">
+      <div class="ux-kicker">Option C</div>
+      <div class="ux-badge">Most agent-like</div>
+    </div>
+    <div class="ux-body">
+      <div class="ux-title">生成新的 Replay Bubble</div>
+      <div class="ux-copy">点 `Re-apply` 以后，不直接改文档，而是在消息流里追加一条 “Replay request” 并重新运行。</div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+          <div>Agent Chat</div>
+        </div>
+        <div class="chat-area">
+          <div class="tool-group">
+            <div class="tool-group-head">
+              <span class="mono">Executed 18 tasks</span>
+              <div class="actions">
+                <button class="solid-btn">Replay in chat</button>
+              </div>
+            </div>
+            <div class="tool-line">
+              <div class="tool-left">
+                <span class="status-check">✓</span>
+                <span class="tool-name mono">replace_note_08</span>
+              </div>
+              <div class="actions">
+                <span class="tool-meta">8ms</span>
+                <button class="solid-btn">Replay</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="assistant-bubble">
+            <strong>Replay request</strong><br />
+            Re-run `replace_note_08` against current document state.
+          </div>
+
+          <div class="tool-group">
+            <div class="tool-group-head">
+              <span class="mono">Replaying 1 task</span>
+              <div class="actions">
+                <button class="ghost-btn">Cancel</button>
+              </div>
+            </div>
+            <div class="tool-line">
+              <div class="tool-left">
+                <span class="status-check" style="background: rgba(10,132,255,0.14); color: var(--accent);">↻</span>
+                <span class="tool-name mono">replace_note_08</span>
+              </div>
+              <div class="actions">
+                <span class="tool-meta">running</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hover-note">历史更完整，但 UI 上会更像“再发起一个 agent 任务”，不够像局部编辑动作。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="footer-note">我现在的推荐仍然是 <strong>B</strong>：入口可以保持轻量，但安全检查、冲突解释和三层统一抽象都会明显更顺。看完后告诉我你更接近哪张，或者直接说你想把哪两张混起来。</p>

@@ -1,0 +1,83 @@
+<h2>`re-apply` 交互方案</h2>
+<p class="subtitle">目标前提：支持单条 tool call、整组 tool call、以及 diff batch；默认按当前文档状态执行，遇到上下文不兼容时提示冲突或降级。</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>就地重放</h3>
+      <p>在单条、整组、diff batch 标题右侧都直接放一个 `Re-apply` 操作，点击立即执行。</p>
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>Pros</h4>
+          <ul>
+            <li>最贴近你截图里的交互，改动最小</li>
+            <li>用户路径最短，看到哪里点哪里</li>
+            <li>单条、整组、batch 都能共用同一种按钮语言</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>Cons</h4>
+          <ul>
+            <li>误触成本高，尤其是整组重放</li>
+            <li>冲突处理容易变成“点了才知道”</li>
+            <li>多次重放的历史和状态不够清晰</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>加入待重放队列</h3>
+      <p>点击 `Re-apply` 先加入一个轻量 queue / tray，再由用户统一执行；冲突和降级提示先在队列层展示。</p>
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>Pros</h4>
+          <ul>
+            <li>最适合三层统一抽象：单条是 1 项，整组是多项，diff batch 是另一种 entry</li>
+            <li>能在执行前做 compatibility check，减少误操作</li>
+            <li>适合以后扩展成多选、局部批处理、一次执行多个 patch</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>Cons</h4>
+          <ul>
+            <li>UI 状态会明显变复杂</li>
+            <li>如果只是想快速重放一条，会比直接点击多一步</li>
+            <li>需要新增 queue 状态与执行反馈</li>
+          </ul>
+        </div>
+      </div>
+      <p><strong>推荐：</strong>如果你要三层都支持，而且要有冲突/降级逻辑，这个方案最稳。</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>转成新的 agent 行为</h3>
+      <p>每次 `Re-apply` 都不是立即操作编辑器，而是生成一个新的 agent action / bubble，再沿现有 loop 执行。</p>
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>Pros</h4>
+          <ul>
+            <li>和当前聊天流、运行状态、错误泡泡最一致</li>
+            <li>天然有执行日志，历史可追踪</li>
+            <li>整组重放尤其自然，本质上像“重跑这个子任务”</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>Cons</h4>
+          <ul>
+            <li>对纯 diff batch 的“再应用”来说有点绕</li>
+            <li>用户可能会分不清“重放旧操作”还是“重新让 agent 思考一次”</li>
+            <li>实现上会更依赖现有 agent store / loop 能否表达重放元信息</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
