@@ -1,5 +1,5 @@
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
-import { createElement } from 'react'
+import { createElement, useMemo } from 'react'
 import { createRoot } from 'react-dom/client'
 import { $getRoot, $getState, $parseSerializedNode } from 'lexical'
 import {
@@ -54,6 +54,7 @@ import { API_URL } from '~/constants/env'
 import { useUIStore } from '~/stores/ui'
 
 import { AgentChatPanel } from './agent-chat/AgentChatPanel'
+import { createContextAwareEngine } from './agent-chat/composables/context-aware-engine'
 import { useAgentSetup } from './agent-chat/composables/use-agent-loop'
 import { useReapply } from './agent-chat/composables/use-agent-reapply'
 import { provideAgentStore } from './agent-chat/composables/use-agent-store'
@@ -163,7 +164,12 @@ function AgentLoopCaptureInner({
   provider: LLMProvider
   store: AgentStore
 }) {
-  const loop = useAgentLoop({ provider, store })
+  const messageEngine = useMemo(() => createContextAwareEngine(store), [store])
+  const loop = useAgentLoop({
+    provider,
+    store,
+    messageEngine: messageEngine as any,
+  })
   onAgentLoopReady(loop)
 
   const [editor] = useLexicalComposerContext()

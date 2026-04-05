@@ -171,3 +171,19 @@
 .write-editor-wrapper.rich-editor-mode.toolbar-stuck [role='toolbar'] {
   box-shadow: var(--rc-shadow-top-bar);
 }
+
+/* Diff review summary bar: stick to the bottom of the editor scroll viewport.
+   The overlay (_12dh7n0) is position:absolute;inset:0 covering the full content.
+   The bar (_12dh7n8) is position:sticky;bottom:0 (from the library).
+   Problem: sticky only activates when the element's natural position is past the
+   viewport edge. With no in-flow siblings, the bar sits at the overlay top.
+   Fix: flex-column + margin-top:auto pushes the bar to the content bottom,
+   so sticky;bottom:0 correctly pins it to the scroll viewport bottom. */
+.write-editor-wrapper.rich-editor-mode ._12dh7n0 {
+  display: flex;
+  flex-direction: column;
+}
+
+.write-editor-wrapper.rich-editor-mode ._12dh7n8 {
+  margin-top: auto;
+}
