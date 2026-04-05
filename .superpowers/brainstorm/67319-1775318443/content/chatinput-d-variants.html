@@ -1,0 +1,332 @@
+<style>
+  .variant-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  @media (max-width: 1100px) {
+    .variant-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .variant-card {
+    background: linear-gradient(180deg, #101214 0%, #0b0d10 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    padding: 18px;
+    min-height: 430px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.28);
+  }
+
+  .variant-card.selected {
+    outline: 2px solid var(--selected-border);
+    outline-offset: 2px;
+  }
+
+  .variant-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .variant-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 28px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #f5f5f7;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .variant-tone {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.58);
+  }
+
+  .panel-shell {
+    flex: 1;
+    border-radius: 16px;
+    background: linear-gradient(180deg, #171b21 0%, #0f1318 100%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 16px;
+    overflow: hidden;
+  }
+
+  .bubble {
+    align-self: flex-start;
+    max-width: 72%;
+    margin-bottom: 10px;
+    border-radius: 14px;
+    padding: 10px 12px;
+    font-size: 12px;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.72);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .bubble.user {
+    align-self: flex-end;
+    background: rgba(86, 156, 255, 0.16);
+    color: rgba(222, 235, 255, 0.92);
+  }
+
+  .input-frame {
+    position: relative;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 8px;
+  }
+
+  .input-field {
+    min-height: 92px;
+    padding: 16px 16px 46px;
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .placeholder-text {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .toolbar-wrap {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 8px 12px 0;
+  }
+
+  .toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .model-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .hint {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.42);
+  }
+
+  .send-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .notes {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .d1 .toolbar {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 0 0 14px 14px;
+    padding: 8px 10px;
+  }
+
+  .d1 .model-chip {
+    padding: 6px 10px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .d2 .input-field {
+    min-height: 82px;
+    padding-bottom: 40px;
+  }
+
+  .d2 .toolbar {
+    padding: 0 2px 4px;
+  }
+
+  .d2 .model-chip {
+    padding: 4px 0;
+  }
+
+  .d2 .send-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: rgba(98, 164, 255, 0.2);
+  }
+
+  .d3 .input-frame {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px 12px 16px 16px;
+    margin-top: 10px;
+  }
+
+  .d3 .toolbar {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.12);
+    border-radius: 0 0 16px 16px;
+    padding: 9px 10px;
+  }
+
+  .d3 .model-chip {
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .d3 .send-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    background: rgba(98, 164, 255, 0.24);
+    box-shadow: 0 6px 14px rgba(98, 164, 255, 0.16);
+  }
+
+  .callout {
+    margin-top: 18px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 13px;
+  }
+</style>
+
+<h2>D Variants</h2>
+<p class="subtitle">You chose the compact-toolbar direction. Which version of that feels most right for this editor?</p>
+
+<div class="cards variant-grid">
+  <div class="card variant-card d1" data-choice="d1" onclick="toggleSelect(this)">
+    <div class="variant-head">
+      <div class="variant-badge">D1</div>
+      <div class="variant-tone">Balanced Compact</div>
+    </div>
+    <div class="panel-shell">
+      <div class="bubble">Compact, but still gives the toolbar its own row and clear structure.</div>
+      <div class="bubble user">Keep it efficient, but not too stripped down.</div>
+      <div class="input-frame">
+        <div class="input-field">
+          <div class="placeholder-text">Message...</div>
+        </div>
+        <div class="toolbar-wrap">
+          <div class="toolbar">
+            <div class="toolbar-left">
+              <div class="model-chip">Select model</div>
+              <div class="hint">Enter</div>
+            </div>
+            <div class="send-btn">^</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <div>Best balance of density and hierarchy.</div>
+      <div>Safe default if you want a polished production UI.</div>
+    </div>
+  </div>
+
+  <div class="card variant-card d2" data-choice="d2" onclick="toggleSelect(this)">
+    <div class="variant-head">
+      <div class="variant-badge">D2</div>
+      <div class="variant-tone">Ultra Dense</div>
+    </div>
+    <div class="panel-shell">
+      <div class="bubble">The footer is almost all function, with very little extra chrome.</div>
+      <div class="bubble user">Make it feel fast and compact.</div>
+      <div class="input-frame">
+        <div class="input-field">
+          <div class="placeholder-text">Message...</div>
+        </div>
+        <div class="toolbar-wrap">
+          <div class="toolbar">
+            <div class="toolbar-left">
+              <div class="model-chip">Select model</div>
+              <div class="hint">Enter</div>
+            </div>
+            <div class="send-btn">^</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <div>Highest information density.</div>
+      <div>Great for long sessions, but easiest to make feel too plain.</div>
+    </div>
+  </div>
+
+  <div class="card variant-card d3" data-choice="d3" onclick="toggleSelect(this)">
+    <div class="variant-head">
+      <div class="variant-badge">D3</div>
+      <div class="variant-tone">Elevated Compact</div>
+    </div>
+    <div class="panel-shell">
+      <div class="bubble">Still compact, but with a slightly more premium shape and clearer actions.</div>
+      <div class="bubble user">Compact, but give it a bit more presence.</div>
+      <div class="input-frame">
+        <div class="input-field">
+          <div class="placeholder-text">Message...</div>
+        </div>
+        <div class="toolbar-wrap">
+          <div class="toolbar">
+            <div class="toolbar-left">
+              <div class="model-chip">Select model</div>
+              <div class="hint">Enter</div>
+            </div>
+            <div class="send-btn">^</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">
+      <div>Most refined while staying in the D family.</div>
+      <div>Good if you want compact plus a little personality.</div>
+    </div>
+  </div>
+</div>
+
+<div class="callout">
+  Pick <strong>D1</strong>, <strong>D2</strong>, or <strong>D3</strong>. If none are right, reply with something like <strong>D1 but flatter</strong> or <strong>D3 with a smaller send button</strong>.
+</div>

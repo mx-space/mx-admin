@@ -1,0 +1,368 @@
+<style>
+  .compare-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  @media (max-width: 1100px) {
+    .compare-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .idea-card {
+    background: linear-gradient(180deg, #101214 0%, #0b0d10 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    padding: 18px;
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.28);
+  }
+
+  .idea-card.selected {
+    outline: 2px solid var(--selected-border);
+    outline-offset: 2px;
+  }
+
+  .idea-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .idea-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #f5f5f7;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .idea-tone {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.58);
+  }
+
+  .panel-shell {
+    flex: 1;
+    border-radius: 16px;
+    background: linear-gradient(180deg, #171b21 0%, #0f1318 100%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bubble {
+    align-self: flex-start;
+    max-width: 72%;
+    margin-bottom: 10px;
+    border-radius: 14px;
+    padding: 10px 12px;
+    font-size: 12px;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.72);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .bubble.user {
+    align-self: flex-end;
+    background: rgba(86, 156, 255, 0.16);
+    color: rgba(222, 235, 255, 0.92);
+  }
+
+  .input-frame {
+    position: relative;
+    margin-top: 8px;
+    color: rgba(255, 255, 255, 0.92);
+  }
+
+  .input-field {
+    min-height: 112px;
+    padding: 18px 18px 50px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .placeholder-text {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .toolbar-row {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .model-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.68);
+  }
+
+  .send-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .hint {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.46);
+  }
+
+  .idea-notes {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .focusbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, rgba(69, 140, 255, 0.2), rgba(69, 140, 255, 0.85), rgba(69, 140, 255, 0.2));
+  }
+
+  .b .input-frame {
+    background: rgba(245, 247, 250, 0.06);
+    border-radius: 16px;
+    box-shadow: 0 0 0 2px rgba(88, 152, 255, 0.22);
+  }
+
+  .b .input-field {
+    background: transparent;
+  }
+
+  .b .send-btn {
+    background: linear-gradient(135deg, #4f89ff 0%, #73a7ff 100%);
+    color: white;
+    box-shadow: 0 8px 20px rgba(79, 137, 255, 0.28);
+  }
+
+  .b .model-chip {
+    padding-left: 10px;
+    border-left: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .c .input-frame {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 22px;
+    backdrop-filter: blur(16px);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 18px 38px rgba(0, 0, 0, 0.3);
+  }
+
+  .c .send-btn {
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .c .model-chip {
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .d .input-frame {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0;
+    background: transparent;
+    padding-top: 2px;
+  }
+
+  .d .input-field {
+    min-height: 98px;
+    padding: 16px 16px 42px;
+  }
+
+  .d .toolbar-row {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 10px 14px 0;
+    position: absolute;
+  }
+
+  .d .toolbar-strip {
+    width: 100%;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 0 0 14px 14px;
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .d .model-chip {
+    padding: 6px 10px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .d .send-btn {
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+  }
+
+  .callout {
+    margin-top: 18px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 13px;
+  }
+</style>
+
+<h2>Chat Input Mockups: B, C, D</h2>
+<p class="subtitle">These are three directions for the selected chat input area. Click the one that feels closest, then tell me what to adjust.</p>
+
+<div class="cards compare-grid">
+  <div class="card idea-card b" data-choice="b" onclick="toggleSelect(this)">
+    <div class="idea-meta">
+      <div>
+        <div class="idea-badge">B</div>
+      </div>
+      <div class="idea-tone">Outlined Focus Ring</div>
+    </div>
+    <div class="panel-shell">
+      <div class="bubble">Agent status, suggestions, and conversation stay visually separate from the footer.</div>
+      <div class="bubble user">Refine this UI and make it feel more precise.</div>
+      <div class="input-frame">
+        <div class="focusbar"></div>
+        <div class="input-field">
+          <div class="placeholder-text">Message...</div>
+        </div>
+        <div class="toolbar-row">
+          <div class="toolbar-left">
+            <div class="model-chip">Select model v</div>
+          </div>
+          <div class="send-btn">^</div>
+        </div>
+      </div>
+    </div>
+    <div class="idea-notes">
+      <div>Strong focus state for an editor-like feel.</div>
+      <div>Looks most native to Cursor / VS Code tooling.</div>
+      <div>Best when precision matters more than softness.</div>
+    </div>
+  </div>
+
+  <div class="card idea-card c" data-choice="c" onclick="toggleSelect(this)">
+    <div class="idea-meta">
+      <div>
+        <div class="idea-badge">C</div>
+      </div>
+      <div class="idea-tone">Glass Card</div>
+    </div>
+    <div class="panel-shell">
+      <div class="bubble">The footer feels lifted and premium, with more depth in dark mode.</div>
+      <div class="bubble user">I want something polished but still restrained.</div>
+      <div class="input-frame">
+        <div class="input-field">
+          <div class="placeholder-text">Message...</div>
+        </div>
+        <div class="toolbar-row">
+          <div class="toolbar-left">
+            <div class="model-chip">Select model v</div>
+          </div>
+          <div class="send-btn">^</div>
+        </div>
+      </div>
+    </div>
+    <div class="idea-notes">
+      <div>Most visual depth and strongest dark-mode personality.</div>
+      <div>Feels a bit more premium and consumer-product-like.</div>
+      <div>Higher risk of feeling too decorative if overdone.</div>
+    </div>
+  </div>
+
+  <div class="card idea-card d" data-choice="d" onclick="toggleSelect(this)">
+    <div class="idea-meta">
+      <div>
+        <div class="idea-badge">D</div>
+      </div>
+      <div class="idea-tone">Compact Toolbar</div>
+    </div>
+    <div class="panel-shell">
+      <div class="bubble">The footer becomes dense and practical, with less visual chrome.</div>
+      <div class="bubble user">Keep it efficient and compact for long writing sessions.</div>
+      <div class="input-frame">
+        <div class="input-field">
+          <div class="placeholder-text">Message...</div>
+        </div>
+        <div class="toolbar-row">
+          <div class="toolbar-strip">
+            <div class="toolbar-left">
+              <div class="model-chip">Select model</div>
+              <div class="hint">Enter</div>
+            </div>
+            <div class="send-btn">^</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="idea-notes">
+      <div>Most compact and utilitarian.</div>
+      <div>Fits productivity-heavy workflows and denser layouts.</div>
+      <div>Least \"special\", but likely the most scalable.</div>
+    </div>
+  </div>
+</div>
+
+<div class="callout">
+  Suggested read: <strong>B</strong> if you want it to feel IDE-native, <strong>C</strong> if you want a richer dark UI, and <strong>D</strong> if you want the most compact workflow.
+</div>
