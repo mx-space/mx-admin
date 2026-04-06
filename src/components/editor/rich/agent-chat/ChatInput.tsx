@@ -1,6 +1,9 @@
-import { ArrowUp, Square } from 'lucide-vue-next'
+import { ArrowUp, Square, Type, X } from 'lucide-vue-next'
 import { defineComponent, ref } from 'vue'
-import type { AgentStoreStatus } from '@haklex/rich-agent-core'
+import type {
+  AgentStoreStatus,
+  CapturedSelection,
+} from '@haklex/rich-agent-core'
 import type { PropType } from 'vue'
 
 const STATUS_LABELS: Partial<Record<AgentStoreStatus, string>> = {
@@ -15,9 +18,13 @@ export const ChatInput = defineComponent({
   props: {
     disabled: { type: Boolean, default: false },
     isRunning: { type: Boolean, default: false },
+    pinnedSelection: {
+      type: Object as PropType<CapturedSelection | null>,
+      default: null,
+    },
     status: { type: String as PropType<AgentStoreStatus>, default: 'idle' },
   },
-  emits: ['send', 'abort'],
+  emits: ['send', 'abort', 'dismissSelection'],
   setup(props, { emit, slots }) {
     const input = ref('')
     const textareaRef = ref<HTMLTextAreaElement>()
@@ -52,6 +59,28 @@ export const ChatInput = defineComponent({
 
       return (
         <div class="flex flex-shrink-0 flex-col">
+          {props.pinnedSelection && (
+            <div class="mx-3 mb-1.5 mt-1 flex items-center gap-1.5 rounded-lg bg-neutral-100 px-2.5 py-1.5 text-xs text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
+              <Type
+                class="flex-shrink-0 text-neutral-400 dark:text-neutral-500"
+                size={12}
+                strokeWidth={2}
+              />
+              <span class="min-w-0 flex-1 truncate">
+                {props.pinnedSelection.type === 'text'
+                  ? `"${props.pinnedSelection.text.length > 60 ? `${props.pinnedSelection.text.slice(0, 60)}…` : props.pinnedSelection.text}"`
+                  : `${props.pinnedSelection.blockIds.length} block${props.pinnedSelection.blockIds.length > 1 ? 's' : ''} selected`}
+              </span>
+              <button
+                aria-label="Dismiss selection"
+                class="inline-flex h-4 w-4 flex-shrink-0 cursor-pointer items-center justify-center rounded-full border-none bg-transparent p-0 text-neutral-400 hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300"
+                type="button"
+                onClick={() => emit('dismissSelection')}
+              >
+                <X size={12} strokeWidth={2} />
+              </button>
+            </div>
+          )}
           {props.isRunning && statusLabel && (
             <div class="flex items-center gap-1.5 px-4 py-1.5 text-xs text-neutral-400">
               <span class="relative flex h-1.5 w-1.5 flex-shrink-0">

@@ -78,6 +78,9 @@ export const AgentChatPanel = defineComponent({
     const bubbles = useAgentStoreSelector(agentStoreSelectors.bubbles)
     const status = useAgentStoreSelector(agentStoreSelectors.status)
     const reviewState = useAgentStoreSelector(agentStoreSelectors.reviewState)
+    const pinnedSelection = useAgentStoreSelector(
+      agentStoreSelectors.pinnedSelection,
+    )
 
     const isRunning = computed(
       () => status.value !== 'idle' && status.value !== 'done',
@@ -137,9 +140,11 @@ export const AgentChatPanel = defineComponent({
             <ChatInput
               disabled={!hasModel.value}
               isRunning={isRunning.value}
+              pinnedSelection={pinnedSelection.value}
               status={status.value}
               onSend={handleSend}
               onAbort={() => emit('abort')}
+              onDismissSelection={() => store.getState().clearPinnedSelection()}
             >
               {{
                 modelSelector: () => (
