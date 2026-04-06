@@ -88,6 +88,9 @@ export default ({ mode }) => {
         importSource: 'vue',
       },
     },
+    test: {
+      environment: 'happy-dom',
+    },
   })
 }
 

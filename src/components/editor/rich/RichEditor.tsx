@@ -4,7 +4,6 @@ import { defineComponent, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { ProviderGroup, SelectedModel } from '@haklex/rich-agent-chat'
 import type { ChatBubble } from '@haklex/rich-agent-core'
 import type { RichEditorVariant } from '@haklex/rich-editor'
-import type { NestedDocDialogEditorProps } from '@haklex/rich-ext-nested-doc'
 import type { ShiroEditorProps } from '@haklex/rich-kit-shiro'
 import type {
   Klass,
@@ -15,14 +14,7 @@ import type {
 import type { Root } from 'react-dom/client'
 import type { PropType } from 'vue'
 
-import { DialogStackProvider } from '@haklex/rich-editor-ui'
-import {
-  NestedDocDialogEditorProvider,
-  nestedDocEditNodes,
-  NestedDocPlugin,
-} from '@haklex/rich-ext-nested-doc'
-import { ExcalidrawConfigProvider, ShiroEditor } from '@haklex/rich-kit-shiro'
-import { ToolbarPlugin } from '@haklex/rich-plugin-toolbar'
+import { NestedDocPlugin } from '@haklex/rich-ext-nested-doc'
 import { $convertToMarkdownString, TRANSFORMERS } from '@lexical/markdown'
 
 import '@haklex/rich-ext-ai-agent/style.css'
@@ -30,45 +22,13 @@ import '@haklex/rich-kit-shiro/style.css'
 import '@haklex/rich-plugin-toolbar/style.css'
 import '@haklex/rich-ext-nested-doc/style.css'
 
-import { filesApi } from '~/api/files'
-import { API_URL } from '~/constants/env'
 import { useUIStore } from '~/stores/ui'
 
+import { buildShiroEditorProps } from './build-shiro-editor-props'
 import { RichEditorWithAgent } from './RichEditorWithAgent'
+import { createShiroEditorBridgeElement } from './shiro-editor-bridge'
 
-const saveExcalidrawSnapshot = async (
-  snapshot: object,
-  existingRef?: string,
-): Promise<string> => {
-  const blob = new Blob([JSON.stringify(snapshot)], {
-    type: 'application/json',
-  })
-  const file = new File([blob], 'snapshot.excalidraw', {
-    type: 'application/json',
-  })
-
-  // 已有文件则原地更新，否则创建新文件
-  if (existingRef?.startsWith('ref:file/')) {
-    const name = existingRef.slice(9)
-    const result = await filesApi.update('file', name, file)
-    return `ref:file/${result.name}`
-  }
-
-  const result = await filesApi.upload(file, 'file')
-  return `ref:file/${result.name}`
-}
-
-function NestedDocDialogEditor({
-  initialValue,
-  onEditorReady,
-}: NestedDocDialogEditorProps) {
-  return createElement(ShiroEditor, {
-    initialValue,
-    onEditorReady,
-    extraNodes: nestedDocEditNodes,
-    header: createElement(ToolbarPlugin),
-  })
-}
+type FocusableEditorHandle = { focus: () => void }
 
 // React wrapper: syncs Vue-driven props and emits callbacks back
 const ShiroEditorReact = (props: {
@@ -77,36 +37,13 @@ const ShiroEditorReact = (props: {
   onSubmit?: () => void
   onEditorReady?: (editor: LexicalEditor | null) => void
 }) => {
-  return createElement(
-    NestedDocDialogEditorProvider,
-    { value: NestedDocDialogEditor },
-    createElement(
-      DialogStackProvider,
-      null,
-      createElement(
-        ExcalidrawConfigProvider,
-        {
-          saveSnapshot: saveExcalidrawSnapshot,
-          apiUrl: API_URL,
-        },
-        createElement(
-          ShiroEditor,
-          {
-            ...props.editorProps,
-            extraNodes: [
-              ...(props.editorProps.extraNodes || []),
-              ...nestedDocEditNodes,
-            ],
-            header: createElement(ToolbarPlugin),
-            onChange: props.onChange,
-            onSubmit: props.onSubmit,
-            onEditorReady: props.onEditorReady,
-          },
-          createElement(NestedDocPlugin),
-        ),
-      ),
-    ),
-  )
+  return createShiroEditorBridgeElement({
+    editorProps: props.editorProps,
+    onChange: props.onChange,
+    onSubmit: props.onSubmit,
+    onEditorReady: props.onEditorReady,
+    children: [createElement(NestedDocPlugin)],
+  })
 }
 
 export const RichEditor = defineComponent({
@@ -139,36 +76,11 @@ export const RichEditor = defineComponent({
     editorReady: (_editor: LexicalEditor | null) => true,
   },
   setup(props, { emit, expose }) {
-    const containerRef = ref<HTMLDivElement>()
-    const agentRef = ref<InstanceType<typeof RichEditorWithAgent>>()
+    const containerRef = ref<HTMLDivElement | null>(null)
+    const agentRef = ref<FocusableEditorHandle | null>(null)
     let root: Root | null = null
     let editorInstance: LexicalEditor | null = null
     let unmounting = false
-
-    const buildEditorProps = (
-      resolvedTheme: 'dark' | 'light',
-    ): Omit<ShiroEditorProps, 'onChange' | 'onSubmit' | 'onEditorReady'> => {
-      const editorProps: Record<string, unknown> = { theme: resolvedTheme }
-      if (props.initialValue !== undefined)
-        editorProps.initialValue = props.initialValue
-      if (props.placeholder !== undefined)
-        editorProps.placeholder = props.placeholder
-      if (props.variant !== undefined) editorProps.variant = props.variant
-      if (props.autoFocus !== undefined) editorProps.autoFocus = props.autoFocus
-      if (props.className !== undefined) editorProps.className = props.className
-      if (props.contentClassName !== undefined)
-        editorProps.contentClassName = props.contentClassName
-      if (props.debounceMs !== undefined)
-        editorProps.debounceMs = props.debounceMs
-      if (props.selfHostnames !== undefined)
-        editorProps.selfHostnames = props.selfHostnames
-      if (props.extraNodes !== undefined)
-        editorProps.extraNodes = props.extraNodes
-      if (props.editorStyle !== undefined) editorProps.style = props.editorStyle
-      if (props.imageUpload !== undefined)
-        editorProps.imageUpload = props.imageUpload
-      return editorProps as any
-    }
 
     const handleChange = (value: SerializedEditorState) => {
       if (unmounting) return
@@ -194,7 +106,19 @@ export const RichEditor = defineComponent({
 
     const renderReact = (resolvedTheme: 'dark' | 'light') => {
       if (!root) return
-      const editorProps = buildEditorProps(resolvedTheme)
+      const editorProps = buildShiroEditorProps(resolvedTheme, {
+        initialValue: props.initialValue,
+        placeholder: props.placeholder,
+        variant: props.variant,
+        autoFocus: props.autoFocus,
+        className: props.className,
+        contentClassName: props.contentClassName,
+        debounceMs: props.debounceMs,
+        selfHostnames: props.selfHostnames,
+        extraNodes: props.extraNodes,
+        editorStyle: props.editorStyle,
+        imageUpload: props.imageUpload,
+      })
 
       root.render(
         createElement(ShiroEditorReact, {
@@ -246,7 +170,7 @@ export const RichEditor = defineComponent({
     expose({
       focus: () => {
         if (props.agentEnabled) {
-          ;(agentRef.value as any)?.focus()
+          agentRef.value?.focus()
         } else {
           editorInstance?.focus()
         }

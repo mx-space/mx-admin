@@ -41,7 +41,7 @@ export const RichDiffBridge = defineComponent({
     className: String,
   },
   setup(props) {
-    const containerRef = ref<HTMLDivElement>()
+    const containerRef = ref<HTMLDivElement | null>(null)
     let root: Root | null = null
 
     const renderReact = (theme: 'dark' | 'light') => {

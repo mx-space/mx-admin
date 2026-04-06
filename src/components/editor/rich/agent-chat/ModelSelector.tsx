@@ -3,6 +3,14 @@ import { NPopselect } from 'naive-ui'
 import { computed, defineComponent, nextTick, ref, watch } from 'vue'
 import type { PropType } from 'vue'
 
+import {
+  filterRecentModelsWithin,
+  readRecentModels,
+  rememberRecentModel,
+  toModelValue,
+  writeRecentModels,
+} from './model-selector-recents'
+
 export interface ProviderGroup {
   id: string
   name: string
@@ -31,21 +39,73 @@ export const ModelSelector = defineComponent({
   emits: ['selectModel'],
   setup(props, { emit }) {
     const searchQuery = ref('')
-    const showPopselect = ref<boolean | undefined>(undefined)
+    const showPopselect = ref(false)
     const inputRef = ref<HTMLInputElement | null>(null)
+    const recentModels = ref<SelectedModel[]>(readRecentModels())
+
+    function getModelLabel(
+      model: Pick<SelectedModel, 'providerId' | 'modelId'>,
+    ): string {
+      const group = props.providerGroups.find(
+        (item) => item.id === model.providerId,
+      )
+      const matchedModel = group?.models.find(
+        (item) => item.id === model.modelId,
+      )
+      return matchedModel?.displayName ?? model.modelId
+    }
+
+    function syncRecentModels(groups: ProviderGroup[]) {
+      const nextRecentModels = filterRecentModelsWithin(
+        recentModels.value,
+        groups,
+      )
+      const hasChanged =
+        nextRecentModels.length !== recentModels.value.length ||
+        nextRecentModels.some(
+          (item, index) =>
+            toModelValue(item) !== toModelValue(recentModels.value[index]!),
+        )
+
+      if (hasChanged) {
+        recentModels.value = nextRecentModels
+        writeRecentModels(nextRecentModels)
+      }
+    }
+
+    const recentOptions = computed(() =>
+      filterRecentModelsWithin(recentModels.value, props.providerGroups).map(
+        (model) => ({
+          label: getModelLabel(model),
+          value: toModelValue(model),
+        }),
+      ),
+    )
 
     const filteredOptions = computed(() => {
       const query = searchQuery.value.toLowerCase().trim()
+      const providerOptions = props.providerGroups.map((group) => ({
+        type: 'group' as const,
+        label: group.name,
+        key: group.id,
+        children: group.models.map((m) => ({
+          label: m.displayName,
+          value: `${group.id}::${m.id}`,
+        })),
+      }))
+
       if (!query) {
-        return props.providerGroups.map((group) => ({
-          type: 'group' as const,
-          label: group.name,
-          key: group.id,
-          children: group.models.map((m) => ({
-            label: m.displayName,
-            value: `${group.id}::${m.id}`,
-          })),
-        }))
+        return recentOptions.value.length
+          ? [
+              {
+                type: 'group' as const,
+                label: 'Recent',
+                key: 'recent',
+                children: recentOptions.value,
+              },
+              ...providerOptions,
+            ]
+          : providerOptions
       }
 
       return props.providerGroups
@@ -70,32 +130,40 @@ export const ModelSelector = defineComponent({
     })
 
     const selectedValue = computed(() =>
-      props.selectedModel
-        ? `${props.selectedModel.providerId}::${props.selectedModel.modelId}`
-        : null,
+      props.selectedModel ? toModelValue(props.selectedModel) : null,
     )
 
     const selectedLabel = computed(() => {
       if (!props.selectedModel) return 'Select model'
-      for (const g of props.providerGroups) {
-        const m = g.models.find((m) => m.id === props.selectedModel!.modelId)
-        if (m) return m.displayName
-      }
-      return props.selectedModel.modelId
+      return getModelLabel(props.selectedModel)
     })
 
     function handleUpdate(value: string) {
       const [providerId, modelId] = value.split('::')
       const group = props.providerGroups.find((g) => g.id === providerId)
       if (!group) return
-      emit('selectModel', {
+      const nextModel = {
         modelId,
         providerId,
         providerType: group.providerType,
-      })
+      }
+      emit('selectModel', nextModel)
+      recentModels.value = rememberRecentModel(
+        nextModel,
+        filterRecentModelsWithin(recentModels.value, props.providerGroups),
+      )
+      writeRecentModels(recentModels.value)
       showPopselect.value = false
       searchQuery.value = ''
     }
+
+    watch(
+      () => props.providerGroups,
+      (groups) => {
+        syncRecentModels(groups)
+      },
+      { immediate: true, deep: true },
+    )
 
     watch(showPopselect, (val) => {
       if (val) {
@@ -115,6 +183,7 @@ export const ModelSelector = defineComponent({
         virtualScroll
         size="small"
         width={280}
+        trigger="click"
         show={showPopselect.value}
         onUpdateShow={(val: boolean) => {
           showPopselect.value = val
