@@ -1,6 +1,6 @@
 {
   "name": "mx-admin",
-  "version": "6.5.0",
+  "version": "6.4.2",
   "bump": {
     "before": [
       "git pull --rebase"
@@ -13,7 +13,6 @@
     "preview": "vite preview --port 2323",
     "lint": "biome lint --write src/**/*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json} --no-errors-on-unmatched",
     "lint:fix": "biome lint --write .",
-    "test": "vitest run",
     "release": "sh ./release.sh",
     "prepare": "pnpm exec simple-git-hooks"
   },
@@ -42,16 +41,16 @@
     "@codemirror/view": "6.39.11",
     "@ddietr/codemirror-themes": "1.5.2",
     "@emoji-mart/data": "1.2.1",
-    "@haklex/rich-agent-chat": "0.0.101",
-    "@haklex/rich-agent-core": "0.0.101",
-    "@haklex/rich-diff": "0.0.101",
-    "@haklex/rich-editor": "0.0.101",
-    "@haklex/rich-editor-ui": "0.0.101",
-    "@haklex/rich-ext-ai-agent": "0.0.101",
-    "@haklex/rich-ext-nested-doc": "0.0.101",
-    "@haklex/rich-kit-shiro": "0.0.101",
-    "@haklex/rich-plugin-toolbar": "0.0.101",
-    "@haklex/rich-style-token": "0.0.101",
+    "@haklex/rich-agent-chat": "0.0.102",
+    "@haklex/rich-agent-core": "0.0.102",
+    "@haklex/rich-diff": "0.0.102",
+    "@haklex/rich-editor": "0.0.102",
+    "@haklex/rich-editor-ui": "0.0.102",
+    "@haklex/rich-ext-ai-agent": "0.0.102",
+    "@haklex/rich-ext-nested-doc": "0.0.102",
+    "@haklex/rich-kit-shiro": "0.0.102",
+    "@haklex/rich-plugin-toolbar": "0.0.102",
+    "@haklex/rich-style-token": "0.0.102",
     "@lexical/code-core": "^0.42.0",
     "@lexical/markdown": "^0.42.0",
     "@lexical/react": "^0.42.0",
@@ -87,8 +86,8 @@
     "katex": "0.16.40",
     "lexical": "^0.42.0",
     "lit": "3.3.2",
-    "lodash.transform": "4.6.0",
     "lucide-react": "0.574.0",
+    "lodash.transform": "4.6.0",
     "lucide-vue-next": "0.574.0",
     "markdown-escape": "2.0.0",
     "marked": "17.0.5",
@@ -131,9 +130,7 @@
     "@vitejs/plugin-vue": "6.0.5",
     "@vitejs/plugin-vue-jsx": "5.1.5",
     "@vue/compiler-sfc": "3.5.30",
-    "@vue/test-utils": "2.4.6",
     "cors": "2.8.6",
-    "happy-dom": "20.8.9",
     "lint-staged": "16.4.0",
     "postcss": "8.5.8",
     "postcss-nested": "7.0.2",
@@ -146,8 +143,7 @@
     "vite": "8.0.1",
     "vite-plugin-checker": "0.12.0",
     "vite-plugin-mkcert": "1.17.10",
-    "vite-plugin-vue-inspector": "5.4.0",
-    "vitest": "4.1.2"
+    "vite-plugin-vue-inspector": "5.4.0"
   },
   "packageManager": "pnpm@10.28.2"
 }
