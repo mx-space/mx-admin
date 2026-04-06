@@ -1,7 +1,7 @@
 import { omit } from 'es-toolkit/compat'
 import { dump, load } from 'js-yaml'
 import JSON5 from 'json5'
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, nextTick, reactive, ref, watch } from 'vue'
 import { toast } from 'vue-sonner'
 import type { Ref } from 'vue'
 
@@ -25,6 +25,7 @@ export function useSnippetEditor(selectedId: Ref<string | null>) {
   })
 
   let jsonFormatBeforeType: SnippetType = SnippetType.JSON
+  let isFetching = false
 
   const isNew = computed(() => !selectedId.value)
   const isFunctionType = computed(
@@ -40,6 +41,8 @@ export function useSnippetEditor(selectedId: Ref<string | null>) {
   watch(
     () => editData.value.type,
     (type, beforeType) => {
+      if (isFetching) return
+
       if (type === 'function' || type === 'text') {
         editData.value.raw = typeToValueMap[type]
 
@@ -92,9 +95,12 @@ export function useSnippetEditor(selectedId: Ref<string | null>) {
       data.raw = JSON.stringify(JSON5.parse(data.raw), null, 2)
     }
 
+    isFetching = true
     editData.value = data
     jsonFormatBeforeType = data.type
     typeToValueMap[data.type] = data.raw
+    await nextTick()
+    isFetching = false
   }
 
   const reset = (reference?: string) => {
