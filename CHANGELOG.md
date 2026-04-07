@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## [6.4.3](https://github.com/mx-space/admin-vue3/compare/v6.5.0...v6.4.3) (2026-04-07)
+
+
+### Bug Fixes
+
+* bump @haklex/* to 0.0.104 — fix Ask AI button click timing ([ed02bd3](https://github.com/mx-space/admin-vue3/commit/ed02bd3405702c2b02bf2b5428ce1bb11ceb20a7))
+* **editor:** prevent double unmount crash when publishing with agent panel open ([3842090](https://github.com/mx-space/admin-vue3/commit/3842090a2b922aeb23470d4e4f66988f68263054))
+* **snippets:** prevent type watcher from overwriting fetched editor data ([4bcf417](https://github.com/mx-space/admin-vue3/commit/4bcf417c1e8d2d779976a432d41e89dc9923c11f))
+
+
+### Features
+
+* add pinned selection indicator to agent chat input ([02e3d48](https://github.com/mx-space/admin-vue3/commit/02e3d48085bd4a783c23d524790c66546eb5ef28))
+* **agent-chat:** remember recent models and simplify editor bridges ([e6a7300](https://github.com/mx-space/admin-vue3/commit/e6a730060d62ad9613105bec006153b08f5dc473))
+* integrate agent selection awareness from @haklex/* 0.0.102 ([12c455d](https://github.com/mx-space/admin-vue3/commit/12c455deb831b9281a582c6ad07d9a7b90c7d008))
+
+
+
 # [6.5.0](https://github.com/mx-space/admin-vue3/compare/v6.4.2...v6.5.0) (2026-04-05)
 
 
