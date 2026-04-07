@@ -1,32 +1,72 @@
-# MX Space Admin Vue 3 v2
+# MX Space Admin
 
-嘿，这是一个为 Mix Space Server 打造的后台管理。使用 Vue 3 + Naive UI 编写。添加了许多有趣的小玩意。一起来玩吗？
+The dashboard for [MX Space](https://github.com/mx-space), a personal space management system. Built with **Vue 3**, **Naive UI**, and **UnoCSS**.
 
-嘿！现在可以使用共享面板了，立即前往：<https://22333322.xyz/#/setup-api>
+> v4.0 for Mix Space Server v5.0
 
-```
-git clone --single-branch -b master https://github.com/mx-space/mx-admin.git
+## Preview
+
+### Desktop
+
+| Dashboard | Posts |
+|-----------|-------|
+| ![Dashboard](docs/screenshots/dashboard.png) | ![Posts](docs/screenshots/posts.png) |
+
+| Notes | Comments |
+|-------|----------|
+| ![Notes](docs/screenshots/notes.png) | ![Comments](docs/screenshots/comments.png) |
+
+| Post Editor | Settings |
+|-------------|----------|
+| ![Post Editor](docs/screenshots/post-edit.png) | ![Settings](docs/screenshots/setting.png) |
+
+| Says | AI |
+|------|-----|
+| ![Says](docs/screenshots/says.png) | ![AI](docs/screenshots/ai.png) |
+
+### Mobile
+
+<p float="left">
+  <img src="docs/screenshots/mobile-dashboard.png" width="200" />
+  <img src="docs/screenshots/mobile-posts.png" width="200" />
+  <img src="docs/screenshots/mobile-says.png" width="200" />
+</p>
+
+## Features
+
+- Real-time dashboard with live visitor stats, content analytics, and trend charts
+- Full content management: posts, notes, pages, drafts, comments, says
+- Rich text editor with AI-assisted writing
+- AI-powered content summarization and translation
+- File management with orphan image detection
+- Friend links and project showcase management
+- Responsive design with mobile support
+- Dark mode with Vercel-style neutral theme
+- WebSocket-based real-time updates
+
+## Getting Started
+
+```bash
+git clone https://github.com/mx-space/mx-admin.git
+pnpm install
+pnpm dev
 ```
 
 ## Build
 
-```
-pnpm i
+```bash
 pnpm build
 ```
 
-## Preview
+## Tech Stack
 
-![CleanShot 2024-05-04 at 11  18 54@2x](https://github.com/mx-space/mx-admin/assets/41265413/6522e6ba-73dc-4214-9999-ad8d88272c2e)
-![CleanShot 2024-05-04 at 11  19 15@2x](https://github.com/mx-space/mx-admin/assets/41265413/44f05e84-c9ed-4e54-b6ed-432a42fb163b)
-![CleanShot 2024-05-04 at 11  19 35@2x](https://github.com/mx-space/mx-admin/assets/41265413/df54ed83-dad0-4bea-a156-320f21108c90)
-![CleanShot 2024-05-04 at 11  20 40@2x](https://github.com/mx-space/mx-admin/assets/41265413/57670e28-5898-4ff9-9fd2-9fda5fb9c21b)
-![CleanShot 2024-05-04 at 11  20 56@2x](https://github.com/mx-space/mx-admin/assets/41265413/5042c5ef-388c-4fa8-bed4-b7758e285875)
-![CleanShot 2024-05-04 at 11  22 13@2x](https://github.com/mx-space/mx-admin/assets/41265413/d1f9d840-5458-4950-997f-638b51fcbeb7)
-
-## Version
-
-- v4.0 for Mix Space Server v5.0
+- [Vue 3](https://vuejs.org/) + Composition API + TSX
+- [Naive UI](https://www.naiveui.com/) - Component library
+- [UnoCSS](https://unocss.dev/) - Atomic CSS engine
+- [TanStack Query](https://tanstack.com/query) - Server state management
+- [Pinia](https://pinia.vuejs.org/) - Store management
+- [CodeMirror](https://codemirror.net/) / [Monaco Editor](https://microsoft.github.io/monaco-editor/) - Code editors
+- [Socket.IO](https://socket.io/) - Real-time communication
 
 ## License
 
