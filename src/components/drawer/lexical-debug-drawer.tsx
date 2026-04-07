@@ -20,7 +20,7 @@ export const LexicalDebugButton = defineComponent({
       <>
         <HeaderActionButton
           icon={<BugIcon />}
-          variant="info"
+          variant="default"
           name="Lexical Debug"
           onClick={() => (show.value = true)}
         />
