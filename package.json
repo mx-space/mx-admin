@@ -84,7 +84,7 @@
     "json5": "2.2.3",
     "jsondiffpatch": "0.7.3",
     "katex": "0.16.40",
-    "lexical": "^0.42.0",
+    "lexical": "^0.43.0",
     "lit": "3.3.2",
     "lucide-react": "0.574.0",
     "lodash.transform": "4.6.0",
