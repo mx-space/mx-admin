@@ -153,7 +153,6 @@
 .write-editor-wrapper.agent-visible .write-editor-content {
   flex: 1;
   min-height: 0;
-  max-width: none;
   padding-bottom: 0;
 }
 
