@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [6.4.7](https://github.com/mx-space/admin-vue3/compare/v6.4.6...v6.4.7) (2026-04-17)
+
+
+
 ## [6.4.6](https://github.com/mx-space/admin-vue3/compare/v6.4.5...v6.4.6) (2026-04-17)
 
 
