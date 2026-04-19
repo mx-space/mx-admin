@@ -32,6 +32,7 @@ import {
   BellOff as SubscribeIcon,
   Paperclip as SymbolIcon,
   Gauge as TachometerAltIcon,
+  Telescope as TelescopeIcon,
   Layout as TemplateIcon,
   Database as TopicIcon,
   Undo2 as UndoAltIcon,
@@ -320,6 +321,15 @@ export const routeForMenu: Array<RouteRecordRaw> = [
           icon: <FileTextIcon />,
         },
         component: () => import('../views/ai/summary'),
+      },
+      {
+        path: 'insights',
+        name: RouteName.AiInsights,
+        meta: {
+          title: '精读',
+          icon: <TelescopeIcon />,
+        },
+        component: () => import('../views/ai/insights'),
       },
       {
         path: 'translation',
