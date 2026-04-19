@@ -5,6 +5,7 @@ import {
   Globe as GlobeIcon,
   Languages as LanguagesIcon,
   Plus as PlusIcon,
+  Telescope as TelescopeIcon,
   X as XIcon,
   Zap as ZapIcon,
 } from 'lucide-vue-next'
@@ -48,12 +49,19 @@ interface AIConfig {
   writerModel?: AIModelAssignment
   commentReviewModel?: AIModelAssignment
   translationModel?: AIModelAssignment
+  insightsModel?: AIModelAssignment
+  insightsTranslationModel?: AIModelAssignment
   enableSummary: boolean
   enableAutoGenerateSummary: boolean
   summaryTargetLanguages?: string[]
   enableTranslation?: boolean
   enableAutoGenerateTranslation?: boolean
   translationTargetLanguages?: string[]
+  enableInsights?: boolean
+  enableAutoGenerateInsightsOnCreate?: boolean
+  enableAutoGenerateInsightsOnUpdate?: boolean
+  enableAutoTranslateInsights?: boolean
+  insightsTargetLanguages?: string[]
 }
 
 interface ModelInfo {
@@ -840,6 +848,24 @@ export const AIConfigSection = defineComponent({
             providerModels={providerModels.value || {}}
             onUpdate={(a) => updateConfig({ translationModel: a })}
           />
+
+          <AIModelAssignmentRow
+            label="精读生成"
+            description="用于生成长篇精读的模型"
+            assignment={config.value.insightsModel}
+            providers={config.value.providers || []}
+            providerModels={providerModels.value || {}}
+            onUpdate={(a) => updateConfig({ insightsModel: a })}
+          />
+
+          <AIModelAssignmentRow
+            label="精读翻译"
+            description="用于翻译精读的模型，留空则复用翻译模型"
+            assignment={config.value.insightsTranslationModel}
+            providers={config.value.providers || []}
+            providerModels={providerModels.value || {}}
+            onUpdate={(a) => updateConfig({ insightsTranslationModel: a })}
+          />
         </SettingsSection>
 
         <SettingsSection
@@ -875,6 +901,71 @@ export const AIConfigSection = defineComponent({
               value={config.value.summaryTargetLanguages || []}
               onUpdate={(v) => updateConfig({ summaryTargetLanguages: v })}
               disabled={!config.value.enableSummary}
+            />
+          </SettingsRow>
+        </SettingsSection>
+
+        <SettingsSection
+          title="AI 精读"
+          description="在摘要之外输出长篇精读版本，含结构化章节"
+          icon={TelescopeIcon}
+        >
+          <SettingsRow title="启用 AI 精读">
+            <NSwitch
+              value={config.value.enableInsights}
+              onUpdateValue={(v: boolean) =>
+                updateConfig({ enableInsights: v })
+              }
+            />
+          </SettingsRow>
+
+          <SettingsRow
+            title="文章创建时自动生成精读"
+            description="发布文章时自动生成精读（需要先启用 AI 精读）"
+          >
+            <NSwitch
+              value={config.value.enableAutoGenerateInsightsOnCreate}
+              onUpdateValue={(v: boolean) =>
+                updateConfig({ enableAutoGenerateInsightsOnCreate: v })
+              }
+              disabled={!config.value.enableInsights}
+            />
+          </SettingsRow>
+
+          <SettingsRow
+            title="文章更新时重新生成精读"
+            description="文章内容变更时重新生成精读"
+          >
+            <NSwitch
+              value={config.value.enableAutoGenerateInsightsOnUpdate}
+              onUpdateValue={(v: boolean) =>
+                updateConfig({ enableAutoGenerateInsightsOnUpdate: v })
+              }
+              disabled={!config.value.enableInsights}
+            />
+          </SettingsRow>
+
+          <SettingsRow
+            title="自动翻译精读"
+            description="精读生成后按目标语言自动翻译"
+          >
+            <NSwitch
+              value={config.value.enableAutoTranslateInsights}
+              onUpdateValue={(v: boolean) =>
+                updateConfig({ enableAutoTranslateInsights: v })
+              }
+              disabled={!config.value.enableInsights}
+            />
+          </SettingsRow>
+
+          <SettingsRow
+            title="精读目标语言"
+            description="自动翻译精读的目标语言列表，使用 ISO 639-1 语言代码"
+          >
+            <TranslationLanguagesInput
+              value={config.value.insightsTargetLanguages || []}
+              onUpdate={(v) => updateConfig({ insightsTargetLanguages: v })}
+              disabled={!config.value.enableInsights}
             />
           </SettingsRow>
         </SettingsSection>
