@@ -165,6 +165,11 @@ export const queryKeys = {
       [...queryKeys.ai.summaries(), 'grouped', params] as const,
     summaryByRef: (refId: string) =>
       [...queryKeys.ai.summaries(), 'ref', refId] as const,
+    insights: () => [...queryKeys.ai.all, 'insights'] as const,
+    insightsGrouped: (params: { page: number; search: string }) =>
+      [...queryKeys.ai.insights(), 'grouped', params] as const,
+    insightsByRef: (refId: string) =>
+      [...queryKeys.ai.insights(), 'ref', refId] as const,
     translations: () => [...queryKeys.ai.all, 'translations'] as const,
     translationsGrouped: (params?: object) =>
       [...queryKeys.ai.translations(), 'grouped', params] as const,
