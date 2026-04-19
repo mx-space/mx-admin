@@ -65,6 +65,42 @@ export interface SummaryByRefResponse {
   }
 }
 
+// AI Insights 类型
+export interface AIInsights {
+  id: string
+  created: string
+  updated?: string
+  refId: string
+  lang: string
+  hash: string
+  content: string
+  isTranslation: boolean
+  sourceInsightsId?: string
+  sourceLang?: string
+}
+
+export interface GroupedInsightsData {
+  article: ArticleInfo
+  insights: AIInsights[]
+}
+
+export interface GroupedInsightsResponse {
+  data: GroupedInsightsData[]
+  pagination: {
+    total: number
+    currentPage: number
+    totalPage: number
+    size: number
+    hasNextPage: boolean
+    hasPrevPage: boolean
+  }
+}
+
+export interface InsightsByRefResponse {
+  insights: AIInsights[]
+  article: ArticleInfo | null
+}
+
 // AI Translation 类型
 export interface AITranslation {
   id: string
@@ -145,6 +181,8 @@ export enum AITaskType {
   TranslationBatch = 'ai:translation:batch',
   TranslationAll = 'ai:translation:all',
   SlugBackfill = 'ai:slug:backfill',
+  Insights = 'ai:insights',
+  InsightsTranslation = 'ai:insights:translation',
 }
 
 export enum AITaskStatus {
@@ -286,6 +324,38 @@ export const aiApi = {
   // 生成摘要（创建任务）
   createSummaryTask: (data: { refId: string; lang?: string }) =>
     request.post<CreateTaskResponse>('/ai/summaries/task', { data }),
+
+  // === AI Insights ===
+
+  // 获取精读列表（分组）
+  getInsightsGrouped: (params: {
+    page: number
+    size?: number
+    search?: string
+  }) =>
+    request.get<GroupedInsightsResponse>('/ai/insights/grouped', { params }),
+
+  // 根据引用获取精读
+  getInsightsByRef: (refId: string) =>
+    request.get<InsightsByRefResponse>(`/ai/insights/ref/${refId}`),
+
+  // 删除精读
+  deleteInsights: (id: string) => request.delete<void>(`/ai/insights/${id}`),
+
+  // 更新精读
+  updateInsights: (id: string, data: { content: string }) =>
+    request.patch<AIInsights>(`/ai/insights/${id}`, { data }),
+
+  // 生成精读（创建任务）
+  createInsightsTask: (data: { refId: string }) =>
+    request.post<CreateTaskResponse>('/ai/insights/task', { data }),
+
+  // 翻译精读（创建任务）
+  createInsightsTranslationTask: (data: {
+    refId: string
+    targetLang: string
+  }) =>
+    request.post<CreateTaskResponse>('/ai/insights/task/translate', { data }),
 
   // 获取可用模型列表
   getModels: () => request.get<ProviderModelsResponse[]>('/ai/models'),
