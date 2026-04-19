@@ -22,6 +22,8 @@ const TaskTypeLabels: Record<AITaskType, string> = {
   [AITaskType.TranslationBatch]: '批量翻译',
   [AITaskType.TranslationAll]: '全量翻译',
   [AITaskType.SlugBackfill]: 'Slug 回填',
+  [AITaskType.Insights]: '精读',
+  [AITaskType.InsightsTranslation]: '精读翻译',
 }
 
 const ITEM_HEIGHT = 56
