@@ -123,6 +123,7 @@ export default defineComponent({
               search={searchRef.value}
               onSelect={handleSelect}
               onPageChange={handlePageChange}
+              onRefresh={refreshList}
               onSearchChange={handleSearchChange}
             />
           ),

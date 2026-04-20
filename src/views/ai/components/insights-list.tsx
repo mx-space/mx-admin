@@ -2,10 +2,11 @@ import {
   FileText as FileTextIcon,
   Inbox as InboxIcon,
   LoaderIcon,
+  Plus as PlusIcon,
   Search as SearchIcon,
   StickyNote as StickyNoteIcon,
 } from 'lucide-vue-next'
-import { NScrollbar } from 'naive-ui'
+import { NButton, NScrollbar, NTooltip } from 'naive-ui'
 import { computed, defineComponent, ref, watch } from 'vue'
 import type { ArticleInfo, GroupedInsightsData } from '~/api/ai'
 import type { PropType } from 'vue'
@@ -13,6 +14,8 @@ import type { PropType } from 'vue'
 import { refDebounced } from '@vueuse/core'
 
 import { BorderlessInput } from '~/components/input/borderless-input'
+
+import { InsightsArticleSelectorModal } from './insights-article-selector-modal'
 
 type ArticleRefType = ArticleInfo['type']
 
@@ -64,6 +67,9 @@ export const InsightsList = defineComponent({
     onPageChange: {
       type: Function as PropType<(page: number) => void>,
     },
+    onRefresh: {
+      type: Function as PropType<() => void>,
+    },
     onSearchChange: {
       type: Function as PropType<(search: string) => void>,
     },
@@ -73,12 +79,17 @@ export const InsightsList = defineComponent({
     },
   },
   setup(props) {
+    const showBatchModal = ref(false)
     const searchInputValue = ref('')
     const debouncedSearch = refDebounced(searchInputValue, 300)
 
     watch(debouncedSearch, (val) => {
       props.onSearchChange?.(val)
     })
+
+    const handleBatchSuccess = () => {
+      props.onRefresh?.()
+    }
 
     const showSearchEmpty = computed(
       () => props.search.trim().length > 0 && props.data.length === 0,
@@ -97,6 +108,12 @@ export const InsightsList = defineComponent({
 
     return () => (
       <div class="flex h-full flex-col">
+        <InsightsArticleSelectorModal
+          show={showBatchModal.value}
+          onClose={() => (showBatchModal.value = false)}
+          onSuccess={handleBatchSuccess}
+        />
+
         <div class="flex h-12 flex-shrink-0 items-center gap-2 border-b border-neutral-200 px-4 py-2 dark:border-neutral-800">
           <BorderlessInput
             class="-mx-4 flex-1"
@@ -115,6 +132,22 @@ export const InsightsList = defineComponent({
               prefix: () => <SearchIcon class="size-4 text-neutral-400" />,
             }}
           </BorderlessInput>
+
+          <NTooltip>
+            {{
+              trigger: () => (
+                <NButton
+                  size="tiny"
+                  quaternary
+                  circle
+                  onClick={() => (showBatchModal.value = true)}
+                >
+                  <PlusIcon class="size-4" />
+                </NButton>
+              ),
+              default: () => '批量生成精读',
+            }}
+          </NTooltip>
         </div>
 
         <div class="min-h-0 flex-1">
