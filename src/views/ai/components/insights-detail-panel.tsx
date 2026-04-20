@@ -24,7 +24,7 @@ import {
 import { computed, defineComponent, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import { toast } from 'vue-sonner'
-import type { AIInsights, ArticleInfo } from '~/api/ai'
+import type { AIInsights, ArticleInfo, InsightsByRefResponse } from '~/api/ai'
 import type { PropType } from 'vue'
 
 import { aiApi, AITaskType } from '~/api/ai'
@@ -64,7 +64,7 @@ export const InsightsDetailPanel = defineComponent({
   setup(props) {
     const taskQueue = useAiTaskQueue()
 
-    const article = ref<ArticleInfo | null>(null)
+    const article = ref<InsightsByRefResponse['article']>(null)
     const insightsList = ref<AIInsights[]>([])
     const loading = ref(false)
     const regenerationLoadingMap = ref<Record<string, boolean>>({})
@@ -113,15 +113,14 @@ export const InsightsDetailPanel = defineComponent({
       }
     }
 
-    const handleGenerateSource = () => {
-      if (!props.articleId) return
-      const taskPayload = { refId: props.articleId }
-      aiApi.createInsightsTask(taskPayload).then((res) => {
+    const submitGenerateSource = (refId: string, title: string) => {
+      const taskPayload = { refId }
+      return aiApi.createInsightsTask(taskPayload).then((res) => {
         if (res.created) {
           taskQueue.trackTask({
             taskId: res.taskId,
             type: AITaskType.Insights,
-            label: `精读: ${article.value?.title || '文章'}`,
+            label: `精读: ${title}`,
             onComplete: () => {
               if (props.articleId) fetchData(props.articleId)
             },
@@ -131,6 +130,56 @@ export const InsightsDetailPanel = defineComponent({
         } else {
           toast.info('任务已存在，正在处理中')
         }
+      })
+    }
+
+    const handleGenerateSource = () => {
+      if (!props.articleId) return
+      const articleId = props.articleId
+      const title = article.value?.document.title || '文章'
+      const hasExisting = insightsList.value.some((i) => !i.isTranslation)
+
+      const loadingRef = ref(false)
+      const $dialog = dialog.create({
+        title: '生成 AI 精读',
+        content() {
+          return (
+            <div class="flex flex-col gap-4">
+              <div class="text-sm text-neutral-600 dark:text-neutral-400">
+                将为《
+                <span class="text-neutral-900 dark:text-neutral-100">
+                  {title}
+                </span>
+                》生成精读。
+                {hasExisting && (
+                  <p class="mt-2 text-xs text-amber-600 dark:text-amber-400">
+                    已存在源精读，重新生成将覆盖现有内容。
+                  </p>
+                )}
+              </div>
+              <div class="text-right">
+                <NButton
+                  size="small"
+                  type="primary"
+                  loading={loadingRef.value}
+                  onClick={() => {
+                    loadingRef.value = true
+                    submitGenerateSource(articleId, title)
+                      .then(() => {
+                        $dialog.destroy()
+                      })
+                      .finally(() => {
+                        loadingRef.value = false
+                      })
+                  }}
+                >
+                  <PlusIcon class="mr-1.5 size-4" />
+                  确认生成
+                </NButton>
+              </div>
+            </div>
+          )
+        },
       })
     }
 
@@ -177,7 +226,7 @@ export const InsightsDetailPanel = defineComponent({
                           taskQueue.trackTask({
                             taskId: res.taskId,
                             type: AITaskType.InsightsTranslation,
-                            label: `精读翻译 (${targetLang.toUpperCase()}): ${article.value?.title || '文章'}`,
+                            label: `精读翻译 (${targetLang.toUpperCase()}): ${article.value?.document.title || '文章'}`,
                             onComplete: () => {
                               if (props.articleId) fetchData(props.articleId)
                             },
@@ -216,7 +265,7 @@ export const InsightsDetailPanel = defineComponent({
             taskQueue.trackTask({
               taskId: res.taskId,
               type: AITaskType.Insights,
-              label: `精读: ${article.value?.title || '文章'}`,
+              label: `精读: ${article.value?.document.title || '文章'}`,
               onComplete: () => {
                 if (props.articleId) fetchData(props.articleId)
               },
@@ -243,7 +292,7 @@ export const InsightsDetailPanel = defineComponent({
             taskQueue.trackTask({
               taskId: res.taskId,
               type: AITaskType.InsightsTranslation,
-              label: `精读翻译 (${item.lang.toUpperCase()}): ${article.value?.title || '文章'}`,
+              label: `精读翻译 (${item.lang.toUpperCase()}): ${article.value?.document.title || '文章'}`,
               onComplete: () => {
                 if (props.articleId) fetchData(props.articleId)
               },
@@ -329,7 +378,7 @@ export const InsightsDetailPanel = defineComponent({
                 >
                   <RefIcon.value class="size-5 shrink-0 text-neutral-400" />
                   <h3 class="text-base font-semibold text-neutral-900 transition-colors group-hover:text-blue-600 dark:text-neutral-100 dark:group-hover:text-blue-400">
-                    {article.value.title}
+                    {article.value.document.title}
                   </h3>
                 </RouterLink>
               </div>

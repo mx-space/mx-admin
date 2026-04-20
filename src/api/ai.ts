@@ -98,7 +98,10 @@ export interface GroupedInsightsResponse {
 
 export interface InsightsByRefResponse {
   insights: AIInsights[]
-  article: ArticleInfo | null
+  article: {
+    type: 'Post' | 'Note' | 'Page' | 'Recently'
+    document: { title: string }
+  } | null
 }
 
 // AI Translation 类型
