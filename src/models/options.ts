@@ -116,7 +116,8 @@ export module MxServerOptions {
     writerModel?: AIModelAssignment
     commentReviewModel?: AIModelAssignment
     enableSummary: boolean
-    enableAutoGenerateSummary: boolean
+    enableAutoGenerateSummaryOnCreate: boolean
+    enableAutoGenerateSummaryOnUpdate: boolean
     summaryTargetLanguages: string[]
   }
 

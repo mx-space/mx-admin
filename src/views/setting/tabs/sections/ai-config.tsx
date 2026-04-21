@@ -52,7 +52,8 @@ interface AIConfig {
   insightsModel?: AIModelAssignment
   insightsTranslationModel?: AIModelAssignment
   enableSummary: boolean
-  enableAutoGenerateSummary: boolean
+  enableAutoGenerateSummaryOnCreate?: boolean
+  enableAutoGenerateSummaryOnUpdate?: boolean
   summaryTargetLanguages?: string[]
   enableTranslation?: boolean
   enableAutoGenerateTranslation?: boolean
@@ -881,13 +882,26 @@ export const AIConfigSection = defineComponent({
           </SettingsRow>
 
           <SettingsRow
-            title="自动生成摘要"
-            description="发布文章时自动生成摘要"
+            title="文章创建时自动生成摘要"
+            description="发布文章时自动生成摘要（需要先启用 AI 摘要）"
           >
             <NSwitch
-              value={config.value.enableAutoGenerateSummary}
+              value={config.value.enableAutoGenerateSummaryOnCreate}
               onUpdateValue={(v: boolean) =>
-                updateConfig({ enableAutoGenerateSummary: v })
+                updateConfig({ enableAutoGenerateSummaryOnCreate: v })
+              }
+              disabled={!config.value.enableSummary}
+            />
+          </SettingsRow>
+
+          <SettingsRow
+            title="文章更新时重新生成摘要"
+            description="文章内容变更时仅重新生成 hash 变化的语言"
+          >
+            <NSwitch
+              value={config.value.enableAutoGenerateSummaryOnUpdate}
+              onUpdateValue={(v: boolean) =>
+                updateConfig({ enableAutoGenerateSummaryOnUpdate: v })
               }
               disabled={!config.value.enableSummary}
             />
