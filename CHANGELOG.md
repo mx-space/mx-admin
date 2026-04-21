@@ -1,5 +1,14 @@
 # CHANGELOG
 
+# [6.7.0](https://github.com/mx-space/mx-admin/compare/v6.6.0...v6.7.0) (2026-04-21)
+
+
+### Features
+
+* **ai-summary:** split auto-generate toggle into create/update ([9f82ba6](https://github.com/mx-space/mx-admin/commit/9f82ba670aad6bbde5c72f2d4462acacc6cf13ce))
+
+
+
 # [6.6.0](https://github.com/mx-space/mx-admin/compare/v6.4.7...v6.6.0) (2026-04-21)
 
 
