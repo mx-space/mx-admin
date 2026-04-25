@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [6.7.1](https://github.com/mx-space/mx-admin/compare/v6.7.0...v6.7.1) (2026-04-25)
+
+
+
 # [6.7.0](https://github.com/mx-space/mx-admin/compare/v6.6.0...v6.7.0) (2026-04-21)
 
 
