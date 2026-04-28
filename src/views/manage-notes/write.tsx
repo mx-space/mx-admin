@@ -26,6 +26,7 @@ import type { ProviderGroup } from '@haklex/rich-agent-chat'
 import type { TopicModel } from '@mx-space/api-client'
 import type { ProviderModelsResponse } from '~/api/ai'
 import type { CreateNoteData } from '~/api/notes'
+import type { MetaFieldsSchema } from '~/components/editor/write-editor'
 import type { DraftModel } from '~/models/draft'
 import type { Coordinate, NoteModel } from '~/models/note'
 import type { ContentFormat, WriteBaseType } from '~/shared/types/base'
@@ -64,6 +65,22 @@ import { useLayout } from '~/layouts/content'
 import { DraftRefType } from '~/models/draft'
 import { UIStore } from '~/stores/ui'
 import { getDayOfYear } from '~/utils/time'
+
+const NOTE_META_SCHEMA: MetaFieldsSchema = {
+  title: { description: '日记标题', type: 'string' },
+  slug: {
+    description: 'URL 路径片段，可空（空则使用 nid 路径）',
+    type: 'string',
+  },
+  mood: { description: '心情', type: 'string' },
+  weather: { description: '天气', type: 'string' },
+  bookmark: { description: '是否标记为回忆项', type: 'boolean' },
+  location: { description: '位置文本（可空）', type: 'string' },
+  isPublished: {
+    description: '是否发布（false 为草稿）',
+    type: 'boolean',
+  },
+}
 
 function toProviderGroups(response: ProviderModelsResponse[]): ProviderGroup[] {
   return response.map((p) => ({
@@ -433,6 +450,27 @@ const NoteWriteView = defineComponent(() => {
         }}
         refId={actualRefId.value || data.id}
         refType="note"
+        metaFieldsSchema={NOTE_META_SCHEMA}
+        getMetaFields={() => ({
+          title: data.title,
+          slug: data.slug,
+          mood: data.mood,
+          weather: data.weather,
+          bookmark: data.bookmark,
+          location: data.location ?? '',
+          isPublished: data.isPublished,
+        })}
+        onMetaFieldsUpdate={(updates) => {
+          if ('title' in updates) data.title = String(updates.title ?? '')
+          if ('slug' in updates) data.slug = String(updates.slug ?? '')
+          if ('mood' in updates) data.mood = String(updates.mood ?? '')
+          if ('weather' in updates) data.weather = String(updates.weather ?? '')
+          if ('bookmark' in updates) data.bookmark = !!updates.bookmark
+          if ('location' in updates)
+            data.location =
+              updates.location == null ? '' : String(updates.location)
+          if ('isPublished' in updates) data.isPublished = !!updates.isPublished
+        }}
         subtitleSlot={() => (
           <div class="flex items-center gap-2 text-sm text-neutral-500">
             <span>{`${WEB_URL}${buildNotePublicPath({ ...data, nid: nid.value })}`}</span>

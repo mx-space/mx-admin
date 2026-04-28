@@ -20,6 +20,7 @@ import { useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
 import type { ProviderGroup } from '@haklex/rich-agent-chat'
 import type { ProviderModelsResponse } from '~/api/ai'
+import type { MetaFieldsSchema } from '~/components/editor/write-editor'
 import type { CategoryModel } from '~/models/category'
 import type { DraftModel } from '~/models/draft'
 import type { PostModel } from '~/models/post'
@@ -58,6 +59,27 @@ import { CategoryStore } from '~/stores/category'
 import { UIStore } from '~/stores/ui'
 
 import { useMemoPostList } from './hooks/use-memo-post-list'
+
+const POST_META_SCHEMA: MetaFieldsSchema = {
+  title: { description: '文章标题', type: 'string' },
+  slug: {
+    description: 'URL 路径片段，建议英文小写并使用连字符',
+    type: 'string',
+    example: 'my-first-post',
+  },
+  tags: { description: '文章标签列表', type: 'string[]' },
+  summary: { description: '文章摘要，留空将自动生成', type: 'string' },
+  copyright: { description: '是否在文末显示版权信息', type: 'boolean' },
+  pin: { description: '是否置顶', type: 'boolean' },
+  pinOrder: {
+    description: '置顶顺序，数字越大越靠前；置顶关闭时为 0',
+    type: 'number',
+  },
+  isPublished: {
+    description: '是否发布（false 为草稿）',
+    type: 'boolean',
+  },
+}
 
 function toProviderGroups(response: ProviderModelsResponse[]): ProviderGroup[] {
   return response.map((p) => ({
@@ -398,6 +420,35 @@ const PostWriteView = defineComponent(() => {
         }}
         refId={actualRefId.value || data.id}
         refType="post"
+        metaFieldsSchema={POST_META_SCHEMA}
+        getMetaFields={() => ({
+          title: data.title,
+          slug: data.slug,
+          tags: [...data.tags],
+          summary: data.summary,
+          copyright: data.copyright,
+          pin: data.pin,
+          pinOrder: data.pinOrder,
+          isPublished: data.isPublished,
+        })}
+        onMetaFieldsUpdate={(updates) => {
+          if ('title' in updates) data.title = String(updates.title ?? '')
+          if ('slug' in updates) data.slug = String(updates.slug ?? '')
+          if ('tags' in updates && Array.isArray(updates.tags)) {
+            data.tags.length = 0
+            data.tags.push(...(updates.tags as unknown[]).map((t) => String(t)))
+          }
+          if ('summary' in updates) data.summary = String(updates.summary ?? '')
+          if ('copyright' in updates) data.copyright = !!updates.copyright
+          if ('pin' in updates) {
+            data.pin = !!updates.pin
+            if (!data.pin) data.pinOrder = 0
+            else if (!data.pinOrder) data.pinOrder = 1
+          }
+          if ('pinOrder' in updates)
+            data.pinOrder = Number(updates.pinOrder ?? 0) || 0
+          if ('isPublished' in updates) data.isPublished = !!updates.isPublished
+        }}
         subtitleSlot={() => (
           <SlugInput
             prefix={`${WEB_URL}/posts/${category.value.slug}/`}

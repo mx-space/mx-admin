@@ -18,6 +18,7 @@ import {
 import { useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
 import type { CreatePageData } from '~/api/pages'
+import type { MetaFieldsSchema } from '~/components/editor/write-editor'
 import type { DraftModel } from '~/models/draft'
 import type { PageModel } from '~/models/page'
 import type { ContentFormat, WriteBaseType } from '~/shared/types/base'
@@ -47,6 +48,20 @@ import { useLayout } from '~/layouts/content'
 import { DraftRefType } from '~/models/draft'
 import { RouteName } from '~/router/name'
 import { UIStore } from '~/stores/ui'
+
+const PAGE_META_SCHEMA: MetaFieldsSchema = {
+  title: { description: '页面标题', type: 'string' },
+  slug: {
+    description: 'URL 路径片段，建议英文小写并使用连字符',
+    type: 'string',
+    example: 'about',
+  },
+  subtitle: { description: '副标题', type: 'string' },
+  order: {
+    description: '导航顺序，数字越小越靠前',
+    type: 'number',
+  },
+}
 
 type PageReactiveType = WriteBaseType & {
   subtitle: string
@@ -285,6 +300,20 @@ const PageWriteView = defineComponent(() => {
         }}
         saveConfirmFn={serverDraft.checkIsSynced}
         variant="post"
+        metaFieldsSchema={PAGE_META_SCHEMA}
+        getMetaFields={() => ({
+          title: data.title,
+          slug: data.slug,
+          subtitle: data.subtitle,
+          order: data.order,
+        })}
+        onMetaFieldsUpdate={(updates) => {
+          if ('title' in updates) data.title = String(updates.title ?? '')
+          if ('slug' in updates) data.slug = String(updates.slug ?? '')
+          if ('subtitle' in updates)
+            data.subtitle = String(updates.subtitle ?? '')
+          if ('order' in updates) data.order = Number(updates.order ?? 0) || 0
+        }}
         subtitleSlot={() => (
           <div class="space-y-2">
             <SlugInput

@@ -4,6 +4,7 @@ import type { ChatBubble } from '@haklex/rich-agent-core'
 import type { ContentFormat } from '~/shared/types/base'
 import type { LexicalEditor, SerializedEditorState } from 'lexical'
 import type { PropType, VNode } from 'vue'
+import type { MetaFieldsSchema } from '../rich/agent-chat/composables/use-meta-tools'
 import type { WriteEditorVariant } from './types'
 
 import { createThemeStyle } from '@haklex/rich-style-token'
@@ -86,6 +87,11 @@ export const RichWriteEditor = defineComponent({
     initialBubbles: Array as PropType<ChatBubble[]>,
     refId: String,
     refType: String as PropType<'post' | 'note' | 'page'>,
+    metaFieldsSchema: Object as PropType<MetaFieldsSchema>,
+    getMetaFields: Function as PropType<() => Record<string, unknown>>,
+    onMetaFieldsUpdate: Function as PropType<
+      (updates: Record<string, unknown>) => void | Promise<void>
+    >,
   },
   setup(props) {
     const richEditorRef = ref<{ focus: () => void }>()
@@ -139,6 +145,9 @@ export const RichWriteEditor = defineComponent({
           initialBubbles={props.initialBubbles}
           refId={props.refId}
           refType={props.refType}
+          metaFieldsSchema={props.metaFieldsSchema}
+          getMetaFields={props.getMetaFields}
+          onMetaFieldsUpdate={props.onMetaFieldsUpdate}
           onChange={(value: SerializedEditorState) => {
             lastEmittedJson = JSON.stringify(value)
             props.onRichContentChange?.(value)

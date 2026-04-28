@@ -3,6 +3,7 @@ import { createElement } from 'react'
 import { createRoot } from 'react-dom/client'
 import { $getRoot, $getState, $parseSerializedNode } from 'lexical'
 import {
+  computed,
   defineComponent,
   onBeforeUnmount,
   onMounted,
@@ -14,7 +15,9 @@ import {
 import type { ProviderGroup, SelectedModel } from '@haklex/rich-agent-chat'
 import type {
   AgentStore,
+  AgentToolConfig,
   ChatBubble,
+  ChatMessage,
   LLMProvider,
 } from '@haklex/rich-agent-core'
 import type { RichEditorVariant } from '@haklex/rich-editor'
@@ -51,6 +54,8 @@ import '@haklex/rich-kit-shiro/style.css'
 import '@haklex/rich-plugin-toolbar/style.css'
 import '@haklex/rich-ext-nested-doc/style.css'
 
+import type { MetaFieldsSchema } from './agent-chat/composables/use-meta-tools'
+
 import { filesApi } from '~/api/files'
 import { API_URL } from '~/constants/env'
 import { useUIStore } from '~/stores/ui'
@@ -59,6 +64,10 @@ import { AgentChatPanel } from './agent-chat/AgentChatPanel'
 import { useAgentSetup } from './agent-chat/composables/use-agent-loop'
 import { useReapply } from './agent-chat/composables/use-agent-reapply'
 import { provideAgentStore } from './agent-chat/composables/use-agent-store'
+import {
+  buildMetaSystemMessages,
+  buildMetaTools,
+} from './agent-chat/composables/use-meta-tools'
 import { useSessionManager } from './agent-chat/composables/use-session-manager'
 
 const saveExcalidrawSnapshot = async (
@@ -136,11 +145,15 @@ function AgentLoopCapture({
   onAgentLoopReady,
   provider,
   store,
+  tools,
+  systemMessages,
 }: {
   editorRef: React.RefObject<LexicalEditor | null>
   onAgentLoopReady: (loop: ReturnType<typeof useAgentLoop> | null) => void
   provider: LLMProvider | null
   store: AgentStore
+  tools?: AgentToolConfig[]
+  systemMessages?: ChatMessage[]
 }) {
   if (!provider) {
     onAgentLoopReady(null)
@@ -151,6 +164,8 @@ function AgentLoopCapture({
     onAgentLoopReady,
     provider,
     store,
+    tools,
+    systemMessages,
   })
 }
 
@@ -159,13 +174,17 @@ function AgentLoopCaptureInner({
   onAgentLoopReady,
   provider,
   store,
+  tools,
+  systemMessages,
 }: {
   editorRef: React.RefObject<LexicalEditor | null>
   onAgentLoopReady: (loop: ReturnType<typeof useAgentLoop>) => void
   provider: LLMProvider
   store: AgentStore
+  tools?: AgentToolConfig[]
+  systemMessages?: ChatMessage[]
 }) {
-  const loop = useAgentLoop({ provider, store })
+  const loop = useAgentLoop({ provider, store, tools, systemMessages })
   onAgentLoopReady(loop)
 
   const [editor] = useLexicalComposerContext()
@@ -183,6 +202,8 @@ function ReactEditorPane({
   onSubmit,
   onEditorReady,
   onAgentLoopReady,
+  tools,
+  systemMessages,
 }: {
   editorProps: Omit<ShiroEditorProps, 'onChange' | 'onSubmit' | 'onEditorReady'>
   store: AgentStore
@@ -191,6 +212,8 @@ function ReactEditorPane({
   onSubmit?: ShiroEditorProps['onSubmit']
   onEditorReady?: (editor: LexicalEditor | null) => void
   onAgentLoopReady: (loop: ReturnType<typeof useAgentLoop> | null) => void
+  tools?: AgentToolConfig[]
+  systemMessages?: ChatMessage[]
 }) {
   const editorRef = { current: null as LexicalEditor | null }
 
@@ -231,6 +254,8 @@ function ReactEditorPane({
             onAgentLoopReady,
             provider,
             store,
+            tools,
+            systemMessages,
           }),
           createElement(NestedDocPlugin),
         ),
@@ -261,6 +286,11 @@ export const RichEditorWithAgent = defineComponent({
     initialBubbles: Array as PropType<ChatBubble[]>,
     refId: String,
     refType: String as PropType<'post' | 'note' | 'page'>,
+    metaFieldsSchema: Object as PropType<MetaFieldsSchema>,
+    getMetaFields: Function as PropType<() => Record<string, unknown>>,
+    onMetaFieldsUpdate: Function as PropType<
+      (updates: Record<string, unknown>) => void | Promise<void>
+    >,
   },
   emits: {
     change: (_value: SerializedEditorState) => true,
@@ -297,6 +327,20 @@ export const RichEditorWithAgent = defineComponent({
           (b: { id: string }) => b.id === batchId,
         )
       },
+    })
+
+    const metaTools = computed<AgentToolConfig[] | undefined>(() => {
+      if (!props.metaFieldsSchema) return undefined
+      return buildMetaTools({
+        schema: props.metaFieldsSchema,
+        getFields: () => props.getMetaFields?.() ?? {},
+        setFields: (updates) => props.onMetaFieldsUpdate?.(updates),
+      })
+    })
+
+    const metaSystemMessages = computed<ChatMessage[] | undefined>(() => {
+      if (!props.metaFieldsSchema) return undefined
+      return buildMetaSystemMessages(props.metaFieldsSchema)
     })
 
     const sessionManager = useSessionManager({
@@ -448,6 +492,8 @@ export const RichEditorWithAgent = defineComponent({
           onSubmit: handleSubmit,
           onEditorReady: handleEditorReady,
           onAgentLoopReady: handleAgentLoopReady,
+          tools: metaTools.value,
+          systemMessages: metaSystemMessages.value,
         }),
       )
     }
@@ -478,6 +524,9 @@ export const RichEditorWithAgent = defineComponent({
           provider.value,
           props.providerGroups,
           props.selectedModel,
+          props.metaFieldsSchema,
+          props.getMetaFields,
+          props.onMetaFieldsUpdate,
         ],
         () => renderReact(resolveTheme()),
       )

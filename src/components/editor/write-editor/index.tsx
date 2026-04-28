@@ -8,6 +8,7 @@ import type { ChatBubble } from '@haklex/rich-agent-core'
 import type { ContentFormat } from '~/shared/types/base'
 import type { LexicalEditor, SerializedEditorState } from 'lexical'
 import type { PropType, VNode } from 'vue'
+import type { MetaFieldsSchema } from '../rich/agent-chat/composables/use-meta-tools'
 import type { WriteEditorVariant } from './types'
 
 import { editorBaseProps } from '../universal/props'
@@ -18,6 +19,10 @@ export { MarkdownWriteEditor } from './MarkdownWriteEditor'
 export { RichWriteEditor } from './RichWriteEditor'
 export { WriteEditorBase } from './WriteEditorBase'
 export type { WriteEditorVariant } from './types'
+export type {
+  MetaFieldDescriptor,
+  MetaFieldsSchema,
+} from '../rich/agent-chat/composables/use-meta-tools'
 
 export const WriteEditor = defineComponent({
   name: 'WriteEditor',
@@ -74,6 +79,11 @@ export const WriteEditor = defineComponent({
     initialBubbles: Array as PropType<ChatBubble[]>,
     refId: String,
     refType: String as PropType<'post' | 'note' | 'page'>,
+    metaFieldsSchema: Object as PropType<MetaFieldsSchema>,
+    getMetaFields: Function as PropType<() => Record<string, unknown>>,
+    onMetaFieldsUpdate: Function as PropType<
+      (updates: Record<string, unknown>) => void | Promise<void>
+    >,
   },
   setup(props) {
     return () => {
@@ -102,6 +112,9 @@ export const WriteEditor = defineComponent({
             initialBubbles={props.initialBubbles}
             refId={props.refId}
             refType={props.refType}
+            metaFieldsSchema={props.metaFieldsSchema}
+            getMetaFields={props.getMetaFields}
+            onMetaFieldsUpdate={props.onMetaFieldsUpdate}
           />
         )
       }

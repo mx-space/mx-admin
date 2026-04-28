@@ -22,6 +22,8 @@ import '@haklex/rich-kit-shiro/style.css'
 import '@haklex/rich-plugin-toolbar/style.css'
 import '@haklex/rich-ext-nested-doc/style.css'
 
+import type { MetaFieldsSchema } from './agent-chat/composables/use-meta-tools'
+
 import { useUIStore } from '~/stores/ui'
 
 import { buildShiroEditorProps } from './build-shiro-editor-props'
@@ -68,6 +70,11 @@ export const RichEditor = defineComponent({
     initialBubbles: Array as PropType<ChatBubble[]>,
     refId: String,
     refType: String as PropType<'post' | 'note' | 'page'>,
+    metaFieldsSchema: Object as PropType<MetaFieldsSchema>,
+    getMetaFields: Function as PropType<() => Record<string, unknown>>,
+    onMetaFieldsUpdate: Function as PropType<
+      (updates: Record<string, unknown>) => void | Promise<void>
+    >,
   },
   emits: {
     change: (_value: SerializedEditorState) => true,
@@ -200,6 +207,9 @@ export const RichEditor = defineComponent({
           initialBubbles={props.initialBubbles}
           refId={props.refId}
           refType={props.refType}
+          metaFieldsSchema={props.metaFieldsSchema}
+          getMetaFields={props.getMetaFields}
+          onMetaFieldsUpdate={props.onMetaFieldsUpdate}
           onChange={(v: SerializedEditorState) => emit('change', v)}
           onSubmit={handleSubmit}
           onEditorReady={(e: LexicalEditor | null) => {
