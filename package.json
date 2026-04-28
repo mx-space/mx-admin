@@ -145,10 +145,5 @@
     "vite-plugin-mkcert": "1.17.10",
     "vite-plugin-vue-inspector": "5.4.0"
   },
-  "packageManager": "pnpm@10.33.0",
-  "pnpm": {
-    "overrides": {
-      "lucide-react": "1.8.0"
-    }
-  }
+  "packageManager": "pnpm@11.0.0"
 }

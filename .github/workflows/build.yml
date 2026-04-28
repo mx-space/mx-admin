@@ -35,9 +35,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
 
-      - uses: pnpm/action-setup@v3.0.0
+      - uses: pnpm/action-setup@v4
         with:
-          version: 8.x.x
+          version: 11.0.0
           run_install: true
       - run: |
           export NODE_OPTIONS=--max-old-space-size=32768

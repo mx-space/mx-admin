@@ -1,2 +1,15 @@
 packages:
-  - '.'
+  - .
+allowBuilds:
+  simple-git-hooks: true
+  vue-demi: true
+overrides:
+  lucide-react: 1.8.0
+publicHoistPattern:
+  - "*eslint*"
+  - "*types*"
+  - "*@prettier/plugin-*"
+  - "*prettier-plugin-*"
+  - "*@codemirror*"
+saveExact: true
+strictPeerDependencies: false
