@@ -9,7 +9,14 @@ import {
   X as XIcon,
   Zap as ZapIcon,
 } from 'lucide-vue-next'
-import { NButton, NInput, NSelect, NSpace, NSwitch } from 'naive-ui'
+import {
+  NButton,
+  NInput,
+  NInputNumber,
+  NSelect,
+  NSpace,
+  NSwitch,
+} from 'naive-ui'
 import { computed, defineComponent, ref, watch } from 'vue'
 import { toast } from 'vue-sonner'
 import type { ProviderModel } from '~/api/ai'
@@ -55,6 +62,7 @@ interface AIConfig {
   enableAutoGenerateSummaryOnCreate?: boolean
   enableAutoGenerateSummaryOnUpdate?: boolean
   summaryTargetLanguages?: string[]
+  summaryMinTextLength?: number
   enableTranslation?: boolean
   enableAutoGenerateTranslation?: boolean
   translationTargetLanguages?: string[]
@@ -63,6 +71,7 @@ interface AIConfig {
   enableAutoGenerateInsightsOnUpdate?: boolean
   enableAutoTranslateInsights?: boolean
   insightsTargetLanguages?: string[]
+  insightsMinTextLength?: number
 }
 
 interface ModelInfo {
@@ -917,6 +926,21 @@ export const AIConfigSection = defineComponent({
               disabled={!config.value.enableSummary}
             />
           </SettingsRow>
+
+          <SettingsRow
+            title="自动生成最小文本长度"
+            description="正文字符数低于此值时跳过自动钩子，仅影响自动触发；0 表示不限"
+          >
+            <NInputNumber
+              value={config.value.summaryMinTextLength ?? 0}
+              min={0}
+              step={50}
+              onUpdateValue={(v) =>
+                updateConfig({ summaryMinTextLength: v ?? 0 })
+              }
+              disabled={!config.value.enableSummary}
+            />
+          </SettingsRow>
         </SettingsSection>
 
         <SettingsSection
@@ -979,6 +1003,21 @@ export const AIConfigSection = defineComponent({
             <TranslationLanguagesInput
               value={config.value.insightsTargetLanguages || []}
               onUpdate={(v) => updateConfig({ insightsTargetLanguages: v })}
+              disabled={!config.value.enableInsights}
+            />
+          </SettingsRow>
+
+          <SettingsRow
+            title="自动生成最小文本长度"
+            description="正文字符数低于此值时跳过自动钩子，仅影响自动触发；0 表示不限"
+          >
+            <NInputNumber
+              value={config.value.insightsMinTextLength ?? 0}
+              min={0}
+              step={50}
+              onUpdateValue={(v) =>
+                updateConfig({ insightsMinTextLength: v ?? 0 })
+              }
               disabled={!config.value.enableInsights}
             />
           </SettingsRow>
