@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [6.7.3](https://github.com/mx-space/mx-admin/compare/v6.7.2...v6.7.3) (2026-04-28)
+
+
+### Features
+
+* **editor/agent:** expose document meta read/update tools to AI agent ([7908fc0](https://github.com/mx-space/mx-admin/commit/7908fc01a33408fc99899512c6001f182778d3f9))
+
+
+
 ## [6.7.2](https://github.com/mx-space/mx-admin/compare/v6.7.1...v6.7.2) (2026-04-28)
 
 
