@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [6.7.2](https://github.com/mx-space/mx-admin/compare/v6.7.1...v6.7.2) (2026-04-28)
+
+
+### Features
+
+* **ai-config:** expose min text length threshold for auto summary/insights ([05d748f](https://github.com/mx-space/mx-admin/commit/05d748fc01e6b621bb9148537ead3004f3dbb256))
+
+
+
 ## [6.7.1](https://github.com/mx-space/mx-admin/compare/v6.7.0...v6.7.1) (2026-04-25)
 
 
