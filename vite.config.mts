@@ -52,8 +52,6 @@ export default ({ mode }) => {
         os: 'os-browserify',
         'node-fetch': 'isomorphic-fetch',
         buffer: 'buffer',
-        '@excalidraw/excalidraw':
-          '@excalidraw/excalidraw/dist/excalidraw.production.min.js',
       },
     },
 
