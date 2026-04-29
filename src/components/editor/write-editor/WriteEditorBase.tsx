@@ -277,8 +277,12 @@ export const WriteEditorBase = defineComponent({
 
         <div
           class="write-editor-content"
-          onClick={() => {
-            props.onAutoFocusContent?.()
+          onClick={(e: MouseEvent) => {
+            // 仅当点击落于 wrapper 自身（如 padding-bottom 空白区）时聚焦
+            // 防止点击编辑器内容、工具栏后焦点被强制拉至末行
+            if (e.target === e.currentTarget) {
+              props.onAutoFocusContent?.()
+            }
           }}
         >
           {slots.default?.()}
