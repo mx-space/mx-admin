@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [6.7.4](https://github.com/mx-space/mx-admin/compare/v6.7.3...v6.7.4) (2026-04-29)
+
+
+### Bug Fixes
+
+* **editor:** prevent focus reset to last line on click bubbling ([902dbbe](https://github.com/mx-space/mx-admin/commit/902dbbec02ca8464a9f4e8dce040552f84322dfc))
+
+
+
 ## [6.7.3](https://github.com/mx-space/mx-admin/compare/v6.7.2...v6.7.3) (2026-04-28)
 
 
