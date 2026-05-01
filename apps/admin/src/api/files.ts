@@ -100,4 +100,49 @@ export const filesApi = {
         data: options,
       }),
   },
+
+  // 评论图片管理（reader uploads）
+  commentUploads: {
+    list: (params: {
+      page?: number
+      size?: number
+      status?: 'pending' | 'active' | 'detached'
+      readerId?: string
+      refId?: string
+    }) =>
+      request.get<CommentUploadListResponse>('/files/comment-uploads/list', {
+        query: params,
+      }),
+
+    delete: (id: string) =>
+      request.delete<{ storageRemoved: boolean }>(
+        `/files/comment-uploads/${id}`,
+      ),
+  },
+}
+
+export interface CommentUploadFile {
+  id: string
+  fileName: string
+  fileUrl: string
+  status: 'pending' | 'active' | 'detached'
+  readerId?: string
+  mimeType?: string
+  byteSize?: number
+  refType?: string
+  refId?: string
+  detachedAt?: string
+  created: string
+}
+
+export interface CommentUploadListResponse {
+  data: CommentUploadFile[]
+  pagination: {
+    currentPage: number
+    totalPage: number
+    size: number
+    total: number
+    hasNextPage: boolean
+    hasPrevPage: boolean
+  }
 }

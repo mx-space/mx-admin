@@ -239,6 +239,15 @@ export const routeForMenu: Array<RouteRecordRaw> = [
         },
         component: () => import('../views/manage-files/orphans'),
       },
+      {
+        path: 'comment-images',
+        name: 'file-comment-images',
+        meta: {
+          title: '评论图片',
+          icon: <ImageIcon />,
+        },
+        component: () => import('../views/manage-files/comment-images'),
+      },
     ],
   },
   {
