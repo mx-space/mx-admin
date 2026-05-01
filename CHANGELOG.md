@@ -1,13 +1,25 @@
 # CHANGELOG
 
+
+# [6.8.0](https://github.com/mx-space/mx-admin/compare/v6.7.4...v6.8.0) (2026-05-01)
+
+
+### Bug Fixes
+
+* **ci:** allow esbuild build scripts for pnpm 11.x ([5527ba3](https://github.com/mx-space/mx-admin/commit/5527ba3d01ec34038ab3a84630b66529150a3f93))
+* **ci:** upgrade vitest to v4 and remove esbuild build approval ([f9ae6af](https://github.com/mx-space/mx-admin/commit/f9ae6afbcb7b3c07b60c5c9f5fa22ed730de0f0d))
+
+
+### Features
+
+* **files:** comment images management page ([dcdd122](https://github.com/mx-space/mx-admin/commit/dcdd122050174c3912491cc69c592002708a17f7))
+
 ## [6.7.4](https://github.com/mx-space/mx-admin/compare/v6.7.3...v6.7.4) (2026-04-29)
 
 
 ### Bug Fixes
 
 * **editor:** prevent focus reset to last line on click bubbling ([902dbbe](https://github.com/mx-space/mx-admin/commit/902dbbec02ca8464a9f4e8dce040552f84322dfc))
-
-
 
 ## [6.7.3](https://github.com/mx-space/mx-admin/compare/v6.7.2...v6.7.3) (2026-04-28)
 
@@ -16,8 +28,6 @@
 
 * **editor/agent:** expose document meta read/update tools to AI agent ([7908fc0](https://github.com/mx-space/mx-admin/commit/7908fc01a33408fc99899512c6001f182778d3f9))
 
-
-
 ## [6.7.2](https://github.com/mx-space/mx-admin/compare/v6.7.1...v6.7.2) (2026-04-28)
 
 
@@ -25,11 +35,7 @@
 
 * **ai-config:** expose min text length threshold for auto summary/insights ([05d748f](https://github.com/mx-space/mx-admin/commit/05d748fc01e6b621bb9148537ead3004f3dbb256))
 
-
-
 ## [6.7.1](https://github.com/mx-space/mx-admin/compare/v6.7.0...v6.7.1) (2026-04-25)
-
-
 
 # [6.7.0](https://github.com/mx-space/mx-admin/compare/v6.6.0...v6.7.0) (2026-04-21)
 
@@ -37,8 +43,6 @@
 ### Features
 
 * **ai-summary:** split auto-generate toggle into create/update ([9f82ba6](https://github.com/mx-space/mx-admin/commit/9f82ba670aad6bbde5c72f2d4462acacc6cf13ce))
-
-
 
 # [6.6.0](https://github.com/mx-space/mx-admin/compare/v6.4.7...v6.6.0) (2026-04-21)
 
@@ -53,23 +57,13 @@
 * **ai-insights:** manual batch generation and generate confirmation dialog ([169a32b](https://github.com/mx-space/mx-admin/commit/169a32b170b85987fa53af64b93ac0e8d89518a6))
 * **ai-insights:** router entry and query keys ([935eb40](https://github.com/mx-space/mx-admin/commit/935eb4065322e153dc571af3d39c28c6c93e0f37))
 
-
-
 ## [6.4.7](https://github.com/mx-space/mx-admin/compare/v6.4.6...v6.4.7) (2026-04-17)
-
-
 
 ## [6.4.6](https://github.com/mx-space/mx-admin/compare/v6.4.5...v6.4.6) (2026-04-17)
 
-
-
 ## [6.4.5](https://github.com/mx-space/mx-admin/compare/v6.4.4...v6.4.5) (2026-04-17)
 
-
-
 ## [6.4.4](https://github.com/mx-space/mx-admin/compare/v6.4.3...v6.4.4) (2026-04-17)
-
-
 
 ## [6.4.3](https://github.com/mx-space/mx-admin/compare/v6.5.0...v6.4.3) (2026-04-07)
 
@@ -86,8 +80,6 @@
 * add pinned selection indicator to agent chat input ([02e3d48](https://github.com/mx-space/mx-admin/commit/02e3d48085bd4a783c23d524790c66546eb5ef28))
 * **agent-chat:** remember recent models and simplify editor bridges ([e6a7300](https://github.com/mx-space/mx-admin/commit/e6a730060d62ad9613105bec006153b08f5dc473))
 * integrate agent selection awareness from @haklex/* 0.0.102 ([12c455d](https://github.com/mx-space/mx-admin/commit/12c455deb831b9281a582c6ad07d9a7b90c7d008))
-
-
 
 # [6.5.0](https://github.com/mx-space/mx-admin/compare/v6.4.2...v6.5.0) (2026-04-05)
 
@@ -126,8 +118,6 @@
 * wire AI agent panel into note editor ([33c2d8c](https://github.com/mx-space/mx-admin/commit/33c2d8c5264b4a9971e2b7229c42031d0bc1e9b4))
 * wire AI agent panel into post editor ([2868a6c](https://github.com/mx-space/mx-admin/commit/2868a6c46e62d8a0b66ad030b5b3281d9c6c6037))
 
-
-
 ## [6.4.2](https://github.com/mx-space/mx-admin/compare/v6.4.1...v6.4.2) (2026-04-01)
 
 
@@ -136,16 +126,12 @@
 * **drafts:** use computeDeltaStats for Lexical version diff header ([a8a6dd1](https://github.com/mx-space/mx-admin/commit/a8a6dd1e417c52faf4fd37ac68666371049c1015))
 * reply ([cee88cb](https://github.com/mx-space/mx-admin/commit/cee88cbd504039ce9ca9823b503e5ee53dfcc598))
 
-
-
 ## [6.4.1](https://github.com/mx-space/mx-admin/compare/v6.4.0...v6.4.1) (2026-03-28)
 
 
 ### Features
 
 * **ai:** add optional subtitle field to translation interfaces and components ([45dfee8](https://github.com/mx-space/mx-admin/commit/45dfee819264665f490fe9de2a9425cccd7b5f93))
-
-
 
 # [6.4.0](https://github.com/mx-space/mx-admin/compare/v6.3.0...v6.4.0) (2026-03-14)
 
@@ -159,16 +145,12 @@
 
 * **ai:** add slug backfill page and task type support ([5de47bd](https://github.com/mx-space/mx-admin/commit/5de47bd5fe3f07f069a4873ac208da89e5cbe9ef))
 
-
-
 # [6.3.0](https://github.com/mx-space/mx-admin/compare/v6.2.3...v6.3.0) (2026-03-13)
 
 
 ### Features
 
 * **note:** expose slug in admin and fix type errors ([e8dc9b0](https://github.com/mx-space/mx-admin/commit/e8dc9b05a2578dfa77ea9d7c2cfc6cc869a25d6a))
-
-
 
 ## [6.2.3](https://github.com/mx-space/mx-admin/compare/v6.2.2...v6.2.3) (2026-03-13)
 
@@ -177,11 +159,7 @@
 
 * **editor:** integrate Lexical editor support in various components ([0ba53a2](https://github.com/mx-space/mx-admin/commit/0ba53a2ac1ef42b89e1c9a3a99f10c9244c76d55))
 
-
-
 ## [6.2.2](https://github.com/mx-space/mx-admin/compare/v6.2.1...v6.2.2) (2026-03-09)
-
-
 
 ## [6.2.1](https://github.com/mx-space/mx-admin/compare/v6.2.0...v6.2.1) (2026-03-08)
 
@@ -190,11 +168,7 @@
 
 * **ai:** add translation entries management ([b71e926](https://github.com/mx-space/mx-admin/commit/b71e92636274116d65547853945327aa42ccbed8))
 
-
-
 # [6.2.0](https://github.com/mx-space/mx-admin/compare/v6.1.9...v6.2.0) (2026-03-08)
-
-
 
 ## [6.1.9](https://github.com/mx-space/mx-admin/compare/v6.1.8...v6.1.9) (2026-03-08)
 
@@ -203,16 +177,12 @@
 
 * adjust z-index for sidebar overlay ([4d7d19d](https://github.com/mx-space/mx-admin/commit/4d7d19d2926a55d0e58a1b5283db937841068e54))
 
-
-
 ## [6.1.8](https://github.com/mx-space/mx-admin/compare/v6.1.7...v6.1.8) (2026-03-07)
 
 
 ### Features
 
 * integrate @haklex/rich-ext-nested-doc extension ([4ceecdc](https://github.com/mx-space/mx-admin/commit/4ceecdc2e93251873ff5be1b731218ea225dd363))
-
-
 
 ## [6.1.7](https://github.com/mx-space/mx-admin/compare/v6.1.6...v6.1.7) (2026-03-05)
 
@@ -221,11 +191,7 @@
 
 * **editor:** enhance rich editor toolbar behavior ([3883fb7](https://github.com/mx-space/mx-admin/commit/3883fb7fddcd0d752291c19a19ecf5d81e894832))
 
-
-
 ## [6.1.6](https://github.com/mx-space/mx-admin/compare/v6.1.5...v6.1.6) (2026-03-04)
-
-
 
 ## [6.1.5](https://github.com/mx-space/mx-admin/compare/v6.1.4...v6.1.5) (2026-03-02)
 
@@ -234,8 +200,6 @@
 
 * **editor:** integrate excalidraw with server file upload/update ([cfeef53](https://github.com/mx-space/mx-admin/commit/cfeef531beadc345b9c8e116281f7849165e147e))
 
-
-
 ## [6.1.4](https://github.com/mx-space/mx-admin/compare/v6.1.3...v6.1.4) (2026-03-02)
 
 
@@ -243,11 +207,7 @@
 
 * analyze activity tab data fetch ([20dd445](https://github.com/mx-space/mx-admin/commit/20dd445c18f3a506a9cb34149f6d945b8dbc6562))
 
-
-
 ## [6.1.3](https://github.com/mx-space/mx-admin/compare/v6.1.2...v6.1.3) (2026-03-02)
-
-
 
 ## [6.1.2](https://github.com/mx-space/mx-admin/compare/v6.1.1...v6.1.2) (2026-03-01)
 
@@ -255,8 +215,6 @@
 ### Bug Fixes
 
 * add webhook dispatch list ([3fbac71](https://github.com/mx-space/mx-admin/commit/3fbac71ab51ecfec48f3aaff3516b3acab61dbf3))
-
-
 
 ## [6.1.1](https://github.com/mx-space/mx-admin/compare/v6.1.0...v6.1.1) (2026-03-01)
 
@@ -270,8 +228,6 @@
 
 * **ai-tasks:** show failed languages and smart retry label for partial-failed tasks ([ee77538](https://github.com/mx-space/mx-admin/commit/ee775381cb98bcf684222facb1e662d6b5539ce3))
 * enhance RichEditor and RichWriteEditor with focus functionality ([0fee4d9](https://github.com/mx-space/mx-admin/commit/0fee4d9b242a70fbd1136ceb013c7e48d8ec7207))
-
-
 
 # [6.1.0](https://github.com/mx-space/mx-admin/compare/v6.0.8...v6.1.0) (2026-02-28)
 
@@ -288,8 +244,6 @@
 * update SplitPanelLayout to accept string values for size properties ([40f848e](https://github.com/mx-space/mx-admin/commit/40f848e86f56749ff12445a90bfd0421551cd5d6))
 * upgrade [@haklex](https://github.com/haklex) packages and enhance editor functionality ([092200d](https://github.com/mx-space/mx-admin/commit/092200daebab1c115119e374e5f59b6a46dc7d4c))
 
-
-
 ## [6.0.8](https://github.com/mx-space/mx-admin/compare/v6.0.7...v6.0.8) (2026-02-16)
 
 
@@ -302,8 +256,6 @@
 
 * add new cron task for syncing published images to S3 ([fd95b5c](https://github.com/mx-space/mx-admin/commit/fd95b5ca415fd5c1d7f09ce7120186416de4c397))
 
-
-
 ## [6.0.7](https://github.com/mx-space/mx-admin/compare/v6.0.6...v6.0.7) (2026-02-14)
 
 
@@ -315,8 +267,6 @@
 ### Features
 
 * enhance category management view with new features ([b8cb7f6](https://github.com/mx-space/mx-admin/commit/b8cb7f68839f35f2059485163de627bda48893bb))
-
-
 
 ## [6.0.6](https://github.com/mx-space/mx-admin/compare/v6.0.5...v6.0.6) (2026-02-08)
 
@@ -335,16 +285,12 @@
 * enhance WYSIWYG editor with new block features and styling ([2add82a](https://github.com/mx-space/mx-admin/commit/2add82a32a434793449c5c615fa279a747ad599b))
 * implement collapsible details block in WYSIWYG editor ([8aca7bc](https://github.com/mx-space/mx-admin/commit/8aca7bc03aa64f9bb9d967c945931a5dac3eeb18))
 
-
-
 ## [6.0.5](https://github.com/mx-space/mx-admin/compare/v6.0.4...v6.0.5) (2026-02-07)
 
 
 ### Features
 
 * add serverless API integration and logging features ([629c40e](https://github.com/mx-space/mx-admin/commit/629c40ec70e4e5a1358a79d808709c949e0b13a8))
-
-
 
 ## [6.0.4](https://github.com/mx-space/mx-admin/compare/v6.0.3...v6.0.4) (2026-02-06)
 
@@ -353,11 +299,7 @@
 
 * add initial loading state and theme initialization ([9a6757e](https://github.com/mx-space/mx-admin/commit/9a6757e7fe9b0c96bad8ed2d6c5d32592588a6ed))
 
-
-
 ## [6.0.3](https://github.com/mx-space/mx-admin/compare/v6.0.2...v6.0.3) (2026-02-06)
-
-
 
 ## [6.0.2](https://github.com/mx-space/mx-admin/compare/v6.0.1...v6.0.2) (2026-02-06)
 
@@ -366,11 +308,7 @@
 
 * enhance shell output handling and update panel reload logic ([d86bb3b](https://github.com/mx-space/mx-admin/commit/d86bb3b28e907c9cdcc6242943090aa0faed2536))
 
-
-
 ## [6.0.1](https://github.com/mx-space/mx-admin/compare/v6.0.0...v6.0.1) (2026-02-06)
-
-
 
 # [6.0.0](https://github.com/mx-space/mx-admin/compare/v5.11.0...v6.0.0) (2026-02-06)
 
@@ -379,16 +317,12 @@
 
 * optimize reading rank with lightweight top readings API and UI improvements ([9dee6ff](https://github.com/mx-space/mx-admin/commit/9dee6ffa4463c238fdc78aaa540438ef450f97ed))
 
-
-
 # [5.11.0](https://github.com/mx-space/mx-admin/compare/v5.10.3...v5.11.0) (2026-02-04)
 
 
 ### Features
 
 * implement cron task management API and UI components ([a31a106](https://github.com/mx-space/mx-admin/commit/a31a106c303e346685ca2d6b530c96291c6322c7))
-
-
 
 ## [5.10.3](https://github.com/mx-space/mx-admin/compare/v5.10.2...v5.10.3) (2026-02-03)
 
@@ -403,16 +337,12 @@
 * enhance AI comment review functionality and update toast styles ([2589db3](https://github.com/mx-space/mx-admin/commit/2589db33bb445604d0ba5ec5e0d11cdca147c4de))
 * extend ArticleSelectorModal to include Page type ([465afb3](https://github.com/mx-space/mx-admin/commit/465afb3f582e899c927a91a8c194ac158b85a222))
 
-
-
 ## [5.10.2](https://github.com/mx-space/mx-admin/compare/v5.10.1...v5.10.2) (2026-02-02)
 
 
 ### Features
 
 * enhance BackupEmptyState component with restore functionality ([cb0f0ae](https://github.com/mx-space/mx-admin/commit/cb0f0ae348b0e7203fef26147b8a1738104923bf))
-
-
 
 ## [5.10.1](https://github.com/mx-space/mx-admin/compare/v5.10.0...v5.10.1) (2026-02-02)
 
@@ -421,8 +351,6 @@
 
 * correct API response handling in PasskeyEntry component ([22b2798](https://github.com/mx-space/mx-admin/commit/22b2798721222df67841a8ef23b6186f8c09358a))
 
-
-
 # [5.10.0](https://github.com/mx-space/mx-admin/compare/v5.9.3...v5.10.0) (2026-02-02)
 
 
@@ -430,16 +358,12 @@
 
 * add email testing functionality to health API and config form ([dfc0f88](https://github.com/mx-space/mx-admin/commit/dfc0f88a4cd1501be4612a827152e73552ec322f))
 
-
-
 ## [5.9.3](https://github.com/mx-space/mx-admin/compare/v5.9.2...v5.9.3) (2026-02-02)
 
 
 ### Features
 
 * add mobile back button to SubTaskDetailPanel ([c206b7c](https://github.com/mx-space/mx-admin/commit/c206b7c1286310f782ebe88b5cb976d10d939ae8))
-
-
 
 ## [5.9.2](https://github.com/mx-space/mx-admin/compare/v5.9.1...v5.9.2) (2026-02-01)
 
@@ -449,8 +373,6 @@
 * update avatar upload component dimensions for consistency ([7a3c986](https://github.com/mx-space/mx-admin/commit/7a3c986802547ed5a4afeff3231411e9b23cb842))
 * update visibility prop in AiTaskQueue component ([2504657](https://github.com/mx-space/mx-admin/commit/25046573eb9fd3b55497fd86204121ec3b89e055))
 
-
-
 ## [5.9.1](https://github.com/mx-space/mx-admin/compare/v5.9.0...v5.9.1) (2026-02-01)
 
 
@@ -458,16 +380,12 @@
 
 * add task deletion functionality to AI task management ([e3e55a5](https://github.com/mx-space/mx-admin/commit/e3e55a5b15ffc3904181b384f9bf562ee7ce3e54))
 
-
-
 # [5.9.0](https://github.com/mx-space/mx-admin/compare/v5.8.0...v5.9.0) (2026-02-01)
 
 
 ### Features
 
 * enhance AI task management and layout components ([6f1f840](https://github.com/mx-space/mx-admin/commit/6f1f84071cb584a2caa4bea1a0d0eca80bafd918))
-
-
 
 # [5.8.0](https://github.com/mx-space/mx-admin/compare/v5.7.1...v5.8.0) (2026-01-31)
 
@@ -483,16 +401,12 @@
 * implement AI task management system ([aa09198](https://github.com/mx-space/mx-admin/commit/aa091980d75a88ff89cd23ed07ca38710ff2f638))
 * integrate AI model queries with localStorage persistence ([0c945e6](https://github.com/mx-space/mx-admin/commit/0c945e6ea45f12aa7659f47b96623fc0654f5382))
 
-
-
 ## [5.7.1](https://github.com/mx-space/mx-admin/compare/v5.7.0...v5.7.1) (2026-01-29)
 
 
 ### Features
 
 * implement drag-to-dismiss functionality for sidebar on mobile ([f07fb2f](https://github.com/mx-space/mx-admin/commit/f07fb2fd393a4cab0410df878f49b1ea4dbba7ae))
-
-
 
 # [5.7.0](https://github.com/mx-space/mx-admin/compare/v5.6.0...v5.7.0) (2026-01-28)
 
@@ -501,8 +415,6 @@
 
 * enhance AI API and UI components for summaries and translations ([b82c5eb](https://github.com/mx-space/mx-admin/commit/b82c5eb4228484694c4d13ccb758933abe9a56b9))
 * implement optimistic updates for translation management ([6a1f168](https://github.com/mx-space/mx-admin/commit/6a1f1686417cfb9413e60af32825e52d73335daa))
-
-
 
 # [5.6.0](https://github.com/mx-space/mx-admin/compare/v5.5.1...v5.6.0) (2026-01-28)
 
@@ -522,11 +434,7 @@
 * refactor settings layout with new components and improved structure ([872de4f](https://github.com/mx-space/mx-admin/commit/872de4f03973bbed0e2d2c218aa526996853d364))
 * refactor snippets view with Master-Detail layout ([42ce3ce](https://github.com/mx-space/mx-admin/commit/42ce3ce6866b4cc7f1d80a6e566f6c618e1ca119))
 
-
-
 ## [5.5.1](https://github.com/mx-space/mx-admin/compare/v5.5.0...v5.5.1) (2026-01-27)
-
-
 
 # [5.5.0](https://github.com/mx-space/mx-admin/compare/v5.4.5...v5.5.0) (2026-01-27)
 
@@ -534,8 +442,6 @@
 ### Features
 
 * draft diff ui optimize ([65fa17a](https://github.com/mx-space/mx-admin/commit/65fa17aa79229a50648596347d5b86574ac293e7))
-
-
 
 ## [5.4.5](https://github.com/mx-space/mx-admin/compare/v5.4.4...v5.4.5) (2026-01-26)
 
@@ -545,8 +451,6 @@
 * introduce Master-Detail layout for improved content management ([bd670e8](https://github.com/mx-space/mx-admin/commit/bd670e82d333b7bce17c72b5e717073cbc560033))
 * refactor AI summary page with Master-Detail layout and new components ([3f3abab](https://github.com/mx-space/mx-admin/commit/3f3abab0f6b0a9739a07f90f8f047edc0b41a25d))
 
-
-
 ## [5.4.4](https://github.com/mx-space/mx-admin/compare/v5.4.3...v5.4.4) (2026-01-25)
 
 
@@ -555,11 +459,7 @@
 * add history diff modal for draft version comparison ([cd30f8d](https://github.com/mx-space/mx-admin/commit/cd30f8d230cae16676b03753c4d7589376c116d9))
 * enhance draft management with new components and layout improvements ([c007606](https://github.com/mx-space/mx-admin/commit/c007606237da7d577f5253100ccc1a0e70d8171c))
 
-
-
 ## [5.4.3](https://github.com/mx-space/mx-admin/compare/v5.4.2...v5.4.3) (2026-01-25)
-
-
 
 ## [5.4.2](https://github.com/mx-space/mx-admin/compare/v5.4.1...v5.4.2) (2026-01-25)
 
@@ -567,8 +467,6 @@
 ### Features
 
 * implement split layout for comment management ([1796f8c](https://github.com/mx-space/mx-admin/commit/1796f8ca044aa139416e144d988f89368c16b09c))
-
-
 
 ## [5.4.1](https://github.com/mx-space/mx-admin/compare/v5.4.0...v5.4.1) (2026-01-25)
 
@@ -580,16 +478,12 @@
 * implement draft management features with upload queue ([7492e17](https://github.com/mx-space/mx-admin/commit/7492e1717b6a1c5e966b0d8433f4d0a2352e8478))
 * integrate emoji picker and enhance comment management features ([2d8e738](https://github.com/mx-space/mx-admin/commit/2d8e7381a3435272953fe167324b4c7960031741))
 
-
-
 # [5.4.0](https://github.com/mx-space/mx-admin/compare/v5.3.0...v5.4.0) (2026-01-24)
 
 
 ### Features
 
 * refactor settings layout and enhance configuration forms ([3d42692](https://github.com/mx-space/mx-admin/commit/3d4269258f17162ba596a549eda8b7489e9adb72))
-
-
 
 # [5.3.0](https://github.com/mx-space/mx-admin/compare/v5.2.0...v5.3.0) (2026-01-24)
 
@@ -608,8 +502,6 @@
 * implement image upload functionality in editor ([b1c14ac](https://github.com/mx-space/mx-admin/commit/b1c14acfca71847473dde882f3fa4535cd951609))
 * implement slash menu functionality ([eef465e](https://github.com/mx-space/mx-admin/commit/eef465ee348a9edc3ca68008fdd4bb435ec8bd04))
 
-
-
 # [5.2.0](https://github.com/mx-space/mx-admin/compare/v5.1.4...v5.2.0) (2026-01-22)
 
 
@@ -622,8 +514,6 @@
 
 * add analysic chart ([2af156a](https://github.com/mx-space/mx-admin/commit/2af156af1049412a10550e53166edab3e50fdb0f))
 
-
-
 ## [5.1.4](https://github.com/mx-space/mx-admin/compare/v5.1.3...v5.1.4) (2026-01-22)
 
 
@@ -631,16 +521,12 @@
 
 * add rounded button components ([c47a604](https://github.com/mx-space/mx-admin/commit/c47a6041c051b51cff8e75c6453f6ac93f4264cb))
 
-
-
 ## [5.1.3](https://github.com/mx-space/mx-admin/compare/v5.1.2...v5.1.3) (2026-01-22)
 
 
 ### Features
 
 * redesign setup view ([4f0e38d](https://github.com/mx-space/mx-admin/commit/4f0e38d1203d6c6dc494d99608cddd5257053161))
-
-
 
 ## [5.1.2](https://github.com/mx-space/mx-admin/compare/v5.1.1...v5.1.2) (2026-01-21)
 
@@ -650,11 +536,7 @@
 * enhance snippets API and UI interactions ([3ceb168](https://github.com/mx-space/mx-admin/commit/3ceb168024b723b38cb5e502ffb6c13fdeb6058a))
 * integrate vue-sonner for toast notifications ([074068a](https://github.com/mx-space/mx-admin/commit/074068accacbea67af63ccf14633b3e73e327745))
 
-
-
 ## [5.1.1](https://github.com/mx-space/mx-admin/compare/v5.1.0...v5.1.1) (2026-01-20)
-
-
 
 # [5.1.0](https://github.com/mx-space/mx-admin/compare/v5.0.1...v5.1.0) (2026-01-20)
 
@@ -666,8 +548,6 @@
 * add search functionality for posts and notes ([98e424e](https://github.com/mx-space/mx-admin/commit/98e424e67d86f046949320c10439bf9aac714921))
 * implement typography standards and image editing functionality ([c244514](https://github.com/mx-space/mx-admin/commit/c2445144210b36d6d62fbad0fc61fccb75f1c14b))
 
-
-
 ## [5.0.1](https://github.com/mx-space/mx-admin/compare/v5.0.0...v5.0.1) (2026-01-19)
 
 
@@ -675,16 +555,12 @@
 
 * add meta presets management functionality ([833dc5b](https://github.com/mx-space/mx-admin/commit/833dc5b8a0aa389937deb69c7c30fd0f33bd0cb6))
 
-
-
 # [5.0.0](https://github.com/mx-space/mx-admin/compare/v4.12.1...v5.0.0) (2026-01-18)
 
 
 ### Features
 
 * new ui ([#1014](https://github.com/mx-space/mx-admin/issues/1014)) ([71f0f07](https://github.com/mx-space/mx-admin/commit/71f0f07e0db2fe4b7ec1b7cc7f39524203a90dba))
-
-
 
 ## [4.12.1](https://github.com/mx-space/mx-admin/compare/v4.12.0...v4.12.1) (2026-01-14)
 
@@ -704,8 +580,6 @@
 
 * **shorthand:** 速记支持编辑和显示修改时间 ([#1012](https://github.com/mx-space/mx-admin/issues/1012)) ([9fb375e](https://github.com/mx-space/mx-admin/commit/9fb375ecb1c18a603c83a49e29a2a3dd5c003630))
 
-
-
 # [4.12.0](https://github.com/mx-space/mx-admin/compare/v4.11.0...v4.12.0) (2026-01-12)
 
 
@@ -713,8 +587,6 @@
 
 * ai settings update ([d0c282f](https://github.com/mx-space/mx-admin/commit/d0c282ffc4f01056f30944bae4a2e4d89cc4e32b))
 * **editor:** markdown toolbar ([#1008](https://github.com/mx-space/mx-admin/issues/1008)) ([a9c983a](https://github.com/mx-space/mx-admin/commit/a9c983a52b775b931e56927c0031de0335be87ef))
-
-
 
 # [4.11.0](https://github.com/mx-space/mx-admin/compare/v4.10.3...v4.11.0) (2025-11-24)
 
@@ -724,16 +596,12 @@
 * **link:** add button to convert approved friend-link avatars to inline ([#1004](https://github.com/mx-space/mx-admin/issues/1004)) ([e7cd6cf](https://github.com/mx-space/mx-admin/commit/e7cd6cf34e096c61d7ab5df23dee82e769813b00))
 * 优化token创建以及查看逻辑并修复Safari后台创建token后不显示token内容 ([#1000](https://github.com/mx-space/mx-admin/issues/1000)) ([4aa1e65](https://github.com/mx-space/mx-admin/commit/4aa1e653b0447133c3a800ac412ed5ca2565e4cd))
 
-
-
 ## [4.10.3](https://github.com/mx-space/mx-admin/compare/v4.10.2...v4.10.3) (2025-07-17)
 
 
 ### Features
 
 * enhance note and post management with status toggle component ([7f4c8b9](https://github.com/mx-space/mx-admin/commit/7f4c8b94600b2572dc71a65f72b481461e52e614))
-
-
 
 ## [4.10.2](https://github.com/mx-space/mx-admin/compare/v4.10.1...v4.10.2) (2025-07-17)
 
@@ -742,11 +610,7 @@
 
 * post write ([c7f7e5e](https://github.com/mx-space/mx-admin/commit/c7f7e5ec650f60ed7ea79d240554fdc3cc5d4452))
 
-
-
 ## [4.10.1](https://github.com/mx-space/mx-admin/compare/v4.10.0...v4.10.1) (2025-07-10)
-
-
 
 # [4.10.0](https://github.com/mx-space/mx-admin/compare/v4.9.0...v4.10.0) (2025-07-10)
 
@@ -755,8 +619,6 @@
 
 * 添加发布状态管理功能 ([#994](https://github.com/mx-space/mx-admin/issues/994)) ([9176a99](https://github.com/mx-space/mx-admin/commit/9176a99867531e6b4c1845ba6f162f326afc6922))
 * 添加更新详情弹窗 ([#996](https://github.com/mx-space/mx-admin/issues/996)) ([bf31e88](https://github.com/mx-space/mx-admin/commit/bf31e88bdd6696871b0b1e4264dfd88058205f0c))
-
-
 
 # [4.9.0](https://github.com/mx-space/mx-admin/compare/v4.8.1...v4.9.0) (2025-01-08)
 
@@ -771,8 +633,6 @@
 * Add WebGL-based image processing (encodeImageToBlurhashWebgl) for better performance ([#983](https://github.com/mx-space/mx-admin/issues/983)) ([650b91b](https://github.com/mx-space/mx-admin/commit/650b91bd30972afc5dac7abc58163a7c0223b6c8))
 * replace NSwitch with NCheckbox for WebGL flag in ImageDetailSection ([47fab29](https://github.com/mx-space/mx-admin/commit/47fab29f6bd4b99e5a25cca91d63b0d028327f63))
 
-
-
 ## [4.8.1](https://github.com/mx-space/mx-admin/compare/v4.8.0...v4.8.1) (2024-11-26)
 
 
@@ -781,8 +641,6 @@
 * typing ([03fa6df](https://github.com/mx-space/mx-admin/commit/03fa6dfd5fa95fbc34b41bbbb4d8076b55055899))
 * vite config ([ac44646](https://github.com/mx-space/mx-admin/commit/ac446463ff6db257ef17fe4d42201d6a2072d801))
 
-
-
 # [4.8.0](https://github.com/mx-space/mx-admin/compare/v4.7.4...v4.8.0) (2024-11-26)
 
 
@@ -790,16 +648,12 @@
 
 * typing ([907b7f7](https://github.com/mx-space/mx-admin/commit/907b7f72fdaf91aec263e9cbde72fd354422e6d4))
 
-
-
 ## [4.7.4](https://github.com/mx-space/mx-admin/compare/v4.7.3...v4.7.4) (2024-10-25)
 
 
 ### Features
 
 * add site like count ([c76ac96](https://github.com/mx-space/mx-admin/commit/c76ac966b756d3020c4b1f51c0a88a6af30a2f9a))
-
-
 
 ## [4.7.3](https://github.com/mx-space/mx-admin/compare/v4.7.2...v4.7.3) (2024-09-04)
 
@@ -813,15 +667,9 @@
 
 * google oauth ([9287b48](https://github.com/mx-space/mx-admin/commit/9287b48e1358e340484dfab88b209fa55bdc4c1a))
 
-
-
 ## [4.7.2](https://github.com/mx-space/mx-admin/compare/v4.7.1...v4.7.2) (2024-09-03)
 
-
-
 ## [4.7.1](https://github.com/mx-space/mx-admin/compare/v4.7.0...v4.7.1) (2024-09-02)
-
-
 
 # [4.7.0](https://github.com/mx-space/mx-admin/compare/v4.6.2...v4.7.0) (2024-09-02)
 
@@ -830,16 +678,12 @@
 
 * authjs integrate ([#951](https://github.com/mx-space/mx-admin/issues/951)) ([b75cbff](https://github.com/mx-space/mx-admin/commit/b75cbff6f51e784558bfb0ca390475fa81015f79))
 
-
-
 ## [4.6.2](https://github.com/mx-space/mx-admin/compare/v4.6.1...v4.6.2) (2024-08-25)
 
 
 ### Bug Fixes
 
 * image blurhash logic ([bf54dd4](https://github.com/mx-space/mx-admin/commit/bf54dd4c4727292071a27e9da04d8ec227f66ec9))
-
-
 
 ## [4.6.1](https://github.com/mx-space/mx-admin/compare/v4.6.0...v4.6.1) (2024-08-16)
 
@@ -848,16 +692,12 @@
 
 * token api fetcher ([bfd75e8](https://github.com/mx-space/mx-admin/commit/bfd75e82f17037d37746b35f6a2155393dd88424))
 
-
-
 # [4.6.0](https://github.com/mx-space/mx-admin/compare/v4.5.3...v4.6.0) (2024-08-16)
 
 
 ### Features
 
 * add blur hash ([8fbfa66](https://github.com/mx-space/mx-admin/commit/8fbfa6655befa0efae83d3fd3e8cc9a32f1e6910))
-
-
 
 ## [4.5.3](https://github.com/mx-space/mx-admin/compare/v4.5.2...v4.5.3) (2024-08-06)
 
@@ -870,16 +710,12 @@
 * **deps:** update dependency qs to v6.12.3 ([#928](https://github.com/mx-space/mx-admin/issues/928)) ([ccfec76](https://github.com/mx-space/mx-admin/commit/ccfec76e2b7abe64d8aa26ef983521b484fdb10b))
 * **deps:** update dependency vue-router to v4.4.0 ([#920](https://github.com/mx-space/mx-admin/issues/920)) ([6bcfff9](https://github.com/mx-space/mx-admin/commit/6bcfff9c2d5cdd2023cfc91273682be655cad016))
 
-
-
 ## [4.5.2](https://github.com/mx-space/mx-admin/compare/v4.5.1...v4.5.2) (2024-06-09)
 
 
 ### Features
 
 * split preview ([b64c807](https://github.com/mx-space/mx-admin/commit/b64c80791c262d33a13e66056af8f1e9668bd974))
-
-
 
 ## [4.5.1](https://github.com/mx-space/mx-admin/compare/v4.5.0...v4.5.1) (2024-05-31)
 
@@ -894,16 +730,12 @@
 
 * add copy link button ([0444628](https://github.com/mx-space/mx-admin/commit/0444628af1cf158dfb51238cec671663501d1abc))
 
-
-
 # [4.5.0](https://github.com/mx-space/mx-admin/compare/v4.4.4...v4.5.0) (2024-05-19)
 
 
 ### Bug Fixes
 
 * custom app color ([e6e7f7b](https://github.com/mx-space/mx-admin/commit/e6e7f7b14eb2682b85ef7bb607f6ec2707e2c649))
-
-
 
 ## [4.4.4](https://github.com/mx-space/mx-admin/compare/v4.4.3...v4.4.4) (2024-05-19)
 
@@ -919,8 +751,6 @@
 
 * title link with token query ([752cf94](https://github.com/mx-space/mx-admin/commit/752cf94c0051eecd10c2dcc7fde8a46c5652ceb9))
 
-
-
 ## [4.4.3](https://github.com/mx-space/mx-admin/compare/v4.4.2...v4.4.3) (2024-05-09)
 
 
@@ -929,16 +759,12 @@
 * align center ([351a556](https://github.com/mx-space/mx-admin/commit/351a556c86d008fa2a979a46884b1edae634eb66))
 * kaomoji button type ([fe257c3](https://github.com/mx-space/mx-admin/commit/fe257c3bc566f251a24bc647db6ea0e7bb0f5493))
 
-
-
 ## [4.4.2](https://github.com/mx-space/mx-admin/compare/v4.4.1...v4.4.2) (2024-05-05)
 
 
 ### Bug Fixes
 
 * naive ui button ([19f5d67](https://github.com/mx-space/mx-admin/commit/19f5d670028e2dbe34ba8d43e7759de08e1f27f0))
-
-
 
 ## [4.4.1](https://github.com/mx-space/mx-admin/compare/v4.4.0...v4.4.1) (2024-05-05)
 
@@ -947,8 +773,6 @@
 
 * asset path in page proxy ([612980c](https://github.com/mx-space/mx-admin/commit/612980cd8aaebfd7aac5cd950e04574a901eb8e8))
 
-
-
 # [4.4.0](https://github.com/mx-space/mx-admin/compare/v4.3.4...v4.4.0) (2024-05-04)
 
 
@@ -956,11 +780,7 @@
 
 * ai helper ([c31cc75](https://github.com/mx-space/mx-admin/commit/c31cc759b78b9f326032f1809a1ea008000ff2ae))
 
-
-
 ## [4.3.4](https://github.com/mx-space/mx-admin/compare/v4.3.3...v4.3.4) (2024-05-04)
-
-
 
 ## [4.3.3](https://github.com/mx-space/mx-admin/compare/v4.3.2...v4.3.3) (2024-05-03)
 
@@ -968,8 +788,6 @@
 ### Bug Fixes
 
 * generate ai summary modal ([270044b](https://github.com/mx-space/mx-admin/commit/270044b602242aeb378d6c5b468a77a70335d2bf))
-
-
 
 ## [4.3.2](https://github.com/mx-space/mx-admin/compare/v4.3.1...v4.3.2) (2024-05-02)
 
@@ -987,16 +805,12 @@
 * update theme ([76fb1dc](https://github.com/mx-space/mx-admin/commit/76fb1dcc779b8d6134d5a0ea3aba764035440e04))
 * uwu ([223eb6f](https://github.com/mx-space/mx-admin/commit/223eb6fbe64c947e26f32affa823e6cf1f70e54f))
 
-
-
 ## [4.3.1](https://github.com/mx-space/mx-admin/compare/v4.3.0...v4.3.1) (2024-05-01)
 
 
 ### Bug Fixes
 
 * add ai summary pagination component ([557d287](https://github.com/mx-space/mx-admin/commit/557d287ef5e1ac7da489aef34ef6fea37e601135))
-
-
 
 # [4.3.0](https://github.com/mx-space/mx-admin/compare/v4.2.8...v4.3.0) (2024-04-26)
 
@@ -1011,8 +825,6 @@
 * ai summary ([d2da40e](https://github.com/mx-space/mx-admin/commit/d2da40e26312607923b3684ef7f98cc87c1ea0a0))
 * ai view ([014102f](https://github.com/mx-space/mx-admin/commit/014102f846446c5fd3b61c6ec6e1eea578f3e1ce))
 
-
-
 ## [4.2.8](https://github.com/mx-space/mx-admin/compare/v4.2.7...v4.2.8) (2024-04-26)
 
 
@@ -1020,16 +832,12 @@
 
 * support get video dim ([b57b40e](https://github.com/mx-space/mx-admin/commit/b57b40ea83d81cdbb295a873ed40e2a50fdd4be3))
 
-
-
 ## [4.2.7](https://github.com/mx-space/mx-admin/compare/v4.2.6...v4.2.7) (2024-04-22)
 
 
 ### Bug Fixes
 
 * table style ([4dd3b7a](https://github.com/mx-space/mx-admin/commit/4dd3b7a9d28664607e7200647808d66fbbe125c2))
-
-
 
 ## [4.2.6](https://github.com/mx-space/mx-admin/compare/v4.2.5...v4.2.6) (2024-04-22)
 
@@ -1039,8 +847,6 @@
 * file update type, closes [#896](https://github.com/mx-space/mx-admin/issues/896) ([3335d36](https://github.com/mx-space/mx-admin/commit/3335d36b1e851cf71cfbb88d42f8270f2e6b8b8f))
 * typing ([25947b5](https://github.com/mx-space/mx-admin/commit/25947b5acb8850558ef3f1725a876cf7b4467564))
 
-
-
 ## [4.2.5](https://github.com/mx-space/mx-admin/compare/v4.2.4...v4.2.5) (2024-04-20)
 
 
@@ -1049,16 +855,12 @@
 * cm search ([4d335f0](https://github.com/mx-space/mx-admin/commit/4d335f0137ab32ec173b9d62ca33462484b28a57))
 * markdown export ([fca4349](https://github.com/mx-space/mx-admin/commit/fca43490f760428411340004e237f75a7aad380b))
 
-
-
 ## [4.2.4](https://github.com/mx-space/mx-admin/compare/v4.2.3...v4.2.4) (2024-04-20)
 
 
 ### Bug Fixes
 
 * setup ([70a0240](https://github.com/mx-space/mx-admin/commit/70a0240c0e5c6e9d0961e2e1892dccab72918c8f))
-
-
 
 ## [4.2.3](https://github.com/mx-space/mx-admin/compare/v4.2.2...v4.2.3) (2024-04-11)
 
@@ -1067,11 +869,7 @@
 
 * make reading duration more easier to read ([#893](https://github.com/mx-space/mx-admin/issues/893)) ([d10a4a0](https://github.com/mx-space/mx-admin/commit/d10a4a0cc0580a974b3042ab5e0a20b707728173))
 
-
-
 ## [4.2.2](https://github.com/mx-space/mx-admin/compare/v4.2.1...v4.2.2) (2024-04-06)
-
-
 
 ## [4.2.1](https://github.com/mx-space/mx-admin/compare/v4.2.0...v4.2.1) (2024-03-27)
 
@@ -1079,8 +877,6 @@
 ### Bug Fixes
 
 * comment ref ([590c172](https://github.com/mx-space/mx-admin/commit/590c1722789b6ba882f8d8aa3f71c0034891cb45))
-
-
 
 # [4.2.0](https://github.com/mx-space/mx-admin/compare/v4.1.1...v4.2.0) (2024-03-23)
 
@@ -1094,16 +890,12 @@
 
 * add ALL method for fn ([102baba](https://github.com/mx-space/mx-admin/commit/102baba612bee3126e7f4e2501c3e17b60ab4b84))
 
-
-
 ## [4.1.1](https://github.com/mx-space/mx-admin/compare/v4.1.0...v4.1.1) (2024-02-21)
 
 
 ### Bug Fixes
 
 * api url transformer ([fe89cdf](https://github.com/mx-space/mx-admin/commit/fe89cdf70a4797d88465f9a4c00ed4eeebc4219f))
-
-
 
 # [4.1.0](https://github.com/mx-space/mx-admin/compare/v4.0.0...v4.1.0) (2024-02-20)
 
@@ -1112,8 +904,6 @@
 
 * reading rank panel ([0db59ae](https://github.com/mx-space/mx-admin/commit/0db59aee78893040b2aaf1992199dcfc77dabe05))
 
-
-
 # [4.0.0](https://github.com/mx-space/mx-admin/compare/v3.39.1...v4.0.0) (2024-02-16)
 
 
@@ -1121,16 +911,12 @@
 
 * markdown highlight, fuck codemirror ([e02985e](https://github.com/mx-space/mx-admin/commit/e02985eee43219aed194d7a124487e4aea62f61e))
 
-
-
 ## [3.39.1](https://github.com/mx-space/mx-admin/compare/v3.39.0...v3.39.1) (2024-02-16)
 
 
 ### Bug Fixes
 
 * read duration data model ([c20d3f7](https://github.com/mx-space/mx-admin/commit/c20d3f7dccbe95566ffd5e95d5b49a43f6ca4c39))
-
-
 
 # [3.39.0](https://github.com/mx-space/mx-admin/compare/v3.38.1...v3.39.0) (2024-02-15)
 
@@ -1141,16 +927,12 @@
 * **deps:** update dependency crossbell.js to v1.11.3 ([#861](https://github.com/mx-space/mx-admin/issues/861)) ([89974f2](https://github.com/mx-space/mx-admin/commit/89974f20d6341ced8793da08980a176f79acb71a))
 * persistent notification closure within the same version ([#869](https://github.com/mx-space/mx-admin/issues/869)) ([6b7567f](https://github.com/mx-space/mx-admin/commit/6b7567fd9b4d9ee6d4a94595d506ecabb375f41c))
 
-
-
 ## [3.38.1](https://github.com/mx-space/mx-admin/compare/v3.38.0...v3.38.1) (2024-02-14)
 
 
 ### Features
 
 * make AI summary persistent and customizable ([#868](https://github.com/mx-space/mx-admin/issues/868)) ([ac2b841](https://github.com/mx-space/mx-admin/commit/ac2b84140d0cb23e383d6aab0c15439b385565fb))
-
-
 
 # [3.38.0](https://github.com/mx-space/mx-admin/compare/v3.37.7...v3.38.0) (2024-02-12)
 
@@ -1160,16 +942,12 @@
 * support custom openai base url ([#863](https://github.com/mx-space/mx-admin/issues/863)) ([dfde89e](https://github.com/mx-space/mx-admin/commit/dfde89e4acf5ea6f579b32cbd1c5ef51f10e82c7))
 * support reading duartion ([fba9dc4](https://github.com/mx-space/mx-admin/commit/fba9dc4932e27cfcdf4af12cab6665f29252ec16))
 
-
-
 ## [3.37.7](https://github.com/mx-space/mx-admin/compare/v3.37.6...v3.37.7) (2024-02-07)
 
 
 ### Bug Fixes
 
 *  category getter in ManagePostListView ([ca24fce](https://github.com/mx-space/mx-admin/commit/ca24fce7ed09031c27ac80f062127aa8e8c139c0))
-
-
 
 ## [3.37.6](https://github.com/mx-space/mx-admin/compare/v3.37.5...v3.37.6) (2024-02-04)
 
@@ -1178,16 +956,12 @@
 
 * broken lockfile ([11fedb0](https://github.com/mx-space/mx-admin/commit/11fedb044ec2c257d31ce959149529b215e981fe))
 
-
-
 ## [3.37.5](https://github.com/mx-space/mx-admin/compare/v3.37.4...v3.37.5) (2024-02-04)
 
 
 ### Bug Fixes
 
 * **act:** listen route change and fetch data ([9662368](https://github.com/mx-space/mx-admin/commit/9662368b13a3f03a45d7095cb9742ecc99136468))
-
-
 
 ## [3.37.4](https://github.com/mx-space/mx-admin/compare/v3.37.3...v3.37.4) (2024-02-03)
 
@@ -1196,8 +970,6 @@
 
 * add file type ([5906f64](https://github.com/mx-space/mx-admin/commit/5906f6479a3013c8ecfdfec4fdde29160c3f79b4))
 
-
-
 ## [3.37.3](https://github.com/mx-space/mx-admin/compare/v3.37.2...v3.37.3) (2024-02-02)
 
 
@@ -1205,11 +977,7 @@
 
 * api error ([c53a4ad](https://github.com/mx-space/mx-admin/commit/c53a4adb9cc93ec93381ba4f2bf7ed089b471f28))
 
-
-
 ## [3.37.2](https://github.com/mx-space/mx-admin/compare/v3.37.1...v3.37.2) (2024-02-02)
-
-
 
 ## [3.37.1](https://github.com/mx-space/mx-admin/compare/v3.37.0...v3.37.1) (2024-02-02)
 
@@ -1224,16 +992,12 @@
 
 * Update dependencies and add PAGE_PROXY flag ([b68696c](https://github.com/mx-space/mx-admin/commit/b68696c742802b4f90376a2a68ea9bdae2787a82))
 
-
-
 # [3.37.0](https://github.com/mx-space/mx-admin/compare/v3.36.3...v3.37.0) (2024-01-31)
 
 
 ### Bug Fixes
 
 * kick session all ([b39bee2](https://github.com/mx-space/mx-admin/commit/b39bee2dd983124ac7ef45fb50a7aa3c4727c99d))
-
-
 
 ## [3.36.3](https://github.com/mx-space/mx-admin/compare/v3.36.2...v3.36.3) (2024-01-30)
 
@@ -1244,16 +1008,12 @@
 * upgrade vue to 3.4 ([4baeaeb](https://github.com/mx-space/mx-admin/commit/4baeaebdb2781ce89854d2a2a35114bfda8f0c87))
 * xlog externalUrl ([c56c2bb](https://github.com/mx-space/mx-admin/commit/c56c2bb0adee6220ba068ea14b1a464b6dc07c50))
 
-
-
 ## [3.36.2](https://github.com/mx-space/mx-admin/compare/v3.36.1...v3.36.2) (2024-01-08)
 
 
 ### Bug Fixes
 
 * attach token in hash mode ([601f9de](https://github.com/mx-space/mx-admin/commit/601f9de171c92e773a3bccfd70e3073d8f5f6e73))
-
-
 
 ## [3.36.1](https://github.com/mx-space/mx-admin/compare/v3.36.0...v3.36.1) (2023-12-28)
 
@@ -1262,8 +1022,6 @@
 
 * remove empty secret ([ee0c9e6](https://github.com/mx-space/mx-admin/commit/ee0c9e6d286e46958d4724bd9c197814e294ad1c))
 * tag space ([28e650b](https://github.com/mx-space/mx-admin/commit/28e650b74b533e3ae52aba806b35547316b7c667))
-
-
 
 # [3.36.0](https://github.com/mx-space/mx-admin/compare/v3.35.3...v3.36.0) (2023-12-24)
 
@@ -1278,8 +1036,6 @@
 * event tag ([c39bb60](https://github.com/mx-space/mx-admin/commit/c39bb6045ad266dd36e3acf7a22fddd881ba2d50))
 * webhook panel ([#842](https://github.com/mx-space/mx-admin/issues/842)) ([3fda218](https://github.com/mx-space/mx-admin/commit/3fda2182a34da2ba988dd2c949b4a280ef692a68))
 
-
-
 ## [3.35.3](https://github.com/mx-space/mx-admin/compare/v3.35.2...v3.35.3) (2023-12-24)
 
 
@@ -1290,16 +1046,12 @@
 * patch the node data for mood ([c684c9b](https://github.com/mx-space/mx-admin/commit/c684c9b75a87317ec0160eab04cd53b6ef3dc0cf))
 * setup-api api default and redirect ([1ec3497](https://github.com/mx-space/mx-admin/commit/1ec349728d40da8900471fbc959a0a5452f9d0a0))
 
-
-
 ## [3.35.2](https://github.com/mx-space/mx-admin/compare/v3.35.1...v3.35.2) (2023-12-11)
 
 
 ### Bug Fixes
 
 * vue proxy track loop ([8e793b9](https://github.com/mx-space/mx-admin/commit/8e793b9299b16bb67005f3a24844a44a6a6dfba5))
-
-
 
 ## [3.35.1](https://github.com/mx-space/mx-admin/compare/v3.35.0...v3.35.1) (2023-12-10)
 
@@ -1313,8 +1065,6 @@
 
 * add passkey login ([121c913](https://github.com/mx-space/mx-admin/commit/121c913b21a2fedc1927806675f3ab7f1f526180))
 
-
-
 # [3.35.0](https://github.com/mx-space/mx-admin/compare/v3.34.2...v3.35.0) (2023-12-10)
 
 
@@ -1322,11 +1072,7 @@
 
 * login with passkey ([#833](https://github.com/mx-space/mx-admin/issues/833)) ([dc662e0](https://github.com/mx-space/mx-admin/commit/dc662e05293a216781d6a22bacd89e40f64395d7))
 
-
-
 ## [3.34.2](https://github.com/mx-space/mx-admin/compare/v3.34.1...v3.34.2) (2023-12-05)
-
-
 
 ## [3.34.1](https://github.com/mx-space/mx-admin/compare/v3.34.0...v3.34.1) (2023-12-03)
 
@@ -1340,8 +1086,6 @@
 
 * json highlight ([d809700](https://github.com/mx-space/mx-admin/commit/d809700495dc78458db984c17e4d5e8fb9d078c4))
 
-
-
 # [3.34.0](https://github.com/mx-space/mx-admin/compare/v3.33.7...v3.34.0) (2023-12-02)
 
 
@@ -1350,16 +1094,12 @@
 * config form style with spacer ([9fe8442](https://github.com/mx-space/mx-admin/commit/9fe84426fce1a044d45960bfc979a5d022888746))
 * **deps:** update dependency canvas-confetti to v1.9.2 ([#828](https://github.com/mx-space/mx-admin/issues/828)) ([66acd4b](https://github.com/mx-space/mx-admin/commit/66acd4b9760e9025c14d48e0111f7eaa8075b4e0))
 
-
-
 ## [3.33.7](https://github.com/mx-space/mx-admin/compare/v3.33.6...v3.33.7) (2023-11-30)
 
 
 ### Bug Fixes
 
 * type error ([607d62b](https://github.com/mx-space/mx-admin/commit/607d62bc032c8253ad52e4dfd08cb4a55692d392))
-
-
 
 ## [3.33.6](https://github.com/mx-space/mx-admin/compare/v3.33.5...v3.33.6) (2023-11-22)
 
@@ -1368,8 +1108,6 @@
 
 * upstream token cleaner ([1d0c296](https://github.com/mx-space/mx-admin/commit/1d0c296ee0aaac4c03e317a5ff5f6193854d5c78))
 
-
-
 ## [3.33.5](https://github.com/mx-space/mx-admin/compare/v3.33.4...v3.33.5) (2023-11-22)
 
 
@@ -1377,16 +1115,12 @@
 
 * add tab for restore when init ([02b7004](https://github.com/mx-space/mx-admin/commit/02b70040b10a30a417ac0aaa556bb06fa437ae07))
 
-
-
 ## [3.33.4](https://github.com/mx-space/mx-admin/compare/v3.33.3...v3.33.4) (2023-11-16)
 
 
 ### Features
 
 * attach token from query ([791b63c](https://github.com/mx-space/mx-admin/commit/791b63cb707a2579c51531d7e294a8f961cc3cc6))
-
-
 
 ## [3.33.3](https://github.com/mx-space/mx-admin/compare/v3.33.2...v3.33.3) (2023-11-02)
 
@@ -1396,11 +1130,7 @@
 * **comment:** `cmd+enter` to reply submit ([7336677](https://github.com/mx-space/mx-admin/commit/7336677041f2304b421cde4a16b127cf71cf582f))
 * see more today ips ([f73d095](https://github.com/mx-space/mx-admin/commit/f73d095a589b2dbe2555272793efe8aafd59eb3f))
 
-
-
 ## [3.33.2](https://github.com/mx-space/mx-admin/compare/v3.33.1...v3.33.2) (2023-11-01)
-
-
 
 ## [3.33.1](https://github.com/mx-space/mx-admin/compare/v3.33.0...v3.33.1) (2023-11-01)
 
@@ -1408,8 +1138,6 @@
 ### Bug Fixes
 
 * post table title render ([29a851e](https://github.com/mx-space/mx-admin/commit/29a851e2ae18938b7b66759fcff258c5647c2d6b))
-
-
 
 # [3.33.0](https://github.com/mx-space/mx-admin/compare/v3.32.7...v3.33.0) (2023-10-31)
 
@@ -1423,16 +1151,12 @@
 
 * dashboard count ([9a1c9b7](https://github.com/mx-space/mx-admin/commit/9a1c9b7837d94704e88e6855a1f00461f4f98649))
 
-
-
 ## [3.32.7](https://github.com/mx-space/mx-admin/compare/v3.32.6...v3.32.7) (2023-10-29)
 
 
 ### Features
 
 * **topic-detail:** support nav to note edit ([162463c](https://github.com/mx-space/mx-admin/commit/162463c9ca6f41fe6f6638fb1b76f4e9d3b2892d))
-
-
 
 ## [3.32.6](https://github.com/mx-space/mx-admin/compare/v3.32.5...v3.32.6) (2023-10-21)
 
@@ -1444,8 +1168,6 @@
 * **deps:** update dependency pinia to v2.1.7 ([#808](https://github.com/mx-space/mx-admin/issues/808)) ([1f1e28e](https://github.com/mx-space/mx-admin/commit/1f1e28e19051313dfb66099c9091c7b62e1e6428))
 * typo ([ce53f69](https://github.com/mx-space/mx-admin/commit/ce53f6949fa9f4b255d2df2458a0c67938d6194a))
 
-
-
 ## [3.32.5](https://github.com/mx-space/mx-admin/compare/v3.32.4...v3.32.5) (2023-10-14)
 
 
@@ -1456,16 +1178,12 @@
 * **deps:** update dependency vue-router to v4.2.5 ([#797](https://github.com/mx-space/mx-admin/issues/797)) ([aa15c0d](https://github.com/mx-space/mx-admin/commit/aa15c0d6573805c399ff5981297ca4f1a1a9238c))
 * edit topic title ([b36d73d](https://github.com/mx-space/mx-admin/commit/b36d73dd5529f1bcb49c41c88a6a40bde8f83112))
 
-
-
 ## [3.32.4](https://github.com/mx-space/mx-admin/compare/v3.32.3...v3.32.4) (2023-09-24)
 
 
 ### Bug Fixes
 
 * codemirror error ([c3f6da1](https://github.com/mx-space/mx-admin/commit/c3f6da156c49d94b98314ee6227512cf31eb46c6))
-
-
 
 ## [3.32.3](https://github.com/mx-space/mx-admin/compare/v3.32.2...v3.32.3) (2023-09-24)
 
@@ -1477,8 +1195,6 @@
 * **deps:** update dependency crossbell.js to v1.6.4 ([#790](https://github.com/mx-space/mx-admin/issues/790)) ([5ab7f2e](https://github.com/mx-space/mx-admin/commit/5ab7f2eafb926f3aa721178ffb11e5c663ad9e81))
 * **deps:** update dependency marked to v7.0.5 ([#793](https://github.com/mx-space/mx-admin/issues/793)) ([c1aacc5](https://github.com/mx-space/mx-admin/commit/c1aacc55813aab1af827b431ff719ed55a7dccae))
 
-
-
 ## [3.32.2](https://github.com/mx-space/mx-admin/compare/v3.32.1...v3.32.2) (2023-08-22)
 
 
@@ -1487,16 +1203,12 @@
 * **deps:** update dependency crossbell.js to v1.6.1 ([#775](https://github.com/mx-space/mx-admin/issues/775)) ([bcdb844](https://github.com/mx-space/mx-admin/commit/bcdb844a557abe7dc7c1c767d183e10c51cb1565))
 * **deps:** update dependency vite-plugin-windicss to v1.9.1 ([#776](https://github.com/mx-space/mx-admin/issues/776)) ([d11b3df](https://github.com/mx-space/mx-admin/commit/d11b3dfd754bf03cb040375a10f7ceff79e06f39))
 
-
-
 ## [3.32.1](https://github.com/mx-space/mx-admin/compare/v3.32.0...v3.32.1) (2023-08-10)
 
 
 ### Bug Fixes
 
 * remove webshell entry ([3e56743](https://github.com/mx-space/mx-admin/commit/3e567433c751624a5e361c995587a932ddf4d4e5))
-
-
 
 # [3.32.0](https://github.com/mx-space/mx-admin/compare/v3.31.1...v3.32.0) (2023-08-10)
 
@@ -1505,11 +1217,7 @@
 
 * activity tab ([42f2bcb](https://github.com/mx-space/mx-admin/commit/42f2bcb53d3ad720f3dfa6f02e03703457cf2087))
 
-
-
 ## [3.31.1](https://github.com/mx-space/mx-admin/compare/v3.31.0...v3.31.1) (2023-08-10)
-
-
 
 # [3.31.0](https://github.com/mx-space/mx-admin/compare/v3.30.10...v3.31.0) (2023-07-27)
 
@@ -1519,8 +1227,6 @@
 * post message for preview page ([9058be6](https://github.com/mx-space/mx-admin/commit/9058be6454e1f582cf6896f873604bf535955917))
 * post message for preview page ([e7f231f](https://github.com/mx-space/mx-admin/commit/e7f231f51d19b8a6fd004df0531fe0dfcc5c829d))
 
-
-
 ## [3.30.10](https://github.com/mx-space/mx-admin/compare/v3.30.9...v3.30.10) (2023-07-22)
 
 
@@ -1528,8 +1234,6 @@
 
 * remove some unsafe lib ([f5beee5](https://github.com/mx-space/mx-admin/commit/f5beee578ecd4055eb3a28cfd99a21ea00da12df))
 * update crossbell ([1ed9b3b](https://github.com/mx-space/mx-admin/commit/1ed9b3b9f5f111b5565c14cafb08fa2fede5af6d))
-
-
 
 ## [3.30.9](https://github.com/mx-space/mx-admin/compare/v3.30.8...v3.30.9) (2023-07-18)
 
@@ -1539,11 +1243,7 @@
 * rollback cm6 deps ([efc0df7](https://github.com/mx-space/mx-admin/commit/efc0df711eae9bc6e6999e4f4da34349114e3ea5))
 * upgrade cm6 ([542ecef](https://github.com/mx-space/mx-admin/commit/542eceff3ab2a05f3eaa91dc33bea8c19e1b47ba))
 
-
-
 ## [3.30.8](https://github.com/mx-space/mx-admin/compare/v3.30.7...v3.30.8) (2023-07-18)
-
-
 
 ## [3.30.7](https://github.com/mx-space/mx-admin/compare/v3.30.6...v3.30.7) (2023-07-10)
 
@@ -1552,8 +1252,6 @@
 
 * split analyze table ([01773e5](https://github.com/mx-space/mx-admin/commit/01773e50a9aeb2211a410ba119723121df562459))
 
-
-
 ## [3.30.6](https://github.com/mx-space/mx-admin/compare/v3.30.5...v3.30.6) (2023-07-08)
 
 
@@ -1561,16 +1259,12 @@
 
 * add vite-vue-devtool ([398a240](https://github.com/mx-space/mx-admin/commit/398a2409ea42bbdb23afcbd68e2f926adf211796))
 
-
-
 ## [3.30.5](https://github.com/mx-space/mx-admin/compare/v3.30.4...v3.30.5) (2023-06-24)
 
 
 ### Bug Fixes
 
 * crossbell connect ([67a37b4](https://github.com/mx-space/mx-admin/commit/67a37b40f3128d2461dadad191c5b5c6858482ac))
-
-
 
 ## [3.30.4](https://github.com/mx-space/mx-admin/compare/v3.30.3...v3.30.4) (2023-06-24)
 
@@ -1582,8 +1276,6 @@
 * image fetch dim ([a44b902](https://github.com/mx-space/mx-admin/commit/a44b902245058396d72cfd65ef255f5609782ab9))
 * preview cover image should show ([507c0ef](https://github.com/mx-space/mx-admin/commit/507c0ef9fc07779ea8f18928db6ed5003af9a84b))
 
-
-
 ## [3.30.3](https://github.com/mx-space/mx-admin/compare/v3.30.2...v3.30.3) (2023-05-25)
 
 
@@ -1592,16 +1284,12 @@
 * **deps:** update all non-major dependencies ([#762](https://github.com/mx-space/mx-admin/issues/762)) ([d3a5930](https://github.com/mx-space/mx-admin/commit/d3a59308d431d2a1b594155e32636cc9004d1c8f))
 * **deps:** update all non-major dependencies ([#763](https://github.com/mx-space/mx-admin/issues/763)) ([9eb6188](https://github.com/mx-space/mx-admin/commit/9eb6188c3eadbb66f3e8f9f1c9e0054dfd6aff5b))
 
-
-
 ## [3.30.2](https://github.com/mx-space/mx-admin/compare/v3.30.1...v3.30.2) (2023-05-17)
 
 
 ### Bug Fixes
 
 * sidebar menu item clickable area ([d084d10](https://github.com/mx-space/mx-admin/commit/d084d107f29c78eb60a341f5f6e5c0f9817b783a))
-
-
 
 ## [3.30.1](https://github.com/mx-space/mx-admin/compare/v3.30.0...v3.30.1) (2023-05-11)
 
@@ -1611,8 +1299,6 @@
 * **deps:** update all non-major dependencies ([#760](https://github.com/mx-space/mx-admin/issues/760)) ([f19a698](https://github.com/mx-space/mx-admin/commit/f19a698454eb5903450d17085997c676bdbdf36e))
 * xlog publish ([7fc708c](https://github.com/mx-space/mx-admin/commit/7fc708c88091d4d781300453c29c53f47b30bfbc))
 * xlog text add new line of end ([a3f7920](https://github.com/mx-space/mx-admin/commit/a3f7920f5065c0687466de62f298e4c61cc67447))
-
-
 
 # [3.30.0](https://github.com/mx-space/mx-admin/compare/v3.29.8...v3.30.0) (2023-04-30)
 
@@ -1625,8 +1311,6 @@
 ### Features
 
 * support page reorder dnd ([17a9101](https://github.com/mx-space/mx-admin/commit/17a9101bc093bd977b6a51e1145106b28923fa5c))
-
-
 
 ## [3.29.8](https://github.com/mx-space/mx-admin/compare/v3.29.7...v3.29.8) (2023-04-29)
 
@@ -1641,8 +1325,6 @@
 
 * support post cover ([f3001fa](https://github.com/mx-space/mx-admin/commit/f3001fa7d350a6f8e3ba3ad945d1da900e4c1760))
 
-
-
 ## [3.29.7](https://github.com/mx-space/mx-admin/compare/v3.29.6...v3.29.7) (2023-04-28)
 
 
@@ -1652,8 +1334,6 @@
 * **deps:** update dependency js-cookie to v3.0.5 ([#753](https://github.com/mx-space/mx-admin/issues/753)) ([67dc608](https://github.com/mx-space/mx-admin/commit/67dc60840ddd3c7c5a1ca8d7e194503c583d1b6d))
 * **deps:** update dependency unidata.js to v0.7.20 ([#748](https://github.com/mx-space/mx-admin/issues/748)) ([49de229](https://github.com/mx-space/mx-admin/commit/49de2299c9e8e405fc52a3df39bd41e5879567e8))
 * memoed web url ([f48859f](https://github.com/mx-space/mx-admin/commit/f48859fe9278e7f20e30d9720c5dcb27f9091653))
-
-
 
 ## [3.29.6](https://github.com/mx-space/mx-admin/compare/v3.29.5...v3.29.6) (2023-04-24)
 
@@ -1667,8 +1347,6 @@
 * update codemirror deps ([18515ff](https://github.com/mx-space/mx-admin/commit/18515ffde3b892d6f6fcbdb4294ccd24f83bff31))
 * update header style for edit ([33b3c2c](https://github.com/mx-space/mx-admin/commit/33b3c2c8eaa11a1b37845a6f903ec2ea776d73eb))
 
-
-
 ## [3.29.5](https://github.com/mx-space/mx-admin/compare/v3.29.4...v3.29.5) (2023-04-22)
 
 
@@ -1676,16 +1354,12 @@
 
 * preview url ([8856372](https://github.com/mx-space/mx-admin/commit/8856372b5dd4ac88189ff4b47d464f921e8b8abc))
 
-
-
 ## [3.29.4](https://github.com/mx-space/mx-admin/compare/v3.29.3...v3.29.4) (2023-04-22)
 
 
 ### Features
 
 * support preview in editor ([3aeaef8](https://github.com/mx-space/mx-admin/commit/3aeaef899067c26d0404b9754cc12a21d33bfe4c))
-
-
 
 ## [3.29.3](https://github.com/mx-space/mx-admin/compare/v3.29.2...v3.29.3) (2023-04-19)
 
@@ -1700,8 +1374,6 @@
 ### Features
 
 * support codemirror auto fonts ([d0acaf0](https://github.com/mx-space/mx-admin/commit/d0acaf0a410934b890c16cadc284fe3421127e7a))
-
-
 
 ## [3.29.2](https://github.com/mx-space/mx-admin/compare/v3.29.1...v3.29.2) (2023-04-17)
 
@@ -1719,11 +1391,7 @@
 
 * **cm-editor:** add mono font for code ([2556cf4](https://github.com/mx-space/mx-admin/commit/2556cf46bc243c9223b77bf4453114127efdcfb2))
 
-
-
 ## [3.29.1](https://github.com/mx-space/mx-admin/compare/v3.29.0...v3.29.1) (2023-04-15)
-
-
 
 # [3.29.0](https://github.com/mx-space/mx-admin/compare/v3.28.3...v3.29.0) (2023-04-08)
 
@@ -1736,8 +1404,6 @@
 ### Features
 
 * add footer for xlog sync ([72415d8](https://github.com/mx-space/mx-admin/commit/72415d8b18944baeccc1ae3a7ff598d15693b95b))
-
-
 
 ## [3.28.3](https://github.com/mx-space/mx-admin/compare/v3.28.2...v3.28.3) (2023-04-07)
 
@@ -1758,8 +1424,6 @@
 
 * improve xlog sync ([#730](https://github.com/mx-space/mx-admin/issues/730)) ([bfa43f3](https://github.com/mx-space/mx-admin/commit/bfa43f357853f2652feadf1f0a48d2cfa09f804e))
 
-
-
 ## [3.28.2](https://github.com/mx-space/mx-admin/compare/v3.28.1...v3.28.2) (2023-04-05)
 
 
@@ -1773,8 +1437,6 @@
 * add info of xLog in post list view ([14654c7](https://github.com/mx-space/mx-admin/commit/14654c7cff452425f3d01e572e82d73e710a54d1))
 * fetch pageId first if meta is empty ([1c8e075](https://github.com/mx-space/mx-admin/commit/1c8e0758a6c339db4a4f2f27860bc7d73b387ed8))
 
-
-
 ## [3.28.1](https://github.com/mx-space/mx-admin/compare/v3.28.0...v3.28.1) (2023-04-05)
 
 
@@ -1782,8 +1444,6 @@
 
 * add store crossbell metadata ([08712c1](https://github.com/mx-space/mx-admin/commit/08712c1d77df7aecc17d1c816e9a1d0ecf7f6313))
 * add tags for sync to xlog ([ce7607d](https://github.com/mx-space/mx-admin/commit/ce7607dc0e629c38d89e705632647e7d13eaa05c))
-
-
 
 # [3.28.0](https://github.com/mx-space/mx-admin/compare/v3.27.5...v3.28.0) (2023-04-05)
 
@@ -1798,16 +1458,12 @@
 
 * support connect to rss3 xLog ([#728](https://github.com/mx-space/mx-admin/issues/728) ([097976b](https://github.com/mx-space/mx-admin/commit/097976b26beeeacc4a24370dcaa706039946d17e))
 
-
-
 ## [3.27.5](https://github.com/mx-space/mx-admin/compare/v3.27.4...v3.27.5) (2023-03-24)
 
 
 ### Features
 
 * ai generate summary ([5da9b15](https://github.com/mx-space/mx-admin/commit/5da9b1505a5c169112159a41dd1e968c15979fb1))
-
-
 
 ## [3.27.4](https://github.com/mx-space/mx-admin/compare/v3.27.3...v3.27.4) (2023-03-24)
 
@@ -1819,8 +1475,6 @@
 * **deps:** update dependency ejs to v3.1.9 ([#708](https://github.com/mx-space/mx-admin/issues/708)) ([e6787cc](https://github.com/mx-space/mx-admin/commit/e6787cc44ee3f3d9df55716959aecc64c5e4d39a))
 * markdown yaml parser ([57efe5d](https://github.com/mx-space/mx-admin/commit/57efe5d5f1c0ede92df33b2a0e319aa6f63a6521))
 
-
-
 ## [3.27.3](https://github.com/mx-space/mx-admin/compare/v3.27.2...v3.27.3) (2023-03-14)
 
 
@@ -1829,8 +1483,6 @@
 * autocorrect reactive ([c857ba2](https://github.com/mx-space/mx-admin/commit/c857ba23c86ea6bb91586a5afd27cdb0e1dc5d4a))
 * **deps:** update dependency @mx-space/api-client to v1.3.5 ([#707](https://github.com/mx-space/mx-admin/issues/707)) ([b3fceee](https://github.com/mx-space/mx-admin/commit/b3fceeefefc2196f7fa0d0470856ca893ee16b28))
 * useStorageObject cached ([6c552d1](https://github.com/mx-space/mx-admin/commit/6c552d1b0ae716cc3811b9548c6a5c5c41728142))
-
-
 
 ## [3.27.2](https://github.com/mx-space/mx-admin/compare/v3.27.1...v3.27.2) (2023-03-07)
 
@@ -1841,8 +1493,6 @@
 * **deps:** update dependency monaco-editor to v0.36.1 ([#700](https://github.com/mx-space/mx-admin/issues/700)) ([f7cde0b](https://github.com/mx-space/mx-admin/commit/f7cde0bdc2a6328f2b3769c551b32a36cbbc4b70))
 * **deps:** update dependency pinia to v2.0.33 ([#702](https://github.com/mx-space/mx-admin/issues/702)) ([a1828bd](https://github.com/mx-space/mx-admin/commit/a1828bdad119fe771332cafefe6785a4a21c7de8))
 * **deps:** update dependency qs to v6.11.1 ([#703](https://github.com/mx-space/mx-admin/issues/703)) ([710629c](https://github.com/mx-space/mx-admin/commit/710629c4674e6cf58a59778d61866a90a2e3a882))
-
-
 
 ## [3.27.1](https://github.com/mx-space/mx-admin/compare/v3.27.0...v3.27.1) (2023-02-21)
 
@@ -1857,8 +1507,6 @@
 
 * add `@type/node` for function editor completion ([60799ee](https://github.com/mx-space/mx-admin/commit/60799ee8a98f59fbca3594dd578cc45a4d9c9b9b))
 * subscribe enable status show on page title ([d6329a3](https://github.com/mx-space/mx-admin/commit/d6329a389aab2b8d20fe929b5d9a500defc66dfe))
-
-
 
 # [3.27.0](https://github.com/mx-space/mx-admin/compare/v3.26.7...v3.27.0) (2023-02-14)
 
@@ -1882,16 +1530,12 @@
 * **snippet:** support built-in action ([d776fe3](https://github.com/mx-space/mx-admin/commit/d776fe34cf905081b12964c1c14678c4fec997e3))
 * subscribe support ([#690](https://github.com/mx-space/mx-admin/issues/690)) ([bd5e327](https://github.com/mx-space/mx-admin/commit/bd5e327c7c7503b175aa3332608ed39eaf5f76ef))
 
-
-
 ## [3.26.7](https://github.com/mx-space/mx-admin/compare/v3.26.6...v3.26.7) (2023-01-30)
 
 
 ### Bug Fixes
 
 * sidebar layout margin left on phone ([5455cb2](https://github.com/mx-space/mx-admin/commit/5455cb2e936ce00c1b826b9d9ccf4b3fc84baa4e))
-
-
 
 ## [3.26.6](https://github.com/mx-space/mx-admin/compare/v3.26.5...v3.26.6) (2023-01-29)
 
@@ -1905,8 +1549,6 @@
 
 * **sidebar:** optimized collapse animation ([942c520](https://github.com/mx-space/mx-admin/commit/942c520bc02d65651779c1e8b1af0c94987707fb))
 
-
-
 ## [3.26.5](https://github.com/mx-space/mx-admin/compare/v3.26.4...v3.26.5) (2023-01-24)
 
 
@@ -1914,11 +1556,7 @@
 
 * **setup:** form submit error ([#665](https://github.com/mx-space/mx-admin/issues/665)) ([78cba92](https://github.com/mx-space/mx-admin/commit/78cba924d0b0895d4855a88e8b1245cfaad63584))
 
-
-
 ## [3.26.4](https://github.com/mx-space/mx-admin/compare/v3.26.3...v3.26.4) (2023-01-11)
-
-
 
 ## [3.26.3](https://github.com/mx-space/mx-admin/compare/v3.26.2...v3.26.3) (2023-01-11)
 
@@ -1926,8 +1564,6 @@
 ### Bug Fixes
 
 * graph number overflow ([#664](https://github.com/mx-space/mx-admin/issues/664)) ([d766e30](https://github.com/mx-space/mx-admin/commit/d766e30876cb9366bb2edcc124ca621f04e98257))
-
-
 
 ## [3.26.2](https://github.com/mx-space/mx-admin/compare/v3.26.1...v3.26.2) (2022-12-30)
 
@@ -1941,16 +1577,12 @@
 
 * autocorrect ([#657](https://github.com/mx-space/mx-admin/issues/657)) ([e26e3da](https://github.com/mx-space/mx-admin/commit/e26e3da9ad2da44cfee057532d688493a52d07b9))
 
-
-
 ## [3.26.1](https://github.com/mx-space/mx-admin/compare/v3.26.0...v3.26.1) (2022-12-25)
 
 
 ### Bug Fixes
 
 * delete more backup ([7c50a2b](https://github.com/mx-space/mx-admin/commit/7c50a2b34bc5e4e62df84e4aa1fc5599233e7438))
-
-
 
 # [3.26.0](https://github.com/mx-space/mx-admin/compare/v3.25.3...v3.26.0) (2022-12-23)
 
@@ -1959,8 +1591,6 @@
 
 * support shorthand comment ([f868372](https://github.com/mx-space/mx-admin/commit/f86837217bc7441c743abbd70ec9cf0d10d6af86))
 
-
-
 ## [3.25.3](https://github.com/mx-space/mx-admin/compare/v3.25.2...v3.25.3) (2022-12-18)
 
 
@@ -1968,16 +1598,12 @@
 
 * build render url ([ab65acf](https://github.com/mx-space/mx-admin/commit/ab65acf6eaff1c97f40e2c5ce8284c06e4f7f782))
 
-
-
 ## [3.25.2](https://github.com/mx-space/mx-admin/compare/v3.25.1...v3.25.2) (2022-12-15)
 
 
 ### Features
 
 * update xterm.4 ([f6359ab](https://github.com/mx-space/mx-admin/commit/f6359abc03d04c0f592eb88f834c2411be023b04))
-
-
 
 ## [3.25.1](https://github.com/mx-space/mx-admin/compare/v3.25.0...v3.25.1) (2022-12-11)
 
@@ -1987,8 +1613,6 @@
 * **deps:** update dependency marked to v4.2.4 ([#640](https://github.com/mx-space/mx-admin/issues/640)) ([0580f10](https://github.com/mx-space/mx-admin/commit/0580f10dab9a3f7a9455c287612a35a5fd59db5e))
 * **deps:** update dependency pinia to v2.0.28 ([#631](https://github.com/mx-space/mx-admin/issues/631)) ([99c9d5f](https://github.com/mx-space/mx-admin/commit/99c9d5fb33d40ee2332222811924f402295243dd))
 * dialog cannot be closed ([#643](https://github.com/mx-space/mx-admin/issues/643)) ([d1b0551](https://github.com/mx-space/mx-admin/commit/d1b05517a2a46e0451d5ca96072efb6d0b4456ca))
-
-
 
 # [3.25.0](https://github.com/mx-space/mx-admin/compare/v3.24.2...v3.25.0) (2022-11-25)
 
@@ -2005,8 +1629,6 @@
 
 * **snippet:** support for secret ([4987863](https://github.com/mx-space/mx-admin/commit/4987863dda8842f10aa14c331a0392727468c9bd))
 
-
-
 ## [3.24.2](https://github.com/mx-space/mx-admin/compare/v3.24.1...v3.24.2) (2022-11-12)
 
 
@@ -2021,16 +1643,12 @@
 * **deps:** update dependency vue-router to v4.1.6 ([#612](https://github.com/mx-space/mx-admin/issues/612)) ([6b1272b](https://github.com/mx-space/mx-admin/commit/6b1272b9beb0806bcfa17973ed053b76daebc85b))
 * project editor height ([644eb65](https://github.com/mx-space/mx-admin/commit/644eb6595e113b7bffd0eda777498b4253807f57))
 
-
-
 ## [3.24.1](https://github.com/mx-space/mx-admin/compare/v3.24.0...v3.24.1) (2022-10-15)
 
 
 ### Bug Fixes
 
 * ts error ([944ab09](https://github.com/mx-space/mx-admin/commit/944ab09f3ed0a2882ad444cbfabaf731d143b65e))
-
-
 
 # [3.24.0](https://github.com/mx-space/mx-admin/compare/v3.23.7...v3.24.0) (2022-10-15)
 
@@ -2045,8 +1663,6 @@
 
 * **link:** support audit result form ([d94d8ee](https://github.com/mx-space/mx-admin/commit/d94d8eee295087d74ded76daacb891dc5999640f))
 
-
-
 ## [3.23.7](https://github.com/mx-space/mx-admin/compare/v3.23.6...v3.23.7) (2022-10-07)
 
 
@@ -2057,8 +1673,6 @@
 * update panel ([3ae957b](https://github.com/mx-space/mx-admin/commit/3ae957bc579e7638f999eb5542a982949f78cdfd))
 * **write:** add clearable on some field in drawer ([3bce4bc](https://github.com/mx-space/mx-admin/commit/3bce4bc0c7849580998b3f0b831faf328654019f))
 
-
-
 ## [3.23.6](https://github.com/mx-space/mx-admin/compare/v3.23.5...v3.23.6) (2022-09-14)
 
 
@@ -2066,8 +1680,6 @@
 
 * **deps:** update dependency @bytebase/vue-kbar to v0.1.8 ([#573](https://github.com/mx-space/mx-admin/issues/573)) ([4ed28d8](https://github.com/mx-space/mx-admin/commit/4ed28d8f719967be09ff6582ddcc4bd3b2d63326))
 * **deps:** update dependency vite-plugin-windicss to v1.8.8 ([#574](https://github.com/mx-space/mx-admin/issues/574)) ([65b15cb](https://github.com/mx-space/mx-admin/commit/65b15cbd5da270d6a94be4a383d5aaa1484acc06))
-
-
 
 ## [3.23.5](https://github.com/mx-space/mx-admin/compare/v3.23.4...v3.23.5) (2022-09-06)
 
@@ -2079,8 +1691,6 @@
 * **deps:** update dependency socket.io-client to v4.5.2 ([#563](https://github.com/mx-space/mx-admin/issues/563)) ([8ed3a8b](https://github.com/mx-space/mx-admin/commit/8ed3a8b94d2d4b6029259b5e41bb00af2348efa0))
 * kv-editor may disappear ([#567](https://github.com/mx-space/mx-admin/issues/567)) ([a8b0d85](https://github.com/mx-space/mx-admin/commit/a8b0d85010525549f4f1ad5d2c55a0a745f99e1a))
 
-
-
 ## [3.23.4](https://github.com/mx-space/mx-admin/compare/v3.23.3...v3.23.4) (2022-08-29)
 
 
@@ -2091,16 +1701,12 @@
 * **deps:** update dependency pinia to v2.0.21 ([#551](https://github.com/mx-space/mx-admin/issues/551)) ([872db33](https://github.com/mx-space/mx-admin/commit/872db337c9935682009b35af50221ccf6b722969))
 * **deps:** update dependency vue-router to v4.1.5 ([#553](https://github.com/mx-space/mx-admin/issues/553)) ([536e95b](https://github.com/mx-space/mx-admin/commit/536e95b80def7fefe20da2e8a4975fc6e3711fc3))
 
-
-
 ## [3.23.3](https://github.com/mx-space/mx-admin/compare/v3.23.2...v3.23.3) (2022-08-27)
 
 
 ### Bug Fixes
 
 * sidebar navigation ([46f79ae](https://github.com/mx-space/mx-admin/commit/46f79aee037d28ae118c759e9b1dc9eacbf859cc))
-
-
 
 ## [3.23.2](https://github.com/mx-space/mx-admin/compare/v3.23.1...v3.23.2) (2022-08-27)
 
@@ -2116,11 +1722,7 @@
 
 * **post & note:** custom created time ([eee5a3d](https://github.com/mx-space/mx-admin/commit/eee5a3d2f8ef89972be4575d4da8554b2269d4fc))
 
-
-
 ## [3.23.1](https://github.com/mx-space/mx-admin/compare/v3.23.0...v3.23.1) (2022-08-23)
-
-
 
 # [3.23.0](https://github.com/mx-space/mx-admin/compare/v3.22.6...v3.23.0) (2022-08-21)
 
@@ -2136,8 +1738,6 @@
 * function method support ([1674c8a](https://github.com/mx-space/mx-admin/commit/1674c8a69239d8203e7124bf05a15bf7555caef2))
 * re-design list of snippet ([f5a391a](https://github.com/mx-space/mx-admin/commit/f5a391a9f08a9317a0fc49c185e317cb32d2292e))
 
-
-
 ## [3.22.6](https://github.com/mx-space/mx-admin/compare/v3.22.5...v3.22.6) (2022-08-13)
 
 
@@ -2151,8 +1751,6 @@
 
 * improve editor perfermance ([51e38fc](https://github.com/mx-space/mx-admin/commit/51e38fcd609ec9aab04570e95fe780d17d87528b))
 
-
-
 ## [3.22.5](https://github.com/mx-space/mx-admin/compare/v3.22.4...v3.22.5) (2022-08-07)
 
 
@@ -2165,8 +1763,6 @@
 ### Features
 
 * add comment is whispers icon ([074f1d8](https://github.com/mx-space/mx-admin/commit/074f1d8d5cd12ef927a97c28c7f986a0594fe5a4))
-
-
 
 ## [3.22.4](https://github.com/mx-space/mx-admin/compare/v3.22.3...v3.22.4) (2022-08-06)
 
@@ -2184,8 +1780,6 @@
 ### Features
 
 * kick out all session ([f7bdcd6](https://github.com/mx-space/mx-admin/commit/f7bdcd6045e8526085a521c6164523623c9ab188))
-
-
 
 ## [3.22.3](https://github.com/mx-space/mx-admin/compare/v3.22.2...v3.22.3) (2022-07-24)
 
@@ -2211,8 +1805,6 @@
 
 * upgrade vite 3 ([#513](https://github.com/mx-space/mx-admin/issues/513)) ([96e7277](https://github.com/mx-space/mx-admin/commit/96e72779bcb67464b37ff1e4d77d7644c08c67c1))
 
-
-
 ## [3.22.2](https://github.com/mx-space/mx-admin/compare/v3.22.1...v3.22.2) (2022-07-12)
 
 
@@ -2230,8 +1822,6 @@
 
 * add new shell output modal ([a3473ae](https://github.com/mx-space/mx-admin/commit/a3473aeb3590697bcdda520183c490a9e135db69))
 
-
-
 ## [3.22.1](https://github.com/mx-space/mx-admin/compare/v3.22.0...v3.22.1) (2022-07-09)
 
 
@@ -2244,8 +1834,6 @@
 
 * comment markdown render ([09c52fb](https://github.com/mx-space/mx-admin/commit/09c52fbe814cee7e62461c979250f30ec1d794f3))
 
-
-
 # [3.22.0](https://github.com/mx-space/mx-admin/compare/v3.21.1...v3.22.0) (2022-07-08)
 
 
@@ -2254,8 +1842,6 @@
 * add support update ([ecaee7c](https://github.com/mx-space/mx-admin/commit/ecaee7c9ca07b1369b64cb7b5d9ee808403bccd4))
 * add update button to notification ([184bd6a](https://github.com/mx-space/mx-admin/commit/184bd6a2d20d1ed6ec3a9bbc39a9ccf87a1d1112))
 * support parse netease id from url ([e3ecf9f](https://github.com/mx-space/mx-admin/commit/e3ecf9f646ecb88b4f335a98b301c46e9a337875))
-
-
 
 ## [3.21.1](https://github.com/mx-space/mx-admin/compare/v3.21.0...v3.21.1) (2022-07-07)
 
@@ -2270,8 +1856,6 @@
 ### Features
 
 * load avatar lazy ([72f34d4](https://github.com/mx-space/mx-admin/commit/72f34d40e44e25f5e450732fb857a7aae25179f0))
-
-
 
 # [3.21.0](https://github.com/mx-space/mx-admin/compare/v3.20.1...v3.21.0) (2022-07-04)
 
@@ -2288,8 +1872,6 @@
 * realtime output when install deps ([7fb223d](https://github.com/mx-space/mx-admin/commit/7fb223de48b83a2a8b364961fbd35f4f6b8e6e3e))
 * support install and update deps ([ac85e62](https://github.com/mx-space/mx-admin/commit/ac85e6208f562a6805dadd9d02f1e4d6e203b90c))
 
-
-
 ## [3.20.1](https://github.com/mx-space/mx-admin/compare/v3.20.0...v3.20.1) (2022-06-26)
 
 
@@ -2301,8 +1883,6 @@
 ### Features
 
 * login session ([d4e6e8d](https://github.com/mx-space/mx-admin/commit/d4e6e8d1791ae42974367de41da0129635298dbb))
-
-
 
 # [3.20.0](https://github.com/mx-space/mx-admin/compare/v3.19.7...v3.20.0) (2022-06-26)
 
@@ -2319,8 +1899,6 @@
 
 * related post ([#491](https://github.com/mx-space/mx-admin/issues/491)) ([90b52cf](https://github.com/mx-space/mx-admin/commit/90b52cf968661a28a57c30a77b394bfdeaef76ee))
 
-
-
 ## [3.19.7](https://github.com/mx-space/mx-admin/compare/v3.19.6...v3.19.7) (2022-06-21)
 
 
@@ -2329,8 +1907,6 @@
 * **deps:** update dependency @mx-space/api-client to v0.10.11 ([#475](https://github.com/mx-space/mx-admin/issues/475)) ([7f71239](https://github.com/mx-space/mx-admin/commit/7f71239d79ca09b1ef1290a5f31d77858a35ece1))
 * **deps:** update dependency naive-ui to v2.30.5 ([#476](https://github.com/mx-space/mx-admin/issues/476)) ([6508b6d](https://github.com/mx-space/mx-admin/commit/6508b6df12657653bcf8561220be5cba735561ce))
 * step2 validation ([#478](https://github.com/mx-space/mx-admin/issues/478)) ([e2f3597](https://github.com/mx-space/mx-admin/commit/e2f359779649300595beb947e92fc5d0d788de13))
-
-
 
 ## [3.19.6](https://github.com/mx-space/mx-admin/compare/v3.19.5...v3.19.6) (2022-06-19)
 
@@ -2351,8 +1927,6 @@
 * json5 snippate ([035a75c](https://github.com/mx-space/mx-admin/commit/035a75c5bb8837b4538f2b42146997a7095bc7db))
 * make select become single choice ([#473](https://github.com/mx-space/mx-admin/issues/473)) ([d05cb20](https://github.com/mx-space/mx-admin/commit/d05cb20aaf4f2472361d38f58525d6d5374a4610))
 
-
-
 ## [3.19.5](https://github.com/mx-space/mx-admin/compare/v3.19.4...v3.19.5) (2022-06-12)
 
 
@@ -2365,8 +1939,6 @@
 
 * add logout ([9d35ece](https://github.com/mx-space/mx-admin/commit/9d35ece73025f04b1013916ac67ed11d4e2837a7))
 * post pin ([b0221aa](https://github.com/mx-space/mx-admin/commit/b0221aa26dcd0545d1eaaa91d6a6f5c314115dd6))
-
-
 
 ## [3.19.4](https://github.com/mx-space/mx-admin/compare/v3.19.2...v3.19.4) (2022-06-11)
 
@@ -2383,8 +1955,6 @@
 
 * update codemirror to v6 ([a08b1f6](https://github.com/mx-space/mx-admin/commit/a08b1f6c4647deadbc172e2bda4e991391f86be9))
 
-
-
 ## [3.19.2](https://github.com/mx-space/mx-admin/compare/v3.19.1...v3.19.2) (2022-06-08)
 
 
@@ -2400,8 +1970,6 @@
 
 * add history for setup-api ([4ba2676](https://github.com/mx-space/mx-admin/commit/4ba267607a30973f32860c385c458f4d617627f4))
 
-
-
 ## [3.19.1](https://github.com/mx-space/mx-admin/compare/v3.19.0...v3.19.1) (2022-06-04)
 
 
@@ -2411,8 +1979,6 @@
 * **deps:** update dependency @vueuse/core to v8.6.0 ([#445](https://github.com/mx-space/mx-admin/issues/445)) ([f3a9686](https://github.com/mx-space/mx-admin/commit/f3a9686378c671c21d70723322232720a1fd5a81))
 * **deps:** update dependency naive-ui to v2.29.1 ([#447](https://github.com/mx-space/mx-admin/issues/447)) ([6e7b012](https://github.com/mx-space/mx-admin/commit/6e7b0128321d9891915f3039bdc5d813b810b608))
 * json config form ([3c77155](https://github.com/mx-space/mx-admin/commit/3c7715546b8a80f03e5f8a9de90ea45e268e2fbf))
-
-
 
 # [3.19.0](https://github.com/mx-space/mx-admin/compare/v3.18.4...v3.19.0) (2022-06-03)
 
@@ -2430,8 +1996,6 @@
 
 * json schema generate form init ([cc6f6fc](https://github.com/mx-space/mx-admin/commit/cc6f6fc741725cf0f278da5914cb9c4fe967bedf))
 
-
-
 ## [3.18.4](https://github.com/mx-space/mx-admin/compare/v3.18.3...v3.18.4) (2022-05-28)
 
 
@@ -2444,8 +2008,6 @@
 
 * idempotence key ([f963f28](https://github.com/mx-space/mx-admin/commit/f963f28e272dc731979ca67160833efdc047d72b))
 
-
-
 ## [3.18.3](https://github.com/mx-space/mx-admin/compare/v3.18.2...v3.18.3) (2022-05-26)
 
 
@@ -2453,11 +2015,7 @@
 
 * revert deploy ([fb87da1](https://github.com/mx-space/mx-admin/commit/fb87da10a5b90cd9e3cada78a58bfa41049d97c0))
 
-
-
 ## [3.18.2](https://github.com/mx-space/mx-admin/compare/v3.18.1...v3.18.2) (2022-05-25)
-
-
 
 ## [3.18.1](https://github.com/mx-space/mx-admin/compare/v3.18.0...v3.18.1) (2022-05-25)
 
@@ -2466,8 +2024,6 @@
 
 * codemirror theme revert version ([30fca90](https://github.com/mx-space/mx-admin/commit/30fca90e36e388d077ebfa94989f7cf288f8bff3))
 * file upload modal can not close ([f0d4212](https://github.com/mx-space/mx-admin/commit/f0d42123e2ea87ecbb324159307ab790596664eb))
-
-
 
 # [3.18.0](https://github.com/mx-space/mx-admin/compare/v3.18.0-alpha.1...v3.18.0) (2022-05-24)
 
@@ -2478,16 +2034,12 @@
 * parse meta field ([f1bcb38](https://github.com/mx-space/mx-admin/commit/f1bcb387bd6841b042e38dbab10dff32a9948fe2))
 * scroll container scroll end event ([70a68e0](https://github.com/mx-space/mx-admin/commit/70a68e0fefff5d8666b4fe7efcc0d656d2eaa01c))
 
-
-
 # [3.18.0-alpha.1](https://github.com/mx-space/mx-admin/compare/v3.18.0-alpha.0...v3.18.0-alpha.1) (2022-05-22)
 
 
 ### Bug Fixes
 
 * topic upload ([372ed8d](https://github.com/mx-space/mx-admin/commit/372ed8de9de93ab636c60ede281bb4b45249f927))
-
-
 
 # [3.18.0-alpha.0](https://github.com/mx-space/mx-admin/compare/v3.17.1...v3.18.0-alpha.0) (2022-05-22)
 
@@ -2504,8 +2056,6 @@
 
 * file manage init ([7cb8f16](https://github.com/mx-space/mx-admin/commit/7cb8f161be0dfe58e857e813ac662eaf7bb59c62))
 
-
-
 ## [3.17.1](https://github.com/mx-space/mx-admin/compare/v3.17.0...v3.17.1) (2022-05-21)
 
 
@@ -2518,11 +2068,7 @@
 
 * header bar mask ([61955f1](https://github.com/mx-space/mx-admin/commit/61955f19540c508276a8a1bd9fb74ac3daa3fdde))
 
-
-
 # [3.17.0](https://github.com/mx-space/mx-admin/compare/v3.17.0-alpha.1...v3.17.0) (2022-05-21)
-
-
 
 # [3.17.0-alpha.1](https://github.com/mx-space/mx-admin/compare/v3.17.0-alpha.0...v3.17.0-alpha.1) (2022-05-21)
 
@@ -2530,8 +2076,6 @@
 ### Bug Fixes
 
 * filter of note select ([3bb8b05](https://github.com/mx-space/mx-admin/commit/3bb8b0537d805fb73bd6ea9c86564082013f0fb9))
-
-
 
 # [3.17.0-alpha.0](https://github.com/mx-space/mx-admin/compare/v3.16.23...v3.17.0-alpha.0) (2022-05-20)
 
@@ -2553,8 +2097,6 @@
 * topic list ([073c80e](https://github.com/mx-space/mx-admin/commit/073c80e8905d1eed7f416042860b47a07e433310))
 * topic note preivew ([d5d4b73](https://github.com/mx-space/mx-admin/commit/d5d4b73b3928a3663b6df5feb3dc6c284be77908))
 
-
-
 ## [3.16.23](https://github.com/mx-space/mx-admin/compare/v3.16.22...v3.16.23) (2022-05-18)
 
 
@@ -2565,8 +2107,6 @@
 * **deps:** update dependency naive-ui to v2.28.4 ([#414](https://github.com/mx-space/mx-admin/issues/414)) ([86bcd85](https://github.com/mx-space/mx-admin/commit/86bcd85333957800fd6ee072641e5abb7a71bb21))
 * **deps:** update dependency vditor to v3.8.14 ([#415](https://github.com/mx-space/mx-admin/issues/415)) ([54babca](https://github.com/mx-space/mx-admin/commit/54babcaaf9c71399c40695bdbdf2104f619efa38))
 
-
-
 ## [3.16.22](https://github.com/mx-space/mx-admin/compare/v3.16.21...v3.16.22) (2022-05-10)
 
 
@@ -2576,16 +2116,12 @@
 * **comment:** clear selection when switch tab ([6495751](https://github.com/mx-space/mx-admin/commit/6495751220586bb8a899b2a032d43d94c97d1a81))
 * disable pnpm 7 strict peer deps ([3cd2241](https://github.com/mx-space/mx-admin/commit/3cd22415b3ad066851429ac209ced5f90a090c93))
 
-
-
 ## [3.16.21](https://github.com/mx-space/mx-admin/compare/v3.16.20...v3.16.21) (2022-05-04)
 
 
 ### Bug Fixes
 
 * ci node version ([63671e9](https://github.com/mx-space/mx-admin/commit/63671e9783282ed9e0f4a5f8d935bcd2c3327662))
-
-
 
 ## [3.16.20](https://github.com/mx-space/mx-admin/compare/v3.16.19...v3.16.20) (2022-05-04)
 
@@ -2598,8 +2134,6 @@
 * **deps:** update dependency naive-ui to v2.28.2 ([#394](https://github.com/mx-space/mx-admin/issues/394)) ([2c2be9e](https://github.com/mx-space/mx-admin/commit/2c2be9ec84991340c50856a6eb4ff55fd8116f52))
 * text drawer label width & key value input ([7151cbb](https://github.com/mx-space/mx-admin/commit/7151cbb18908c291256826dc48b3ae8fe098f48f))
 
-
-
 ## [3.16.19](https://github.com/mx-space/mx-admin/compare/v3.16.19-alpha.3...v3.16.19) (2022-04-30)
 
 
@@ -2607,16 +2141,12 @@
 
 * add text macro option ([43d4e43](https://github.com/mx-space/mx-admin/commit/43d4e435e44e558abcea4334c3b5e0052619f3ec))
 
-
-
 ## [3.16.19-alpha.3](https://github.com/mx-space/mx-admin/compare/v3.16.19-alpha.2...v3.16.19-alpha.3) (2022-04-23)
 
 
 ### Features
 
 * meta editor ([ca85d5d](https://github.com/mx-space/mx-admin/commit/ca85d5d08266035ff6ff20d6381d94aff3461689))
-
-
 
 ## [3.16.19-alpha.2](https://github.com/mx-space/mx-admin/compare/v3.16.19-alpha.1...v3.16.19-alpha.2) (2022-04-22)
 
@@ -2628,16 +2158,12 @@
 * **deps:** update dependency naive-ui to v2.28.1 ([#390](https://github.com/mx-space/mx-admin/issues/390)) ([eb6fd3a](https://github.com/mx-space/mx-admin/commit/eb6fd3ae5162c1f7d39650b871ab6ff87a82afae))
 * remove banner if not in debug mode ([e7952bf](https://github.com/mx-space/mx-admin/commit/e7952bf26178dc10024d9888f1d74eb818dffa9b))
 
-
-
 ## [3.16.19-alpha.1](https://github.com/mx-space/mx-admin/compare/v3.16.19-alpha.0...v3.16.19-alpha.1) (2022-04-19)
 
 
 ### Bug Fixes
 
 * remove hash ([0ec7003](https://github.com/mx-space/mx-admin/commit/0ec70039fbe7f16988920a0c3fb5ee16497a9236))
-
-
 
 ## [3.16.19-alpha.0](https://github.com/mx-space/mx-admin/compare/v3.16.18...v3.16.19-alpha.0) (2022-04-19)
 
@@ -2646,11 +2172,7 @@
 
 * guard loop ([6b8be0f](https://github.com/mx-space/mx-admin/commit/6b8be0f7fe952d155c75f2ab3c808c8cb1a0f318))
 
-
-
 ## [3.16.18](https://github.com/mx-space/mx-admin/compare/v3.16.17...v3.16.18) (2022-04-19)
-
-
 
 ## [3.16.17](https://github.com/mx-space/mx-admin/compare/v3.16.16...v3.16.17) (2022-04-19)
 
@@ -2658,8 +2180,6 @@
 ### Features
 
 * setup api ([fd4938c](https://github.com/mx-space/mx-admin/commit/fd4938cb9f812d87ce4e32d4fc6abf60eedf509a))
-
-
 
 ## [3.16.16](https://github.com/mx-space/mx-admin/compare/v3.16.14...v3.16.16) (2022-04-19)
 
@@ -2677,8 +2197,6 @@
 * **deps:** update dependency naive-ui to v2.28.0 ([#373](https://github.com/mx-space/mx-admin/issues/373)) ([a7f8727](https://github.com/mx-space/mx-admin/commit/a7f8727e001090db95799a737fcb2af737668fcd))
 * **deps:** update dependency vite-plugin-windicss to v1.8.4 ([#379](https://github.com/mx-space/mx-admin/issues/379)) ([96384c8](https://github.com/mx-space/mx-admin/commit/96384c88f2a8f1b609c2494faa49b5115ada3b42))
 
-
-
 ## [3.16.14](https://github.com/mx-space/mx-admin/compare/v3.16.13...v3.16.14) (2022-04-10)
 
 
@@ -2690,8 +2208,6 @@
 * monaco resolution ([eb9787a](https://github.com/mx-space/mx-admin/commit/eb9787aaa158ee85a466975140e9b6dc33f7f99b))
 * remove token ([#369](https://github.com/mx-space/mx-admin/issues/369)) ([e3cff9f](https://github.com/mx-space/mx-admin/commit/e3cff9fcb1416e8a48de37c189c0afa845fc3f20))
 
-
-
 ## [3.16.13](https://github.com/mx-space/mx-admin/compare/v3.16.12...v3.16.13) (2022-04-05)
 
 
@@ -2700,8 +2216,6 @@
 * **deps:** update dependency @vueuse/core to v8.2.4 ([#358](https://github.com/mx-space/mx-admin/issues/358)) ([7350edd](https://github.com/mx-space/mx-admin/commit/7350edd5cbd9fc6a5a18b835ec2d712064a41c7a))
 * github api error message ([9fc354f](https://github.com/mx-space/mx-admin/commit/9fc354f06ef61065e78c4c5c21c344c3bcfb8865))
 * update notice ([afa5d9c](https://github.com/mx-space/mx-admin/commit/afa5d9c9ec18af8d4cf1efb1ceee1e49c96b1267))
-
-
 
 ## [3.16.12](https://github.com/mx-space/mx-admin/compare/v3.16.11...v3.16.12) (2022-04-05)
 
@@ -2717,8 +2231,6 @@
 * check update ([7c9b8ad](https://github.com/mx-space/mx-admin/commit/7c9b8ad9535dac385ce01510608200fdefbb84ec))
 * import snippets ([596f30e](https://github.com/mx-space/mx-admin/commit/596f30e7293447fba1c1266b1a893c1cfa1776e2))
 
-
-
 ## [3.16.11](https://github.com/mx-space/mx-admin/compare/v3.16.10...v3.16.11) (2022-04-01)
 
 
@@ -2730,16 +2242,12 @@
 * **deps:** update dependency @vueuse/core to v8.2.0 ([#349](https://github.com/mx-space/mx-admin/issues/349)) ([c8d12da](https://github.com/mx-space/mx-admin/commit/c8d12daf7734645b4cdbfca970a82f9f5a88eca5))
 * **deps:** update dependency naive-ui to v2.27.0 ([#352](https://github.com/mx-space/mx-admin/issues/352)) ([95a9958](https://github.com/mx-space/mx-admin/commit/95a9958b4b8f22d021b8393b4e8508bf4fbf0aac))
 
-
-
 ## [3.16.10](https://github.com/mx-space/mx-admin/compare/v3.16.9...v3.16.10) (2022-03-23)
 
 
 ### Bug Fixes
 
 * resolve path polyfill ([04dc940](https://github.com/mx-space/mx-admin/commit/04dc9407aa4cb92853e793ffc38f1b372f2aef3f))
-
-
 
 ## [3.16.9](https://github.com/mx-space/mx-admin/compare/v3.16.8...v3.16.9) (2022-03-23)
 
@@ -2755,8 +2263,6 @@
 * add email field for friend ([04c0029](https://github.com/mx-space/mx-admin/commit/04c0029af70c45303e442e0fbd3fe04f2425f8a9))
 * auto typings for monaco ([b0737a8](https://github.com/mx-space/mx-admin/commit/b0737a8d8fffa54e7fd5b682467cba28edfd0ebb))
 
-
-
 ## [3.16.8](https://github.com/mx-space/mx-admin/compare/v3.16.7...v3.16.8) (2022-03-19)
 
 
@@ -2764,11 +2270,7 @@
 
 * add friend options ([b1ff921](https://github.com/mx-space/mx-admin/commit/b1ff921a9f6b55abf6d53e12c1d2c0ffa1a8e0bd))
 
-
-
 ## [3.16.7](https://github.com/mx-space/mx-admin/compare/v3.16.6...v3.16.7) (2022-03-19)
-
-
 
 ## [3.16.6](https://github.com/mx-space/mx-admin/compare/v3.16.5...v3.16.6) (2022-03-19)
 
@@ -2778,16 +2280,12 @@
 * **deps:** update dependency @vueuse/core to v8.0.1 ([#329](https://github.com/mx-space/mx-admin/issues/329)) ([57f39bb](https://github.com/mx-space/mx-admin/commit/57f39bbf368179bf285c9e130e379b5b30740b7e))
 * **deps:** update dependency @vueuse/core to v8.1.1 ([#335](https://github.com/mx-space/mx-admin/issues/335)) ([062aac5](https://github.com/mx-space/mx-admin/commit/062aac5987fd3d1e0d5096d825423b975b19645f))
 
-
-
 ## [3.16.5](https://github.com/mx-space/mx-admin/compare/v3.16.4...v3.16.5) (2022-03-14)
 
 
 ### Features
 
 * support serverless typescrpt format ([abb9e32](https://github.com/mx-space/mx-admin/commit/abb9e327514d012969af9eb65341edaca9f59dd8))
-
-
 
 ## [3.16.4](https://github.com/mx-space/mx-admin/compare/v3.16.3...v3.16.4) (2022-03-13)
 
@@ -2805,8 +2303,6 @@
 
 * delete more snippet once ([375cdb6](https://github.com/mx-space/mx-admin/commit/375cdb6c5bb7f2585ed83f894d4ed5968756cc88))
 
-
-
 ## [3.16.3](https://github.com/mx-space/mx-admin/compare/v3.16.2...v3.16.3) (2022-03-12)
 
 
@@ -2816,8 +2312,6 @@
 * add unSave confirm on editor ([82616c7](https://github.com/mx-space/mx-admin/commit/82616c7b599d21c27febd8b5407fe4418026fbbd))
 * json schema validate ([7c0b1b8](https://github.com/mx-space/mx-admin/commit/7c0b1b8477a64d694e6ce3b571de8badabe1204d))
 * **snippet:** add filter of reference name ([802deae](https://github.com/mx-space/mx-admin/commit/802deae6735a32fbfec5542c04a1720ef39fcd54))
-
-
 
 ## [3.16.2](https://github.com/mx-space/mx-admin/compare/v3.16.1...v3.16.2) (2022-03-11)
 
@@ -2833,8 +2327,6 @@
 
 * fetch type declare from server ([3b29ed8](https://github.com/mx-space/mx-admin/commit/3b29ed806c8587bba2b0fbeab0a06e16aafd8b2b))
 
-
-
 ## [3.16.1](https://github.com/mx-space/mx-admin/compare/v3.16.0...v3.16.1) (2022-03-11)
 
 
@@ -2849,8 +2341,6 @@
 
 * add code intelisense editor ([c9492a8](https://github.com/mx-space/mx-admin/commit/c9492a85b0a40c8b6525bf3a3b8a9669101a7b9a))
 * add serverless type declare ([a641cf6](https://github.com/mx-space/mx-admin/commit/a641cf627897ff26e9cddfd74fe05cf862f2ca88))
-
-
 
 # [3.16.0](https://github.com/mx-space/mx-admin/compare/v3.15.11...v3.16.0) (2022-03-09)
 
@@ -2874,8 +2364,6 @@
 * init serverless function ([047039a](https://github.com/mx-space/mx-admin/commit/047039aafb237f805cedfa0469124c394abb65a3))
 * serverless debug ([5fc1a00](https://github.com/mx-space/mx-admin/commit/5fc1a007c458dec1ecb5ff9f066972a274f847e5))
 
-
-
 ## [3.15.11](https://github.com/mx-space/mx-admin/compare/v3.15.10...v3.15.11) (2022-03-06)
 
 
@@ -2888,8 +2376,6 @@
 
 * add note filter ([a5daaf3](https://github.com/mx-space/mx-admin/commit/a5daaf3c53645478411474f4b06be0566e3156c5))
 
-
-
 ## [3.15.10](https://github.com/mx-space/mx-admin/compare/v3.15.9...v3.15.10) (2022-03-05)
 
 
@@ -2898,8 +2384,6 @@
 * **deps:** update dependency vite-plugin-windicss to v1.8.2 ([#310](https://github.com/mx-space/mx-admin/issues/310)) ([025d762](https://github.com/mx-space/mx-admin/commit/025d762396aebe2483b5dbd9bec7187b81c35d55))
 * lock file ([2f7aa30](https://github.com/mx-space/mx-admin/commit/2f7aa3033bad9da6fa605f0a5b1f8b8f6f47b853))
 * page drawer ([9b49667](https://github.com/mx-space/mx-admin/commit/9b49667e49b9434b51132be14e4e65efb9a6e2ed))
-
-
 
 ## [3.15.9](https://github.com/mx-space/mx-admin/compare/v3.15.8...v3.15.9) (2022-03-03)
 
@@ -2916,8 +2400,6 @@
 * **deps:** update dependency xterm to v4.18.0 ([#305](https://github.com/mx-space/mx-admin/issues/305)) ([f1e1dfc](https://github.com/mx-space/mx-admin/commit/f1e1dfc9773a76f57ca574ea242afcfdecc7e0d1))
 * remove post `hide` field ([7dd9531](https://github.com/mx-space/mx-admin/commit/7dd95316ecad16cbcc55edfb44444e447283be49))
 
-
-
 ## [3.15.8](https://github.com/mx-space/mx-admin/compare/v3.15.7...v3.15.8) (2022-02-25)
 
 
@@ -2925,11 +2407,7 @@
 
 * nested css `:global` with postcss ([2b5a719](https://github.com/mx-space/mx-admin/commit/2b5a71950b44110145cec2145908a58e68ec70cd))
 
-
-
 ## [3.15.7](https://github.com/mx-space/mx-admin/compare/v3.15.6...v3.15.7) (2022-02-24)
-
-
 
 ## [3.15.6](https://github.com/mx-space/mx-admin/compare/v3.15.5...v3.15.6) (2022-02-24)
 
@@ -2939,8 +2417,6 @@
 * add id for injection script ([01824e3](https://github.com/mx-space/mx-admin/commit/01824e3f607ba40687f586dfe8e602a226db2a63))
 * update codemirror by re-resolve lock file ([dbd5bd3](https://github.com/mx-space/mx-admin/commit/dbd5bd32953c0c8c1a2ad31c1d271e3bd25f2430))
 
-
-
 ## [3.15.5](https://github.com/mx-space/mx-admin/compare/v3.15.4...v3.15.5) (2022-02-23)
 
 
@@ -2948,8 +2424,6 @@
 
 * **deps:** update dependency naive-ui to v2.25.3 ([#288](https://github.com/mx-space/mx-admin/issues/288)) ([00eb3ea](https://github.com/mx-space/mx-admin/commit/00eb3ea3af2c44d1a602b48c1c5990dad702c516))
 * **deps:** update dependency vite-plugin-windicss to v1.7.1 ([#277](https://github.com/mx-space/mx-admin/issues/277)) ([103c3ab](https://github.com/mx-space/mx-admin/commit/103c3ab83206eaac30cc491df4238870921b20cf))
-
-
 
 ## [3.15.4](https://github.com/mx-space/mx-admin/compare/v3.15.2...v3.15.4) (2022-02-18)
 
@@ -2971,8 +2445,6 @@
 
 * pty session record ([1391cee](https://github.com/mx-space/mx-admin/commit/1391ceedbcfeea10a177cf84cd943005449fd688))
 
-
-
 ## [3.15.2](https://github.com/mx-space/mx-admin/compare/v3.15.1...v3.15.2) (2022-02-12)
 
 
@@ -2986,16 +2458,12 @@
 
 * change xterm font ([e451bd1](https://github.com/mx-space/mx-admin/commit/e451bd1403079abc0cc40156091d087206a15e09))
 
-
-
 ## [3.15.1](https://github.com/mx-space/mx-admin/compare/v3.15.0...v3.15.1) (2022-02-11)
 
 
 ### Bug Fixes
 
 * socket reconnect if disconnect ([bc6ea85](https://github.com/mx-space/mx-admin/commit/bc6ea8564a96b6d11b8d09ed6270308513950ab8))
-
-
 
 # [3.15.0](https://github.com/mx-space/mx-admin/compare/v3.14.3...v3.15.0) (2022-02-10)
 
@@ -3012,8 +2480,6 @@
 * improve xterm background ([d80faed](https://github.com/mx-space/mx-admin/commit/d80faed54c0cce8b3c925ec03c785507a7cda544))
 * pty support & webshell embed ([14bad3d](https://github.com/mx-space/mx-admin/commit/14bad3d12b22fdee4e247f82784e850608c723e4))
 
-
-
 ## [3.14.3](https://github.com/mx-space/mx-admin/compare/v3.14.2...v3.14.3) (2022-02-09)
 
 
@@ -3021,11 +2487,7 @@
 
 * revert vite-check version ([e1e6107](https://github.com/mx-space/mx-admin/commit/e1e6107f68bc055006b981f2c1bcd3e3883316a0))
 
-
-
 ## [3.14.2](https://github.com/mx-space/mx-admin/compare/v3.14.1...v3.14.2) (2022-02-09)
-
-
 
 ## [3.14.1](https://github.com/mx-space/mx-admin/compare/v3.14.0...v3.14.1) (2022-02-09)
 
@@ -3034,16 +2496,12 @@
 
 * native log list & xterm support ([1a56c57](https://github.com/mx-space/mx-admin/commit/1a56c57fb629838d0f9164cd3b0432b2193a79c6))
 
-
-
 # [3.14.0](https://github.com/mx-space/mx-admin/compare/v3.13.3...v3.14.0) (2022-02-08)
 
 
 ### Features
 
 * add kbar ([1e2a15f](https://github.com/mx-space/mx-admin/commit/1e2a15fbf67a05cc7c87145346881c1195806423))
-
-
 
 ## [3.13.3](https://github.com/mx-space/mx-admin/compare/v3.13.2...v3.13.3) (2022-02-06)
 
@@ -3054,8 +2512,6 @@
 * **deps:** update dependency @mx-space/api-client to v0.6.2 ([1b7ee82](https://github.com/mx-space/mx-admin/commit/1b7ee8254f1c797952455ceac82d0003663a8d28))
 * **deps:** update dependency monaco-editor to v0.32.1 ([951f41d](https://github.com/mx-space/mx-admin/commit/951f41d5a6d728221fe73ab82fec17a873b85fa4))
 
-
-
 ## [3.13.2](https://github.com/mx-space/mx-admin/compare/v3.13.1...v3.13.2) (2022-01-31)
 
 
@@ -3064,8 +2520,6 @@
 * **friend:** try error in check health ([c0beba4](https://github.com/mx-space/mx-admin/commit/c0beba48777c4a1e3af4f1be4b84618418f1bc33))
 * move bundled js into single folder ([1bd34f0](https://github.com/mx-space/mx-admin/commit/1bd34f00bb427496c911942b572c4674af0651de))
 * store token ([b2c7618](https://github.com/mx-space/mx-admin/commit/b2c761841d827ca2eb55e8945448b95a724a1c6e))
-
-
 
 ## [3.13.1](https://github.com/mx-space/mx-admin/compare/v3.13.0...v3.13.1) (2022-01-31)
 
@@ -3079,8 +2533,6 @@
 
 * link check ([731abd1](https://github.com/mx-space/mx-admin/commit/731abd1bbf8c5aac705bd4ec0d1f6b16dcfb73d0))
 
-
-
 # [3.13.0](https://github.com/mx-space/mx-admin/compare/v3.12.0...v3.13.0) (2022-01-30)
 
 
@@ -3093,8 +2545,6 @@
 
 * add markdown image manage ([865d3e6](https://github.com/mx-space/mx-admin/commit/865d3e611a1f1b09d1eeac97ff03f6a390e0d60d))
 * inject env into build ([211aa74](https://github.com/mx-space/mx-admin/commit/211aa7497c33f9363a03e3ceb16ad30989d8fa93))
-
-
 
 # [3.12.0](https://github.com/mx-space/mx-admin/compare/v3.11.12...v3.12.0) (2022-01-22)
 
@@ -3113,16 +2563,12 @@
 * jump to simple render ([ee29eb8](https://github.com/mx-space/mx-admin/commit/ee29eb8f115bd49e474242b1e0002eee4cf596e4))
 * project list new design ([9936966](https://github.com/mx-space/mx-admin/commit/99369660335a4d11be4d5922a34bd0093af870ab))
 
-
-
 ## [3.11.12](https://github.com/mx-space/mx-admin/compare/v3.11.11...v3.11.12) (2022-01-21)
 
 
 ### Features
 
 * fetch project from github ([09efd87](https://github.com/mx-space/mx-admin/commit/09efd872ca2a5c553b3c917c83a2d1cecb6e6811))
-
-
 
 ## [3.11.11](https://github.com/mx-space/mx-admin/compare/v3.11.10...v3.11.11) (2022-01-18)
 
@@ -3133,8 +2579,6 @@
 * **deps:** update dependency vite-plugin-windicss to v1.6.3 ([60e3832](https://github.com/mx-space/mx-admin/commit/60e38325a23b7c18839af13d6dbb8c13f3c8b830))
 * remove header bg ([48cc119](https://github.com/mx-space/mx-admin/commit/48cc119319e667fe0f70d10622d5bfbbb2459884))
 
-
-
 ## [3.11.10](https://github.com/mx-space/mx-admin/compare/v3.11.8...v3.11.10) (2022-01-15)
 
 
@@ -3143,16 +2587,12 @@
 * adjust header blur ([ee1ba2d](https://github.com/mx-space/mx-admin/commit/ee1ba2d37c2d2a5587a18b0c9d6496e13c396d83))
 * default allow comment switch ([705994c](https://github.com/mx-space/mx-admin/commit/705994ce2f8ba2546ffc3e0973405280317e75e4))
 
-
-
 ## [3.11.8](https://github.com/mx-space/mx-admin/compare/v3.11.7...v3.11.8) (2022-01-13)
 
 
 ### Bug Fixes
 
 * comment nav to post path use category slug ([06b2655](https://github.com/mx-space/mx-admin/commit/06b265561b305ab8b8099dd71e34d4af91af16cf))
-
-
 
 ## [3.11.7](https://github.com/mx-space/mx-admin/compare/v3.11.6...v3.11.7) (2022-01-11)
 
@@ -3166,16 +2606,12 @@
 
 * add debug fake data ([b1a3e5f](https://github.com/mx-space/mx-admin/commit/b1a3e5f4dbf174ec77573ed33bd674693df42e55))
 
-
-
 ## [3.11.6](https://github.com/mx-space/mx-admin/compare/v3.11.5...v3.11.6) (2022-01-11)
 
 
 ### Features
 
 * debug console ([a03e0d6](https://github.com/mx-space/mx-admin/commit/a03e0d6fcb9a62a8108cd070b9e627d7f743d125))
-
-
 
 ## [3.11.5](https://github.com/mx-space/mx-admin/compare/v3.11.4...v3.11.5) (2022-01-10)
 
@@ -3185,8 +2621,6 @@
 * layout re-redener twice ([0da8e8e](https://github.com/mx-space/mx-admin/commit/0da8e8eedaca83198c43342e671a733572018137))
 * snippet post data ([f7ee716](https://github.com/mx-space/mx-admin/commit/f7ee716c5c6908963dfbb176bf4de7da44352a04))
 
-
-
 ## [3.11.4](https://github.com/mx-space/mx-admin/compare/v3.11.3...v3.11.4) (2022-01-09)
 
 
@@ -3194,16 +2628,12 @@
 
 * custom email reply template ([5acb540](https://github.com/mx-space/mx-admin/commit/5acb54006e5610e0324c6797850b5f544d7a1dbc))
 
-
-
 ## [3.11.3](https://github.com/mx-space/mx-admin/compare/v3.11.2...v3.11.3) (2022-01-08)
 
 
 ### Features
 
 * add user social id ([bec4a3c](https://github.com/mx-space/mx-admin/commit/bec4a3c7b7d2aa408ed15d18b493d10f3a428c36))
-
-
 
 ## [3.11.2](https://github.com/mx-space/mx-admin/compare/v3.11.1...v3.11.2) (2022-01-08)
 
@@ -3213,8 +2643,6 @@
 * **deps:** update dependency vue to v3.2.26 ([0ab3887](https://github.com/mx-space/mx-admin/commit/0ab3887145cf3e0b7c7dd08509ddfd9204c5cbf7))
 * editor tabsize set to 2 ([6761e7d](https://github.com/mx-space/mx-admin/commit/6761e7d7b7cb0fcc1552955dc9cb5899cdbfa1d2))
 
-
-
 ## [3.11.1](https://github.com/mx-space/mx-admin/compare/v3.11.0...v3.11.1) (2022-01-04)
 
 
@@ -3222,8 +2650,6 @@
 
 * **deps:** update dependency naive-ui to v2.23.2 ([c9c3c15](https://github.com/mx-space/mx-admin/commit/c9c3c1540893e8abe8783d041b34c5df626df9ba))
 * **edit:** if title is empty enter loading loop ([df11a27](https://github.com/mx-space/mx-admin/commit/df11a2788bd233c56b35e7333999e0d63670ab60))
-
-
 
 # [3.11.0](https://github.com/mx-space/mx-admin/compare/v3.10.4...v3.11.0) (2021-12-23)
 
@@ -3238,8 +2664,6 @@
 * replace taildwind with windicss ([bec9bef](https://github.com/mx-space/mx-admin/commit/bec9befa5152d6e79abe5709e4e5a47f3e34ac0b))
 * **snippet:** yaml support ([938cce7](https://github.com/mx-space/mx-admin/commit/938cce717a0b969fc573de9a193c4208d9054d65))
 
-
-
 ## [3.10.4](https://github.com/mx-space/mx-admin/compare/v3.10.3...v3.10.4) (2021-12-21)
 
 
@@ -3248,16 +2672,12 @@
 * add quick preview ([ec10a21](https://github.com/mx-space/mx-admin/commit/ec10a216a3258967614c7b175bf00ca5c8e5baf2))
 * parse markdown yaml ([dcac3d9](https://github.com/mx-space/mx-admin/commit/dcac3d98020ea79a867b88e9f7b2388b033515ff))
 
-
-
 ## [3.10.3](https://github.com/mx-space/mx-admin/compare/v3.10.2...v3.10.3) (2021-12-14)
 
 
 ### Bug Fixes
 
 * update tailwind to 3, codemirror highlight bug ([d388909](https://github.com/mx-space/mx-admin/commit/d388909bf1d0730b5f1c48da6de0b7667e2b5991))
-
-
 
 ## [3.10.2](https://github.com/mx-space/mx-admin/compare/v3.10.1...v3.10.2) (2021-12-10)
 
@@ -3267,8 +2687,6 @@
 * **deps:** update dependency naive-ui to v2.21.5 ([cdb4d0f](https://github.com/mx-space/mx-admin/commit/cdb4d0fca946c57b611fa8b200d0ab743c31dd41))
 * **deps:** update dependency vditor to v3.8.8 ([d5e0d7a](https://github.com/mx-space/mx-admin/commit/d5e0d7a20a87a0d9b164547522a1e973873179e6))
 * post link nav error ([ab7ea01](https://github.com/mx-space/mx-admin/commit/ab7ea0148694e0a6549729754a7464d97358eb9d))
-
-
 
 ## [3.10.1](https://github.com/mx-space/mx-admin/compare/v3.10.0...v3.10.1) (2021-12-04)
 
@@ -3280,16 +2698,12 @@
 * **deps:** update dependency class-transformer to v0.5.1 ([495547e](https://github.com/mx-space/mx-admin/commit/495547ef87ce4dd2604d8d967e2237e1407d1d76))
 * **deps:** update dependency naive-ui to v2.21.1 ([df52998](https://github.com/mx-space/mx-admin/commit/df529981c82fafe158a4170bc835b98d6a8f20f4))
 
-
-
 # [3.10.0](https://github.com/mx-space/mx-admin/compare/v3.9.8...v3.10.0) (2021-11-23)
 
 
 ### Features
 
 * add external link on title field ([47f0407](https://github.com/mx-space/mx-admin/commit/47f0407e1d8475396ebe50b39d92e7d7535da639))
-
-
 
 ## [3.9.8](https://github.com/mx-space/mx-admin/compare/v3.9.7...v3.9.8) (2021-11-21)
 
@@ -3299,8 +2713,6 @@
 * **deps:** update dependency @vueuse/core to v7 ([1ad0e81](https://github.com/mx-space/mx-admin/commit/1ad0e814b8451227867f9f372e9abb4000fcbc0e))
 * **deps:** update dependency class-validator to v0.13.2 ([5ad9764](https://github.com/mx-space/mx-admin/commit/5ad9764af164473f7f392b61052293ad186edb9e))
 
-
-
 ## [3.9.7](https://github.com/mx-space/mx-admin/compare/v3.9.5...v3.9.7) (2021-11-20)
 
 
@@ -3308,8 +2720,6 @@
 
 * add debug type for markdown import ([4d5330b](https://github.com/mx-space/mx-admin/commit/4d5330b332b574b03c1d596a09812a1632f6fc56))
 * mine type on windows, Why is windows so fucking ([3bcb480](https://github.com/mx-space/mx-admin/commit/3bcb48052f293db56e8b2ab67a3888f377dcef0c))
-
-
 
 ## [3.9.5](https://github.com/mx-space/mx-admin/compare/v3.9.4...v3.9.5) (2021-11-20)
 
@@ -3321,16 +2731,12 @@
 * **deps:** update dependency vue to v3.2.22 ([5863dcb](https://github.com/mx-space/mx-admin/commit/5863dcbdc773c9414b4745e8d20f299f8c308c64))
 * lost page subtitle ([66b87a5](https://github.com/mx-space/mx-admin/commit/66b87a56847084fa7f60c8bc419ac8fbe0133ce6))
 
-
-
 ## [3.9.4](https://github.com/mx-space/mx-admin/compare/v3.9.3...v3.9.4) (2021-11-19)
 
 
 ### Bug Fixes
 
 * ignore webkit tap highlight ([bff8f32](https://github.com/mx-space/mx-admin/commit/bff8f32f4c6ecbce919d2c8caa898b6d314ed795))
-
-
 
 ## [3.9.3](https://github.com/mx-space/mx-admin/compare/v3.9.2...v3.9.3) (2021-11-17)
 
@@ -3339,8 +2745,6 @@
 
 * update to server ([057fbcd](https://github.com/mx-space/mx-admin/commit/057fbcdf51dcb2b62359fb8280c30e46ea2755f2))
 
-
-
 ## [3.9.2](https://github.com/mx-space/mx-admin/compare/v3.9.1...v3.9.2) (2021-11-17)
 
 
@@ -3348,8 +2752,6 @@
 
 * **deps:** update dependency @vueuse/core to v6.9.1 ([9686bef](https://github.com/mx-space/mx-admin/commit/9686beff6ba1c52b658bedc8cf31ab717b834574))
 * **deps:** update dependency naive-ui to v2.20.3 ([071fad2](https://github.com/mx-space/mx-admin/commit/071fad2a4671f06ab749c708e8a09122ec4753d7))
-
-
 
 ## [3.9.1](https://github.com/mx-space/mx-admin/compare/v3.9.0...v3.9.1) (2021-11-09)
 
@@ -3366,8 +2768,6 @@
 * **deps:** update dependency xterm to v4.15.0 ([3d3a881](https://github.com/mx-space/mx-admin/commit/3d3a88178fc41f9a2d4d65dc19b9f86524fe12d5))
 * post model type error ([8ae70ed](https://github.com/mx-space/mx-admin/commit/8ae70ed4e49f937481e9b00608ff0358955834a7))
 * read multi-comment callback ([2e0033a](https://github.com/mx-space/mx-admin/commit/2e0033a475868030664b6fa5e2a2879546500132))
-
-
 
 # [3.9.0](https://github.com/mx-space/mx-admin/compare/v3.8.3...v3.9.0) (2021-10-22)
 
@@ -3389,16 +2789,12 @@
 * snippate link ([9514399](https://github.com/mx-space/mx-admin/commit/95143993ec2221cf6254e7b220f196a6a94f94bc))
 * snippet support ([599ca7a](https://github.com/mx-space/mx-admin/commit/599ca7a9c086aac67f9ef10c5df444880d662497))
 
-
-
 ## [3.8.3](https://github.com/mx-space/mx-admin/compare/v3.8.2...v3.8.3) (2021-10-13)
 
 
 ### Bug Fixes
 
 * link style ([22cfecd](https://github.com/mx-space/mx-admin/commit/22cfecdda2c38c2a5ee46d8bec146448da29960f))
-
-
 
 ## [3.8.2](https://github.com/mx-space/mx-admin/compare/v3.8.1...v3.8.2) (2021-10-11)
 
@@ -3407,16 +2803,12 @@
 
 * table row style ([e6e0303](https://github.com/mx-space/mx-admin/commit/e6e03031dab0beeee22598ff95ff0523f0520f6f))
 
-
-
 ## [3.8.1](https://github.com/mx-space/mx-admin/compare/v3.8.0...v3.8.1) (2021-10-09)
 
 
 ### Features
 
 * update timeline ([461b6ec](https://github.com/mx-space/mx-admin/commit/461b6ec500d73e407454e213d26d069c898d9fe7))
-
-
 
 # [3.8.0](https://github.com/mx-space/mx-admin/compare/v3.7.1...v3.8.0) (2021-10-08)
 
@@ -3425,8 +2817,6 @@
 
 * new setup view ([fa30359](https://github.com/mx-space/mx-admin/commit/fa303596624e2e730b076a56c31db052f35d2e4e))
 
-
-
 ## [3.7.1](https://github.com/mx-space/mx-admin/compare/v3.7.0...v3.7.1) (2021-10-07)
 
 
@@ -3434,8 +2824,6 @@
 
 * **deps:** update dependency date-fns to v2.25.0 ([7e107ca](https://github.com/mx-space/mx-admin/commit/7e107ca2e702c2320beea5712de881954afbe94f))
 * mark catch value as any ([1684d43](https://github.com/mx-space/mx-admin/commit/1684d435e0954ab0719ec1fdc6b9271a62ab3d37))
-
-
 
 # [3.7.0](https://github.com/mx-space/mx-admin/compare/v3.6.10...v3.7.0) (2021-10-05)
 
@@ -3450,16 +2838,12 @@
 * codemirror toggle theme ([9f4f439](https://github.com/mx-space/mx-admin/commit/9f4f43980904feec30e60c6d99aa9848dcce0e9a))
 * editor fullscreen support ([1d0187b](https://github.com/mx-space/mx-admin/commit/1d0187bdba046b30a40b57bbc62b09087671883b))
 
-
-
 ## [3.6.10](https://github.com/mx-space/mx-admin/compare/v3.6.9...v3.6.10) (2021-10-04)
 
 
 ### Features
 
 * show system version ([dbaabe9](https://github.com/mx-space/mx-admin/commit/dbaabe9fa6d6b791531579f97791e9992b2295be))
-
-
 
 ## [3.6.9](https://github.com/mx-space/mx-admin/compare/v3.6.7...v3.6.9) (2021-10-04)
 
@@ -3468,15 +2852,9 @@
 
 * codemirror deps version ([d27d6a4](https://github.com/mx-space/mx-admin/commit/d27d6a4f20ea9e70bff0d7d1efa6b14203c676c4))
 
-
-
 ## [3.6.7](https://github.com/mx-space/mx-admin/compare/v3.6.6...v3.6.7) (2021-10-04)
 
-
-
 ## [3.6.6](https://github.com/mx-space/mx-admin/compare/v1.1.2...v3.6.6) (2021-10-04)
-
-
 
 ## [1.1.2](https://github.com/mx-space/mx-admin/compare/v1.1.1...v1.1.2) (2021-10-04)
 
@@ -3485,16 +2863,12 @@
 
 * markdown import logic ([5c799da](https://github.com/mx-space/mx-admin/commit/5c799da181d1ac50195dcb0fe5b70f4a1cab3980))
 
-
-
 ## [3.6.5](https://github.com/mx-space/mx-admin/compare/v3.6.4...v3.6.5) (2021-10-04)
 
 
 ### Bug Fixes
 
 * markdown import type ([56cc87e](https://github.com/mx-space/mx-admin/commit/56cc87e558e52cabc315de49ab56e08c2bd8855f))
-
-
 
 ## [3.6.4](https://github.com/mx-space/mx-admin/compare/v3.6.3...v3.6.4) (2021-10-02)
 
@@ -3503,8 +2877,6 @@
 
 * set relative time if time is null ([6a367d6](https://github.com/mx-space/mx-admin/commit/6a367d649a6610b78d98dbac98e090afafb804d4))
 
-
-
 ## [3.6.3](https://github.com/mx-space/mx-admin/compare/v3.6.2...v3.6.3) (2021-10-01)
 
 
@@ -3512,8 +2884,6 @@
 
 * change dashboard say icon ([4bf326a](https://github.com/mx-space/mx-admin/commit/4bf326a5d344ba4478b0dffef3940f93bc762c9b))
 * upload rollback content-type ([1f5b9f6](https://github.com/mx-space/mx-admin/commit/1f5b9f675602563ea55219fdd7f48d7f4c3b4d40))
-
-
 
 ## [3.6.2](https://github.com/mx-space/mx-admin/compare/v3.6.1...v3.6.2) (2021-09-28)
 
@@ -3525,16 +2895,12 @@
 * **deps:** update dependency vditor to v3.8.7 ([58734e3](https://github.com/mx-space/mx-admin/commit/58734e333dd5301e86c2a99baa42db4f65f4ebaf))
 * table sort prop ([6c6bf77](https://github.com/mx-space/mx-admin/commit/6c6bf77c32ffa53640111c2bb3fd57327f323339))
 
-
-
 ## [3.6.1](https://github.com/mx-space/mx-admin/compare/v3.6.0...v3.6.1) (2021-09-28)
 
 
 ### Bug Fixes
 
 * speed up editor loading, suspense component ([bb615b7](https://github.com/mx-space/mx-admin/commit/bb615b7f3cb29dea8cf873a2f176777221ca577b))
-
-
 
 # [3.6.0](https://github.com/mx-space/mx-admin/compare/v3.5.6...v3.6.0) (2021-09-28)
 
@@ -3543,8 +2909,6 @@
 
 * add codemirror ([75fb704](https://github.com/mx-space/mx-admin/commit/75fb704365e52731e25c08c90287f3b0177b00a4))
 
-
-
 ## [3.5.6](https://github.com/mx-space/mx-admin/compare/v3.3.5...v3.5.6) (2021-09-23)
 
 
@@ -3552,16 +2916,12 @@
 
 * auto complete tag auto focus ([72923e6](https://github.com/mx-space/mx-admin/commit/72923e64b2b32d0adb75c71c78b2789f5a45e357))
 
-
-
 ## [3.3.5](https://github.com/mx-space/mx-admin/compare/v3.3.4...v3.3.5) (2021-09-22)
 
 
 ### Features
 
 * add new markdown export option ([99dcb20](https://github.com/mx-space/mx-admin/commit/99dcb20b1c01ca03744d818b67124a0674118645))
-
-
 
 ## [3.3.4](https://github.com/mx-space/mx-admin/compare/v3.3.3...v3.3.4) (2021-09-22)
 
@@ -3575,16 +2935,12 @@
 
 * add shorthand ([d9bba81](https://github.com/mx-space/mx-admin/commit/d9bba81ecdff1d0a2e4d7030a946ab54dedc0418))
 
-
-
 ## [3.3.3](https://github.com/mx-space/mx-admin/compare/v3.3.2...v3.3.3) (2021-09-22)
 
 
 ### Bug Fixes
 
 * after setup reload ([74f6400](https://github.com/mx-space/mx-admin/commit/74f6400ecb9838127daf49f6ce62c19460eeb4fe))
-
-
 
 ## [3.3.2](https://github.com/mx-space/mx-admin/compare/v3.3.1...v3.3.2) (2021-09-20)
 
@@ -3598,8 +2954,6 @@
 
 * **notification:** open window if not focus ([bca068c](https://github.com/mx-space/mx-admin/commit/bca068c308c2ffe279f50579a41dc774736ca1a2))
 
-
-
 ## [3.3.1](https://github.com/mx-space/mx-admin/compare/v3.3.0...v3.3.1) (2021-09-20)
 
 
@@ -3607,16 +2961,12 @@
 
 * get location api params ([9851790](https://github.com/mx-space/mx-admin/commit/9851790a674acfc7e1759fbd509858b6ca5579cd))
 
-
-
 # [3.3.0](https://github.com/mx-space/mx-admin/compare/v3.2.8...v3.3.0) (2021-09-20)
 
 
 ### Features
 
 * auto complete for tag ([2affe98](https://github.com/mx-space/mx-admin/commit/2affe98466912c8c914efa11cc008875307f16c2))
-
-
 
 ## [3.2.8](https://github.com/mx-space/mx-admin/compare/v3.2.7...v3.2.8) (2021-09-20)
 
@@ -3626,16 +2976,12 @@
 * nav after setup ([cd46f99](https://github.com/mx-space/mx-admin/commit/cd46f99b31f2bfb30a2dfdee35c856be2fb743b8))
 * re-set init status ([70436d2](https://github.com/mx-space/mx-admin/commit/70436d207935c621d9584d96930d44bcb516004d))
 
-
-
 ## [3.2.7](https://github.com/mx-space/mx-admin/compare/v3.2.6...v3.2.7) (2021-09-20)
 
 
 ### Bug Fixes
 
 * vue hook outside ([30c3b51](https://github.com/mx-space/mx-admin/commit/30c3b51a773e42429aa4a5a1aa4574b2d1d8cf9a))
-
-
 
 ## [3.2.6](https://github.com/mx-space/mx-admin/compare/v3.2.5...v3.2.6) (2021-09-20)
 
@@ -3644,8 +2990,6 @@
 
 * reload page after register ([3728522](https://github.com/mx-space/mx-admin/commit/3728522cb2bdf5aed5a110edaa8899a14df7de61))
 
-
-
 ## [3.2.5](https://github.com/mx-space/mx-admin/compare/v3.2.4...v3.2.5) (2021-09-20)
 
 
@@ -3653,16 +2997,12 @@
 
 * polling ([c2405c8](https://github.com/mx-space/mx-admin/commit/c2405c8e6c520a53769a1c8cc85c8a55f145dc1d))
 
-
-
 ## [3.2.4](https://github.com/mx-space/mx-admin/compare/v3.2.3...v3.2.4) (2021-09-20)
 
 
 ### Bug Fixes
 
 * route import in prod ([0a3f0d8](https://github.com/mx-space/mx-admin/commit/0a3f0d8745d9dabe96d0d56933e7cd518fe13498))
-
-
 
 ## [3.2.3](https://github.com/mx-space/mx-admin/compare/v3.2.2...v3.2.3) (2021-09-19)
 
@@ -3672,16 +3012,12 @@
 * get avatar `/undefine` ([830a64b](https://github.com/mx-space/mx-admin/commit/830a64bd7340790fb104131be9c91040118ce25b))
 * if !init, nav to `/setup` ([c067888](https://github.com/mx-space/mx-admin/commit/c067888db422ad536bf230d377b870c8bf6823d8))
 
-
-
 ## [3.2.2](https://github.com/mx-space/mx-admin/compare/v3.2.1...v3.2.2) (2021-09-19)
 
 
 ### Features
 
 * setup page ([9d6deb3](https://github.com/mx-space/mx-admin/commit/9d6deb35580c81b4a321a9a5c9bf0d5b12502ed8))
-
-
 
 ## [3.2.1](https://github.com/mx-space/mx-admin/compare/v3.2.0...v3.2.1) (2021-09-19)
 
@@ -3690,8 +3026,6 @@
 
 * polling cron status ([2f8aad3](https://github.com/mx-space/mx-admin/commit/2f8aad3bd0b4a6f1ce9ef5b04af04de9e30cc6c8))
 
-
-
 # [3.2.0](https://github.com/mx-space/mx-admin/compare/v3.1.4...v3.2.0) (2021-09-19)
 
 
@@ -3699,16 +3033,12 @@
 
 * page proxy ([8b770f6](https://github.com/mx-space/mx-admin/commit/8b770f6b8d653ebb47ed6e1c5b615b017fc5a131))
 
-
-
 ## [3.1.4](https://github.com/mx-space/mx-admin/compare/v3.1.3...v3.1.4) (2021-09-19)
 
 
 ### Features
 
 * pageproxy init ([4c62187](https://github.com/mx-space/mx-admin/commit/4c621872f61179cd8a0bf8afa718542700c30568))
-
-
 
 ## [3.1.3](https://github.com/mx-space/mx-admin/compare/v3.1.2...v3.1.3) (2021-09-18)
 
@@ -3719,16 +3049,12 @@
 * **deps:** pin dependency socket.io-client to 4.2.0 ([40d5968](https://github.com/mx-space/mx-admin/commit/40d5968e5ec2b79b2f6fe8f53a84a856f125723a))
 * fuck chrome auto-fill ([84a5b90](https://github.com/mx-space/mx-admin/commit/84a5b90a010252134a343aaba27aab698a862f9c))
 
-
-
 ## [3.1.2](https://github.com/mx-space/mx-admin/compare/v3.1.1...v3.1.2) (2021-09-16)
 
 
 ### Reverts
 
 * Revert "fix: upper case cos" ([0ec293d](https://github.com/mx-space/mx-admin/commit/0ec293d46f91fa7a7a88bfb290ed294101f664c4))
-
-
 
 ## [3.1.1](https://github.com/mx-space/mx-admin/compare/v3.1.0...v3.1.1) (2021-09-16)
 
@@ -3737,8 +3063,6 @@
 
 * upper case cos ([dfd97b3](https://github.com/mx-space/mx-admin/commit/dfd97b381c5a916f27dd1f9d9f8b240715ee0661))
 
-
-
 # [3.1.0](https://github.com/mx-space/mx-admin/compare/v3.0.1...v3.1.0) (2021-09-16)
 
 
@@ -3746,16 +3070,12 @@
 
 * add log ([493615b](https://github.com/mx-space/mx-admin/commit/493615be8f954f09b1d5da132d9ddc310e7ed484))
 
-
-
 ## [3.0.1](https://github.com/mx-space/mx-admin/compare/v3.0.0...v3.0.1) (2021-09-11)
 
 
 ### Bug Fixes
 
 * patch category directly on posts ([3dfdea1](https://github.com/mx-space/mx-admin/commit/3dfdea1925bf6ba618d0ccce966df511192dfce9))
-
-
 
 # [3.0.0](https://github.com/mx-space/mx-admin/compare/v2.5.0...v3.0.0) (2021-09-10)
 
@@ -3770,11 +3090,7 @@
 * other improvement ([54823e9](https://github.com/mx-space/mx-admin/commit/54823e9ed8afde886dda8d9392173b5851250edc))
 * update api version ([d995eac](https://github.com/mx-space/mx-admin/commit/d995eacecd2e78d6bd82476b8bf16f9a9ceb46ca))
 
-
-
 # [2.5.0](https://github.com/mx-space/mx-admin/compare/v2.4.8...v2.5.0) (2021-09-07)
-
-
 
 ## [2.4.8](https://github.com/mx-space/mx-admin/compare/v2.4.7...v2.4.8) (2021-09-06)
 
@@ -3783,16 +3099,12 @@
 
 * remove `virtualScroll` to improve pref. ([06061bf](https://github.com/mx-space/mx-admin/commit/06061bf4b1238be2edab186242b177a299f45f21))
 
-
-
 ## [2.4.7](https://github.com/mx-space/mx-admin/compare/v2.4.6...v2.4.7) (2021-08-31)
 
 
 ### Bug Fixes
 
 * download backup blob ([3d084bb](https://github.com/mx-space/mx-admin/commit/3d084bb011e80c7f17d84de3183400427abd56e9))
-
-
 
 ## [2.4.6](https://github.com/mx-space/mx-admin/compare/v2.4.5...v2.4.6) (2021-08-19)
 
@@ -3801,8 +3113,6 @@
 
 * mobile layout ([3202735](https://github.com/mx-space/mx-admin/commit/32027359d3ed19c09a438e34754405cdf0cbe4aa))
 
-
-
 ## [2.4.5](https://github.com/mx-space/mx-admin/compare/v2.4.3...v2.4.5) (2021-08-16)
 
 
@@ -3810,11 +3120,7 @@
 
 * vue3 re-render loop what fuck ([19e0a79](https://github.com/mx-space/mx-admin/commit/19e0a799c3e0030c52e19420bc1418f04f2f4f18))
 
-
-
 ## [2.4.3](https://github.com/mx-space/mx-admin/compare/v2.4.2...v2.4.3) (2021-08-14)
-
-
 
 ## [2.4.2](https://github.com/mx-space/mx-admin/compare/v2.4.1...v2.4.2) (2021-08-14)
 
@@ -3825,11 +3131,7 @@
 * **deps:** update dependency naive-ui to v2.16.2 ([#96](https://github.com/mx-space/mx-admin/issues/96)) ([8c42945](https://github.com/mx-space/mx-admin/commit/8c429458bbe543770e2cbbf7f6e421af15041eb5))
 * **deps:** update dependency vue-router to v4.0.11 ([#98](https://github.com/mx-space/mx-admin/issues/98)) ([b56f4d9](https://github.com/mx-space/mx-admin/commit/b56f4d91d9660dd3bb37af016994f184d28c323d))
 
-
-
 ## [2.4.1](https://github.com/mx-space/mx-admin/compare/v2.4.0...v2.4.1) (2021-08-02)
-
-
 
 # [2.4.0](https://github.com/mx-space/mx-admin/compare/v2.3.7...v2.4.0) (2021-08-02)
 
@@ -3843,11 +3145,7 @@
 
 * improve post and note table view ([2219f3f](https://github.com/mx-space/mx-admin/commit/2219f3f28a7b35741c953556df2a8d779e254dcf))
 
-
-
 ## [2.3.7](https://github.com/mx-space/mx-admin/compare/v2.3.6...v2.3.7) (2021-08-01)
-
-
 
 ## [2.3.6](https://github.com/mx-space/mx-admin/compare/v2.3.5-1...v2.3.6) (2021-08-01)
 
@@ -3856,11 +3154,7 @@
 
 * **deps:** update dependency naive-ui to v2.15.11 ([#82](https://github.com/mx-space/mx-admin/issues/82)) ([5f92f72](https://github.com/mx-space/mx-admin/commit/5f92f72430ff102df2d3ebfdc6b9a446069d7d2e))
 
-
-
 ## [2.3.5-1](https://github.com/mx-space/mx-admin/compare/v2.3.5...v2.3.5-1) (2021-07-28)
-
-
 
 ## [2.3.5](https://github.com/mx-space/mx-admin/compare/v2.3.4...v2.3.5) (2021-07-28)
 
@@ -3872,8 +3166,6 @@
 * **deps:** update dependency naive-ui to v2.15.8 ([#74](https://github.com/mx-space/mx-admin/issues/74)) ([4cd4b66](https://github.com/mx-space/mx-admin/commit/4cd4b667723107668bb7cb218cc024221430c610))
 * **deps:** update dependency naive-ui to v2.15.9 ([#79](https://github.com/mx-space/mx-admin/issues/79)) ([aefc8ba](https://github.com/mx-space/mx-admin/commit/aefc8ba39845b0362fd5dc26d965700da24d3ad2))
 
-
-
 ## [2.3.4](https://github.com/mx-space/mx-admin/compare/v2.3.3-beta...v2.3.4) (2021-07-25)
 
 
@@ -3881,19 +3173,11 @@
 
 * avatar load style ([3af2799](https://github.com/mx-space/mx-admin/commit/3af27995c4943e6ec4f15901b13c6576a864c703))
 
-
-
 ## [2.3.3-beta](https://github.com/mx-space/mx-admin/compare/v2.3.2...v2.3.3-beta) (2021-07-25)
-
-
 
 ## [2.3.2](https://github.com/mx-space/mx-admin/compare/v2.3.1-alpha...v2.3.2) (2021-07-25)
 
-
-
 ## [2.3.1-alpha](https://github.com/mx-space/mx-admin/compare/v2.3.1...v2.3.1-alpha) (2021-07-25)
-
-
 
 ## [2.3.1](https://github.com/mx-space/mx-admin/compare/v2.3.0...v2.3.1) (2021-07-25)
 
@@ -3904,8 +3188,6 @@
 * **deps:** update dependency date-fns to v2.23.0 ([#68](https://github.com/mx-space/mx-admin/issues/68)) ([e2d3592](https://github.com/mx-space/mx-admin/commit/e2d35925ed48aae78732cdec09a5942d2075e150))
 * **deps:** update dependency naive-ui to v2.15.6 ([#60](https://github.com/mx-space/mx-admin/issues/60)) ([9940a4c](https://github.com/mx-space/mx-admin/commit/9940a4ca5401fc8c18118a01b92ca463eebbbfa8))
 
-
-
 # [2.3.0](https://github.com/mx-space/mx-admin/compare/v2.2.0...v2.3.0) (2021-07-25)
 
 
@@ -3914,8 +3196,6 @@
 * dark mode ([aa73834](https://github.com/mx-space/mx-admin/commit/aa738345ccdc3a6f1575bc03fab1491a13e5324f))
 * improve search location ([bda48e3](https://github.com/mx-space/mx-admin/commit/bda48e3fc402d0a16c1ac489f812cee1b84bb7a9))
 
-
-
 # [2.2.0](https://github.com/mx-space/mx-admin/compare/v2.1.6...v2.2.0) (2021-07-24)
 
 
@@ -3923,16 +3203,12 @@
 
 * add custom location ([c180e13](https://github.com/mx-space/mx-admin/commit/c180e13183a124c457847cea3945a3dafe5310a0))
 
-
-
 ## [2.1.6](https://github.com/mx-space/mx-admin/compare/v2.1.5...v2.1.6) (2021-07-24)
 
 
 ### Bug Fixes
 
 * build without output ([bff887a](https://github.com/mx-space/mx-admin/commit/bff887a4d036bc8f95e9eca92c3e50582b06e4cb))
-
-
 
 ## [2.1.5](https://github.com/mx-space/mx-admin/compare/v2.1.4...v2.1.5) (2021-07-24)
 
@@ -3948,11 +3224,7 @@
 
 * auto save for note (beta) ([c24435b](https://github.com/mx-space/mx-admin/commit/c24435b228b8c1c41d28a29e8a770794444c7399))
 
-
-
 ## [2.1.4](https://github.com/mx-space/mx-admin/compare/v2.1.3...v2.1.4) (2021-07-19)
-
-
 
 ## [2.1.3](https://github.com/mx-space/mx-admin/compare/v2.1.2...v2.1.3) (2021-07-17)
 
@@ -3960,8 +3232,6 @@
 ### Bug Fixes
 
 * confirm hook ([f3556ab](https://github.com/mx-space/mx-admin/commit/f3556abb9e76d00ae93ba278b96d25c3520ddb49))
-
-
 
 ## [2.1.2](https://github.com/mx-space/mx-admin/compare/v2.1.1...v2.1.2) (2021-07-17)
 
@@ -3977,8 +3247,6 @@
 * auto save hook ([a42a85f](https://github.com/mx-space/mx-admin/commit/a42a85f476667dbe3ac3acaec91e0ba2dacfbf70))
 * use dialog confim instead of native confim ([92c3a6e](https://github.com/mx-space/mx-admin/commit/92c3a6e4219674856d5dd8ef783fc55495293c79))
 
-
-
 ## [2.1.1](https://github.com/mx-space/mx-admin/compare/v2.1.0...v2.1.1) (2021-07-15)
 
 
@@ -3991,8 +3259,6 @@
 
 * loading editor toggle ([ba5bff6](https://github.com/mx-space/mx-admin/commit/ba5bff6fa4647f018f6c1974dfa162852f12d59e))
 
-
-
 # [2.1.0](https://github.com/mx-space/mx-admin/compare/v2.0.1...v2.1.0) (2021-07-14)
 
 
@@ -4000,8 +3266,6 @@
 
 * **deps:** update dependency naive-ui to v2.15.4 ([#55](https://github.com/mx-space/mx-admin/issues/55)) ([8fe74f1](https://github.com/mx-space/mx-admin/commit/8fe74f1273c6bc8a8ec6af70353f12a0fff3d9b7))
 * vditor value change ([7727ed1](https://github.com/mx-space/mx-admin/commit/7727ed13d4ef6fbe29733d7b2e56426705a23fa9))
-
-
 
 ## [2.0.1](https://github.com/mx-space/mx-admin/compare/v2.0.0...v2.0.1) (2021-07-09)
 
@@ -4030,8 +3294,6 @@
 * editor toggle ([be758ca](https://github.com/mx-space/mx-admin/commit/be758caef9de083dbade0f3b14a68ddbf8342ae7))
 * login bg custom ([becfda8](https://github.com/mx-space/mx-admin/commit/becfda88e2be28cf9579ab8d3e221f50cca5d8af))
 
-
-
 # [2.0.0](https://github.com/mx-space/mx-admin/compare/v2.0.0-beta.3...v2.0.0) (2021-06-26)
 
 
@@ -4052,11 +3314,7 @@
 * add amap ([a9b1b9f](https://github.com/mx-space/mx-admin/commit/a9b1b9fe634c385a328d25481defdecce69c97d0))
 * add skeleton to data analyze ([18b1ff8](https://github.com/mx-space/mx-admin/commit/18b1ff824b825ddc841ea43f6a7bf4b1313b3bc6))
 
-
-
 # [2.0.0-beta.3](https://github.com/mx-space/mx-admin/compare/v2.0.0-beta.2...v2.0.0-beta.3) (2021-06-21)
-
-
 
 # [2.0.0-beta.2](https://github.com/mx-space/mx-admin/compare/v2.0.0-alpha...v2.0.0-beta.2) (2021-06-20)
 
@@ -4072,8 +3330,6 @@
 ### Features
 
 * tailwind override style ([9da40f1](https://github.com/mx-space/mx-admin/commit/9da40f1fbfa5e283d907990be97851b6f22b1307))
-
-
 
 # [2.0.0-alpha](https://github.com/mx-space/mx-admin/compare/44a1bcf79201a59fc2fdaeac10de7ceeebcbb66d...v2.0.0-alpha) (2021-06-20)
 
@@ -4145,6 +3401,3 @@
 ### Reverts
 
 * router hash ([0857282](https://github.com/mx-space/mx-admin/commit/08572826e725b08f4783bc4bc83e4dcd77c76c81))
-
-
-
