@@ -1,0 +1,60 @@
+{
+  "name": "@mx-admin/rich-react",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "lint": "oxlint src",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "@haklex/rich-agent-core": "0.4.0",
+    "@haklex/rich-diff": "0.4.0",
+    "@haklex/rich-editor": "0.4.0",
+    "@haklex/rich-editor-ui": "0.4.0",
+    "@haklex/rich-ext-ai-agent": "0.4.0",
+    "@haklex/rich-ext-nested-doc": "0.4.0",
+    "@haklex/rich-kit-shiro": "0.4.0",
+    "@haklex/rich-plugin-toolbar": "0.4.0",
+    "@lexical/markdown": "^0.44.0",
+    "@lexical/react": "^0.44.0",
+    "lexical": "^0.44.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@haklex/rich-agent-core": "0.4.0",
+    "@haklex/rich-diff": "0.4.0",
+    "@haklex/rich-editor": "0.4.0",
+    "@haklex/rich-editor-ui": "0.4.0",
+    "@haklex/rich-ext-ai-agent": "0.4.0",
+    "@haklex/rich-ext-nested-doc": "0.4.0",
+    "@haklex/rich-kit-shiro": "0.4.0",
+    "@haklex/rich-plugin-toolbar": "0.4.0",
+    "@lexical/markdown": "^0.44.0",
+    "@lexical/react": "^0.44.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "happy-dom": "^15.11.0",
+    "lexical": "^0.44.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "tsdown": "^0.21.10",
+    "typescript": "5.9.3",
+    "vitest": "^2.1.0"
+  }
+}
