@@ -44,8 +44,8 @@ const TaskTypeLabels: Record<CronTaskType, string> = {
   [CronTaskType.PushToBaiduSearch]: '推送百度搜索',
   [CronTaskType.PushToBingSearch]: '推送 Bing 搜索',
   [CronTaskType.DeleteExpiredJWT]: '删除过期 JWT',
-  [CronTaskType.CleanupOrphanImages]: '清理孤儿图片',
-  [CronTaskType.SyncPublishedImagesToS3]: '同步图片到 S3',
+  [CronTaskType.RebuildSearchIndex]: '重建搜索索引',
+  [CronTaskType.CleanCommentUploads]: '清理评论图片上传',
 }
 
 const TaskStatusLabels: Record<CronTaskStatus, string> = {

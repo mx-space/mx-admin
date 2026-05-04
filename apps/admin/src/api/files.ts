@@ -15,7 +15,15 @@ export interface OrphanFile {
   id: string
   fileName: string
   fileUrl: string
-  created: string
+  status?: 'pending' | 'active' | 'detached'
+  uploadedBy?: string | null
+  readerId?: string | null
+  mimeType?: string | null
+  byteSize?: number | null
+  refType?: string | null
+  refId?: string | null
+  detachedAt?: string | null
+  createdAt: string
 }
 
 export interface OrphanListResponse {
@@ -132,7 +140,7 @@ export interface CommentUploadFile {
   refType?: string
   refId?: string
   detachedAt?: string
-  created: string
+  createdAt: string
 }
 
 export interface CommentUploadListResponse {

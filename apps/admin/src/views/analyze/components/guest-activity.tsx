@@ -156,7 +156,7 @@ export const GuestActivity = defineComponent({
 
 interface ActivityItemData {
   id: string
-  created: string
+  createdAt: string
   payload: {
     id?: string
     ip: string
@@ -240,8 +240,8 @@ const LikeActivityItem = defineComponent({
               <span>点赞</span>
             </span>
           </div>
-          <time class={styles.activityTime} datetime={props.item.created}>
-            <RelativeTime time={props.item.created} />
+          <time class={styles.activityTime} datetime={props.item.createdAt}>
+            <RelativeTime time={props.item.createdAt} />
           </time>
         </div>
 
@@ -399,8 +399,8 @@ const ReadDurationItem = defineComponent({
               </span>
             )}
           </div>
-          <time class={styles.activityTime} datetime={props.item.created}>
-            <RelativeTime time={props.item.created} />
+          <time class={styles.activityTime} datetime={props.item.createdAt}>
+            <RelativeTime time={props.item.createdAt} />
           </time>
         </div>
 

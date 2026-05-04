@@ -2,9 +2,9 @@ import type { Pager } from './base'
 
 export interface CommentParentPreview {
   id: string
-  author: string
+  author: string | null
   text: string
-  isDeleted?: boolean
+  isDeleted: boolean
 }
 
 export interface CommentReplyWindow {
@@ -17,25 +17,28 @@ export interface CommentReplyWindow {
 }
 
 export interface CommentModel {
-  refType: string
-  state: number
   id: string
+  createdAt: string
+  refType: 'post' | 'note' | 'page' | 'recently'
+  state: number
   author: string
   text: string
   mail?: string
   url?: string
   ip?: string
   agent?: string
-  created: string
-  modified: string
+  pin?: boolean
   avatar?: string
   isWhispers?: boolean
-  parentCommentId?: string | CommentParentPreview | null
+  parentCommentId?: string | null
+  parent?: CommentParentPreview | null
   rootCommentId?: string | null
   replyCount?: number
   latestReplyAt?: string | null
   isDeleted?: boolean
   deletedAt?: string | null
+  editedAt?: string | null
+  anchor?: Record<string, unknown> | null
   replies?: CommentModel[]
   replyWindow?: CommentReplyWindow
   ref?: Record<string, any>

@@ -8,8 +8,8 @@ export enum CronTaskType {
   PushToBaiduSearch = 'cron:push-to-baidu-search',
   PushToBingSearch = 'cron:push-to-bing-search',
   DeleteExpiredJWT = 'cron:delete-expired-jwt',
-  CleanupOrphanImages = 'cron:cleanup-orphan-images',
-  SyncPublishedImagesToS3 = 'cron:sync-published-images-to-s3',
+  RebuildSearchIndex = 'cron:rebuild-search-index',
+  CleanCommentUploads = 'cron:clean-comment-uploads',
 }
 
 export enum CronTaskStatus {

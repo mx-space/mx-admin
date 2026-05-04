@@ -819,11 +819,11 @@ const PostListSection = defineComponent({
                     {post.title}
                   </p>
                   <div class="mt-1 flex items-center gap-2 text-xs text-neutral-400">
-                    <RelativeTime time={post.created} />
-                    {typeof post.count?.read === 'number' && (
+                    <RelativeTime time={post.createdAt} />
+                    {typeof post.readCount === 'number' && (
                       <>
                         <span>·</span>
-                        <span>{post.count.read} 阅读</span>
+                        <span>{post.readCount} 阅读</span>
                       </>
                     )}
                   </div>

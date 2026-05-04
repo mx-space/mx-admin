@@ -84,7 +84,7 @@ export const CommentListItem = defineComponent({
               <span class="shrink-0 text-xs text-neutral-400">回复</span>
             )}
             <span class="ml-auto shrink-0 text-xs text-neutral-400">
-              <RelativeTime time={comment.value.created} />
+              <RelativeTime time={comment.value.createdAt} />
             </span>
           </div>
           <p class="mt-0.5 line-clamp-2 text-sm text-neutral-600 dark:text-neutral-400">

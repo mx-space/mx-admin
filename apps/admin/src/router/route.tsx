@@ -252,24 +252,13 @@ export const routeForMenu: Array<RouteRecordRaw> = [
   },
   {
     path: '/says',
-    name: RouteName.Say,
+    name: RouteName.ListSay,
     meta: {
       title: '说说',
       icon: <CommentsIcon />,
+      query: { page: 1 },
     },
-    component: $RouterView,
-    children: [
-      {
-        path: 'list',
-        name: RouteName.ListSay,
-        meta: {
-          title: '说什么了',
-          query: { page: 1 },
-          icon: <EyeIcon />,
-        },
-        component: () => import('../views/manage-says/list'),
-      },
-    ],
+    component: () => import('../views/manage-says/list'),
   },
   {
     path: '/recently',
@@ -282,24 +271,13 @@ export const routeForMenu: Array<RouteRecordRaw> = [
   },
   {
     path: '/projects',
-    name: RouteName.Project,
+    name: RouteName.ListProject,
     meta: {
       title: '项目',
       icon: <FlaskIcon />,
+      query: { page: 1 },
     },
-    component: $RouterView,
-    children: [
-      {
-        path: 'list',
-        name: RouteName.ListProject,
-        meta: {
-          title: '项目列表',
-          query: { page: 1 },
-          icon: <EyeIcon />,
-        },
-        component: () => import('../views/manage-project/index'),
-      },
-    ],
+    component: () => import('../views/manage-project/index'),
   },
   {
     path: '/friends',

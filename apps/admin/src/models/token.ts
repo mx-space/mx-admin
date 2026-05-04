@@ -1,11 +1,7 @@
 export interface TokenModel {
-  created: string
-
-  token: string
-
-  expired?: Date
-
-  name: string
-
   id: string
+  createdAt: string
+  token: string
+  expired?: Date
+  name: string
 }

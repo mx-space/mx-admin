@@ -13,7 +13,7 @@ import { aiAgentApi } from '~/api/ai-agent'
 export interface SessionMeta {
   id: string
   title?: string
-  updated: string
+  updatedAt: string
   messageCount: number
 }
 
@@ -30,7 +30,7 @@ function toSessionMeta(conv: AgentConversation): SessionMeta {
   return {
     id: conv.id,
     title: conv.title,
-    updated: conv.updated,
+    updatedAt: conv.updatedAt,
     messageCount: conv.messageCount ?? conv.messages?.length ?? 0,
   }
 }

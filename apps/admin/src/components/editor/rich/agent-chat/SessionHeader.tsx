@@ -57,7 +57,8 @@ export const SessionHeader = defineComponent({
 
     const sortedSessions = computed(() =>
       [...props.sessions].sort(
-        (a, b) => new Date(b.updated).getTime() - new Date(a.updated).getTime(),
+        (a, b) =>
+          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
       ),
     )
 
@@ -163,7 +164,7 @@ export const SessionHeader = defineComponent({
                                   {session.title || '未命名对话'}
                                 </span>
                                 <span class="text-xs text-neutral-400">
-                                  {formatRelativeTime(session.updated)}
+                                  {formatRelativeTime(session.updatedAt)}
                                   {' · '}
                                   {session.messageCount} 条消息
                                 </span>

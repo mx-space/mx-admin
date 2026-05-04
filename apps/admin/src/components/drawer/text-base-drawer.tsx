@@ -101,12 +101,6 @@ export const TextBaseDrawer = defineComponent({
             {/* 基础设置 */}
             <SectionTitle icon={SettingsIcon}>基础设置</SectionTitle>
 
-            <SwitchRow
-              label="允许评论"
-              modelValue={props.data.allowComment}
-              onUpdate={(e) => void (props.data.allowComment = e)}
-            />
-
             {!disabledItem.has('date-picker') && (
               <FormField label="自定义创建时间">
                 <NDatePicker

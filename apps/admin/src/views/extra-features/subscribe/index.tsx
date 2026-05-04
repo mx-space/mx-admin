@@ -1,5 +1,4 @@
 import {
-  Download as DownloadIcon,
   Mail as MailIcon,
   MailX as MailXIcon,
   RefreshCw as RefreshIcon,
@@ -80,7 +79,7 @@ const SubscriberRow = defineComponent({
   props: {
     email: { type: String, required: true },
     subscribe: { type: Number, required: true },
-    created: { type: String, required: true },
+    createdAt: { type: String, required: true },
     selected: { type: Boolean, default: false },
     onSelect: { type: Function as PropType<(checked: boolean) => void> },
     onDelete: { type: Function as PropType<() => void>, required: true },
@@ -114,7 +113,7 @@ const SubscriberRow = defineComponent({
         </div>
 
         <div class="w-16 shrink-0 text-right text-sm tabular-nums text-neutral-400 transition-opacity group-hover:opacity-0">
-          <RelativeTime time={props.created} />
+          <RelativeTime time={props.createdAt} />
         </div>
 
         <div class="absolute right-4 opacity-0 transition-opacity group-hover:opacity-100">
@@ -282,7 +281,7 @@ export default defineComponent({
     }
 
     const handleDelete = async (email: string) => {
-      await subscribeApi.unsubscribe({ email })
+      await subscribeApi.unsubscribeBatch({ emails: [email] })
       toast.success('已移除订阅者')
       refetchList()
     }
@@ -322,23 +321,6 @@ export default defineComponent({
       }
     }
 
-    const handleExport = async () => {
-      try {
-        const blob = await subscribeApi.export()
-        const url = window.URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        a.href = url
-        a.download = `subscribers-${new Date().toISOString().slice(0, 10)}.csv`
-        document.body.appendChild(a)
-        a.click()
-        window.URL.revokeObjectURL(url)
-        document.body.removeChild(a)
-        toast.success('导出成功')
-      } catch {
-        toast.error('导出失败')
-      }
-    }
-
     const handleRefresh = () => {
       refetchList()
       refetchStatus()
@@ -347,19 +329,11 @@ export default defineComponent({
     const { setActions } = useLayout()
     watchEffect(() => {
       setActions(
-        <>
-          <HeaderActionButton
-            icon={<RefreshIcon />}
-            onClick={handleRefresh}
-            name="刷新"
-          />
-          <HeaderActionButton
-            icon={<DownloadIcon />}
-            onClick={handleExport}
-            name="导出"
-            variant="info"
-          />
-        </>,
+        <HeaderActionButton
+          icon={<RefreshIcon />}
+          onClick={handleRefresh}
+          name="刷新"
+        />,
       )
     })
 
@@ -514,7 +488,7 @@ export default defineComponent({
                   key={subscriber.id}
                   email={subscriber.email}
                   subscribe={subscriber.subscribe}
-                  created={subscriber.created}
+                  createdAt={subscriber.createdAt}
                   selected={selectedIds.value.has(subscriber.id)}
                   onSelect={(checked: boolean) =>
                     toggleSelect(subscriber.id, checked)

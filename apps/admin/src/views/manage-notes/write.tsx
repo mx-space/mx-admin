@@ -112,7 +112,7 @@ const useNoteTopic = () => {
 
   const fetchTopic = async () => {
     const { data } = await topicsApi.getList({ size: 50 })
-    topics.value = data
+    topics.value = data as unknown as TopicModel[]
   }
 
   return { topics, fetchTopic }
@@ -154,7 +154,6 @@ const NoteWriteView = defineComponent(() => {
     weather: '',
     location: '',
     coordinates: null,
-    allowComment: true,
     isPublished: true,
     id: undefined,
     nid: undefined,
@@ -213,10 +212,14 @@ const NoteWriteView = defineComponent(() => {
     }
     nid.value = noteData.nid
 
-    const created = new Date((noteData as any).created)
-    defaultTitle.value = `记录 ${created.getFullYear()} 年第 ${getDayOfYear(created)} 天`
+    const createdAt = new Date((noteData as any).createdAt)
+    defaultTitle.value = `记录 ${createdAt.getFullYear()} 年第 ${getDayOfYear(createdAt)} 天`
 
     parsePayloadIntoReactiveData(noteData as NoteModel)
+    // The reactive form keeps `created` as the canonical timestamp slot
+    // shared with WriteBaseType, but the API now returns the timestamp
+    // under `createdAt` after the Postgres migration.
+    data.created = (noteData as any).createdAt
     data.contentFormat = (noteData as any).contentFormat || 'markdown'
     data.content = (noteData as any).content || ''
   }

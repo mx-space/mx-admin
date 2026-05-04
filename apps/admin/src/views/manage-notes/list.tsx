@@ -40,10 +40,10 @@ import { HeaderActionButton } from '../../components/button/header-action-button
 import { useLayout } from '../../layouts/content'
 
 const buildNotePublicPath = (
-  note: Pick<NoteModel, 'nid' | 'slug' | 'created'>,
+  note: Pick<NoteModel, 'nid' | 'slug' | 'createdAt'>,
 ) => {
   if (note.slug) {
-    const date = new Date(note.created)
+    const date = new Date(note.createdAt)
     return `/notes/${date.getUTCFullYear()}/${date.getUTCMonth() + 1}/${date.getUTCDate()}/${note.slug}`
   }
 
@@ -113,17 +113,17 @@ const NoteItem = defineComponent({
             </span>
             <span class="flex items-center gap-0.5 text-xs text-neutral-400 dark:text-neutral-500">
               <BookIcon class="h-2.5 w-2.5" />
-              {formatNumber(row.value.count?.read || 0)}
+              {formatNumber(row.value.readCount || 0)}
             </span>
             <span class="flex items-center gap-0.5 text-xs text-neutral-400 dark:text-neutral-500">
               <HeartIcon class="h-2.5 w-2.5" />
-              {formatNumber(row.value.count?.like || 0)}
+              {formatNumber(row.value.likeCount || 0)}
             </span>
             <span class="text-xs text-neutral-400 dark:text-neutral-500">
               ·
             </span>
             <RelativeTime
-              time={row.value.created}
+              time={row.value.createdAt}
               class="text-xs text-neutral-400 dark:text-neutral-500"
             />
             <StatusToggle
@@ -226,7 +226,7 @@ export const ManageNoteListView = defineComponent({
           page: params.page,
           size: params.size,
           select:
-            'title _id nid id slug created modified mood weather publicAt bookmark coordinates location count meta isPublished',
+            'title nid id slug createdAt modifiedAt mood weather publicAt bookmark coordinates location readCount likeCount meta isPublished',
           sortBy: params.sortBy || undefined,
           sortOrder: params.sortOrder || undefined,
           db_query: params.filters?.dbQuery,
@@ -347,8 +347,9 @@ export const ManageNoteListView = defineComponent({
             ],
 
             render(row) {
-              const isSecret =
-                row.publicAt && +new Date(row.publicAt) - Date.now() > 0
+              const isSecret = Boolean(
+                row.publicAt && +new Date(row.publicAt) - Date.now() > 0,
+              )
               const isUnpublished = !row.isPublished
               return (
                 <TableTitleLink
@@ -456,13 +457,13 @@ export const ManageNoteListView = defineComponent({
 
           {
             title: () => <BookIcon class="h-4 w-4" />,
-            key: 'count.read',
+            key: 'readCount',
             width: 50,
             ellipsis: {
               tooltip: true,
             },
             render(row) {
-              return formatNumber(row.count?.read || 0)
+              return formatNumber(row.readCount || 0)
             },
           },
           {
@@ -471,30 +472,30 @@ export const ManageNoteListView = defineComponent({
             ellipsis: {
               tooltip: true,
             },
-            key: 'count.like',
+            key: 'likeCount',
             render(row) {
-              return formatNumber(row.count?.like || 0)
+              return formatNumber(row.likeCount || 0)
             },
           },
 
           {
             title: '创建于',
-            key: 'created',
+            key: 'createdAt',
             sortOrder: 'descend',
             sorter: 'default',
             width: 200,
             render(row) {
-              return <RelativeTime time={row.created} />
+              return <RelativeTime time={row.createdAt} />
             },
           },
           {
             title: '修改于',
-            key: 'modified',
+            key: 'modifiedAt',
             sorter: 'default',
             sortOrder: false,
             width: 200,
             render(row) {
-              return <RelativeTime time={row.modified} />
+              return <RelativeTime time={row.modifiedAt ?? row.createdAt} />
             },
           },
           {

@@ -1,10 +1,11 @@
 import type { Pager } from './base'
 
 export interface SayModel {
-  id?: string
+  id: string
+  createdAt: string
   text: string
-  source?: string
-  author?: string
+  source: string | null
+  author: string | null
 }
 
 export interface SayResponse {

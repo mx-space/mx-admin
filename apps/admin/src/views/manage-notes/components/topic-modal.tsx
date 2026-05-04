@@ -132,7 +132,7 @@ export const TopicEditModal = defineComponent({
 
     const updateMutation = useMutation({
       mutationFn: ({ id, data }: { id: string; data: Partial<TopicModel> }) =>
-        topicsApi.update(id, data),
+        topicsApi.update(id, data as any),
       onSuccess: (data) => {
         toast.success('修改成功')
         props.onSubmit?.(data)

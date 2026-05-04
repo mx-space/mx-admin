@@ -361,13 +361,8 @@ const ProjectDetailView = defineComponent({
             )}
             <div class="mt-2 flex flex-wrap items-center gap-3 text-xs text-neutral-400">
               <span class="flex items-center gap-1">
-                创建于 <RelativeTime time={props.project.created} />
+                创建于 <RelativeTime time={props.project.createdAt} />
               </span>
-              {props.project.modified && (
-                <span class="flex items-center gap-1">
-                  更新于 <RelativeTime time={props.project.modified} />
-                </span>
-              )}
             </div>
           </div>
         </div>
@@ -390,7 +385,7 @@ const ProjectDetailView = defineComponent({
                 {links.map(({ url, icon: Icon, label }) => (
                   <a
                     key={label}
-                    href={url}
+                    href={url ?? undefined}
                     target="_blank"
                     rel="noopener noreferrer"
                     class="inline-flex items-center gap-1.5 rounded-md bg-neutral-100 px-3 py-1.5 text-sm text-neutral-700 transition-colors hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"

@@ -688,7 +688,7 @@ const TokenListPanel = defineComponent(() => {
   }
 
   const TokenItem = ({ token: tokenData }: { token: TokenModel }) => {
-    const { id, name, token, created, expired } = tokenData
+    const { id, name, token, createdAt, expired } = tokenData
     const isVisible = visibleTokens.value.has(id)
 
     return (
@@ -750,7 +750,7 @@ const TokenListPanel = defineComponent(() => {
 
         <div class="flex flex-wrap items-center gap-3 text-xs text-neutral-500 dark:text-neutral-400">
           <span>
-            创建于 <RelativeTime time={created} />
+            创建于 <RelativeTime time={createdAt} />
           </span>
           <span>
             {expired ? (

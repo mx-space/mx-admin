@@ -159,7 +159,13 @@ export function useSnippetEditor(selectedId: Ref<string | null>) {
     const rawText = handleRawText()
     if (rawText === null) return null
 
-    const omitData = omit(editData.value, ['_id', 'id', 'created', 'data'])
+    const omitData = omit(editData.value, [
+      'id',
+      'createdAt',
+      'updatedAt',
+      'compiledCode',
+      'builtIn',
+    ])
     const finalData = { ...omitData, raw: rawText }
 
     if (!finalData.metatype) {
@@ -169,7 +175,7 @@ export function useSnippetEditor(selectedId: Ref<string | null>) {
     try {
       let result: SnippetModel
       if (selectedId.value) {
-        result = await snippetsApi.update(selectedId.value, finalData)
+        result = await snippetsApi.update(selectedId.value, finalData as any)
         toast.success('更新成功')
       } else {
         result = await snippetsApi.create(finalData as any)

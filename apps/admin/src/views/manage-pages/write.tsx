@@ -95,7 +95,6 @@ const PageWriteView = defineComponent(() => {
     order: 0,
     slug: '',
     subtitle: '',
-    allowComment: true,
     id: undefined,
     images: [],
     meta: undefined,

@@ -13,7 +13,7 @@ import {
 import { NButton, NPopconfirm, NSkeleton, NTooltip } from 'naive-ui'
 import { computed, defineComponent, onMounted, ref, Transition } from 'vue'
 import { toast } from 'vue-sonner'
-import type { RecentlyModel, RecentlyRefTypes } from '~/models/recently'
+import type { RecentlyModel } from '~/models/recently'
 import type { PropType } from 'vue'
 
 import { recentlyApi } from '~/api'
@@ -21,19 +21,22 @@ import { HeaderActionButton } from '~/components/button/header-action-button'
 import { useShorthand } from '~/components/shorthand'
 import { RelativeTime } from '~/components/time/relative-time'
 import { useLayout } from '~/layouts/content'
+import { RecentlyRefTypes } from '~/models/recently'
 
 import styles from './index.module.css'
 
 const RefTypeIcons: Record<RecentlyRefTypes, typeof ArticleIcon> = {
-  Post: ArticleIcon,
-  Note: NoteIcon,
-  Page: PageIcon,
+  [RecentlyRefTypes.Post]: ArticleIcon,
+  [RecentlyRefTypes.Note]: NoteIcon,
+  [RecentlyRefTypes.Page]: PageIcon,
+  [RecentlyRefTypes.Recently]: NoteIcon,
 }
 
 const RefTypeLabels: Record<RecentlyRefTypes, string> = {
-  Post: '文章',
-  Note: '笔记',
-  Page: '页面',
+  [RecentlyRefTypes.Post]: '文章',
+  [RecentlyRefTypes.Note]: '笔记',
+  [RecentlyRefTypes.Page]: '页面',
+  [RecentlyRefTypes.Recently]: '速记',
 }
 
 const RecentlyItem = defineComponent({
@@ -91,17 +94,17 @@ const RecentlyItem = defineComponent({
           <div class={styles.meta}>
             <div class={styles.timeInfo}>
               <time
-                datetime={props.item.created}
+                datetime={props.item.createdAt}
                 class={styles.time}
                 aria-label="创建时间"
               >
-                <RelativeTime time={props.item.created} />
+                <RelativeTime time={props.item.createdAt} />
               </time>
-              {props.item.modified && (
+              {props.item.modifiedAt && (
                 <span class={styles.modified} aria-label="修改时间">
                   <span aria-hidden="true">·</span>
                   <span>编辑于</span>
-                  <RelativeTime time={props.item.modified} />
+                  <RelativeTime time={props.item.modifiedAt} />
                 </span>
               )}
             </div>

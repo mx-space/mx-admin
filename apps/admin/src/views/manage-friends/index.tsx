@@ -69,7 +69,7 @@ export default defineComponent({
 
     const resetEditData: () => Omit<
       LinkModel,
-      'id' | 'created' | 'hide' | 'email'
+      'id' | 'createdAt' | 'hide' | 'email'
     > & {
       id: null | string
     } = () => ({
@@ -98,7 +98,7 @@ export default defineComponent({
         if (id) {
           return await linksApi.update(
             id,
-            omit<any, keyof LinkModel>(editData, ['id', 'created', 'hide']),
+            omit<any, keyof LinkModel>(editData, ['id', 'createdAt', 'hide']),
           )
         } else {
           return await linksApi.create(editData as any)
@@ -379,10 +379,10 @@ export default defineComponent({
               },
               {
                 title: '结识时间',
-                key: 'created',
+                key: 'createdAt',
                 width: 80,
                 render(row) {
-                  return <RelativeTime time={row.created} />
+                  return <RelativeTime time={row.createdAt} />
                 },
               },
               {

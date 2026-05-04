@@ -1,7 +1,8 @@
 export enum RecentlyRefTypes {
-  Post = 'Post',
-  Note = 'Note',
-  Page = 'Page',
+  Post = 'post',
+  Note = 'note',
+  Page = 'page',
+  Recently = 'recently',
 }
 
 export interface RecentlyRefType {
@@ -12,8 +13,8 @@ export interface RecentlyRefType {
 export interface RecentlyModel {
   id: string
   content: string
-  created: string
-  modified?: string
+  createdAt: string
+  modifiedAt: string | null
 
   ref?: RecentlyRefType & { [key: string]: any }
   refId?: string

@@ -146,7 +146,6 @@ const PostWriteView = defineComponent(() => {
     copyright: true,
     tags: [],
     summary: '',
-    allowComment: true,
     id: undefined,
     images: [],
     meta: undefined,
@@ -199,6 +198,9 @@ const PostWriteView = defineComponent(() => {
     const postData = payload as any
     postData.relatedId = postData.related?.map((r: any) => r.id) || []
     postListState.append(postData.related)
+    // The reactive form keeps `pin` as a boolean toggle, but the API now
+    // returns the timestamp under `pinAt` after the Postgres migration.
+    postData.pin = !!postData.pinAt
     parsePayloadIntoReactiveData(postData as PostModel)
     data.contentFormat = postData.contentFormat || 'markdown'
     data.content = postData.content || ''

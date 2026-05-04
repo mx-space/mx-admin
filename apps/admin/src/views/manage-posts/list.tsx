@@ -72,7 +72,7 @@ const PostItem = defineComponent({
       <div class="flex items-center gap-2 border-b border-neutral-200 px-3 py-2.5 transition-colors last:border-b-0 hover:bg-neutral-50 dark:border-neutral-800 dark:hover:bg-neutral-900/50">
         <div class="min-w-0 flex-1">
           <div class="flex items-center gap-1.5">
-            {row.value.pin && (
+            {row.value.pinAt && (
               <PhPushPin class="h-3 w-3 shrink-0 text-orange-400" />
             )}
             <RouterLink
@@ -97,17 +97,17 @@ const PostItem = defineComponent({
             )}
             <span class="flex items-center gap-0.5 text-xs text-neutral-400 dark:text-neutral-500">
               <BookIcon class="h-2.5 w-2.5" />
-              {row.value.count?.read || 0}
+              {row.value.readCount || 0}
             </span>
             <span class="flex items-center gap-0.5 text-xs text-neutral-400 dark:text-neutral-500">
               <ThumbsUpIcon class="h-2.5 w-2.5" />
-              {row.value.count?.like || 0}
+              {row.value.likeCount || 0}
             </span>
             <span class="text-xs text-neutral-400 dark:text-neutral-500">
               ·
             </span>
             <RelativeTime
-              time={row.value.created}
+              time={row.value.createdAt}
               class="text-xs text-neutral-400 dark:text-neutral-500"
             />
             <StatusToggle
@@ -204,7 +204,7 @@ export const ManagePostListView = defineComponent({
           page: params.page,
           size: params.size,
           select:
-            'title _id id created modified slug categoryId copyright tags count pin meta isPublished',
+            'title id createdAt modifiedAt slug categoryId copyright tags readCount likeCount pinAt meta isPublished',
           categoryIds: params.filters?.categoryIds,
           ...(params.sortBy
             ? {
@@ -336,7 +336,7 @@ export const ManagePostListView = defineComponent({
             render(row) {
               return (
                 <div class={'flex flex-grow items-center space-x-2'}>
-                  {row.pin && (
+                  {row.pinAt && (
                     <NPopover>
                       {{
                         trigger() {
@@ -347,11 +347,14 @@ export const ManagePostListView = defineComponent({
                           )
                         },
                         default() {
-                          if (!row.pin) return null
+                          if (!row.pinAt) return null
                           return (
                             <span>
                               置顶于{' '}
-                              {parseDate(row.pin, 'yyyy 年 M 月 d 日 HH:mm:ss')}
+                              {parseDate(
+                                row.pinAt,
+                                'yyyy 年 M 月 d 日 HH:mm:ss',
+                              )}
                             </span>
                           )
                         },
@@ -421,38 +424,38 @@ export const ManagePostListView = defineComponent({
           },
           {
             title: () => <BookIcon class="h-4 w-4" />,
-            key: 'count.read',
+            key: 'readCount',
             width: 50,
             render(row) {
-              return row.count?.read || 0
+              return row.readCount || 0
             },
           },
           {
             title: () => <ThumbsUpIcon class="h-4 w-4" />,
             width: 50,
-            key: 'count.like',
+            key: 'likeCount',
             render(row) {
-              return row.count?.like || 0
+              return row.likeCount || 0
             },
           },
           {
             title: '创建于',
             width: 100,
-            key: 'created',
+            key: 'createdAt',
             sortOrder: 'descend',
             sorter: 'default',
             render(row) {
-              return <RelativeTime time={row.created} />
+              return <RelativeTime time={row.createdAt} />
             },
           },
           {
             title: '修改于',
-            key: 'modified',
+            key: 'modifiedAt',
             sorter: 'default',
             sortOrder: false,
             width: 100,
             render(row) {
-              return <RelativeTime time={row.modified} />
+              return <RelativeTime time={row.modifiedAt ?? row.createdAt} />
             },
           },
           {

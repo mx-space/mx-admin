@@ -172,10 +172,15 @@ const RankingListItem = defineComponent({
   setup(props) {
     const isTop3 = computed(() => props.position <= 3)
     const percentage = computed(() => (props.item.count / props.maxCount) * 100)
+    const hasRef = computed(() => !!props.item.ref?.id)
+    const title = computed(
+      () => (props.item.ref as any)?.title || '已删除的文章',
+    )
 
     const handleOpenArticle = () => {
+      if (!hasRef.value) return
       apiClient
-        .get<{ data: string }>(`/helper/url-builder/${props.item.ref.id}`)
+        .get<{ data: string }>(`/helper/url-builder/${props.item.ref!.id}`)
         .then(({ data: url }) => {
           window.open(url)
         })
@@ -201,12 +206,15 @@ const RankingListItem = defineComponent({
         <div class={styles.rankingContent}>
           <button
             type="button"
-            class={styles.rankingTitle}
+            class={[styles.rankingTitle, !hasRef.value && 'cursor-default']}
             onClick={handleOpenArticle}
-            aria-label={`查看文章: ${(props.item.ref as any).title}`}
+            aria-label={hasRef.value ? `查看文章: ${title.value}` : title.value}
+            disabled={!hasRef.value}
           >
-            {(props.item.ref as any).title}
-            <ExternalLinkIcon class="ml-1 inline size-3 text-neutral-400 opacity-0 transition-opacity group-hover:opacity-100" />
+            {title.value}
+            {hasRef.value && (
+              <ExternalLinkIcon class="ml-1 inline size-3 text-neutral-400 opacity-0 transition-opacity group-hover:opacity-100" />
+            )}
           </button>
 
           <div class={styles.rankingBar}>

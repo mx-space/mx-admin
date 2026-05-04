@@ -1,8 +1,19 @@
-import type { LinkModel, LinkState, PaginateResult } from '@mx-space/api-client'
+import type { LinkState, LinkType, PaginateResult } from '@mx-space/api-client'
 
-export { LinkType, LinkState } from '@mx-space/api-client'
+export { LinkState, LinkType } from '@mx-space/api-client'
 
-export { LinkModel }
+export interface LinkModel {
+  id: string
+  createdAt: string
+  name: string
+  url: string
+  avatar: string
+  description?: string
+  type: LinkType
+  state: LinkState
+  hide: boolean
+  email: string
+}
 
 export type LinkResponse = PaginateResult<LinkModel>
 

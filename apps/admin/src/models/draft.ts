@@ -1,9 +1,9 @@
 import type { Image, Pager } from './base'
 
 export enum DraftRefType {
-  Post = 'posts',
-  Note = 'notes',
-  Page = 'pages',
+  Post = 'post',
+  Note = 'note',
+  Page = 'page',
 }
 
 export interface DraftHistoryModel {
@@ -28,8 +28,8 @@ export interface DraftModel {
   meta?: Record<string, any>
   typeSpecificData?: Record<string, any>
   version: number
-  updated: string
-  created: string
+  updatedAt: string
+  createdAt: string
   history: DraftHistoryModel[]
 }
 

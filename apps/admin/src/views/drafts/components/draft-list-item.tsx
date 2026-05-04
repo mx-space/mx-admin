@@ -96,7 +96,7 @@ export const DraftListItem = defineComponent({
           </div>
 
           <div class="flex-shrink-0 text-xs text-neutral-400 dark:text-neutral-500">
-            <RelativeTime time={props.data.updated} />
+            <RelativeTime time={props.data.updatedAt} />
           </div>
         </div>
       </div>

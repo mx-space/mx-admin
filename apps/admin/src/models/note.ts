@@ -2,34 +2,35 @@ import type { TopicModel } from '@mx-space/api-client'
 
 export interface NoteModel {
   id: string
-  allowComment: boolean
-  count: {
-    read: number
-    like: number
-  }
-  title: string
-  text: string
-  contentFormat?: 'markdown' | 'lexical'
-  content?: string
-  mood?: string
-  weather?: string
-  bookmark?: boolean
-  created: string
-  modified: string
-  publicAt?: Date
-  password?: string | null
   nid: number
-  slug?: string
-  hide: boolean
+  title: string
+  slug?: string | null
+  text: string
+  content?: string | null
+  contentFormat?: 'markdown' | 'lexical'
+  images?: any[] | null
+  meta?: Record<string, any> | null
 
-  location?: string
+  isPublished: boolean
+  hasPassword?: boolean
+  password?: string | null
+  publicAt?: string | Date | null
 
-  coordinates?: Coordinate
+  mood?: string | null
+  weather?: string | null
+  bookmark: boolean
 
-  meta?: any
-  isPublished?: boolean
-  topicId?: string
-  topic?: TopicModel
+  coordinates?: Coordinate | null
+  location?: string | null
+
+  readCount: number
+  likeCount: number
+
+  topicId?: string | null
+  topic?: TopicModel | null
+
+  createdAt: string
+  modifiedAt: string | null
 }
 
 export interface Coordinate {

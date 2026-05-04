@@ -34,26 +34,19 @@ import { useUserStore } from '~/stores/user'
 
 import { CommentMarkdownRender } from '../markdown-render'
 
-const getParentCommentPreview = (parent: CommentModel['parentCommentId']) => {
-  if (!parent || typeof parent === 'string') {
-    return null
-  }
-  return parent
-}
-
 const getReferenceLink = (row: CommentModel) => {
   const ref = (row as any).ref
   switch (row.refType) {
-    case 'posts': {
+    case 'post': {
       return `${WEB_URL}/posts/${ref.category.slug}/${ref.slug}`
     }
-    case 'notes': {
+    case 'note': {
       return `${WEB_URL}/notes/${ref.nid}`
     }
-    case 'pages': {
+    case 'page': {
       return `${WEB_URL}/${ref.slug}`
     }
-    case 'recentlies': {
+    case 'recently': {
       return `${WEB_URL}/thinking/${ref.id}`
     }
     default:
@@ -114,9 +107,7 @@ export const CommentDetail = defineComponent({
     const commentBody = computed(() =>
       props.comment.isDeleted ? '该评论已删除' : props.comment.text,
     )
-    const parentComment = computed(() =>
-      getParentCommentPreview(props.comment.parentCommentId),
-    )
+    const parentComment = computed(() => props.comment.parent ?? null)
     const parentCommentBody = computed(() => {
       if (!parentComment.value) {
         return ''
@@ -335,7 +326,9 @@ export const CommentDetail = defineComponent({
                     )}
                   </div>
                   <div class="text-xs text-neutral-500">
-                    <RelativeTime time={props.comment.created} />
+                    <RelativeTime
+                      time={props.comment.editedAt ?? props.comment.createdAt}
+                    />
                   </div>
                 </div>
               </div>

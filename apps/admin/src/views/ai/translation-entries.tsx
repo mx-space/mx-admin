@@ -190,9 +190,9 @@ export default defineComponent({
       },
       {
         title: '创建时间',
-        key: 'created',
+        key: 'createdAt',
         width: 130,
-        render: (row) => <RelativeTime time={row.created} />,
+        render: (row) => <RelativeTime time={row.createdAt} />,
       },
       {
         title: '',

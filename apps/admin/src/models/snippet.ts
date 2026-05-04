@@ -1,5 +1,3 @@
-import { BaseModel } from './base'
-
 export const defaultServerlessFunction = `
 export default async function handler(ctx: Context) {
   return 'pong';
@@ -20,22 +18,28 @@ export enum SnippetTypeToLanguage {
   text = 'markdown',
   yaml = 'yaml',
 }
-export class SnippetModel extends BaseModel {
+
+export class SnippetModel {
+  id = ''
+  createdAt = ''
+  updatedAt: string | null = null
+
   type = SnippetType.JSON
   private = false
   raw = '{}'
   name = ''
   reference = 'root'
-  comment?: string
-  metatype?: string
-  schema?: string
+  comment?: string | null
+  metatype?: string | null
+  schema?: string | null
 
   // for serverless function
   enable?: boolean
-  method?: string
-  secret?: Record<string, any>
+  method?: string | null
+  secret?: Record<string, any> | string | null
 
-  customPath?: string
+  customPath?: string | null
 
   builtIn = false
+  compiledCode?: string | null
 }

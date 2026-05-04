@@ -422,7 +422,7 @@ const OrphanFileCard = defineComponent({
             {props.file.fileName}
           </p>
           <p class="mb-2 text-xs text-white/60">
-            {formatDate(props.file.created)}
+            {formatDate(props.file.createdAt)}
           </p>
           <div class="flex gap-1">
             <NTooltip>

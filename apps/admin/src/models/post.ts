@@ -1,4 +1,4 @@
-import type { Count, Image, Pager } from './base'
+import type { Image, Pager } from './base'
 
 export interface PostResponse {
   data: PostModel[]
@@ -6,33 +6,32 @@ export interface PostResponse {
 }
 
 export interface PostModel {
-  commentsIndex: number
-  allowComment: boolean
   copyright: boolean
   tags: string[]
-  count: Count
+  readCount: number
+  likeCount: number
   id: string
   text: string
   title: string
   slug: string
   categoryId: string
   images: Image[]
-  modified: string
-  created: string
+  modifiedAt: string | null
+  createdAt: string
   category: Category
   contentFormat?: 'markdown' | 'lexical'
   content?: string
-  summary?: string
-  pin?: string | null
-  pinOrder?: number
+  summary?: string | null
+  pinAt?: string | null
+  pinOrder?: number | null
   related?: Pick<
     PostModel,
     | 'id'
     | 'title'
     | 'slug'
     | 'categoryId'
-    | 'modified'
-    | 'created'
+    | 'modifiedAt'
+    | 'createdAt'
     | 'category'
     | 'summary'
   >[]
@@ -42,10 +41,7 @@ export interface PostModel {
 
 export interface Category {
   type: number
-  count: number
   id: string
   name: string
   slug: string
-  created: string
-  categoryId: string
 }

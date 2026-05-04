@@ -11,7 +11,7 @@ import { useAiTaskQueue } from '~/components/ai-task-queue/use-ai-task-queue'
 import { queryKeys } from '~/hooks/queries/keys'
 
 interface NoteWithoutSlug {
-  _id: string
+  id: string
   title: string
   nid: number
 }

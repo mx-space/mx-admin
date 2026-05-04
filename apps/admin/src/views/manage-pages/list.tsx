@@ -67,7 +67,7 @@ const PageItem = defineComponent({
 
           <div class="flex shrink-0 items-center">
             <RelativeTime
-              time={row.created}
+              time={row.createdAt}
               class="text-xs text-neutral-400 group-hover:hidden dark:text-neutral-500"
             />
             <div class="hidden items-center gap-1 group-hover:flex">
@@ -155,7 +155,7 @@ export const ManagePageListView = defineComponent({
         pagesApi.getList({
           page: 1,
           size: 50,
-          select: 'title subtitle _id id created modified slug',
+          select: 'title subtitle id createdAt modifiedAt slug',
         }),
     })
 

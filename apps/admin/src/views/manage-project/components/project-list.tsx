@@ -148,7 +148,7 @@ const ProjectListItem = defineComponent({
             </p>
           )}
           <div class="mt-1 text-xs text-neutral-400">
-            <RelativeTime time={props.data.created} />
+            <RelativeTime time={props.data.createdAt} />
           </div>
         </div>
       </div>

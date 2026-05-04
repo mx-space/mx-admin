@@ -263,7 +263,7 @@ const CommentImageCard = defineComponent({
               ? `→ ${props.file.refType}/${props.file.refId}`
               : '未绑定'}
           </div>
-          <div class="text-neutral-400">{formatDate(props.file.created)}</div>
+          <div class="text-neutral-400">{formatDate(props.file.createdAt)}</div>
         </div>
 
         <div class="flex border-t border-neutral-200 dark:border-neutral-800">

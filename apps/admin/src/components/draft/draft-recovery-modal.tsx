@@ -156,7 +156,7 @@ export const DraftRecoveryModal = defineComponent({
       list.push({
         version: 'current',
         title: props.draft.title,
-        savedAt: props.draft.updated,
+        savedAt: props.draft.updatedAt,
         isCurrent: true,
       })
 

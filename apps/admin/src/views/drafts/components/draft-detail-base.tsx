@@ -820,7 +820,7 @@ export const DraftDetailBase = defineComponent({
                 <span>·</span>
                 <span>v{props.draft.version}</span>
                 <span>·</span>
-                <RelativeTime time={props.draft.updated} />
+                <RelativeTime time={props.draft.updatedAt} />
               </div>
             </div>
           </div>

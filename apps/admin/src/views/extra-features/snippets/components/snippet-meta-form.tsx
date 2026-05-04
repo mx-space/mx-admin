@@ -267,7 +267,11 @@ export const SnippetMetaForm = defineComponent({
               key={props.data.id}
               plainKeyInput
               onChange={(kv) => updateField('secret', kv)}
-              value={props.data.secret || {}}
+              value={
+                (typeof props.data.secret === 'object' && props.data.secret
+                  ? props.data.secret
+                  : {}) as Record<string, string | number | boolean>
+              }
             />
           </CollapsibleSection>
         )}

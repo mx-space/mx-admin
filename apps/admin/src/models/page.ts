@@ -6,9 +6,8 @@ export enum EnumPageType {
   frame = 'frame',
 }
 export interface PageModel {
-  created: string
-  modified: string
-  allowComment: boolean
+  createdAt: string
+  modifiedAt: string | null
   id: string
   /** Slug */
   slug: string

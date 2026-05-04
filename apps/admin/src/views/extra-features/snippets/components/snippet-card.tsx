@@ -222,9 +222,9 @@ export const SnippetCard = defineComponent({
               </span>
             )}
 
-            {snippet.created && (
+            {snippet.createdAt && (
               <RelativeTime
-                time={snippet.created}
+                time={snippet.createdAt}
                 class="ml-auto flex-shrink-0"
               />
             )}

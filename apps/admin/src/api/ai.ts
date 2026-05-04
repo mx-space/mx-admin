@@ -270,7 +270,7 @@ export type TranslationEntryKeyPath =
 
 export interface TranslationEntry {
   id: string
-  created: string
+  createdAt: string
   keyPath: TranslationEntryKeyPath
   lang: string
   keyType: 'entity' | 'dict'
@@ -494,7 +494,7 @@ export const aiApi = {
   getSlugBackfillStatus: () =>
     request.get<{
       count: number
-      notes: Array<{ _id: string; title: string; nid: number }>
+      notes: Array<{ id: string; title: string; nid: number }>
     }>('/ai/writer/backfill-slugs/status'),
 
   createSlugBackfillTask: () =>

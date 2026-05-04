@@ -1,16 +1,11 @@
+import type { UA } from '~/models/analyze'
 import type { PaginateResult } from '~/models/base'
 
 import { request } from '~/utils/request'
 
-export interface AnalyzeRecord {
-  id: string
-  ip: string
-  path: string
-  ua: string
-  country?: string
-  region?: string
-  city?: string
-  created: string
+export type AnalyzeRecord = UA.Root & {
+  country?: string | null
+  referer?: string | null
 }
 
 export interface IPAggregate {

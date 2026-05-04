@@ -6,13 +6,12 @@ export enum CategoryType {
 }
 
 export interface CategoryModel {
+  id: string
+  createdAt: string
   type: CategoryType
   count: number
-  id: string
-  created: string
   slug: string
   name: string
-  modified: string
 }
 
 export interface CategoryResponse {
@@ -25,7 +24,7 @@ export type CategoryWithChildrenModel = CategoryModel & {
 
 export type PickedPostModelInCategoryChildren = Pick<
   PostModel,
-  'id' | 'title' | 'slug' | 'modified' | 'created'
+  'id' | 'title' | 'slug' | 'modifiedAt' | 'createdAt'
 >
 
 export interface TagModel {

@@ -5,7 +5,6 @@ export type ContentFormat = 'markdown' | 'lexical'
 export type WriteBaseType = {
   title: string
   text: string
-  allowComment: boolean
   contentFormat?: ContentFormat
   content?: string
 

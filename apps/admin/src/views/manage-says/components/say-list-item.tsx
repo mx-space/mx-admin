@@ -8,10 +8,7 @@ import type { PropType } from 'vue'
 import { saysApi } from '~/api/says'
 import { RelativeTime } from '~/components/time/relative-time'
 
-export interface SayWithMeta extends SayModel {
-  created?: string
-  modified?: string
-}
+export type SayWithMeta = SayModel
 
 export const SayListItem = defineComponent({
   name: 'SayListItem',
@@ -57,9 +54,9 @@ export const SayListItem = defineComponent({
                   —— {props.say.source}
                 </span>
               )}
-              {props.say.created && (
+              {props.say.createdAt && (
                 <RelativeTime
-                  time={props.say.created}
+                  time={props.say.createdAt}
                   class="text-neutral-400 dark:text-neutral-500"
                 />
               )}

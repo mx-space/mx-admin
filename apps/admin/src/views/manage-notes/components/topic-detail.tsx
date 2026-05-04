@@ -51,7 +51,9 @@ export const TopicDetailDrawer = defineComponent({
     const router = useRouter()
 
     const topic = ref<TopicModel | null>(null)
-    const notes = ref<Pick<NoteModel, 'id' | 'title' | 'nid' | 'created'>[]>([])
+    const notes = ref<Pick<NoteModel, 'id' | 'title' | 'nid' | 'createdAt'>[]>(
+      [],
+    )
     const notePagination = ref<Pager>()
     const loadingTopic = ref(false)
     const loadingNotes = ref(false)
@@ -348,7 +350,7 @@ const NoteListItem = defineComponent({
   props: {
     note: {
       type: Object as PropType<
-        Pick<NoteModel, 'id' | 'title' | 'nid' | 'created'>
+        Pick<NoteModel, 'id' | 'title' | 'nid' | 'createdAt'>
       >,
       required: true,
     },
@@ -378,7 +380,7 @@ const NoteListItem = defineComponent({
             </span>
           </div>
           <div class="mt-0.5 text-xs text-neutral-400">
-            <RelativeTime time={props.note.created} />
+            <RelativeTime time={props.note.createdAt} />
           </div>
         </div>
 

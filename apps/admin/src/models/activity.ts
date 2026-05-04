@@ -2,7 +2,7 @@ export interface ActivityReadDurationType {
   id: string
   type: number
   payload: RoomPayload
-  created: string
+  createdAt: string
   refId: string
 }
 export interface RoomPayload {

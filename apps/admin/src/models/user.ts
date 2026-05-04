@@ -12,9 +12,7 @@ export interface UserModel {
   image?: string
   handle?: string
   displayUsername?: string
-  created?: string | Date
-  modified?: string | Date
-  v?: number
+  createdAt?: string | Date
   lastLoginTime?: string
   lastLoginIp?: string
   avatar?: string

@@ -7,8 +7,8 @@ export interface AgentConversation {
   title?: string
   model: string
   providerId: string
-  created: string
-  updated: string
+  createdAt: string
+  updatedAt: string
   messageCount: number
   messages?: Record<string, unknown>[]
   reviewState?: Record<string, unknown>
