@@ -23,7 +23,7 @@ import {
 import { useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
 import type { ProviderGroup } from '@haklex/rich-agent-chat'
-import type { TopicModel } from '@mx-space/api-client'
+import type { TopicModel } from '~/models/topic'
 import type { ProviderModelsResponse } from '~/api/ai'
 import type { CreateNoteData } from '~/api/notes'
 import type { MetaFieldsSchema } from '~/components/editor/write-editor'

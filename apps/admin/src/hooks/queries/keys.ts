@@ -253,4 +253,12 @@ export const queryKeys = {
       [...queryKeys.enrichment.lists(), params] as const,
     providers: () => [...queryKeys.enrichment.all, 'providers'] as const,
   },
+
+  // === 搜索索引 ===
+  searchIndex: {
+    all: ['searchIndex'] as const,
+    lists: () => [...queryKeys.searchIndex.all, 'list'] as const,
+    list: (params?: object) =>
+      [...queryKeys.searchIndex.lists(), params] as const,
+  },
 }

@@ -49,6 +49,7 @@ export enum RouteName {
 
   Maintain = 'maintain',
   Enrichment = 'enrichment',
+  SearchIndex = 'search-index',
   Other = 'other',
   Reader = 'reader',
   Draft = 'draft',

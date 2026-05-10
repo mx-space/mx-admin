@@ -107,9 +107,6 @@ importers:
       '@mx-admin/rich-react':
         specifier: workspace:*
         version: link:../../packages/rich-react
-      '@mx-space/api-client':
-        specifier: 1.21.2
-        version: 1.21.2
       '@pierre/diffs':
         specifier: 1.1.3
         version: 1.1.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -1859,10 +1856,6 @@ packages:
 
   '@mermaid-js/parser@1.1.0':
     resolution: {integrity: sha512-gxK9ZX2+Fex5zu8LhRQoMeMPEHbc73UKZ0FQ54YrQtUxE1VVhMwzeNtKRPAu5aXks4FasbMe4xB4bWrmq6Jlxw==}
-
-  '@mx-space/api-client@1.21.2':
-    resolution: {integrity: sha512-WOYXj4xq+p9GkGr+PhfRhCxDFd39352MjOHNOQt+dnCKkfp98RSU4sU1MbCjFtCBIghwFim1rYYxNeDpUi7f3w==}
-    engines: {node: '>=22'}
 
   '@napi-rs/wasm-runtime@1.1.4':
     resolution: {integrity: sha512-3NQNNgA1YSlJb/kMH1ildASP9HW7/7kYnRI2szWJaofaS1hWmbGI4H+d3+22aGzXXN9IJ+n+GiFVcGipJP18ow==}
@@ -9062,8 +9055,6 @@ snapshots:
   '@mermaid-js/parser@1.1.0':
     dependencies:
       langium: 4.2.2
-
-  '@mx-space/api-client@1.21.2': {}
 
   '@napi-rs/wasm-runtime@1.1.4(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)':
     dependencies:

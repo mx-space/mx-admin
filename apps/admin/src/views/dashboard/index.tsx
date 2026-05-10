@@ -58,6 +58,7 @@ import PKG from '../../../package.json'
 import { CategoryPie } from './components/CategoryPie'
 import { CommentActivity } from './components/CommentActivity'
 import { PublicationTrend } from './components/PublicationTrend'
+import { SearchIndexRebuildCard } from './components/SearchIndexRebuildCard'
 import { TagCloud } from './components/TagCloud'
 import { TopArticles } from './components/TopArticles'
 import { TrafficSource } from './components/TrafficSource'
@@ -596,6 +597,7 @@ export const DashBoardView = defineComponent({
                 },
               ]}
             />
+            <SearchIndexRebuildCard />
           </div>
         </section>
 
