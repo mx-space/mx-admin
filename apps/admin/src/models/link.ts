@@ -1,6 +1,17 @@
-import type { LinkState, LinkType, PaginateResult } from '@mx-space/api-client'
+import type { PaginateResult } from './base'
 
-export { LinkState, LinkType } from '@mx-space/api-client'
+export enum LinkType {
+  Friend,
+  Collection,
+}
+
+export enum LinkState {
+  Pass,
+  Audit,
+  Outdate,
+  Banned,
+  Reject,
+}
 
 export interface LinkModel {
   id: string

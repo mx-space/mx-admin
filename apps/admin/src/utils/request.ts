@@ -2,7 +2,7 @@ import { ofetch } from 'ofetch'
 import { toast } from 'vue-sonner'
 import type { FetchOptions } from 'ofetch'
 
-import { simpleCamelcaseKeys } from '@mx-space/api-client'
+import { simpleCamelcaseKeys } from './camelcase-keys'
 
 import { API_URL } from '~/constants/env'
 

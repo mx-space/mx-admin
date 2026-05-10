@@ -21,7 +21,7 @@ import {
 import { defineComponent, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { toast } from 'vue-sonner'
-import type { Pager } from '@mx-space/api-client'
+import type { Pager } from '~/models/base'
 import type { NoteModel } from '~/models/note'
 import type { TopicModel } from '~/models/topic'
 import type { PropType } from 'vue'

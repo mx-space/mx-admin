@@ -1,4 +1,4 @@
-import type { TopicModel } from '@mx-space/api-client'
+import type { TopicModel } from './topic'
 
 export interface NoteModel {
   id: string

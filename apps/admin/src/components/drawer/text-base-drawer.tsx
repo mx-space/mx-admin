@@ -11,7 +11,7 @@ import {
 } from 'naive-ui'
 import isURL from 'validator/lib/isURL'
 import { defineComponent, h, ref } from 'vue'
-import type { Image } from '@mx-space/api-client'
+import type { Image } from '~/models/base'
 import type { MetaPresetScope } from '~/models/meta-preset'
 import type { LexicalEditor } from 'lexical'
 import type { SelectOption } from 'naive-ui'

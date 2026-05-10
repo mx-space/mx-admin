@@ -8,12 +8,10 @@ import {
 } from 'lucide-vue-next'
 import { NButton, NDatePicker, NSkeleton, NSpace } from 'naive-ui'
 import { computed, defineComponent, ref } from 'vue'
-import type {
-  NoteModel,
-  PageModel,
-  PostModel,
-  RecentlyModel,
-} from '@mx-space/api-client'
+import type { NoteModel } from '~/models/note'
+import type { PageModel } from '~/models/page'
+import type { PostModel } from '~/models/post'
+import type { RecentlyModel } from '~/models/recently'
 
 import { useQuery } from '@tanstack/vue-query'
 

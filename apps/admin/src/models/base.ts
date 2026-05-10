@@ -1,6 +1,17 @@
-import type { Pager, PaginateResult } from '@mx-space/api-client'
+export interface Pager {
+  total: number
+  size: number
+  currentPage: number
+  totalPage: number
+  hasPrevPage: boolean
+  hasNextPage: boolean
+}
 
-export { Pager, PaginateResult }
+export interface PaginateResult<T> {
+  data: T[]
+  pagination: Pager
+}
+
 export interface Count {
   read: number
   like: number
