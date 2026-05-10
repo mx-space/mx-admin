@@ -1,6 +1,8 @@
 import {
   CheckCircle2 as CheckIcon,
   ExternalLink as ExternalLinkIcon,
+  Hammer as ForceRebuildIcon,
+  Layers as IncrementalRebuildIcon,
   Loader2 as LoaderIcon,
   RefreshCw as RefreshIcon,
   RotateCcw as RetryIcon,
@@ -11,6 +13,7 @@ import {
   NButton,
   NInput,
   NPagination,
+  NPopconfirm,
   NScrollbar,
   NSelect,
   NTag,
@@ -134,6 +137,19 @@ export default defineComponent({
       },
     })
 
+    const rebuildAllMutation = useMutation({
+      mutationFn: (force: boolean) => searchIndexApi.rebuildAll(force),
+      onSuccess: (r, force) => {
+        toast.success(
+          `${force ? '全量' : '增量'}重建完成 · total ${r.total} · +${r.created} ~${r.updated} -${r.deleted} =${r.skipped}`,
+        )
+        queryClient.invalidateQueries({ queryKey: queryKeys.searchIndex.all })
+      },
+      onError: (e: any) => {
+        toast.error(e?.message || '重建失败')
+      },
+    })
+
     const isRowRebuilding = (row: SearchDocumentAdminRow) =>
       rebuildMutation.isPending.value &&
       rebuildMutation.variables.value?.refType === row.refType &&
@@ -154,11 +170,69 @@ export default defineComponent({
 
     const { setActions } = useLayout()
     watchEffect(() => {
+      const isRebuildingAll = rebuildAllMutation.isPending.value
       setActions(
         <div class="flex items-center gap-2">
           <span class="hidden text-xs tabular-nums text-neutral-500 md:inline">
             共 {total.value} 条
           </span>
+          <NPopconfirm
+            positiveText="增量重建"
+            negativeText="取消"
+            onPositiveClick={() => rebuildAllMutation.mutate(false)}
+          >
+            {{
+              trigger: () => (
+                <HeaderActionButton
+                  icon={
+                    isRebuildingAll &&
+                    rebuildAllMutation.variables.value === false ? (
+                      <LoaderIcon class="animate-spin" />
+                    ) : (
+                      <IncrementalRebuildIcon />
+                    )
+                  }
+                  name="增量重建"
+                  variant="info"
+                  disabled={isRebuildingAll}
+                />
+              ),
+              default: () => (
+                <span>
+                  按 sourceHash 比对，仅 upsert 变更行并清理孤立条目。
+                </span>
+              ),
+            }}
+          </NPopconfirm>
+          <NPopconfirm
+            positiveText="全量重建"
+            negativeText="取消"
+            onPositiveClick={() => rebuildAllMutation.mutate(true)}
+          >
+            {{
+              trigger: () => (
+                <HeaderActionButton
+                  icon={
+                    isRebuildingAll &&
+                    rebuildAllMutation.variables.value === true ? (
+                      <LoaderIcon class="animate-spin" />
+                    ) : (
+                      <ForceRebuildIcon />
+                    )
+                  }
+                  name="全量重建 (force)"
+                  variant="warning"
+                  disabled={isRebuildingAll}
+                />
+              ),
+              default: () => (
+                <span class="text-amber-600 dark:text-amber-400">
+                  将清空 search
+                  表后重建全部文档，搜索功能将短暂不可用，确认继续？
+                </span>
+              ),
+            }}
+          </NPopconfirm>
           <HeaderActionButton
             icon={
               isFetching.value ? (
