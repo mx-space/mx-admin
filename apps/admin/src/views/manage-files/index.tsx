@@ -35,7 +35,15 @@ import { HeaderActionButton } from '~/components/button/header-action-button'
 import { API_URL } from '~/constants/env'
 import { useLayout } from '~/layouts/content'
 
+import {
+  OG_SCREENSHOT_TAB_ICON,
+  OG_SCREENSHOT_TAB_KEY,
+  OG_SCREENSHOT_TAB_LABEL,
+  OgScreenshotsTab,
+} from './og-screenshots'
+
 type FileType = 'file' | 'icon' | 'image' | 'avatar'
+type TabKey = FileType | typeof OG_SCREENSHOT_TAB_KEY
 
 interface FileTypeConfig {
   key: FileType
@@ -51,30 +59,35 @@ const FILE_TYPE_CONFIGS: FileTypeConfig[] = [
   { key: 'file', label: '文件', icon: FileIcon, acceptImage: false },
 ]
 
+const isFileType = (key: TabKey): key is FileType =>
+  key !== OG_SCREENSHOT_TAB_KEY
+
 export default defineComponent({
   setup() {
-    const type = ref<FileType>('icon')
+    const activeTab = ref<TabKey>('icon')
     const list = ref<{ url: string; name: string; created?: number }[]>([])
     const loading = ref(false)
     const modalShow = ref(false)
 
     const currentConfig = computed(
       () =>
-        FILE_TYPE_CONFIGS.find((c) => c.key === type.value) ||
-        FILE_TYPE_CONFIGS[0],
+        FILE_TYPE_CONFIGS.find(
+          (c) => isFileType(activeTab.value) && c.key === activeTab.value,
+        ) || FILE_TYPE_CONFIGS[0],
     )
 
     const fetch = async () => {
+      if (!isFileType(activeTab.value)) return
       loading.value = true
       try {
-        const data = await filesApi.getByType(type.value)
+        const data = await filesApi.getByType(activeTab.value)
         list.value = data
       } finally {
         loading.value = false
       }
     }
 
-    watch(() => type.value, fetch)
+    watch(() => activeTab.value, fetch)
     onMounted(fetch)
 
     const checkUploadFile = async (data: {
@@ -108,7 +121,8 @@ export default defineComponent({
     }
 
     const handleDelete = async (name: string) => {
-      await filesApi.deleteByTypeAndName(type.value, name)
+      if (!isFileType(activeTab.value)) return
+      await filesApi.deleteByTypeAndName(activeTab.value, name)
       toast.success('删除成功')
       list.value = list.value.filter((item) => item.name !== name)
     }
@@ -123,25 +137,38 @@ export default defineComponent({
     }
 
     const { setActions } = useLayout()
-    setActions(
-      <HeaderActionButton
-        variant="info"
-        onClick={() => {
-          modalShow.value = true
-        }}
-        icon={<UploadIcon />}
-        name="上传文件"
-      />,
+    watch(
+      () => activeTab.value,
+      (tab) => {
+        if (isFileType(tab)) {
+          setActions(
+            <HeaderActionButton
+              variant="info"
+              onClick={() => {
+                modalShow.value = true
+              }}
+              icon={<UploadIcon />}
+              name="上传文件"
+            />,
+          )
+        } else {
+          setActions(null)
+        }
+      },
+      { immediate: true },
     )
 
     const isImageType = computed(() => currentConfig.value.acceptImage)
+    const isOgScreenshotTab = computed(
+      () => activeTab.value === OG_SCREENSHOT_TAB_KEY,
+    )
 
     return () => (
       <div class="flex h-full flex-col">
         <NTabs
-          value={type.value}
+          value={activeTab.value}
           onUpdateValue={(val) => {
-            type.value = val
+            activeTab.value = val as TabKey
           }}
           type="line"
           class="mb-4"
@@ -158,59 +185,75 @@ export default defineComponent({
               )}
             />
           ))}
+          <NTabPane
+            key={OG_SCREENSHOT_TAB_KEY}
+            name={OG_SCREENSHOT_TAB_KEY}
+            tab={() => (
+              <div class="flex items-center gap-2">
+                <OG_SCREENSHOT_TAB_ICON class="size-4" />
+                <span>{OG_SCREENSHOT_TAB_LABEL}</span>
+              </div>
+            )}
+          />
         </NTabs>
 
-        <div class="relative min-h-0 flex-1">
-          {loading.value ? (
-            <div class="flex h-64 items-center justify-center">
-              <NSpin size="large" />
-            </div>
-          ) : list.value.length === 0 ? (
-            <div class="flex h-64 items-center justify-center">
-              <NEmpty description="暂无文件">
-                {{
-                  extra: () => (
-                    <NButton
-                      size="small"
-                      onClick={() => {
-                        modalShow.value = true
-                      }}
-                    >
-                      上传文件
-                    </NButton>
-                  ),
-                }}
-              </NEmpty>
-            </div>
-          ) : (
-            <NScrollbar class="h-full max-h-[calc(100vh-220px)]">
-              {isImageType.value ? (
-                <div class="grid grid-cols-2 gap-4 p-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-                  {list.value.map((item) => (
-                    <FileCard
-                      key={item.name}
-                      item={item}
-                      isImage={true}
-                      onDelete={() => handleDelete(item.name)}
-                      onCopy={() => handleCopyUrl(item.url)}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div class="flex flex-col gap-2 p-1">
-                  {list.value.map((item) => (
-                    <FileListItem
-                      key={item.name}
-                      item={item}
-                      onDelete={() => handleDelete(item.name)}
-                      onCopy={() => handleCopyUrl(item.url)}
-                    />
-                  ))}
-                </div>
-              )}
-            </NScrollbar>
-          )}
-        </div>
+        {isOgScreenshotTab.value ? (
+          <div class="min-h-0 flex-1">
+            <OgScreenshotsTab />
+          </div>
+        ) : (
+          <div class="relative min-h-0 flex-1">
+            {loading.value ? (
+              <div class="flex h-64 items-center justify-center">
+                <NSpin size="large" />
+              </div>
+            ) : list.value.length === 0 ? (
+              <div class="flex h-64 items-center justify-center">
+                <NEmpty description="暂无文件">
+                  {{
+                    extra: () => (
+                      <NButton
+                        size="small"
+                        onClick={() => {
+                          modalShow.value = true
+                        }}
+                      >
+                        上传文件
+                      </NButton>
+                    ),
+                  }}
+                </NEmpty>
+              </div>
+            ) : (
+              <NScrollbar class="h-full max-h-[calc(100vh-220px)]">
+                {isImageType.value ? (
+                  <div class="grid grid-cols-2 gap-4 p-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+                    {list.value.map((item) => (
+                      <FileCard
+                        key={item.name}
+                        item={item}
+                        isImage={true}
+                        onDelete={() => handleDelete(item.name)}
+                        onCopy={() => handleCopyUrl(item.url)}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div class="flex flex-col gap-2 p-1">
+                    {list.value.map((item) => (
+                      <FileListItem
+                        key={item.name}
+                        item={item}
+                        onDelete={() => handleDelete(item.name)}
+                        onCopy={() => handleCopyUrl(item.url)}
+                      />
+                    ))}
+                  </div>
+                )}
+              </NScrollbar>
+            )}
+          </div>
+        )}
 
         <NModal
           closable
@@ -231,7 +274,7 @@ export default defineComponent({
             <NUpload
               class="flex w-full flex-col items-center"
               withCredentials
-              action={`${API_URL}/files/upload?type=${type.value}`}
+              action={`${API_URL}/files/upload?type=${activeTab.value}`}
               directory-dnd
               multiple
               accept={currentConfig.value.acceptImage ? 'image/*' : undefined}
