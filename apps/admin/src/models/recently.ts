@@ -22,9 +22,7 @@ export interface RecentlyModel {
   refId?: string
   refType?: RecentlyRefTypes
 
-  enrichmentProvider?: string | null
-  enrichmentExternalId?: string | null
-  enrichment?: EnrichmentResult | null
+  enrichments?: Record<string, EnrichmentResult>
 
   up: number
   down: number

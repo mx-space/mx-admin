@@ -2,20 +2,8 @@ import type { RecentlyModel } from '~/models/recently'
 
 import { request } from '~/utils/request'
 
-export type RecentlyType =
-  | 'text'
-  | 'link'
-  | 'book'
-  | 'media'
-  | 'music'
-  | 'github'
-  | 'academic'
-  | 'code'
-
 export interface RecentlyCreatePayload {
-  type?: RecentlyType
-  content?: string
-  metadata?: Record<string, unknown>
+  content: string
 }
 
 export type RecentlyUpdatePayload = RecentlyCreatePayload

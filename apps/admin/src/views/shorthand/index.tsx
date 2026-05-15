@@ -57,35 +57,30 @@ const RecentlyItem = defineComponent({
     },
     onEnrichmentUpdate: {
       type: Function as PropType<
-        (next: NonNullable<RecentlyModel['enrichment']>) => void
+        (url: string, next: NonNullable<RecentlyModel['enrichments']>[string]) => void
       >,
       required: true,
     },
   },
   setup(props) {
     const totalVotes = computed(() => props.item.up + props.item.down)
-    const retrying = ref(false)
-    const handleRetryEnrichment = async () => {
-      const provider = props.item.enrichmentProvider
-      const externalId = props.item.enrichmentExternalId
-      if (!provider || !externalId) return
-      retrying.value = true
+    const retryingUrls = ref<Set<string>>(new Set())
+
+    const handleRetryUrl = async (url: string) => {
+      retryingUrls.value = new Set(retryingUrls.value).add(url)
       try {
-        const result = await enrichmentApi.refresh(provider, externalId)
-        props.onEnrichmentUpdate(result)
+        const result = await enrichmentApi.resolve(url)
+        props.onEnrichmentUpdate(url, result)
         toast.success('已刷新')
       } catch (e: any) {
         toast.error(e?.message || '刷新失败')
       } finally {
-        retrying.value = false
+        const next = new Set(retryingUrls.value)
+        next.delete(url)
+        retryingUrls.value = next
       }
     }
-    const enrichmentFailed = computed(
-      () =>
-        !!props.item.enrichmentProvider &&
-        !!props.item.enrichmentExternalId &&
-        !props.item.enrichment,
-    )
+
     const upPercentage = computed(() =>
       totalVotes.value > 0
         ? Math.round((props.item.up / totalVotes.value) * 100)
@@ -103,18 +98,19 @@ const RecentlyItem = defineComponent({
           <p class={styles.text}>{props.item.content}</p>
         </div>
 
-        {(props.item.enrichment || enrichmentFailed.value) && (
-          <div class="mt-2">
-            <EnrichmentCard
-              enrichment={props.item.enrichment}
-              provider={props.item.enrichmentProvider ?? undefined}
-              externalId={props.item.enrichmentExternalId ?? undefined}
-              failed={enrichmentFailed.value}
-              retrying={retrying.value}
-              onRetry={handleRetryEnrichment}
-            />
-          </div>
-        )}
+        {props.item.enrichments &&
+          Object.keys(props.item.enrichments).length > 0 && (
+            <div class="mt-2 space-y-2">
+              {Object.entries(props.item.enrichments).map(([url, enrichment]) => (
+                <EnrichmentCard
+                  key={url}
+                  enrichment={enrichment}
+                  retrying={retryingUrls.value.has(url)}
+                  onRetry={() => handleRetryUrl(url)}
+                />
+              ))}
+            </div>
+          )}
 
         {props.item.ref && props.item.refType && (
           <div class={styles.reference}>
@@ -346,8 +342,11 @@ export default defineComponent({
                     toast.success('删除成功')
                     data.value.splice(data.value.indexOf(item), 1)
                   }}
-                  onEnrichmentUpdate={(next) => {
-                    data.value[index] = { ...item, enrichment: next }
+                  onEnrichmentUpdate={(url, next) => {
+                    data.value[index] = {
+                      ...item,
+                      enrichments: { ...item.enrichments, [url]: next },
+                    }
                   }}
                 />
               ))}
