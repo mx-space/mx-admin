@@ -122,34 +122,36 @@ While search is active and non-empty, the underlying request switches from `post
 
 Default grouping is **none** — flat list. The display-options popover offers `按状态 / 按月 / 无` grouping. When grouping is active, group headers render as 24 px rows with `▾ 群名 · count`. Collapsed state is page-local (Jotai), not persisted across sessions.
 
-### Row (44 px, B variant)
+### Row (57 px, Linear inbox aligned)
 
 ```
 [📌] [title text…]                  [● status]
      [category · tags head · 📖N · 👍N · time]
 ```
 
-Concrete spec:
+Concrete spec — typography numbers come from `02-design-tokens.md` v2 calibrated (do not redeclare here):
 
 | Slot | Source field | Notes |
 |---|---|---|
-| pin column | `row.pinAt` | 12 px wide; lavender pin icon when set; empty when not |
-| title | `row.title` | 14 px / 500 weight; ellipsis on overflow |
-| status dot | `row.isPublished` | 8 px dot — green `#65c466` published, neutral `#888a92` draft. The status dot renders **inline at the end of body-row 1**, not as its own column |
-| category | `row.category.name` | 11 px / muted |
-| tags head | `row.tags?.slice(0, 3).join(' · ')` + `…` | Drops to none when empty |
-| read count | `row.readCount` | `📖 1.2k` formatter. Hidden when `0` |
-| like count | `row.likeCount` | `👍 N` formatter. Hidden when `0` |
-| relative time | `row.modifiedAt ?? row.createdAt` | "3 天前" formatter; right-aligned within row 2 |
+| pin column | `row.pinAt` | `iconSize.sm` (12) wide; lavender pin icon when set; empty when not |
+| title | `row.title` | `typography.listTitle` (13 / 500 / normal / `ink`); ellipsis on overflow |
+| status dot | `row.isPublished` | 7 px dot — `semanticSuccess` published, `inkTertiary` draft. The status dot renders **inline at the end of body-row 1**, not as its own column |
+| category | `row.category.name` | `typography.listMeta` size, `inkMuted` color (slightly brighter than other meta items so it acts as the row's secondary anchor) |
+| tags head | `row.tags?.slice(0, 3).join(' · ')` + `…` | `typography.listMeta`; drops to none when empty |
+| read count | `row.readCount` | `<BookOpen size={iconSize.sm}/> 1.2k` formatter — lucide icons not emoji (emoji ignore font-size). Hidden when `0` |
+| like count | `row.likeCount` | `<ThumbsUp size={iconSize.sm}/> N` formatter. Hidden when `0` |
+| relative time | `row.modifiedAt ?? row.createdAt` | `typography.listMeta` size, `inkTertiary` color (dimmer than other meta to recede). Compact unit format: `1mo` / `3d` / `4h`. Right-aligned within row 2 |
+
+Row metrics: `min-height: 57px`, `padding: 10px 16px`, `gap: 4px` between title line and meta line. Inherits from the **compact-list density rule** in `02-design-tokens.md` — do not invent per-view row sizes.
 
 States:
 - `default` — neutral row
 - `hover` — `surface1` background
 - `active` (right pane is showing this row) — `surface3` background
-- `selected` (in selection set) — translucent lavender background `rgba(94,106,210,0.10)` + 2 px lavender left border (replaces row padding-left from 14 → 12)
-- `active + selected` — lavender left border + slightly stronger background
+- `selected` (in selection set) — translucent lavender background `rgba(94,106,210,0.10)` + 2 px lavender left border (replaces row padding-left from 16 → 14)
+- `active + selected` — lavender left border + slightly stronger background (`rgba(94,106,210,0.18)`)
 
-Density is **fixed at 44 px** for v1. The display-options popover does not include a density toggle; cut to keep scope.
+Density is **fixed at 57 px** for v1. The display-options popover does not include a density toggle; cut to keep scope.
 
 ### Display-properties chips
 
@@ -457,7 +459,7 @@ The display atom is persisted to `localStorage` (key: `posts.list.display.v1`); 
 | `<ListPaneHeader>` | `src/pages/posts/view/list/Header.tsx` | The 4-icon-button row |
 | `<ListFilterBar>` | `src/pages/posts/view/list/FilterBar.tsx` | Applied-filter chips |
 | `<ListSearchBar>` | `src/pages/posts/view/list/SearchBar.tsx` | Slim search overlay |
-| `<PostRow>` | `src/pages/posts/view/list/Row.tsx` | The 44 px row |
+| `<PostRow>` | `src/pages/posts/view/list/Row.tsx` | The 57 px row |
 | `<FilterPopover>` | `src/pages/posts/view/list/FilterPopover.tsx` | Funnel popover |
 | `<DisplayPopover>` | `src/pages/posts/view/list/DisplayPopover.tsx` | Sliders popover |
 | `<BulkActionBar>` | `src/pages/posts/view/list/BulkActionBar.tsx` | Floating bar |
@@ -543,7 +545,7 @@ Card list items are `role="link"` (single-action card → navigation). Per-card 
 
 ## Acceptance
 
-1. `/posts/view` renders the 2-pane layout matching the mockup on desktop (≥768px), with rows in the 44px B variant.
+1. `/posts/view` renders the 2-pane layout matching the mockup on desktop (≥768px), with rows at the 57 px Linear-aligned density (per `02-design-tokens.md` v2 calibrated).
 2. Pagination, sort, category filter, search (300ms debounced, matches vue3), pin, status toggle, bulk delete, single delete, jump-to-edit, external view link — all functional with no regression vs. vue3.
 3. Funnel popover and display-options popover open, write to atoms / table state correctly, and persist `postsListDisplayAtom` to localStorage.
 4. Multi-select works: click / ⌘+click / shift+click / `x` / `mod+a` / `escape` behaviours match the table in **Selection model**. Page change clears selection.

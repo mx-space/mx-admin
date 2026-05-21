@@ -20,7 +20,7 @@ docs/superpowers/specs/2026-05-06-react-migration/
 ├── 05-data-layer.md        ← request.ts port, TanStack Query patterns, socket.io hook
 ├── 06-routing-auth.md      ← react-router tree, ProtectedRoute, better-auth + passkey
 ├── 07-layouts-patterns.md  ← AppShell, Sidebar, MasterDetailLayout, header-action injection
-├── 08-form-system.md       ← react-hook-form + zod, ConfigForm DSL port
+├── 08-form-system.md       ← @tanstack/react-form + zod (Standard Schema), ConfigForm DSL port
 ├── 09-editors.md           ← haklex direct-mount, monaco, codemirror, xterm, draft system
 ├── 10-charts-misc.md       ← G2 hook, kbar swap, shiki/marked, diffs, excalidraw, confetti
 ├── 11-views-migration.md   ← 21 views in batches; preconditions + acceptance per batch
@@ -43,7 +43,7 @@ docs/superpowers/specs/2026-05-06-react-migration/
 | UI primitives | Base UI (`@base-ui-components/react`) | headless; pairs with css.ts |
 | Styling | css.ts (`@vanilla-extract/css` + vite plugin) | Compile-time CSS; tokens live as TS exports |
 | Design system | Linear dark-canvas (per pasted DESIGN.md) | Lavender accent, four-step surface ladder, no second chromatic accent |
-| Forms | `react-hook-form` + `zod` | `zod` already in source repo |
+| Forms | `@tanstack/react-form` + `zod` (Standard Schema) | aligns with TanStack Query/Table; zod already in source repo; library swap landed 2026-05-10 |
 | Animation | `motion` | User-specified |
 | Icons | `lucide-react` | 1:1 swap from `lucide-vue-next` |
 | Toast | `sonner` | 1:1 swap from `vue-sonner` |

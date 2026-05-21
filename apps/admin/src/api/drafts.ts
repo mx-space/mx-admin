@@ -8,13 +8,15 @@ import type {
 
 import { request } from '~/utils/request'
 
+export type DraftSortOrder = 'asc' | 'desc'
+
 export interface GetDraftsParams {
   page?: number
   size?: number
   refType?: DraftRefType
   hasRef?: boolean
-  sortBy?: string
-  sortOrder?: 1 | -1
+  sort_by?: string
+  sort_order?: DraftSortOrder
 }
 
 export interface CreateDraftData {

@@ -3,11 +3,14 @@ import type { PostModel } from '~/models/post'
 
 import { request } from '~/utils/request'
 
+export type PostSortKey = 'createdAt' | 'modifiedAt' | 'pinAt'
+export type SortOrder = 'asc' | 'desc'
+
 export interface GetPostsParams {
   page?: number
   size?: number
-  sortBy?: string
-  sortOrder?: number
+  sort_by?: PostSortKey
+  sort_order?: SortOrder
   categoryIds?: string[]
 }
 

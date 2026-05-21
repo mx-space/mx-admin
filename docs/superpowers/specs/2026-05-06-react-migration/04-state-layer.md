@@ -13,7 +13,7 @@ Defines the non-server state layer: Zustand stores for session-level singletons,
 ## Scope
 
 - **In**: state allocation rule, Zustand store definitions (auth, ui, layout backbone), Jotai atom catalog (layout slots, AI task queue, master-detail selection, table state, draft drawer), event-bus dismantle plan, persistence policy.
-- **Out**: server data (→ 05), form state (→ 08, owned by `react-hook-form`), router state (→ 06).
+- **Out**: server data (→ 05), form state (→ 08, owned by `@tanstack/react-form`), router state (→ 06).
 
 ---
 

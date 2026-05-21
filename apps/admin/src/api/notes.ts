@@ -3,11 +3,22 @@ import type { NoteModel } from '~/models/note'
 
 import { request } from '~/utils/request'
 
+export type NoteSortKey =
+  | 'title'
+  | 'createdAt'
+  | 'modifiedAt'
+  | 'weather'
+  | 'mood'
+export type SortOrder = 'asc' | 'desc'
+
 export interface GetNotesParams {
   page?: number
   size?: number
-  sortBy?: string
-  sortOrder?: number
+  sort_by?: NoteSortKey
+  sort_order?: SortOrder
+  /**
+   * @deprecated backend dropped db_query in v12.10.x pager refactor; param is silently ignored
+   */
   db_query?: Record<string, boolean>
 }
 

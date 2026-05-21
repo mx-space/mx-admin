@@ -174,6 +174,8 @@ export function SetupLayout() {
 
 ## MasterDetailLayout
 
+> **Status 2026-05-10 — superseded.** Replaced by the column-layout primitives shipped during P1: `FullLayout` (single-column page surface) + `TwoColLayout` (master/detail with mobile drawer). Master-detail views compose `<TwoColLayout>` directly with their own list + detail children. The spec text below is preserved as design history; the `MasterDetailLayout` symbol and `useMasterDetailLayout` hook are no longer planned. Acceptance items 1–2 below are dropped from P2 acceptance.
+
 Used by ~10 views: `comments`, `manage-friends`, `manage-project`, `maintenance/cron`, `ai/*`, `shorthand`, `setting`, `reader`.
 
 ```

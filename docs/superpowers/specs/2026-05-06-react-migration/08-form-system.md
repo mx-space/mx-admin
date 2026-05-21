@@ -3,10 +3,11 @@
 **Date**: 2026-05-06
 **Owner spec**: [00-roadmap.md](./00-roadmap.md)
 **Phase**: P2
-**Depends on**: 03 (Input, Select, Switch, Checkbox, Radio, Textarea), 02 (tokens for spacing / typography)
+**Status**: P2 core shipped 2026-05-10 (Form / FormField / FormFieldArray / FormLabel / FormMessage / FormSection + Textarea primitive). Form library swapped from `react-hook-form` → `@tanstack/react-form` on 2026-05-10. ConfigForm DSL renderer deferred to P3 (depends on real `/setting` descriptors).
+**Depends on**: 03 (Input, Textarea, Select, Switch, Checkbox, Radio), 02 (tokens for spacing / typography)
 **Feeds**: 11 (every CRUD view), 06 (login form), 09 (write-editor metadata drawer)
 
-Defines the form binding layer (`react-hook-form` + `zod`), the field-renderer registry, and the port plan for the existing dynamic-form DSL used in `/setting`. The system serves both static forms (login, project create) and the runtime-schema-driven forms (settings panels, snippet metadata, friend application form).
+Defines the form binding layer (`@tanstack/react-form` + `zod` via Standard Schema), the field-renderer registry, and the port plan for the existing dynamic-form DSL used in `/setting`. The system serves both static forms (login, project create) and the runtime-schema-driven forms (settings panels, snippet metadata, friend application form).
 
 ---
 
@@ -19,10 +20,10 @@ Defines the form binding layer (`react-hook-form` + `zod`), the field-renderer r
 
 ## Decisions
 
-- **`react-hook-form` + `@hookform/resolvers/zod`**. Zero overlap with existing deps (zod already in source).
-- **One canonical wrapper component per primitive.** `<FormField>`, `<FormLabel>`, `<FormControl>`, `<FormMessage>`. They wire up `react-hook-form` context to the Base UI primitive.
+- **`@tanstack/react-form` + zod via Standard Schema.** Zod 4's Standard Schema output plugs into `validators.onChange` / `onSubmit` directly — no resolver package needed. We migrated off `react-hook-form` on 2026-05-10 to align the data + state stack on TanStack (Query, Form, Table). Cost: render-prop API is slightly different; payoff: shared mental model with the rest of the data layer, smaller bundle, first-class array fields, Subscribe-based selective re-renders.
+- **One canonical wrapper component per primitive.** `<FormField>`, `<FormLabel>`, `<FormMessage>`, `<FormSection>`, `<FormFieldArray>`. They wire `form.Field` / `form.Subscribe` from TanStack Form to our UI primitives. There is no separate `<FormControl>` — controls are user-rendered inside `<FormField>`'s render-prop.
 - **Schemas live next to the form.** No central schema repo; each form owns its zod schema (or imports a shared one from `~/models/schemas/*` when reuse is genuine).
-- **Runtime schemas (`/setting`) ship a `FormFieldRenderer`** that consumes the source's existing form descriptor JSON. The descriptor is converted to zod at runtime; values flow through the same `react-hook-form` machinery.
+- **Runtime schemas (`/setting`) ship a `FormFieldRenderer`** that consumes the source's existing form descriptor JSON. The descriptor is converted to zod at runtime; values flow through the same `@tanstack/react-form` machinery.
 - **No `<form>` without zod.** Even simple forms (login) declare a schema. Cost is low, payoff (consistent error rendering) is high.
 
 ---
@@ -31,14 +32,14 @@ Defines the form binding layer (`react-hook-form` + `zod`), the field-renderer r
 
 ```
 src/components/form/
-├── Form.tsx                   # FormProvider wrapper + onSubmit helper
-├── FormField.tsx              # Controller + label + control + message
+├── Form.tsx                   # form-context provider + handleSubmit + root-error banner
+├── FormField.tsx              # form.Field + label + control + message
 ├── FormLabel.tsx
-├── FormControl.tsx
-├── FormMessage.tsx
+├── FormMessage.tsx            # standalone error reader for a named field
 ├── FormSection.tsx            # spacing wrapper, optional title/description
-├── FormFieldArray.tsx         # useFieldArray wrapper for kv / tags / repeats
-├── ConfigForm/                # runtime DSL renderer
+├── FormFieldArray.tsx         # form.Field mode="array" wrapper for kv / tags / repeats
+├── stringifyError.ts          # normalises Standard Schema / string / object errors
+├── ConfigForm/                # runtime DSL renderer (P3)
 │   ├── index.tsx              # ConfigFormRenderer
 │   ├── descriptorToSchema.ts  # converts descriptor → zod
 │   ├── fieldRegistry.ts       # type → renderer map
@@ -52,46 +53,72 @@ src/components/form/
 
 ```tsx
 // example: project-create form
+import { useForm } from '@tanstack/react-form'
+
 const schema = z.object({
   name: z.string().min(1, '名称不能为空').max(80),
-  url: z.string().url('请输入合法的 URL'),
+  url: z.url('请输入合法的 URL'),
   description: z.string().max(200).optional(),
-  hidden: z.boolean().default(false),
+  hidden: z.boolean(),
 })
 
 type ProjectFormValues = z.infer<typeof schema>
 
-export function ProjectForm({ initial, onSubmit }: { initial?: ProjectFormValues, onSubmit: (v: ProjectFormValues) => Promise<void> }) {
-  const form = useForm<ProjectFormValues>({
-    resolver: zodResolver(schema),
-    defaultValues: initial,
+export function ProjectForm({
+  initial,
+  onSubmit,
+}: {
+  initial?: ProjectFormValues
+  onSubmit: (v: ProjectFormValues) => Promise<void>
+}) {
+  const form = useForm({
+    defaultValues: initial ?? { name: '', url: '', description: '', hidden: false },
+    validators: { onChange: schema, onSubmit: schema },
+    onSubmit: ({ value }) => onSubmit(value),
   })
 
   return (
-    <Form form={form} onSubmit={onSubmit}>
-      <FormField name="name" label="名称">
-        {(field) => <Input {...field} placeholder="项目名称" />}
+    <Form form={form}>
+      <FormField<ProjectFormValues, 'name'> name="name" label="名称" required>
+        {({ field, invalid }) => (
+          <Input {...field} invalid={invalid} placeholder="项目名称" />
+        )}
       </FormField>
-      <FormField name="url" label="URL">
-        {(field) => <Input {...field} placeholder="https://..." />}
+      <FormField<ProjectFormValues, 'url'> name="url" label="URL" required>
+        {({ field, invalid }) => (
+          <Input {...field} invalid={invalid} placeholder="https://..." />
+        )}
       </FormField>
-      <FormField name="description" label="说明">
-        {(field) => <Textarea {...field} rows={3} />}
+      <FormField<ProjectFormValues, 'description'> name="description" label="说明">
+        {({ field, invalid }) => (
+          <Textarea {...field} invalid={invalid} rows={3} />
+        )}
       </FormField>
-      <FormField name="hidden" label="隐藏">
-        {(field) => <Switch {...field} />}
+      <FormField<ProjectFormValues, 'hidden'> name="hidden" label="隐藏" inline>
+        {({ field, fieldApi }) => (
+          <Switch
+            checked={Boolean(field.value)}
+            onCheckedChange={(checked) => fieldApi.handleChange(checked)}
+          />
+        )}
       </FormField>
-      <div className={styles.actions}>
-        <Button type="submit" intent="primary" loading={form.formState.isSubmitting}>保存</Button>
-      </div>
+      <form.Subscribe selector={(s) => s.isSubmitting}>
+        {(isSubmitting) => (
+          <Button type="submit" intent="primary" loading={isSubmitting}>
+            保存
+          </Button>
+        )}
+      </form.Subscribe>
     </Form>
   )
 }
 ```
 
-`<FormField>` accepts a render-prop `(field) => …` to keep field control explicit, or accepts a string `as` prop for trivial mapping (`<FormField name="name" label="名称" as={Input} />`).
+`<FormField>` is a render-prop wrapper around `form.Field`. The render arg gives `{ field, invalid, errors, fieldApi, id }` — `field` is a spread-friendly bag (`{name, value, onChange, onBlur, id, aria-invalid, aria-describedby}`) compatible with our `<Input>` / `<Textarea>` primitives; `fieldApi` is the raw TanStack `FieldApi` for advanced cases (push/swap/setMeta/...).
 
-`<Form>` wraps `react-hook-form`'s `FormProvider` plus the `<form onSubmit={handleSubmit(...)}>`. It catches `BusinessError` from the submit handler and surfaces it as either an inline error (`form.setError('root', { message })`) or a toast — caller chooses via prop.
+`<Form>` provides a React context carrying the form API, calls `form.handleSubmit()` on the form's submit event, and renders a root-error banner when `form.state.errorMap.onSubmit` (or `onServer`) is populated. The `onSubmit` callback lives in `useForm`'s config (TanStack convention), not on `<Form>`.
+
+Server-derived errors: from your `onSubmit` callback, throw a `BusinessError` that the caller wraps, or call `form.setErrorMap({ onServer: { fields: { foo: 'msg' }, form: 'top-level msg' } })` after a failed mutation. The banner reads `state.errorMap.onSubmit ?? state.errorMap.onServer`.
 
 ---
 
@@ -170,11 +197,11 @@ Strict typing requires per-type primitives; runtime descriptors lose the type in
 
 ### Conditional fields (`showWhen`)
 
-`<ConfigFormRenderer>` watches `form.watch(condition.field)` and conditionally mounts the field. Conditional fields are not required in the schema even if marked `required: true` when their condition is false — the converter applies a `superRefine` that only validates when the dependency holds.
+`<ConfigFormRenderer>` subscribes via `form.Subscribe` to the dependency value and conditionally mounts the field. Conditional fields are not required in the schema even if marked `required: true` when their condition is false — the converter applies a `superRefine` that only validates when the dependency holds.
 
 ### Live-editing UX
 
-`/setting` saves on blur per-field (mirrors source). Implementation: each renderer invokes a debounced `onSave(value)` after blur if `form.formState.dirtyFields[name]` is true. The wrapper component owns the API call and toast.
+`/setting` saves on blur per-field (mirrors source). Implementation: each renderer invokes a debounced `onSave(value)` after blur if the field's `state.meta.isDirty` is true. The wrapper component owns the API call and toast.
 
 Alternative: explicit "Save" button per group. Source uses field-level autosave; preserve unless P1 reveals UX regressions.
 
@@ -182,29 +209,47 @@ Alternative: explicit "Save" button per group. Source uses field-level autosave;
 
 ## Field arrays
 
-`useFieldArray` wraps repeated structures: `kv-editor` (key-value pairs), `dynamic-tags`, repeated webhook headers, etc.
+`<FormFieldArray name=…>` wraps `form.Field name=… mode="array"` for repeated structures: `kv-editor` (key-value pairs), `dynamic-tags`, repeated webhook headers, etc.
 
 ```tsx
-// src/components/form/FormFieldArray.tsx
-export function FormFieldArray<T>({ name, render }: { name: string, render: (controls) => ReactNode }) {
-  const { fields, append, remove, move } = useFieldArray({ name })
-  return render({ fields, append, remove, move })
+// src/components/form/FormFieldArray.tsx (sketch)
+export function FormFieldArray<T, N>({ name, render }) {
+  const form = useFormApi()
+  return (
+    <form.Field name={name} mode="array">
+      {(field) =>
+        render({
+          field,
+          items: field.state.value,
+          pushValue: (v) => field.pushValue(v),
+          removeValue: (i) => field.removeValue(i),
+          swapValues: (a, b) => field.swapValues(a, b),
+          moveValue: (from, to) => field.moveValue(from, to),
+          insertValue: (i, v) => field.insertValue(i, v),
+        })
+      }
+    </form.Field>
+  )
 }
 ```
 
 `<KVEditor>` (consumer):
 
 ```tsx
-<FormFieldArray name="headers" render={({ fields, append, remove }) => (
+<FormFieldArray<Values, 'headers'> name="headers" render={({ items, pushValue, removeValue }) => (
   <div className={styles.kv}>
-    {fields.map((row, i) => (
-      <div key={row.id} className={styles.row}>
-        <FormField name={`headers.${i}.key`}>{(f) => <Input {...f} />}</FormField>
-        <FormField name={`headers.${i}.value`}>{(f) => <Input {...f} />}</FormField>
-        <Button intent="tertiary" onClick={() => remove(i)} aria-label="删除">×</Button>
+    {items.map((_, i) => (
+      <div key={i} className={styles.row}>
+        <FormField<Values, `headers.${number}.key`> name={`headers.${i}.key`}>
+          {({ field }) => <Input {...field} />}
+        </FormField>
+        <FormField<Values, `headers.${number}.value`> name={`headers.${i}.value`}>
+          {({ field }) => <Input {...field} />}
+        </FormField>
+        <Button intent="tertiary" onClick={() => removeValue(i)} aria-label="删除">×</Button>
       </div>
     ))}
-    <Button intent="tertiary" onClick={() => append({ key: '', value: '' })}>添加</Button>
+    <Button intent="tertiary" onClick={() => pushValue({ key: '', value: '' })}>添加</Button>
   </div>
 )} />
 ```
@@ -213,17 +258,17 @@ export function FormFieldArray<T>({ name, render }: { name: string, render: (con
 
 ## Error rendering
 
-- Field-level: `<FormMessage name="..." />` reads `form.formState.errors.<name>?.message` and renders below the control with `intent="danger"`.
-- Form-level: `form.setError('root', { message })` from the submit handler. Rendered at the top or bottom of the form per layout.
-- Server-derived: when the API returns `BusinessError` with field-specific issues, the submit wrapper maps `error.raw.fields[k]` → `form.setError(k, { message })`.
+- Field-level: `<FormField>` renders the first error inline (`field.state.meta.errors[0]`). For ad-hoc placement, `<FormMessage name="..." />` subscribes to a single field's first error and renders below.
+- Form-level: `form.setErrorMap({ onSubmit: 'msg' })` from the submit handler — `<Form showRootError>` (default true) renders a banner above the body when `state.errorMap.onSubmit` or `state.errorMap.onServer` is set.
+- Server-derived: when the API returns `BusinessError` with field-specific issues, the submit wrapper maps `error.raw.fields[k]` → `form.setFieldMeta(k, (m) => ({ ...m, errors: [{ message }] }))` per field, plus `form.setErrorMap({ onServer: { form: error.message } })` for the banner.
 
 ---
 
 ## Dirty / touched / submit behavior
 
-- **Dirty tracking**: `react-hook-form` default. `form.formState.isDirty` controls Save button enable.
-- **Block navigation on dirty**: views call `useBlocker(form.formState.isDirty)` (port from source's `beforeRouteLeave` pattern). Confirms before navigating away.
-- **Reset after save**: `form.reset(form.getValues())` clears dirty without losing values.
+- **Dirty tracking**: subscribe to `form.state.isDirty` (or per-field `state.meta.isDirty`). Save buttons read it via `form.Subscribe selector={(s) => s.isDirty}`.
+- **Block navigation on dirty**: views call `useBlocker(isDirty)` (port from source's `beforeRouteLeave` pattern). Confirms before navigating away.
+- **Reset after save**: `form.reset()` (or `form.reset(form.state.values)`) clears dirty without losing values.
 - **Submit on Enter** is the browser default — keep. Use `<Button type="button">` for non-submit actions.
 
 ---
@@ -236,12 +281,12 @@ export function FormFieldArray<T>({ name, render }: { name: string, render: (con
 function UploadRenderer({ name, descriptor }: RendererProps) {
   return (
     <FormField name={name} label={descriptor.label}>
-      {(field) => (
+      {({ field, fieldApi }) => (
         <Upload
           accept={descriptor.accept}
           multiple={descriptor.multiple}
           value={field.value}
-          onChange={(value) => field.onChange(value)}
+          onChange={(value) => fieldApi.handleChange(value)}
         />
       )}
     </FormField>
@@ -257,12 +302,105 @@ function UploadRenderer({ name, descriptor }: RendererProps) {
 
 ### P2 acceptance
 
-1. `Form`, `FormField`, `FormLabel`, `FormControl`, `FormMessage`, `FormSection`, `FormFieldArray` exist and pass smoke tests.
-2. A static `ProjectForm` example renders, validates with zod, submits, and round-trips dirty / reset state.
+1. `Form`, `FormField`, `FormLabel`, `FormMessage`, `FormSection`, `FormFieldArray` exist and pass smoke tests. (No separate `<FormControl>` — controls render inside `<FormField>`.)
+2. A static `ProjectForm` example renders, validates with zod via `validators.onChange / onSubmit`, submits, and round-trips dirty / reset state.
 3. `ConfigFormRenderer` consumes a sample descriptor (port one `/setting` group) and renders the right fields with the right defaults.
 4. `descriptorToSchema` produces a valid zod schema; conditional `showWhen` fields validate correctly.
 5. `useBlocker(isDirty)` prevents navigation when the form has unsaved changes (smoke test).
 6. Field-level autosave (per `/setting` semantics) debounces correctly.
+
+---
+
+## P2 core · 2026-05-10 (shipped, then re-shipped on @tanstack/react-form)
+
+The first wave covers static forms only. ConfigForm DSL ships in P3 alongside `/setting`.
+
+**Files**
+
+```
+src/components/form/
+├── Form.tsx              # form-context provider + handleSubmit + root-error banner
+├── FormField.tsx         # form.Field + label + control + message wiring
+├── FormLabel.tsx         # Renders `<label>` with optional required-marker
+├── FormMessage.tsx       # Subscribes to a single field's first error
+├── FormSection.tsx       # Title + description block, hairline divider on bottom
+├── FormFieldArray.tsx    # Sugar over `form.Field name=… mode="array"`
+├── stringifyError.ts     # Normalises Standard Schema / string / object errors
+├── form.css.ts
+└── index.ts              # Barrel
+```
+
+**API**
+
+```tsx
+import { useForm } from '@tanstack/react-form'
+
+const schema = z.object({
+  name: z.string().min(1, '名称不能为空').max(80),
+  url: z.url('请输入合法的 URL'),
+  description: z.string().max(200).optional(),
+  hidden: z.boolean(),
+})
+type Values = z.infer<typeof schema>
+
+function ProjectForm() {
+  const form = useForm({
+    defaultValues: { name: '', url: '', description: '', hidden: false } as Values,
+    validators: { onChange: schema, onSubmit: schema },
+    onSubmit: ({ value }) => console.log(value),
+  })
+  return (
+    <Form form={form}>
+      <FormSection title="项目" description="…">
+        <FormField<Values, 'name'> name="name" label="名称" required>
+          {({ field, invalid }) => <Input {...field} invalid={invalid} />}
+        </FormField>
+        <FormField<Values, 'description'> name="description" label="说明">
+          {({ field, invalid }) => <Textarea {...field} invalid={invalid} rows={3} />}
+        </FormField>
+        <FormField<Values, 'hidden'> name="hidden" label="隐藏" inline>
+          {({ field, fieldApi }) => (
+            <Switch
+              checked={Boolean(field.value)}
+              onCheckedChange={(checked) => fieldApi.handleChange(checked)}
+            />
+          )}
+        </FormField>
+      </FormSection>
+      <form.Subscribe selector={(s) => s.isSubmitting}>
+        {(isSubmitting) => (
+          <Button type="submit" intent="primary" loading={isSubmitting}>
+            保存
+          </Button>
+        )}
+      </form.Subscribe>
+    </Form>
+  )
+}
+```
+
+Notes:
+
+- `<FormField>` is generic over `<Values, FieldName>` — it keeps `field.value` strongly typed against the schema.
+- The render-prop receives `{ field, invalid, errors, fieldApi, id }`. `field` carries `value`, `onChange`, `onBlur`, plus a generated `id`, `aria-invalid`, and `aria-describedby` so primitives stay accessible without manual wiring. `field.onChange` accepts both React change events (extracts `target.value` / `target.checked` / `target.valueAsNumber`) and bare values.
+- `fieldApi` is the raw TanStack `FieldApi` — use it for `handleChange`, `pushValue`, `setMeta`, `state.meta.isDirty`, etc.
+- `inline` flag puts the label and control on a single row — typical for `Switch` / `Checkbox`.
+- Boolean primitives (`Switch`, `Checkbox`) prefer `checked` / `onCheckedChange`. Use `<Switch checked={Boolean(field.value)} onCheckedChange={(c) => fieldApi.handleChange(c)} />`.
+- Submission state: don't read `form.state.isSubmitting` directly inside `<Form>` body unless you also wrap in `<form.Subscribe>` — bare reads won't re-render. Subscribe with a selector for selective re-render.
+- Server-derived errors: call `form.setErrorMap({ onServer: 'msg' })` (form-level) or `form.setFieldMeta(name, m => ({ ...m, errors: [{ message }] }))` (per field). `<Form showRootError>` reads `state.errorMap.onSubmit ?? state.errorMap.onServer`.
+- `<FormFieldArray name="…" render={({ items, pushValue, removeValue, swapValues, moveValue, insertValue, field }) => …}>` exposes array helpers; UI is consumer-defined (kv-editor, repeating headers, etc).
+
+**Textarea primitive** — `src/components/ui/Textarea/{index.tsx, Textarea.css.ts, Textarea.test.tsx}`. Multi-line text input with the same intent (default / danger) × size (sm / md / lg) variants as `Input`. `invalid` flips intent to `danger` and sets `aria-invalid`. Vertical resize on; horizontal locked.
+
+**Vitest** — `src/components/form/Form.test.tsx` covers (1) zod schema → render → submit valid round-trip, (2) zod errors block submit and surface as inline messages. 79 tests across 26 files green.
+
+**Mockup** — `src/pages/_dev/primitives/index.tsx` "24 · form" section (`<FormSystemSection>`) demonstrates Input / Textarea / Switch fields wired through `<Form>` / `<FormField>` / `<FormSection>` against a zod schema; submit button reads `isSubmitting` via `<form.Subscribe>`; reset button calls `form.reset()`.
+
+**What's next (P3 follow-ups)**
+
+- ConfigForm DSL renderer + `descriptorToSchema` — depends on porting real `/setting` descriptors. Tracked in spec 11 settings batch.
+- `useBlocker(isDirty)` navigation guard — implement when first dirty-form view lands (`/posts/edit`, `/notes/edit`, etc).
+- `Combobox` / `DatePicker` — deferred to spec 03b.
 
 ---
 

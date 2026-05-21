@@ -17,7 +17,33 @@ Catches the residual integrations: AntV G2 charts, kbar command palette, shiki /
 
 ---
 
-## AntV G2
+## Charts (recharts)
+
+> **Status 2026-05-10 — superseded.** AntV G2 dropped from the dependency tree; **recharts** is the canonical chart library. Composable React components, no imperative `useG2Chart` hook needed. The G2 spec text below is preserved as design history; the `useG2Chart` hook is no longer planned. Acceptance items 1 and 3 referencing G2 are dropped.
+
+### Recharts pattern
+
+```tsx
+// src/pages/dashboard/index.tsx (current shipping shape)
+import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from 'recharts'
+
+const TrendChart = () => (
+  <ResponsiveContainer width="100%" height={220}>
+    <AreaChart data={mockSeries} margin={{ top: 16, right: 16, bottom: 8, left: 0 }}>
+      <Area type="monotone" dataKey="visits" stroke="#5e6ad2" strokeWidth={2} />
+      …axes, grid, tooltip wired with token-driven colors…
+    </AreaChart>
+  </ResponsiveContainer>
+)
+```
+
+Tone: hard-code colors against `themeContract` token literals at the recharts layer (recharts wants raw color strings, not CSS vars). Accept the duplication; charts are few.
+
+### Theme bridging
+
+Recharts is light/dark-agnostic — pass colors per chart instance. Pull from `themeContract` exports; do not introduce a separate chart palette.
+
+### Below — original G2 design (historical)
 
 ### Hook
 

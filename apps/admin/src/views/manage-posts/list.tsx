@@ -19,6 +19,7 @@ import {
 } from 'vue'
 import { RouterLink } from 'vue-router'
 import { toast } from 'vue-sonner'
+import type { PostSortKey } from '~/api/posts'
 import type {
   FilterOption,
   FilterState,
@@ -206,8 +207,8 @@ export const ManagePostListView = defineComponent({
           categoryIds: params.filters?.categoryIds,
           ...(params.sortBy
             ? {
-                sortBy: params.sortBy,
-                sortOrder: params.sortOrder,
+                sort_by: params.sortBy as PostSortKey,
+                sort_order: params.sortOrder === 1 ? 'asc' : 'desc',
               }
             : {}),
         })

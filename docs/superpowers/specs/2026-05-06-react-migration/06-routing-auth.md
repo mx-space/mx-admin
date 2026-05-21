@@ -243,7 +243,7 @@ The client is framework-agnostic for the most part; better-auth ships React hook
 
 `LoginPage`:
 
-1. Username + password form — `react-hook-form` + zod.
+1. Username + password form — `@tanstack/react-form` + zod.
 2. Passkey button — `authClient.signIn.passkey()`.
 3. Both redirect to `state.from?.pathname ?? '/dashboard'` on success (read from `useLocation().state`).
 4. Errors: `BusinessError` rendered inline below the form; `SystemError` toasts.

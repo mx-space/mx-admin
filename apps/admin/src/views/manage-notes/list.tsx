@@ -14,6 +14,7 @@ import { NButton, NEllipsis, NInput, NPopconfirm, NSpace } from 'naive-ui'
 import { computed, defineComponent, reactive, ref, watchEffect } from 'vue'
 import { RouterLink } from 'vue-router'
 import { toast } from 'vue-sonner'
+import type { NoteSortKey } from '~/api/notes'
 import type { NoteModel } from '~/models/note'
 import type { TableColumns } from 'naive-ui/lib/data-table/src/interface'
 import type { PropType } from 'vue'
@@ -225,8 +226,12 @@ export const ManageNoteListView = defineComponent({
         return notesApi.getList({
           page: params.page,
           size: params.size,
-          sortBy: params.sortBy || undefined,
-          sortOrder: params.sortOrder || undefined,
+          ...(params.sortBy
+            ? {
+                sort_by: params.sortBy as NoteSortKey,
+                sort_order: params.sortOrder === 1 ? 'asc' : 'desc',
+              }
+            : {}),
           db_query: params.filters?.dbQuery,
         }) as Promise<any>
       },

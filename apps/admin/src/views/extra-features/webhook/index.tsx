@@ -160,7 +160,13 @@ export default defineComponent({
           data: submitData,
         })
       } else {
-        createMutation.mutate(data as any)
+        // Server requires `secret` as a string; admin form leaves it optional.
+        // Default to "" when the user did not provide one so creation succeeds.
+        const createPayload: Partial<WebhookModel> = {
+          ...data,
+          secret: data.secret ?? '',
+        }
+        createMutation.mutate(createPayload as any)
       }
     }
 
