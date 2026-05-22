@@ -46,7 +46,10 @@ function createAdminTransport(providerId: string): TransportAdapter {
   return async (messages, tools, model, signal) => {
     const response = await fetch(`${API_URL}/ai/agent/chat`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-skip-translation': '1',
+      },
       credentials: 'include',
       body: JSON.stringify({ model, messages, tools, providerId }),
       signal,

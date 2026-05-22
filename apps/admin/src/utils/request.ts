@@ -40,6 +40,7 @@ export const $api = ofetch.create({
   onRequest({ options }) {
     const headers = new Headers(options.headers)
     headers.set('x-uuid', _uuid)
+    headers.set('x-skip-translation', '1')
 
     // GET 请求添加时间戳防缓存
     if (options.method?.toUpperCase() === 'GET') {
