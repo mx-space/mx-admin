@@ -1,0 +1,1 @@
+export const APP_SHELL_HEADER_HEIGHT_CLASS = 'h-12'

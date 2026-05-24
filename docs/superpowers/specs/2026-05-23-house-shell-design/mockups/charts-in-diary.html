@@ -1,0 +1,227 @@
+<h2>难处验之 · charts 入手记</h2>
+<p class="subtitle">图非 widget，乃序文之佐图 · 色入纸调 · 数皆有所云</p>
+
+<!-- 主：dashboard 之「本周纪」 -->
+<div class="mockup" style="padding:0;overflow:hidden;border:none;margin-bottom:16px">
+  <div style="background:#f5ede0;color:#2a2520;font-family:'Iowan Old Style','Charter','Georgia',serif;padding:36px 64px 24px;min-height:760px">
+
+    <!-- header -->
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
+      <div>
+        <div style="font-size:11px;letter-spacing:0.22em;text-transform:uppercase;opacity:0.45;font-family:-apple-system,sans-serif;font-weight:500">Saturday · the 23rd of May</div>
+        <div style="font-size:34px;font-weight:600;margin-top:4px;letter-spacing:-0.012em">Today</div>
+      </div>
+      <div style="font-family:-apple-system,sans-serif;font-size:10.5px;color:#8a7a55;letter-spacing:0.08em;text-align:right;line-height:1.7;opacity:0.7">
+        <div>⌘K · jump</div>
+        <div>⌘N · write</div>
+      </div>
+    </div>
+
+    <div style="height:1px;background:#3a2f1e;opacity:0.16;margin:18px 0 26px"></div>
+
+    <!-- today's stream — compact -->
+    <div style="display:grid;grid-template-columns:80px 1fr;gap:24px;align-items:baseline;margin-bottom:14px">
+      <div style="text-align:right;font-family:-apple-system,sans-serif;font-size:10px;color:#8a7a55;letter-spacing:0.08em">
+        <div style="text-transform:uppercase;font-weight:600">draft</div>
+        <div>23:47</div>
+      </div>
+      <div>
+        <div style="font-size:17.5px;font-weight:600">The Garden, after rain</div>
+        <div style="font-size:12.5px;line-height:1.7;opacity:0.7;font-style:italic">a few notes about how Linear's design language…</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:80px 1fr;gap:24px;align-items:baseline;margin-bottom:14px">
+      <div style="text-align:right;font-family:-apple-system,sans-serif;font-size:10px;color:#8a7a55;letter-spacing:0.08em">
+        <div style="text-transform:uppercase;font-weight:600">letter</div>
+        <div>21:12</div>
+      </div>
+      <div>
+        <div style="font-size:13.5px;line-height:1.7"><span style="opacity:0.55">— a reader writes on </span><span style="font-weight:600">"Hello world"</span><span style="opacity:0.55">…</span></div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:80px 1fr;gap:24px;align-items:baseline;margin-bottom:14px">
+      <div style="text-align:right;font-family:-apple-system,sans-serif;font-size:10px;color:#8a7a55;letter-spacing:0.08em">
+        <div style="text-transform:uppercase;font-weight:600">post</div>
+        <div>15:08</div>
+      </div>
+      <div>
+        <div style="font-size:17.5px;font-weight:600">Migration note #6 — Drawer mechanics</div>
+        <div style="font-size:12.5px;line-height:1.7;opacity:0.7">342 views · 12 reading now</div>
+      </div>
+    </div>
+
+    <!-- divider: this week's ledger -->
+    <div style="margin:36px 0 28px;text-align:center;font-style:italic;font-size:13px;color:#7a6a48;letter-spacing:0.04em">
+      <span style="display:inline-block;padding:0 18px;background:#f5ede0;position:relative;z-index:1">— this week's ledger —</span>
+      <div style="height:1px;background:#3a2f1e;opacity:0.16;margin-top:-7px"></div>
+    </div>
+
+    <!-- chart 1: writing pace -->
+    <div style="display:grid;grid-template-columns:1fr auto;gap:36px;align-items:center;margin-bottom:30px">
+      <div>
+        <div style="font-size:15px;line-height:1.75;color:#2a2520">▸ You wrote <strong>4 posts</strong> this week — two more than last week, and the most since March.</div>
+        <div style="font-family:-apple-system,sans-serif;font-size:10.5px;color:#7a6a48;margin-top:6px;opacity:0.7;letter-spacing:0.04em">posts per week, last 12 weeks</div>
+      </div>
+      <svg width="220" height="56" viewBox="0 0 220 56" style="display:block">
+        <line x1="0" y1="55" x2="220" y2="55" stroke="#a89568" stroke-width="0.5" opacity="0.4"/>
+        <polyline points="0,40 20,36 40,42 60,30 80,38 100,28 120,32 140,24 160,30 180,28 200,22 220,12" fill="none" stroke="#6b5840" stroke-width="1.5"/>
+        <circle cx="220" cy="12" r="2.5" fill="#6b5840"/>
+        <text x="222" y="11" font-family="Iowan Old Style, Georgia, serif" font-size="9" font-style="italic" fill="#6b5840">4</text>
+      </svg>
+    </div>
+
+    <!-- chart 2: readers per day -->
+    <div style="display:grid;grid-template-columns:1fr auto;gap:36px;align-items:center;margin-bottom:30px">
+      <div>
+        <div style="font-size:15px;line-height:1.75;color:#2a2520">▸ Readers arrived steadily — about <strong>140 a day</strong>, with a gentle peak on Thursday afternoon (you published <em>"Why I rewrote my admin"</em> that morning).</div>
+        <div style="font-family:-apple-system,sans-serif;font-size:10.5px;color:#7a6a48;margin-top:6px;opacity:0.7;letter-spacing:0.04em">unique readers · this week (Sun→Sat)</div>
+      </div>
+      <div style="display:flex;align-items:flex-end;gap:6px;height:56px">
+        <div style="width:14px;background:#a89568;height:60%;opacity:0.7" title="Sun"></div>
+        <div style="width:14px;background:#a89568;height:55%;opacity:0.7"></div>
+        <div style="width:14px;background:#a89568;height:65%;opacity:0.7"></div>
+        <div style="width:14px;background:#a89568;height:72%;opacity:0.85"></div>
+        <div style="width:14px;background:#6b5840;height:95%" title="Thu — peak"></div>
+        <div style="width:14px;background:#a89568;height:78%;opacity:0.85"></div>
+        <div style="width:14px;background:#a89568;height:68%;opacity:0.7"></div>
+      </div>
+    </div>
+
+    <!-- chart 3: most-read -->
+    <div style="display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:30px">
+      <div style="font-size:15px;line-height:1.75;color:#2a2520">▸ Most-read this week:</div>
+      <div style="font-size:13.5px;line-height:1.95;padding-left:16px;display:grid;grid-template-columns:1fr auto;gap:0 20px">
+        <span><em style="opacity:0.4;font-style:italic">i.</em> &nbsp; Why I rewrote my admin in React</span><span style="font-family:-apple-system,sans-serif;font-size:11px;color:#7a6a48;align-self:center">8,742 readers</span>
+        <span><em style="opacity:0.4;font-style:italic">ii.</em> &nbsp; Migration note #6 — Drawer mechanics</span><span style="font-family:-apple-system,sans-serif;font-size:11px;color:#7a6a48;align-self:center">1,204</span>
+        <span><em style="opacity:0.4;font-style:italic">iii.</em> &nbsp; On Lavender and the choice of accent</span><span style="font-family:-apple-system,sans-serif;font-size:11px;color:#7a6a48;align-self:center">812</span>
+        <span style="opacity:0.7"><em style="opacity:0.4;font-style:italic">iv.</em> &nbsp; A small protest against feature flags</span><span style="font-family:-apple-system,sans-serif;font-size:11px;color:#7a6a48;align-self:center;opacity:0.7">522</span>
+      </div>
+    </div>
+
+    <!-- chart 4: where from (donut) -->
+    <div style="display:grid;grid-template-columns:1fr auto;gap:36px;align-items:center;margin-bottom:30px">
+      <div>
+        <div style="font-size:15px;line-height:1.75;color:#2a2520">▸ Where they came from — mostly from <strong>Hacker News</strong>, with a steady trickle through RSS.</div>
+        <div style="font-family:-apple-system,sans-serif;font-size:10.5px;color:#7a6a48;margin-top:8px;opacity:0.8;letter-spacing:0.04em;display:grid;grid-template-columns:1fr 1fr;gap:2px 18px;max-width:280px">
+          <span><span style="display:inline-block;width:8px;height:8px;background:#6b5840;margin-right:5px;vertical-align:middle"></span>Hacker News &nbsp; 48%</span>
+          <span><span style="display:inline-block;width:8px;height:8px;background:#a89568;margin-right:5px;vertical-align:middle"></span>direct &nbsp; 24%</span>
+          <span><span style="display:inline-block;width:8px;height:8px;background:#c8b878;margin-right:5px;vertical-align:middle"></span>RSS &nbsp; 16%</span>
+          <span><span style="display:inline-block;width:8px;height:8px;background:#d8c8a0;margin-right:5px;vertical-align:middle"></span>elsewhere &nbsp; 12%</span>
+        </div>
+      </div>
+      <svg width="110" height="110" viewBox="0 0 42 42" style="display:block">
+        <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#6b5840" stroke-width="8" stroke-dasharray="48 52" stroke-dashoffset="25"/>
+        <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#a89568" stroke-width="8" stroke-dasharray="24 76" stroke-dashoffset="-23"/>
+        <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#c8b878" stroke-width="8" stroke-dasharray="16 84" stroke-dashoffset="-47"/>
+        <circle cx="21" cy="21" r="15.915" fill="transparent" stroke="#d8c8a0" stroke-width="8" stroke-dasharray="12 88" stroke-dashoffset="-63"/>
+      </svg>
+    </div>
+
+    <!-- chart 5: tags shape (cloud as italic words) -->
+    <div style="display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:24px">
+      <div style="font-size:15px;line-height:1.75;color:#2a2520">▸ The shape of your writing this month:</div>
+      <div style="padding-left:16px;line-height:1.85;color:#2a2520">
+        <em style="font-size:24px;font-style:italic;color:#3a2f1e;font-weight:600">design</em>
+        <span style="margin:0 4px;opacity:0.3">·</span>
+        <em style="font-size:18px;font-style:italic;color:#5a4f38">engineering</em>
+        <span style="margin:0 4px;opacity:0.3">·</span>
+        <em style="font-size:21px;font-style:italic;color:#3a2f1e;font-weight:500">react</em>
+        <span style="margin:0 4px;opacity:0.3">·</span>
+        <em style="font-size:14px;font-style:italic;color:#7a6a48">typography</em>
+        <span style="margin:0 4px;opacity:0.3">·</span>
+        <em style="font-size:16px;font-style:italic;color:#5a4f38">admin</em>
+        <span style="margin:0 4px;opacity:0.3">·</span>
+        <em style="font-size:12px;font-style:italic;color:#8a7a55">linear</em>
+        <span style="margin:0 4px;opacity:0.3">·</span>
+        <em style="font-size:13px;font-style:italic;color:#7a6a48">notes</em>
+        <span style="margin:0 4px;opacity:0.3">·</span>
+        <em style="font-size:15px;font-style:italic;color:#5a4f38">migration</em>
+        <span style="margin:0 4px;opacity:0.3">·</span>
+        <em style="font-size:11px;font-style:italic;color:#a89568">life</em>
+        <span style="margin:0 4px;opacity:0.3">·</span>
+        <em style="font-size:13px;font-style:italic;color:#7a6a48">side projects</em>
+      </div>
+    </div>
+
+    <!-- footer -->
+    <div style="margin-top:18px;padding-top:14px;border-top:1px dashed #c4b89a;display:flex;justify-content:space-between;font-family:-apple-system,sans-serif;font-size:10.5px;color:#8a7a55;letter-spacing:0.08em">
+      <span>← yesterday · May 22</span>
+      <span style="font-style:italic;font-family:'Iowan Old Style',serif;font-size:12px">— for deeper analysis, turn to <span style="border-bottom:1px solid #8a7a55;padding-bottom:1px">the ledger</span> · /analyze —</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- 次：/analyze 之一节 -->
+<div class="mockup" style="padding:0;overflow:hidden;border:none">
+  <div style="background:#f5ede0;color:#2a2520;font-family:'Iowan Old Style',Georgia,serif;padding:32px 48px;min-height:360px">
+
+    <div style="font-family:-apple-system,sans-serif;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;opacity:0.42">斋 · 手记 · the ledger · /analyze</div>
+    <div style="font-size:24px;font-weight:600;margin:3px 0 4px">A longer look — the past month</div>
+    <div style="font-family:-apple-system,sans-serif;font-size:11px;color:#7a6a48;opacity:0.7;display:flex;gap:6px;margin-bottom:18px">
+      <span style="opacity:0.55">showing</span>
+      <span style="font-weight:600;border-bottom:1px solid #a89568">all readers</span>
+      <span style="opacity:0.4">·</span>
+      <span style="font-weight:600;border-bottom:1px solid #a89568">past 30 days</span>
+      <span style="opacity:0.4">·</span>
+      <span style="font-weight:600;border-bottom:1px solid #a89568">by day</span>
+    </div>
+
+    <div style="font-size:14.5px;line-height:1.75;color:#2a2520;margin-bottom:18px;max-width:60ch">
+      Readers held steady through most of April, then climbed in the week of the rewrite essay. The shape of the month, drawn out:
+    </div>
+
+    <!-- a larger bar chart -->
+    <div style="display:flex;align-items:flex-end;gap:3px;height:120px;border-bottom:1px solid #a89568;margin-bottom:6px">
+      <div style="flex:1;background:#a89568;height:38%;opacity:0.55"></div>
+      <div style="flex:1;background:#a89568;height:42%;opacity:0.55"></div>
+      <div style="flex:1;background:#a89568;height:36%;opacity:0.55"></div>
+      <div style="flex:1;background:#a89568;height:40%;opacity:0.6"></div>
+      <div style="flex:1;background:#a89568;height:48%;opacity:0.6"></div>
+      <div style="flex:1;background:#a89568;height:52%;opacity:0.65"></div>
+      <div style="flex:1;background:#a89568;height:46%;opacity:0.65"></div>
+      <div style="flex:1;background:#a89568;height:50%;opacity:0.7"></div>
+      <div style="flex:1;background:#a89568;height:44%;opacity:0.7"></div>
+      <div style="flex:1;background:#a89568;height:54%;opacity:0.7"></div>
+      <div style="flex:1;background:#a89568;height:58%;opacity:0.75"></div>
+      <div style="flex:1;background:#a89568;height:52%;opacity:0.75"></div>
+      <div style="flex:1;background:#a89568;height:60%;opacity:0.8"></div>
+      <div style="flex:1;background:#a89568;height:64%;opacity:0.8"></div>
+      <div style="flex:1;background:#a89568;height:56%;opacity:0.8"></div>
+      <div style="flex:1;background:#a89568;height:62%;opacity:0.85"></div>
+      <div style="flex:1;background:#a89568;height:70%;opacity:0.9"></div>
+      <div style="flex:1;background:#a89568;height:78%;opacity:0.9"></div>
+      <div style="flex:1;background:#6b5840;height:96%" title="rewrite essay published"></div>
+      <div style="flex:1;background:#a89568;height:88%"></div>
+      <div style="flex:1;background:#a89568;height:82%;opacity:0.9"></div>
+      <div style="flex:1;background:#a89568;height:75%;opacity:0.85"></div>
+      <div style="flex:1;background:#a89568;height:72%;opacity:0.85"></div>
+      <div style="flex:1;background:#a89568;height:70%;opacity:0.85"></div>
+      <div style="flex:1;background:#a89568;height:68%;opacity:0.85"></div>
+      <div style="flex:1;background:#a89568;height:65%;opacity:0.8"></div>
+      <div style="flex:1;background:#a89568;height:74%;opacity:0.85"></div>
+      <div style="flex:1;background:#a89568;height:80%;opacity:0.9"></div>
+      <div style="flex:1;background:#a89568;height:78%;opacity:0.9"></div>
+      <div style="flex:1;background:#a89568;height:72%;opacity:0.85"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-family:-apple-system,sans-serif;font-size:10px;color:#8a7a55;letter-spacing:0.04em;opacity:0.7">
+      <span>April 24</span>
+      <span style="font-family:'Iowan Old Style',serif;font-style:italic">↑ rewrite essay · May 12</span>
+      <span>May 23</span>
+    </div>
+
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:16px;font-size:11.5px;line-height:1.7;text-align:left;max-width:80ch;margin-left:auto;margin-right:auto">
+<strong>所验：</strong>
+① <strong>图非 widget</strong>，乃序文之佐图 ——「你这周写了 4 篇 [sparkline]」，<strong>数皆有所云</strong>，非冷裸数字；
+② palette 入纸调 —— bars/lines 用 <code>#6b5840</code>(墨)、<code>#a89568</code>(matte gold)，accent 一处即可，无 SaaS 之蓝紫；
+③ donut/pie 用四阶 sepia 同色不同明，legend 文字 italic；
+④ <strong>tag cloud → italic words</strong>，字号即权重，无 cloud lib 之乱；
+⑤ /analyze 之深表 —— filter 同「showing X · past 30 days · by day」单行下划线语，bar chart 横展长条，峰值染暗墨 + italic 序文 "↑ rewrite essay · May 12" 注其下，<strong>非 tooltip</strong>；
+⑥ G2 仍可用，但 theme override 必加 —— accent / axis / label 皆吐 token 用纸色；
+⑦ 与「夜灯」夜模同此 —— 工坊深色变 backup，色 ramp 仅明暗，accent 仍油焰金。
+</p>

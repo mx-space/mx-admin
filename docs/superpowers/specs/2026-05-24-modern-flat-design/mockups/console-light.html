@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<title>丙 · 密台 Console-Light</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --canvas: #fafafa;
+    --border: #e5e5e5;
+    --border-strong: #d4d4d4;
+    --ink: #18181b;
+    --muted: #71717a;
+    --faint: #a1a1aa;
+    --hover: #f4f4f5;
+    --accent: #f59e0b;
+    --accent-strong: #b45309;
+    --success: #16a34a;
+    --danger: #dc2626;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+
+  .app { display: grid; grid-template-columns: 132px 1fr; min-height: 100vh; }
+
+  /* ─ sidebar ─ */
+  .side {
+    background: var(--canvas);
+    border-right: 1px solid var(--border);
+    padding: 10px 0;
+    font-size: 12px;
+    position: sticky; top: 0; height: 100vh;
+    display: flex; flex-direction: column;
+  }
+  .brand {
+    font-size: 12px; font-weight: 600;
+    color: var(--ink);
+    padding: 6px 14px 14px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .nav { display: flex; flex-direction: column; }
+  .group { padding: 8px 14px 2px; font-size: 10px; color: var(--faint); text-transform: uppercase; letter-spacing: 0.1em; }
+  .item {
+    padding: 4px 14px;
+    color: var(--muted);
+    cursor: default;
+    display: flex; align-items: center; gap: 8px;
+    border-left: 2px solid transparent;
+  }
+  .item:hover { background: var(--hover); color: var(--ink); }
+  .item.active {
+    color: var(--ink); font-weight: 500;
+    border-left-color: var(--accent);
+    background: rgba(245, 158, 11, 0.06);
+  }
+  .item .count { margin-left: auto; font-size: 10.5px; color: var(--faint); }
+  .item.active .count { color: var(--accent-strong); }
+
+  .side .foot {
+    margin-top: auto; padding: 10px 14px; font-size: 10px;
+    color: var(--faint); border-top: 1px solid var(--border);
+  }
+  .side .foot .row { display: flex; justify-content: space-between; }
+
+  /* ─ main ─ */
+  .main { padding: 0; }
+
+  .topbar {
+    display: flex; align-items: center; gap: 12px;
+    padding: 8px 18px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .topbar .crumb { color: var(--muted); }
+  .topbar .crumb strong { color: var(--ink); font-weight: 500; }
+  .topbar .spacer { flex: 1; }
+  .topbar .kbd {
+    border: 1px solid var(--border-strong); padding: 1px 6px;
+    font-size: 10.5px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    color: var(--muted);
+  }
+
+  .pagehead {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    background: var(--canvas);
+    display: flex; align-items: baseline; gap: 16px;
+  }
+  .pagehead h1 {
+    margin: 0; font-size: 16px; font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .pagehead .sub {
+    font-size: 11px; color: var(--muted);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  .pagehead .spacer { flex: 1; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 10px; font-size: 12px;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--ink);
+    cursor: default;
+    height: 26px;
+    border-radius: 2px;
+  }
+  .btn:hover { background: var(--hover); }
+  .btn.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+  /* ─ stats strip ─ */
+  .stats {
+    display: grid; grid-template-columns: repeat(6, 1fr);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .stat {
+    padding: 10px 14px;
+    border-right: 1px solid var(--border);
+  }
+  .stat:last-child { border-right: none; }
+  .stat .lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px; }
+  .stat .val { font-size: 16px; font-weight: 600; font-family: 'JetBrains Mono', ui-monospace, monospace; line-height: 1.1; }
+  .stat .delta { font-size: 10px; color: var(--success); margin-top: 1px; }
+  .stat .delta.down { color: var(--danger); }
+  .stat .delta.neutral { color: var(--muted); }
+
+  /* ─ filter bar ─ */
+  .filterbar {
+    display: flex; align-items: center; gap: 12px;
+    padding: 6px 18px;
+    border-bottom: 1px solid var(--border);
+    font-size: 11.5px;
+    background: var(--canvas);
+  }
+  .chip {
+    padding: 2px 8px;
+    font-size: 11px;
+    color: var(--muted); cursor: default;
+    border-radius: 2px;
+  }
+  .chip.active { color: var(--ink); background: var(--surface); border: 1px solid var(--border-strong); font-weight: 500; }
+  .chip .count { color: var(--faint); margin-left: 4px; font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  .filterbar .spacer { flex: 1; }
+  .search {
+    border: 1px solid var(--border);
+    padding: 3px 8px; font-size: 11.5px; color: var(--muted);
+    background: var(--surface); min-width: 200px;
+    border-radius: 2px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+  }
+
+  /* ─ table ─ */
+  .tbl-wrap { background: var(--surface); }
+  table {
+    width: 100%; border-collapse: collapse;
+    font-size: 12.5px;
+    table-layout: fixed;
+  }
+  th, td {
+    padding: 6px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+    text-align: left;
+  }
+  thead th {
+    font-size: 10px; font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    background: var(--canvas);
+    border-bottom: 1px solid var(--border-strong);
+    padding-top: 8px; padding-bottom: 8px;
+  }
+  tbody tr:hover { background: var(--hover); cursor: default; }
+  td.id { font-family: 'JetBrains Mono', ui-monospace, monospace; color: var(--faint); font-size: 11.5px; }
+  td.title { font-weight: 500; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  td.num { font-family: 'JetBrains Mono', ui-monospace, monospace; text-align: right; color: var(--muted); }
+  td.date { font-family: 'JetBrains Mono', ui-monospace, monospace; color: var(--muted); font-size: 11.5px; }
+  td.tag {
+    font-size: 10.5px; letter-spacing: 0.06em;
+    text-transform: uppercase; font-weight: 500;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  .tag-pub { color: var(--success); }
+  .tag-draft { color: var(--accent-strong); background: rgba(245, 158, 11, 0.1); padding: 1px 5px; border-radius: 2px; }
+  .tag-pin { color: var(--ink); }
+  .tag-pin::before { content: '◆ '; color: var(--accent); }
+
+  .check { width: 12px; height: 12px; border: 1px solid var(--border-strong); display: inline-block; vertical-align: middle; border-radius: 1px; }
+  td.check-cell { width: 32px; }
+
+  /* ─ pagination strip ─ */
+  .pagi {
+    padding: 6px 18px;
+    display: flex; justify-content: space-between;
+    font-size: 11.5px; color: var(--muted);
+    border-top: 1px solid var(--border);
+    background: var(--canvas);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  .pagi .pages { display: flex; gap: 2px; }
+  .page-btn {
+    padding: 1px 6px; border-radius: 2px;
+    cursor: default;
+  }
+  .page-btn.active { background: var(--ink); color: #fff; }
+  .page-btn:hover:not(.active) { background: var(--hover); }
+
+  /* ─ status bar ─ */
+  .statusbar {
+    position: fixed; bottom: 0; left: 132px; right: 0;
+    background: var(--ink); color: #d4d4d4;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10.5px;
+    padding: 3px 18px;
+    display: flex; gap: 18px;
+  }
+  .statusbar .spacer { flex: 1; }
+  .statusbar .lit { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ───── sidebar ───── -->
+  <aside class="side">
+    <div class="brand">▸ MX</div>
+
+    <nav class="nav">
+      <div class="group">手记</div>
+      <div class="item">today</div>
+      <div class="item active">posts<span class="count">171</span></div>
+      <div class="item">notes<span class="count">42</span></div>
+      <div class="item">pages</div>
+      <div class="item">comments<span class="count">3</span></div>
+
+      <div class="group">资料</div>
+      <div class="item">files</div>
+      <div class="item">projects</div>
+      <div class="item">friends</div>
+
+      <div class="group">智能</div>
+      <div class="item">apprentice<span class="count">2</span></div>
+
+      <div class="group">工具</div>
+      <div class="item">snippets</div>
+      <div class="item">backup</div>
+      <div class="item">debug</div>
+      <div class="item">⚙ settings</div>
+    </nav>
+
+    <div class="foot">
+      <div class="row"><span>mx-core</span><span>v6.4.2</span></div>
+      <div class="row"><span style="color:var(--success)">● healthy</span><span>6h backup</span></div>
+    </div>
+  </aside>
+
+  <!-- ───── main ───── -->
+  <main class="main">
+
+    <div class="topbar">
+      <span class="crumb">手记 / <strong>posts</strong></span>
+      <span class="spacer"></span>
+      <span class="kbd">⌘K</span>
+      <span class="kbd">⌘N</span>
+    </div>
+
+    <!-- pagehead -->
+    <div class="pagehead">
+      <h1>posts</h1>
+      <span class="sub">171 total · 168 published · 3 drafts</span>
+      <span class="spacer"></span>
+      <span class="btn">Export</span>
+      <span class="btn">Bulk edit</span>
+      <span class="btn primary">+ New</span>
+    </div>
+
+    <!-- stats strip -->
+    <div class="stats">
+      <div class="stat"><div class="lbl">Reads 7d</div><div class="val">14,328</div><div class="delta">+12.4%</div></div>
+      <div class="stat"><div class="lbl">Avg/day</div><div class="val">2,047</div><div class="delta neutral">±0.2%</div></div>
+      <div class="stat"><div class="lbl">Comments</div><div class="val">23</div><div class="delta">+5</div></div>
+      <div class="stat"><div class="lbl">Drafts</div><div class="val">3</div><div class="delta down">2 stale</div></div>
+      <div class="stat"><div class="lbl">Realtime</div><div class="val">3</div><div class="delta">readers</div></div>
+      <div class="stat"><div class="lbl">Queue</div><div class="val">2</div><div class="delta neutral">apprentice</div></div>
+    </div>
+
+    <!-- filter bar -->
+    <div class="filterbar">
+      <span class="chip active">all<span class="count">171</span></span>
+      <span class="chip">published<span class="count">168</span></span>
+      <span class="chip">drafts<span class="count">3</span></span>
+      <span class="chip">pinned<span class="count">2</span></span>
+      <span class="spacer"></span>
+      <span class="search">⌕ id, title, slug, tag…</span>
+    </div>
+
+    <!-- table -->
+    <div class="tbl-wrap">
+      <table>
+        <colgroup>
+          <col style="width:32px" />
+          <col style="width:90px" />
+          <col />
+          <col style="width:120px" />
+          <col style="width:96px" />
+          <col style="width:96px" />
+          <col style="width:120px" />
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="check-cell"><span class="check"></span></th>
+            <th>id</th>
+            <th>title</th>
+            <th>tag</th>
+            <th style="text-align:right">reads</th>
+            <th style="text-align:right">comments</th>
+            <th>modified</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="check-cell"><span class="check"></span></td>
+            <td class="id">133259</td>
+            <td class="title">The Garden, after rain</td>
+            <td class="tag"><span class="tag-draft">DRAFT</span></td>
+            <td class="num">—</td>
+            <td class="num">—</td>
+            <td class="date">today 23:47</td>
+          </tr>
+          <tr>
+            <td class="check-cell"><span class="check"></span></td>
+            <td class="id">133258</td>
+            <td class="title">AI 时代的效率悖论：当生产力提升反而带来疲惫</td>
+            <td class="tag tag-pub">PUBLISHED</td>
+            <td class="num">2,137</td>
+            <td class="num">8</td>
+            <td class="date">2026-05-23</td>
+          </tr>
+          <tr>
+            <td class="check-cell"><span class="check"></span></td>
+            <td class="id">133201</td>
+            <td class="title">Migration note #6 — Drawer mechanics</td>
+            <td class="tag tag-pub">PUBLISHED</td>
+            <td class="num">1,204</td>
+            <td class="num">3</td>
+            <td class="date">2026-05-22</td>
+          </tr>
+          <tr>
+            <td class="check-cell"><span class="check"></span></td>
+            <td class="id">133112</td>
+            <td class="title">On Lavender and the choice of accent</td>
+            <td class="tag"><span class="tag-pin">PINNED</span></td>
+            <td class="num">812</td>
+            <td class="num">2</td>
+            <td class="date">2026-05-21</td>
+          </tr>
+          <tr>
+            <td class="check-cell"><span class="check"></span></td>
+            <td class="id">132871</td>
+            <td class="title">Migration note #5 — Token reform</td>
+            <td class="tag tag-pub">PUBLISHED</td>
+            <td class="num">982</td>
+            <td class="num">1</td>
+            <td class="date">2026-05-20</td>
+          </tr>
+          <tr>
+            <td class="check-cell"><span class="check"></span></td>
+            <td class="id">132633</td>
+            <td class="title">Why I rewrote my admin in React</td>
+            <td class="tag tag-pub">PUBLISHED</td>
+            <td class="num">8,742</td>
+            <td class="num">19</td>
+            <td class="date">2026-05-09</td>
+          </tr>
+          <tr>
+            <td class="check-cell"><span class="check"></span></td>
+            <td class="id">132540</td>
+            <td class="title">Notes on motion · easings and durations</td>
+            <td class="tag tag-pub">PUBLISHED</td>
+            <td class="num">412</td>
+            <td class="num">0</td>
+            <td class="date">2026-05-04</td>
+          </tr>
+          <tr>
+            <td class="check-cell"><span class="check"></span></td>
+            <td class="id">132401</td>
+            <td class="title">Hello world</td>
+            <td class="tag tag-pub">PUBLISHED</td>
+            <td class="num">15,820</td>
+            <td class="num">87</td>
+            <td class="date">2025-12-31</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- pagination -->
+    <div class="pagi">
+      <span>showing 1 – 10 of 171</span>
+      <div class="pages">
+        <span class="page-btn">‹</span>
+        <span class="page-btn active">1</span>
+        <span class="page-btn">2</span>
+        <span class="page-btn">3</span>
+        <span class="page-btn">…</span>
+        <span class="page-btn">18</span>
+        <span class="page-btn">›</span>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- status bar -->
+<div class="statusbar">
+  <span class="lit">● realtime</span>
+  <span>3 readers online</span>
+  <span>last backup 6h ago</span>
+  <span class="spacer"></span>
+  <span>mem 142M</span>
+  <span>req 12.4k/d</span>
+  <span>mx-core v6.4.2</span>
+</div>
+
+</body>
+</html>

@@ -1,11 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
-import { Crown, Mail, Users } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { Crown, Loader2, Mail, Users } from 'lucide-react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { ReaderModel } from '../api/readers'
 
 import { getReaders } from '../api/readers'
 import { Button } from '../ui/button'
-import { Panel } from '../ui/panel'
+import { cn } from '../ui/cn'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
 
 const pageSize = 20
 
@@ -13,77 +14,123 @@ type ReaderWithKey = ReaderModel & { _key: string }
 
 export function ReadersPage() {
   const [page, setPage] = useState(1)
+  const [readerList, setReaderList] = useState<ReaderWithKey[]>([])
+  const seenKeysRef = useRef(new Set<string>())
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null)
+  const loadMoreRef = useRef<HTMLDivElement | null>(null)
   const readersQuery = useQuery({
     queryFn: () => getReaders({ page, size: pageSize }),
     queryKey: ['readers', 'list', page, pageSize],
   })
 
-  const readers = useMemo(
-    () =>
-      (readersQuery.data?.data ?? []).map((reader, index) => ({
+  const pagination = readersQuery.data?.pagination
+  const hasNextPage = pagination ? page < pagination.totalPages : false
+  const readers = useMemo(() => readerList, [readerList])
+
+  useEffect(() => {
+    if (!readersQuery.data) return
+
+    if (page === 1) {
+      seenKeysRef.current = new Set()
+    }
+
+    const nextReaders = readersQuery.data.data
+      .map((reader, index) => ({
         ...reader,
         _key: `${reader.id}-${reader.provider || index}`,
-      })),
-    [readersQuery.data?.data],
-  )
-  const pagination = readersQuery.data?.pagination
+      }))
+      .filter((reader) => {
+        if (seenKeysRef.current.has(reader._key)) return false
+        seenKeysRef.current.add(reader._key)
+        return true
+      })
+
+    setReaderList((current) =>
+      page === 1 ? nextReaders : [...current, ...nextReaders],
+    )
+  }, [page, readersQuery.data])
+
+  useEffect(() => {
+    const target = loadMoreRef.current
+    const root = scrollContainerRef.current
+    if (!target || !hasNextPage) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (
+          entries.some((entry) => entry.isIntersecting) &&
+          !readersQuery.isFetching
+        ) {
+          setPage((current) => current + 1)
+        }
+      },
+      { root, rootMargin: '200px' },
+    )
+
+    observer.observe(target)
+
+    return () => observer.disconnect()
+  }, [hasNextPage, readersQuery.isFetching])
 
   return (
-    <div className="mx-auto max-w-4xl">
-      <Panel
-        description={pagination ? `${pagination.total} readers` : undefined}
-        title={
-          <span className="inline-flex items-center gap-2">
-            <Users aria-hidden="true" className="size-4" />
-            Readers
-          </span>
-        }
-      >
-        {readersQuery.isLoading && readers.length === 0 ? (
-          <div className="flex items-center justify-center py-16 text-sm text-neutral-400">
-            Loading readers...
-          </div>
-        ) : readers.length === 0 ? (
-          <ReaderEmptyState />
-        ) : (
-          <div>
-            {readers.map((reader) => (
-              <ReaderItem data={reader} key={reader._key} />
-            ))}
-          </div>
+    <section className="flex h-full min-h-0 flex-col bg-white dark:bg-neutral-950">
+      <div
+        className={cn(
+          'flex shrink-0 items-center justify-between gap-3 border-b border-neutral-200 px-4 dark:border-neutral-800',
+          APP_SHELL_HEADER_HEIGHT_CLASS,
         )}
+      >
+        <div className="min-w-0">
+          <h2 className="inline-flex items-center gap-2 text-sm font-medium text-neutral-950 dark:text-neutral-50">
+            <Users aria-hidden="true" className="size-4" />
+            读者
+          </h2>
+        </div>
+        <span className="text-xs text-neutral-500 dark:text-neutral-400">
+          {pagination ? `${pagination.total} 位` : '加载中'}
+        </span>
+      </div>
 
-        {pagination && pagination.totalPages > 1 ? (
-          <div className="flex items-center justify-between border-t border-neutral-200 px-4 py-3 text-sm text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
-            <span>
-              Page {pagination.page} / {pagination.totalPages}
-            </span>
-            <div className="flex gap-2">
-              <Button
-                disabled={page <= 1}
-                onClick={() => setPage((current) => Math.max(1, current - 1))}
-                type="button"
-                variant="subtle"
-              >
-                Previous
-              </Button>
-              <Button
-                disabled={page >= pagination.totalPages}
-                onClick={() =>
-                  setPage((current) =>
-                    Math.min(pagination.totalPages, current + 1),
-                  )
-                }
-                type="button"
-                variant="subtle"
-              >
-                Next
-              </Button>
+      <div className="min-h-0 flex-1 overflow-y-auto" ref={scrollContainerRef}>
+        <div className="mx-auto max-w-4xl">
+          {readersQuery.isLoading && readers.length === 0 ? (
+            <div className="flex items-center justify-center py-16 text-sm text-neutral-400">
+              Loading readers...
             </div>
-          </div>
-        ) : null}
-      </Panel>
-    </div>
+          ) : readers.length === 0 ? (
+            <ReaderEmptyState />
+          ) : (
+            <div>
+              {readers.map((reader) => (
+                <ReaderItem data={reader} key={reader._key} />
+              ))}
+              {hasNextPage ? <div ref={loadMoreRef} /> : null}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {pagination ? (
+        <div className="flex shrink-0 items-center justify-between border-t border-neutral-200 px-4 py-3 text-sm text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
+          <span>
+            已加载 {readers.length} / {pagination.total}
+          </span>
+          <Button
+            disabled={!hasNextPage || readersQuery.isFetching}
+            onClick={() => {
+              if (hasNextPage) setPage((current) => current + 1)
+            }}
+            type="button"
+            variant="subtle"
+          >
+            {readersQuery.isFetching ? (
+              <Loader2 aria-hidden="true" className="size-4 animate-spin" />
+            ) : null}
+            {hasNextPage ? '加载更多' : '已全部加载'}
+          </Button>
+        </div>
+      ) : null}
+    </section>
   )
 }
 

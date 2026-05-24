@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<title>丁 · Card-Bento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #f2f2f6;          /* iOS-system gray bg */
+    --surface: #ffffff;
+    --border: rgba(0,0,0,0.06);
+    --ink: #1d1d1f;          /* Apple near-black */
+    --ink-2: #1d1d1f;
+    --muted: #6e6e73;
+    --faint: #aeaeb2;
+    --accent: #007aff;       /* SF blue */
+    --accent-soft: rgba(0,122,255,0.1);
+    --green: #34c759;
+    --orange: #ff9500;
+    --red: #ff3b30;
+    --pink: #ff2d55;
+    --indigo: #5856d6;
+    --teal: #5ac8fa;
+    --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 14px rgba(0,0,0,0.06);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', -apple-system, system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  .app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+
+  /* ─ sidebar ─ */
+  .side {
+    background: transparent;
+    padding: 24px 16px;
+    position: sticky; top: 0; height: 100vh;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .brand {
+    font-size: 18px; font-weight: 600;
+    color: var(--ink); padding: 4px 12px 24px;
+    display: flex; align-items: center; gap: 10px;
+    letter-spacing: -0.02em;
+  }
+  .brand .icon {
+    width: 26px; height: 26px; border-radius: 7px;
+    background: var(--accent);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 14px; font-weight: 600;
+  }
+  .nav-group { font-size: 12px; color: var(--muted); padding: 16px 12px 4px; font-weight: 500; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; font-size: 14px; color: var(--ink);
+    border-radius: 8px; cursor: default;
+  }
+  .nav-item:hover { background: rgba(0,0,0,0.04); }
+  .nav-item.active {
+    background: var(--accent); color: #fff;
+  }
+  .nav-item .ic {
+    width: 22px; height: 22px;
+    border-radius: 5px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 12px; font-weight: 600;
+    flex: none;
+  }
+  .nav-item.active .ic { background: rgba(255,255,255,0.2); }
+  .nav-item .badge {
+    margin-left: auto; font-size: 12px;
+    color: var(--muted);
+    background: rgba(0,0,0,0.06); padding: 1px 8px; border-radius: 99px;
+  }
+  .nav-item.active .badge { background: rgba(255,255,255,0.25); color: #fff; }
+
+  /* ─ main ─ */
+  .main { padding: 32px 40px 64px; max-width: 1240px; }
+  .topbar {
+    display: flex; align-items: center; margin-bottom: 24px;
+    gap: 12px;
+  }
+  h1 {
+    font-size: 28px; font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.02em;
+  }
+  .subtitle { color: var(--muted); margin: 4px 0 0; font-size: 14px; }
+  .topbar .spacer { flex: 1; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border-radius: 10px;
+    font-size: 14px; font-weight: 600;
+    cursor: default; border: none;
+    background: var(--surface); color: var(--ink);
+    box-shadow: var(--shadow);
+    height: 36px;
+  }
+  .btn.primary { background: var(--accent); color: #fff; box-shadow: 0 4px 14px rgba(0,122,255,0.3); }
+
+  /* ─ bento grid ─ */
+  .bento {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 16px;
+    grid-auto-flow: row dense;
+  }
+  .card {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: var(--shadow);
+  }
+  .card h3 {
+    font-size: 13px; font-weight: 600;
+    color: var(--muted);
+    margin: 0 0 14px;
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .card h3 .ic {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: 6px;
+    color: #fff; font-size: 11px; font-weight: 700;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+
+  .span-2 { grid-column: span 2; }
+  .span-3 { grid-column: span 3; }
+  .span-4 { grid-column: span 4; }
+  .span-6 { grid-column: span 6; }
+
+  /* stat-card */
+  .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .stat {
+    padding: 4px 0;
+  }
+  .stat .v {
+    font-size: 32px; font-weight: 700;
+    letter-spacing: -0.02em; line-height: 1.1;
+    color: var(--ink);
+  }
+  .stat .l {
+    font-size: 13px; color: var(--muted);
+    margin-top: 4px;
+  }
+  .stat .d {
+    font-size: 12px; color: var(--green);
+    margin-top: 2px; font-weight: 500;
+  }
+  .stat .d.down { color: var(--red); }
+  .stat .d.neutral { color: var(--muted); }
+
+  /* sparkline mock */
+  .sparkline {
+    height: 60px; margin: 4px 0 0;
+    background: linear-gradient(to top, var(--accent-soft) 0%, transparent 100%);
+    position: relative;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .sparkline svg { width: 100%; height: 100%; display: block; }
+
+  /* recent posts mini list */
+  .mini-list { display: flex; flex-direction: column; }
+  .mini-row {
+    padding: 12px 0;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .mini-row:first-of-type { border-top: none; }
+  .mini-row .t {
+    flex: 1; font-weight: 500; color: var(--ink);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .mini-row .m { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .mini-row .badge {
+    font-size: 11px; padding: 2px 8px; border-radius: 6px;
+    background: rgba(0,0,0,0.05); color: var(--muted);
+    font-weight: 500;
+  }
+  .mini-row .badge.live { background: rgba(52,199,89,0.12); color: #1a7d3a; }
+  .mini-row .badge.draft { background: rgba(255,149,0,0.12); color: #b35900; }
+  .mini-row .badge.pinned { background: rgba(88,86,214,0.12); color: var(--indigo); }
+
+  /* activity */
+  .act { padding: 8px 0; border-top: 1px solid var(--border); display: flex; gap: 10px; align-items: flex-start; }
+  .act:first-of-type { border-top: none; }
+  .act .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green); margin-top: 8px; flex: none;
+  }
+  .act .dot.blue { background: var(--accent); }
+  .act .dot.purple { background: var(--indigo); }
+  .act .dot.orange { background: var(--orange); }
+  .act .main-text { font-size: 13.5px; color: var(--ink); }
+  .act .sub-text { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* health card */
+  .health-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 6px 0;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .health-row:first-of-type { border-top: none; }
+  .health-row .lbl { color: var(--muted); }
+  .health-row .val { font-weight: 500; color: var(--ink); }
+  .health-row .val.ok { color: var(--green); }
+
+  /* link footer of card */
+  .card-foot {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    font-size: 13px; font-weight: 500;
+    color: var(--accent);
+    cursor: default;
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ───── sidebar ───── -->
+  <aside class="side">
+    <div class="brand"><span class="icon">M</span> mx-admin</div>
+
+    <div class="nav-group">Content</div>
+    <div class="nav-item active">
+      <span class="ic" style="background:var(--accent)">⌂</span>
+      Today
+    </div>
+    <div class="nav-item">
+      <span class="ic" style="background:var(--orange)">▤</span>
+      Posts
+      <span class="badge">171</span>
+    </div>
+    <div class="nav-item">
+      <span class="ic" style="background:var(--teal)">▤</span>
+      Notes
+      <span class="badge">42</span>
+    </div>
+    <div class="nav-item">
+      <span class="ic" style="background:var(--pink)">▤</span>
+      Pages
+    </div>
+    <div class="nav-item">
+      <span class="ic" style="background:var(--green)">↩</span>
+      Comments
+      <span class="badge">3</span>
+    </div>
+
+    <div class="nav-group">Assets</div>
+    <div class="nav-item">
+      <span class="ic" style="background:var(--indigo)">⊞</span>
+      Files
+    </div>
+    <div class="nav-item">
+      <span class="ic" style="background:#af52de">⊞</span>
+      Projects
+    </div>
+
+    <div class="nav-group">Intelligence</div>
+    <div class="nav-item">
+      <span class="ic" style="background:#ffcc00">⊕</span>
+      Apprentice
+      <span class="badge">2</span>
+    </div>
+
+    <div class="nav-group">System</div>
+    <div class="nav-item">
+      <span class="ic" style="background:var(--muted)">⚙</span>
+      Settings
+    </div>
+  </aside>
+
+  <!-- ───── main ───── -->
+  <main class="main">
+
+    <div class="topbar">
+      <div>
+        <h1>Today</h1>
+        <p class="subtitle">Saturday · the 23rd of May · 7 entries since midnight</p>
+      </div>
+      <div class="spacer"></div>
+      <span class="btn">⌘K</span>
+      <span class="btn primary">+ New post</span>
+    </div>
+
+    <div class="bento">
+
+      <!-- BIG stats card -->
+      <div class="card span-4">
+        <h3><span class="ic" style="background:var(--accent)">↗</span>This week's reads</h3>
+        <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:8px">
+          <div style="font-size:42px;font-weight:700;letter-spacing:-0.02em;line-height:1">14,328</div>
+          <div style="color:var(--green);font-weight:500;font-size:14px">↑ 12.4% vs last week</div>
+        </div>
+        <div class="sparkline">
+          <svg viewBox="0 0 300 60" preserveAspectRatio="none">
+            <polyline points="0,42 30,38 60,40 90,30 120,32 150,18 180,22 210,15 240,20 270,10 300,8"
+              fill="none" stroke="#007aff" stroke-width="2" stroke-linejoin="round" />
+            <polyline points="0,42 30,38 60,40 90,30 120,32 150,18 180,22 210,15 240,20 270,10 300,8 300,60 0,60"
+              fill="rgba(0,122,255,0.12)" stroke="none" />
+          </svg>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:8px">
+          <span>May 17</span><span>May 18</span><span>May 19</span><span>May 20</span><span>May 21</span><span>May 22</span><span>May 23</span>
+        </div>
+      </div>
+
+      <!-- small stats stack -->
+      <div class="card span-2">
+        <h3><span class="ic" style="background:var(--green)">○</span>Now reading</h3>
+        <div style="font-size:42px;font-weight:700;letter-spacing:-0.02em;line-height:1;margin-bottom:6px">12</div>
+        <div style="color:var(--muted);font-size:13px">across 3 posts · realtime</div>
+        <div class="card-foot">View readers →</div>
+      </div>
+
+      <!-- recent posts -->
+      <div class="card span-4">
+        <h3><span class="ic" style="background:var(--orange)">▤</span>Recent posts</h3>
+        <div class="mini-list">
+          <div class="mini-row">
+            <span class="t">The Garden, after rain</span>
+            <span class="badge draft">Draft</span>
+            <span class="m">23:47</span>
+          </div>
+          <div class="mini-row">
+            <span class="t">AI 时代的效率悖论</span>
+            <span class="badge live">Live</span>
+            <span class="m">2,137</span>
+          </div>
+          <div class="mini-row">
+            <span class="t">Migration #6 — Drawer mechanics</span>
+            <span class="badge">Published</span>
+            <span class="m">1,204</span>
+          </div>
+          <div class="mini-row">
+            <span class="t">On Lavender and the choice of accent</span>
+            <span class="badge pinned">Pinned</span>
+            <span class="m">812</span>
+          </div>
+        </div>
+        <div class="card-foot">All 171 posts →</div>
+      </div>
+
+      <!-- drafts -->
+      <div class="card span-2">
+        <h3><span class="ic" style="background:var(--orange)">✎</span>Drafts</h3>
+        <div style="font-size:42px;font-weight:700;letter-spacing:-0.02em;line-height:1;margin-bottom:6px">3</div>
+        <div style="color:var(--muted);font-size:13px;margin-bottom:8px">2 stale &gt; 14 days</div>
+        <div style="border-top:1px solid var(--border);padding-top:10px;font-size:13px;color:var(--ink)">
+          ✦ The Garden, after rain <span style="color:var(--muted)">· 3 min</span>
+        </div>
+      </div>
+
+      <!-- activity -->
+      <div class="card span-3">
+        <h3><span class="ic" style="background:var(--indigo)">⟲</span>Activity</h3>
+        <div class="act">
+          <div class="dot"></div>
+          <div>
+            <div class="main-text">New comment on <strong>Hello world</strong></div>
+            <div class="sub-text">bekka@example.com · 21:12</div>
+          </div>
+        </div>
+        <div class="act">
+          <div class="dot blue"></div>
+          <div>
+            <div class="main-text">Autosaved <strong>The Garden, after rain</strong></div>
+            <div class="sub-text">3 min ago</div>
+          </div>
+        </div>
+        <div class="act">
+          <div class="dot purple"></div>
+          <div>
+            <div class="main-text">Apprentice finished <strong>summarising 4 entries</strong></div>
+            <div class="sub-text">2 h ago · exit 0</div>
+          </div>
+        </div>
+        <div class="act">
+          <div class="dot orange"></div>
+          <div>
+            <div class="main-text">Published <strong>Migration #6</strong></div>
+            <div class="sub-text">May 22 · 15:08</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- system health -->
+      <div class="card span-3">
+        <h3><span class="ic" style="background:var(--green)">●</span>System</h3>
+        <div class="health-row"><span class="lbl">Core</span><span class="val">v6.4.2</span></div>
+        <div class="health-row"><span class="lbl">Health</span><span class="val ok">● healthy</span></div>
+        <div class="health-row"><span class="lbl">Last backup</span><span class="val">6 h ago</span></div>
+        <div class="health-row"><span class="lbl">Realtime</span><span class="val ok">● connected</span></div>
+        <div class="health-row"><span class="lbl">Apprentice queue</span><span class="val">2 running</span></div>
+        <div class="card-foot">System details →</div>
+      </div>
+
+    </div>
+
+  </main>
+
+</div>
+
+</body>
+</html>

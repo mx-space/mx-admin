@@ -8,6 +8,7 @@ import type { ReactNode } from 'react'
 
 import { API_URL, bgUrl } from '~/app/constants/env'
 import { SESSION_WITH_LOGIN } from '~/app/constants/keys'
+import { useI18n } from '~/app/i18n'
 import { authClient } from '~/app/utils/authjs/auth'
 
 import { getJson } from '../api/http'
@@ -30,6 +31,7 @@ const allowLoginQueryKey = ['login', 'allow-login'] as const
 const initQueryKey = ['login', 'init'] as const
 
 export function LoginPage() {
+  const { t } = useI18n()
   const inputRef = useRef<HTMLInputElement>(null)
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -93,7 +95,7 @@ export function LoginPage() {
 
   const postSuccessfulLogin = () => {
     sessionStorage.setItem(SESSION_WITH_LOGIN, '1')
-    toast.success('欢迎回来')
+    toast.success(t('auth.login.welcomeBack'))
     navigate(fromPath, { replace: true })
   }
 
@@ -103,7 +105,7 @@ export function LoginPage() {
 
     const username = owner?.username || owner?.handle
     if (!username) {
-      toast.error('主人用户名无法获取')
+      toast.error(t('auth.login.ownerUsernameMissing'))
       return
     }
 
@@ -116,13 +118,13 @@ export function LoginPage() {
       })
 
       if (result.error) {
-        toast.error(result.error.message || '登录失败')
+        toast.error(result.error.message || t('auth.login.failed'))
         return
       }
 
       postSuccessfulLogin()
     } catch (error) {
-      toast.error(readErrorMessage(error, '登录失败'))
+      toast.error(readErrorMessage(error, t('auth.login.failed')))
     } finally {
       setIsLoggingIn(false)
     }
@@ -133,14 +135,14 @@ export function LoginPage() {
       const result = await authClient.signIn.passkey()
 
       if (result.error) {
-        toast.error(result.error.message || 'Passkey 验证失败')
+        toast.error(result.error.message || t('auth.login.passkeyFailed'))
         return
       }
 
-      toast.success('Passkey 验证成功')
+      toast.success(t('auth.login.passkeySucceeded'))
       postSuccessfulLogin()
     } catch (error) {
-      toast.error(readErrorMessage(error, 'Passkey 验证失败'))
+      toast.error(readErrorMessage(error, t('auth.login.passkeyFailed')))
     }
   }
 
@@ -183,7 +185,7 @@ export function LoginPage() {
         {showPasswordInput ? (
           <form className="w-full max-w-[280px]" onSubmit={handlePasswordLogin}>
             <label className="sr-only" htmlFor="password-input">
-              密码
+              {t('auth.login.passwordLabel')}
             </label>
             <div className="relative">
               <TextInput
@@ -192,13 +194,13 @@ export function LoginPage() {
                 disabled={isLoggingIn}
                 id="password-input"
                 onChange={setPassword}
-                placeholder="输入密码"
+                placeholder={t('auth.login.passwordPlaceholder')}
                 ref={inputRef}
                 type="password"
                 value={password}
               />
               <button className="sr-only" type="submit">
-                登录
+                {t('auth.login.submit')}
               </button>
             </div>
           </form>
@@ -208,16 +210,16 @@ export function LoginPage() {
           <div className="mt-6 flex justify-center gap-4">
             {settings?.passkey ? (
               <LoginIconButton
-                label="使用 Passkey 登录"
+                label={t('auth.login.passkey')}
                 onClick={handlePasskeyLogin}
               >
-                <KeyRound aria-hidden="true" className="size-4" />
+                <KeyRound aria-hidden="true" className="!size-5" />
               </LoginIconButton>
             ) : null}
 
             {settings?.github ? (
               <LoginIconButton
-                label="使用 GitHub 登录"
+                label={t('auth.login.github')}
                 onClick={() => handleSocialLogin('github')}
               >
                 <GithubIcon />
@@ -226,7 +228,7 @@ export function LoginPage() {
 
             {settings?.google ? (
               <LoginIconButton
-                label="使用 Google 登录"
+                label={t('auth.login.google')}
                 onClick={() => handleSocialLogin('google')}
               >
                 <GoogleIcon />
@@ -238,7 +240,7 @@ export function LoginPage() {
         {ownerQuery.isLoading || allowLoginQuery.isLoading ? (
           <div className="mt-6 flex items-center gap-2 text-xs text-white/70">
             <Loader2 aria-hidden="true" className="size-3.5 animate-spin" />
-            Loading authentication profile
+            {t('auth.login.loadingProfile')}
           </div>
         ) : null}
       </section>
@@ -254,7 +256,7 @@ function LoginIconButton(props: {
   return (
     <Button
       aria-label={props.label}
-      className="size-9 rounded-full border-white/10 bg-white/15 p-0 text-white/80 backdrop-blur-sm hover:bg-white/25 hover:text-white focus-visible:ring-white/50 dark:border-white/10 dark:bg-white/15 dark:text-white/80 dark:hover:bg-white/25"
+      className="!size-10 rounded-full border-white/10 bg-white/15 !p-0 text-white/80 backdrop-blur-sm hover:bg-white/25 hover:text-white focus-visible:ring-white/50 dark:border-white/10 dark:bg-white/15 dark:text-white/80 dark:hover:bg-white/25"
       onClick={props.onClick}
       type="button"
       variant="subtle"
@@ -267,7 +269,7 @@ function LoginIconButton(props: {
 const GithubIcon = () => (
   <svg
     aria-hidden="true"
-    className="size-4"
+    className="!size-5"
     fill="currentColor"
     viewBox="0 0 24 24"
   >
@@ -278,7 +280,7 @@ const GithubIcon = () => (
 const GoogleIcon = () => (
   <svg
     aria-hidden="true"
-    className="size-4"
+    className="!size-5"
     fill="currentColor"
     viewBox="0 0 24 24"
   >

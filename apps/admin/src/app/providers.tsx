@@ -2,6 +2,7 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'sonner'
 import type { PropsWithChildren } from 'react'
 
+import { I18nProvider } from './i18n'
 import { queryClient } from './query-client'
 import { useThemeMode } from './theme'
 
@@ -10,7 +11,7 @@ export function AppProviders(props: PropsWithChildren) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {props.children}
+      <I18nProvider>{props.children}</I18nProvider>
       <Toaster
         closeButton
         gap={12}

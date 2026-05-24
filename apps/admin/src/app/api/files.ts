@@ -1,3 +1,5 @@
+import { API_URL } from '~/app/constants/env'
+
 import { deleteJson, getJson, patchJson, requestJson } from './http'
 
 export interface FileItem {
@@ -83,6 +85,47 @@ export function uploadFile(file: File, type?: FileType) {
   })
 }
 
+export function uploadFileWithProgress(
+  file: File,
+  options: {
+    onProgress: (progress: number) => void
+    type?: FileType
+  },
+) {
+  const formData = new FormData()
+  formData.append('file', file)
+
+  const query = options.type ? `?type=${encodeURIComponent(options.type)}` : ''
+
+  return new Promise<UploadResponse>((resolve, reject) => {
+    const xhr = new XMLHttpRequest()
+
+    xhr.open('POST', `${API_URL}/files/upload${query}`)
+    xhr.withCredentials = true
+    xhr.setRequestHeader('x-skip-translation', '1')
+
+    xhr.upload.onprogress = (event) => {
+      if (!event.lengthComputable) return
+      options.onProgress(Math.round((event.loaded / event.total) * 100))
+    }
+
+    xhr.onload = () => {
+      const responseData = readXhrJson(xhr.responseText)
+
+      if (xhr.status < 200 || xhr.status >= 300) {
+        reject(new Error(readXhrError(responseData, xhr.statusText)))
+        return
+      }
+
+      options.onProgress(100)
+      resolve(readUploadResponse(responseData))
+    }
+
+    xhr.onerror = () => reject(new Error('上传失败'))
+    xhr.send(formData)
+  })
+}
+
 export function updateFile(type: FileType, name: string, file: File) {
   const formData = new FormData()
   formData.append('file', file)
@@ -149,4 +192,38 @@ export function getCommentUploads(params: {
 
 export function deleteCommentUpload(id: string) {
   return deleteJson<{ storageRemoved: boolean }>(`/files/comment-uploads/${id}`)
+}
+
+function readXhrJson(text: string) {
+  try {
+    return JSON.parse(text) as unknown
+  } catch {
+    return null
+  }
+}
+
+function readUploadResponse(responseData: unknown): UploadResponse {
+  if (
+    responseData &&
+    typeof responseData === 'object' &&
+    'data' in responseData
+  ) {
+    return (responseData as { data: UploadResponse }).data
+  }
+
+  return responseData as UploadResponse
+}
+
+function readXhrError(responseData: unknown, fallback: string) {
+  if (!responseData || typeof responseData !== 'object') return fallback
+
+  const message =
+    'error' in responseData
+      ? (responseData as { error?: { message?: string | string[] } }).error
+          ?.message
+      : 'message' in responseData
+        ? (responseData as { message?: string | string[] }).message
+        : undefined
+
+  return Array.isArray(message) ? message.join(', ') : (message ?? fallback)
 }

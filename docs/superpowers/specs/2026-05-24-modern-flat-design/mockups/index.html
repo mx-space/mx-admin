@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<title>Modern Flat — 六向脑暴</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: #f5f5f5;
+    color: #111;
+    padding: 48px 64px;
+    line-height: 1.6;
+  }
+  h1 { font-size: 26px; font-weight: 600; margin: 0 0 8px; letter-spacing: -0.01em; }
+  .lede { color: #555; margin: 0 0 32px; font-size: 14.5px; max-width: 62ch; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 1400px; }
+  .card {
+    background: #fff;
+    border: 1px solid #e3e3e3;
+    border-radius: 10px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 200ms ease, box-shadow 200ms ease;
+    display: flex;
+    flex-direction: column;
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(0,0,0,0.08); }
+  .preview { height: 180px; padding: 14px; font-size: 9.5px; line-height: 1.4; overflow: hidden; position: relative; }
+  .body { padding: 18px 20px 20px; }
+  .name { font-size: 15px; font-weight: 600; margin: 0 0 4px; }
+  .tag { font-size: 12.5px; color: #6b7280; margin: 0 0 12px; line-height: 1.5; }
+  .swatches { display: flex; gap: 6px; margin-bottom: 8px; }
+  .sw { width: 18px; height: 18px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.08); }
+  .recommend { font-size: 10.5px; color: #10b981; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; }
+  .badge-new { font-size: 9.5px; color: #fff; background: #ef4444; padding: 1px 5px; border-radius: 2px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; }
+
+  /* ───── A · soft-pro ───── */
+  .pv-a { background: #fafbfc; color: #1f2937; display: grid; grid-template-columns: 56px 1fr; gap: 8px; }
+  .pv-a .side { background: #ffffff; border-right: 1px solid #e4e7eb; padding: 8px 6px; font-size: 8.5px; }
+  .pv-a .side div { margin-bottom: 4px; }
+  .pv-a .side .active { background: #eef2ff; color: #4f46e5; padding: 2px 4px; border-radius: 3px; font-weight: 600; }
+  .pv-a .main { padding: 6px 8px 0; }
+  .pv-a .main h4 { margin: 0 0 6px; font-size: 11px; font-weight: 600; }
+  .pv-a .stat { display: flex; gap: 8px; font-size: 8.5px; color: #6b7280; }
+  .pv-a .row { border-top: 1px solid #f3f4f6; padding: 3px 0; font-size: 9px; }
+
+  /* ───── B · mono-editorial ───── */
+  .pv-b { background: #fafafa; color: #0a0a0a; padding: 0; }
+  .pv-b .topnav { padding: 8px 12px; border-bottom: 1px solid #1a1a1a; font-size: 8.5px; letter-spacing: 0.18em; text-transform: uppercase; display: flex; gap: 12px; }
+  .pv-b .topnav .active { font-weight: 600; }
+  .pv-b .topnav .dim { opacity: 0.4; }
+  .pv-b .content { padding: 12px 14px; }
+  .pv-b .label { font-size: 8.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #525252; margin-bottom: 6px; }
+  .pv-b .entry { padding: 6px 0; border-top: 1px solid #0a0a0a; font-size: 10px; font-weight: 500; display: flex; justify-content: space-between; align-items: center; }
+  .pv-b .dot { width: 6px; height: 6px; border-radius: 50%; background: #10b981; display: inline-block; margin-left: 6px; }
+  .pv-b .meta { font-size: 8px; color: #525252; }
+
+  /* ───── C · console-light ───── */
+  .pv-c { background: #ffffff; color: #18181b; display: grid; grid-template-columns: 44px 1fr; gap: 0; font-family: 'Inter', system-ui; font-size: 9px; }
+  .pv-c .side { background: #fafafa; border-right: 1px solid #e5e5e5; padding: 6px 6px; font-size: 8px; }
+  .pv-c .side div { margin-bottom: 3px; opacity: 0.7; }
+  .pv-c .side .active { background: transparent; color: #18181b; font-weight: 600; opacity: 1; }
+  .pv-c .side .active::before { content: '▸'; color: #f59e0b; margin-right: 2px; }
+  .pv-c .main { padding: 6px 8px 0; }
+  .pv-c table { width: 100%; border-collapse: collapse; }
+  .pv-c th, .pv-c td { text-align: left; padding: 3px 2px; font-size: 8.5px; border-bottom: 1px solid #f4f4f5; }
+  .pv-c th { font-size: 7.5px; text-transform: uppercase; color: #71717a; letter-spacing: 0.06em; font-weight: 500; }
+  .pv-c .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  .pv-c .amber { color: #b45309; }
+
+  /* ───── D · bento ───── */
+  .pv-d { background: #f2f2f6; color: #1d1d1f; padding: 8px; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 60px 50px 50px; gap: 6px; }
+  .pv-d .bc {
+    background: #fff; border-radius: 8px; padding: 6px 8px;
+    font-size: 8.5px; line-height: 1.3;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .pv-d .big {
+    grid-column: span 2;
+    display: flex; align-items: baseline; gap: 6px;
+  }
+  .pv-d .big .v { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; }
+  .pv-d .big .lbl { font-size: 8px; color: #6e6e73; text-transform: uppercase; letter-spacing: 0.08em; }
+  .pv-d .lbl { font-size: 7.5px; color: #6e6e73; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px; }
+  .pv-d .v-mid { font-size: 13px; font-weight: 700; }
+  .pv-d .blue { color: #007aff; }
+  .pv-d .green { color: #34c759; }
+
+  /* ───── E · warm-dark ───── */
+  .pv-e { background: #18171a; color: #ece9e3; display: grid; grid-template-columns: 52px 1fr; gap: 0; }
+  .pv-e .side { background: #1f1d20; border-right: 1px solid #2e2c33; padding: 6px 6px; font-size: 8px; color: #d4d1cb; }
+  .pv-e .side div { margin-bottom: 4px; opacity: 0.65; }
+  .pv-e .side .active {
+    background: rgba(212,165,116,0.12);
+    color: #e9b986; opacity: 1; font-weight: 500;
+    padding: 1px 4px; border-radius: 3px;
+  }
+  .pv-e .main { padding: 7px 9px 0; }
+  .pv-e h4 { font-size: 11px; font-weight: 600; margin: 0 0 4px; }
+  .pv-e .lede { color: #8a847a; font-size: 8px; margin: 0 0 8px; }
+  .pv-e .row {
+    background: #1f1d20; border: 1px solid #2e2c33; border-radius: 4px;
+    padding: 3px 5px; margin-bottom: 3px;
+    display: flex; justify-content: space-between;
+    font-size: 8.5px;
+  }
+  .pv-e .row .b {
+    background: rgba(212,165,116,0.12); color: #d4a574;
+    font-size: 6.5px; padding: 0 4px; border-radius: 2px;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    font-weight: 600;
+  }
+  .pv-e .row .b.live { background: rgba(127,176,105,0.12); color: #7fb069; }
+
+  /* ───── F · brand-bold ───── */
+  .pv-f { background: #ffffff; color: #000; padding: 0; position: relative; overflow: hidden; }
+  .pv-f .stripe {
+    position: absolute; top: 0; right: -30px; width: 80px; height: 100%;
+    background: linear-gradient(135deg, #f97316 0%, #f97316 60%, transparent 100%);
+    opacity: 0.15;
+    transform: skewX(-12deg);
+  }
+  .pv-f .topnav {
+    padding: 6px 10px; border-bottom: 1px solid #000;
+    display: flex; gap: 10px; font-size: 8px; font-weight: 600;
+  }
+  .pv-f .topnav .brand { font-weight: 800; }
+  .pv-f .topnav .active { border-bottom: 2px solid #f97316; padding-bottom: 1px; }
+  .pv-f .content { padding: 10px 12px; position: relative; z-index: 1; }
+  .pv-f .eb { font-size: 7px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #f97316; margin-bottom: 3px; }
+  .pv-f h2 { margin: 0 0 4px; font-size: 17px; font-weight: 800; letter-spacing: -0.025em; line-height: 1; }
+  .pv-f h2 .acc { color: #f97316; }
+  .pv-f .stats {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+    border: 1px solid #000; margin-top: 8px;
+  }
+  .pv-f .stats .c {
+    padding: 4px 6px;
+    border-right: 1px solid #000;
+    font-size: 9px;
+  }
+  .pv-f .stats .c:last-child { border-right: none; }
+  .pv-f .stats .v { font-weight: 800; font-size: 13px; letter-spacing: -0.02em; }
+  .pv-f .stats .lbl { font-size: 7px; color: #525252; text-transform: uppercase; letter-spacing: 0.08em; }
+
+  .footer { margin-top: 56px; max-width: 1400px; color: #6b7280; font-size: 12.5px; line-height: 1.7; }
+  .footer strong { color: #111; }
+  a { color: inherit; text-decoration: none; }
+
+  .section-h {
+    font-size: 11.5px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: #6b7280;
+    margin: 32px 0 14px;
+    font-weight: 600;
+  }
+  .section-h:first-of-type { margin-top: 0; }
+</style>
+</head>
+<body>
+
+<h1>Modern Flat — 六向脑暴</h1>
+<p class="lede">皆扁平、皆线条、皆 modern；皆离 Linear。点卡入全页 mockup（含 sidebar/nav · stats · posts list · filter · pagination）。</p>
+
+<div class="section-h">前三向 · 沿 modern admin 之常族</div>
+
+<div class="grid">
+
+  <a class="card" href="./soft-pro.html">
+    <div class="preview pv-a">
+      <div class="side">
+        <div>⌂ Today</div>
+        <div class="active">◳ Posts</div>
+        <div>◳ Notes</div>
+        <div>⊟ Files</div>
+        <div>⚙</div>
+      </div>
+      <div class="main">
+        <h4>Posts</h4>
+        <div class="stat">3 drafts · 168 published</div>
+        <div class="row">☐ AI 时代的效率悖论 · May 23</div>
+        <div class="row">☐ Migration #6 · May 22</div>
+        <div class="row">☐ Lavender · May 21</div>
+      </div>
+    </div>
+    <div class="body">
+      <div class="swatches">
+        <div class="sw" style="background:#ffffff"></div>
+        <div class="sw" style="background:#fafbfc"></div>
+        <div class="sw" style="background:#e4e7eb"></div>
+        <div class="sw" style="background:#1f2937"></div>
+        <div class="sw" style="background:#4f46e5"></div>
+      </div>
+      <div class="name">甲 · 软光 Pro</div>
+      <div class="tag">Stripe / Notion-clean 之味。Light · indigo accent · sidebar · medium density · 1px hairline · 6px radius · Inter.</div>
+    </div>
+  </a>
+
+  <a class="card" href="./mono-editorial.html">
+    <div class="preview pv-b">
+      <div class="topnav">
+        <span class="dim">TODAY</span>
+        <span class="active">POSTS</span>
+        <span class="dim">NOTES</span>
+        <span class="dim">FILES</span>
+        <span class="dim">AI</span>
+      </div>
+      <div class="content">
+        <div class="label">POSTS · 171</div>
+        <div class="entry">AI 时代的效率悖论 <span class="meta">May 23</span></div>
+        <div class="entry">Migration #6 <span class="meta">May 22</span></div>
+        <div class="entry">Lavender accent <span class="dot"></span><span class="meta" style="margin-left:auto;padding-left:6px">May 21</span></div>
+      </div>
+    </div>
+    <div class="body">
+      <div class="swatches">
+        <div class="sw" style="background:#fafafa"></div>
+        <div class="sw" style="background:#0a0a0a"></div>
+        <div class="sw" style="background:#525252"></div>
+        <div class="sw" style="background:#10b981"></div>
+        <div class="sw" style="background:transparent;border-style:dashed"></div>
+      </div>
+      <div class="name">乙 · 单色编辑型 <span class="recommend">荐</span></div>
+      <div class="tag">Are.na / It's Nice That 之味。Off-white · ONE saturated accent (status 之独点) · top tab nav · sharp corners · high whitespace · type-driven.</div>
+    </div>
+  </a>
+
+  <a class="card" href="./console-light.html">
+    <div class="preview pv-c">
+      <div class="side">
+        <div>today</div>
+        <div class="active">posts</div>
+        <div>notes</div>
+        <div>files</div>
+        <div>ai</div>
+        <div>⚙</div>
+      </div>
+      <div class="main">
+        <table>
+          <tr><th>id</th><th>title</th><th>reads</th></tr>
+          <tr><td class="mono">133259</td><td>AI 时代...</td><td class="mono">2,137</td></tr>
+          <tr><td class="mono">132871</td><td>Migration #6</td><td class="mono">1,204</td></tr>
+          <tr><td class="mono">132633</td><td>Lavender</td><td class="mono">812</td></tr>
+          <tr><td class="mono">132540</td><td>Garden ...</td><td class="amber mono">DRAFT</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="body">
+      <div class="swatches">
+        <div class="sw" style="background:#ffffff"></div>
+        <div class="sw" style="background:#fafafa"></div>
+        <div class="sw" style="background:#e5e5e5"></div>
+        <div class="sw" style="background:#18181b"></div>
+        <div class="sw" style="background:#f59e0b"></div>
+      </div>
+      <div class="name">丙 · 密台 Console-Light</div>
+      <div class="tag">Bloomberg-data 与 Vercel-light 之合。Pure white · amber accent · slim sidebar · table-first · Inter 13 + Mono · very dense.</div>
+    </div>
+  </a>
+
+</div>
+
+<div class="section-h">后三向 · 离常族更远 <span class="badge-new" style="margin-left:8px;color:#fff;background:#ef4444">new</span></div>
+
+<div class="grid">
+
+  <a class="card" href="./bento-cards.html">
+    <div class="preview pv-d">
+      <div class="bc big">
+        <span class="v">14,328</span>
+        <span class="lbl">Reads · 7d</span>
+        <span style="margin-left:auto;color:#34c759;font-size:8.5px">↑ 12.4%</span>
+      </div>
+      <div class="bc">
+        <div class="lbl">Now reading</div>
+        <div class="v-mid blue">12</div>
+      </div>
+      <div class="bc">
+        <div class="lbl">Drafts</div>
+        <div class="v-mid">3</div>
+      </div>
+      <div class="bc" style="grid-column:span 2;font-size:7.5px">
+        <div class="lbl" style="margin-bottom:3px">Recent</div>
+        <div>The Garden · <span style="color:#ff9500">Draft</span></div>
+        <div>AI 时代 · <span style="color:#34c759">Live</span> 2,137</div>
+      </div>
+    </div>
+    <div class="body">
+      <div class="swatches">
+        <div class="sw" style="background:#f2f2f6"></div>
+        <div class="sw" style="background:#ffffff"></div>
+        <div class="sw" style="background:#1d1d1f"></div>
+        <div class="sw" style="background:#007aff"></div>
+        <div class="sw" style="background:#34c759"></div>
+        <div class="sw" style="background:#ff9500"></div>
+      </div>
+      <div class="name">丁 · Card-Bento</div>
+      <div class="tag">Apple Settings / macOS Sequoia 之味。Soft rounded cards · 16px radius · 软影 · 多色 accent · sidebar + bento dashboard · 友好系统感.</div>
+    </div>
+  </a>
+
+  <a class="card" href="./warm-dark.html">
+    <div class="preview pv-e">
+      <div class="side">
+        <div>⌂ Today</div>
+        <div class="active">▤ Posts</div>
+        <div>▤ Notes</div>
+        <div>⊟ Files</div>
+        <div>⊕ AI</div>
+        <div>⚙</div>
+      </div>
+      <div class="main">
+        <h4>Posts</h4>
+        <div class="lede">171 · 168 published · 3 drafts</div>
+        <div class="row">
+          <span>The Garden</span><span class="b">Draft</span>
+        </div>
+        <div class="row">
+          <span>AI 时代...</span><span class="b live">Live · 2,137</span>
+        </div>
+        <div class="row">
+          <span>Migration #6</span><span class="b live">1,204</span>
+        </div>
+      </div>
+    </div>
+    <div class="body">
+      <div class="swatches">
+        <div class="sw" style="background:#18171a"></div>
+        <div class="sw" style="background:#1f1d20"></div>
+        <div class="sw" style="background:#ece9e3"></div>
+        <div class="sw" style="background:#d4a574"></div>
+        <div class="sw" style="background:#7fb069"></div>
+      </div>
+      <div class="name">戊 · Warm-Dark Pro</div>
+      <div class="tag">Anthropic console / claude.ai 之味。暖色深底 (不冷灰)·sand 之单 accent·sidebar + spacious·muted sage 之 status.</div>
+    </div>
+  </a>
+
+  <a class="card" href="./brand-bold.html">
+    <div class="preview pv-f">
+      <div class="stripe"></div>
+      <div class="topnav">
+        <span class="brand">M</span>
+        <span>Today</span>
+        <span class="active">Posts</span>
+        <span>Notes</span>
+        <span>AI</span>
+      </div>
+      <div class="content">
+        <div class="eb">Posts · 171</div>
+        <h2>worth<br /><span class="acc">keeping.</span></h2>
+        <div class="stats">
+          <div class="c"><div class="lbl">Reads 7d</div><div class="v">14,328</div></div>
+          <div class="c"><div class="lbl">Drafts</div><div class="v">3</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="body">
+      <div class="swatches">
+        <div class="sw" style="background:#ffffff"></div>
+        <div class="sw" style="background:#000000"></div>
+        <div class="sw" style="background:#f97316"></div>
+        <div class="sw" style="background:#84cc16"></div>
+        <div class="sw" style="background:#06b6d4"></div>
+      </div>
+      <div class="name">己 · Brand-Bold (Vercel-v0)</div>
+      <div class="tag">Vercel-marketing 与 v0 admin 之合。大字 display · 全幅 hero · 多色 brand accent · 强 type contrast · top tab nav · bold-confident.</div>
+    </div>
+  </a>
+
+</div>
+
+<div class="footer">
+  <p><strong>看 mockup 之要：</strong> 注 type weight、color contrast、border thickness、density、chrome 之多寡。六向各为完整一族，无须于 mockup 内逐项调，只看其灵 fit 否。</p>
+  <p><strong>下一步：</strong> 择字 / 混向 / 描汝心中之向。若皆不合，告其特质（"too 冷"、"too dense"、"too dark"、"want X 之 mood"），可再拟。</p>
+</div>
+
+</body>
+</html>

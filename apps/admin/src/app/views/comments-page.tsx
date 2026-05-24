@@ -31,6 +31,8 @@ import {
 import { Button } from '../ui/button'
 import { Checkbox } from '../ui/checkbox'
 import { cn } from '../ui/cn'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
+import { MasterDetailLayout } from '../ui/page-layout'
 import { SelectField } from '../ui/select'
 import { TextArea } from '../ui/text-field'
 
@@ -48,9 +50,14 @@ export function CommentsPage() {
   const [state, setState] = useState(() =>
     normalizeState(searchParams.get('state')),
   )
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState(() => readPage(searchParams.get('page')))
   const [selectedId, setSelectedId] = useState<string | null>(
     searchParams.get('id'),
+  )
+  const [selectedCommentSnapshot, setSelectedCommentSnapshot] =
+    useState<CommentModel | null>(null)
+  const [showDetailOnMobile, setShowDetailOnMobile] = useState(
+    Boolean(searchParams.get('id')),
   )
   const [checkedIds, setCheckedIds] = useState<string[]>([])
   const [selectAllMode, setSelectAllMode] = useState(false)
@@ -63,20 +70,20 @@ export function CommentsPage() {
   const comments = commentsQuery.data?.data ?? []
   const pagination = commentsQuery.data?.pagination
   const selectedComment =
-    comments.find((comment) => comment.id === selectedId) ?? null
+    comments.find((comment) => comment.id === selectedId) ??
+    (selectedCommentSnapshot?.id === selectedId
+      ? selectedCommentSnapshot
+      : null)
 
   useEffect(() => {
     const next = new URLSearchParams()
     next.set('state', String(state))
+    if (page > 1) next.set('page', String(page))
     if (selectedId) next.set('id', selectedId)
-    setSearchParams(next, { replace: true })
-  }, [selectedId, setSearchParams, state])
-
-  useEffect(() => {
-    if (selectedId && comments.length > 0 && !selectedComment) {
-      setSelectedId(null)
+    if (next.toString() !== searchParams.toString()) {
+      setSearchParams(next, { replace: true })
     }
-  }, [comments, selectedComment, selectedId])
+  }, [page, searchParams, selectedId, setSearchParams, state])
 
   const invalidateComments = async () => {
     await queryClient.invalidateQueries({ queryKey: ['comments'] })
@@ -96,6 +103,8 @@ export function CommentsPage() {
     onSuccess: async () => {
       toast.success('删除成功')
       setSelectedId(null)
+      setSelectedCommentSnapshot(null)
+      setShowDetailOnMobile(false)
       await invalidateComments()
     },
   })
@@ -127,6 +136,8 @@ export function CommentsPage() {
       setCheckedIds([])
       setSelectAllMode(false)
       setSelectedId(null)
+      setSelectedCommentSnapshot(null)
+      setShowDetailOnMobile(false)
       await invalidateComments()
     },
   })
@@ -169,162 +180,200 @@ export function CommentsPage() {
     setCheckedIds([])
     setSelectAllMode(false)
     setSelectedId(null)
+    setSelectedCommentSnapshot(null)
+    setShowDetailOnMobile(false)
+  }
+
+  const selectComment = (comment: CommentModel) => {
+    setSelectedId(comment.id)
+    setSelectedCommentSnapshot({ ...comment })
+    setShowDetailOnMobile(true)
+  }
+
+  const confirmDeleteComment = (id: string) => {
+    if (!window.confirm('确定要删除这条评论吗？')) return
+    deleteMutation.mutate(id)
+  }
+
+  const confirmBatchDelete = () => {
+    if (!hasSelection) return
+    if (!window.confirm(`确定要删除选中的 ${selectedCount} 条评论吗？`)) return
+    batchDeleteMutation.mutate()
   }
 
   return (
-    <div className="grid min-h-[calc(100vh-8rem)] grid-cols-1 overflow-hidden rounded border border-neutral-200 bg-white lg:grid-cols-[minmax(320px,0.42fr)_1fr] dark:border-neutral-800 dark:bg-neutral-950">
-      <section className="flex min-h-0 flex-col border-b border-neutral-200 lg:border-b-0 lg:border-r dark:border-neutral-800">
-        <div className="flex min-h-12 items-center justify-between gap-3 border-b border-neutral-200 px-4 dark:border-neutral-800">
-          <div className="flex items-center gap-2">
-            <MessageSquare aria-hidden="true" className="size-4" />
-            <SelectField
-              aria-label="评论状态"
-              options={filters}
-              onValueChange={changeFilter}
-              triggerClassName="h-auto border-0 bg-transparent px-0 text-sm font-medium hover:bg-transparent dark:bg-transparent dark:hover:bg-transparent"
-              value={state}
-            />
-          </div>
-          <span className="text-xs text-neutral-400">
-            {pagination ? `${pagination.total} 条` : 'Comments'}
-          </span>
-        </div>
-
-        {comments.length > 0 ? (
-          <div className="flex flex-wrap items-center gap-2 border-b border-neutral-200 bg-neutral-50 px-4 py-2 text-sm dark:border-neutral-800 dark:bg-neutral-900/40">
-            <Checkbox
-              aria-label="选择当前页评论"
-              checked={allVisibleChecked}
-              indeterminate={hasSelection && !allVisibleChecked}
-              onCheckedChange={toggleVisible}
-            />
-            <span className="text-neutral-500 dark:text-neutral-400">
-              {hasSelection ? `已选 ${selectedCount} 项` : '全选'}
-            </span>
-            {allVisibleChecked &&
-            pagination &&
-            pagination.totalPages > 1 &&
-            !selectAllMode ? (
-              <button
-                className="text-sm text-blue-600 hover:underline dark:text-blue-400"
-                onClick={() => setSelectAllMode(true)}
-                type="button"
-              >
-                选择全部 {pagination.total} 条
-              </button>
-            ) : null}
-          </div>
-        ) : null}
-
-        <div className="min-h-0 flex-1 overflow-y-auto">
-          {commentsQuery.isLoading && comments.length === 0 ? (
-            <div className="flex justify-center py-20">
-              <div className="size-6 animate-spin rounded-full border-2 border-neutral-300 border-t-neutral-950 dark:border-neutral-700 dark:border-t-neutral-100" />
-            </div>
-          ) : comments.length === 0 ? (
-            <CommentEmptyState />
-          ) : (
-            comments.map((comment) => (
-              <CommentListItem
-                checked={checkedSet.has(comment.id)}
-                comment={comment}
-                key={comment.id}
-                onCheck={toggleChecked}
-                onSelect={() => setSelectedId(comment.id)}
-                selected={selectedId === comment.id}
+    <MasterDetailLayout
+      defaultSize={0.42}
+      maxSize={0.5}
+      minSize={0.25}
+      showDetailOnMobile={showDetailOnMobile}
+      list={
+        <section className="flex h-full min-h-0 flex-col">
+          <div
+            className={cn(
+              'flex shrink-0 items-center justify-between gap-3 border-b border-neutral-200 px-4 dark:border-neutral-800',
+              APP_SHELL_HEADER_HEIGHT_CLASS,
+            )}
+          >
+            <div className="flex items-center gap-2">
+              <MessageSquare aria-hidden="true" className="size-4" />
+              <SelectField
+                aria-label="评论状态"
+                options={filters}
+                onValueChange={changeFilter}
+                triggerClassName="h-auto border-0 bg-transparent px-0 text-sm font-medium hover:bg-transparent dark:bg-transparent dark:hover:bg-transparent"
+                value={state}
               />
-            ))
-          )}
-        </div>
-
-        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
-          <div className="flex gap-2">
-            <Button
-              className="h-8 px-2"
-              disabled={!hasSelection || state === CommentState.Read}
-              onClick={() => batchStateMutation.mutate(CommentState.Read)}
-              type="button"
-              variant="subtle"
-            >
-              <CheckCheck aria-hidden="true" className="size-3.5" />
-              已读
-            </Button>
-            <Button
-              className="h-8 px-2"
-              disabled={!hasSelection || state === CommentState.Junk}
-              onClick={() => batchStateMutation.mutate(CommentState.Junk)}
-              type="button"
-              variant="subtle"
-            >
-              <ShieldAlert aria-hidden="true" className="size-3.5" />
-              垃圾
-            </Button>
-            <Button
-              className="h-8 px-2 text-red-600 dark:text-red-400"
-              disabled={!hasSelection}
-              onClick={() => batchDeleteMutation.mutate()}
-              type="button"
-              variant="subtle"
-            >
-              <Trash2 aria-hidden="true" className="size-3.5" />
-              删除
-            </Button>
+            </div>
+            <span className="text-xs text-neutral-400">
+              {pagination ? `${pagination.total} 条` : 'Comments'}
+            </span>
           </div>
-          {pagination && pagination.totalPages > 1 ? (
-            <div className="flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400">
-              <Button
-                className="h-8 px-2"
-                disabled={page <= 1}
-                onClick={() => setPage((current) => Math.max(1, current - 1))}
-                type="button"
-                variant="subtle"
-              >
-                上一页
-              </Button>
-              <span>
-                {pagination.page} / {pagination.totalPages}
+
+          {comments.length > 0 ? (
+            <div className="flex flex-wrap items-center gap-2 border-b border-neutral-200 bg-neutral-50 px-4 py-2 text-sm dark:border-neutral-800 dark:bg-neutral-900/40">
+              <Checkbox
+                aria-label="选择当前页评论"
+                checked={allVisibleChecked}
+                indeterminate={hasSelection && !allVisibleChecked}
+                onCheckedChange={toggleVisible}
+              />
+              <span className="text-neutral-500 dark:text-neutral-400">
+                {hasSelection ? `已选 ${selectedCount} 项` : '全选'}
               </span>
-              <Button
-                className="h-8 px-2"
-                disabled={page >= pagination.totalPages}
-                onClick={() =>
-                  setPage((current) =>
-                    Math.min(pagination.totalPages, current + 1),
-                  )
-                }
-                type="button"
-                variant="subtle"
-              >
-                下一页
-              </Button>
+              {allVisibleChecked &&
+              pagination &&
+              pagination.totalPages > 1 &&
+              !selectAllMode ? (
+                <button
+                  className="text-sm text-blue-600 hover:underline dark:text-blue-400"
+                  onClick={() => setSelectAllMode(true)}
+                  type="button"
+                >
+                  选择全部 {pagination.total} 条
+                </button>
+              ) : null}
             </div>
           ) : null}
-        </div>
-      </section>
 
-      <section className="min-h-0">
-        {selectedComment ? (
-          <CommentDetail
-            comment={selectedComment}
-            currentState={state}
-            onDelete={(id) => deleteMutation.mutate(id)}
-            onReply={(id, text) => replyMutation.mutateAsync({ id, text })}
-            onStateChange={(id, nextState) =>
-              stateMutation.mutate({ id, nextState })
-            }
-            replyPending={replyMutation.isPending}
-          />
-        ) : (
-          <div className="flex h-full min-h-72 flex-col items-center justify-center text-center text-sm text-neutral-500 dark:text-neutral-400">
-            <MessageSquare
-              aria-hidden="true"
-              className="mb-3 size-10 text-neutral-300 dark:text-neutral-700"
-            />
-            选择一条评论
+          <div className="min-h-0 flex-1 overflow-y-auto">
+            {commentsQuery.isLoading && comments.length === 0 ? (
+              <div className="flex justify-center py-20">
+                <div className="size-6 animate-spin rounded-full border-2 border-neutral-300 border-t-neutral-950 dark:border-neutral-700 dark:border-t-neutral-100" />
+              </div>
+            ) : comments.length === 0 ? (
+              <CommentEmptyState />
+            ) : (
+              comments.map((comment) => (
+                <CommentListItem
+                  checked={checkedSet.has(comment.id)}
+                  comment={comment}
+                  key={comment.id}
+                  onCheck={toggleChecked}
+                  onSelect={() => selectComment(comment)}
+                  selected={selectedId === comment.id}
+                />
+              ))
+            )}
           </div>
-        )}
-      </section>
-    </div>
+
+          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
+            <div className="flex gap-2">
+              <Button
+                className="h-8 px-2"
+                disabled={!hasSelection || state === CommentState.Read}
+                onClick={() => batchStateMutation.mutate(CommentState.Read)}
+                type="button"
+                variant="subtle"
+              >
+                <CheckCheck aria-hidden="true" className="size-3.5" />
+                已读
+              </Button>
+              <Button
+                className="h-8 px-2"
+                disabled={!hasSelection || state === CommentState.Junk}
+                onClick={() => batchStateMutation.mutate(CommentState.Junk)}
+                type="button"
+                variant="subtle"
+              >
+                <ShieldAlert aria-hidden="true" className="size-3.5" />
+                垃圾
+              </Button>
+              <Button
+                className="h-8 px-2 text-red-600 dark:text-red-400"
+                disabled={!hasSelection}
+                onClick={confirmBatchDelete}
+                type="button"
+                variant="subtle"
+              >
+                <Trash2 aria-hidden="true" className="size-3.5" />
+                删除
+              </Button>
+            </div>
+            {pagination && pagination.totalPages > 1 ? (
+              <div className="flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400">
+                <Button
+                  className="h-8 px-2"
+                  disabled={page <= 1}
+                  onClick={() => {
+                    setPage((current) => Math.max(1, current - 1))
+                    setCheckedIds([])
+                    setSelectAllMode(false)
+                  }}
+                  type="button"
+                  variant="subtle"
+                >
+                  上一页
+                </Button>
+                <span>
+                  {pagination.page} / {pagination.totalPages}
+                </span>
+                <Button
+                  className="h-8 px-2"
+                  disabled={page >= pagination.totalPages}
+                  onClick={() => {
+                    setPage((current) =>
+                      Math.min(pagination.totalPages, current + 1),
+                    )
+                    setCheckedIds([])
+                    setSelectAllMode(false)
+                  }}
+                  type="button"
+                  variant="subtle"
+                >
+                  下一页
+                </Button>
+              </div>
+            ) : null}
+          </div>
+        </section>
+      }
+      detail={
+        <section className="h-full min-h-0">
+          {selectedComment ? (
+            <CommentDetail
+              comment={selectedComment}
+              currentState={state}
+              onBack={() => setShowDetailOnMobile(false)}
+              onDelete={confirmDeleteComment}
+              onReply={(id, text) => replyMutation.mutateAsync({ id, text })}
+              onStateChange={(id, nextState) =>
+                stateMutation.mutate({ id, nextState })
+              }
+              replyPending={replyMutation.isPending}
+            />
+          ) : (
+            <div className="flex h-full min-h-72 flex-col items-center justify-center text-center text-sm text-neutral-500 dark:text-neutral-400">
+              <MessageSquare
+                aria-hidden="true"
+                className="mb-3 size-10 text-neutral-300 dark:text-neutral-700"
+              />
+              选择一条评论
+            </div>
+          )}
+        </section>
+      }
+    />
   )
 }
 
@@ -390,6 +439,7 @@ function CommentListItem(props: {
 function CommentDetail(props: {
   comment: CommentModel
   currentState: CommentState
+  onBack: () => void
   onDelete: (id: string) => void
   onReply: (id: string, text: string) => Promise<unknown>
   onStateChange: (id: string, state: CommentState) => void
@@ -415,11 +465,27 @@ function CommentDetail(props: {
   }
 
   return (
-    <div className="flex h-full min-h-[calc(100vh-8rem)] flex-col">
-      <div className="flex min-h-12 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
-        <h2 className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
-          评论详情
-        </h2>
+    <div className="flex h-full min-h-0 flex-col">
+      <div
+        className={cn(
+          'flex shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800',
+          APP_SHELL_HEADER_HEIGHT_CLASS,
+        )}
+      >
+        <div className="flex min-w-0 items-center gap-2">
+          <Button
+            aria-label="返回评论列表"
+            className="h-8 px-2 lg:hidden"
+            onClick={props.onBack}
+            type="button"
+            variant="subtle"
+          >
+            <ChevronRight aria-hidden="true" className="size-4 rotate-180" />
+          </Button>
+          <h2 className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+            评论详情
+          </h2>
+        </div>
         <div className="flex gap-2">
           <Button
             className="h-8 px-2"
@@ -677,6 +743,11 @@ function normalizeState(value: string | null): CommentState {
   return filters.some((filter) => filter.value === numeric)
     ? numeric
     : CommentState.Unread
+}
+
+function readPage(value: string | null) {
+  const parsed = Number(value)
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 1
 }
 
 function formatDate(value?: string | null) {

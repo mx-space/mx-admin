@@ -1,0 +1,128 @@
+<h2>跳出窠臼之四式</h2>
+<p class="subtitle">皆见于现役产品 · 非纸上空谈 · 多选可，亦可言更倾心者</p>
+
+<div class="cards" data-multiselect>
+
+  <div class="card" data-choice="palette" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0">
+      <div style="background:#0a0a0f;color:#e8e8ed;padding:24px;height:200px;position:relative;display:flex;align-items:flex-start;justify-content:center">
+        <div style="position:absolute;top:12px;left:16px;font-size:11px;opacity:0.4">⌘ acme · workspace</div>
+        <div style="position:absolute;top:12px;right:16px;font-size:11px;opacity:0.4">avatar</div>
+        <div style="background:#1a1a22;border:1px solid #2a2a36;border-radius:8px;width:80%;margin-top:48px;box-shadow:0 8px 32px rgba(0,0,0,0.6)">
+          <div style="padding:10px 14px;border-bottom:1px solid #2a2a36;font-size:11px;opacity:0.6">⌘K · type to navigate or act</div>
+          <div style="padding:8px 14px;font-size:11px;background:#6b5bd6;color:#fff;border-radius:4px;margin:6px">▸ Posts &nbsp;&nbsp;<span style="opacity:0.7">— jump to list</span></div>
+          <div style="padding:8px 14px;font-size:11px;opacity:0.7">▸ Comments</div>
+          <div style="padding:8px 14px;font-size:11px;opacity:0.7">▸ Create post</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A · 命令面板为骨</h3>
+      <p>无固定 sidebar。⌘K 即导航即操作。content 占满整屏。参考：Raycast、Linear、Vercel CLI dashboard。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="dock" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0">
+      <div style="background:#0a0a0f;color:#e8e8ed;padding:0;height:200px;position:relative;overflow:hidden">
+        <div style="position:absolute;inset:0;padding:24px">
+          <div style="background:#15151c;border-radius:6px;padding:12px;height:100%;border:1px solid #2a2a36">
+            <div style="font-size:11px;opacity:0.5;margin-bottom:8px">Posts · 124 items</div>
+            <div style="height:8px;background:#22222d;border-radius:2px;margin-bottom:6px"></div>
+            <div style="height:8px;background:#22222d;border-radius:2px;margin-bottom:6px"></div>
+            <div style="height:8px;background:#22222d;border-radius:2px;margin-bottom:6px"></div>
+            <div style="height:8px;background:#22222d;border-radius:2px"></div>
+          </div>
+        </div>
+        <div style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);background:#1a1a22;border:1px solid #2a2a36;border-radius:999px;padding:6px 14px;display:flex;gap:14px;font-size:13px;box-shadow:0 8px 24px rgba(0,0,0,0.6)">
+          <span style="opacity:0.5">☰</span><span style="color:#9d8df0">●</span><span style="opacity:0.5">▢</span><span style="opacity:0.5">✎</span><span style="opacity:0.5">⚙</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B · 浮岛 dock</h3>
+      <p>内容顶天立地。一条胶囊形 dock 浮于底（或侧），藏导航、命令、状态。极少 chrome。参考：macOS Dock、Apple Music mini player、Things 3。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="tabs" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0">
+      <div style="background:#0a0a0f;color:#e8e8ed;height:200px;display:flex">
+        <div style="width:40px;background:#0e0e14;border-right:1px solid #1f1f28;display:flex;flex-direction:column;gap:6px;padding:8px 0;align-items:center">
+          <div style="width:20px;height:20px;background:#9d8df0;border-radius:4px"></div>
+          <div style="width:20px;height:20px;background:#22222d;border-radius:4px"></div>
+          <div style="width:20px;height:20px;background:#22222d;border-radius:4px"></div>
+          <div style="width:20px;height:20px;background:#22222d;border-radius:4px"></div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column">
+          <div style="background:#0e0e14;border-bottom:1px solid #1f1f28;display:flex;font-size:10px">
+            <div style="padding:8px 12px;background:#15151c;border-right:1px solid #1f1f28">Post · "Hello"</div>
+            <div style="padding:8px 12px;opacity:0.5;border-right:1px solid #1f1f28">User · innei</div>
+            <div style="padding:8px 12px;opacity:0.5;border-right:1px solid #1f1f28">Comments</div>
+            <div style="padding:8px 12px;opacity:0.3">+</div>
+          </div>
+          <div style="flex:1;display:flex">
+            <div style="flex:1;padding:10px;border-right:1px solid #1f1f28">
+              <div style="font-size:10px;opacity:0.5;margin-bottom:6px">editor</div>
+              <div style="height:6px;background:#22222d;border-radius:2px;margin-bottom:4px"></div>
+              <div style="height:6px;background:#22222d;border-radius:2px;margin-bottom:4px"></div>
+              <div style="height:6px;background:#22222d;border-radius:2px;width:60%"></div>
+            </div>
+            <div style="flex:1;padding:10px">
+              <div style="font-size:10px;opacity:0.5;margin-bottom:6px">preview</div>
+              <div style="height:6px;background:#22222d;border-radius:2px;margin-bottom:4px"></div>
+              <div style="height:6px;background:#22222d;border-radius:2px;margin-bottom:4px;width:80%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C · IDE 式多 tab 工作台</h3>
+      <p>每条记录为一 tab，可同时开多个，可左右分屏。导航降为细侧栏 icon。参考：VS Code、Arc、Linear sub-issue split。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="triple" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0">
+      <div style="background:#0a0a0f;color:#e8e8ed;height:200px;display:flex">
+        <div style="width:90px;background:#0c0c12;border-right:1px solid #1f1f28;padding:10px 8px;font-size:10px">
+          <div style="opacity:0.4;margin-bottom:8px">Workspace</div>
+          <div style="padding:4px 6px;background:#1a1a22;border-radius:4px;margin-bottom:2px">▸ Inbox</div>
+          <div style="padding:4px 6px;opacity:0.6;margin-bottom:2px">▸ Posts</div>
+          <div style="padding:4px 6px;opacity:0.6;margin-bottom:2px">▸ Users</div>
+          <div style="padding:4px 6px;opacity:0.6">▸ Settings</div>
+        </div>
+        <div style="width:140px;background:#10101a;border-right:1px solid #1f1f28;padding:10px 8px;font-size:10px">
+          <div style="opacity:0.4;margin-bottom:8px">Posts · 124</div>
+          <div style="padding:6px;background:#1f1d2e;border-left:2px solid #9d8df0;border-radius:2px;margin-bottom:3px">
+            <div>Hello world</div>
+            <div style="opacity:0.4;font-size:9px">3 min ago</div>
+          </div>
+          <div style="padding:6px;opacity:0.7;margin-bottom:3px">
+            <div>Migration note</div>
+            <div style="opacity:0.6;font-size:9px">1 h ago</div>
+          </div>
+          <div style="padding:6px;opacity:0.7">
+            <div>Linear design</div>
+            <div style="opacity:0.6;font-size:9px">2 d ago</div>
+          </div>
+        </div>
+        <div style="flex:1;padding:14px">
+          <div style="font-size:11px;font-weight:600;margin-bottom:6px">Hello world</div>
+          <div style="font-size:9px;opacity:0.4;margin-bottom:10px">draft · last saved 3m ago</div>
+          <div style="height:6px;background:#22222d;border-radius:2px;margin-bottom:4px"></div>
+          <div style="height:6px;background:#22222d;border-radius:2px;margin-bottom:4px"></div>
+          <div style="height:6px;background:#22222d;border-radius:2px;width:70%"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>D · 三栏并立</h3>
+      <p>左 workspace、中列表、右详情，皆常驻同屏。中列即是导航。参考：Mail.app、Things、Linear 收件箱、Notion sidebar+page。</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:20px">点选所喜（可多选）。若有他向，于终端径陈之。</p>

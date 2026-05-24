@@ -12,6 +12,7 @@ export type NoteSortKey =
 export type SortOrder = 'asc' | 'desc'
 
 export interface GetNotesParams {
+  db_query?: Record<string, boolean>
   page?: number
   size?: number
   sort_by?: NoteSortKey
@@ -19,17 +20,27 @@ export interface GetNotesParams {
   topicId?: null | string
 }
 
+export interface SearchNotesParams {
+  keyword: string
+  page: number
+  size: number
+}
+
 export interface CreateNoteData {
   bookmark?: boolean
   content?: string
   contentFormat?: 'lexical' | 'markdown'
+  coordinates?: null | {
+    latitude: number
+    longitude: number
+  }
   draftId?: string
   isPublished?: boolean
   location?: null | string
   meta?: Record<string, unknown>
   mood?: string
   password?: null | string
-  publicAt?: Date | null
+  publicAt?: Date | null | string
   slug?: string
   text: string
   title: string
@@ -45,11 +56,20 @@ export interface PatchNoteData {
 
 export function getNotes(params: GetNotesParams = {}) {
   return getJson<PaginateResult<NoteModel>>('/notes', {
+    db_query: params.db_query,
     page: params.page,
     size: params.size,
     sort_by: params.sort_by,
     sort_order: params.sort_order,
     topicId: params.topicId ?? undefined,
+  })
+}
+
+export function searchNotes(params: SearchNotesParams) {
+  return getJson<PaginateResult<NoteModel>>('/search/note', {
+    keyword: params.keyword,
+    page: params.page,
+    size: params.size,
   })
 }
 

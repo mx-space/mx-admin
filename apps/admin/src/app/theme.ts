@@ -8,34 +8,38 @@ export const themeColors = {
 
 export type ThemeMode = 'dark' | 'light' | 'system'
 
+const themeModeChangeEvent = 'mx-admin-theme-mode-change'
+
 export function useThemeMode() {
   const query = useMemo(
     () => window.matchMedia('(prefers-color-scheme: dark)'),
     [],
   )
 
-  const isDark = useSyncExternalStore(
+  const snapshot = useSyncExternalStore(
     (onStoreChange) => {
       query.addEventListener('change', onStoreChange)
+      window.addEventListener(themeModeChangeEvent, onStoreChange)
 
-      return () => query.removeEventListener('change', onStoreChange)
+      return () => {
+        query.removeEventListener('change', onStoreChange)
+        window.removeEventListener(themeModeChangeEvent, onStoreChange)
+      }
     },
-    () => {
-      const storedTheme = readThemeMode()
-
-      if (storedTheme === 'dark') return true
-      if (storedTheme === 'light') return false
-
-      return query.matches
-    },
-    () => false,
+    () => getThemeSnapshot(query),
+    () => 'system:light',
   )
+  const [themeMode, resolvedTheme] = snapshot.split(':') as [
+    ThemeMode,
+    'dark' | 'light',
+  ]
+  const isDark = resolvedTheme === 'dark'
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', isDark)
   }, [isDark])
 
-  return { isDark }
+  return { isDark, setThemeMode, themeMode }
 }
 
 export function installThemeTokens() {
@@ -51,6 +55,24 @@ export function installThemeTokens() {
     '--color-primary-deep',
     themeColors.primaryDeep,
   )
+}
+
+export function setThemeMode(themeMode: ThemeMode) {
+  if (themeMode === 'system') {
+    localStorage.removeItem('theme-mode')
+  } else {
+    localStorage.setItem('theme-mode', themeMode)
+  }
+
+  window.dispatchEvent(new Event(themeModeChangeEvent))
+}
+
+function getThemeSnapshot(query: MediaQueryList) {
+  const themeMode = readThemeMode()
+  const resolvedTheme =
+    themeMode === 'system' ? (query.matches ? 'dark' : 'light') : themeMode
+
+  return `${themeMode}:${resolvedTheme}` as const
 }
 
 function readThemeMode(): ThemeMode {

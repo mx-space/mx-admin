@@ -2,20 +2,23 @@ import { Dialog } from '@base-ui/react/dialog'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Pencil, Plus, Quote, Trash2, User, X } from 'lucide-react'
 import { FormEvent, useEffect, useRef, useState } from 'react'
+import { useSearchParams } from 'react-router'
 import { toast } from 'sonner'
 import type { SayModel } from '~/app/models/say'
 
 import { createSay, deleteSay, getSays, updateSay } from '../api/says'
 import { Button } from '../ui/button'
+import { cn } from '../ui/cn'
 import { CompactPagination } from '../ui/compact-pagination'
-import { Panel } from '../ui/panel'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
 import { TextArea, TextInput } from '../ui/text-field'
 
 const pageSize = 20
 
 export function SaysPage() {
   const queryClient = useQueryClient()
-  const [page, setPage] = useState(1)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [page, setPage] = useState(readPage(searchParams.get('page')))
   const [editingSay, setEditingSay] = useState<SayModel | null>(null)
   const [isEditorOpen, setIsEditorOpen] = useState(false)
 
@@ -50,25 +53,44 @@ export function SaysPage() {
   const says = saysQuery.data?.data ?? []
   const pagination = saysQuery.data?.pagination
 
+  useEffect(() => {
+    const nextParams = new URLSearchParams()
+    if (page > 1) nextParams.set('page', String(page))
+    setSearchParams(nextParams, { replace: true })
+  }, [page, setSearchParams])
+
   return (
-    <div className="mx-auto flex max-w-5xl flex-col gap-4">
-      <div className="flex items-center justify-between gap-3">
-        <div className="text-sm text-neutral-500 dark:text-neutral-400">
-          {pagination ? `${pagination.total} records` : 'Say records'}
+    <section className="flex h-full min-h-0 flex-col bg-white dark:bg-neutral-950">
+      <div
+        className={cn(
+          'flex shrink-0 items-center justify-between gap-3 border-b border-neutral-200 px-4 dark:border-neutral-800',
+          APP_SHELL_HEADER_HEIGHT_CLASS,
+        )}
+      >
+        <div className="min-w-0">
+          <h2 className="inline-flex items-center gap-2 text-sm font-medium text-neutral-950 dark:text-neutral-50">
+            <Quote aria-hidden="true" className="size-4" />
+            一言
+          </h2>
         </div>
-        <Button onClick={openCreate} type="button">
-          <Plus aria-hidden="true" className="size-4" />
-          添加一言
-        </Button>
+        <div className="flex shrink-0 items-center gap-3">
+          <span className="text-xs text-neutral-500 dark:text-neutral-400">
+            {pagination ? `${pagination.total} 条` : '加载中'}
+          </span>
+          <Button onClick={openCreate} type="button" variant="subtle">
+            <Plus aria-hidden="true" className="size-4" />
+            添加一言
+          </Button>
+        </div>
       </div>
 
-      {saysQuery.isLoading && says.length === 0 ? (
-        <SayListSkeleton />
-      ) : says.length === 0 ? (
-        <SayEmptyState onCreate={openCreate} />
-      ) : (
-        <Panel title="Say list">
-          <div>
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        {saysQuery.isLoading && says.length === 0 ? (
+          <SayListSkeleton />
+        ) : says.length === 0 ? (
+          <SayEmptyState onCreate={openCreate} />
+        ) : (
+          <div className="mx-auto max-w-5xl">
             {says.map((say) => (
               <SayListItem
                 key={say.id}
@@ -78,11 +100,11 @@ export function SaysPage() {
               />
             ))}
           </div>
-        </Panel>
-      )}
+        )}
+      </div>
 
       {pagination && pagination.totalPages > 1 ? (
-        <div className="flex justify-center">
+        <div className="flex shrink-0 justify-center border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
           <CompactPagination
             onPageChange={setPage}
             onPageSizeChange={() => undefined}
@@ -103,7 +125,7 @@ export function SaysPage() {
         open={isEditorOpen}
         say={editingSay}
       />
-    </div>
+    </section>
   )
 }
 
@@ -323,8 +345,8 @@ function SayEditorDialog(props: {
 
 function SayEmptyState(props: { onCreate: () => void }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded border-2 border-dashed border-neutral-200 bg-neutral-50/50 py-16 dark:border-neutral-800 dark:bg-neutral-900/50">
-      <div className="mb-4 flex size-16 items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800">
+    <div className="flex min-h-full flex-col items-center justify-center px-6 py-16 text-center">
+      <div className="mb-4 flex size-16 items-center justify-center rounded bg-neutral-100 dark:bg-neutral-900">
         <Quote aria-hidden="true" className="size-8 text-neutral-400" />
       </div>
       <h2 className="mb-1 text-lg font-medium text-neutral-900 dark:text-neutral-100">
@@ -342,27 +364,30 @@ function SayEmptyState(props: { onCreate: () => void }) {
 
 function SayListSkeleton() {
   return (
-    <Panel title="Loading say list">
-      <div className="animate-pulse">
-        {[1, 2, 3, 4, 5].map((index) => (
-          <div
-            className="flex gap-3 border-b border-neutral-200 px-4 py-4 last:border-b-0 dark:border-neutral-800"
-            key={index}
-          >
-            <div className="size-5 rounded bg-neutral-200 dark:bg-neutral-700" />
-            <div className="flex-1">
-              <div className="h-5 w-full rounded bg-neutral-200 dark:bg-neutral-700" />
-              <div className="mt-2 h-5 w-3/4 rounded bg-neutral-100 dark:bg-neutral-800" />
-              <div className="mt-3 flex gap-4">
-                <div className="h-4 w-20 rounded bg-neutral-100 dark:bg-neutral-800" />
-                <div className="h-4 w-24 rounded bg-neutral-100 dark:bg-neutral-800" />
-              </div>
+    <div className="mx-auto max-w-5xl animate-pulse">
+      {[1, 2, 3, 4, 5].map((index) => (
+        <div
+          className="flex gap-3 border-b border-neutral-200 px-4 py-4 last:border-b-0 dark:border-neutral-800"
+          key={index}
+        >
+          <div className="size-5 rounded bg-neutral-200 dark:bg-neutral-700" />
+          <div className="flex-1">
+            <div className="h-5 w-full rounded bg-neutral-200 dark:bg-neutral-700" />
+            <div className="mt-2 h-5 w-3/4 rounded bg-neutral-100 dark:bg-neutral-800" />
+            <div className="mt-3 flex gap-4">
+              <div className="h-4 w-20 rounded bg-neutral-100 dark:bg-neutral-800" />
+              <div className="h-4 w-24 rounded bg-neutral-100 dark:bg-neutral-800" />
             </div>
           </div>
-        ))}
-      </div>
-    </Panel>
+        </div>
+      ))}
+    </div>
   )
+}
+
+function readPage(value: string | null) {
+  const parsed = Number(value)
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 1
 }
 
 function formatDate(value: string) {

@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<title>甲 · 软光 Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #ffffff;
+    --canvas: #fafbfc;
+    --surface: #ffffff;
+    --border: #e4e7eb;
+    --border-strong: #d1d5db;
+    --ink: #1f2937;
+    --ink-strong: #111827;
+    --muted: #6b7280;
+    --faint: #9ca3af;
+    --accent: #4f46e5;
+    --accent-soft: #eef2ff;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+    background: var(--canvas);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  .app { display: grid; grid-template-columns: 232px 1fr; min-height: 100vh; }
+
+  /* ─ sidebar ─ */
+  .side {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 18px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+  }
+  .brand {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--ink-strong);
+    padding: 6px 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .brand .dot { width: 18px; height: 18px; border-radius: 6px; background: var(--accent); }
+  .nav-section { font-size: 11px; color: var(--faint); text-transform: uppercase; letter-spacing: 0.06em; padding: 12px 8px 4px; font-weight: 500; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 10px; font-size: 13.5px; color: var(--ink);
+    border-radius: 6px; cursor: default;
+  }
+  .nav-item .ic { width: 16px; opacity: 0.65; font-size: 12.5px; }
+  .nav-item:hover { background: #f3f4f6; }
+  .nav-item.active { background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+  .nav-item.active .ic { opacity: 1; }
+  .nav-item .badge { margin-left: auto; font-size: 11px; color: var(--muted); }
+
+  /* ─ main ─ */
+  .main { padding: 24px 36px 48px; max-width: 1200px; }
+  .topbar {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 18px;
+    font-size: 12.5px; color: var(--muted);
+  }
+  .topbar .crumb { color: var(--muted); }
+  .topbar .crumb strong { color: var(--ink); font-weight: 500; }
+  .topbar .spacer { flex: 1; }
+  .kbd {
+    display: inline-flex; align-items: center; gap: 4px;
+    border: 1px solid var(--border-strong); border-radius: 4px;
+    padding: 2px 6px; font-size: 11px; color: var(--muted);
+    background: var(--surface);
+  }
+
+  h1 { font-size: 22px; font-weight: 600; margin: 0 0 4px; letter-spacing: -0.01em; color: var(--ink-strong); }
+  .subtitle { color: var(--muted); font-size: 13.5px; margin: 0 0 24px; }
+
+  /* ─ stats row ─ */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .stat .lbl { font-size: 11.5px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+  .stat .val { font-size: 22px; font-weight: 600; color: var(--ink-strong); letter-spacing: -0.01em; }
+  .stat .delta { font-size: 11.5px; color: var(--success); margin-top: 2px; }
+  .stat .delta.down { color: var(--danger); }
+
+  /* ─ section ─ */
+  .section-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    padding: 0 0 12px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0;
+  }
+  .section-head h2 { font-size: 15px; font-weight: 600; margin: 0; color: var(--ink-strong); }
+  .section-head .actions { display: flex; gap: 8px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 6px;
+    font-size: 13px; font-weight: 500;
+    cursor: pointer; border: 1px solid var(--border-strong);
+    background: var(--surface); color: var(--ink);
+    height: 30px;
+  }
+  .btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn.primary:hover { background: #4338ca; }
+  .btn:not(.primary):hover { background: #f9fafb; }
+
+  /* ─ posts table ─ */
+  .posts-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; border-bottom-left-radius: 8px; border-top: 1px solid var(--border); margin-bottom: 32px; }
+  .filters {
+    display: flex; gap: 12px; padding: 10px 16px;
+    border-bottom: 1px solid var(--border); font-size: 13px;
+    align-items: center;
+  }
+  .filter-chip {
+    padding: 4px 10px; border-radius: 6px; font-size: 12.5px;
+    border: 1px solid transparent; color: var(--muted); cursor: default;
+  }
+  .filter-chip.active { background: #f3f4f6; color: var(--ink-strong); font-weight: 500; }
+  .filters .spacer { flex: 1; }
+  .search-mock {
+    border: 1px solid var(--border); border-radius: 6px;
+    padding: 4px 10px; font-size: 12.5px; color: var(--muted);
+    background: var(--canvas); min-width: 200px;
+  }
+  table.posts { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  table.posts thead th {
+    text-align: left; padding: 9px 16px;
+    font-size: 11.5px; font-weight: 500; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.04em;
+    border-bottom: 1px solid var(--border);
+    background: #fafbfc;
+  }
+  table.posts tbody td {
+    padding: 11px 16px;
+    border-bottom: 1px solid #f3f4f6;
+    vertical-align: middle;
+  }
+  table.posts tbody tr:last-child td { border-bottom: none; }
+  table.posts tbody tr:hover { background: #fafbfc; cursor: default; }
+  .check { width: 14px; height: 14px; border: 1.5px solid var(--border-strong); border-radius: 3px; display: inline-block; vertical-align: middle; }
+  .post-title { font-weight: 500; color: var(--ink-strong); }
+  .post-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11.5px; padding: 2px 8px; border-radius: 99px;
+    font-weight: 500;
+  }
+  .pill.published { background: #ecfdf5; color: #047857; }
+  .pill.draft { background: #fef3c7; color: #92400e; }
+  .pill.pinned { background: #eef2ff; color: #4338ca; }
+  .pill .dot { width: 5px; height: 5px; border-radius: 50%; }
+  .pill.published .dot { background: #10b981; }
+  .pill.draft .dot { background: #f59e0b; }
+  .pill.pinned .dot { background: #6366f1; }
+  .num { color: var(--muted); font-variant-numeric: tabular-nums; }
+  .date { color: var(--muted); font-variant-numeric: tabular-nums; font-size: 12.5px; }
+
+  /* ─ pagination ─ */
+  .pagi { display: flex; justify-content: space-between; padding: 10px 16px; font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--border); }
+  .pagi .pages { display: flex; gap: 4px; }
+  .page-btn { padding: 3px 8px; border-radius: 4px; cursor: default; }
+  .page-btn.active { background: var(--accent); color: #fff; }
+
+  /* ─ aside (Recent activity) ─ */
+  .two-col { display: grid; grid-template-columns: 1fr 320px; gap: 24px; }
+  .feed-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
+  .feed-card h3 { font-size: 13.5px; font-weight: 600; margin: 0 0 12px; color: var(--ink-strong); }
+  .feed-item { display: flex; gap: 10px; padding: 8px 0; border-top: 1px solid #f3f4f6; font-size: 13px; }
+  .feed-item:first-of-type { border-top: none; }
+  .feed-item .ic { width: 22px; height: 22px; border-radius: 50%; background: #f3f4f6; flex: none; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--muted); }
+  .feed-item .t { font-size: 11.5px; color: var(--faint); margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ───── sidebar ───── -->
+  <aside class="side">
+    <div class="brand"><span class="dot"></span> mx-admin</div>
+
+    <div class="nav-section">手记</div>
+    <div class="nav-item"><span class="ic">⌂</span> Today</div>
+    <div class="nav-item active"><span class="ic">◳</span> Posts <span class="badge">171</span></div>
+    <div class="nav-item"><span class="ic">◳</span> Notes <span class="badge">42</span></div>
+    <div class="nav-item"><span class="ic">◳</span> Pages</div>
+    <div class="nav-item"><span class="ic">↩</span> Comments <span class="badge">3</span></div>
+
+    <div class="nav-section">资料</div>
+    <div class="nav-item"><span class="ic">⊟</span> Files</div>
+    <div class="nav-item"><span class="ic">⊟</span> Projects</div>
+    <div class="nav-item"><span class="ic">⊟</span> Friends</div>
+
+    <div class="nav-section">智能</div>
+    <div class="nav-item"><span class="ic">⊕</span> Apprentice <span class="badge">2</span></div>
+
+    <div class="nav-section">工具</div>
+    <div class="nav-item"><span class="ic">⌘</span> Snippets</div>
+    <div class="nav-item"><span class="ic">↻</span> Backup</div>
+    <div class="nav-item"><span class="ic">⚙</span> Settings</div>
+  </aside>
+
+  <!-- ───── main ───── -->
+  <main class="main">
+
+    <div class="topbar">
+      <span class="crumb">手记 ▸ <strong>Posts</strong></span>
+      <span class="spacer"></span>
+      <span class="kbd">⌘K</span>
+      <span class="kbd">⌘N</span>
+    </div>
+
+    <h1>Posts</h1>
+    <p class="subtitle">171 entries · 168 published · 3 drafts</p>
+
+    <div class="stats">
+      <div class="stat"><div class="lbl">Total reads · this week</div><div class="val">14,328</div><div class="delta">+12.4% vs last week</div></div>
+      <div class="stat"><div class="lbl">New comments</div><div class="val">23</div><div class="delta">+5 today</div></div>
+      <div class="stat"><div class="lbl">Active drafts</div><div class="val">3</div><div class="delta down">2 stale</div></div>
+      <div class="stat"><div class="lbl">Apprentice queue</div><div class="val">2</div><div class="delta">running</div></div>
+    </div>
+
+    <div class="section-head">
+      <h2>All posts</h2>
+      <div class="actions">
+        <span class="btn">Export</span>
+        <span class="btn primary">+ New post</span>
+      </div>
+    </div>
+
+    <div class="posts-card">
+      <div class="filters">
+        <span class="filter-chip active">All</span>
+        <span class="filter-chip">Published <span style="opacity:.5">· 168</span></span>
+        <span class="filter-chip">Drafts <span style="opacity:.5">· 3</span></span>
+        <span class="filter-chip">Pinned</span>
+        <span class="spacer"></span>
+        <span class="search-mock">⌕ Search posts…</span>
+      </div>
+      <table class="posts">
+        <thead>
+          <tr>
+            <th style="width:32px;"><span class="check"></span></th>
+            <th>Title</th>
+            <th style="width:120px;">Status</th>
+            <th style="width:96px;">Reads</th>
+            <th style="width:110px;">Modified</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="check"></span></td>
+            <td>
+              <div class="post-title">AI 时代的效率悖论：当生产力提升反而带来疲惫</div>
+              <div class="post-sub">ai-era-efficiency-paradox · /posts/2026/ai-era-efficiency-paradox</div>
+            </td>
+            <td><span class="pill published"><span class="dot"></span>Published</span></td>
+            <td class="num">2,137</td>
+            <td class="date">3 days ago</td>
+          </tr>
+          <tr>
+            <td><span class="check"></span></td>
+            <td>
+              <div class="post-title">Migration note #6 — Drawer mechanics</div>
+              <div class="post-sub">migration-note-6 · /posts/2026/migration-note-6</div>
+            </td>
+            <td><span class="pill published"><span class="dot"></span>Published</span></td>
+            <td class="num">1,204</td>
+            <td class="date">4 days ago</td>
+          </tr>
+          <tr>
+            <td><span class="check"></span></td>
+            <td>
+              <div class="post-title">On Lavender and the choice of accent</div>
+              <div class="post-sub">lavender-accent · /posts/2026/lavender-accent</div>
+            </td>
+            <td><span class="pill pinned"><span class="dot"></span>Pinned</span></td>
+            <td class="num">812</td>
+            <td class="date">5 days ago</td>
+          </tr>
+          <tr>
+            <td><span class="check"></span></td>
+            <td>
+              <div class="post-title">The Garden, after rain</div>
+              <div class="post-sub">— last saved 3 min ago</div>
+            </td>
+            <td><span class="pill draft"><span class="dot"></span>Draft</span></td>
+            <td class="num">—</td>
+            <td class="date">today · 23:47</td>
+          </tr>
+          <tr>
+            <td><span class="check"></span></td>
+            <td>
+              <div class="post-title">Why I rewrote my admin in React</div>
+              <div class="post-sub">why-i-rewrote-my-admin · /posts/2026/why-i-rewrote</div>
+            </td>
+            <td><span class="pill published"><span class="dot"></span>Published</span></td>
+            <td class="num">8,742</td>
+            <td class="date">2 weeks ago</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="pagi">
+        <span>showing 1 – 10 of 171</span>
+        <div class="pages">
+          <span class="page-btn active">1</span>
+          <span class="page-btn">2</span>
+          <span class="page-btn">3</span>
+          <span class="page-btn">…</span>
+          <span class="page-btn">18</span>
+          <span class="page-btn">→</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="feed-card">
+        <h3>Recent activity</h3>
+        <div class="feed-item">
+          <div class="ic">✎</div>
+          <div>
+            <div>You autosaved <strong>The Garden, after rain</strong></div>
+            <div class="t">3 min ago</div>
+          </div>
+        </div>
+        <div class="feed-item">
+          <div class="ic">↩</div>
+          <div>
+            <div>New comment from <strong>bekka@example.com</strong></div>
+            <div class="t">on Hello world · 21:12</div>
+          </div>
+        </div>
+        <div class="feed-item">
+          <div class="ic">⊕</div>
+          <div>
+            <div>Apprentice finished <strong>summarising 4 entries</strong></div>
+            <div class="t">2h ago · exit 0</div>
+          </div>
+        </div>
+        <div class="feed-item">
+          <div class="ic">▸</div>
+          <div>
+            <div>Published <strong>Migration note #6 — Drawer mechanics</strong></div>
+            <div class="t">May 22 · 15:08</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feed-card">
+        <h3>System</h3>
+        <div class="feed-item">
+          <div class="ic">▤</div>
+          <div>
+            <div><strong>mx-core</strong> · v6.4.2</div>
+            <div class="t">healthy · last backup 6h ago</div>
+          </div>
+        </div>
+        <div class="feed-item">
+          <div class="ic">⚡</div>
+          <div>
+            <div>Realtime · <strong>connected</strong></div>
+            <div class="t">3 readers online right now</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+</div>
+
+</body>
+</html>

@@ -6,7 +6,6 @@ import {
   Pencil,
   Pin,
   Plus,
-  Search,
   ThumbsUp,
   Trash2,
 } from 'lucide-react'
@@ -18,14 +17,18 @@ import type { PostModel } from '~/app/models/post'
 import { WEB_URL } from '~/app/constants/env'
 import { relativeTimeFromNow } from '~/app/utils/time'
 
+import { getCategories } from '../api/categories'
 import { deletePost, getPosts, patchPost, searchPosts } from '../api/posts'
 import { Button, ButtonLink } from '../ui/button'
+import { Checkbox } from '../ui/checkbox'
 import { cn } from '../ui/cn'
 import { CompactPagination } from '../ui/compact-pagination'
-import { Panel } from '../ui/panel'
-import { TextInput } from '../ui/text-field'
+import { ContentListToolbar } from '../ui/content-list-toolbar'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
+import { SelectField } from '../ui/select'
 
 const pageSize = 20
+const allCategoriesValue = '__all__'
 
 export function PostsPage() {
   const queryClient = useQueryClient()
@@ -35,25 +38,60 @@ export function PostsPage() {
     searchParams.get('keyword') ?? '',
   )
   const [keyword, setKeyword] = useState(searchParams.get('keyword') ?? '')
+  const [categoryId, setCategoryId] = useState(
+    searchParams.get('category') ?? allCategoriesValue,
+  )
+  const [sortKey, setSortKey] = useState<'createdAt' | 'modifiedAt' | 'pinAt'>(
+    (searchParams.get('sort') as 'createdAt' | 'modifiedAt' | 'pinAt') ??
+      'createdAt',
+  )
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(
+    searchParams.get('order') === 'asc' ? 'asc' : 'desc',
+  )
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set())
 
   useEffect(() => {
     const nextParams = new URLSearchParams()
     if (page > 1) nextParams.set('page', String(page))
     if (keyword) nextParams.set('keyword', keyword)
+    if (categoryId !== allCategoriesValue)
+      nextParams.set('category', categoryId)
+    if (sortKey !== 'createdAt') nextParams.set('sort', sortKey)
+    if (sortOrder !== 'desc') nextParams.set('order', sortOrder)
     setSearchParams(nextParams, { replace: true })
-  }, [keyword, page, setSearchParams])
+  }, [categoryId, keyword, page, setSearchParams, sortKey, sortOrder])
+
+  useEffect(() => {
+    setSelectedIds(new Set())
+  }, [categoryId, keyword, page, sortKey, sortOrder])
+
+  const categoriesQuery = useQuery({
+    queryFn: () => getCategories({ type: 'Category' }),
+    queryKey: ['categories', 'post-filter'],
+  })
 
   const postsQuery = useQuery({
     queryFn: () =>
       keyword
         ? searchPosts({ keyword, page, size: pageSize })
         : getPosts({
+            categoryIds:
+              categoryId === allCategoriesValue ? undefined : [categoryId],
             page,
             size: pageSize,
-            sort_by: 'createdAt',
-            sort_order: 'desc',
+            sort_by: sortKey,
+            sort_order: sortOrder,
           }),
-    queryKey: ['posts', 'list', page, pageSize, keyword],
+    queryKey: [
+      'posts',
+      'list',
+      page,
+      pageSize,
+      keyword,
+      categoryId,
+      sortKey,
+      sortOrder,
+    ],
   })
 
   const posts = postsQuery.data?.data ?? []
@@ -69,10 +107,53 @@ export function PostsPage() {
     onSuccess: invalidatePosts,
   })
 
+  const categoryMutation = useMutation({
+    mutationFn: (payload: { categoryId: string; id: string }) =>
+      patchPost(payload.id, { categoryId: payload.categoryId }),
+    onError: (error: unknown) =>
+      toast.error(getErrorMessage(error, '分类更新失败')),
+    onSuccess: invalidatePosts,
+  })
+
   const deleteMutation = useMutation({
     mutationFn: deletePost,
-    onSuccess: async () => {
+    onSuccess: async (_, id) => {
       toast.success('文章已删除')
+      setSelectedIds((current) => {
+        const next = new Set(current)
+        next.delete(id)
+        return next
+      })
+      await invalidatePosts()
+    },
+  })
+
+  const batchDeleteMutation = useMutation({
+    mutationFn: async (ids: string[]) => {
+      const results = await Promise.allSettled(ids.map((id) => deletePost(id)))
+      const successfulIds = ids.filter(
+        (_, index) => results[index].status === 'fulfilled',
+      )
+
+      return {
+        failedCount: ids.length - successfulIds.length,
+        successfulIds,
+        successCount: successfulIds.length,
+      }
+    },
+    onError: (error: unknown) =>
+      toast.error(getErrorMessage(error, '批量删除失败')),
+    onSuccess: async ({ failedCount, successfulIds, successCount }) => {
+      setSelectedIds((current) => {
+        const next = new Set(current)
+        successfulIds.forEach((id) => next.delete(id))
+        return next
+      })
+      if (failedCount > 0) {
+        toast.warning(`删除完成：成功 ${successCount}，失败 ${failedCount}`)
+      } else {
+        toast.success(`成功删除 ${successCount} 篇文章`)
+      }
       await invalidatePosts()
     },
   })
@@ -84,127 +165,229 @@ export function PostsPage() {
       : `共 ${pagination.total} 篇`
   }, [keyword, pagination])
 
+  const categoryOptions = useMemo(
+    () => [
+      { label: '全部分类', value: allCategoriesValue },
+      ...(categoriesQuery.data ?? []).map((category) => ({
+        label: category.name,
+        value: category.id,
+      })),
+    ],
+    [categoriesQuery.data],
+  )
+
+  const rowCategoryOptions = useMemo(
+    () =>
+      (categoriesQuery.data ?? []).map((category) => ({
+        label: category.name,
+        value: category.id,
+      })),
+    [categoriesQuery.data],
+  )
+
+  const selectedCount = selectedIds.size
+  const visibleIds = posts.map((post) => post.id)
+  const allVisibleSelected =
+    visibleIds.length > 0 && visibleIds.every((id) => selectedIds.has(id))
+
   const onSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setPage(1)
     setKeyword(keywordInput.trim())
   }
 
+  const toggleAllVisible = (checked: boolean) => {
+    setSelectedIds((current) => {
+      const next = new Set(current)
+      for (const id of visibleIds) {
+        if (checked) next.add(id)
+        else next.delete(id)
+      }
+      return next
+    })
+  }
+
   return (
-    <div className="space-y-4">
-      <Panel
-        description="文章列表、发布状态和外部访问入口。"
-        title={
-          <span className="inline-flex items-center gap-2">
+    <div className="flex h-full min-h-0 flex-col bg-white dark:bg-neutral-950">
+      <header
+        className={cn(
+          'flex shrink-0 items-center justify-between gap-3 border-b border-neutral-200 px-4 dark:border-neutral-800',
+          APP_SHELL_HEADER_HEIGHT_CLASS,
+        )}
+      >
+        <div className="min-w-0">
+          <h2 className="inline-flex items-center gap-2 text-sm font-medium">
             <FileText aria-hidden="true" className="size-4" />
             文章
+          </h2>
+          <span className="ml-3 text-xs text-neutral-500 dark:text-neutral-400">
+            {summary}
           </span>
-        }
-      >
-        <div className="flex flex-col gap-3 border-b border-neutral-200 p-4 lg:flex-row lg:items-center lg:justify-between dark:border-neutral-800">
-          <form className="flex max-w-xl flex-1 gap-2" onSubmit={onSearch}>
-            <label className="relative min-w-0 flex-1">
-              <Search
-                aria-hidden="true"
-                className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-neutral-400"
-              />
-              <TextInput
-                controlClassName="h-9 pl-9 focus:border-neutral-400 focus:ring-0 dark:focus:border-neutral-600"
-                onChange={setKeywordInput}
-                placeholder="搜索标题或正文"
-                value={keywordInput}
-              />
-            </label>
-            <Button type="submit" variant="subtle">
-              搜索
-            </Button>
-            {keyword ? (
-              <Button
-                onClick={() => {
-                  setKeywordInput('')
-                  setKeyword('')
-                  setPage(1)
-                }}
-                type="button"
-                variant="subtle"
-              >
-                清除
-              </Button>
-            ) : null}
-          </form>
-
-          <div className="flex flex-wrap items-center gap-2">
-            <p className="text-xs text-neutral-500 dark:text-neutral-400">
-              {summary}
-            </p>
-            <ButtonLink to="/posts/edit">
-              <Plus aria-hidden="true" className="size-4" />
-              新建文章
-            </ButtonLink>
-          </div>
         </div>
+        <ButtonLink to="/posts/edit">
+          <Plus aria-hidden="true" className="size-4" />
+          新建文章
+        </ButtonLink>
+      </header>
 
-        <div className="min-h-[32rem]">
-          {postsQuery.isLoading && posts.length === 0 ? (
-            <PostsSkeleton />
-          ) : postsQuery.isError ? (
-            <PostsError onRetry={() => void postsQuery.refetch()} />
-          ) : posts.length === 0 ? (
-            <PostsEmpty keyword={keyword} />
-          ) : (
-            <div className="divide-y divide-neutral-100 dark:divide-neutral-900">
-              {posts.map((post) => (
-                <PostRow
-                  deleting={deleteMutation.isPending}
-                  key={post.id}
-                  onDelete={(id) => {
-                    if (window.confirm(`确定删除「${post.title}」？`)) {
-                      deleteMutation.mutate(id)
-                    }
-                  }}
-                  onPublishChange={(id, isPublished) =>
-                    publishMutation.mutate({ id, isPublished })
-                  }
-                  post={post}
-                  publishing={publishMutation.isPending}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-
-        {pagination && pagination.totalPages > 1 ? (
-          <div className="flex items-center justify-between border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
-            <span className="text-xs text-neutral-500 dark:text-neutral-400">
-              第 {pagination.page} 页
-            </span>
-            <CompactPagination
-              onPageChange={setPage}
-              onPageSizeChange={() => undefined}
-              page={page}
-              pageCount={pagination.totalPages}
-              pageSize={pageSize}
-              pageSizes={[pageSize]}
+      <ContentListToolbar
+        filters={
+          <>
+            <SelectField
+              aria-label="按分类过滤文章"
+              disabled={Boolean(keyword)}
+              onValueChange={(value) => {
+                setCategoryId(value)
+                setPage(1)
+              }}
+              options={categoryOptions}
+              triggerClassName="w-40 !h-8 text-xs"
+              value={categoryId}
             />
+            <SelectField
+              aria-label="文章排序字段"
+              disabled={Boolean(keyword)}
+              onValueChange={(value) => {
+                setSortKey(value)
+                setPage(1)
+              }}
+              options={[
+                { label: '创建时间', value: 'createdAt' },
+                { label: '修改时间', value: 'modifiedAt' },
+                { label: '置顶时间', value: 'pinAt' },
+              ]}
+              triggerClassName="w-36 !h-8 text-xs"
+              value={sortKey}
+            />
+            <SelectField
+              aria-label="文章排序方向"
+              disabled={Boolean(keyword)}
+              onValueChange={(value) => {
+                setSortOrder(value)
+                setPage(1)
+              }}
+              options={[
+                { label: '降序', value: 'desc' },
+                { label: '升序', value: 'asc' },
+              ]}
+              triggerClassName="w-28 !h-8 text-xs"
+              value={sortOrder}
+            />
+          </>
+        }
+        hasSearch={Boolean(keyword)}
+        onClearSearch={() => {
+          setKeywordInput('')
+          setKeyword('')
+          setPage(1)
+        }}
+        onSearch={onSearch}
+        onSearchValueChange={setKeywordInput}
+        searchPlaceholder="搜索标题或正文"
+        searchValue={keywordInput}
+        selection={{
+          allVisibleSelected,
+          bulkActionDisabled:
+            selectedCount === 0 || batchDeleteMutation.isPending,
+          bulkActionIcon: <Trash2 aria-hidden="true" className="size-4" />,
+          bulkActionLabel: '批量删除',
+          hasVisibleItems: posts.length > 0,
+          indeterminate: selectedCount > 0 && !allVisibleSelected,
+          onBulkAction: () => {
+            if (window.confirm(`确定删除选中的 ${selectedCount} 篇文章？`)) {
+              batchDeleteMutation.mutate(Array.from(selectedIds))
+            }
+          },
+          onToggleAllVisible: toggleAllVisible,
+          selectAllLabel: '选择当前页',
+          selectedLabel: `已选 ${selectedCount} 项`,
+        }}
+      />
+
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        {postsQuery.isLoading && posts.length === 0 ? (
+          <PostsSkeleton />
+        ) : postsQuery.isError ? (
+          <PostsError onRetry={() => void postsQuery.refetch()} />
+        ) : posts.length === 0 ? (
+          <PostsEmpty keyword={keyword} />
+        ) : (
+          <div className="divide-y divide-neutral-100 dark:divide-neutral-900">
+            {posts.map((post) => (
+              <PostRow
+                deleting={deleteMutation.isPending}
+                categories={rowCategoryOptions}
+                key={post.id}
+                onDelete={(id) => {
+                  if (window.confirm(`确定删除「${post.title}」？`)) {
+                    deleteMutation.mutate(id)
+                  }
+                }}
+                onCategoryChange={(id, nextCategoryId) =>
+                  categoryMutation.mutate({ categoryId: nextCategoryId, id })
+                }
+                onPublishChange={(id, isPublished) =>
+                  publishMutation.mutate({ id, isPublished })
+                }
+                onSelectedChange={(checked) => {
+                  setSelectedIds((current) => {
+                    const next = new Set(current)
+                    if (checked) next.add(post.id)
+                    else next.delete(post.id)
+                    return next
+                  })
+                }}
+                post={post}
+                publishing={publishMutation.isPending}
+                selected={selectedIds.has(post.id)}
+                updatingCategory={categoryMutation.isPending}
+              />
+            ))}
           </div>
-        ) : null}
-      </Panel>
+        )}
+      </div>
+
+      {pagination && pagination.totalPages > 1 ? (
+        <div className="flex shrink-0 items-center justify-between border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
+          <span className="text-xs text-neutral-500 dark:text-neutral-400">
+            第 {pagination.page} 页
+          </span>
+          <CompactPagination
+            onPageChange={setPage}
+            onPageSizeChange={() => undefined}
+            page={page}
+            pageCount={pagination.totalPages}
+            pageSize={pageSize}
+            pageSizes={[pageSize]}
+          />
+        </div>
+      ) : null}
     </div>
   )
 }
 
 function PostRow(props: {
+  categories: Array<{ label: string; value: string }>
   deleting: boolean
+  onCategoryChange: (id: string, categoryId: string) => void
   onDelete: (id: string) => void
   onPublishChange: (id: string, isPublished: boolean) => void
+  onSelectedChange: (checked: boolean) => void
   post: PostModel
   publishing: boolean
+  selected: boolean
+  updatingCategory: boolean
 }) {
   const externalHref = `${WEB_URL}/posts/${props.post.category?.slug ?? props.post.categoryId}/${props.post.slug}`
   const isPublished = props.post.isPublished ?? false
 
   return (
-    <article className="grid gap-3 px-4 py-3 transition-colors hover:bg-neutral-50 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center dark:hover:bg-neutral-900/50">
+    <article className="grid gap-3 px-4 py-3 transition-colors hover:bg-neutral-50 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center dark:hover:bg-neutral-900/50">
+      <Checkbox
+        aria-label={`选择文章「${props.post.title || '未命名文章'}」`}
+        checked={props.selected}
+        onCheckedChange={props.onSelectedChange}
+      />
       <div className="min-w-0">
         <div className="flex min-w-0 items-center gap-2">
           {props.post.pinAt ? (
@@ -226,7 +409,20 @@ function PostRow(props: {
         </div>
 
         <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-neutral-500 dark:text-neutral-400">
-          <span>{props.post.category?.name ?? '未分类'}</span>
+          {props.categories.length > 0 ? (
+            <SelectField
+              aria-label={`修改「${props.post.title || '未命名文章'}」分类`}
+              disabled={props.updatingCategory}
+              onValueChange={(value) =>
+                props.onCategoryChange(props.post.id, value)
+              }
+              options={props.categories}
+              triggerClassName="h-7 w-32 px-2 text-xs"
+              value={props.post.categoryId}
+            />
+          ) : (
+            <span>{props.post.category?.name ?? '未分类'}</span>
+          )}
           {props.post.tags?.length ? (
             <span className="max-w-64 truncate">
               {props.post.tags.join('、')}
@@ -331,4 +527,9 @@ function PostsSkeleton() {
 function readPage(value: string | null) {
   const page = Number(value)
   return Number.isFinite(page) && page > 0 ? page : 1
+}
+
+function getErrorMessage(error: unknown, fallback: string) {
+  if (error instanceof Error && error.message) return error.message
+  return fallback
 }

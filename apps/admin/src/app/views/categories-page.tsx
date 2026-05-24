@@ -33,6 +33,8 @@ import {
 import { getPosts } from '../api/posts'
 import { Button } from '../ui/button'
 import { cn } from '../ui/cn'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
+import { MasterDetailLayout } from '../ui/page-layout'
 import { TextInput } from '../ui/text-field'
 
 type SelectedItem =
@@ -58,6 +60,7 @@ export function CategoriesPage() {
   const queryClient = useQueryClient()
   const [selectedItem, setSelectedItem] = useState<SelectedItem | null>(null)
   const [formMode, setFormMode] = useState<CategoryFormMode | null>(null)
+  const [showDetailOnMobile, setShowDetailOnMobile] = useState(false)
 
   const categoriesQuery = useQuery({
     queryFn: () => getCategories({ type: 'Category' }),
@@ -87,6 +90,7 @@ export function CategoriesPage() {
       !categories.some((item) => item.id === selectedItem.id)
     ) {
       setSelectedItem(null)
+      setShowDetailOnMobile(false)
     }
     if (
       selectedItem.kind === 'tag' &&
@@ -94,6 +98,7 @@ export function CategoriesPage() {
       !tags.some((item) => item.name === selectedItem.name)
     ) {
       setSelectedItem(null)
+      setShowDetailOnMobile(false)
     }
   }, [categories, selectedItem, tags])
 
@@ -109,104 +114,134 @@ export function CategoriesPage() {
     onSuccess: async () => {
       toast.success('分类已删除')
       setSelectedItem(null)
+      setShowDetailOnMobile(false)
       await invalidateCategories()
     },
   })
 
+  const selectItem = (item: SelectedItem) => {
+    setSelectedItem(item)
+    setShowDetailOnMobile(true)
+  }
+
   return (
-    <div className="grid min-h-[calc(100vh-8rem)] overflow-hidden rounded border border-neutral-200 bg-white lg:grid-cols-[320px_minmax(0,1fr)] dark:border-neutral-800 dark:bg-neutral-950">
-      <section className="flex min-h-0 flex-col border-b border-neutral-200 lg:border-b-0 lg:border-r dark:border-neutral-800">
-        <div className="flex items-center justify-between border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
-          <div>
-            <h2 className="inline-flex items-center gap-2 text-sm font-medium">
-              <FolderOpen aria-hidden="true" className="size-4" />
-              分类与标签
-            </h2>
-            <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
-              {categories.length} 个分类 / {tags.length} 个标签
-            </p>
+    <MasterDetailLayout
+      defaultSize={0.34}
+      maxSize={0.44}
+      minSize={0.25}
+      showDetailOnMobile={showDetailOnMobile}
+      list={
+        <section className="flex h-full min-h-0 flex-col border-b border-neutral-200 lg:border-b-0 lg:border-r dark:border-neutral-800">
+          <div
+            className={cn(
+              'flex shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800',
+              APP_SHELL_HEADER_HEIGHT_CLASS,
+            )}
+          >
+            <div className="min-w-0">
+              <h2 className="inline-flex items-center gap-2 text-sm font-medium">
+                <FolderOpen aria-hidden="true" className="size-4" />
+                分类与标签
+              </h2>
+            </div>
+            <span className="text-xs text-neutral-500 dark:text-neutral-400">
+              {categories.length} / {tags.length}
+            </span>
+            <Button
+              onClick={() => setFormMode({ kind: 'create' })}
+              type="button"
+              variant="subtle"
+            >
+              <Plus aria-hidden="true" className="size-4" />
+              新建
+            </Button>
           </div>
-          <Button
-            onClick={() => setFormMode({ kind: 'create' })}
-            type="button"
-            variant="subtle"
-          >
-            <Plus aria-hidden="true" className="size-4" />
-            新建
-          </Button>
-        </div>
 
-        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
-          <ListSection
-            count={categories.length}
-            title="分类"
-            loading={categoriesQuery.isLoading}
-          >
-            {categories.length === 0 && !categoriesQuery.isLoading ? (
-              <EmptyList label="暂无分类" />
-            ) : (
-              categories.map((category) => (
-                <CategoryRow
-                  category={category}
-                  key={category.id}
-                  onSelect={() =>
-                    setSelectedItem({ id: category.id, kind: 'category' })
+          <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+            <ListSection
+              count={categories.length}
+              title="分类"
+              loading={categoriesQuery.isLoading}
+            >
+              {categories.length === 0 && !categoriesQuery.isLoading ? (
+                <EmptyList
+                  action={
+                    <Button
+                      className="mt-3"
+                      onClick={() => setFormMode({ kind: 'create' })}
+                      type="button"
+                    >
+                      创建分类
+                    </Button>
                   }
-                  selected={
-                    selectedItem?.kind === 'category' &&
-                    selectedItem.id === category.id
-                  }
+                  label="暂无分类"
                 />
-              ))
-            )}
-          </ListSection>
+              ) : (
+                categories.map((category) => (
+                  <CategoryRow
+                    category={category}
+                    key={category.id}
+                    onSelect={() =>
+                      selectItem({ id: category.id, kind: 'category' })
+                    }
+                    selected={
+                      selectedItem?.kind === 'category' &&
+                      selectedItem.id === category.id
+                    }
+                  />
+                ))
+              )}
+            </ListSection>
 
-          <ListSection
-            count={tags.length}
-            title="标签"
-            loading={tagsQuery.isLoading}
-          >
-            {tags.length === 0 && !tagsQuery.isLoading ? (
-              <EmptyList label="暂无标签" />
-            ) : (
-              tags.map((tag) => (
-                <TagRow
-                  key={tag.name}
-                  onSelect={() =>
-                    setSelectedItem({ kind: 'tag', name: tag.name })
-                  }
-                  selected={
-                    selectedItem?.kind === 'tag' &&
-                    selectedItem.name === tag.name
-                  }
-                  tag={tag}
-                />
-              ))
-            )}
-          </ListSection>
-        </div>
-      </section>
-
-      <section className="min-h-0">
-        {selectedCategory ? (
-          <CategoryDetail
-            category={selectedCategory}
-            deleting={deleteMutation.isPending}
-            onBack={() => setSelectedItem(null)}
-            onDelete={(category) => {
-              if (window.confirm(`确认删除「${category.name}」？`)) {
-                deleteMutation.mutate(category.id)
-              }
-            }}
-            onEdit={(category) => setFormMode({ category, kind: 'edit' })}
-          />
-        ) : selectedTag ? (
-          <TagDetail onBack={() => setSelectedItem(null)} tag={selectedTag} />
-        ) : (
-          <DetailEmpty />
-        )}
-      </section>
-
+            <ListSection
+              count={tags.length}
+              title="标签"
+              loading={tagsQuery.isLoading}
+            >
+              {tags.length === 0 && !tagsQuery.isLoading ? (
+                <EmptyList label="暂无标签" />
+              ) : (
+                tags.map((tag) => (
+                  <TagRow
+                    key={tag.name}
+                    onSelect={() => selectItem({ kind: 'tag', name: tag.name })}
+                    selected={
+                      selectedItem?.kind === 'tag' &&
+                      selectedItem.name === tag.name
+                    }
+                    tag={tag}
+                  />
+                ))
+              )}
+            </ListSection>
+          </div>
+        </section>
+      }
+      detail={
+        <section className="h-full min-h-0">
+          {selectedCategory ? (
+            <CategoryDetail
+              category={selectedCategory}
+              deleting={deleteMutation.isPending}
+              onBack={() => setShowDetailOnMobile(false)}
+              onDelete={(category) => {
+                if (window.confirm(`确认删除「${category.name}」？`)) {
+                  deleteMutation.mutate(category.id)
+                }
+              }}
+              onEdit={(category) => setFormMode({ category, kind: 'edit' })}
+            />
+          ) : selectedTag ? (
+            <TagDetail
+              onBack={() => setShowDetailOnMobile(false)}
+              tag={selectedTag}
+            />
+          ) : (
+            <DetailEmpty />
+          )}
+        </section>
+      }
+    >
       {formMode ? (
         <CategoryFormDialog
           mode={formMode}
@@ -214,11 +249,12 @@ export function CategoriesPage() {
           onSaved={async (category) => {
             setFormMode(null)
             setSelectedItem({ id: category.id, kind: 'category' })
+            setShowDetailOnMobile(true)
             await invalidateCategories()
           }}
         />
       ) : null}
-    </div>
+    </MasterDetailLayout>
   )
 }
 
@@ -407,7 +443,12 @@ function DetailHeader(props: {
   title: string
 }) {
   return (
-    <div className="flex min-h-14 items-center justify-between gap-3 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
+    <div
+      className={cn(
+        'flex shrink-0 items-center justify-between gap-3 border-b border-neutral-200 px-4 dark:border-neutral-800',
+        APP_SHELL_HEADER_HEIGHT_CLASS,
+      )}
+    >
       <div className="flex min-w-0 items-center gap-2">
         <button
           className="inline-flex size-8 items-center justify-center rounded text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-950 lg:hidden dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-50"
@@ -646,10 +687,11 @@ function ListSkeleton() {
   )
 }
 
-function EmptyList(props: { label: string }) {
+function EmptyList(props: { action?: ReactNode; label: string }) {
   return (
     <div className="border-b border-neutral-100 px-4 py-8 text-center text-sm text-neutral-500 dark:border-neutral-800/60 dark:text-neutral-400">
-      {props.label}
+      <p>{props.label}</p>
+      {props.action}
     </div>
   )
 }

@@ -1,4 +1,5 @@
 import react from '@vitejs/plugin-react'
+import { codeInspectorPlugin } from 'code-inspector-plugin'
 import UnoCSS from 'unocss/vite'
 import { loadEnv } from 'vite'
 import { checker } from 'vite-plugin-checker'
@@ -16,6 +17,7 @@ export default ({ mode }) => {
   return defineConfig({
     plugins: [
       // mkcert(),
+      codeInspectorPlugin({ bundler: 'vite' }),
       UnoCSS(),
       react(),
 

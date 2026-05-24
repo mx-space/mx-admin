@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   AlertCircle,
   AlertTriangle,
+  ArrowLeft,
   BookOpenText,
   CheckCircle2,
   Clock,
@@ -19,7 +20,7 @@ import {
   XCircle,
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { useLocation } from 'react-router'
+import { useLocation, useSearchParams } from 'react-router'
 import { toast } from 'sonner'
 import type { LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
@@ -64,12 +65,17 @@ import {
   getTranslationEntries,
   getTranslationsGrouped,
   retryAiTask,
+  updateInsights,
+  updateSummary,
+  updateTranslation,
   updateTranslationEntry,
   writerGenerate,
 } from '../api/ai'
 import { Button } from '../ui/button'
 import { cn } from '../ui/cn'
 import { CompactPagination } from '../ui/compact-pagination'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
+import { AppPage, MasterDetailLayout, PageHeader } from '../ui/page-layout'
 import { SelectField } from '../ui/select'
 import { TextArea, TextInput } from '../ui/text-field'
 
@@ -173,17 +179,9 @@ export function AiPage() {
   }, [location.pathname])
 
   return (
-    <div className="space-y-4">
-      <section className="rounded border border-neutral-200 bg-white px-4 py-3 dark:border-neutral-800 dark:bg-neutral-950">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h1 className="text-base font-semibold text-neutral-950 dark:text-neutral-50">
-              AI 管理
-            </h1>
-            <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
-              管理任务、摘要、翻译、精读、词表与 slug 回填。
-            </p>
-          </div>
+    <AppPage>
+      <PageHeader
+        actions={
           <div className="flex flex-wrap gap-2" role="tablist">
             {aiSurfaceTabs.map((tab) => {
               const Icon = tab.icon
@@ -209,16 +207,20 @@ export function AiPage() {
               )
             })}
           </div>
-        </div>
-      </section>
+        }
+        description="管理任务、摘要、翻译、精读、词表与 slug 回填。"
+        title="AI 管理"
+      />
 
-      {surface === 'tasks' ? <AiTasksSurface /> : null}
-      {surface === 'summaries' ? <SummariesSurface /> : null}
-      {surface === 'translations' ? <TranslationsSurface /> : null}
-      {surface === 'insights' ? <InsightsSurface /> : null}
-      {surface === 'entries' ? <TranslationEntriesSurface /> : null}
-      {surface === 'slug' ? <SlugBackfillSurface /> : null}
-    </div>
+      <div className="min-h-0 flex-1">
+        {surface === 'tasks' ? <AiTasksSurface /> : null}
+        {surface === 'summaries' ? <SummariesSurface /> : null}
+        {surface === 'translations' ? <TranslationsSurface /> : null}
+        {surface === 'insights' ? <InsightsSurface /> : null}
+        {surface === 'entries' ? <TranslationEntriesSurface /> : null}
+        {surface === 'slug' ? <SlugBackfillSurface /> : null}
+      </div>
+    </AppPage>
   )
 }
 
@@ -239,6 +241,7 @@ function AiTasksSurface() {
   const [typeFilter, setTypeFilter] = useState<AITaskType | ''>('')
   const [page, setPage] = useState(1)
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
+  const [showDetailOnMobile, setShowDetailOnMobile] = useState(false)
 
   const queryParams = {
     page,
@@ -257,8 +260,14 @@ function AiTasksSurface() {
   const tasks = tasksQuery.data?.data ?? []
   const total = tasksQuery.data?.total ?? 0
   const pageCount = Math.max(1, Math.ceil(total / pageSize))
-  const selectedTask =
-    tasks.find((task) => task.id === selectedTaskId) ?? tasks[0] ?? null
+  const selectedTask = tasks.find((task) => task.id === selectedTaskId) ?? null
+
+  useEffect(() => {
+    if (selectedTaskId && !selectedTask) {
+      setSelectedTaskId(null)
+      setShowDetailOnMobile(false)
+    }
+  }, [selectedTask, selectedTaskId])
 
   const invalidateTasks = async () => {
     await queryClient.invalidateQueries({ queryKey: aiTasksQueryKey })
@@ -288,6 +297,7 @@ function AiTasksSurface() {
     onSuccess: async () => {
       toast.success('任务已删除')
       setSelectedTaskId(null)
+      setShowDetailOnMobile(false)
       await invalidateTasks()
     },
   })
@@ -312,141 +322,159 @@ function AiTasksSurface() {
     setPage(1)
   }
 
+  const selectTask = (taskId: string) => {
+    setSelectedTaskId(taskId)
+    setShowDetailOnMobile(true)
+  }
+
   return (
-    <div className="grid min-h-[calc(100vh-8rem)] grid-cols-1 overflow-hidden rounded border border-neutral-200 bg-white lg:grid-cols-[minmax(360px,0.4fr)_1fr] dark:border-neutral-800 dark:bg-neutral-950">
-      <section className="flex min-h-0 flex-col border-b border-neutral-200 lg:border-b-0 lg:border-r dark:border-neutral-800">
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
-          <div>
-            <h2 className="text-sm font-medium">AI 任务</h2>
-            <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
-              共 {total} 个任务
-            </p>
+    <MasterDetailLayout
+      defaultSize={0.4}
+      maxSize={0.5}
+      minSize={0.3}
+      showDetailOnMobile={showDetailOnMobile}
+      list={
+        <section className="flex h-full min-h-0 flex-col border-b border-neutral-200 lg:border-b-0 lg:border-r dark:border-neutral-800">
+          <div
+            className={cn(
+              'flex shrink-0 items-center justify-between gap-3 border-b border-neutral-200 px-4 dark:border-neutral-800',
+              APP_SHELL_HEADER_HEIGHT_CLASS,
+            )}
+          >
+            <div className="min-w-0">
+              <h2 className="text-sm font-medium">AI 任务</h2>
+            </div>
+            <span className="text-xs text-neutral-500 dark:text-neutral-400">
+              {total} 个
+            </span>
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                disabled={clearCompletedMutation.isPending}
+                onClick={() => {
+                  if (window.confirm('确认清理所有已完成任务？')) {
+                    clearCompletedMutation.mutate()
+                  }
+                }}
+                type="button"
+                variant="subtle"
+              >
+                {clearCompletedMutation.isPending ? (
+                  <Loader2 aria-hidden="true" className="size-4 animate-spin" />
+                ) : (
+                  <Trash2 aria-hidden="true" className="size-4" />
+                )}
+                清理已完成
+              </Button>
+              <Button
+                disabled={tasksQuery.isFetching}
+                onClick={() => void tasksQuery.refetch()}
+                type="button"
+                variant="subtle"
+              >
+                <RefreshCw
+                  aria-hidden="true"
+                  className={cn(
+                    'size-4',
+                    tasksQuery.isFetching && 'animate-spin',
+                  )}
+                />
+                刷新
+              </Button>
+            </div>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
+
+          <div className="grid grid-cols-2 gap-2 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
+            <SelectField
+              aria-label="任务状态过滤"
+              onValueChange={(value) => {
+                setStatusFilter(value)
+                setPage(1)
+              }}
+              options={statusOptions}
+              value={statusFilter}
+            />
+            <SelectField
+              aria-label="任务类型过滤"
+              onValueChange={(value) => {
+                setTypeFilter(value)
+                setPage(1)
+              }}
+              options={typeOptions}
+              value={typeFilter}
+            />
             <Button
-              disabled={clearCompletedMutation.isPending}
-              onClick={() => {
-                if (window.confirm('确认清理所有已完成任务？')) {
-                  clearCompletedMutation.mutate()
+              className="col-span-2 justify-self-end"
+              onClick={resetFilters}
+              type="button"
+              variant="subtle"
+            >
+              重置筛选
+            </Button>
+          </div>
+
+          <div className="min-h-0 flex-1 overflow-y-auto">
+            {tasksQuery.isLoading && tasks.length === 0 ? (
+              <TasksSkeleton />
+            ) : tasksQuery.isError ? (
+              <TasksError onRetry={() => void tasksQuery.refetch()} />
+            ) : tasks.length === 0 ? (
+              <TasksEmpty />
+            ) : (
+              tasks.map((task) => (
+                <TaskRow
+                  key={task.id}
+                  onSelect={() => selectTask(task.id)}
+                  selected={selectedTask?.id === task.id}
+                  task={task}
+                />
+              ))
+            )}
+          </div>
+
+          {pageCount > 1 ? (
+            <div className="flex shrink-0 items-center justify-between gap-3 border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
+              <span className="text-xs tabular-nums text-neutral-500 dark:text-neutral-400">
+                第 {page} 页
+              </span>
+              <CompactPagination
+                onPageChange={setPage}
+                onPageSizeChange={() => undefined}
+                page={page}
+                pageCount={pageCount}
+                pageSize={pageSize}
+                pageSizes={[pageSize]}
+              />
+            </div>
+          ) : null}
+        </section>
+      }
+      detail={
+        <section className="min-h-0">
+          {selectedTask ? (
+            <TaskDetail
+              canceling={cancelMutation.isPending}
+              deleting={deleteMutation.isPending}
+              onBack={() => setShowDetailOnMobile(false)}
+              onCancel={(task) => {
+                if (window.confirm(`确认取消任务 ${task.id}？`)) {
+                  cancelMutation.mutate(task.id)
                 }
               }}
-              type="button"
-              variant="subtle"
-            >
-              {clearCompletedMutation.isPending ? (
-                <Loader2 aria-hidden="true" className="size-4 animate-spin" />
-              ) : (
-                <Trash2 aria-hidden="true" className="size-4" />
-              )}
-              清理已完成
-            </Button>
-            <Button
-              disabled={tasksQuery.isFetching}
-              onClick={() => void tasksQuery.refetch()}
-              type="button"
-              variant="subtle"
-            >
-              <RefreshCw
-                aria-hidden="true"
-                className={cn(
-                  'size-4',
-                  tasksQuery.isFetching && 'animate-spin',
-                )}
-              />
-              刷新
-            </Button>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-2 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
-          <SelectField
-            aria-label="任务状态过滤"
-            onValueChange={(value) => {
-              setStatusFilter(value)
-              setPage(1)
-            }}
-            options={statusOptions}
-            value={statusFilter}
-          />
-          <SelectField
-            aria-label="任务类型过滤"
-            onValueChange={(value) => {
-              setTypeFilter(value)
-              setPage(1)
-            }}
-            options={typeOptions}
-            value={typeFilter}
-          />
-          <Button
-            className="col-span-2 justify-self-end"
-            onClick={resetFilters}
-            type="button"
-            variant="subtle"
-          >
-            重置筛选
-          </Button>
-        </div>
-
-        <div className="min-h-0 flex-1 overflow-y-auto">
-          {tasksQuery.isLoading && tasks.length === 0 ? (
-            <TasksSkeleton />
-          ) : tasksQuery.isError ? (
-            <TasksError onRetry={() => void tasksQuery.refetch()} />
-          ) : tasks.length === 0 ? (
-            <TasksEmpty />
-          ) : (
-            tasks.map((task) => (
-              <TaskRow
-                key={task.id}
-                onSelect={() => setSelectedTaskId(task.id)}
-                selected={selectedTask?.id === task.id}
-                task={task}
-              />
-            ))
-          )}
-        </div>
-
-        {pageCount > 1 ? (
-          <div className="flex shrink-0 items-center justify-between gap-3 border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
-            <span className="text-xs tabular-nums text-neutral-500 dark:text-neutral-400">
-              第 {page} 页
-            </span>
-            <CompactPagination
-              onPageChange={setPage}
-              onPageSizeChange={() => undefined}
-              page={page}
-              pageCount={pageCount}
-              pageSize={pageSize}
-              pageSizes={[pageSize]}
+              onDelete={(task) => {
+                if (window.confirm(`确认删除任务 ${task.id}？`)) {
+                  deleteMutation.mutate(task.id)
+                }
+              }}
+              onRetry={(task) => retryMutation.mutate(task.id)}
+              retrying={retryMutation.isPending}
+              task={selectedTask}
             />
-          </div>
-        ) : null}
-      </section>
-
-      <section className="min-h-0">
-        {selectedTask ? (
-          <TaskDetail
-            canceling={cancelMutation.isPending}
-            deleting={deleteMutation.isPending}
-            onCancel={(task) => {
-              if (window.confirm(`确认取消任务 ${task.id}？`)) {
-                cancelMutation.mutate(task.id)
-              }
-            }}
-            onDelete={(task) => {
-              if (window.confirm(`确认删除任务 ${task.id}？`)) {
-                deleteMutation.mutate(task.id)
-              }
-            }}
-            onRetry={(task) => retryMutation.mutate(task.id)}
-            retrying={retryMutation.isPending}
-            task={selectedTask}
-          />
-        ) : (
-          <TaskDetailEmpty />
-        )}
-      </section>
-    </div>
+          ) : (
+            <TaskDetailEmpty />
+          )}
+        </section>
+      }
+    />
   )
 }
 
@@ -457,6 +485,12 @@ type GroupedResourceItem = {
   id: string
   lang: string
   refId: string
+}
+
+type GroupedItemAction = {
+  getSuccessMessage?: (result: unknown) => null | string
+  label: string
+  run: () => Promise<unknown>
 }
 
 function SummariesSurface() {
@@ -472,6 +506,12 @@ function SummariesSurface() {
         }))
       }
       getPreview={(item: AISummary) => item.summary}
+      itemActions={(item) => [
+        {
+          label: '编辑',
+          run: () => editSummaryItem(item as AISummary),
+        },
+      ]}
       queryFn={getSummariesGrouped}
       queryKey="summaries"
       title="摘要"
@@ -524,6 +564,21 @@ function TranslationsSurface() {
           全量翻译
         </Button>
       }
+      itemActions={(item) => [
+        {
+          label: '编辑',
+          run: () => editTranslationItem(item as AITranslation),
+        },
+        {
+          getSuccessMessage: getTaskMutationMessage,
+          label: '重翻译',
+          run: () =>
+            createTranslationTask({
+              refId: item.refId,
+              targetLanguages: [item.lang],
+            }),
+        },
+      ]}
       queryFn={getTranslationsGrouped}
       queryKey="translations"
       title="翻译"
@@ -544,19 +599,47 @@ function InsightsSurface() {
         }))
       }
       getPreview={(item: AIInsights) => item.content}
-      itemAction={(item) => ({
-        label: '翻译',
-        run: () => {
-          const targetLang = window.prompt('目标语言', 'en')
-          if (!targetLang)
-            return Promise.resolve({ created: false, taskId: '' })
+      itemActions={(item) => {
+        const insight = item as AIInsights
 
-          return createInsightsTranslationTask({
-            refId: item.refId,
-            targetLang,
-          })
-        },
-      })}
+        return [
+          {
+            label: '编辑',
+            run: () => editInsightsItem(insight),
+          },
+          {
+            getSuccessMessage: getTaskMutationMessage,
+            label: '翻译',
+            run: () => {
+              const targetLang = window
+                .prompt('目标语言（ISO 639-1）', 'en')
+                ?.trim()
+                .toLowerCase()
+
+              if (!targetLang) return Promise.resolve({ cancelled: true })
+              if (targetLang.length !== 2) {
+                throw new Error('请填写合法的 ISO 639-1 语言代码')
+              }
+
+              return createInsightsTranslationTask({
+                refId: insight.refId,
+                targetLang,
+              })
+            },
+          },
+          {
+            getSuccessMessage: getTaskMutationMessage,
+            label: insight.isTranslation ? '重翻译' : '重生成',
+            run: () =>
+              insight.isTranslation
+                ? createInsightsTranslationTask({
+                    refId: insight.refId,
+                    targetLang: insight.lang,
+                  })
+                : createInsightsTask({ refId: insight.refId }),
+          },
+        ]
+      }}
       queryFn={getInsightsGrouped}
       queryKey="insights"
       title="精读"
@@ -578,10 +661,7 @@ function AiGroupedResourceSurface<
   ) => Array<{ article: ArticleInfo; items: TItem[] }>
   getPreview: (item: TItem) => string
   headerAction?: ReactNode
-  itemAction?: (item: TItem) => {
-    label: string
-    run: () => Promise<{ created: boolean; taskId: string }>
-  }
+  itemActions?: (item: TItem) => GroupedItemAction[]
   queryFn: (params: {
     page: number
     search?: string
@@ -591,8 +671,16 @@ function AiGroupedResourceSurface<
   title: string
 }) {
   const queryClient = useQueryClient()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
+  const [selectedArticleId, setSelectedArticleId] = useState<string | null>(
+    () => searchParams.get('id'),
+  )
+  const [showDetailOnMobile, setShowDetailOnMobile] = useState(() =>
+    Boolean(searchParams.get('id')),
+  )
+  const selectedArticleParam = searchParams.get('id')
 
   const params = {
     page,
@@ -619,6 +707,24 @@ function AiGroupedResourceSurface<
     1,
     pagination?.totalPage ?? Math.ceil(total / groupedPageSize),
   )
+  const selectedGroup =
+    groups.find((group) => group.article.id === selectedArticleId) ?? null
+
+  useEffect(() => {
+    if ((selectedArticleParam ?? null) === selectedArticleId) {
+      return
+    }
+
+    const next = new URLSearchParams(searchParams)
+
+    if (selectedArticleId) {
+      next.set('id', selectedArticleId)
+    } else {
+      next.delete('id')
+    }
+
+    setSearchParams(next, { replace: true })
+  }, [searchParams, selectedArticleId, selectedArticleParam, setSearchParams])
 
   const invalidate = async () => {
     await queryClient.invalidateQueries({ queryKey: ['ai', props.queryKey] })
@@ -653,90 +759,187 @@ function AiGroupedResourceSurface<
   })
 
   const itemMutation = useMutation({
-    mutationFn: (action: {
-      run: () => Promise<{ created: boolean; taskId: string }>
-    }) => action.run(),
+    mutationFn: async (action: GroupedItemAction) => ({
+      action,
+      result: await action.run(),
+    }),
     onError: (error: unknown) =>
       toast.error(getErrorMessage(error, '任务创建失败')),
-    onSuccess: async (result) => {
-      if (!result.taskId) return
-      toast.success(result.created ? '已创建任务' : '任务已存在')
+    onSuccess: async ({ action, result }) => {
+      const message =
+        action.getSuccessMessage?.(result) ??
+        getGroupedActionSuccessMessage(result)
+
+      if (message) toast.success(message)
       await invalidate()
     },
   })
 
-  return (
-    <section className="rounded border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
-        <div>
-          <h2 className="text-sm font-medium text-neutral-950 dark:text-neutral-50">
-            {props.title}
-          </h2>
-          <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
-            共 {total} 条记录
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <label className="relative block">
-            <Search
-              aria-hidden="true"
-              className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-neutral-400"
-            />
-            <TextInput
-              controlClassName="h-9 w-64 pl-9 focus:border-neutral-400"
-              onChange={(value) => {
-                setSearch(value)
-                setPage(1)
-              }}
-              placeholder="搜索标题"
-              value={search}
-            />
-          </label>
-          {props.headerAction}
-          <Button
-            disabled={query.isFetching}
-            onClick={() => void query.refetch()}
-            type="button"
-            variant="subtle"
-          >
-            <RefreshCw
-              aria-hidden="true"
-              className={cn('size-4', query.isFetching && 'animate-spin')}
-            />
-            刷新
-          </Button>
-        </div>
-      </div>
+  const selectGroup = (articleId: string) => {
+    setSelectedArticleId(articleId)
+    setShowDetailOnMobile(true)
+  }
 
-      {query.isLoading && groups.length === 0 ? (
-        <GroupedResourceSkeleton />
-      ) : query.isError ? (
-        <ResourceError onRetry={() => void query.refetch()} />
-      ) : groups.length === 0 ? (
-        <ResourceEmpty label={props.title} />
-      ) : (
-        <div className="divide-y divide-neutral-100 dark:divide-neutral-900">
-          {groups.map((group) => (
-            <article
-              className="grid gap-4 px-4 py-4 lg:grid-cols-[18rem_minmax(0,1fr)]"
-              key={`${group.article.type}-${group.article.id}`}
-            >
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
-                  <SmallBadge>{group.article.type}</SmallBadge>
-                  <span className="text-xs text-neutral-500 dark:text-neutral-400">
-                    {group.items.length} 条
-                  </span>
+  return (
+    <MasterDetailLayout
+      defaultSize={0.36}
+      maxSize={0.48}
+      minSize={0.28}
+      showDetailOnMobile={showDetailOnMobile}
+      list={
+        <section className="flex h-full min-h-0 flex-col bg-white dark:bg-neutral-950">
+          <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
+            <div>
+              <h2 className="text-sm font-medium text-neutral-950 dark:text-neutral-50">
+                {props.title}
+              </h2>
+              <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+                共 {total} 条记录
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <label className="relative block">
+                <Search
+                  aria-hidden="true"
+                  className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-neutral-400"
+                />
+                <TextInput
+                  controlClassName="h-9 w-64 pl-9 focus:border-neutral-400"
+                  onChange={(value) => {
+                    setSearch(value)
+                    setPage(1)
+                  }}
+                  placeholder="搜索标题"
+                  value={search}
+                />
+              </label>
+              {props.headerAction}
+              <Button
+                disabled={query.isFetching}
+                onClick={() => void query.refetch()}
+                type="button"
+                variant="subtle"
+              >
+                <RefreshCw
+                  aria-hidden="true"
+                  className={cn('size-4', query.isFetching && 'animate-spin')}
+                />
+                刷新
+              </Button>
+            </div>
+          </div>
+
+          <div className="min-h-0 flex-1 overflow-y-auto">
+            {query.isLoading && groups.length === 0 ? (
+              <GroupedResourceSkeleton />
+            ) : query.isError ? (
+              <ResourceError onRetry={() => void query.refetch()} />
+            ) : groups.length === 0 ? (
+              <ResourceEmpty label={props.title} />
+            ) : (
+              <div className="divide-y divide-neutral-100 dark:divide-neutral-900">
+                {groups.map((group) => (
+                  <article
+                    className={cn(
+                      'flex items-start gap-3 px-4 py-3 transition-colors',
+                      selectedArticleId === group.article.id
+                        ? 'bg-neutral-100 dark:bg-neutral-900'
+                        : 'hover:bg-neutral-50 dark:hover:bg-neutral-900/70',
+                    )}
+                    key={`${group.article.type}-${group.article.id}`}
+                  >
+                    <button
+                      className="min-w-0 flex-1 text-left"
+                      onClick={() => selectGroup(group.article.id)}
+                      type="button"
+                    >
+                      <div className="flex flex-wrap items-center gap-2">
+                        <SmallBadge>{group.article.type}</SmallBadge>
+                        <span className="text-xs text-neutral-500 dark:text-neutral-400">
+                          {group.items.length} 条
+                        </span>
+                      </div>
+                      <h3 className="mt-2 truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
+                        {group.article.title || group.article.id}
+                      </h3>
+                      <Code>{group.article.id}</Code>
+                    </button>
+                    {props.createTask ? (
+                      <Button
+                        className="shrink-0"
+                        disabled={createMutation.isPending}
+                        onClick={() => createMutation.mutate(group.article)}
+                        type="button"
+                        variant="subtle"
+                      >
+                        {createMutation.isPending ? (
+                          <Loader2
+                            aria-hidden="true"
+                            className="size-4 animate-spin"
+                          />
+                        ) : (
+                          <Sparkles aria-hidden="true" className="size-4" />
+                        )}
+                        {props.createTaskLabel ?? '创建任务'}
+                      </Button>
+                    ) : null}
+                  </article>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {pageCount > 1 ? (
+            <div className="flex shrink-0 items-center justify-between gap-3 border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
+              <span className="text-xs tabular-nums text-neutral-500 dark:text-neutral-400">
+                第 {page} 页
+              </span>
+              <CompactPagination
+                onPageChange={setPage}
+                onPageSizeChange={() => undefined}
+                page={page}
+                pageCount={pageCount}
+                pageSize={groupedPageSize}
+                pageSizes={[groupedPageSize]}
+              />
+            </div>
+          ) : null}
+        </section>
+      }
+      detail={
+        <section className="h-full min-h-0 bg-white dark:bg-neutral-950">
+          {selectedGroup ? (
+            <div className="flex h-full min-h-0 flex-col">
+              <div
+                className={cn(
+                  'flex shrink-0 items-center justify-between gap-3 border-b border-neutral-200 px-4 dark:border-neutral-800',
+                  APP_SHELL_HEADER_HEIGHT_CLASS,
+                )}
+              >
+                <div className="flex min-w-0 items-center gap-2">
+                  <button
+                    className="inline-flex size-8 items-center justify-center rounded text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-950 lg:hidden dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-50"
+                    onClick={() => setShowDetailOnMobile(false)}
+                    type="button"
+                  >
+                    <ArrowLeft aria-hidden="true" className="size-4" />
+                  </button>
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <SmallBadge>{selectedGroup.article.type}</SmallBadge>
+                      <span className="text-xs text-neutral-500 dark:text-neutral-400">
+                        {selectedGroup.items.length} 条
+                      </span>
+                    </div>
+                    <h2 className="mt-1 truncate text-sm font-semibold text-neutral-950 dark:text-neutral-50">
+                      {selectedGroup.article.title || selectedGroup.article.id}
+                    </h2>
+                  </div>
                 </div>
-                <h3 className="mt-2 truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
-                  {group.article.title || group.article.id}
-                </h3>
-                <Code>{group.article.id}</Code>
                 {props.createTask ? (
                   <Button
-                    className="mt-3"
                     disabled={createMutation.isPending}
-                    onClick={() => createMutation.mutate(group.article)}
+                    onClick={() => createMutation.mutate(selectedGroup.article)}
                     type="button"
                     variant="subtle"
                   >
@@ -753,77 +956,66 @@ function AiGroupedResourceSurface<
                 ) : null}
               </div>
 
-              <div className="min-w-0 space-y-3">
-                {group.items.map((item) => {
-                  const itemAction = props.itemAction?.(item)
+              <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+                <div className="space-y-3">
+                  {selectedGroup.items.map((item) => {
+                    const itemActions = props.itemActions?.(item) ?? []
 
-                  return (
-                    <div
-                      className="rounded border border-neutral-200 p-3 dark:border-neutral-800"
-                      key={item.id}
-                    >
-                      <div className="flex flex-wrap items-center justify-between gap-2">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <SmallBadge tone="info">{item.lang}</SmallBadge>
-                          <span className="text-xs tabular-nums text-neutral-500 dark:text-neutral-400">
-                            {formatDateString(item.createdAt)}
-                          </span>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {itemAction ? (
+                    return (
+                      <div
+                        className="rounded border border-neutral-200 p-3 dark:border-neutral-800"
+                        key={item.id}
+                      >
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <SmallBadge tone="info">{item.lang}</SmallBadge>
+                            <span className="text-xs tabular-nums text-neutral-500 dark:text-neutral-400">
+                              {formatDateString(item.createdAt)}
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {itemActions.map((action) => (
+                              <Button
+                                disabled={itemMutation.isPending}
+                                key={action.label}
+                                onClick={() => itemMutation.mutate(action)}
+                                type="button"
+                                variant="subtle"
+                              >
+                                {action.label}
+                              </Button>
+                            ))}
                             <Button
-                              disabled={itemMutation.isPending}
-                              onClick={() => itemMutation.mutate(itemAction)}
+                              className="border-red-200 text-red-600 hover:bg-red-50 dark:border-red-950 dark:text-red-400 dark:hover:bg-red-950/30"
+                              disabled={deleteMutation.isPending}
+                              onClick={() => {
+                                if (window.confirm('确认删除该记录？')) {
+                                  deleteMutation.mutate(item.id)
+                                }
+                              }}
                               type="button"
                               variant="subtle"
                             >
-                              {itemAction.label}
+                              <Trash2 aria-hidden="true" className="size-4" />
+                              删除
                             </Button>
-                          ) : null}
-                          <Button
-                            className="border-red-200 text-red-600 hover:bg-red-50 dark:border-red-950 dark:text-red-400 dark:hover:bg-red-950/30"
-                            disabled={deleteMutation.isPending}
-                            onClick={() => {
-                              if (window.confirm('确认删除该记录？')) {
-                                deleteMutation.mutate(item.id)
-                              }
-                            }}
-                            type="button"
-                            variant="subtle"
-                          >
-                            <Trash2 aria-hidden="true" className="size-4" />
-                            删除
-                          </Button>
+                          </div>
                         </div>
+                        <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-neutral-700 dark:text-neutral-300">
+                          {props.getPreview(item) || '-'}
+                        </p>
                       </div>
-                      <p className="mt-3 line-clamp-3 whitespace-pre-wrap text-sm leading-6 text-neutral-700 dark:text-neutral-300">
-                        {props.getPreview(item) || '-'}
-                      </p>
-                    </div>
-                  )
-                })}
+                    )
+                  })}
+                </div>
               </div>
-            </article>
-          ))}
-        </div>
-      )}
-
-      {pageCount > 1 ? (
-        <div className="flex items-center justify-between gap-3 border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
-          <span className="text-xs tabular-nums text-neutral-500 dark:text-neutral-400">
-            第 {page} 页
-          </span>
-          <CompactPagination
-            onPageChange={setPage}
-            onPageSizeChange={() => undefined}
-            page={page}
-            pageCount={pageCount}
-            pageSize={groupedPageSize}
-            pageSizes={[groupedPageSize]}
-          />
-        </div>
-      ) : null}
-    </section>
+            </div>
+          ) : (
+            <ResourceEmpty label={`选择${props.title}记录`} />
+          )}
+        </section>
+      }
+    />
   )
 }
 
@@ -899,7 +1091,7 @@ function TranslationEntriesSurface() {
   })
 
   return (
-    <section className="rounded border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950">
+    <section className="bg-white dark:bg-neutral-950">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
         <div>
           <h2 className="text-sm font-medium">翻译词表</h2>
@@ -1065,7 +1257,7 @@ function SlugBackfillSurface() {
 
   return (
     <div className="grid gap-4 lg:grid-cols-[1fr_24rem]">
-      <section className="rounded border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950">
+      <section className="bg-white dark:bg-neutral-950">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
           <div>
             <h2 className="text-sm font-medium">Slug 回填</h2>
@@ -1150,7 +1342,7 @@ function WriterGeneratePanel() {
   })
 
   return (
-    <section className="rounded border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-950">
+    <section className="bg-white p-4 dark:bg-neutral-950">
       <h2 className="text-sm font-medium">标题与 Slug 生成</h2>
       <div className="mt-3 grid gap-3">
         <SelectField
@@ -1307,6 +1499,7 @@ function TaskRow(props: {
 function TaskDetail(props: {
   canceling: boolean
   deleting: boolean
+  onBack: () => void
   onCancel: (task: AITask) => void
   onDelete: (task: AITask) => void
   onRetry: (task: AITask) => void
@@ -1332,12 +1525,24 @@ function TaskDetail(props: {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="flex shrink-0 flex-wrap items-start justify-between gap-3 border-b border-neutral-200 px-5 py-4 dark:border-neutral-800">
-        <div className="flex min-w-0 items-start gap-3">
+      <div
+        className={cn(
+          'flex shrink-0 items-center justify-between gap-3 border-b border-neutral-200 px-4 dark:border-neutral-800',
+          APP_SHELL_HEADER_HEIGHT_CLASS,
+        )}
+      >
+        <div className="flex min-w-0 items-center gap-3">
+          <button
+            className="inline-flex size-8 items-center justify-center rounded text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-950 lg:hidden dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-50"
+            onClick={props.onBack}
+            type="button"
+          >
+            <ArrowLeft aria-hidden="true" className="size-4" />
+          </button>
           <Icon
             aria-hidden="true"
             className={cn(
-              'mt-0.5 size-5 shrink-0',
+              'size-5 shrink-0',
               effectiveStatus === AITaskStatus.Running && 'animate-spin',
               statusIconClassName(effectiveStatus),
             )}
@@ -1351,7 +1556,7 @@ function TaskDetail(props: {
             </p>
           </div>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2">
           <StatusBadge status={effectiveStatus}>
             {taskStatusLabels[effectiveStatus]}
           </StatusBadge>
@@ -1811,6 +2016,89 @@ function formatAbsoluteTimestamp(timestamp?: number) {
     dateStyle: 'medium',
     timeStyle: 'medium',
   }).format(new Date(timestamp))
+}
+
+function editSummaryItem(item: AISummary) {
+  const summary = window.prompt('摘要内容', item.summary)
+  if (summary === null) return Promise.resolve({ cancelled: true })
+  if (!summary.trim()) throw new Error('摘要内容不能为空')
+
+  return updateSummary(item.id, { summary })
+}
+
+function editTranslationItem(item: AITranslation) {
+  const title = window.prompt('标题', item.title)
+  if (title === null) return Promise.resolve({ cancelled: true })
+  if (!title.trim()) throw new Error('标题不能为空')
+
+  const subtitle = window.prompt('副标题（可留空）', item.subtitle ?? '')
+  if (subtitle === null) return Promise.resolve({ cancelled: true })
+
+  const summary = window.prompt('摘要（可留空）', item.summary ?? '')
+  if (summary === null) return Promise.resolve({ cancelled: true })
+
+  if (item.contentFormat === 'lexical') {
+    const content = window.prompt('Lexical JSON 内容', item.content ?? '')
+    if (content === null) return Promise.resolve({ cancelled: true })
+
+    return updateTranslation(item.id, {
+      content: content.trim() || undefined,
+      subtitle: subtitle.trim() || undefined,
+      summary: summary.trim() || undefined,
+      title,
+    })
+  }
+
+  const text = window.prompt('正文内容', item.text)
+  if (text === null) return Promise.resolve({ cancelled: true })
+  if (!text.trim()) throw new Error('正文内容不能为空')
+
+  return updateTranslation(item.id, {
+    subtitle: subtitle.trim() || undefined,
+    summary: summary.trim() || undefined,
+    text,
+    title,
+  })
+}
+
+function editInsightsItem(item: AIInsights) {
+  const content = window.prompt('精读内容', item.content)
+  if (content === null) return Promise.resolve({ cancelled: true })
+  if (!content.trim()) throw new Error('精读内容不能为空')
+
+  return updateInsights(item.id, { content })
+}
+
+function getGroupedActionSuccessMessage(result: unknown) {
+  if (isCancelledActionResult(result)) return null
+  return getTaskMutationMessage(result) ?? '已保存'
+}
+
+function getTaskMutationMessage(result: unknown) {
+  if (isCancelledActionResult(result)) return null
+  if (
+    result &&
+    typeof result === 'object' &&
+    'taskId' in result &&
+    'created' in result
+  ) {
+    return (result as { created?: boolean }).created
+      ? '已创建任务'
+      : '任务已存在'
+  }
+
+  return null
+}
+
+function isCancelledActionResult(result: unknown): result is {
+  cancelled: true
+} {
+  return (
+    !!result &&
+    typeof result === 'object' &&
+    'cancelled' in result &&
+    (result as { cancelled?: unknown }).cancelled === true
+  )
 }
 
 function formatDateString(value?: string) {

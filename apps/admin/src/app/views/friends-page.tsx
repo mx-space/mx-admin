@@ -31,7 +31,8 @@ import {
   updateLink,
 } from '../api/links'
 import { Button } from '../ui/button'
-import { Panel } from '../ui/panel'
+import { cn } from '../ui/cn'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
 import { SelectField } from '../ui/select'
 import { TextArea, TextInput } from '../ui/text-field'
 
@@ -60,7 +61,7 @@ export function FriendsPage() {
   const [state, setState] = useState(() =>
     normalizeState(searchParams.get('state')),
   )
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState(() => readPage(searchParams.get('page')))
   const [editingLink, setEditingLink] = useState<LinkModel | null>(null)
   const [isEditorOpen, setIsEditorOpen] = useState(false)
   const [auditTarget, setAuditTarget] = useState<LinkModel | null>(null)
@@ -79,8 +80,11 @@ export function FriendsPage() {
   useEffect(() => {
     const next = new URLSearchParams()
     next.set('state', String(state))
-    setSearchParams(next, { replace: true })
-  }, [setSearchParams, state])
+    if (page > 1) next.set('page', String(page))
+    if (next.toString() !== searchParams.toString()) {
+      setSearchParams(next, { replace: true })
+    }
+  }, [page, searchParams, setSearchParams, state])
 
   const invalidateLinks = async () => {
     await queryClient.invalidateQueries({ queryKey: ['links'] })
@@ -162,8 +166,51 @@ export function FriendsPage() {
   }
 
   return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <section className="flex h-full min-h-0 flex-col bg-white dark:bg-neutral-950">
+      <div
+        className={cn(
+          'flex shrink-0 items-center justify-between gap-3 border-b border-neutral-200 px-4 dark:border-neutral-800',
+          APP_SHELL_HEADER_HEIGHT_CLASS,
+        )}
+      >
+        <div className="min-w-0">
+          <h2 className="inline-flex items-center gap-2 text-sm font-medium text-neutral-950 dark:text-neutral-50">
+            <UserRound aria-hidden="true" className="size-4" />
+            友链
+          </h2>
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
+          <span className="hidden text-xs text-neutral-500 sm:inline dark:text-neutral-400">
+            {pagination ? `${pagination.total} 条` : '加载中'}
+          </span>
+          <Button onClick={openCreate} type="button" variant="subtle">
+            <Plus aria-hidden="true" className="size-4" />
+            <span className="hidden sm:inline">新增友链</span>
+          </Button>
+          <Button
+            aria-label="检查友链可用性"
+            disabled={healthMutation.isPending}
+            onClick={() => healthMutation.mutate()}
+            type="button"
+            variant="subtle"
+          >
+            <SearchCheck aria-hidden="true" className="size-4" />
+            <span className="hidden lg:inline">检查可用性</span>
+          </Button>
+          <Button
+            aria-label="迁移头像"
+            disabled={migrateMutation.isPending}
+            onClick={() => migrateMutation.mutate()}
+            type="button"
+            variant="subtle"
+          >
+            <RefreshCcw aria-hidden="true" className="size-4" />
+            <span className="hidden lg:inline">迁移头像</span>
+          </Button>
+        </div>
+      </div>
+
+      <div className="shrink-0 border-b border-neutral-200 px-4 py-2 dark:border-neutral-800">
         <TabBar
           counts={counts}
           onChange={(nextState) => {
@@ -172,109 +219,78 @@ export function FriendsPage() {
           }}
           value={state}
         />
-        <div className="flex flex-wrap gap-2">
-          <Button onClick={openCreate} type="button">
-            <Plus aria-hidden="true" className="size-4" />
-            新增友链
-          </Button>
-          <Button
-            disabled={healthMutation.isPending}
-            onClick={() => healthMutation.mutate()}
-            type="button"
-            variant="subtle"
-          >
-            <SearchCheck aria-hidden="true" className="size-4" />
-            检查可用性
-          </Button>
-          <Button
-            disabled={migrateMutation.isPending}
-            onClick={() => migrateMutation.mutate()}
-            type="button"
-            variant="subtle"
-          >
-            <RefreshCcw aria-hidden="true" className="size-4" />
-            迁移头像
-          </Button>
-        </div>
       </div>
 
-      <Panel
-        description={pagination ? `${pagination.total} links` : undefined}
-        title="Friend links"
-      >
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[920px] border-collapse text-left text-sm">
-            <thead className="border-b border-neutral-200 bg-neutral-50 text-xs uppercase text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900/50 dark:text-neutral-400">
+      <div className="min-h-0 flex-1 overflow-auto">
+        <table className="w-full min-w-[920px] border-collapse text-left text-sm">
+          <thead className="sticky top-0 z-10 border-b border-neutral-200 bg-neutral-50 text-xs uppercase text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400">
+            <tr>
+              <th className="px-4 py-3 font-medium">名称</th>
+              <th className="px-4 py-3 font-medium">描述</th>
+              <th className="px-4 py-3 font-medium">网址</th>
+              <th className="px-4 py-3 font-medium">类型</th>
+              <th className="px-4 py-3 font-medium">邮箱</th>
+              <th className="px-4 py-3 font-medium">创建时间</th>
+              <th className="px-4 py-3 text-right font-medium">操作</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800">
+            {linksQuery.isLoading && links.length === 0 ? (
+              <FriendsSkeletonRows />
+            ) : links.length === 0 ? (
               <tr>
-                <th className="px-4 py-3 font-medium">名称</th>
-                <th className="px-4 py-3 font-medium">描述</th>
-                <th className="px-4 py-3 font-medium">网址</th>
-                <th className="px-4 py-3 font-medium">类型</th>
-                <th className="px-4 py-3 font-medium">邮箱</th>
-                <th className="px-4 py-3 font-medium">创建时间</th>
-                <th className="px-4 py-3 text-right font-medium">操作</th>
+                <td className="px-4 py-14 text-center" colSpan={7}>
+                  <div className="flex flex-col items-center text-sm text-neutral-500 dark:text-neutral-400">
+                    <UserRound
+                      aria-hidden="true"
+                      className="mb-3 size-10 text-neutral-300 dark:text-neutral-700"
+                    />
+                    暂无友链
+                  </div>
+                </td>
               </tr>
-            </thead>
-            <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800">
-              {linksQuery.isLoading && links.length === 0 ? (
-                <FriendsSkeletonRows />
-              ) : links.length === 0 ? (
-                <tr>
-                  <td className="px-4 py-14 text-center" colSpan={7}>
-                    <div className="flex flex-col items-center text-sm text-neutral-500 dark:text-neutral-400">
-                      <UserRound
-                        aria-hidden="true"
-                        className="mb-3 size-10 text-neutral-300 dark:text-neutral-700"
-                      />
-                      暂无友链
-                    </div>
-                  </td>
-                </tr>
-              ) : (
-                links.map((link) => (
-                  <FriendRow
-                    health={health[link.id]}
-                    key={link.id}
-                    link={link}
-                    onAuditPass={() => auditPassMutation.mutate(link.id)}
-                    onAuditReason={() => setAuditTarget(link)}
-                    onDelete={() => deleteMutation.mutate(link.id)}
-                    onEdit={() => openEdit(link)}
-                  />
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+            ) : (
+              links.map((link) => (
+                <FriendRow
+                  health={health[link.id]}
+                  key={link.id}
+                  link={link}
+                  onAuditPass={() => auditPassMutation.mutate(link.id)}
+                  onAuditReason={() => setAuditTarget(link)}
+                  onDelete={() => deleteMutation.mutate(link.id)}
+                  onEdit={() => openEdit(link)}
+                />
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
 
-        {pagination && pagination.totalPages > 1 ? (
-          <div className="flex items-center justify-end gap-2 border-t border-neutral-200 px-4 py-3 text-sm text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
-            <Button
-              disabled={page <= 1}
-              onClick={() => setPage((current) => Math.max(1, current - 1))}
-              type="button"
-              variant="subtle"
-            >
-              上一页
-            </Button>
-            <span>
-              {pagination.page} / {pagination.totalPages}
-            </span>
-            <Button
-              disabled={page >= pagination.totalPages}
-              onClick={() =>
-                setPage((current) =>
-                  Math.min(pagination.totalPages, current + 1),
-                )
-              }
-              type="button"
-              variant="subtle"
-            >
-              下一页
-            </Button>
-          </div>
-        ) : null}
-      </Panel>
+      {pagination && pagination.totalPages > 1 ? (
+        <div className="flex shrink-0 items-center justify-end gap-2 border-t border-neutral-200 px-4 py-3 text-sm text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
+          <Button
+            disabled={page <= 1}
+            onClick={() => setPage((current) => Math.max(1, current - 1))}
+            type="button"
+            variant="subtle"
+          >
+            上一页
+          </Button>
+          <span>
+            {pagination.page} / {pagination.totalPages}
+          </span>
+          <Button
+            disabled={page >= pagination.totalPages}
+            onClick={() =>
+              setPage((current) => Math.min(pagination.totalPages, current + 1))
+            }
+            type="button"
+            variant="subtle"
+          >
+            下一页
+          </Button>
+        </div>
+      ) : null}
 
       <FriendEditorDialog
         link={editingLink}
@@ -298,7 +314,7 @@ export function FriendsPage() {
         }}
         pending={auditReasonMutation.isPending}
       />
-    </div>
+    </section>
   )
 }
 
@@ -758,6 +774,11 @@ function normalizeState(value: string | null): LinkState {
   return stateTabs.some((tab) => tab.value === numeric)
     ? numeric
     : LinkState.Pass
+}
+
+function readPage(value: string | null) {
+  const parsed = Number(value)
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 1
 }
 
 function formatDate(value?: string | null) {

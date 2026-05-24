@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
+  ArrowLeft,
   Calendar,
   Database,
   Download,
@@ -22,12 +23,16 @@ import {
 } from '../api/backups'
 import { Button } from '../ui/button'
 import { Checkbox } from '../ui/checkbox'
+import { cn } from '../ui/cn'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
+import { MasterDetailLayout } from '../ui/page-layout'
 import { Panel } from '../ui/panel'
 
 export function BackupPage() {
   const queryClient = useQueryClient()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [selectedFilename, setSelectedFilename] = useState<string | null>(null)
+  const [showDetailOnMobile, setShowDetailOnMobile] = useState(false)
   const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set())
 
   const backupsQuery = useQuery({
@@ -84,8 +89,14 @@ export function BackupPage() {
         next.delete(filename)
         return next
       })
-      if (selectedFilename === filename) setSelectedFilename(null)
+      if (selectedFilename === filename) {
+        setSelectedFilename(null)
+        setShowDetailOnMobile(false)
+      }
       await invalidateBackups()
+    },
+    onError: () => {
+      toast.error('删除失败')
     },
   })
 
@@ -124,17 +135,31 @@ export function BackupPage() {
       )
 
       return {
+        failedCount: results.filter((result) => result.status === 'rejected')
+          .length,
         filenames,
+        successfulFilenames: filenames.filter(
+          (_, index) => results[index].status === 'fulfilled',
+        ),
         successCount: results.filter((result) => result.status === 'fulfilled')
           .length,
       }
     },
-    onSuccess: async ({ filenames, successCount }) => {
-      setSelectedKeys(new Set())
-      if (selectedFilename && filenames.includes(selectedFilename)) {
+    onSuccess: async ({ failedCount, successfulFilenames, successCount }) => {
+      setSelectedKeys((current) => {
+        const next = new Set(current)
+        successfulFilenames.forEach((filename) => next.delete(filename))
+        return next
+      })
+      if (selectedFilename && successfulFilenames.includes(selectedFilename)) {
         setSelectedFilename(null)
+        setShowDetailOnMobile(false)
       }
-      toast.success(`成功删除 ${successCount} 个备份`)
+      if (failedCount > 0) {
+        toast.warning(`删除完成：成功 ${successCount}，失败 ${failedCount}`)
+      } else {
+        toast.success(`成功删除 ${successCount} 个备份`)
+      }
       await invalidateBackups()
     },
   })
@@ -161,98 +186,130 @@ export function BackupPage() {
   }
 
   return (
-    <div className="grid min-h-[calc(100vh-8rem)] grid-cols-1 overflow-hidden rounded border border-neutral-200 bg-white lg:grid-cols-[minmax(320px,0.38fr)_1fr] dark:border-neutral-800 dark:bg-neutral-950">
-      <section className="flex min-h-0 flex-col border-b border-neutral-200 lg:border-b-0 lg:border-r dark:border-neutral-800">
-        <div className="flex min-h-12 items-center justify-between gap-3 border-b border-neutral-200 px-4 dark:border-neutral-800">
-          <div className="flex items-center gap-3">
-            <Checkbox
-              aria-label="选择全部备份"
-              checked={allSelected}
-              indeterminate={selectedKeys.size > 0 && !allSelected}
-              onCheckedChange={toggleSelectAll}
-            />
-            <span className="text-sm text-neutral-500 dark:text-neutral-400">
-              {selectedKeys.size > 0 ? `已选 ${selectedKeys.size} 项` : '全选'}
+    <MasterDetailLayout
+      defaultSize={0.38}
+      maxSize={0.45}
+      minSize={0.25}
+      showDetailOnMobile={showDetailOnMobile}
+      list={
+        <section className="flex h-full min-h-0 flex-col">
+          <div
+            className={cn(
+              'flex shrink-0 items-center justify-between gap-3 border-b border-neutral-200 px-4 dark:border-neutral-800',
+              APP_SHELL_HEADER_HEIGHT_CLASS,
+            )}
+          >
+            <div className="flex items-center gap-3">
+              <Checkbox
+                aria-label="选择全部备份"
+                checked={allSelected}
+                indeterminate={selectedKeys.size > 0 && !allSelected}
+                onCheckedChange={toggleSelectAll}
+              />
+              <span className="text-sm text-neutral-500 dark:text-neutral-400">
+                {selectedKeys.size > 0
+                  ? `已选 ${selectedKeys.size} 项`
+                  : '全选'}
+              </span>
+            </div>
+            <span className="text-xs text-neutral-400">
+              {backups.length} 个备份
             </span>
           </div>
-          <span className="text-xs text-neutral-400">
-            {backups.length} 个备份
-          </span>
-        </div>
 
-        <div className="flex flex-wrap gap-2 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
-          <Button
-            disabled={createMutation.isPending}
-            onClick={() => createMutation.mutate()}
-            type="button"
-          >
-            <Database aria-hidden="true" className="size-4" />
-            立即备份
-          </Button>
-          <Button
-            disabled={uploadMutation.isPending}
-            onClick={() => fileInputRef.current?.click()}
-            type="button"
-            variant="subtle"
-          >
-            <Upload aria-hidden="true" className="size-4" />
-            上传恢复
-          </Button>
-          <Button
-            className="text-red-600 dark:text-red-400"
-            disabled={selectedKeys.size === 0 || batchDeleteMutation.isPending}
-            onClick={() => batchDeleteMutation.mutate()}
-            type="button"
-            variant="subtle"
-          >
-            <Trash2 aria-hidden="true" className="size-4" />
-            批量删除
-          </Button>
-          <input
-            accept=".zip"
-            className="hidden"
-            onChange={(event) => handleUploadChange(event.target.files?.[0])}
-            ref={fileInputRef}
-            type="file"
-          />
-        </div>
+          <div className="flex flex-wrap gap-2 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
+            <Button
+              disabled={createMutation.isPending}
+              onClick={() => createMutation.mutate()}
+              type="button"
+            >
+              <Database aria-hidden="true" className="size-4" />
+              立即备份
+            </Button>
+            <Button
+              disabled={uploadMutation.isPending}
+              onClick={() => fileInputRef.current?.click()}
+              type="button"
+              variant="subtle"
+            >
+              <Upload aria-hidden="true" className="size-4" />
+              上传恢复
+            </Button>
+            <Button
+              className="text-red-600 dark:text-red-400"
+              disabled={
+                selectedKeys.size === 0 || batchDeleteMutation.isPending
+              }
+              onClick={() => {
+                if (
+                  window.confirm(
+                    `确定要删除选中的 ${selectedKeys.size} 个备份吗？`,
+                  )
+                ) {
+                  batchDeleteMutation.mutate()
+                }
+              }}
+              type="button"
+              variant="subtle"
+            >
+              <Trash2 aria-hidden="true" className="size-4" />
+              批量删除
+            </Button>
+            <input
+              accept=".zip"
+              className="hidden"
+              onChange={(event) => handleUploadChange(event.target.files?.[0])}
+              ref={fileInputRef}
+              type="file"
+            />
+          </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto">
-          {backupsQuery.isLoading && backups.length === 0 ? (
-            <BackupListSkeleton />
-          ) : backups.length === 0 ? (
-            <BackupListEmptyState
-              onCreate={() => createMutation.mutate()}
-              onRestore={() => fileInputRef.current?.click()}
+          <div className="min-h-0 flex-1 overflow-y-auto">
+            {backupsQuery.isLoading && backups.length === 0 ? (
+              <BackupListSkeleton />
+            ) : backups.length === 0 ? (
+              <BackupListEmptyState
+                onCreate={() => createMutation.mutate()}
+                onRestore={() => fileInputRef.current?.click()}
+              />
+            ) : (
+              backups.map((item) => (
+                <BackupListItem
+                  checked={selectedKeys.has(item.filename)}
+                  item={item}
+                  key={item.filename}
+                  onSelect={() => {
+                    setSelectedFilename(item.filename)
+                    setShowDetailOnMobile(true)
+                  }}
+                  onToggleCheck={toggleSelect}
+                  selected={selectedFilename === item.filename}
+                />
+              ))
+            )}
+          </div>
+        </section>
+      }
+      detail={
+        <section className="h-full min-h-0">
+          {selectedBackup ? (
+            <BackupDetail
+              item={selectedBackup}
+              onBack={() => setShowDetailOnMobile(false)}
+              onDelete={() => deleteMutation.mutate(selectedBackup.filename)}
+              onDownload={() =>
+                downloadMutation.mutate(selectedBackup.filename)
+              }
+              onRollback={() =>
+                rollbackMutation.mutate(selectedBackup.filename)
+              }
             />
           ) : (
-            backups.map((item) => (
-              <BackupListItem
-                checked={selectedKeys.has(item.filename)}
-                item={item}
-                key={item.filename}
-                onSelect={() => setSelectedFilename(item.filename)}
-                onToggleCheck={toggleSelect}
-                selected={selectedFilename === item.filename}
-              />
-            ))
+            <BackupDetailEmptyState />
           )}
-        </div>
-      </section>
-
-      <section className="min-h-0">
-        {selectedBackup ? (
-          <BackupDetail
-            item={selectedBackup}
-            onDelete={() => deleteMutation.mutate(selectedBackup.filename)}
-            onDownload={() => downloadMutation.mutate(selectedBackup.filename)}
-            onRollback={() => rollbackMutation.mutate(selectedBackup.filename)}
-          />
-        ) : (
-          <BackupDetailEmptyState />
-        )}
-      </section>
-    </div>
+        </section>
+      }
+    />
   )
 }
 
@@ -297,6 +354,7 @@ function BackupListItem(props: {
 
 function BackupDetail(props: {
   item: BackupFile
+  onBack: () => void
   onDelete: () => void
   onDownload: () => void
   onRollback: () => void
@@ -305,11 +363,25 @@ function BackupDetail(props: {
   const [rollbackConfirming, setRollbackConfirming] = useState(false)
 
   return (
-    <div className="flex h-full min-h-[calc(100vh-8rem)] flex-col">
-      <div className="flex min-h-12 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
-        <h2 className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
-          备份详情
-        </h2>
+    <div className="flex h-full min-h-0 flex-col">
+      <div
+        className={cn(
+          'flex shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800',
+          APP_SHELL_HEADER_HEIGHT_CLASS,
+        )}
+      >
+        <div className="flex min-w-0 items-center gap-2">
+          <button
+            className="inline-flex size-8 items-center justify-center rounded text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-950 lg:hidden dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-50"
+            onClick={props.onBack}
+            type="button"
+          >
+            <ArrowLeft aria-hidden="true" className="size-4" />
+          </button>
+          <h2 className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+            备份详情
+          </h2>
+        </div>
         <div className="flex gap-2">
           <Button
             className="h-8 px-2"

@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   AlertCircle,
   AlertTriangle,
+  ArrowLeft,
   CheckCircle,
   Clock,
   ListTodo,
@@ -35,6 +36,8 @@ import {
 } from '../api/cron-tasks'
 import { Button } from '../ui/button'
 import { cn } from '../ui/cn'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
+import { MasterDetailLayout } from '../ui/page-layout'
 import { SelectField } from '../ui/select'
 
 const taskQueryKey = ['cron-tasks']
@@ -115,6 +118,7 @@ export function CronPage() {
   const [statusFilter, setStatusFilter] = useState<CronTaskStatus | undefined>()
   const [typeFilter, setTypeFilter] = useState<CronTaskType | undefined>()
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
+  const [showDetailOnMobile, setShowDetailOnMobile] = useState(false)
 
   const definitionsQuery = useQuery({
     queryFn: getCronTaskDefinitions,
@@ -140,7 +144,10 @@ export function CronPage() {
   const selectedTask = tasks.find((task) => task.id === selectedTaskId) ?? null
 
   useEffect(() => {
-    if (selectedTaskId && !selectedTask) setSelectedTaskId(null)
+    if (selectedTaskId && !selectedTask) {
+      setSelectedTaskId(null)
+      setShowDetailOnMobile(false)
+    }
   }, [selectedTask, selectedTaskId])
 
   const invalidateCronTasks = async () => {
@@ -183,7 +190,10 @@ export function CronPage() {
     mutationFn: deleteCronTask,
     onSuccess: async (_, taskId) => {
       toast.success('任务已删除')
-      if (selectedTaskId === taskId) setSelectedTaskId(null)
+      if (selectedTaskId === taskId) {
+        setSelectedTaskId(null)
+        setShowDetailOnMobile(false)
+      }
       await invalidateCronTasks()
     },
   })
@@ -207,136 +217,158 @@ export function CronPage() {
     ])
   }
 
+  const selectTask = (taskId: string) => {
+    setSelectedTaskId(taskId)
+    setShowDetailOnMobile(true)
+  }
+
   return (
-    <div className="grid min-h-[calc(100vh-8rem)] grid-cols-1 overflow-hidden rounded border border-neutral-200 bg-white lg:grid-cols-[minmax(360px,0.42fr)_1fr] dark:border-neutral-800 dark:bg-neutral-950">
-      <section className="flex min-h-0 flex-col border-b border-neutral-200 lg:border-b-0 lg:border-r dark:border-neutral-800">
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
-          <div>
-            <h2 className="text-sm font-medium">计划任务</h2>
-            <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
-              {total} 个任务，{definitions.length} 个任务定义
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              disabled={clearCompletedMutation.isPending}
-              onClick={() => clearCompletedMutation.mutate()}
-              type="button"
-              variant="subtle"
-            >
-              <Trash2 aria-hidden="true" className="size-4" />
-              清理已完成
-            </Button>
-            <Button
-              disabled={tasksQuery.isFetching || definitionsQuery.isFetching}
-              onClick={() => {
-                void refreshAll()
-              }}
-              type="button"
-              variant="subtle"
-            >
-              <RefreshCw
-                aria-hidden="true"
-                className={cn(
-                  'size-4',
-                  (tasksQuery.isFetching || definitionsQuery.isFetching) &&
-                    'animate-spin',
-                )}
-              />
-              刷新
-            </Button>
-          </div>
-        </div>
-
-        <div className="border-b border-neutral-200 dark:border-neutral-800">
-          <details className="group" open>
-            <summary className="flex cursor-pointer items-center justify-between gap-3 px-4 py-3 text-sm font-medium outline-none transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-900">
-              <span>任务定义</span>
-              <span className="text-xs font-normal tabular-nums text-neutral-400">
-                {definitions.length}
-              </span>
-            </summary>
-            <div className="max-h-72 divide-y divide-neutral-100 overflow-y-auto border-t border-neutral-100 dark:divide-neutral-800 dark:border-neutral-800">
-              {definitionsQuery.isLoading ? (
-                <DefinitionSkeleton />
-              ) : definitions.length === 0 ? (
-                <div className="px-4 py-6 text-sm text-neutral-500">
-                  暂无任务定义
-                </div>
-              ) : (
-                definitions.map((definition) => (
-                  <DefinitionRow
-                    definition={definition}
-                    key={definition.type}
-                    onRun={() => runMutation.mutate(definition.type)}
-                    running={runMutation.isPending}
-                  />
-                ))
-              )}
+    <MasterDetailLayout
+      defaultSize={0.42}
+      maxSize={0.5}
+      minSize={0.3}
+      showDetailOnMobile={showDetailOnMobile}
+      list={
+        <section className="flex min-h-0 flex-col border-b border-neutral-200 lg:border-b-0 lg:border-r dark:border-neutral-800">
+          <div
+            className={cn(
+              'flex shrink-0 items-center justify-between gap-3 border-b border-neutral-200 px-4 dark:border-neutral-800',
+              APP_SHELL_HEADER_HEIGHT_CLASS,
+            )}
+          >
+            <div className="min-w-0">
+              <h2 className="text-sm font-medium">计划任务</h2>
             </div>
-          </details>
-        </div>
+            <span className="text-xs text-neutral-500 dark:text-neutral-400">
+              {total} / {definitions.length}
+            </span>
+            <div className="flex items-center gap-2">
+              <Button
+                disabled={clearCompletedMutation.isPending}
+                onClick={() => clearCompletedMutation.mutate()}
+                type="button"
+                variant="subtle"
+              >
+                <Trash2 aria-hidden="true" className="size-4" />
+                清理已完成
+              </Button>
+              <Button
+                disabled={tasksQuery.isFetching || definitionsQuery.isFetching}
+                onClick={() => {
+                  void refreshAll()
+                }}
+                type="button"
+                variant="subtle"
+              >
+                <RefreshCw
+                  aria-hidden="true"
+                  className={cn(
+                    'size-4',
+                    (tasksQuery.isFetching || definitionsQuery.isFetching) &&
+                      'animate-spin',
+                  )}
+                />
+                刷新
+              </Button>
+            </div>
+          </div>
 
-        <div className="flex shrink-0 flex-wrap items-center gap-2 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
-          <Select
-            ariaLabel="任务状态过滤"
-            onChange={(value) =>
-              setStatusFilter(
-                (value || undefined) as CronTaskStatus | undefined,
-              )
-            }
-            options={statusOptions}
-            value={statusFilter ?? ''}
-          />
-          <Select
-            ariaLabel="任务类型过滤"
-            onChange={(value) =>
-              setTypeFilter((value || undefined) as CronTaskType | undefined)
-            }
-            options={typeOptions}
-            value={typeFilter ?? ''}
-          />
-        </div>
+          <div className="border-b border-neutral-200 dark:border-neutral-800">
+            <details className="group" open>
+              <summary className="flex cursor-pointer items-center justify-between gap-3 px-4 py-3 text-sm font-medium outline-none transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-900">
+                <span>任务定义</span>
+                <span className="text-xs font-normal tabular-nums text-neutral-400">
+                  {definitions.length}
+                </span>
+              </summary>
+              <div className="max-h-72 divide-y divide-neutral-100 overflow-y-auto border-t border-neutral-100 dark:divide-neutral-800 dark:border-neutral-800">
+                {definitionsQuery.isLoading ? (
+                  <DefinitionSkeleton />
+                ) : definitions.length === 0 ? (
+                  <div className="px-4 py-6 text-sm text-neutral-500">
+                    暂无任务定义
+                  </div>
+                ) : (
+                  definitions.map((definition) => (
+                    <DefinitionRow
+                      definition={definition}
+                      key={definition.type}
+                      onRun={() => {
+                        if (window.confirm('立即执行此计划任务？')) {
+                          runMutation.mutate(definition.type)
+                        }
+                      }}
+                      running={runMutation.isPending}
+                    />
+                  ))
+                )}
+              </div>
+            </details>
+          </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto">
-          {tasksQuery.isLoading && tasks.length === 0 ? (
-            <TaskListSkeleton />
-          ) : tasks.length === 0 ? (
-            <TaskEmptyState />
+          <div className="flex shrink-0 flex-wrap items-center gap-2 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
+            <Select
+              ariaLabel="任务状态过滤"
+              onChange={(value) =>
+                setStatusFilter(
+                  (value || undefined) as CronTaskStatus | undefined,
+                )
+              }
+              options={statusOptions}
+              value={statusFilter ?? ''}
+            />
+            <Select
+              ariaLabel="任务类型过滤"
+              onChange={(value) =>
+                setTypeFilter((value || undefined) as CronTaskType | undefined)
+              }
+              options={typeOptions}
+              value={typeFilter ?? ''}
+            />
+          </div>
+
+          <div className="min-h-0 flex-1 overflow-y-auto">
+            {tasksQuery.isLoading && tasks.length === 0 ? (
+              <TaskListSkeleton />
+            ) : tasks.length === 0 ? (
+              <TaskEmptyState />
+            ) : (
+              tasks.map((task) => (
+                <TaskListItem
+                  key={task.id}
+                  onSelect={() => selectTask(task.id)}
+                  selected={selectedTaskId === task.id}
+                  task={task}
+                />
+              ))
+            )}
+          </div>
+        </section>
+      }
+      detail={
+        <section className="min-h-0">
+          {selectedTask ? (
+            <TaskDetail
+              onBack={() => setShowDetailOnMobile(false)}
+              onCancel={() => {
+                if (window.confirm('终止此任务后将无法恢复。')) {
+                  cancelMutation.mutate(selectedTask.id)
+                }
+              }}
+              onDelete={() => {
+                if (window.confirm('删除此任务记录？')) {
+                  deleteMutation.mutate(selectedTask.id)
+                }
+              }}
+              onRetry={() => retryMutation.mutate(selectedTask.id)}
+              task={selectedTask}
+            />
           ) : (
-            tasks.map((task) => (
-              <TaskListItem
-                key={task.id}
-                onSelect={() => setSelectedTaskId(task.id)}
-                selected={selectedTaskId === task.id}
-                task={task}
-              />
-            ))
+            <TaskDetailEmptyState />
           )}
-        </div>
-      </section>
-
-      <section className="min-h-0">
-        {selectedTask ? (
-          <TaskDetail
-            onCancel={() => {
-              if (window.confirm('终止此任务后将无法恢复。')) {
-                cancelMutation.mutate(selectedTask.id)
-              }
-            }}
-            onDelete={() => {
-              if (window.confirm('删除此任务记录？')) {
-                deleteMutation.mutate(selectedTask.id)
-              }
-            }}
-            onRetry={() => retryMutation.mutate(selectedTask.id)}
-            task={selectedTask}
-          />
-        ) : (
-          <TaskDetailEmptyState />
-        )}
-      </section>
-    </div>
+        </section>
+      }
+    />
   )
 }
 
@@ -416,6 +448,7 @@ function TaskListItem(props: {
 }
 
 function TaskDetail(props: {
+  onBack: () => void
   onCancel: () => void
   onDelete: () => void
   onRetry: () => void
@@ -439,8 +472,20 @@ function TaskDetail(props: {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="border-b border-neutral-200 px-5 py-4 dark:border-neutral-800">
-        <div className="flex flex-wrap items-start justify-between gap-3">
+      <div
+        className={cn(
+          'flex shrink-0 items-center justify-between gap-3 border-b border-neutral-200 px-5 dark:border-neutral-800',
+          APP_SHELL_HEADER_HEIGHT_CLASS,
+        )}
+      >
+        <div className="flex min-w-0 items-center gap-3">
+          <button
+            className="inline-flex size-8 items-center justify-center rounded text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-950 lg:hidden dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-50"
+            onClick={props.onBack}
+            type="button"
+          >
+            <ArrowLeft aria-hidden="true" className="size-4" />
+          </button>
           <div className="flex min-w-0 items-start gap-3">
             <Icon
               aria-hidden="true"
@@ -458,18 +503,20 @@ function TaskDetail(props: {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <StatusBadge status={task.status} />
-            {task.retryCount > 0 ? (
-              <span className="rounded border border-amber-200 bg-amber-50 px-2 py-1 text-xs text-amber-700 dark:border-amber-900 dark:bg-amber-950/50 dark:text-amber-300">
-                重试 {task.retryCount}
-              </span>
-            ) : null}
-          </div>
         </div>
+        <div className="flex shrink-0 items-center gap-2">
+          <StatusBadge status={task.status} />
+          {task.retryCount > 0 ? (
+            <span className="rounded border border-amber-200 bg-amber-50 px-2 py-1 text-xs text-amber-700 dark:border-amber-900 dark:bg-amber-950/50 dark:text-amber-300">
+              重试 {task.retryCount}
+            </span>
+          ) : null}
+        </div>
+      </div>
 
+      <div className="border-b border-neutral-200 px-5 py-3 dark:border-neutral-800">
         {task.progress !== undefined ? (
-          <div className="mt-4">
+          <div>
             <div className="h-2 overflow-hidden rounded-full bg-neutral-100 dark:bg-neutral-900">
               <div
                 className="h-full rounded-full bg-blue-500 transition-all"
@@ -483,7 +530,12 @@ function TaskDetail(props: {
         ) : null}
 
         {(canCancel || canRetry || canDelete) && (
-          <div className="mt-4 flex flex-wrap items-center gap-2">
+          <div
+            className={cn(
+              'flex flex-wrap items-center gap-2',
+              task.progress !== undefined ? 'mt-3' : null,
+            )}
+          >
             {canCancel ? (
               <Button
                 className="text-red-600 dark:text-red-400"

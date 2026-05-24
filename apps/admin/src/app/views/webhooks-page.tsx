@@ -1,6 +1,7 @@
 import { Dialog } from '@base-ui/react/dialog'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
+  ArrowLeft,
   ChevronRight,
   ExternalLink,
   Globe,
@@ -30,7 +31,9 @@ import {
 } from '../api/webhooks'
 import { Button } from '../ui/button'
 import { Checkbox } from '../ui/checkbox'
-import { Panel } from '../ui/panel'
+import { cn } from '../ui/cn'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
+import { MasterDetailLayout } from '../ui/page-layout'
 import { Switch } from '../ui/switch'
 import { TextInput } from '../ui/text-field'
 
@@ -49,6 +52,7 @@ export function WebhooksPage() {
     null,
   )
   const [isEditorOpen, setIsEditorOpen] = useState(false)
+  const [showDetailOnMobile, setShowDetailOnMobile] = useState(false)
 
   const webhooksQuery = useQuery({
     queryFn: getWebhooks,
@@ -74,7 +78,11 @@ export function WebhooksPage() {
     onSuccess: async () => {
       toast.success('Webhook 已删除')
       setSelectedId(null)
+      setShowDetailOnMobile(false)
       await invalidateWebhooks()
+    },
+    onError: () => {
+      toast.error('Webhook 删除失败')
     },
   })
 
@@ -105,231 +113,284 @@ export function WebhooksPage() {
   }
 
   return (
-    <div className="grid min-h-[calc(100vh-8rem)] grid-cols-1 overflow-hidden rounded border border-neutral-200 bg-white xl:grid-cols-[360px_minmax(0,1fr)] dark:border-neutral-800 dark:bg-neutral-950">
-      <section className="flex min-h-0 flex-col border-b border-neutral-200 xl:border-b-0 xl:border-r dark:border-neutral-800">
-        <div className="flex min-h-12 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
-          <div>
-            <span className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
-              Webhooks
-            </span>
-            <span className="ml-2 text-xs text-neutral-400">
-              {webhooks.filter((webhook) => webhook.enabled).length}/
-              {webhooks.length} 启用
-            </span>
-          </div>
-          <div className="flex gap-2">
-            <Button
-              aria-label="刷新"
-              className="h-8 px-2"
-              onClick={() => {
-                void invalidateWebhooks()
-              }}
-              type="button"
-              variant="subtle"
+    <>
+      <MasterDetailLayout
+        defaultSize={0.36}
+        list={
+          <section className="flex h-full min-h-0 flex-col border-r border-neutral-200 dark:border-neutral-800">
+            <div
+              className={cn(
+                'flex shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800',
+                APP_SHELL_HEADER_HEIGHT_CLASS,
+              )}
             >
-              <RefreshCw aria-hidden="true" className="size-3.5" />
-            </Button>
-            <Button className="h-8 px-2" onClick={openCreate} type="button">
-              <Plus aria-hidden="true" className="size-3.5" />
-              添加
-            </Button>
-          </div>
-        </div>
-
-        <div className="min-h-0 flex-1 overflow-y-auto">
-          {webhooksQuery.isLoading && webhooks.length === 0 ? (
-            <WebhookListSkeleton />
-          ) : webhooks.length === 0 ? (
-            <WebhookListEmptyState onCreate={openCreate} />
-          ) : (
-            webhooks.map((webhook) => (
-              <button
-                className={[
-                  'flex w-full items-center gap-3 border-b border-neutral-100 px-4 py-3 text-left transition-colors last:border-b-0 dark:border-neutral-900',
-                  selectedId === webhook.id
-                    ? 'bg-neutral-100 dark:bg-neutral-900'
-                    : 'hover:bg-neutral-50 dark:hover:bg-neutral-900/50',
-                ].join(' ')}
-                key={webhook.id}
-                onClick={() => setSelectedId(webhook.id)}
-                type="button"
-              >
-                <StatusDot enabled={webhook.enabled} />
-                <div className="min-w-0 flex-1">
-                  <div className="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
-                    {webhook.payloadUrl || webhook.url}
-                  </div>
-                  <div className="mt-0.5 flex items-center gap-2 text-xs text-neutral-400">
-                    <span>{webhook.events.length} 个事件</span>
-                    <span>·</span>
-                    <span>{getScopeText(webhook.scope)}</span>
-                  </div>
-                </div>
-                <span className="rounded-full bg-neutral-100 px-2 py-0.5 text-xs text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
-                  {webhook.enabled ? '启用' : '禁用'}
+              <div>
+                <span className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
+                  Webhooks
                 </span>
-              </button>
-            ))
-          )}
-        </div>
-      </section>
+                <span className="ml-2 text-xs text-neutral-400">
+                  {webhooks.filter((webhook) => webhook.enabled).length}/
+                  {webhooks.length} 启用
+                </span>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  aria-label="刷新"
+                  className="h-8 px-2"
+                  onClick={() => {
+                    void invalidateWebhooks()
+                  }}
+                  type="button"
+                  variant="subtle"
+                >
+                  <RefreshCw aria-hidden="true" className="size-3.5" />
+                </Button>
+                <Button className="h-8 px-2" onClick={openCreate} type="button">
+                  <Plus aria-hidden="true" className="size-3.5" />
+                  添加
+                </Button>
+              </div>
+            </div>
 
-      <section className="grid min-h-0 grid-rows-[minmax(0,1fr)_minmax(18rem,0.75fr)]">
-        {selectedWebhook ? (
-          <>
-            <WebhookDetail
-              onDelete={() => deleteMutation.mutate(selectedWebhook.id)}
-              onEdit={() => openEdit(selectedWebhook)}
-              onTest={(event) =>
-                testMutation.mutate({ event, id: selectedWebhook.id })
-              }
-              webhook={selectedWebhook}
-            />
-            <WebhookDispatches webhookId={selectedWebhook.id} />
-          </>
-        ) : (
-          <WebhookDetailEmptyState />
-        )}
-      </section>
+            <div className="min-h-0 flex-1 overflow-y-auto">
+              {webhooksQuery.isLoading && webhooks.length === 0 ? (
+                <WebhookListSkeleton />
+              ) : webhooks.length === 0 ? (
+                <WebhookListEmptyState onCreate={openCreate} />
+              ) : (
+                webhooks.map((webhook) => (
+                  <button
+                    className={[
+                      'flex w-full items-center gap-3 border-b border-neutral-100 px-4 py-3 text-left transition-colors last:border-b-0 dark:border-neutral-900',
+                      selectedId === webhook.id
+                        ? 'bg-neutral-100 dark:bg-neutral-900'
+                        : 'hover:bg-neutral-50 dark:hover:bg-neutral-900/50',
+                    ].join(' ')}
+                    key={webhook.id}
+                    onClick={() => {
+                      setSelectedId(webhook.id)
+                      setShowDetailOnMobile(true)
+                    }}
+                    type="button"
+                  >
+                    <StatusDot enabled={webhook.enabled} />
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                        {webhook.payloadUrl || webhook.url}
+                      </div>
+                      <div className="mt-0.5 flex items-center gap-2 text-xs text-neutral-400">
+                        <span>{webhook.events.length} 个事件</span>
+                        <span>·</span>
+                        <span>{getScopeText(webhook.scope)}</span>
+                      </div>
+                    </div>
+                    <span className="rounded-full bg-neutral-100 px-2 py-0.5 text-xs text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
+                      {webhook.enabled ? '启用' : '禁用'}
+                    </span>
+                  </button>
+                ))
+              )}
+            </div>
+          </section>
+        }
+        showDetailOnMobile={showDetailOnMobile}
+        detail={
+          <section
+            className={cn(
+              'h-full min-h-0',
+              selectedWebhook
+                ? 'grid grid-rows-[minmax(0,1fr)_minmax(18rem,0.75fr)]'
+                : null,
+            )}
+          >
+            {selectedWebhook ? (
+              <>
+                <WebhookDetail
+                  onBack={() => setShowDetailOnMobile(false)}
+                  onDelete={() => deleteMutation.mutate(selectedWebhook.id)}
+                  onEdit={() => openEdit(selectedWebhook)}
+                  onTest={(event) =>
+                    testMutation.mutate({ event, id: selectedWebhook.id })
+                  }
+                  showBack={showDetailOnMobile}
+                  webhook={selectedWebhook}
+                />
+                <WebhookDispatches webhookId={selectedWebhook.id} />
+              </>
+            ) : (
+              <WebhookDetailEmptyState />
+            )}
+          </section>
+        }
+      />
 
       <WebhookEditorDialog
         onClose={closeEditor}
         onSuccess={async (createdOrUpdated) => {
           await invalidateWebhooks()
           setSelectedId(createdOrUpdated.id)
+          setShowDetailOnMobile(true)
           closeEditor()
         }}
         open={isEditorOpen}
         webhook={editingWebhook}
       />
-    </div>
+    </>
   )
 }
 
 function WebhookDetail(props: {
+  onBack: () => void
   onDelete: () => void
   onEdit: () => void
   onTest: (event: string) => void
+  showBack: boolean
   webhook: WebhookModel
 }) {
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)
   const targetUrl = props.webhook.payloadUrl || props.webhook.url
 
   return (
-    <div className="min-h-0 overflow-y-auto border-b border-neutral-200 dark:border-neutral-800">
-      <div className="mx-auto max-w-4xl space-y-6 p-6">
-        <div className="flex items-start gap-4">
-          <div className="relative shrink-0">
-            <div className="flex size-14 items-center justify-center rounded-2xl bg-neutral-100 dark:bg-neutral-800">
-              <Webhook
-                aria-hidden="true"
-                className="size-7 text-neutral-500 dark:text-neutral-400"
-              />
+    <section className="flex min-h-0 flex-col border-b border-neutral-200 dark:border-neutral-800">
+      <div
+        className={cn(
+          'flex shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800',
+          APP_SHELL_HEADER_HEIGHT_CLASS,
+        )}
+      >
+        <div className="flex min-w-0 items-center gap-2">
+          {props.showBack ? (
+            <Button
+              aria-label="返回 Webhook 列表"
+              className="h-8 px-2 lg:hidden"
+              onClick={props.onBack}
+              type="button"
+              variant="subtle"
+            >
+              <ArrowLeft aria-hidden="true" className="size-4" />
+            </Button>
+          ) : null}
+          <h2 className="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
+            Webhook 详情
+          </h2>
+        </div>
+
+        <div className="flex shrink-0 gap-2">
+          <Button
+            className="h-8 px-2"
+            onClick={props.onEdit}
+            type="button"
+            variant="subtle"
+          >
+            <Pencil aria-hidden="true" className="size-3.5" />
+            编辑
+          </Button>
+          <Button
+            className="h-8 px-2 text-red-600 dark:text-red-400"
+            onClick={() => {
+              if (isConfirmingDelete) {
+                props.onDelete()
+                setIsConfirmingDelete(false)
+              } else {
+                setIsConfirmingDelete(true)
+              }
+            }}
+            onMouseLeave={() => setIsConfirmingDelete(false)}
+            type="button"
+            variant="subtle"
+          >
+            <Trash2 aria-hidden="true" className="size-3.5" />
+            {isConfirmingDelete ? '确认' : '删除'}
+          </Button>
+        </div>
+      </div>
+
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        <div className="mx-auto max-w-4xl space-y-6 p-6">
+          <div className="flex items-start gap-4">
+            <div className="relative shrink-0">
+              <div className="flex size-14 items-center justify-center rounded-2xl bg-neutral-100 dark:bg-neutral-800">
+                <Webhook
+                  aria-hidden="true"
+                  className="size-7 text-neutral-500 dark:text-neutral-400"
+                />
+              </div>
+              <div className="absolute -bottom-1 -right-1 rounded-full border-2 border-white bg-white dark:border-neutral-950 dark:bg-neutral-950">
+                <StatusDot enabled={props.webhook.enabled} />
+              </div>
             </div>
-            <div className="absolute -bottom-1 -right-1 rounded-full border-2 border-white bg-white dark:border-neutral-950 dark:bg-neutral-950">
-              <StatusDot enabled={props.webhook.enabled} />
+
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2">
+                <h2 className="truncate text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+                  {targetUrl}
+                </h2>
+                {targetUrl ? (
+                  <a
+                    className="shrink-0 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300"
+                    href={targetUrl}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    <ExternalLink aria-hidden="true" className="size-4" />
+                  </a>
+                ) : null}
+              </div>
+              <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400">
+                <span className="rounded-full bg-neutral-100 px-2 py-0.5 text-xs dark:bg-neutral-800">
+                  {props.webhook.enabled ? '已启用' : '已禁用'}
+                </span>
+                <span>{getScopeText(props.webhook.scope)}</span>
+              </div>
             </div>
           </div>
 
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2">
-              <h2 className="truncate text-lg font-semibold text-neutral-900 dark:text-neutral-100">
-                {targetUrl}
-              </h2>
-              {targetUrl ? (
-                <a
-                  className="shrink-0 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300"
-                  href={targetUrl}
-                  rel="noreferrer"
-                  target="_blank"
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <InfoCard
+              icon={Globe}
+              label="触发范围"
+              value={getScopeText(props.webhook.scope)}
+            />
+            <InfoCard
+              icon={Shield}
+              label="Secret"
+              value={props.webhook.secret ? '已配置' : '未配置'}
+            />
+          </div>
+
+          <div className="space-y-3">
+            <h3 className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
+              触发事件 ({props.webhook.events.length})
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {props.webhook.events.map((event) => (
+                <EventBadge event={event} key={event} />
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <h3 className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
+              发送测试
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {props.webhook.events.map((event) => (
+                <Button
+                  className="h-8 px-2"
+                  key={event}
+                  onClick={() => props.onTest(event)}
+                  type="button"
+                  variant="subtle"
                 >
-                  <ExternalLink aria-hidden="true" className="size-4" />
-                </a>
-              ) : null}
+                  <Play aria-hidden="true" className="size-3.5" />
+                  {event}
+                </Button>
+              ))}
             </div>
-            <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400">
-              <span className="rounded-full bg-neutral-100 px-2 py-0.5 text-xs dark:bg-neutral-800">
-                {props.webhook.enabled ? '已启用' : '已禁用'}
-              </span>
-              <span>{getScopeText(props.webhook.scope)}</span>
-            </div>
-          </div>
-
-          <div className="flex gap-2">
-            <Button
-              className="h-8 px-2"
-              onClick={props.onEdit}
-              type="button"
-              variant="subtle"
-            >
-              <Pencil aria-hidden="true" className="size-3.5" />
-              编辑
-            </Button>
-            <Button
-              className="h-8 px-2 text-red-600 dark:text-red-400"
-              onClick={() => {
-                if (isConfirmingDelete) {
-                  props.onDelete()
-                  setIsConfirmingDelete(false)
-                } else {
-                  setIsConfirmingDelete(true)
-                }
-              }}
-              onMouseLeave={() => setIsConfirmingDelete(false)}
-              type="button"
-              variant="subtle"
-            >
-              <Trash2 aria-hidden="true" className="size-3.5" />
-              {isConfirmingDelete ? '确认' : '删除'}
-            </Button>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <InfoCard
-            icon={Globe}
-            label="触发范围"
-            value={getScopeText(props.webhook.scope)}
-          />
-          <InfoCard
-            icon={Shield}
-            label="Secret"
-            value={props.webhook.secret ? '已配置' : '未配置'}
-          />
-        </div>
-
-        <div className="space-y-3">
-          <h3 className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
-            触发事件 ({props.webhook.events.length})
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            {props.webhook.events.map((event) => (
-              <EventBadge event={event} key={event} />
-            ))}
-          </div>
-        </div>
-
-        <div className="space-y-3">
-          <h3 className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
-            发送测试
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            {props.webhook.events.map((event) => (
-              <Button
-                className="h-8 px-2"
-                key={event}
-                onClick={() => props.onTest(event)}
-                type="button"
-                variant="subtle"
-              >
-                <Play aria-hidden="true" className="size-3.5" />
-                {event}
-              </Button>
-            ))}
           </div>
         </div>
       </div>
-    </div>
+    </section>
   )
 }
 
@@ -370,12 +431,24 @@ function WebhookDispatches(props: { webhookId: string }) {
   const pagination = dispatchesQuery.data?.pagination
 
   return (
-    <Panel
-      className="min-h-0 overflow-hidden rounded-none border-0"
-      description={pagination ? `共 ${pagination.total} 条` : undefined}
-      title="推送记录"
-    >
-      <div className="min-h-0 overflow-y-auto">
+    <section className="flex min-h-0 flex-col overflow-hidden border-t border-neutral-200 dark:border-neutral-800">
+      <div
+        className={cn(
+          'flex shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800',
+          APP_SHELL_HEADER_HEIGHT_CLASS,
+        )}
+      >
+        <h2 className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+          推送记录
+        </h2>
+        {pagination ? (
+          <span className="text-xs text-neutral-400">
+            共 {pagination.total} 条
+          </span>
+        ) : null}
+      </div>
+
+      <div className="min-h-0 flex-1 overflow-y-auto">
         {dispatchesQuery.isLoading && dispatches.length === 0 ? (
           <div className="flex justify-center py-20">
             <div className="size-6 animate-spin rounded-full border-2 border-neutral-300 border-t-neutral-950 dark:border-neutral-700 dark:border-t-neutral-100" />
@@ -426,7 +499,7 @@ function WebhookDispatches(props: { webhookId: string }) {
           </Button>
         </div>
       ) : null}
-    </Panel>
+    </section>
   )
 }
 

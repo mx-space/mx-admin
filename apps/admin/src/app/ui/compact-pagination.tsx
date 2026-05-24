@@ -1,5 +1,6 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
+import { useI18n } from '../i18n'
 import { SelectField } from './select'
 
 export interface CompactPaginationProps {
@@ -12,6 +13,7 @@ export interface CompactPaginationProps {
 }
 
 export function CompactPagination(props: CompactPaginationProps) {
+  const { t } = useI18n()
   const pageSizes = props.pageSizes ?? [10, 20, 50, 100]
   const canPrev = props.page > 1
   const canNext = props.page < props.pageCount
@@ -19,6 +21,7 @@ export function CompactPagination(props: CompactPaginationProps) {
   return (
     <div className="flex items-center gap-1 text-xs text-neutral-500 dark:text-neutral-400">
       <button
+        aria-label={t('common.pagination.previousPage')}
         className="flex size-6 items-center justify-center rounded transition-colors hover:bg-neutral-100 disabled:opacity-30 disabled:hover:bg-transparent dark:hover:bg-neutral-800"
         disabled={!canPrev}
         onClick={() => {
@@ -38,6 +41,7 @@ export function CompactPagination(props: CompactPaginationProps) {
       </span>
 
       <button
+        aria-label={t('common.pagination.nextPage')}
         className="flex size-6 items-center justify-center rounded transition-colors hover:bg-neutral-100 disabled:opacity-30 disabled:hover:bg-transparent dark:hover:bg-neutral-800"
         disabled={!canNext}
         onClick={() => {
@@ -49,10 +53,10 @@ export function CompactPagination(props: CompactPaginationProps) {
       </button>
 
       <SelectField
-        aria-label="每页数量"
+        aria-label={t('common.pagination.pageSize', { count: props.pageSize })}
         onValueChange={props.onPageSizeChange}
         options={pageSizes.map((size) => ({
-          label: `${size} / 页`,
+          label: t('common.pagination.pageSize', { count: size }),
           value: size,
         }))}
         popupClassName="text-xs"

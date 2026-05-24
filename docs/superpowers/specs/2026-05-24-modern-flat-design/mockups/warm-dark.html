@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<title>戊 · Warm-Dark Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    /* warm dark palette — distinct from Linear's cool steel-grays */
+    --bg: #18171a;            /* warm near-black, slight magenta tint */
+    --surface: #1f1d20;
+    --surface-2: #26242a;
+    --border: #2e2c33;
+    --border-strong: #3a3840;
+    --ink: #ece9e3;           /* warm off-white */
+    --ink-2: #d4d1cb;
+    --muted: #8a847a;
+    --faint: #5e584f;
+    --accent: #d4a574;        /* sand / warm amber */
+    --accent-soft: rgba(212,165,116,0.12);
+    --accent-strong: #e9b986;
+    --green: #7fb069;         /* muted sage green */
+    --rose: #c97a7e;
+    --blue: #7892b0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+
+  .app { display: grid; grid-template-columns: 232px 1fr; min-height: 100vh; }
+
+  /* ─ sidebar ─ */
+  .side {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 20px 14px;
+    position: sticky; top: 0; height: 100vh;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .brand {
+    font-size: 14.5px; font-weight: 600;
+    color: var(--ink);
+    padding: 4px 10px 18px;
+    display: flex; align-items: center; gap: 10px;
+    letter-spacing: -0.005em;
+  }
+  .brand .icon {
+    width: 22px; height: 22px;
+    background: var(--accent); color: var(--bg);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700;
+    border-radius: 4px;
+  }
+  .nav-group {
+    font-size: 11px; color: var(--faint);
+    padding: 14px 10px 4px;
+    text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 10px; font-size: 13.5px;
+    color: var(--ink-2); cursor: default;
+    border-radius: 6px;
+  }
+  .nav-item:hover { background: var(--surface-2); color: var(--ink); }
+  .nav-item.active {
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    font-weight: 500;
+  }
+  .nav-item .ic {
+    width: 16px; opacity: 0.55; font-size: 13px;
+    flex: none;
+  }
+  .nav-item.active .ic { opacity: 1; }
+  .nav-item .badge {
+    margin-left: auto; font-size: 11.5px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+  }
+  .nav-item.active .badge { color: var(--accent); }
+
+  /* ─ main ─ */
+  .main { padding: 28px 40px 56px; max-width: 1240px; }
+  .topbar { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; font-size: 12.5px; color: var(--muted); }
+  .topbar .crumb strong { color: var(--ink); font-weight: 500; }
+  .topbar .spacer { flex: 1; }
+  .kbd {
+    display: inline-flex; gap: 4px;
+    border: 1px solid var(--border-strong); border-radius: 4px;
+    padding: 2px 8px; font-size: 11px;
+    background: var(--surface);
+    color: var(--muted);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+  }
+
+  h1 {
+    font-size: 28px; font-weight: 600;
+    margin: 0 0 4px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .lede { color: var(--muted); font-size: 14px; margin: 0 0 32px; }
+
+  /* ─ stats ─ */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 36px; }
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+  }
+  .stat .lbl {
+    font-size: 11px; color: var(--muted); font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+  .stat .val {
+    font-size: 28px; font-weight: 600;
+    letter-spacing: -0.02em; line-height: 1;
+    color: var(--ink);
+  }
+  .stat .delta {
+    font-size: 12px; color: var(--green); margin-top: 6px; font-weight: 500;
+  }
+  .stat .delta.down { color: var(--rose); }
+  .stat .delta.neutral { color: var(--muted); }
+
+  /* ─ section head ─ */
+  .section-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    padding: 0 0 14px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0;
+  }
+  .section-head h2 { font-size: 15px; font-weight: 600; margin: 0; color: var(--ink); }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px; border-radius: 7px;
+    font-size: 13px; font-weight: 500;
+    cursor: default; border: 1px solid var(--border-strong);
+    background: var(--surface); color: var(--ink-2);
+    height: 32px;
+  }
+  .btn:hover { background: var(--surface-2); }
+  .btn.primary {
+    background: var(--accent); color: var(--bg);
+    border-color: var(--accent); font-weight: 600;
+  }
+  .btn.primary:hover { background: var(--accent-strong); }
+
+  /* ─ posts list (card-wrapped, no table grid) ─ */
+  .posts-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .filters {
+    display: flex; gap: 4px; padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+  }
+  .filter-chip {
+    padding: 4px 12px; border-radius: 6px;
+    font-size: 12.5px; color: var(--muted);
+    cursor: default;
+  }
+  .filter-chip.active {
+    background: var(--surface-2); color: var(--ink);
+    font-weight: 500;
+  }
+  .filters .spacer { flex: 1; }
+  .search-mock {
+    border: 1px solid var(--border-strong); border-radius: 6px;
+    padding: 4px 10px; font-size: 12.5px; color: var(--muted);
+    background: var(--bg); min-width: 220px;
+  }
+
+  .post-row {
+    display: grid; grid-template-columns: 88px 1fr auto auto auto;
+    gap: 18px; align-items: center;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .post-row:last-child { border-bottom: none; }
+  .post-row:hover { background: var(--surface-2); cursor: default; }
+  .post-row .date {
+    font-size: 11.5px; color: var(--muted);
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    letter-spacing: 0.04em;
+  }
+  .post-row .title {
+    font-size: 14.5px; font-weight: 500; color: var(--ink);
+    margin-bottom: 3px;
+  }
+  .post-row .sub {
+    font-size: 12.5px; color: var(--muted);
+    overflow: hidden; text-overflow: ellipsis;
+    display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;
+  }
+  .post-row .badge {
+    font-size: 11px; padding: 3px 9px; border-radius: 99px;
+    font-weight: 500; letter-spacing: 0.02em;
+    text-transform: uppercase;
+    border: 1px solid transparent;
+  }
+  .badge.live {
+    background: rgba(127,176,105,0.12);
+    color: var(--green);
+    border-color: rgba(127,176,105,0.25);
+  }
+  .badge.draft {
+    background: rgba(212,165,116,0.12);
+    color: var(--accent);
+    border-color: rgba(212,165,116,0.25);
+  }
+  .badge.pinned {
+    background: rgba(120,146,176,0.12);
+    color: var(--blue);
+    border-color: rgba(120,146,176,0.25);
+  }
+  .post-row .num {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 13px; color: var(--muted);
+    min-width: 64px; text-align: right;
+  }
+
+  .post-foot {
+    padding: 10px 18px;
+    display: flex; justify-content: space-between;
+    font-size: 12.5px; color: var(--muted);
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ───── sidebar ───── -->
+  <aside class="side">
+    <div class="brand"><span class="icon">M</span> mx-admin</div>
+
+    <div class="nav-group">手记</div>
+    <div class="nav-item"><span class="ic">⌂</span>Today</div>
+    <div class="nav-item active"><span class="ic">▤</span>Posts<span class="badge">171</span></div>
+    <div class="nav-item"><span class="ic">▤</span>Notes<span class="badge">42</span></div>
+    <div class="nav-item"><span class="ic">▤</span>Pages</div>
+    <div class="nav-item"><span class="ic">↩</span>Comments<span class="badge">3</span></div>
+
+    <div class="nav-group">资料</div>
+    <div class="nav-item"><span class="ic">⊟</span>Files</div>
+    <div class="nav-item"><span class="ic">⊟</span>Projects</div>
+    <div class="nav-item"><span class="ic">⊟</span>Friends</div>
+
+    <div class="nav-group">智能</div>
+    <div class="nav-item"><span class="ic">⊕</span>Apprentice<span class="badge">2</span></div>
+
+    <div class="nav-group">工具</div>
+    <div class="nav-item"><span class="ic">⌘</span>Snippets</div>
+    <div class="nav-item"><span class="ic">↻</span>Backup</div>
+    <div class="nav-item"><span class="ic">⚙</span>Settings</div>
+  </aside>
+
+  <!-- ───── main ───── -->
+  <main class="main">
+
+    <div class="topbar">
+      <span class="crumb">手记 ▸ <strong>Posts</strong></span>
+      <span class="spacer"></span>
+      <span class="kbd">⌘ K</span>
+      <span class="kbd">⌘ N</span>
+    </div>
+
+    <h1>Posts</h1>
+    <p class="lede">171 entries · 168 published · 3 drafts</p>
+
+    <div class="stats">
+      <div class="stat"><div class="lbl">Reads · 7d</div><div class="val">14,328</div><div class="delta">+ 12.4%</div></div>
+      <div class="stat"><div class="lbl">Comments</div><div class="val">23</div><div class="delta">+5 today</div></div>
+      <div class="stat"><div class="lbl">Drafts</div><div class="val">3</div><div class="delta down">2 stale</div></div>
+      <div class="stat"><div class="lbl">Apprentice</div><div class="val">2</div><div class="delta neutral">running</div></div>
+    </div>
+
+    <div class="section-head">
+      <h2>All posts</h2>
+      <div style="display:flex;gap:8px">
+        <span class="btn">Export</span>
+        <span class="btn primary">+ New post</span>
+      </div>
+    </div>
+
+    <div class="posts-card">
+      <div class="filters">
+        <span class="filter-chip active">All <span style="opacity:.55">171</span></span>
+        <span class="filter-chip">Published <span style="opacity:.55">168</span></span>
+        <span class="filter-chip">Drafts <span style="opacity:.55">3</span></span>
+        <span class="filter-chip">Pinned</span>
+        <span class="spacer"></span>
+        <span class="search-mock">⌕ Search posts…</span>
+      </div>
+
+      <div class="post-row">
+        <div class="date">May 23<br /><span style="opacity:.65">23:47</span></div>
+        <div>
+          <div class="title">The Garden, after rain</div>
+          <div class="sub">A few notes about how Linear's design language quietly shapes its product personality…</div>
+        </div>
+        <div><span class="badge draft">Draft</span></div>
+        <div class="num">—</div>
+        <div class="num">today</div>
+      </div>
+
+      <div class="post-row">
+        <div class="date">May 23<br /><span style="opacity:.65">15:32</span></div>
+        <div>
+          <div class="title">AI 时代的效率悖论：当生产力提升反而带来疲惫</div>
+          <div class="sub">昨天读到一篇关于 AI 倦怠的文章。最近几个月，我高强度地使用 AI 完成各种任务…</div>
+        </div>
+        <div><span class="badge live">Live</span></div>
+        <div class="num">2,137</div>
+        <div class="num">3d ago</div>
+      </div>
+
+      <div class="post-row">
+        <div class="date">May 22<br /><span style="opacity:.65">15:08</span></div>
+        <div>
+          <div class="title">Migration note #6 — Drawer mechanics</div>
+          <div class="sub">Published this afternoon. It explains why the inset-card shell now uses 14px radius…</div>
+        </div>
+        <div><span class="badge">Published</span></div>
+        <div class="num">1,204</div>
+        <div class="num">4d ago</div>
+      </div>
+
+      <div class="post-row">
+        <div class="date">May 21<br /><span style="opacity:.65">09:18</span></div>
+        <div>
+          <div class="title">On Lavender and the choice of accent</div>
+          <div class="sub">A short essay on accent colors in admin UI — why I keep returning to the cooler greens…</div>
+        </div>
+        <div><span class="badge pinned">Pinned</span></div>
+        <div class="num">812</div>
+        <div class="num">5d ago</div>
+      </div>
+
+      <div class="post-row">
+        <div class="date">May 09<br /><span style="opacity:.65">10:42</span></div>
+        <div>
+          <div class="title">Why I rewrote my admin in React</div>
+          <div class="sub">A short note on why I dropped the Vue 3 admin and started this rewrite.</div>
+        </div>
+        <div><span class="badge">Published</span></div>
+        <div class="num">8,742</div>
+        <div class="num">2w ago</div>
+      </div>
+
+      <div class="post-foot">
+        <span>showing 1 – 10 of 171</span>
+        <span>page 1 / 18 · → load earlier</span>
+      </div>
+    </div>
+
+  </main>
+
+</div>
+
+</body>
+</html>

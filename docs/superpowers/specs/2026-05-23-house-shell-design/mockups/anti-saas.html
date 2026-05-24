@@ -1,0 +1,132 @@
+<h2>非 SaaS · 四式个人之器</h2>
+<p class="subtitle">远离 product 范 · 近于手作 / 私物之感</p>
+
+<div class="cards" data-multiselect>
+
+  <!-- A · 手记 / 日记本 -->
+  <div class="card" data-choice="diary" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0">
+      <div style="background:#f4ede0;color:#2a2520;height:200px;padding:18px 28px;font-family:'Iowan Old Style','Charter','Georgia',serif;overflow:hidden;border-bottom:1px solid #d8cfb8">
+        <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:6px">
+          <div style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;opacity:0.5">May · 23</div>
+          <div style="font-size:13px;font-weight:600">A late-night migration note</div>
+        </div>
+        <div style="font-size:11px;line-height:1.65;opacity:0.7;margin-bottom:14px;font-style:italic">Today I shipped P3. The drawer animation still feels off—</div>
+        <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:6px">
+          <div style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;opacity:0.5">May · 22</div>
+          <div style="font-size:13px;font-weight:600">2 comments awaiting reply</div>
+        </div>
+        <div style="font-size:11px;line-height:1.65;opacity:0.6;margin-bottom:14px">›  on "Hello world"  ·  ›  on "Linear design"</div>
+        <div style="display:flex;align-items:baseline;gap:14px">
+          <div style="font-size:10px;letter-spacing:0.15em;text-transform:uppercase;opacity:0.5">May · 20</div>
+          <div style="font-size:13px;font-weight:600;opacity:0.7">Draft · The Garden</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A · 手记 · 时序之河</h3>
+      <p>一栏到底，无 nav。Posts、comments、drafts 皆为「条目」，按日次第而下。serif、纸色、留白阔。读如自家日记。参考：Robin Sloan's site、Craig Mod、Are.na 个人页。</p>
+    </div>
+  </div>
+
+  <!-- B · 书桌 · 多浮窗 -->
+  <div class="card" data-choice="desk" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0">
+      <div style="background:radial-gradient(circle at 30% 20%, #2c2520, #1a1612 70%);color:#e8dfd0;height:200px;position:relative;overflow:hidden">
+        <!-- floating window 1 -->
+        <div style="position:absolute;top:12px;left:14px;width:120px;background:#f4ede0;color:#2a2520;border-radius:4px;box-shadow:0 6px 20px rgba(0,0,0,0.5);transform:rotate(-1.5deg)">
+          <div style="background:#ede2c8;padding:4px 8px;font-size:9px;font-weight:600;border-bottom:1px solid #d8cfb8;display:flex;justify-content:space-between"><span>posts.idx</span><span style="opacity:0.4">⌄</span></div>
+          <div style="padding:6px 8px;font-size:9px;line-height:1.6">
+            <div>· Hello world</div>
+            <div>· Migration note</div>
+            <div style="opacity:0.5">· Linear design</div>
+          </div>
+        </div>
+        <!-- floating window 2 -->
+        <div style="position:absolute;top:46px;right:16px;width:140px;background:#1f1d2e;color:#d8d2eb;border:1px solid #3a3450;border-radius:4px;box-shadow:0 6px 20px rgba(0,0,0,0.6);transform:rotate(1deg)">
+          <div style="background:#2a2640;padding:4px 8px;font-size:9px;font-weight:600;display:flex;justify-content:space-between;border-bottom:1px solid #3a3450"><span>inspector</span><span style="opacity:0.4">×</span></div>
+          <div style="padding:6px 8px;font-size:9px;line-height:1.7">
+            <div style="opacity:0.5">slug</div>
+            <div>hello-world</div>
+            <div style="opacity:0.5;margin-top:4px">tags</div>
+            <div>diary · code</div>
+          </div>
+        </div>
+        <!-- floating note -->
+        <div style="position:absolute;bottom:14px;left:60px;width:130px;background:#f6e9a8;color:#3b2e15;padding:8px 10px;font-size:9px;line-height:1.5;box-shadow:0 4px 14px rgba(0,0,0,0.5);transform:rotate(-2deg);font-family:'Comic Sans MS',cursive">
+          fix drawer height bug<br>before tagging v8 ✎
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B · 书桌 · 浮窗散置</h3>
+      <p>无固定 layout。每模块为一可拖之窗，可叠、可隐、可贴便条。如真桌上散文件然。skeuomorphic 而克制。参考：classic Mac OS、Muse、tldraw、Patchwork。</p>
+    </div>
+  </div>
+
+  <!-- C · TUI / 终端 -->
+  <div class="card" data-choice="tui" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0">
+      <div style="background:#0d0d0d;color:#d8e2c8;height:200px;padding:14px 16px;font-family:'JetBrains Mono','SF Mono',Menlo,monospace;font-size:10px;line-height:1.55;overflow:hidden">
+        <div style="color:#85a878">mx-admin ▸ posts</div>
+        <div style="opacity:0.4;margin:6px 0">────────────────────────────────────────</div>
+        <div style="display:grid;grid-template-columns:14px 1fr 60px 50px;gap:6px;opacity:0.5;margin-bottom:4px">
+          <div></div><div>TITLE</div><div>STATE</div><div>HITS</div>
+        </div>
+        <div style="display:grid;grid-template-columns:14px 1fr 60px 50px;gap:6px;background:rgba(157,141,240,0.18);padding:1px 0">
+          <div>›</div><div>Hello world</div><div style="color:#85a878">published</div><div>1,204</div>
+        </div>
+        <div style="display:grid;grid-template-columns:14px 1fr 60px 50px;gap:6px;padding:1px 0">
+          <div> </div><div>Migration note</div><div style="color:#85a878">published</div><div>342</div>
+        </div>
+        <div style="display:grid;grid-template-columns:14px 1fr 60px 50px;gap:6px;padding:1px 0">
+          <div> </div><div>Linear design</div><div style="color:#d8a878">draft</div><div>—</div>
+        </div>
+        <div style="display:grid;grid-template-columns:14px 1fr 60px 50px;gap:6px;padding:1px 0;opacity:0.7">
+          <div> </div><div>The Garden</div><div style="color:#d8a878">draft</div><div>—</div>
+        </div>
+        <div style="position:absolute;bottom:14px;left:16px;right:16px;display:flex;justify-content:space-between;font-size:9px;color:#85a878;border-top:1px solid #2a2a2a;padding-top:6px">
+          <span>j/k move · enter open · n new · / search</span>
+          <span>4 / 124</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C · TUI · 字模之屏</h3>
+      <p>等宽全字、无图、键驱。Vim 操作。如 lazygit、k9s、htop 之于 admin。极客自留地。参考：lazygit、k9s、tig、Superhuman 键盘。</p>
+    </div>
+  </div>
+
+  <!-- D · 拼贴 / 墙 -->
+  <div class="card" data-choice="wall" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:0">
+      <div style="background:#ebebeb;color:#1a1a1a;height:200px;padding:14px;position:relative;overflow:hidden">
+        <div style="display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:34px;gap:6px">
+          <div style="grid-column:span 2;grid-row:span 3;background:#fff;border:1px solid #d4d4d4;padding:6px;font-size:9px;line-height:1.4">
+            <div style="font-weight:600;margin-bottom:3px">Hello world</div>
+            <div style="opacity:0.5">post · 3min</div>
+            <div style="height:48px;background:#e0d8c8;margin-top:4px"></div>
+          </div>
+          <div style="grid-column:span 2;background:#1a1a1a;color:#fff;padding:5px 6px;font-size:9px;display:flex;align-items:center">comments · 12 new</div>
+          <div style="grid-column:span 2;background:#fff;border:1px solid #d4d4d4;padding:5px 6px;font-size:9px">draft · The Garden</div>
+          <div style="grid-column:span 3;background:#9d8df0;color:#fff;padding:5px 6px;font-size:9px;display:flex;align-items:center;border-radius:1px">user · innei · last seen 1m</div>
+          <div style="grid-column:span 1;background:#fff;border:1px solid #d4d4d4"></div>
+          <div style="grid-column:span 3;grid-row:span 2;background:#fff;border:1px solid #d4d4d4;padding:6px;font-size:9px">
+            <div style="font-weight:600">Migration note</div>
+            <div style="opacity:0.5">post · 1h</div>
+            <div style="height:20px;background:#d8d8e0;margin-top:4px"></div>
+          </div>
+          <div style="grid-column:span 2;background:#f4e6a8;padding:5px 6px;font-size:9px">page · About</div>
+          <div style="grid-column:span 1;background:#fff;border:1px solid #d4d4d4"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>D · 拼贴 · 物之墙</h3>
+      <p>无层级。所有「物」（post、user、comment、draft）皆为大小不一之卡，杂陈一墙。可拖、可缩、可挂便签。慢读式浏览。参考：Are.na、tldraw、Cosmos、pinboard 时代。</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:20px">点选中意者（可多选）。若仍未中，于终端陈所拒为何 —— 私感乎？读感乎？工具感乎？吾再探。</p>

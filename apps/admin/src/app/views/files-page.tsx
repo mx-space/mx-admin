@@ -3,6 +3,7 @@ import {
   Copy,
   ExternalLink,
   FileIcon,
+  Files as FilesIcon,
   ImageIcon,
   Loader2,
   RefreshCw,
@@ -11,9 +12,11 @@ import {
   Upload,
   User,
 } from 'lucide-react'
-import { ChangeEvent, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router'
 import { toast } from 'sonner'
 import type { LucideIcon } from 'lucide-react'
+import type { ChangeEvent, DragEvent } from 'react'
 import type {
   CommentUploadFile,
   CommentUploadStatus,
@@ -32,19 +35,37 @@ import {
   getCommentUploads,
   getFilesByType,
   getOrphanFiles,
-  uploadFile,
+  uploadFileWithProgress,
 } from '../api/files'
 import { Button } from '../ui/button'
 import { Checkbox } from '../ui/checkbox'
 import { cn } from '../ui/cn'
 import { CompactPagination } from '../ui/compact-pagination'
-import { Panel } from '../ui/panel'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
 import { SelectField } from '../ui/select'
 
 type FilesSource = 'comment-images' | 'files' | 'orphans'
 
 const filesQueryKey = ['files']
 const pageSize = 24
+const sourceTabs: Array<{ label: string; value: FilesSource }> = [
+  { label: '文件库', value: 'files' },
+  { label: '孤儿图片', value: 'orphans' },
+  { label: '评论图片', value: 'comment-images' },
+]
+const sourcePathMap: Record<FilesSource, string> = {
+  'comment-images': '/files/comment-images',
+  files: '/files',
+  orphans: '/files/orphans',
+}
+
+interface UploadItem {
+  error?: string
+  id: string
+  name: string
+  progress: number
+  status: 'done' | 'error' | 'uploading'
+}
 
 const fileTypes: Array<{
   acceptImage: boolean
@@ -81,6 +102,7 @@ export function CommentImagesPage() {
 }
 
 function FilesSurface(props: { initialSource: FilesSource }) {
+  const navigate = useNavigate()
   const queryClient = useQueryClient()
   const uploadInputRef = useRef<HTMLInputElement>(null)
   const [source, setSource] = useState<FilesSource>(props.initialSource)
@@ -90,6 +112,8 @@ function FilesSurface(props: { initialSource: FilesSource }) {
   const [commentStatus, setCommentStatus] = useState<CommentUploadStatus>('')
   const [selectedOrphanIds, setSelectedOrphanIds] = useState<string[]>([])
   const [selectAllOrphans, setSelectAllOrphans] = useState(false)
+  const [uploadItems, setUploadItems] = useState<UploadItem[]>([])
+  const [isDraggingUpload, setIsDraggingUpload] = useState(false)
 
   useEffect(() => {
     setSource(props.initialSource)
@@ -131,16 +155,6 @@ function FilesSurface(props: { initialSource: FilesSource }) {
       'comment-uploads',
       { page: commentPage, size: pageSize, status: commentStatus },
     ],
-  })
-
-  const uploadMutation = useMutation({
-    mutationFn: (file: File) => uploadFile(file, fileType),
-    onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '上传失败')),
-    onSuccess: async () => {
-      toast.success('上传成功')
-      await queryClient.invalidateQueries({ queryKey: filesQueryKey })
-    },
   })
 
   const deleteFileMutation = useMutation({
@@ -202,93 +216,176 @@ function FilesSurface(props: { initialSource: FilesSource }) {
   })
 
   const currentType = fileTypes.find((type) => type.value === fileType)!
+  const uploadBusy = uploadItems.some((item) => item.status === 'uploading')
+  const currentSource = sourceTabs.find((item) => item.value === source)!
+
+  const handleSourceChange = (next: FilesSource) => {
+    setSource(next)
+    navigate(sourcePathMap[next])
+  }
+  const handleToggleAllOrphans = () => {
+    const next = !selectAllOrphans
+
+    setSelectAllOrphans(next)
+    setSelectedOrphanIds(
+      next ? (orphansQuery.data?.data ?? []).map((file) => file.id) : [],
+    )
+  }
 
   const onUploadChange = (event: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files ?? [])
-    const nextFile = files[0]
     event.target.value = ''
-    if (!nextFile) return
-    if (currentType.acceptImage && !nextFile.type.startsWith('image/')) {
-      toast.error('该分类只能上传图片文件')
-      return
+    void uploadFiles(files)
+  }
+
+  const uploadFiles = async (files: File[]) => {
+    const validFiles = files.filter((file) => {
+      if (!currentType.acceptImage || file.type.startsWith('image/'))
+        return true
+
+      toast.error(`${file.name} 不是图片文件`)
+      return false
+    })
+
+    if (validFiles.length === 0) return
+
+    const items = validFiles.map((file) => ({
+      id: `${file.name}-${file.lastModified}-${file.size}-${crypto.randomUUID()}`,
+      name: file.name,
+      progress: 0,
+      status: 'uploading' as const,
+    }))
+
+    setUploadItems((previous) => [...items, ...previous].slice(0, 8))
+
+    const results = await Promise.allSettled(
+      validFiles.map((file, index) =>
+        uploadFileWithProgress(file, {
+          onProgress: (progress) => {
+            setUploadItems((previous) =>
+              previous.map((item) =>
+                item.id === items[index].id ? { ...item, progress } : item,
+              ),
+            )
+          },
+          type: fileType,
+        }),
+      ),
+    )
+
+    setUploadItems((previous) =>
+      previous.map((item) => {
+        const index = items.findIndex((candidate) => candidate.id === item.id)
+        if (index === -1) return item
+
+        const result = results[index]
+        if (result.status === 'fulfilled') {
+          return { ...item, progress: 100, status: 'done' }
+        }
+
+        return {
+          ...item,
+          error: getErrorMessage(result.reason, '上传失败'),
+          status: 'error',
+        }
+      }),
+    )
+
+    const successCount = results.filter(
+      (result) => result.status === 'fulfilled',
+    ).length
+    if (successCount > 0) {
+      toast.success(`已上传 ${successCount} 个文件`)
+      await queryClient.invalidateQueries({ queryKey: filesQueryKey })
     }
-    uploadMutation.mutate(nextFile)
   }
 
   return (
-    <div className="space-y-4">
-      <Panel description="文件库、孤儿图片和评论图片审计。" title="文件管理">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-200 p-4 dark:border-neutral-800">
-          <SourceTabs onChange={(next) => setSource(next)} value={source} />
-          <div className="flex flex-wrap items-center gap-2">
-            {source === 'files' ? (
-              <>
-                <input
-                  accept={currentType.acceptImage ? 'image/*' : undefined}
-                  className="hidden"
-                  onChange={onUploadChange}
-                  ref={uploadInputRef}
-                  type="file"
-                />
+    <div className="flex h-full min-h-0 flex-col bg-white dark:bg-neutral-950">
+      <header
+        className={cn(
+          'flex shrink-0 items-center justify-between gap-3 border-b border-neutral-200 px-4 dark:border-neutral-800',
+          APP_SHELL_HEADER_HEIGHT_CLASS,
+        )}
+      >
+        <h2 className="inline-flex items-center gap-2 text-sm font-medium">
+          <FilesIcon aria-hidden="true" className="size-4" />
+          {currentSource.label}
+        </h2>
+        <Button
+          disabled={
+            filesQuery.isFetching ||
+            orphansQuery.isFetching ||
+            commentUploadsQuery.isFetching
+          }
+          onClick={() => {
+            void filesQuery.refetch()
+            void orphansQuery.refetch()
+            void commentUploadsQuery.refetch()
+          }}
+          type="button"
+          variant="subtle"
+        >
+          <RefreshCw
+            aria-hidden="true"
+            className={cn(
+              'size-4',
+              (filesQuery.isFetching ||
+                orphansQuery.isFetching ||
+                commentUploadsQuery.isFetching) &&
+                'animate-spin',
+            )}
+          />
+          刷新
+        </Button>
+      </header>
+
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-200 p-4 dark:border-neutral-800">
+        <SourceTabs onChange={handleSourceChange} value={source} />
+        <div className="flex flex-wrap items-center gap-2">
+          {source === 'files' ? (
+            <>
+              <input
+                accept={currentType.acceptImage ? 'image/*' : undefined}
+                className="hidden"
+                multiple
+                onChange={onUploadChange}
+                ref={uploadInputRef}
+                type="file"
+              />
+              <Button
+                disabled={uploadBusy}
+                onClick={() => uploadInputRef.current?.click()}
+                type="button"
+                variant="subtle"
+              >
+                {uploadBusy ? (
+                  <Loader2 aria-hidden="true" className="size-4 animate-spin" />
+                ) : (
+                  <Upload aria-hidden="true" className="size-4" />
+                )}
+                上传
+              </Button>
+            </>
+          ) : null}
+          {source === 'orphans' ? (
+            <>
+              {selectedOrphanIds.length > 0 || selectAllOrphans ? (
                 <Button
-                  disabled={uploadMutation.isPending}
-                  onClick={() => uploadInputRef.current?.click()}
-                  type="button"
-                  variant="subtle"
-                >
-                  {uploadMutation.isPending ? (
-                    <Loader2
-                      aria-hidden="true"
-                      className="size-4 animate-spin"
-                    />
-                  ) : (
-                    <Upload aria-hidden="true" className="size-4" />
-                  )}
-                  上传
-                </Button>
-              </>
-            ) : null}
-            {source === 'orphans' ? (
-              <>
-                {selectedOrphanIds.length > 0 || selectAllOrphans ? (
-                  <Button
-                    className="border-red-200 text-red-600 hover:bg-red-50 dark:border-red-950 dark:text-red-400 dark:hover:bg-red-950/30"
-                    disabled={batchDeleteOrphansMutation.isPending}
-                    onClick={() => {
-                      const label = selectAllOrphans
-                        ? `全部 ${orphansQuery.data?.pagination.total ?? 0} 个`
-                        : `选中的 ${selectedOrphanIds.length} 个`
-                      if (window.confirm(`确认删除${label}孤儿文件？`)) {
-                        batchDeleteOrphansMutation.mutate()
-                      }
-                    }}
-                    type="button"
-                    variant="subtle"
-                  >
-                    {batchDeleteOrphansMutation.isPending ? (
-                      <Loader2
-                        aria-hidden="true"
-                        className="size-4 animate-spin"
-                      />
-                    ) : (
-                      <Trash2 aria-hidden="true" className="size-4" />
-                    )}
-                    {selectAllOrphans
-                      ? `删除全部 (${orphansQuery.data?.pagination.total ?? 0})`
-                      : `删除选中 (${selectedOrphanIds.length})`}
-                  </Button>
-                ) : null}
-                <Button
-                  disabled={cleanupMutation.isPending}
+                  className="border-red-200 text-red-600 hover:bg-red-50 dark:border-red-950 dark:text-red-400 dark:hover:bg-red-950/30"
+                  disabled={batchDeleteOrphansMutation.isPending}
                   onClick={() => {
-                    if (window.confirm('确认清理 60 分钟以前的孤儿图片？')) {
-                      cleanupMutation.mutate()
+                    const label = selectAllOrphans
+                      ? `全部 ${orphansQuery.data?.pagination.total ?? 0} 个`
+                      : `选中的 ${selectedOrphanIds.length} 个`
+                    if (window.confirm(`确认删除${label}孤儿文件？`)) {
+                      batchDeleteOrphansMutation.mutate()
                     }
                   }}
                   type="button"
                   variant="subtle"
                 >
-                  {cleanupMutation.isPending ? (
+                  {batchDeleteOrphansMutation.isPending ? (
                     <Loader2
                       aria-hidden="true"
                       className="size-4 animate-spin"
@@ -296,39 +393,34 @@ function FilesSurface(props: { initialSource: FilesSource }) {
                   ) : (
                     <Trash2 aria-hidden="true" className="size-4" />
                   )}
-                  清理孤儿图片
+                  {selectAllOrphans
+                    ? `删除全部 (${orphansQuery.data?.pagination.total ?? 0})`
+                    : `删除选中 (${selectedOrphanIds.length})`}
                 </Button>
-              </>
-            ) : null}
-            <Button
-              disabled={
-                filesQuery.isFetching ||
-                orphansQuery.isFetching ||
-                commentUploadsQuery.isFetching
-              }
-              onClick={() => {
-                void filesQuery.refetch()
-                void orphansQuery.refetch()
-                void commentUploadsQuery.refetch()
-              }}
-              type="button"
-              variant="subtle"
-            >
-              <RefreshCw
-                aria-hidden="true"
-                className={cn(
-                  'size-4',
-                  (filesQuery.isFetching ||
-                    orphansQuery.isFetching ||
-                    commentUploadsQuery.isFetching) &&
-                    'animate-spin',
+              ) : null}
+              <Button
+                disabled={cleanupMutation.isPending}
+                onClick={() => {
+                  if (window.confirm('确认清理 60 分钟以前的孤儿图片？')) {
+                    cleanupMutation.mutate()
+                  }
+                }}
+                type="button"
+                variant="subtle"
+              >
+                {cleanupMutation.isPending ? (
+                  <Loader2 aria-hidden="true" className="size-4 animate-spin" />
+                ) : (
+                  <Trash2 aria-hidden="true" className="size-4" />
                 )}
-              />
-              刷新
-            </Button>
-          </div>
+                清理孤儿图片
+              </Button>
+            </>
+          ) : null}
         </div>
+      </div>
 
+      <div className="min-h-0 flex-1 overflow-y-auto">
         {source === 'files' ? (
           <div>
             <div className="flex flex-wrap items-center gap-2 border-b border-neutral-200 p-4 dark:border-neutral-800">
@@ -352,6 +444,14 @@ function FilesSurface(props: { initialSource: FilesSource }) {
                 )
               })}
             </div>
+            <UploadDropZone
+              acceptImage={currentType.acceptImage}
+              dragging={isDraggingUpload}
+              items={uploadItems}
+              onBrowse={() => uploadInputRef.current?.click()}
+              onDragChange={setIsDraggingUpload}
+              onFiles={(files) => void uploadFiles(files)}
+            />
             <FileGrid
               deleting={deleteFileMutation.isPending}
               files={filesQuery.data ?? []}
@@ -395,12 +495,7 @@ function FilesSurface(props: { initialSource: FilesSource }) {
                   : previous.filter((current) => current !== id),
               )
             }}
-            onToggleAllOrphans={() => {
-              setSelectAllOrphans((previous) => !previous)
-              setSelectedOrphanIds(
-                (orphansQuery.data?.data ?? []).map((file) => file.id),
-              )
-            }}
+            onToggleAllOrphans={handleToggleAllOrphans}
             page={orphansPage}
             pageCount={orphansQuery.data?.pagination.totalPage ?? 1}
             selectedIds={selectedOrphanIds}
@@ -431,7 +526,7 @@ function FilesSurface(props: { initialSource: FilesSource }) {
             total={commentUploadsQuery.data?.pagination.total ?? 0}
           />
         ) : null}
-      </Panel>
+      </div>
     </div>
   )
 }
@@ -440,15 +535,9 @@ function SourceTabs(props: {
   onChange: (source: FilesSource) => void
   value: FilesSource
 }) {
-  const items: Array<{ label: string; value: FilesSource }> = [
-    { label: '文件库', value: 'files' },
-    { label: '孤儿图片', value: 'orphans' },
-    { label: '评论图片', value: 'comment-images' },
-  ]
-
   return (
     <div className="inline-flex items-center gap-1 rounded bg-neutral-100/80 p-1 dark:bg-neutral-800/60">
-      {items.map((item) => (
+      {sourceTabs.map((item) => (
         <button
           className={cn(
             'rounded px-3 py-1.5 text-xs font-medium transition-colors',
@@ -463,6 +552,91 @@ function SourceTabs(props: {
           {item.label}
         </button>
       ))}
+    </div>
+  )
+}
+
+function UploadDropZone(props: {
+  acceptImage: boolean
+  dragging: boolean
+  items: UploadItem[]
+  onBrowse: () => void
+  onDragChange: (dragging: boolean) => void
+  onFiles: (files: File[]) => void
+}) {
+  const onDrop = (event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault()
+    props.onDragChange(false)
+    props.onFiles(Array.from(event.dataTransfer.files))
+  }
+
+  return (
+    <div className="border-b border-neutral-200 p-4 dark:border-neutral-800">
+      <div
+        className={cn(
+          'flex min-h-32 flex-col items-center justify-center gap-3 border border-dashed border-neutral-300 bg-neutral-50 px-4 py-6 text-center transition-colors dark:border-neutral-700 dark:bg-neutral-900/40',
+          props.dragging &&
+            'border-neutral-950 bg-neutral-100 dark:border-neutral-50 dark:bg-neutral-900',
+        )}
+        onDragEnter={(event) => {
+          event.preventDefault()
+          props.onDragChange(true)
+        }}
+        onDragLeave={(event) => {
+          event.preventDefault()
+          props.onDragChange(false)
+        }}
+        onDragOver={(event) => event.preventDefault()}
+        onDrop={onDrop}
+      >
+        <Upload aria-hidden="true" className="size-8 text-neutral-400" />
+        <div>
+          <p className="text-sm font-medium text-neutral-800 dark:text-neutral-100">
+            点击或拖动文件到该区域上传
+          </p>
+          <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+            {props.acceptImage
+              ? '当前分类仅接受图片文件。'
+              : '当前分类接受任意文件。'}
+          </p>
+        </div>
+        <Button onClick={props.onBrowse} type="button" variant="subtle">
+          选择文件
+        </Button>
+      </div>
+
+      {props.items.length > 0 ? (
+        <div className="mt-3 grid gap-2">
+          {props.items.map((item) => (
+            <div
+              className="grid gap-1 text-xs text-neutral-500 dark:text-neutral-400"
+              key={item.id}
+            >
+              <div className="flex items-center justify-between gap-3">
+                <span className="min-w-0 truncate">{item.name}</span>
+                <span>
+                  {item.status === 'done'
+                    ? '完成'
+                    : item.status === 'error'
+                      ? item.error
+                      : `${item.progress}%`}
+                </span>
+              </div>
+              <div className="h-1.5 overflow-hidden bg-neutral-100 dark:bg-neutral-900">
+                <div
+                  className={cn(
+                    'h-full transition-all',
+                    item.status === 'error'
+                      ? 'bg-red-500'
+                      : 'bg-neutral-950 dark:bg-neutral-50',
+                  )}
+                  style={{ width: `${item.progress}%` }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : null}
     </div>
   )
 }
@@ -703,6 +877,11 @@ function CommentUploadGrid(props: {
                 fileUrl: file.fileUrl,
                 id: file.id,
                 meta: `${formatBytes(file.byteSize)} · ${file.mimeType ?? '-'}`,
+                reference:
+                  file.refType && file.refId
+                    ? `${file.refType}/${file.refId}`
+                    : '未绑定',
+                secondary: `reader: ${file.readerId ?? '-'}`,
                 status: file.status,
               }}
               key={file.id}
@@ -730,6 +909,8 @@ function ImageAuditCard(props: {
     fileUrl: string
     id: string
     meta: string
+    reference?: string
+    secondary?: string
     status?: string
   }
   onCopy: (url: string) => void
@@ -773,6 +954,16 @@ function ImageAuditCard(props: {
         <div className="text-xs text-neutral-500 dark:text-neutral-400">
           {props.file.meta}
         </div>
+        {props.file.secondary ? (
+          <div className="truncate text-xs text-neutral-500 dark:text-neutral-400">
+            {props.file.secondary}
+          </div>
+        ) : null}
+        {props.file.reference ? (
+          <div className="truncate text-xs text-neutral-500 dark:text-neutral-400">
+            {props.file.reference}
+          </div>
+        ) : null}
         <div className="text-xs text-neutral-400">
           {relativeTimeFromNow(props.file.createdAt)}
         </div>

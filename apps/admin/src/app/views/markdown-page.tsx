@@ -179,7 +179,7 @@ export function MarkdownPage() {
 
   return (
     <div className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(360px,0.8fr)]">
-      <section className="rounded border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950">
+      <section className="bg-white dark:bg-neutral-950">
         <Header
           description="解析本地 Markdown 文件并导入为博文或日记。"
           icon={<FileUp aria-hidden="true" className="size-5" />}
@@ -341,7 +341,7 @@ export function MarkdownPage() {
         </div>
       </section>
 
-      <section className="rounded border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950">
+      <section className="bg-white dark:bg-neutral-950">
         <Header
           description="导出所有博文和日记为 Hexo YAML 风格 Markdown 压缩包。"
           icon={<FileDown aria-hidden="true" className="size-5" />}

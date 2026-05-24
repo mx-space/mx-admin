@@ -21,7 +21,7 @@ export interface CreateSnippetData {
   raw: string
   reference?: string
   schema?: string
-  secret?: Record<string, unknown>
+  secret?: Record<string, unknown> | string | null
   type: SnippetType
 }
 
@@ -32,7 +32,7 @@ export interface SnippetGroup {
 
 export interface ImportSnippetsData {
   packages?: string[]
-  snippets: SnippetModel[]
+  snippets: Array<CreateSnippetData | SnippetModel>
 }
 
 export function getSnippets(params: GetSnippetsParams = {}) {

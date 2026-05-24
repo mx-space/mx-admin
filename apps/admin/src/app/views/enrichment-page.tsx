@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   AlertCircle,
+  ArrowLeft,
+  Camera,
   CheckCircle2,
   DatabaseZap,
   Eraser,
@@ -8,13 +10,16 @@ import {
   ImageIcon,
   Loader2,
   RefreshCw,
+  Save,
   Search,
   Trash2,
 } from 'lucide-react'
-import { FormEvent, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router'
 import { toast } from 'sonner'
 import type {
   EnrichmentCaptureJoinedRow,
+  EnrichmentCaptureQuota,
   EnrichmentProbeResult,
   EnrichmentProviderMeta,
   EnrichmentRow,
@@ -40,6 +45,8 @@ import { Button } from '../ui/button'
 import { Checkbox } from '../ui/checkbox'
 import { cn } from '../ui/cn'
 import { CompactPagination } from '../ui/compact-pagination'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
+import { MasterDetailLayout } from '../ui/page-layout'
 import { SelectField } from '../ui/select'
 import { TextInput } from '../ui/text-field'
 
@@ -52,19 +59,36 @@ type ProbeHistoryEntry = {
   url: string
 }
 
-const pageSize = 20
+const defaultPageSize = 20
 const enrichmentQueryKey = ['enrichment']
+
+function isEnrichmentSource(value: unknown): value is EnrichmentSource {
+  return value === 'cache' || value === 'probe' || value === 'screenshots'
+}
 
 export function EnrichmentPage() {
   const queryClient = useQueryClient()
-  const [source, setSource] = useState<EnrichmentSource>('cache')
-  const [selectedCacheId, setSelectedCacheId] = useState<string | null>(null)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const initialSourceParam = searchParams.get('source')
+  const initialSource = isEnrichmentSource(initialSourceParam)
+    ? initialSourceParam
+    : 'cache'
+  const initialSelectedId = searchParams.get('id')
+  const [source, setSource] = useState<EnrichmentSource>(initialSource)
+  const [selectedCacheId, setSelectedCacheId] = useState<string | null>(
+    initialSource === 'cache' ? initialSelectedId : null,
+  )
   const [selectedCaptureId, setSelectedCaptureId] = useState<string | null>(
-    null,
+    initialSource === 'screenshots' ? initialSelectedId : null,
   )
   const [selectedProbeId, setSelectedProbeId] = useState<string | null>(null)
+  const [showDetailOnMobile, setShowDetailOnMobile] = useState(
+    Boolean(initialSelectedId),
+  )
   const [cachePage, setCachePage] = useState(1)
+  const [cachePageSize, setCachePageSize] = useState(defaultPageSize)
   const [capturePage, setCapturePage] = useState(1)
+  const [capturePageSize, setCapturePageSize] = useState(defaultPageSize)
   const [filterMode, setFilterMode] = useState<CacheFilterMode>('all')
   const [captureSort, setCaptureSort] = useState<
     'bytes' | 'created' | 'last_accessed'
@@ -79,12 +103,12 @@ export function EnrichmentPage() {
       getEnrichmentList({
         onlyFailed: filterMode === 'failed',
         page: cachePage,
-        size: pageSize,
+        size: cachePageSize,
       }),
     queryKey: [
       ...enrichmentQueryKey,
       'cache',
-      { filterMode, page: cachePage, size: pageSize },
+      { filterMode, page: cachePage, size: cachePageSize },
     ],
   })
 
@@ -95,7 +119,7 @@ export function EnrichmentPage() {
       getEnrichmentCaptures({
         order: captureOrder,
         page: capturePage,
-        size: pageSize,
+        size: capturePageSize,
         sort: captureSort,
       }),
     queryKey: [
@@ -104,7 +128,7 @@ export function EnrichmentPage() {
       {
         order: captureOrder,
         page: capturePage,
-        size: pageSize,
+        size: capturePageSize,
         sort: captureSort,
       },
     ],
@@ -135,11 +159,27 @@ export function EnrichmentPage() {
   const selectedProbe =
     probeHistory.find((entry) => entry.id === selectedProbeId) ?? null
 
+  useEffect(() => {
+    const next = new URLSearchParams()
+    const selectedId =
+      source === 'cache'
+        ? selectedCacheId
+        : source === 'screenshots'
+          ? selectedCaptureId
+          : null
+
+    if (source !== 'cache') next.set('source', source)
+    if (selectedId) next.set('id', selectedId)
+
+    setSearchParams(next, { replace: true })
+  }, [selectedCacheId, selectedCaptureId, setSearchParams, source])
+
   const setSourceAndReset = (next: EnrichmentSource) => {
     setSource(next)
     setSelectedCacheId(null)
     setSelectedCaptureId(null)
     setSelectedProbeId(null)
+    setShowDetailOnMobile(false)
   }
 
   const invalidateAll = async () => {
@@ -147,162 +187,204 @@ export function EnrichmentPage() {
   }
 
   return (
-    <div className="grid min-h-[calc(100vh-8rem)] grid-cols-1 overflow-hidden rounded border border-neutral-200 bg-white lg:grid-cols-[minmax(360px,0.4fr)_1fr] dark:border-neutral-800 dark:bg-neutral-950">
-      <section className="flex min-h-0 flex-col border-b border-neutral-200 lg:border-b-0 lg:border-r dark:border-neutral-800">
-        <div className="border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
-          <SourceSwitcher onChange={setSourceAndReset} value={source} />
-          {source === 'cache' ? (
-            <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-              <div className="flex flex-wrap items-center gap-2">
-                <FilterSegment
-                  onChange={(next) => {
-                    setFilterMode(next)
-                    setCachePage(1)
-                  }}
-                  value={filterMode}
-                />
-                {providersQuery.data ? (
-                  <ProviderStatusBar providers={providersQuery.data} />
-                ) : null}
+    <MasterDetailLayout
+      defaultSize={source === 'probe' ? 28 : 40}
+      maxSize={source === 'probe' ? 35 : 50}
+      minSize={source === 'probe' ? 22 : 30}
+      showDetailOnMobile={showDetailOnMobile}
+      list={
+        <section className="flex h-full min-h-0 flex-col border-b border-neutral-200 lg:border-b-0 lg:border-r dark:border-neutral-800">
+          <div className="border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
+            <SourceSwitcher onChange={setSourceAndReset} value={source} />
+            {source === 'cache' ? (
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  <FilterSegment
+                    onChange={(next) => {
+                      setFilterMode(next)
+                      setCachePage(1)
+                    }}
+                    value={filterMode}
+                  />
+                  {providersQuery.data ? (
+                    <ProviderStatusBar providers={providersQuery.data} />
+                  ) : null}
+                </div>
+                <Button
+                  disabled={cacheQuery.isFetching}
+                  onClick={() => void cacheQuery.refetch()}
+                  type="button"
+                  variant="subtle"
+                >
+                  <RefreshCw
+                    aria-hidden="true"
+                    className={cn(
+                      'size-4',
+                      cacheQuery.isFetching && 'animate-spin',
+                    )}
+                  />
+                  刷新
+                </Button>
               </div>
-              <Button
-                disabled={cacheQuery.isFetching}
-                onClick={() => void cacheQuery.refetch()}
-                type="button"
-                variant="subtle"
-              >
-                <RefreshCw
-                  aria-hidden="true"
-                  className={cn(
-                    'size-4',
-                    cacheQuery.isFetching && 'animate-spin',
-                  )}
+            ) : null}
+            {source === 'screenshots' ? (
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+                <CaptureControls
+                  onOrderChange={(next) => {
+                    setCaptureOrder(next)
+                    setCapturePage(1)
+                  }}
+                  onSortChange={(next) => {
+                    setCaptureSort(next)
+                    setCapturePage(1)
+                  }}
+                  order={captureOrder}
+                  sort={captureSort}
                 />
-                刷新
-              </Button>
-            </div>
+                <Button
+                  disabled={captureQuery.isFetching}
+                  onClick={() => {
+                    void captureQuery.refetch()
+                    void quotaQuery.refetch()
+                  }}
+                  type="button"
+                  variant="subtle"
+                >
+                  <RefreshCw
+                    aria-hidden="true"
+                    className={cn(
+                      'size-4',
+                      captureQuery.isFetching && 'animate-spin',
+                    )}
+                  />
+                  刷新
+                </Button>
+              </div>
+            ) : null}
+          </div>
+
+          {source === 'cache' ? (
+            <CacheListPanel
+              filterMode={filterMode}
+              loading={cacheQuery.isLoading}
+              onPageChange={setCachePage}
+              onPageSizeChange={(size) => {
+                setCachePageSize(size)
+                setCachePage(1)
+              }}
+              onSelect={(row) => {
+                setSelectedCacheId(row.id)
+                setShowDetailOnMobile(true)
+              }}
+              page={cachePage}
+              pageCount={cachePager?.totalPage ?? 1}
+              pageSize={cachePageSize}
+              rows={cacheRows}
+              selectedId={selectedCacheId}
+              total={cachePager?.total ?? 0}
+            />
           ) : null}
+
           {source === 'screenshots' ? (
-            <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-              <CaptureControls
-                onOrderChange={(next) => {
-                  setCaptureOrder(next)
-                  setCapturePage(1)
-                }}
-                onSortChange={(next) => {
-                  setCaptureSort(next)
-                  setCapturePage(1)
-                }}
-                order={captureOrder}
-                sort={captureSort}
-              />
-              <Button
-                disabled={captureQuery.isFetching}
-                onClick={() => {
-                  void captureQuery.refetch()
-                  void quotaQuery.refetch()
-                }}
-                type="button"
-                variant="subtle"
-              >
-                <RefreshCw
-                  aria-hidden="true"
-                  className={cn(
-                    'size-4',
-                    captureQuery.isFetching && 'animate-spin',
-                  )}
-                />
-                刷新
-              </Button>
-            </div>
-          ) : null}
-        </div>
-
-        {source === 'cache' ? (
-          <CacheListPanel
-            filterMode={filterMode}
-            loading={cacheQuery.isLoading}
-            onPageChange={setCachePage}
-            onSelect={(row) => setSelectedCacheId(row.id)}
-            page={cachePage}
-            pageCount={cachePager?.totalPage ?? 1}
-            rows={cacheRows}
-            selectedId={selectedCacheId}
-            total={cachePager?.total ?? 0}
-          />
-        ) : null}
-
-        {source === 'screenshots' ? (
-          <CaptureListPanel
-            loading={captureQuery.isLoading}
-            onPageChange={setCapturePage}
-            onSelect={(row) => setSelectedCaptureId(row.enrichmentId)}
-            page={capturePage}
-            pageCount={capturePager?.totalPage ?? 1}
-            quota={
-              quotaQuery.data
-                ? `${formatBytes(quotaQuery.data.used.totalBytes)} / ${formatBytes(
-                    quotaQuery.data.cap.maxTotalBytes,
-                  )}`
-                : null
-            }
-            rows={captureRows}
-            selectedId={selectedCaptureId}
-            total={capturePager?.total ?? 0}
-          />
-        ) : null}
-
-        {source === 'probe' ? (
-          <ProbeListPanel
-            history={probeHistory}
-            onClear={() => {
-              setProbeHistory([])
-              setSelectedProbeId(null)
-            }}
-            onSelect={(entry) => setSelectedProbeId(entry.id)}
-            selectedId={selectedProbeId}
-          />
-        ) : null}
-      </section>
-
-      <section className="min-h-0">
-        {source === 'cache' ? (
-          selectedCacheId ? (
-            <CacheDetailPanel
-              fallback={selectedCache}
-              id={selectedCacheId}
-              invalidateAll={invalidateAll}
-            />
-          ) : (
-            <DetailEmpty label="选择缓存项查看详情。" />
-          )
-        ) : null}
-
-        {source === 'screenshots' ? (
-          selectedCapture ? (
-            <CaptureDetail
-              invalidateAll={invalidateAll}
+            <CaptureListPanel
+              loading={captureQuery.isLoading}
+              onPageChange={setCapturePage}
+              onPageSizeChange={(size) => {
+                setCapturePageSize(size)
+                setCapturePage(1)
+              }}
+              onSelect={(row) => {
+                setSelectedCaptureId(row.enrichmentId)
+                setShowDetailOnMobile(true)
+              }}
+              page={capturePage}
+              pageCount={capturePager?.totalPage ?? 1}
+              pageSize={capturePageSize}
               quota={
-                quotaQuery.data?.enabled ? quotaQuery.data.fetchMode : null
+                quotaQuery.data
+                  ? `${formatBytes(quotaQuery.data.used.totalBytes)} / ${formatBytes(
+                      quotaQuery.data.cap.maxTotalBytes,
+                    )}`
+                  : null
               }
-              row={selectedCapture}
+              rows={captureRows}
+              selectedId={selectedCaptureId}
+              total={capturePager?.total ?? 0}
             />
-          ) : (
-            <DetailEmpty label="选择截图记录查看详情。" />
-          )
-        ) : null}
+          ) : null}
 
-        {source === 'probe' ? (
-          <ProbeConsole
-            onProbed={(entry) => {
-              setProbeHistory((current) => [entry, ...current].slice(0, 20))
-              setSelectedProbeId(entry.id)
-            }}
-            selected={selectedProbe}
-          />
-        ) : null}
-      </section>
-    </div>
+          {source === 'probe' ? (
+            <ProbeListPanel
+              history={probeHistory}
+              onClear={() => {
+                setProbeHistory([])
+                setSelectedProbeId(null)
+                setShowDetailOnMobile(false)
+              }}
+              onSelect={(entry) => {
+                setSelectedProbeId(entry.id)
+                setShowDetailOnMobile(true)
+              }}
+              selectedId={selectedProbeId}
+            />
+          ) : null}
+        </section>
+      }
+      detail={
+        <section className="min-h-0">
+          {source === 'cache' ? (
+            selectedCacheId ? (
+              <CacheDetailPanel
+                fallback={selectedCache}
+                id={selectedCacheId}
+                invalidateAll={invalidateAll}
+                onBack={() => setShowDetailOnMobile(false)}
+                onJumpToScreenshot={(id) => {
+                  setSource('screenshots')
+                  setSelectedCacheId(null)
+                  setSelectedCaptureId(id)
+                  setSelectedProbeId(null)
+                  setShowDetailOnMobile(true)
+                }}
+              />
+            ) : (
+              <DetailEmpty label="选择缓存项查看详情。" />
+            )
+          ) : null}
+
+          {source === 'screenshots' ? (
+            selectedCapture ? (
+              <CaptureDetail
+                invalidateAll={invalidateAll}
+                onDeleted={(id) => {
+                  if (selectedCaptureId === id) {
+                    setSelectedCaptureId(null)
+                    setShowDetailOnMobile(false)
+                  }
+                }}
+                onBack={() => setShowDetailOnMobile(false)}
+                quota={quotaQuery.data ?? null}
+                row={selectedCapture}
+              />
+            ) : (
+              <DetailEmpty label="选择截图记录查看详情。" />
+            )
+          ) : null}
+
+          {source === 'probe' ? (
+            <ProbeConsole
+              onProbed={(entry) => {
+                setProbeHistory((current) => [entry, ...current].slice(0, 20))
+                setSelectedProbeId(entry.id)
+                setShowDetailOnMobile(true)
+              }}
+              onBack={() => setShowDetailOnMobile(false)}
+              selected={selectedProbe}
+            />
+          ) : null}
+        </section>
+      }
+    />
   )
 }
 
@@ -402,9 +484,11 @@ function CacheListPanel(props: {
   filterMode: CacheFilterMode
   loading: boolean
   onPageChange: (page: number) => void
+  onPageSizeChange: (size: number) => void
   onSelect: (row: EnrichmentRow) => void
   page: number
   pageCount: number
+  pageSize: number
   rows: EnrichmentRow[]
   selectedId: null | string
   total: number
@@ -436,11 +520,10 @@ function CacheListPanel(props: {
         <div className="flex shrink-0 items-center justify-end border-t border-neutral-200 px-3 py-2 dark:border-neutral-800">
           <CompactPagination
             onPageChange={props.onPageChange}
-            onPageSizeChange={() => undefined}
+            onPageSizeChange={props.onPageSizeChange}
             page={props.page}
             pageCount={props.pageCount}
-            pageSize={pageSize}
-            pageSizes={[pageSize]}
+            pageSize={props.pageSize}
           />
         </div>
       ) : null}
@@ -492,6 +575,8 @@ function CacheDetailPanel(props: {
   fallback: EnrichmentRow | null
   id: string
   invalidateAll: () => Promise<void>
+  onBack: () => void
+  onJumpToScreenshot: (id: string) => void
 }) {
   const queryClient = useQueryClient()
   const detailQuery = useQuery({
@@ -537,23 +622,37 @@ function CacheDetailPanel(props: {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b border-neutral-200 px-5 py-4 dark:border-neutral-800">
-        <div className="min-w-0">
-          <div className="flex min-w-0 items-center gap-2">
-            <ProviderBadge provider={row.provider} />
-            <h2 className="truncate text-base font-semibold text-neutral-950 dark:text-neutral-50">
-              {row.normalized.title || row.url}
-            </h2>
-            {detailQuery.isFetching ? (
-              <Loader2
-                aria-hidden="true"
-                className="size-3.5 animate-spin text-neutral-400"
-              />
-            ) : null}
+      <div
+        className={cn(
+          'flex shrink-0 items-center justify-between gap-3 border-b border-neutral-200 px-4 dark:border-neutral-800',
+          APP_SHELL_HEADER_HEIGHT_CLASS,
+        )}
+      >
+        <div className="flex min-w-0 items-center gap-2">
+          <button
+            className="inline-flex size-8 items-center justify-center rounded text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-950 lg:hidden dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-50"
+            onClick={props.onBack}
+            type="button"
+          >
+            <ArrowLeft aria-hidden="true" className="size-4" />
+          </button>
+          <div className="min-w-0">
+            <div className="flex min-w-0 items-center gap-2">
+              <ProviderBadge provider={row.provider} />
+              <h2 className="truncate text-base font-semibold text-neutral-950 dark:text-neutral-50">
+                {row.normalized.title || row.url}
+              </h2>
+              {detailQuery.isFetching ? (
+                <Loader2
+                  aria-hidden="true"
+                  className="size-3.5 animate-spin text-neutral-400"
+                />
+              ) : null}
+            </div>
+            <p className="mt-1 truncate text-sm text-neutral-500 dark:text-neutral-400">
+              {row.url}
+            </p>
           </div>
-          <p className="mt-1 truncate text-sm text-neutral-500 dark:text-neutral-400">
-            {row.url}
-          </p>
         </div>
         <a
           className="inline-flex size-9 items-center justify-center rounded border border-neutral-200 text-neutral-600 transition-colors hover:bg-neutral-50 dark:border-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-900"
@@ -571,14 +670,25 @@ function CacheDetailPanel(props: {
 
         {row.capture ? (
           <DetailBlock title="截图">
-            <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-neutral-500 dark:text-neutral-400">
-              <span>
-                {row.capture.width} x {row.capture.height}
-              </span>
-              <span>{formatBytes(row.capture.bytes)}</span>
-              <span>
-                最近访问 {relativeTimeFromNow(row.capture.lastAccessedAt)}
-              </span>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-neutral-500 dark:text-neutral-400">
+                <span>
+                  {row.capture.width} x {row.capture.height}
+                </span>
+                <span>{formatBytes(row.capture.bytes)}</span>
+                <span>创建于 {relativeTimeFromNow(row.capture.createdAt)}</span>
+                <span>
+                  最近访问 {relativeTimeFromNow(row.capture.lastAccessedAt)}
+                </span>
+              </div>
+              <Button
+                onClick={() => props.onJumpToScreenshot(row.id)}
+                type="button"
+                variant="subtle"
+              >
+                <ImageIcon aria-hidden="true" className="size-4" />
+                查看截图
+              </Button>
             </div>
           </DetailBlock>
         ) : null}
@@ -688,9 +798,11 @@ function NormalizedPreview(props: { row: EnrichmentRowDetail }) {
 function CaptureListPanel(props: {
   loading: boolean
   onPageChange: (page: number) => void
+  onPageSizeChange: (size: number) => void
   onSelect: (row: EnrichmentCaptureJoinedRow) => void
   page: number
   pageCount: number
+  pageSize: number
   quota: null | string
   rows: EnrichmentCaptureJoinedRow[]
   selectedId: null | string
@@ -722,11 +834,11 @@ function CaptureListPanel(props: {
         <div className="flex shrink-0 items-center justify-end border-t border-neutral-200 px-3 py-2 dark:border-neutral-800">
           <CompactPagination
             onPageChange={props.onPageChange}
-            onPageSizeChange={() => undefined}
+            onPageSizeChange={props.onPageSizeChange}
             page={props.page}
             pageCount={props.pageCount}
-            pageSize={pageSize}
-            pageSizes={[pageSize]}
+            pageSize={props.pageSize}
+            pageSizes={[10, 20, 50]}
           />
         </div>
       ) : null}
@@ -775,9 +887,12 @@ function CaptureRow(props: {
 
 function CaptureDetail(props: {
   invalidateAll: () => Promise<void>
-  quota: null | string
+  onDeleted: (id: string) => void
+  onBack: () => void
+  quota: EnrichmentCaptureQuota | null
   row: EnrichmentCaptureJoinedRow
 }) {
+  const recaptureDisabledReason = getRecaptureDisabledReason(props.quota)
   const recaptureMutation = useMutation({
     mutationFn: () => recaptureEnrichment(props.row.enrichmentId),
     onError: (error: unknown) =>
@@ -793,40 +908,73 @@ function CaptureDetail(props: {
       toast.error(getErrorMessage(error, '删除失败')),
     onSuccess: async () => {
       toast.success('截图已删除')
+      props.onDeleted(props.row.enrichmentId)
       await props.invalidateAll()
     },
   })
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b border-neutral-200 px-5 py-4 dark:border-neutral-800">
-        <div className="min-w-0">
-          <h2 className="truncate text-base font-semibold text-neutral-950 dark:text-neutral-50">
-            {props.row.title || props.row.url}
-          </h2>
-          <p className="mt-1 truncate text-sm text-neutral-500 dark:text-neutral-400">
-            {props.row.provider} · {props.quota ?? 'capture'}
-          </p>
+      <div
+        className={cn(
+          'flex shrink-0 items-center justify-between gap-3 border-b border-neutral-200 px-4 dark:border-neutral-800',
+          APP_SHELL_HEADER_HEIGHT_CLASS,
+        )}
+      >
+        <div className="flex min-w-0 items-center gap-2">
+          <button
+            className="inline-flex size-8 items-center justify-center rounded text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-950 lg:hidden dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-50"
+            onClick={props.onBack}
+            type="button"
+          >
+            <ArrowLeft aria-hidden="true" className="size-4" />
+          </button>
+          <div className="min-w-0">
+            <h2 className="truncate text-base font-semibold text-neutral-950 dark:text-neutral-50">
+              {props.row.title || props.row.url}
+            </h2>
+            <p className="mt-1 truncate text-sm text-neutral-500 dark:text-neutral-400">
+              {props.row.provider} · {props.quota?.fetchMode ?? 'capture'}
+            </p>
+          </div>
         </div>
         <a
           className="inline-flex size-9 items-center justify-center rounded border border-neutral-200 text-neutral-600 transition-colors hover:bg-neutral-50 dark:border-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-900"
-          href={props.row.publicUrl}
+          href={props.row.url}
           rel="noreferrer"
           target="_blank"
-          title="打开截图"
+          title="打开原始链接"
         >
           <ExternalLink aria-hidden="true" className="size-4" />
         </a>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">
-        <div className="overflow-hidden rounded border border-neutral-200 bg-neutral-100 dark:border-neutral-800 dark:bg-neutral-900">
-          <img
-            alt={props.row.title || props.row.url}
-            className="max-h-[32rem] w-full object-contain"
-            src={props.row.publicUrl}
-          />
+        <div
+          className="overflow-hidden rounded border border-neutral-200 bg-neutral-100 dark:border-neutral-800 dark:bg-neutral-900"
+          style={
+            props.row.palette?.dominant
+              ? { backgroundColor: props.row.palette.dominant }
+              : undefined
+          }
+        >
+          <a
+            className="block"
+            href={props.row.publicUrl}
+            rel="noreferrer"
+            target="_blank"
+          >
+            <img
+              alt={props.row.title || props.row.url}
+              className="max-h-[32rem] w-full object-contain"
+              src={props.row.publicUrl}
+            />
+          </a>
         </div>
         <div className="mt-5 grid grid-cols-1 gap-x-6 gap-y-4 text-sm sm:grid-cols-2">
+          <Field label="Provider">{props.row.provider}</Field>
+          <Field label="External ID">
+            <Code>{props.row.externalId}</Code>
+          </Field>
           <Field label="尺寸">
             {props.row.width} x {props.row.height}
           </Field>
@@ -844,20 +992,35 @@ function CaptureDetail(props: {
             <Code>{props.row.enrichmentId}</Code>
           </Field>
         </div>
+        {props.row.palette?.swatches?.length ? (
+          <DetailBlock title="调色板">
+            <div className="flex items-center gap-1.5">
+              {props.row.palette.swatches.slice(0, 5).map((color) => (
+                <span
+                  className="block size-7 rounded border border-neutral-200 dark:border-neutral-800"
+                  key={color}
+                  style={{ backgroundColor: color }}
+                  title={color}
+                />
+              ))}
+            </div>
+          </DetailBlock>
+        ) : null}
       </div>
       <div className="flex shrink-0 items-center justify-end gap-2 border-t border-neutral-200 px-5 py-4 dark:border-neutral-800">
         <Button
-          disabled={recaptureMutation.isPending}
+          disabled={recaptureMutation.isPending || !!recaptureDisabledReason}
           onClick={() => recaptureMutation.mutate()}
+          title={recaptureDisabledReason ?? '重新截图'}
           type="button"
           variant="subtle"
         >
           {recaptureMutation.isPending ? (
             <Loader2 aria-hidden="true" className="size-4 animate-spin" />
           ) : (
-            <RefreshCw aria-hidden="true" className="size-4" />
+            <Camera aria-hidden="true" className="size-4" />
           )}
-          重抓
+          重新截图
         </Button>
         <Button
           className="border-red-200 text-red-600 hover:bg-red-50 dark:border-red-950 dark:text-red-400 dark:hover:bg-red-950/30"
@@ -946,11 +1109,12 @@ function ProbeListPanel(props: {
 }
 
 function ProbeConsole(props: {
+  onBack: () => void
   onProbed: (entry: ProbeHistoryEntry) => void
   selected: ProbeHistoryEntry | null
 }) {
   const [url, setUrl] = useState('')
-  const [useCache, setUseCache] = useState(true)
+  const [useCache, setUseCache] = useState(false)
   const probeMutation = useMutation({
     mutationFn: () => probeEnrichment(url.trim(), useCache),
     onError: (error: unknown) =>
@@ -980,6 +1144,18 @@ function ProbeConsole(props: {
         className="flex shrink-0 flex-col gap-3 border-b border-neutral-200 px-5 py-4 dark:border-neutral-800"
         onSubmit={onSubmit}
       >
+        <div className="flex items-center gap-2 lg:hidden">
+          <button
+            className="inline-flex size-8 items-center justify-center rounded text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-950 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-50"
+            onClick={props.onBack}
+            type="button"
+          >
+            <ArrowLeft aria-hidden="true" className="size-4" />
+          </button>
+          <span className="text-sm font-medium text-neutral-950 dark:text-neutral-50">
+            探针
+          </span>
+        </div>
         <div className="relative">
           <Search
             aria-hidden="true"
@@ -995,7 +1171,7 @@ function ProbeConsole(props: {
         <div className="flex flex-wrap items-center justify-between gap-2">
           <Checkbox
             checked={useCache}
-            label="使用缓存"
+            label="如已有缓存则使用缓存"
             onCheckedChange={setUseCache}
           />
           <Button
@@ -1023,18 +1199,36 @@ function ProbeConsole(props: {
 }
 
 function ProbeResult(props: { result: EnrichmentProbeResult }) {
+  const queryClient = useQueryClient()
+  const canPersist =
+    !props.result.cached && !props.result.error && !!props.result.matched
+  const persistMutation = useMutation({
+    mutationFn: () => {
+      const matched = props.result.matched
+      if (!matched) throw new Error('未匹配 provider')
+      return refreshEnrichment(matched.provider, matched.externalId)
+    },
+    onError: (error: unknown) =>
+      toast.error(getErrorMessage(error, '持久化失败')),
+    onSuccess: async () => {
+      toast.success('已持久化')
+      await queryClient.invalidateQueries({ queryKey: enrichmentQueryKey })
+    },
+  })
+
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center gap-2">
         {props.result.error ? (
           <SmallBadge tone="danger">{props.result.error.code}</SmallBadge>
+        ) : props.result.matched ? (
+          <SmallBadge tone="success">
+            {props.result.matched.provider} · {props.result.matched.externalId}
+          </SmallBadge>
         ) : (
-          <SmallBadge tone="success">matched</SmallBadge>
+          <SmallBadge tone="warning">无匹配 provider</SmallBadge>
         )}
-        {props.result.cached ? <SmallBadge>cache</SmallBadge> : null}
-        {props.result.matched ? (
-          <SmallBadge>{props.result.matched.provider}</SmallBadge>
-        ) : null}
+        <SmallBadge>{props.result.cached ? '使用缓存' : '强制刷新'}</SmallBadge>
       </div>
       {props.result.error ? (
         <div className="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-950 dark:bg-red-950/40 dark:text-red-300">
@@ -1053,7 +1247,23 @@ function ProbeResult(props: { result: EnrichmentProbeResult }) {
           ) : null}
         </section>
       ) : null}
-      <JsonBlock value={props.result} />
+      <JsonBlock value={props.result.result ?? props.result} />
+      {canPersist ? (
+        <div className="flex justify-end">
+          <Button
+            disabled={persistMutation.isPending}
+            onClick={() => persistMutation.mutate()}
+            type="button"
+          >
+            {persistMutation.isPending ? (
+              <Loader2 aria-hidden="true" className="size-4 animate-spin" />
+            ) : (
+              <Save aria-hidden="true" className="size-4" />
+            )}
+            持久化结果
+          </Button>
+        </div>
+      ) : null}
     </div>
   )
 }
@@ -1207,6 +1417,13 @@ function formatBytes(bytes: number | null | undefined) {
   if (bytes < 1024 * 1024 * 1024)
     return `${(bytes / 1024 / 1024).toFixed(2)} MB`
   return `${(bytes / 1024 / 1024 / 1024).toFixed(2)} GB`
+}
+
+function getRecaptureDisabledReason(quota: EnrichmentCaptureQuota | null) {
+  if (!quota) return '配额信息加载中'
+  if (!quota.enabled) return '截图功能未启用'
+  if (quota.fetchMode !== 'browser') return '当前抓取模式不支持重新截图'
+  return null
 }
 
 function getErrorMessage(error: unknown, fallback: string) {

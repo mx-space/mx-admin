@@ -1,3 +1,4 @@
+import { Dialog } from '@base-ui/react/dialog'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   BookOpen,
@@ -9,7 +10,9 @@ import {
   History,
   Loader2,
   Save,
+  SlidersHorizontal,
   WandSparkles,
+  X,
 } from 'lucide-react'
 import { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
@@ -28,13 +31,14 @@ import type { LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
 import type { CreateDraftData } from '../api/drafts'
 
-import { API_URL } from '~/app/constants/env'
+import { API_URL, WEB_URL } from '~/app/constants/env'
 import { DraftRefType } from '~/app/models/draft'
 
 import { AiQueryType, writerGenerate } from '../api/ai'
 import { getCategories } from '../api/categories'
 import {
   createDraft,
+  getDraftById,
   getDraftByRef,
   getNewDrafts,
   updateDraft,
@@ -45,6 +49,8 @@ import { createPage, getPageById, updatePage } from '../api/pages'
 import { createPost, getPostById, updatePost } from '../api/posts'
 import { getTopics } from '../api/topics'
 import { Button } from '../ui/button'
+import { cn } from '../ui/cn'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
 import { SelectField } from '../ui/select'
 import { Switch } from '../ui/switch'
 import { TextArea, TextInput } from '../ui/text-field'
@@ -53,12 +59,23 @@ type WriteKind = 'note' | 'page' | 'post'
 type ContentFormat = 'lexical' | 'markdown'
 
 interface WriteFormState {
+  bookmark: boolean
   categoryId: string
   content: string
   contentFormat: ContentFormat
+  coordinatesLat: string
+  coordinatesLng: string
   copyright: boolean
   isPublished: boolean
+  location: string
+  mood: string
   order: string
+  password: string
+  passwordProtected: boolean
+  pin: boolean
+  pinOrder: string
+  publicAt: string
+  relatedId: string
   slug: string
   subtitle: string
   summary: string
@@ -66,15 +83,27 @@ interface WriteFormState {
   text: string
   title: string
   topicId: string
+  weather: string
 }
 
 const emptyState: WriteFormState = {
+  bookmark: false,
   categoryId: '',
   content: '',
   contentFormat: 'markdown',
+  coordinatesLat: '',
+  coordinatesLng: '',
   copyright: true,
   isPublished: true,
+  location: '',
+  mood: '',
   order: '',
+  password: '',
+  passwordProtected: false,
+  pin: false,
+  pinOrder: '1',
+  publicAt: '',
+  relatedId: '',
   slug: '',
   subtitle: '',
   summary: '',
@@ -82,6 +111,7 @@ const emptyState: WriteFormState = {
   text: '',
   title: '',
   topicId: '',
+  weather: '',
 }
 
 const emptyCategories: CategoryModel[] = []
@@ -139,10 +169,13 @@ function WritePage(props: { kind: WriteKind }) {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const id = searchParams.get('id') ?? ''
+  const routeDraftId = searchParams.get('draftId') ?? ''
   const isEditing = Boolean(id)
   const [state, setState] = useState<WriteFormState>(emptyState)
   const [preview, setPreview] = useState(false)
   const [draftId, setDraftId] = useState('')
+  const [pageSettingsOpen, setPageSettingsOpen] = useState(false)
+  const appliedRouteDraftIdRef = useRef<string | null>(null)
   const draftRefType = draftRefTypeByKind[props.kind]
 
   const categoriesQuery = useQuery({
@@ -164,6 +197,11 @@ function WritePage(props: { kind: WriteKind }) {
     enabled: isEditing,
     queryFn: () => getDraftByRef(draftRefType, id),
     queryKey: ['drafts', 'by-ref', draftRefType, id],
+  })
+  const routeDraftQuery = useQuery({
+    enabled: Boolean(routeDraftId),
+    queryFn: () => getDraftById(routeDraftId),
+    queryKey: ['drafts', 'detail', routeDraftId],
   })
   const newDraftsQuery = useQuery({
     enabled: !isEditing,
@@ -196,8 +234,10 @@ function WritePage(props: { kind: WriteKind }) {
       return
     }
 
-    setState(fromModel(props.kind, detailQuery.data))
-  }, [detailQuery.data, firstCategoryId, props.kind])
+    if (!routeDraftId) {
+      setState(fromModel(props.kind, detailQuery.data))
+    }
+  }, [detailQuery.data, firstCategoryId, props.kind, routeDraftId])
 
   useEffect(() => {
     if (refDraftQuery.data && !draftId) {
@@ -205,8 +245,37 @@ function WritePage(props: { kind: WriteKind }) {
     }
   }, [draftId, refDraftQuery.data])
 
+  useEffect(() => {
+    const draft = routeDraftQuery.data
+    if (!draft || appliedRouteDraftIdRef.current === draft.id) return
+
+    if (draft.refType !== draftRefType) {
+      toast.error('草稿类型与当前写作页面不匹配')
+      appliedRouteDraftIdRef.current = draft.id
+      return
+    }
+
+    appliedRouteDraftIdRef.current = draft.id
+    setDraftId(draft.id)
+    setState((previous) => fromDraft(props.kind, draft, previous))
+
+    if (draft.refId && !id) {
+      const nextParams = new URLSearchParams(searchParams)
+      nextParams.set('id', draft.refId)
+      nextParams.set('draftId', draft.id)
+      setSearchParams(nextParams, { replace: true })
+    }
+  }, [
+    draftRefType,
+    id,
+    props.kind,
+    routeDraftQuery.data,
+    searchParams,
+    setSearchParams,
+  ])
+
   const saveMutation = useMutation<WriteModel>({
-    mutationFn: () => saveWrite(props.kind, id, state),
+    mutationFn: () => saveWrite(props.kind, id, state, draftId || undefined),
     onError: (error: unknown) =>
       toast.error(getErrorMessage(error, '保存失败')),
     onSuccess: async (result) => {
@@ -267,8 +336,8 @@ function WritePage(props: { kind: WriteKind }) {
   })
 
   const validationError = useMemo(
-    () => validateState(props.kind, state, categories),
-    [categories, props.kind, state],
+    () => validateState(props.kind, state, categories, isEditing),
+    [categories, isEditing, props.kind, state],
   )
 
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -305,6 +374,10 @@ function WritePage(props: { kind: WriteKind }) {
   const applyDraft = (draft: DraftModel) => {
     setDraftId(draft.id)
     setState((previous) => fromDraft(props.kind, draft, previous))
+    const nextParams = new URLSearchParams(searchParams)
+    nextParams.set('draftId', draft.id)
+    if (draft.refId) nextParams.set('id', draft.refId)
+    setSearchParams(nextParams, { replace: true })
     toast.success('已套用草稿')
   }
 
@@ -319,16 +392,22 @@ function WritePage(props: { kind: WriteKind }) {
 
   return (
     <form className="space-y-4" onSubmit={onSubmit}>
-      <section className="rounded border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
+      <section className="bg-white dark:bg-neutral-950">
+        <div
+          className={cn(
+            'flex shrink-0 items-center justify-between gap-3 border-b border-neutral-200 px-4 dark:border-neutral-800',
+            APP_SHELL_HEADER_HEIGHT_CLASS,
+          )}
+        >
           <div className="min-w-0">
-            <h2 className="inline-flex items-center gap-2 text-base font-semibold text-neutral-950 dark:text-neutral-50">
+            <h2 className="inline-flex items-center gap-2 text-sm font-medium text-neutral-950 dark:text-neutral-50">
               <Icon aria-hidden="true" className="size-4" />
-              {config.title}
+              {props.kind === 'page'
+                ? isEditing
+                  ? '修改页面'
+                  : '新建页面'
+                : config.title}
             </h2>
-            <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
-              {config.description}
-            </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Button
@@ -339,6 +418,16 @@ function WritePage(props: { kind: WriteKind }) {
               <Eye aria-hidden="true" className="size-4" />
               {preview ? '编辑' : '预览'}
             </Button>
+            {props.kind === 'page' ? (
+              <Button
+                onClick={() => setPageSettingsOpen(true)}
+                type="button"
+                variant="subtle"
+              >
+                <SlidersHorizontal aria-hidden="true" className="size-4" />
+                页面设置
+              </Button>
+            ) : null}
             <Button
               onClick={() => navigate(config.listPath)}
               type="button"
@@ -355,13 +444,98 @@ function WritePage(props: { kind: WriteKind }) {
               ) : (
                 <Save aria-hidden="true" className="size-4" />
               )}
-              保存
+              {props.kind === 'page' && !isEditing ? '发布' : '保存'}
             </Button>
           </div>
         </div>
 
         {detailQuery.isLoading ? (
           <WriteSkeleton />
+        ) : props.kind === 'page' ? (
+          <div className="min-h-0">
+            <main className="min-w-0 px-6 py-5">
+              <div className="mx-auto flex w-full max-w-5xl flex-col gap-4">
+                <TextInput
+                  controlClassName="h-14 rounded-none border-0 border-b border-neutral-200 bg-transparent px-0 text-2xl font-semibold focus:border-neutral-400 focus:ring-0 dark:border-neutral-800"
+                  onChange={(value) => updateField('title', value)}
+                  placeholder="输入标题..."
+                  required
+                  value={state.title}
+                />
+
+                <div className="grid gap-2 border-b border-neutral-100 pb-4 dark:border-neutral-900">
+                  <label className="grid gap-1.5">
+                    <span className="text-xs font-medium text-neutral-500 dark:text-neutral-400">
+                      Slug
+                    </span>
+                    <div className="flex min-w-0 items-center rounded border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950">
+                      <span className="max-w-[45%] truncate border-r border-neutral-200 px-3 py-2 font-mono text-xs text-neutral-400 dark:border-neutral-800">
+                        {WEB_URL}/
+                      </span>
+                      <input
+                        className="h-9 min-w-0 flex-1 bg-transparent px-3 font-mono text-sm text-neutral-900 outline-none placeholder:text-neutral-400 dark:text-neutral-100"
+                        onChange={(event) =>
+                          updateField('slug', event.target.value)
+                        }
+                        placeholder="slug"
+                        required
+                        value={state.slug}
+                      />
+                    </div>
+                  </label>
+
+                  <input
+                    className="h-9 w-full bg-transparent px-1 text-sm text-neutral-600 outline-none placeholder:text-neutral-400 dark:text-neutral-400 dark:placeholder:text-neutral-500"
+                    onChange={(event) =>
+                      updateField('subtitle', event.target.value)
+                    }
+                    placeholder="输入副标题..."
+                    value={state.subtitle}
+                  />
+                </div>
+
+                <div className="inline-flex w-fit rounded border border-neutral-200 bg-neutral-50 p-1 text-sm dark:border-neutral-800 dark:bg-neutral-900">
+                  {(['markdown', 'lexical'] as const).map((format) => (
+                    <button
+                      className={[
+                        'h-8 rounded px-3 font-medium transition-colors',
+                        state.contentFormat === format
+                          ? 'bg-white text-neutral-950 shadow-sm dark:bg-neutral-800 dark:text-neutral-50'
+                          : 'text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100',
+                      ].join(' ')}
+                      key={format}
+                      onClick={() => updateField('contentFormat', format)}
+                      type="button"
+                    >
+                      {format === 'markdown' ? 'Markdown' : 'Lexical'}
+                    </button>
+                  ))}
+                </div>
+
+                {preview ? (
+                  <PreviewPanel text={state.text} />
+                ) : state.contentFormat === 'lexical' ? (
+                  <RichWriteSurface
+                    content={state.content}
+                    kind={props.kind}
+                    key={`${props.kind}:${id || 'new'}:${state.contentFormat}`}
+                    onContentChange={(content) =>
+                      updateField('content', content)
+                    }
+                    onTextChange={(text) => updateField('text', text)}
+                  />
+                ) : (
+                  <TextArea
+                    controlClassName="min-h-[34rem] resize-y font-mono text-sm leading-6 focus:border-neutral-400"
+                    label="正文"
+                    onChange={(value) => updateField('text', value)}
+                    required
+                    value={state.text}
+                  />
+                )}
+              </div>
+            </main>
+          </div>
         ) : (
           <div className="grid gap-4 p-4 lg:grid-cols-[minmax(0,1fr)_320px]">
             <main className="min-w-0 space-y-4">
@@ -528,14 +702,19 @@ function WritePage(props: { kind: WriteKind }) {
                   updateField={updateField}
                 />
               ) : null}
-
-              {props.kind === 'page' ? (
-                <PageFields state={state} updateField={updateField} />
-              ) : null}
             </aside>
           </div>
         )}
       </section>
+
+      {props.kind === 'page' ? (
+        <PageSettingsDrawer
+          onClose={() => setPageSettingsOpen(false)}
+          open={pageSettingsOpen}
+          state={state}
+          updateField={updateField}
+        />
+      ) : null}
     </form>
   )
 }
@@ -585,6 +764,27 @@ function PostFields(props: {
           label="版权声明"
           onCheckedChange={(checked) => props.updateField('copyright', checked)}
         />
+        <Switch
+          checked={props.state.pin}
+          label="置顶"
+          onCheckedChange={(checked) => props.updateField('pin', checked)}
+        />
+        {props.state.pin ? (
+          <TextInput
+            controlClassName="h-9 focus:border-neutral-400"
+            inputMode="numeric"
+            label="置顶顺序"
+            onChange={(value) => props.updateField('pinOrder', value)}
+            value={props.state.pinOrder}
+          />
+        ) : null}
+        <TextInput
+          controlClassName="h-9 focus:border-neutral-400"
+          label="相关文章 ID"
+          onChange={(value) => props.updateField('relatedId', value)}
+          placeholder="用逗号分隔"
+          value={props.state.relatedId}
+        />
       </PanelBlock>
     </>
   )
@@ -599,22 +799,94 @@ function NoteFields(props: {
   ) => void
 }) {
   return (
-    <PanelBlock title="手记属性">
-      <Field label="专栏">
-        <SelectField
-          aria-label="专栏"
-          onValueChange={(topicId) => props.updateField('topicId', topicId)}
-          options={[
-            { label: '无专栏', value: '' },
-            ...props.topics.map((topic) => ({
-              label: topic.name,
-              value: topic.id,
-            })),
-          ]}
-          value={props.state.topicId}
+    <>
+      <PanelBlock title="手记属性">
+        <Field label="专栏">
+          <SelectField
+            aria-label="专栏"
+            onValueChange={(topicId) => props.updateField('topicId', topicId)}
+            options={[
+              { label: '无专栏', value: '' },
+              ...props.topics.map((topic) => ({
+                label: topic.name,
+                value: topic.id,
+              })),
+            ]}
+            value={props.state.topicId}
+          />
+        </Field>
+        <TextInput
+          controlClassName="h-9 focus:border-neutral-400"
+          label="心情"
+          onChange={(value) => props.updateField('mood', value)}
+          value={props.state.mood}
         />
-      </Field>
-    </PanelBlock>
+        <TextInput
+          controlClassName="h-9 focus:border-neutral-400"
+          label="天气"
+          onChange={(value) => props.updateField('weather', value)}
+          value={props.state.weather}
+        />
+        <Switch
+          checked={props.state.bookmark}
+          label="回忆标记"
+          onCheckedChange={(checked) => props.updateField('bookmark', checked)}
+        />
+      </PanelBlock>
+
+      <PanelBlock title="公开与位置">
+        <TextInput
+          controlClassName="h-9 focus:border-neutral-400"
+          label="定时公开"
+          onChange={(value) => props.updateField('publicAt', value)}
+          type="datetime-local"
+          value={props.state.publicAt}
+        />
+        <TextInput
+          controlClassName="h-9 focus:border-neutral-400"
+          label="位置"
+          onChange={(value) => props.updateField('location', value)}
+          value={props.state.location}
+        />
+        <div className="grid grid-cols-2 gap-2">
+          <TextInput
+            controlClassName="h-9 focus:border-neutral-400"
+            inputMode="decimal"
+            label="纬度"
+            onChange={(value) => props.updateField('coordinatesLat', value)}
+            value={props.state.coordinatesLat}
+          />
+          <TextInput
+            controlClassName="h-9 focus:border-neutral-400"
+            inputMode="decimal"
+            label="经度"
+            onChange={(value) => props.updateField('coordinatesLng', value)}
+            value={props.state.coordinatesLng}
+          />
+        </div>
+      </PanelBlock>
+
+      <PanelBlock title="访问保护">
+        <Switch
+          checked={props.state.passwordProtected}
+          label="密码保护"
+          onCheckedChange={(checked) =>
+            props.updateField('passwordProtected', checked)
+          }
+        />
+        {props.state.passwordProtected ? (
+          <TextInput
+            autoComplete="new-password"
+            controlClassName="h-9 focus:border-neutral-400"
+            label="访问密码"
+            onChange={(value) => props.updateField('password', value)}
+            placeholder="留空保持原密码"
+            type="password"
+            value={props.state.password}
+          />
+        ) : null}
+      </PanelBlock>
+    </>
   )
 }
 
@@ -629,18 +901,51 @@ function PageFields(props: {
     <PanelBlock title="页面属性">
       <TextInput
         controlClassName="h-9 focus:border-neutral-400"
-        label="副标题"
-        onChange={(value) => props.updateField('subtitle', value)}
-        value={props.state.subtitle}
-      />
-      <TextInput
-        controlClassName="h-9 focus:border-neutral-400"
         inputMode="numeric"
         label="排序"
         onChange={(value) => props.updateField('order', value)}
         value={props.state.order}
       />
     </PanelBlock>
+  )
+}
+
+function PageSettingsDrawer(props: {
+  onClose: () => void
+  open: boolean
+  state: WriteFormState
+  updateField: <TKey extends keyof WriteFormState>(
+    key: TKey,
+    value: WriteFormState[TKey],
+  ) => void
+}) {
+  return (
+    <Dialog.Root
+      onOpenChange={(open) => {
+        if (!open) props.onClose()
+      }}
+      open={props.open}
+    >
+      <Dialog.Portal>
+        <Dialog.Backdrop className="fixed inset-0 z-40 bg-black/35" />
+        <Dialog.Popup className="fixed bottom-0 right-0 top-0 z-50 flex w-[min(92vw,24rem)] flex-col border-l border-neutral-200 bg-white shadow-xl outline-none dark:border-neutral-800 dark:bg-neutral-950">
+          <div className="flex h-14 shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
+            <Dialog.Title className="text-sm font-medium text-neutral-950 dark:text-neutral-50">
+              页面设定
+            </Dialog.Title>
+            <Dialog.Close
+              aria-label="关闭"
+              className="inline-flex size-9 items-center justify-center rounded text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-600 dark:hover:bg-neutral-900 dark:hover:text-neutral-200"
+            >
+              <X aria-hidden="true" className="size-4" />
+            </Dialog.Close>
+          </div>
+          <div className="grid gap-4 overflow-y-auto p-4">
+            <PageFields state={props.state} updateField={props.updateField} />
+          </div>
+        </Dialog.Popup>
+      </Dialog.Portal>
+    </Dialog.Root>
   )
 }
 
@@ -730,6 +1035,9 @@ function fromModel(kind: WriteKind, model: WriteModel) {
       contentFormat: post.contentFormat ?? 'markdown',
       copyright: post.copyright,
       isPublished: post.isPublished ?? true,
+      pin: Boolean(post.pinAt),
+      pinOrder: String(post.pinOrder ?? 1),
+      relatedId: post.related?.map((item) => item.id).join(', ') ?? '',
       slug: post.slug,
       summary: post.summary ?? '',
       tags: post.tags.join(', '),
@@ -744,11 +1052,26 @@ function fromModel(kind: WriteKind, model: WriteModel) {
       ...emptyState,
       content: note.content ?? '',
       contentFormat: note.contentFormat ?? 'markdown',
+      bookmark: note.bookmark,
+      coordinatesLat:
+        typeof note.coordinates?.latitude === 'number'
+          ? String(note.coordinates.latitude)
+          : '',
+      coordinatesLng:
+        typeof note.coordinates?.longitude === 'number'
+          ? String(note.coordinates.longitude)
+          : '',
       isPublished: note.isPublished,
+      location: note.location ?? '',
+      mood: note.mood ?? '',
+      password: '',
+      passwordProtected: Boolean(note.hasPassword || note.password),
+      publicAt: toDatetimeLocalValue(note.publicAt),
       slug: note.slug ?? '',
       text: note.content || note.text || '',
       title: note.title,
       topicId: note.topicId ?? '',
+      weather: note.weather ?? '',
     }
   }
 
@@ -795,6 +1118,15 @@ function fromDraft(
         typeof specific.isPublished === 'boolean'
           ? specific.isPublished
           : previous.isPublished,
+      pin:
+        typeof specific.pin === 'string' ? Boolean(specific.pin) : previous.pin,
+      pinOrder:
+        typeof specific.pinOrder === 'number'
+          ? String(specific.pinOrder)
+          : previous.pinOrder,
+      relatedId: Array.isArray(specific.relatedId)
+        ? specific.relatedId.map((id) => String(id)).join(', ')
+        : previous.relatedId,
       slug: typeof specific.slug === 'string' ? specific.slug : previous.slug,
       summary:
         typeof specific.summary === 'string'
@@ -809,15 +1141,48 @@ function fromDraft(
   if (kind === 'note') {
     return {
       ...base,
+      bookmark:
+        typeof specific.bookmark === 'boolean'
+          ? specific.bookmark
+          : previous.bookmark,
+      coordinatesLat:
+        typeof specific.coordinates?.latitude === 'number'
+          ? String(specific.coordinates.latitude)
+          : previous.coordinatesLat,
+      coordinatesLng:
+        typeof specific.coordinates?.longitude === 'number'
+          ? String(specific.coordinates.longitude)
+          : previous.coordinatesLng,
       isPublished:
         typeof specific.isPublished === 'boolean'
           ? specific.isPublished
           : previous.isPublished,
+      location:
+        typeof specific.location === 'string'
+          ? specific.location
+          : previous.location,
+      mood: typeof specific.mood === 'string' ? specific.mood : previous.mood,
+      password:
+        typeof specific.password === 'string'
+          ? specific.password
+          : previous.password,
+      passwordProtected:
+        typeof specific.password === 'string'
+          ? true
+          : previous.passwordProtected,
+      publicAt:
+        typeof specific.publicAt === 'string'
+          ? toDatetimeLocalValue(specific.publicAt)
+          : previous.publicAt,
       slug: typeof specific.slug === 'string' ? specific.slug : previous.slug,
       topicId:
         typeof specific.topicId === 'string'
           ? specific.topicId
           : previous.topicId,
+      weather:
+        typeof specific.weather === 'string'
+          ? specific.weather
+          : previous.weather,
     }
   }
 
@@ -839,14 +1204,19 @@ function saveWrite(
   kind: WriteKind,
   id: string,
   state: WriteFormState,
+  draftId?: string,
 ): Promise<WriteModel> {
   if (kind === 'post') {
     const data = {
       categoryId: state.categoryId,
-      content: state.text,
+      content: state.contentFormat === 'lexical' ? state.content : undefined,
       contentFormat: state.contentFormat,
       copyright: state.copyright,
+      draftId,
       isPublished: state.isPublished,
+      pin: state.pin ? new Date().toISOString() : null,
+      pinOrder: state.pin ? Number(state.pinOrder) || 1 : null,
+      relatedId: splitCommaList(state.relatedId),
       slug: state.slug,
       summary: state.summary || null,
       tags: state.tags
@@ -857,30 +1227,37 @@ function saveWrite(
       title: state.title,
     }
 
-    if (state.contentFormat === 'lexical') {
-      data.content = state.content
-    }
-
     return id ? updatePost(id, data) : createPost(data)
   }
 
   if (kind === 'note') {
     const data = {
-      content: state.contentFormat === 'lexical' ? state.content : state.text,
+      bookmark: state.bookmark,
+      content: state.contentFormat === 'lexical' ? state.content : undefined,
       contentFormat: state.contentFormat,
+      coordinates: parseCoordinates(state),
+      draftId,
       isPublished: state.isPublished,
+      location: state.location || null,
+      mood: state.mood || undefined,
+      password: state.passwordProtected
+        ? state.password.trim() || undefined
+        : null,
+      publicAt: state.publicAt ? new Date(state.publicAt).toISOString() : null,
       slug: state.slug || undefined,
       text: state.text,
       title: state.title,
       topicId: state.topicId || null,
+      weather: state.weather || undefined,
     }
 
     return id ? updateNote(id, data) : createNote(data)
   }
 
   const data = {
-    content: state.contentFormat === 'lexical' ? state.content : state.text,
+    content: state.contentFormat === 'lexical' ? state.content : undefined,
     contentFormat: state.contentFormat,
+    draftId,
     order: state.order ? Number(state.order) : undefined,
     slug: state.slug,
     subtitle: state.subtitle,
@@ -897,7 +1274,7 @@ function toDraftData(
   refId?: string,
 ): CreateDraftData {
   const base = {
-    content: state.contentFormat === 'lexical' ? state.content : state.text,
+    content: state.contentFormat === 'lexical' ? state.content : undefined,
     contentFormat: state.contentFormat,
     refId,
     refType: draftRefTypeByKind[kind],
@@ -912,6 +1289,9 @@ function toDraftData(
         categoryId: state.categoryId,
         copyright: state.copyright,
         isPublished: state.isPublished,
+        pin: state.pin ? new Date().toISOString() : null,
+        pinOrder: state.pin ? Number(state.pinOrder) || 1 : undefined,
+        relatedId: splitCommaList(state.relatedId),
         slug: state.slug,
         summary: state.summary || null,
         tags: state.tags
@@ -927,8 +1307,17 @@ function toDraftData(
       ...base,
       typeSpecificData: {
         isPublished: state.isPublished,
+        bookmark: state.bookmark,
+        coordinates: parseCoordinates(state),
+        location: state.location,
+        mood: state.mood,
+        password: state.passwordProtected ? state.password || null : null,
+        publicAt: state.publicAt
+          ? new Date(state.publicAt).toISOString()
+          : null,
         slug: state.slug,
         topicId: state.topicId || null,
+        weather: state.weather,
       },
     }
   }
@@ -1059,6 +1448,7 @@ function validateState(
   kind: WriteKind,
   state: WriteFormState,
   categories: CategoryModel[],
+  isEditing: boolean,
 ) {
   if (!state.title.trim()) return '请输入标题'
   if (!state.text.trim()) return '请输入正文'
@@ -1069,8 +1459,47 @@ function validateState(
   if (kind === 'page' && state.order && Number.isNaN(Number(state.order))) {
     return '排序必须是数字'
   }
+  if (kind === 'post' && state.pin && Number.isNaN(Number(state.pinOrder))) {
+    return '置顶顺序必须是数字'
+  }
+  if (
+    kind === 'note' &&
+    state.passwordProtected &&
+    !isEditing &&
+    !state.password.trim()
+  ) {
+    return '请输入访问密码'
+  }
 
   return null
+}
+
+function splitCommaList(value: string) {
+  return value
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean)
+}
+
+function parseCoordinates(state: WriteFormState) {
+  if (!state.coordinatesLat.trim() || !state.coordinatesLng.trim()) return null
+
+  const latitude = Number(state.coordinatesLat)
+  const longitude = Number(state.coordinatesLng)
+
+  if (Number.isNaN(latitude) || Number.isNaN(longitude)) return null
+
+  return { latitude, longitude }
+}
+
+function toDatetimeLocalValue(value: Date | string | null | undefined) {
+  if (!value) return ''
+
+  const date = value instanceof Date ? value : new Date(value)
+  if (Number.isNaN(date.getTime())) return ''
+
+  const offsetDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+  return offsetDate.toISOString().slice(0, 16)
 }
 
 function getErrorMessage(error: unknown, fallback: string) {

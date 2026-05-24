@@ -18,6 +18,66 @@ export interface EmailTemplateResponse {
   template: string
 }
 
+export type ConfigFieldComponent =
+  | 'action'
+  | 'input'
+  | 'number'
+  | 'password'
+  | 'select'
+  | 'switch'
+  | 'tags'
+  | 'textarea'
+
+export interface ConfigFieldUi {
+  actionId?: string
+  actionLabel?: string
+  component: ConfigFieldComponent
+  halfGrid?: boolean
+  hidden?: boolean
+  options?: Array<{ label: string; value: number | string }>
+  placeholder?: string
+  showWhen?: Record<
+    string,
+    boolean | number | string | Array<boolean | number | string>
+  >
+}
+
+export interface ConfigFormField {
+  description?: string
+  fields?: ConfigFormField[]
+  key: string
+  required?: boolean
+  subsection?: {
+    description?: string
+    title: string
+  }
+  title: string
+  ui: ConfigFieldUi
+}
+
+export interface ConfigFormSection {
+  description?: string
+  fields: ConfigFormField[]
+  hidden?: boolean
+  key: string
+  title: string
+}
+
+export interface ConfigFormGroup {
+  description: string
+  icon: string
+  key: string
+  sections: ConfigFormSection[]
+  title: string
+}
+
+export interface ConfigFormSchema {
+  defaults: Record<string, unknown>
+  description?: string
+  groups: ConfigFormGroup[]
+  title: string
+}
+
 export interface UpdateOwnerData {
   avatar?: string
   introduce?: string
@@ -30,6 +90,10 @@ export interface UpdateOwnerData {
 
 export function getAllOptions() {
   return getJson<SystemOptions>('/options')
+}
+
+export function getFormSchema() {
+  return getJson<ConfigFormSchema>('/config/form-schema')
 }
 
 export function getOption<T = unknown>(key: string) {

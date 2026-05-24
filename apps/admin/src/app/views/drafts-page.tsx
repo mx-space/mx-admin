@@ -1,24 +1,41 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   BookOpen,
+  ChevronLeft,
   Code2,
   FileText,
+  GitCompare,
   Inbox,
   Loader2,
+  Pencil,
   RefreshCw,
+  RotateCcw,
   Trash2,
 } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router'
 import { toast } from 'sonner'
-import type { DraftModel, DraftRefType } from '~/app/models/draft'
+import type {
+  DraftHistoryListItem,
+  DraftModel,
+  DraftRefType,
+} from '~/app/models/draft'
 import type { LucideIcon } from 'lucide-react'
 
 import { DraftRefType as DraftRefTypeValue } from '~/app/models/draft'
 import { relativeTimeFromNow } from '~/app/utils/time'
 
-import { deleteDraft, getDraftHistory, getDrafts } from '../api/drafts'
-import { Button } from '../ui/button'
+import {
+  deleteDraft,
+  getDraftHistory,
+  getDraftHistoryVersion,
+  getDrafts,
+  restoreDraftVersion,
+} from '../api/drafts'
+import { Button, ButtonLink } from '../ui/button'
 import { cn } from '../ui/cn'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
+import { MasterDetailLayout } from '../ui/page-layout'
 
 const draftsQueryKey = ['drafts']
 
@@ -55,8 +72,17 @@ const refTypeMeta: Record<
 
 export function DraftsPage() {
   const queryClient = useQueryClient()
-  const [filterType, setFilterType] = useState<DraftRefType | 'all'>('all')
-  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const initialType = parseDraftFilterType(searchParams.get('type'))
+  const [filterType, setFilterType] = useState<DraftRefType | 'all'>(
+    initialType,
+  )
+  const [selectedId, setSelectedId] = useState<string | null>(
+    searchParams.get('id'),
+  )
+  const [selectedDraftSnapshot, setSelectedDraftSnapshot] =
+    useState<DraftModel | null>(null)
+  const [showDetailOnMobile, setShowDetailOnMobile] = useState(false)
 
   const draftsQuery = useQuery({
     placeholderData: (previous) => previous,
@@ -70,10 +96,33 @@ export function DraftsPage() {
   })
 
   const drafts = draftsQuery.data?.data ?? []
-  const selectedDraft = useMemo(
-    () => drafts.find((draft) => draft.id === selectedId) ?? drafts[0] ?? null,
-    [drafts, selectedId],
-  )
+  const selectedDraft = useMemo(() => {
+    if (!selectedId) return null
+    const fromList = drafts.find((draft) => draft.id === selectedId)
+    if (fromList) return fromList
+    if (selectedDraftSnapshot?.id === selectedId) return selectedDraftSnapshot
+    return null
+  }, [drafts, selectedDraftSnapshot, selectedId])
+
+  useEffect(() => {
+    const nextParams = new URLSearchParams(searchParams)
+
+    if (filterType === 'all') {
+      nextParams.delete('type')
+    } else {
+      nextParams.set('type', filterType)
+    }
+
+    if (selectedId) {
+      nextParams.set('id', selectedId)
+    } else {
+      nextParams.delete('id')
+    }
+
+    if (nextParams.toString() !== searchParams.toString()) {
+      setSearchParams(nextParams, { replace: true })
+    }
+  }, [filterType, searchParams, selectedId, setSearchParams])
 
   const deleteMutation = useMutation({
     mutationFn: deleteDraft,
@@ -82,89 +131,140 @@ export function DraftsPage() {
     onSuccess: async () => {
       toast.success('草稿已删除')
       setSelectedId(null)
+      setSelectedDraftSnapshot(null)
+      setShowDetailOnMobile(false)
       await queryClient.invalidateQueries({ queryKey: draftsQueryKey })
     },
   })
 
+  const handleSelect = (draft: DraftModel) => {
+    setSelectedId(draft.id)
+    setSelectedDraftSnapshot({ ...draft })
+    setShowDetailOnMobile(true)
+  }
+
+  const handleFilterChange = (value: DraftRefType | 'all') => {
+    setFilterType(value)
+    setSelectedId(null)
+    setSelectedDraftSnapshot(null)
+    setShowDetailOnMobile(false)
+  }
+
   return (
-    <div className="grid min-h-[calc(100vh-8rem)] grid-cols-1 overflow-hidden rounded border border-neutral-200 bg-white lg:grid-cols-[minmax(320px,0.36fr)_1fr] dark:border-neutral-800 dark:bg-neutral-950">
-      <section className="flex min-h-0 flex-col border-b border-neutral-200 lg:border-b-0 lg:border-r dark:border-neutral-800">
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
-          <div>
-            <h2 className="text-sm font-medium">草稿箱</h2>
-            <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
-              共 {draftsQuery.data?.pagination.total ?? 0} 个草稿
-            </p>
-          </div>
-          <Button
-            disabled={draftsQuery.isFetching}
-            onClick={() => void draftsQuery.refetch()}
-            type="button"
-            variant="subtle"
+    <MasterDetailLayout
+      defaultSize={36}
+      list={
+        <section className="flex h-full min-h-0 flex-col border-r border-neutral-200 dark:border-neutral-800">
+          <div
+            className={cn(
+              'flex shrink-0 items-center justify-between gap-3 border-b border-neutral-200 px-4 dark:border-neutral-800',
+              APP_SHELL_HEADER_HEIGHT_CLASS,
+            )}
           >
-            <RefreshCw
-              aria-hidden="true"
-              className={cn('size-4', draftsQuery.isFetching && 'animate-spin')}
-            />
-            刷新
-          </Button>
-        </div>
+            <div className="min-w-0">
+              <h2 className="text-sm font-medium">草稿箱</h2>
+            </div>
+            <span className="text-xs text-neutral-500 dark:text-neutral-400">
+              {draftsQuery.data?.pagination.total ?? 0} 个
+            </span>
+            <div className="flex items-center gap-2">
+              <Button
+                className="h-8 px-2.5"
+                disabled={draftsQuery.isFetching}
+                onClick={() => void draftsQuery.refetch()}
+                type="button"
+                variant="subtle"
+              >
+                <RefreshCw
+                  aria-hidden="true"
+                  className={cn(
+                    'size-4',
+                    draftsQuery.isFetching && 'animate-spin',
+                  )}
+                />
+                刷新
+              </Button>
+            </div>
+          </div>
 
-        <div className="flex flex-wrap gap-2 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
-          {filterOptions.map((option) => (
-            <button
-              className={cn(
-                'rounded border px-2.5 py-1 text-xs transition-colors',
-                filterType === option.value
-                  ? 'border-neutral-950 bg-neutral-950 text-white dark:border-neutral-50 dark:bg-neutral-50 dark:text-neutral-950'
-                  : 'border-neutral-200 text-neutral-600 hover:bg-neutral-50 dark:border-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-900',
-              )}
-              key={option.value}
-              onClick={() => {
-                setFilterType(option.value)
-                setSelectedId(null)
-              }}
-              type="button"
+          <div className="flex flex-wrap gap-2 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
+            <ButtonLink className="h-8 px-2.5 text-xs" to="/posts/edit">
+              新建文章
+            </ButtonLink>
+            <ButtonLink
+              className="h-8 px-2.5 text-xs"
+              to="/notes/edit"
+              variant="subtle"
             >
-              {option.label}
-            </button>
-          ))}
-        </div>
+              新建手记
+            </ButtonLink>
+            <ButtonLink
+              className="h-8 px-2.5 text-xs"
+              to="/pages/edit"
+              variant="subtle"
+            >
+              新建页面
+            </ButtonLink>
+          </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto">
-          {draftsQuery.isLoading && drafts.length === 0 ? (
-            <DraftListSkeleton />
-          ) : drafts.length === 0 ? (
-            <DraftListEmpty />
+          <div className="flex flex-wrap gap-2 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
+            {filterOptions.map((option) => (
+              <button
+                className={cn(
+                  'rounded border px-2.5 py-1 text-xs transition-colors',
+                  filterType === option.value
+                    ? 'border-neutral-950 bg-neutral-950 text-white dark:border-neutral-50 dark:bg-neutral-50 dark:text-neutral-950'
+                    : 'border-neutral-200 text-neutral-600 hover:bg-neutral-50 dark:border-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-900',
+                )}
+                key={option.value}
+                onClick={() => handleFilterChange(option.value)}
+                type="button"
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="min-h-0 flex-1 overflow-y-auto">
+            {draftsQuery.isLoading && drafts.length === 0 ? (
+              <DraftListSkeleton />
+            ) : drafts.length === 0 ? (
+              <DraftListEmpty />
+            ) : (
+              drafts.map((draft) => (
+                <DraftRow
+                  draft={draft}
+                  key={draft.id}
+                  onSelect={() => handleSelect(draft)}
+                  selected={selectedDraft?.id === draft.id}
+                />
+              ))
+            )}
+          </div>
+        </section>
+      }
+      showDetailOnMobile={showDetailOnMobile}
+      detail={
+        <section className="h-full min-h-0">
+          {selectedDraft ? (
+            <DraftDetail
+              deleting={deleteMutation.isPending}
+              draft={selectedDraft}
+              onBack={() => setShowDetailOnMobile(false)}
+              onDelete={(draft) => {
+                if (
+                  window.confirm(`确认删除「${draft.title || '无标题'}」？`)
+                ) {
+                  deleteMutation.mutate(draft.id)
+                }
+              }}
+            />
           ) : (
-            drafts.map((draft) => (
-              <DraftRow
-                draft={draft}
-                key={draft.id}
-                onSelect={() => setSelectedId(draft.id)}
-                selected={selectedDraft?.id === draft.id}
-              />
-            ))
+            <DraftDetailEmpty />
           )}
-        </div>
-      </section>
-
-      <section className="min-h-0">
-        {selectedDraft ? (
-          <DraftDetail
-            deleting={deleteMutation.isPending}
-            draft={selectedDraft}
-            onDelete={(draft) => {
-              if (window.confirm(`确认删除「${draft.title || '无标题'}」？`)) {
-                deleteMutation.mutate(draft.id)
-              }
-            }}
-          />
-        ) : (
-          <DraftDetailEmpty />
-        )}
-      </section>
-    </div>
+        </section>
+      }
+    />
   )
 }
 
@@ -220,144 +320,434 @@ function DraftRow(props: {
 function DraftDetail(props: {
   deleting: boolean
   draft: DraftModel
+  onBack: () => void
   onDelete: (draft: DraftModel) => void
 }) {
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const historyQuery = useQuery({
     enabled: Boolean(props.draft.id),
     queryFn: () => getDraftHistory(props.draft.id),
     queryKey: [...draftsQueryKey, 'history', props.draft.id],
   })
   const meta = refTypeMeta[props.draft.refType]
-  const text = props.draft.text || props.draft.content || ''
+  const editPath = getEditPathForDraft(props.draft)
+  const versionItems = useMemo(
+    () => buildVersionItems(props.draft, historyQuery.data),
+    [historyQuery.data, props.draft],
+  )
+  const [selectedVersion, setSelectedVersion] = useState<number | null>(null)
+
+  useEffect(() => {
+    const previousVersion = versionItems.find((item) => !item.isCurrent)
+    setSelectedVersion(previousVersion?.version ?? null)
+  }, [props.draft.id, versionItems])
+
+  const selectedVersionItem = versionItems.find(
+    (item) => item.version === selectedVersion,
+  )
+  const selectedVersionQuery = useQuery({
+    enabled: selectedVersion != null && selectedVersion !== props.draft.version,
+    queryFn: () => getDraftHistoryVersion(props.draft.id, selectedVersion!),
+    queryKey: [
+      ...draftsQueryKey,
+      'history-version',
+      props.draft.id,
+      selectedVersion,
+    ],
+  })
+  const selectedVersionDraft =
+    selectedVersion === props.draft.version
+      ? props.draft
+      : selectedVersionQuery.data
+  const diffStats =
+    selectedVersionDraft && selectedVersion !== null
+      ? computeDiffStats(selectedVersionDraft, props.draft)
+      : null
+  const restoreMutation = useMutation({
+    mutationFn: (version: number) =>
+      restoreDraftVersion(props.draft.id, version),
+    onError: (error: unknown) =>
+      toast.error(getErrorMessage(error, '恢复失败')),
+    onSuccess: async () => {
+      toast.success('版本已恢复')
+      await queryClient.invalidateQueries({ queryKey: draftsQueryKey })
+    },
+  })
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="flex shrink-0 flex-wrap items-start justify-between gap-3 border-b border-neutral-200 px-5 py-4 dark:border-neutral-800">
-        <div className="min-w-0">
-          <div className="flex min-w-0 items-center gap-2">
-            <span
-              className={cn(
-                'rounded border px-2 py-1 text-xs font-medium',
-                meta.className,
-              )}
-            >
-              {meta.label}
-            </span>
-            <h2 className="truncate text-base font-semibold text-neutral-950 dark:text-neutral-50">
+      <div
+        className={cn(
+          'flex shrink-0 items-center justify-between gap-3 border-b border-neutral-200 px-4 dark:border-neutral-800',
+          APP_SHELL_HEADER_HEIGHT_CLASS,
+        )}
+      >
+        <div className="flex min-w-0 items-center gap-3">
+          <Button
+            aria-label="返回草稿列表"
+            className="h-8 px-2 lg:hidden"
+            onClick={props.onBack}
+            type="button"
+            variant="subtle"
+          >
+            <ChevronLeft aria-hidden="true" className="size-4" />
+          </Button>
+          <div className="min-w-0">
+            <h2 className="truncate text-sm font-semibold text-neutral-950 dark:text-neutral-50">
               {props.draft.title || '无标题'}
             </h2>
+            <div className="mt-0.5 flex items-center gap-2 text-xs text-neutral-500 dark:text-neutral-400">
+              <span>{meta.label}</span>
+              <span>v{props.draft.version}</span>
+              <time dateTime={props.draft.updatedAt}>
+                {relativeTimeFromNow(props.draft.updatedAt)}
+              </time>
+            </div>
           </div>
-          <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
-            v{props.draft.version} ·{' '}
-            {props.draft.refId ? '编辑已有内容' : '新建内容'}
-          </p>
         </div>
+        <div className="flex shrink-0 items-center gap-2">
+          <Button
+            className="h-8 px-2.5"
+            onClick={() => navigate(editPath)}
+            type="button"
+            variant="subtle"
+          >
+            <Pencil aria-hidden="true" className="size-4" />
+            编辑
+          </Button>
+          <Button
+            className="h-8 border-red-200 px-2.5 text-red-600 hover:bg-red-50 dark:border-red-950 dark:text-red-400 dark:hover:bg-red-950/30"
+            disabled={props.deleting}
+            onClick={() => props.onDelete(props.draft)}
+            type="button"
+            variant="subtle"
+          >
+            {props.deleting ? (
+              <Loader2 aria-hidden="true" className="size-4 animate-spin" />
+            ) : (
+              <Trash2 aria-hidden="true" className="size-4" />
+            )}
+            删除
+          </Button>
+        </div>
+      </div>
+
+      <div className="min-h-0 flex-1 overflow-hidden">
+        {historyQuery.isLoading ? (
+          <div className="flex h-full items-center justify-center">
+            <Loader2
+              aria-hidden="true"
+              className="size-5 animate-spin text-neutral-400"
+            />
+          </div>
+        ) : versionItems.length === 0 ? (
+          <DraftDetailEmpty />
+        ) : (
+          <div className="grid h-full min-h-0 grid-cols-1 lg:grid-cols-[300px_minmax(0,1fr)]">
+            <div className="min-h-0 border-b border-neutral-200 lg:border-b-0 lg:border-r dark:border-neutral-800">
+              <div className="flex h-10 items-center gap-2 border-b border-neutral-200 px-4 text-sm font-medium text-neutral-700 dark:border-neutral-800 dark:text-neutral-300">
+                <GitCompare aria-hidden="true" className="size-4" />
+                版本列表
+                <span className="text-xs font-normal text-neutral-400">
+                  ({versionItems.length})
+                </span>
+              </div>
+              <div className="max-h-72 overflow-y-auto lg:h-[calc(100%-2.5rem)] lg:max-h-none">
+                {versionItems.map((item) => (
+                  <VersionRow
+                    diffStats={
+                      item.version === selectedVersion ? diffStats : null
+                    }
+                    item={item}
+                    key={item.version}
+                    onRestore={() => restoreMutation.mutate(item.version)}
+                    onSelect={() => setSelectedVersion(item.version)}
+                    restorePending={restoreMutation.isPending}
+                    selected={selectedVersion === item.version}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div className="flex min-h-0 flex-col bg-neutral-50 dark:bg-neutral-950">
+              <div className="flex h-10 shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
+                <div className="flex items-center gap-2 text-xs text-neutral-600 dark:text-neutral-400">
+                  {selectedVersionItem ? (
+                    <>
+                      <span>v{selectedVersionItem.version}</span>
+                      <span className="text-neutral-400">→</span>
+                      <span>v{props.draft.version} 当前</span>
+                    </>
+                  ) : (
+                    <span>选择一个历史版本查看差异</span>
+                  )}
+                </div>
+                {diffStats && !diffStats.isSame ? (
+                  <span className="text-xs tabular-nums text-neutral-500">
+                    {diffStats.delta > 0
+                      ? `+${diffStats.delta}`
+                      : diffStats.delta}{' '}
+                    字
+                  </span>
+                ) : null}
+              </div>
+
+              <div className="min-h-0 flex-1 overflow-y-auto p-4">
+                {selectedVersionQuery.isLoading ? (
+                  <div className="flex h-full items-center justify-center">
+                    <Loader2
+                      aria-hidden="true"
+                      className="size-5 animate-spin text-neutral-400"
+                    />
+                  </div>
+                ) : selectedVersionDraft ? (
+                  <DraftDiffPreview
+                    currentDraft={props.draft}
+                    diffStats={diffStats}
+                    selectedDraft={selectedVersionDraft}
+                  />
+                ) : (
+                  <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                    无法加载版本内容。
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+interface VersionItem {
+  baseVersion?: number
+  isCurrent: boolean
+  isFullSnapshot?: boolean
+  refVersion?: number
+  savedAt: string
+  title: string
+  version: number
+}
+
+function VersionRow(props: {
+  diffStats: DraftDiffStats | null
+  item: VersionItem
+  onRestore: () => void
+  onSelect: () => void
+  restorePending: boolean
+  selected: boolean
+}) {
+  return (
+    <div
+      className={cn(
+        'group flex w-full items-center gap-3 border-b border-neutral-100 px-4 py-3 text-left transition-colors dark:border-neutral-800/60',
+        props.selected
+          ? 'bg-neutral-100 dark:bg-neutral-900'
+          : 'hover:bg-neutral-50 dark:hover:bg-neutral-900/70',
+      )}
+      onClick={props.onSelect}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault()
+          props.onSelect()
+        }
+      }}
+      role="button"
+      tabIndex={0}
+    >
+      <div className="min-w-0 flex-1">
+        <div className="flex min-w-0 flex-wrap items-center gap-2">
+          <span className="text-sm font-medium text-neutral-950 dark:text-neutral-50">
+            v{props.item.version}
+          </span>
+          {props.item.isCurrent ? (
+            <span className="rounded bg-neutral-200 px-1.5 py-0.5 text-xs text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300">
+              当前
+            </span>
+          ) : null}
+          {props.item.isFullSnapshot !== undefined ? (
+            <span className="rounded bg-neutral-100 px-1.5 py-0.5 text-xs text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
+              {props.item.isFullSnapshot ? '全量' : '增量'}
+            </span>
+          ) : null}
+          {props.item.refVersion !== undefined ? (
+            <span className="rounded bg-neutral-100 px-1.5 py-0.5 text-xs text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
+              = v{props.item.refVersion}
+            </span>
+          ) : null}
+        </div>
+        <p className="mt-1 truncate text-xs text-neutral-500 dark:text-neutral-400">
+          {props.item.title || '无标题'} ·{' '}
+          {relativeTimeFromNow(props.item.savedAt)}
+        </p>
+      </div>
+      {props.diffStats ? (
+        <span className="shrink-0 text-xs tabular-nums text-neutral-500">
+          {props.diffStats.isSame
+            ? '相同'
+            : `${props.diffStats.delta > 0 ? '+' : ''}${props.diffStats.delta} 字`}
+        </span>
+      ) : null}
+      {!props.item.isCurrent ? (
         <Button
-          className="border-red-200 text-red-600 hover:bg-red-50 dark:border-red-950 dark:text-red-400 dark:hover:bg-red-950/30"
-          disabled={props.deleting}
-          onClick={() => props.onDelete(props.draft)}
+          aria-label={`恢复版本 ${props.item.version}`}
+          className="h-7 px-2 opacity-0 transition-opacity group-hover:opacity-100"
+          disabled={props.restorePending}
+          onClick={(event) => {
+            event.stopPropagation()
+            props.onRestore()
+          }}
           type="button"
           variant="subtle"
         >
-          {props.deleting ? (
-            <Loader2 aria-hidden="true" className="size-4 animate-spin" />
+          {props.restorePending ? (
+            <Loader2 aria-hidden="true" className="size-3.5 animate-spin" />
           ) : (
-            <Trash2 aria-hidden="true" className="size-4" />
+            <RotateCcw aria-hidden="true" className="size-3.5" />
           )}
-          删除
         </Button>
-      </div>
+      ) : null}
+    </div>
+  )
+}
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">
-        <div className="grid grid-cols-1 gap-x-6 gap-y-4 text-sm sm:grid-cols-2">
-          <Field label="草稿 ID">
-            <Code>{props.draft.id}</Code>
-          </Field>
-          <Field label="关联 ID">{props.draft.refId ?? '-'}</Field>
-          <Field label="内容格式">
-            {props.draft.contentFormat ?? 'markdown'}
-          </Field>
-          <Field label="创建时间">
-            {relativeTimeFromNow(props.draft.createdAt)}
-          </Field>
-          <Field label="更新时间">
-            {relativeTimeFromNow(props.draft.updatedAt)}
-          </Field>
-          <Field label="历史版本">
-            {historyQuery.data?.length ?? props.draft.history?.length ?? 0}
-          </Field>
+interface DraftDiffStats {
+  delta: number
+  isSame: boolean
+}
+
+function DraftDiffPreview(props: {
+  currentDraft: DraftModel
+  diffStats: DraftDiffStats | null
+  selectedDraft: DraftModel
+}) {
+  const selectedText = getDraftTextForDiff(props.selectedDraft)
+  const currentText = getDraftTextForDiff(props.currentDraft)
+
+  if (props.diffStats?.isSame) {
+    return (
+      <div className="flex min-h-[20rem] flex-col items-center justify-center text-center">
+        <GitCompare aria-hidden="true" className="size-8 text-neutral-300" />
+        <p className="mt-3 text-sm font-medium text-neutral-700 dark:text-neutral-300">
+          与当前版本内容相同
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="grid min-h-full gap-4 lg:grid-cols-2">
+      <DiffColumn
+        label={`v${props.selectedDraft.version}`}
+        text={selectedText}
+        title={props.selectedDraft.title || '无标题'}
+      />
+      <DiffColumn
+        label={`v${props.currentDraft.version} 当前`}
+        text={currentText}
+        title={props.currentDraft.title || '无标题'}
+      />
+    </div>
+  )
+}
+
+function DiffColumn(props: { label: string; text: string; title: string }) {
+  return (
+    <section className="min-w-0">
+      <div className="mb-2 flex items-center justify-between gap-3">
+        <h3 className="truncate text-sm font-medium text-neutral-800 dark:text-neutral-200">
+          {props.title}
+        </h3>
+        <span className="shrink-0 text-xs tabular-nums text-neutral-500">
+          {props.label}
+        </span>
+      </div>
+      {props.text ? (
+        <pre className="max-h-[calc(100vh-12rem)] min-h-[20rem] overflow-auto whitespace-pre-wrap border border-neutral-200 bg-white p-3 text-xs leading-5 text-neutral-800 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-200">
+          {props.text}
+        </pre>
+      ) : (
+        <div className="flex min-h-[20rem] items-center justify-center border border-dashed border-neutral-200 bg-white text-sm text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400">
+          无正文内容。
         </div>
-
-        <section className="mt-6">
-          <h3 className="mb-2 text-xs font-medium uppercase text-neutral-500 dark:text-neutral-400">
-            正文预览
-          </h3>
-          {text ? (
-            <pre className="max-h-96 overflow-auto whitespace-pre-wrap rounded border border-neutral-200 bg-neutral-50 p-3 text-xs leading-5 text-neutral-800 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-200">
-              {text}
-            </pre>
-          ) : (
-            <p className="text-sm text-neutral-500 dark:text-neutral-400">
-              暂无正文内容。
-            </p>
-          )}
-        </section>
-
-        <section className="mt-6">
-          <h3 className="mb-2 text-xs font-medium uppercase text-neutral-500 dark:text-neutral-400">
-            历史版本
-          </h3>
-          {historyQuery.isLoading ? (
-            <div className="h-16 animate-pulse rounded bg-neutral-100 dark:bg-neutral-900" />
-          ) : historyQuery.data?.length ? (
-            <div className="divide-y divide-neutral-100 overflow-hidden rounded border border-neutral-200 dark:divide-neutral-800 dark:border-neutral-800">
-              {historyQuery.data.map((item) => (
-                <div
-                  className="grid gap-1 px-3 py-2 text-xs sm:grid-cols-[5rem_minmax(0,1fr)_9rem]"
-                  key={item.version}
-                >
-                  <span className="tabular-nums text-neutral-500">
-                    v{item.version}
-                  </span>
-                  <span className="truncate text-neutral-800 dark:text-neutral-200">
-                    {item.title || '无标题'}
-                  </span>
-                  <time className="text-neutral-400">
-                    {relativeTimeFromNow(item.savedAt)}
-                  </time>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm text-neutral-500 dark:text-neutral-400">
-              暂无历史版本。
-            </p>
-          )}
-        </section>
-      </div>
-    </div>
+      )}
+    </section>
   )
 }
 
-function Field(props: { children: React.ReactNode; label: string }) {
-  return (
-    <div className="min-w-0 space-y-1">
-      <div className="text-xs text-neutral-500 dark:text-neutral-400">
-        {props.label}
-      </div>
-      <div className="min-w-0 text-neutral-950 dark:text-neutral-50">
-        {props.children}
-      </div>
-    </div>
-  )
+function buildVersionItems(
+  draft: DraftModel,
+  history: DraftHistoryListItem[] | undefined,
+): VersionItem[] {
+  const currentSavedAt = draft.updatedAt || draft.createdAt
+  const currentItem: VersionItem = {
+    isCurrent: true,
+    savedAt: currentSavedAt,
+    title: draft.title,
+    version: draft.version,
+  }
+  const historyItems = (history ?? [])
+    .filter((item) => item.version !== draft.version)
+    .map((item) => ({
+      baseVersion: item.baseVersion,
+      isCurrent: false,
+      isFullSnapshot: item.isFullSnapshot,
+      refVersion: item.refVersion,
+      savedAt: item.savedAt,
+      title: item.title,
+      version: item.version,
+    }))
+
+  return [currentItem, ...historyItems].sort((a, b) => b.version - a.version)
 }
 
-function Code(props: { children: React.ReactNode }) {
-  return (
-    <code className="block truncate rounded bg-neutral-100 px-1.5 py-0.5 font-mono text-xs text-neutral-800 dark:bg-neutral-900 dark:text-neutral-200">
-      {props.children}
-    </code>
-  )
+function computeDiffStats(
+  selectedDraft: DraftModel,
+  currentDraft: DraftModel,
+): DraftDiffStats {
+  const selectedText = getDraftTextForDiff(selectedDraft)
+  const currentText = getDraftTextForDiff(currentDraft)
+
+  return {
+    delta: currentText.length - selectedText.length,
+    isSame: selectedText === currentText,
+  }
+}
+
+function getDraftTextForDiff(draft: DraftModel) {
+  if (draft.contentFormat === 'lexical' && draft.content) {
+    return draft.text || draft.content
+  }
+
+  return draft.text || draft.content || ''
+}
+
+function getEditPathForDraft(draft: DraftModel) {
+  const basePath =
+    draft.refType === DraftRefTypeValue.Post
+      ? '/posts/edit'
+      : draft.refType === DraftRefTypeValue.Note
+        ? '/notes/edit'
+        : '/pages/edit'
+  const params = new URLSearchParams()
+  params.set('draftId', draft.id)
+  if (draft.refId) params.set('id', draft.refId)
+
+  return `${basePath}?${params.toString()}`
+}
+
+function parseDraftFilterType(value: string | null): DraftRefType | 'all' {
+  if (
+    value === DraftRefTypeValue.Post ||
+    value === DraftRefTypeValue.Note ||
+    value === DraftRefTypeValue.Page
+  ) {
+    return value
+  }
+
+  return 'all'
 }
 
 function DraftListSkeleton() {

@@ -1,0 +1,147 @@
+<h2>工坊 · 器之间 (snippets · cron · backup · debug)</h2>
+<p class="subtitle">夜灯换色 —— 深木墨地 · 暖金油焰 · 字仍 serif italic 为小注 · 代码为 monospace</p>
+
+<!-- 主：snippets -->
+<div class="mockup" style="padding:0;overflow:hidden;border:none;margin-bottom:16px">
+  <div style="background:#1a1612;color:#d8d0b8;font-family:'Iowan Old Style','Charter','Georgia',serif;min-height:580px;position:relative;background-image:radial-gradient(circle at 80% 0%,rgba(200,168,104,0.08),transparent 50%)">
+
+    <!-- top -->
+    <div style="display:flex;justify-content:space-between;align-items:baseline;padding:28px 40px 8px">
+      <div>
+        <div style="font-family:-apple-system,sans-serif;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:#a89868;opacity:0.7">斋 · 工坊 · snippets</div>
+        <div style="font-size:24px;font-weight:600;margin-top:3px;color:#e8ddb8">— a workbench for small scripts —</div>
+      </div>
+      <div style="font-family:-apple-system,sans-serif;font-size:10.5px;color:#a89868;text-align:right;line-height:1.7;opacity:0.75">
+        <div>⌘R · run</div>
+        <div>⌘S · save</div>
+        <div style="font-style:italic;font-family:'Iowan Old Style',serif;font-size:11.5px;color:#b8d8a8;opacity:0.85">last run · exit 0 · 234 ms</div>
+      </div>
+    </div>
+
+    <div style="height:1px;background:#c8a868;opacity:0.18;margin:8px 40px 0"></div>
+
+    <!-- workbench grid -->
+    <div style="display:grid;grid-template-columns:200px 1fr;min-height:480px">
+
+      <!-- list -->
+      <div style="padding:18px 18px 18px 40px;border-right:1px dashed #4a3f2a;font-family:'Iowan Old Style',Georgia,serif">
+        <div style="font-family:-apple-system,sans-serif;font-size:9.5px;letter-spacing:0.18em;text-transform:uppercase;color:#a89868;opacity:0.6;margin-bottom:12px">snippets</div>
+        <div style="font-size:12.5px;line-height:2.05;color:#c8c0a8">
+          <div style="font-weight:600;color:#e8ddb8">▸ <em style="font-style:italic">sitemap</em>.js</div>
+          <div style="opacity:0.7">&nbsp;&nbsp;&nbsp;<em>build-rss</em>.js</div>
+          <div style="opacity:0.7">&nbsp;&nbsp;&nbsp;<em>pin-feed</em>.js</div>
+          <div style="opacity:0.7">&nbsp;&nbsp;&nbsp;<em>hot-articles</em>.ts</div>
+          <div style="opacity:0.55;margin-top:8px;font-style:italic;font-size:11.5px;color:#a89868">— archived —</div>
+          <div style="opacity:0.45">&nbsp;&nbsp;&nbsp;old-cleanup.js</div>
+          <div style="opacity:0.45">&nbsp;&nbsp;&nbsp;legacy-import.js</div>
+        </div>
+        <div style="margin-top:18px;font-family:-apple-system,sans-serif;font-size:10.5px;color:#a89868;letter-spacing:0.06em;opacity:0.75">+ a new tool</div>
+      </div>
+
+      <!-- editor + log -->
+      <div style="display:grid;grid-template-rows:1fr 160px;min-width:0">
+
+        <!-- monaco -->
+        <div style="padding:18px 24px 12px;font-family:'JetBrains Mono','SF Mono','Menlo',monospace;font-size:12px;line-height:1.7;color:#d8d0b8;background:#0e0b08;border-bottom:1px solid #2a2520;position:relative;overflow:hidden">
+          <div style="position:absolute;top:14px;right:18px;font-family:'Iowan Old Style',serif;font-style:italic;font-size:11px;color:#a89868;opacity:0.7">sitemap.js</div>
+
+          <div style="display:flex;gap:18px"><span style="color:#5a4f38;width:14px;text-align:right">1</span><span style="color:#7a6a48">// build sitemap.xml from posts &amp; pages</span></div>
+          <div style="display:flex;gap:18px"><span style="color:#5a4f38;width:14px;text-align:right">2</span><span><span style="color:#c8a868">import</span> { posts, pages } <span style="color:#c8a868">from</span> <span style="color:#b8d8a8">'./mx'</span></span></div>
+          <div style="display:flex;gap:18px"><span style="color:#5a4f38;width:14px;text-align:right">3</span><span></span></div>
+          <div style="display:flex;gap:18px"><span style="color:#5a4f38;width:14px;text-align:right">4</span><span><span style="color:#c8a868">export</span> <span style="color:#c8a868">async</span> <span style="color:#c8a868">function</span> <span style="color:#e8ddb8">sitemap</span>() {</span></div>
+          <div style="display:flex;gap:18px"><span style="color:#5a4f38;width:14px;text-align:right">5</span><span style="padding-left:18px"><span style="color:#c8a868">const</span> all = [...<span style="color:#e8ddb8">posts</span>, ...<span style="color:#e8ddb8">pages</span>]</span></div>
+          <div style="display:flex;gap:18px"><span style="color:#5a4f38;width:14px;text-align:right">6</span><span style="padding-left:18px"><span style="color:#c8a868">return</span> all.<span style="color:#e8ddb8">map</span>((p) =&gt; ({</span></div>
+          <div style="display:flex;gap:18px"><span style="color:#5a4f38;width:14px;text-align:right">7</span><span style="padding-left:36px">loc: <span style="color:#b8d8a8">`/${p.slug}`</span>,</span></div>
+          <div style="display:flex;gap:18px;background:rgba(200,168,104,0.08)"><span style="color:#c8a868;width:14px;text-align:right">8</span><span style="padding-left:36px">lastmod: p.<span style="color:#e8ddb8">modified</span>,<span style="background:#3a3020;color:#e8ddb8;margin-left:6px;padding:0 4px;border-radius:1px;font-style:italic;font-family:'Iowan Old Style',serif;font-size:10.5px">— cursor</span></span></div>
+          <div style="display:flex;gap:18px"><span style="color:#5a4f38;width:14px;text-align:right">9</span><span style="padding-left:36px">priority: p.<span style="color:#e8ddb8">isPinned</span> ? <span style="color:#d8a868">1.0</span> : <span style="color:#d8a868">0.5</span>,</span></div>
+          <div style="display:flex;gap:18px"><span style="color:#5a4f38;width:14px;text-align:right">10</span><span style="padding-left:18px">}))</span></div>
+          <div style="display:flex;gap:18px"><span style="color:#5a4f38;width:14px;text-align:right">11</span><span>}</span></div>
+        </div>
+
+        <!-- log -->
+        <div style="background:#08070a;padding:14px 24px 14px;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.7;color:#a8b8a0;position:relative;overflow:hidden">
+          <div style="position:absolute;top:8px;right:18px;font-family:'Iowan Old Style',serif;font-style:italic;font-size:10.5px;color:#7a6a48">— log · live —</div>
+          <div style="color:#7a6a48">$ <span style="color:#c8c0a8">node sitemap.js</span></div>
+          <div style="color:#a8b8a0;margin-top:2px">  fetching 124 entries…</div>
+          <div style="color:#a8b8a0">  building xml…</div>
+          <div style="color:#b8d8a8">  <strong>✓ built</strong> 124 entries in <span style="color:#d8a868">234 ms</span></div>
+          <div style="color:#b8d8a8">  <strong>✓ written</strong> to <span style="color:#c8a868">/public/sitemap.xml</span></div>
+          <div style="color:#7a6a48;margin-top:4px">— exit 0 — 23 May, 23:47:12</div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- 次：cron 一条 -->
+<div class="split" style="gap:14px">
+
+  <div class="mockup" style="padding:0;overflow:hidden;border:none">
+    <div style="background:#1a1612;color:#d8d0b8;font-family:'Iowan Old Style',Georgia,serif;padding:24px 28px;min-height:340px;background-image:radial-gradient(circle at 80% 0%,rgba(200,168,104,0.06),transparent 50%)">
+      <div style="font-family:-apple-system,sans-serif;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:#a89868;opacity:0.65">斋 · 工坊 · cron</div>
+      <div style="font-size:18px;font-weight:600;margin:3px 0 2px;color:#e8ddb8"><em style="font-style:italic">"every-night-rebuild"</em></div>
+      <div style="font-family:-apple-system,sans-serif;font-size:11px;color:#a89868;opacity:0.75;margin-bottom:14px"><code style="font-family:'JetBrains Mono',monospace">0 3 * * *</code> · next at 03:00 tomorrow</div>
+
+      <div style="background:#08070a;padding:12px 14px;font-family:'JetBrains Mono',monospace;font-size:10.5px;line-height:1.75;color:#c8c0a8">
+        <div style="color:#7a6a48">— 22 May, 03:00:01</div>
+        <div>  starting…</div>
+        <div>  fetching 124 posts</div>
+        <div style="color:#a8b8a0">  ✓ rebuilt index in 14 s</div>
+        <div style="color:#7a6a48">— exit 0</div>
+        <div style="color:#7a6a48;margin-top:6px">— 21 May, 03:00:01</div>
+        <div>  starting…</div>
+        <div style="color:#d8a868">  ⚠ skipped: 2 orphaned files</div>
+        <div style="color:#a8b8a0">  ✓ rebuilt index in 12 s</div>
+        <div style="color:#7a6a48">— exit 0</div>
+      </div>
+
+      <div style="margin-top:14px;font-family:-apple-system,sans-serif;font-size:11px;color:#a89868;opacity:0.7;display:flex;gap:18px">
+        <span>run now</span><span>pause</span><span style="opacity:0.55">edit schedule</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup" style="padding:0;overflow:hidden;border:none">
+    <div style="background:#1a1612;color:#d8d0b8;font-family:'Iowan Old Style',Georgia,serif;padding:24px 28px;min-height:340px;background-image:radial-gradient(circle at 80% 0%,rgba(200,168,104,0.06),transparent 50%)">
+      <div style="font-family:-apple-system,sans-serif;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:#a89868;opacity:0.65">斋 · 工坊 · backup</div>
+      <div style="font-size:18px;font-weight:600;margin:3px 0 14px;color:#e8ddb8">— what's been kept —</div>
+
+      <div style="font-size:13px;line-height:2.1">
+        <div style="display:flex;justify-content:space-between;border-bottom:1px solid #2a2520;padding:4px 0">
+          <span><em style="font-style:italic">mx-backup-2026-05-23</em>.tar</span>
+          <span style="font-family:-apple-system,sans-serif;font-size:10.5px;color:#a89868">14 MB · take</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;border-bottom:1px solid #2a2520;padding:4px 0">
+          <span><em style="font-style:italic">mx-backup-2026-05-22</em>.tar</span>
+          <span style="font-family:-apple-system,sans-serif;font-size:10.5px;color:#a89868">14 MB · take</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;border-bottom:1px solid #2a2520;padding:4px 0">
+          <span><em style="font-style:italic">mx-backup-2026-05-21</em>.tar</span>
+          <span style="font-family:-apple-system,sans-serif;font-size:10.5px;color:#a89868">13 MB · take</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;border-bottom:1px solid #2a2520;padding:4px 0;opacity:0.65">
+          <span><em style="font-style:italic">mx-backup-2026-05-20</em>.tar</span>
+          <span style="font-family:-apple-system,sans-serif;font-size:10.5px;color:#a89868">13 MB · take</span>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;padding-top:14px;border-top:1px dashed #4a3f2a;font-family:-apple-system,sans-serif;font-size:11px;color:#a89868;opacity:0.75;display:flex;gap:18px">
+        <span>+ keep one now</span>
+        <span style="opacity:0.55">prune old</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:16px;font-size:11.5px;line-height:1.7;text-align:left;max-width:80ch;margin-left:auto;margin-right:auto">
+<strong>所验：</strong>
+① 入此室即换灯 —— 深木墨地 + 暖金油焰之 radial glow（顶右），<strong>同 typography 不换</strong>，仅 palette 翻夜；
+② Monaco 之 syntax color 改作暖金—蕈绿—琥珀，弃 VS Code 之冷蓝紫；
+③ <strong>log 即 xterm，</strong>ANSI ✓ 与 ⚠ 入流，timestamp 用 italic serif "— exit 0 — 23 May, 23:47:12" 衬底；
+④ cron 不为表，乃<strong>「条目入流」</strong>—— 每次 run 一段，时间为 serif italic 小注；
+⑤ backup 乃 "what's been kept" 之一行行，用 italic 罗马字，"take" 即下载；
+⑥ debug/dev 同此palette，无单陈之必。
+</p>

@@ -1,3 +1,5 @@
+import type { AppInfo } from '~/app/models/system'
+
 import { API_URL } from '~/app/constants/env'
 
 import { getJson, patchJson, postJson, requestJson } from './http'
@@ -43,6 +45,10 @@ export async function checkInit() {
   }
 }
 
+export function getAppInfo() {
+  return getJson<AppInfo>('/')
+}
+
 export function getInitDefaultConfigs() {
   return getJson<InitDefaultConfigs>('/init/configs/default')
 }
@@ -60,4 +66,11 @@ export function restoreFromBackup(formData: FormData) {
 
 export function createOwner(data: CreateOwnerData) {
   return postJson<void, CreateOwnerData>('/init/owner', data)
+}
+
+export function callBuiltInFunction<TResponse = unknown>(
+  name: string,
+  params?: Record<string, boolean | number | string | undefined>,
+) {
+  return getJson<TResponse>(`/fn/built-in/${name}`, params)
 }

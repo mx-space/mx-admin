@@ -39,6 +39,16 @@ export function getTags() {
   return getJson<TagModel[]>('/categories', { type: 'tag' })
 }
 
-export function getPostsByTag(tagName: string) {
-  return getJson<PostModel[]>(`/categories/${tagName}`, { tag: 'true' })
+interface PostsByTagResponse {
+  data: PostModel[]
+  tag: string
+}
+
+export async function getPostsByTag(tagName: string) {
+  const result = await getJson<PostModel[] | PostsByTagResponse>(
+    `/categories/${tagName}`,
+    { tag: 'true' },
+  )
+
+  return Array.isArray(result) ? result : result.data
 }

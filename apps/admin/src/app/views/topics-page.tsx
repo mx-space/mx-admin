@@ -37,6 +37,8 @@ import {
 import { Button } from '../ui/button'
 import { cn } from '../ui/cn'
 import { CompactPagination } from '../ui/compact-pagination'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
+import { MasterDetailLayout } from '../ui/page-layout'
 import { TextArea, TextInput } from '../ui/text-field'
 
 const topicPageSize = 20
@@ -97,82 +99,94 @@ export function TopicsPage() {
   })
 
   return (
-    <div className="grid min-h-[calc(100vh-8rem)] overflow-hidden rounded border border-neutral-200 bg-white lg:grid-cols-[340px_minmax(0,1fr)] dark:border-neutral-800 dark:bg-neutral-950">
-      <section className="flex min-h-0 flex-col border-b border-neutral-200 lg:border-b-0 lg:border-r dark:border-neutral-800">
-        <div className="flex items-center justify-between border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
-          <div>
-            <h2 className="inline-flex items-center gap-2 text-sm font-medium">
-              <Hash aria-hidden="true" className="size-4" />
-              专栏列表
-            </h2>
-            <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
-              {pagination ? `${pagination.total} 个专栏` : '加载专栏'}
-            </p>
-          </div>
-          <Button
-            onClick={() => setFormMode({ kind: 'create' })}
-            type="button"
-            variant="subtle"
+    <MasterDetailLayout
+      defaultSize={0.34}
+      maxSize={0.45}
+      minSize={0.25}
+      showDetailOnMobile={Boolean(selectedId)}
+      list={
+        <section className="flex h-full min-h-0 flex-col">
+          <div
+            className={cn(
+              'flex shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800',
+              APP_SHELL_HEADER_HEIGHT_CLASS,
+            )}
           >
-            <Plus aria-hidden="true" className="size-4" />
-            新建
-          </Button>
-        </div>
-
-        <div className="min-h-0 flex-1 overflow-y-auto">
-          {topicsQuery.isLoading && topics.length === 0 ? (
-            <TopicListSkeleton />
-          ) : topicsQuery.isError ? (
-            <ListError onRetry={() => void topicsQuery.refetch()} />
-          ) : topics.length === 0 ? (
-            <ListEmpty onCreate={() => setFormMode({ kind: 'create' })} />
-          ) : (
-            topics.map((topic) => (
-              <TopicRow
-                key={topic.id}
-                onSelect={() => setSelectedId(topic.id)}
-                selected={selectedId === topic.id}
-                topic={topic}
-              />
-            ))
-          )}
-        </div>
-
-        {pagination && pagination.totalPages > 1 ? (
-          <div className="flex shrink-0 items-center justify-between gap-3 border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
-            <span className="text-xs tabular-nums text-neutral-500 dark:text-neutral-400">
-              第 {pagination.page} 页
+            <div className="min-w-0">
+              <h2 className="inline-flex items-center gap-2 text-sm font-medium">
+                <Hash aria-hidden="true" className="size-4" />
+                专栏列表
+              </h2>
+            </div>
+            <span className="text-xs text-neutral-500 dark:text-neutral-400">
+              {pagination ? `${pagination.total} 个` : '加载中'}
             </span>
-            <CompactPagination
-              onPageChange={setPage}
-              onPageSizeChange={() => undefined}
-              page={page}
-              pageCount={pagination.totalPages}
-              pageSize={topicPageSize}
-              pageSizes={[topicPageSize]}
-            />
+            <Button
+              onClick={() => setFormMode({ kind: 'create' })}
+              type="button"
+              variant="subtle"
+            >
+              <Plus aria-hidden="true" className="size-4" />
+              新建
+            </Button>
           </div>
-        ) : null}
-      </section>
 
-      <section className="min-h-0">
-        {selectedId ? (
-          <TopicDetail
-            deleting={deleteMutation.isPending}
-            onBack={() => setSelectedId('')}
-            onDelete={(topic) => {
-              if (window.confirm(`确认删除「${topic.name}」？`)) {
-                deleteMutation.mutate(topic.id)
-              }
-            }}
-            onEdit={(topic) => setFormMode({ id: topic.id, kind: 'edit' })}
-            topicId={selectedId}
-          />
-        ) : (
-          <TopicDetailEmpty />
-        )}
-      </section>
+          <div className="min-h-0 flex-1 overflow-y-auto">
+            {topicsQuery.isLoading && topics.length === 0 ? (
+              <TopicListSkeleton />
+            ) : topicsQuery.isError ? (
+              <ListError onRetry={() => void topicsQuery.refetch()} />
+            ) : topics.length === 0 ? (
+              <ListEmpty onCreate={() => setFormMode({ kind: 'create' })} />
+            ) : (
+              topics.map((topic) => (
+                <TopicRow
+                  key={topic.id}
+                  onSelect={() => setSelectedId(topic.id)}
+                  selected={selectedId === topic.id}
+                  topic={topic}
+                />
+              ))
+            )}
+          </div>
 
+          {pagination && pagination.totalPages > 1 ? (
+            <div className="flex shrink-0 items-center justify-between gap-3 border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
+              <span className="text-xs tabular-nums text-neutral-500 dark:text-neutral-400">
+                第 {pagination.page} 页
+              </span>
+              <CompactPagination
+                onPageChange={setPage}
+                onPageSizeChange={() => undefined}
+                page={page}
+                pageCount={pagination.totalPages}
+                pageSize={topicPageSize}
+                pageSizes={[topicPageSize]}
+              />
+            </div>
+          ) : null}
+        </section>
+      }
+      detail={
+        <section className="h-full min-h-0">
+          {selectedId ? (
+            <TopicDetail
+              deleting={deleteMutation.isPending}
+              onBack={() => setSelectedId('')}
+              onDelete={(topic) => {
+                if (window.confirm(`确认删除「${topic.name}」？`)) {
+                  deleteMutation.mutate(topic.id)
+                }
+              }}
+              onEdit={(topic) => setFormMode({ id: topic.id, kind: 'edit' })}
+              topicId={selectedId}
+            />
+          ) : (
+            <TopicDetailEmpty />
+          )}
+        </section>
+      }
+    >
       {formMode ? (
         <TopicFormDialog
           mode={formMode}
@@ -184,7 +198,7 @@ export function TopicsPage() {
           }}
         />
       ) : null}
-    </div>
+    </MasterDetailLayout>
   )
 }
 
@@ -285,7 +299,12 @@ function TopicDetail(props: {
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      <div className="flex min-h-14 items-center justify-between gap-3 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
+      <div
+        className={cn(
+          'flex shrink-0 items-center justify-between gap-3 border-b border-neutral-200 px-4 dark:border-neutral-800',
+          APP_SHELL_HEADER_HEIGHT_CLASS,
+        )}
+      >
         <div className="flex min-w-0 items-center gap-2">
           <button
             className="inline-flex size-8 items-center justify-center rounded text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-950 lg:hidden dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-50"

@@ -28,6 +28,7 @@ export interface CreatePostData {
   draftId?: string
   isPublished?: boolean
   meta?: Record<string, unknown>
+  pin?: null | string
   pinOrder?: null | number
   relatedId?: string[]
   slug?: string

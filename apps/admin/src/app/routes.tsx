@@ -2,9 +2,11 @@ import {
   BellOff,
   BellRing,
   BookOpen,
+  BookOpenText,
   ChartLine,
   Clock,
   DatabaseZap,
+  Eye,
   File,
   FileClock,
   FileCode2,
@@ -17,6 +19,8 @@ import {
   Hash,
   Image,
   KeyRound,
+  Languages,
+  Link,
   ListTodo,
   MessageSquare,
   Pencil,
@@ -26,15 +30,17 @@ import {
   Settings,
   Sparkles,
   SquareFunction,
+  Telescope,
   Terminal,
   Undo2,
   UserRound,
   Users,
   Webhook,
 } from 'lucide-react'
-import { Navigate, Route, Routes } from 'react-router'
+import { Navigate, Route, Routes, useLocation } from 'react-router'
 import type { LucideIcon } from 'lucide-react'
 import type { ComponentType } from 'react'
+import type { TranslationKey } from './i18n/types'
 
 import { AiPage } from './views/ai-page'
 import { AnalyzePage } from './views/analyze-page'
@@ -61,6 +67,7 @@ import { PostsPage } from './views/posts-page'
 import { ProjectsPage } from './views/projects-page'
 import { ReadersPage } from './views/readers-page'
 import { RecentlyPage } from './views/recently-page'
+import { RichDebugPage } from './views/rich-debug-page'
 import { SaysPage } from './views/says-page'
 import { SearchIndexPage } from './views/search-index-page'
 import { ServerlessDebugPage } from './views/serverless-debug-page'
@@ -75,259 +82,482 @@ import { TopicsPage } from './views/topics-page'
 import { WebhooksPage } from './views/webhooks-page'
 import { NoteWritePage, PageWritePage, PostWritePage } from './views/write-page'
 
-export interface AppRoute {
-  description: string
-  element: ComponentType
+export interface SidebarNavRoute {
+  descriptionKey: TranslationKey
   icon: LucideIcon
+  matchPaths?: string[]
   path: string
-  title: string
+  titleKey: TranslationKey
+}
+
+export interface AppRoute extends SidebarNavRoute {
+  element: ComponentType
+}
+
+export interface SidebarNavNode {
+  children?: SidebarNavNode[]
+  route: SidebarNavRoute
+}
+
+export interface SidebarNavSection {
+  items: SidebarNavNode[]
+  titleKey?: TranslationKey
 }
 
 export const appRoutes: AppRoute[] = [
   {
-    description: 'Runtime status and environment data.',
+    descriptionKey: 'routes.dashboard.description',
     element: DashboardPage,
     icon: Gauge,
     path: '/dashboard',
-    title: 'Dashboard',
+    titleKey: 'routes.dashboard.title',
   },
   {
-    description: 'Posts, publishing state, search, and article operations.',
+    descriptionKey: 'routes.posts.description',
     element: PostsPage,
     icon: FileText,
     path: '/posts',
-    title: 'Posts',
+    titleKey: 'routes.posts.title',
   },
   {
-    description: 'Create and edit posts in the React markdown writing surface.',
+    descriptionKey: 'routes.writePost.description',
     element: PostWritePage,
     icon: Pencil,
     path: '/posts/edit',
-    title: 'Write Post',
+    titleKey: 'routes.writePost.title',
   },
   {
-    description: 'Post categories, tags, and their associated articles.',
+    descriptionKey: 'routes.categories.description',
     element: CategoriesPage,
     icon: FolderOpen,
     path: '/posts/category',
-    title: 'Categories',
+    titleKey: 'routes.categories.title',
   },
   {
-    description: 'Notes, publication state, and public note links.',
+    descriptionKey: 'routes.notes.description',
     element: NotesPage,
     icon: BookOpen,
     path: '/notes',
-    title: 'Notes',
+    titleKey: 'routes.notes.title',
   },
   {
-    description: 'Create and edit notes in the React markdown writing surface.',
+    descriptionKey: 'routes.writeNote.description',
     element: NoteWritePage,
     icon: Pencil,
     path: '/notes/edit',
-    title: 'Write Note',
+    titleKey: 'routes.writeNote.title',
   },
   {
-    description: 'Note topics, metadata, and associated note references.',
+    descriptionKey: 'routes.topics.description',
     element: TopicsPage,
     icon: Hash,
     path: '/notes/topic',
-    title: 'Topics',
+    titleKey: 'routes.topics.title',
   },
   {
-    description: 'Static pages, ordering metadata, and public page links.',
+    descriptionKey: 'routes.pages.description',
     element: PagesPage,
     icon: File,
     path: '/pages',
-    title: 'Pages',
+    titleKey: 'routes.pages.title',
   },
   {
-    description: 'Create and edit static pages in the React writing surface.',
+    descriptionKey: 'routes.writePage.description',
     element: PageWritePage,
     icon: Pencil,
     path: '/pages/edit',
-    title: 'Write Page',
+    titleKey: 'routes.writePage.title',
   },
   {
-    description: 'Autosaved drafts, versions, and content recovery.',
+    descriptionKey: 'routes.drafts.description',
     element: DraftsPage,
     icon: FileClock,
     path: '/drafts',
-    title: 'Drafts',
+    titleKey: 'routes.drafts.title',
   },
   {
-    description: 'Comments, moderation, and reader-facing feedback.',
+    descriptionKey: 'routes.comments.description',
     element: CommentsPage,
     icon: MessageSquare,
     path: '/comments',
-    title: 'Comments',
+    titleKey: 'routes.comments.title',
   },
   {
-    description: 'Authenticated readers and provider identities.',
+    descriptionKey: 'routes.readers.description',
     element: ReadersPage,
     icon: Users,
     path: '/readers',
-    title: 'Readers',
+    titleKey: 'routes.readers.title',
   },
   {
-    description: 'Short quotes, sayings, and source metadata.',
+    descriptionKey: 'routes.says.description',
     element: SaysPage,
     icon: Quote,
     path: '/says',
-    title: 'Says',
+    titleKey: 'routes.says.title',
   },
   {
-    description: 'Short-form thoughts, links, and lightweight references.',
+    descriptionKey: 'routes.recently.description',
     element: RecentlyPage,
     icon: Clock,
     path: '/recently',
-    title: 'Recently',
+    titleKey: 'routes.recently.title',
   },
   {
-    description: 'Project portfolio entries and publication metadata.',
+    descriptionKey: 'routes.projects.description',
     element: ProjectsPage,
     icon: Folder,
     path: '/projects',
-    title: 'Projects',
+    titleKey: 'routes.projects.title',
   },
   {
-    description: 'Friend links, link review, and site health checks.',
+    descriptionKey: 'routes.friends.description',
     element: FriendsPage,
     icon: UserRound,
     path: '/friends',
-    title: 'Friends',
+    titleKey: 'routes.friends.title',
   },
   {
-    description: 'Uploaded files, orphan images, and comment image uploads.',
+    descriptionKey: 'routes.files.description',
     element: FilesPage,
     icon: Files,
     path: '/files',
-    title: 'Files',
+    titleKey: 'routes.files.title',
   },
   {
-    description: 'Uploaded images that are no longer attached to content.',
+    descriptionKey: 'routes.orphanImages.description',
     element: OrphanFilesPage,
     icon: Image,
     path: '/files/orphans',
-    title: 'Orphan Images',
+    titleKey: 'routes.orphanImages.title',
   },
   {
-    description: 'Reader comment image uploads and binding status.',
+    descriptionKey: 'routes.commentImages.description',
     element: CommentImagesPage,
     icon: Image,
     path: '/files/comment-images',
-    title: 'Comment Images',
+    titleKey: 'routes.commentImages.title',
   },
   {
-    description: 'Traffic metrics, paths, IP records, and visitor analysis.',
+    descriptionKey: 'routes.analyze.description',
     element: AnalyzePage,
     icon: ChartLine,
     path: '/analyze',
-    title: 'Analyze',
+    titleKey: 'routes.analyze.title',
   },
   {
-    description: 'AI task surfaces and enrichment workflows.',
+    descriptionKey: 'routes.ai.description',
     element: AiPage,
     icon: Sparkles,
     path: '/ai',
-    title: 'AI',
+    titleKey: 'routes.ai.title',
   },
   {
-    description: 'Owner profile, URL data, and system options.',
+    descriptionKey: 'routes.aiSummary.description',
+    element: AiPage,
+    icon: FileText,
+    path: '/ai/summary',
+    titleKey: 'routes.aiSummary.title',
+  },
+  {
+    descriptionKey: 'routes.aiInsights.description',
+    element: AiPage,
+    icon: Telescope,
+    path: '/ai/insights',
+    titleKey: 'routes.aiInsights.title',
+  },
+  {
+    descriptionKey: 'routes.aiTranslation.description',
+    element: AiPage,
+    icon: Languages,
+    path: '/ai/translation',
+    titleKey: 'routes.aiTranslation.title',
+  },
+  {
+    descriptionKey: 'routes.aiTranslationEntries.description',
+    element: AiPage,
+    icon: BookOpenText,
+    path: '/ai/translation-entries',
+    titleKey: 'routes.aiTranslationEntries.title',
+  },
+  {
+    descriptionKey: 'routes.aiTasks.description',
+    element: AiPage,
+    icon: ListTodo,
+    path: '/ai/tasks',
+    titleKey: 'routes.aiTasks.title',
+  },
+  {
+    descriptionKey: 'routes.aiSlugBackfill.description',
+    element: AiPage,
+    icon: Link,
+    path: '/ai/slug-backfill',
+    titleKey: 'routes.aiSlugBackfill.title',
+  },
+  {
+    descriptionKey: 'routes.settings.description',
     element: SettingsPage,
     icon: Settings,
     path: '/setting',
-    title: 'Settings',
+    titleKey: 'routes.settings.title',
   },
   {
-    description: 'Email subscription status and subscriber management.',
+    descriptionKey: 'routes.subscribe.description',
     element: SubscribePage,
     icon: BellOff,
     path: '/extra-features/subscribe',
-    title: 'Subscribe',
+    titleKey: 'routes.subscribe.title',
   },
   {
-    description: 'Configuration snippets and serverless function source.',
+    descriptionKey: 'routes.snippets.description',
     element: SnippetsPage,
     icon: SquareFunction,
     path: '/extra-features/snippets',
-    title: 'Snippets',
+    titleKey: 'routes.snippets.title',
   },
   {
-    description: 'Outbound webhook endpoints and dispatch history.',
+    descriptionKey: 'routes.webhooks.description',
     element: WebhooksPage,
     icon: Webhook,
     path: '/extra-features/webhooks',
-    title: 'Webhooks',
+    titleKey: 'routes.webhooks.title',
   },
   {
-    description: 'Markdown import, parsing preview, and archive export.',
+    descriptionKey: 'routes.markdown.description',
     element: MarkdownPage,
     icon: FileDown,
     path: '/extra-features/markdown',
-    title: 'Markdown',
+    titleKey: 'routes.markdown.title',
   },
   {
-    description: 'Email template source and sample payloads.',
+    descriptionKey: 'routes.templates.description',
     element: TemplatePage,
     icon: FileCode2,
     path: '/extra-features/assets/template',
-    title: 'Templates',
+    titleKey: 'routes.templates.title',
   },
   {
-    description: 'Database backup archives and restore operations.',
+    descriptionKey: 'routes.backups.description',
     element: BackupPage,
     icon: Undo2,
     path: '/maintenance/backup',
-    title: 'Backups',
+    titleKey: 'routes.backups.title',
   },
   {
-    description: 'Scheduled task definitions, execution status, and logs.',
+    descriptionKey: 'routes.cron.description',
     element: CronPage,
     icon: ListTodo,
     path: '/maintenance/cron',
-    title: 'Cron',
+    titleKey: 'routes.cron.title',
   },
   {
-    description: 'Search document rows, rebuild controls, and index metadata.',
+    descriptionKey: 'routes.searchIndex.description',
     element: SearchIndexPage,
     icon: SearchCheck,
     path: '/maintenance/search-index',
-    title: 'Search Index',
+    titleKey: 'routes.searchIndex.title',
   },
   {
-    description: 'Cache, screenshots, probes, and derived content assets.',
+    descriptionKey: 'routes.enrichment.description',
     element: EnrichmentPage,
     icon: DatabaseZap,
     path: '/enrichment',
-    title: 'Enrichment',
+    titleKey: 'routes.enrichment.title',
   },
   {
-    description: 'React Sonner scenarios for status, loading, and actions.',
+    descriptionKey: 'routes.toastLab.description',
     element: ToastDebugPage,
     icon: BellRing,
     path: '/debug/toast',
-    title: 'Toast Lab',
+    titleKey: 'routes.toastLab.title',
   },
   {
-    description: 'Passkey registration and authentication diagnostics.',
+    descriptionKey: 'routes.passkeyLab.description',
     element: AuthnDebugPage,
     icon: KeyRound,
     path: '/debug/authn',
-    title: 'Passkey Lab',
+    titleKey: 'routes.passkeyLab.title',
   },
   {
-    description: 'Synthetic socket event payloads and dispatch checks.',
+    descriptionKey: 'routes.eventLab.description',
     element: EventsDebugPage,
     icon: RadioTower,
     path: '/debug/events',
-    title: 'Event Lab',
+    titleKey: 'routes.eventLab.title',
   },
   {
-    description: 'Serverless function execution and response diagnostics.',
+    descriptionKey: 'routes.functionLab.description',
     element: ServerlessDebugPage,
     icon: Terminal,
     path: '/debug/serverless',
-    title: 'Function Lab',
+    titleKey: 'routes.functionLab.title',
+  },
+  {
+    descriptionKey: 'routes.richLab.description',
+    element: RichDebugPage,
+    icon: FileCode2,
+    path: '/debug/rich',
+    titleKey: 'routes.richLab.title',
+  },
+]
+
+function routeByPath(path: string) {
+  const route = appRoutes.find((item) => item.path === path)
+  if (!route) {
+    throw new Error(`Missing admin route: ${path}`)
+  }
+
+  return route
+}
+
+function sidebarRoute(
+  path: string,
+  overrides: Partial<Omit<SidebarNavRoute, 'path'>> = {},
+): SidebarNavRoute {
+  return {
+    ...routeByPath(path),
+    ...overrides,
+  }
+}
+
+function sidebarOnlyRoute(route: SidebarNavRoute): SidebarNavRoute {
+  return route
+}
+
+function sidebarNode(
+  path: string,
+  overrides?: Partial<Omit<SidebarNavRoute, 'path'>>,
+): SidebarNavNode {
+  return { route: sidebarRoute(path, overrides) }
+}
+
+function sidebarAliasNode(
+  path: string,
+  targetPath: string,
+  overrides?: Partial<Omit<SidebarNavRoute, 'path'>>,
+): SidebarNavNode {
+  const route = sidebarRoute(targetPath, overrides)
+
+  return {
+    route: {
+      ...route,
+      matchPaths: [...(route.matchPaths ?? []), targetPath],
+      path,
+    },
+  }
+}
+
+function sidebarGroupNode(route: SidebarNavRoute, children: SidebarNavNode[]) {
+  return {
+    children,
+    route: sidebarOnlyRoute(route),
+  } satisfies SidebarNavNode
+}
+
+export const sidebarNavigation: SidebarNavSection[] = [
+  {
+    items: [{ route: routeByPath('/dashboard') }],
+  },
+  {
+    titleKey: 'shell.nav.content',
+    items: [
+      sidebarGroupNode(routeByPath('/posts'), [
+        sidebarAliasNode('/posts/view', '/posts', {
+          descriptionKey: 'routes.managePosts.description',
+          icon: Eye,
+          titleKey: 'routes.managePosts.title',
+        }),
+        sidebarNode('/posts/edit'),
+        sidebarNode('/posts/category'),
+      ]),
+      sidebarGroupNode(routeByPath('/notes'), [
+        sidebarAliasNode('/notes/view', '/notes', {
+          descriptionKey: 'routes.manageNotes.description',
+          icon: Eye,
+          titleKey: 'routes.manageNotes.title',
+        }),
+        sidebarNode('/notes/edit'),
+        sidebarNode('/notes/topic'),
+      ]),
+      { route: routeByPath('/drafts') },
+      sidebarGroupNode(routeByPath('/pages'), [
+        sidebarAliasNode('/pages/list', '/pages', {
+          descriptionKey: 'routes.managePages.description',
+          icon: Eye,
+          titleKey: 'routes.managePages.title',
+        }),
+        sidebarNode('/pages/edit'),
+      ]),
+      { route: routeByPath('/says') },
+      { route: routeByPath('/recently') },
+      { route: routeByPath('/projects') },
+    ],
+  },
+  {
+    titleKey: 'shell.nav.community',
+    items: [
+      { route: routeByPath('/comments') },
+      { route: routeByPath('/readers') },
+      { route: routeByPath('/friends') },
+      sidebarNode('/extra-features/subscribe'),
+    ],
+  },
+  {
+    titleKey: 'shell.nav.assets',
+    items: [
+      sidebarGroupNode(routeByPath('/files'), [
+        sidebarAliasNode('/files/list', '/files', {
+          descriptionKey: 'routes.manageFiles.description',
+          icon: Eye,
+          titleKey: 'routes.manageFiles.title',
+        }),
+        sidebarNode('/files/orphans'),
+        sidebarNode('/files/comment-images'),
+      ]),
+      sidebarNode('/extra-features/assets/template'),
+      sidebarNode('/extra-features/markdown'),
+    ],
+  },
+  {
+    titleKey: 'shell.nav.system',
+    items: [
+      sidebarGroupNode(routeByPath('/ai'), [
+        sidebarNode('/ai/summary'),
+        sidebarNode('/ai/insights'),
+        sidebarNode('/ai/translation'),
+        sidebarNode('/ai/translation-entries'),
+        sidebarNode('/ai/tasks'),
+        sidebarNode('/ai/slug-backfill'),
+      ]),
+      { route: routeByPath('/analyze') },
+      { route: routeByPath('/setting') },
+    ],
+  },
+  {
+    titleKey: 'shell.nav.extra',
+    items: [
+      sidebarNode('/extra-features/snippets'),
+      sidebarNode('/extra-features/webhooks'),
+    ],
+  },
+  {
+    titleKey: 'shell.nav.maintenance',
+    items: [
+      sidebarNode('/maintenance/cron'),
+      sidebarNode('/maintenance/backup'),
+      sidebarAliasNode('/maintenance/enrichment', '/enrichment'),
+      sidebarNode('/maintenance/search-index'),
+    ],
+  },
+  {
+    titleKey: 'shell.nav.debug',
+    items: [
+      sidebarNode('/debug/toast'),
+      sidebarNode('/debug/authn'),
+      sidebarNode('/debug/events'),
+      sidebarNode('/debug/serverless'),
+      sidebarNode('/debug/rich'),
+    ],
   },
 ]
 
@@ -341,13 +571,30 @@ const legacyRouteAliases: Array<{
   { from: '/pages/list', to: '/pages' },
   { from: '/files/list', to: '/files' },
   { from: '/maintenance/enrichment', to: '/enrichment' },
-  { element: AiPage, from: '/ai/summary' },
-  { element: AiPage, from: '/ai/insights' },
-  { element: AiPage, from: '/ai/translation' },
-  { element: AiPage, from: '/ai/translation-entries' },
-  { element: AiPage, from: '/ai/tasks' },
-  { element: AiPage, from: '/ai/slug-backfill' },
+  { element: LegacyPageRedirect, from: '/page/*' },
+  { element: LegacyExtraRedirect, from: '/extra/*' },
 ]
+
+function LegacyPageRedirect() {
+  const location = useLocation()
+  const nextPath = location.pathname.replace(/^\/page(?=\/|$)/, '/pages')
+
+  return (
+    <Navigate replace to={`${nextPath}${location.search}${location.hash}`} />
+  )
+}
+
+function LegacyExtraRedirect() {
+  const location = useLocation()
+  const nextPath = location.pathname.replace(/^\/extra(?=\/|$)/, '')
+
+  return (
+    <Navigate
+      replace
+      to={`${nextPath || '/'}${location.search}${location.hash}`}
+    />
+  )
+}
 
 export function AppRoutes() {
   return (

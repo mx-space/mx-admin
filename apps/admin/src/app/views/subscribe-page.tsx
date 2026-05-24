@@ -16,7 +16,8 @@ import {
 } from '../api/subscribe'
 import { Button } from '../ui/button'
 import { Checkbox } from '../ui/checkbox'
-import { Panel } from '../ui/panel'
+import { cn } from '../ui/cn'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
 import { Switch } from '../ui/switch'
 import { TextInput } from '../ui/text-field'
 
@@ -54,6 +55,8 @@ export function SubscribePage() {
   const [page, setPage] = useState(1)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+  const [isConfirmingBatchDelete, setIsConfirmingBatchDelete] = useState(false)
+  const [isConfirmingDeleteAll, setIsConfirmingDeleteAll] = useState(false)
 
   const statusQuery = useQuery({
     queryFn: getSubscribeStatus,
@@ -93,14 +96,26 @@ export function SubscribePage() {
       toast.success('订阅设置已更新')
       await invalidateSubscribe()
     },
+    onError: () => {
+      toast.error('订阅设置更新失败')
+    },
   })
 
   const deleteMutation = useMutation({
     mutationFn: unsubscribeBatch,
-    onSuccess: async (result) => {
-      toast.success(`已移除 ${result.deletedCount} 位订阅者`)
+    onSuccess: async (result, variables) => {
+      toast.success(
+        'all' in variables
+          ? `已移除全部 ${result.deletedCount} 位订阅者`
+          : `已移除 ${result.deletedCount} 位订阅者`,
+      )
       setSelectedIds(new Set())
+      setIsConfirmingBatchDelete(false)
+      setIsConfirmingDeleteAll(false)
       await invalidateSubscribe()
+    },
+    onError: () => {
+      toast.error('删除订阅者失败')
     },
   })
 
@@ -132,8 +147,36 @@ export function SubscribePage() {
   }
 
   return (
-    <div className="flex h-full flex-col gap-6">
-      <div className="grid shrink-0 grid-cols-1 gap-4 sm:grid-cols-3">
+    <section className="flex h-full min-h-0 flex-col bg-white dark:bg-neutral-950">
+      <div
+        className={cn(
+          'flex shrink-0 items-center justify-between gap-3 border-b border-neutral-200 px-4 dark:border-neutral-800',
+          APP_SHELL_HEADER_HEIGHT_CLASS,
+        )}
+      >
+        <h2 className="inline-flex min-w-0 items-center gap-2 text-sm font-medium text-neutral-950 dark:text-neutral-50">
+          <Mail aria-hidden="true" className="size-4" />
+          <span className="truncate">邮件订阅</span>
+        </h2>
+        <div className="flex shrink-0 items-center gap-2">
+          <span className="hidden text-xs text-neutral-500 sm:inline dark:text-neutral-400">
+            {totalCount} 位订阅者
+          </span>
+          <Button
+            aria-label="刷新订阅数据"
+            className="h-8 px-2"
+            onClick={() => {
+              void invalidateSubscribe()
+            }}
+            type="button"
+            variant="subtle"
+          >
+            <RefreshCw aria-hidden="true" className="size-4" />
+          </Button>
+        </div>
+      </div>
+
+      <div className="grid shrink-0 grid-cols-1 gap-4 border-b border-neutral-200 p-4 sm:grid-cols-3 dark:border-neutral-800">
         <StatCard icon={Users} label="总订阅者" value={totalCount} />
         <StatCard
           icon={subscribeEnabled ? Mail : MailX}
@@ -152,11 +195,7 @@ export function SubscribePage() {
         </div>
       </div>
 
-      <Panel
-        className="flex min-h-0 flex-1 flex-col overflow-hidden"
-        description={`${totalCount} subscribers`}
-        title="Subscribers"
-      >
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
         <div className="flex shrink-0 items-center gap-4 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
           <Checkbox
             aria-label="选择当前页订阅者"
@@ -183,7 +222,11 @@ export function SubscribePage() {
               </span>
               <Button
                 className="h-8 px-2"
-                onClick={() => setSelectedIds(new Set())}
+                onClick={() => {
+                  setSelectedIds(new Set())
+                  setIsConfirmingBatchDelete(false)
+                  setIsConfirmingDeleteAll(false)
+                }}
                 type="button"
                 variant="subtle"
               >
@@ -192,22 +235,38 @@ export function SubscribePage() {
               <Button
                 className="h-8 px-2 text-red-600 dark:text-red-400"
                 disabled={deleteMutation.isPending}
-                onClick={deleteSelected}
+                onClick={() => {
+                  if (isConfirmingBatchDelete) {
+                    deleteSelected()
+                  } else {
+                    setIsConfirmingBatchDelete(true)
+                    setIsConfirmingDeleteAll(false)
+                  }
+                }}
+                onMouseLeave={() => setIsConfirmingBatchDelete(false)}
                 type="button"
                 variant="subtle"
               >
                 <Trash2 aria-hidden="true" className="size-3.5" />
-                删除选中
+                {isConfirmingBatchDelete ? '确认删除选中' : '删除选中'}
               </Button>
               {isAllSelected && totalCount > 0 ? (
                 <Button
                   className="h-8 px-2 text-red-600 dark:text-red-400"
                   disabled={deleteMutation.isPending}
-                  onClick={() => deleteMutation.mutate({ all: true })}
+                  onClick={() => {
+                    if (isConfirmingDeleteAll) {
+                      deleteMutation.mutate({ all: true })
+                    } else {
+                      setIsConfirmingDeleteAll(true)
+                      setIsConfirmingBatchDelete(false)
+                    }
+                  }}
+                  onMouseLeave={() => setIsConfirmingDeleteAll(false)}
                   type="button"
                   variant="subtle"
                 >
-                  删除全部
+                  {isConfirmingDeleteAll ? '确认删除全部' : '删除全部'}
                 </Button>
               ) : null}
             </div>
@@ -216,17 +275,6 @@ export function SubscribePage() {
               共 {totalCount} 位订阅者
             </span>
           )}
-          <Button
-            aria-label="刷新"
-            className="h-10 px-2"
-            onClick={() => {
-              void invalidateSubscribe()
-            }}
-            type="button"
-            variant="subtle"
-          >
-            <RefreshCw aria-hidden="true" className="size-4" />
-          </Button>
         </div>
 
         <div className="min-h-0 flex-1 overflow-y-auto">
@@ -276,8 +324,8 @@ export function SubscribePage() {
             </Button>
           </div>
         ) : null}
-      </Panel>
-    </div>
+      </div>
+    </section>
   )
 }
 

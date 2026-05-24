@@ -1,8 +1,10 @@
 import { API_URL } from '~/app/constants/env'
+import { SESSION_WITH_LOGIN } from '~/app/constants/keys'
 
 type ResponseEnvelope<T> = {
+  code?: number | string
   data?: T
-  error?: { message?: string | string[] }
+  error?: { code?: number | string; message?: string | string[] }
   meta?: {
     pagination?: unknown
   }
@@ -22,7 +24,14 @@ export async function postJson<TResponse, TData>(
   })
 }
 
-type QueryValue = Array<number | string> | boolean | number | string | undefined
+type QueryObject = Record<string, boolean | number | string | undefined>
+type QueryValue =
+  | Array<number | string>
+  | QueryObject
+  | boolean
+  | number
+  | string
+  | undefined
 
 export async function getJson<TResponse>(
   path: string,
@@ -44,7 +53,13 @@ export async function requestJson<TResponse>(
     },
   })
 
-  const responseData = await readResponseData<TResponse>(response)
+  const responseData = normalizeResponseData(
+    camelcaseKeys(await readResponseData<TResponse>(response)),
+  )
+
+  if (isUnauthorizedResponse(response, responseData)) {
+    handleUnauthorized()
+  }
 
   if (!response.ok) {
     const message =
@@ -69,6 +84,35 @@ export async function requestJson<TResponse>(
   }
 
   return responseData as TResponse
+}
+
+function isUnauthorizedResponse<TResponse>(
+  response: Response,
+  responseData: null | ResponseEnvelope<TResponse>,
+) {
+  return (
+    response.status === 401 ||
+    responseData?.code === 401 ||
+    responseData?.error?.code === 401 ||
+    responseData?.error?.code === 'AUTH_NOT_LOGGED_IN'
+  )
+}
+
+function handleUnauthorized() {
+  sessionStorage.removeItem(SESSION_WITH_LOGIN)
+
+  const current = `${window.location.pathname}${window.location.hash}`
+  const hash = window.location.hash.replace(/^#/, '')
+  const isAuthRoute =
+    hash.startsWith('/login') ||
+    hash.startsWith('/setup') ||
+    hash.startsWith('/setup-api')
+
+  if (isAuthRoute) return
+
+  window.location.hash = `/login?from=${encodeURIComponent(
+    hash || current || '/dashboard',
+  )}`
 }
 
 export async function putJson<TResponse, TData>(
@@ -125,6 +169,14 @@ function withQuery(path: string, params?: Record<string, QueryValue>) {
       value.forEach((item) => searchParams.append(key, String(item)))
       continue
     }
+    if (typeof value === 'object') {
+      for (const [childKey, childValue] of Object.entries(value)) {
+        if (childValue !== undefined) {
+          searchParams.set(`${key}[${childKey}]`, String(childValue))
+        }
+      }
+      continue
+    }
 
     searchParams.set(key, String(value))
   }
@@ -140,4 +192,60 @@ async function readResponseData<TResponse>(response: Response) {
   } catch {
     return null
   }
+}
+
+function camelcaseKeys<T>(value: T): T {
+  if (Array.isArray(value)) {
+    return value.map((item) => camelcaseKeys(item)) as T
+  }
+
+  if (!isPlainObject(value)) return value
+
+  return Object.fromEntries(
+    Object.entries(value).map(([key, item]) => [
+      toCamelCase(key),
+      camelcaseKeys(item),
+    ]),
+  ) as T
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  if (!value || typeof value !== 'object') return false
+  const prototype = Object.getPrototypeOf(value)
+
+  return prototype === Object.prototype || prototype === null
+}
+
+function toCamelCase(value: string) {
+  return value.replace(/_([a-z])/g, (_, letter: string) => letter.toUpperCase())
+}
+
+function normalizeResponseData<T>(value: T): T {
+  if (Array.isArray(value)) {
+    return value.map((item) => normalizeResponseData(item)) as T
+  }
+
+  if (!isPlainObject(value)) return value
+
+  const next = Object.fromEntries(
+    Object.entries(value).map(([key, item]) => [
+      key,
+      normalizeResponseData(item),
+    ]),
+  )
+
+  if ('totalPages' in next && !('totalPage' in next)) {
+    next.totalPage = next.totalPages
+  }
+  if ('totalPage' in next && !('totalPages' in next)) {
+    next.totalPages = next.totalPage
+  }
+  if ('page' in next && !('currentPage' in next)) {
+    next.currentPage = next.page
+  }
+  if ('currentPage' in next && !('page' in next)) {
+    next.page = next.currentPage
+  }
+
+  return next as T
 }

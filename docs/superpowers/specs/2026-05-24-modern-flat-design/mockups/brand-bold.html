@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<title>己 · Brand-Bold (Vercel-v0)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #ffffff;
+    --canvas: #ffffff;
+    --surface: #ffffff;
+    --ink: #000000;
+    --ink-2: #171717;
+    --muted: #525252;
+    --faint: #a3a3a3;
+    --border: #e5e5e5;
+    --border-strong: #d4d4d4;
+    --accent: #000000;
+    --accent-on: #ffffff;
+    --color-1: #f97316;    /* orange — primary brand accent */
+    --color-2: #06b6d4;    /* cyan */
+    --color-3: #84cc16;    /* lime */
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+
+  /* ─ top nav (bold, all-caps) ─ */
+  .top {
+    border-bottom: 1px solid var(--ink);
+    padding: 14px 32px;
+    display: flex; align-items: center; gap: 32px;
+    background: var(--surface);
+  }
+  .brand {
+    font-size: 17px; font-weight: 800;
+    letter-spacing: -0.02em;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .brand .block {
+    width: 22px; height: 22px;
+    background: var(--ink);
+    color: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 800;
+  }
+  .top-nav { display: flex; gap: 20px; font-size: 13px; font-weight: 500; }
+  .top-nav a { color: var(--muted); padding-bottom: 2px; }
+  .top-nav a.active { color: var(--ink); font-weight: 700; border-bottom: 2px solid var(--color-1); padding-bottom: 4px; }
+  .top .spacer { flex: 1; }
+  .top .kbd {
+    border: 1px solid var(--border-strong);
+    padding: 2px 8px; font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--muted);
+  }
+  .top .avatar {
+    width: 26px; height: 26px;
+    background: var(--ink); color: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700;
+    border-radius: 50%;
+  }
+
+  /* ─ hero ─ */
+  .hero {
+    padding: 64px 32px 48px;
+    border-bottom: 1px solid var(--ink);
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero .stripe {
+    position: absolute; top: 0; right: 0; bottom: 0; width: 320px;
+    background: linear-gradient(135deg, var(--color-1) 0%, var(--color-1) 60%, transparent 100%);
+    opacity: 0.08;
+    transform: skewX(-12deg) translateX(80px);
+    z-index: 0;
+  }
+  .hero .inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  .hero .eyebrow {
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--color-1);
+    margin-bottom: 12px;
+  }
+  .hero h1 {
+    font-size: 68px; font-weight: 800;
+    margin: 0;
+    letter-spacing: -0.04em;
+    line-height: 0.98;
+    color: var(--ink);
+  }
+  .hero h1 .accent { color: var(--color-1); }
+  .hero .lede {
+    font-size: 17px; color: var(--muted);
+    margin: 18px 0 28px; max-width: 56ch;
+    line-height: 1.55;
+  }
+  .hero .cta-row { display: flex; gap: 10px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 18px;
+    font-size: 14px; font-weight: 600;
+    cursor: default;
+    border: 1px solid var(--ink);
+    background: var(--surface);
+    color: var(--ink);
+  }
+  .btn.primary { background: var(--ink); color: #fff; }
+  .btn.hot { background: var(--color-1); color: #fff; border-color: var(--color-1); }
+
+  /* ─ section: stats ─ */
+  .section { padding: 56px 32px; max-width: 1280px; margin: 0 auto; }
+  .section h2 {
+    font-size: 32px; font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0 0 8px;
+  }
+  .section .sub { color: var(--muted); margin: 0 0 32px; font-size: 14.5px; }
+
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border: 1px solid var(--ink); }
+  .stat-cell {
+    padding: 24px 24px;
+    border-right: 1px solid var(--ink);
+    position: relative;
+  }
+  .stat-cell:last-child { border-right: none; }
+  .stat-cell .lbl {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .stat-cell .val {
+    font-size: 38px; font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1; color: var(--ink);
+  }
+  .stat-cell .delta {
+    font-size: 12px; color: var(--ink);
+    margin-top: 8px;
+    background: var(--color-3); color: var(--ink);
+    display: inline-block; padding: 1px 8px;
+    font-weight: 600;
+  }
+  .stat-cell .delta.down { background: var(--color-1); color: #fff; }
+  .stat-cell .delta.neutral { background: transparent; color: var(--muted); padding: 0; }
+
+  /* ─ section: posts ─ */
+  .post-section { padding: 56px 32px 80px; max-width: 1280px; margin: 0 auto; }
+  .post-section .head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  .post-section .head h2 { margin: 0; }
+  .post-section .right {
+    display: flex; gap: 10px;
+  }
+  .filter-bar {
+    display: flex; gap: 4px;
+    border-bottom: 1px solid var(--ink);
+    padding: 0 0 14px;
+    margin-bottom: 0;
+  }
+  .filter-chip {
+    padding: 4px 12px;
+    font-size: 13px; font-weight: 500;
+    color: var(--muted); cursor: default;
+  }
+  .filter-chip.active { color: var(--ink); background: var(--ink); color: #fff; font-weight: 600; }
+  .filter-bar .spacer { flex: 1; }
+  .filter-bar .search {
+    border: 1px solid var(--ink);
+    padding: 4px 12px; font-size: 13px;
+    color: var(--muted); background: var(--surface);
+    min-width: 240px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+
+  /* posts: bold card-rows */
+  .post {
+    display: grid; grid-template-columns: 24px 1fr auto auto 120px;
+    gap: 20px; align-items: center;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .post:hover { background: rgba(0,0,0,0.02); cursor: default; }
+  .post .idx {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; font-weight: 600;
+    color: var(--faint);
+  }
+  .post .title {
+    font-size: 19px; font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+  .post .sub {
+    font-size: 13px; color: var(--muted);
+    display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .badge {
+    font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 4px 9px;
+    border: 1px solid var(--ink);
+    background: var(--surface); color: var(--ink);
+  }
+  .badge.live { background: var(--color-3); color: var(--ink); border-color: var(--ink); }
+  .badge.draft { background: var(--color-1); color: #fff; border-color: var(--color-1); }
+  .badge.pinned { background: var(--color-2); color: var(--ink); border-color: var(--ink); }
+  .post .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px; font-weight: 600;
+    text-align: right;
+  }
+  .post .date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: var(--muted);
+    text-align: right;
+  }
+
+  /* footer (bottom block) */
+  .pg-foot {
+    background: var(--ink); color: #d4d4d4;
+    padding: 28px 32px;
+    display: flex; justify-content: space-between;
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.04em;
+  }
+  .pg-foot .lit { color: var(--color-1); }
+</style>
+</head>
+<body>
+
+<!-- ───── top nav ───── -->
+<header class="top">
+  <div class="brand"><span class="block">M</span> mx-admin</div>
+  <nav class="top-nav">
+    <a>Today</a>
+    <a class="active">Posts</a>
+    <a>Notes</a>
+    <a>Files</a>
+    <a>Apprentice</a>
+    <a>Settings</a>
+  </nav>
+  <div class="spacer"></div>
+  <span class="kbd">⌘ K</span>
+  <span class="avatar">I</span>
+</header>
+
+<!-- ───── hero ───── -->
+<section class="hero">
+  <div class="stripe"></div>
+  <div class="inner">
+    <div class="eyebrow">Posts · 171 entries</div>
+    <h1>An assortment of<br />things <span class="accent">worth keeping.</span></h1>
+    <p class="lede">168 published, 3 still drafting. This week your readers turned up steadily — about 140 a day, with a gentle peak on Thursday afternoon.</p>
+    <div class="cta-row">
+      <span class="btn hot">+ New post</span>
+      <span class="btn">Bulk edit</span>
+      <span class="btn">Export</span>
+    </div>
+  </div>
+</section>
+
+<!-- ───── stats ───── -->
+<section class="section">
+  <h2>The numbers</h2>
+  <p class="sub">A snapshot of the past seven days.</p>
+
+  <div class="stat-grid">
+    <div class="stat-cell">
+      <div class="lbl">Reads · 7d</div>
+      <div class="val">14,328</div>
+      <div class="delta">+ 12.4%</div>
+    </div>
+    <div class="stat-cell">
+      <div class="lbl">Comments · 7d</div>
+      <div class="val">23</div>
+      <div class="delta">+ 5 today</div>
+    </div>
+    <div class="stat-cell">
+      <div class="lbl">Drafts</div>
+      <div class="val">3</div>
+      <div class="delta down">2 stale</div>
+    </div>
+    <div class="stat-cell">
+      <div class="lbl">Apprentice</div>
+      <div class="val">2</div>
+      <div class="delta neutral">running</div>
+    </div>
+  </div>
+</section>
+
+<!-- ───── posts ───── -->
+<section class="post-section">
+  <div class="head">
+    <h2>All posts</h2>
+  </div>
+
+  <div class="filter-bar">
+    <span class="filter-chip active">All · 171</span>
+    <span class="filter-chip">Published · 168</span>
+    <span class="filter-chip">Drafts · 3</span>
+    <span class="filter-chip">Pinned</span>
+    <span class="spacer"></span>
+    <span class="search">⌕ search id, title, slug…</span>
+  </div>
+
+  <div class="post">
+    <div class="idx">01</div>
+    <div>
+      <div class="title">The Garden, after rain</div>
+      <div class="sub">A few notes about how Linear's design language quietly shapes its product personality…</div>
+    </div>
+    <span class="badge draft">Draft</span>
+    <div class="num">—</div>
+    <div class="date">today 23:47</div>
+  </div>
+
+  <div class="post">
+    <div class="idx">02</div>
+    <div>
+      <div class="title">AI 时代的效率悖论：当生产力提升反而带来疲惫</div>
+      <div class="sub">昨天读到一篇关于 AI 倦怠的文章。最近几个月，我高强度地使用 AI 完成各种任务…</div>
+    </div>
+    <span class="badge live">Live</span>
+    <div class="num">2,137</div>
+    <div class="date">May 23</div>
+  </div>
+
+  <div class="post">
+    <div class="idx">03</div>
+    <div>
+      <div class="title">Migration note #6 — Drawer mechanics</div>
+      <div class="sub">Published this afternoon. It explains why the inset-card shell now uses a 14px border-radius…</div>
+    </div>
+    <span class="badge">Published</span>
+    <div class="num">1,204</div>
+    <div class="date">May 22</div>
+  </div>
+
+  <div class="post">
+    <div class="idx">04</div>
+    <div>
+      <div class="title">On Lavender and the choice of accent</div>
+      <div class="sub">A short essay on accent colors in admin UI — why I keep returning to the cooler greens…</div>
+    </div>
+    <span class="badge pinned">Pinned</span>
+    <div class="num">812</div>
+    <div class="date">May 21</div>
+  </div>
+
+  <div class="post">
+    <div class="idx">05</div>
+    <div>
+      <div class="title">Why I rewrote my admin in React</div>
+      <div class="sub">A short note on why I dropped the Vue 3 admin and started this rewrite.</div>
+    </div>
+    <span class="badge">Published</span>
+    <div class="num">8,742</div>
+    <div class="date">May 09</div>
+  </div>
+
+</section>
+
+<!-- footer status -->
+<div class="pg-foot">
+  <span><span class="lit">●</span> realtime · 3 readers online</span>
+  <span>last backup 6h ago · mx-core v6.4.2</span>
+  <span>mem 142M · req 12.4k/d</span>
+</div>
+
+</body>
+</html>
