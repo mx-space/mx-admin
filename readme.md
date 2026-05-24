@@ -1,6 +1,6 @@
 # MX Space Admin
 
-The dashboard for [MX Space](https://github.com/mx-space), a personal space management system. Built with **Vue 3**, **Naive UI**, and **UnoCSS**.
+The dashboard for [MX Space](https://github.com/mx-space), a personal space management system. Built with **React**, **Base UI**, and **UnoCSS**.
 
 > v4.0 for Mix Space Server v5.0
 
@@ -34,15 +34,11 @@ The dashboard for [MX Space](https://github.com/mx-space), a personal space mana
 
 ## Features
 
-- Real-time dashboard with live visitor stats, content analytics, and trend charts
-- Full content management: posts, notes, pages, drafts, comments, says
-- Rich text editor with AI-assisted writing
-- AI-powered content summarization and translation
-- File management with orphan image detection
-- Friend links and project showcase management
-- Responsive design with mobile support
+- React Router application shell with Base UI primitives
+- Content and operations surfaces for comments, says, projects, friends, subscribers, webhooks, backups, cron tasks, search index, and markdown import/export
+- Authentication and setup flows
+- Debug labs for toast, passkey, socket event, and serverless function diagnostics
 - Dark mode with Vercel-style neutral theme
-- WebSocket-based real-time updates
 
 ## Getting Started
 
@@ -60,12 +56,12 @@ pnpm build
 
 ## Tech Stack
 
-- [Vue 3](https://vuejs.org/) + Composition API + TSX
-- [Naive UI](https://www.naiveui.com/) - Component library
+- [React](https://react.dev/) + TSX
+- [Base UI](https://base-ui.com/) - Headless component primitives
+- [React Router](https://reactrouter.com/) - Routing
 - [UnoCSS](https://unocss.dev/) - Atomic CSS engine
 - [TanStack Query](https://tanstack.com/query) - Server state management
-- [Pinia](https://pinia.vuejs.org/) - Store management
-- [CodeMirror](https://codemirror.net/) / [Monaco Editor](https://microsoft.github.io/monaco-editor/) - Code editors
+- [Sonner](https://sonner.emilkowal.ski/) - Toast notifications
 - [Socket.IO](https://socket.io/) - Real-time communication
 
 ## License

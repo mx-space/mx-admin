@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,300;1,300&display=swap');
-@import 'vue-sonner/style.css';
+@import 'sonner/dist/styles.css';
 
 body,
 html {
@@ -7,8 +7,8 @@ html {
   font-size: 14px !important;
   padding: 0;
 
-  --sans-font: 'Segoe UI', 'Helvetica Neue', sans-serif, -apple-system,
-    system-ui;
+  --sans-font:
+    'Segoe UI', 'Helvetica Neue', sans-serif, -apple-system, system-ui;
 
   font-family: var(--sans-font);
   background: var(--page-bg);
@@ -36,7 +36,7 @@ button {
   outline: unset;
 }
 
-button:where(:not(.n-button):not([class*='n-'])) {
+button {
   border: none;
   background: transparent;
   padding: 0;
@@ -81,11 +81,7 @@ html.dark *::-webkit-scrollbar-corner {
   background: #171717;
 }
 
-.n-scrollbar-rail {
-  @apply z-100;
-}
-
-/* vue-sonner toast 样式 - Lobe UI Design */
+/* Sonner toast styles - Lobe UI Design */
 [data-sonner-toaster] {
   font-family: var(--sans-font) !important;
   --width: 360px;
@@ -212,7 +208,7 @@ html:not(.dark) [data-sonner-toast] [data-close-button] {
 }
 
 html:not(.dark) [data-sonner-toast] [data-close-button]:hover {
-  @apply !text-neutral-900 !bg-neutral-100;
+  @apply !bg-neutral-100 !text-neutral-900;
 }
 
 html.dark [data-sonner-toast] [data-close-button] {
@@ -220,7 +216,7 @@ html.dark [data-sonner-toast] [data-close-button] {
 }
 
 html.dark [data-sonner-toast] [data-close-button]:hover {
-  @apply !text-neutral-100 !bg-neutral-800;
+  @apply !bg-neutral-800 !text-neutral-100;
 }
 
 /* Toast Action 按钮 - 28px 高度 */
@@ -308,209 +304,4 @@ html.dark .sonner-cancel-button:hover {
 * {
   -webkit-tap-highlight-color: transparent;
   -webkit-text-size-adjust: 100%;
-}
-
-.n-list-item {
-  .n-list-item__prefix {
-    align-self: flex-start;
-  }
-
-  .n-thing-avatar {
-    @apply self-center;
-  }
-}
-
-.n-data-table-base-table-header {
-  @apply overflow-hidden;
-}
-
-.n-upload-trigger,
-.n-upload-file-list {
-  @apply w-full;
-}
-
-.p0 .n-upload-dragger {
-  @apply flex p-0;
-}
-
-/*  monaco */
-.monaco-editor {
-  @apply !border-0 !outline-none;
-
-  & .sticky-widget {
-    background-color: var(--n-color) !important;
-  }
-}
-
-/* Naive UI Layout 背景覆盖 - 沉浸式 Sidebar */
-.n-layout {
-  background: transparent !important;
-}
-
-.n-layout-scroll-container {
-  background: transparent !important;
-}
-
-.n-data-table-table {
-  @apply rounded-naive;
-}
-
-/* Modal & Dialog 样式优化 - Vercel 风格 */
-.n-modal-mask {
-  backdrop-filter: blur(4px);
-  background-color: rgba(0, 0, 0, 0.5) !important;
-}
-
-.n-modal-body-wrapper {
-  /* 优化动画 */
-  --n-bezier: cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-/* Light mode Dialog 阴影 */
-html:not(.dark) .n-dialog {
-  @apply !rounded-xl;
-  box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.06),
-    0 8px 24px rgba(0, 0, 0, 0.08),
-    0 16px 32px rgba(0, 0, 0, 0.06);
-}
-
-/* Dark mode Dialog 阴影 */
-html.dark .n-dialog {
-  @apply !rounded-xl;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.08),
-    0 8px 24px rgba(0, 0, 0, 0.5),
-    0 16px 32px rgba(0, 0, 0, 0.4);
-}
-
-.n-dialog__title {
-  @apply !font-semibold;
-}
-
-.n-dialog__action {
-  @apply !pt-0;
-}
-
-/* Light mode Card 阴影 */
-html:not(.dark) .n-modal .n-card {
-  @apply !rounded-xl;
-  box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.06),
-    0 8px 24px rgba(0, 0, 0, 0.08),
-    0 16px 32px rgba(0, 0, 0, 0.06);
-}
-
-/* Dark mode Card 阴影 */
-html.dark .n-modal .n-card {
-  @apply !rounded-xl;
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.08),
-    0 8px 24px rgba(0, 0, 0, 0.5),
-    0 16px 32px rgba(0, 0, 0, 0.4);
-}
-
-.n-card__header {
-  @apply !pb-4;
-}
-
-.n-card-header__main {
-  @apply !font-semibold;
-}
-
-/* Naive UI 动画加速 - 全局 transition duration 覆盖 */
-[class*='n-'] {
-  --n-duration: 0.2s !important;
-}
-
-/* Transition 动画覆盖 */
-.fade-in-transition-enter-active,
-.fade-in-transition-leave-active,
-.fade-in-scale-up-transition-enter-active,
-.fade-in-scale-up-transition-leave-active,
-.fade-down-transition-enter-active,
-.fade-down-transition-leave-active,
-.icon-switch-transition-enter-active,
-.icon-switch-transition-leave-active,
-.fade-in-height-expand-transition-enter-active,
-.fade-in-height-expand-transition-leave-active,
-.fade-in-width-expand-transition-enter-active,
-.fade-in-width-expand-transition-leave-active {
-  transition-duration: 0.2s !important;
-}
-
-/* 组件内部 transition 覆盖 */
-.n-base-selection,
-.n-base-selection-label,
-.n-base-selection-input,
-.n-input,
-.n-input__input-el,
-.n-button,
-.n-checkbox,
-.n-radio,
-.n-switch,
-.n-slider,
-.n-select,
-.n-dropdown,
-.n-popover,
-.n-tooltip,
-.n-modal,
-.n-dialog,
-.n-drawer,
-.n-card,
-.n-collapse,
-.n-collapse-item,
-.n-data-table,
-.n-pagination,
-.n-tabs,
-.n-menu,
-.n-tree {
-  transition-duration: 0.2s !important;
-}
-
-.n-headless.n-popover {
-  padding: 0 !important;
-  background: transparent !important;
-}
-
-/* Comment filter select - custom trigger styling */
-.comment-filter-select .n-base-selection {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-  min-height: auto !important;
-  cursor: pointer !important;
-}
-
-.comment-filter-select .n-base-selection .n-base-selection-label {
-  background: transparent !important;
-  padding: 0 !important;
-}
-
-.comment-filter-select .n-base-selection .n-base-selection__border,
-.comment-filter-select .n-base-selection .n-base-selection__state-border {
-  display: none !important;
-}
-
-.comment-filter-select .n-base-selection-input {
-  padding: 0 !important;
-}
-
-.comment-filter-select .n-base-suffix {
-  display: none !important;
-}
-
-.comment-filter-select .n-base-selection:hover {
-  background: transparent !important;
-}
-
-.comment-filter-select .n-base-selection.n-base-selection--active {
-  background: transparent !important;
-  box-shadow: none !important;
-}
-
-.n-split__resize-trigger,
-.n-split__resize-trigger-wrapper {
-  width: 0px !important;
 }

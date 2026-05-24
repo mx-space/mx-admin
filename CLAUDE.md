@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-MX Admin (admin-vue3) is the dashboard for MX Space, a personal blog management system. Built with Vue 3, Naive UI, and UnoCSS. This is the v4.0 admin interface for Mix Space Server v5.0.
+MX Admin is the dashboard for MX Space, a personal blog management system. The active admin app is a React application built with Base UI primitives, React Router, TanStack Query, Sonner, and UnoCSS.
 
 ## Development Commands
 
@@ -12,22 +12,22 @@ MX Admin (admin-vue3) is the dashboard for MX Space, a personal blog management 
 pnpm install          # Install dependencies
 pnpm dev              # Start development server (opens browser automatically)
 pnpm build            # Build for production
-pnpm lint             # Lint code with Biome
+pnpm lint             # Lint code with oxlint
 pnpm lint:fix         # Lint and auto-fix
-npx tsc --noEmit      # Type check (use this instead of build for validation)
+pnpm -C apps/admin exec tsc --noEmit --pretty false
 ```
 
 ## Architecture Overview
 
 ### Technology Stack
 
-- **Vue 3** with Composition API and TSX (JSX via `@vitejs/plugin-vue-jsx`)
-- **Naive UI** - Component library with Vercel-style neutral theme
+- **React** with TSX
+- **Base UI** - Headless component primitives
+- **React Router** - Route rendering and shell navigation
 - **UnoCSS** (preset-wind4) - Tailwind-compatible utility classes
-- **Pinia** - State management
-- **TanStack Query** (`@tanstack/vue-query`) - Server state management with localStorage persistence
+- **TanStack Query** (`@tanstack/react-query`) - Server state management
+- **Sonner** - Toast notifications
 - **Socket.IO** - Real-time WebSocket updates
-- **CodeMirror/Monaco** - Code editors
 
 ### Path Aliases
 
@@ -35,9 +35,9 @@ npx tsc --noEmit      # Type check (use this instead of build for validation)
 import { something } from '~/utils/...'  // ~ maps to ./src
 ```
 
-### API Layer (`src/api/`)
+### API Layer (`src/app/api/`)
 
-API services use the custom request layer built on `ofetch`. The backend wraps array responses as `{ data: [...] }`, which is automatically unwrapped by the request layer.
+React app API services use the fetch-based helpers in `src/app/api/http.ts`.
 
 When using TanStack Query, extract arrays with:
 ```typescript
@@ -47,14 +47,6 @@ select: (res: any) => Array.isArray(res) ? res : res?.data ?? []
 **Error Classes:**
 - `BusinessError` - Application-level errors (4xx responses)
 - `SystemError` - Network/server errors (5xx responses, network failures)
-
-### State Management
-
-**Pinia Stores (`src/stores/`):**
-- `useUIStore` - Theme mode (light/dark/system), viewport dimensions, sidebar state
-- `useUserStore` - User authentication state
-- `useAppStore` - Global application state
-- `useCategoryStore` - Category data
 
 ### Responsive Breakpoints (UnoCSS)
 
@@ -66,7 +58,7 @@ select: (res: any) => Array.isArray(res) ? res : res?.data ?? []
 
 ### Validation
 
-After modifying code, run type check only (`npx tsc --noEmit`). Do not run `pnpm build` for validation.
+After modifying code, run focused type checking and linting. Run production build before reporting completion for broad application changes.
 
 ### Gray Scale Colors
 
@@ -92,8 +84,8 @@ See `docs/typography.md` for full guidelines.
 ## Configuration Files
 
 - `uno.config.ts` - UnoCSS configuration with custom breakpoints and theme colors
-- `src/utils/color.ts` - Naive UI theme overrides (Vercel-style neutral gray palette)
-- `biome.json` - Linter/formatter configuration with Vue globals
+- `src/app/theme.ts` - CSS token installation for the React shell
+- `src/app/` - React routes, shell, API helpers, UI primitives, and migrated views
 - `.env` - Local dev API endpoint (`VITE_APP_BASE_API`)
 
 ## Related Projects
@@ -102,9 +94,6 @@ See `docs/typography.md` for full guidelines.
 - **Shiroi** — Next.js frontend (blog), located at `../Shiroi`
 - **haklex** — Rich editor packages (`@haklex/*`), located at `../haklex` (standalone) or `../Shiroi/haklex` (original host)
 
-### Rich Editor Integration (React-in-Vue)
+### Rich Editor Integration
 
-admin-vue3 is a Vue 3 project but embeds the React-based haklex editor via a bridge pattern in `src/components/editor/rich/RichEditor.tsx`:
-- Uses `createRoot()` from `react-dom/client` inside Vue `defineComponent` to mount the local `ShiroEditor` (`packages/rich-react/src/shiro/`)
-- Local Shiro lives in `packages/rich-react/src/shiro/` — composes `@haklex/rich-editor` + per-feature `@haklex/rich-ext-*` / `@haklex/rich-renderer-*` packages directly
-- All `@haklex/*` packages are pinned npm versions (not workspace links). After haklex releases, update versions here.
+The admin app no longer mounts rich editor surfaces through a framework bridge. React editor work should be integrated as ordinary React components and kept out of compatibility shims.

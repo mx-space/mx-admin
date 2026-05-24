@@ -51,20 +51,19 @@
 <p className="text-[13px]">...</p>
 ```
 
-## NaiveUI 组件字号配置
+## React 组件字号配置
 
-NaiveUI 组件的字号通过全局主题配置统一管理，配置位于 `src/utils/color.ts` 的 `componentThemeOverrides`：
+React 组件字号由局部 className 控制，优先使用 `src/app/ui/*` 中的基础组件。基础组件应内置标准字号，页面代码只在布局层补充语义和状态。
 
-| 组件 | Small | Medium | Large | 备注 |
-|------|-------|--------|-------|------|
-| DataTable | 12px | 14px | 14px | 表头 font-weight: 500 |
-| Form | 12px | 14px | 14px | 标签和反馈信息 |
-| Input | 12px | 14px | 14px | |
-| Button | 12px | 14px | 14px | Tiny: 12px |
-| Card | 14px | 14px | 14px | 标题: 16/18/18px |
-| Tag | 12px | 12px | 14px | |
-| Select | 12px | 14px | 14px | |
-| Tabs | 12px | 14px | 14px | |
+| 组件 | 默认字号 | 备注 |
+|------|----------|------|
+| `Button` | `text-sm` | 命令按钮与表单操作 |
+| `Panel` 标题 | `text-sm` | 工作台区域标题 |
+| `Panel` 描述 | `text-xs` | 元数据、范围和状态说明 |
+| `DataTable` 表头 | `text-xs` | 大写标签、`font-medium` |
+| `DataTable` 单元格 | `text-xs` | 扫描型数据 |
+| 表单输入 | `text-sm` | 页面内直接声明或封装为 UI primitive |
+| 徽章/标签 | `text-xs` | 状态与分类 |
 
 ## 验证
 

@@ -1,0 +1,63 @@
+import { API_URL } from '~/app/constants/env'
+
+import { getJson, patchJson, postJson, requestJson } from './http'
+
+export interface CreateOwnerData {
+  avatar?: string
+  introduce?: string
+  mail: string
+  name?: string
+  password: string
+  url?: string
+  username: string
+}
+
+export interface InitDefaultConfigs {
+  seo?: {
+    description?: string
+    keywords?: string[]
+    title?: string
+  }
+}
+
+export async function checkInit() {
+  try {
+    const response = await fetch(`${API_URL}/init`, {
+      credentials: 'include',
+      headers: {
+        'x-skip-translation': '1',
+      },
+    })
+
+    if (response.status === 404 || response.status === 403) {
+      return { isInit: true }
+    }
+
+    if (!response.ok)
+      throw new Error(response.statusText || 'Init check failed')
+
+    return (await response.json()) as { isInit: boolean }
+  } catch (error) {
+    if (error instanceof Error) throw error
+    throw new Error('Init check failed')
+  }
+}
+
+export function getInitDefaultConfigs() {
+  return getJson<InitDefaultConfigs>('/init/configs/default')
+}
+
+export function patchInitConfig<TData>(key: string, data: TData) {
+  return patchJson<void, TData>(`/init/configs/${key}`, data)
+}
+
+export function restoreFromBackup(formData: FormData) {
+  return requestJson<void>('/init/restore', {
+    body: formData,
+    method: 'POST',
+  })
+}
+
+export function createOwner(data: CreateOwnerData) {
+  return postJson<void, CreateOwnerData>('/init/owner', data)
+}

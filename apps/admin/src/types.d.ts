@@ -1,9 +1,6 @@
-import type { useDialog } from 'naive-ui'
-import type { VNodeProps } from 'vue'
-
 declare global {
   export interface Window {
-    dialog: ReturnType<typeof useDialog>
+    dialog: unknown
     injectData: {
       BASE_API: null | string
       WEB_URL: null | string
@@ -19,14 +16,7 @@ declare global {
     [K: string]: any
   }
 
-  export const dialog: ReturnType<typeof useDialog>
-
-  export const Fragment: {
-    new (): {
-      $props: VNodeProps
-    }
-    __isFragment: true
-  }
+  export const dialog: unknown
 
   export const __DEV__: boolean
   export type KV = Record<string, any>

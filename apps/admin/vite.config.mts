@@ -1,11 +1,9 @@
+import react from '@vitejs/plugin-react'
 import UnoCSS from 'unocss/vite'
-
-import { defineConfig, loadEnv, type PluginOption } from 'vite'
+import { loadEnv } from 'vite'
 import { checker } from 'vite-plugin-checker'
-
-import vue from '@vitejs/plugin-vue'
-import vueJsx from '@vitejs/plugin-vue-jsx'
-import VueInspector from 'vite-plugin-vue-inspector'
+import { defineConfig } from 'vitest/config'
+import type { PluginOption } from 'vite'
 
 import PKG from './package.json'
 
@@ -19,17 +17,7 @@ export default ({ mode }) => {
     plugins: [
       // mkcert(),
       UnoCSS(),
-      vue({}),
-      vueJsx(),
-
-      ...(isDev
-        ? [
-            VueInspector({
-              toggleButtonVisibility: 'always',
-              launchEditor: 'cursor',
-            }),
-          ]
-        : []),
+      react(),
 
       checker({
         enableBuild: true,
@@ -83,7 +71,7 @@ export default ({ mode }) => {
     oxc: {
       jsx: {
         runtime: 'automatic',
-        importSource: 'vue',
+        importSource: 'react',
       },
     },
     test: {
@@ -105,8 +93,10 @@ const htmlPlugin: (env: any) => PluginOption = (env) => {
         .replace(/@gh-pages/g, `@page_v${PKG.version}`)
         .replace(
           '<!-- ENV INJECT -->',
-          `<script id="env_injection">window.injectData = {WEB_URL:'${env.VITE_APP_WEB_URL || ''
-          }', GATEWAY: '${env.VITE_APP_GATEWAY || ''}',BASE_API: '${env.VITE_APP_BASE_API || ''
+          `<script id="env_injection">window.injectData = {WEB_URL:'${
+            env.VITE_APP_WEB_URL || ''
+          }', GATEWAY: '${env.VITE_APP_GATEWAY || ''}',BASE_API: '${
+            env.VITE_APP_BASE_API || ''
           }'}</script>`,
         )
     },

@@ -4,43 +4,29 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "strict": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "sourceMap": true,
     "resolveJsonModule": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
     "esModuleInterop": true,
     "noImplicitAny": false,
     "baseUrl": "./",
-    "allowJs": true,
     "skipLibCheck": true,
-    "jsxImportSource": "vue",
     "noEmit": true,
     "skipDefaultLibCheck": true,
-    "lib": [
-      "esnext",
-      "dom",
-      "dom.iterable"
-    ],
+    "lib": ["esnext", "dom", "dom.iterable"],
     "types": [],
     "paths": {
-      "~": [
-        "./src"
-      ],
-      "~/*": [
-        "./src/*"
-      ]
+      "~": ["./src"],
+      "~/*": ["./src/*"]
     }
   },
   "include": [
-    "src/**/*.ts",
+    "src/main.tsx",
+    "src/App.tsx",
+    "src/app/**/*.ts",
+    "src/app/**/*.tsx",
     "src/**/*.d.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue"
+    "vite.config.mts"
   ],
-  "exclude": [
-    "node_modules",
-    "assets",
-    "dist/**"
-  ]
+  "exclude": ["node_modules", "assets", "dist/**"]
 }

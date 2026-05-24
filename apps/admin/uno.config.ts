@@ -52,8 +52,6 @@ export default defineConfig({
     // 可以在这里定义快捷方式
   },
   rules: [
-    // 自定义规则
-    ['rounded-naive', { 'border-radius': 'var(--border-radius)' }],
     [
       /^phone:(.+)$/,
       ([, c], { rawSelector }) => {
@@ -89,7 +87,7 @@ export default defineConfig({
   ],
   content: {
     pipeline: {
-      include: [/\.(vue|svelte|[jt]sx|mdx?|astro|elm|php|phtml|html)($|\?)/],
+      include: [/\.(svelte|[jt]sx|mdx?|astro|elm|php|phtml|html)($|\?)/],
     },
   },
 })

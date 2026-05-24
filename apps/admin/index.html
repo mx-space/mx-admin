@@ -15,7 +15,7 @@
       link.href = favicon
       document.head.appendChild(link)
     </script>
-    <title>Mx Space Admin Vue 3 v2</title>
+    <title>Mx Space Admin</title>
     <script>
       window.injectData = {}
       window.version = 'N/A'
@@ -98,15 +98,15 @@
     </div>
     <noscript>
       <strong
-        >We're sorry but MX Space Admin Vue 3 doesn't work properly without
-        JavaScript enabled. Please enable it to continue.</strong
+        >We're sorry but MX Space Admin doesn't work properly without JavaScript
+        enabled. Please enable it to continue.</strong
       >
       <strong>
         It may be a network problem that caused the failure to load the JS file.
       </strong>
     </noscript>
     <script>
-      // Initialize theme before Vue loads to prevent flash
+      // Initialize theme before the application loads to prevent flash
       ;(function () {
         var themeMode = localStorage.getItem('theme-mode')
         // Remove quotes if stored as JSON string
@@ -124,6 +124,6 @@
         }
       })()
     </script>
-    <script type="module" src="/src/main.ts"></script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
