@@ -5,6 +5,7 @@ import type { PropsWithChildren } from 'react'
 import { I18nProvider } from './i18n'
 import { queryClient } from './query-client'
 import { useThemeMode } from './theme'
+import { ModalRoot } from './ui/modal-imperative'
 
 export function AppProviders(props: PropsWithChildren) {
   const { isDark } = useThemeMode()
@@ -12,6 +13,7 @@ export function AppProviders(props: PropsWithChildren) {
   return (
     <QueryClientProvider client={queryClient}>
       <I18nProvider>{props.children}</I18nProvider>
+      <ModalRoot />
       <Toaster
         closeButton
         gap={12}

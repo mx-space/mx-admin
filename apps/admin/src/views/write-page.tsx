@@ -120,6 +120,7 @@ import {
   APP_SHELL_HEADER_HEIGHT_VALUE,
 } from '../ui/layout'
 import { Modal, ModalHeader } from '../ui/modal'
+import { present } from '../ui/modal-imperative'
 import { Scroll } from '../ui/scroll'
 import { SelectField } from '../ui/select'
 import { Switch } from '../ui/switch'
@@ -352,6 +353,7 @@ function WritePage(props: { kind: WriteKind }) {
   const [pageLexicalDebugOpen, setPageLexicalDebugOpen] = useState(false)
   const [draftListOpen, setDraftListOpen] = useState(false)
   const [recoveryDraft, setRecoveryDraft] = useState<DraftModel | null>(null)
+  const applyDraftRef = useRef<(draft: DraftModel) => void>(() => {})
   const appliedRouteDraftIdRef = useRef<string | null>(null)
   const acceptedRouteRef = useRef({ pathname: '', route: '' })
   const confirmedNavigationRouteRef = useRef('')
@@ -425,9 +427,10 @@ function WritePage(props: { kind: WriteKind }) {
       (a, b) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt),
     )[0]
   }, [newDraftsQuery.data, refDraftQuery.data])
-  const publishedContent = detailQuery.data
-    ? getPublishedContent(detailQuery.data)
-    : null
+  const publishedContent = useMemo(
+    () => (detailQuery.data ? getPublishedContent(detailQuery.data) : null),
+    [detailQuery.data],
+  )
   const defaultNoteTitle = useMemo(() => {
     if (props.kind === 'note' && detailQuery.data) {
       return getDefaultNoteTitle(
@@ -587,6 +590,34 @@ function WritePage(props: { kind: WriteKind }) {
     promptedRecoveryDraftIdRef.current = draft.id
     setRecoveryDraft(draft)
   }, [detailQuery.data, isEditing, refDraftQuery.data, routeDraftId])
+
+  useEffect(() => {
+    if (!recoveryDraft || !publishedContent) return
+    const handle = present(
+      DraftRecoveryDialog,
+      {
+        draft: recoveryDraft,
+        publishedContent,
+        onRecover: (draft) => {
+          applyDraftRef.current(draft)
+          setRecoveryDraft(null)
+        },
+        onUsePublished: () => {
+          draftDirtyRef.current = false
+          lastSavedDraftFingerprintRef.current =
+            latestDraftFingerprintRef.current
+          setLastSavedFingerprint(latestDraftFingerprintRef.current)
+          setRecoveryDraft(null)
+        },
+      },
+      {
+        modalProps: {
+          popupStyle: { height: 'min(78vh, 38rem)', width: 'min(92vw, 56rem)' },
+        },
+      },
+    )
+    return () => handle.dismiss()
+  }, [recoveryDraft, publishedContent])
 
   useEffect(() => {
     if (isEditing || routeDraftId) return
@@ -767,6 +798,7 @@ function WritePage(props: { kind: WriteKind }) {
     setSearchParams(nextParams, { replace: true })
     toast.success('已套用草稿')
   }
+  applyDraftRef.current = applyDraft
 
   const generateTitleOrSlug = () => {
     if (!state.title.trim() && !state.text.trim()) {
@@ -993,7 +1025,7 @@ function WritePage(props: { kind: WriteKind }) {
               innerClassName="min-h-full bg-white dark:bg-neutral-950"
             >
               <main className="flex min-h-full min-w-0 flex-col bg-white dark:bg-neutral-950">
-                <div className="mx-auto w-full max-w-[80rem] shrink-0 px-3 pt-8">
+                <div className="mx-auto w-full max-w-6xl shrink-0 px-3 pt-8">
                   <EditorMetaStrip
                     aiButtonPending={writerGenerateMutation.isPending}
                     aiButtonVisible={aiButtonVisible}
@@ -1033,7 +1065,7 @@ function WritePage(props: { kind: WriteKind }) {
                 </div>
 
                 <div className="flex min-h-0 flex-1 flex-col pb-[200px]">
-                  <div className="mx-auto w-full max-w-[80rem] px-3">
+                  <div className="mx-auto w-full max-w-6xl px-3">
                     {state.contentFormat === 'lexical' ? (
                       <RichWriteSurface
                         agentVisible={agentVisible}
@@ -1155,24 +1187,6 @@ function WritePage(props: { kind: WriteKind }) {
         }}
         open={draftListOpen}
       />
-      {recoveryDraft && publishedContent ? (
-        <DraftRecoveryDialog
-          draft={recoveryDraft}
-          onClose={() => setRecoveryDraft(null)}
-          onRecover={(draft) => {
-            applyDraft(draft)
-            setRecoveryDraft(null)
-          }}
-          onUsePublished={() => {
-            draftDirtyRef.current = false
-            lastSavedDraftFingerprintRef.current =
-              latestDraftFingerprintRef.current
-            setLastSavedFingerprint(latestDraftFingerprintRef.current)
-            setRecoveryDraft(null)
-          }}
-          publishedContent={publishedContent}
-        />
-      ) : null}
     </form>
   )
 }
@@ -1437,7 +1451,6 @@ interface PublishedWriteContent {
 
 function DraftRecoveryDialog(props: {
   draft: DraftModel
-  onClose: () => void
   onRecover: (draft: DraftModel) => void
   onUsePublished: () => void
   publishedContent: PublishedWriteContent
@@ -1496,11 +1509,7 @@ function DraftRecoveryDialog(props: {
   }
 
   return (
-    <Modal
-      onClose={props.onClose}
-      open
-      popupStyle={{ height: 'min(78vh, 38rem)', width: 'min(92vw, 56rem)' }}
-    >
+    <>
       <ModalHeader
         className="h-auto py-3"
         subtitle={`当前草稿更新于 ${formatDateTime(props.draft.updatedAt)}，可与已发布内容对比后恢复。`}
@@ -1643,7 +1652,7 @@ function DraftRecoveryDialog(props: {
           恢复选中版本
         </Button>
       </div>
-    </Modal>
+    </>
   )
 }
 

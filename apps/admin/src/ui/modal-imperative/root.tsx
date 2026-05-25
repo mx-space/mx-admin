@@ -1,0 +1,54 @@
+import { useSyncExternalStore } from 'react'
+
+import { Modal } from '~/ui/modal'
+import { PortalLayerScope } from '~/ui/portal-layer'
+
+import { ModalInstanceProvider } from './context'
+import { modalStore } from './store'
+
+/**
+ * Z-stack stride: each modal reserves this many depth steps so its descendants
+ * (popovers, nested dialogs) stay below the next stacked modal. See spec
+ * `docs/superpowers/specs/2026-05-26-imperative-modal-design.md` § z-index.
+ */
+const Z_STACK_STRIDE = 10
+
+export function ModalRoot() {
+  const stack = useSyncExternalStore(
+    modalStore.subscribe,
+    modalStore.getSnapshot,
+    modalStore.getSnapshot,
+  )
+  const topIndex = stack.length - 1
+
+  return (
+    <>
+      {stack.map((inst, index) => {
+        const isTop = index === topIndex
+        const baseDepth = index * Z_STACK_STRIDE
+        const Component = inst.Component
+        return (
+          <PortalLayerScope key={inst.id} depth={baseDepth}>
+            <ModalInstanceProvider value={inst.handle}>
+              <Modal
+                {...inst.options.modalProps}
+                onExitComplete={() => modalStore.remove(inst.id)}
+                onOpenChange={(open, eventDetails) => {
+                  if (open) return
+                  if (!isTop || !inst.options.dismissable) {
+                    eventDetails.cancel()
+                    return
+                  }
+                  inst.handle.dismiss()
+                }}
+                open={inst.status === 'open'}
+              >
+                <Component {...inst.props} />
+              </Modal>
+            </ModalInstanceProvider>
+          </PortalLayerScope>
+        )
+      })}
+    </>
+  )
+}
