@@ -38,6 +38,7 @@ import { Button } from '../ui/button'
 import { cn } from '../ui/cn'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
 import { MasterDetailLayout } from '../ui/page-layout'
+import { Scroll } from '../ui/scroll'
 import { SelectField } from '../ui/select'
 
 const taskQueryKey = ['cron-tasks']
@@ -281,7 +282,11 @@ export function CronPage() {
                   {definitions.length}
                 </span>
               </summary>
-              <div className="max-h-72 divide-y divide-neutral-100 overflow-y-auto border-t border-neutral-100 dark:divide-neutral-800 dark:border-neutral-800">
+              <Scroll
+                className="border-t border-neutral-100 dark:border-neutral-800"
+                innerClassName="divide-y divide-neutral-100 dark:divide-neutral-800"
+                viewportClassName="max-h-72"
+              >
                 {definitionsQuery.isLoading ? (
                   <DefinitionSkeleton />
                 ) : definitions.length === 0 ? (
@@ -302,7 +307,7 @@ export function CronPage() {
                     />
                   ))
                 )}
-              </div>
+              </Scroll>
             </details>
           </div>
 
@@ -327,7 +332,7 @@ export function CronPage() {
             />
           </div>
 
-          <div className="min-h-0 flex-1 overflow-y-auto">
+          <Scroll className="flex-1">
             {tasksQuery.isLoading && tasks.length === 0 ? (
               <TaskListSkeleton />
             ) : tasks.length === 0 ? (
@@ -342,7 +347,7 @@ export function CronPage() {
                 />
               ))
             )}
-          </div>
+          </Scroll>
         </section>
       }
       detail={
@@ -568,7 +573,7 @@ function TaskDetail(props: {
         )}
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">
+      <Scroll className="flex-1" innerClassName="px-5 py-4">
         {task.error ? (
           <div className="mb-4 rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/50 dark:text-red-300">
             <span className="font-medium">错误：</span>
@@ -578,9 +583,14 @@ function TaskDetail(props: {
 
         {task.result ? (
           <DetailSection title="结果">
-            <pre className="overflow-auto rounded bg-neutral-100 p-3 font-mono text-xs leading-relaxed text-neutral-800 dark:bg-neutral-900 dark:text-neutral-200">
-              {JSON.stringify(task.result, null, 2)}
-            </pre>
+            <Scroll
+              className="rounded bg-neutral-100 dark:bg-neutral-900"
+              orientation="both"
+            >
+              <pre className="p-3 font-mono text-xs leading-relaxed text-neutral-800 dark:text-neutral-200">
+                {JSON.stringify(task.result, null, 2)}
+              </pre>
+            </Scroll>
           </DetailSection>
         ) : null}
 
@@ -599,11 +609,16 @@ function TaskDetail(props: {
               暂无日志
             </div>
           ) : (
-            <div className="max-h-64 overflow-auto rounded bg-neutral-100 p-3 dark:bg-neutral-900">
+            <Scroll
+              className="rounded bg-neutral-100 dark:bg-neutral-900"
+              orientation="both"
+              viewportClassName="max-h-64"
+              innerClassName="p-3"
+            >
               {task.logs.map((log, index) => (
                 <LogLine key={`${log.timestamp}-${index}`} log={log} />
               ))}
-            </div>
+            </Scroll>
           )}
         </DetailSection>
 
@@ -632,7 +647,7 @@ function TaskDetail(props: {
             ) : null}
           </dl>
         </DetailSection>
-      </div>
+      </Scroll>
     </div>
   )
 }

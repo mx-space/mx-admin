@@ -18,6 +18,7 @@ import { Button } from '../ui/button'
 import { Checkbox } from '../ui/checkbox'
 import { cn } from '../ui/cn'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
+import { Scroll } from '../ui/scroll'
 import { Switch } from '../ui/switch'
 import { TextInput } from '../ui/text-field'
 
@@ -277,7 +278,7 @@ export function SubscribePage() {
           )}
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto">
+        <Scroll className="flex-1">
           {listQuery.isLoading && subscribers.length === 0 ? (
             <SubscriberSkeletonList />
           ) : filteredSubscribers.length === 0 ? (
@@ -295,7 +296,7 @@ export function SubscribePage() {
               />
             ))
           )}
-        </div>
+        </Scroll>
 
         {pagination && pagination.totalPage > 1 ? (
           <div className="flex shrink-0 items-center justify-end gap-2 border-t border-neutral-200 px-4 py-3 text-sm text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">

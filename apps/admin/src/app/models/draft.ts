@@ -67,6 +67,7 @@ export interface NoteSpecificData {
   mood?: string
   weather?: string
   password?: string | null
+  passwordProtected?: boolean
   publicAt?: string | null
   bookmark?: boolean
   location?: string

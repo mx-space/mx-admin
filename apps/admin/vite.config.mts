@@ -54,6 +54,46 @@ export default ({ mode }) => {
         output: {
           chunkFileNames: `js/[name]-[hash].js`,
           entryFileNames: `js/[name]-[hash].js`,
+          manualChunks(id: string) {
+            if (!id.includes('node_modules')) return
+
+            const normalized = id.replaceAll('\\', '/')
+
+            if (normalized.includes('/react-dom/')) return 'vendor-react-dom'
+            if (
+              normalized.includes('/react/') ||
+              normalized.includes('/scheduler/')
+            ) {
+              return 'vendor-react'
+            }
+
+            if (normalized.includes('/@tanstack/')) return 'vendor-tanstack'
+            if (normalized.includes('/@base-ui-components/')) {
+              return 'vendor-base-ui'
+            }
+            if (normalized.includes('/lucide-react/')) return 'vendor-icons'
+
+            if (
+              normalized.includes('/@lexical/') ||
+              normalized.includes('/lexical/')
+            ) {
+              return 'editor-lexical'
+            }
+            if (normalized.includes('/katex/')) return 'editor-katex'
+            if (normalized.includes('/cytoscape/')) return 'editor-graph'
+            if (normalized.includes('/elkjs/')) return 'editor-elk'
+            if (normalized.includes('/roughjs/')) return 'editor-rough'
+
+            const haklexChunk = getScopedPackageChunk(
+              normalized,
+              '@haklex/',
+              'haklex',
+            )
+            if (haklexChunk) return haklexChunk
+
+            if (normalized.includes('/monaco-editor/')) return 'editor-monaco'
+            if (normalized.includes('/@antv/')) return 'vendor-charts'
+          },
         },
       },
     },
@@ -103,4 +143,16 @@ const htmlPlugin: (env: any) => PluginOption = (env) => {
         )
     },
   }
+}
+
+function getScopedPackageChunk(id: string, scope: string, prefix: string) {
+  const marker = `/node_modules/${scope}`
+  const markerIndex = id.lastIndexOf(marker)
+  if (markerIndex === -1) return
+
+  const packagePath = id.slice(markerIndex + marker.length)
+  const packageName = packagePath.split('/')[0]
+  if (!packageName) return
+
+  return `${prefix}-${packageName.replaceAll(/[^a-zA-Z0-9_-]/g, '-')}`
 }

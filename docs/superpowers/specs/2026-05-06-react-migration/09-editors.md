@@ -19,7 +19,7 @@ Defines the integration of the four editor surfaces — `@haklex/*` rich editor,
 
 ## Decisions
 
-- **haklex mounts directly via `@mx-admin/rich-react`.** No `createRoot` Vue bridge. The source workspace package already exposes a React component; the new repo imports it like any React component.
+- **haklex mounts inside the admin app.** No `createRoot` Vue bridge and no `@mx-admin/rich-react` workspace package; the React runtime wrapper lives under `apps/admin/src/app/rich-editor`.
 - **Monaco uses `@monaco-editor/react`.** Drop manual worker setup; the wrapper handles workers.
 - **CodeMirror 6 hand-rolled.** A `useCodeMirror({ extensions, value, onChange, theme })` hook wraps `EditorView` lifecycle. The custom WYSIWYG / slash menu / image popover extensions port unchanged (they're framework-agnostic CM6 extensions).
 - **xterm hand-rolled.** A `useXterm({ darkMode })` hook wraps `Terminal` + `FitAddon` + ResizeObserver.
@@ -34,8 +34,8 @@ Defines the integration of the four editor surfaces — `@haklex/*` rich editor,
 ### Direct mount
 
 ```tsx
-// src/components/editor/rich/RichEditor.tsx
-import { ShiroEditor, type ShiroEditorHandle, type ShiroEditorProps } from '@mx-admin/rich-react'
+// apps/admin/src/app/rich-editor/RichEditor.tsx
+import { ShiroEditor, type ShiroEditorHandle, type ShiroEditorProps } from '~/app/rich-editor'
 import { forwardRef, useCallback, useMemo } from 'react'
 import { useUIStore } from '~/stores/ui'
 
@@ -74,7 +74,7 @@ const editorRef = useRef<ShiroEditorHandle>(null)
 
 `@haklex/rich-style-token` ships dark + light tokens. The component prop `theme` toggles which. In source, the `useUIStore.isDark` reactive value drove a watcher; in React it drives the prop directly.
 
-If the haklex package needs custom token overrides (admin only), publish them to `@mx-admin/rich-react` rather than admin-side. Keeps the contract crisp.
+If haklex needs custom token overrides for admin only, keep them in `apps/admin/src/app/rich-editor` so the editor contract remains app-local.
 
 ### Lexical content format
 
@@ -381,7 +381,7 @@ The write views (`posts/edit`, `notes/edit`, `pages/edit`) host a side-panel age
 import { AgentChat, type AgentChatProps } from '@haklex/rich-agent-chat'
 import { useAtomValue } from 'jotai'
 import { selectedAgentModelAtom } from '~/atoms/agent'
-import type { ShiroEditorHandle } from '@mx-admin/rich-react'
+import type { ShiroEditorHandle } from '~/app/rich-editor'
 
 export function AgentChatPanel({ editorRef }: { editorRef: RefObject<ShiroEditorHandle> }) {
   const selectedModel = useAtomValue(selectedAgentModelAtom)

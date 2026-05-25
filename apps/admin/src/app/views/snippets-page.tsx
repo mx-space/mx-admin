@@ -20,9 +20,9 @@ import {
 } from 'lucide-react'
 import {
   FormEvent,
-  KeyboardEvent,
   ReactNode,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useState,
 } from 'react'
@@ -43,8 +43,8 @@ import { relativeTimeFromNow } from '~/app/utils/time'
 
 import {
   getDependencyGraph,
+  getDependencyInstallUrl,
   getNpmPackageLatest,
-  installDependencies,
 } from '../api/dependencies'
 import { fetchGitHubSnippetTree, fetchGitHubText } from '../api/github-snippets'
 import {
@@ -65,10 +65,13 @@ import {
 import { Button } from '../ui/button'
 import { Checkbox } from '../ui/checkbox'
 import { cn } from '../ui/cn'
+import { CodeEditor } from '../ui/code-editor'
 import { CompactPagination } from '../ui/compact-pagination'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
 import { MasterDetailLayout } from '../ui/page-layout'
+import { Scroll } from '../ui/scroll'
 import { SelectField } from '../ui/select'
+import { TerminalOutputDialog } from '../ui/terminal-output-dialog'
 import { TextArea, TextInput } from '../ui/text-field'
 
 const snippetsQueryKey = ['snippets']
@@ -108,30 +111,64 @@ interface ImportPackagePreview {
 export function SnippetsPage() {
   const queryClient = useQueryClient()
   const [searchParams, setSearchParams] = useSearchParams()
+  const searchParamsKey = searchParams.toString()
   const [selectedId, setSelectedId] = useState<SelectedSnippetId>(
     searchParams.get('id'),
   )
-  const [typeFilter, setTypeFilter] = useState<SnippetType | ''>('')
-  const [referenceFilter, setReferenceFilter] = useState('')
+  const [typeFilter, setTypeFilter] = useState<SnippetType | ''>(
+    readSnippetTypeFilter(searchParams.get('type')),
+  )
+  const [referenceFilter, setReferenceFilter] = useState(
+    searchParams.get('reference') ?? '',
+  )
   const [importOpen, setImportOpen] = useState(false)
   const [installOpen, setInstallOpen] = useState(false)
   const [installInitialPackages, setInstallInitialPackages] = useState('')
   const [dependenciesOpen, setDependenciesOpen] = useState(false)
   const [compiledOpen, setCompiledOpen] = useState(false)
   const [logsOpen, setLogsOpen] = useState(false)
+  const [terminalOutput, setTerminalOutput] = useState<{
+    onFinish?: () => void
+    title: string
+    url: string
+  } | null>(null)
   const [showDetailOnMobile, setShowDetailOnMobile] = useState(false)
 
-  useEffect(() => {
-    const currentId = searchParams.get('id')
-    const nextId = selectedId && selectedId !== 'new' ? selectedId : null
+  useLayoutEffect(() => {
+    const nextId = searchParams.get('id')
+    const nextType = readSnippetTypeFilter(searchParams.get('type'))
+    const nextReference = searchParams.get('reference') ?? ''
 
-    if ((currentId ?? null) === nextId) return
+    setSelectedId((value) => (value === nextId ? value : nextId))
+    setTypeFilter((value) => (value === nextType ? value : nextType))
+    setReferenceFilter((value) =>
+      value === nextReference ? value : nextReference,
+    )
+    setShowDetailOnMobile(Boolean(nextId))
+  }, [searchParamsKey])
+
+  useEffect(() => {
+    const nextId = selectedId && selectedId !== 'new' ? selectedId : null
 
     const next = new URLSearchParams(searchParams)
     if (nextId) next.set('id', nextId)
     else next.delete('id')
+    if (typeFilter) next.set('type', typeFilter)
+    else next.delete('type')
+    if (referenceFilter) next.set('reference', referenceFilter)
+    else next.delete('reference')
+
+    if (next.toString() === searchParamsKey) return
+
     setSearchParams(next, { replace: true })
-  }, [searchParams, selectedId, setSearchParams])
+  }, [
+    referenceFilter,
+    searchParams,
+    searchParamsKey,
+    selectedId,
+    setSearchParams,
+    typeFilter,
+  ])
 
   const snippetsQuery = useQuery({
     placeholderData: (previous) => previous,
@@ -147,7 +184,7 @@ export function SnippetsPage() {
 
   const groupsQuery = useQuery({
     placeholderData: (previous) => previous,
-    queryFn: () => getSnippetGroups({ page: 1, size: 200 }),
+    queryFn: () => getSnippetGroups({ page: 1, size: 50 }),
     queryKey: [...snippetsQueryKey, 'groups'],
   })
 
@@ -283,7 +320,7 @@ export function SnippetsPage() {
               />
             </div>
 
-            <div className="min-h-0 flex-1 overflow-y-auto">
+            <Scroll className="flex-1">
               {snippetsQuery.isLoading && snippets.length === 0 ? (
                 <SnippetSkeleton />
               ) : snippets.length === 0 ? (
@@ -295,7 +332,7 @@ export function SnippetsPage() {
                   snippets={snippets}
                 />
               )}
-            </div>
+            </Scroll>
           </section>
         }
         showDetailOnMobile={showDetailOnMobile}
@@ -362,6 +399,13 @@ export function SnippetsPage() {
       />
       <InstallDependencyModal
         initialPackages={installInitialPackages}
+        onInstall={(packages) => {
+          setTerminalOutput({
+            onFinish: () => toast.success('依赖安装完成'),
+            title: '安装依赖',
+            url: getDependencyInstallUrl(packages),
+          })
+        }}
         onClose={() => {
           setInstallOpen(false)
           setInstallInitialPackages('')
@@ -369,6 +413,16 @@ export function SnippetsPage() {
         open={installOpen}
       />
       <UpdateDependenciesModal
+        onInstall={(packageName, onFinish) => {
+          setTerminalOutput({
+            onFinish: () => {
+              toast.success('依赖更新完成')
+              onFinish?.()
+            },
+            title: `更新依赖：${packageName}`,
+            url: getDependencyInstallUrl(packageName),
+          })
+        }}
         onClose={() => setDependenciesOpen(false)}
         open={dependenciesOpen}
       />
@@ -381,6 +435,13 @@ export function SnippetsPage() {
         onClose={() => setLogsOpen(false)}
         open={logsOpen}
         snippet={selectedFunction}
+      />
+      <TerminalOutputDialog
+        onClose={() => setTerminalOutput(null)}
+        onFinish={terminalOutput?.onFinish}
+        open={Boolean(terminalOutput)}
+        title={terminalOutput?.title ?? '终端输出'}
+        url={terminalOutput?.url ?? null}
       />
     </>
   )
@@ -597,7 +658,11 @@ function SnippetEditor(props: {
             </p>
           </div>
         </div>
-        <div className="flex shrink-0 items-center gap-2 overflow-x-auto">
+        <Scroll
+          className="shrink-0"
+          innerClassName="flex items-center gap-2"
+          orientation="horizontal"
+        >
           {isFunction && editSnippet ? (
             <>
               <Button
@@ -669,11 +734,14 @@ function SnippetEditor(props: {
             )}
             保存
           </Button>
-        </div>
+        </Scroll>
       </div>
 
       <div className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[19rem_minmax(0,1fr)]">
-        <div className="min-h-0 space-y-3 overflow-y-auto border-b border-neutral-200 p-4 lg:border-b-0 lg:border-r dark:border-neutral-800">
+        <Scroll
+          className="min-h-0 border-b border-neutral-200 lg:border-b-0 lg:border-r dark:border-neutral-800"
+          innerClassName="space-y-3 p-4"
+        >
           <Field label="名称">
             <TextInput
               disabled={isBuiltInFunction}
@@ -781,7 +849,7 @@ function SnippetEditor(props: {
               />
             </Field>
           )}
-        </div>
+        </Scroll>
 
         <CodeEditorSurface
           language={SnippetTypeToLanguage[form.type]}
@@ -800,27 +868,15 @@ function CodeEditorSurface(props: {
   onSave: () => void
   value: string
 }) {
-  const onKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 's') {
-      event.preventDefault()
-      props.onSave()
-    }
-  }
-
   return (
-    <div className="flex min-h-0 flex-col bg-neutral-950 text-neutral-100">
-      <div className="flex h-10 shrink-0 items-center justify-between border-b border-neutral-800 px-4 text-xs text-neutral-400">
-        <span className="font-medium uppercase">{props.language}</span>
-        <span>{props.value.split('\n').length} lines</span>
-      </div>
-      <TextArea
-        controlClassName="min-h-[32rem] flex-1 resize-none rounded-none border-0 bg-neutral-950 p-4 font-mono text-xs leading-5 text-neutral-100 focus:border-transparent focus:ring-0 dark:border-0 dark:bg-neutral-950"
-        onChange={props.onChange}
-        onKeyDown={onKeyDown}
-        spellCheck={false}
-        value={props.value}
-      />
-    </div>
+    <CodeEditor
+      className="min-h-[32rem]"
+      language={props.language}
+      onChange={props.onChange}
+      onSave={props.onSave}
+      title={props.language}
+      value={props.value}
+    />
   )
 }
 
@@ -1058,6 +1114,7 @@ function PreviewTagList<TItem>(props: {
 
 function InstallDependencyModal(props: {
   initialPackages: string
+  onInstall: (packages: string[]) => void
   onClose: () => void
   open: boolean
 }) {
@@ -1067,23 +1124,15 @@ function InstallDependencyModal(props: {
     if (props.open) setInput(props.initialPackages)
   }, [props.initialPackages, props.open])
 
-  const mutation = useMutation({
-    mutationFn: () => installDependencies(parsePackageInput(input)),
-    onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '安装依赖失败')),
-    onSuccess: () => {
-      toast.success('依赖安装任务已提交')
-      props.onClose()
-    },
-  })
-
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    if (parsePackageInput(input).length === 0) {
+    const packages = parsePackageInput(input)
+    if (packages.length === 0) {
       toast.error('请输入依赖包名')
       return
     }
-    mutation.mutate()
+    props.onInstall(packages)
+    props.onClose()
   }
 
   return (
@@ -1099,12 +1148,8 @@ function InstallDependencyModal(props: {
           />
         </Field>
         <div className="flex justify-end">
-          <Button disabled={mutation.isPending} type="submit">
-            {mutation.isPending ? (
-              <Loader2 aria-hidden="true" className="size-4 animate-spin" />
-            ) : (
-              <Download aria-hidden="true" className="size-4" />
-            )}
+          <Button type="submit">
+            <Download aria-hidden="true" className="size-4" />
             安装
           </Button>
         </div>
@@ -1114,6 +1159,7 @@ function InstallDependencyModal(props: {
 }
 
 function UpdateDependenciesModal(props: {
+  onInstall: (packageName: string, onFinish?: () => void) => void
   onClose: () => void
   open: boolean
 }) {
@@ -1124,15 +1170,12 @@ function UpdateDependenciesModal(props: {
     queryKey: ['dependencies', 'graph'],
   })
   const dependencies = Object.entries(graphQuery.data?.dependencies ?? {})
-  const mutation = useMutation({
-    mutationFn: installDependencies,
-    onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '更新依赖失败')),
-    onSuccess: async () => {
-      toast.success('依赖更新任务已提交')
-      await queryClient.invalidateQueries({ queryKey: ['dependencies'] })
-    },
-  })
+  const refreshDependencies = async () => {
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['dependencies'] }),
+      graphQuery.refetch(),
+    ])
+  }
 
   return (
     <Modal onClose={props.onClose} open={props.open} title="依赖更新">
@@ -1181,10 +1224,13 @@ function UpdateDependenciesModal(props: {
                 dependencies.map(([name, version]) => (
                   <DependencyRow
                     currentVersion={version}
-                    disabled={mutation.isPending}
                     key={name}
                     name={name}
-                    onUpdate={(packageName) => mutation.mutate(packageName)}
+                    onUpdate={(packageName) =>
+                      props.onInstall(packageName, () => {
+                        void refreshDependencies()
+                      })
+                    }
                     open={props.open}
                   />
                 ))
@@ -1199,7 +1245,6 @@ function UpdateDependenciesModal(props: {
 
 function DependencyRow(props: {
   currentVersion: string
-  disabled: boolean
   name: string
   onUpdate: (packageName: string) => void
   open: boolean
@@ -1232,7 +1277,7 @@ function DependencyRow(props: {
       </td>
       <td className="px-3 py-2 text-right">
         <Button
-          disabled={props.disabled || !latestVersion}
+          disabled={!latestVersion}
           onClick={() => {
             if (latestVersion) props.onUpdate(`${props.name}@${latestVersion}`)
           }}
@@ -1270,9 +1315,15 @@ function CompiledCodeModal(props: {
           {getErrorMessage(query.error, '读取编译产物失败')}
         </p>
       ) : (
-        <pre className="max-h-[70vh] overflow-auto rounded border border-neutral-200 bg-neutral-950 p-4 font-mono text-xs leading-5 text-neutral-100 dark:border-neutral-800">
-          {query.data || '暂无编译产物'}
-        </pre>
+        <Scroll
+          className="rounded border border-neutral-200 bg-neutral-950 dark:border-neutral-800"
+          orientation="both"
+          viewportClassName="max-h-[70vh]"
+        >
+          <pre className="p-4 font-mono text-xs leading-5 text-neutral-100">
+            {query.data || '暂无编译产物'}
+          </pre>
+        </Scroll>
       )}
     </Modal>
   )
@@ -1342,7 +1393,7 @@ function FunctionLogsDrawer(props: {
           ))}
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto">
+        <Scroll className="flex-1">
           {logsQuery.isLoading ? (
             <div className="flex justify-center py-20">
               <InlineLoading label="正在读取调用日志" />
@@ -1367,7 +1418,7 @@ function FunctionLogsDrawer(props: {
               ))}
             </div>
           )}
-        </div>
+        </Scroll>
 
         {pagination && pagination.totalPage > 1 ? (
           <div className="flex shrink-0 justify-center border-t border-neutral-200 pt-3 dark:border-neutral-800">
@@ -1528,7 +1579,7 @@ function Modal(props: {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-      <div className="max-h-[90vh] w-full max-w-3xl overflow-hidden rounded border border-neutral-200 bg-white shadow-xl dark:border-neutral-800 dark:bg-neutral-950">
+      <div className="flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded border border-neutral-200 bg-white shadow-xl dark:border-neutral-800 dark:bg-neutral-950">
         <div className="flex items-center justify-between border-b border-neutral-200 px-5 py-4 dark:border-neutral-800">
           <h2 className="text-lg font-semibold">{props.title}</h2>
           <button
@@ -1539,9 +1590,9 @@ function Modal(props: {
             <X aria-hidden="true" className="size-5" />
           </button>
         </div>
-        <div className="max-h-[calc(90vh-5rem)] overflow-y-auto p-5">
+        <Scroll className="flex-1" innerClassName="p-5">
           {props.children}
-        </div>
+        </Scroll>
       </div>
     </div>
   )
@@ -1908,6 +1959,12 @@ function formatLogArgs(args: unknown[]) {
       }
     })
     .join(' ')
+}
+
+function readSnippetTypeFilter(value: string | null): SnippetType | '' {
+  return snippetTypes.includes(value as SnippetType)
+    ? (value as SnippetType)
+    : ''
 }
 
 function getErrorMessage(error: unknown, fallback: string) {

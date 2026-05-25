@@ -8,6 +8,7 @@ import {
   Eye,
   EyeOff,
   Fingerprint,
+  Globe,
   GripVertical,
   Key,
   ListPlus,
@@ -31,7 +32,7 @@ import {
   useRef,
   useState,
 } from 'react'
-import { useNavigate, useSearchParams } from 'react-router'
+import { useNavigate, useParams, useSearchParams } from 'react-router'
 import { toast } from 'sonner'
 import type {
   CreateMetaPresetDto,
@@ -84,9 +85,11 @@ import {
 import { API_URL } from '../constants/env'
 import { Button } from '../ui/button'
 import { cn } from '../ui/cn'
+import { IpInfoPopover } from '../ui/ip-info-popover'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
 import { MasterDetailLayout } from '../ui/page-layout'
 import { Panel } from '../ui/panel'
+import { Scroll } from '../ui/scroll'
 import { SelectField } from '../ui/select'
 import { Switch } from '../ui/switch'
 import { TextArea, TextInput } from '../ui/text-field'
@@ -152,6 +155,13 @@ const aiProviderTypeOptions: Array<{ label: string; value: AIProviderType }> = [
   { label: 'Anthropic', value: 'anthropic' },
   { label: 'OpenRouter', value: 'openrouter' },
 ]
+
+const socialOptions = [
+  { label: 'GitHub', value: 'github' },
+  { label: 'Weibo', value: 'weibo' },
+  { label: '网易云', value: 'netease' },
+  { label: '哔哩哔哩', value: 'bilibili' },
+] as const
 
 const staticGroupsBefore: SettingsGroupSummary[] = [
   {
@@ -220,11 +230,14 @@ interface SettingsGroupSummary {
 
 export function SettingsPage() {
   const queryClient = useQueryClient()
-  const [searchParams, setSearchParams] = useSearchParams()
+  const navigate = useNavigate()
+  const { tab } = useParams()
+  const [searchParams] = useSearchParams()
+  const queryGroup = searchParams.get('group')
+  const selectedGroup = tab || queryGroup || 'user'
   const [showDetailOnMobile, setShowDetailOnMobile] = useState(() =>
-    searchParams.has('group'),
+    Boolean(tab || queryGroup),
   )
-  const selectedGroup = searchParams.get('group') || 'user'
 
   const schemaQuery = useQuery({
     queryFn: getFormSchema,
@@ -249,13 +262,32 @@ export function SettingsPage() {
     groups.find((group) => group.key === selectedGroup) ?? groups[0]
 
   const selectGroup = (key: string) => {
-    setSearchParams((current) => {
-      const next = new URLSearchParams(current)
-      next.set('group', key)
-      return next
+    const nextSearchParams = new URLSearchParams(searchParams)
+    nextSearchParams.delete('group')
+    const search = nextSearchParams.toString()
+
+    navigate({
+      pathname: `/setting/${encodeURIComponent(key)}`,
+      search: search ? `?${search}` : '',
     })
     setShowDetailOnMobile(true)
   }
+
+  useEffect(() => {
+    if (tab || !queryGroup) return
+
+    const nextSearchParams = new URLSearchParams(searchParams)
+    nextSearchParams.delete('group')
+    const search = nextSearchParams.toString()
+
+    navigate(
+      {
+        pathname: `/setting/${encodeURIComponent(queryGroup)}`,
+        search: search ? `?${search}` : '',
+      },
+      { replace: true },
+    )
+  }, [navigate, queryGroup, searchParams, tab])
 
   return (
     <MasterDetailLayout
@@ -279,45 +311,47 @@ export function SettingsPage() {
             <span className="text-xs text-neutral-400">{groups.length} 项</span>
           </div>
 
-          <nav className="min-h-0 flex-1 overflow-y-auto p-2">
-            {groups.map((group) => {
-              const Icon = group.icon
-              const selected = activeGroup.key === group.key
+          <Scroll className="flex-1" innerClassName="p-2">
+            <nav>
+              {groups.map((group) => {
+                const Icon = group.icon
+                const selected = activeGroup.key === group.key
 
-              return (
-                <button
-                  className={cn(
-                    'flex w-full items-center gap-3 rounded px-3 py-2 text-left transition-colors',
-                    selected
-                      ? 'bg-neutral-100 text-neutral-950 dark:bg-neutral-900 dark:text-neutral-50'
-                      : 'text-neutral-600 hover:bg-neutral-50 dark:text-neutral-300 dark:hover:bg-neutral-900/70',
-                  )}
-                  key={group.key}
-                  onClick={() => selectGroup(group.key)}
-                  type="button"
-                >
-                  <span
+                return (
+                  <button
                     className={cn(
-                      'flex size-9 shrink-0 items-center justify-center rounded',
+                      'flex w-full items-center gap-3 rounded px-3 py-2 text-left transition-colors',
                       selected
-                        ? 'bg-[var(--color-primary-shallow)] text-[var(--color-primary)]'
-                        : 'bg-neutral-100 text-neutral-500 dark:bg-neutral-900 dark:text-neutral-400',
+                        ? 'bg-neutral-100 text-neutral-950 dark:bg-neutral-900 dark:text-neutral-50'
+                        : 'text-neutral-600 hover:bg-neutral-50 dark:text-neutral-300 dark:hover:bg-neutral-900/70',
                     )}
+                    key={group.key}
+                    onClick={() => selectGroup(group.key)}
+                    type="button"
                   >
-                    <Icon aria-hidden="true" className="size-4" />
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-medium">
-                      {group.title}
+                    <span
+                      className={cn(
+                        'flex size-9 shrink-0 items-center justify-center rounded',
+                        selected
+                          ? 'bg-[var(--color-primary-shallow)] text-[var(--color-primary)]'
+                          : 'bg-neutral-100 text-neutral-500 dark:bg-neutral-900 dark:text-neutral-400',
+                      )}
+                    >
+                      <Icon aria-hidden="true" className="size-4" />
                     </span>
-                    <span className="mt-0.5 block truncate text-xs text-neutral-500 dark:text-neutral-400">
-                      {group.description}
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm font-medium">
+                        {group.title}
+                      </span>
+                      <span className="mt-0.5 block truncate text-xs text-neutral-500 dark:text-neutral-400">
+                        {group.description}
+                      </span>
                     </span>
-                  </span>
-                </button>
-              )
-            })}
-          </nav>
+                  </button>
+                )
+              })}
+            </nav>
+          </Scroll>
         </aside>
       }
       detail={
@@ -355,7 +389,7 @@ export function SettingsPage() {
             ) : null}
           </div>
 
-          <div className="min-h-0 flex-1 overflow-y-auto p-4">
+          <Scroll className="flex-1" innerClassName="p-4">
             {activeGroup.type === 'user' ? (
               <OwnerSettings
                 onSaved={() =>
@@ -371,7 +405,7 @@ export function SettingsPage() {
                 schema={schemaQuery.data}
               />
             ) : null}
-          </div>
+          </Scroll>
         </main>
       }
     />
@@ -419,12 +453,21 @@ function OwnerSettings(props: { onSaved: () => Promise<unknown> }) {
   })
 
   const socialEntries = Object.entries(form.socialIds ?? {})
+  const usedSocialKeys = new Set(socialEntries.map(([key]) => key))
+  const availableSocialOption = socialOptions.find(
+    (option) => !usedSocialKeys.has(option.value),
+  )
 
   const setField = (key: keyof UpdateOwnerData, value: string) => {
     setForm((current) => ({ ...current, [key]: value }))
   }
 
   const updateSocial = (oldKey: string, nextKey: string, value: string) => {
+    if (oldKey !== nextKey && Object.hasOwn(form.socialIds ?? {}, nextKey)) {
+      toast.warning('该社交平台已存在')
+      return
+    }
+
     setForm((current) => {
       const next = { ...current.socialIds }
       if (oldKey !== nextKey) delete next[oldKey]
@@ -439,6 +482,11 @@ function OwnerSettings(props: { onSaved: () => Promise<unknown> }) {
       delete next[key]
       return { ...current, socialIds: next }
     })
+  }
+
+  const addSocial = () => {
+    if (!availableSocialOption) return
+    updateSocial(`custom-${Date.now()}`, availableSocialOption.value, '')
   }
 
   if (ownerQuery.isLoading) return <SettingsSkeleton title="用户" />
@@ -490,18 +538,50 @@ function OwnerSettings(props: { onSaved: () => Promise<unknown> }) {
               )}
             </span>
           </button>
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <div className="truncate text-base font-semibold text-neutral-950 dark:text-neutral-50">
               {form.name || '未命名用户'}
             </div>
             <div className="mt-1 text-sm text-neutral-500">
               @{form.username || 'username'}
             </div>
-            {ownerQuery.data?.lastLoginTime ? (
-              <div className="mt-1 text-xs text-neutral-500">
-                上次登录：{formatDateTime(ownerQuery.data.lastLoginTime)}
-              </div>
-            ) : null}
+            <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-neutral-500 dark:text-neutral-400">
+              {form.mail ? (
+                <span className="inline-flex min-w-0 items-center gap-1.5">
+                  <Mail
+                    aria-hidden="true"
+                    className="size-3.5 shrink-0 text-neutral-400"
+                  />
+                  <span className="truncate">{form.mail}</span>
+                </span>
+              ) : null}
+              {ownerQuery.data?.lastLoginTime ? (
+                <span className="inline-flex min-w-0 items-center gap-1.5">
+                  <Shield
+                    aria-hidden="true"
+                    className="size-3.5 shrink-0 text-neutral-400"
+                  />
+                  <span>
+                    上次登录：{formatDateTime(ownerQuery.data.lastLoginTime)}
+                  </span>
+                </span>
+              ) : null}
+              {ownerQuery.data?.lastLoginIp ? (
+                <IpInfoPopover
+                  className="inline-flex min-w-0 items-center gap-1.5 hover:underline"
+                  ip={ownerQuery.data.lastLoginIp}
+                  trigger={
+                    <>
+                      <Globe
+                        aria-hidden="true"
+                        className="size-3.5 shrink-0 text-neutral-400"
+                      />
+                      <span>{ownerQuery.data.lastLoginIp}</span>
+                    </>
+                  }
+                />
+              ) : null}
+            </div>
           </div>
         </div>
 
@@ -545,7 +625,8 @@ function OwnerSettings(props: { onSaved: () => Promise<unknown> }) {
           <div className="flex items-center justify-between border-b border-neutral-100 px-3 py-2 dark:border-neutral-900">
             <h3 className="text-sm font-medium">社交账号</h3>
             <Button
-              onClick={() => updateSocial(`custom-${Date.now()}`, 'github', '')}
+              disabled={!availableSocialOption}
+              onClick={addSocial}
               type="button"
               variant="subtle"
             >
@@ -562,13 +643,28 @@ function OwnerSettings(props: { onSaved: () => Promise<unknown> }) {
                   className="grid gap-2 md:grid-cols-[12rem_1fr_auto]"
                   key={key}
                 >
-                  <TextInput
-                    aria-label={undefined}
-                    onChange={(nextKey) =>
-                      updateSocial(key, nextKey, String(value))
-                    }
-                    value={key}
-                  />
+                  {socialOptions.some((option) => option.value === key) ? (
+                    <SelectField
+                      aria-label="社交平台"
+                      onValueChange={(nextKey) =>
+                        updateSocial(key, nextKey, String(value))
+                      }
+                      options={socialOptions.filter(
+                        (option) =>
+                          option.value === key ||
+                          !usedSocialKeys.has(option.value),
+                      )}
+                      value={key}
+                    />
+                  ) : (
+                    <TextInput
+                      aria-label={undefined}
+                      onChange={(nextKey) =>
+                        updateSocial(key, nextKey, String(value))
+                      }
+                      value={key}
+                    />
+                  )}
                   <TextInput
                     onChange={(nextValue) => updateSocial(key, key, nextValue)}
                     value={String(value)}
@@ -2046,9 +2142,19 @@ function SessionSection() {
                         {session.current ? '当前设备' : '其他设备'}
                       </span>
                       {session.ip ? (
-                        <span className="text-xs text-neutral-500">
-                          {session.ip}
-                        </span>
+                        <IpInfoPopover
+                          className="inline-flex min-w-0 items-center gap-1 text-xs text-neutral-500 hover:underline dark:text-neutral-400"
+                          ip={session.ip}
+                          trigger={
+                            <>
+                              <Globe
+                                aria-hidden="true"
+                                className="size-3 shrink-0 text-neutral-400"
+                              />
+                              <span>{session.ip}</span>
+                            </>
+                          }
+                        />
                       ) : null}
                     </div>
                     <p className="mt-2 truncate font-mono text-xs text-neutral-600 dark:text-neutral-300">
@@ -2306,7 +2412,7 @@ function TokenPanel(props: { onBack: () => void }) {
           新增
         </Button>
       </PanelHeader>
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <Scroll className="flex-1">
         {tokensQuery.isLoading ? (
           <div className="p-4 text-sm text-neutral-500">加载中...</div>
         ) : (tokensQuery.data ?? []).length === 0 ? (
@@ -2371,7 +2477,7 @@ function TokenPanel(props: { onBack: () => void }) {
             })}
           </div>
         )}
-      </div>
+      </Scroll>
 
       <Modal
         onClose={() => setCreateOpen(false)}
@@ -2590,7 +2696,7 @@ function PasskeyPanel(props: { onBack: () => void }) {
           </Button>
         </form>
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <Scroll className="flex-1">
         {passkeysQuery.isLoading ? (
           <div className="p-4 text-sm text-neutral-500">加载中...</div>
         ) : (passkeysQuery.data ?? []).length === 0 ? (
@@ -2631,7 +2737,7 @@ function PasskeyPanel(props: { onBack: () => void }) {
             ))}
           </div>
         )}
-      </div>
+      </Scroll>
     </div>
   )
 }
@@ -3190,7 +3296,7 @@ function Modal(props: {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-      <div className="max-h-[90vh] w-full max-w-2xl overflow-hidden rounded border border-neutral-200 bg-white shadow-xl dark:border-neutral-800 dark:bg-neutral-950">
+      <div className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded border border-neutral-200 bg-white shadow-xl dark:border-neutral-800 dark:bg-neutral-950">
         <div className="flex items-center justify-between border-b border-neutral-200 px-5 py-4 dark:border-neutral-800">
           <h2 className="text-lg font-semibold">{props.title}</h2>
           <button
@@ -3201,9 +3307,9 @@ function Modal(props: {
             <X aria-hidden="true" className="size-5" />
           </button>
         </div>
-        <div className="max-h-[calc(90vh-5rem)] overflow-y-auto p-5">
+        <Scroll className="flex-1" innerClassName="p-5">
           {props.children}
-        </div>
+        </Scroll>
       </div>
     </div>
   )

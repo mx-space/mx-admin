@@ -3,17 +3,22 @@ import { API_URL } from '~/app/constants/env'
 import { deleteJson, getJson, patchJson, requestJson } from './http'
 
 export interface FileItem {
+  blurhash?: null | string
   created?: number
   name: string
+  palette?: { dominant?: string; swatches?: string[] } | null
   url: string
 }
 
 export interface UploadResponse {
+  blurhash?: null | string
   name: string
+  palette?: { dominant?: string; swatches?: string[] } | null
   url: string
 }
 
 export interface OrphanFile {
+  blurhash?: null | string
   byteSize?: null | number
   createdAt: string
   detachedAt?: null | string
@@ -24,6 +29,7 @@ export interface OrphanFile {
   readerId?: null | string
   refId?: null | string
   refType?: null | string
+  palette?: { dominant?: string; swatches?: string[] } | null
   status?: 'active' | 'detached' | 'pending'
   uploadedBy?: null | string
 }
@@ -48,6 +54,7 @@ export interface CleanupResult {
 }
 
 export interface CommentUploadFile {
+  blurhash?: null | string
   byteSize?: number
   createdAt: string
   detachedAt?: string
@@ -58,6 +65,7 @@ export interface CommentUploadFile {
   readerId?: string
   refId?: string
   refType?: string
+  palette?: { dominant?: string; swatches?: string[] } | null
   status: 'active' | 'detached' | 'pending'
 }
 

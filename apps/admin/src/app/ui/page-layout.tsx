@@ -6,6 +6,7 @@ import {
 import type { ReactNode } from 'react'
 
 import { cn } from './cn'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from './layout'
 
 export function AppPage(props: { children: ReactNode; className?: string }) {
   return (
@@ -29,16 +30,17 @@ export function PageHeader(props: {
   return (
     <header
       className={cn(
-        'flex shrink-0 flex-wrap items-center justify-between gap-3 border-b border-neutral-200 bg-white px-4 py-3 dark:border-neutral-800 dark:bg-neutral-950',
+        'flex shrink-0 items-center justify-between gap-3 border-b border-neutral-200 bg-white px-4 dark:border-neutral-800 dark:bg-neutral-950',
+        APP_SHELL_HEADER_HEIGHT_CLASS,
         props.className,
       )}
     >
       <div className="min-w-0">
-        <h1 className="text-base font-semibold text-neutral-950 dark:text-neutral-50">
+        <h1 className="truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
           {props.title}
         </h1>
         {props.description ? (
-          <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
+          <p className="mt-0.5 truncate text-xs text-neutral-500 dark:text-neutral-400">
             {props.description}
           </p>
         ) : null}

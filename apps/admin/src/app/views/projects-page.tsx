@@ -14,7 +14,7 @@ import {
   Trash2,
   X,
 } from 'lucide-react'
-import { FormEvent, useEffect, useMemo, useState } from 'react'
+import { FormEvent, useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { toast } from 'sonner'
 import type { ProjectModel } from '~/app/models/project'
@@ -35,6 +35,7 @@ import { CompactPagination } from '../ui/compact-pagination'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
 import { MarkdownRender } from '../ui/markdown-render'
 import { MasterDetailLayout } from '../ui/page-layout'
+import { Scroll } from '../ui/scroll'
 import { TextArea, TextInput } from '../ui/text-field'
 import { relativeTimeFromNow } from '../utils/time'
 
@@ -59,6 +60,7 @@ const emptyForm: ProjectFormState = {
 export function ProjectsPage() {
   const queryClient = useQueryClient()
   const [searchParams, setSearchParams] = useSearchParams()
+  const searchParamsKey = searchParams.toString()
   const [page, setPage] = useState(readPage(searchParams.get('page')))
   const [selectedId, setSelectedId] = useState<string | null>(
     searchParams.get('id'),
@@ -68,6 +70,7 @@ export function ProjectsPage() {
   const [showDetailOnMobile, setShowDetailOnMobile] = useState(false)
 
   const projectsQuery = useQuery({
+    placeholderData: (previous) => previous,
     queryFn: () => getProjects({ page, size: pageSize }),
     queryKey: ['projects', 'list', page, pageSize],
   })
@@ -80,14 +83,33 @@ export function ProjectsPage() {
   const projects = projectsQuery.data?.data ?? []
   const pagination = projectsQuery.data?.pagination
 
+  useLayoutEffect(() => {
+    const nextPage = readPage(searchParams.get('page'))
+    const nextSelectedId = searchParams.get('id')
+
+    setPage((value) => (value === nextPage ? value : nextPage))
+    setSelectedId((value) =>
+      value === nextSelectedId ? value : nextSelectedId,
+    )
+
+    if (nextSelectedId) {
+      setIsCreating(false)
+      setIsEditing(false)
+      setShowDetailOnMobile(true)
+    } else if (!isCreating) {
+      setIsEditing(false)
+      setShowDetailOnMobile(false)
+    }
+  }, [isCreating, searchParamsKey])
+
   useEffect(() => {
     const nextParams = new URLSearchParams()
     if (page > 1) nextParams.set('page', String(page))
     if (selectedId) nextParams.set('id', selectedId)
-    if (nextParams.toString() !== searchParams.toString()) {
+    if (nextParams.toString() !== searchParamsKey) {
       setSearchParams(nextParams, { replace: true })
     }
-  }, [page, searchParams, selectedId, setSearchParams])
+  }, [page, searchParamsKey, selectedId, setSearchParams])
 
   const invalidateProjects = async () => {
     await queryClient.invalidateQueries({ queryKey: ['projects'] })
@@ -130,7 +152,7 @@ export function ProjectsPage() {
             </Button>
           </div>
 
-          <div className="min-h-0 flex-1 overflow-y-auto">
+          <Scroll className="flex-1">
             {projectsQuery.isLoading && projects.length === 0 ? (
               <ProjectListSkeleton />
             ) : projects.length === 0 ? (
@@ -150,7 +172,7 @@ export function ProjectsPage() {
                 />
               ))
             )}
-          </div>
+          </Scroll>
 
           {pagination && pagination.totalPages > 1 ? (
             <div className="shrink-0 border-t border-neutral-200 p-3 dark:border-neutral-800">
@@ -417,7 +439,7 @@ function ProjectDetailPanel(props: {
         </div>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <Scroll className="flex-1">
         <div className="mx-auto grid max-w-3xl gap-6 p-6">
           <div className="flex items-start gap-4">
             <ProjectAvatar project={props.project} size="large" />
@@ -455,7 +477,7 @@ function ProjectDetailPanel(props: {
             </p>
           )}
         </div>
-      </div>
+      </Scroll>
     </section>
   )
 }
@@ -573,71 +595,69 @@ function ProjectFormPanel(props: {
         </div>
       </div>
 
-      <form
-        className="min-h-0 flex-1 overflow-y-auto"
-        id="project-form"
-        onSubmit={handleSubmit}
-      >
-        <div className="mx-auto grid max-w-3xl gap-4 p-6">
-          {githubImportOpen ? (
-            <GithubImportPanel
-              defaultValue={form.projectUrl}
-              onApply={applyGithubRepo}
-            />
-          ) : null}
-          <div className="grid gap-4 md:grid-cols-2">
+      <Scroll className="flex-1">
+        <form id="project-form" onSubmit={handleSubmit}>
+          <div className="mx-auto grid max-w-3xl gap-4 p-6">
+            {githubImportOpen ? (
+              <GithubImportPanel
+                defaultValue={form.projectUrl}
+                onApply={applyGithubRepo}
+              />
+            ) : null}
+            <div className="grid gap-4 md:grid-cols-2">
+              <TextInput
+                label="项目名称"
+                onChange={(value) => updateField('name', value)}
+                required
+                value={form.name}
+              />
+              <TextInput
+                label="头像 URL"
+                onChange={(value) => updateField('avatar', value)}
+                value={form.avatar ?? ''}
+              />
+            </div>
             <TextInput
-              label="项目名称"
-              onChange={(value) => updateField('name', value)}
+              label="描述"
+              onChange={(value) => updateField('description', value)}
+              value={form.description}
+            />
+            <div className="grid gap-4 md:grid-cols-3">
+              <TextInput
+                label="项目 URL"
+                onChange={(value) => updateField('projectUrl', value)}
+                value={form.projectUrl ?? ''}
+              />
+              <TextInput
+                label="预览 URL"
+                onChange={(value) => updateField('previewUrl', value)}
+                value={form.previewUrl ?? ''}
+              />
+              <TextInput
+                label="文档 URL"
+                onChange={(value) => updateField('docUrl', value)}
+                value={form.docUrl ?? ''}
+              />
+            </div>
+            <TextArea
+              controlClassName="min-h-20"
+              label="图片 URL"
+              onChange={(value) => updateField('imagesText', value)}
+              placeholder="一行一个图片 URL"
+              value={form.imagesText}
+            />
+            <ImagePreview imagesText={form.imagesText} />
+            <TextArea
+              controlClassName="min-h-72 font-mono"
+              label="内容"
+              onChange={(value) => updateField('text', value)}
               required
-              value={form.name}
+              value={form.text}
             />
-            <TextInput
-              label="头像 URL"
-              onChange={(value) => updateField('avatar', value)}
-              value={form.avatar ?? ''}
-            />
+            {error ? <p className="text-sm text-red-500">{error}</p> : null}
           </div>
-          <TextInput
-            label="描述"
-            onChange={(value) => updateField('description', value)}
-            value={form.description}
-          />
-          <div className="grid gap-4 md:grid-cols-3">
-            <TextInput
-              label="项目 URL"
-              onChange={(value) => updateField('projectUrl', value)}
-              value={form.projectUrl ?? ''}
-            />
-            <TextInput
-              label="预览 URL"
-              onChange={(value) => updateField('previewUrl', value)}
-              value={form.previewUrl ?? ''}
-            />
-            <TextInput
-              label="文档 URL"
-              onChange={(value) => updateField('docUrl', value)}
-              value={form.docUrl ?? ''}
-            />
-          </div>
-          <TextArea
-            controlClassName="min-h-20"
-            label="图片 URL"
-            onChange={(value) => updateField('imagesText', value)}
-            placeholder="一行一个图片 URL"
-            value={form.imagesText}
-          />
-          <ImagePreview imagesText={form.imagesText} />
-          <TextArea
-            controlClassName="min-h-72 font-mono"
-            label="内容"
-            onChange={(value) => updateField('text', value)}
-            required
-            value={form.text}
-          />
-          {error ? <p className="text-sm text-red-500">{error}</p> : null}
-        </div>
-      </form>
+        </form>
+      </Scroll>
     </section>
   )
 }

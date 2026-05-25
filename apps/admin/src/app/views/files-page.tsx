@@ -1,3 +1,4 @@
+import { Dialog } from '@base-ui/react/dialog'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   Copy,
@@ -12,8 +13,9 @@ import {
   Upload,
   User,
 } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
+import { decode } from 'blurhash'
 import { toast } from 'sonner'
 import type { LucideIcon } from 'lucide-react'
 import type { ChangeEvent, DragEvent } from 'react'
@@ -42,6 +44,7 @@ import { Checkbox } from '../ui/checkbox'
 import { cn } from '../ui/cn'
 import { CompactPagination } from '../ui/compact-pagination'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
+import { Scroll } from '../ui/scroll'
 import { SelectField } from '../ui/select'
 
 type FilesSource = 'comment-images' | 'files' | 'orphans'
@@ -58,6 +61,7 @@ const sourcePathMap: Record<FilesSource, string> = {
   files: '/files',
   orphans: '/files/orphans',
 }
+const blurhashPreviewSize = 32
 
 interface UploadItem {
   error?: string
@@ -89,6 +93,15 @@ const commentStatusOptions: Array<{
   { label: '已脱离', value: 'detached' },
 ]
 
+const commentUploadStatusLabels: Record<
+  Exclude<CommentUploadStatus, ''>,
+  string
+> = {
+  active: '已绑定',
+  detached: '已脱离',
+  pending: '待绑定',
+}
+
 export function FilesPage() {
   return <FilesSurface initialSource="files" />
 }
@@ -114,6 +127,10 @@ function FilesSurface(props: { initialSource: FilesSource }) {
   const [selectAllOrphans, setSelectAllOrphans] = useState(false)
   const [uploadItems, setUploadItems] = useState<UploadItem[]>([])
   const [isDraggingUpload, setIsDraggingUpload] = useState(false)
+  const [previewImage, setPreviewImage] = useState<{
+    name: string
+    url: string
+  } | null>(null)
 
   useEffect(() => {
     setSource(props.initialSource)
@@ -210,7 +227,11 @@ function FilesSurface(props: { initialSource: FilesSource }) {
     onError: (error: unknown) =>
       toast.error(getErrorMessage(error, '删除失败')),
     onSuccess: async (result) => {
-      toast.success(result.storageRemoved ? '评论图片已删除' : '记录已删除')
+      if (result.storageRemoved) {
+        toast.success('已删除（含 storage 对象）')
+      } else {
+        toast.warning('已删除记录，但 storage 删除失败（看 mx-core 日志）')
+      }
       await queryClient.invalidateQueries({ queryKey: filesQueryKey })
     },
   })
@@ -420,7 +441,7 @@ function FilesSurface(props: { initialSource: FilesSource }) {
         </div>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <Scroll className="flex-1">
         {source === 'files' ? (
           <div>
             <div className="flex flex-wrap items-center gap-2 border-b border-neutral-200 p-4 dark:border-neutral-800">
@@ -463,6 +484,9 @@ function FilesSurface(props: { initialSource: FilesSource }) {
                   deleteFileMutation.mutate(file)
                 }
               }}
+              onPreview={(file) =>
+                setPreviewImage({ name: file.name, url: file.url })
+              }
             />
           </div>
         ) : null}
@@ -496,6 +520,9 @@ function FilesSurface(props: { initialSource: FilesSource }) {
               )
             }}
             onToggleAllOrphans={handleToggleAllOrphans}
+            onPreview={(file) =>
+              setPreviewImage({ name: file.fileName, url: file.fileUrl })
+            }
             page={orphansPage}
             pageCount={orphansQuery.data?.pagination.totalPage ?? 1}
             selectedIds={selectedOrphanIds}
@@ -516,6 +543,9 @@ function FilesSurface(props: { initialSource: FilesSource }) {
               }
             }}
             onPageChange={setCommentPage}
+            onPreview={(file) =>
+              setPreviewImage({ name: file.fileName, url: file.fileUrl })
+            }
             onStatusChange={(next) => {
               setCommentStatus(next)
               setCommentPage(1)
@@ -526,7 +556,11 @@ function FilesSurface(props: { initialSource: FilesSource }) {
             total={commentUploadsQuery.data?.pagination.total ?? 0}
           />
         ) : null}
-      </div>
+      </Scroll>
+      <ImagePreviewDialog
+        image={previewImage}
+        onClose={() => setPreviewImage(null)}
+      />
     </div>
   )
 }
@@ -648,6 +682,7 @@ function FileGrid(props: {
   loading: boolean
   onCopy: (url: string) => void
   onDelete: (file: FileItem) => void
+  onPreview: (file: FileItem) => void
 }) {
   if (props.loading) return <FileSkeleton />
   if (props.files.length === 0) return <FileEmpty label="暂无文件" />
@@ -669,6 +704,7 @@ function FileGrid(props: {
           key={file.name}
           onCopy={props.onCopy}
           onDelete={props.onDelete}
+          onPreview={props.onPreview}
         />
       ))}
     </div>
@@ -681,18 +717,25 @@ function FileCard(props: {
   imageMode: boolean
   onCopy: (url: string) => void
   onDelete: (file: FileItem) => void
+  onPreview: (file: FileItem) => void
 }) {
   return (
     <article className="group overflow-hidden rounded border border-neutral-200 bg-white transition-colors hover:bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-950 dark:hover:bg-neutral-900/70">
       {props.imageMode ? (
-        <div className="aspect-square overflow-hidden bg-neutral-100 dark:bg-neutral-900">
-          <img
+        <button
+          className="block aspect-square w-full overflow-hidden bg-neutral-100 text-left dark:bg-neutral-900"
+          onClick={() => props.onPreview(props.file)}
+          title="预览图片"
+          type="button"
+        >
+          <BlurhashImage
             alt={props.file.name}
+            blurhash={props.file.blurhash}
             className="h-full w-full object-cover"
-            loading="lazy"
+            dominantColor={props.file.palette?.dominant}
             src={props.file.url}
           />
-        </div>
+        </button>
       ) : null}
       <div className="flex items-center gap-2 p-3">
         {!props.imageMode ? (
@@ -743,6 +786,7 @@ function OrphanGrid(props: {
   onCopy: (url: string) => void
   onDelete: (file: OrphanFile) => void
   onPageChange: (page: number) => void
+  onPreview: (file: OrphanFile) => void
   onSelectAllCurrentPage: (checked: boolean) => void
   onSelectFile: (id: string, checked: boolean) => void
   onToggleAllOrphans: () => void
@@ -765,6 +809,12 @@ function OrphanGrid(props: {
 
   return (
     <>
+      <div className="border-b border-neutral-200 px-4 py-3 text-sm text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
+        <p>孤儿图片是上传后未被任何文章引用的图片。</p>
+        <p className="mt-1 text-xs">
+          清理操作仅删除超过 1 小时的孤儿图片，以避免误删正在编辑中的图片。
+        </p>
+      </div>
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-200 px-4 py-3 text-xs text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
         <div className="flex flex-wrap items-center gap-3">
           <label className="inline-flex items-center gap-2">
@@ -813,15 +863,18 @@ function OrphanGrid(props: {
             deleting={props.deleting}
             file={{
               createdAt: file.createdAt,
+              blurhash: file.blurhash,
               fileName: file.fileName,
               fileUrl: file.fileUrl,
               id: file.id,
               meta: formatBytes(file.byteSize),
+              palette: file.palette,
               status: file.status,
             }}
             key={file.id}
             onCopy={props.onCopy}
             onDelete={() => props.onDelete(file)}
+            onPreview={() => props.onPreview(file)}
             onSelect={(checked) => props.onSelectFile(file.id, checked)}
           />
         ))}
@@ -842,6 +895,7 @@ function CommentUploadGrid(props: {
   onCopy: (url: string) => void
   onDelete: (file: CommentUploadFile) => void
   onPageChange: (page: number) => void
+  onPreview: (file: CommentUploadFile) => void
   onStatusChange: (status: CommentUploadStatus) => void
   page: number
   pageCount: number
@@ -852,6 +906,10 @@ function CommentUploadGrid(props: {
 
   return (
     <>
+      <div className="border-b border-neutral-200 px-4 py-3 text-sm text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
+        读者通过评论编辑器上传之图片。pending 经 2h、detached 经 30min
+        自动清理；评论删除时同步级联清理。此页用于审计与手动干预。
+      </div>
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
         <SelectField
           aria-label="评论图片状态筛选"
@@ -873,20 +931,23 @@ function CommentUploadGrid(props: {
               deleting={props.deleting}
               file={{
                 createdAt: file.createdAt,
+                blurhash: file.blurhash,
                 fileName: file.fileName,
                 fileUrl: file.fileUrl,
                 id: file.id,
                 meta: `${formatBytes(file.byteSize)} · ${file.mimeType ?? '-'}`,
+                palette: file.palette,
                 reference:
                   file.refType && file.refId
                     ? `${file.refType}/${file.refId}`
                     : '未绑定',
                 secondary: `reader: ${file.readerId ?? '-'}`,
-                status: file.status,
+                status: commentUploadStatusLabels[file.status],
               }}
               key={file.id}
               onCopy={props.onCopy}
               onDelete={() => props.onDelete(file)}
+              onPreview={() => props.onPreview(file)}
             />
           ))}
         </div>
@@ -904,17 +965,20 @@ function ImageAuditCard(props: {
   checked?: boolean
   deleting: boolean
   file: {
+    blurhash?: null | string
     createdAt: string
     fileName: string
     fileUrl: string
     id: string
     meta: string
+    palette?: { dominant?: string; swatches?: string[] } | null
     reference?: string
     secondary?: string
     status?: string
   }
   onCopy: (url: string) => void
   onDelete: () => void
+  onPreview: () => void
   onSelect?: (checked: boolean) => void
 }) {
   return (
@@ -934,14 +998,20 @@ function ImageAuditCard(props: {
           />
         </label>
       ) : null}
-      <div className="aspect-square overflow-hidden bg-neutral-100 dark:bg-neutral-900">
-        <img
+      <button
+        className="block aspect-square w-full overflow-hidden bg-neutral-100 text-left dark:bg-neutral-900"
+        onClick={props.onPreview}
+        title="预览图片"
+        type="button"
+      >
+        <BlurhashImage
           alt={props.file.fileName}
+          blurhash={props.file.blurhash}
           className="h-full w-full object-cover"
-          loading="lazy"
+          dominantColor={props.file.palette?.dominant}
           src={props.file.fileUrl}
         />
-      </div>
+      </button>
       <div className="space-y-2 p-3">
         <div className="flex items-center justify-between gap-2">
           <span className="truncate text-xs font-medium">
@@ -994,6 +1064,153 @@ function ImageAuditCard(props: {
         </div>
       </div>
     </article>
+  )
+}
+
+function BlurhashImage(props: {
+  alt: string
+  blurhash?: null | string
+  className?: string
+  dominantColor?: string
+  src: string
+}) {
+  const [loaded, setLoaded] = useState(false)
+  const placeholder = useMemo(
+    () =>
+      props.blurhash
+        ? decodeBlurhashToDataUrl(props.blurhash, blurhashPreviewSize)
+        : null,
+    [props.blurhash],
+  )
+  const backgroundColor = isPreviewColor(props.dominantColor)
+    ? props.dominantColor
+    : undefined
+
+  useEffect(() => {
+    setLoaded(false)
+  }, [props.src])
+
+  return (
+    <span
+      className="relative block h-full w-full overflow-hidden bg-neutral-100 dark:bg-neutral-900"
+      style={backgroundColor ? { backgroundColor } : undefined}
+    >
+      {placeholder ? (
+        <img
+          alt=""
+          aria-hidden="true"
+          className={cn(
+            'absolute inset-0 h-full w-full scale-110 object-cover blur-md transition-opacity duration-300',
+            loaded ? 'opacity-0' : 'opacity-100',
+          )}
+          decoding="async"
+          src={placeholder}
+        />
+      ) : (
+        <span
+          aria-hidden="true"
+          className={cn(
+            'absolute inset-0 bg-neutral-100 transition-opacity duration-300 dark:bg-neutral-900',
+            loaded ? 'opacity-0' : 'opacity-100',
+          )}
+        />
+      )}
+      <img
+        alt={props.alt}
+        className={cn(
+          'relative z-[1] transition-opacity duration-300',
+          props.className,
+          loaded ? 'opacity-100' : 'opacity-0',
+        )}
+        decoding="async"
+        loading="lazy"
+        onError={() => setLoaded(true)}
+        onLoad={() => setLoaded(true)}
+        src={props.src}
+      />
+    </span>
+  )
+}
+
+function decodeBlurhashToDataUrl(hash: string, size: number) {
+  try {
+    if (typeof document === 'undefined') return null
+
+    const pixels = decode(hash, size, size)
+    const canvas = document.createElement('canvas')
+    canvas.width = size
+    canvas.height = size
+
+    const context = canvas.getContext('2d')
+    if (!context) return null
+
+    const imageData = context.createImageData(size, size)
+    imageData.data.set(pixels)
+    context.putImageData(imageData, 0, 0)
+
+    return canvas.toDataURL()
+  } catch {
+    return null
+  }
+}
+
+function isPreviewColor(value: string | undefined) {
+  if (!value) return false
+
+  return (
+    /^#[0-9a-f]{3,8}$/i.test(value) ||
+    /^rgba?\([\d\s.,%]+\)$/i.test(value) ||
+    /^hsla?\([\d\s.,%a-z-]+\)$/i.test(value)
+  )
+}
+
+function ImagePreviewDialog(props: {
+  image: null | { name: string; url: string }
+  onClose: () => void
+}) {
+  return (
+    <Dialog.Root
+      onOpenChange={(open) => {
+        if (!open) props.onClose()
+      }}
+      open={Boolean(props.image)}
+    >
+      <Dialog.Portal>
+        <Dialog.Backdrop className="fixed inset-0 z-40 bg-black/70" />
+        <Dialog.Popup className="fixed inset-4 z-50 flex flex-col overflow-hidden rounded border border-neutral-800 bg-neutral-950 shadow-2xl outline-none sm:inset-8">
+          <div className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
+            <Dialog.Title className="min-w-0 truncate text-sm font-medium text-white">
+              {props.image?.name ?? '图片预览'}
+            </Dialog.Title>
+            <div className="flex shrink-0 items-center gap-2">
+              {props.image ? (
+                <a
+                  className="inline-flex h-8 items-center gap-2 rounded border border-white/15 px-2.5 text-xs text-neutral-200 transition-colors hover:bg-white/10"
+                  href={props.image.url}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  <ExternalLink aria-hidden="true" className="size-3.5" />
+                  打开
+                </a>
+              ) : null}
+              <Dialog.Close className="inline-flex h-8 items-center rounded border border-white/15 px-2.5 text-xs text-neutral-200 transition-colors hover:bg-white/10">
+                关闭
+              </Dialog.Close>
+            </div>
+          </div>
+          <div className="flex min-h-0 flex-1 items-center justify-center bg-black p-3">
+            {props.image ? (
+              <img
+                alt={props.image.name}
+                className="max-h-full max-w-full object-contain"
+                src={props.image.url}
+              />
+            ) : null}
+          </div>
+        </Dialog.Popup>
+      </Dialog.Portal>
+    </Dialog.Root>
   )
 }
 

@@ -1,5 +1,5 @@
 import { $getRoot, $getState, $parseSerializedNode } from 'lexical'
-import type { ReviewBatch } from '@haklex/rich-agent-core'
+import type { AgentOperation, ReviewBatch } from '@haklex/rich-agent-core'
 import type { LexicalEditor, LexicalNode } from 'lexical'
 
 import { blockIdState } from '@haklex/rich-editor'
@@ -36,6 +36,109 @@ function stripBlockIdFromSerialized<
     )
   }
   return next
+}
+
+export type AgentOperationApplyStatus = 'conflict' | 'error' | 'success'
+
+export interface AgentOperationApplyResult {
+  message?: string
+  status: AgentOperationApplyStatus
+}
+
+function applyOperation(op: AgentOperation): AgentOperationApplyResult {
+  try {
+    if (op.op === 'insert') {
+      if (!op.node?.type) {
+        return {
+          message: 'Insert operation missing node type',
+          status: 'error',
+        }
+      }
+
+      const newNode = $parseSerializedNode(stripBlockIdFromSerialized(op.node))
+      if (op.position.type === 'root') {
+        const root = $getRoot()
+        const idx = op.position.index ?? root.getChildrenSize()
+        const children = root.getChildren()
+        if (idx >= children.length) root.append(newNode)
+        else children[idx].insertBefore(newNode)
+      } else {
+        const target = $findBlockByBlockId(op.position.blockId)
+        if (!target) {
+          return {
+            message: `Target block not found: ${op.position.blockId}`,
+            status: 'conflict',
+          }
+        }
+        if (op.position.type === 'after') target.insertAfter(newNode)
+        else target.insertBefore(newNode)
+      }
+
+      return { status: 'success' }
+    }
+
+    if (op.op === 'replace') {
+      if (!op.node?.type) {
+        return {
+          message: 'Replace operation missing node type',
+          status: 'error',
+        }
+      }
+
+      const target = $findBlockByBlockId(op.blockId)
+      if (!target) {
+        return {
+          message: `Target block not found: ${op.blockId}`,
+          status: 'conflict',
+        }
+      }
+      target.replace($parseSerializedNode(stripBlockIdFromSerialized(op.node)))
+
+      return { status: 'success' }
+    }
+
+    if (op.op === 'delete') {
+      const target = $findBlockByBlockId(op.blockId)
+      if (!target) {
+        return {
+          message: `Target block not found: ${op.blockId}`,
+          status: 'conflict',
+        }
+      }
+      target.remove()
+
+      return { status: 'success' }
+    }
+
+    return {
+      message: `Unknown operation type: ${(op as any).op}`,
+      status: 'error',
+    }
+  } catch (error) {
+    return {
+      message: error instanceof Error ? error.message : String(error),
+      status: 'error',
+    }
+  }
+}
+
+export function applyAgentOperation(
+  editor: LexicalEditor,
+  op: AgentOperation,
+): AgentOperationApplyResult {
+  let result: AgentOperationApplyResult = {
+    message: 'Not executed',
+    status: 'error',
+  }
+
+  editor.update(
+    () => {
+      result = applyOperation(op)
+    },
+    { discrete: true },
+  )
+
+  return result
 }
 
 export function applyAgentReviewBatch(

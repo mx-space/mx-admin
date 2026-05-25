@@ -37,50 +37,182 @@ import {
   Users,
   Webhook,
 } from 'lucide-react'
+import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router'
 import type { LucideIcon } from 'lucide-react'
-import type { ComponentType } from 'react'
+import type { ComponentType, LazyExoticComponent } from 'react'
 import type { TranslationKey } from './i18n/types'
 
-import { AiPage } from './views/ai-page'
-import { AnalyzePage } from './views/analyze-page'
-import { AuthnDebugPage } from './views/authn-debug-page'
-import { BackupPage } from './views/backup-page'
-import { CategoriesPage } from './views/categories-page'
-import { CommentsPage } from './views/comments-page'
-import { CronPage } from './views/cron-page'
-import { DashboardPage } from './views/dashboard-page'
-import { DraftsPage } from './views/drafts-page'
-import { EnrichmentPage } from './views/enrichment-page'
-import { EventsDebugPage } from './views/events-debug-page'
-import {
-  CommentImagesPage,
-  FilesPage,
-  OrphanFilesPage,
-} from './views/files-page'
-import { FriendsPage } from './views/friends-page'
-import { LoginPage } from './views/login-page'
-import { MarkdownPage } from './views/markdown-page'
-import { NotesPage } from './views/notes-page'
-import { PagesPage } from './views/pages-page'
-import { PostsPage } from './views/posts-page'
-import { ProjectsPage } from './views/projects-page'
-import { ReadersPage } from './views/readers-page'
-import { RecentlyPage } from './views/recently-page'
-import { RichDebugPage } from './views/rich-debug-page'
-import { SaysPage } from './views/says-page'
-import { SearchIndexPage } from './views/search-index-page'
-import { ServerlessDebugPage } from './views/serverless-debug-page'
-import { SettingsPage } from './views/settings-page'
-import { SetupApiPage } from './views/setup-api-page'
-import { SetupPage } from './views/setup-page'
-import { SnippetsPage } from './views/snippets-page'
-import { SubscribePage } from './views/subscribe-page'
-import { TemplatePage } from './views/template-page'
-import { ToastDebugPage } from './views/toast-debug-page'
-import { TopicsPage } from './views/topics-page'
-import { WebhooksPage } from './views/webhooks-page'
-import { NoteWritePage, PageWritePage, PostWritePage } from './views/write-page'
+type RouteComponent = ComponentType | LazyExoticComponent<ComponentType>
+
+const lazyView = <T extends ComponentType>(
+  loader: () => Promise<{ default: T }>,
+) => lazy(loader)
+
+const AiPage = lazyView(() =>
+  import('./views/ai-page').then((module) => ({ default: module.AiPage })),
+)
+const AnalyzePage = lazyView(() =>
+  import('./views/analyze-page').then((module) => ({
+    default: module.AnalyzePage,
+  })),
+)
+const BackupPage = lazyView(() =>
+  import('./views/backup-page').then((module) => ({
+    default: module.BackupPage,
+  })),
+)
+const CategoriesPage = lazyView(() =>
+  import('./views/categories-page').then((module) => ({
+    default: module.CategoriesPage,
+  })),
+)
+const CommentsPage = lazyView(() =>
+  import('./views/comments-page').then((module) => ({
+    default: module.CommentsPage,
+  })),
+)
+const CronPage = lazyView(() =>
+  import('./views/cron-page').then((module) => ({ default: module.CronPage })),
+)
+const DashboardPage = lazyView(() =>
+  import('./views/dashboard-page').then((module) => ({
+    default: module.DashboardPage,
+  })),
+)
+const DraftsPage = lazyView(() =>
+  import('./views/drafts-page').then((module) => ({
+    default: module.DraftsPage,
+  })),
+)
+const EnrichmentPage = lazyView(() =>
+  import('./views/enrichment-page').then((module) => ({
+    default: module.EnrichmentPage,
+  })),
+)
+const FilesPage = lazyView(() =>
+  import('./views/files-page').then((module) => ({
+    default: module.FilesPage,
+  })),
+)
+const OrphanFilesPage = lazyView(() =>
+  import('./views/files-page').then((module) => ({
+    default: module.OrphanFilesPage,
+  })),
+)
+const CommentImagesPage = lazyView(() =>
+  import('./views/files-page').then((module) => ({
+    default: module.CommentImagesPage,
+  })),
+)
+const FriendsPage = lazyView(() =>
+  import('./views/friends-page').then((module) => ({
+    default: module.FriendsPage,
+  })),
+)
+const LoginPage = lazyView(() =>
+  import('./views/login-page').then((module) => ({
+    default: module.LoginPage,
+  })),
+)
+const MarkdownPage = lazyView(() =>
+  import('./views/markdown-page').then((module) => ({
+    default: module.MarkdownPage,
+  })),
+)
+const NotesPage = lazyView(() =>
+  import('./views/notes-page').then((module) => ({
+    default: module.NotesPage,
+  })),
+)
+const PagesPage = lazyView(() =>
+  import('./views/pages-page').then((module) => ({
+    default: module.PagesPage,
+  })),
+)
+const PostsPage = lazyView(() =>
+  import('./views/posts-page').then((module) => ({
+    default: module.PostsPage,
+  })),
+)
+const ProjectsPage = lazyView(() =>
+  import('./views/projects-page').then((module) => ({
+    default: module.ProjectsPage,
+  })),
+)
+const ReadersPage = lazyView(() =>
+  import('./views/readers-page').then((module) => ({
+    default: module.ReadersPage,
+  })),
+)
+const RecentlyPage = lazyView(() =>
+  import('./views/recently-page').then((module) => ({
+    default: module.RecentlyPage,
+  })),
+)
+const SaysPage = lazyView(() =>
+  import('./views/says-page').then((module) => ({ default: module.SaysPage })),
+)
+const SearchIndexPage = lazyView(() =>
+  import('./views/search-index-page').then((module) => ({
+    default: module.SearchIndexPage,
+  })),
+)
+const SettingsPage = lazyView(() =>
+  import('./views/settings-page').then((module) => ({
+    default: module.SettingsPage,
+  })),
+)
+const SetupApiPage = lazyView(() =>
+  import('./views/setup-api-page').then((module) => ({
+    default: module.SetupApiPage,
+  })),
+)
+const SetupPage = lazyView(() =>
+  import('./views/setup-page').then((module) => ({
+    default: module.SetupPage,
+  })),
+)
+const SnippetsPage = lazyView(() =>
+  import('./views/snippets-page').then((module) => ({
+    default: module.SnippetsPage,
+  })),
+)
+const SubscribePage = lazyView(() =>
+  import('./views/subscribe-page').then((module) => ({
+    default: module.SubscribePage,
+  })),
+)
+const TemplatePage = lazyView(() =>
+  import('./views/template-page').then((module) => ({
+    default: module.TemplatePage,
+  })),
+)
+const TopicsPage = lazyView(() =>
+  import('./views/topics-page').then((module) => ({
+    default: module.TopicsPage,
+  })),
+)
+const WebhooksPage = lazyView(() =>
+  import('./views/webhooks-page').then((module) => ({
+    default: module.WebhooksPage,
+  })),
+)
+const PostWritePage = lazyView(() =>
+  import('./views/write-page').then((module) => ({
+    default: module.PostWritePage,
+  })),
+)
+const NoteWritePage = lazyView(() =>
+  import('./views/write-page').then((module) => ({
+    default: module.NoteWritePage,
+  })),
+)
+const PageWritePage = lazyView(() =>
+  import('./views/write-page').then((module) => ({
+    default: module.PageWritePage,
+  })),
+)
 
 export interface SidebarNavRoute {
   descriptionKey: TranslationKey
@@ -91,7 +223,7 @@ export interface SidebarNavRoute {
 }
 
 export interface AppRoute extends SidebarNavRoute {
-  element: ComponentType
+  element: RouteComponent
 }
 
 export interface SidebarNavNode {
@@ -104,7 +236,106 @@ export interface SidebarNavSection {
   titleKey?: TranslationKey
 }
 
-export const appRoutes: AppRoute[] = [
+type DebugRouteKey = 'authn' | 'events' | 'rich' | 'serverless' | 'toast'
+
+const debugRouteModules = import.meta.glob<{ default: ComponentType }>(
+  './views/debug/**/*.tsx',
+)
+
+const devRouteModules = import.meta.glob<{ default: ComponentType }>(
+  './views/dev/**/*.tsx',
+)
+
+const debugRouteOrder: DebugRouteKey[] = [
+  'toast',
+  'authn',
+  'events',
+  'serverless',
+  'rich',
+]
+
+const debugRouteMeta = {
+  authn: {
+    descriptionKey: 'routes.passkeyLab.description',
+    icon: KeyRound,
+    titleKey: 'routes.passkeyLab.title',
+  },
+  events: {
+    descriptionKey: 'routes.eventLab.description',
+    icon: RadioTower,
+    titleKey: 'routes.eventLab.title',
+  },
+  rich: {
+    descriptionKey: 'routes.richLab.description',
+    icon: FileCode2,
+    titleKey: 'routes.richLab.title',
+  },
+  serverless: {
+    descriptionKey: 'routes.functionLab.description',
+    icon: Terminal,
+    titleKey: 'routes.functionLab.title',
+  },
+  toast: {
+    descriptionKey: 'routes.toastLab.description',
+    icon: BellRing,
+    titleKey: 'routes.toastLab.title',
+  },
+} satisfies Record<DebugRouteKey, Omit<SidebarNavRoute, 'path'>>
+
+function readGlobRouteName(modulePath: string, root: string) {
+  const relativePath = modulePath
+    .replace(root, '')
+    .replace(/\.[jt]sx$/, '')
+    .replace(/\/index$/, '')
+  const name = relativePath.split('/').filter(Boolean).at(-1)
+
+  return name || 'index'
+}
+
+const debugRoutes: AppRoute[] = Object.entries(debugRouteModules)
+  .map(([modulePath, moduleLoader]) => {
+    const name = readGlobRouteName(modulePath, './views/debug/')
+    const knownMeta = debugRouteMeta[name as DebugRouteKey]
+
+    return {
+      descriptionKey: knownMeta?.descriptionKey ?? 'routes.debug.description',
+      element: lazyView(moduleLoader),
+      icon: knownMeta?.icon ?? Terminal,
+      path: `/debug/${name}`,
+      titleKey: knownMeta?.titleKey ?? 'routes.debug.title',
+    } satisfies AppRoute
+  })
+  .sort((a, b) => {
+    const aName = a.path.replace('/debug/', '') as DebugRouteKey
+    const bName = b.path.replace('/debug/', '') as DebugRouteKey
+    const aOrder = debugRouteOrder.indexOf(aName)
+    const bOrder = debugRouteOrder.indexOf(bName)
+
+    if (aOrder !== -1 || bOrder !== -1) {
+      return (
+        (aOrder === -1 ? Number.POSITIVE_INFINITY : aOrder) -
+        (bOrder === -1 ? Number.POSITIVE_INFINITY : bOrder)
+      )
+    }
+
+    return a.path.localeCompare(b.path)
+  })
+
+const devRoutes: AppRoute[] = import.meta.env.DEV
+  ? Object.entries(devRouteModules).map(([modulePath, moduleLoader]) => {
+      const name = readGlobRouteName(modulePath, './views/dev/')
+
+      return {
+        descriptionKey: 'routes.dev.description',
+        element: lazyView(moduleLoader),
+        icon: Terminal,
+        path: `/dev/${name}`,
+        titleKey: 'routes.dev.title',
+      }
+    })
+  : []
+
+const coreAppRoutes: AppRoute[] = [
   {
     descriptionKey: 'routes.dashboard.description',
     element: DashboardPage,
@@ -302,6 +533,13 @@ export const appRoutes: AppRoute[] = [
     titleKey: 'routes.settings.title',
   },
   {
+    descriptionKey: 'routes.settings.description',
+    element: SettingsPage,
+    icon: Settings,
+    path: '/setting/:tab',
+    titleKey: 'routes.settings.title',
+  },
+  {
     descriptionKey: 'routes.subscribe.description',
     element: SubscribePage,
     icon: BellOff,
@@ -364,41 +602,12 @@ export const appRoutes: AppRoute[] = [
     path: '/enrichment',
     titleKey: 'routes.enrichment.title',
   },
-  {
-    descriptionKey: 'routes.toastLab.description',
-    element: ToastDebugPage,
-    icon: BellRing,
-    path: '/debug/toast',
-    titleKey: 'routes.toastLab.title',
-  },
-  {
-    descriptionKey: 'routes.passkeyLab.description',
-    element: AuthnDebugPage,
-    icon: KeyRound,
-    path: '/debug/authn',
-    titleKey: 'routes.passkeyLab.title',
-  },
-  {
-    descriptionKey: 'routes.eventLab.description',
-    element: EventsDebugPage,
-    icon: RadioTower,
-    path: '/debug/events',
-    titleKey: 'routes.eventLab.title',
-  },
-  {
-    descriptionKey: 'routes.functionLab.description',
-    element: ServerlessDebugPage,
-    icon: Terminal,
-    path: '/debug/serverless',
-    titleKey: 'routes.functionLab.title',
-  },
-  {
-    descriptionKey: 'routes.richLab.description',
-    element: RichDebugPage,
-    icon: FileCode2,
-    path: '/debug/rich',
-    titleKey: 'routes.richLab.title',
-  },
+]
+
+export const appRoutes: AppRoute[] = [
+  ...coreAppRoutes,
+  ...debugRoutes,
+  ...devRoutes,
 ]
 
 function routeByPath(path: string) {
@@ -551,18 +760,12 @@ export const sidebarNavigation: SidebarNavSection[] = [
   },
   {
     titleKey: 'shell.nav.debug',
-    items: [
-      sidebarNode('/debug/toast'),
-      sidebarNode('/debug/authn'),
-      sidebarNode('/debug/events'),
-      sidebarNode('/debug/serverless'),
-      sidebarNode('/debug/rich'),
-    ],
+    items: debugRoutes.map((route) => ({ route })),
   },
 ]
 
 const legacyRouteAliases: Array<{
-  element?: ComponentType
+  element?: RouteComponent
   from: string
   to?: string
 }> = [
@@ -571,9 +774,20 @@ const legacyRouteAliases: Array<{
   { from: '/pages/list', to: '/pages' },
   { from: '/files/list', to: '/files' },
   { from: '/maintenance/enrichment', to: '/enrichment' },
+  { from: '/maintenance', to: '/maintenance/cron' },
+  { from: '/extra-features', to: '/extra-features/snippets' },
+  { from: '/ai', to: '/ai/summary' },
   { element: LegacyPageRedirect, from: '/page/*' },
   { element: LegacyExtraRedirect, from: '/extra/*' },
 ]
+
+function LegacyStaticRedirect(props: { to: string }) {
+  const location = useLocation()
+
+  return (
+    <Navigate replace to={`${props.to}${location.search}${location.hash}`} />
+  )
+}
 
 function LegacyPageRedirect() {
   const location = useLocation()
@@ -598,31 +812,45 @@ function LegacyExtraRedirect() {
 
 export function AppRoutes() {
   return (
-    <Routes>
-      <Route element={<Navigate replace to="/dashboard" />} path="/" />
-      <Route element={<LoginPage />} path="/login" />
-      <Route element={<SetupPage />} path="/setup" />
-      <Route element={<SetupApiPage />} path="/setup-api" />
-      {legacyRouteAliases.map((route) => {
-        if (route.to) {
-          return (
-            <Route
-              element={<Navigate replace to={route.to} />}
-              key={route.from}
-              path={route.from}
-            />
-          )
-        }
+    <Suspense fallback={<RouteLoadingFallback />}>
+      <Routes>
+        <Route element={<Navigate replace to="/dashboard" />} path="/" />
+        <Route element={<LoginPage />} path="/login" />
+        <Route element={<SetupPage />} path="/setup" />
+        <Route element={<SetupApiPage />} path="/setup-api" />
+        {legacyRouteAliases.map((route) => {
+          if (route.to) {
+            return (
+              <Route
+                element={<LegacyStaticRedirect to={route.to} />}
+                key={route.from}
+                path={route.from}
+              />
+            )
+          }
 
-        const Element = route.element
-        return Element ? (
-          <Route element={<Element />} key={route.from} path={route.from} />
-        ) : null
-      })}
-      {appRoutes.map((route) => (
-        <Route element={<route.element />} key={route.path} path={route.path} />
-      ))}
-      <Route element={<Navigate replace to="/dashboard" />} path="*" />
-    </Routes>
+          const Element = route.element
+          return Element ? (
+            <Route element={<Element />} key={route.from} path={route.from} />
+          ) : null
+        })}
+        {appRoutes.map((route) => (
+          <Route
+            element={<route.element />}
+            key={route.path}
+            path={route.path}
+          />
+        ))}
+        <Route element={<Navigate replace to="/dashboard" />} path="*" />
+      </Routes>
+    </Suspense>
+  )
+}
+
+function RouteLoadingFallback() {
+  return (
+    <div className="flex h-full min-h-0 items-center justify-center bg-white text-sm text-neutral-500 dark:bg-neutral-950 dark:text-neutral-400">
+      Loading...
+    </div>
   )
 }

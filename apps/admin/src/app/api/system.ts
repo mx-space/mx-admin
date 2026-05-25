@@ -2,7 +2,13 @@ import type { AppInfo } from '~/app/models/system'
 
 import { API_URL } from '~/app/constants/env'
 
-import { getJson, patchJson, postJson, requestJson } from './http'
+import {
+  buildAdminRequestHeaders,
+  getJson,
+  patchJson,
+  postJson,
+  requestJson,
+} from './http'
 
 export interface CreateOwnerData {
   avatar?: string
@@ -26,9 +32,7 @@ export async function checkInit() {
   try {
     const response = await fetch(`${API_URL}/init`, {
       credentials: 'include',
-      headers: {
-        'x-skip-translation': '1',
-      },
+      headers: buildAdminRequestHeaders(),
     })
 
     if (response.status === 404 || response.status === 403) {

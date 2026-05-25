@@ -4,31 +4,42 @@ import { toast } from 'sonner'
 import { authClient } from '~/app/utils/authjs/auth'
 
 import { Button } from '../ui/button'
+import { AppPage, PageHeader } from '../ui/page-layout'
 import { Panel } from '../ui/panel'
+import { Scroll } from '../ui/scroll'
 
 export function AuthnDebugPage() {
   return (
-    <div className="mx-auto max-w-3xl">
-      <Panel
-        description="Passkey registration and authentication checks using the React runtime."
-        title="Passkey diagnostics"
+    <AppPage>
+      <PageHeader
+        description="Passkey registration and authentication checks."
+        title="Passkey Diagnostics"
+      />
+      <Scroll
+        className="min-h-0 flex-1"
+        innerClassName="mx-auto w-full max-w-3xl p-4"
       >
-        <div className="grid gap-4 p-4 md:grid-cols-2">
-          <DiagnosticAction
-            description="Creates a random test passkey name and sends it to Better Auth."
-            icon={KeyRound}
-            label="Register"
-            onClick={registerPasskey}
-          />
-          <DiagnosticAction
-            description="Runs the browser passkey authentication flow for the current user."
-            icon={ShieldCheck}
-            label="Authenticator"
-            onClick={authenticatePasskey}
-          />
-        </div>
-      </Panel>
-    </div>
+        <Panel
+          description="Passkey registration and authentication checks using the React runtime."
+          title="Passkey diagnostics"
+        >
+          <div className="grid gap-4 p-4 md:grid-cols-2">
+            <DiagnosticAction
+              description="Creates a random test passkey name and sends it to Better Auth."
+              icon={KeyRound}
+              label="Register"
+              onClick={registerPasskey}
+            />
+            <DiagnosticAction
+              description="Runs the browser passkey authentication flow for the current user."
+              icon={ShieldCheck}
+              label="Authenticator"
+              onClick={authenticatePasskey}
+            />
+          </div>
+        </Panel>
+      </Scroll>
+    </AppPage>
   )
 }
 

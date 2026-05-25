@@ -12,7 +12,7 @@ import {
   RotateCcw,
   Trash2,
 } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
 import { toast } from 'sonner'
 import type {
@@ -20,6 +20,7 @@ import type {
   DraftModel,
   DraftRefType,
 } from '~/app/models/draft'
+import type { SerializedEditorState } from 'lexical'
 import type { LucideIcon } from 'lucide-react'
 
 import { DraftRefType as DraftRefTypeValue } from '~/app/models/draft'
@@ -36,8 +37,18 @@ import { Button, ButtonLink } from '../ui/button'
 import { cn } from '../ui/cn'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
 import { MasterDetailLayout } from '../ui/page-layout'
+import { Scroll } from '../ui/scroll'
 
 const draftsQueryKey = ['drafts']
+let diffHighlighterReady: Promise<void> | null = null
+type DiffRendererInstance = {
+  cleanUp: () => void
+  render: (props: {
+    containerWrapper: HTMLElement
+    newFile: { contents: string; name: string }
+    oldFile: { contents: string; name: string }
+  }) => boolean | void
+}
 
 const filterOptions: Array<{ label: string; value: DraftRefType | 'all' }> = [
   { label: '全部', value: 'all' },
@@ -73,6 +84,7 @@ const refTypeMeta: Record<
 export function DraftsPage() {
   const queryClient = useQueryClient()
   const [searchParams, setSearchParams] = useSearchParams()
+  const searchParamsKey = searchParams.toString()
   const initialType = parseDraftFilterType(searchParams.get('type'))
   const [filterType, setFilterType] = useState<DraftRefType | 'all'>(
     initialType,
@@ -104,6 +116,18 @@ export function DraftsPage() {
     return null
   }, [drafts, selectedDraftSnapshot, selectedId])
 
+  useLayoutEffect(() => {
+    const nextType = parseDraftFilterType(searchParams.get('type'))
+    const nextSelectedId = searchParams.get('id')
+
+    setFilterType((value) => (value === nextType ? value : nextType))
+    setSelectedId((value) =>
+      value === nextSelectedId ? value : nextSelectedId,
+    )
+    setShowDetailOnMobile(Boolean(nextSelectedId))
+    if (!nextSelectedId) setSelectedDraftSnapshot(null)
+  }, [searchParamsKey])
+
   useEffect(() => {
     const nextParams = new URLSearchParams(searchParams)
 
@@ -119,10 +143,10 @@ export function DraftsPage() {
       nextParams.delete('id')
     }
 
-    if (nextParams.toString() !== searchParams.toString()) {
+    if (nextParams.toString() !== searchParamsKey) {
       setSearchParams(nextParams, { replace: true })
     }
-  }, [filterType, searchParams, selectedId, setSearchParams])
+  }, [filterType, searchParams, searchParamsKey, selectedId, setSearchParams])
 
   const deleteMutation = useMutation({
     mutationFn: deleteDraft,
@@ -225,7 +249,7 @@ export function DraftsPage() {
             ))}
           </div>
 
-          <div className="min-h-0 flex-1 overflow-y-auto">
+          <Scroll className="flex-1">
             {draftsQuery.isLoading && drafts.length === 0 ? (
               <DraftListSkeleton />
             ) : drafts.length === 0 ? (
@@ -240,7 +264,7 @@ export function DraftsPage() {
                 />
               ))
             )}
-          </div>
+          </Scroll>
         </section>
       }
       showDetailOnMobile={showDetailOnMobile}
@@ -453,7 +477,7 @@ function DraftDetail(props: {
                   ({versionItems.length})
                 </span>
               </div>
-              <div className="max-h-72 overflow-y-auto lg:h-[calc(100%-2.5rem)] lg:max-h-none">
+              <Scroll className="max-h-72 lg:h-[calc(100%-2.5rem)] lg:max-h-none">
                 {versionItems.map((item) => (
                   <VersionRow
                     diffStats={
@@ -467,7 +491,7 @@ function DraftDetail(props: {
                     selected={selectedVersion === item.version}
                   />
                 ))}
-              </div>
+              </Scroll>
             </div>
 
             <div className="flex min-h-0 flex-col bg-neutral-50 dark:bg-neutral-950">
@@ -493,7 +517,7 @@ function DraftDetail(props: {
                 ) : null}
               </div>
 
-              <div className="min-h-0 flex-1 overflow-y-auto p-4">
+              <Scroll className="flex-1" innerClassName="p-4">
                 {selectedVersionQuery.isLoading ? (
                   <div className="flex h-full items-center justify-center">
                     <Loader2
@@ -512,7 +536,7 @@ function DraftDetail(props: {
                     无法加载版本内容。
                   </p>
                 )}
-              </div>
+              </Scroll>
             </div>
           </div>
         )}
@@ -623,6 +647,22 @@ function DraftDiffPreview(props: {
   diffStats: DraftDiffStats | null
   selectedDraft: DraftModel
 }) {
+  if (
+    props.selectedDraft.contentFormat === 'lexical' &&
+    props.currentDraft.contentFormat === 'lexical' &&
+    props.selectedDraft.content &&
+    props.currentDraft.content
+  ) {
+    return (
+      <RichDraftDiffPanel
+        currentContent={props.currentDraft.content}
+        currentVersion={props.currentDraft.version}
+        selectedContent={props.selectedDraft.content}
+        selectedVersion={props.selectedDraft.version}
+      />
+    )
+  }
+
   const selectedText = getDraftTextForDiff(props.selectedDraft)
   const currentText = getDraftTextForDiff(props.currentDraft)
 
@@ -638,43 +678,198 @@ function DraftDiffPreview(props: {
   }
 
   return (
-    <div className="grid min-h-full gap-4 lg:grid-cols-2">
-      <DiffColumn
-        label={`v${props.selectedDraft.version}`}
-        text={selectedText}
-        title={props.selectedDraft.title || '无标题'}
-      />
-      <DiffColumn
-        label={`v${props.currentDraft.version} 当前`}
-        text={currentText}
-        title={props.currentDraft.title || '无标题'}
-      />
-    </div>
+    <MarkdownDraftDiffPanel
+      currentText={currentText}
+      currentVersion={props.currentDraft.version}
+      selectedText={selectedText}
+      selectedVersion={props.selectedDraft.version}
+    />
   )
 }
 
-function DiffColumn(props: { label: string; text: string; title: string }) {
+function RichDraftDiffPanel(props: {
+  currentContent: string
+  currentVersion: number
+  selectedContent: string
+  selectedVersion: number
+}) {
+  const containerRef = useRef<HTMLDivElement | null>(null)
+  const selectedValue = useMemo(
+    () => parseSerializedDraftContent(props.selectedContent),
+    [props.selectedContent],
+  )
+  const currentValue = useMemo(
+    () => parseSerializedDraftContent(props.currentContent),
+    [props.currentContent],
+  )
+
+  useEffect(() => {
+    if (!containerRef.current || !selectedValue || !currentValue) return
+
+    let disposed = false
+    let handle: { unmount: () => void } | null = null
+
+    void import('../rich-editor/mount/mount-rich-diff').then(
+      ({ mountRichDiff }) => {
+        if (disposed || !containerRef.current) return
+        handle = mountRichDiff(containerRef.current, {
+          className: '!rounded-none !border-0',
+          newValue: currentValue,
+          oldValue: selectedValue,
+          theme: getCurrentColorScheme(),
+          variant: 'comment',
+        })
+      },
+    )
+
+    return () => {
+      disposed = true
+      handle?.unmount()
+    }
+  }, [currentValue, selectedValue])
+
+  if (!selectedValue || !currentValue) {
+    return (
+      <div className="flex min-h-[20rem] items-center justify-center border border-dashed border-neutral-200 bg-white text-sm text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400">
+        富文本内容解析失败。
+      </div>
+    )
+  }
+
   return (
-    <section className="min-w-0">
+    <section className="min-h-full min-w-0">
       <div className="mb-2 flex items-center justify-between gap-3">
         <h3 className="truncate text-sm font-medium text-neutral-800 dark:text-neutral-200">
-          {props.title}
+          富文本差异
         </h3>
         <span className="shrink-0 text-xs tabular-nums text-neutral-500">
-          {props.label}
+          v{props.selectedVersion} → v{props.currentVersion}
         </span>
       </div>
-      {props.text ? (
-        <pre className="max-h-[calc(100vh-12rem)] min-h-[20rem] overflow-auto whitespace-pre-wrap border border-neutral-200 bg-white p-3 text-xs leading-5 text-neutral-800 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-200">
-          {props.text}
-        </pre>
-      ) : (
-        <div className="flex min-h-[20rem] items-center justify-center border border-dashed border-neutral-200 bg-white text-sm text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400">
-          无正文内容。
-        </div>
-      )}
+      <Scroll
+        className="min-h-[20rem] border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950"
+        orientation="both"
+        viewportClassName="min-h-[20rem]"
+      >
+        <div className="min-h-[20rem]" ref={containerRef} />
+      </Scroll>
     </section>
   )
+}
+
+function MarkdownDraftDiffPanel(props: {
+  currentText: string
+  currentVersion: number
+  selectedText: string
+  selectedVersion: number
+}) {
+  const containerRef = useRef<HTMLDivElement | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [hasError, setHasError] = useState(false)
+
+  useEffect(() => {
+    if (!containerRef.current) return
+
+    let disposed = false
+    let diffInstance: DiffRendererInstance | null = null
+
+    setIsLoading(true)
+    setHasError(false)
+    containerRef.current.innerHTML = ''
+
+    void import('@pierre/diffs')
+      .then(async ({ FileDiff, preloadHighlighter }) => {
+        await ensureDiffHighlighter(preloadHighlighter)
+
+        if (disposed || !containerRef.current) return
+
+        setIsLoading(false)
+        const nextDiffInstance = new FileDiff({
+          diffIndicators: 'bars',
+          diffStyle: 'unified',
+          disableFileHeader: true,
+          themeType: 'system',
+        }) as unknown as DiffRendererInstance
+        nextDiffInstance.render({
+          containerWrapper: containerRef.current,
+          newFile: {
+            contents: props.currentText,
+            name: `v${props.currentVersion}.md`,
+          },
+          oldFile: {
+            contents: props.selectedText,
+            name: `v${props.selectedVersion}.md`,
+          },
+        })
+        diffInstance = nextDiffInstance
+      })
+      .catch((error: unknown) => {
+        console.error('[DraftsPage] Failed to render markdown diff:', error)
+        if (!disposed) {
+          setHasError(true)
+          setIsLoading(false)
+        }
+      })
+
+    return () => {
+      disposed = true
+      diffInstance?.cleanUp()
+      if (containerRef.current) containerRef.current.innerHTML = ''
+    }
+  }, [
+    props.currentText,
+    props.currentVersion,
+    props.selectedText,
+    props.selectedVersion,
+  ])
+
+  return (
+    <section className="min-h-full min-w-0">
+      <div className="mb-2 flex items-center justify-between gap-3">
+        <h3 className="truncate text-sm font-medium text-neutral-800 dark:text-neutral-200">
+          Markdown 差异
+        </h3>
+        <span className="shrink-0 text-xs tabular-nums text-neutral-500">
+          v{props.selectedVersion} → v{props.currentVersion}
+        </span>
+      </div>
+      <Scroll
+        className="relative min-h-[20rem] border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950"
+        orientation="both"
+        viewportClassName="min-h-[20rem]"
+      >
+        <div className="min-h-[20rem]" ref={containerRef} />
+        {isLoading ? (
+          <div className="absolute inset-0 flex items-center justify-center bg-white/80 text-sm text-neutral-500 backdrop-blur-sm dark:bg-neutral-950/80 dark:text-neutral-400">
+            加载差异视图...
+          </div>
+        ) : null}
+        {hasError ? (
+          <div className="absolute inset-0 flex items-center justify-center bg-white text-sm text-neutral-500 dark:bg-neutral-950 dark:text-neutral-400">
+            Markdown 差异渲染失败。
+          </div>
+        ) : null}
+        {!isLoading &&
+        !hasError &&
+        !props.selectedText &&
+        !props.currentText ? (
+          <div className="absolute inset-0 flex items-center justify-center text-sm text-neutral-500 dark:text-neutral-400">
+            无正文内容。
+          </div>
+        ) : null}
+      </Scroll>
+    </section>
+  )
+}
+
+function ensureDiffHighlighter(
+  preloadHighlighter: typeof import('@pierre/diffs').preloadHighlighter,
+) {
+  diffHighlighterReady ??= preloadHighlighter({
+    langs: ['markdown', 'json', 'typescript', 'javascript', 'html', 'css'],
+    themes: ['github-dark', 'github-light'],
+  })
+  return diffHighlighterReady
 }
 
 function buildVersionItems(
@@ -722,6 +917,25 @@ function getDraftTextForDiff(draft: DraftModel) {
   }
 
   return draft.text || draft.content || ''
+}
+
+function parseSerializedDraftContent(
+  content: string,
+): SerializedEditorState | null {
+  try {
+    const parsed = JSON.parse(content)
+    if (parsed && typeof parsed === 'object' && 'root' in parsed) {
+      return parsed as SerializedEditorState
+    }
+  } catch {
+    return null
+  }
+
+  return null
+}
+
+function getCurrentColorScheme(): 'dark' | 'light' {
+  return document.documentElement.classList.contains('dark') ? 'dark' : 'light'
 }
 
 function getEditPathForDraft(draft: DraftModel) {

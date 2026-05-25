@@ -3,6 +3,7 @@ import { ChevronDown } from 'lucide-react'
 import type { ReactNode } from 'react'
 
 import { cn } from './cn'
+import { Scroll } from './scroll'
 
 type SelectValue = number | string
 
@@ -54,19 +55,25 @@ export function SelectField<TValue extends SelectValue = string>(
         <BaseSelect.Positioner alignItemWithTrigger={false} sideOffset={6}>
           <BaseSelect.Popup
             className={cn(
-              'z-50 max-h-72 min-w-40 overflow-auto rounded border border-neutral-200 bg-white p-1 text-sm shadow-lg outline-none dark:border-neutral-800 dark:bg-neutral-950',
+              'z-50 min-w-40 rounded border border-neutral-200 bg-white text-sm shadow-lg outline-none dark:border-neutral-800 dark:bg-neutral-950',
               props.popupClassName,
             )}
           >
-            {props.options.map((option) => (
-              <BaseSelect.Item
-                className="cursor-pointer rounded px-2 py-1.5 text-neutral-700 outline-none data-[highlighted]:bg-neutral-100 data-[selected]:text-[var(--color-primary)] dark:text-neutral-200 dark:data-[highlighted]:bg-neutral-800"
-                key={String(option.value)}
-                value={option.value}
-              >
-                {option.label}
-              </BaseSelect.Item>
-            ))}
+            <Scroll
+              className="max-h-72"
+              innerClassName="p-1"
+              viewportClassName="max-h-72"
+            >
+              {props.options.map((option) => (
+                <BaseSelect.Item
+                  className="cursor-pointer rounded px-2 py-1.5 text-neutral-700 outline-none data-[highlighted]:bg-neutral-100 data-[selected]:text-[var(--color-primary)] dark:text-neutral-200 dark:data-[highlighted]:bg-neutral-800"
+                  key={String(option.value)}
+                  value={option.value}
+                >
+                  {option.label}
+                </BaseSelect.Item>
+              ))}
+            </Scroll>
           </BaseSelect.Popup>
         </BaseSelect.Positioner>
       </BaseSelect.Portal>

@@ -1,4 +1,5 @@
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
+import { useEffect } from 'react'
 import type {
   AgentStore,
   AgentToolConfig,
@@ -13,7 +14,7 @@ import { useAgentLoop } from '@haklex/rich-ext-ai-agent'
 
 interface AgentLoopCaptureInnerProps {
   editorRef: RefObject<LexicalEditor | null>
-  onAgentLoopReady: (loop: AgentLoopHandle) => void
+  onAgentLoopReady: (loop: AgentLoopHandle | null) => void
   provider: LLMProvider
   store: AgentStore
   tools?: AgentToolConfig[]
@@ -29,9 +30,17 @@ function AgentLoopCaptureInner({
   systemMessages,
 }: AgentLoopCaptureInnerProps) {
   const loop = useAgentLoop({ provider, store, tools, systemMessages })
-  onAgentLoopReady(loop)
   const [editor] = useLexicalComposerContext()
-  editorRef.current = editor
+
+  useEffect(() => {
+    onAgentLoopReady(loop)
+    return () => onAgentLoopReady(null)
+  }, [loop, onAgentLoopReady])
+
+  useEffect(() => {
+    editorRef.current = editor
+  }, [editor, editorRef])
+
   return null
 }
 
@@ -52,8 +61,11 @@ export function AgentLoopCapture({
   tools,
   systemMessages,
 }: AgentLoopCaptureProps) {
+  useEffect(() => {
+    if (!provider) onAgentLoopReady(null)
+  }, [onAgentLoopReady, provider])
+
   if (!provider) {
-    onAgentLoopReady(null)
     return null
   }
   return (

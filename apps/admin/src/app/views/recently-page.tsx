@@ -1,5 +1,9 @@
 import { Dialog } from '@base-ui/react/dialog'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query'
 import {
   ExternalLink,
   File,
@@ -15,8 +19,17 @@ import {
   Trash2,
   X,
 } from 'lucide-react'
-import { FormEvent, useEffect, useRef, useState } from 'react'
+import {
+  FormEvent,
+  forwardRef,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
+import { useSearchParams } from 'react-router'
 import { toast } from 'sonner'
+import type { InfiniteData } from '@tanstack/react-query'
 import type { EnrichmentResult } from '~/app/models/enrichment'
 import type { RecentlyModel, RecentlyRefTypes } from '~/app/models/recently'
 
@@ -30,6 +43,7 @@ import {
 import { Button } from '../ui/button'
 import { cn } from '../ui/cn'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
+import { Scroll } from '../ui/scroll'
 import { TextArea } from '../ui/text-field'
 
 const refTypeIcons: Record<RecentlyRefTypes, typeof FileText> = {
@@ -48,6 +62,12 @@ const refTypeLabels: Record<RecentlyRefTypes, string> = {
 
 const URL_REGEX = /https?:\/\/\S+/gi
 const URL_TAIL_TRIM = /[)\].,;:!?'"`>}）。，、；：！？「」『』《》〉〕—…]+$/
+const RECENTLY_PAGE_SIZE = 20
+const recentlyListQueryKey = [
+  'recently',
+  'list',
+  { size: RECENTLY_PAGE_SIZE },
+] as const
 
 interface UrlPreviewState {
   error: string | null
@@ -57,12 +77,30 @@ interface UrlPreviewState {
 
 export function RecentlyPage() {
   const queryClient = useQueryClient()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [editingItem, setEditingItem] = useState<RecentlyModel | null>(null)
   const [isEditorOpen, setIsEditorOpen] = useState(false)
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null)
+  const loadMoreRef = useRef<HTMLDivElement | null>(null)
 
-  const recentlyQuery = useQuery({
-    queryFn: getRecentlyList,
-    queryKey: ['recently', 'list'],
+  const recentlyQuery = useInfiniteQuery<
+    RecentlyModel[],
+    Error,
+    InfiniteData<RecentlyModel[], null | string>,
+    typeof recentlyListQueryKey,
+    null | string
+  >({
+    getNextPageParam: (lastPage) =>
+      lastPage.length >= RECENTLY_PAGE_SIZE
+        ? (lastPage.at(-1)?.id ?? null)
+        : null,
+    initialPageParam: null as null | string,
+    queryFn: ({ pageParam }) =>
+      getRecentlyList({
+        before: pageParam ?? undefined,
+        size: RECENTLY_PAGE_SIZE,
+      }),
+    queryKey: recentlyListQueryKey,
   })
 
   const deleteMutation = useMutation({
@@ -88,29 +126,78 @@ export function RecentlyPage() {
     setIsEditorOpen(false)
   }
 
+  useEffect(() => {
+    if (searchParams.get('create') !== '1') return
+
+    setEditingItem(null)
+    setIsEditorOpen(true)
+
+    const next = new URLSearchParams(searchParams)
+    next.delete('create')
+    setSearchParams(next, { replace: true })
+  }, [searchParams, setSearchParams])
+
   const updateItemEnrichment = (
     itemId: string,
     url: string,
     enrichment: EnrichmentResult,
   ) => {
-    queryClient.setQueryData<RecentlyModel[]>(
-      ['recently', 'list'],
+    queryClient.setQueryData<InfiniteData<RecentlyModel[], null | string>>(
+      recentlyListQueryKey,
       (current) =>
-        current?.map((item) =>
-          item.id === itemId
-            ? {
-                ...item,
-                enrichments: {
-                  ...item.enrichments,
-                  [url]: enrichment,
-                },
-              }
-            : item,
-        ) ?? current,
+        current
+          ? {
+              ...current,
+              pages: current.pages.map((page) =>
+                page.map((item) =>
+                  item.id === itemId
+                    ? {
+                        ...item,
+                        enrichments: {
+                          ...item.enrichments,
+                          [url]: enrichment,
+                        },
+                      }
+                    : item,
+                ),
+              ),
+            }
+          : current,
     )
   }
 
-  const items = recentlyQuery.data ?? []
+  const items = useMemo(
+    () => recentlyQuery.data?.pages.flat() ?? [],
+    [recentlyQuery.data],
+  )
+  const hasNextPage = Boolean(recentlyQuery.hasNextPage)
+
+  useEffect(() => {
+    const target = loadMoreRef.current
+    const root = scrollContainerRef.current
+
+    if (!target || !hasNextPage) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (
+          entries.some((entry) => entry.isIntersecting) &&
+          !recentlyQuery.isFetchingNextPage
+        ) {
+          void recentlyQuery.fetchNextPage()
+        }
+      },
+      { root, rootMargin: '240px' },
+    )
+
+    observer.observe(target)
+
+    return () => observer.disconnect()
+  }, [
+    hasNextPage,
+    recentlyQuery.fetchNextPage,
+    recentlyQuery.isFetchingNextPage,
+  ])
 
   return (
     <section className="flex h-full min-h-0 flex-col bg-white dark:bg-neutral-950">
@@ -128,7 +215,11 @@ export function RecentlyPage() {
         </div>
         <div className="flex shrink-0 items-center gap-3">
           <span className="text-xs text-neutral-500 dark:text-neutral-400">
-            {recentlyQuery.isLoading ? '加载中' : `${items.length} 条`}
+            {recentlyQuery.isLoading
+              ? '加载中'
+              : hasNextPage
+                ? `已加载 ${items.length} 条`
+                : `${items.length} 条`}
           </span>
           <Button onClick={openCreate} type="button" variant="subtle">
             <Plus aria-hidden="true" className="size-4" />
@@ -137,9 +228,11 @@ export function RecentlyPage() {
         </div>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <Scroll className="flex-1" ref={scrollContainerRef}>
         {recentlyQuery.isLoading && items.length === 0 ? (
           <RecentlyListSkeleton />
+        ) : recentlyQuery.isError && items.length === 0 ? (
+          <RecentlyErrorState onRetry={() => recentlyQuery.refetch()} />
         ) : items.length === 0 ? (
           <RecentlyEmptyState onCreate={openCreate} />
         ) : (
@@ -159,9 +252,15 @@ export function RecentlyPage() {
                 }
               />
             ))}
+            <RecentlyLoadMore
+              hasNextPage={hasNextPage}
+              isFetching={recentlyQuery.isFetchingNextPage}
+              onLoadMore={() => recentlyQuery.fetchNextPage()}
+              ref={loadMoreRef}
+            />
           </div>
         )}
-      </div>
+      </Scroll>
 
       <RecentlyEditorDialog
         item={editingItem}
@@ -624,6 +723,60 @@ function RecentlyEmptyState(props: { onCreate: () => void }) {
     </div>
   )
 }
+
+function RecentlyErrorState(props: { onRetry: () => void }) {
+  return (
+    <div className="flex min-h-full flex-col items-center justify-center px-6 py-16 text-center">
+      <div className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+        速记加载失败
+      </div>
+      <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
+        请检查登录状态或后端服务后重试。
+      </p>
+      <Button
+        className="mt-4"
+        onClick={props.onRetry}
+        type="button"
+        variant="subtle"
+      >
+        <RefreshCcw aria-hidden="true" className="size-4" />
+        重新加载
+      </Button>
+    </div>
+  )
+}
+
+const RecentlyLoadMore = forwardRef<
+  HTMLDivElement,
+  {
+    hasNextPage: boolean
+    isFetching: boolean
+    onLoadMore: () => void
+  }
+>(function RecentlyLoadMore(props, ref) {
+  return (
+    <div
+      className="flex items-center justify-center px-4 py-6 text-sm text-neutral-500 dark:text-neutral-400"
+      ref={ref}
+    >
+      {props.hasNextPage ? (
+        <Button
+          disabled={props.isFetching}
+          onClick={props.onLoadMore}
+          type="button"
+          variant="subtle"
+        >
+          {props.isFetching ? (
+            <Loader2 aria-hidden="true" className="size-4 animate-spin" />
+          ) : null}
+          加载更多
+        </Button>
+      ) : (
+        <span>已全部加载</span>
+      )}
+    </div>
+  )
+})
 
 function RecentlyListSkeleton() {
   return (

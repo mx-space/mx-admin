@@ -1,4 +1,4 @@
-import type { PaginateResult } from '~/app/models/base'
+import type { Image, PaginateResult } from '~/app/models/base'
 import type { PageModel } from '~/app/models/page'
 
 import { deleteJson, getJson, patchJson, postJson, putJson } from './http'
@@ -12,6 +12,7 @@ export interface CreatePageData {
   content?: string
   contentFormat?: 'lexical' | 'markdown'
   draftId?: string
+  images?: Image[]
   meta?: Record<string, unknown>
   order?: number
   slug: string

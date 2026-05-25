@@ -4,7 +4,7 @@ import { toast } from 'sonner'
 import type {
   MountRichEditorOptions,
   RichEditorHandle,
-} from '@mx-admin/rich-react'
+} from '../rich-editor/mount/mount-rich-editor'
 
 import { API_URL } from '~/app/constants/env'
 
@@ -104,7 +104,8 @@ function RichDebugSurface(props: {
     const mount = async () => {
       if (!containerRef.current) return
 
-      const { mountRichEditor } = await import('@mx-admin/rich-react')
+      const { mountRichEditor } =
+        await import('../rich-editor/mount/mount-rich-editor')
 
       if (disposed || !containerRef.current) return
 

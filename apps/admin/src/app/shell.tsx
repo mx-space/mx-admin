@@ -1,10 +1,15 @@
+import { Popover } from '@base-ui/react/popover'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   ChevronDown,
   ExternalLink,
+  ListTodo,
+  Loader2,
   LogOut,
   Monitor,
   Moon,
+  Settings,
+  Sparkles,
   Sun,
 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
@@ -14,6 +19,7 @@ import type { Locale, TranslationKey } from './i18n/types'
 import type { SidebarNavNode, SidebarNavRoute } from './routes'
 import type { ThemeMode } from './theme'
 
+import { AITaskStatus, getAiTasks } from './api/ai'
 import { getOwner } from './api/options'
 import { getAppInfo } from './api/system'
 import { API_URL, GATEWAY_URL, WEB_URL } from './constants/env'
@@ -24,6 +30,7 @@ import { appRoutes, sidebarNavigation } from './routes'
 import { useThemeMode } from './theme'
 import { cn } from './ui/cn'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from './ui/layout'
+import { Scroll } from './ui/scroll'
 import { SelectField } from './ui/select'
 import { authClient } from './utils/authjs/auth'
 
@@ -31,10 +38,10 @@ const activeLinkClassName =
   'bg-neutral-950 text-white shadow-sm dark:bg-neutral-50 dark:text-neutral-950'
 const inactiveLinkClassName =
   'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-950 dark:text-neutral-300 dark:hover:bg-neutral-900 dark:hover:text-neutral-50'
-const localeLabelKeys = {
-  'en-US': 'common.locale.en-US',
-  'zh-CN': 'common.locale.zh-CN',
-} satisfies Record<Locale, TranslationKey>
+const localeShortLabels = {
+  'en-US': 'EN',
+  'zh-CN': 'ZH',
+} satisfies Record<Locale, string>
 const themeModeLabelKeys = {
   dark: 'shell.theme.dark',
   light: 'shell.theme.light',
@@ -65,6 +72,26 @@ export function AdminShell(props: PropsWithChildren) {
     queryKey: ['shell', 'app-info'],
     retry: false,
   })
+  const pendingAiTasksQuery = useQuery({
+    queryFn: () =>
+      getAiTasks({
+        page: 1,
+        size: 1,
+        status: AITaskStatus.Pending,
+      }),
+    queryKey: ['shell', 'ai-tasks', AITaskStatus.Pending],
+    refetchInterval: 5000,
+  })
+  const runningAiTasksQuery = useQuery({
+    queryFn: () =>
+      getAiTasks({
+        page: 1,
+        size: 1,
+        status: AITaskStatus.Running,
+      }),
+    queryKey: ['shell', 'ai-tasks', AITaskStatus.Running],
+    refetchInterval: 5000,
+  })
   const activeRoute =
     [...appRoutes]
       .sort((a, b) => b.path.length - a.path.length)
@@ -72,8 +99,14 @@ export function AdminShell(props: PropsWithChildren) {
   const owner = ownerQuery.data
   const ownerName =
     owner?.name || owner?.username || owner?.handle || t('shell.owner.fallback')
+  const ownerContact = owner?.mail || owner?.email || owner?.username
   const shouldShowDebugMenu =
     window.injectData.PAGE_PROXY || appInfoQuery.data?.version === 'dev'
+  const activeAiTaskCount =
+    (pendingAiTasksQuery.data?.total ?? 0) +
+    (runningAiTasksQuery.data?.total ?? 0)
+  const isFetchingAiTaskCount =
+    pendingAiTasksQuery.isFetching || runningAiTasksQuery.isFetching
   const isInApiDebugMode = Boolean(
     localStorage.getItem('__api') ||
     localStorage.getItem('__gateway') ||
@@ -161,42 +194,94 @@ export function AdminShell(props: PropsWithChildren) {
             APP_SHELL_HEADER_HEIGHT_CLASS,
           )}
         >
-          <NavLink
-            className="flex min-w-0 items-center gap-2 rounded-lg px-2 py-1 text-sm text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-950 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-50"
-            title={ownerName}
-            to="/setting?group=user"
-          >
-            {owner?.avatar ? (
-              <img
-                alt=""
-                className="size-5 shrink-0 rounded-lg object-cover"
-                decoding="async"
-                src={owner.avatar}
+          <Popover.Root>
+            <Popover.Trigger
+              className="flex min-w-0 items-center gap-2 rounded-lg px-2 py-1 text-sm text-neutral-500 outline-none transition-colors hover:bg-neutral-100 hover:text-neutral-950 data-[popup-open]:bg-neutral-100 data-[popup-open]:text-neutral-950 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-50 dark:data-[popup-open]:bg-neutral-900 dark:data-[popup-open]:text-neutral-50"
+              title={ownerName}
+              type="button"
+            >
+              {owner?.avatar ? (
+                <img
+                  alt=""
+                  className="size-5 shrink-0 rounded-lg object-cover"
+                  decoding="async"
+                  src={owner.avatar}
+                />
+              ) : (
+                <span className="flex size-5 shrink-0 items-center justify-center rounded-lg bg-neutral-200 text-[11px] font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300">
+                  {ownerName.slice(0, 1).toUpperCase()}
+                </span>
+              )}
+              <span className="truncate">{ownerName}</span>
+              <ChevronDown
+                aria-hidden="true"
+                className="size-3 shrink-0 text-neutral-400"
               />
-            ) : (
-              <span className="flex size-5 shrink-0 items-center justify-center rounded-lg bg-neutral-200 text-[11px] font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300">
-                {ownerName.slice(0, 1).toUpperCase()}
-              </span>
-            )}
-            <span className="truncate">{ownerName}</span>
-          </NavLink>
-
-          <a
-            className="inline-flex size-7 shrink-0 items-center justify-center rounded-md text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-950 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-50"
-            href={WEB_URL}
-            rel="noreferrer"
-            target="_blank"
-            title={t('common.openMainSite')}
-          >
-            <ExternalLink aria-hidden="true" className="size-4" />
-          </a>
+            </Popover.Trigger>
+            <Popover.Portal>
+              <Popover.Positioner align="start" side="bottom" sideOffset={8}>
+                <Popover.Popup className="z-50 w-56 rounded border border-neutral-200 bg-white p-1 text-sm shadow-lg outline-none dark:border-neutral-800 dark:bg-neutral-950">
+                  <div className="flex min-w-0 items-center gap-3 px-2 py-2">
+                    {owner?.avatar ? (
+                      <img
+                        alt=""
+                        className="size-9 shrink-0 rounded-lg object-cover"
+                        decoding="async"
+                        src={owner.avatar}
+                      />
+                    ) : (
+                      <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-neutral-200 text-sm font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300">
+                        {ownerName.slice(0, 1).toUpperCase()}
+                      </span>
+                    )}
+                    <div className="min-w-0">
+                      <div className="truncate font-medium text-neutral-950 dark:text-neutral-50">
+                        {ownerName}
+                      </div>
+                      {ownerContact ? (
+                        <div className="mt-0.5 truncate text-xs text-neutral-500 dark:text-neutral-400">
+                          {ownerContact}
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+                  <div className="my-1 h-px bg-neutral-100 dark:bg-neutral-800" />
+                  <button
+                    className="flex h-8 w-full items-center gap-2 rounded px-2 text-left text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-950 dark:text-neutral-300 dark:hover:bg-neutral-900 dark:hover:text-neutral-50"
+                    onClick={() => navigate('/setting?group=user')}
+                    type="button"
+                  >
+                    <Settings aria-hidden="true" className="size-4" />
+                    账户设置
+                  </button>
+                  <a
+                    className="flex h-8 w-full items-center gap-2 rounded px-2 text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-950 dark:text-neutral-300 dark:hover:bg-neutral-900 dark:hover:text-neutral-50"
+                    href={WEB_URL}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    <ExternalLink aria-hidden="true" className="size-4" />
+                    {t('common.openMainSite')}
+                  </a>
+                  <button
+                    className="flex h-8 w-full items-center gap-2 rounded px-2 text-left text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30"
+                    onClick={() => void handleLogout()}
+                    type="button"
+                  >
+                    <LogOut aria-hidden="true" className="size-4" />
+                    {t('shell.logout')}
+                  </button>
+                </Popover.Popup>
+              </Popover.Positioner>
+            </Popover.Portal>
+          </Popover.Root>
         </div>
 
         <nav
-          className="min-h-0 flex-1 overflow-y-auto"
+          className="min-h-0 flex-1"
           aria-label={t('common.primaryNavigation')}
         >
-          <div className="flex flex-col gap-3 py-3">
+          <Scroll className="h-full" innerClassName="flex flex-col gap-3 py-3">
             {visibleSidebarNavigation.map((section, sectionIndex) => (
               <div
                 className="grid gap-1 px-2"
@@ -222,13 +307,13 @@ export function AdminShell(props: PropsWithChildren) {
                 ))}
               </div>
             ))}
-          </div>
+          </Scroll>
         </nav>
 
-        <div className="flex items-center gap-2 border-t border-neutral-200 p-2 text-xs text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
+        <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-1.5 border-t border-neutral-200 px-2 py-1.5 text-xs text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
           <div
             aria-label={t('shell.theme.label')}
-            className="grid w-[5.75rem] shrink-0 grid-cols-3 gap-0.5 rounded bg-neutral-100 p-0.5 dark:bg-neutral-900"
+            className="grid w-[4.875rem] shrink-0 grid-cols-3 gap-0.5 rounded bg-neutral-100 p-0.5 dark:bg-neutral-900"
             role="group"
           >
             {themeModeOptions.map((option) => {
@@ -239,7 +324,7 @@ export function AdminShell(props: PropsWithChildren) {
                 <button
                   aria-label={t(themeModeLabelKeys[option.value])}
                   className={cn(
-                    'inline-flex size-7 items-center justify-center rounded text-neutral-500 transition-colors hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-neutral-50',
+                    'inline-flex size-6 items-center justify-center rounded text-neutral-500 transition-colors hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-neutral-50',
                     active
                       ? 'bg-white text-neutral-950 shadow-sm dark:bg-neutral-800 dark:text-neutral-50'
                       : null,
@@ -259,23 +344,14 @@ export function AdminShell(props: PropsWithChildren) {
               aria-label={t('shell.locale.label')}
               onValueChange={setLocale}
               options={SUPPORTED_LOCALES.map((value) => ({
-                label: t(localeLabelKeys[value]),
+                label: localeShortLabels[value],
                 value,
               }))}
               popupClassName="text-xs"
-              triggerClassName="h-8 w-full text-xs"
+              triggerClassName="h-7 w-full border-transparent bg-transparent px-1.5 text-[11px] font-medium text-neutral-500 hover:bg-neutral-100 dark:border-transparent dark:bg-transparent dark:text-neutral-400 dark:hover:bg-neutral-900"
               value={locale}
             />
           </div>
-          <button
-            aria-label={t('shell.logout')}
-            className="inline-flex size-8 shrink-0 items-center justify-center rounded border border-neutral-200 bg-white text-neutral-600 transition-colors hover:bg-neutral-50 hover:text-neutral-950 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-300 dark:hover:bg-neutral-900 dark:hover:text-neutral-50"
-            onClick={() => void handleLogout()}
-            title={t('shell.logout')}
-            type="button"
-          >
-            <LogOut aria-hidden="true" className="size-3.5" />
-          </button>
         </div>
       </aside>
 
@@ -302,9 +378,61 @@ export function AdminShell(props: PropsWithChildren) {
             </span>
           </div>
         ) : null}
-        <div className="min-h-0 flex-1 overflow-y-auto">{props.children}</div>
+        <div className="relative min-h-0 flex-1 overflow-hidden">
+          {props.children}
+          <AiTaskFloatingButton
+            activeCount={activeAiTaskCount}
+            fetching={isFetchingAiTaskCount}
+            onClick={() => navigate('/ai/tasks')}
+          />
+        </div>
       </section>
     </main>
+  )
+}
+
+function AiTaskFloatingButton(props: {
+  activeCount: number
+  fetching: boolean
+  onClick: () => void
+}) {
+  const hasActiveTasks = props.activeCount > 0
+
+  return (
+    <button
+      aria-label={
+        hasActiveTasks
+          ? `查看 AI 任务，当前 ${props.activeCount} 个任务处理中`
+          : '查看 AI 任务'
+      }
+      className={cn(
+        'absolute bottom-4 right-4 z-30 inline-flex h-10 items-center gap-2 rounded-full border px-3 text-sm font-medium shadow-lg outline-none transition-all focus-visible:ring-2 focus-visible:ring-[var(--color-primary-shallow)]',
+        hasActiveTasks
+          ? 'border-neutral-950 bg-neutral-950 text-white hover:bg-neutral-800 dark:border-neutral-100 dark:bg-neutral-100 dark:text-neutral-950 dark:hover:bg-neutral-200'
+          : 'border-neutral-200 bg-white text-neutral-600 hover:bg-neutral-50 hover:text-neutral-950 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-300 dark:hover:bg-neutral-900 dark:hover:text-neutral-50',
+      )}
+      onClick={props.onClick}
+      title="AI 任务"
+      type="button"
+    >
+      <span className="relative inline-flex size-4 items-center justify-center">
+        <Sparkles aria-hidden="true" className="size-4" />
+        {props.fetching ? (
+          <Loader2
+            aria-hidden="true"
+            className="absolute -right-1 -top-1 size-2.5 animate-spin"
+          />
+        ) : null}
+      </span>
+      <span>AI 任务</span>
+      {hasActiveTasks ? (
+        <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-white px-1.5 text-[11px] font-semibold tabular-nums text-neutral-950 dark:bg-neutral-950 dark:text-white">
+          {props.activeCount > 99 ? '99+' : props.activeCount}
+        </span>
+      ) : (
+        <ListTodo aria-hidden="true" className="size-3.5 text-neutral-400" />
+      )}
+    </button>
   )
 }
 
@@ -448,7 +576,7 @@ function doesRouteMatch(
 }
 
 function filterSidebarNode(node: SidebarNavNode): SidebarNavNode | null {
-  if (node.route.path === '/debug') {
+  if (node.route.path === '/debug' || node.route.path.startsWith('/debug/')) {
     return null
   }
 

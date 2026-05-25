@@ -14,7 +14,7 @@ import {
   Search,
   Trash2,
 } from 'lucide-react'
-import { FormEvent, useEffect, useState } from 'react'
+import { FormEvent, useEffect, useLayoutEffect, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { toast } from 'sonner'
 import type {
@@ -47,6 +47,7 @@ import { cn } from '../ui/cn'
 import { CompactPagination } from '../ui/compact-pagination'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
 import { MasterDetailLayout } from '../ui/page-layout'
+import { Scroll } from '../ui/scroll'
 import { SelectField } from '../ui/select'
 import { TextInput } from '../ui/text-field'
 
@@ -69,6 +70,7 @@ function isEnrichmentSource(value: unknown): value is EnrichmentSource {
 export function EnrichmentPage() {
   const queryClient = useQueryClient()
   const [searchParams, setSearchParams] = useSearchParams()
+  const searchParamsKey = searchParams.toString()
   const initialSourceParam = searchParams.get('source')
   const initialSource = isEnrichmentSource(initialSourceParam)
     ? initialSourceParam
@@ -159,6 +161,34 @@ export function EnrichmentPage() {
   const selectedProbe =
     probeHistory.find((entry) => entry.id === selectedProbeId) ?? null
 
+  useLayoutEffect(() => {
+    const nextSourceParam = searchParams.get('source')
+    const nextSource = isEnrichmentSource(nextSourceParam)
+      ? nextSourceParam
+      : 'cache'
+    const nextSelectedId = searchParams.get('id')
+
+    setSource((value) => (value === nextSource ? value : nextSource))
+    setSelectedProbeId(null)
+
+    if (nextSource === 'cache') {
+      setSelectedCacheId((value) =>
+        value === nextSelectedId ? value : nextSelectedId,
+      )
+      setSelectedCaptureId(null)
+    } else if (nextSource === 'screenshots') {
+      setSelectedCacheId(null)
+      setSelectedCaptureId((value) =>
+        value === nextSelectedId ? value : nextSelectedId,
+      )
+    } else {
+      setSelectedCacheId(null)
+      setSelectedCaptureId(null)
+    }
+
+    setShowDetailOnMobile(Boolean(nextSelectedId) && nextSource !== 'probe')
+  }, [searchParamsKey])
+
   useEffect(() => {
     const next = new URLSearchParams()
     const selectedId =
@@ -171,8 +201,16 @@ export function EnrichmentPage() {
     if (source !== 'cache') next.set('source', source)
     if (selectedId) next.set('id', selectedId)
 
-    setSearchParams(next, { replace: true })
-  }, [selectedCacheId, selectedCaptureId, setSearchParams, source])
+    if (next.toString() !== searchParamsKey) {
+      setSearchParams(next, { replace: true })
+    }
+  }, [
+    searchParamsKey,
+    selectedCacheId,
+    selectedCaptureId,
+    setSearchParams,
+    source,
+  ])
 
   const setSourceAndReset = (next: EnrichmentSource) => {
     setSource(next)
@@ -498,7 +536,7 @@ function CacheListPanel(props: {
       <div className="border-b border-neutral-200 px-4 py-2 text-xs text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
         共 {props.total} 条缓存
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <Scroll className="flex-1">
         {props.loading && props.rows.length === 0 ? (
           <ListLoading />
         ) : props.rows.length === 0 ? (
@@ -515,7 +553,7 @@ function CacheListPanel(props: {
             />
           ))
         )}
-      </div>
+      </Scroll>
       {props.pageCount > 1 ? (
         <div className="flex shrink-0 items-center justify-end border-t border-neutral-200 px-3 py-2 dark:border-neutral-800">
           <CompactPagination
@@ -665,7 +703,7 @@ function CacheDetailPanel(props: {
         </a>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">
+      <Scroll className="flex-1" innerClassName="px-5 py-4">
         <NormalizedPreview row={row} />
 
         {row.capture ? (
@@ -711,7 +749,7 @@ function CacheDetailPanel(props: {
         <DetailBlock title="Raw">
           <JsonBlock value={row.raw} />
         </DetailBlock>
-      </div>
+      </Scroll>
 
       <div className="flex shrink-0 items-center justify-end gap-2 border-t border-neutral-200 px-5 py-4 dark:border-neutral-800">
         <Button
@@ -814,7 +852,7 @@ function CaptureListPanel(props: {
         共 {props.total} 张截图
         {props.quota ? ` · ${props.quota}` : ''}
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <Scroll className="flex-1">
         {props.loading && props.rows.length === 0 ? (
           <ListLoading />
         ) : props.rows.length === 0 ? (
@@ -829,7 +867,7 @@ function CaptureListPanel(props: {
             />
           ))
         )}
-      </div>
+      </Scroll>
       {props.pageCount > 1 ? (
         <div className="flex shrink-0 items-center justify-end border-t border-neutral-200 px-3 py-2 dark:border-neutral-800">
           <CompactPagination
@@ -948,7 +986,7 @@ function CaptureDetail(props: {
           <ExternalLink aria-hidden="true" className="size-4" />
         </a>
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">
+      <Scroll className="flex-1" innerClassName="px-5 py-4">
         <div
           className="overflow-hidden rounded border border-neutral-200 bg-neutral-100 dark:border-neutral-800 dark:bg-neutral-900"
           style={
@@ -1006,7 +1044,7 @@ function CaptureDetail(props: {
             </div>
           </DetailBlock>
         ) : null}
-      </div>
+      </Scroll>
       <div className="flex shrink-0 items-center justify-end gap-2 border-t border-neutral-200 px-5 py-4 dark:border-neutral-800">
         <Button
           disabled={recaptureMutation.isPending || !!recaptureDisabledReason}
@@ -1065,7 +1103,7 @@ function ProbeListPanel(props: {
           清空
         </Button>
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <Scroll className="flex-1">
         {props.history.length === 0 ? (
           <ListEmpty label="暂无探针历史" />
         ) : (
@@ -1103,7 +1141,7 @@ function ProbeListPanel(props: {
             </button>
           ))
         )}
-      </div>
+      </Scroll>
     </div>
   )
 }
@@ -1187,13 +1225,13 @@ function ProbeConsole(props: {
           </Button>
         </div>
       </form>
-      <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">
+      <Scroll className="flex-1" innerClassName="px-5 py-4">
         {activeResult ? (
           <ProbeResult result={activeResult} />
         ) : (
           <DetailEmpty label="输入链接后运行探针。" />
         )}
-      </div>
+      </Scroll>
     </div>
   )
 }
@@ -1324,9 +1362,15 @@ function Code(props: { children: ReactNode }) {
 
 function JsonBlock(props: { value: unknown }) {
   return (
-    <pre className="max-h-72 overflow-auto rounded border border-neutral-200 bg-neutral-50 p-3 text-xs leading-5 text-neutral-800 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-200">
-      {JSON.stringify(props.value, null, 2)}
-    </pre>
+    <Scroll
+      className="rounded border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900"
+      orientation="both"
+      viewportClassName="max-h-72"
+    >
+      <pre className="p-3 text-xs leading-5 text-neutral-800 dark:text-neutral-200">
+        {JSON.stringify(props.value, null, 2)}
+      </pre>
+    </Scroll>
   )
 }
 

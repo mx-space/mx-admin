@@ -19,8 +19,8 @@ import {
   WandSparkles,
   XCircle,
 } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { useLocation, useSearchParams } from 'react-router'
+import { useEffect, useLayoutEffect, useState } from 'react'
+import { useLocation, useNavigate, useSearchParams } from 'react-router'
 import { toast } from 'sonner'
 import type { LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
@@ -76,6 +76,7 @@ import { cn } from '../ui/cn'
 import { CompactPagination } from '../ui/compact-pagination'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
 import { AppPage, MasterDetailLayout, PageHeader } from '../ui/page-layout'
+import { Scroll } from '../ui/scroll'
 import { SelectField } from '../ui/select'
 import { TextArea, TextInput } from '../ui/text-field'
 
@@ -158,18 +159,40 @@ type AiSurface =
 const aiSurfaceTabs: Array<{
   icon: LucideIcon
   label: string
+  path: string
   value: AiSurface
 }> = [
-  { icon: ListTodo, label: '任务队列', value: 'tasks' },
-  { icon: FileText, label: '摘要', value: 'summaries' },
-  { icon: Languages, label: '翻译', value: 'translations' },
-  { icon: BookOpenText, label: '精读', value: 'insights' },
-  { icon: Sparkles, label: '词表', value: 'entries' },
-  { icon: WandSparkles, label: 'Slug 回填', value: 'slug' },
+  { icon: ListTodo, label: '任务队列', path: '/ai/tasks', value: 'tasks' },
+  { icon: FileText, label: '摘要', path: '/ai/summary', value: 'summaries' },
+  {
+    icon: Languages,
+    label: '翻译',
+    path: '/ai/translation',
+    value: 'translations',
+  },
+  {
+    icon: BookOpenText,
+    label: '精读',
+    path: '/ai/insights',
+    value: 'insights',
+  },
+  {
+    icon: Sparkles,
+    label: '词表',
+    path: '/ai/translation-entries',
+    value: 'entries',
+  },
+  {
+    icon: WandSparkles,
+    label: 'Slug 回填',
+    path: '/ai/slug-backfill',
+    value: 'slug',
+  },
 ]
 
 export function AiPage() {
   const location = useLocation()
+  const navigate = useNavigate()
   const [surface, setSurface] = useState<AiSurface>(() =>
     getInitialAiSurface(location.pathname),
   )
@@ -197,7 +220,7 @@ export function AiPage() {
                       : 'border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-200 dark:hover:bg-neutral-900',
                   )}
                   key={tab.value}
-                  onClick={() => setSurface(tab.value)}
+                  onClick={() => navigate(tab.path)}
                   role="tab"
                   type="button"
                 >
@@ -237,11 +260,21 @@ function getInitialAiSurface(pathname: string): AiSurface {
 
 function AiTasksSurface() {
   const queryClient = useQueryClient()
-  const [statusFilter, setStatusFilter] = useState<AITaskStatus | ''>('')
-  const [typeFilter, setTypeFilter] = useState<AITaskType | ''>('')
-  const [page, setPage] = useState(1)
-  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
-  const [showDetailOnMobile, setShowDetailOnMobile] = useState(false)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const searchParamsKey = searchParams.toString()
+  const [statusFilter, setStatusFilter] = useState<AITaskStatus | ''>(
+    readTaskStatusFilter(searchParams.get('status')),
+  )
+  const [typeFilter, setTypeFilter] = useState<AITaskType | ''>(
+    readTaskTypeFilter(searchParams.get('type')),
+  )
+  const [page, setPage] = useState(readPositivePage(searchParams.get('page')))
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(
+    searchParams.get('id'),
+  )
+  const [showDetailOnMobile, setShowDetailOnMobile] = useState(
+    Boolean(searchParams.get('id')),
+  )
 
   const queryParams = {
     page,
@@ -262,12 +295,61 @@ function AiTasksSurface() {
   const pageCount = Math.max(1, Math.ceil(total / pageSize))
   const selectedTask = tasks.find((task) => task.id === selectedTaskId) ?? null
 
+  useLayoutEffect(() => {
+    const nextStatus = readTaskStatusFilter(searchParams.get('status'))
+    const nextType = readTaskTypeFilter(searchParams.get('type'))
+    const nextPage = readPositivePage(searchParams.get('page'))
+    const nextSelectedId = searchParams.get('id')
+
+    setStatusFilter((value) => (value === nextStatus ? value : nextStatus))
+    setTypeFilter((value) => (value === nextType ? value : nextType))
+    setPage((value) => (value === nextPage ? value : nextPage))
+    setSelectedTaskId((value) =>
+      value === nextSelectedId ? value : nextSelectedId,
+    )
+    setShowDetailOnMobile(Boolean(nextSelectedId))
+  }, [searchParamsKey])
+
   useEffect(() => {
-    if (selectedTaskId && !selectedTask) {
+    const next = new URLSearchParams(searchParams)
+    if (statusFilter) next.set('status', statusFilter)
+    else next.delete('status')
+    if (typeFilter) next.set('type', typeFilter)
+    else next.delete('type')
+    if (page > 1) next.set('page', String(page))
+    else next.delete('page')
+    if (selectedTaskId) next.set('id', selectedTaskId)
+    else next.delete('id')
+
+    if (next.toString() !== searchParamsKey) {
+      setSearchParams(next, { replace: true })
+    }
+  }, [
+    page,
+    searchParams,
+    searchParamsKey,
+    selectedTaskId,
+    setSearchParams,
+    statusFilter,
+    typeFilter,
+  ])
+
+  useEffect(() => {
+    if (
+      selectedTaskId &&
+      !selectedTask &&
+      tasksQuery.isSuccess &&
+      !tasksQuery.isFetching
+    ) {
       setSelectedTaskId(null)
       setShowDetailOnMobile(false)
     }
-  }, [selectedTask, selectedTaskId])
+  }, [
+    selectedTask,
+    selectedTaskId,
+    tasksQuery.isFetching,
+    tasksQuery.isSuccess,
+  ])
 
   const invalidateTasks = async () => {
     await queryClient.invalidateQueries({ queryKey: aiTasksQueryKey })
@@ -412,7 +494,7 @@ function AiTasksSurface() {
             </Button>
           </div>
 
-          <div className="min-h-0 flex-1 overflow-y-auto">
+          <Scroll className="flex-1">
             {tasksQuery.isLoading && tasks.length === 0 ? (
               <TasksSkeleton />
             ) : tasksQuery.isError ? (
@@ -429,7 +511,7 @@ function AiTasksSurface() {
                 />
               ))
             )}
-          </div>
+          </Scroll>
 
           {pageCount > 1 ? (
             <div className="flex shrink-0 items-center justify-between gap-3 border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
@@ -680,6 +762,7 @@ function AiGroupedResourceSurface<
   const [showDetailOnMobile, setShowDetailOnMobile] = useState(() =>
     Boolean(searchParams.get('id')),
   )
+  const searchParamsKey = searchParams.toString()
   const selectedArticleParam = searchParams.get('id')
 
   const params = {
@@ -710,11 +793,14 @@ function AiGroupedResourceSurface<
   const selectedGroup =
     groups.find((group) => group.article.id === selectedArticleId) ?? null
 
-  useEffect(() => {
-    if ((selectedArticleParam ?? null) === selectedArticleId) {
-      return
-    }
+  useLayoutEffect(() => {
+    setSelectedArticleId((value) =>
+      value === selectedArticleParam ? value : selectedArticleParam,
+    )
+    setShowDetailOnMobile(Boolean(selectedArticleParam))
+  }, [searchParamsKey, selectedArticleParam])
 
+  useEffect(() => {
     const next = new URLSearchParams(searchParams)
 
     if (selectedArticleId) {
@@ -723,8 +809,10 @@ function AiGroupedResourceSurface<
       next.delete('id')
     }
 
-    setSearchParams(next, { replace: true })
-  }, [searchParams, selectedArticleId, selectedArticleParam, setSearchParams])
+    if (next.toString() !== searchParamsKey) {
+      setSearchParams(next, { replace: true })
+    }
+  }, [searchParams, searchParamsKey, selectedArticleId, setSearchParams])
 
   const invalidate = async () => {
     await queryClient.invalidateQueries({ queryKey: ['ai', props.queryKey] })
@@ -829,7 +917,7 @@ function AiGroupedResourceSurface<
             </div>
           </div>
 
-          <div className="min-h-0 flex-1 overflow-y-auto">
+          <Scroll className="flex-1">
             {query.isLoading && groups.length === 0 ? (
               <GroupedResourceSkeleton />
             ) : query.isError ? (
@@ -887,7 +975,7 @@ function AiGroupedResourceSurface<
                 ))}
               </div>
             )}
-          </div>
+          </Scroll>
 
           {pageCount > 1 ? (
             <div className="flex shrink-0 items-center justify-between gap-3 border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
@@ -956,7 +1044,7 @@ function AiGroupedResourceSurface<
                 ) : null}
               </div>
 
-              <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+              <Scroll className="flex-1" innerClassName="px-4 py-4">
                 <div className="space-y-3">
                   {selectedGroup.items.map((item) => {
                     const itemActions = props.itemActions?.(item) ?? []
@@ -1008,7 +1096,7 @@ function AiGroupedResourceSurface<
                     )
                   })}
                 </div>
-              </div>
+              </Scroll>
             </div>
           ) : (
             <ResourceEmpty label={`选择${props.title}记录`} />
@@ -1160,7 +1248,7 @@ function TranslationEntriesSurface() {
       ) : entries.length === 0 ? (
         <ResourceEmpty label="词表" />
       ) : (
-        <div className="overflow-x-auto">
+        <Scroll orientation="horizontal">
           <table className="w-full min-w-[860px] text-sm">
             <thead className="border-b border-neutral-200 text-left text-xs uppercase text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
               <tr>
@@ -1215,7 +1303,7 @@ function TranslationEntriesSurface() {
               ))}
             </tbody>
           </table>
-        </div>
+        </Scroll>
       )}
 
       {pageCount > 1 ? (
@@ -1567,7 +1655,7 @@ function TaskDetail(props: {
         </div>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">
+      <Scroll className="flex-1" innerClassName="px-5 py-4">
         {task.error ? (
           <div
             className="mb-4 rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-950 dark:bg-red-950/40 dark:text-red-300"
@@ -1652,7 +1740,7 @@ function TaskDetail(props: {
             </p>
           )}
         </DetailBlock>
-      </div>
+      </Scroll>
 
       <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 border-t border-neutral-200 px-5 py-4 dark:border-neutral-800">
         {canRetry ? (
@@ -1813,9 +1901,15 @@ function DetailBlock(props: { children: ReactNode; title: string }) {
 
 function JsonBlock(props: { value: unknown }) {
   return (
-    <pre className="max-h-72 overflow-auto rounded border border-neutral-200 bg-neutral-50 p-3 text-xs leading-5 text-neutral-800 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-200">
-      {JSON.stringify(props.value, null, 2)}
-    </pre>
+    <Scroll
+      className="rounded border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900"
+      orientation="both"
+      viewportClassName="max-h-72"
+    >
+      <pre className="p-3 text-xs leading-5 text-neutral-800 dark:text-neutral-200">
+        {JSON.stringify(props.value, null, 2)}
+      </pre>
+    </Scroll>
   )
 }
 
@@ -2110,6 +2204,23 @@ function formatDateString(value?: string) {
     dateStyle: 'medium',
     timeStyle: 'short',
   }).format(date)
+}
+
+function readPositivePage(value: null | string) {
+  const parsed = Number(value)
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : 1
+}
+
+function readTaskStatusFilter(value: null | string): AITaskStatus | '' {
+  return statusOptions.some((option) => option.value === value)
+    ? (value as AITaskStatus | '')
+    : ''
+}
+
+function readTaskTypeFilter(value: null | string): AITaskType | '' {
+  return typeOptions.some((option) => option.value === value)
+    ? (value as AITaskType | '')
+    : ''
 }
 
 function getErrorMessage(error: unknown, fallback: string) {

@@ -65,6 +65,9 @@ export const enUS = {
   'routes.dashboard.description': 'Runtime status and environment data.',
   'routes.dashboard.title': 'Dashboard',
   'routes.debug.description': 'Development and diagnostic tools.',
+  'routes.debug.title': 'Debug Page',
+  'routes.dev.description': 'Development-only auto-registered pages.',
+  'routes.dev.title': 'Dev Page',
   'routes.drafts.description':
     'Autosaved drafts, versions, and content recovery.',
   'routes.drafts.title': 'Drafts',

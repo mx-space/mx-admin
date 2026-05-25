@@ -1,6 +1,8 @@
 import { API_URL } from '~/app/constants/env'
 import { SESSION_WITH_LOGIN } from '~/app/constants/keys'
 
+const requestUuid = createRequestUuid()
+
 type ResponseEnvelope<T> = {
   code?: number | string
   data?: T
@@ -47,10 +49,7 @@ export async function requestJson<TResponse>(
   const response = await fetch(`${API_URL}${path}`, {
     credentials: 'include',
     ...init,
-    headers: {
-      'x-skip-translation': '1',
-      ...init.headers,
-    },
+    headers: buildAdminRequestHeaders(init.headers),
   })
 
   const responseData = normalizeResponseData(
@@ -84,6 +83,59 @@ export async function requestJson<TResponse>(
   }
 
   return responseData as TResponse
+}
+
+export async function requestBlob(
+  path: string,
+  init: RequestInit = {},
+): Promise<Blob> {
+  const response = await fetch(`${API_URL}${path}`, {
+    credentials: 'include',
+    ...init,
+    headers: buildAdminRequestHeaders(init.headers),
+  })
+
+  if (!response.ok) {
+    const responseData = normalizeResponseData(
+      camelcaseKeys(await readResponseData<unknown>(response.clone())),
+    )
+
+    if (isUnauthorizedResponse(response, responseData)) {
+      handleUnauthorized()
+    }
+
+    const message =
+      responseData?.error?.message ||
+      responseData?.message ||
+      response.statusText
+
+    throw new Error(
+      Array.isArray(message) ? message.join(', ') : message || 'Request failed',
+    )
+  }
+
+  return response.blob()
+}
+
+export function buildAdminRequestHeaders(headers?: HeadersInit) {
+  const next = new Headers(headers)
+  next.set('x-skip-translation', '1')
+  next.set('x-uuid', requestUuid)
+
+  return next
+}
+
+function createRequestUuid() {
+  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
+    return crypto.randomUUID()
+  }
+
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replaceAll(/[xy]/g, (char) => {
+    const value = (Math.random() * 16) | 0
+    const digit = char === 'x' ? value : (value & 0x3) | 0x8
+
+    return digit.toString(16)
+  })
 }
 
 function isUnauthorizedResponse<TResponse>(

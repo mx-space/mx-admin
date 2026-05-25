@@ -1,3 +1,4 @@
+import { API_URL } from '../constants/env'
 import { getJson } from './http'
 
 export interface DependencyGraph {
@@ -13,14 +14,20 @@ export function getDependencyGraph() {
   return getJson<DependencyGraph>('/dependencies/graph')
 }
 
-export function installDependencies(packageNames: string | string[]) {
+export function getDependencyInstallUrl(packageNames: string | string[]) {
+  return `${API_URL}${getDependencyInstallPath(packageNames)}`
+}
+
+function getDependencyInstallPath(packageNames: string | string[]) {
   const names = Array.isArray(packageNames)
     ? packageNames.join(',')
     : packageNames
 
-  return getJson<void>('/dependencies/install_deps', {
+  const searchParams = new URLSearchParams({
     packageNames: names,
   })
+
+  return `/dependencies/install_deps?${searchParams}`
 }
 
 export async function getNpmPackageLatest(name: string) {

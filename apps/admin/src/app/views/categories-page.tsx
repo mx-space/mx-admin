@@ -35,6 +35,7 @@ import { Button } from '../ui/button'
 import { cn } from '../ui/cn'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
 import { MasterDetailLayout } from '../ui/page-layout'
+import { Scroll } from '../ui/scroll'
 import { TextInput } from '../ui/text-field'
 
 type SelectedItem =
@@ -157,7 +158,7 @@ export function CategoriesPage() {
             </Button>
           </div>
 
-          <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+          <Scroll className="min-h-0 flex-1">
             <ListSection
               count={categories.length}
               title="分类"
@@ -214,7 +215,7 @@ export function CategoriesPage() {
                 ))
               )}
             </ListSection>
-          </div>
+          </Scroll>
         </section>
       }
       detail={
@@ -392,7 +393,7 @@ function CategoryDetail(props: {
         </Button>
       </DetailHeader>
 
-      <div className="min-h-0 flex-1 overflow-y-auto p-5">
+      <Scroll className="min-h-0 flex-1" innerClassName="p-5">
         <EntitySummary
           countLabel={`${props.category.count} 篇文章`}
           icon={<FolderOpen aria-hidden="true" className="size-6" />}
@@ -405,7 +406,7 @@ function CategoryDetail(props: {
           posts={postsQuery.data ?? []}
           title="该分类下的文章"
         />
-      </div>
+      </Scroll>
     </div>
   )
 }
@@ -420,7 +421,7 @@ function TagDetail(props: { onBack: () => void; tag: TagModel }) {
   return (
     <div className="flex h-full min-h-0 flex-col">
       <DetailHeader onBack={props.onBack} title="标签详情" />
-      <div className="min-h-0 flex-1 overflow-y-auto p-5">
+      <Scroll className="min-h-0 flex-1" innerClassName="p-5">
         <EntitySummary
           countLabel={`${props.tag.count} 篇文章`}
           icon={<Tag aria-hidden="true" className="size-6" />}
@@ -432,7 +433,7 @@ function TagDetail(props: { onBack: () => void; tag: TagModel }) {
           posts={postsQuery.data ?? []}
           title={`「${props.tag.name}」关联的文章`}
         />
-      </div>
+      </Scroll>
     </div>
   )
 }
@@ -548,7 +549,8 @@ function PostListRow(props: { post: PostModel }) {
     <div className="flex items-center justify-between gap-4 border-b border-neutral-100 px-4 py-3 last:border-b-0 dark:border-neutral-800">
       <Link
         className="min-w-0 flex-1"
-        to={`/posts?keyword=${props.post.title}`}
+        title="编辑文章"
+        to={`/posts/edit?id=${props.post.id}`}
       >
         <p className="truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
           {props.post.title || '未命名文章'}

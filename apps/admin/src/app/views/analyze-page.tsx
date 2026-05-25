@@ -50,7 +50,9 @@ import { Button } from '../ui/button'
 import { cn } from '../ui/cn'
 import { CompactPagination } from '../ui/compact-pagination'
 import { MetricCard } from '../ui/metric-card'
+import { AppPage, PageHeader } from '../ui/page-layout'
 import { Panel } from '../ui/panel'
+import { Scroll } from '../ui/scroll'
 
 const analyzeQueryKey = ['analyze']
 const pageSize = 20
@@ -163,286 +165,119 @@ export function AnalyzePage() {
     : 1
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h2 className="text-sm font-medium text-neutral-950 dark:text-neutral-50">
-            数据分析
-          </h2>
-          <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
-            访问量、独立访客、路径分布和访问记录。
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <Button
-            disabled={
-              aggregateQuery.isFetching ||
-              recordsQuery.isFetching ||
-              trafficSourceQuery.isFetching ||
-              deviceDistributionQuery.isFetching ||
-              topReadingsQuery.isFetching
-            }
-            onClick={() => {
-              void aggregateQuery.refetch()
-              void recordsQuery.refetch()
-              void activityQuery.refetch()
-              void readingRankQuery.refetch()
-              void topReadingsQuery.refetch()
-              void trafficSourceQuery.refetch()
-              void deviceDistributionQuery.refetch()
-            }}
-            type="button"
-            variant="subtle"
-          >
-            <RefreshCw
-              aria-hidden="true"
-              className={cn(
-                'size-4',
-                (aggregateQuery.isFetching ||
-                  recordsQuery.isFetching ||
-                  trafficSourceQuery.isFetching ||
-                  deviceDistributionQuery.isFetching ||
-                  topReadingsQuery.isFetching) &&
-                  'animate-spin',
-              )}
-            />
-            刷新
-          </Button>
-          <Button
-            className="border-red-200 text-red-600 hover:bg-red-50 dark:border-red-950 dark:text-red-400 dark:hover:bg-red-950/30"
-            disabled={deleteMutation.isPending}
-            onClick={() => {
-              if (window.confirm('确认清空全部访问分析记录？')) {
-                deleteMutation.mutate()
+    <AppPage>
+      <PageHeader
+        actions={
+          <>
+            <Button
+              disabled={
+                aggregateQuery.isFetching ||
+                recordsQuery.isFetching ||
+                trafficSourceQuery.isFetching ||
+                deviceDistributionQuery.isFetching ||
+                topReadingsQuery.isFetching
               }
-            }}
-            type="button"
-            variant="subtle"
-          >
-            {deleteMutation.isPending ? (
-              <Loader2 aria-hidden="true" className="size-4 animate-spin" />
-            ) : (
-              <Trash2 aria-hidden="true" className="size-4" />
-            )}
-            清空
-          </Button>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <MetricCard
-          icon={Eye}
-          label="总访问量 PV"
-          value={formatNumber(aggregate?.total.callTime)}
-        />
-        <MetricCard
-          icon={Users}
-          label="独立访客 UV"
-          value={formatNumber(aggregate?.total.uv)}
-        />
-        <MetricCard
-          icon={Globe2}
-          label="今日访问 IP"
-          value={formatNumber(aggregate?.todayIps.length)}
-        />
-        <MetricCard
-          icon={Route}
-          label="平均访问深度"
-          value={formatAverageDepth(
-            aggregate?.total.callTime,
-            aggregate?.total.uv,
-          )}
-        />
-      </div>
-
-      <Panel
-        description="按日、周、月切换 PV / IP 趋势。"
-        title={
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <span className="inline-flex items-center gap-2">
-              <ChartLine aria-hidden="true" className="size-4" />
-              访问趋势
-            </span>
-            <div className="flex rounded border border-neutral-200 bg-white p-0.5 dark:border-neutral-800 dark:bg-neutral-950">
-              {(
-                [
-                  ['day', '今日'],
-                  ['week', '本周'],
-                  ['month', '本月'],
-                ] as const
-              ).map(([value, label]) => (
-                <button
-                  className={cn(
-                    'h-8 rounded px-3 text-xs font-medium text-neutral-500 transition-colors hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-neutral-50',
-                    period === value &&
-                      'bg-neutral-950 text-white hover:text-white dark:bg-neutral-50 dark:text-neutral-950 dark:hover:text-neutral-950',
-                  )}
-                  key={value}
-                  onClick={() => setPeriod(value)}
-                  type="button"
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          </div>
+              onClick={() => {
+                void aggregateQuery.refetch()
+                void recordsQuery.refetch()
+                void activityQuery.refetch()
+                void readingRankQuery.refetch()
+                void topReadingsQuery.refetch()
+                void trafficSourceQuery.refetch()
+                void deviceDistributionQuery.refetch()
+              }}
+              type="button"
+              variant="subtle"
+            >
+              <RefreshCw
+                aria-hidden="true"
+                className={cn(
+                  'size-4',
+                  (aggregateQuery.isFetching ||
+                    recordsQuery.isFetching ||
+                    trafficSourceQuery.isFetching ||
+                    deviceDistributionQuery.isFetching ||
+                    topReadingsQuery.isFetching) &&
+                    'animate-spin',
+                )}
+              />
+              刷新
+            </Button>
+            <Button
+              className="border-red-200 text-red-600 hover:bg-red-50 dark:border-red-950 dark:text-red-400 dark:hover:bg-red-950/30"
+              disabled={deleteMutation.isPending}
+              onClick={() => {
+                if (window.confirm('确认清空全部访问分析记录？')) {
+                  deleteMutation.mutate()
+                }
+              }}
+              type="button"
+              variant="subtle"
+            >
+              {deleteMutation.isPending ? (
+                <Loader2 aria-hidden="true" className="size-4 animate-spin" />
+              ) : (
+                <Trash2 aria-hidden="true" className="size-4" />
+              )}
+              清空
+            </Button>
+          </>
         }
-      >
-        {aggregateQuery.isLoading ? (
-          <AnalyzeSkeleton />
-        ) : trendData.length ? (
-          <TrendChart data={trendData} />
-        ) : (
-          <EmptyBlock label="暂无趋势数据" />
-        )}
-      </Panel>
+        description="访问量、独立访客、路径分布和访问记录。"
+        title="数据分析"
+      />
 
-      <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
-        <Panel
-          description="按阅读量统计最近 14 天的内容排行。"
-          title={
-            <span className="inline-flex items-center gap-2">
-              <Newspaper aria-hidden="true" className="size-4" />
-              热门文章
-            </span>
-          }
-        >
-          {topReadingsQuery.isLoading ? (
-            <AnalyzeSkeleton />
-          ) : topReadingsQuery.isError ? (
-            <ErrorBlock
-              label="热门文章加载失败"
-              onRetry={() => void topReadingsQuery.refetch()}
-            />
-          ) : topReadingsQuery.data?.length ? (
-            <TopReadingsChart items={topReadingsQuery.data} />
-          ) : (
-            <EmptyBlock label="暂无阅读排行数据" />
-          )}
-        </Panel>
+      <Scroll className="min-h-0 flex-1" innerClassName="space-y-4 p-4">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <MetricCard
+            icon={Eye}
+            label="总访问量 PV"
+            value={formatNumber(aggregate?.total.callTime)}
+          />
+          <MetricCard
+            icon={Users}
+            label="独立访客 UV"
+            value={formatNumber(aggregate?.total.uv)}
+          />
+          <MetricCard
+            icon={Globe2}
+            label="今日访问 IP"
+            value={formatNumber(aggregate?.todayIps.length)}
+          />
+          <MetricCard
+            icon={Route}
+            label="平均访问深度"
+            value={formatAverageDepth(
+              aggregate?.total.callTime,
+              aggregate?.total.uv,
+            )}
+          />
+        </div>
 
         <Panel
-          description="按来源类型与来源地址统计最近访问。"
-          title={
-            <span className="inline-flex items-center gap-2">
-              <Route aria-hidden="true" className="size-4" />
-              流量来源
-            </span>
-          }
-        >
-          {trafficSourceQuery.isLoading ? (
-            <AnalyzeSkeleton />
-          ) : trafficSourceQuery.isError ? (
-            <ErrorBlock
-              label="流量来源加载失败"
-              onRetry={() => void trafficSourceQuery.refetch()}
-            />
-          ) : trafficSourceQuery.data?.categories.length ? (
-            <TrafficSourceChart data={trafficSourceQuery.data} />
-          ) : (
-            <EmptyBlock label="暂无流量来源数据" />
-          )}
-        </Panel>
-
-        <Panel
-          description="按设备、浏览器和系统聚合访客客户端。"
-          title={
-            <span className="inline-flex items-center gap-2">
-              <MonitorSmartphone aria-hidden="true" className="size-4" />
-              设备分布
-            </span>
-          }
-        >
-          {deviceDistributionQuery.isLoading ? (
-            <AnalyzeSkeleton />
-          ) : deviceDistributionQuery.isError ? (
-            <ErrorBlock
-              label="设备分布加载失败"
-              onRetry={() => void deviceDistributionQuery.refetch()}
-            />
-          ) : hasDeviceDistribution(deviceDistributionQuery.data) ? (
-            <DeviceDistributionChart data={deviceDistributionQuery.data} />
-          ) : (
-            <EmptyBlock label="暂无设备分布数据" />
-          )}
-        </Panel>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,0.55fr)_minmax(0,0.45fr)]">
-        <Panel
-          description="按后端聚合结果展示访问路径。"
-          title={
-            <span className="inline-flex items-center gap-2">
-              <ChartLine aria-hidden="true" className="size-4" />
-              热门路径
-            </span>
-          }
-        >
-          {aggregateQuery.isLoading ? (
-            <AnalyzeSkeleton />
-          ) : aggregate?.paths.length ? (
-            <div className="divide-y divide-neutral-100 dark:divide-neutral-900">
-              {aggregate.paths.slice(0, 10).map((path) => (
-                <div
-                  className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 px-4 py-3"
-                  key={path.path}
-                >
-                  <span className="truncate text-sm text-neutral-800 dark:text-neutral-100">
-                    {path.path}
-                  </span>
-                  <span className="text-xs tabular-nums text-neutral-500 dark:text-neutral-400">
-                    {path.count}
-                  </span>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <EmptyBlock label="暂无路径聚合数据" />
-          )}
-        </Panel>
-
-        <Panel description="当日访问 IP 列表。" title="今日 IP">
-          {aggregateQuery.isLoading ? (
-            <AnalyzeSkeleton />
-          ) : aggregate?.todayIps.length ? (
-            <div className="flex max-h-80 flex-wrap gap-2 overflow-y-auto p-4">
-              {aggregate.todayIps.map((ip) => (
-                <IpInfoButton ip={ip} key={ip} />
-              ))}
-            </div>
-          ) : (
-            <EmptyBlock label="暂无今日 IP" />
-          )}
-        </Panel>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,0.56fr)_minmax(0,0.44fr)]">
-        <Panel
-          description="访客点赞与阅读时长活动。"
+          description="按日、周、月切换 PV / IP 趋势。"
           title={
             <div className="flex flex-wrap items-center justify-between gap-3">
               <span className="inline-flex items-center gap-2">
-                <Heart aria-hidden="true" className="size-4" />
-                访客活动
+                <ChartLine aria-hidden="true" className="size-4" />
+                访问趋势
               </span>
               <div className="flex rounded border border-neutral-200 bg-white p-0.5 dark:border-neutral-800 dark:bg-neutral-950">
                 {(
                   [
-                    [ActivityType.Like, '点赞记录'],
-                    [ActivityType.ReadDuration, '阅读记录'],
+                    ['day', '今日'],
+                    ['week', '本周'],
+                    ['month', '本月'],
                   ] as const
                 ).map(([value, label]) => (
                   <button
                     className={cn(
                       'h-8 rounded px-3 text-xs font-medium text-neutral-500 transition-colors hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-neutral-50',
-                      activityType === value &&
+                      period === value &&
                         'bg-neutral-950 text-white hover:text-white dark:bg-neutral-50 dark:text-neutral-950 dark:hover:text-neutral-950',
                     )}
                     key={value}
-                    onClick={() => {
-                      setActivityType(value)
-                      setActivityPage(1)
-                    }}
+                    onClick={() => setPeriod(value)}
                     type="button"
                   >
                     {label}
@@ -452,159 +287,327 @@ export function AnalyzePage() {
             </div>
           }
         >
-          {activityQuery.isLoading && activities.length === 0 ? (
+          {aggregateQuery.isLoading ? (
             <AnalyzeSkeleton />
-          ) : activityQuery.isError ? (
-            <ErrorBlock
-              label="访客活动加载失败"
-              onRetry={() => void activityQuery.refetch()}
-            />
-          ) : activities.length ? (
-            <ActivityList
-              items={activities}
-              refObjects={refObjects}
-              type={activityType}
-            />
+          ) : trendData.length ? (
+            <TrendChart data={trendData} />
           ) : (
-            <EmptyBlock
-              label={
-                activityType === ActivityType.Like
-                  ? '暂无点赞记录'
-                  : '暂无阅读记录'
-              }
-            />
+            <EmptyBlock label="暂无趋势数据" />
+          )}
+        </Panel>
+
+        <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
+          <Panel
+            description="按阅读量统计最近 14 天的内容排行。"
+            title={
+              <span className="inline-flex items-center gap-2">
+                <Newspaper aria-hidden="true" className="size-4" />
+                热门文章
+              </span>
+            }
+          >
+            {topReadingsQuery.isLoading ? (
+              <AnalyzeSkeleton />
+            ) : topReadingsQuery.isError ? (
+              <ErrorBlock
+                label="热门文章加载失败"
+                onRetry={() => void topReadingsQuery.refetch()}
+              />
+            ) : topReadingsQuery.data?.length ? (
+              <TopReadingsChart items={topReadingsQuery.data} />
+            ) : (
+              <EmptyBlock label="暂无阅读排行数据" />
+            )}
+          </Panel>
+
+          <Panel
+            description="按来源类型与来源地址统计最近访问。"
+            title={
+              <span className="inline-flex items-center gap-2">
+                <Route aria-hidden="true" className="size-4" />
+                流量来源
+              </span>
+            }
+          >
+            {trafficSourceQuery.isLoading ? (
+              <AnalyzeSkeleton />
+            ) : trafficSourceQuery.isError ? (
+              <ErrorBlock
+                label="流量来源加载失败"
+                onRetry={() => void trafficSourceQuery.refetch()}
+              />
+            ) : trafficSourceQuery.data?.categories.length ? (
+              <TrafficSourceChart data={trafficSourceQuery.data} />
+            ) : (
+              <EmptyBlock label="暂无流量来源数据" />
+            )}
+          </Panel>
+
+          <Panel
+            description="按设备、浏览器和系统聚合访客客户端。"
+            title={
+              <span className="inline-flex items-center gap-2">
+                <MonitorSmartphone aria-hidden="true" className="size-4" />
+                设备分布
+              </span>
+            }
+          >
+            {deviceDistributionQuery.isLoading ? (
+              <AnalyzeSkeleton />
+            ) : deviceDistributionQuery.isError ? (
+              <ErrorBlock
+                label="设备分布加载失败"
+                onRetry={() => void deviceDistributionQuery.refetch()}
+              />
+            ) : hasDeviceDistribution(deviceDistributionQuery.data) ? (
+              <DeviceDistributionChart data={deviceDistributionQuery.data} />
+            ) : (
+              <EmptyBlock label="暂无设备分布数据" />
+            )}
+          </Panel>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,0.55fr)_minmax(0,0.45fr)]">
+          <Panel
+            description="按后端聚合结果展示访问路径。"
+            title={
+              <span className="inline-flex items-center gap-2">
+                <ChartLine aria-hidden="true" className="size-4" />
+                热门路径
+              </span>
+            }
+          >
+            {aggregateQuery.isLoading ? (
+              <AnalyzeSkeleton />
+            ) : aggregate?.paths.length ? (
+              <div className="divide-y divide-neutral-100 dark:divide-neutral-900">
+                {aggregate.paths.slice(0, 10).map((path) => (
+                  <div
+                    className="grid grid-cols-[minmax(0,1fr)_auto] gap-3 px-4 py-3"
+                    key={path.path}
+                  >
+                    <span className="truncate text-sm text-neutral-800 dark:text-neutral-100">
+                      {path.path}
+                    </span>
+                    <span className="text-xs tabular-nums text-neutral-500 dark:text-neutral-400">
+                      {path.count}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <EmptyBlock label="暂无路径聚合数据" />
+            )}
+          </Panel>
+
+          <Panel description="当日访问 IP 列表。" title="今日 IP">
+            {aggregateQuery.isLoading ? (
+              <AnalyzeSkeleton />
+            ) : aggregate?.todayIps.length ? (
+              <Scroll
+                viewportClassName="max-h-80"
+                innerClassName="flex flex-wrap gap-2 p-4"
+              >
+                {aggregate.todayIps.map((ip) => (
+                  <IpInfoButton ip={ip} key={ip} />
+                ))}
+              </Scroll>
+            ) : (
+              <EmptyBlock label="暂无今日 IP" />
+            )}
+          </Panel>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,0.56fr)_minmax(0,0.44fr)]">
+          <Panel
+            description="访客点赞与阅读时长活动。"
+            title={
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <span className="inline-flex items-center gap-2">
+                  <Heart aria-hidden="true" className="size-4" />
+                  访客活动
+                </span>
+                <div className="flex rounded border border-neutral-200 bg-white p-0.5 dark:border-neutral-800 dark:bg-neutral-950">
+                  {(
+                    [
+                      [ActivityType.Like, '点赞记录'],
+                      [ActivityType.ReadDuration, '阅读记录'],
+                    ] as const
+                  ).map(([value, label]) => (
+                    <button
+                      className={cn(
+                        'h-8 rounded px-3 text-xs font-medium text-neutral-500 transition-colors hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-neutral-50',
+                        activityType === value &&
+                          'bg-neutral-950 text-white hover:text-white dark:bg-neutral-50 dark:text-neutral-950 dark:hover:text-neutral-950',
+                      )}
+                      key={value}
+                      onClick={() => {
+                        setActivityType(value)
+                        setActivityPage(1)
+                      }}
+                      type="button"
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            }
+          >
+            {activityQuery.isLoading && activities.length === 0 ? (
+              <AnalyzeSkeleton />
+            ) : activityQuery.isError ? (
+              <ErrorBlock
+                label="访客活动加载失败"
+                onRetry={() => void activityQuery.refetch()}
+              />
+            ) : activities.length ? (
+              <ActivityList
+                items={activities}
+                refObjects={refObjects}
+                type={activityType}
+              />
+            ) : (
+              <EmptyBlock
+                label={
+                  activityType === ActivityType.Like
+                    ? '暂无点赞记录'
+                    : '暂无阅读记录'
+                }
+              />
+            )}
+
+            {activityPagination && activityPagination.totalPages > 1 ? (
+              <div className="flex items-center justify-end border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
+                <CompactPagination
+                  onPageChange={setActivityPage}
+                  onPageSizeChange={() => undefined}
+                  page={activityPage}
+                  pageCount={activityPagination.totalPages}
+                  pageSize={activityPageSize}
+                  pageSizes={[activityPageSize]}
+                />
+              </div>
+            ) : null}
+          </Panel>
+
+          <Panel
+            description="按时间范围统计阅读排名。"
+            title={
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <span className="inline-flex items-center gap-2">
+                  <BookOpen aria-hidden="true" className="size-4" />
+                  阅读排名
+                </span>
+                <div className="flex rounded border border-neutral-200 bg-white p-0.5 dark:border-neutral-800 dark:bg-neutral-950">
+                  {(
+                    [
+                      ['day', '24 小时'],
+                      ['week', '7 天'],
+                      ['month', '30 天'],
+                    ] as const
+                  ).map(([value, label]) => (
+                    <button
+                      className={cn(
+                        'h-8 rounded px-3 text-xs font-medium text-neutral-500 transition-colors hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-neutral-50',
+                        rankRange === value &&
+                          'bg-neutral-950 text-white hover:text-white dark:bg-neutral-50 dark:text-neutral-950 dark:hover:text-neutral-950',
+                      )}
+                      key={value}
+                      onClick={() => setRankRange(value)}
+                      type="button"
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            }
+          >
+            <div className="border-b border-neutral-100 px-4 py-3 text-xs text-neutral-500 dark:border-neutral-900 dark:text-neutral-400">
+              <Calendar aria-hidden="true" className="mr-1.5 inline size-3.5" />
+              {formatDateTime(new Date(rankRangeValue.start).toISOString())} -
+              {formatDateTime(new Date(rankRangeValue.end).toISOString())}
+            </div>
+            {readingRankQuery.isLoading ? (
+              <AnalyzeSkeleton />
+            ) : readingRankQuery.isError ? (
+              <ErrorBlock
+                label="阅读排名加载失败"
+                onRetry={() => void readingRankQuery.refetch()}
+              />
+            ) : readingRankQuery.data?.length ? (
+              <ReadingRankList items={readingRankQuery.data} />
+            ) : (
+              <EmptyBlock label="暂无阅读数据" />
+            )}
+          </Panel>
+        </div>
+
+        <Panel description="最近访问记录，按后端分页返回。" title="访问记录">
+          {recordsQuery.isLoading && records.length === 0 ? (
+            <AnalyzeSkeleton />
+          ) : recordsQuery.isError ? (
+            <div className="flex min-h-[18rem] flex-col items-center justify-center">
+              <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                访问记录加载失败
+              </p>
+              <Button
+                className="mt-3"
+                onClick={() => void recordsQuery.refetch()}
+                type="button"
+              >
+                重试
+              </Button>
+            </div>
+          ) : records.length ? (
+            <Scroll orientation="horizontal">
+              <table className="w-full border-collapse text-left text-sm">
+                <thead className="text-xs uppercase text-neutral-500 dark:text-neutral-400">
+                  <tr>
+                    <th className="border-b border-neutral-200 px-4 py-3 font-medium dark:border-neutral-800">
+                      路径
+                    </th>
+                    <th className="border-b border-neutral-200 px-4 py-3 font-medium dark:border-neutral-800">
+                      IP
+                    </th>
+                    <th className="border-b border-neutral-200 px-4 py-3 font-medium dark:border-neutral-800">
+                      浏览器
+                    </th>
+                    <th className="border-b border-neutral-200 px-4 py-3 font-medium dark:border-neutral-800">
+                      系统
+                    </th>
+                    <th className="border-b border-neutral-200 px-4 py-3 font-medium dark:border-neutral-800">
+                      时间
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {records.map((record) => (
+                    <AnalyzeRecordRow key={record.id} record={record} />
+                  ))}
+                </tbody>
+              </table>
+            </Scroll>
+          ) : (
+            <EmptyBlock label="暂无访问记录" />
           )}
 
-          {activityPagination && activityPagination.totalPages > 1 ? (
+          {pagination && totalPages > 1 ? (
             <div className="flex items-center justify-end border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
               <CompactPagination
-                onPageChange={setActivityPage}
+                onPageChange={setPage}
                 onPageSizeChange={() => undefined}
-                page={activityPage}
-                pageCount={activityPagination.totalPages}
-                pageSize={activityPageSize}
-                pageSizes={[activityPageSize]}
+                page={page}
+                pageCount={totalPages}
+                pageSize={pageSize}
+                pageSizes={[pageSize]}
               />
             </div>
           ) : null}
         </Panel>
-
-        <Panel
-          description="按时间范围统计阅读排名。"
-          title={
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <span className="inline-flex items-center gap-2">
-                <BookOpen aria-hidden="true" className="size-4" />
-                阅读排名
-              </span>
-              <div className="flex rounded border border-neutral-200 bg-white p-0.5 dark:border-neutral-800 dark:bg-neutral-950">
-                {(
-                  [
-                    ['day', '24 小时'],
-                    ['week', '7 天'],
-                    ['month', '30 天'],
-                  ] as const
-                ).map(([value, label]) => (
-                  <button
-                    className={cn(
-                      'h-8 rounded px-3 text-xs font-medium text-neutral-500 transition-colors hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-neutral-50',
-                      rankRange === value &&
-                        'bg-neutral-950 text-white hover:text-white dark:bg-neutral-50 dark:text-neutral-950 dark:hover:text-neutral-950',
-                    )}
-                    key={value}
-                    onClick={() => setRankRange(value)}
-                    type="button"
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          }
-        >
-          <div className="border-b border-neutral-100 px-4 py-3 text-xs text-neutral-500 dark:border-neutral-900 dark:text-neutral-400">
-            <Calendar aria-hidden="true" className="mr-1.5 inline size-3.5" />
-            {formatDateTime(new Date(rankRangeValue.start).toISOString())} -
-            {formatDateTime(new Date(rankRangeValue.end).toISOString())}
-          </div>
-          {readingRankQuery.isLoading ? (
-            <AnalyzeSkeleton />
-          ) : readingRankQuery.isError ? (
-            <ErrorBlock
-              label="阅读排名加载失败"
-              onRetry={() => void readingRankQuery.refetch()}
-            />
-          ) : readingRankQuery.data?.length ? (
-            <ReadingRankList items={readingRankQuery.data} />
-          ) : (
-            <EmptyBlock label="暂无阅读数据" />
-          )}
-        </Panel>
-      </div>
-
-      <Panel description="最近访问记录，按后端分页返回。" title="访问记录">
-        {recordsQuery.isLoading && records.length === 0 ? (
-          <AnalyzeSkeleton />
-        ) : recordsQuery.isError ? (
-          <div className="flex min-h-[18rem] flex-col items-center justify-center">
-            <p className="text-sm text-neutral-500 dark:text-neutral-400">
-              访问记录加载失败
-            </p>
-            <Button
-              className="mt-3"
-              onClick={() => void recordsQuery.refetch()}
-              type="button"
-            >
-              重试
-            </Button>
-          </div>
-        ) : records.length ? (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-left text-sm">
-              <thead className="text-xs uppercase text-neutral-500 dark:text-neutral-400">
-                <tr>
-                  <th className="border-b border-neutral-200 px-4 py-3 font-medium dark:border-neutral-800">
-                    路径
-                  </th>
-                  <th className="border-b border-neutral-200 px-4 py-3 font-medium dark:border-neutral-800">
-                    IP
-                  </th>
-                  <th className="border-b border-neutral-200 px-4 py-3 font-medium dark:border-neutral-800">
-                    浏览器
-                  </th>
-                  <th className="border-b border-neutral-200 px-4 py-3 font-medium dark:border-neutral-800">
-                    系统
-                  </th>
-                  <th className="border-b border-neutral-200 px-4 py-3 font-medium dark:border-neutral-800">
-                    时间
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {records.map((record) => (
-                  <AnalyzeRecordRow key={record.id} record={record} />
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <EmptyBlock label="暂无访问记录" />
-        )}
-
-        {pagination && totalPages > 1 ? (
-          <div className="flex items-center justify-end border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
-            <CompactPagination
-              onPageChange={setPage}
-              onPageSizeChange={() => undefined}
-              page={page}
-              pageCount={totalPages}
-              pageSize={pageSize}
-              pageSizes={[pageSize]}
-            />
-          </div>
-        ) : null}
-      </Panel>
-    </div>
+      </Scroll>
+    </AppPage>
   )
 }
 
@@ -879,7 +882,7 @@ function TrafficSourceChart(props: { data: TrafficSourceResponse }) {
           <div className="mb-2 text-xs font-medium text-neutral-500 dark:text-neutral-400">
             来源明细
           </div>
-          <div className="grid max-h-36 gap-2 overflow-y-auto">
+          <Scroll viewportClassName="max-h-36" innerClassName="grid gap-2">
             {props.data.details.slice(0, 8).map((item) => (
               <div
                 className="flex items-center justify-between gap-3 text-xs"
@@ -893,7 +896,7 @@ function TrafficSourceChart(props: { data: TrafficSourceResponse }) {
                 </span>
               </div>
             ))}
-          </div>
+          </Scroll>
         </div>
       ) : null}
     </div>
@@ -1127,34 +1130,39 @@ function TrendChart(props: { data: TrendPoint[] }) {
 
   return (
     <div className="p-4">
-      <div className="flex h-64 items-end gap-3 overflow-x-auto border-b border-l border-neutral-200 px-2 pb-6 dark:border-neutral-800">
-        {props.data.map((item) => (
-          <div
-            className="flex min-w-12 flex-1 flex-col items-center gap-2"
-            key={item.label}
-          >
-            <div className="flex h-48 items-end gap-1">
-              <span
-                className="w-3 rounded-t bg-neutral-950 dark:bg-neutral-50"
-                style={{
-                  height: `${Math.max(4, (item.pv / maxValue) * 100)}%`,
-                }}
-                title={`PV ${item.pv}`}
-              />
-              <span
-                className="w-3 rounded-t bg-[var(--color-primary)]"
-                style={{
-                  height: `${Math.max(4, (item.ip / maxValue) * 100)}%`,
-                }}
-                title={`IP ${item.ip}`}
-              />
+      <Scroll
+        className="border-b border-l border-neutral-200 dark:border-neutral-800"
+        orientation="horizontal"
+      >
+        <div className="flex h-64 items-end gap-3 px-2 pb-6">
+          {props.data.map((item) => (
+            <div
+              className="flex min-w-12 flex-1 flex-col items-center gap-2"
+              key={item.label}
+            >
+              <div className="flex h-48 items-end gap-1">
+                <span
+                  className="w-3 rounded-t bg-neutral-950 dark:bg-neutral-50"
+                  style={{
+                    height: `${Math.max(4, (item.pv / maxValue) * 100)}%`,
+                  }}
+                  title={`PV ${item.pv}`}
+                />
+                <span
+                  className="w-3 rounded-t bg-[var(--color-primary)]"
+                  style={{
+                    height: `${Math.max(4, (item.ip / maxValue) * 100)}%`,
+                  }}
+                  title={`IP ${item.ip}`}
+                />
+              </div>
+              <span className="max-w-16 truncate text-xs text-neutral-500 dark:text-neutral-400">
+                {item.label}
+              </span>
             </div>
-            <span className="max-w-16 truncate text-xs text-neutral-500 dark:text-neutral-400">
-              {item.label}
-            </span>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      </Scroll>
       <div className="mt-3 flex items-center gap-4 px-2 text-xs text-neutral-500 dark:text-neutral-400">
         <span className="inline-flex items-center gap-1.5">
           <span className="size-2 rounded-sm bg-neutral-950 dark:bg-neutral-50" />

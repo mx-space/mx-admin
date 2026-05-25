@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react'
 
+import { Scroll } from './scroll'
+
 interface DataTableColumn<T> {
   key: keyof T
   label: string
@@ -15,8 +17,8 @@ export function DataTable<T extends Record<string, ReactNode>>(
   props: DataTableProps<T>,
 ) {
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full border-collapse text-left text-sm">
+    <Scroll innerClassName="min-w-max" orientation="horizontal">
+      <table className="min-w-full border-collapse text-left text-sm">
         <thead className="text-xs uppercase tracking-wide text-neutral-500">
           <tr>
             {props.columns.map((column) => (
@@ -51,6 +53,6 @@ export function DataTable<T extends Record<string, ReactNode>>(
           ))}
         </tbody>
       </table>
-    </div>
+    </Scroll>
   )
 }

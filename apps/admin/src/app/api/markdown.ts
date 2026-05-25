@@ -1,6 +1,4 @@
-import { API_URL } from '~/app/constants/env'
-
-import { postJson } from './http'
+import { postJson, requestBlob } from './http'
 
 export interface MarkdownImportData {
   content?: string
@@ -31,19 +29,5 @@ export async function exportMarkdown(params?: MarkdownExportParams) {
   }
 
   const query = searchParams.toString()
-  const response = await fetch(
-    `${API_URL}/markdown/export${query ? `?${query}` : ''}`,
-    {
-      credentials: 'include',
-      headers: {
-        'x-skip-translation': '1',
-      },
-    },
-  )
-
-  if (!response.ok) {
-    throw new Error(response.statusText || 'Export failed')
-  }
-
-  return response.blob()
+  return requestBlob(`/markdown/export${query ? `?${query}` : ''}`)
 }

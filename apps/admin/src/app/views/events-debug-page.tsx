@@ -8,7 +8,9 @@ import { postJson } from '../api/http'
 import { useLocalStorageState } from '../hooks/use-local-storage-state'
 import { EventTypes } from '../socket/types'
 import { Button } from '../ui/button'
+import { AppPage, PageHeader } from '../ui/page-layout'
 import { Panel } from '../ui/panel'
+import { Scroll } from '../ui/scroll'
 import { TextArea } from '../ui/text-field'
 
 type DebugTarget = 'admin' | 'all' | 'web'
@@ -68,109 +70,132 @@ export function EventsDebugPage() {
   }
 
   return (
-    <div className="mx-auto grid max-w-6xl gap-6 xl:grid-cols-[320px_minmax(0,1fr)]">
-      <Panel
-        description="Compose and dispatch synthetic socket events from the React runtime."
-        title="Event dispatcher"
+    <AppPage>
+      <PageHeader
+        description="Compose and dispatch synthetic socket events."
+        title="Events Debug"
+      />
+      <Scroll
+        className="min-h-0 flex-1"
+        innerClassName="mx-auto grid w-full max-w-6xl gap-6 p-4 xl:grid-cols-[320px_minmax(0,1fr)]"
       >
-        <div className="flex flex-col gap-5 p-4">
-          <Field label="Target">
-            <Select.Root
-              items={targetOptions.map((value) => ({
-                label: value,
-                value,
-              }))}
-              onValueChange={(value: unknown) => {
-                if (isDebugTarget(value)) setTarget(value)
-              }}
-              value={target}
-            >
-              <SelectTrigger />
-              <Select.Portal>
-                <Select.Positioner alignItemWithTrigger={false} sideOffset={6}>
-                  <Select.Popup className="z-50 min-w-40 rounded border border-neutral-200 bg-white p-1 text-sm shadow-lg outline-none dark:border-neutral-800 dark:bg-neutral-950">
-                    {targetOptions.map((value) => (
-                      <Select.Item
-                        className="cursor-pointer rounded px-2 py-1.5 text-neutral-700 outline-none data-[highlighted]:bg-neutral-100 data-[selected]:text-[var(--color-primary)] dark:text-neutral-200 dark:data-[highlighted]:bg-neutral-800"
-                        key={value}
-                        value={value}
-                      >
-                        {value}
-                      </Select.Item>
-                    ))}
-                  </Select.Popup>
-                </Select.Positioner>
-              </Select.Portal>
-            </Select.Root>
-          </Field>
+        <Panel
+          description="Compose and dispatch synthetic socket events from the React runtime."
+          title="Event dispatcher"
+        >
+          <div className="flex flex-col gap-5 p-4">
+            <Field label="Target">
+              <Select.Root
+                items={targetOptions.map((value) => ({
+                  label: value,
+                  value,
+                }))}
+                onValueChange={(value: unknown) => {
+                  if (isDebugTarget(value)) setTarget(value)
+                }}
+                value={target}
+              >
+                <SelectTrigger />
+                <Select.Portal>
+                  <Select.Positioner
+                    alignItemWithTrigger={false}
+                    sideOffset={6}
+                  >
+                    <Select.Popup className="z-50 min-w-40 rounded border border-neutral-200 bg-white text-sm shadow-lg outline-none dark:border-neutral-800 dark:bg-neutral-950">
+                      <Scroll innerClassName="p-1">
+                        {targetOptions.map((value) => (
+                          <Select.Item
+                            className="cursor-pointer rounded px-2 py-1.5 text-neutral-700 outline-none data-[highlighted]:bg-neutral-100 data-[selected]:text-[var(--color-primary)] dark:text-neutral-200 dark:data-[highlighted]:bg-neutral-800"
+                            key={value}
+                            value={value}
+                          >
+                            {value}
+                          </Select.Item>
+                        ))}
+                      </Scroll>
+                    </Select.Popup>
+                  </Select.Positioner>
+                </Select.Portal>
+              </Select.Root>
+            </Field>
 
-          <Field label="Event">
-            <Select.Root
-              items={eventOptions.map((value) => ({
-                label: value,
-                value,
-              }))}
-              onValueChange={(value: unknown) => {
-                if (isEventType(value)) setEvent(value)
-              }}
-              value={event}
-            >
-              <SelectTrigger />
-              <Select.Portal>
-                <Select.Positioner alignItemWithTrigger={false} sideOffset={6}>
-                  <Select.Popup className="z-50 max-h-72 min-w-56 overflow-auto rounded border border-neutral-200 bg-white p-1 text-sm shadow-lg outline-none dark:border-neutral-800 dark:bg-neutral-950">
-                    {eventOptions.map((value) => (
-                      <Select.Item
-                        className="cursor-pointer rounded px-2 py-1.5 text-neutral-700 outline-none data-[highlighted]:bg-neutral-100 data-[selected]:text-[var(--color-primary)] dark:text-neutral-200 dark:data-[highlighted]:bg-neutral-800"
-                        key={value}
-                        value={value}
+            <Field label="Event">
+              <Select.Root
+                items={eventOptions.map((value) => ({
+                  label: value,
+                  value,
+                }))}
+                onValueChange={(value: unknown) => {
+                  if (isEventType(value)) setEvent(value)
+                }}
+                value={event}
+              >
+                <SelectTrigger />
+                <Select.Portal>
+                  <Select.Positioner
+                    alignItemWithTrigger={false}
+                    sideOffset={6}
+                  >
+                    <Select.Popup className="z-50 min-w-56 rounded border border-neutral-200 bg-white text-sm shadow-lg outline-none dark:border-neutral-800 dark:bg-neutral-950">
+                      <Scroll
+                        className="max-h-72"
+                        innerClassName="p-1"
+                        viewportClassName="max-h-72"
                       >
-                        {value}
-                      </Select.Item>
-                    ))}
-                  </Select.Popup>
-                </Select.Positioner>
-              </Select.Portal>
-            </Select.Root>
-          </Field>
+                        {eventOptions.map((value) => (
+                          <Select.Item
+                            className="cursor-pointer rounded px-2 py-1.5 text-neutral-700 outline-none data-[highlighted]:bg-neutral-100 data-[selected]:text-[var(--color-primary)] dark:text-neutral-200 dark:data-[highlighted]:bg-neutral-800"
+                            key={value}
+                            value={value}
+                          >
+                            {value}
+                          </Select.Item>
+                        ))}
+                      </Scroll>
+                    </Select.Popup>
+                  </Select.Positioner>
+                </Select.Portal>
+              </Select.Root>
+            </Field>
 
-          <div className="rounded border border-neutral-200 bg-neutral-50 p-3 text-xs leading-5 text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900/60 dark:text-neutral-400">
-            <RadioTower aria-hidden="true" className="mb-2 size-4" />
-            <div className="font-medium text-neutral-700 dark:text-neutral-200">
-              {target}:{event}
+            <div className="rounded border border-neutral-200 bg-neutral-50 p-3 text-xs leading-5 text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900/60 dark:text-neutral-400">
+              <RadioTower aria-hidden="true" className="mb-2 size-4" />
+              <div className="font-medium text-neutral-700 dark:text-neutral-200">
+                {target}:{event}
+              </div>
+              <div className="mt-1">
+                Supported placeholders: {'{{objectId}}'}, {'{{now}}'},{' '}
+                {'{{randomtext}}'}, {'{{randomnumber}}'}.
+              </div>
             </div>
-            <div className="mt-1">
-              Supported placeholders: {'{{objectId}}'}, {'{{now}}'},{' '}
-              {'{{randomtext}}'}, {'{{randomnumber}}'}.
-            </div>
+
+            <Button disabled={isSending} onClick={sendEvent} type="button">
+              <SendHorizontal aria-hidden="true" className="size-4" />
+              {isSending ? 'Sending' : 'Send event'}
+            </Button>
           </div>
+        </Panel>
 
-          <Button disabled={isSending} onClick={sendEvent} type="button">
-            <SendHorizontal aria-hidden="true" className="size-4" />
-            {isSending ? 'Sending' : 'Send event'}
-          </Button>
-        </div>
-      </Panel>
-
-      <Panel
-        description="Enter an object expression or an export default object."
-        title={
-          <span className="inline-flex items-center gap-2">
-            <Code2 aria-hidden="true" className="size-4" />
-            Payload
-          </span>
-        }
-      >
-        <div className="p-4">
-          <TextArea
-            controlClassName="min-h-[520px] resize-y p-3 font-mono text-sm leading-6"
-            onChange={updatePayload}
-            spellCheck={false}
-            value={payload}
-          />
-        </div>
-      </Panel>
-    </div>
+        <Panel
+          description="Enter an object expression or an export default object."
+          title={
+            <span className="inline-flex items-center gap-2">
+              <Code2 aria-hidden="true" className="size-4" />
+              Payload
+            </span>
+          }
+        >
+          <div className="p-4">
+            <TextArea
+              controlClassName="min-h-[520px] resize-y p-3 font-mono text-sm leading-6"
+              onChange={updatePayload}
+              spellCheck={false}
+              value={payload}
+            />
+          </div>
+        </Panel>
+      </Scroll>
+    </AppPage>
   )
 }
 

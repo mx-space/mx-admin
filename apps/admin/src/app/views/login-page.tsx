@@ -73,7 +73,7 @@ export function LoginPage() {
 
   useEffect(() => {
     if (initQuery.data === false) {
-      navigate('/setup-api', { replace: true })
+      navigate('/setup', { replace: true })
     }
   }, [initQuery.data, navigate])
 

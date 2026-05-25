@@ -27,6 +27,7 @@ import { Button } from '../ui/button'
 import { cn } from '../ui/cn'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
 import { MasterDetailLayout } from '../ui/page-layout'
+import { Scroll } from '../ui/scroll'
 import { SelectField } from '../ui/select'
 import { TextInput } from '../ui/text-field'
 
@@ -277,7 +278,7 @@ export function SearchIndexPage() {
             </div>
           </form>
 
-          <div className="min-h-0 flex-1 overflow-y-auto">
+          <Scroll className="flex-1">
             {documentsQuery.isLoading && rows.length === 0 ? (
               <SearchIndexSkeleton />
             ) : rows.length === 0 ? (
@@ -292,7 +293,7 @@ export function SearchIndexPage() {
                 />
               ))
             )}
-          </div>
+          </Scroll>
 
           {pageCount > 1 ? (
             <div className="flex shrink-0 items-center justify-between gap-3 border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
@@ -425,7 +426,7 @@ function SearchIndexDetail(props: {
         </h2>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">
+      <Scroll className="flex-1" innerClassName="px-5 py-4">
         <div className="grid grid-cols-1 gap-x-6 gap-y-4 text-sm sm:grid-cols-2">
           <Field label="refId">
             <Code>{row.refId}</Code>
@@ -458,7 +459,7 @@ function SearchIndexDetail(props: {
             <Field label="公开时间">{formatDateTime(row.publicAt)}</Field>
           ) : null}
         </div>
-      </div>
+      </Scroll>
 
       <div className="flex shrink-0 items-center justify-end gap-2 border-t border-neutral-200 px-5 py-4 dark:border-neutral-800">
         {editUrl ? (

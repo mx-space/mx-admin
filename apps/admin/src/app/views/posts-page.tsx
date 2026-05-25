@@ -1,15 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   BookOpen,
-  ExternalLink,
   FileText,
-  Pencil,
   Pin,
   Plus,
+  RefreshCw,
   ThumbsUp,
   Trash2,
 } from 'lucide-react'
-import { FormEvent, useEffect, useMemo, useState } from 'react'
+import { FormEvent, useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { toast } from 'sonner'
 import type { PostModel } from '~/app/models/post'
@@ -20,15 +19,23 @@ import { relativeTimeFromNow } from '~/app/utils/time'
 import { getCategories } from '../api/categories'
 import { deletePost, getPosts, patchPost, searchPosts } from '../api/posts'
 import { Button, ButtonLink } from '../ui/button'
-import { Checkbox } from '../ui/checkbox'
 import { cn } from '../ui/cn'
 import { CompactPagination } from '../ui/compact-pagination'
-import { ContentListToolbar } from '../ui/content-list-toolbar'
-import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
+import {
+  ContentEntryListItem,
+  ContentListStatusBadge,
+} from '../ui/content-list-item'
+import {
+  ContentListPageHeader,
+  ContentListToolbar,
+} from '../ui/content-list-toolbar'
+import { Scroll } from '../ui/scroll'
 import { SelectField } from '../ui/select'
 
 const pageSize = 20
 const allCategoriesValue = '__all__'
+type PostSortKey = 'createdAt' | 'modifiedAt' | 'pinAt'
+type SortOrder = 'asc' | 'desc'
 
 export function PostsPage() {
   const queryClient = useQueryClient()
@@ -41,14 +48,31 @@ export function PostsPage() {
   const [categoryId, setCategoryId] = useState(
     searchParams.get('category') ?? allCategoriesValue,
   )
-  const [sortKey, setSortKey] = useState<'createdAt' | 'modifiedAt' | 'pinAt'>(
-    (searchParams.get('sort') as 'createdAt' | 'modifiedAt' | 'pinAt') ??
-      'createdAt',
+  const [sortKey, setSortKey] = useState<PostSortKey>(
+    readPostSortKey(searchParams.get('sort')),
   )
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>(
-    searchParams.get('order') === 'asc' ? 'asc' : 'desc',
+  const [sortOrder, setSortOrder] = useState<SortOrder>(
+    readSortOrder(searchParams.get('order')),
   )
   const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set())
+  const searchParamsKey = searchParams.toString()
+
+  useLayoutEffect(() => {
+    const nextPage = readPage(searchParams.get('page'))
+    const nextKeyword = searchParams.get('keyword') ?? ''
+    const nextCategoryId = searchParams.get('category') ?? allCategoriesValue
+    const nextSortKey = readPostSortKey(searchParams.get('sort'))
+    const nextSortOrder = readSortOrder(searchParams.get('order'))
+
+    setPage((value) => (value === nextPage ? value : nextPage))
+    setKeyword((value) => (value === nextKeyword ? value : nextKeyword))
+    setKeywordInput((value) => (value === nextKeyword ? value : nextKeyword))
+    setCategoryId((value) =>
+      value === nextCategoryId ? value : nextCategoryId,
+    )
+    setSortKey((value) => (value === nextSortKey ? value : nextSortKey))
+    setSortOrder((value) => (value === nextSortOrder ? value : nextSortOrder))
+  }, [searchParamsKey])
 
   useEffect(() => {
     const nextParams = new URLSearchParams()
@@ -58,8 +82,18 @@ export function PostsPage() {
       nextParams.set('category', categoryId)
     if (sortKey !== 'createdAt') nextParams.set('sort', sortKey)
     if (sortOrder !== 'desc') nextParams.set('order', sortOrder)
-    setSearchParams(nextParams, { replace: true })
-  }, [categoryId, keyword, page, setSearchParams, sortKey, sortOrder])
+    if (nextParams.toString() !== searchParamsKey) {
+      setSearchParams(nextParams, { replace: true })
+    }
+  }, [
+    categoryId,
+    keyword,
+    page,
+    searchParamsKey,
+    setSearchParams,
+    sortKey,
+    sortOrder,
+  ])
 
   useEffect(() => {
     setSelectedIds(new Set())
@@ -71,6 +105,7 @@ export function PostsPage() {
   })
 
   const postsQuery = useQuery({
+    placeholderData: (previous) => previous,
     queryFn: () =>
       keyword
         ? searchPosts({ keyword, page, size: pageSize })
@@ -209,28 +244,37 @@ export function PostsPage() {
 
   return (
     <div className="flex h-full min-h-0 flex-col bg-white dark:bg-neutral-950">
-      <header
-        className={cn(
-          'flex shrink-0 items-center justify-between gap-3 border-b border-neutral-200 px-4 dark:border-neutral-800',
-          APP_SHELL_HEADER_HEIGHT_CLASS,
-        )}
-      >
-        <div className="min-w-0">
-          <h2 className="inline-flex items-center gap-2 text-sm font-medium">
-            <FileText aria-hidden="true" className="size-4" />
-            文章
-          </h2>
-          <span className="ml-3 text-xs text-neutral-500 dark:text-neutral-400">
-            {summary}
-          </span>
-        </div>
-        <ButtonLink to="/posts/edit">
-          <Plus aria-hidden="true" className="size-4" />
-          新建文章
-        </ButtonLink>
-      </header>
+      <ContentListPageHeader
+        action={
+          <ButtonLink to="/posts/edit">
+            <Plus aria-hidden="true" className="size-4" />
+            新建文章
+          </ButtonLink>
+        }
+        icon={<FileText aria-hidden="true" className="size-4" />}
+        summary={summary}
+        title="文章"
+      />
 
       <ContentListToolbar
+        actions={
+          <Button
+            aria-label="刷新文章列表"
+            className="h-8 px-2.5 text-xs"
+            disabled={postsQuery.isFetching}
+            onClick={() => void postsQuery.refetch()}
+            type="button"
+            variant="subtle"
+          >
+            <RefreshCw
+              aria-hidden="true"
+              className={cn('size-4', postsQuery.isFetching && 'animate-spin')}
+            />
+            <span className="hidden sm:inline">
+              {postsQuery.isFetching ? '同步中' : '刷新'}
+            </span>
+          </Button>
+        }
         filters={
           <>
             <SelectField
@@ -304,7 +348,7 @@ export function PostsPage() {
         }}
       />
 
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <Scroll className="min-h-0 flex-1">
         {postsQuery.isLoading && posts.length === 0 ? (
           <PostsSkeleton />
         ) : postsQuery.isError ? (
@@ -345,7 +389,7 @@ export function PostsPage() {
             ))}
           </div>
         )}
-      </div>
+      </Scroll>
 
       {pagination && pagination.totalPages > 1 ? (
         <div className="flex shrink-0 items-center justify-between border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
@@ -380,38 +424,27 @@ function PostRow(props: {
 }) {
   const externalHref = `${WEB_URL}/posts/${props.post.category?.slug ?? props.post.categoryId}/${props.post.slug}`
   const isPublished = props.post.isPublished ?? false
+  const title = props.post.title || '未命名文章'
+  const editPath = `/posts/edit?id=${encodeURIComponent(props.post.id)}`
 
   return (
-    <article className="grid gap-3 px-4 py-3 transition-colors hover:bg-neutral-50 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center dark:hover:bg-neutral-900/50">
-      <Checkbox
-        aria-label={`选择文章「${props.post.title || '未命名文章'}」`}
-        checked={props.selected}
-        onCheckedChange={props.onSelectedChange}
-      />
-      <div className="min-w-0">
-        <div className="flex min-w-0 items-center gap-2">
-          {props.post.pinAt ? (
-            <Pin aria-hidden="true" className="size-3.5 text-orange-500" />
-          ) : null}
-          <h3 className="truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
-            {props.post.title || '未命名文章'}
-          </h3>
-          <span
-            className={cn(
-              'shrink-0 rounded px-1.5 py-0.5 text-xs leading-4',
-              isPublished
-                ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300'
-                : 'bg-neutral-100 text-neutral-500 dark:bg-neutral-900 dark:text-neutral-400',
-            )}
-          >
-            {isPublished ? '已发布' : '草稿'}
-          </span>
-        </div>
-
-        <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-neutral-500 dark:text-neutral-400">
+    <ContentEntryListItem
+      checkboxLabel={`选择文章「${title}」`}
+      deleteDisabled={props.deleting}
+      deleteTitle="删除文章"
+      editTitle="编辑文章"
+      editTo={editPath}
+      externalHref={externalHref}
+      leading={
+        props.post.pinAt ? (
+          <Pin aria-hidden="true" className="size-3.5 text-orange-500" />
+        ) : null
+      }
+      meta={
+        <>
           {props.categories.length > 0 ? (
             <SelectField
-              aria-label={`修改「${props.post.title || '未命名文章'}」分类`}
+              aria-label={`修改「${title}」分类`}
               disabled={props.updatingCategory}
               onValueChange={(value) =>
                 props.onCategoryChange(props.post.id, value)
@@ -439,61 +472,44 @@ function PostRow(props: {
           <time dateTime={props.post.createdAt}>
             {relativeTimeFromNow(props.post.createdAt)}
           </time>
-        </div>
-      </div>
-
-      <div className="flex items-center gap-2">
-        <Button
-          disabled={props.publishing}
-          onClick={() => props.onPublishChange(props.post.id, !isPublished)}
-          type="button"
-          variant="subtle"
-        >
-          {isPublished ? '下架' : '发布'}
-        </Button>
-        <ButtonLink
-          className="size-9 px-0"
-          title="编辑文章"
-          to={`/posts/edit?id=${encodeURIComponent(props.post.id)}`}
-          variant="subtle"
-        >
-          <Pencil aria-hidden="true" className="size-4" />
-        </ButtonLink>
-        <a
-          className="inline-flex size-9 items-center justify-center rounded border border-neutral-200 text-neutral-600 transition-colors hover:bg-neutral-50 dark:border-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-900"
-          href={externalHref}
-          rel="noreferrer"
-          target="_blank"
-          title="打开文章"
-        >
-          <ExternalLink aria-hidden="true" className="size-4" />
-        </a>
-        <button
-          className="inline-flex size-9 items-center justify-center rounded border border-red-200 text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50 dark:border-red-950 dark:text-red-400 dark:hover:bg-red-950/30"
-          disabled={props.deleting}
-          onClick={() => props.onDelete(props.post.id)}
-          title="删除文章"
-          type="button"
-        >
-          <Trash2 aria-hidden="true" className="size-4" />
-        </button>
-      </div>
-    </article>
+        </>
+      }
+      onDelete={() => props.onDelete(props.post.id)}
+      onPublishToggle={() => props.onPublishChange(props.post.id, !isPublished)}
+      onSelectedChange={props.onSelectedChange}
+      openTitle="打开文章"
+      publishDisabled={props.publishing}
+      publishLabel={isPublished ? '下架' : '发布'}
+      selected={props.selected}
+      status={
+        <ContentListStatusBadge active={isPublished}>
+          {isPublished ? '已发布' : '草稿'}
+        </ContentListStatusBadge>
+      }
+      title={title}
+      titleTo={editPath}
+    />
   )
 }
 
 function PostsEmpty(props: { keyword: string }) {
+  const hasSearch = Boolean(props.keyword)
+
   return (
     <div className="flex min-h-[24rem] flex-col items-center justify-center px-4 text-center">
       <FileText aria-hidden="true" className="size-8 text-neutral-300" />
       <p className="mt-3 text-sm font-medium text-neutral-700 dark:text-neutral-200">
-        {props.keyword ? '没有匹配的文章' : '暂无文章'}
+        {hasSearch ? '没有匹配的文章' : '暂无文章'}
       </p>
       <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
-        {props.keyword
-          ? '调整关键词后重新搜索。'
-          : '可以从列表右上角进入 React 写作页创建文章。'}
+        {hasSearch ? '调整关键词后重新搜索。' : '还没有创建任何文章。'}
       </p>
+      {!hasSearch ? (
+        <ButtonLink className="mt-4" to="/posts/edit" variant="subtle">
+          <Plus aria-hidden="true" className="size-4" />
+          创建第一篇文章
+        </ButtonLink>
+      ) : null}
     </div>
   )
 }
@@ -527,6 +543,15 @@ function PostsSkeleton() {
 function readPage(value: string | null) {
   const page = Number(value)
   return Number.isFinite(page) && page > 0 ? page : 1
+}
+
+function readPostSortKey(value: string | null): PostSortKey {
+  if (value === 'modifiedAt' || value === 'pinAt') return value
+  return 'createdAt'
+}
+
+function readSortOrder(value: string | null): SortOrder {
+  return value === 'asc' ? 'asc' : 'desc'
 }
 
 function getErrorMessage(error: unknown, fallback: string) {

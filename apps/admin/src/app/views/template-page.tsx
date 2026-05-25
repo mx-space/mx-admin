@@ -20,9 +20,10 @@ import {
 } from '../api/options'
 import { Button } from '../ui/button'
 import { cn } from '../ui/cn'
+import { CodeEditor } from '../ui/code-editor'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
+import { Scroll } from '../ui/scroll'
 import { SelectField } from '../ui/select'
-import { TextArea } from '../ui/text-field'
 
 type TemplateType = 'guest' | 'newsletter' | 'owner'
 
@@ -47,6 +48,8 @@ export function TemplatePage() {
     queryFn: () => getEmailTemplate(templateType),
     queryKey: [...templateQueryKey, templateType],
   })
+  const savedSource = templateQuery.data?.template ?? ''
+  const isDirty = source !== savedSource
 
   useEffect(() => {
     if (templateQuery.data?.template !== undefined) {
@@ -150,7 +153,9 @@ export function TemplatePage() {
             重置
           </Button>
           <Button
-            disabled={saveMutation.isPending || templateQuery.isLoading}
+            disabled={
+              saveMutation.isPending || templateQuery.isLoading || !isDirty
+            }
             onClick={() => saveMutation.mutate()}
             type="button"
           >
@@ -159,7 +164,7 @@ export function TemplatePage() {
             ) : (
               <Save aria-hidden="true" className="size-4" />
             )}
-            保存
+            {isDirty ? '保存' : '已保存'}
           </Button>
         </div>
       </header>
@@ -215,10 +220,15 @@ export function TemplatePage() {
             {templateQuery.isLoading ? (
               <TemplateSkeleton />
             ) : (
-              <TextArea
-                controlClassName="h-full min-h-0 resize-none border-0 bg-transparent p-4 font-mono text-xs leading-5 focus:border-transparent focus:ring-0 dark:border-0 dark:bg-transparent"
+              <TemplateCodeEditor
+                dirty={isDirty}
                 onChange={setSource}
-                spellCheck={false}
+                onSave={() => {
+                  if (isDirty && !saveMutation.isPending) {
+                    saveMutation.mutate()
+                  }
+                }}
+                saving={saveMutation.isPending}
                 value={source}
               />
             )}
@@ -255,9 +265,15 @@ export function TemplatePage() {
             <h3 className="mb-2 text-xs font-medium uppercase text-neutral-500 dark:text-neutral-400">
               示例 Props
             </h3>
-            <pre className="max-h-full overflow-auto rounded border border-neutral-200 bg-neutral-50 p-3 text-xs leading-5 text-neutral-800 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-200">
-              {JSON.stringify(templateQuery.data?.props ?? {}, null, 2)}
-            </pre>
+            <Scroll
+              className="rounded border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900"
+              orientation="both"
+              viewportClassName="max-h-full"
+            >
+              <pre className="p-3 text-xs leading-5 text-neutral-800 dark:text-neutral-200">
+                {JSON.stringify(templateQuery.data?.props ?? {}, null, 2)}
+              </pre>
+            </Scroll>
           </aside>
         </div>
       )}
@@ -275,6 +291,26 @@ function TemplateSkeleton() {
         />
       ))}
     </div>
+  )
+}
+
+function TemplateCodeEditor(props: {
+  dirty: boolean
+  onChange: (value: string) => void
+  onSave: () => void
+  saving: boolean
+  value: string
+}) {
+  return (
+    <CodeEditor
+      dirty={props.dirty}
+      language="html"
+      onChange={props.onChange}
+      onSave={props.onSave}
+      saving={props.saving}
+      title="html / ejs"
+      value={props.value}
+    />
   )
 }
 

@@ -9,6 +9,7 @@ import {
   Trash2,
 } from 'lucide-react'
 import { DragEvent, useEffect, useState } from 'react'
+import { Link } from 'react-router'
 import { toast } from 'sonner'
 import type { PageModel } from '~/app/models/page'
 
@@ -19,6 +20,7 @@ import { deletePage, getPages, reorderPages } from '../api/pages'
 import { Button, ButtonLink } from '../ui/button'
 import { cn } from '../ui/cn'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
+import { Scroll } from '../ui/scroll'
 
 const pagesQueryKey = ['pages']
 
@@ -105,7 +107,7 @@ export function PagesPage() {
         </div>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <Scroll className="min-h-0 flex-1">
         {pagesQuery.isLoading ? (
           <PagesSkeleton />
         ) : pagesQuery.isError ? (
@@ -149,7 +151,7 @@ export function PagesPage() {
             ))}
           </div>
         )}
-      </div>
+      </Scroll>
 
       <div className="flex h-11 shrink-0 items-center justify-between border-t border-neutral-200 px-4 text-xs text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
         <span>{orderedPages.length} 个页面</span>
@@ -179,23 +181,30 @@ function PageRow(props: {
         'grid gap-3 px-4 py-3 transition-colors hover:bg-neutral-50 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center dark:hover:bg-neutral-900/50',
         props.dragging && 'bg-neutral-100 opacity-60 dark:bg-neutral-900',
       )}
-      draggable={!props.reordering}
-      onDragEnd={props.onDragEnd}
       onDragOver={props.onDragOver}
-      onDragStart={props.onDragStart}
       onDrop={props.onDrop}
     >
       <div className="flex min-w-0 items-start gap-3">
-        <GripVertical
-          aria-hidden="true"
-          className="mt-0.5 size-4 shrink-0 cursor-grab text-neutral-300 active:cursor-grabbing dark:text-neutral-600"
-        />
+        <button
+          aria-label={`拖拽排序「${page.title || '未命名页面'}」`}
+          className="mt-0.5 inline-flex size-5 shrink-0 cursor-grab items-center justify-center rounded text-neutral-300 transition-colors hover:bg-neutral-100 hover:text-neutral-500 active:cursor-grabbing disabled:cursor-not-allowed disabled:opacity-40 dark:text-neutral-600 dark:hover:bg-neutral-900 dark:hover:text-neutral-400"
+          disabled={props.reordering}
+          draggable={!props.reordering}
+          onDragEnd={props.onDragEnd}
+          onDragStart={props.onDragStart}
+          type="button"
+        >
+          <GripVertical aria-hidden="true" className="size-4" />
+        </button>
         <div className="min-w-0">
           <div className="flex min-w-0 items-center gap-2">
             <FileText aria-hidden="true" className="size-4 text-neutral-400" />
-            <h3 className="truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
+            <Link
+              className="truncate text-sm font-medium text-neutral-950 outline-none transition-colors hover:text-neutral-600 focus-visible:underline dark:text-neutral-50 dark:hover:text-neutral-300"
+              to={`/pages/edit?id=${encodeURIComponent(page.id)}`}
+            >
               {page.title || '未命名页面'}
-            </h3>
+            </Link>
             {typeof page.order === 'number' ? (
               <span className="rounded bg-neutral-100 px-1.5 py-0.5 text-xs text-neutral-500 dark:bg-neutral-900 dark:text-neutral-400">
                 #{page.order}
@@ -271,7 +280,15 @@ function PagesSkeleton() {
 function PagesEmpty() {
   return (
     <div className="flex min-h-[24rem] flex-col items-center justify-center px-4 text-center text-sm text-neutral-500 dark:text-neutral-400">
-      暂无页面
+      <FileText
+        aria-hidden="true"
+        className="mb-4 size-12 text-neutral-300 dark:text-neutral-700"
+      />
+      <p>暂无页面</p>
+      <ButtonLink className="mt-4" to="/pages/edit" variant="subtle">
+        <Plus aria-hidden="true" className="size-4" />
+        创建第一个页面
+      </ButtonLink>
     </div>
   )
 }

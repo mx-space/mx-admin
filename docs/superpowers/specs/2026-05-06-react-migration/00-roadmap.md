@@ -49,7 +49,7 @@ docs/superpowers/specs/2026-05-06-react-migration/
 | Toast | `sonner` | 1:1 swap from `vue-sonner` |
 | Command palette | `kbar` | Original React lib; replaces `@bytebase/vue-kbar` |
 | Code editors | `@monaco-editor/react`, CodeMirror 6 hand-rolled | Slash menu / WYSIWYG depth justifies hand-roll for CM6 |
-| Rich editor | `@haklex/*` mounted directly (no Vue bridge) | `@mx-admin/rich-react` already React-native |
+| Rich editor | `@haklex/*` mounted directly in `apps/admin/src/app/rich-editor` | No Vue bridge and no `@mx-admin/rich-react` workspace package |
 | Charts | `@antv/g2` via `useG2Chart` hook | Library is framework-agnostic |
 | Terminal | `xterm` via `useEffect` mount | Library is framework-agnostic |
 | Realtime | `socket.io-client` via `useSocketIO` hook | Replaces `window.bus` event bus |

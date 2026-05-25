@@ -1,4 +1,4 @@
-import type { PaginateResult } from '~/app/models/base'
+import type { Image, PaginateResult } from '~/app/models/base'
 import type { NoteModel } from '~/app/models/note'
 
 import { deleteJson, getJson, patchJson, postJson, putJson } from './http'
@@ -12,7 +12,6 @@ export type NoteSortKey =
 export type SortOrder = 'asc' | 'desc'
 
 export interface GetNotesParams {
-  db_query?: Record<string, boolean>
   page?: number
   size?: number
   sort_by?: NoteSortKey
@@ -35,6 +34,7 @@ export interface CreateNoteData {
     longitude: number
   }
   draftId?: string
+  images?: Image[]
   isPublished?: boolean
   location?: null | string
   meta?: Record<string, unknown>
@@ -56,7 +56,6 @@ export interface PatchNoteData {
 
 export function getNotes(params: GetNotesParams = {}) {
   return getJson<PaginateResult<NoteModel>>('/notes', {
-    db_query: params.db_query,
     page: params.page,
     size: params.size,
     sort_by: params.sort_by,

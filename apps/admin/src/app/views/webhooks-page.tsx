@@ -34,6 +34,7 @@ import { Checkbox } from '../ui/checkbox'
 import { cn } from '../ui/cn'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
 import { MasterDetailLayout } from '../ui/page-layout'
+import { Scroll } from '../ui/scroll'
 import { Switch } from '../ui/switch'
 import { TextInput } from '../ui/text-field'
 
@@ -152,7 +153,7 @@ export function WebhooksPage() {
               </div>
             </div>
 
-            <div className="min-h-0 flex-1 overflow-y-auto">
+            <Scroll className="flex-1">
               {webhooksQuery.isLoading && webhooks.length === 0 ? (
                 <WebhookListSkeleton />
               ) : webhooks.length === 0 ? (
@@ -190,7 +191,7 @@ export function WebhooksPage() {
                   </button>
                 ))
               )}
-            </div>
+            </Scroll>
           </section>
         }
         showDetailOnMobile={showDetailOnMobile}
@@ -305,7 +306,7 @@ function WebhookDetail(props: {
         </div>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <Scroll className="flex-1">
         <div className="mx-auto max-w-4xl space-y-6 p-6">
           <div className="flex items-start gap-4">
             <div className="relative shrink-0">
@@ -389,7 +390,7 @@ function WebhookDetail(props: {
             </div>
           </div>
         </div>
-      </div>
+      </Scroll>
     </section>
   )
 }
@@ -448,7 +449,7 @@ function WebhookDispatches(props: { webhookId: string }) {
         ) : null}
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <Scroll className="flex-1">
         {dispatchesQuery.isLoading && dispatches.length === 0 ? (
           <div className="flex justify-center py-20">
             <div className="size-6 animate-spin rounded-full border-2 border-neutral-300 border-t-neutral-950 dark:border-neutral-700 dark:border-t-neutral-100" />
@@ -472,7 +473,7 @@ function WebhookDispatches(props: { webhookId: string }) {
             />
           ))
         )}
-      </div>
+      </Scroll>
 
       {pagination && pagination.totalPages > 1 ? (
         <div className="flex items-center justify-center gap-2 border-t border-neutral-200 py-2 text-sm text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
@@ -595,7 +596,7 @@ function WebhookEditorDialog(props: {
               </Dialog.Close>
             </div>
 
-            <div className="grid min-h-0 gap-4 overflow-y-auto px-5 py-4">
+            <Scroll className="flex-1" innerClassName="grid gap-4 px-5 py-4">
               <TextInput
                 label="Payload URL"
                 onChange={setPayloadUrl}
@@ -624,7 +625,11 @@ function WebhookEditorDialog(props: {
                   />
                   全部事件
                 </label>
-                <div className="grid max-h-56 grid-cols-1 gap-2 overflow-y-auto rounded border border-neutral-200 bg-neutral-50 p-3 sm:grid-cols-2 dark:border-neutral-800 dark:bg-neutral-900/50">
+                <Scroll
+                  className="rounded border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900/50"
+                  innerClassName="grid grid-cols-1 gap-2 p-3 sm:grid-cols-2"
+                  viewportClassName="max-h-56"
+                >
                   {availableEvents.map((event) => (
                     <label
                       className="flex items-center gap-2 text-sm"
@@ -644,7 +649,7 @@ function WebhookEditorDialog(props: {
                       {event}
                     </label>
                   ))}
-                </div>
+                </Scroll>
               </fieldset>
 
               <fieldset className="grid gap-2">
@@ -682,7 +687,7 @@ function WebhookEditorDialog(props: {
               {error ? (
                 <span className="text-xs text-red-500">{error}</span>
               ) : null}
-            </div>
+            </Scroll>
 
             <div className="flex items-center justify-end gap-2 border-t border-neutral-200 px-5 py-4 dark:border-neutral-800">
               <Dialog.Close
@@ -798,9 +803,15 @@ function JsonBlock(props: { content: unknown; label: string }) {
       <div className="mb-1 text-xs font-medium text-neutral-500">
         {props.label}
       </div>
-      <pre className="max-h-56 overflow-auto rounded bg-neutral-100 p-2 text-xs text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
-        {formatJson(props.content) || '-'}
-      </pre>
+      <Scroll
+        className="rounded bg-neutral-100 dark:bg-neutral-800"
+        orientation="both"
+        viewportClassName="max-h-56"
+      >
+        <pre className="p-2 text-xs text-neutral-700 dark:text-neutral-300">
+          {formatJson(props.content) || '-'}
+        </pre>
+      </Scroll>
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import type { Pager } from './base'
+import type { Image, Pager } from './base'
 
 export enum EnumPageType {
   md = 'md',
@@ -26,6 +26,8 @@ export interface PageModel {
 
   contentFormat?: 'markdown' | 'lexical'
   content?: string
+  images?: Image[] | null
+  meta?: Record<string, unknown> | null
 
   /** Type (MD | html | frame) */
   type?: EnumPageType

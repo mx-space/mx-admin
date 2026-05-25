@@ -3,6 +3,7 @@ import { Input as BaseInput } from '@base-ui/react/input'
 import { forwardRef } from 'react'
 import type {
   ComponentPropsWithoutRef,
+  CSSProperties,
   FocusEventHandler,
   KeyboardEventHandler,
   ReactNode,
@@ -24,6 +25,7 @@ interface TextInputProps {
   labelClassName?: string
   list?: string
   maxLength?: number
+  min?: ComponentPropsWithoutRef<'input'>['min']
   name?: string
   onBlur?: FocusEventHandler<HTMLInputElement>
   onChange: (value: string) => void
@@ -31,6 +33,7 @@ interface TextInputProps {
   placeholder?: string
   required?: boolean
   spellCheck?: boolean
+  style?: CSSProperties
   type?: TextInputType
   value: string
 }
@@ -50,6 +53,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
         inputMode={props.inputMode}
         list={props.list}
         maxLength={props.maxLength}
+        min={props.min}
         name={props.name}
         onBlur={props.onBlur}
         onKeyDown={props.onKeyDown}
@@ -58,6 +62,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
         ref={ref}
         required={props.required}
         spellCheck={props.spellCheck}
+        style={props.style}
         type={props.type ?? 'text'}
         value={props.value}
       />
@@ -97,11 +102,13 @@ interface TextAreaProps {
   labelClassName?: string
   maxLength?: number
   name?: string
+  onBlur?: FocusEventHandler<HTMLTextAreaElement>
   onChange: (value: string) => void
   onKeyDown?: KeyboardEventHandler<HTMLTextAreaElement>
   placeholder?: string
   required?: boolean
   spellCheck?: boolean
+  style?: CSSProperties
   value: string
 }
 
@@ -117,12 +124,14 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
         disabled={props.disabled}
         maxLength={props.maxLength}
         name={props.name}
+        onBlur={props.onBlur}
         onChange={(event) => props.onChange(event.target.value)}
         onKeyDown={props.onKeyDown}
         placeholder={props.placeholder}
         ref={ref}
         required={props.required}
         spellCheck={props.spellCheck}
+        style={props.style}
         value={props.value}
       />
     )

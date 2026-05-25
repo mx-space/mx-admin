@@ -1,12 +1,16 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { Dialog } from '@base-ui/react/dialog'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   Activity,
   BookOpen,
   BrushCleaning,
   Clock3,
+  Download,
+  ExternalLink,
   File,
   FileText,
   Gauge,
+  Globe,
   Heart,
   Link,
   MessageSquare,
@@ -14,15 +18,20 @@ import {
   Quote,
   Radio,
   RefreshCw,
+  Search,
+  Shield,
   Tags,
   TrendingUp,
   Users,
+  X,
 } from 'lucide-react'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
+import { EventSourcePolyfill } from 'event-source-polyfill'
 import { toast } from 'sonner'
 import type { LucideIcon } from 'lucide-react'
 import type { StatCount } from '../api/aggregate'
+import type { UpdateRepo } from '../api/github-update'
 
 import {
   cleanCache,
@@ -38,9 +47,18 @@ import {
   getTopArticles,
   getTrafficSource,
 } from '../api/aggregate'
+import { checkUpdateFromGitHub, getReleaseDetails } from '../api/github-update'
+import { getOwner } from '../api/options'
+import { rebuildSearchIndex } from '../api/search-index'
+import { getAppInfo } from '../api/system'
+import { API_URL } from '../constants/env'
 import { Button } from '../ui/button'
 import { cn } from '../ui/cn'
+import { IpInfoPopover } from '../ui/ip-info-popover'
+import { MarkdownRender } from '../ui/markdown-render'
 import { Panel } from '../ui/panel'
+import { Scroll } from '../ui/scroll'
+import { isNewerVersion } from '../utils/version'
 
 const defaultStat: StatCount = {
   callTime: 0,
@@ -63,6 +81,14 @@ const defaultStat: StatCount = {
 
 export function DashboardPage() {
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
+  const [releaseModal, setReleaseModal] = useState<{
+    repo: UpdateRepo
+    title: string
+    version: string
+  } | null>(null)
+  const [upgradeDialogOpen, setUpgradeDialogOpen] = useState(false)
+  const notifiedUpdatesRef = useRef(new Set<string>())
   const statQuery = useQuery({
     queryFn: getAggregateStat,
     queryKey: ['dashboard', 'aggregate-stat'],
@@ -80,6 +106,28 @@ export function DashboardPage() {
   const siteLikeQuery = useQuery({
     queryFn: getSiteLikeCount,
     queryKey: ['dashboard', 'site-like'],
+  })
+  const ownerQuery = useQuery({
+    queryFn: getOwner,
+    queryKey: ['dashboard', 'owner'],
+    retry: false,
+  })
+  const appInfoQuery = useQuery({
+    queryFn: getAppInfo,
+    queryKey: ['dashboard', 'app-info'],
+    retry: false,
+  })
+  const adminVersion = __DEV__ ? 'dev mode' : window.version || 'N/A'
+  const systemVersion = appInfoQuery.data?.version || 'N/A'
+  const updateQuery = useQuery({
+    enabled:
+      !__DEV__ &&
+      appInfoQuery.isSuccess &&
+      !appInfoQuery.data?.version?.startsWith('demo'),
+    queryFn: checkUpdateFromGitHub,
+    queryKey: ['dashboard', 'github-update'],
+    retry: false,
+    staleTime: 60 * 60 * 1000,
   })
   const categoryQuery = useQuery({
     queryFn: getCategoryDistribution,
@@ -118,11 +166,77 @@ export function DashboardPage() {
       toast.error(getErrorMessage(error, '清除数据缓存失败')),
     onSuccess: () => toast.success('数据缓存已清除'),
   })
+  const rebuildSearchIndexMutation = useMutation({
+    mutationFn: rebuildSearchIndex,
+    onError: (error: unknown) =>
+      toast.error(getErrorMessage(error, '重建搜索索引失败')),
+    onSuccess: async (result) => {
+      toast.success(formatSearchIndexStats(result))
+      await queryClient.invalidateQueries({ queryKey: ['search-index'] })
+    },
+  })
 
   const updatedAt = useMemo(() => new Date(), [statQuery.dataUpdatedAt])
 
+  useEffect(() => {
+    if (__DEV__) return
+    if (appInfoQuery.data?.version?.startsWith('demo')) {
+      toast.info('Demo Mode - 当前处于演示模式，部分功能可能受到限制')
+    }
+  }, [appInfoQuery.data?.version])
+
+  useEffect(() => {
+    const updates = updateQuery.data
+    if (!updates || __DEV__) return
+
+    const closedTips = readClosedUpdateTips()
+
+    if (
+      isNewerVersion(adminVersion, updates.dashboard) &&
+      closedTips.dashboard !== updates.dashboard &&
+      !notifiedUpdatesRef.current.has(`dashboard:${updates.dashboard}`)
+    ) {
+      notifiedUpdatesRef.current.add(`dashboard:${updates.dashboard}`)
+      toast.info(`管理后台有新版本：${adminVersion} → ${updates.dashboard}`, {
+        action: {
+          label: '更新',
+          onClick: () => {
+            writeClosedUpdateTip('dashboard', updates.dashboard)
+            setUpgradeDialogOpen(true)
+          },
+        },
+        duration: 10000,
+      })
+    }
+
+    if (
+      isNewerVersion(systemVersion, updates.system) &&
+      closedTips.system !== updates.system &&
+      !notifiedUpdatesRef.current.has(`system:${updates.system}`)
+    ) {
+      notifiedUpdatesRef.current.add(`system:${updates.system}`)
+      toast.info(`系统有新版本：${systemVersion} → ${updates.system}`, {
+        action: {
+          label: '查看',
+          onClick: () => {
+            writeClosedUpdateTip('system', updates.system)
+            setReleaseModal({
+              repo: 'mx-server',
+              title: '[系统] 更新详情',
+              version: updates.system,
+            })
+          },
+        },
+        duration: 10000,
+      })
+    }
+  }, [adminVersion, systemVersion, updateQuery.data])
+
   return (
-    <div className="flex flex-col gap-6">
+    <Scroll
+      className="h-full min-h-0 bg-white dark:bg-neutral-950"
+      innerClassName="flex flex-col gap-6 p-4"
+    >
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold text-neutral-950 dark:text-neutral-50">
@@ -181,7 +295,7 @@ export function DashboardPage() {
             icon={Pencil}
             label="速记"
             onManage={() => navigate('/recently')}
-            onPrimary={() => navigate('/recently')}
+            onPrimary={() => navigate('/recently?create=1')}
             primaryLabel="新建速记"
             value={stat.recently}
           />
@@ -303,7 +417,7 @@ export function DashboardPage() {
       </section>
 
       <Panel title="系统操作">
-        <div className="grid gap-px bg-neutral-200 sm:grid-cols-2 dark:bg-neutral-800">
+        <div className="grid gap-px bg-neutral-200 sm:grid-cols-2 xl:grid-cols-3 dark:bg-neutral-800">
           <MaintenanceCard
             disabled={cleanCacheMutation.isPending}
             icon={BrushCleaning}
@@ -318,9 +432,59 @@ export function DashboardPage() {
             onClick={() => cleanRedisMutation.mutate()}
             value="Redis"
           />
+          <SearchIndexRebuildCard
+            forceLoading={
+              rebuildSearchIndexMutation.isPending &&
+              rebuildSearchIndexMutation.variables === true
+            }
+            incrementalLoading={
+              rebuildSearchIndexMutation.isPending &&
+              rebuildSearchIndexMutation.variables !== true
+            }
+            onForceRebuild={() => {
+              if (
+                window.confirm(
+                  '将清空全部索引行后重新构建，期间搜索结果可能短暂为空，确定继续？',
+                )
+              ) {
+                rebuildSearchIndexMutation.mutate(true)
+              }
+            }}
+            onIncrementalRebuild={() =>
+              rebuildSearchIndexMutation.mutate(false)
+            }
+          />
         </div>
       </Panel>
-    </div>
+
+      <OwnerLoginStat
+        lastLoginIp={ownerQuery.data?.lastLoginIp}
+        lastLoginTime={ownerQuery.data?.lastLoginTime}
+      />
+
+      <DashboardRuntimeFooter
+        adminLatestVersion={updateQuery.data?.dashboard}
+        adminVersion={adminVersion}
+        onCheckUpdates={() => {
+          void appInfoQuery.refetch()
+          void updateQuery.refetch()
+        }}
+        onOpenUpgrade={() => setUpgradeDialogOpen(true)}
+        pageSource={window.pageSource || ''}
+        refreshing={appInfoQuery.isFetching || updateQuery.isFetching}
+        systemLatestVersion={updateQuery.data?.system}
+        systemVersion={systemVersion}
+      />
+
+      <UpdateReleaseDialog
+        onClose={() => setReleaseModal(null)}
+        release={releaseModal}
+      />
+      <DashboardUpgradeDialog
+        onClose={() => setUpgradeDialogOpen(false)}
+        open={upgradeDialogOpen}
+      />
+    </Scroll>
   )
 }
 
@@ -575,6 +739,316 @@ function MaintenanceCard(props: {
   )
 }
 
+function SearchIndexRebuildCard(props: {
+  forceLoading: boolean
+  incrementalLoading: boolean
+  onForceRebuild: () => void
+  onIncrementalRebuild: () => void
+}) {
+  return (
+    <div className="bg-white p-4 dark:bg-neutral-950">
+      <Search className="mb-3 size-5 text-neutral-400" />
+      <div className="text-sm text-neutral-500">搜索索引</div>
+      <div className="mt-1 text-lg font-semibold">BM25</div>
+      <p className="mt-1 line-clamp-2 text-xs text-neutral-400 dark:text-neutral-500">
+        按需重建全文索引；强制模式会清空后全量重建。
+      </p>
+      <div className="mt-3 flex flex-wrap gap-2">
+        <Button
+          disabled={props.incrementalLoading || props.forceLoading}
+          onClick={props.onIncrementalRebuild}
+          type="button"
+          variant="subtle"
+        >
+          {props.incrementalLoading ? (
+            <RefreshCw aria-hidden="true" className="size-4 animate-spin" />
+          ) : null}
+          增量重建
+        </Button>
+        <Button
+          className="border-amber-200 text-amber-700 hover:bg-amber-50 dark:border-amber-950 dark:text-amber-300 dark:hover:bg-amber-950/30"
+          disabled={props.incrementalLoading || props.forceLoading}
+          onClick={props.onForceRebuild}
+          type="button"
+          variant="subtle"
+        >
+          {props.forceLoading ? (
+            <RefreshCw aria-hidden="true" className="size-4 animate-spin" />
+          ) : null}
+          强制全量重建
+        </Button>
+      </div>
+    </div>
+  )
+}
+
+function OwnerLoginStat(props: {
+  lastLoginIp?: string
+  lastLoginTime?: string
+}) {
+  if (!props.lastLoginIp && !props.lastLoginTime) return null
+
+  return (
+    <div className="grid gap-2 border-t border-neutral-100 pt-4 text-sm text-neutral-500 sm:grid-cols-2 dark:border-neutral-800 dark:text-neutral-400">
+      <div className="inline-flex min-w-0 items-center gap-2">
+        <Shield
+          aria-hidden="true"
+          className="size-4 shrink-0 text-neutral-400"
+        />
+        <span className="shrink-0">上次登录时间:</span>
+        <time
+          className="min-w-0 truncate text-neutral-700 dark:text-neutral-300"
+          dateTime={props.lastLoginTime}
+        >
+          {props.lastLoginTime ? formatDateTime(props.lastLoginTime) : 'N/A'}
+        </time>
+      </div>
+      <div className="inline-flex min-w-0 items-center gap-2 sm:justify-end">
+        <Globe
+          aria-hidden="true"
+          className="size-4 shrink-0 text-neutral-400"
+        />
+        <span className="shrink-0">上次登录 IP:</span>
+        {props.lastLoginIp ? (
+          <IpInfoPopover
+            className="inline-flex min-w-0 items-center gap-1.5 text-neutral-700 hover:underline dark:text-neutral-300"
+            ip={props.lastLoginIp}
+            trigger={<span className="truncate">{props.lastLoginIp}</span>}
+          />
+        ) : (
+          <span className="text-neutral-700 dark:text-neutral-300">N/A</span>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function DashboardRuntimeFooter(props: {
+  adminLatestVersion?: string
+  adminVersion: string
+  onCheckUpdates: () => void
+  onOpenUpgrade: () => void
+  pageSource: string
+  refreshing: boolean
+  systemLatestVersion?: string
+  systemVersion: string
+}) {
+  return (
+    <footer className="border-t border-neutral-100 pb-4 pt-4 text-center text-xs leading-6 text-neutral-400 dark:border-neutral-800 dark:text-neutral-500">
+      <div className="inline-flex flex-wrap items-center justify-center gap-2">
+        <span>
+          面板版本: {props.adminVersion}
+          {props.adminLatestVersion
+            ? ` / 最新 ${props.adminLatestVersion}`
+            : ''}
+        </span>
+        <button
+          aria-label="检查更新"
+          className="inline-flex size-6 items-center justify-center rounded text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-700 dark:hover:bg-neutral-900 dark:hover:text-neutral-200"
+          disabled={props.refreshing}
+          onClick={props.onCheckUpdates}
+          type="button"
+        >
+          <RefreshCw
+            aria-hidden="true"
+            className={cn('size-3.5', props.refreshing && 'animate-spin')}
+          />
+        </button>
+        <button
+          className="inline-flex h-6 items-center gap-1 rounded border border-neutral-200 px-2 text-neutral-500 transition-colors hover:bg-neutral-50 hover:text-neutral-800 dark:border-neutral-800 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-100"
+          onClick={props.onOpenUpgrade}
+          type="button"
+        >
+          <Download aria-hidden="true" className="size-3" />
+          更新面板
+        </button>
+      </div>
+      <div>
+        系统版本: {props.systemVersion}
+        {props.systemLatestVersion
+          ? ` / 最新 ${props.systemLatestVersion}`
+          : ''}
+      </div>
+      <div>页面来源: {props.pageSource || 'N/A'}</div>
+    </footer>
+  )
+}
+
+function UpdateReleaseDialog(props: {
+  onClose: () => void
+  release: { repo: UpdateRepo; title: string; version: string } | null
+}) {
+  const releaseQuery = useQuery({
+    enabled: Boolean(props.release),
+    queryFn: () => {
+      if (!props.release) throw new Error('Missing release')
+      return getReleaseDetails(props.release.repo, props.release.version)
+    },
+    queryKey: [
+      'dashboard',
+      'release-detail',
+      props.release?.repo,
+      props.release?.version,
+    ],
+    retry: false,
+  })
+  const details = releaseQuery.data
+
+  return (
+    <Dialog.Root
+      onOpenChange={(open) => !open && props.onClose()}
+      open={Boolean(props.release)}
+    >
+      <Dialog.Portal>
+        <Dialog.Backdrop className="fixed inset-0 z-40 bg-black/40" />
+        <Dialog.Popup className="fixed left-1/2 top-1/2 z-50 flex max-h-[min(86vh,42rem)] w-[min(92vw,40rem)] -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded border border-neutral-200 bg-white shadow-xl outline-none dark:border-neutral-800 dark:bg-neutral-950">
+          <div className="flex items-center justify-between gap-3 border-b border-neutral-100 px-4 py-3 dark:border-neutral-800">
+            <Dialog.Title className="min-w-0 truncate text-base font-semibold text-neutral-950 dark:text-neutral-50">
+              {props.release?.title || '更新详情'}
+            </Dialog.Title>
+            <Dialog.Close className="inline-flex size-8 items-center justify-center rounded text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-neutral-900 dark:hover:text-neutral-100">
+              <X aria-hidden="true" className="size-4" />
+            </Dialog.Close>
+          </div>
+          <Scroll className="min-h-0 flex-1" innerClassName="p-4">
+            {releaseQuery.isLoading ? (
+              <div className="py-10 text-center text-sm text-neutral-500">
+                正在获取更新详情...
+              </div>
+            ) : details ? (
+              <div className="space-y-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <h3 className="text-lg font-semibold text-neutral-950 dark:text-neutral-50">
+                      {details.name || details.tagName}
+                    </h3>
+                    <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-neutral-500">
+                      <span className="rounded border border-neutral-200 px-2 py-0.5 dark:border-neutral-800">
+                        {details.tagName}
+                      </span>
+                      <span>
+                        发布于 {formatDateTime(details.publishedAt || '')}
+                      </span>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={() => window.open(details.htmlUrl, '_blank')}
+                    type="button"
+                    variant="subtle"
+                  >
+                    <ExternalLink aria-hidden="true" className="size-4" />在
+                    GitHub 查看
+                  </Button>
+                </div>
+                {details.body ? (
+                  <MarkdownRender
+                    className="rounded border border-neutral-100 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-900/50"
+                    text={details.body}
+                  />
+                ) : (
+                  <div className="py-8 text-center text-sm text-neutral-500">
+                    此版本没有发布说明。
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="py-10 text-center text-sm text-neutral-500">
+                无法获取更新详情
+              </div>
+            )}
+          </Scroll>
+        </Dialog.Popup>
+      </Dialog.Portal>
+    </Dialog.Root>
+  )
+}
+
+function DashboardUpgradeDialog(props: { onClose: () => void; open: boolean }) {
+  const [output, setOutput] = useState('')
+  const [running, setRunning] = useState(false)
+  const outputRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    if (!props.open) return
+
+    setOutput('')
+    setRunning(true)
+
+    const source = new EventSourcePolyfill(
+      `${API_URL}/update/upgrade/dashboard`,
+      {
+        withCredentials: true,
+      },
+    )
+
+    source.onmessage = (event) => {
+      setOutput((value) => `${value}${event.data}\n`)
+    }
+    source.onerror = (event) => {
+      const errorEvent = event as unknown as { data?: string }
+      source.close()
+      setRunning(false)
+
+      if (errorEvent.data) {
+        toast.error(errorEvent.data)
+        return
+      }
+
+      setOutput((value) => `${value}\nDone.\n`)
+      window.setTimeout(() => {
+        window.location.reload()
+      }, 1500)
+    }
+
+    return () => {
+      source.close()
+      setRunning(false)
+    }
+  }, [props.open])
+
+  useEffect(() => {
+    const element = outputRef.current
+    if (!element) return
+
+    element.scrollTop = element.scrollHeight
+  }, [output])
+
+  return (
+    <Dialog.Root
+      onOpenChange={(open) => !open && props.onClose()}
+      open={props.open}
+    >
+      <Dialog.Portal>
+        <Dialog.Backdrop className="fixed inset-0 z-40 bg-black/45" />
+        <Dialog.Popup className="fixed left-1/2 top-1/2 z-50 flex h-[min(82vh,42rem)] w-[min(92vw,46rem)] -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded border border-neutral-200 bg-white shadow-xl outline-none dark:border-neutral-800 dark:bg-neutral-950">
+          <div className="flex items-center justify-between gap-3 border-b border-neutral-100 px-4 py-3 dark:border-neutral-800">
+            <Dialog.Title className="text-base font-semibold text-neutral-950 dark:text-neutral-50">
+              面板更新输出
+            </Dialog.Title>
+            <div className="flex items-center gap-2">
+              {running ? (
+                <span className="text-xs text-neutral-500">运行中...</span>
+              ) : null}
+              <Dialog.Close className="inline-flex size-8 items-center justify-center rounded text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-neutral-900 dark:hover:text-neutral-100">
+                <X aria-hidden="true" className="size-4" />
+              </Dialog.Close>
+            </div>
+          </div>
+          <Scroll
+            className="min-h-0 flex-1 bg-neutral-950"
+            innerClassName="p-4"
+            ref={outputRef}
+          >
+            <pre className="whitespace-pre-wrap break-all font-mono text-xs leading-5 text-neutral-100">
+              {output || '正在连接更新服务...'}
+            </pre>
+          </Scroll>
+        </Dialog.Popup>
+      </Dialog.Portal>
+    </Dialog.Root>
+  )
+}
+
 function EmptyDashboardBlock() {
   return (
     <div className="flex min-h-32 items-center justify-center text-sm text-neutral-500">
@@ -587,6 +1061,58 @@ function formatNumber(value: number | string) {
   return typeof value === 'number'
     ? new Intl.NumberFormat('en-US').format(value)
     : value
+}
+
+function formatSearchIndexStats(result: {
+  created: number
+  deleted: number
+  skipped: number
+  total: number
+  updated: number
+}) {
+  return `共 ${result.total}：新建 ${result.created} · 更新 ${result.updated} · 删除 ${result.deleted} · 跳过 ${result.skipped}`
+}
+
+function formatDateTime(value: string) {
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return value
+
+  return new Intl.DateTimeFormat('zh-CN', {
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  }).format(date)
+}
+
+function readClosedUpdateTips() {
+  try {
+    return {
+      dashboard: null,
+      system: null,
+      ...(JSON.parse(localStorage.getItem('closed-tips') || '{}') as {
+        dashboard?: null | string
+        system?: null | string
+      }),
+    }
+  } catch {
+    return {
+      dashboard: null,
+      system: null,
+    }
+  }
+}
+
+function writeClosedUpdateTip(type: 'dashboard' | 'system', version: string) {
+  const tips = readClosedUpdateTips()
+  localStorage.setItem(
+    'closed-tips',
+    JSON.stringify({
+      ...tips,
+      [type]: version,
+    }),
+  )
 }
 
 function getErrorMessage(error: unknown, fallback: string) {

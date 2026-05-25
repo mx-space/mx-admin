@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import type {
   AgentStore,
   AgentToolConfig,
@@ -5,7 +6,6 @@ import type {
   LLMProvider,
 } from '@haklex/rich-agent-core'
 import type { LexicalEditor } from 'lexical'
-import type { RefObject } from 'react'
 import type { ShiroEditorProps } from '../shiro'
 import type { AgentLoopHandle, SaveExcalidrawSnapshot } from '../types'
 import type { EnrichmentFetcher } from './EnrichmentLinkCardContext'
@@ -31,6 +31,11 @@ import './setup-enrichment-linkcard'
 
 import { AgentLoopCapture } from './AgentLoopCapture'
 import { NestedDocDialogEditor } from './NestedDocDialogEditor'
+
+import '@haklex/rich-ext-ai-agent/style.css'
+import '@haklex/rich-plugin-toolbar/style.css'
+import '@haklex/rich-ext-nested-doc/style.css'
+import '../shiro/style'
 
 export interface ReactEditorPaneProps {
   editorProps: Omit<ShiroEditorProps, 'onChange' | 'onSubmit' | 'onEditorReady'>
@@ -61,9 +66,7 @@ export function ReactEditorPane({
   tools,
   systemMessages,
 }: ReactEditorPaneProps) {
-  const editorRef: RefObject<LexicalEditor | null> = {
-    current: null,
-  }
+  const editorRef = useRef<LexicalEditor | null>(null)
 
   const handleEditorReady = (editor: LexicalEditor | null) => {
     editorRef.current = editor

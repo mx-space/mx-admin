@@ -1,4 +1,4 @@
-import type { PaginateResult } from '~/app/models/base'
+import type { Image, PaginateResult } from '~/app/models/base'
 import type { PostModel } from '~/app/models/post'
 
 import { deleteJson, getJson, patchJson, postJson, putJson } from './http'
@@ -26,6 +26,7 @@ export interface CreatePostData {
   contentFormat?: 'lexical' | 'markdown'
   copyright?: boolean
   draftId?: string
+  images?: Image[]
   isPublished?: boolean
   meta?: Record<string, unknown>
   pin?: null | string

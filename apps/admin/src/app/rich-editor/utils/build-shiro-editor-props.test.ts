@@ -1,58 +1,63 @@
-import { describe, expect, it } from 'vitest'
+// @vitest-environment node
+
+import { describe, expect, it, vi } from 'vitest'
 
 import { buildShiroEditorProps } from './build-shiro-editor-props'
 
+vi.mock('@haklex/rich-editor', () => ({}))
+vi.mock('../shiro', () => ({}))
+
 describe('buildShiroEditorProps', () => {
-  it('keeps theme, copies defined editor props, and maps editorStyle to style', () => {
+  it('copies defined editor props and maps editorStyle to style', () => {
     const result = buildShiroEditorProps('dark', {
+      autoFocus: true,
+      className: 'editor-shell',
+      contentClassName: 'editor-content',
+      debounceMs: 120,
+      editorStyle: { minHeight: 120 },
+      extraNodes: ['node-a'] as any,
+      imageUpload: (() => Promise.resolve('ok')) as any,
       initialValue: {
         root: {
-          type: 'root',
-          version: 1,
           children: [],
           direction: null,
           format: '',
           indent: 0,
+          type: 'root',
+          version: 1,
         },
       } as any,
       placeholder: 'Write here',
-      variant: 'article',
-      autoFocus: true,
-      className: 'editor-shell',
-      contentClassName: 'editor-content',
-      debounceMs: 120,
       selfHostnames: ['mx-space.local'],
-      extraNodes: ['node-a'] as any,
-      editorStyle: { minHeight: 120 },
-      imageUpload: (() => Promise.resolve('ok')) as any,
+      variant: 'article',
     })
 
     expect(result).toMatchObject({
-      theme: 'dark',
-      placeholder: 'Write here',
-      variant: 'article',
       autoFocus: true,
       className: 'editor-shell',
       contentClassName: 'editor-content',
       debounceMs: 120,
-      selfHostnames: ['mx-space.local'],
       extraNodes: ['node-a'],
-      style: { minHeight: 120 },
       imageUpload: expect.any(Function),
+      placeholder: 'Write here',
+      selfHostnames: ['mx-space.local'],
+      style: { minHeight: 120 },
+      theme: 'dark',
+      variant: 'article',
     })
     expect(result).not.toHaveProperty('editorStyle')
   })
 
   it('omits undefined values', () => {
     const result = buildShiroEditorProps('light', {
-      placeholder: undefined,
-      editorStyle: undefined,
       className: 'editor-shell',
+      editorStyle: undefined,
+      placeholder: undefined,
     })
 
     expect(result).toEqual({
-      theme: 'light',
       className: 'editor-shell',
+      theme: 'light',
     })
   })
 })

@@ -27,6 +27,7 @@ import { cn } from '../ui/cn'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
 import { MasterDetailLayout } from '../ui/page-layout'
 import { Panel } from '../ui/panel'
+import { Scroll } from '../ui/scroll'
 
 export function BackupPage() {
   const queryClient = useQueryClient()
@@ -264,7 +265,7 @@ export function BackupPage() {
             />
           </div>
 
-          <div className="min-h-0 flex-1 overflow-y-auto">
+          <Scroll className="flex-1">
             {backupsQuery.isLoading && backups.length === 0 ? (
               <BackupListSkeleton />
             ) : backups.length === 0 ? (
@@ -287,7 +288,7 @@ export function BackupPage() {
                 />
               ))
             )}
-          </div>
+          </Scroll>
         </section>
       }
       detail={
@@ -429,7 +430,7 @@ function BackupDetail(props: {
         </div>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto p-6">
+      <Scroll className="flex-1" innerClassName="p-6">
         <div className="mx-auto max-w-3xl space-y-6">
           <div className="flex flex-col items-center py-8 text-center">
             <div className="mb-4 flex size-20 items-center justify-center rounded-2xl bg-blue-50 dark:bg-blue-950/50">
@@ -501,7 +502,7 @@ function BackupDetail(props: {
             </div>
           </Panel>
         </div>
-      </div>
+      </Scroll>
     </div>
   )
 }

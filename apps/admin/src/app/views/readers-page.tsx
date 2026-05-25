@@ -7,6 +7,7 @@ import { getReaders } from '../api/readers'
 import { Button } from '../ui/button'
 import { cn } from '../ui/cn'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
+import { Scroll } from '../ui/scroll'
 
 const pageSize = 20
 
@@ -91,7 +92,7 @@ export function ReadersPage() {
         </span>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto" ref={scrollContainerRef}>
+      <Scroll className="flex-1" ref={scrollContainerRef}>
         <div className="mx-auto max-w-4xl">
           {readersQuery.isLoading && readers.length === 0 ? (
             <div className="flex items-center justify-center py-16 text-sm text-neutral-400">
@@ -108,7 +109,7 @@ export function ReadersPage() {
             </div>
           )}
         </div>
-      </div>
+      </Scroll>
 
       {pagination ? (
         <div className="flex shrink-0 items-center justify-between border-t border-neutral-200 px-4 py-3 text-sm text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">

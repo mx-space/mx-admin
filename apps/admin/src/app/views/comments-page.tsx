@@ -1,21 +1,24 @@
+import { Popover } from '@base-ui/react/popover'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   CheckCheck,
   ChevronRight,
+  Globe,
   Inbox,
   Mail,
-  MapPin,
   MessageSquare,
   Monitor,
   Send,
   ShieldAlert,
   Smartphone,
+  SmilePlus,
   Trash2,
 } from 'lucide-react'
-import { FormEvent, useEffect, useMemo, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { toast } from 'sonner'
 import type { CommentModel } from '~/app/models/comment'
+import type { FormEvent, KeyboardEvent } from 'react'
 
 import { WEB_URL } from '~/app/constants/env'
 import { CommentState } from '~/app/models/comment'
@@ -28,15 +31,52 @@ import {
   replyComment,
   updateCommentState,
 } from '../api/comments'
+import { getOwner } from '../api/options'
 import { Button } from '../ui/button'
 import { Checkbox } from '../ui/checkbox'
 import { cn } from '../ui/cn'
+import { IpInfoPopover } from '../ui/ip-info-popover'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
+import { MarkdownRender } from '../ui/markdown-render'
 import { MasterDetailLayout } from '../ui/page-layout'
+import { Scroll } from '../ui/scroll'
 import { SelectField } from '../ui/select'
 import { TextArea } from '../ui/text-field'
 
 const pageSize = 20
+
+interface LocalReply {
+  createdAt: string
+  id: string
+  text: string
+}
+
+const quickEmojis = [
+  '😀',
+  '😄',
+  '😂',
+  '😊',
+  '😍',
+  '🥳',
+  '😢',
+  '😭',
+  '😅',
+  '🤔',
+  '👍',
+  '👎',
+  '👏',
+  '🙏',
+  '💪',
+  '🔥',
+  '✨',
+  '❤️',
+  '💔',
+  '🎉',
+  '🌹',
+  '🍻',
+  '☕',
+  '🚀',
+]
 
 const filters = [
   { label: '待审核', value: CommentState.Unread },
@@ -47,6 +87,7 @@ const filters = [
 export function CommentsPage() {
   const queryClient = useQueryClient()
   const [searchParams, setSearchParams] = useSearchParams()
+  const searchParamsKey = searchParams.toString()
   const [state, setState] = useState(() =>
     normalizeState(searchParams.get('state')),
   )
@@ -63,6 +104,7 @@ export function CommentsPage() {
   const [selectAllMode, setSelectAllMode] = useState(false)
 
   const commentsQuery = useQuery({
+    placeholderData: (previous) => previous,
     queryFn: () => getComments({ page, size: pageSize, state }),
     queryKey: ['comments', 'list', state, page, pageSize],
   })
@@ -75,15 +117,31 @@ export function CommentsPage() {
       ? selectedCommentSnapshot
       : null)
 
+  useLayoutEffect(() => {
+    const nextState = normalizeState(searchParams.get('state'))
+    const nextPage = readPage(searchParams.get('page'))
+    const nextSelectedId = searchParams.get('id')
+
+    setState((value) => (value === nextState ? value : nextState))
+    setPage((value) => (value === nextPage ? value : nextPage))
+    setSelectedId((value) =>
+      value === nextSelectedId ? value : nextSelectedId,
+    )
+    setShowDetailOnMobile(Boolean(nextSelectedId))
+    setCheckedIds([])
+    setSelectAllMode(false)
+    if (!nextSelectedId) setSelectedCommentSnapshot(null)
+  }, [searchParamsKey])
+
   useEffect(() => {
     const next = new URLSearchParams()
     next.set('state', String(state))
     if (page > 1) next.set('page', String(page))
     if (selectedId) next.set('id', selectedId)
-    if (next.toString() !== searchParams.toString()) {
+    if (next.toString() !== searchParamsKey) {
       setSearchParams(next, { replace: true })
     }
-  }, [page, searchParams, selectedId, setSearchParams, state])
+  }, [page, searchParamsKey, selectedId, setSearchParams, state])
 
   const invalidateComments = async () => {
     await queryClient.invalidateQueries({ queryKey: ['comments'] })
@@ -256,7 +314,7 @@ export function CommentsPage() {
             </div>
           ) : null}
 
-          <div className="min-h-0 flex-1 overflow-y-auto">
+          <Scroll className="flex-1">
             {commentsQuery.isLoading && comments.length === 0 ? (
               <div className="flex justify-center py-20">
                 <div className="size-6 animate-spin rounded-full border-2 border-neutral-300 border-t-neutral-950 dark:border-neutral-700 dark:border-t-neutral-100" />
@@ -275,7 +333,7 @@ export function CommentsPage() {
                 />
               ))
             )}
-          </div>
+          </Scroll>
 
           <div className="flex flex-wrap items-center justify-between gap-2 border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
             <div className="flex gap-2">
@@ -446,22 +504,75 @@ function CommentDetail(props: {
   replyPending: boolean
 }) {
   const [reply, setReply] = useState('')
+  const [localReplies, setLocalReplies] = useState<LocalReply[]>([])
+  const replyInputRef = useRef<HTMLTextAreaElement | null>(null)
+  const ownerQuery = useQuery({
+    queryFn: getOwner,
+    queryKey: ['comments', 'owner'],
+    staleTime: 5 * 60 * 1000,
+  })
   const commentText = props.comment.isDeleted
     ? '该评论已删除'
     : props.comment.text
   const refLink = getReferenceLink(props.comment)
   const device = getDeviceInfo(props.comment.agent)
+  const ownerName =
+    ownerQuery.data?.name ||
+    ownerQuery.data?.username ||
+    ownerQuery.data?.handle ||
+    '我'
 
   useEffect(() => {
     setReply('')
+    setLocalReplies([])
   }, [props.comment.id])
 
   const submitReply = async (event: FormEvent) => {
     event.preventDefault()
+    await sendReply()
+  }
+
+  const sendReply = async () => {
     const text = reply.trim()
     if (!text) return
     await props.onReply(props.comment.id, text)
     setReply('')
+    setLocalReplies((current) => [
+      ...current,
+      {
+        createdAt: new Date().toISOString(),
+        id: `${Date.now()}`,
+        text,
+      },
+    ])
+  }
+
+  const handleReplyKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
+      event.preventDefault()
+      if (!props.replyPending) {
+        void sendReply()
+      }
+    }
+  }
+
+  const insertEmoji = (emoji: string) => {
+    const input = replyInputRef.current
+    if (!input) {
+      setReply((current) => `${current}${emoji}`)
+      return
+    }
+
+    const start = input.selectionStart
+    const end = input.selectionEnd
+    const next = `${reply.slice(0, start)}${emoji}${reply.slice(end)}`
+    setReply(next)
+
+    window.requestAnimationFrame(() => {
+      input.focus()
+      const cursor = start + emoji.length
+      input.setSelectionRange(cursor, cursor)
+    })
   }
 
   return (
@@ -523,18 +634,21 @@ function CommentDetail(props: {
         </div>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto p-6">
+      <Scroll className="flex-1" innerClassName="p-6">
         <div className="mx-auto max-w-3xl space-y-6">
           {props.comment.parent ? (
             <div className="border-l-2 border-neutral-200 pl-4 text-sm text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
               <div className="mb-1 font-medium text-neutral-700 dark:text-neutral-300">
                 @{props.comment.parent.author || '上级评论'}
               </div>
-              <p className="line-clamp-2 whitespace-pre-wrap">
-                {props.comment.parent.isDeleted
-                  ? '该评论已删除'
-                  : props.comment.parent.text}
-              </p>
+              {props.comment.parent.isDeleted ? (
+                <p className="line-clamp-2 whitespace-pre-wrap">该评论已删除</p>
+              ) : (
+                <MarkdownRender
+                  className="line-clamp-2 text-sm text-neutral-600 dark:text-neutral-400"
+                  text={props.comment.parent.text}
+                />
+              )}
             </div>
           ) : null}
 
@@ -560,9 +674,16 @@ function CommentDetail(props: {
             </div>
           </div>
 
-          <p className="whitespace-pre-wrap text-base leading-7 text-neutral-900 dark:text-neutral-100">
-            {commentText}
-          </p>
+          {props.comment.isDeleted ? (
+            <p className="whitespace-pre-wrap text-base leading-7 text-neutral-900 dark:text-neutral-100">
+              {commentText}
+            </p>
+          ) : (
+            <MarkdownRender
+              className="text-base leading-7 text-neutral-900 dark:text-neutral-100"
+              text={commentText}
+            />
+          )}
 
           {props.comment.ref?.title && refLink ? (
             <a
@@ -582,13 +703,7 @@ function CommentDetail(props: {
           <dl className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2 xl:grid-cols-3">
             <MetaItem label="IP 地址">
               {props.comment.ip ? (
-                <span className="inline-flex items-center gap-1.5">
-                  <MapPin
-                    aria-hidden="true"
-                    className="size-3.5 text-neutral-400"
-                  />
-                  {props.comment.ip}
-                </span>
+                <IpInfoPopover ip={props.comment.ip} />
               ) : (
                 '未知'
               )}
@@ -625,31 +740,90 @@ function CommentDetail(props: {
                 </a>
               </MetaItem>
             ) : null}
+            {props.comment.url ? (
+              <MetaItem label="站点地址">
+                <a
+                  className="inline-flex min-w-0 items-center gap-1.5 hover:underline"
+                  href={props.comment.url}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  <Globe
+                    aria-hidden="true"
+                    className="size-3.5 shrink-0 text-neutral-400"
+                  />
+                  <span className="truncate">{props.comment.url}</span>
+                </a>
+              </MetaItem>
+            ) : null}
           </dl>
+
+          {localReplies.length > 0 ? (
+            <div className="space-y-4 border-t border-neutral-100 pt-6 dark:border-neutral-800">
+              <h3 className="text-xs font-medium uppercase text-neutral-500 dark:text-neutral-400">
+                新增回复
+              </h3>
+              {localReplies.map((item) => (
+                <div className="flex gap-3" key={item.id}>
+                  <OwnerReplyAvatar
+                    avatar={ownerQuery.data?.avatar || ownerQuery.data?.image}
+                    name={ownerName}
+                  />
+                  <div className="min-w-0 flex-1 space-y-1">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                        {ownerName}
+                      </span>
+                      <time
+                        className="shrink-0 text-xs text-neutral-400"
+                        dateTime={item.createdAt}
+                      >
+                        {formatDate(item.createdAt)}
+                      </time>
+                    </div>
+                    <MarkdownRender
+                      className="text-sm text-neutral-700 dark:text-neutral-300"
+                      text={item.text}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : null}
         </div>
-      </div>
+      </Scroll>
 
       {props.currentState !== CommentState.Junk ? (
         <form
           className="border-t border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-950"
           onSubmit={submitReply}
         >
-          <div className="mx-auto flex max-w-3xl gap-2">
-            <TextArea
-              className="flex-1"
-              controlClassName="min-h-20 resize-y focus:border-neutral-400 dark:focus:border-neutral-600"
-              onChange={setReply}
-              placeholder="写下你的回复..."
-              value={reply}
-            />
-            <Button
-              className="self-end"
-              disabled={!reply.trim() || props.replyPending}
-              type="submit"
-            >
-              <Send aria-hidden="true" className="size-4" />
-              发送
-            </Button>
+          <div className="mx-auto max-w-3xl">
+            <div className="overflow-hidden rounded border border-neutral-200 bg-white shadow-sm focus-within:border-neutral-400 focus-within:ring-1 focus-within:ring-neutral-400 dark:border-neutral-800 dark:bg-neutral-950 dark:focus-within:border-neutral-600 dark:focus-within:ring-neutral-600">
+              <TextArea
+                controlClassName="min-h-20 resize-y border-0 focus:border-transparent focus:ring-0 dark:border-0"
+                onChange={setReply}
+                onKeyDown={handleReplyKeyDown}
+                placeholder="写下你的回复..."
+                ref={replyInputRef}
+                value={reply}
+              />
+              <div className="flex items-center justify-between gap-2 border-t border-neutral-100 bg-neutral-50 px-2 py-1.5 dark:border-neutral-800 dark:bg-neutral-900/50">
+                <EmojiPopover onSelect={insertEmoji} />
+                <div className="flex items-center gap-3">
+                  <span className="hidden text-xs text-neutral-400 sm:block">
+                    ⌘/Ctrl + Enter 发送
+                  </span>
+                  <Button
+                    disabled={!reply.trim() || props.replyPending}
+                    type="submit"
+                  >
+                    <Send aria-hidden="true" className="size-4" />
+                    发送回复
+                  </Button>
+                </div>
+              </div>
+            </div>
           </div>
         </form>
       ) : null}
@@ -694,6 +868,24 @@ function Avatar(props: { comment: CommentModel; size: 'lg' | 'sm' }) {
   )
 }
 
+function OwnerReplyAvatar(props: { avatar?: null | string; name: string }) {
+  if (props.avatar) {
+    return (
+      <img
+        alt=""
+        className="size-8 shrink-0 rounded-full object-cover"
+        src={props.avatar}
+      />
+    )
+  }
+
+  return (
+    <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-neutral-100 text-xs font-medium text-neutral-500 dark:bg-neutral-800 dark:text-neutral-300">
+      {props.name.slice(0, 1).toUpperCase()}
+    </div>
+  )
+}
+
 function MetaItem(props: { children: React.ReactNode; label: string }) {
   return (
     <div>
@@ -704,6 +896,41 @@ function MetaItem(props: { children: React.ReactNode; label: string }) {
         {props.children}
       </dd>
     </div>
+  )
+}
+
+function EmojiPopover(props: { onSelect: (emoji: string) => void }) {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <Popover.Root onOpenChange={setOpen} open={open}>
+      <Popover.Trigger
+        aria-label="插入表情"
+        className="inline-flex size-8 items-center justify-center rounded text-neutral-400 transition-colors hover:bg-neutral-200 hover:text-neutral-700 dark:hover:bg-neutral-800 dark:hover:text-neutral-200"
+        type="button"
+      >
+        <SmilePlus aria-hidden="true" className="size-4" />
+      </Popover.Trigger>
+      <Popover.Portal>
+        <Popover.Positioner align="start" side="top" sideOffset={8}>
+          <Popover.Popup className="z-50 grid w-64 grid-cols-8 gap-1 rounded border border-neutral-200 bg-white p-2 shadow-xl outline-none dark:border-neutral-800 dark:bg-neutral-950">
+            {quickEmojis.map((emoji) => (
+              <button
+                className="flex size-7 items-center justify-center rounded text-lg transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                key={emoji}
+                onClick={() => {
+                  props.onSelect(emoji)
+                  setOpen(false)
+                }}
+                type="button"
+              >
+                {emoji}
+              </button>
+            ))}
+          </Popover.Popup>
+        </Popover.Positioner>
+      </Popover.Portal>
+    </Popover.Root>
   )
 }
 

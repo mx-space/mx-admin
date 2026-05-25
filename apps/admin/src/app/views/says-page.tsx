@@ -1,7 +1,7 @@
 import { Dialog } from '@base-ui/react/dialog'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Pencil, Plus, Quote, Trash2, User, X } from 'lucide-react'
-import { FormEvent, useEffect, useRef, useState } from 'react'
+import { FormEvent, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { toast } from 'sonner'
 import type { SayModel } from '~/app/models/say'
@@ -11,6 +11,7 @@ import { Button } from '../ui/button'
 import { cn } from '../ui/cn'
 import { CompactPagination } from '../ui/compact-pagination'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
+import { Scroll } from '../ui/scroll'
 import { TextArea, TextInput } from '../ui/text-field'
 
 const pageSize = 20
@@ -21,8 +22,16 @@ export function SaysPage() {
   const [page, setPage] = useState(readPage(searchParams.get('page')))
   const [editingSay, setEditingSay] = useState<SayModel | null>(null)
   const [isEditorOpen, setIsEditorOpen] = useState(false)
+  const searchParamsKey = searchParams.toString()
+
+  useLayoutEffect(() => {
+    const nextPage = readPage(searchParams.get('page'))
+
+    setPage((value) => (value === nextPage ? value : nextPage))
+  }, [searchParamsKey])
 
   const saysQuery = useQuery({
+    placeholderData: (previous) => previous,
     queryFn: () => getSays({ page, size: pageSize }),
     queryKey: ['says', 'list', page, pageSize],
   })
@@ -56,8 +65,10 @@ export function SaysPage() {
   useEffect(() => {
     const nextParams = new URLSearchParams()
     if (page > 1) nextParams.set('page', String(page))
-    setSearchParams(nextParams, { replace: true })
-  }, [page, setSearchParams])
+    if (nextParams.toString() !== searchParamsKey) {
+      setSearchParams(nextParams, { replace: true })
+    }
+  }, [page, searchParamsKey, setSearchParams])
 
   return (
     <section className="flex h-full min-h-0 flex-col bg-white dark:bg-neutral-950">
@@ -84,7 +95,7 @@ export function SaysPage() {
         </div>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <Scroll className="flex-1">
         {saysQuery.isLoading && says.length === 0 ? (
           <SayListSkeleton />
         ) : says.length === 0 ? (
@@ -101,7 +112,7 @@ export function SaysPage() {
             ))}
           </div>
         )}
-      </div>
+      </Scroll>
 
       {pagination && pagination.totalPages > 1 ? (
         <div className="flex shrink-0 justify-center border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">

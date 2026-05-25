@@ -14,12 +14,21 @@ export {
   ShiroEditorBridge,
   type ShiroEditorBridgeProps,
 } from './components/ShiroEditorBridge'
+export {
+  RichEditorWithAgent,
+  type RichEditorWithAgentProps,
+  type RichEditorWithAgentRef,
+} from './components/RichEditorWithAgent'
 
 export {
   buildShiroEditorProps,
   type BuildShiroEditorPropsInput,
 } from './utils/build-shiro-editor-props'
-export { applyAgentReviewBatch } from './utils/apply-agent-review-batch'
+export {
+  applyAgentOperation,
+  applyAgentReviewBatch,
+  type AgentOperationApplyResult,
+} from './utils/apply-agent-review-batch'
 
 export {
   mountRichEditor,
@@ -31,8 +40,3 @@ export {
   type MountRichDiffOptions,
   type RichDiffHandle,
 } from './mount/mount-rich-diff'
-export {
-  mountRichEditorWithAgent,
-  type MountRichEditorWithAgentOptions,
-  type RichEditorWithAgentHandle,
-} from './mount/mount-rich-editor-with-agent'

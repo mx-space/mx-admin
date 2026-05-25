@@ -4,6 +4,7 @@ import type { FormEventHandler, ReactNode } from 'react'
 import { Button } from './button'
 import { Checkbox } from './checkbox'
 import { cn } from './cn'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from './layout'
 import { TextInput } from './text-field'
 
 interface ContentListToolbarSelection {
@@ -20,6 +21,7 @@ interface ContentListToolbarSelection {
 }
 
 interface ContentListToolbarProps {
+  actions?: ReactNode
   className?: string
   filters?: ReactNode
   hasSearch: boolean
@@ -33,19 +35,54 @@ interface ContentListToolbarProps {
 }
 
 const toolbarControlClassName =
-  'h-8 text-xs transition-transform active:scale-[0.96]'
+  'h-8 shrink-0 px-2.5 text-xs transition-transform active:scale-[0.96]'
+
+export function ContentListPageHeader(props: {
+  action: ReactNode
+  className?: string
+  icon: ReactNode
+  summary?: ReactNode
+  title: ReactNode
+}) {
+  return (
+    <header
+      className={cn(
+        'flex shrink-0 items-center justify-between gap-3 border-b border-neutral-200 bg-white px-4 dark:border-neutral-800 dark:bg-neutral-950',
+        APP_SHELL_HEADER_HEIGHT_CLASS,
+        props.className,
+      )}
+    >
+      <div className="flex min-w-0 items-center gap-3">
+        <span className="inline-flex size-7 shrink-0 items-center justify-center border border-neutral-200 bg-neutral-50 text-neutral-600 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300">
+          {props.icon}
+        </span>
+        <div className="min-w-0">
+          <h2 className="truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
+            {props.title}
+          </h2>
+          {props.summary ? (
+            <p className="mt-0.5 hidden truncate text-xs text-neutral-500 sm:block dark:text-neutral-400">
+              {props.summary}
+            </p>
+          ) : null}
+        </div>
+      </div>
+      <div className="flex shrink-0 items-center gap-2">{props.action}</div>
+    </header>
+  )
+}
 
 export function ContentListToolbar(props: ContentListToolbarProps) {
   return (
     <div
       className={cn(
-        'flex shrink-0 flex-col gap-2 border-b border-neutral-200 bg-neutral-50/60 px-4 py-2 dark:border-neutral-800 dark:bg-neutral-950',
+        'flex shrink-0 flex-col gap-2 border-b border-neutral-200 bg-white px-4 py-2 dark:border-neutral-800 dark:bg-neutral-950',
         props.className,
       )}
     >
-      <div className="flex min-w-0 flex-wrap items-center gap-2">
+      <div className="flex min-w-0 flex-col gap-2 xl:flex-row xl:items-center xl:justify-between">
         <form
-          className="flex min-w-72 flex-1 items-center gap-2"
+          className="flex min-w-0 items-center gap-2 xl:min-w-64 xl:flex-1"
           onSubmit={props.onSearch}
         >
           <label className="relative min-w-0 flex-1">
@@ -79,14 +116,24 @@ export function ContentListToolbar(props: ContentListToolbarProps) {
           ) : null}
         </form>
 
-        {props.filters ? (
-          <div className="flex min-w-0 flex-wrap items-center gap-2">
-            {props.filters}
+        {props.filters || props.actions || props.selection ? (
+          <div className="flex min-w-0 flex-wrap items-center gap-2 xl:justify-end">
+            {props.filters ? (
+              <div className="flex min-w-0 flex-wrap items-center gap-2">
+                {props.filters}
+              </div>
+            ) : null}
+            {props.actions ? (
+              <div className="flex shrink-0 items-center gap-2">
+                {props.actions}
+              </div>
+            ) : null}
+            {props.selection ? (
+              <ContentListToolbarSelectionControls
+                selection={props.selection}
+              />
+            ) : null}
           </div>
-        ) : null}
-
-        {props.selection ? (
-          <ContentListToolbarSelectionControls selection={props.selection} />
         ) : null}
       </div>
       {props.summary ? (
@@ -104,31 +151,32 @@ function ContentListToolbarSelectionControls(props: {
   const selection = props.selection
 
   return (
-    <div className="ml-auto flex min-w-fit items-center gap-2">
-      {selection.hasVisibleItems ? (
-        <div className="flex h-8 items-center gap-2 rounded px-1 text-xs text-neutral-500 dark:text-neutral-400">
-          <Checkbox
-            aria-label={selection.selectAllLabel}
-            checked={selection.allVisibleSelected}
-            indeterminate={selection.indeterminate}
-            onCheckedChange={selection.onToggleAllVisible}
-          />
-          <span className="hidden sm:inline">{selection.selectAllLabel}</span>
-        </div>
-      ) : null}
-      <span className="text-xs tabular-nums text-neutral-500 dark:text-neutral-400">
-        {selection.selectedLabel}
-      </span>
-      <Button
-        className={toolbarControlClassName}
-        disabled={selection.bulkActionDisabled}
-        onClick={selection.onBulkAction}
-        type="button"
-        variant="subtle"
-      >
-        {selection.bulkActionIcon}
-        <span>{selection.bulkActionLabel}</span>
-      </Button>
+    <div className="flex min-w-fit items-center justify-start lg:justify-end">
+      <div className="inline-flex h-8 max-w-full items-center overflow-hidden rounded border border-neutral-200 bg-neutral-50 text-xs text-neutral-600 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300">
+        {selection.hasVisibleItems ? (
+          <div className="inline-flex h-full items-center gap-2 border-r border-neutral-200 px-2 dark:border-neutral-800">
+            <Checkbox
+              aria-label={selection.selectAllLabel}
+              checked={selection.allVisibleSelected}
+              indeterminate={selection.indeterminate}
+              onCheckedChange={selection.onToggleAllVisible}
+            />
+            <span className="hidden sm:inline">{selection.selectAllLabel}</span>
+          </div>
+        ) : null}
+        <span className="px-2 tabular-nums text-neutral-500 dark:text-neutral-400">
+          {selection.selectedLabel}
+        </span>
+        <button
+          className="inline-flex h-full shrink-0 items-center gap-1.5 border-l border-neutral-200 px-2.5 font-medium text-neutral-700 outline-none transition-colors hover:bg-neutral-100 focus-visible:ring-2 focus-visible:ring-[var(--color-primary-shallow)] disabled:pointer-events-none disabled:opacity-50 dark:border-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-800"
+          disabled={selection.bulkActionDisabled}
+          onClick={selection.onBulkAction}
+          type="button"
+        >
+          {selection.bulkActionIcon}
+          <span>{selection.bulkActionLabel}</span>
+        </button>
+      </div>
     </div>
   )
 }

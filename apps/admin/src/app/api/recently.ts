@@ -6,8 +6,15 @@ export interface RecentlyInput {
   content: string
 }
 
-export function getRecentlyList() {
-  return getJson<RecentlyModel[]>('/recently/all')
+export interface RecentlyListParams {
+  [key: string]: boolean | number | string | undefined
+  after?: string
+  before?: string
+  size?: number
+}
+
+export function getRecentlyList(params: RecentlyListParams = {}) {
+  return getJson<RecentlyModel[]>('/recently', params)
 }
 
 export function createRecently(data: RecentlyInput) {

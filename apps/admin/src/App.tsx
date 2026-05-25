@@ -7,6 +7,7 @@ import { useI18n } from './app/i18n'
 import { AppProviders } from './app/providers'
 import { AppRoutes } from './app/routes'
 import { AdminShell } from './app/shell'
+import { SocketBridge } from './app/socket/SocketBridge'
 import { installThemeTokens } from './app/theme'
 
 function App() {
@@ -68,6 +69,7 @@ function ProtectedAdminApp() {
 
   return (
     <AdminShell>
+      <SocketBridge />
       <AppRoutes />
     </AdminShell>
   )

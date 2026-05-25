@@ -7,7 +7,9 @@ import { defaultServerlessFunction } from '~/app/models/snippet'
 import { postJson } from '../api/http'
 import { useLocalStorageState } from '../hooks/use-local-storage-state'
 import { Button } from '../ui/button'
+import { AppPage, PageHeader } from '../ui/page-layout'
 import { Panel } from '../ui/panel'
+import { Scroll } from '../ui/scroll'
 import { TextArea } from '../ui/text-field'
 
 export function ServerlessDebugPage() {
@@ -51,60 +53,78 @@ export function ServerlessDebugPage() {
   }
 
   return (
-    <div className="mx-auto grid max-w-7xl gap-6 xl:grid-cols-[minmax(0,1fr)_420px]">
-      <Panel
-        description="Edit and execute the development serverless function from the React runtime."
-        title={
-          <span className="inline-flex items-center gap-2">
-            <Code2 aria-hidden="true" className="size-4" />
-            Function editor
-          </span>
-        }
+    <AppPage>
+      <PageHeader
+        description="Execute the development serverless function."
+        title="Serverless Debug"
+      />
+      <Scroll
+        className="min-h-0 flex-1"
+        innerClassName="mx-auto grid w-full max-w-7xl gap-6 p-4 xl:grid-cols-[minmax(0,1fr)_420px]"
       >
-        <div className="border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="text-xs text-neutral-500 dark:text-neutral-400">
-              {lineCount} lines saved in local storage.
-            </div>
-            <div className="flex items-center gap-2">
-              <Button onClick={resetFunction} type="button" variant="subtle">
-                <RotateCcw aria-hidden="true" className="size-4" />
-                Reset
-              </Button>
-              <Button disabled={isRunning} onClick={runFunction} type="button">
-                <Play aria-hidden="true" className="size-4" />
-                {isRunning ? 'Running' : 'Run'}
-              </Button>
+        <Panel
+          description="Edit and execute the development serverless function from the React runtime."
+          title={
+            <span className="inline-flex items-center gap-2">
+              <Code2 aria-hidden="true" className="size-4" />
+              Function editor
+            </span>
+          }
+        >
+          <div className="border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="text-xs text-neutral-500 dark:text-neutral-400">
+                {lineCount} lines saved in local storage.
+              </div>
+              <div className="flex items-center gap-2">
+                <Button onClick={resetFunction} type="button" variant="subtle">
+                  <RotateCcw aria-hidden="true" className="size-4" />
+                  Reset
+                </Button>
+                <Button
+                  disabled={isRunning}
+                  onClick={runFunction}
+                  type="button"
+                >
+                  <Play aria-hidden="true" className="size-4" />
+                  {isRunning ? 'Running' : 'Run'}
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="p-4">
-          <TextArea
-            controlClassName="min-h-[620px] resize-y p-3 font-mono text-sm leading-6"
-            onChange={setCode}
-            spellCheck={false}
-            value={code}
-          />
-        </div>
-      </Panel>
+          <div className="p-4">
+            <TextArea
+              controlClassName="min-h-[620px] resize-y p-3 font-mono text-sm leading-6"
+              onChange={setCode}
+              spellCheck={false}
+              value={code}
+            />
+          </div>
+        </Panel>
 
-      <Panel
-        description="The latest execution response or error."
-        title={
-          <span className="inline-flex items-center gap-2">
-            <Terminal aria-hidden="true" className="size-4" />
-            Preview
-          </span>
-        }
-      >
-        <div className="p-4">
-          <pre className="min-h-[620px] overflow-auto rounded border border-neutral-200 bg-neutral-50 p-3 font-mono text-xs leading-5 text-neutral-800 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-100">
-            {result || 'Run the function to inspect its response.'}
-          </pre>
-        </div>
-      </Panel>
-    </div>
+        <Panel
+          description="The latest execution response or error."
+          title={
+            <span className="inline-flex items-center gap-2">
+              <Terminal aria-hidden="true" className="size-4" />
+              Preview
+            </span>
+          }
+        >
+          <div className="p-4">
+            <Scroll
+              className="rounded border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900"
+              orientation="both"
+            >
+              <pre className="min-h-[620px] p-3 font-mono text-xs leading-5 text-neutral-800 dark:text-neutral-100">
+                {result || 'Run the function to inspect its response.'}
+              </pre>
+            </Scroll>
+          </div>
+        </Panel>
+      </Scroll>
+    </AppPage>
   )
 }
 

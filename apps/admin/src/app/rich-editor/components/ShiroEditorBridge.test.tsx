@@ -1,3 +1,5 @@
+// @vitest-environment node
+
 import { createElement } from 'react'
 import { describe, expect, it, vi } from 'vitest'
 
@@ -16,10 +18,10 @@ vi.mock('@haklex/rich-ext-nested-doc', async () => {
   const { createElement } = await import('react')
 
   return {
-    nestedDocEditNodes: ['nested-a', 'nested-b'],
-    NestedDocPlugin: () => createElement('nested-doc-plugin'),
     NestedDocDialogEditorProvider: (props: any) =>
       createElement('nested-doc-dialog-provider', props, props.children),
+    NestedDocPlugin: () => createElement('nested-doc-plugin'),
+    nestedDocEditNodes: ['nested-a', 'nested-b'],
   }
 })
 
@@ -36,6 +38,8 @@ vi.mock('../shiro', async () => {
   const { createElement } = await import('react')
 
   return {
+    enhancedEditRendererConfig: {},
+    enhancedRendererConfig: {},
     ShiroEditor: (props: any) =>
       createElement('shiro-editor', props, props.children),
   }
@@ -49,29 +53,33 @@ vi.mock('@haklex/rich-plugin-toolbar', async () => {
   }
 })
 
+vi.mock('./setup-enrichment-linkcard', () => ({}))
+
 describe('ShiroEditorBridge', () => {
   it('wraps shiro editor with shared providers and appends nested doc nodes', () => {
     const saveExcalidrawSnapshot = vi.fn(async () => 'ref:file/x')
     const apiUrl = 'https://api.test'
 
     const tree: any = ShiroEditorBridge({
-      editorProps: {
-        theme: 'dark',
-        extraNodes: ['custom-node'] as any,
-      } as any,
-      saveExcalidrawSnapshot,
       apiUrl,
-      onChange: vi.fn(),
-      onSubmit: vi.fn(),
-      onEditorReady: vi.fn(),
       children: createElement('custom-child'),
+      editorProps: {
+        extraNodes: ['custom-node'] as any,
+        theme: 'dark',
+      } as any,
+      onChange: vi.fn(),
+      onEditorReady: vi.fn(),
+      onSubmit: vi.fn(),
+      saveExcalidrawSnapshot,
     })
 
-    const dialogProvider = tree
+    const enrichmentProvider = tree
+    const dialogProvider = enrichmentProvider.props.children
     const stackProvider = dialogProvider.props.children
     const excalidrawProvider = stackProvider.props.children
     const shiroEditor = excalidrawProvider.props.children
 
+    expect(enrichmentProvider.props.value).toBeNull()
     expect(dialogProvider.props.value).toBeTypeOf('function')
     expect(excalidrawProvider.props.apiUrl).toBe(apiUrl)
     expect(excalidrawProvider.props.saveSnapshot).toBe(saveExcalidrawSnapshot)

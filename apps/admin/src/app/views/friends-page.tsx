@@ -12,7 +12,7 @@ import {
   UserRound,
   X,
 } from 'lucide-react'
-import { FormEvent, useEffect, useState } from 'react'
+import { FormEvent, useEffect, useLayoutEffect, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { toast } from 'sonner'
 import type { LinkModel, LinkStateCount } from '~/app/models/link'
@@ -33,6 +33,7 @@ import {
 import { Button } from '../ui/button'
 import { cn } from '../ui/cn'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
+import { Scroll } from '../ui/scroll'
 import { SelectField } from '../ui/select'
 import { TextArea, TextInput } from '../ui/text-field'
 
@@ -58,6 +59,7 @@ type HealthMap = Record<
 export function FriendsPage() {
   const queryClient = useQueryClient()
   const [searchParams, setSearchParams] = useSearchParams()
+  const searchParamsKey = searchParams.toString()
   const [state, setState] = useState(() =>
     normalizeState(searchParams.get('state')),
   )
@@ -68,6 +70,7 @@ export function FriendsPage() {
   const [health, setHealth] = useState<HealthMap>({})
 
   const linksQuery = useQuery({
+    placeholderData: (previous) => previous,
     queryFn: () => getLinks({ page, size: pageSize, state }),
     queryKey: ['links', 'list', state, page, pageSize],
   })
@@ -77,14 +80,22 @@ export function FriendsPage() {
     queryKey: ['links', 'state-count'],
   })
 
+  useLayoutEffect(() => {
+    const nextState = normalizeState(searchParams.get('state'))
+    const nextPage = readPage(searchParams.get('page'))
+
+    setState((value) => (value === nextState ? value : nextState))
+    setPage((value) => (value === nextPage ? value : nextPage))
+  }, [searchParamsKey])
+
   useEffect(() => {
     const next = new URLSearchParams()
     next.set('state', String(state))
     if (page > 1) next.set('page', String(page))
-    if (next.toString() !== searchParams.toString()) {
+    if (next.toString() !== searchParamsKey) {
       setSearchParams(next, { replace: true })
     }
-  }, [page, searchParams, setSearchParams, state])
+  }, [page, searchParamsKey, setSearchParams, state])
 
   const invalidateLinks = async () => {
     await queryClient.invalidateQueries({ queryKey: ['links'] })
@@ -221,7 +232,7 @@ export function FriendsPage() {
         />
       </div>
 
-      <div className="min-h-0 flex-1 overflow-auto">
+      <Scroll className="flex-1" orientation="both">
         <table className="w-full min-w-[920px] border-collapse text-left text-sm">
           <thead className="sticky top-0 z-10 border-b border-neutral-200 bg-neutral-50 text-xs uppercase text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400">
             <tr>
@@ -264,7 +275,7 @@ export function FriendsPage() {
             )}
           </tbody>
         </table>
-      </div>
+      </Scroll>
 
       {pagination && pagination.totalPages > 1 ? (
         <div className="flex shrink-0 items-center justify-end gap-2 border-t border-neutral-200 px-4 py-3 text-sm text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">

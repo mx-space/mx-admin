@@ -1,6 +1,10 @@
-import { API_URL } from '~/app/constants/env'
-
-import { deleteJson, patchJson } from './http'
+import {
+  deleteJson,
+  getJson,
+  patchJson,
+  requestBlob,
+  requestJson,
+} from './http'
 
 export interface BackupFile {
   createdAt: string
@@ -9,7 +13,7 @@ export interface BackupFile {
 }
 
 export async function getBackups() {
-  return requestJson<BackupFile[]>('/backups')
+  return getJson<BackupFile[]>('/backups')
 }
 
 export function createBackup() {
@@ -35,51 +39,8 @@ export async function uploadAndRestoreBackup(file: File) {
   const formData = new FormData()
   formData.append('file', file)
 
-  const response = await fetch(`${API_URL}/backups/rollback`, {
+  await requestJson<void>('/backups/rollback', {
     body: formData,
-    credentials: 'include',
-    headers: {
-      'x-skip-translation': '1',
-    },
     method: 'POST',
   })
-
-  if (!response.ok) {
-    throw new Error(response.statusText || 'Upload restore failed')
-  }
-}
-
-async function requestJson<TResponse>(path: string) {
-  const response = await fetch(`${API_URL}${path}`, {
-    credentials: 'include',
-    headers: {
-      'x-skip-translation': '1',
-    },
-  })
-
-  if (!response.ok) {
-    throw new Error(response.statusText || 'Request failed')
-  }
-
-  const data = await response.json()
-  if (data && typeof data === 'object' && 'data' in data) {
-    return data.data as TResponse
-  }
-
-  return data as TResponse
-}
-
-async function requestBlob(path: string) {
-  const response = await fetch(`${API_URL}${path}`, {
-    credentials: 'include',
-    headers: {
-      'x-skip-translation': '1',
-    },
-  })
-
-  if (!response.ok) {
-    throw new Error(response.statusText || 'Request failed')
-  }
-
-  return response.blob()
 }
