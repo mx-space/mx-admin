@@ -1,5 +1,5 @@
 import { Plus } from 'lucide-react'
-import { act, createElement } from 'react'
+import { act, createElement, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 import { MemoryRouter } from 'react-router'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -7,6 +7,7 @@ import type { Root } from 'react-dom/client'
 import type { HeaderAction } from './page-layout'
 
 import { PageHeader } from './page-layout'
+import { ShellNavProvider, useShellNav } from './shell-nav-context'
 
 interface Harness {
   container: HTMLDivElement
@@ -127,6 +128,94 @@ describe('PageHeader', () => {
     for (const button of buttons) {
       expect(button.className).toContain('bg-neutral-950')
     }
+  })
+
+  it('renders MobileHamburger when ShellNavProvider is present', () => {
+    const setOpen = vi.fn()
+    renderWithRouter(
+      harness,
+      createElement(ShellNavProvider, {
+        open: false,
+        setOpen,
+        children: createElement(PageHeader, { title: 'Title' }),
+      }),
+    )
+    const hamburger = harness.container.querySelector(
+      'button[aria-label="打开导航"]',
+    )
+    expect(hamburger).not.toBeNull()
+  })
+
+  it('does not render MobileHamburger when no ShellNavProvider is present', () => {
+    renderWithRouter(harness, createElement(PageHeader, { title: 'Title' }))
+    const hamburger = harness.container.querySelector(
+      'button[aria-label="打开导航"]',
+    )
+    expect(hamburger).toBeNull()
+  })
+
+  it('clicking MobileHamburger toggles open via setOpen', () => {
+    const setOpen = vi.fn()
+    renderWithRouter(
+      harness,
+      createElement(ShellNavProvider, {
+        open: false,
+        setOpen,
+        children: createElement(PageHeader, { title: 'Title' }),
+      }),
+    )
+    const hamburger = harness.container.querySelector<HTMLButtonElement>(
+      'button[aria-label="打开导航"]',
+    )
+    expect(hamburger).not.toBeNull()
+    act(() => {
+      hamburger!.click()
+    })
+    expect(setOpen).toHaveBeenLastCalledWith(true)
+  })
+
+  it('mounting PageHeader flips hasOwnHeader to true; unmounting flips back', () => {
+    const setOpen = vi.fn()
+    const captured: Array<boolean> = []
+    function Probe() {
+      const value = useShellNav()
+      useEffect(() => {
+        captured.push(value?.hasOwnHeader ?? false)
+      })
+      return null
+    }
+    act(() => {
+      harness.root.render(
+        createElement(
+          MemoryRouter,
+          null,
+          createElement(ShellNavProvider, {
+            open: false,
+            setOpen,
+            children: [
+              createElement(Probe, { key: 'probe' }),
+              createElement(PageHeader, { key: 'header', title: 'Title' }),
+            ],
+          }),
+        ),
+      )
+    })
+    expect(captured.at(-1)).toBe(true)
+
+    act(() => {
+      harness.root.render(
+        createElement(
+          MemoryRouter,
+          null,
+          createElement(ShellNavProvider, {
+            open: false,
+            setOpen,
+            children: createElement(Probe),
+          }),
+        ),
+      )
+    })
+    expect(captured.at(-1)).toBe(false)
   })
 
   it('renders both node and mobileNode for kind: custom', () => {

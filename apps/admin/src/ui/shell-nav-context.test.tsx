@@ -106,6 +106,72 @@ describe('ShellNavContext', () => {
     expect(setOpen).toHaveBeenLastCalledWith(false)
   })
 
+  it('registerPageHeader flips hasOwnHeader to true and cleanup flips it back', () => {
+    const setOpen = vi.fn()
+    const captured: Array<ReturnType<typeof useShellNav>> = []
+    function Probe() {
+      captured.push(useShellNav())
+      return null
+    }
+    act(() => {
+      harness.root.render(
+        createElement(ShellNavProvider, {
+          children: createElement(Probe),
+          open: false,
+          setOpen,
+        }),
+      )
+    })
+    expect(captured.at(-1)!.hasOwnHeader).toBe(false)
+
+    let dispose: () => void = () => {}
+    act(() => {
+      dispose = captured.at(-1)!.registerPageHeader()
+    })
+    expect(captured.at(-1)!.hasOwnHeader).toBe(true)
+
+    act(() => {
+      dispose()
+    })
+    expect(captured.at(-1)!.hasOwnHeader).toBe(false)
+  })
+
+  it('two simultaneous registrations keep hasOwnHeader true until both clean up', () => {
+    const setOpen = vi.fn()
+    const captured: Array<ReturnType<typeof useShellNav>> = []
+    function Probe() {
+      captured.push(useShellNav())
+      return null
+    }
+    act(() => {
+      harness.root.render(
+        createElement(ShellNavProvider, {
+          children: createElement(Probe),
+          open: false,
+          setOpen,
+        }),
+      )
+    })
+
+    let disposeA: () => void = () => {}
+    let disposeB: () => void = () => {}
+    act(() => {
+      disposeA = captured.at(-1)!.registerPageHeader()
+      disposeB = captured.at(-1)!.registerPageHeader()
+    })
+    expect(captured.at(-1)!.hasOwnHeader).toBe(true)
+
+    act(() => {
+      disposeA()
+    })
+    expect(captured.at(-1)!.hasOwnHeader).toBe(true)
+
+    act(() => {
+      disposeB()
+    })
+    expect(captured.at(-1)!.hasOwnHeader).toBe(false)
+  })
+
   it('setOpen and toggle are stable across re-renders when open is unchanged', () => {
     const setOpen = vi.fn()
     const captured: Array<ReturnType<typeof useShellNav>> = []

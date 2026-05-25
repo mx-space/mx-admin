@@ -1,11 +1,14 @@
 import { Popover } from '@base-ui/react/popover'
 import { ArrowDown, ArrowUp, ArrowUpDown, Search, X } from 'lucide-react'
+import { useEffect } from 'react'
 import type { FormEventHandler, ReactNode } from 'react'
 
 import { Checkbox } from './checkbox'
 import { cn } from './cn'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from './layout'
+import { MobileHamburger } from './mobile-hamburger'
 import { PortalLayerScope, useFloatingZ } from './portal-layer'
+import { useShellNav } from './shell-nav-context'
 
 interface ContentListToolbarSelection {
   allVisibleSelected: boolean
@@ -42,6 +45,9 @@ export function ContentListHeader(props: {
   icon: ReactNode
   title: ReactNode
 }) {
+  const shellNav = useShellNav()
+  useEffect(() => shellNav?.registerPageHeader(), [shellNav])
+
   return (
     <header
       className={cn(
@@ -51,6 +57,7 @@ export function ContentListHeader(props: {
       )}
     >
       <div className="flex min-w-0 items-center gap-3">
+        <MobileHamburger />
         <span className="inline-flex size-7 shrink-0 items-center justify-center border border-neutral-200 bg-neutral-50 text-neutral-600 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300">
           {props.icon}
         </span>

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { Loader2, Menu, Sparkles } from 'lucide-react'
+import { Loader2, Sparkles } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import type { PropsWithChildren } from 'react'
@@ -9,6 +9,7 @@ import { useI18n } from './i18n'
 import { cn } from './ui/cn'
 import { Drawer } from './ui/drawer'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from './ui/layout'
+import { MobileHamburger } from './ui/mobile-hamburger'
 import { ShellNavProvider, useShellNav } from './ui/shell-nav-context'
 import { SidebarBody } from './ui/sidebar-body'
 
@@ -95,6 +96,7 @@ export function AdminShell(props: PropsWithChildren) {
 
 function MobileShellTopBar() {
   const shellNav = useShellNav()
+  if (shellNav?.hasOwnHeader) return null
   return (
     <div
       className={cn(
@@ -102,14 +104,7 @@ function MobileShellTopBar() {
         APP_SHELL_HEADER_HEIGHT_CLASS,
       )}
     >
-      <button
-        aria-label="打开导航"
-        className="inline-flex size-9 items-center justify-center rounded text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-950 dark:hover:bg-neutral-900 dark:hover:text-neutral-50"
-        onClick={() => shellNav?.toggle()}
-        type="button"
-      >
-        <Menu aria-hidden="true" className="size-4" />
-      </button>
+      <MobileHamburger />
     </div>
   )
 }

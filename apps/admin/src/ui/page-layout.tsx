@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import {
   Group as PanelGroup,
   Separator as PanelResizeHandle,
@@ -9,6 +10,8 @@ import type { ReactNode } from 'react'
 import { cn } from './cn'
 import { HeaderBackButton } from './header-back-button'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from './layout'
+import { MobileHamburger } from './mobile-hamburger'
+import { useShellNav } from './shell-nav-context'
 
 export function AppPage(props: { children: ReactNode; className?: string }) {
   return (
@@ -73,6 +76,9 @@ export function PageHeader(props: PageHeaderProps) {
       props.actions !== null &&
       !(Array.isArray(props.actions) && props.actions.length === 0))
 
+  const shellNav = useShellNav()
+  useEffect(() => shellNav?.registerPageHeader(), [shellNav])
+
   return (
     <header
       className={cn(
@@ -82,6 +88,7 @@ export function PageHeader(props: PageHeaderProps) {
       )}
     >
       <div className="flex min-w-0 items-center gap-2">
+        <MobileHamburger />
         {props.back ? <HeaderBackButton {...props.back} /> : null}
         <div className="min-w-0">
           <h1 className="truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
