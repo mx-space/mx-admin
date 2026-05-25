@@ -1,4 +1,3 @@
-import { Menu } from 'lucide-react'
 import {
   Group as PanelGroup,
   Separator as PanelResizeHandle,
@@ -10,7 +9,6 @@ import type { ReactNode } from 'react'
 import { cn } from './cn'
 import { HeaderBackButton } from './header-back-button'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from './layout'
-import { useShellNav } from './shell-nav-context'
 
 export function AppPage(props: { children: ReactNode; className?: string }) {
   return (
@@ -68,7 +66,6 @@ export function isHeaderActionArray(
 }
 
 export function PageHeader(props: PageHeaderProps) {
-  const shellNav = useShellNav()
   const typedActions = isHeaderActionArray(props.actions) ? props.actions : null
   const hasActions =
     typedActions !== null ||
@@ -85,17 +82,6 @@ export function PageHeader(props: PageHeaderProps) {
       )}
     >
       <div className="flex min-w-0 items-center gap-2">
-        {shellNav ? (
-          <button
-            aria-label="打开导航"
-            className="focus-visible:outline-hidden -ml-1.5 inline-flex size-9 shrink-0 items-center justify-center rounded-md text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 lg:hidden dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-100 dark:focus-visible:ring-neutral-500 dark:focus-visible:ring-offset-neutral-900"
-            onClick={shellNav.toggle}
-            title="打开导航"
-            type="button"
-          >
-            <Menu aria-hidden="true" className="size-4" />
-          </button>
-        ) : null}
         {props.back ? <HeaderBackButton {...props.back} /> : null}
         <div className="min-w-0">
           <h1 className="truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">

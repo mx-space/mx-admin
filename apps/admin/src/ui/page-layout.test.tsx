@@ -7,7 +7,6 @@ import type { Root } from 'react-dom/client'
 import type { HeaderAction } from './page-layout'
 
 import { PageHeader } from './page-layout'
-import { ShellNavProvider } from './shell-nav-context'
 
 interface Harness {
   container: HTMLDivElement
@@ -156,47 +155,5 @@ describe('PageHeader', () => {
     expect(
       harness.container.querySelector('[data-testid="custom-mobile"]'),
     ).not.toBeNull()
-  })
-
-  it('renders hamburger when wrapped in ShellNavProvider', () => {
-    renderWithRouter(
-      harness,
-      createElement(ShellNavProvider, {
-        open: false,
-        setOpen: vi.fn(),
-        children: createElement(PageHeader, { title: 'Title' }),
-      }),
-    )
-    const hamburger = harness.container.querySelector(
-      'button[aria-label="打开导航"]',
-    )
-    expect(hamburger).not.toBeNull()
-  })
-
-  it('does NOT render hamburger when no ShellNavProvider', () => {
-    renderWithRouter(harness, createElement(PageHeader, { title: 'Title' }))
-    const hamburger = harness.container.querySelector(
-      'button[aria-label="打开导航"]',
-    )
-    expect(hamburger).toBeNull()
-  })
-
-  it('clicking hamburger calls setOpen with inverted value', () => {
-    const setOpen = vi.fn()
-    renderWithRouter(
-      harness,
-      createElement(ShellNavProvider, {
-        open: false,
-        setOpen,
-        children: createElement(PageHeader, { title: 'Title' }),
-      }),
-    )
-    const hamburger = harness.container.querySelector(
-      'button[aria-label="打开导航"]',
-    ) as HTMLButtonElement
-    act(() => {
-      hamburger.click()
-    })
-    expect(setOpen).toHaveBeenCalledWith(true)
   })
 })

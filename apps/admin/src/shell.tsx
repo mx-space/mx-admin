@@ -1,13 +1,15 @@
 import { useQuery } from '@tanstack/react-query'
-import { Loader2, Sparkles } from 'lucide-react'
+import { Loader2, Menu, Sparkles } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import type { PropsWithChildren } from 'react'
 
 import { AITaskStatus, getAiTasks } from './api/ai'
 import { useI18n } from './i18n'
+import { cn } from './ui/cn'
 import { Drawer } from './ui/drawer'
-import { ShellNavProvider } from './ui/shell-nav-context'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from './ui/layout'
+import { ShellNavProvider, useShellNav } from './ui/shell-nav-context'
 import { SidebarBody } from './ui/sidebar-body'
 
 export function AdminShell(props: PropsWithChildren) {
@@ -64,6 +66,7 @@ export function AdminShell(props: PropsWithChildren) {
         </aside>
 
         <section className="flex h-screen min-h-0 min-w-0 flex-col">
+          <MobileShellTopBar />
           <div className="relative min-h-0 flex-1 overflow-hidden">
             {props.children}
             {activeAiTaskCount > 0 ? (
@@ -87,6 +90,27 @@ export function AdminShell(props: PropsWithChildren) {
         </Drawer>
       </main>
     </ShellNavProvider>
+  )
+}
+
+function MobileShellTopBar() {
+  const shellNav = useShellNav()
+  return (
+    <div
+      className={cn(
+        'flex shrink-0 items-center gap-2 border-b border-neutral-200 bg-white px-3 lg:hidden dark:border-neutral-800 dark:bg-neutral-950',
+        APP_SHELL_HEADER_HEIGHT_CLASS,
+      )}
+    >
+      <button
+        aria-label="打开导航"
+        className="inline-flex size-9 items-center justify-center rounded text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-950 dark:hover:bg-neutral-900 dark:hover:text-neutral-50"
+        onClick={() => shellNav?.toggle()}
+        type="button"
+      >
+        <Menu aria-hidden="true" className="size-4" />
+      </button>
+    </div>
   )
 }
 

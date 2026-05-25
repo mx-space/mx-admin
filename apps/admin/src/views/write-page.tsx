@@ -1013,6 +1013,7 @@ function WritePage(props: { kind: WriteKind }) {
         <ContentLayout
           className="min-h-0 flex-1"
           mainClassName="flex flex-col"
+          onCloseAside={() => setAsidePanel(null)}
           open={asidePanel !== null && !detailQuery.isLoading}
         >
           {detailQuery.isLoading ? (
