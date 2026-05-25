@@ -96,11 +96,8 @@ export function present<P extends object, T = unknown>(
 ): ModalHandle<T>
 
 // context.tsx
-export function useModal<T = unknown>(): {
-  id: string
-  close: (value?: T) => void
-  dismiss: () => void
-}
+// Returns the full ModalHandle for the enclosing instance.
+export function useModal<T = unknown>(): ModalHandle<T>
 
 // root.tsx
 export function ModalRoot(): JSX.Element
@@ -125,48 +122,91 @@ function ModalRoot() {
     modalStore.getSnapshot,
     modalStore.getSnapshot,
   )
+  const topIndex = stack.length - 1
 
   return (
     <>
-      {stack.map((inst, index) => (
-        <PortalLayerScope key={inst.id} depth={index}>
-          <ModalInstanceContext.Provider value={makeHandle(inst)}>
-            <Modal
-              open={inst.status === 'open'}
-              onClose={() => {
-                if (inst.options.dismissable) {
+      {stack.map((inst, index) => {
+        const isTop = index === topIndex
+        // Reserve room between modals so any descendant popover/dialog
+        // (depth + 1, +2, ...) stays under the next stacked modal.
+        const baseDepth = index * Z_STACK_STRIDE // see "z-index Layering"
+        return (
+          <PortalLayerScope key={inst.id} depth={baseDepth}>
+            <ModalInstanceContext.Provider value={makeHandle(inst)}>
+              <Modal
+                {...inst.options.modalProps}
+                open={inst.status === 'open'}
+                onOpenChange={(open, eventDetails) => {
+                  if (open) return
+                  // Block backdrop/ESC dismissal on non-top modals and when
+                  // dismissable === false. Cancel via Base UI event details
+                  // so internal state stays consistent.
+                  if (!isTop || !inst.options.dismissable) {
+                    eventDetails?.cancel()
+                    return
+                  }
                   inst.deferred.resolve(undefined)
                   modalStore.update(inst.id, { status: 'closing' })
-                }
-              }}
-              {...inst.options.modalProps}
-            >
-              <inst.Component {...inst.props} />
-            </Modal>
-          </ModalInstanceContext.Provider>
-        </PortalLayerScope>
-      ))}
+                }}
+                onExitComplete={() => modalStore.remove(inst.id)}
+              >
+                <inst.Component {...inst.props} />
+              </Modal>
+            </ModalInstanceContext.Provider>
+          </PortalLayerScope>
+        )
+      })}
     </>
   )
 }
 ```
 
-The Modal's internal `AnimatePresence` already plays an exit animation when `open` flips to `false`. To know when the exit completes (so we can remove the instance from the store), `Modal` is extended with one new optional prop:
+Three invariants enforced above (review-driven):
+
+1. **Spread order**: `{...inst.options.modalProps}` is spread first; `open`, `onOpenChange`, and `onExitComplete` are then assigned to prevent accidental override by consumer-supplied `modalProps`.
+2. **Top-only dismissal**: Base UI does not track sibling dialogs as a stack — each sibling sees `ownNestedOpenDialogs === 0` and independently enables Escape/backdrop dismissal. `ModalRoot` therefore decides which instance is top and cancels dismissal events on the rest.
+3. **Cancellable dismissal**: `Modal` is updated to forward Base UI's `onOpenChange(open, eventDetails)` (replacing today's `onClose: () => void`). Callers that want a non-dismissable modal call `eventDetails.cancel()` synchronously inside the handler. The internal Base UI store reads `isCanceled` and bails out — see `@base-ui/react/dialog/store/DialogStore.js`.
+
+`Modal` needs two additive prop changes to support imperative use:
 
 ```ts
 interface ModalProps {
   // ...existing fields
   onExitComplete?: () => void
+  // NEW: replaces or supplements `onClose` so callers can cancel Base UI's
+  // internal dismissal (backdrop/ESC). `onClose` continues to be supported
+  // for declarative callsites; if both are provided, `onOpenChange` wins.
+  onOpenChange?: (
+    open: boolean,
+    eventDetails: { cancel: () => void; isCanceled: boolean },
+  ) => void
 }
 ```
 
-Inside `Modal`, the existing `<AnimatePresence onExitComplete={...}>` callback is extended to call `props.onExitComplete?.()` after `actionsRef.current?.unmount()`. This is a minimal, additive change to `src/ui/modal.tsx` — no behavior change for existing callsites. `ModalRoot` wires `onExitComplete={() => modalStore.remove(inst.id)}`.
+Inside `Modal`:
+
+- The current `Dialog.Root.onOpenChange` wrapper is widened to forward `(open, eventDetails)` to whichever of `onOpenChange` / `onClose` is supplied.
+- `<AnimatePresence onExitComplete={...}>` calls `props.onExitComplete?.()` after `actionsRef.current?.unmount()`.
+
+Both fields are optional and default to today's behavior. The named existing callsites (`write-page.tsx:1330,1500,2497,2774` and `write-page-meta-presets.tsx`) keep using `onClose: () => void` and are unaffected.
 
 ### z-index Layering
 
-`Modal` already uses `useFloatingZ('dialog')`, which reads the parent `PortalLayerContext` depth and adds 1. The `ModalRoot` wraps each instance in `<PortalLayerScope depth={index}>`, so instance `n` ends up with `depth = n + 1`. Each modal's portal sits above the previous, including any popovers opened from inside, which read this depth via `PortalLayerScope` already wired in `Modal`'s `popup` child.
+`Modal` uses `useFloatingZ('dialog')`, which reads the parent `PortalLayerContext` depth and adds 1. Each unit of depth adds `DEPTH_STEP = 100` to z-index (see `portal-layer.tsx`). A naïve `depth={index}` is unsafe: a popover opened from modal 0 would sit at depth+1 = z = 1204, which exceeds modal 1's popup at z = 1202.
 
-Existing declarative `<Modal>` callsites continue to use depth 1, so they coexist with imperative modals (the topmost wins because it mounts later).
+To preserve the invariant **"every descendant of modal N stays below modal N+1"**, the stack uses a stride:
+
+```ts
+const Z_STACK_STRIDE = 10  // reserves 10 depth steps per modal for descendants
+// instance n base depth = n * Z_STACK_STRIDE
+// instance n popup z   = BASE_Z + (n * STRIDE + 1) * DEPTH_STEP + TIER_OFFSET['dialog']
+//                      = 1000 + (n * 10 + 1) * 100 + 2
+// instance n descendants (popovers, nested dialogs) consume depths
+//   n*STRIDE + 1 .. n*STRIDE + STRIDE - 1, all below (n+1)*STRIDE + 1.
+```
+
+Existing declarative `<Modal>` callsites use depth 1 (stride 0). They render at the bottom of any imperative stack; this is acceptable because in practice declarative modals are never co-open with imperative ones.
 
 ### Provider Mount Point
 
@@ -182,6 +222,18 @@ Mount once, at the top of the app tree, **outside** the router so route navigati
 ```
 
 If the user navigates while a modal is open, the modal stays mounted. The component is responsible for closing itself in response to relevant state changes if needed.
+
+**Lifecycle ownership at the callsite**: When a page that opens a modal is sensitive to unmount (e.g., `DraftRecoveryDialog` is only meaningful while the write page is mounted), the callsite must dismiss on cleanup:
+
+```ts
+useEffect(() => {
+  if (!recoveryDraft || !publishedContent) return
+  const handle = present(DraftRecoveryDialog, { draft: recoveryDraft, publishedContent })
+  return () => handle.dismiss()
+}, [recoveryDraft, publishedContent])
+```
+
+This rule is documented in the migration section.
 
 ## Data Flow
 
@@ -219,9 +271,10 @@ caller (or inner useModal): handle.close(value)
 - Backdrop click → `dismiss()`
 - ESC key → `dismiss()`
 - Modal `X` button (when consumer uses `ModalHeader`) → `useModal().dismiss()`
+- Only the top instance in the stack is dismissable; non-top instances cancel the event via `eventDetails.cancel()`.
 
 `dismissable: false`:
-- Backdrop and ESC do nothing (Modal `onClose` is wired but checks the flag).
+- Backdrop and ESC cancel the dismissal via `eventDetails.cancel()` so Base UI's internal state does not flip.
 - The component must offer an explicit affordance and call `close`/`dismiss` itself.
 
 ## Migration: DraftRecoveryDialog
@@ -250,30 +303,39 @@ caller (or inner useModal): handle.close(value)
 
 **After**:
 
-- Remove the `recoveryDraft` state and JSX block above.
-- At the site that previously did `setRecoveryDraft(d)`, call `present` instead:
+- Keep `recoveryDraft` state at the write-page level (it still gates when a recovery prompt is appropriate). Remove the JSX block above.
+- Drive the modal from an effect so unmount cleanly dismisses it:
 
   ```tsx
-  const handle = present(DraftRecoveryDialog, {
-    draft: d,
-    publishedContent,
-    onRecover: (draft) => {
-      applyDraft(draft)
-      handle.close()
-    },
-    onUsePublished: () => {
-      draftDirtyRef.current = false
-      lastSavedDraftFingerprintRef.current = latestDraftFingerprintRef.current
-      setLastSavedFingerprint(latestDraftFingerprintRef.current)
-      handle.close()
-    },
-  })
+  useEffect(() => {
+    if (!recoveryDraft || !publishedContent) return
+    const handle = present(DraftRecoveryDialog, {
+      draft: recoveryDraft,
+      publishedContent,
+      onRecover: (draft) => {
+        applyDraft(draft)
+        setRecoveryDraft(null)
+      },
+      onUsePublished: () => {
+        draftDirtyRef.current = false
+        lastSavedDraftFingerprintRef.current = latestDraftFingerprintRef.current
+        setLastSavedFingerprint(latestDraftFingerprintRef.current)
+        setRecoveryDraft(null)
+      },
+    })
+    return () => handle.dismiss()
+  }, [recoveryDraft, publishedContent])
   ```
+
+  Setting `recoveryDraft` to `null` triggers the effect cleanup, which calls `handle.dismiss()` — that path also runs on write-page unmount.
+
+  The closure-over-`handle` is safe: callbacks fire only after user interaction, well after the `const handle = ...` binding has initialized. The lint smell can be removed entirely by closing from inside the body instead — see next point.
 
 - In `DraftRecoveryDialog` itself (`write-page.tsx:1439`):
   - Drop the `onClose` prop.
   - Remove the outer `<Modal open ...>` wrapper. Render only the header and body. `ModalRoot` provides the Modal shell.
   - The cancel/close affordance in the footer (or `ModalHeader`'s X) calls `useModal().dismiss()`.
+  - After invoking `onRecover` / `onUsePublished`, the component itself calls `useModal().dismiss()` rather than relying on the caller to close. This removes the outer-closure-over-`handle` pattern.
 
 The component now reads as a self-contained body and is reusable in any context — invoke it imperatively from anywhere in the codebase.
 
@@ -313,6 +375,10 @@ The component now reads as a self-contained body and is reusable in any context 
 | `apps/admin/src/ui/modal-imperative/root.tsx` | NEW — `<ModalRoot/>`, subscribes store, renders stack |
 | `apps/admin/src/ui/modal-imperative/types.ts` | NEW — type defs |
 | `apps/admin/src/ui/modal-imperative/index.ts` | NEW — barrel |
-| `apps/admin/src/ui/modal.tsx` | EDIT — add optional `onExitComplete?: () => void` prop, additive |
+| `apps/admin/src/ui/modal.tsx` | EDIT — add optional `onExitComplete?` and `onOpenChange?(open, eventDetails)` props, additive (existing `onClose` callsites untouched) |
 | `apps/admin/src/main.tsx` (or root composition file) | EDIT — mount `<ModalRoot/>` next to `<Toaster/>` |
-| `apps/admin/src/views/write-page.tsx` | EDIT — remove `recoveryDraft` state + JSX block; call `present` at trigger; strip `<Modal>` and `onClose` from `DraftRecoveryDialog` |
+| `apps/admin/src/views/write-page.tsx` | EDIT — keep `recoveryDraft` state but drive modal via `useEffect` + `present`; strip outer `<Modal>` and `onClose` from `DraftRecoveryDialog`; body calls `useModal().dismiss()` |
+
+## Review History
+
+- 2026-05-26 — Codex review (high-severity findings around Base UI stack semantics, z-index stride, dismissal cancellation, lifecycle on route change) folded into the spec. See sections "Render Flow", "z-index Layering", "Dismissable Behavior", and "Migration" for the resolutions.
