@@ -6,6 +6,7 @@ import {
 import type { ReactNode } from 'react'
 
 import { cn } from './cn'
+import { HeaderBackButton } from './header-back-button'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from './layout'
 
 export function AppPage(props: { children: ReactNode; className?: string }) {
@@ -21,8 +22,15 @@ export function AppPage(props: { children: ReactNode; className?: string }) {
   )
 }
 
+export interface PageHeaderBackProp {
+  label?: string
+  onClick?: () => void
+  to?: string
+}
+
 export function PageHeader(props: {
   actions?: ReactNode
+  back?: PageHeaderBackProp
   className?: string
   description?: ReactNode
   title: ReactNode
@@ -35,15 +43,18 @@ export function PageHeader(props: {
         props.className,
       )}
     >
-      <div className="min-w-0">
-        <h1 className="truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
-          {props.title}
-        </h1>
-        {props.description ? (
-          <p className="mt-0.5 truncate text-xs text-neutral-500 dark:text-neutral-400">
-            {props.description}
-          </p>
-        ) : null}
+      <div className="flex min-w-0 items-center gap-2">
+        {props.back ? <HeaderBackButton {...props.back} /> : null}
+        <div className="min-w-0">
+          <h1 className="truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
+            {props.title}
+          </h1>
+          {props.description ? (
+            <p className="mt-0.5 truncate text-xs text-neutral-500 dark:text-neutral-400">
+              {props.description}
+            </p>
+          ) : null}
+        </div>
       </div>
       {props.actions ? (
         <div className="flex shrink-0 flex-wrap items-center gap-2">

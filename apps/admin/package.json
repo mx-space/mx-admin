@@ -75,6 +75,7 @@
     "lucide-react": "1.8.0",
     "marked": "17.0.5",
     "monaco-editor": "0.55.1",
+    "motion": "12.40.0",
     "ofetch": "1.5.1",
     "os-browserify": "0.3.0",
     "path-browserify": "1.0.1",
@@ -91,9 +92,9 @@
     "zod": "4.3.6"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.1.13",
     "@types/event-source-polyfill": "1.0.5",
     "@types/js-yaml": "4.0.9",
-    "@tailwindcss/vite": "^4.1.13",
     "@types/qs": "6.15.0",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",

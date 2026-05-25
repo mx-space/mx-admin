@@ -1,7 +1,6 @@
 import { Dialog } from '@base-ui/react/dialog'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
-  ArrowLeft,
   BookOpen,
   Bot,
   Braces,
@@ -9,7 +8,6 @@ import {
   Check,
   Clock,
   Copy,
-  Eye,
   FileCode2,
   File as FileIcon,
   FileText,
@@ -30,7 +28,6 @@ import {
 } from 'lucide-react'
 import {
   FormEvent,
-  forwardRef,
   lazy,
   Suspense,
   useEffect,
@@ -38,11 +35,6 @@ import {
   useRef,
   useState,
 } from 'react'
-import {
-  Group as PanelGroup,
-  Separator as PanelResizeHandle,
-  Panel as ResizablePanel,
-} from 'react-resizable-panels'
 import {
   useBeforeUnload,
   useLocation,
@@ -115,6 +107,9 @@ import {
 import { Button } from '../ui/button'
 import { Checkbox } from '../ui/checkbox'
 import { cn } from '../ui/cn'
+import { DraftStatusTag } from '../ui/draft-status-tag'
+import { Drawer } from '../ui/drawer'
+import { HeaderBackButton } from '../ui/header-back-button'
 import {
   APP_SHELL_HEADER_HEIGHT_CLASS,
   APP_SHELL_HEADER_HEIGHT_VALUE,
@@ -127,13 +122,6 @@ import { TextArea, TextInput } from '../ui/text-field'
 type WriteKind = 'note' | 'page' | 'post'
 type ContentFormat = 'lexical' | 'markdown'
 type NoteCoordinates = { latitude: number; longitude: number }
-
-interface PagePreviewState {
-  key: string
-  origin: string
-  storageKey: string
-  url: string
-}
 
 interface WriteFormState {
   bookmark: boolean
@@ -347,8 +335,6 @@ function WritePage(props: { kind: WriteKind }) {
     ...emptyState,
     contentFormat: preferredContentFormat,
   }))
-  const [preview, setPreview] = useState(false)
-  const [pagePreview, setPagePreview] = useState<PagePreviewState | null>(null)
   const [agentVisible, setAgentVisible] = useState(false)
   const [draftId, setDraftId] = useState('')
   const [pageSettingsOpen, setPageSettingsOpen] = useState(false)
@@ -365,8 +351,6 @@ function WritePage(props: { kind: WriteKind }) {
   const promptedRecoveryDraftIdRef = useRef<string | null>(null)
   const lastSavedDraftFingerprintRef = useRef('')
   const latestDraftFingerprintRef = useRef('')
-  const pagePreviewFrameRef = useRef<HTMLIFrameElement | null>(null)
-  const pagePreviewPostTimerRef = useRef<number | null>(null)
   const draftRefType = draftRefTypeByKind[props.kind]
 
   const categoriesQuery = useQuery({
@@ -812,101 +796,6 @@ function WritePage(props: { kind: WriteKind }) {
       .catch(() => toast.error('复制失败'))
   }
 
-  const buildPagePreviewPayload = () => ({
-    ...state,
-    id: `preview-${id || 'new'}`,
-    images: buildWriteImages(state),
-    order: Number(state.order) || 0,
-  })
-
-  const sendPagePreviewMessage = (previewState: PagePreviewState) => {
-    const previewWindow = pagePreviewFrameRef.current?.contentWindow
-    if (!previewWindow) return
-
-    previewWindow.postMessage(
-      JSON.stringify({
-        data: buildPagePreviewPayload(),
-        key: previewState.key,
-        type: 'preview',
-      }),
-      previewState.origin,
-    )
-  }
-
-  const openPagePreview = () => {
-    const key = Math.random().toString(36).slice(2)
-    const storageKey = `mx-preview-${id || 'new'}`
-    const url = new URL(
-      '/preview',
-      import.meta.env.DEV ? 'http://localhost:2323' : WEB_URL,
-    )
-
-    localStorage.setItem(storageKey, JSON.stringify(buildPagePreviewPayload()))
-    url.searchParams.set('storageKey', storageKey)
-    url.searchParams.set('origin', window.location.origin)
-    url.searchParams.set('key', key)
-
-    setPreview(false)
-    setPagePreview({
-      key,
-      origin: url.origin,
-      storageKey,
-      url: url.toString(),
-    })
-  }
-
-  useEffect(() => {
-    return () => {
-      if (pagePreviewPostTimerRef.current !== null) {
-        window.clearTimeout(pagePreviewPostTimerRef.current)
-      }
-    }
-  }, [])
-
-  useEffect(() => {
-    if (!pagePreview) return
-
-    return () => {
-      localStorage.removeItem(pagePreview.storageKey)
-    }
-  }, [pagePreview])
-
-  useEffect(() => {
-    if (!pagePreview) return
-
-    localStorage.setItem(
-      pagePreview.storageKey,
-      JSON.stringify(buildPagePreviewPayload()),
-    )
-
-    if (pagePreviewPostTimerRef.current !== null) {
-      window.clearTimeout(pagePreviewPostTimerRef.current)
-    }
-    pagePreviewPostTimerRef.current = window.setTimeout(() => {
-      sendPagePreviewMessage(pagePreview)
-    }, 100)
-
-    return () => {
-      if (pagePreviewPostTimerRef.current !== null) {
-        window.clearTimeout(pagePreviewPostTimerRef.current)
-      }
-    }
-  }, [id, pagePreview, state])
-
-  useEffect(() => {
-    if (!pagePreview) return
-
-    const handler = (event: MessageEvent<unknown>) => {
-      if (event.origin !== pagePreview.origin) return
-      if (event.data !== 'ok') return
-
-      sendPagePreviewMessage(pagePreview)
-    }
-
-    window.addEventListener('message', handler)
-    return () => window.removeEventListener('message', handler)
-  }, [pagePreview, state])
-
   return (
     <form className="flex h-full min-h-0 flex-col" onSubmit={onSubmit}>
       <section
@@ -923,23 +812,23 @@ function WritePage(props: { kind: WriteKind }) {
             APP_SHELL_HEADER_HEIGHT_CLASS,
           )}
         >
-          <div className="min-w-0">
-            <div className="flex min-w-0 items-center gap-2">
-              <h2 className="inline-flex min-w-0 items-center gap-2 text-sm font-medium text-neutral-950 dark:text-neutral-50">
-                <Icon aria-hidden="true" className="size-4 shrink-0" />
-                <span className="truncate">
-                  {props.kind === 'page'
-                    ? isEditing
-                      ? '修改页面'
-                      : '新建页面'
-                    : config.title}
-                </span>
-              </h2>
-              <HeaderDraftStatus
-                draft={draftMutation.data ?? availableDraft}
-                isSaving={draftMutation.isPending}
-              />
-            </div>
+          <div className="flex min-w-0 items-center gap-2">
+            <HeaderBackButton label="返回列表" to={config.listPath} />
+            <h2 className="inline-flex min-w-0 items-center gap-2 text-sm font-medium text-neutral-950 dark:text-neutral-50">
+              <Icon aria-hidden="true" className="size-4 shrink-0" />
+              <span className="truncate">
+                {props.kind === 'page'
+                  ? isEditing
+                    ? '修改页面'
+                    : '新建页面'
+                  : config.title}
+              </span>
+            </h2>
+            <DraftStatusTag
+              className="hidden md:inline-flex"
+              draft={draftMutation.data ?? availableDraft}
+              isSaving={draftMutation.isPending}
+            />
           </div>
           {props.kind === 'page' ? (
             <div className="flex shrink-0 items-center gap-1.5">
@@ -960,20 +849,6 @@ function WritePage(props: { kind: WriteKind }) {
                   <Bug aria-hidden="true" className="size-4" />
                 </WriteHeaderIconButton>
               )}
-              <WriteHeaderIconButton
-                onClick={() => {
-                  if (pagePreview) {
-                    setPagePreview(null)
-                  } else {
-                    openPagePreview()
-                  }
-                }}
-                title={pagePreview ? '关闭预览' : '预览'}
-                type="button"
-                variant={pagePreview ? 'primary' : 'default'}
-              >
-                <Eye aria-hidden="true" className="size-4" />
-              </WriteHeaderIconButton>
               <WriteHeaderIconButton
                 onClick={() => setPageSettingsOpen(true)}
                 title="页面设置"
@@ -997,13 +872,6 @@ function WritePage(props: { kind: WriteKind }) {
           ) : (
             <div className="flex shrink-0 items-center gap-1.5">
               <WriteHeaderIconButton
-                onClick={() => setPreview((value) => !value)}
-                title={preview ? '编辑' : '预览'}
-                type="button"
-              >
-                <Eye aria-hidden="true" className="size-4" />
-              </WriteHeaderIconButton>
-              <WriteHeaderIconButton
                 disabled={state.contentFormat !== 'lexical'}
                 onClick={() => setAgentVisible((value) => !value)}
                 title={agentVisible ? '隐藏 AI 助手' : 'AI 助手'}
@@ -1011,13 +879,6 @@ function WritePage(props: { kind: WriteKind }) {
                 variant={agentVisible ? 'primary' : 'default'}
               >
                 <Bot aria-hidden="true" className="size-4" />
-              </WriteHeaderIconButton>
-              <WriteHeaderIconButton
-                onClick={() => navigate(config.listPath)}
-                title="返回列表"
-                type="button"
-              >
-                <ArrowLeft aria-hidden="true" className="size-4" />
               </WriteHeaderIconButton>
               <WriteHeaderIconButton
                 onClick={() => setContentSettingsOpen(true)}
@@ -1048,138 +909,119 @@ function WritePage(props: { kind: WriteKind }) {
           </div>
         ) : props.kind === 'page' ? (
           <main className="min-h-0 flex-1 bg-white dark:bg-neutral-950">
-            <PagePreviewSplit
-              preview={
-                pagePreview ? (
-                  <PagePreviewFrame
-                    ref={pagePreviewFrameRef}
-                    url={pagePreview.url}
-                  />
-                ) : null
-              }
+            <Scroll
+              className="min-h-0"
+              innerClassName="min-h-full bg-white dark:bg-neutral-950"
             >
-              <Scroll
-                className="min-h-0"
-                innerClassName="min-h-full bg-white dark:bg-neutral-950"
-              >
-                <div className="min-w-0">
-                  <div className="mx-auto w-full max-w-[60rem] shrink-0 px-3 pb-2 pt-6">
-                    <div className="flex min-w-0 items-center gap-2">
-                      <TextInput
-                        autoFocus={!isEditing}
-                        controlClassName="h-auto min-w-0 flex-1 !rounded-none !border-transparent !bg-transparent px-0 py-3 text-2xl font-semibold !shadow-none !outline-hidden focus:!border-transparent focus:!ring-0 focus-visible:!outline-hidden dark:!border-transparent dark:!bg-transparent"
-                        onChange={(value) => updateField('title', value)}
-                        placeholder="输入标题..."
-                        required
-                        style={{
-                          backgroundColor: 'transparent',
-                          borderColor: 'transparent',
-                        }}
-                        value={state.title}
+              <div className="min-w-0">
+                <div className="mx-auto w-full max-w-[60rem] shrink-0 px-3 pb-2 pt-6">
+                  <div className="flex min-w-0 items-center gap-2">
+                    <TextInput
+                      autoFocus={!isEditing}
+                      controlClassName="h-auto min-w-0 flex-1 !rounded-none !border-transparent !bg-transparent px-0 py-3 text-2xl font-semibold !shadow-none !outline-hidden focus:!border-transparent focus:!ring-0 focus-visible:!outline-hidden dark:!border-transparent dark:!bg-transparent"
+                      onChange={(value) => updateField('title', value)}
+                      placeholder="输入标题..."
+                      required
+                      style={{
+                        backgroundColor: 'transparent',
+                        borderColor: 'transparent',
+                      }}
+                      value={state.title}
+                    />
+                    {canSwitchEditorType ? (
+                      <PageFormatToggle
+                        format={state.contentFormat}
+                        onToggle={() =>
+                          updateContentFormat(
+                            state.contentFormat === 'lexical'
+                              ? 'markdown'
+                              : 'lexical',
+                          )
+                        }
                       />
-                      {canSwitchEditorType ? (
-                        <PageFormatToggle
-                          format={state.contentFormat}
-                          onToggle={() =>
-                            updateContentFormat(
-                              state.contentFormat === 'lexical'
-                                ? 'markdown'
-                                : 'lexical',
-                            )
-                          }
-                        />
+                    ) : null}
+                  </div>
+
+                  <div className="mt-2 grid gap-2">
+                    <div className="flex min-w-0 items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400">
+                      <span className="select-none truncate text-neutral-400 dark:text-neutral-500">
+                        {WEB_URL}/
+                      </span>
+                      <input
+                        className="outline-hidden min-w-20 max-w-full border-b border-transparent bg-transparent px-0.5 text-neutral-600 transition-colors placeholder:text-neutral-400 hover:border-neutral-200 focus:border-neutral-400 dark:text-neutral-400 dark:placeholder:text-neutral-600 dark:hover:border-neutral-700 dark:focus:border-neutral-500"
+                        onChange={(event) =>
+                          updateField('slug', event.target.value)
+                        }
+                        placeholder="slug"
+                        required
+                        size={Math.max(state.slug.length || 4, 4)}
+                        value={state.slug}
+                      />
+                      {state.slug ? (
+                        <button
+                          aria-label="复制链接"
+                          className="inline-flex size-6 shrink-0 items-center justify-center rounded text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-600 dark:text-neutral-500 dark:hover:bg-neutral-800 dark:hover:text-neutral-300"
+                          onClick={copyPageUrl}
+                          title="复制链接"
+                          type="button"
+                        >
+                          <Copy aria-hidden="true" className="size-3.5" />
+                        </button>
                       ) : null}
                     </div>
 
-                    <div className="mt-2 grid gap-2">
-                      <div className="flex min-w-0 items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400">
-                        <span className="select-none truncate text-neutral-400 dark:text-neutral-500">
-                          {WEB_URL}/
-                        </span>
-                        <input
-                          className="outline-hidden min-w-20 max-w-full border-b border-transparent bg-transparent px-0.5 text-neutral-600 transition-colors placeholder:text-neutral-400 hover:border-neutral-200 focus:border-neutral-400 dark:text-neutral-400 dark:placeholder:text-neutral-600 dark:hover:border-neutral-700 dark:focus:border-neutral-500"
-                          onChange={(event) =>
-                            updateField('slug', event.target.value)
-                          }
-                          placeholder="slug"
-                          required
-                          size={Math.max(state.slug.length || 4, 4)}
-                          value={state.slug}
-                        />
-                        {state.slug ? (
-                          <button
-                            aria-label="复制链接"
-                            className="inline-flex size-6 shrink-0 items-center justify-center rounded text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-600 dark:text-neutral-500 dark:hover:bg-neutral-800 dark:hover:text-neutral-300"
-                            onClick={copyPageUrl}
-                            title="复制链接"
-                            type="button"
-                          >
-                            <Copy aria-hidden="true" className="size-3.5" />
-                          </button>
-                        ) : null}
-                      </div>
-
-                      <input
-                        className="outline-hidden h-7 w-full bg-transparent px-0.5 text-sm text-neutral-600 placeholder:text-neutral-400 dark:text-neutral-400 dark:placeholder:text-neutral-500"
-                        onChange={(event) =>
-                          updateField('subtitle', event.target.value)
-                        }
-                        placeholder="输入副标题..."
-                        value={state.subtitle}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex min-h-0 flex-1 flex-col pb-[200px]">
-                    {preview ? (
-                      <div className="mx-auto w-full max-w-[60rem] px-3">
-                        <PreviewPanel
-                          className="min-h-136 rounded-none border-0 bg-transparent px-0 py-6 dark:bg-transparent"
-                          style={{ minHeight: '34rem' }}
-                          text={state.text}
-                        />
-                      </div>
-                    ) : state.contentFormat === 'lexical' ? (
-                      <div
-                        className="mx-auto mt-4 w-full px-3"
-                        style={{ maxWidth: agentVisible ? '82rem' : '60rem' }}
-                      >
-                        <RichWriteSurface
-                          agentVisible={agentVisible}
-                          autoFocus={isEditing}
-                          content={state.content}
-                          contentClassName="min-h-120 px-0 py-3"
-                          kind={props.kind}
-                          key={`${props.kind}:${id || 'new'}:${state.contentFormat}`}
-                          getMetaFields={getAgentMetaFields}
-                          metaFieldsSchema={getWriteAgentMetaSchema(props.kind)}
-                          onContentChange={(content) =>
-                            updateField('content', content)
-                          }
-                          onMetaFieldsUpdate={applyAgentMetaUpdates}
-                          onTextChange={(text) => updateField('text', text)}
-                          refId={isEditing ? id : undefined}
-                          surfaceClassName="min-h-136 rounded-none border-0 bg-transparent dark:bg-transparent"
-                          surfaceStyle={{ minHeight: '34rem' }}
-                        />
-                      </div>
-                    ) : (
-                      <div className="mx-auto w-full max-w-[60rem] px-3">
-                        <TextArea
-                          autoFocus={isEditing}
-                          controlClassName="min-h-136 resize-y rounded-none border-0 bg-transparent px-0 py-6 font-mono text-sm leading-6 focus:border-transparent focus:ring-0 dark:border-transparent dark:bg-transparent"
-                          onChange={(value) => updateField('text', value)}
-                          placeholder="输入正文..."
-                          required
-                          style={{ minHeight: '34rem' }}
-                          value={state.text}
-                        />
-                      </div>
-                    )}
+                    <input
+                      className="outline-hidden h-7 w-full bg-transparent px-0.5 text-sm text-neutral-600 placeholder:text-neutral-400 dark:text-neutral-400 dark:placeholder:text-neutral-500"
+                      onChange={(event) =>
+                        updateField('subtitle', event.target.value)
+                      }
+                      placeholder="输入副标题..."
+                      value={state.subtitle}
+                    />
                   </div>
                 </div>
-              </Scroll>
-            </PagePreviewSplit>
+
+                <div className="flex min-h-0 flex-1 flex-col pb-[200px]">
+                  {state.contentFormat === 'lexical' ? (
+                    <div
+                      className="mx-auto mt-4 w-full px-3"
+                      style={{ maxWidth: agentVisible ? '82rem' : '60rem' }}
+                    >
+                      <RichWriteSurface
+                        agentVisible={agentVisible}
+                        autoFocus={isEditing}
+                        content={state.content}
+                        contentClassName="min-h-120 px-0 py-3"
+                        kind={props.kind}
+                        key={`${props.kind}:${id || 'new'}:${state.contentFormat}`}
+                        getMetaFields={getAgentMetaFields}
+                        metaFieldsSchema={getWriteAgentMetaSchema(props.kind)}
+                        onContentChange={(content) =>
+                          updateField('content', content)
+                        }
+                        onMetaFieldsUpdate={applyAgentMetaUpdates}
+                        onTextChange={(text) => updateField('text', text)}
+                        refId={isEditing ? id : undefined}
+                        surfaceClassName="min-h-136 rounded-none border-0 bg-transparent dark:bg-transparent"
+                        surfaceStyle={{ minHeight: '34rem' }}
+                      />
+                    </div>
+                  ) : (
+                    <div className="mx-auto w-full max-w-[60rem] px-3">
+                      <TextArea
+                        autoFocus={isEditing}
+                        controlClassName="min-h-136 resize-y rounded-none border-0 bg-transparent px-0 py-6 font-mono text-sm leading-6 focus:border-transparent focus:ring-0 dark:border-transparent dark:bg-transparent"
+                        onChange={(value) => updateField('text', value)}
+                        placeholder="输入正文..."
+                        required
+                        style={{ minHeight: '34rem' }}
+                        value={state.text}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Scroll>
           </main>
         ) : (
           <Scroll
@@ -1295,18 +1137,7 @@ function WritePage(props: { kind: WriteKind }) {
               </div>
 
               <div className="flex min-h-0 flex-1 flex-col pb-[200px]">
-                {preview ? (
-                  <div
-                    className="mx-auto w-full px-3"
-                    style={{ maxWidth: agentVisible ? '82rem' : '60rem' }}
-                  >
-                    <PreviewPanel
-                      className="min-h-136 rounded-none border-0 bg-transparent px-0 py-6 dark:bg-transparent"
-                      style={{ minHeight: '34rem' }}
-                      text={state.text}
-                    />
-                  </div>
-                ) : state.contentFormat === 'lexical' ? (
+                {state.contentFormat === 'lexical' ? (
                   <div
                     className="mx-auto mt-4 w-full px-3"
                     style={{ maxWidth: agentVisible ? '82rem' : '60rem' }}
@@ -1479,142 +1310,116 @@ function ContentSettingsDrawer(props: {
   writerGeneratePending: boolean
 }) {
   return (
-    <Dialog.Root
-      onOpenChange={(open) => {
-        if (!open) props.onClose()
-      }}
+    <Drawer
+      icon={SlidersHorizontal}
+      onClose={props.onClose}
       open={props.open}
+      title={props.kind === 'post' ? '文章设定' : '手记设定'}
     >
-      <Dialog.Portal>
-        <Dialog.Backdrop className="fixed inset-0 z-40 bg-black/35" />
-        <Dialog.Popup className="outline-hidden fixed bottom-0 right-0 top-0 z-50 flex w-[min(90vw,28.125rem)] flex-col border-l border-neutral-200 bg-white shadow-xl dark:border-neutral-800 dark:bg-neutral-950">
-          <div className="flex h-14 shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
-            <Dialog.Title className="inline-flex min-w-0 items-center gap-2 text-sm font-medium text-neutral-950 dark:text-neutral-50">
-              <SlidersHorizontal
-                aria-hidden="true"
-                className="size-4 shrink-0"
-              />
-              <span className="truncate">
-                {props.kind === 'post' ? '文章设定' : '手记设定'}
-              </span>
-            </Dialog.Title>
-            <Dialog.Close
-              aria-label="关闭"
-              className="inline-flex size-9 items-center justify-center rounded text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-600 dark:hover:bg-neutral-900 dark:hover:text-neutral-200"
-            >
-              <X aria-hidden="true" className="size-4" />
-            </Dialog.Close>
-          </div>
+      <Scroll className="min-h-0 flex-1" innerClassName="grid gap-4 p-4">
+        <PanelBlock title="发布">
+          <Switch
+            checked={props.state.isPublished}
+            label="发布状态"
+            onCheckedChange={(checked) =>
+              props.updateField('isPublished', checked)
+            }
+          />
+          {props.saveResultId ? (
+            <div className="mt-3 inline-flex items-center gap-2 text-xs text-emerald-600 dark:text-emerald-400">
+              <Check aria-hidden="true" className="size-4" />
+              已保存 ID: {props.saveResultId}
+            </div>
+          ) : null}
+        </PanelBlock>
 
-          <Scroll className="min-h-0 flex-1" innerClassName="grid gap-4 p-4">
-            <PanelBlock title="发布">
-              <Switch
-                checked={props.state.isPublished}
-                label="发布状态"
-                onCheckedChange={(checked) =>
-                  props.updateField('isPublished', checked)
-                }
-              />
-              {props.saveResultId ? (
-                <div className="mt-3 inline-flex items-center gap-2 text-xs text-emerald-600 dark:text-emerald-400">
-                  <Check aria-hidden="true" className="size-4" />
-                  已保存 ID: {props.saveResultId}
+        <PanelBlock title="草稿">
+          <div className="space-y-3 text-sm">
+            {props.availableDraft ? (
+              <div className="border border-neutral-200 bg-white p-3 dark:border-neutral-800 dark:bg-neutral-950">
+                <div className="flex items-center gap-2 text-xs text-neutral-500 dark:text-neutral-400">
+                  <History aria-hidden="true" className="size-4" />
+                  <span>
+                    版本 {props.availableDraft.version} ·{' '}
+                    {formatDateTime(props.availableDraft.updatedAt)}
+                  </span>
                 </div>
-              ) : null}
-            </PanelBlock>
-
-            <PanelBlock title="草稿">
-              <div className="space-y-3 text-sm">
-                {props.availableDraft ? (
-                  <div className="border border-neutral-200 bg-white p-3 dark:border-neutral-800 dark:bg-neutral-950">
-                    <div className="flex items-center gap-2 text-xs text-neutral-500 dark:text-neutral-400">
-                      <History aria-hidden="true" className="size-4" />
-                      <span>
-                        版本 {props.availableDraft.version} ·{' '}
-                        {formatDateTime(props.availableDraft.updatedAt)}
-                      </span>
-                    </div>
-                    <p className="mt-2 line-clamp-2 text-neutral-800 dark:text-neutral-200">
-                      {props.availableDraft.title || '未命名草稿'}
-                    </p>
-                    <Button
-                      className="mt-3 w-full"
-                      onClick={() => props.onApplyDraft(props.availableDraft!)}
-                      type="button"
-                      variant="subtle"
-                    >
-                      套用草稿
-                    </Button>
-                  </div>
-                ) : (
-                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                    暂无可恢复草稿。
-                  </p>
-                )}
-
+                <p className="mt-2 line-clamp-2 text-neutral-800 dark:text-neutral-200">
+                  {props.availableDraft.title || '未命名草稿'}
+                </p>
                 <Button
-                  className="w-full"
-                  disabled={props.draftMutationPending}
-                  onClick={props.onSaveDraft}
+                  className="mt-3 w-full"
+                  onClick={() => props.onApplyDraft(props.availableDraft!)}
                   type="button"
                   variant="subtle"
                 >
-                  {props.draftMutationPending ? (
-                    <Loader2
-                      aria-hidden="true"
-                      className="size-4 animate-spin"
-                    />
-                  ) : (
-                    <Clock aria-hidden="true" className="size-4" />
-                  )}
-                  保存草稿
+                  套用草稿
                 </Button>
-                {props.draftMutationData ? (
-                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                    最近保存：
-                    {formatDateTime(props.draftMutationData.updatedAt)}
-                  </p>
-                ) : null}
               </div>
-            </PanelBlock>
-
-            <PanelBlock title="路径">
-              <TextInput
-                controlClassName="h-9 font-mono focus:border-neutral-400"
-                label="Slug"
-                onChange={(value) => props.updateField('slug', value)}
-                required={props.kind !== 'note'}
-                value={props.state.slug}
-              />
-              <Button
-                className="w-full"
-                disabled={props.writerGeneratePending}
-                onClick={props.onGenerateTitleOrSlug}
-                type="button"
-                variant="subtle"
-              >
-                {props.writerGeneratePending ? (
-                  <Loader2 aria-hidden="true" className="size-4 animate-spin" />
-                ) : (
-                  <WandSparkles aria-hidden="true" className="size-4" />
-                )}
-                {props.state.title.trim() ? '生成 Slug' : '生成标题与 Slug'}
-              </Button>
+            ) : (
               <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                {props.publicPath}
+                暂无可恢复草稿。
               </p>
-            </PanelBlock>
+            )}
 
-            {props.postFields}
-            {props.noteFields}
-            <MediaAndMetaFields
-              state={props.state}
-              updateField={props.updateField}
-            />
-          </Scroll>
-        </Dialog.Popup>
-      </Dialog.Portal>
-    </Dialog.Root>
+            <Button
+              className="w-full"
+              disabled={props.draftMutationPending}
+              onClick={props.onSaveDraft}
+              type="button"
+              variant="subtle"
+            >
+              {props.draftMutationPending ? (
+                <Loader2 aria-hidden="true" className="size-4 animate-spin" />
+              ) : (
+                <Clock aria-hidden="true" className="size-4" />
+              )}
+              保存草稿
+            </Button>
+            {props.draftMutationData ? (
+              <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                最近保存：
+                {formatDateTime(props.draftMutationData.updatedAt)}
+              </p>
+            ) : null}
+          </div>
+        </PanelBlock>
+
+        <PanelBlock title="路径">
+          <TextInput
+            controlClassName="h-9 font-mono focus:border-neutral-400"
+            label="Slug"
+            onChange={(value) => props.updateField('slug', value)}
+            required={props.kind !== 'note'}
+            value={props.state.slug}
+          />
+          <Button
+            className="w-full"
+            disabled={props.writerGeneratePending}
+            onClick={props.onGenerateTitleOrSlug}
+            type="button"
+            variant="subtle"
+          >
+            {props.writerGeneratePending ? (
+              <Loader2 aria-hidden="true" className="size-4 animate-spin" />
+            ) : (
+              <WandSparkles aria-hidden="true" className="size-4" />
+            )}
+            {props.state.title.trim() ? '生成 Slug' : '生成标题与 Slug'}
+          </Button>
+          <p className="text-xs text-neutral-500 dark:text-neutral-400">
+            {props.publicPath}
+          </p>
+        </PanelBlock>
+
+        {props.postFields}
+        {props.noteFields}
+        <MediaAndMetaFields
+          state={props.state}
+          updateField={props.updateField}
+        />
+      </Scroll>
+    </Drawer>
   )
 }
 
@@ -1759,24 +1564,6 @@ function DraftListDialog(props: {
         </Dialog.Popup>
       </Dialog.Portal>
     </Dialog.Root>
-  )
-}
-
-function HeaderDraftStatus(props: {
-  draft: DraftModel | undefined
-  isSaving: boolean
-}) {
-  return (
-    <span className="hidden min-w-0 items-center gap-1.5 text-xs text-neutral-500 md:inline-flex dark:text-neutral-400">
-      <Clock aria-hidden="true" className="size-3.5 shrink-0" />
-      <span className="truncate">
-        {props.isSaving
-          ? '草稿保存中'
-          : props.draft
-            ? `草稿 ${formatDateTime(props.draft.updatedAt)}`
-            : '尚未保存草稿'}
-      </span>
-    </span>
   )
 }
 
@@ -3255,39 +3042,20 @@ function PageSettingsDrawer(props: {
   ) => void
 }) {
   return (
-    <Dialog.Root
-      onOpenChange={(open) => {
-        if (!open) props.onClose()
-      }}
+    <Drawer
+      icon={SlidersHorizontal}
+      onClose={props.onClose}
       open={props.open}
+      title="页面设定"
     >
-      <Dialog.Portal>
-        <Dialog.Backdrop className="fixed inset-0 z-40 bg-black/35" />
-        <Dialog.Popup className="outline-hidden fixed bottom-0 right-0 top-0 z-50 flex w-[min(90vw,28.125rem)] flex-col border-l border-neutral-200 bg-white shadow-xl dark:border-neutral-800 dark:bg-neutral-950">
-          <div className="flex h-14 shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
-            <Dialog.Title className="text-sm font-medium text-neutral-950 dark:text-neutral-50">
-              页面设定
-            </Dialog.Title>
-            <Dialog.Close
-              aria-label="关闭"
-              className="inline-flex size-9 items-center justify-center rounded text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-600 dark:hover:bg-neutral-900 dark:hover:text-neutral-200"
-            >
-              <X aria-hidden="true" className="size-4" />
-            </Dialog.Close>
-          </div>
-          <Scroll
-            className="min-h-0 flex-1"
-            innerClassName="grid gap-5 px-5 py-4"
-          >
-            <PageFields state={props.state} updateField={props.updateField} />
-            <MediaAndMetaFields
-              state={props.state}
-              updateField={props.updateField}
-            />
-          </Scroll>
-        </Dialog.Popup>
-      </Dialog.Portal>
-    </Dialog.Root>
+      <Scroll className="min-h-0 flex-1" innerClassName="grid gap-5 px-5 py-4">
+        <PageFields state={props.state} updateField={props.updateField} />
+        <MediaAndMetaFields
+          state={props.state}
+          updateField={props.updateField}
+        />
+      </Scroll>
+    </Drawer>
   )
 }
 
@@ -3332,103 +3100,6 @@ function Field(props: {
     </label>
   )
 }
-
-function PreviewPanel(props: {
-  className?: string
-  style?: CSSProperties
-  text: string
-}) {
-  return (
-    <section
-      className={cn(
-        'min-h-136 bg-white p-4 dark:bg-neutral-950',
-        props.className,
-      )}
-      style={props.style}
-    >
-      {props.text ? (
-        <pre className="whitespace-pre-wrap break-words text-sm leading-7 text-neutral-800 dark:text-neutral-200">
-          {props.text}
-        </pre>
-      ) : (
-        <p className="text-sm text-neutral-500 dark:text-neutral-400">
-          暂无正文。
-        </p>
-      )}
-    </section>
-  )
-}
-
-function PagePreviewSplit(props: {
-  children: ReactNode
-  preview: ReactNode | null
-}) {
-  const [isDesktop, setIsDesktop] = useState(
-    () => window.matchMedia('(min-width: 1024px)').matches,
-  )
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(min-width: 1024px)')
-    const update = () => setIsDesktop(mediaQuery.matches)
-
-    update()
-    mediaQuery.addEventListener('change', update)
-    return () => mediaQuery.removeEventListener('change', update)
-  }, [])
-
-  if (!props.preview) {
-    return <>{props.children}</>
-  }
-
-  if (!isDesktop) {
-    return (
-      <div className="grid h-full min-h-0 grid-rows-[minmax(0,1fr)_minmax(24rem,42vh)]">
-        <div className="min-h-0 overflow-hidden">{props.children}</div>
-        <div className="min-h-0 overflow-hidden">{props.preview}</div>
-      </div>
-    )
-  }
-
-  return (
-    <PanelGroup className="h-full min-h-0" orientation="horizontal">
-      <ResizablePanel
-        className="min-h-0 overflow-hidden"
-        defaultSize="50%"
-        minSize="500px"
-      >
-        {props.children}
-      </ResizablePanel>
-      <PanelResizeHandle className="outline-hidden group relative w-0 shrink-0 cursor-col-resize border-r border-neutral-200 transition-colors focus-visible:border-neutral-400 dark:border-neutral-800 dark:focus-visible:border-neutral-600">
-        <span className="absolute left-1/2 top-1/2 h-8 w-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-neutral-300 opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 dark:bg-neutral-700" />
-      </PanelResizeHandle>
-      <ResizablePanel
-        className="min-h-0 min-w-[500px] overflow-hidden"
-        defaultSize="50%"
-        minSize="500px"
-      >
-        {props.preview}
-      </ResizablePanel>
-    </PanelGroup>
-  )
-}
-
-const PagePreviewFrame = forwardRef<
-  HTMLIFrameElement,
-  {
-    url: string
-  }
->(function PagePreviewFrame(props, ref) {
-  return (
-    <aside className="min-h-0 border-t border-neutral-200 bg-white lg:h-full lg:border-l lg:border-t-0 dark:border-neutral-800 dark:bg-neutral-950">
-      <iframe
-        className="h-full w-full bg-white dark:bg-neutral-950"
-        ref={ref}
-        src={props.url}
-        title="页面预览"
-      />
-    </aside>
-  )
-})
 
 function WriteSkeleton(props: { kind: WriteKind }) {
   if (props.kind === 'page') {
