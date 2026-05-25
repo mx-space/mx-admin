@@ -57,7 +57,7 @@ interface PageHeaderProps {
 export function isHeaderActionArray(
   actions: PageHeaderProps['actions'],
 ): actions is HeaderAction[] {
-  if (!Array.isArray(actions)) return false
+  if (!Array.isArray(actions) || actions.length === 0) return false
   return actions.every(
     (item) =>
       item != null &&
@@ -69,7 +69,12 @@ export function isHeaderActionArray(
 
 export function PageHeader(props: PageHeaderProps) {
   const shellNav = useShellNav()
-  const actionsIsTyped = isHeaderActionArray(props.actions)
+  const typedActions = isHeaderActionArray(props.actions) ? props.actions : null
+  const hasActions =
+    typedActions !== null ||
+    (props.actions !== undefined &&
+      props.actions !== null &&
+      !(Array.isArray(props.actions) && props.actions.length === 0))
 
   return (
     <header
@@ -103,10 +108,10 @@ export function PageHeader(props: PageHeaderProps) {
           ) : null}
         </div>
       </div>
-      {props.actions ? (
+      {hasActions ? (
         <div className="flex shrink-0 flex-wrap items-center gap-2">
-          {actionsIsTyped
-            ? (props.actions as HeaderAction[]).map((action, index) =>
+          {typedActions
+            ? typedActions.map((action, index) =>
                 renderHeaderAction(action, index),
               )
             : (props.actions as ReactNode)}
@@ -141,11 +146,7 @@ function renderHeaderAction(action: HeaderAction, index: number) {
     <span key={index} className="contents">
       <button
         aria-label={action.label}
-        className={cn(
-          baseClasses,
-          variantClasses,
-          'inline-flex size-9 lg:hidden',
-        )}
+        className={cn(baseClasses, variantClasses, 'size-9 lg:hidden')}
         disabled={action.disabled}
         onClick={action.onClick}
         title={action.label}
