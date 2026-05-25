@@ -146,6 +146,9 @@ importers:
       '@pierre/diffs':
         specifier: 1.1.3
         version: 1.1.3(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@rehookify/datepicker':
+        specifier: 6.6.8
+        version: 6.6.8(react@19.2.4)
       '@simplewebauthn/browser':
         specifier: 13.3.0
         version: 13.3.0
@@ -1767,6 +1770,12 @@ packages:
 
   '@radix-ui/rect@1.1.0':
     resolution: {integrity: sha512-A9+lCBZoaMJlVKcRBz2YByCG+Cp2t6nAnMnNba+XiWxnj6r4JUFqfsgwocMBZU9LPtdxC6wB56ySYpc7LQIoJg==}
+
+  '@rehookify/datepicker@6.6.8':
+    resolution: {integrity: sha512-s/KFkVZSLWTICeFOshlhgAGiRTzuSXSQOJHoXWcihqX8Nz8ZctgGaskd5+ybxSrcndSYGGts4XsL4A7P9kimBQ==}
+    engines: {node: '>=16'}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18 || ^19
 
   '@reteps/dockerfmt@0.3.6':
     resolution: {integrity: sha512-Tb5wIMvBf/nLejTQ61krK644/CEMB/cpiaIFXqGApfGqO3GwcR3qnI0DbmkFVCl2OyEp8LnLX3EkucoL0+tbFg==}
@@ -6962,6 +6971,10 @@ snapshots:
       '@types/react': 19.2.14
 
   '@radix-ui/rect@1.1.0': {}
+
+  '@rehookify/datepicker@6.6.8(react@19.2.4)':
+    dependencies:
+      react: 19.2.4
 
   '@reteps/dockerfmt@0.3.6': {}
 
