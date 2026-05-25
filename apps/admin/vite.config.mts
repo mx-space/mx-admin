@@ -1,6 +1,6 @@
+import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { codeInspectorPlugin } from 'code-inspector-plugin'
-import UnoCSS from 'unocss/vite'
 import { loadEnv } from 'vite'
 import { checker } from 'vite-plugin-checker'
 import { defineConfig } from 'vitest/config'
@@ -18,7 +18,7 @@ export default ({ mode }) => {
     plugins: [
       // mkcert(),
       codeInspectorPlugin({ bundler: 'vite' }),
-      UnoCSS(),
+      tailwindcss(),
       react(),
 
       checker({

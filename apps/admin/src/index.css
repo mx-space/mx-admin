@@ -1,5 +1,35 @@
 @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,300;1,300&display=swap');
+@import 'tailwindcss';
 @import 'sonner/dist/styles.css';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-neutral-200, currentColor);
+  }
+  :where(.dark, .dark *) {
+    border-color: var(--color-neutral-800, currentColor);
+  }
+
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-neutral-400);
+  }
+  :where(.dark, .dark *) input::placeholder,
+  :where(.dark, .dark *) textarea::placeholder {
+    color: var(--color-neutral-500);
+  }
+}
 
 body,
 html {
@@ -21,29 +51,32 @@ body {
   @apply overflow-hidden;
 }
 
-body a {
-  @apply text-primary transition-colors;
-  text-decoration: none;
-}
+@layer base {
+  body a {
+    color: var(--color-primary);
+    transition: color 0.15s ease;
+    text-decoration: none;
+  }
 
-body a:hover {
-  @apply text-primary-shallow;
-}
+  body a:hover {
+    color: var(--color-primary-shallow);
+  }
 
-/* 按钮样式重置 - 针对自定义按钮组件 */
-button:focus,
-button {
-  outline: unset;
-}
+  /* 按钮样式重置 - 针对自定义按钮组件 */
+  button:focus,
+  button {
+    outline: unset;
+  }
 
-button {
-  border: none;
-  background: transparent;
-  padding: 0;
-  margin: 0;
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
+  button {
+    border: none;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
 }
 
 *::-webkit-scrollbar {
@@ -126,7 +159,7 @@ html.dark [data-sonner-toast].sonner-toast {
 
 /* 图标容器 */
 [data-sonner-toast] [data-icon] {
-  @apply flex-shrink-0;
+  @apply shrink-0;
 }
 
 /* 成功状态图标 */

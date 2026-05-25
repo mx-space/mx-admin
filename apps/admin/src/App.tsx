@@ -2,13 +2,13 @@ import { useQuery } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { HashRouter, Navigate, useLocation } from 'react-router'
 
-import { checkLogged } from './app/api/auth'
-import { useI18n } from './app/i18n'
-import { AppProviders } from './app/providers'
-import { AppRoutes } from './app/routes'
-import { AdminShell } from './app/shell'
-import { SocketBridge } from './app/socket/SocketBridge'
-import { installThemeTokens } from './app/theme'
+import { checkLogged } from './api/auth'
+import { useI18n } from './i18n'
+import { AppProviders } from './providers'
+import { AppRoutes } from './routes'
+import { AdminShell } from './shell'
+import { SocketBridge } from './socket/SocketBridge'
+import { installThemeTokens } from './theme'
 
 function App() {
   useEffect(() => {
