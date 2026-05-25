@@ -1,8 +1,9 @@
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment } from 'react'
 import type { ReactNode } from 'react'
 
 import { cn } from './cn'
 import { Scroll } from './scroll'
+import { DESKTOP_MEDIA_QUERY, useMediaQuery } from './use-media-query'
 
 export interface ResponsiveDataTableColumn<Row> {
   key: string
@@ -23,22 +24,6 @@ export interface ResponsiveDataTableProps<Row> {
   className?: string
 }
 
-function useMediaQuery(query: string): boolean {
-  const [matches, setMatches] = useState(() => {
-    if (typeof window === 'undefined') return true
-    return window.matchMedia(query).matches
-  })
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-    const mql = window.matchMedia(query)
-    const listener = () => setMatches(mql.matches)
-    listener()
-    mql.addEventListener('change', listener)
-    return () => mql.removeEventListener('change', listener)
-  }, [query])
-  return matches
-}
-
 const EMPTY_FALLBACK = (
   <div className="px-4 py-12 text-center text-sm text-neutral-500 dark:text-neutral-400">
     暂无数据
@@ -46,7 +31,7 @@ const EMPTY_FALLBACK = (
 )
 
 export function ResponsiveDataTable<Row>(props: ResponsiveDataTableProps<Row>) {
-  const isDesktop = useMediaQuery('(min-width: 1024px)')
+  const isDesktop = useMediaQuery(DESKTOP_MEDIA_QUERY)
 
   if (props.rows.length === 0) {
     return (
@@ -116,6 +101,7 @@ export interface DefaultRowCardProps<Row> {
 
 export function DefaultRowCard<Row>(props: DefaultRowCardProps<Row>) {
   const visible = props.columns.filter((column) => !column.hideOnMobile)
+  // first non-hideOnMobile column is rendered as title
   const [firstColumn, ...remainingColumns] = visible
 
   return (

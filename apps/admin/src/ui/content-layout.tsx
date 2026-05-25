@@ -15,9 +15,9 @@ import type { BottomSheetSnap } from './bottom-sheet'
 import { BottomSheet } from './bottom-sheet'
 import { cn } from './cn'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from './layout'
+import { DESKTOP_MEDIA_QUERY, useMediaQuery } from './use-media-query'
 
 const PANEL_FADE = { duration: 0.22, ease: 'easeOut' as const }
-const DESKTOP_MEDIA_QUERY = '(min-width: 1024px)'
 
 interface ContentLayoutContextValue {
   asideEl: HTMLDivElement | null
@@ -26,24 +26,6 @@ interface ContentLayoutContextValue {
 const ContentLayoutContext = createContext<ContentLayoutContextValue | null>(
   null,
 )
-
-function useMediaQuery(query: string): boolean {
-  const [matches, setMatches] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return true
-    return window.matchMedia(query).matches
-  })
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-    const list = window.matchMedia(query)
-    const update = () => setMatches(list.matches)
-    update()
-    list.addEventListener('change', update)
-    return () => list.removeEventListener('change', update)
-  }, [query])
-
-  return matches
-}
 
 export function ContentLayout(props: {
   asideDefaultSize?: number | string
@@ -214,9 +196,7 @@ function MobileContentLayout(props: {
         open={props.open}
         title={props.asideMobileTitle}
       >
-        <div className="relative h-full bg-white dark:bg-neutral-950">
-          <div className="absolute inset-0" ref={props.setAsideEl} />
-        </div>
+        <div className="relative h-full" ref={props.setAsideEl} />
       </BottomSheet>
     </>
   )
