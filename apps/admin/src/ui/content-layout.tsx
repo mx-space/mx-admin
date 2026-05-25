@@ -10,11 +10,14 @@ import {
 } from 'react-resizable-panels'
 import type { LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
+import type { BottomSheetSnap } from './bottom-sheet'
 
+import { BottomSheet } from './bottom-sheet'
 import { cn } from './cn'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from './layout'
 
 const PANEL_FADE = { duration: 0.22, ease: 'easeOut' as const }
+const DESKTOP_MEDIA_QUERY = '(min-width: 1024px)'
 
 interface ContentLayoutContextValue {
   asideEl: HTMLDivElement | null
@@ -24,7 +27,76 @@ const ContentLayoutContext = createContext<ContentLayoutContextValue | null>(
   null,
 )
 
+function useMediaQuery(query: string): boolean {
+  const [matches, setMatches] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return true
+    return window.matchMedia(query).matches
+  })
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const list = window.matchMedia(query)
+    const update = () => setMatches(list.matches)
+    update()
+    list.addEventListener('change', update)
+    return () => list.removeEventListener('change', update)
+  }, [query])
+
+  return matches
+}
+
 export function ContentLayout(props: {
+  asideDefaultSize?: number | string
+  asideMaxSize?: number | string
+  asideMinSize?: number | string
+  asideMobileSnap?: BottomSheetSnap
+  asideMobileTitle?: ReactNode
+  children: ReactNode
+  className?: string
+  mainClassName?: string
+  onCloseAside?: () => void
+  open: boolean
+}) {
+  const isDesktop = useMediaQuery(DESKTOP_MEDIA_QUERY)
+  const [asideEl, setAsideEl] = useState<HTMLDivElement | null>(null)
+
+  const value = useMemo<ContentLayoutContextValue>(
+    () => ({ asideEl }),
+    [asideEl],
+  )
+
+  return (
+    <ContentLayoutContext.Provider value={value}>
+      {isDesktop ? (
+        <DesktopContentLayout
+          asideDefaultSize={props.asideDefaultSize}
+          asideMaxSize={props.asideMaxSize}
+          asideMinSize={props.asideMinSize}
+          className={props.className}
+          mainClassName={props.mainClassName}
+          open={props.open}
+          setAsideEl={setAsideEl}
+        >
+          {props.children}
+        </DesktopContentLayout>
+      ) : (
+        <MobileContentLayout
+          asideMobileSnap={props.asideMobileSnap}
+          asideMobileTitle={props.asideMobileTitle}
+          className={props.className}
+          mainClassName={props.mainClassName}
+          onCloseAside={props.onCloseAside}
+          open={props.open}
+          setAsideEl={setAsideEl}
+        >
+          {props.children}
+        </MobileContentLayout>
+      )}
+    </ContentLayoutContext.Provider>
+  )
+}
+
+function DesktopContentLayout(props: {
   asideDefaultSize?: number | string
   asideMaxSize?: number | string
   asideMinSize?: number | string
@@ -32,9 +104,9 @@ export function ContentLayout(props: {
   className?: string
   mainClassName?: string
   open: boolean
+  setAsideEl: (el: HTMLDivElement | null) => void
 }) {
   const asideRef = usePanelRef()
-  const [asideEl, setAsideEl] = useState<HTMLDivElement | null>(null)
   const [resizing, setResizing] = useState(false)
 
   useEffect(() => {
@@ -58,60 +130,95 @@ export function ContentLayout(props: {
     }
   }, [resizing])
 
-  const value = useMemo<ContentLayoutContextValue>(
-    () => ({ asideEl }),
-    [asideEl],
+  return (
+    <PanelGroup
+      className={cn('flex min-h-0 min-w-0 flex-1', props.className)}
+      data-content-layout=""
+      data-resizing={resizing ? 'true' : 'false'}
+      orientation="horizontal"
+    >
+      <Panel
+        className={cn('min-h-0 min-w-0 overflow-hidden', props.mainClassName)}
+        id="content-layout-main"
+        minSize="40%"
+      >
+        {props.children}
+      </Panel>
+      <Separator
+        className={cn(
+          'outline-hidden group relative w-0 shrink-0 cursor-col-resize border-l border-neutral-200 transition-colors focus-visible:border-neutral-400 dark:border-neutral-800 dark:focus-visible:border-neutral-600',
+          !props.open && 'pointer-events-none border-transparent',
+        )}
+        onPointerDown={() => setResizing(true)}
+      >
+        <span
+          aria-hidden="true"
+          className={cn(
+            'absolute left-1/2 top-1/2 h-8 w-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-neutral-300 opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 dark:bg-neutral-700',
+            !props.open && 'group-hover:opacity-0',
+            resizing && 'opacity-100',
+          )}
+        />
+      </Separator>
+      <Panel
+        className="min-h-0 overflow-hidden"
+        collapsedSize={0}
+        collapsible
+        defaultSize={props.asideDefaultSize ?? '320px'}
+        groupResizeBehavior="preserve-pixel-size"
+        id="content-layout-aside"
+        maxSize={props.asideMaxSize ?? '50%'}
+        minSize={props.asideMinSize ?? '280px'}
+        panelRef={asideRef}
+      >
+        <div
+          className="relative h-full bg-white dark:bg-neutral-950"
+          ref={props.setAsideEl}
+        />
+      </Panel>
+    </PanelGroup>
   )
+}
+
+function MobileContentLayout(props: {
+  asideMobileSnap?: BottomSheetSnap
+  asideMobileTitle?: ReactNode
+  children: ReactNode
+  className?: string
+  mainClassName?: string
+  onCloseAside?: () => void
+  open: boolean
+  setAsideEl: (el: HTMLDivElement | null) => void
+}) {
+  const handleClose = () => {
+    props.onCloseAside?.()
+  }
 
   return (
-    <ContentLayoutContext.Provider value={value}>
-      <PanelGroup
-        className={cn('flex min-h-0 min-w-0 flex-1', props.className)}
+    <>
+      <div
+        className={cn(
+          'flex min-h-0 min-w-0 flex-1 flex-col',
+          props.className,
+          props.mainClassName,
+        )}
         data-content-layout=""
-        data-resizing={resizing ? 'true' : 'false'}
-        orientation="horizontal"
+        data-content-layout-mode="mobile"
       >
-        <Panel
-          className={cn('min-h-0 min-w-0 overflow-hidden', props.mainClassName)}
-          id="content-layout-main"
-          minSize="40%"
-        >
-          {props.children}
-        </Panel>
-        <Separator
-          className={cn(
-            'outline-hidden group relative w-0 shrink-0 cursor-col-resize border-l border-neutral-200 transition-colors focus-visible:border-neutral-400 dark:border-neutral-800 dark:focus-visible:border-neutral-600',
-            !props.open && 'pointer-events-none border-transparent',
-          )}
-          onPointerDown={() => setResizing(true)}
-        >
-          <span
-            aria-hidden="true"
-            className={cn(
-              'absolute left-1/2 top-1/2 h-8 w-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-neutral-300 opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 dark:bg-neutral-700',
-              !props.open && 'group-hover:opacity-0',
-              resizing && 'opacity-100',
-            )}
-          />
-        </Separator>
-        <Panel
-          className="min-h-0 overflow-hidden"
-          collapsedSize={0}
-          collapsible
-          defaultSize={props.asideDefaultSize ?? '320px'}
-          groupResizeBehavior="preserve-pixel-size"
-          id="content-layout-aside"
-          maxSize={props.asideMaxSize ?? '50%'}
-          minSize={props.asideMinSize ?? '280px'}
-          panelRef={asideRef}
-        >
-          <div
-            className="relative h-full bg-white dark:bg-neutral-950"
-            ref={setAsideEl}
-          />
-        </Panel>
-      </PanelGroup>
-    </ContentLayoutContext.Provider>
+        {props.children}
+      </div>
+      <BottomSheet
+        bodyClassName="relative bg-white dark:bg-neutral-950"
+        defaultSnap={props.asideMobileSnap ?? 'half'}
+        onClose={handleClose}
+        open={props.open}
+        title={props.asideMobileTitle}
+      >
+        <div className="relative h-full bg-white dark:bg-neutral-950">
+          <div className="absolute inset-0" ref={props.setAsideEl} />
+        </div>
+      </BottomSheet>
+    </>
   )
 }
 
