@@ -1,13 +1,16 @@
+import { Menu } from 'lucide-react'
 import {
   Group as PanelGroup,
   Separator as PanelResizeHandle,
   Panel as ResizablePanel,
 } from 'react-resizable-panels'
+import type { LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
 
 import { cn } from './cn'
 import { HeaderBackButton } from './header-back-button'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from './layout'
+import { useShellNav } from './shell-nav-context'
 
 export function AppPage(props: { children: ReactNode; className?: string }) {
   return (
@@ -28,13 +31,46 @@ export interface PageHeaderBackProp {
   to?: string
 }
 
-export function PageHeader(props: {
-  actions?: ReactNode
+export type HeaderAction =
+  | {
+      kind: 'button'
+      icon: LucideIcon
+      label: string
+      onClick: () => void
+      primary?: boolean
+      disabled?: boolean
+    }
+  | {
+      kind: 'custom'
+      node: ReactNode
+      mobileNode?: ReactNode
+    }
+
+interface PageHeaderProps {
+  actions?: ReactNode | HeaderAction[]
   back?: PageHeaderBackProp
   className?: string
   description?: ReactNode
   title: ReactNode
-}) {
+}
+
+export function isHeaderActionArray(
+  actions: PageHeaderProps['actions'],
+): actions is HeaderAction[] {
+  if (!Array.isArray(actions)) return false
+  return actions.every(
+    (item) =>
+      item != null &&
+      typeof item === 'object' &&
+      'kind' in item &&
+      (item.kind === 'button' || item.kind === 'custom'),
+  )
+}
+
+export function PageHeader(props: PageHeaderProps) {
+  const shellNav = useShellNav()
+  const actionsIsTyped = isHeaderActionArray(props.actions)
+
   return (
     <header
       className={cn(
@@ -44,6 +80,17 @@ export function PageHeader(props: {
       )}
     >
       <div className="flex min-w-0 items-center gap-2">
+        {shellNav ? (
+          <button
+            aria-label="打开导航"
+            className="focus-visible:outline-hidden -ml-1.5 inline-flex size-9 shrink-0 items-center justify-center rounded-md text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 lg:hidden dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-100 dark:focus-visible:ring-neutral-500 dark:focus-visible:ring-offset-neutral-900"
+            onClick={shellNav.toggle}
+            title="打开导航"
+            type="button"
+          >
+            <Menu aria-hidden="true" className="size-4" />
+          </button>
+        ) : null}
         {props.back ? <HeaderBackButton {...props.back} /> : null}
         <div className="min-w-0">
           <h1 className="truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
@@ -58,10 +105,69 @@ export function PageHeader(props: {
       </div>
       {props.actions ? (
         <div className="flex shrink-0 flex-wrap items-center gap-2">
-          {props.actions}
+          {actionsIsTyped
+            ? (props.actions as HeaderAction[]).map((action, index) =>
+                renderHeaderAction(action, index),
+              )
+            : (props.actions as ReactNode)}
         </div>
       ) : null}
     </header>
+  )
+}
+
+function renderHeaderAction(action: HeaderAction, index: number) {
+  if (action.kind === 'custom') {
+    return (
+      <span key={index} className="contents">
+        <span className="hidden lg:contents">{action.node}</span>
+        <span className="contents lg:hidden">
+          {action.mobileNode ?? action.node}
+        </span>
+      </span>
+    )
+  }
+
+  const Icon = action.icon
+  const baseClasses =
+    'focus-visible:outline-hidden inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:focus-visible:ring-neutral-500 dark:focus-visible:ring-offset-neutral-900'
+  const primaryClasses =
+    'bg-neutral-950 text-white hover:bg-neutral-800 dark:bg-neutral-50 dark:text-neutral-950 dark:hover:bg-neutral-200'
+  const secondaryClasses =
+    'border border-neutral-200 bg-white text-neutral-900 hover:bg-neutral-100 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50 dark:hover:bg-neutral-900'
+  const variantClasses = action.primary ? primaryClasses : secondaryClasses
+
+  return (
+    <span key={index} className="contents">
+      <button
+        aria-label={action.label}
+        className={cn(
+          baseClasses,
+          variantClasses,
+          'inline-flex size-9 lg:hidden',
+        )}
+        disabled={action.disabled}
+        onClick={action.onClick}
+        title={action.label}
+        type="button"
+      >
+        <Icon aria-hidden="true" className="size-4" />
+      </button>
+      <button
+        aria-label={action.label}
+        className={cn(
+          baseClasses,
+          variantClasses,
+          'hidden h-9 gap-1.5 px-3 lg:inline-flex',
+        )}
+        disabled={action.disabled}
+        onClick={action.onClick}
+        type="button"
+      >
+        <Icon aria-hidden="true" className="size-4" />
+        <span>{action.label}</span>
+      </button>
+    </span>
   )
 }
 
