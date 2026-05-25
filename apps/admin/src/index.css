@@ -338,3 +338,7 @@ html.dark .sonner-cancel-button:hover {
   -webkit-tap-highlight-color: transparent;
   -webkit-text-size-adjust: 100%;
 }
+
+[data-content-layout] [data-panel] {
+  transition: none;
+}

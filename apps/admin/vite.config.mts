@@ -1,5 +1,6 @@
+import babel from '@rolldown/plugin-babel'
 import tailwindcss from '@tailwindcss/vite'
-import react from '@vitejs/plugin-react'
+import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import { codeInspectorPlugin } from 'code-inspector-plugin'
 import { loadEnv } from 'vite'
 import { checker } from 'vite-plugin-checker'
@@ -20,6 +21,7 @@ export default ({ mode }) => {
       codeInspectorPlugin({ bundler: 'vite' }),
       tailwindcss(),
       react(),
+      babel({ presets: [reactCompilerPreset()] }),
 
       checker({
         enableBuild: true,

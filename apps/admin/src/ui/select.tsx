@@ -3,6 +3,7 @@ import { ChevronDown } from 'lucide-react'
 import type { ReactNode } from 'react'
 
 import { cn } from './cn'
+import { PortalLayerScope, useFloatingZ } from './portal-layer'
 import { Scroll } from './scroll'
 
 type SelectValue = number | string
@@ -27,6 +28,7 @@ interface SelectFieldProps<TValue extends SelectValue = string> {
 export function SelectField<TValue extends SelectValue = string>(
   props: SelectFieldProps<TValue>,
 ) {
+  const { z, depth } = useFloatingZ('popover')
   return (
     <BaseSelect.Root<TValue>
       disabled={props.disabled}
@@ -52,29 +54,31 @@ export function SelectField<TValue extends SelectValue = string>(
         />
       </BaseSelect.Trigger>
       <BaseSelect.Portal>
-        <BaseSelect.Positioner alignItemWithTrigger={false} sideOffset={6}>
-          <BaseSelect.Popup
-            className={cn(
-              'outline-hidden z-50 min-w-40 rounded border border-neutral-200 bg-white text-sm shadow-lg dark:border-neutral-800 dark:bg-neutral-950',
-              props.popupClassName,
-            )}
-          >
-            <Scroll
-              className="max-h-72"
-              innerClassName="p-1"
-              viewportClassName="max-h-72"
+        <BaseSelect.Positioner style={{ zIndex: z }}>
+          <PortalLayerScope depth={depth}>
+            <BaseSelect.Popup
+              className={cn(
+                'outline-hidden w-[var(--anchor-width)] rounded border border-neutral-200 bg-white text-sm shadow-lg dark:border-neutral-800 dark:bg-neutral-950',
+                props.popupClassName,
+              )}
             >
-              {props.options.map((option) => (
-                <BaseSelect.Item
-                  className="outline-hidden cursor-pointer rounded px-2 py-1.5 text-neutral-700 data-[highlighted]:bg-neutral-100 data-[selected]:text-[var(--color-primary)] dark:text-neutral-200 dark:data-[highlighted]:bg-neutral-800"
-                  key={String(option.value)}
-                  value={option.value}
-                >
-                  {option.label}
-                </BaseSelect.Item>
-              ))}
-            </Scroll>
-          </BaseSelect.Popup>
+              <Scroll
+                className="max-h-72"
+                innerClassName="p-1"
+                viewportClassName="max-h-72"
+              >
+                {props.options.map((option) => (
+                  <BaseSelect.Item
+                    className="outline-hidden cursor-pointer rounded px-2 py-1.5 text-neutral-700 data-[highlighted]:bg-neutral-100 data-[selected]:text-[var(--color-primary)] dark:text-neutral-200 dark:data-[highlighted]:bg-neutral-800"
+                    key={String(option.value)}
+                    value={option.value}
+                  >
+                    {option.label}
+                  </BaseSelect.Item>
+                ))}
+              </Scroll>
+            </BaseSelect.Popup>
+          </PortalLayerScope>
         </BaseSelect.Positioner>
       </BaseSelect.Portal>
     </BaseSelect.Root>

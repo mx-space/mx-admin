@@ -85,6 +85,7 @@ import {
 import { API_URL } from '../constants/env'
 import { Button } from '../ui/button'
 import { cn } from '../ui/cn'
+import { DateTimePicker } from '../ui/datetime-picker'
 import { IpInfoPopover } from '../ui/ip-info-popover'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '../ui/layout'
 import { MasterDetailLayout } from '../ui/page-layout'
@@ -2511,11 +2512,11 @@ function TokenPanel(props: { onBack: () => void }) {
             label="是否过期"
             onCheckedChange={setExpiresEnabled}
           />
-          <TextInput
+          <DateTimePicker
             disabled={!expiresEnabled}
             label="过期时间"
             onChange={setExpires}
-            type="datetime-local"
+            placeholder="选择过期时间"
             value={expires}
           />
           <div className="flex justify-end gap-2">

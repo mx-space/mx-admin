@@ -30,6 +30,7 @@ import { appRoutes, sidebarNavigation } from './routes'
 import { useThemeMode } from './theme'
 import { cn } from './ui/cn'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from './ui/layout'
+import { PortalLayerScope, useFloatingZ } from './ui/portal-layer'
 import { Scroll } from './ui/scroll'
 import { SelectField } from './ui/select'
 import { authClient } from './utils/authjs/auth'
@@ -62,6 +63,7 @@ export function AdminShell(props: PropsWithChildren) {
   const queryClient = useQueryClient()
   const { locale, setLocale, t } = useI18n()
   const { setThemeMode, themeMode } = useThemeMode()
+  const userMenuFloat = useFloatingZ('popover')
   const ownerQuery = useQuery({
     queryFn: getOwner,
     queryKey: ['shell', 'owner'],
@@ -219,59 +221,66 @@ export function AdminShell(props: PropsWithChildren) {
               />
             </Popover.Trigger>
             <Popover.Portal>
-              <Popover.Positioner align="start" side="bottom" sideOffset={8}>
-                <Popover.Popup className="outline-hidden z-50 w-56 rounded border border-neutral-200 bg-white p-1 text-sm shadow-lg dark:border-neutral-800 dark:bg-neutral-950">
-                  <div className="flex min-w-0 items-center gap-3 px-2 py-2">
-                    {owner?.avatar ? (
-                      <img
-                        alt=""
-                        className="size-9 shrink-0 rounded-lg object-cover"
-                        decoding="async"
-                        src={owner.avatar}
-                      />
-                    ) : (
-                      <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-neutral-200 text-sm font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300">
-                        {ownerName.slice(0, 1).toUpperCase()}
-                      </span>
-                    )}
-                    <div className="min-w-0">
-                      <div className="truncate font-medium text-neutral-950 dark:text-neutral-50">
-                        {ownerName}
-                      </div>
-                      {ownerContact ? (
-                        <div className="mt-0.5 truncate text-xs text-neutral-500 dark:text-neutral-400">
-                          {ownerContact}
+              <Popover.Positioner
+                align="start"
+                side="bottom"
+                sideOffset={8}
+                style={{ zIndex: userMenuFloat.z }}
+              >
+                <PortalLayerScope depth={userMenuFloat.depth}>
+                  <Popover.Popup className="outline-hidden w-56 rounded border border-neutral-200 bg-white p-1 text-sm shadow-lg dark:border-neutral-800 dark:bg-neutral-950">
+                    <div className="flex min-w-0 items-center gap-3 px-2 py-2">
+                      {owner?.avatar ? (
+                        <img
+                          alt=""
+                          className="size-9 shrink-0 rounded-lg object-cover"
+                          decoding="async"
+                          src={owner.avatar}
+                        />
+                      ) : (
+                        <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-neutral-200 text-sm font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300">
+                          {ownerName.slice(0, 1).toUpperCase()}
+                        </span>
+                      )}
+                      <div className="min-w-0">
+                        <div className="truncate font-medium text-neutral-950 dark:text-neutral-50">
+                          {ownerName}
                         </div>
-                      ) : null}
+                        {ownerContact ? (
+                          <div className="mt-0.5 truncate text-xs text-neutral-500 dark:text-neutral-400">
+                            {ownerContact}
+                          </div>
+                        ) : null}
+                      </div>
                     </div>
-                  </div>
-                  <div className="my-1 h-px bg-neutral-100 dark:bg-neutral-800" />
-                  <button
-                    className="flex h-8 w-full items-center gap-2 rounded px-2 text-left text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-950 dark:text-neutral-300 dark:hover:bg-neutral-900 dark:hover:text-neutral-50"
-                    onClick={() => navigate('/setting?group=user')}
-                    type="button"
-                  >
-                    <Settings aria-hidden="true" className="size-4" />
-                    账户设置
-                  </button>
-                  <a
-                    className="flex h-8 w-full items-center gap-2 rounded px-2 text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-950 dark:text-neutral-300 dark:hover:bg-neutral-900 dark:hover:text-neutral-50"
-                    href={WEB_URL}
-                    rel="noreferrer"
-                    target="_blank"
-                  >
-                    <ExternalLink aria-hidden="true" className="size-4" />
-                    {t('common.openMainSite')}
-                  </a>
-                  <button
-                    className="flex h-8 w-full items-center gap-2 rounded px-2 text-left text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30"
-                    onClick={() => void handleLogout()}
-                    type="button"
-                  >
-                    <LogOut aria-hidden="true" className="size-4" />
-                    {t('shell.logout')}
-                  </button>
-                </Popover.Popup>
+                    <div className="my-1 h-px bg-neutral-100 dark:bg-neutral-800" />
+                    <button
+                      className="flex h-8 w-full items-center gap-2 rounded px-2 text-left text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-950 dark:text-neutral-300 dark:hover:bg-neutral-900 dark:hover:text-neutral-50"
+                      onClick={() => navigate('/setting?group=user')}
+                      type="button"
+                    >
+                      <Settings aria-hidden="true" className="size-4" />
+                      账户设置
+                    </button>
+                    <a
+                      className="flex h-8 w-full items-center gap-2 rounded px-2 text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-950 dark:text-neutral-300 dark:hover:bg-neutral-900 dark:hover:text-neutral-50"
+                      href={WEB_URL}
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      <ExternalLink aria-hidden="true" className="size-4" />
+                      {t('common.openMainSite')}
+                    </a>
+                    <button
+                      className="flex h-8 w-full items-center gap-2 rounded px-2 text-left text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30"
+                      onClick={() => void handleLogout()}
+                      type="button"
+                    >
+                      <LogOut aria-hidden="true" className="size-4" />
+                      {t('shell.logout')}
+                    </button>
+                  </Popover.Popup>
+                </PortalLayerScope>
               </Popover.Positioner>
             </Popover.Portal>
           </Popover.Root>

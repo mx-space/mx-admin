@@ -4,6 +4,7 @@ import { useState } from 'react'
 import type { ReactNode } from 'react'
 
 import { callBuiltInFunction } from '../api/system'
+import { PortalLayerScope, useFloatingZ } from './portal-layer'
 
 interface IpInfo {
   cityName?: string
@@ -30,6 +31,7 @@ export function IpInfoPopover(props: {
   )
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const { z, depth } = useFloatingZ('popover')
 
   const loadInfo = async () => {
     if (!props.ip || ipInfoCache.has(props.ip)) {
@@ -75,40 +77,47 @@ export function IpInfoPopover(props: {
         )}
       </Popover.Trigger>
       <Popover.Portal>
-        <Popover.Positioner align="start" side="top" sideOffset={8}>
-          <Popover.Popup className="outline-hidden z-50 w-72 rounded border border-neutral-200 bg-white p-3 text-xs text-neutral-600 shadow-xl dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-300">
-            {loading ? (
-              <span className="text-neutral-400">获取中...</span>
-            ) : error ? (
-              <span className="text-red-500">{error}</span>
-            ) : info ? (
-              <div className="grid gap-2">
-                <InfoRow label="IP" value={info.ip || props.ip} />
-                <InfoRow
-                  label="城市"
-                  value={
-                    [info.countryName, info.regionName, info.cityName]
-                      .filter(Boolean)
-                      .join(' - ') || 'N/A'
-                  }
-                />
-                <InfoRow label="ISP" value={info.ispDomain || 'N/A'} />
-                <InfoRow label="组织" value={info.ownerDomain || 'N/A'} />
-                <InfoRow
-                  label="范围"
-                  value={
-                    info.range
-                      ? [info.range.from, info.range.to]
-                          .filter(Boolean)
-                          .join(' - ') || 'N/A'
-                      : 'N/A'
-                  }
-                />
-              </div>
-            ) : (
-              <span className="text-neutral-400">暂无信息</span>
-            )}
-          </Popover.Popup>
+        <Popover.Positioner
+          align="start"
+          side="top"
+          sideOffset={8}
+          style={{ zIndex: z }}
+        >
+          <PortalLayerScope depth={depth}>
+            <Popover.Popup className="outline-hidden w-72 rounded border border-neutral-200 bg-white p-3 text-xs text-neutral-600 shadow-xl dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-300">
+              {loading ? (
+                <span className="text-neutral-400">获取中...</span>
+              ) : error ? (
+                <span className="text-red-500">{error}</span>
+              ) : info ? (
+                <div className="grid gap-2">
+                  <InfoRow label="IP" value={info.ip || props.ip} />
+                  <InfoRow
+                    label="城市"
+                    value={
+                      [info.countryName, info.regionName, info.cityName]
+                        .filter(Boolean)
+                        .join(' - ') || 'N/A'
+                    }
+                  />
+                  <InfoRow label="ISP" value={info.ispDomain || 'N/A'} />
+                  <InfoRow label="组织" value={info.ownerDomain || 'N/A'} />
+                  <InfoRow
+                    label="范围"
+                    value={
+                      info.range
+                        ? [info.range.from, info.range.to]
+                            .filter(Boolean)
+                            .join(' - ') || 'N/A'
+                        : 'N/A'
+                    }
+                  />
+                </div>
+              ) : (
+                <span className="text-neutral-400">暂无信息</span>
+              )}
+            </Popover.Popup>
+          </PortalLayerScope>
         </Popover.Positioner>
       </Popover.Portal>
     </Popover.Root>

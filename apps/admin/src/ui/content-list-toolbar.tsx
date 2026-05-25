@@ -5,6 +5,7 @@ import type { FormEventHandler, ReactNode } from 'react'
 import { Checkbox } from './checkbox'
 import { cn } from './cn'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from './layout'
+import { PortalLayerScope, useFloatingZ } from './portal-layer'
 
 interface ContentListToolbarSelection {
   allVisibleSelected: boolean
@@ -207,6 +208,7 @@ export function SortMenu<TField extends string = string>(
     (option) => option.value === props.field,
   )
   const OrderIcon = props.order === 'asc' ? ArrowUp : ArrowDown
+  const { z, depth } = useFloatingZ('popover')
 
   return (
     <Popover.Root>
@@ -224,57 +226,67 @@ export function SortMenu<TField extends string = string>(
         <OrderIcon aria-hidden="true" className="size-3 text-neutral-400" />
       </Popover.Trigger>
       <Popover.Portal>
-        <Popover.Positioner align="end" side="bottom" sideOffset={6}>
-          <Popover.Popup className="outline-hidden z-50 w-48 rounded border border-neutral-200 bg-white p-1 text-xs shadow-lg dark:border-neutral-800 dark:bg-neutral-950">
-            <div className="px-2 py-1 text-[10px] font-medium uppercase tracking-wide text-neutral-400 dark:text-neutral-500">
-              字段
-            </div>
-            {props.options.map((option) => {
-              const active = option.value === props.field
-              return (
-                <button
-                  className={cn(
-                    'outline-hidden flex w-full items-center justify-between rounded px-2 py-1.5 text-left transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800',
-                    active
-                      ? 'font-medium text-neutral-950 dark:text-neutral-50'
-                      : 'text-neutral-600 dark:text-neutral-300',
-                  )}
-                  key={String(option.value)}
+        <Popover.Positioner
+          align="end"
+          side="bottom"
+          sideOffset={6}
+          style={{ zIndex: z }}
+        >
+          <PortalLayerScope depth={depth}>
+            <Popover.Popup className="outline-hidden w-48 rounded border border-neutral-200 bg-white p-1 text-xs shadow-lg dark:border-neutral-800 dark:bg-neutral-950">
+              <div className="px-2 py-1 text-[10px] font-medium uppercase tracking-wide text-neutral-400 dark:text-neutral-500">
+                字段
+              </div>
+              {props.options.map((option) => {
+                const active = option.value === props.field
+                return (
+                  <button
+                    className={cn(
+                      'outline-hidden flex w-full items-center justify-between rounded px-2 py-1.5 text-left transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-800',
+                      active
+                        ? 'font-medium text-neutral-950 dark:text-neutral-50'
+                        : 'text-neutral-600 dark:text-neutral-300',
+                    )}
+                    key={String(option.value)}
+                    onClick={() =>
+                      props.onChange({
+                        field: option.value,
+                        order: props.order,
+                      })
+                    }
+                    type="button"
+                  >
+                    <span className="truncate">{option.label}</span>
+                    {active ? (
+                      <span className="text-[var(--color-primary)]">●</span>
+                    ) : null}
+                  </button>
+                )
+              })}
+              <div className="mx-1 my-1 border-t border-neutral-100 dark:border-neutral-800" />
+              <div className="px-2 py-1 text-[10px] font-medium uppercase tracking-wide text-neutral-400 dark:text-neutral-500">
+                方向
+              </div>
+              <div className="grid grid-cols-2 gap-1 p-1">
+                <SortOrderButton
+                  active={props.order === 'desc'}
+                  icon={<ArrowDown aria-hidden="true" className="size-3.5" />}
+                  label="降序"
                   onClick={() =>
-                    props.onChange({ field: option.value, order: props.order })
+                    props.onChange({ field: props.field, order: 'desc' })
                   }
-                  type="button"
-                >
-                  <span className="truncate">{option.label}</span>
-                  {active ? (
-                    <span className="text-[var(--color-primary)]">●</span>
-                  ) : null}
-                </button>
-              )
-            })}
-            <div className="mx-1 my-1 border-t border-neutral-100 dark:border-neutral-800" />
-            <div className="px-2 py-1 text-[10px] font-medium uppercase tracking-wide text-neutral-400 dark:text-neutral-500">
-              方向
-            </div>
-            <div className="grid grid-cols-2 gap-1 p-1">
-              <SortOrderButton
-                active={props.order === 'desc'}
-                icon={<ArrowDown aria-hidden="true" className="size-3.5" />}
-                label="降序"
-                onClick={() =>
-                  props.onChange({ field: props.field, order: 'desc' })
-                }
-              />
-              <SortOrderButton
-                active={props.order === 'asc'}
-                icon={<ArrowUp aria-hidden="true" className="size-3.5" />}
-                label="升序"
-                onClick={() =>
-                  props.onChange({ field: props.field, order: 'asc' })
-                }
-              />
-            </div>
-          </Popover.Popup>
+                />
+                <SortOrderButton
+                  active={props.order === 'asc'}
+                  icon={<ArrowUp aria-hidden="true" className="size-3.5" />}
+                  label="升序"
+                  onClick={() =>
+                    props.onChange({ field: props.field, order: 'asc' })
+                  }
+                />
+              </div>
+            </Popover.Popup>
+          </PortalLayerScope>
         </Popover.Positioner>
       </Popover.Portal>
     </Popover.Root>

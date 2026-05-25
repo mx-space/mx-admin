@@ -4,40 +4,51 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-MX Admin is the dashboard for MX Space, a personal blog management system. The active admin app is a React application built with Base UI primitives, React Router, TanStack Query, Sonner, and UnoCSS.
+MX Admin is the dashboard for MX Space, a personal blog management system. The repo is a pnpm + turbo monorepo whose only active app is `apps/admin` — a React 19 SPA built with Base UI primitives, React Router (HashRouter), TanStack Query, Sonner, UnoCSS, and a Tailwind v4 layer. Despite the repo name `admin-vue3`, the Vue codebase has been retired; React is the sole runtime.
 
 ## Development Commands
 
+All scripts go through turbo at the repo root:
+
 ```bash
 pnpm install          # Install dependencies
-pnpm dev              # Start development server (opens browser automatically)
-pnpm build            # Build for production
-pnpm lint             # Lint code with oxlint
-pnpm lint:fix         # Lint and auto-fix
-pnpm -C apps/admin exec tsc --noEmit --pretty false
+pnpm dev              # Start Vite dev server (opens browser automatically)
+pnpm build            # Production build
+pnpm lint             # oxlint
+pnpm lint:fix         # oxlint --fix
+pnpm typecheck        # tsc --noEmit (per-package)
 ```
+
+Scope checks to changed files only — never run lint/typecheck/build over the whole tree just to verify a small edit. For a one-off file typecheck inside the app: `pnpm -C apps/admin exec tsc --noEmit --pretty false`.
+
+Local API endpoint lives in `apps/admin/.env` as `VITE_APP_BASE_API`.
 
 ## Architecture Overview
 
 ### Technology Stack
 
-- **React** with TSX
-- **Base UI** - Headless component primitives
-- **React Router** - Route rendering and shell navigation
-- **UnoCSS** (preset-wind4) - Tailwind-compatible utility classes
-- **TanStack Query** (`@tanstack/react-query`) - Server state management
-- **Sonner** - Toast notifications
-- **Socket.IO** - Real-time WebSocket updates
+- **React 19** + TSX, react-compiler enabled via Babel
+- **Base UI** (`@base-ui/react`) — headless primitives; UI wrappers live in `apps/admin/src/ui/`
+- **React Router 7** (`HashRouter`) — `apps/admin/src/routes.tsx` is the single source of route → lazy-view mapping
+- **UnoCSS** (preset-wind4) + **Tailwind v4** layer via `@tailwindcss/vite`
+- **TanStack Query** — created in `apps/admin/src/query-client.ts`, mounted in `providers.tsx`
+- **Sonner** — toast layer mounted alongside the query provider
+- **Socket.IO** — `src/socket/SocketBridge` hangs off the authenticated shell
+- **better-auth** + passkey for login; auth gate in `App.tsx` (`checkLogged` query) wraps everything except `/setup`, `/setup-api`, `/login`
+
+### Entry & Shell
+
+`main.tsx` → `App.tsx` (mounts providers, HashRouter, auth gate, installs theme tokens via `installThemeTokens`) → `AdminShell` (nav chrome + `SocketBridge` + `AppRoutes`). All views in `routes.tsx` are `lazy()`-loaded and wrapped in `<Suspense>`; add new pages by registering a lazy import there.
 
 ### Path Aliases
 
 ```typescript
-import { something } from '~/utils/...'  // ~ maps to ./src
+import { something } from '~/utils/...'  // ~ → apps/admin/src
 ```
 
-### API Layer (`src/app/api/`)
+### API Layer (`apps/admin/src/api/`)
 
-React app API services use the fetch-based helpers in `src/app/api/http.ts`.
+API services use the fetch-based helpers in `apps/admin/src/api/http.ts`.
 
 When using TanStack Query, extract arrays with:
 ```typescript
@@ -81,12 +92,21 @@ Do NOT use arbitrary font sizes (e.g., `text-[11px]`, `text-[13px]`). Use standa
 
 See `docs/typography.md` for full guidelines.
 
+## Layout Conventions
+
+New admin views must follow the master-detail / content-layout convention. See:
+
+- `docs/master-detail-layout.md` — list+detail pages (comments, drafts, topics)
+- `docs/typography.md` — full typography rules
+- `apps/admin/src/ui/content-layout.tsx` and `page-layout.tsx` — reusable shells
+
 ## Configuration Files
 
-- `uno.config.ts` - UnoCSS configuration with custom breakpoints and theme colors
-- `src/app/theme.ts` - CSS token installation for the React shell
-- `src/app/` - React routes, shell, API helpers, UI primitives, and migrated views
-- `.env` - Local dev API endpoint (`VITE_APP_BASE_API`)
+- `apps/admin/vite.config.mts` — Vite + react-compiler + Tailwind + mkcert + checker
+- `apps/admin/uno.config.ts` — UnoCSS breakpoints (`phone:`, `tablet:`, `desktop:`) and theme colors (if present)
+- `apps/admin/src/theme.ts` — CSS token installation for the shell
+- `apps/admin/src/index.css` — global stylesheet + Tailwind layer
+- `turbo.json` — task pipeline (build/dev/lint/typecheck)
 
 ## Related Projects
 

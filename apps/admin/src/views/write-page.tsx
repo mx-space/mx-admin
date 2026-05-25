@@ -1025,7 +1025,7 @@ function WritePage(props: { kind: WriteKind }) {
               innerClassName="min-h-full bg-white dark:bg-neutral-950"
             >
               <main className="flex min-h-full min-w-0 flex-col bg-white dark:bg-neutral-950">
-                <div className="mx-auto w-full max-w-6xl shrink-0 px-3 pt-8">
+                <div className="mx-auto w-full max-w-5xl shrink-0 px-3 pt-8">
                   <EditorMetaStrip
                     aiButtonPending={writerGenerateMutation.isPending}
                     aiButtonVisible={aiButtonVisible}
@@ -1065,7 +1065,7 @@ function WritePage(props: { kind: WriteKind }) {
                 </div>
 
                 <div className="flex min-h-0 flex-1 flex-col pb-[200px]">
-                  <div className="mx-auto w-full max-w-6xl px-3">
+                  <div className="mx-auto w-full max-w-5xl px-3">
                     {state.contentFormat === 'lexical' ? (
                       <RichWriteSurface
                         agentVisible={agentVisible}
