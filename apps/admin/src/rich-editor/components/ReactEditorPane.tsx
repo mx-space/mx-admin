@@ -22,9 +22,9 @@ import {
   nestedDocEditNodes,
   NestedDocPlugin,
 } from '@haklex/rich-ext-nested-doc'
-import { ToolbarPlugin } from '@haklex/rich-plugin-toolbar'
 
 import { ShiroEditor } from '../shiro'
+import { EditorToolbar } from './EditorToolbar'
 import { EnrichmentFetcherProvider } from './EnrichmentLinkCardContext'
 
 import './setup-enrichment-linkcard'
@@ -33,7 +33,6 @@ import { AgentLoopCapture } from './AgentLoopCapture'
 import { NestedDocDialogEditor } from './NestedDocDialogEditor'
 
 import '@haklex/rich-ext-ai-agent/style.css'
-import '@haklex/rich-plugin-toolbar/style.css'
 import '@haklex/rich-ext-nested-doc/style.css'
 import '../shiro/style'
 
@@ -87,7 +86,7 @@ export function ReactEditorPane({
                 ...(editorProps.extraNodes || []),
                 ...nestedDocEditNodes,
               ]}
-              header={<ToolbarPlugin />}
+              header={<EditorToolbar />}
               floatingToolbarActions={
                 provider ? <AgentAskAIAction /> : undefined
               }

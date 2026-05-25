@@ -45,11 +45,11 @@ vi.mock('../shiro', async () => {
   }
 })
 
-vi.mock('@haklex/rich-plugin-toolbar', async () => {
+vi.mock('./EditorToolbar', async () => {
   const { createElement } = await import('react')
 
   return {
-    ToolbarPlugin: () => createElement('toolbar-plugin'),
+    EditorToolbar: () => createElement('editor-toolbar'),
   }
 })
 

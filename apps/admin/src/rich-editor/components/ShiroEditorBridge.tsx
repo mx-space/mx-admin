@@ -10,9 +10,9 @@ import {
   NestedDocDialogEditorProvider,
   nestedDocEditNodes,
 } from '@haklex/rich-ext-nested-doc'
-import { ToolbarPlugin } from '@haklex/rich-plugin-toolbar'
 
 import { ShiroEditor } from '../shiro'
+import { EditorToolbar } from './EditorToolbar'
 import { EnrichmentFetcherProvider } from './EnrichmentLinkCardContext'
 import { NestedDocDialogEditor } from './NestedDocDialogEditor'
 
@@ -53,7 +53,7 @@ export function ShiroEditorBridge({
                 ...(editorProps.extraNodes || []),
                 ...nestedDocEditNodes,
               ]}
-              header={<ToolbarPlugin />}
+              header={<EditorToolbar />}
               onChange={onChange}
               onSubmit={onSubmit}
               onEditorReady={onEditorReady}

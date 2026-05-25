@@ -1,9 +1,9 @@
 import type { NestedDocDialogEditorProps } from '@haklex/rich-ext-nested-doc'
 
 import { nestedDocEditNodes } from '@haklex/rich-ext-nested-doc'
-import { ToolbarPlugin } from '@haklex/rich-plugin-toolbar'
 
 import { ShiroEditor } from '../shiro'
+import { EditorToolbar } from './EditorToolbar'
 
 export function NestedDocDialogEditor({
   initialValue,
@@ -14,7 +14,7 @@ export function NestedDocDialogEditor({
       initialValue={initialValue}
       onEditorReady={onEditorReady}
       extraNodes={nestedDocEditNodes}
-      header={<ToolbarPlugin />}
+      header={<EditorToolbar />}
     />
   )
 }
