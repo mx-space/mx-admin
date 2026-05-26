@@ -2,8 +2,8 @@ import { Plus } from 'lucide-react'
 import type { Pager } from '~/models/base'
 import type { NoteModel } from '~/models/note'
 
-import { Button } from '~/ui/button'
-import { CompactPagination } from '~/ui/compact-pagination'
+import { CompactPagination } from '~/ui/data/compact-pagination'
+import { Button } from '~/ui/primitives/button'
 
 import { topicNotesPageSize } from '../constants'
 import { NoteListSkeleton } from './NoteListSkeleton'

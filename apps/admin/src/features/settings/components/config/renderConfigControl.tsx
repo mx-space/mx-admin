@@ -1,8 +1,8 @@
 import type { ConfigFormField } from '~/api/options'
 
-import { Button } from '~/ui/button'
-import { SelectField } from '~/ui/select'
-import { TextArea, TextInput } from '~/ui/text-field'
+import { Button } from '~/ui/primitives/button'
+import { SelectField } from '~/ui/primitives/select'
+import { TextArea, TextInput } from '~/ui/primitives/text-field'
 
 import { stringValue } from '../../utils/settings'
 import { TagsEditor } from '../TagsEditor'

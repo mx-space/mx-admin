@@ -10,12 +10,12 @@ import {
   getTranslationEntries,
   updateTranslationEntry,
 } from '~/api/ai'
-import { Button } from '~/ui/button'
-import { cn } from '~/ui/cn'
-import { CompactPagination } from '~/ui/compact-pagination'
-import { Scroll } from '~/ui/scroll'
-import { SelectField } from '~/ui/select'
-import { TextInput } from '~/ui/text-field'
+import { CompactPagination } from '~/ui/data/compact-pagination'
+import { Button } from '~/ui/primitives/button'
+import { Scroll } from '~/ui/primitives/scroll'
+import { SelectField } from '~/ui/primitives/select'
+import { TextInput } from '~/ui/primitives/text-field'
+import { cn } from '~/utils/cn'
 
 import { translationEntryKeyPathOptions } from '../constants'
 import { getErrorMessage } from '../utils/ai'

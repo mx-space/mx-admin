@@ -1,10 +1,10 @@
 import { ArrowLeft, X } from 'lucide-react'
 import type { ReactNode } from 'react'
 
-import { cn } from '~/ui/cn'
-import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/ui/layout'
-import { Panel } from '~/ui/panel'
-import { Scroll } from '~/ui/scroll'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { Panel } from '~/ui/primitives/panel'
+import { Scroll } from '~/ui/primitives/scroll'
+import { cn } from '~/utils/cn'
 
 export function PanelHeader(props: {
   children?: ReactNode

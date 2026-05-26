@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import type { FormEvent } from 'react'
 
-import { Button } from '~/ui/button'
-import { TextArea } from '~/ui/text-field'
+import { Button } from '~/ui/primitives/button'
+import { TextArea } from '~/ui/primitives/text-field'
 
 import { parsePackageInput } from '../utils/snippets'
 import { Field, Modal } from './SnippetPrimitives'

@@ -1,6 +1,6 @@
 import { Plus, Webhook } from 'lucide-react'
 
-import { Button } from '~/ui/button'
+import { Button } from '~/ui/primitives/button'
 
 export function WebhookListSkeleton() {
   return (

@@ -1,6 +1,6 @@
 import { Quote } from 'lucide-react'
 
-import { Button } from '~/ui/button'
+import { Button } from '~/ui/primitives/button'
 
 export function SayEmptyState(props: { onCreate: () => void }) {
   return (

@@ -4,7 +4,7 @@ import type { CreateOwnerData } from '~/api/system'
 import type { FormEvent } from 'react'
 
 import { createOwner } from '~/api/system'
-import { TextInput } from '~/ui/text-field'
+import { TextInput } from '~/ui/primitives/text-field'
 
 import { inputClassName, labelClassName } from '../constants'
 import { getErrorMessage, removeEmptyStrings } from '../utils/setup'

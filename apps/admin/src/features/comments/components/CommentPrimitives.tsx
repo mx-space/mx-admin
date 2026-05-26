@@ -3,7 +3,7 @@ import { Inbox, SmilePlus } from 'lucide-react'
 import { useState } from 'react'
 import type { CommentModel } from '~/models/comment'
 
-import { cn } from '~/ui/cn'
+import { cn } from '~/utils/cn'
 
 import { commentQuickEmojis } from '../constants'
 

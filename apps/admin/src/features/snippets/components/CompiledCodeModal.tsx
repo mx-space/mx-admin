@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import type { SnippetModel } from '~/models/snippet'
 
 import { getCompiledCode } from '~/api/serverless'
-import { Scroll } from '~/ui/scroll'
+import { Scroll } from '~/ui/primitives/scroll'
 
 import { getErrorMessage } from '../utils/snippets'
 import { InlineLoading, Modal } from './SnippetPrimitives'

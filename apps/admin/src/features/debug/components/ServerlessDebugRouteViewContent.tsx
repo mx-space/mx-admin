@@ -5,11 +5,11 @@ import { toast } from 'sonner'
 import { postJson } from '~/api/http'
 import { useLocalStorageState } from '~/hooks/use-local-storage-state'
 import { defaultServerlessFunction } from '~/models/snippet'
-import { Button } from '~/ui/button'
-import { AppPage, PageHeader } from '~/ui/page-layout'
-import { Panel } from '~/ui/panel'
-import { Scroll } from '~/ui/scroll'
-import { TextArea } from '~/ui/text-field'
+import { AppPage, PageHeader } from '~/ui/layout/page-layout'
+import { Button } from '~/ui/primitives/button'
+import { Panel } from '~/ui/primitives/panel'
+import { Scroll } from '~/ui/primitives/scroll'
+import { TextArea } from '~/ui/primitives/text-field'
 
 export function ServerlessDebugRouteViewContent() {
   const [code, setCode] = useLocalStorageState(

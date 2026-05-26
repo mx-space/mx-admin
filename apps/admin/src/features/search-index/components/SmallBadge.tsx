@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-import { cn } from '~/ui/cn'
+import { cn } from '~/utils/cn'
 
 export function SmallBadge(props: {
   children: ReactNode

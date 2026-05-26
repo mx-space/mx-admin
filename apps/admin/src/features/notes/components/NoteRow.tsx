@@ -6,7 +6,7 @@ import { WEB_URL } from '~/constants/env'
 import {
   ContentEntryListItem,
   ContentListStatusBadge,
-} from '~/ui/content-list-item'
+} from '~/features/_shared/components/content-list-item'
 import { relativeTimeFromNow } from '~/utils/time'
 
 import { buildNotePublicPath, formatCompactNumber } from '../utils/format'

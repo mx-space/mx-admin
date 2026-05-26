@@ -15,11 +15,11 @@ import {
   getLinkStateCount,
   migrateLinkAvatars,
 } from '~/api/links'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
 import { LinkState } from '~/models/link'
-import { Button } from '~/ui/button'
-import { cn } from '~/ui/cn'
-import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/ui/layout'
-import { Scroll } from '~/ui/scroll'
+import { Button } from '~/ui/primitives/button'
+import { Scroll } from '~/ui/primitives/scroll'
+import { cn } from '~/utils/cn'
 
 import { friendsPageSize, friendsQueryKey } from '../constants'
 import { normalizeState, readPage } from '../utils/friends'

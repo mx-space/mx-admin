@@ -9,13 +9,13 @@ import {
   unsubscribeBatch,
   updateSubscribeEnabled,
 } from '~/api/subscribe'
-import { Button } from '~/ui/button'
-import { Checkbox } from '~/ui/checkbox'
-import { cn } from '~/ui/cn'
-import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/ui/layout'
-import { Scroll } from '~/ui/scroll'
-import { Switch } from '~/ui/switch'
-import { TextInput } from '~/ui/text-field'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { Button } from '~/ui/primitives/button'
+import { Checkbox } from '~/ui/primitives/checkbox'
+import { Scroll } from '~/ui/primitives/scroll'
+import { Switch } from '~/ui/primitives/switch'
+import { TextInput } from '~/ui/primitives/text-field'
+import { cn } from '~/utils/cn'
 
 import { pageSize } from '../constants'
 import { StatCard } from './StatCard'

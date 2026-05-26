@@ -8,8 +8,8 @@ import type { CategoryModel } from '~/models/category'
 import type { CategoryFormMode } from '../types/categories'
 
 import { createCategory, updateCategory } from '~/api/categories'
-import { Button } from '~/ui/button'
-import { TextInput } from '~/ui/text-field'
+import { Button } from '~/ui/primitives/button'
+import { TextInput } from '~/ui/primitives/text-field'
 
 import { getErrorMessage } from '../utils/errors'
 

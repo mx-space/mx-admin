@@ -3,7 +3,7 @@ import { Tag } from 'lucide-react'
 import type { TagModel } from '~/models/category'
 
 import { getPostsByTag } from '~/api/categories'
-import { Scroll } from '~/ui/scroll'
+import { Scroll } from '~/ui/primitives/scroll'
 
 import { DetailHeader } from './DetailHeader'
 import { EntitySummary } from './EntitySummary'

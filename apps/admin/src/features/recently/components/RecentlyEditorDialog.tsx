@@ -8,8 +8,8 @@ import type { UrlPreviewState } from '../types/recently'
 
 import { resolveEnrichment } from '~/api/enrichment'
 import { createRecently, updateRecently } from '~/api/recently'
-import { Button } from '~/ui/button'
-import { TextArea } from '~/ui/text-field'
+import { Button } from '~/ui/primitives/button'
+import { TextArea } from '~/ui/primitives/text-field'
 
 import { cleanErrorMessage, extractUrls } from '../utils/recently'
 import { EnrichmentInlineCard } from './RecentlyPrimitives'

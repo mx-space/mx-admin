@@ -2,8 +2,8 @@ import { Folder, Inbox } from 'lucide-react'
 import type { ProjectModel } from '~/models/project'
 import type { ProjectAvatarSize } from '../types/projects'
 
-import { cn } from '~/ui/cn'
-import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/ui/layout'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { cn } from '~/utils/cn'
 
 import { readInitial } from '../utils/projects'
 

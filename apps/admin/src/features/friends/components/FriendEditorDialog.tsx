@@ -7,9 +7,9 @@ import type { LinkModel } from '~/models/link'
 
 import { createLink, updateLink } from '~/api/links'
 import { LinkState, LinkStateNameMap, LinkType } from '~/models/link'
-import { Button } from '~/ui/button'
-import { SelectField } from '~/ui/select'
-import { TextInput } from '~/ui/text-field'
+import { Button } from '~/ui/primitives/button'
+import { SelectField } from '~/ui/primitives/select'
+import { TextInput } from '~/ui/primitives/text-field'
 
 export function FriendEditorDialog(props: {
   link: LinkModel | null

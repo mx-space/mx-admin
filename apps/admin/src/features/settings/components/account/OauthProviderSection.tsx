@@ -4,9 +4,9 @@ import { toast } from 'sonner'
 import type { FlatOauthProvider, OauthProviderType } from '../../types/settings'
 
 import { API_URL } from '~/constants/env'
-import { Button } from '~/ui/button'
-import { Switch } from '~/ui/switch'
-import { TextInput } from '~/ui/text-field'
+import { Button } from '~/ui/primitives/button'
+import { Switch } from '~/ui/primitives/switch'
+import { TextInput } from '~/ui/primitives/text-field'
 import { authClient } from '~/utils/authjs/auth'
 
 import { GitHubIcon, GoogleIcon } from './OauthIcons'

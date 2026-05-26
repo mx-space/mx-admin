@@ -1,7 +1,7 @@
 import { BookOpen, Plus } from 'lucide-react'
 import type { NoteFilter } from '../types/notes'
 
-import { ButtonLink } from '~/ui/button'
+import { ButtonLink } from '~/ui/primitives/button'
 
 export function NotesEmpty(props: { filter: NoteFilter; keyword: string }) {
   const isPlainEmpty = !props.keyword && props.filter === 'all'

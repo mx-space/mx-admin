@@ -2,8 +2,8 @@ import { Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import type { Subscriber } from '~/api/subscribe'
 
-import { Button } from '~/ui/button'
-import { Checkbox } from '~/ui/checkbox'
+import { Button } from '~/ui/primitives/button'
+import { Checkbox } from '~/ui/primitives/checkbox'
 
 import { formatDate } from '../utils/format'
 import { SubscribeTags } from './SubscribeTags'

@@ -1,6 +1,6 @@
 import type { ConfigFormField } from '~/api/options'
 
-import { Switch } from '~/ui/switch'
+import { Switch } from '~/ui/primitives/switch'
 
 import { renderConfigControl } from './renderConfigControl'
 

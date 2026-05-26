@@ -1,6 +1,6 @@
 import type { TrafficSourceResponse } from '~/api/analyze'
 
-import { Scroll } from '~/ui/scroll'
+import { Scroll } from '~/ui/primitives/scroll'
 
 import { formatNumber } from '../utils/analyze'
 import { DistributionList } from './DistributionList'

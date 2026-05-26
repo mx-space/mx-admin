@@ -4,14 +4,14 @@ import { toast } from 'sonner'
 import type {
   MountRichEditorOptions,
   RichEditorHandle,
-} from '~/rich-editor/mount/mount-rich-editor'
+} from '~/vendor/rich-editor/mount/mount-rich-editor'
 
 import { resolveEnrichment } from '~/api/enrichment'
 import { uploadFile } from '~/api/files'
 import { API_URL } from '~/constants/env'
-import { Button } from '~/ui/button'
-import { cn } from '~/ui/cn'
-import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/ui/layout'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { Button } from '~/ui/primitives/button'
+import { cn } from '~/utils/cn'
 
 const STORAGE_KEY = 'debug-rich-editor-content'
 
@@ -104,7 +104,7 @@ function RichDebugSurface(props: {
       if (!containerRef.current) return
 
       const { mountRichEditor } =
-        await import('~/rich-editor/mount/mount-rich-editor')
+        await import('~/vendor/rich-editor/mount/mount-rich-editor')
 
       if (disposed || !containerRef.current) return
 

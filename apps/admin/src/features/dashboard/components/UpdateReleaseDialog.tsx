@@ -4,9 +4,9 @@ import { ExternalLink, X } from 'lucide-react'
 import type { ReleaseModalState } from '../types/dashboard'
 
 import { getReleaseDetails } from '~/api/github-update'
-import { Button } from '~/ui/button'
-import { MarkdownRender } from '~/ui/markdown-render'
-import { Scroll } from '~/ui/scroll'
+import { Button } from '~/ui/primitives/button'
+import { MarkdownRender } from '~/ui/primitives/markdown-render'
+import { Scroll } from '~/ui/primitives/scroll'
 
 import { dashboardQueryKeys } from '../constants'
 import { formatDateTime } from '../utils/dashboard'

@@ -1,7 +1,7 @@
 import { ChevronRight, RefreshCw } from 'lucide-react'
 import type { WebhookEventRecord } from '~/api/webhooks'
 
-import { Button } from '~/ui/button'
+import { Button } from '~/ui/primitives/button'
 
 import { formatDateTime } from '../utils/webhooks'
 import { EventBadge, JsonBlock, StatusDot } from './WebhookPrimitives'

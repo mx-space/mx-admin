@@ -1,7 +1,7 @@
 import { Loader2, RefreshCcw, StickyNote } from 'lucide-react'
 import { forwardRef } from 'react'
 
-import { Button } from '~/ui/button'
+import { Button } from '~/ui/primitives/button'
 
 export function RecentlyEmptyState(props: { onCreate: () => void }) {
   return (

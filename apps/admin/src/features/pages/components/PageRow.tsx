@@ -10,8 +10,8 @@ import { Link } from 'react-router'
 import type { PageModel } from '~/models/page'
 
 import { WEB_URL } from '~/constants/env'
-import { ButtonLink } from '~/ui/button'
-import { cn } from '~/ui/cn'
+import { ButtonLink } from '~/ui/primitives/button'
+import { cn } from '~/utils/cn'
 import { relativeTimeFromNow } from '~/utils/time'
 
 export function PageRow(props: {

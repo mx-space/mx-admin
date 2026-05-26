@@ -1,7 +1,7 @@
 import { X } from 'lucide-react'
 import { useState } from 'react'
 
-import { TextInput } from '~/ui/text-field'
+import { TextInput } from '~/ui/primitives/text-field'
 
 export function TagsEditor(props: {
   onChange: (value: string[]) => void

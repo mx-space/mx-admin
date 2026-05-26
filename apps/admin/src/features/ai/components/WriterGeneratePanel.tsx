@@ -4,9 +4,9 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 
 import { AiQueryType, writerGenerate } from '~/api/ai'
-import { Button } from '~/ui/button'
-import { SelectField } from '~/ui/select'
-import { TextArea, TextInput } from '~/ui/text-field'
+import { Button } from '~/ui/primitives/button'
+import { SelectField } from '~/ui/primitives/select'
+import { TextArea, TextInput } from '~/ui/primitives/text-field'
 
 import { getErrorMessage } from '../utils/ai'
 import { Field } from './AiPrimitives'

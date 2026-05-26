@@ -1,10 +1,10 @@
 import { toast } from 'sonner'
 import type { ReactNode } from 'react'
 
-import { Button } from '~/ui/button'
-import { AppPage, PageHeader } from '~/ui/page-layout'
-import { Panel } from '~/ui/panel'
-import { Scroll } from '~/ui/scroll'
+import { AppPage, PageHeader } from '~/ui/layout/page-layout'
+import { Button } from '~/ui/primitives/button'
+import { Panel } from '~/ui/primitives/panel'
+import { Scroll } from '~/ui/primitives/scroll'
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 

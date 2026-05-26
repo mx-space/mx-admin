@@ -31,13 +31,13 @@ import {
   getDeviceDistribution,
   getTrafficSource,
 } from '~/api/analyze'
-import { Button } from '~/ui/button'
-import { cn } from '~/ui/cn'
-import { CompactPagination } from '~/ui/compact-pagination'
-import { MetricCard } from '~/ui/metric-card'
-import { AppPage, PageHeader } from '~/ui/page-layout'
-import { Panel } from '~/ui/panel'
-import { Scroll } from '~/ui/scroll'
+import { MetricCard } from '~/features/analyze/components/metric-card'
+import { CompactPagination } from '~/ui/data/compact-pagination'
+import { AppPage, PageHeader } from '~/ui/layout/page-layout'
+import { Button } from '~/ui/primitives/button'
+import { Panel } from '~/ui/primitives/panel'
+import { Scroll } from '~/ui/primitives/scroll'
+import { cn } from '~/utils/cn'
 
 import { activityPageSize, analyzeQueryKey, pageSize } from '../constants'
 import {

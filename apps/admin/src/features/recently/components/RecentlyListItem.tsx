@@ -5,7 +5,7 @@ import type { EnrichmentResult } from '~/models/enrichment'
 import type { RecentlyModel } from '~/models/recently'
 
 import { resolveEnrichment } from '~/api/enrichment'
-import { Button } from '~/ui/button'
+import { Button } from '~/ui/primitives/button'
 
 import { refTypeIcons, refTypeLabels } from '../constants'
 import { formatDate } from '../utils/recently'

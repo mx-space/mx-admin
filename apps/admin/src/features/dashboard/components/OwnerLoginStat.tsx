@@ -1,6 +1,6 @@
 import { Globe, Shield } from 'lucide-react'
 
-import { IpInfoPopover } from '~/ui/ip-info-popover'
+import { IpInfoPopover } from '~/features/_shared/components/ip-info-popover'
 
 import { formatDateTime } from '../utils/dashboard'
 

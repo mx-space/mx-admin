@@ -1,6 +1,6 @@
 import { ChevronLeft } from 'lucide-react'
 
-import { TextInput } from '~/ui/text-field'
+import { TextInput } from '~/ui/primitives/text-field'
 
 import {
   inputClassName,

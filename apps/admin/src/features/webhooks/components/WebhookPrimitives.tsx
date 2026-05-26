@@ -1,6 +1,6 @@
 import type { Globe } from 'lucide-react'
 
-import { Scroll } from '~/ui/scroll'
+import { Scroll } from '~/ui/primitives/scroll'
 
 import { formatJson, getEventColorClass } from '../utils/webhooks'
 

@@ -6,7 +6,7 @@ import type { FormEvent } from 'react'
 import type { SetupUrls } from '../types/setup'
 
 import { patchInitConfig } from '~/api/system'
-import { TextInput } from '~/ui/text-field'
+import { TextInput } from '~/ui/primitives/text-field'
 
 import { inputClassName, labelClassName } from '../constants'
 import { getErrorMessage } from '../utils/setup'

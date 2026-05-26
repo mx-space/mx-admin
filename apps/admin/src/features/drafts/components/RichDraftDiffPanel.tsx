@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react'
 
-import { Scroll } from '~/ui/scroll'
+import { Scroll } from '~/ui/primitives/scroll'
 
 import {
   getCurrentColorScheme,
@@ -29,7 +29,7 @@ export function RichDraftDiffPanel(props: {
     let disposed = false
     let handle: { unmount: () => void } | null = null
 
-    void import('~/rich-editor/mount/mount-rich-diff').then(
+    void import('~/vendor/rich-editor/mount/mount-rich-diff').then(
       ({ mountRichDiff }) => {
         if (disposed || !containerRef.current) return
         handle = mountRichDiff(containerRef.current, {

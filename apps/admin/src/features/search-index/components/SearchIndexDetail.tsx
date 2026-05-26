@@ -2,10 +2,10 @@ import { ArrowLeft, ExternalLink, Loader2, RotateCcw } from 'lucide-react'
 import { Link } from 'react-router'
 import type { SearchDocumentAdminRow } from '~/api/search-index'
 
-import { Button } from '~/ui/button'
-import { cn } from '~/ui/cn'
-import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/ui/layout'
-import { Scroll } from '~/ui/scroll'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { Button } from '~/ui/primitives/button'
+import { Scroll } from '~/ui/primitives/scroll'
+import { cn } from '~/utils/cn'
 
 import {
   buildEditUrl,

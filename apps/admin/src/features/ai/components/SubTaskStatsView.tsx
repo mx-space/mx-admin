@@ -1,6 +1,6 @@
 import type { AITask } from '~/api/ai'
 
-import { cn } from '~/ui/cn'
+import { cn } from '~/utils/cn'
 
 import { SmallBadge } from './AiPrimitives'
 

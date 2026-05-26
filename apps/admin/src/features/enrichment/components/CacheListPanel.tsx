@@ -1,9 +1,9 @@
 import type { EnrichmentRow } from '~/models/enrichment'
 import type { CacheFilterMode } from '../types/enrichment'
 
-import { cn } from '~/ui/cn'
-import { CompactPagination } from '~/ui/compact-pagination'
-import { Scroll } from '~/ui/scroll'
+import { CompactPagination } from '~/ui/data/compact-pagination'
+import { Scroll } from '~/ui/primitives/scroll'
+import { cn } from '~/utils/cn'
 import { relativeTimeFromNow } from '~/utils/time'
 
 import { ListEmpty, ListLoading, ProviderBadge } from './EnrichmentPrimitives'

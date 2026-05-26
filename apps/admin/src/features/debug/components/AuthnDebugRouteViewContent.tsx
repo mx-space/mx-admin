@@ -1,10 +1,10 @@
 import { KeyRound, ShieldCheck } from 'lucide-react'
 import { toast } from 'sonner'
 
-import { Button } from '~/ui/button'
-import { AppPage, PageHeader } from '~/ui/page-layout'
-import { Panel } from '~/ui/panel'
-import { Scroll } from '~/ui/scroll'
+import { AppPage, PageHeader } from '~/ui/layout/page-layout'
+import { Button } from '~/ui/primitives/button'
+import { Panel } from '~/ui/primitives/panel'
+import { Scroll } from '~/ui/primitives/scroll'
 import { authClient } from '~/utils/authjs/auth'
 
 export function AuthnDebugRouteViewContent() {

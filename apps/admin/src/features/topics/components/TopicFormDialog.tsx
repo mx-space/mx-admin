@@ -8,8 +8,8 @@ import type { TopicModel } from '~/models/topic'
 import type { TopicFormMode } from '../types/topics'
 
 import { createTopic, getTopic, updateTopic } from '~/api/topics'
-import { Button } from '~/ui/button'
-import { TextArea, TextInput } from '~/ui/text-field'
+import { Button } from '~/ui/primitives/button'
+import { TextArea, TextInput } from '~/ui/primitives/text-field'
 
 import { getErrorMessage } from '../utils/errors'
 import { validateTopicForm } from '../utils/topic-form'

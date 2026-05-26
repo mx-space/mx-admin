@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react'
 import type { LinkModel } from '~/models/link'
 
 import { LinkState, LinkStateNameMap } from '~/models/link'
-import { Button } from '~/ui/button'
-import { SelectField } from '~/ui/select'
-import { TextArea } from '~/ui/text-field'
+import { Button } from '~/ui/primitives/button'
+import { SelectField } from '~/ui/primitives/select'
+import { TextArea } from '~/ui/primitives/text-field'
 
 export function AuditReasonDialog(props: {
   link: LinkModel | null

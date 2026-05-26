@@ -6,8 +6,8 @@ import type { ImportFunctionPreview } from '../types/snippets'
 
 import { importSnippets } from '~/api/snippets'
 import { SnippetType } from '~/models/snippet'
-import { Button } from '~/ui/button'
-import { TextInput } from '~/ui/text-field'
+import { Button } from '~/ui/primitives/button'
+import { TextInput } from '~/ui/primitives/text-field'
 
 import {
   fetchAvailableSnippetPackages,

@@ -4,8 +4,8 @@ import type {
   AIProviderModel,
 } from '../../types/settings'
 
-import { SelectField } from '~/ui/select'
-import { TextInput } from '~/ui/text-field'
+import { SelectField } from '~/ui/primitives/select'
+import { TextInput } from '~/ui/primitives/text-field'
 
 import { formatAIProviderLabel } from '../../utils/settings'
 

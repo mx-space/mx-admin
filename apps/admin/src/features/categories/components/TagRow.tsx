@@ -1,7 +1,7 @@
 import { Tag } from 'lucide-react'
 import type { TagModel } from '~/models/category'
 
-import { cn } from '~/ui/cn'
+import { cn } from '~/utils/cn'
 
 export function TagRow(props: {
   onSelect: () => void

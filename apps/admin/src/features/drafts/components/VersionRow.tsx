@@ -1,8 +1,8 @@
 import { Loader2, RotateCcw } from 'lucide-react'
 import type { DraftDiffStats, VersionItem } from '../types/drafts'
 
-import { Button } from '~/ui/button'
-import { cn } from '~/ui/cn'
+import { Button } from '~/ui/primitives/button'
+import { cn } from '~/utils/cn'
 import { relativeTimeFromNow } from '~/utils/time'
 
 export function VersionRow(props: {

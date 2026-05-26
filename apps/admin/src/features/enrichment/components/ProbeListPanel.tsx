@@ -1,9 +1,9 @@
 import { AlertCircle, CheckCircle2, Eraser } from 'lucide-react'
 import type { ProbeHistoryEntry } from '../types/enrichment'
 
-import { Button } from '~/ui/button'
-import { cn } from '~/ui/cn'
-import { Scroll } from '~/ui/scroll'
+import { Button } from '~/ui/primitives/button'
+import { Scroll } from '~/ui/primitives/scroll'
+import { cn } from '~/utils/cn'
 
 import { ListEmpty } from './EnrichmentPrimitives'
 

@@ -1,6 +1,6 @@
 import type { ReadingRankItem } from '~/api/activity'
 
-import { cn } from '~/ui/cn'
+import { cn } from '~/utils/cn'
 
 import { formatNumber } from '../utils/analyze'
 import { ProgressBar } from './AnalyzePrimitives'

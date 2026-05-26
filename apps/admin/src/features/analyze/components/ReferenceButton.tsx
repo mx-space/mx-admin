@@ -1,7 +1,7 @@
 import { BookOpen, ExternalLink } from 'lucide-react'
 
 import { getReferenceUrl } from '~/api/activity'
-import { cn } from '~/ui/cn'
+import { cn } from '~/utils/cn'
 
 export function ReferenceButton(props: { id?: string; title: string }) {
   const openReference = async () => {

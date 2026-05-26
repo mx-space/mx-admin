@@ -7,9 +7,9 @@ import type { ConfigFormGroup, ConfigFormSchema } from '~/api/options'
 import { testCommentReview } from '~/api/ai'
 import { sendTestEmail } from '~/api/health'
 import { getAllOptions, patchOption } from '~/api/options'
-import { Button } from '~/ui/button'
-import { Panel } from '~/ui/panel'
-import { TextArea } from '~/ui/text-field'
+import { Button } from '~/ui/primitives/button'
+import { Panel } from '~/ui/primitives/panel'
+import { TextArea } from '~/ui/primitives/text-field'
 
 import { settingsQueryKey } from '../constants'
 import {

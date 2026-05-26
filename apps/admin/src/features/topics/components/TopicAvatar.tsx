@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import type { TopicModel } from '~/models/topic'
 
-import { cn } from '~/ui/cn'
+import { cn } from '~/utils/cn'
 
 import { getInitial } from '../utils/topic-form'
 

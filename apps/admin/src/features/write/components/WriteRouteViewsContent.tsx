@@ -68,9 +68,9 @@ import type { TopicModel } from '~/models/topic'
 import type {
   RichEditorWithAgentProps,
   RichEditorWithAgentRef,
-} from '~/rich-editor/components/RichEditorWithAgent'
-import type { AgentLoopHandle } from '~/rich-editor/types'
-import type { MetaFieldsSchema } from '~/rich-editor/utils/meta-tools'
+} from '~/vendor/rich-editor/components/RichEditorWithAgent'
+import type { AgentLoopHandle } from '~/vendor/rich-editor/types'
+import type { MetaFieldsSchema } from '~/vendor/rich-editor/utils/meta-tools'
 import type { LexicalEditor, SerializedEditorState } from 'lexical'
 import type { LucideIcon } from 'lucide-react'
 import type { CSSProperties, ReactNode } from 'react'
@@ -95,38 +95,39 @@ import { createPost, getPostById, getPosts, updatePost } from '~/api/posts'
 import { callBuiltInFunction } from '~/api/system'
 import { getTopics } from '~/api/topics'
 import { API_URL, WEB_URL } from '~/constants/env'
+import {
+  APP_SHELL_HEADER_HEIGHT_CLASS,
+  APP_SHELL_HEADER_HEIGHT_VALUE,
+} from '~/constants/layout'
+import { DraftStatusTag } from '~/features/drafts/components/draft-status-tag'
 import { DraftHintBanner } from '~/features/write/components/DraftHintBanner'
 import { MetaPresetSection } from '~/features/write/meta-presets'
 import { useAgentSessionManager } from '~/hooks/use-agent-session-manager'
 import { useLocalStorageState } from '~/hooks/use-local-storage-state'
 import { DraftRefType } from '~/models/draft'
-import {
-  buildMetaSystemMessages,
-  buildMetaTools,
-} from '~/rich-editor/utils/meta-tools'
-import { Button } from '~/ui/button'
-import { cn } from '~/ui/cn'
-import { CodeMirrorEditor, ImageDropZone } from '~/ui/codemirror'
+import { confirmDialog } from '~/ui/feedback/confirm'
+import { Drawer } from '~/ui/feedback/drawer'
+import { Modal, ModalHeader } from '~/ui/feedback/modal'
+import { present } from '~/ui/feedback/modal-imperative'
 import {
   AsidePanel,
   ContentLayout,
   ContentLayoutSlot,
-} from '~/ui/content-layout'
-import { DateTimePicker } from '~/ui/datetime-picker'
-import { DraftStatusTag } from '~/ui/draft-status-tag'
-import { Drawer } from '~/ui/drawer'
-import { HeaderBackButton } from '~/ui/header-back-button'
-import {
-  APP_SHELL_HEADER_HEIGHT_CLASS,
-  APP_SHELL_HEADER_HEIGHT_VALUE,
-} from '~/ui/layout'
-import { Modal, ModalHeader } from '~/ui/modal'
-import { present } from '~/ui/modal-imperative'
-import { Scroll } from '~/ui/scroll'
-import { SelectField } from '~/ui/select'
-import { Switch } from '~/ui/switch'
-import { TextArea, TextInput } from '~/ui/text-field'
+} from '~/ui/layout/content-layout'
+import { HeaderBackButton } from '~/ui/layout/header-back-button'
+import { Button } from '~/ui/primitives/button'
+import { DateTimePicker } from '~/ui/primitives/datetime-picker'
+import { Scroll } from '~/ui/primitives/scroll'
+import { SelectField } from '~/ui/primitives/select'
+import { Switch } from '~/ui/primitives/switch'
+import { TextArea, TextInput } from '~/ui/primitives/text-field'
+import { cn } from '~/utils/cn'
 import { getDayOfYear } from '~/utils/time'
+import { CodeMirrorEditor, ImageDropZone } from '~/vendor/codemirror'
+import {
+  buildMetaSystemMessages,
+  buildMetaTools,
+} from '~/vendor/rich-editor/utils/meta-tools'
 
 type WriteKind = 'note' | 'page' | 'post'
 type ContentFormat = 'lexical' | 'markdown'
@@ -196,9 +197,11 @@ const emptyCategories: CategoryModel[] = []
 const emptyTopics: TopicModel[] = []
 const PREFERRED_CONTENT_FORMAT_STORAGE_KEY = 'preferred-content-format'
 const RichEditorWithAgent = lazy(() =>
-  import('~/rich-editor/components/RichEditorWithAgent').then((module) => ({
-    default: module.RichEditorWithAgent,
-  })),
+  import('~/vendor/rich-editor/components/RichEditorWithAgent').then(
+    (module) => ({
+      default: module.RichEditorWithAgent,
+    }),
+  ),
 )
 const MOOD_SET = [
   '开心',
@@ -359,6 +362,7 @@ function WritePage(props: { kind: WriteKind }) {
   const appliedRouteDraftIdRef = useRef<string | null>(null)
   const acceptedRouteRef = useRef({ pathname: '', route: '' })
   const confirmedNavigationRouteRef = useRef('')
+  const isConfirmingNavRef = useRef(false)
   const draftDirtyRef = useRef(false)
   const lastSavedDraftFingerprintRef = useRef('')
   const latestDraftFingerprintRef = useRef('')
@@ -498,18 +502,26 @@ function WritePage(props: { kind: WriteKind }) {
       const nextPathname = getRoutePathname(nextRoute)
       if (nextPathname === location.pathname) return
 
-      if (window.confirm('当前内容尚未保存为草稿，确认离开？')) {
-        confirmedNavigationRouteRef.current = nextRoute
-        return
-      }
-
       event.preventDefault()
       event.stopPropagation()
+
+      if (isConfirmingNavRef.current) return
+      isConfirmingNavRef.current = true
+      void confirmDialog({
+        title: '离开当前页面？',
+        description: '当前内容尚未保存为草稿，确认离开？',
+        confirmText: '离开',
+      }).then((ok) => {
+        isConfirmingNavRef.current = false
+        if (!ok) return
+        confirmedNavigationRouteRef.current = nextRoute
+        navigate(nextRoute)
+      })
     }
 
     document.addEventListener('click', onClickCapture, true)
     return () => document.removeEventListener('click', onClickCapture, true)
-  }, [hasDraftAutosaveContent, location.pathname])
+  }, [hasDraftAutosaveContent, location.pathname, navigate])
 
   useEffect(() => {
     const currentRoute = `${location.pathname}${location.search}${location.hash}`
@@ -538,14 +550,20 @@ function WritePage(props: { kind: WriteKind }) {
       acceptedRoute.pathname !== location.pathname &&
       hasUnsavedDraftChanges()
     ) {
-      if (window.confirm('当前内容尚未保存为草稿，确认离开？')) {
-        acceptedRouteRef.current = {
-          pathname: location.pathname,
-          route: currentRoute,
-        }
-      } else {
-        navigate(acceptedRoute.route, { replace: true })
-      }
+      const targetRoute = currentRoute
+      navigate(acceptedRoute.route, { replace: true })
+      if (isConfirmingNavRef.current) return
+      isConfirmingNavRef.current = true
+      void confirmDialog({
+        title: '离开当前页面？',
+        description: '当前内容尚未保存为草稿，确认离开？',
+        confirmText: '离开',
+      }).then((ok) => {
+        isConfirmingNavRef.current = false
+        if (!ok) return
+        confirmedNavigationRouteRef.current = targetRoute
+        navigate(targetRoute)
+      })
       return
     }
 
@@ -3746,7 +3764,7 @@ function RichWriteSurface(props: {
 
     const apply = async () => {
       const { applyAgentReviewBatch } =
-        await import('~/rich-editor/utils/apply-agent-review-batch')
+        await import('~/vendor/rich-editor/utils/apply-agent-review-batch')
       applyAgentReviewBatch(editor, batch)
       if (mode === 'accept') agentStore.getState().acceptReviewBatch(batchId)
       toast.success(mode === 'accept' ? '建议已应用' : '建议已重新应用')
@@ -3778,7 +3796,7 @@ function RichWriteSurface(props: {
 
     const apply = async () => {
       const { applyAgentOperation } =
-        await import('~/rich-editor/utils/apply-agent-review-batch')
+        await import('~/vendor/rich-editor/utils/apply-agent-review-batch')
       const summary = {
         conflict: 0,
         error: 0,

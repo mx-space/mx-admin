@@ -4,7 +4,7 @@ import type { LinkModel } from '~/models/link'
 import type { HealthEntry } from '../types/friends'
 
 import { LinkState, LinkType } from '~/models/link'
-import { Button } from '~/ui/button'
+import { Button } from '~/ui/primitives/button'
 
 import { formatDate } from '../utils/friends'
 import { Avatar } from './FriendsPrimitives'

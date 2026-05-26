@@ -1,5 +1,5 @@
-import { Button } from '~/ui/button'
-import { cn } from '~/ui/cn'
+import { Button } from '~/ui/primitives/button'
+import { cn } from '~/utils/cn'
 
 export function ErrorBlock(props: { label: string; onRetry: () => void }) {
   return (

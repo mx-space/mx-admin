@@ -1,4 +1,4 @@
-import { Panel } from '~/ui/panel'
+import { Panel } from '~/ui/primitives/panel'
 
 import { EmptyDashboardBlock } from './DashboardPrimitives'
 

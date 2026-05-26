@@ -1,8 +1,8 @@
 import { Bug, Check, RotateCcw, Server } from 'lucide-react'
 import { FormEvent, useMemo, useState } from 'react'
 
-import { Switch } from '~/ui/switch'
-import { TextInput } from '~/ui/text-field'
+import { Switch } from '~/ui/primitives/switch'
+import { TextInput } from '~/ui/primitives/text-field'
 
 const storeApiUrlKey = 'mx-admin:setup-api:url'
 const storeGatewayUrlKey = 'mx-admin:setup-api:gateway'

@@ -1,7 +1,7 @@
 import { HardDrive } from 'lucide-react'
 import type { BackupFile } from '~/api/backups'
 
-import { Checkbox } from '~/ui/checkbox'
+import { Checkbox } from '~/ui/primitives/checkbox'
 
 import { formatBackupDate } from '../utils/backup-file'
 

@@ -1,7 +1,7 @@
 import { AlertCircle, History, X } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
-import { cn } from '~/ui/cn'
+import { cn } from '~/utils/cn'
 
 interface DraftHintBannerProps {
   variant: 'list' | 'recovery'

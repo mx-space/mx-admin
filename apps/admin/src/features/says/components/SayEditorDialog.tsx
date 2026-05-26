@@ -6,8 +6,8 @@ import { toast } from 'sonner'
 import type { SayModel } from '~/models/say'
 
 import { createSay, updateSay } from '~/api/says'
-import { Button } from '~/ui/button'
-import { TextArea, TextInput } from '~/ui/text-field'
+import { Button } from '~/ui/primitives/button'
+import { TextArea, TextInput } from '~/ui/primitives/text-field'
 
 export function SayEditorDialog(props: {
   onClose: () => void

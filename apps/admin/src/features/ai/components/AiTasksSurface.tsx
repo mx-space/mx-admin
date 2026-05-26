@@ -13,13 +13,13 @@ import {
   getAiTasks,
   retryAiTask,
 } from '~/api/ai'
-import { Button } from '~/ui/button'
-import { cn } from '~/ui/cn'
-import { CompactPagination } from '~/ui/compact-pagination'
-import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/ui/layout'
-import { MasterDetailLayout } from '~/ui/page-layout'
-import { Scroll } from '~/ui/scroll'
-import { SelectField } from '~/ui/select'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { CompactPagination } from '~/ui/data/compact-pagination'
+import { MasterDetailLayout } from '~/ui/layout/page-layout'
+import { Button } from '~/ui/primitives/button'
+import { Scroll } from '~/ui/primitives/scroll'
+import { SelectField } from '~/ui/primitives/select'
+import { cn } from '~/utils/cn'
 
 import {
   aiTasksQueryKey,

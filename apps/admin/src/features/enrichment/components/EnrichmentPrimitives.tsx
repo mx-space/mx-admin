@@ -1,8 +1,8 @@
 import { DatabaseZap, Loader2 } from 'lucide-react'
 import type { ReactNode } from 'react'
 
-import { cn } from '~/ui/cn'
-import { Scroll } from '~/ui/scroll'
+import { Scroll } from '~/ui/primitives/scroll'
+import { cn } from '~/utils/cn'
 
 export function DetailBlock(props: { children: ReactNode; title: string }) {
   return (

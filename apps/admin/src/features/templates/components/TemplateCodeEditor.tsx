@@ -1,4 +1,4 @@
-import { CodeEditor } from '~/ui/code-editor'
+import { CodeEditor } from '~/ui/primitives/code-editor'
 
 export function TemplateCodeEditor(props: {
   dirty: boolean

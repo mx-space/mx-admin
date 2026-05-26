@@ -4,7 +4,7 @@ import { toast } from 'sonner'
 import type { OauthOptions, OauthProviderType } from '../../types/settings'
 
 import { getOption, patchOption } from '~/api/options'
-import { Panel } from '~/ui/panel'
+import { Panel } from '~/ui/primitives/panel'
 
 import { accountQueryKey, oauthProviders } from '../../constants'
 import { flattenOauthOptions } from '../../utils/oauth'

@@ -1,7 +1,7 @@
 import type { CommentModel } from '~/models/comment'
 
-import { Checkbox } from '~/ui/checkbox'
-import { cn } from '~/ui/cn'
+import { Checkbox } from '~/ui/primitives/checkbox'
+import { cn } from '~/utils/cn'
 
 import { formatCommentDate } from '../utils/comments'
 import { Avatar } from './CommentPrimitives'

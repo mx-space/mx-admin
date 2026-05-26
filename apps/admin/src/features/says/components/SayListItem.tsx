@@ -2,7 +2,7 @@ import { Pencil, Quote, Trash2, User } from 'lucide-react'
 import { useState } from 'react'
 import type { SayModel } from '~/models/say'
 
-import { Button } from '~/ui/button'
+import { Button } from '~/ui/primitives/button'
 
 import { formatSayDate } from '../utils/format'
 

@@ -10,10 +10,10 @@ import type {
 } from '../../types/settings'
 
 import { getModelList, getModels, testConfig } from '~/api/ai'
-import { Button } from '~/ui/button'
-import { SelectField } from '~/ui/select'
-import { Switch } from '~/ui/switch'
-import { TextInput } from '~/ui/text-field'
+import { Button } from '~/ui/primitives/button'
+import { SelectField } from '~/ui/primitives/select'
+import { Switch } from '~/ui/primitives/switch'
+import { TextInput } from '~/ui/primitives/text-field'
 
 import { aiProviderTypeOptions } from '../../constants'
 import {

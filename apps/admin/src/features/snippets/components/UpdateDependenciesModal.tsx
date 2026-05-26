@@ -2,8 +2,8 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { RefreshCw } from 'lucide-react'
 
 import { getDependencyGraph, getNpmPackageLatest } from '~/api/dependencies'
-import { Button } from '~/ui/button'
-import { cn } from '~/ui/cn'
+import { Button } from '~/ui/primitives/button'
+import { cn } from '~/utils/cn'
 
 import { InlineLoading, Modal } from './SnippetPrimitives'
 

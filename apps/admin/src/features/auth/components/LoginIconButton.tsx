@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-import { Button } from '~/ui/button'
+import { Button } from '~/ui/primitives/button'
 
 export function LoginIconButton(props: {
   children: ReactNode

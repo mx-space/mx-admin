@@ -11,11 +11,11 @@ import {
   getWebhookEvents,
   updateWebhook,
 } from '~/api/webhooks'
-import { Button } from '~/ui/button'
-import { Checkbox } from '~/ui/checkbox'
-import { Scroll } from '~/ui/scroll'
-import { Switch } from '~/ui/switch'
-import { TextInput } from '~/ui/text-field'
+import { Button } from '~/ui/primitives/button'
+import { Checkbox } from '~/ui/primitives/checkbox'
+import { Scroll } from '~/ui/primitives/scroll'
+import { Switch } from '~/ui/primitives/switch'
+import { TextInput } from '~/ui/primitives/text-field'
 
 import { scopeOptions, webhooksQueryKey } from '../constants'
 

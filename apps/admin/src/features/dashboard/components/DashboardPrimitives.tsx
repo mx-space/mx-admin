@@ -1,7 +1,7 @@
 import type { LucideIcon } from 'lucide-react'
 
-import { Button } from '~/ui/button'
-import { cn } from '~/ui/cn'
+import { Button } from '~/ui/primitives/button'
+import { cn } from '~/utils/cn'
 
 import { formatNumber } from '../utils/dashboard'
 

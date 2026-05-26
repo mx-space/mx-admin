@@ -5,8 +5,8 @@ import { toast } from 'sonner'
 import type { GithubRepo } from '~/api/github-repo'
 
 import { getRepoDetail, getRepoReadme } from '~/api/github-repo'
-import { Button } from '~/ui/button'
-import { TextInput } from '~/ui/text-field'
+import { Button } from '~/ui/primitives/button'
+import { TextInput } from '~/ui/primitives/text-field'
 
 import { getErrorMessage, parseGithubRepo } from '../utils/projects'
 

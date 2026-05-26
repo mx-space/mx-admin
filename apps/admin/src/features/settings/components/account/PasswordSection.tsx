@@ -4,9 +4,9 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { toast } from 'sonner'
 
-import { Button } from '~/ui/button'
-import { Panel } from '~/ui/panel'
-import { TextInput } from '~/ui/text-field'
+import { Button } from '~/ui/primitives/button'
+import { Panel } from '~/ui/primitives/panel'
+import { TextInput } from '~/ui/primitives/text-field'
 import { authClient } from '~/utils/authjs/auth'
 
 import { getErrorMessage } from '../../utils/settings'

@@ -13,14 +13,14 @@ import {
   replyComment,
   updateCommentState,
 } from '~/api/comments'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
 import { CommentState } from '~/models/comment'
-import { Button } from '~/ui/button'
-import { Checkbox } from '~/ui/checkbox'
-import { cn } from '~/ui/cn'
-import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/ui/layout'
-import { MasterDetailLayout } from '~/ui/page-layout'
-import { Scroll } from '~/ui/scroll'
-import { SelectField } from '~/ui/select'
+import { MasterDetailLayout } from '~/ui/layout/page-layout'
+import { Button } from '~/ui/primitives/button'
+import { Checkbox } from '~/ui/primitives/checkbox'
+import { Scroll } from '~/ui/primitives/scroll'
+import { SelectField } from '~/ui/primitives/select'
+import { cn } from '~/utils/cn'
 
 import {
   commentFilters,

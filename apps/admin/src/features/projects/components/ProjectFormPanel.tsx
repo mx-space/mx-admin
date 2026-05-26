@@ -7,11 +7,11 @@ import type { ProjectModel } from '~/models/project'
 import type { ProjectFormMode, ProjectFormState } from '../types/projects'
 
 import { createProject, updateProject } from '~/api/projects'
-import { Button } from '~/ui/button'
-import { cn } from '~/ui/cn'
-import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/ui/layout'
-import { Scroll } from '~/ui/scroll'
-import { TextArea, TextInput } from '~/ui/text-field'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { Button } from '~/ui/primitives/button'
+import { Scroll } from '~/ui/primitives/scroll'
+import { TextArea, TextInput } from '~/ui/primitives/text-field'
+import { cn } from '~/utils/cn'
 
 import { emptyProjectForm } from '../constants'
 import {

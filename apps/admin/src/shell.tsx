@@ -4,14 +4,15 @@ import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import type { PropsWithChildren } from 'react'
 
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { Drawer } from '~/ui/feedback/drawer'
+import { MobileHamburger } from '~/ui/layout/mobile-hamburger'
+import { ShellNavProvider, useShellNav } from '~/ui/layout/shell-nav-context'
+import { SidebarBody } from '~/ui/layout/sidebar-body'
+import { cn } from '~/utils/cn'
+
 import { AITaskStatus, getAiTasks } from './api/ai'
 import { useI18n } from './i18n'
-import { cn } from './ui/cn'
-import { Drawer } from './ui/drawer'
-import { APP_SHELL_HEADER_HEIGHT_CLASS } from './ui/layout'
-import { MobileHamburger } from './ui/mobile-hamburger'
-import { ShellNavProvider, useShellNav } from './ui/shell-nav-context'
-import { SidebarBody } from './ui/sidebar-body'
 
 export function AdminShell(props: PropsWithChildren) {
   const location = useLocation()

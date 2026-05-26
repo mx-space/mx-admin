@@ -1,4 +1,4 @@
-import { cn } from '~/ui/cn'
+import { cn } from '~/utils/cn'
 
 import { refTypeClassNames, refTypeLabel } from '../constants'
 

@@ -1,8 +1,8 @@
 import { ArrowLeft } from 'lucide-react'
 import type { ReactNode } from 'react'
 
-import { cn } from '~/ui/cn'
-import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/ui/layout'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { cn } from '~/utils/cn'
 
 export function DetailHeader(props: {
   children?: ReactNode

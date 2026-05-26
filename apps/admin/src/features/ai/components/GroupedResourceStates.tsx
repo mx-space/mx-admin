@@ -1,6 +1,6 @@
 import { ListTodo } from 'lucide-react'
 
-import { Button } from '~/ui/button'
+import { Button } from '~/ui/primitives/button'
 
 export function GroupedResourceSkeleton() {
   return (

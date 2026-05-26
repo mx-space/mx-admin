@@ -1,8 +1,8 @@
 import type { EnrichmentCaptureJoinedRow } from '~/models/enrichment'
 
-import { cn } from '~/ui/cn'
-import { CompactPagination } from '~/ui/compact-pagination'
-import { Scroll } from '~/ui/scroll'
+import { CompactPagination } from '~/ui/data/compact-pagination'
+import { Scroll } from '~/ui/primitives/scroll'
+import { cn } from '~/utils/cn'
 
 import { formatBytes } from '../utils/enrichment'
 import { ListEmpty, ListLoading } from './EnrichmentPrimitives'

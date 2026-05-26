@@ -1,4 +1,4 @@
-import { Button } from '~/ui/button'
+import { Button } from '~/ui/primitives/button'
 
 export function PostsError(props: { onRetry: () => void }) {
   return (

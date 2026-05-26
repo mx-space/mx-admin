@@ -2,7 +2,7 @@ import { Layers } from 'lucide-react'
 import type { AITask } from '~/api/ai'
 
 import { AITaskStatus } from '~/api/ai'
-import { cn } from '~/ui/cn'
+import { cn } from '~/utils/cn'
 
 import { statusIcon, taskStatusLabels, taskTypeLabels } from '../constants'
 import {

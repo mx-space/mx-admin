@@ -3,8 +3,8 @@ import { Edit3, FolderOpen, Loader2, Trash2 } from 'lucide-react'
 import type { CategoryModel } from '~/models/category'
 
 import { getPosts } from '~/api/posts'
-import { Button } from '~/ui/button'
-import { Scroll } from '~/ui/scroll'
+import { Button } from '~/ui/primitives/button'
+import { Scroll } from '~/ui/primitives/scroll'
 
 import { categoryDetailPostPageSize } from '../constants'
 import { DetailHeader } from './DetailHeader'

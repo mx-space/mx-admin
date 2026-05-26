@@ -3,8 +3,8 @@ import { Loader2, RefreshCw, WandSparkles } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { createSlugBackfillTask, getSlugBackfillStatus } from '~/api/ai'
-import { Button } from '~/ui/button'
-import { cn } from '~/ui/cn'
+import { Button } from '~/ui/primitives/button'
+import { cn } from '~/utils/cn'
 
 import { getErrorMessage } from '../utils/ai'
 import { Code } from './AiPrimitives'

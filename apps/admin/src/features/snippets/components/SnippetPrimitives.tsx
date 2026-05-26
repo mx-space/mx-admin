@@ -1,7 +1,7 @@
 import { Loader2, X } from 'lucide-react'
 import type { ReactNode } from 'react'
 
-import { Scroll } from '~/ui/scroll'
+import { Scroll } from '~/ui/primitives/scroll'
 
 export function Field(props: { children: ReactNode; label: string }) {
   return (

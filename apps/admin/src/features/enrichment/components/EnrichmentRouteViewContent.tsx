@@ -16,9 +16,9 @@ import {
   getEnrichmentList,
   getEnrichmentProviders,
 } from '~/api/enrichment'
-import { Button } from '~/ui/button'
-import { cn } from '~/ui/cn'
-import { MasterDetailLayout } from '~/ui/page-layout'
+import { MasterDetailLayout } from '~/ui/layout/page-layout'
+import { Button } from '~/ui/primitives/button'
+import { cn } from '~/utils/cn'
 
 import { defaultPageSize, enrichmentQueryKey } from '../constants'
 import { formatBytes, isEnrichmentSource } from '../utils/enrichment'

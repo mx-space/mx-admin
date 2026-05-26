@@ -1,7 +1,7 @@
 import { Dialog } from '@base-ui/react/dialog'
 import { AlertCircle } from 'lucide-react'
 
-import { Button } from '~/ui/button'
+import { Button } from '~/ui/primitives/button'
 
 import { ImportType } from '../types/markdown'
 

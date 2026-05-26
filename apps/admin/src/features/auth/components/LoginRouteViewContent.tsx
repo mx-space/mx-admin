@@ -10,7 +10,7 @@ import { getJson } from '~/api/http'
 import { bgUrl } from '~/constants/env'
 import { SESSION_WITH_LOGIN } from '~/constants/keys'
 import { useI18n } from '~/i18n'
-import { TextInput } from '~/ui/text-field'
+import { TextInput } from '~/ui/primitives/text-field'
 import { authClient } from '~/utils/authjs/auth'
 
 import { allowLoginQueryKey, initQueryKey, ownerQueryKey } from '../constants'

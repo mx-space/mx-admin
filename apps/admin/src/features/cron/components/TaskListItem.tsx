@@ -1,6 +1,6 @@
 import type { CronTask } from '~/api/cron-tasks'
 
-import { cn } from '~/ui/cn'
+import { cn } from '~/utils/cn'
 
 import {
   taskStatusIconClassNames,

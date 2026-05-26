@@ -7,16 +7,16 @@ import type { PostSortKey, SortOrder } from '../types/posts'
 
 import { getCategories } from '~/api/categories'
 import { deletePost, getPosts, patchPost, searchPosts } from '~/api/posts'
-import { ButtonLink } from '~/ui/button'
-import { cn } from '~/ui/cn'
-import { CompactPagination } from '~/ui/compact-pagination'
 import {
   ContentListHeader,
   ContentListToolbar,
   SortMenu,
-} from '~/ui/content-list-toolbar'
-import { Scroll } from '~/ui/scroll'
-import { SelectField } from '~/ui/select'
+} from '~/features/_shared/components/content-list-toolbar'
+import { CompactPagination } from '~/ui/data/compact-pagination'
+import { ButtonLink } from '~/ui/primitives/button'
+import { Scroll } from '~/ui/primitives/scroll'
+import { SelectField } from '~/ui/primitives/select'
+import { cn } from '~/utils/cn'
 
 import {
   allCategoriesValue,

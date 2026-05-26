@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import type { SnippetModel } from '~/models/snippet'
 import type { SelectedSnippetId } from '../types/snippets'
 
-import { cn } from '~/ui/cn'
+import { cn } from '~/utils/cn'
 import { relativeTimeFromNow } from '~/utils/time'
 
 import { groupSnippetList } from '../utils/snippets'

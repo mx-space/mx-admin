@@ -13,13 +13,13 @@ import {
   rebuildSearchIndex,
   rebuildSearchIndexDocument,
 } from '~/api/search-index'
-import { Button } from '~/ui/button'
-import { cn } from '~/ui/cn'
-import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/ui/layout'
-import { MasterDetailLayout } from '~/ui/page-layout'
-import { Scroll } from '~/ui/scroll'
-import { SelectField } from '~/ui/select'
-import { TextInput } from '~/ui/text-field'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { MasterDetailLayout } from '~/ui/layout/page-layout'
+import { Button } from '~/ui/primitives/button'
+import { Scroll } from '~/ui/primitives/scroll'
+import { SelectField } from '~/ui/primitives/select'
+import { TextInput } from '~/ui/primitives/text-field'
+import { cn } from '~/utils/cn'
 
 import { refTypeOptions, searchIndexQueryKey } from '../constants'
 import { getErrorMessage } from '../utils/format'

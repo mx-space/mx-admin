@@ -2,8 +2,8 @@ import { X } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
-import { Button } from '~/ui/button'
-import { TextInput } from '~/ui/text-field'
+import { Button } from '~/ui/primitives/button'
+import { TextInput } from '~/ui/primitives/text-field'
 
 import { FieldShell } from '../SettingsPrimitives'
 

@@ -3,8 +3,8 @@ import type { CronTaskLog, CronTaskStatus } from '~/api/cron-tasks'
 import type { ReactNode } from 'react'
 import type { SelectOption } from '../types/cron'
 
-import { cn } from '~/ui/cn'
-import { SelectField } from '~/ui/select'
+import { SelectField } from '~/ui/primitives/select'
+import { cn } from '~/utils/cn'
 
 import { taskStatusClassNames, taskStatusLabels } from '../constants'
 import { formatLogTime } from '../utils/cron'

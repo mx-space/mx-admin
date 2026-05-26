@@ -1,6 +1,6 @@
 import { Inbox } from 'lucide-react'
 
-import { Button } from '~/ui/button'
+import { Button } from '~/ui/primitives/button'
 
 export function ListEmpty(props: { onCreate: () => void }) {
   return (

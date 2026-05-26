@@ -1,6 +1,6 @@
 import type { SnippetGroup } from '~/api/snippets'
 
-import { cn } from '~/ui/cn'
+import { cn } from '~/utils/cn'
 
 export function GroupFilter(props: {
   groups: SnippetGroup[]

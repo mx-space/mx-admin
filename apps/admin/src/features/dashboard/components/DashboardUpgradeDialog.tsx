@@ -5,7 +5,7 @@ import { EventSourcePolyfill } from 'event-source-polyfill'
 import { toast } from 'sonner'
 
 import { API_URL } from '~/constants/env'
-import { Scroll } from '~/ui/scroll'
+import { Scroll } from '~/ui/primitives/scroll'
 
 export function DashboardUpgradeDialog(props: {
   onClose: () => void

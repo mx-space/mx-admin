@@ -1,6 +1,6 @@
 import type { TrendPoint } from '../types/analyze'
 
-import { Scroll } from '~/ui/scroll'
+import { Scroll } from '~/ui/primitives/scroll'
 
 export function TrendChart(props: { data: TrendPoint[] }) {
   const maxValue = Math.max(

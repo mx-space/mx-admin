@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { DiffRendererInstance } from '../types/drafts'
 
-import { Scroll } from '~/ui/scroll'
+import { Scroll } from '~/ui/primitives/scroll'
 
 import { ensureDiffHighlighter } from '../utils/diff-highlighter'
 

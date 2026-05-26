@@ -1,7 +1,7 @@
 import { Hash } from 'lucide-react'
 import type { TopicModel } from '~/models/topic'
 
-import { cn } from '~/ui/cn'
+import { cn } from '~/utils/cn'
 
 import { TopicAvatar } from './TopicAvatar'
 

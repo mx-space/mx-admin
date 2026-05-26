@@ -1,7 +1,7 @@
 import { ChevronRight } from 'lucide-react'
 import type { ReactNode } from 'react'
 
-import { cn } from '~/ui/cn'
+import { cn } from '~/utils/cn'
 
 export function AccountEntry(props: {
   active: boolean

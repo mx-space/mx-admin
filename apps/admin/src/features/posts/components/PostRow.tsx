@@ -5,8 +5,8 @@ import { WEB_URL } from '~/constants/env'
 import {
   ContentEntryListItem,
   ContentListStatusBadge,
-} from '~/ui/content-list-item'
-import { SelectField } from '~/ui/select'
+} from '~/features/_shared/components/content-list-item'
+import { SelectField } from '~/ui/primitives/select'
 import { relativeTimeFromNow } from '~/utils/time'
 
 export function PostRow(props: {

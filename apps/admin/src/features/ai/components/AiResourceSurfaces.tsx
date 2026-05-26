@@ -23,7 +23,7 @@ import {
   getSummariesGrouped,
   getTranslationsGrouped,
 } from '~/api/ai'
-import { Button } from '~/ui/button'
+import { Button } from '~/ui/primitives/button'
 
 import {
   editInsightsItem,

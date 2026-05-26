@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import type { AiSurface } from '../types/ai'
 
-import { cn } from '~/ui/cn'
-import { AppPage, PageHeader } from '~/ui/page-layout'
+import { AppPage, PageHeader } from '~/ui/layout/page-layout'
+import { cn } from '~/utils/cn'
 
 import { aiSurfaceTabs } from '../constants'
 import { getInitialAiSurface } from '../utils/ai'

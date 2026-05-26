@@ -18,11 +18,11 @@ import {
   getEmailTemplate,
   updateEmailTemplate,
 } from '~/api/options'
-import { Button } from '~/ui/button'
-import { cn } from '~/ui/cn'
-import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/ui/layout'
-import { Scroll } from '~/ui/scroll'
-import { SelectField } from '~/ui/select'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { Button } from '~/ui/primitives/button'
+import { Scroll } from '~/ui/primitives/scroll'
+import { SelectField } from '~/ui/primitives/select'
+import { cn } from '~/utils/cn'
 
 import { templateQueryKey, templateTabs, templateTypes } from '../constants'
 import { getErrorMessage } from '../utils/errors'

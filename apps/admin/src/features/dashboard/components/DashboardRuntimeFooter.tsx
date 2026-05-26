@@ -1,6 +1,6 @@
 import { Download, RefreshCw } from 'lucide-react'
 
-import { cn } from '~/ui/cn'
+import { cn } from '~/utils/cn'
 
 export function DashboardRuntimeFooter(props: {
   adminLatestVersion?: string

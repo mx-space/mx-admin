@@ -1,6 +1,6 @@
 import { RefreshCw, Search } from 'lucide-react'
 
-import { Button } from '~/ui/button'
+import { Button } from '~/ui/primitives/button'
 
 export function SearchIndexRebuildCard(props: {
   forceLoading: boolean

@@ -10,9 +10,9 @@ import {
   updateMetaPreset,
   updateMetaPresetOrder,
 } from '~/api/meta-presets'
-import { Button } from '~/ui/button'
-import { cn } from '~/ui/cn'
-import { Panel } from '~/ui/panel'
+import { Button } from '~/ui/primitives/button'
+import { Panel } from '~/ui/primitives/panel'
+import { cn } from '~/utils/cn'
 
 import { metaPresetsQueryKey } from '../../constants'
 import { getErrorMessage } from '../../utils/settings'

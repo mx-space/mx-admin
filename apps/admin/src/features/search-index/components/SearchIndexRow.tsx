@@ -1,6 +1,6 @@
 import type { SearchDocumentAdminRow } from '~/api/search-index'
 
-import { cn } from '~/ui/cn'
+import { cn } from '~/utils/cn'
 
 import { formatRelativeDate } from '../utils/format'
 import { RefTypeBadge } from './RefTypeBadge'

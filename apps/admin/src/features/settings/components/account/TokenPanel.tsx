@@ -5,11 +5,11 @@ import { toast } from 'sonner'
 import type { TokenModel } from '~/models/token'
 
 import { createToken, deleteToken, getToken, getTokens } from '~/api/auth'
-import { Button } from '~/ui/button'
-import { DateTimePicker } from '~/ui/datetime-picker'
-import { Scroll } from '~/ui/scroll'
-import { Switch } from '~/ui/switch'
-import { TextInput } from '~/ui/text-field'
+import { Button } from '~/ui/primitives/button'
+import { DateTimePicker } from '~/ui/primitives/datetime-picker'
+import { Scroll } from '~/ui/primitives/scroll'
+import { Switch } from '~/ui/primitives/switch'
+import { TextInput } from '~/ui/primitives/text-field'
 
 import { accountQueryKey } from '../../constants'
 import {

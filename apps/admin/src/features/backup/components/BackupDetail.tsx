@@ -9,11 +9,11 @@ import {
 import { useState } from 'react'
 import type { BackupFile } from '~/api/backups'
 
-import { Button } from '~/ui/button'
-import { cn } from '~/ui/cn'
-import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/ui/layout'
-import { Panel } from '~/ui/panel'
-import { Scroll } from '~/ui/scroll'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { Button } from '~/ui/primitives/button'
+import { Panel } from '~/ui/primitives/panel'
+import { Scroll } from '~/ui/primitives/scroll'
+import { cn } from '~/utils/cn'
 
 import { formatBackupDate } from '../utils/backup-file'
 import { ActionRow } from './ActionRow'

@@ -1,8 +1,8 @@
 import { GripVertical, Lock } from 'lucide-react'
 import type { MetaPresetField } from '~/models/meta-preset'
 
-import { Button } from '~/ui/button'
-import { Switch } from '~/ui/switch'
+import { Button } from '~/ui/primitives/button'
+import { Switch } from '~/ui/primitives/switch'
 
 import { fieldTypeLabels, scopeLabels } from '../../constants'
 import { SmallBadge } from '../SettingsPrimitives'

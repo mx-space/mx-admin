@@ -6,8 +6,8 @@ import type {
   SortOrder,
 } from '../types/enrichment'
 
-import { cn } from '~/ui/cn'
-import { SelectField } from '~/ui/select'
+import { SelectField } from '~/ui/primitives/select'
+import { cn } from '~/utils/cn'
 
 import { SmallBadge } from './EnrichmentPrimitives'
 

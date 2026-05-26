@@ -1,9 +1,9 @@
 import { Plus, Trash2 } from 'lucide-react'
 import type { MetaFieldType, MetaPresetChild } from '~/models/meta-preset'
 
-import { Button } from '~/ui/button'
-import { SelectField } from '~/ui/select'
-import { TextInput } from '~/ui/text-field'
+import { Button } from '~/ui/primitives/button'
+import { SelectField } from '~/ui/primitives/select'
+import { TextInput } from '~/ui/primitives/text-field'
 
 import { fieldTypeOptions } from '../../constants'
 

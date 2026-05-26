@@ -1,6 +1,6 @@
 import { Database, Upload } from 'lucide-react'
 
-import { Button } from '~/ui/button'
+import { Button } from '~/ui/primitives/button'
 
 export function BackupListEmptyState(props: {
   onCreate: () => void

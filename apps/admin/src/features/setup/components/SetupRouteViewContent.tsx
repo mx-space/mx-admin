@@ -5,7 +5,7 @@ import type { InitDefaultConfigs } from '~/api/system'
 
 import { checkInit, getInitDefaultConfigs } from '~/api/system'
 import { bgUrl } from '~/constants/env'
-import { cn } from '~/ui/cn'
+import { cn } from '~/utils/cn'
 
 import { setupStepDescriptions, setupSteps } from '../constants'
 import { getErrorMessage } from '../utils/setup'

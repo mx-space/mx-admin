@@ -1,7 +1,7 @@
 import { Play } from 'lucide-react'
 import type { CronTaskDefinition } from '~/api/cron-tasks'
 
-import { Button } from '~/ui/button'
+import { Button } from '~/ui/primitives/button'
 
 import { taskTypeLabels } from '../constants'
 import { formatNullableDate } from '../utils/cron'

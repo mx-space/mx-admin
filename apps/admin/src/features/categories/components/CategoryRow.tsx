@@ -1,7 +1,7 @@
 import { FolderOpen, Hash } from 'lucide-react'
 import type { CategoryModel } from '~/models/category'
 
-import { cn } from '~/ui/cn'
+import { cn } from '~/utils/cn'
 
 export function CategoryRow(props: {
   category: CategoryModel

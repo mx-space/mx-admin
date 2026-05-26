@@ -1,8 +1,8 @@
 import { Plus, Trash2 } from 'lucide-react'
 import type { MetaFieldOption } from '~/models/meta-preset'
 
-import { Button } from '~/ui/button'
-import { TextInput } from '~/ui/text-field'
+import { Button } from '~/ui/primitives/button'
+import { TextInput } from '~/ui/primitives/text-field'
 
 export function OptionsEditor(props: {
   onChange: (options: MetaFieldOption[]) => void

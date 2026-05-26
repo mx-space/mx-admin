@@ -1,4 +1,4 @@
-import { Button } from '~/ui/button'
+import { Button } from '~/ui/primitives/button'
 
 export function ListError(props: { onRetry: () => void }) {
   return (

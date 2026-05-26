@@ -2,10 +2,11 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'sonner'
 import type { PropsWithChildren } from 'react'
 
+import { ModalRoot } from '~/ui/feedback/modal-imperative'
+
 import { I18nProvider } from './i18n'
 import { queryClient } from './query-client'
 import { useThemeMode } from './theme'
-import { ModalRoot } from './ui/modal-imperative'
 
 export function AppProviders(props: PropsWithChildren) {
   const { isDark } = useThemeMode()

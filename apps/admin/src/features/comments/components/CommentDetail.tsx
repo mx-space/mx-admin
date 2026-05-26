@@ -16,14 +16,14 @@ import type { FormEvent, KeyboardEvent } from 'react'
 import type { LocalReply } from '../types/comments'
 
 import { getOwner } from '~/api/options'
+import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { IpInfoPopover } from '~/features/_shared/components/ip-info-popover'
 import { CommentState } from '~/models/comment'
-import { Button } from '~/ui/button'
-import { cn } from '~/ui/cn'
-import { IpInfoPopover } from '~/ui/ip-info-popover'
-import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/ui/layout'
-import { MarkdownRender } from '~/ui/markdown-render'
-import { Scroll } from '~/ui/scroll'
-import { TextArea } from '~/ui/text-field'
+import { Button } from '~/ui/primitives/button'
+import { MarkdownRender } from '~/ui/primitives/markdown-render'
+import { Scroll } from '~/ui/primitives/scroll'
+import { TextArea } from '~/ui/primitives/text-field'
+import { cn } from '~/utils/cn'
 
 import {
   formatCommentDate,

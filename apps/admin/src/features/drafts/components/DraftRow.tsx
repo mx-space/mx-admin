@@ -1,6 +1,6 @@
 import type { DraftModel } from '~/models/draft'
 
-import { cn } from '~/ui/cn'
+import { cn } from '~/utils/cn'
 import { relativeTimeFromNow } from '~/utils/time'
 
 import { refTypeMeta } from '../constants'

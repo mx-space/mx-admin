@@ -1,6 +1,6 @@
 import { FileText, Plus } from 'lucide-react'
 
-import { ButtonLink } from '~/ui/button'
+import { ButtonLink } from '~/ui/primitives/button'
 
 export function PagesEmpty() {
   return (
