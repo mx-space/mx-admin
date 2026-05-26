@@ -92,7 +92,7 @@ export function ContentListToolbar(props: ContentListToolbarProps) {
       )}
     >
       <form
-        className="relative flex h-full min-w-0 max-w-80 flex-1 items-center self-stretch border-r border-neutral-200 pr-3 dark:border-neutral-800"
+        className="relative flex h-full min-w-0 flex-1 items-center self-stretch"
         onSubmit={props.onSearch}
       >
         <Search
@@ -130,12 +130,16 @@ export function ContentListToolbar(props: ContentListToolbarProps) {
       {props.sortMenu}
 
       {props.extraActions ? (
-        <div className="flex shrink-0 items-center gap-1.5">
-          {props.extraActions}
-        </div>
+        <>
+          <span
+            aria-hidden="true"
+            className="h-3.5 w-px shrink-0 bg-neutral-200 dark:bg-neutral-800"
+          />
+          <div className="flex shrink-0 items-center gap-1.5">
+            {props.extraActions}
+          </div>
+        </>
       ) : null}
-
-      <div className="min-w-0 flex-1" />
 
       {selection ? (
         <ContentListToolbarSelectionControls
@@ -154,40 +158,36 @@ function ContentListToolbarSelectionControls(props: {
   const { hasSelection, selection } = props
 
   if (!hasSelection) {
+    if (!selection.hasVisibleItems) return null
     return (
-      <div className="inline-flex h-7 shrink-0 items-center gap-3 text-xs text-neutral-500 dark:text-neutral-400">
-        {selection.hasVisibleItems ? (
-          <label className="inline-flex cursor-pointer items-center gap-1.5 transition-colors hover:text-neutral-950 dark:hover:text-neutral-50">
-            <Checkbox
-              aria-label={selection.selectAllLabel}
-              checked={selection.allVisibleSelected}
-              indeterminate={selection.indeterminate}
-              onCheckedChange={selection.onToggleAllVisible}
-            />
-            <span className="hidden sm:inline">{selection.selectAllLabel}</span>
-          </label>
-        ) : null}
-      </div>
+      <label
+        aria-label={selection.selectAllLabel}
+        className="inline-flex h-7 shrink-0 cursor-pointer items-center justify-center px-1 text-neutral-500 transition-colors hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-neutral-50"
+        title={selection.selectAllLabel}
+      >
+        <Checkbox
+          aria-label={selection.selectAllLabel}
+          checked={selection.allVisibleSelected}
+          indeterminate={selection.indeterminate}
+          onCheckedChange={selection.onToggleAllVisible}
+        />
+      </label>
     )
   }
 
   return (
-    <div className="inline-flex h-7 shrink-0 items-center overflow-hidden rounded bg-neutral-950 text-xs text-white dark:bg-neutral-50 dark:text-neutral-950">
-      {selection.hasVisibleItems ? (
-        <div className="inline-flex h-full items-center gap-2 border-r border-white/15 px-2 dark:border-neutral-950/15">
-          <Checkbox
-            aria-label={selection.selectAllLabel}
-            checked={selection.allVisibleSelected}
-            indeterminate={selection.indeterminate}
-            onCheckedChange={selection.onToggleAllVisible}
-          />
-        </div>
-      ) : null}
-      <span className="px-2 tabular-nums text-white/80 dark:text-neutral-950/80">
-        {selection.selectedLabel}
-      </span>
+    <>
+      <label className="inline-flex h-7 shrink-0 cursor-pointer items-center gap-1.5 rounded bg-neutral-100 px-2 text-xs tabular-nums text-neutral-700 dark:bg-neutral-900 dark:text-neutral-200">
+        <Checkbox
+          aria-label={selection.selectAllLabel}
+          checked={selection.allVisibleSelected}
+          indeterminate={selection.indeterminate}
+          onCheckedChange={selection.onToggleAllVisible}
+        />
+        <span>{selection.selectedLabel}</span>
+      </label>
       <button
-        className="outline-hidden inline-flex h-full shrink-0 items-center gap-1.5 border-l border-white/15 px-2.5 font-medium transition-colors hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-[var(--color-primary-shallow)] disabled:pointer-events-none disabled:opacity-50 dark:border-neutral-950/15 dark:hover:bg-neutral-950/10"
+        className="outline-hidden inline-flex h-7 shrink-0 items-center gap-1.5 rounded border border-red-200 bg-red-50/60 px-2 text-xs text-red-700 transition-colors hover:bg-red-100 focus-visible:ring-2 focus-visible:ring-[var(--color-primary-shallow)] disabled:pointer-events-none disabled:opacity-50 dark:border-red-900 dark:bg-red-950/30 dark:text-red-300 dark:hover:bg-red-950/50"
         disabled={selection.bulkActionDisabled}
         onClick={selection.onBulkAction}
         type="button"
@@ -195,7 +195,7 @@ function ContentListToolbarSelectionControls(props: {
         {selection.bulkActionIcon}
         <span>{selection.bulkActionLabel}</span>
       </button>
-    </div>
+    </>
   )
 }
 
