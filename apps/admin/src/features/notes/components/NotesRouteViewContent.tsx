@@ -3,6 +3,7 @@ import { BookOpen, Plus, RefreshCw, Trash2 } from 'lucide-react'
 import { FormEvent, useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { toast } from 'sonner'
+import type { NoteModel } from '~/models/note'
 import type {
   NoteFilter,
   NoteMetadataUpdate,
@@ -17,12 +18,15 @@ import {
   patchNotePublish,
   searchNotes,
 } from '~/api/notes'
+import { WEB_URL } from '~/constants/env'
 import {
   ContentListHeader,
   ContentListToolbar,
   SortMenu,
 } from '~/features/_shared/components/content-list-toolbar'
 import { CompactPagination } from '~/ui/data/compact-pagination'
+import { FocusScope, setActiveScope, useScopeArrowNav } from '~/ui/focus-scope'
+import { useListSelection, useListShortcuts } from '~/ui/list-actions'
 import { ButtonLink } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
 import { SelectField } from '~/ui/primitives/select'
@@ -35,6 +39,7 @@ import {
   notesQueryKey,
 } from '../constants'
 import { getErrorMessage } from '../utils/errors'
+import { buildNotePublicPath } from '../utils/format'
 import { getFilteredNotes } from '../utils/get-filtered-notes'
 import {
   readNoteFilter,
@@ -42,10 +47,13 @@ import {
   readPage,
   readSortOrder,
 } from '../utils/search-params'
+import { buildNoteActions } from './buildNoteActions'
 import { NoteRow } from './NoteRow'
 import { NotesEmpty } from './NotesEmpty'
 import { NotesError } from './NotesError'
 import { NotesSkeleton } from './NotesSkeleton'
+
+const FOCUS_SCOPE_ID = 'notes-list'
 
 export function NotesRouteViewContent() {
   const queryClient = useQueryClient()
@@ -64,7 +72,6 @@ export function NotesRouteViewContent() {
   const [sortOrder, setSortOrder] = useState<SortOrder>(
     readSortOrder(searchParams.get('order')),
   )
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set())
   const searchParamsKey = searchParams.toString()
 
   useLayoutEffect(() => {
@@ -111,6 +118,11 @@ export function NotesRouteViewContent() {
   const notes = notesQuery.data?.data ?? []
   const pagination = notesQuery.data?.pagination
 
+  const selection = useListSelection<NoteModel>({
+    getId: (note) => note.id,
+    items: notes,
+  })
+
   const invalidateNotes = async () => {
     await queryClient.invalidateQueries({ queryKey: notesQueryKey })
   }
@@ -136,7 +148,7 @@ export function NotesRouteViewContent() {
   ])
 
   useEffect(() => {
-    setSelectedIds(new Set())
+    selection.clear()
   }, [filter, keyword, page, sortKey, sortOrder])
 
   const publishMutation = useMutation({
@@ -159,13 +171,8 @@ export function NotesRouteViewContent() {
     mutationFn: deleteNote,
     onError: (error: unknown) =>
       toast.error(getErrorMessage(error, '删除失败')),
-    onSuccess: async (_, id) => {
+    onSuccess: async () => {
       toast.success('手记已删除')
-      setSelectedIds((current) => {
-        const next = new Set(current)
-        next.delete(id)
-        return next
-      })
       await invalidateNotes()
     },
   })
@@ -185,12 +192,8 @@ export function NotesRouteViewContent() {
     },
     onError: (error: unknown) =>
       toast.error(getErrorMessage(error, '批量删除失败')),
-    onSuccess: async ({ failedCount, successfulIds, successCount }) => {
-      setSelectedIds((current) => {
-        const next = new Set(current)
-        successfulIds.forEach((id) => next.delete(id))
-        return next
-      })
+    onSuccess: async ({ failedCount, successCount }) => {
+      selection.clear()
       if (failedCount > 0) {
         toast.warning(`删除完成：成功 ${successCount}，失败 ${failedCount}`)
       } else {
@@ -200,10 +203,67 @@ export function NotesRouteViewContent() {
     },
   })
 
-  const selectedCount = selectedIds.size
+  const confirmAndDelete = (targets: NoteModel[]) => {
+    if (targets.length === 0) return
+    const msg =
+      targets.length === 1
+        ? `确认删除「${targets[0].title || '未命名手记'}」？`
+        : `确认删除选中的 ${targets.length} 条手记？`
+    if (!window.confirm(msg)) return
+    if (targets.length === 1) {
+      deleteMutation.mutate(targets[0].id)
+    } else {
+      batchDeleteMutation.mutate(targets.map((t) => t.id))
+    }
+  }
+
+  const actions = useMemo(
+    () =>
+      buildNoteActions({
+        deleteMany: confirmAndDelete,
+        navigateToEdit: (note) => {
+          window.location.hash = `#/notes/edit?id=${encodeURIComponent(note.id)}`
+        },
+        openExternal: (note) => {
+          window.open(
+            `${WEB_URL}${buildNotePublicPath(note)}`,
+            '_blank',
+            'noopener,noreferrer',
+          )
+        },
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  )
+
+  useListShortcuts(actions, {
+    extra: {
+      '$mod+a': (event) => {
+        event.preventDefault()
+        selection.selectAll()
+      },
+      Escape: () => {
+        selection.clear()
+        setActiveScope(null)
+      },
+    },
+    getTargets: selection.getSelectedTargets,
+    scopeId: FOCUS_SCOPE_ID,
+  })
+
+  useScopeArrowNav({
+    itemSelector: '[data-scope-item="row"]',
+    onItemFocus: (el) => {
+      const id = el.getAttribute('data-id')
+      if (id) selection.selectOne(id)
+    },
+    scopeId: FOCUS_SCOPE_ID,
+  })
+
+  const selectedCount = selection.size
   const visibleIds = notes.map((note) => note.id)
   const allVisibleSelected =
-    visibleIds.length > 0 && visibleIds.every((id) => selectedIds.has(id))
+    visibleIds.length > 0 && visibleIds.every((id) => selection.isSelected(id))
   const count = useMemo(() => {
     if (!pagination) return null
     return `${pagination.total} 条`
@@ -216,18 +276,15 @@ export function NotesRouteViewContent() {
   }
 
   const toggleAllVisible = (checked: boolean) => {
-    setSelectedIds((current) => {
-      const next = new Set(current)
-      for (const id of visibleIds) {
-        if (checked) next.add(id)
-        else next.delete(id)
-      }
-      return next
-    })
+    if (checked) selection.selectAll()
+    else selection.clear()
   }
 
   return (
-    <section className="flex h-full min-h-0 flex-col bg-white dark:bg-neutral-950">
+    <FocusScope
+      className="outline-hidden flex h-full min-h-0 flex-col bg-white dark:bg-neutral-950"
+      id={FOCUS_SCOPE_ID}
+    >
       <ContentListHeader
         action={
           <ButtonLink aria-label="新建手记" to="/notes/edit">
@@ -302,11 +359,7 @@ export function NotesRouteViewContent() {
           bulkActionLabel: '批量删除',
           hasVisibleItems: notes.length > 0,
           indeterminate: selectedCount > 0 && !allVisibleSelected,
-          onBulkAction: () => {
-            if (window.confirm(`确认删除选中的 ${selectedCount} 条手记？`)) {
-              batchDeleteMutation.mutate(Array.from(selectedIds))
-            }
-          },
+          onBulkAction: () => confirmAndDelete(selection.getSelectedTargets()),
           onToggleAllVisible: toggleAllVisible,
           selectAllLabel: '选择当前页',
           selectedCount,
@@ -325,28 +378,22 @@ export function NotesRouteViewContent() {
           <div className="divide-y divide-neutral-100 dark:divide-neutral-900">
             {notes.map((note) => (
               <NoteRow
+                actions={actions}
                 key={note.id}
                 note={note}
-                onDelete={(id) => {
-                  if (window.confirm(`确认删除「${note.title}」？`)) {
-                    deleteMutation.mutate(id)
-                  }
-                }}
                 onMetadataChange={(id, data) =>
                   patchMutation.mutate({ data, id })
                 }
                 onPublishChange={(id, isPublished) =>
                   publishMutation.mutate({ id, isPublished })
                 }
-                onSelectedChange={(checked) => {
-                  setSelectedIds((current) => {
-                    const next = new Set(current)
-                    if (checked) next.add(note.id)
-                    else next.delete(note.id)
-                    return next
-                  })
+                onSelect={(id, mode) => {
+                  if (mode === 'range') selection.selectRange(id)
+                  else if (mode === 'toggle') selection.toggleWithAnchor(id)
+                  else selection.selectOne(id)
                 }}
-                selected={selectedIds.has(note.id)}
+                onSelectedChange={() => selection.toggleWithAnchor(note.id)}
+                selected={selection.isSelected(note.id)}
               />
             ))}
           </div>
@@ -365,6 +412,6 @@ export function NotesRouteViewContent() {
           />
         </div>
       ) : null}
-    </section>
+    </FocusScope>
   )
 }

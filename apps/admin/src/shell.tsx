@@ -6,6 +6,7 @@ import type { PropsWithChildren } from 'react'
 
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
 import { Drawer } from '~/ui/feedback/drawer'
+import { FOCUS_SCOPES, FocusScope, useScopeArrowNav } from '~/ui/focus-scope'
 import { MobileHamburger } from '~/ui/layout/mobile-hamburger'
 import { ShellNavProvider, useShellNav } from '~/ui/layout/shell-nav-context'
 import { SidebarBody } from '~/ui/layout/sidebar-body'
@@ -45,6 +46,14 @@ export function AdminShell(props: PropsWithChildren) {
   const isFetchingAiTaskCount =
     pendingAiTasksQuery.isFetching || runningAiTasksQuery.isFetching
 
+  // Sidebar HJKL / arrow-key navigation. One binding is enough — the hook
+  // looks up the scope's DOM element at fire time, so whichever sidebar
+  // (desktop aside or mobile Drawer) is currently mounted handles the keys.
+  useScopeArrowNav({
+    itemSelector: '[data-scope-item="nav"]',
+    scopeId: FOCUS_SCOPES.sidebar,
+  })
+
   useEffect(() => {
     setNavOpen(false)
   }, [location.pathname])
@@ -64,7 +73,12 @@ export function AdminShell(props: PropsWithChildren) {
     <ShellNavProvider open={navOpen} setOpen={setNavOpen}>
       <main className="grid h-screen min-h-0 grid-cols-[minmax(0,1fr)] overflow-hidden bg-neutral-50 text-neutral-950 lg:grid-cols-[240px_minmax(0,1fr)] dark:bg-neutral-950 dark:text-neutral-50">
         <aside className="hidden h-screen min-h-0 flex-col border-r border-neutral-200 bg-white lg:flex dark:border-neutral-800 dark:bg-neutral-950">
-          <SidebarBody />
+          <FocusScope
+            className="flex min-h-0 flex-1 flex-col"
+            id={FOCUS_SCOPES.sidebar}
+          >
+            <SidebarBody />
+          </FocusScope>
         </aside>
 
         <section className="flex h-screen min-h-0 min-w-0 flex-col">
@@ -88,7 +102,12 @@ export function AdminShell(props: PropsWithChildren) {
           title={t('common.primaryNavigation')}
           widthClassName="w-[min(85vw,18rem)]"
         >
-          <SidebarBody />
+          <FocusScope
+            className="flex min-h-0 flex-1 flex-col"
+            id={FOCUS_SCOPES.sidebar}
+          >
+            <SidebarBody />
+          </FocusScope>
         </Drawer>
       </main>
     </ShellNavProvider>

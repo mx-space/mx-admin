@@ -1,5 +1,6 @@
 import { Bookmark, BookOpen, EyeOff, Heart, MapPin } from 'lucide-react'
 import type { NoteModel } from '~/models/note'
+import type { ListAction } from '~/ui/list-actions'
 import type { NoteMetadataUpdate } from '../types/notes'
 
 import { WEB_URL } from '~/constants/env'
@@ -13,10 +14,11 @@ import { buildNotePublicPath, formatCompactNumber } from '../utils/format'
 import { buildNoteMenuItems } from './buildNoteMenuItems'
 
 export function NoteRow(props: {
+  actions: ReadonlyArray<ListAction<NoteModel>>
   note: NoteModel
-  onDelete: (id: string) => void
   onMetadataChange: (id: string, data: NoteMetadataUpdate) => void
   onPublishChange: (id: string, isPublished: boolean) => void
+  onSelect: (id: string, mode: 'single' | 'toggle' | 'range') => void
   onSelectedChange: (checked: boolean) => void
   selected: boolean
 }) {
@@ -28,13 +30,10 @@ export function NoteRow(props: {
 
   const menuItems = () =>
     buildNoteMenuItems(note, {
+      actions: props.actions,
       externalHref: publicHref,
       onBookmarkToggle: (next) =>
         props.onMetadataChange(note.id, { bookmark: next }),
-      onDelete: () => props.onDelete(note.id),
-      onEdit: () => {
-        window.location.hash = `#${editPath}`
-      },
       onMoodChange: (next) => props.onMetadataChange(note.id, { mood: next }),
       onPublishToggle: (next) => props.onPublishChange(note.id, next),
       onWeatherChange: (next) =>
@@ -44,6 +43,7 @@ export function NoteRow(props: {
   return (
     <ContentEntryListItem
       checkboxLabel={`选择手记「${title}」`}
+      dataId={note.id}
       editTitle="编辑手记"
       editTo={editPath}
       externalHref={publicHref}
@@ -94,6 +94,7 @@ export function NoteRow(props: {
           </time>
         </>
       }
+      onSelect={(mode) => props.onSelect(note.id, mode)}
       onSelectedChange={props.onSelectedChange}
       openTitle="打开手记"
       selected={props.selected}

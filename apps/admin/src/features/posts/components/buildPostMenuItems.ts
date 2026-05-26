@@ -1,20 +1,21 @@
-import { Check, Copy, ExternalLink, Pencil, Trash2 } from 'lucide-react'
+import { Check, Copy } from 'lucide-react'
 import { toast } from 'sonner'
 import type { PostModel } from '~/models/post'
+import type { ListAction } from '~/ui/list-actions'
 import type { ContextMenuItem } from '~/ui/overlay/context-menu'
-
-export interface PostMenuHandlers {
-  externalHref: string
-  onCategoryChange: (categoryId: string) => void
-  onDelete: () => void
-  onEdit: () => void
-  onPinToggle: (next: boolean) => void
-  onPublishToggle: (next: boolean) => void
-}
 
 export interface PostMenuCategoryOption {
   id: string
   name: string
+}
+
+export interface BuildPostMenuItemsOptions {
+  actions: ReadonlyArray<ListAction<PostModel>>
+  categories: PostMenuCategoryOption[]
+  externalHref: string
+  onCategoryChange: (categoryId: string) => void
+  onPinToggle: (next: boolean) => void
+  onPublishToggle: (next: boolean) => void
 }
 
 async function copyText(value: string | undefined, label: string) {
@@ -30,53 +31,61 @@ async function copyText(value: string | undefined, label: string) {
   }
 }
 
+function actionToItem<T>(
+  action: ListAction<T> | undefined,
+  target: T,
+): ContextMenuItem | null {
+  if (!action) return null
+  if (action.available && !action.available([target])) return null
+  return {
+    danger: action.danger,
+    extra: action.shortcutLabel,
+    icon: action.icon,
+    key: action.key,
+    label: action.label,
+    onClick: () => void action.run([target]),
+  }
+}
+
 export function buildPostMenuItems(
   post: PostModel,
-  handlers: PostMenuHandlers,
-  categories: PostMenuCategoryOption[],
+  options: BuildPostMenuItemsOptions,
 ): ContextMenuItem[] {
-  const isPublished = post.isPublished ?? false
-  const isPinned = Boolean(post.pinAt)
+  const find = (key: string) =>
+    options.actions.find((action) => action.key === key)
 
-  const items: ContextMenuItem[] = [
-    {
-      extra: '↵',
-      icon: Pencil,
-      key: 'edit',
-      label: '编辑',
-      onClick: () => handlers.onEdit(),
-    },
-    {
-      icon: ExternalLink,
-      key: 'open-external',
-      label: '在新窗口打开',
-      onClick: () =>
-        window.open(handlers.externalHref, '_blank', 'noopener,noreferrer'),
-    },
+  const items: ContextMenuItem[] = []
+
+  const edit = actionToItem(find('edit'), post)
+  if (edit) items.push(edit)
+  const openExternal = actionToItem(find('open-external'), post)
+  if (openExternal) items.push(openExternal)
+
+  items.push(
     { key: 'sep-1', type: 'divider' },
     {
-      checked: isPublished,
+      checked: post.isPublished ?? false,
       key: 'publish',
       label: '已发布',
-      onCheckedChange: (next) => handlers.onPublishToggle(next),
+      onCheckedChange: options.onPublishToggle,
       type: 'checkbox',
     },
     {
-      checked: isPinned,
+      checked: Boolean(post.pinAt),
       key: 'pin',
       label: '置顶',
-      onCheckedChange: (next) => handlers.onPinToggle(next),
+      onCheckedChange: options.onPinToggle,
       type: 'checkbox',
     },
-  ]
+  )
 
-  if (categories.length > 0) {
+  if (options.categories.length > 0) {
     items.push({
-      children: categories.map<ContextMenuItem>((category) => ({
+      children: options.categories.map<ContextMenuItem>((category) => ({
         icon: category.id === post.categoryId ? Check : undefined,
         key: `category-${category.id}`,
         label: category.name,
-        onClick: () => handlers.onCategoryChange(category.id),
+        onClick: () => options.onCategoryChange(category.id),
       })),
       key: 'category-submenu',
       label: '修改分类',
@@ -90,7 +99,7 @@ export function buildPostMenuItems(
       icon: Copy,
       key: 'copy-link',
       label: '复制链接',
-      onClick: () => void copyText(handlers.externalHref, '链接'),
+      onClick: () => void copyText(options.externalHref, '链接'),
     },
     {
       key: 'copy-id',
@@ -102,16 +111,12 @@ export function buildPostMenuItems(
       label: '复制 slug',
       onClick: () => void copyText(post.slug, 'slug'),
     },
-    { key: 'sep-3', type: 'divider' },
-    {
-      danger: true,
-      extra: '⌫',
-      icon: Trash2,
-      key: 'delete',
-      label: '删除',
-      onClick: () => handlers.onDelete(),
-    },
   )
+
+  const remove = actionToItem(find('delete'), post)
+  if (remove) {
+    items.push({ key: 'sep-3', type: 'divider' }, remove)
+  }
 
   return items
 }

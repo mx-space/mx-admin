@@ -1,22 +1,15 @@
-import {
-  CloudSun,
-  Copy,
-  ExternalLink,
-  Pencil,
-  Smile,
-  Trash2,
-} from 'lucide-react'
+import { CloudSun, Copy, Smile } from 'lucide-react'
 import { toast } from 'sonner'
 import type { NoteModel } from '~/models/note'
+import type { ListAction } from '~/ui/list-actions'
 import type { ContextMenuItem } from '~/ui/overlay/context-menu'
 
 import { presentNoteMetaEditModal } from './NoteMetaEditModal'
 
-export interface NoteMenuHandlers {
+export interface BuildNoteMenuItemsOptions {
+  actions: ReadonlyArray<ListAction<NoteModel>>
   externalHref: string
   onBookmarkToggle: (next: boolean) => void
-  onDelete: () => void
-  onEdit: () => void
   onMoodChange: (next: string | null) => void
   onPublishToggle: (next: boolean) => void
   onWeatherChange: (next: string | null) => void
@@ -36,38 +29,49 @@ async function copyText(value: string | undefined | null, label: string) {
   }
 }
 
+function actionToItem<T>(
+  action: ListAction<T> | undefined,
+  target: T,
+): ContextMenuItem | null {
+  if (!action) return null
+  if (action.available && !action.available([target])) return null
+  return {
+    danger: action.danger,
+    extra: action.shortcutLabel,
+    icon: action.icon,
+    key: action.key,
+    label: action.label,
+    onClick: () => void action.run([target]),
+  }
+}
+
 export function buildNoteMenuItems(
   note: NoteModel,
-  handlers: NoteMenuHandlers,
+  options: BuildNoteMenuItemsOptions,
 ): ContextMenuItem[] {
-  return [
-    {
-      extra: '↵',
-      icon: Pencil,
-      key: 'edit',
-      label: '编辑',
-      onClick: () => handlers.onEdit(),
-    },
-    {
-      icon: ExternalLink,
-      key: 'open-external',
-      label: '在新窗口打开',
-      onClick: () =>
-        window.open(handlers.externalHref, '_blank', 'noopener,noreferrer'),
-    },
+  const find = (key: string) =>
+    options.actions.find((action) => action.key === key)
+  const items: ContextMenuItem[] = []
+
+  const edit = actionToItem(find('edit'), note)
+  if (edit) items.push(edit)
+  const openExternal = actionToItem(find('open-external'), note)
+  if (openExternal) items.push(openExternal)
+
+  items.push(
     { key: 'sep-1', type: 'divider' },
     {
       checked: note.isPublished,
       key: 'publish',
       label: '已发布',
-      onCheckedChange: (next) => handlers.onPublishToggle(next),
+      onCheckedChange: options.onPublishToggle,
       type: 'checkbox',
     },
     {
       checked: note.bookmark,
       key: 'bookmark',
       label: '收藏',
-      onCheckedChange: (next) => handlers.onBookmarkToggle(next),
+      onCheckedChange: options.onBookmarkToggle,
       type: 'checkbox',
     },
     { key: 'sep-2', type: 'divider' },
@@ -83,7 +87,7 @@ export function buildNoteMenuItems(
           title: '修改心情',
         })
         if (next === undefined) return
-        handlers.onMoodChange(next)
+        options.onMoodChange(next)
       },
     },
     {
@@ -98,7 +102,7 @@ export function buildNoteMenuItems(
           title: '修改天气',
         })
         if (next === undefined) return
-        handlers.onWeatherChange(next)
+        options.onWeatherChange(next)
       },
     },
     { key: 'sep-3', type: 'divider' },
@@ -106,7 +110,7 @@ export function buildNoteMenuItems(
       icon: Copy,
       key: 'copy-link',
       label: '复制链接',
-      onClick: () => void copyText(handlers.externalHref, '链接'),
+      onClick: () => void copyText(options.externalHref, '链接'),
     },
     {
       key: 'copy-id',
@@ -118,14 +122,12 @@ export function buildNoteMenuItems(
       label: '复制 #编号',
       onClick: () => void copyText(`#${note.nid}`, '编号'),
     },
-    { key: 'sep-4', type: 'divider' },
-    {
-      danger: true,
-      extra: '⌫',
-      icon: Trash2,
-      key: 'delete',
-      label: '删除',
-      onClick: () => handlers.onDelete(),
-    },
-  ]
+  )
+
+  const remove = actionToItem(find('delete'), note)
+  if (remove) {
+    items.push({ key: 'sep-4', type: 'divider' }, remove)
+  }
+
+  return items
 }

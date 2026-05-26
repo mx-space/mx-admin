@@ -3,16 +3,20 @@ import { FileText, Plus, RefreshCw, Trash2 } from 'lucide-react'
 import { FormEvent, useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { toast } from 'sonner'
+import type { PostModel } from '~/models/post'
 import type { PostSortKey, SortOrder } from '../types/posts'
 
 import { getCategories } from '~/api/categories'
 import { deletePost, getPosts, patchPost, searchPosts } from '~/api/posts'
+import { WEB_URL } from '~/constants/env'
 import {
   ContentListHeader,
   ContentListToolbar,
   SortMenu,
 } from '~/features/_shared/components/content-list-toolbar'
 import { CompactPagination } from '~/ui/data/compact-pagination'
+import { FocusScope, setActiveScope, useScopeArrowNav } from '~/ui/focus-scope'
+import { useListSelection, useListShortcuts } from '~/ui/list-actions'
 import { ButtonLink } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
 import { SelectField } from '~/ui/primitives/select'
@@ -29,10 +33,13 @@ import {
   readPostSortKey,
   readSortOrder,
 } from '../utils/search-params'
+import { buildPostActions } from './buildPostActions'
 import { PostRow } from './PostRow'
 import { PostsEmpty } from './PostsEmpty'
 import { PostsError } from './PostsError'
 import { PostsSkeleton } from './PostsSkeleton'
+
+const FOCUS_SCOPE_ID = 'posts-list'
 
 export function PostsRouteViewContent() {
   const queryClient = useQueryClient()
@@ -51,7 +58,6 @@ export function PostsRouteViewContent() {
   const [sortOrder, setSortOrder] = useState<SortOrder>(
     readSortOrder(searchParams.get('order')),
   )
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set())
   const searchParamsKey = searchParams.toString()
 
   useLayoutEffect(() => {
@@ -92,10 +98,6 @@ export function PostsRouteViewContent() {
     sortOrder,
   ])
 
-  useEffect(() => {
-    setSelectedIds(new Set())
-  }, [categoryId, keyword, page, sortKey, sortOrder])
-
   const categoriesQuery = useQuery({
     queryFn: () => getCategories({ type: 'Category' }),
     queryKey: ['categories', 'post-filter'],
@@ -129,6 +131,15 @@ export function PostsRouteViewContent() {
   const posts = postsQuery.data?.data ?? []
   const pagination = postsQuery.data?.pagination
 
+  const selection = useListSelection<PostModel>({
+    getId: (post) => post.id,
+    items: posts,
+  })
+
+  useEffect(() => {
+    selection.clear()
+  }, [categoryId, keyword, page, sortKey, sortOrder])
+
   const invalidatePosts = async () => {
     await queryClient.invalidateQueries({ queryKey: ['posts'] })
   }
@@ -149,13 +160,8 @@ export function PostsRouteViewContent() {
 
   const deleteMutation = useMutation({
     mutationFn: deletePost,
-    onSuccess: async (_, id) => {
+    onSuccess: async () => {
       toast.success('文章已删除')
-      setSelectedIds((current) => {
-        const next = new Set(current)
-        next.delete(id)
-        return next
-      })
       await invalidatePosts()
     },
   })
@@ -175,12 +181,8 @@ export function PostsRouteViewContent() {
     },
     onError: (error: unknown) =>
       toast.error(getErrorMessage(error, '批量删除失败')),
-    onSuccess: async ({ failedCount, successfulIds, successCount }) => {
-      setSelectedIds((current) => {
-        const next = new Set(current)
-        successfulIds.forEach((id) => next.delete(id))
-        return next
-      })
+    onSuccess: async ({ failedCount, successCount }) => {
+      selection.clear()
       if (failedCount > 0) {
         toast.warning(`删除完成：成功 ${successCount}，失败 ${failedCount}`)
       } else {
@@ -188,6 +190,72 @@ export function PostsRouteViewContent() {
       }
       await invalidatePosts()
     },
+  })
+
+  const pinMutation = useMutation({
+    mutationFn: (payload: { id: string; isPinned: boolean }) =>
+      patchPost(payload.id, {
+        pinAt: payload.isPinned ? new Date().toISOString() : null,
+      }),
+    onError: (error: unknown) =>
+      toast.error(getErrorMessage(error, '置顶状态更新失败')),
+    onSuccess: invalidatePosts,
+  })
+
+  const externalHrefFor = (post: PostModel) =>
+    `${WEB_URL}/posts/${post.category?.slug ?? post.categoryId}/${post.slug}`
+
+  const confirmAndDelete = (targets: PostModel[]) => {
+    if (targets.length === 0) return
+    const msg =
+      targets.length === 1
+        ? `确定删除「${targets[0].title || '未命名文章'}」？`
+        : `确定删除选中的 ${targets.length} 篇文章？`
+    if (!window.confirm(msg)) return
+    if (targets.length === 1) {
+      deleteMutation.mutate(targets[0].id)
+    } else {
+      batchDeleteMutation.mutate(targets.map((t) => t.id))
+    }
+  }
+
+  const actions = useMemo(
+    () =>
+      buildPostActions({
+        deleteMany: confirmAndDelete,
+        navigateToEdit: (post) => {
+          window.location.hash = `#/posts/edit?id=${encodeURIComponent(post.id)}`
+        },
+        openExternal: (post) => {
+          window.open(externalHrefFor(post), '_blank', 'noopener,noreferrer')
+        },
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  )
+
+  useListShortcuts(actions, {
+    extra: {
+      '$mod+a': (event) => {
+        event.preventDefault()
+        selection.selectAll()
+      },
+      Escape: () => {
+        selection.clear()
+        setActiveScope(null)
+      },
+    },
+    getTargets: selection.getSelectedTargets,
+    scopeId: FOCUS_SCOPE_ID,
+  })
+
+  useScopeArrowNav({
+    itemSelector: '[data-scope-item="row"]',
+    onItemFocus: (el) => {
+      const id = el.getAttribute('data-id')
+      if (id) selection.selectOne(id)
+    },
+    scopeId: FOCUS_SCOPE_ID,
   })
 
   const count = useMemo(() => {
@@ -215,20 +283,10 @@ export function PostsRouteViewContent() {
     [categoriesQuery.data],
   )
 
-  const pinMutation = useMutation({
-    mutationFn: (payload: { id: string; isPinned: boolean }) =>
-      patchPost(payload.id, {
-        pinAt: payload.isPinned ? new Date().toISOString() : null,
-      }),
-    onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '置顶状态更新失败')),
-    onSuccess: invalidatePosts,
-  })
-
-  const selectedCount = selectedIds.size
+  const selectedCount = selection.size
   const visibleIds = posts.map((post) => post.id)
   const allVisibleSelected =
-    visibleIds.length > 0 && visibleIds.every((id) => selectedIds.has(id))
+    visibleIds.length > 0 && visibleIds.every((id) => selection.isSelected(id))
 
   const onSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -237,18 +295,15 @@ export function PostsRouteViewContent() {
   }
 
   const toggleAllVisible = (checked: boolean) => {
-    setSelectedIds((current) => {
-      const next = new Set(current)
-      for (const id of visibleIds) {
-        if (checked) next.add(id)
-        else next.delete(id)
-      }
-      return next
-    })
+    if (checked) selection.selectAll()
+    else selection.clear()
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-white dark:bg-neutral-950">
+    <FocusScope
+      className="outline-hidden flex h-full min-h-0 flex-col bg-white dark:bg-neutral-950"
+      id={FOCUS_SCOPE_ID}
+    >
       <ContentListHeader
         action={
           <ButtonLink to="/posts/edit">
@@ -323,11 +378,7 @@ export function PostsRouteViewContent() {
           bulkActionLabel: '批量删除',
           hasVisibleItems: posts.length > 0,
           indeterminate: selectedCount > 0 && !allVisibleSelected,
-          onBulkAction: () => {
-            if (window.confirm(`确定删除选中的 ${selectedCount} 篇文章？`)) {
-              batchDeleteMutation.mutate(Array.from(selectedIds))
-            }
-          },
+          onBulkAction: () => confirmAndDelete(selection.getSelectedTargets()),
           onToggleAllVisible: toggleAllVisible,
           selectAllLabel: '选择当前页',
           selectedCount,
@@ -346,32 +397,26 @@ export function PostsRouteViewContent() {
           <div className="divide-y divide-neutral-100 dark:divide-neutral-900">
             {posts.map((post) => (
               <PostRow
+                actions={actions}
                 categories={rowCategoryOptions}
                 key={post.id}
                 onCategoryChange={(id, nextCategoryId) =>
                   categoryMutation.mutate({ categoryId: nextCategoryId, id })
                 }
-                onDelete={(id) => {
-                  if (window.confirm(`确定删除「${post.title}」？`)) {
-                    deleteMutation.mutate(id)
-                  }
-                }}
                 onPinToggle={(id, isPinned) =>
                   pinMutation.mutate({ id, isPinned })
                 }
                 onPublishChange={(id, isPublished) =>
                   publishMutation.mutate({ id, isPublished })
                 }
-                onSelectedChange={(checked) => {
-                  setSelectedIds((current) => {
-                    const next = new Set(current)
-                    if (checked) next.add(post.id)
-                    else next.delete(post.id)
-                    return next
-                  })
+                onSelect={(id, mode) => {
+                  if (mode === 'range') selection.selectRange(id)
+                  else if (mode === 'toggle') selection.toggleWithAnchor(id)
+                  else selection.selectOne(id)
                 }}
+                onSelectedChange={() => selection.toggleWithAnchor(post.id)}
                 post={post}
-                selected={selectedIds.has(post.id)}
+                selected={selection.isSelected(post.id)}
               />
             ))}
           </div>
@@ -393,6 +438,6 @@ export function PostsRouteViewContent() {
           />
         </div>
       ) : null}
-    </div>
+    </FocusScope>
   )
 }

@@ -1,5 +1,6 @@
 import { BookOpen, Pin, ThumbsUp } from 'lucide-react'
 import type { PostModel } from '~/models/post'
+import type { ListAction } from '~/ui/list-actions'
 
 import { WEB_URL } from '~/constants/env'
 import {
@@ -16,11 +17,12 @@ export interface PostMenuCategoryOption {
 }
 
 export function PostRow(props: {
+  actions: ReadonlyArray<ListAction<PostModel>>
   categories: PostMenuCategoryOption[]
   onCategoryChange: (id: string, categoryId: string) => void
-  onDelete: (id: string) => void
   onPinToggle: (id: string, isPinned: boolean) => void
   onPublishChange: (id: string, isPublished: boolean) => void
+  onSelect: (id: string, mode: 'single' | 'toggle' | 'range') => void
   onSelectedChange: (checked: boolean) => void
   post: PostModel
   selected: boolean
@@ -32,25 +34,20 @@ export function PostRow(props: {
   const editPath = `/posts/edit?id=${encodeURIComponent(post.id)}`
 
   const menuItems = () =>
-    buildPostMenuItems(
-      post,
-      {
-        externalHref,
-        onCategoryChange: (categoryId) =>
-          props.onCategoryChange(post.id, categoryId),
-        onDelete: () => props.onDelete(post.id),
-        onEdit: () => {
-          window.location.hash = `#${editPath}`
-        },
-        onPinToggle: (next) => props.onPinToggle(post.id, next),
-        onPublishToggle: (next) => props.onPublishChange(post.id, next),
-      },
-      props.categories,
-    )
+    buildPostMenuItems(post, {
+      actions: props.actions,
+      categories: props.categories,
+      externalHref,
+      onCategoryChange: (categoryId) =>
+        props.onCategoryChange(post.id, categoryId),
+      onPinToggle: (next) => props.onPinToggle(post.id, next),
+      onPublishToggle: (next) => props.onPublishChange(post.id, next),
+    })
 
   return (
     <ContentEntryListItem
       checkboxLabel={`选择文章「${title}」`}
+      dataId={post.id}
       editTitle="编辑文章"
       editTo={editPath}
       externalHref={externalHref}
@@ -81,6 +78,7 @@ export function PostRow(props: {
           </time>
         </>
       }
+      onSelect={(mode) => props.onSelect(post.id, mode)}
       onSelectedChange={props.onSelectedChange}
       openTitle="打开文章"
       selected={props.selected}
