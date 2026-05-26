@@ -3,8 +3,11 @@ import type { HTMLAttributes, Ref } from 'react'
 
 import { cn } from '~/utils/cn'
 
-import { useFocusScopeActive } from './hooks'
-import { registerFocusScope, setActiveScope } from './store'
+import {
+  registerFocusScope,
+  setActiveScope,
+  useFocusScopeActive,
+} from './hooks'
 
 export interface FocusScopeProps extends Omit<
   HTMLAttributes<HTMLDivElement>,

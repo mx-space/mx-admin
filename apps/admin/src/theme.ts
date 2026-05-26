@@ -1,4 +1,7 @@
 import { useEffect, useMemo, useSyncExternalStore } from 'react'
+import type { ThemeMode } from '~/store/theme'
+
+import { useThemeStore } from '~/store/theme'
 
 export const themeColors = {
   primary: '#1a9cf3',
@@ -6,33 +9,32 @@ export const themeColors = {
   primaryShallow: '#4fb5f7',
 } as const
 
-export type ThemeMode = 'dark' | 'light' | 'system'
+export type { ThemeMode }
 
-const themeModeChangeEvent = 'mx-admin-theme-mode-change'
+const DARK_QUERY = '(prefers-color-scheme: dark)'
 
+/**
+ * Reads the persisted theme mode from the Zustand store and resolves it
+ * against the OS preference. The OS-preference side still goes through
+ * `useSyncExternalStore` because the source is a `MediaQueryList`, not
+ * React state.
+ */
 export function useThemeMode() {
-  const query = useMemo(
-    () => window.matchMedia('(prefers-color-scheme: dark)'),
-    [],
-  )
+  const themeMode = useThemeStore((s) => s.themeMode)
+  const setThemeMode = useThemeStore((s) => s.setThemeMode)
 
-  const snapshot = useSyncExternalStore(
-    (onStoreChange) => {
-      query.addEventListener('change', onStoreChange)
-      window.addEventListener(themeModeChangeEvent, onStoreChange)
-
-      return () => {
-        query.removeEventListener('change', onStoreChange)
-        window.removeEventListener(themeModeChangeEvent, onStoreChange)
-      }
+  const query = useMemo(() => window.matchMedia(DARK_QUERY), [])
+  const systemMatches = useSyncExternalStore(
+    (onChange) => {
+      query.addEventListener('change', onChange)
+      return () => query.removeEventListener('change', onChange)
     },
-    () => getThemeSnapshot(query),
-    () => 'system:light',
+    () => query.matches,
+    () => false,
   )
-  const [themeMode, resolvedTheme] = snapshot.split(':') as [
-    ThemeMode,
-    'dark' | 'light',
-  ]
+
+  const resolvedTheme: 'dark' | 'light' =
+    themeMode === 'system' ? (systemMatches ? 'dark' : 'light') : themeMode
   const isDark = resolvedTheme === 'dark'
 
   useEffect(() => {
@@ -57,28 +59,7 @@ export function installThemeTokens() {
   )
 }
 
+/** Imperative setter for callers outside React. */
 export function setThemeMode(themeMode: ThemeMode) {
-  if (themeMode === 'system') {
-    localStorage.removeItem('theme-mode')
-  } else {
-    localStorage.setItem('theme-mode', themeMode)
-  }
-
-  window.dispatchEvent(new Event(themeModeChangeEvent))
-}
-
-function getThemeSnapshot(query: MediaQueryList) {
-  const themeMode = readThemeMode()
-  const resolvedTheme =
-    themeMode === 'system' ? (query.matches ? 'dark' : 'light') : themeMode
-
-  return `${themeMode}:${resolvedTheme}` as const
-}
-
-function readThemeMode(): ThemeMode {
-  const storedTheme = localStorage.getItem('theme-mode')?.replace(/^"|"$/g, '')
-
-  if (storedTheme === 'dark' || storedTheme === 'light') return storedTheme
-
-  return 'system'
+  useThemeStore.getState().setThemeMode(themeMode)
 }

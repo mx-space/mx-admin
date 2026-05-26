@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { tinykeys } from 'tinykeys'
 
-import { getActiveScopeId } from './store'
+import { getActiveScopeId } from './hooks'
 
 export interface UseScopeArrowNavOptions {
   /** The focus-scope id whose items this set navigates. */

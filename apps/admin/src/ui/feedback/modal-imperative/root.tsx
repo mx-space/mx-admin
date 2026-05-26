@@ -1,10 +1,8 @@
-import { useSyncExternalStore } from 'react'
-
 import { Modal } from '~/ui/feedback/modal'
 import { PortalLayerScope } from '~/ui/feedback/portal-layer'
 
 import { ModalInstanceProvider } from './context'
-import { modalStore } from './store'
+import { modalStore, useModalStore } from './store'
 
 /**
  * Z-stack stride: each modal reserves this many depth steps so its descendants
@@ -14,11 +12,7 @@ import { modalStore } from './store'
 const Z_STACK_STRIDE = 10
 
 export function ModalRoot() {
-  const stack = useSyncExternalStore(
-    modalStore.subscribe,
-    modalStore.getSnapshot,
-    modalStore.getSnapshot,
-  )
+  const stack = useModalStore((s) => s.stack)
   const topIndex = stack.length - 1
 
   return (

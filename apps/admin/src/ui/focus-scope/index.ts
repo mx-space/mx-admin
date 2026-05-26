@@ -1,11 +1,14 @@
 export { FocusScope } from './FocusScope'
 export type { FocusScopeProps } from './FocusScope'
 export {
+  getActiveScopeId,
+  registerFocusScope,
   setActiveScope,
   useActiveFocusScopeId,
   useFocusScopeActive,
 } from './hooks'
-export { getActiveScopeId } from './store'
+export type { FocusScopeStore } from './store'
+export { getFocusScopeStoreState, useFocusScopeStore } from './store'
 export { useScopeArrowNav } from './use-scope-arrow-nav'
 export type { UseScopeArrowNavOptions } from './use-scope-arrow-nav'
 

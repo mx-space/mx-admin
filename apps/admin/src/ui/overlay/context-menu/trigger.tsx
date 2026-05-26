@@ -6,7 +6,6 @@ import {
   memo,
   useCallback,
   useId,
-  useSyncExternalStore,
 } from 'react'
 import type {
   HTMLAttributes,
@@ -17,12 +16,7 @@ import type { ContextMenuItem } from './types'
 
 import { cn } from '~/utils/cn'
 
-import {
-  getServerSnapshot,
-  getSnapshot,
-  showContextMenu,
-  subscribe,
-} from './store'
+import { showContextMenu, useContextMenuStore } from './store'
 
 export type ContextMenuTriggerProps = {
   children: ReactNode
@@ -53,12 +47,7 @@ const wrapperStyle = { display: 'contents' as const }
 export const ContextMenuTrigger = memo<ContextMenuTriggerProps>(
   function ContextMenuTrigger({ children, items, onContextMenu, ...rest }) {
     const triggerId = useId()
-    const state = useSyncExternalStore(
-      subscribe,
-      getSnapshot,
-      getServerSnapshot,
-    )
-    const open = state.open && state.triggerId === triggerId
+    const open = useContextMenuStore((s) => s.open && s.triggerId === triggerId)
 
     const handleContextMenu = useCallback(
       (event: ReactMouseEvent<HTMLElement>) => {

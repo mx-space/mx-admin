@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from 'react'
+import { atom, getDefaultStore, useAtomValue } from 'jotai'
 import type { EditorView } from '@codemirror/view'
 
 export interface ImagePopoverSnapshot {
@@ -7,43 +7,30 @@ export interface ImagePopoverSnapshot {
   view: EditorView | null
 }
 
-let snapshot: ImagePopoverSnapshot = {
+const emptySnapshot: ImagePopoverSnapshot = {
   visible: false,
   targetEl: null,
   view: null,
 }
 
-const listeners = new Set<() => void>()
-
-function emit() {
-  listeners.forEach((l) => l())
-}
+const imagePopoverAtom = atom<ImagePopoverSnapshot>(emptySnapshot)
+const jotaiStore = getDefaultStore()
 
 export function getImagePopoverState(): ImagePopoverSnapshot {
-  return snapshot
-}
-
-export function subscribeImagePopover(listener: () => void): () => void {
-  listeners.add(listener)
-  return () => {
-    listeners.delete(listener)
-  }
+  return jotaiStore.get(imagePopoverAtom)
 }
 
 export function useImagePopoverState(): ImagePopoverSnapshot {
-  return useSyncExternalStore(
-    subscribeImagePopover,
-    getImagePopoverState,
-    getImagePopoverState,
-  )
+  return useAtomValue(imagePopoverAtom)
 }
 
-export const showImagePopover = (targetEl: HTMLElement, view: EditorView) => {
-  snapshot = { visible: true, targetEl, view }
-  emit()
+export const showImagePopover = (
+  targetEl: HTMLElement,
+  view: EditorView,
+): void => {
+  jotaiStore.set(imagePopoverAtom, { visible: true, targetEl, view })
 }
 
-export const hideImagePopover = () => {
-  snapshot = { visible: false, targetEl: null, view: null }
-  emit()
+export const hideImagePopover = (): void => {
+  jotaiStore.set(imagePopoverAtom, emptySnapshot)
 }

@@ -1,5 +1,5 @@
 import { ContextMenu } from '@base-ui/react/context-menu'
-import { memo, useEffect, useMemo, useSyncExternalStore } from 'react'
+import { memo, useEffect, useMemo } from 'react'
 
 import {
   useFloatLayerContainer,
@@ -10,11 +10,8 @@ import { menuStyles } from '~/ui/overlay/menu-styles'
 import { renderContextMenuItems } from './renderItems'
 import {
   closeContextMenu,
-  getServerSnapshot,
-  getSnapshot,
-  setContextMenuState,
-  subscribe,
   updateLastPointer,
+  useContextMenuStore,
 } from './store'
 
 function preventDefaultAndStopPropagation(event: {
@@ -33,7 +30,12 @@ function preventDefaultAndStopPropagation(event: {
  *   manager so submenus naturally stack above their parents.
  */
 export const ContextMenuHost = memo(function ContextMenuHost() {
-  const state = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
+  const state = useContextMenuStore((s) => ({
+    anchor: s.anchor,
+    items: s.items,
+    open: s.open,
+  }))
+  const setContextMenuState = useContextMenuStore((s) => s.setContextMenuState)
   const { ref: zRef, zIndex } = useLayerZIndex<HTMLDivElement>('floating')
   const container = useFloatLayerContainer()
 
