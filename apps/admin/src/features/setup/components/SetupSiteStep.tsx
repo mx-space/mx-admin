@@ -1,0 +1,172 @@
+import { X } from 'lucide-react'
+import { useState } from 'react'
+import { toast } from 'sonner'
+import type { InitDefaultConfigs } from '~/api/system'
+import type { FormEvent } from 'react'
+import type { SetupUrls } from '../types/setup'
+
+import { patchInitConfig } from '~/api/system'
+import { TextInput } from '~/ui/text-field'
+
+import { inputClassName, labelClassName } from '../constants'
+import { getErrorMessage } from '../utils/setup'
+import { StepActions, UrlInput } from './SetupPrimitives'
+
+export function SetupSiteStep(props: {
+  defaultConfigs: InitDefaultConfigs
+  onNext: () => void
+  onPrev: () => void
+}) {
+  const [title, setTitle] = useState(props.defaultConfigs.seo?.title ?? '')
+  const [description, setDescription] = useState(
+    props.defaultConfigs.seo?.description ?? '',
+  )
+  const [keywords, setKeywords] = useState<string[]>(
+    props.defaultConfigs.seo?.keywords ?? [],
+  )
+  const [keywordInput, setKeywordInput] = useState('')
+  const [urls, setUrls] = useState<SetupUrls>({
+    adminUrl: `${location.origin}/qaqdmin`,
+    serverUrl: `${location.origin}/api/v2`,
+    webUrl: location.origin,
+    wsUrl: location.origin,
+  })
+  const [submitting, setSubmitting] = useState(false)
+  const canSubmit = Boolean(title && description)
+
+  const submit = async (event: FormEvent) => {
+    event.preventDefault()
+    if (!canSubmit || submitting) return
+
+    setSubmitting(true)
+
+    try {
+      await Promise.all([
+        patchInitConfig('seo', {
+          description,
+          keywords,
+          title,
+        }),
+        patchInitConfig('url', urls),
+      ])
+      props.onNext()
+    } catch (error) {
+      toast.error(getErrorMessage(error, '保存站点配置失败'))
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const addKeyword = () => {
+    const value = keywordInput.trim()
+    if (!value || keywords.includes(value)) return
+    setKeywords((current) => [...current, value])
+    setKeywordInput('')
+  }
+
+  return (
+    <div className="rounded-2xl border border-white/20 bg-white/10 p-6 backdrop-blur-xl">
+      <form onSubmit={submit}>
+        <div className="space-y-4">
+          <TextInput
+            autoComplete="organization"
+            controlClassName={inputClassName}
+            label="站点标题"
+            labelClassName={labelClassName}
+            onChange={setTitle}
+            placeholder="输入站点标题"
+            required
+            value={title}
+          />
+
+          <TextInput
+            autoComplete="off"
+            controlClassName={inputClassName}
+            label="站点描述"
+            labelClassName={labelClassName}
+            onChange={setDescription}
+            placeholder="输入站点描述"
+            required
+            value={description}
+          />
+
+          <div>
+            <label className={labelClassName}>关键字</label>
+            <div className="rounded-2xl bg-white/10 p-2">
+              <div className="mb-2 flex flex-wrap gap-2">
+                {keywords.map((keyword) => (
+                  <span
+                    className="inline-flex items-center gap-1 rounded-full bg-white/20 px-3 py-1 text-xs text-white"
+                    key={keyword}
+                  >
+                    {keyword}
+                    <button
+                      aria-label={`移除 ${keyword}`}
+                      onClick={() =>
+                        setKeywords((current) =>
+                          current.filter((item) => item !== keyword),
+                        )
+                      }
+                      type="button"
+                    >
+                      <X aria-hidden="true" className="size-3" />
+                    </button>
+                  </span>
+                ))}
+              </div>
+              <TextInput
+                controlClassName="h-9 rounded-full border-0 bg-white/10 px-3 text-sm text-white placeholder:text-white/50 focus:bg-white/20 dark:border-0 dark:bg-white/10 dark:text-white"
+                onChange={setKeywordInput}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') {
+                    event.preventDefault()
+                    addKeyword()
+                  }
+                }}
+                placeholder="输入关键字后按 Enter"
+                value={keywordInput}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <UrlInput
+              label="前端地址"
+              onChange={(value) =>
+                setUrls((current) => ({ ...current, webUrl: value }))
+              }
+              value={urls.webUrl}
+            />
+            <UrlInput
+              label="API 地址"
+              onChange={(value) =>
+                setUrls((current) => ({ ...current, serverUrl: value }))
+              }
+              value={urls.serverUrl}
+            />
+            <UrlInput
+              label="后台地址"
+              onChange={(value) =>
+                setUrls((current) => ({ ...current, adminUrl: value }))
+              }
+              value={urls.adminUrl}
+            />
+            <UrlInput
+              label="Gateway 地址"
+              onChange={(value) =>
+                setUrls((current) => ({ ...current, wsUrl: value }))
+              }
+              value={urls.wsUrl}
+            />
+          </div>
+        </div>
+
+        <StepActions
+          canSubmit={canSubmit}
+          onPrev={props.onPrev}
+          submitting={submitting}
+        />
+      </form>
+    </div>
+  )
+}

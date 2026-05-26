@@ -1,0 +1,262 @@
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { Copy, Eye, EyeOff, Key, Plus, Trash2 } from 'lucide-react'
+import { useState } from 'react'
+import { toast } from 'sonner'
+import type { TokenModel } from '~/models/token'
+
+import { createToken, deleteToken, getToken, getTokens } from '~/api/auth'
+import { Button } from '~/ui/button'
+import { DateTimePicker } from '~/ui/datetime-picker'
+import { Scroll } from '~/ui/scroll'
+import { Switch } from '~/ui/switch'
+import { TextInput } from '~/ui/text-field'
+
+import { accountQueryKey } from '../../constants'
+import {
+  formatDateTime,
+  formatDateTimeInputValue,
+  getErrorMessage,
+} from '../../utils/settings'
+import { EmptyState, Modal, PanelHeader } from '../SettingsPrimitives'
+
+export function TokenPanel(props: { onBack: () => void }) {
+  const queryClient = useQueryClient()
+  const [visibleTokens, setVisibleTokens] = useState<Record<string, string>>({})
+  const [createOpen, setCreateOpen] = useState(false)
+  const [createdToken, setCreatedToken] = useState<TokenModel | null>(null)
+  const [name, setName] = useState('')
+  const [expires, setExpires] = useState(formatDateTimeInputValue(new Date()))
+  const [expiresEnabled, setExpiresEnabled] = useState(false)
+
+  const tokensQuery = useQuery({
+    queryFn: getTokens,
+    queryKey: [...accountQueryKey, 'tokens'],
+  })
+
+  const createMutation = useMutation({
+    mutationFn: () =>
+      createToken({
+        expired: expiresEnabled ? new Date(expires).toISOString() : undefined,
+        name,
+      }),
+    onError: (error: unknown) =>
+      toast.error(getErrorMessage(error, '创建 Token 失败')),
+    onSuccess: async (token) => {
+      try {
+        await navigator.clipboard.writeText(token.token)
+        toast.success('Token 已创建并复制到剪贴板')
+      } catch {
+        toast.success('Token 已创建')
+      }
+      setCreatedToken(token)
+      setCreateOpen(false)
+      setName('')
+      setExpires(formatDateTimeInputValue(new Date()))
+      setExpiresEnabled(false)
+      await queryClient.invalidateQueries({ queryKey: accountQueryKey })
+    },
+  })
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteToken,
+    onError: (error: unknown) =>
+      toast.error(getErrorMessage(error, '删除 Token 失败')),
+    onSuccess: async () => {
+      toast.success('删除成功')
+      await queryClient.invalidateQueries({ queryKey: accountQueryKey })
+    },
+  })
+
+  const revealToken = async (token: TokenModel) => {
+    if (visibleTokens[token.id]) {
+      setVisibleTokens((current) => {
+        const next = { ...current }
+        delete next[token.id]
+        return next
+      })
+      return
+    }
+
+    try {
+      const detail = await getToken(token.id)
+      setVisibleTokens((current) => ({ ...current, [token.id]: detail.token }))
+    } catch (error) {
+      toast.error(getErrorMessage(error, '获取 Token 详情失败'))
+    }
+  }
+
+  return (
+    <div className="flex h-full min-h-72 flex-col">
+      <PanelHeader onBack={props.onBack} title="API Token">
+        <Button onClick={() => setCreateOpen(true)} type="button">
+          <Plus aria-hidden="true" className="size-4" />
+          新增
+        </Button>
+      </PanelHeader>
+      <Scroll className="flex-1">
+        {tokensQuery.isLoading ? (
+          <div className="p-4 text-sm text-neutral-500">加载中...</div>
+        ) : (tokensQuery.data ?? []).length === 0 ? (
+          <EmptyState icon={<Key className="size-7" />} label="暂无 Token" />
+        ) : (
+          <div className="divide-y divide-neutral-100 dark:divide-neutral-900">
+            {tokensQuery.data?.map((token) => {
+              const visible = visibleTokens[token.id]
+              return (
+                <div className="p-4" key={token.id}>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <h3 className="truncate text-sm font-medium">
+                        {token.name}
+                      </h3>
+                      <button
+                        className="mt-2 max-w-full truncate font-mono text-xs text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100"
+                        onClick={() => {
+                          if (visible)
+                            void navigator.clipboard.writeText(visible)
+                        }}
+                        type="button"
+                      >
+                        {visible || '••••••••••••••••••••••••'}
+                      </button>
+                      <p className="mt-2 text-xs text-neutral-500">
+                        创建于 {formatDateTime(token.createdAt)}
+                        {token.expired
+                          ? ` · 过期 ${formatDateTime(String(token.expired))}`
+                          : ' · 永不过期'}
+                      </p>
+                    </div>
+                    <div className="flex gap-1">
+                      <Button
+                        onClick={() => void revealToken(token)}
+                        type="button"
+                        variant="subtle"
+                      >
+                        {visible ? (
+                          <EyeOff aria-hidden="true" className="size-4" />
+                        ) : (
+                          <Eye aria-hidden="true" className="size-4" />
+                        )}
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          if (
+                            window.confirm(`确认删除 Token「${token.name}」？`)
+                          ) {
+                            deleteMutation.mutate(token.id)
+                          }
+                        }}
+                        type="button"
+                        variant="subtle"
+                      >
+                        <Trash2 aria-hidden="true" className="size-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
+      </Scroll>
+
+      <Modal
+        onClose={() => setCreateOpen(false)}
+        open={createOpen}
+        title="创建 Token"
+      >
+        <form
+          className="space-y-4"
+          onSubmit={(event) => {
+            event.preventDefault()
+            if (!name.trim()) {
+              toast.warning('请输入 Token 名称')
+              return
+            }
+            if (expiresEnabled && Number.isNaN(new Date(expires).getTime())) {
+              toast.warning('请选择有效的过期时间')
+              return
+            }
+            createMutation.mutate()
+          }}
+        >
+          <TextInput
+            label="名称"
+            onChange={setName}
+            placeholder="为这个 Token 起个名字..."
+            required
+            value={name}
+          />
+          <Switch
+            checked={expiresEnabled}
+            label="是否过期"
+            onCheckedChange={setExpiresEnabled}
+          />
+          <DateTimePicker
+            disabled={!expiresEnabled}
+            label="过期时间"
+            onChange={setExpires}
+            placeholder="选择过期时间"
+            value={expires}
+          />
+          <div className="flex justify-end gap-2">
+            <Button
+              onClick={() => setCreateOpen(false)}
+              type="button"
+              variant="subtle"
+            >
+              取消
+            </Button>
+            <Button disabled={createMutation.isPending} type="submit">
+              创建
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+      <Modal
+        onClose={() => setCreatedToken(null)}
+        open={Boolean(createdToken)}
+        title="Token 创建成功"
+      >
+        <div className="space-y-4">
+          <div className="rounded border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-300">
+            Token 创建成功，请妥善保存。
+          </div>
+          <div className="rounded border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm dark:border-neutral-800 dark:bg-neutral-900">
+            <span className="text-neutral-500">名称：</span>
+            <span className="font-medium">{createdToken?.name}</span>
+          </div>
+          <div className="flex items-center gap-2 rounded border border-neutral-200 bg-neutral-50 p-3 dark:border-neutral-800 dark:bg-neutral-900">
+            <code className="min-w-0 flex-1 break-all text-xs">
+              {createdToken?.token}
+            </code>
+            <Button
+              onClick={() => {
+                if (createdToken?.token) {
+                  void navigator.clipboard.writeText(createdToken.token)
+                  toast.success('Token 已复制')
+                }
+              }}
+              type="button"
+              variant="subtle"
+            >
+              <Copy aria-hidden="true" className="size-4" />
+            </Button>
+          </div>
+          {createdToken?.expired ? (
+            <div className="rounded border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm dark:border-neutral-800 dark:bg-neutral-900">
+              <span className="text-neutral-500">过期时间：</span>
+              <span className="font-medium">
+                {formatDateTime(String(createdToken.expired))}
+              </span>
+            </div>
+          ) : null}
+          <p className="rounded border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-700 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-300">
+            关闭此窗口后将无法再次查看完整 Token。
+          </p>
+        </div>
+      </Modal>
+    </div>
+  )
+}

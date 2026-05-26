@@ -1,0 +1,72 @@
+import type {
+  AIModelAssignment,
+  AIProviderConfig,
+  AIProviderModel,
+} from '../../types/settings'
+
+import { SelectField } from '~/ui/select'
+import { TextInput } from '~/ui/text-field'
+
+import { formatAIProviderLabel } from '../../utils/settings'
+
+export function AIModelAssignmentField(props: {
+  description: string
+  label: string
+  models: Record<string, AIProviderModel[]>
+  onChange: (value: AIModelAssignment | undefined) => void
+  providers: AIProviderConfig[]
+  value?: AIModelAssignment
+}) {
+  const modelListId = `assignment-models-${props.label}`
+  const providerId = props.value?.providerId ?? ''
+  const providerModels = providerId ? (props.models[providerId] ?? []) : []
+
+  return (
+    <div className="grid gap-2 rounded border border-neutral-100 p-3 text-sm md:grid-cols-[12rem_minmax(0,1fr)] dark:border-neutral-900">
+      <div>
+        <div className="font-medium text-neutral-700 dark:text-neutral-300">
+          {props.label}
+        </div>
+        <p className="mt-1 text-xs text-neutral-500">{props.description}</p>
+      </div>
+      <div className="grid gap-2 md:grid-cols-[minmax(0,12rem)_minmax(0,1fr)]">
+        <SelectField<string>
+          aria-label={`${props.label}服务商`}
+          onValueChange={(nextProviderId) =>
+            props.onChange(
+              nextProviderId
+                ? { providerId: nextProviderId, model: undefined }
+                : undefined,
+            )
+          }
+          options={[
+            { label: '不指定', value: '' },
+            ...props.providers.map((provider) => ({
+              label: formatAIProviderLabel(provider),
+              value: provider.id,
+            })),
+          ]}
+          value={providerId}
+        />
+        <TextInput
+          disabled={!providerId}
+          list={modelListId}
+          onChange={(model) =>
+            props.onChange(providerId ? { providerId, model } : undefined)
+          }
+          placeholder="使用 Provider 默认模型"
+          value={props.value?.model ?? ''}
+        />
+        <datalist id={modelListId}>
+          {providerModels.map((model) => (
+            <option
+              key={model.id}
+              label={model.name || model.id}
+              value={model.id}
+            />
+          ))}
+        </datalist>
+      </div>
+    </div>
+  )
+}

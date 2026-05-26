@@ -1,0 +1,226 @@
+import { dump, load } from 'js-yaml'
+import JSON5 from 'json5'
+import { toast } from 'sonner'
+import type { CreateSnippetData } from '~/api/snippets'
+import type { SnippetModel } from '~/models/snippet'
+
+import { defaultServerlessFunction, SnippetType } from '~/models/snippet'
+
+import { snippetTypes } from '../constants'
+
+export function normalizeSnippet(snippet: CreateSnippetData | SnippetModel) {
+  return {
+    comment: snippet.comment ?? '',
+    customPath: snippet.customPath ?? '',
+    enable: Boolean(snippet.enable),
+    metatype: snippet.metatype ?? '',
+    method: snippet.method ?? '',
+    name: snippet.name ?? '',
+    private: Boolean(snippet.private),
+    raw: snippet.raw ?? '',
+    reference: snippet.reference ?? 'root',
+    schema: snippet.schema ?? '',
+    secret: serializeSnippetSecret(snippet.secret),
+    type: snippet.type ?? SnippetType.JSON,
+  } satisfies CreateSnippetData
+}
+
+export function prepareSnippetPayload(
+  form: CreateSnippetData,
+): CreateSnippetData {
+  const payload: CreateSnippetData = {
+    ...form,
+    raw: normalizeSnippetRawForSave(form.type, form.raw),
+  }
+
+  if (!payload.metatype) delete payload.metatype
+  if (!payload.schema) delete payload.schema
+  if (!payload.customPath) delete payload.customPath
+  if (!payload.method) delete payload.method
+  if (payload.secret) payload.secret = parseSnippetSecret(payload.secret)
+  else delete payload.secret
+
+  return payload
+}
+
+export function normalizeSnippetRawForSave(type: SnippetType, raw: string) {
+  switch (type) {
+    case SnippetType.JSON:
+      try {
+        return JSON.stringify(JSON.parse(raw))
+      } catch {
+        throw new Error('JSON 格式错误')
+      }
+    case SnippetType.YAML:
+      try {
+        load(raw)
+        return raw
+      } catch {
+        throw new Error('YAML 格式错误')
+      }
+    case SnippetType.JSON5:
+      try {
+        JSON5.parse(raw)
+        return raw
+      } catch {
+        throw new Error('JSON5 格式错误')
+      }
+    case SnippetType.Function:
+    case SnippetType.Text:
+      return raw
+  }
+}
+
+export function getSnippetDefaultsForType(
+  type: SnippetType,
+  previousType: SnippetType,
+  previousRaw: string,
+): Partial<CreateSnippetData> {
+  if (type === previousType) return {}
+
+  if (type === SnippetType.Function) {
+    return {
+      enable: true,
+      method: 'GET',
+      raw: defaultServerlessFunction,
+    }
+  }
+
+  if (type === SnippetType.Text) {
+    return {
+      enable: undefined,
+      method: undefined,
+      raw: '',
+    }
+  }
+
+  const value =
+    previousType === SnippetType.JSON ||
+    previousType === SnippetType.JSON5 ||
+    previousType === SnippetType.YAML
+      ? readStructuredSnippetRaw(previousType, previousRaw)
+      : { name: 'hello world' }
+
+  return {
+    enable: undefined,
+    method: undefined,
+    raw: writeStructuredSnippetRaw(type, value),
+  }
+}
+
+export function readStructuredSnippetRaw(type: SnippetType, raw: string) {
+  try {
+    switch (type) {
+      case SnippetType.JSON:
+        return JSON.parse(raw)
+      case SnippetType.JSON5:
+        return JSON5.parse(raw)
+      case SnippetType.YAML:
+        return load(raw)
+      case SnippetType.Function:
+      case SnippetType.Text:
+        return raw
+    }
+  } catch {
+    toast.warning('当前内容无法转换，已使用默认内容')
+    return { name: 'hello world' }
+  }
+}
+
+export function writeStructuredSnippetRaw(type: SnippetType, value: unknown) {
+  switch (type) {
+    case SnippetType.JSON:
+      return JSON.stringify(value ?? {}, null, 2)
+    case SnippetType.JSON5:
+      return JSON5.stringify(value ?? {}, null, 2)
+    case SnippetType.YAML:
+      return dump(value)
+    case SnippetType.Function:
+    case SnippetType.Text:
+      return String(value ?? '')
+  }
+}
+
+export function serializeSnippetSecret(secret: CreateSnippetData['secret']) {
+  if (!secret) return ''
+  if (typeof secret === 'string') return secret
+
+  return JSON.stringify(secret, null, 2)
+}
+
+export function parseSnippetSecret(secret: CreateSnippetData['secret']) {
+  if (!secret || typeof secret !== 'string') return secret
+  const text = secret.trim()
+  if (!text) return undefined
+  try {
+    return JSON5.parse(text) as Record<string, unknown>
+  } catch {
+    return text
+  }
+}
+
+export function groupSnippetList(snippets: SnippetModel[]) {
+  const groups = new Map<string, SnippetModel[]>()
+
+  for (const snippet of snippets) {
+    const reference = snippet.reference || 'root'
+    groups.set(reference, [...(groups.get(reference) ?? []), snippet])
+  }
+
+  return [...groups.entries()]
+    .map(([reference, groupSnippets]) => ({
+      reference,
+      snippets: groupSnippets,
+    }))
+    .sort((left, right) => left.reference.localeCompare(right.reference))
+}
+
+export function basenameWithoutExt(name: string) {
+  return name.replace(/\.[^.]+$/, '')
+}
+
+export function parsePackageInput(input: string) {
+  return input
+    .split(/[\s,;]+/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+}
+
+export function logLevelColor(level: string) {
+  switch (level) {
+    case 'warn':
+      return 'text-amber-700 dark:text-amber-400'
+    case 'error':
+      return 'text-red-700 dark:text-red-400'
+    case 'info':
+      return 'text-blue-700 dark:text-blue-400'
+    case 'debug':
+      return 'text-neutral-600 dark:text-neutral-400'
+    default:
+      return 'text-neutral-700 dark:text-neutral-300'
+  }
+}
+
+export function formatLogArgs(args: unknown[]) {
+  return args
+    .map((arg) => {
+      if (typeof arg === 'string') return arg
+      try {
+        return JSON.stringify(arg, null, 2)
+      } catch {
+        return String(arg)
+      }
+    })
+    .join(' ')
+}
+
+export function readSnippetTypeFilter(value: string | null): SnippetType | '' {
+  return snippetTypes.includes(value as SnippetType)
+    ? (value as SnippetType)
+    : ''
+}
+
+export function getErrorMessage(error: unknown, fallback: string) {
+  if (error instanceof Error && error.message) return error.message
+  return fallback
+}
