@@ -34,9 +34,11 @@ Existing fields unchanged: `refId`, `refType`, `title?`, `messages` (Mixed[]), `
 
 #### New Endpoint
 
-| Method | Path | Body | Purpose |
-|--------|------|------|---------|
+
+| Method  | Path                          | Body                                   | Purpose                                       |
+| ------- | ----------------------------- | -------------------------------------- | --------------------------------------------- |
 | `PATCH` | `/ai/agent/conversations/:id` | `{ title?, reviewState?, diffState? }` | Partial update of conversation metadata/state |
+
 
 Existing endpoints unchanged: `POST` create, `GET` list, `GET` detail, `PATCH .../messages` append, `DELETE`.
 
@@ -101,22 +103,26 @@ Replaces `use-conversation-sync.ts`. Location: `src/components/editor/rich/agent
 
 **Reactive State:**
 
-| Name | Type | Description |
-|------|------|-------------|
-| `sessions` | `Ref<SessionMeta[]>` | All sessions for current refId (id, title, updated, messageCount) |
-| `activeSessionId` | `Ref<string \| null>` | Currently active session |
-| `isHydrating` | `Ref<boolean>` | True during store hydration |
-| `isLoading` | `Ref<boolean>` | True during session list loading |
+
+| Name              | Type                 | Description                                                       |
+| ----------------- | -------------------- | ----------------------------------------------------------------- |
+| `sessions`        | `Ref<SessionMeta[]>` | All sessions for current refId (id, title, updated, messageCount) |
+| `activeSessionId` | `Ref<string          | null>`                                                            |
+| `isHydrating`     | `Ref<boolean>`       | True during store hydration                                       |
+| `isLoading`       | `Ref<boolean>`       | True during session list loading                                  |
+
 
 **Methods:**
 
-| Method | Behavior |
-|--------|----------|
-| `loadSessions()` | `GET /conversations?refId&refType`, populate `sessions` |
-| `switchSession(id)` | Abort agent loop → `store.reset()` → fetch detail → hydrate bubbles + reviewState + diffState → set `lastSyncedLength` |
-| `createSession()` | Mark local "pending creation" state; actual `POST` on first user message (lazy) |
-| `deleteSession(id)` | `DELETE /conversations/:id`; if active, switch to next; if list empty, reset to empty store |
-| `renameSession(id, title)` | `PATCH /conversations/:id { title }` |
+
+| Method                     | Behavior                                                                                                               |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `loadSessions()`           | `GET /conversations?refId&refType`, populate `sessions`                                                                |
+| `switchSession(id)`        | Abort agent loop → `store.reset()` → fetch detail → hydrate bubbles + reviewState + diffState → set `lastSyncedLength` |
+| `createSession()`          | Mark local "pending creation" state; actual `POST` on first user message (lazy)                                        |
+| `deleteSession(id)`        | `DELETE /conversations/:id`; if active, switch to next; if list empty, reset to empty store                            |
+| `renameSession(id, title)` | `PATCH /conversations/:id { title }`                                                                                   |
+
 
 **Hydration Flow (inside `switchSession`):**
 
@@ -239,23 +245,28 @@ Insert `SessionHeader` before `ChatMessageList`:
 
 #### mx-core (backend)
 
-| File | Change |
-|------|--------|
-| `apps/core/src/modules/ai/ai-agent/ai-agent-conversation.model.ts` | Add `reviewState`, `diffState` fields |
-| `apps/core/src/modules/ai/ai-agent/ai-agent-conversation.service.ts` | Add `updateById` method |
-| `apps/core/src/modules/ai/ai-agent/ai-agent.controller.ts` | Add `PATCH /conversations/:id` endpoint |
-| `apps/core/src/modules/ai/ai-agent/ai-agent.schema.ts` | Add `UpdateConversationSchema` + DTO |
+
+| File                                                                 | Change                                         |
+| -------------------------------------------------------------------- | ---------------------------------------------- |
+| `apps/core/src/modules/ai/ai-agent/ai-agent-conversation.model.ts`   | Add `reviewState`, `diffState` fields          |
+| `apps/core/src/modules/ai/ai-agent/ai-agent-conversation.service.ts` | Add `updateById` method                        |
+| `apps/core/src/modules/ai/ai-agent/ai-agent.controller.ts`           | Add `PATCH /conversations/:id` endpoint        |
+| `apps/core/src/modules/ai/ai-agent/ai-agent.schema.ts`               | Add `UpdateConversationSchema` + DTO           |
 | `apps/core/src/modules/ai/ai-agent/ai-agent-conversation.service.ts` | Add title generation logic in `appendMessages` |
+
 
 #### admin-vue3 (frontend)
 
-| File | Change |
-|------|--------|
-| `src/api/ai-agent.ts` | Add `updateConversation`, update types |
-| `src/components/editor/rich/agent-chat/composables/use-session-manager.ts` | **New file** — replaces `use-conversation-sync.ts` |
-| `src/components/editor/rich/agent-chat/composables/use-conversation-sync.ts` | **Delete** (replaced by session manager) |
-| `src/components/editor/rich/agent-chat/SessionHeader.tsx` | **New file** — session switcher UI |
-| `src/components/editor/rich/agent-chat/AgentChatPanel.tsx` | Add SessionHeader, accept session props |
-| `src/components/editor/rich/RichEditorWithAgent.tsx` | Replace `useConversationSync` with `useSessionManager`, pass session state to panel |
-| `src/views/manage-posts/write.tsx` | No change (session managed inside RichEditorWithAgent) |
-| `src/views/manage-notes/write.tsx` | No change |
+
+| File                                                                         | Change                                                                              |
+| ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `src/api/ai-agent.ts`                                                        | Add `updateConversation`, update types                                              |
+| `src/components/editor/rich/agent-chat/composables/use-session-manager.ts`   | **New file** — replaces `use-conversation-sync.ts`                                  |
+| `src/components/editor/rich/agent-chat/composables/use-conversation-sync.ts` | **Delete** (replaced by session manager)                                            |
+| `src/components/editor/rich/agent-chat/SessionHeader.tsx`                    | **New file** — session switcher UI                                                  |
+| `src/components/editor/rich/agent-chat/AgentChatPanel.tsx`                   | Add SessionHeader, accept session props                                             |
+| `src/components/editor/rich/RichEditorWithAgent.tsx`                         | Replace `useConversationSync` with `useSessionManager`, pass session state to panel |
+| `src/views/manage-posts/write.tsx`                                           | No change (session managed inside RichEditorWithAgent)                              |
+| `src/views/manage-notes/write.tsx`                                           | No change                                                                           |
+
+

@@ -15,11 +15,14 @@ import { DEFAULT_LOCALE, messages, SUPPORTED_LOCALES } from './resources'
 interface I18nContextValue {
   format: {
     dateTime: (
-      value: Date | number | string,
+      value: Date | number | string | null | undefined,
       options?: Intl.DateTimeFormatOptions,
     ) => string
     number: (value: number, options?: Intl.NumberFormatOptions) => string
-    relativeTime: (value: Date | number | string, current?: Date) => string
+    relativeTime: (
+      value: Date | number | string | null | undefined,
+      current?: Date,
+    ) => string
   }
   locale: Locale
   setLocale: (locale: Locale) => void
@@ -54,13 +57,15 @@ export function I18nProvider(props: PropsWithChildren) {
   const format = useMemo(
     () => ({
       dateTime: (
-        value: Date | number | string,
+        value: Date | number | string | null | undefined,
         options?: Intl.DateTimeFormatOptions,
       ) => formatDateTime(value, locale, options),
       number: (value: number, options?: Intl.NumberFormatOptions) =>
         formatNumber(value, locale, options),
-      relativeTime: (value: Date | number | string, current?: Date) =>
-        formatRelativeTime(value, locale, current),
+      relativeTime: (
+        value: Date | number | string | null | undefined,
+        current?: Date,
+      ) => formatRelativeTime(value, locale, current),
     }),
     [locale],
   )

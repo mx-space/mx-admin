@@ -1,10 +1,11 @@
 import type { Locale } from './types'
 
 export function formatDateTime(
-  value: Date | number | string,
+  value: Date | number | string | null | undefined,
   locale: Locale,
   options?: Intl.DateTimeFormatOptions,
 ) {
+  if (value == null || value === '') return 'N/A'
   const date = value instanceof Date ? value : new Date(value)
 
   if (Number.isNaN(date.getTime())) return 'N/A'
@@ -25,10 +26,11 @@ export function formatNumber(
 }
 
 export function formatRelativeTime(
-  value: Date | number | string,
+  value: Date | number | string | null | undefined,
   locale: Locale,
   current = new Date(),
 ) {
+  if (value == null || value === '') return '-'
   const date = value instanceof Date ? value : new Date(value)
 
   if (Number.isNaN(date.getTime())) return '-'

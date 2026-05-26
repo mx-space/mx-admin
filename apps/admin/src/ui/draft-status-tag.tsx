@@ -47,8 +47,9 @@ export function DraftStatusTag(props: DraftStatusTagProps) {
     )
   }
 
-  const absolute = format.dateTime(props.draft.updatedAt)
-  const relative = format.relativeTime(props.draft.updatedAt, now)
+  const savedAt = props.draft.updatedAt ?? props.draft.createdAt
+  const absolute = format.dateTime(savedAt)
+  const relative = format.relativeTime(savedAt, now)
 
   return (
     <Tag className={props.className} title={`已保存 ${absolute}`}>
