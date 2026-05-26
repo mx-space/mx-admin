@@ -29,7 +29,7 @@ export function Checkbox(props: CheckboxProps) {
       onCheckedChange={props.onCheckedChange}
       onClick={props.onClick}
     >
-      <BaseCheckbox.Indicator keepMounted>
+      <BaseCheckbox.Indicator>
         {props.indeterminate ? (
           <Minus aria-hidden="true" className="size-3" />
         ) : (

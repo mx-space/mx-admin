@@ -24,6 +24,7 @@ import {
   SlidersHorizontal,
   Trash2,
   WandSparkles,
+  X,
 } from 'lucide-react'
 import {
   FormEvent,
@@ -94,6 +95,7 @@ import { createPost, getPostById, getPosts, updatePost } from '~/api/posts'
 import { callBuiltInFunction } from '~/api/system'
 import { getTopics } from '~/api/topics'
 import { API_URL, WEB_URL } from '~/constants/env'
+import { DraftHintBanner } from '~/features/write/components/DraftHintBanner'
 import { MetaPresetSection } from '~/features/write/meta-presets'
 import { useAgentSessionManager } from '~/hooks/use-agent-session-manager'
 import { useLocalStorageState } from '~/hooks/use-local-storage-state'
@@ -103,8 +105,8 @@ import {
   buildMetaTools,
 } from '~/rich-editor/utils/meta-tools'
 import { Button } from '~/ui/button'
-import { Checkbox } from '~/ui/checkbox'
 import { cn } from '~/ui/cn'
+import { CodeMirrorEditor, ImageDropZone } from '~/ui/codemirror'
 import {
   AsidePanel,
   ContentLayout,
@@ -351,14 +353,13 @@ function WritePage(props: { kind: WriteKind }) {
   const [pageParseDialogOpen, setPageParseDialogOpen] = useState(false)
   const [pageLexicalDebugOpen, setPageLexicalDebugOpen] = useState(false)
   const [draftListOpen, setDraftListOpen] = useState(false)
-  const [recoveryDraft, setRecoveryDraft] = useState<DraftModel | null>(null)
+  const [draftListHintDismissed, setDraftListHintDismissed] = useState(false)
+  const [recoveryHintDismissed, setRecoveryHintDismissed] = useState(false)
   const applyDraftRef = useRef<(draft: DraftModel) => void>(() => {})
   const appliedRouteDraftIdRef = useRef<string | null>(null)
   const acceptedRouteRef = useRef({ pathname: '', route: '' })
   const confirmedNavigationRouteRef = useRef('')
   const draftDirtyRef = useRef(false)
-  const promptedDraftListSignatureRef = useRef('')
-  const promptedRecoveryDraftIdRef = useRef<string | null>(null)
   const lastSavedDraftFingerprintRef = useRef('')
   const latestDraftFingerprintRef = useRef('')
   const [lastSavedFingerprint, setLastSavedFingerprint] = useState('')
@@ -579,34 +580,33 @@ function WritePage(props: { kind: WriteKind }) {
     }
   }, [draftId, refDraftQuery.data])
 
-  useEffect(() => {
+  const recoveryHintDraft = useMemo(() => {
     const draft = refDraftQuery.data
     const published = detailQuery.data
-    if (!isEditing || routeDraftId || !draft || !published) return
-    if (promptedRecoveryDraftIdRef.current === draft.id) return
-    if (!isDraftNewerThanPublished(draft, published)) return
-
-    promptedRecoveryDraftIdRef.current = draft.id
-    setRecoveryDraft(draft)
+    if (!isEditing || routeDraftId || !draft || !published) return null
+    if (!isDraftNewerThanPublished(draft, published)) return null
+    return draft
   }, [detailQuery.data, isEditing, refDraftQuery.data, routeDraftId])
 
-  useEffect(() => {
-    if (!recoveryDraft || !publishedContent) return
+  const openRecoveryDialog = (draft: DraftModel) => {
+    if (!publishedContent) return
     const handle = present(
       DraftRecoveryDialog,
       {
-        draft: recoveryDraft,
+        draft,
         publishedContent,
-        onRecover: (draft) => {
-          applyDraftRef.current(draft)
-          setRecoveryDraft(null)
+        onRecover: (recovered) => {
+          applyDraftRef.current(recovered)
+          setRecoveryHintDismissed(true)
+          handle.dismiss()
         },
         onUsePublished: () => {
           draftDirtyRef.current = false
           lastSavedDraftFingerprintRef.current =
             latestDraftFingerprintRef.current
           setLastSavedFingerprint(latestDraftFingerprintRef.current)
-          setRecoveryDraft(null)
+          setRecoveryHintDismissed(true)
+          handle.dismiss()
         },
       },
       {
@@ -615,21 +615,7 @@ function WritePage(props: { kind: WriteKind }) {
         },
       },
     )
-    return () => handle.dismiss()
-  }, [recoveryDraft, publishedContent])
-
-  useEffect(() => {
-    if (isEditing || routeDraftId) return
-
-    const drafts = newDraftsQuery.data ?? []
-    if (!drafts.length) return
-
-    const signature = drafts.map((draft) => draft.id).join(',')
-    if (promptedDraftListSignatureRef.current === signature) return
-
-    promptedDraftListSignatureRef.current = signature
-    setDraftListOpen(true)
-  }, [isEditing, newDraftsQuery.data, routeDraftId])
+  }
 
   useEffect(() => {
     const draft = routeDraftQuery.data
@@ -840,6 +826,14 @@ function WritePage(props: { kind: WriteKind }) {
   }
 
   const latestDraft = draftMutation.data ?? availableDraft
+  const draftListHintCount =
+    !isEditing && !routeDraftId ? (newDraftsQuery.data?.length ?? 0) : 0
+  const showDraftListHint =
+    draftListHintCount > 0 && !draftListHintDismissed && !draftListOpen
+  const showRecoveryHint = Boolean(
+    recoveryHintDraft && publishedContent && !recoveryHintDismissed,
+  )
+  const draftKindText = getDraftKindLabel(props.kind)
   const isDirty =
     hasDraftAutosaveContent && draftFingerprint !== lastSavedFingerprint
   const metaStatus = computeMetaStatus({
@@ -877,18 +871,6 @@ function WritePage(props: { kind: WriteKind }) {
         onChange={(event) => updateField('subtitle', event.target.value)}
         placeholder="副标题…"
         value={state.subtitle}
-      />
-    ) : props.kind === 'post' ? (
-      <input
-        className={cn(
-          'outline-hidden mt-1 w-full border-0 bg-transparent px-0 text-base text-neutral-500 transition-opacity placeholder:text-neutral-300 dark:text-neutral-400 dark:placeholder:text-neutral-700',
-          state.summary.trim()
-            ? 'opacity-100'
-            : 'opacity-0 focus:opacity-100 group-hover:opacity-100',
-        )}
-        onChange={(event) => updateField('summary', event.target.value)}
-        placeholder="一句话简介…"
-        value={state.summary}
       />
     ) : null
 
@@ -1009,6 +991,25 @@ function WritePage(props: { kind: WriteKind }) {
           )}
         </div>
 
+        {showDraftListHint ? (
+          <DraftHintBanner
+            actionLabel="查看列表"
+            message={`发现 ${draftListHintCount} 条未完成${draftKindText}草稿`}
+            onAction={() => setDraftListOpen(true)}
+            onDismiss={() => setDraftListHintDismissed(true)}
+            variant="list"
+          />
+        ) : null}
+        {showRecoveryHint && recoveryHintDraft ? (
+          <DraftHintBanner
+            actionLabel="对比并恢复"
+            message={`本${draftKindText}有较已发布更新之草稿（v${recoveryHintDraft.version}）`}
+            onAction={() => openRecoveryDialog(recoveryHintDraft)}
+            onDismiss={() => setRecoveryHintDismissed(true)}
+            variant="recovery"
+          />
+        ) : null}
+
         <ContentLayout
           className="min-h-0 flex-1"
           mainClassName="flex flex-col"
@@ -1091,15 +1092,16 @@ function WritePage(props: { kind: WriteKind }) {
                         }
                       />
                     ) : (
-                      <TextArea
-                        autoFocus={isEditing}
-                        controlClassName="min-h-136 resize-y rounded-none border-0 bg-transparent px-0 py-6 font-mono text-sm leading-6 focus:border-transparent focus:ring-0 dark:border-transparent dark:bg-transparent"
-                        onChange={(value) => updateField('text', value)}
-                        placeholder="输入正文..."
-                        required
-                        style={{ minHeight: '34rem' }}
-                        value={state.text}
-                      />
+                      <>
+                        <CodeMirrorEditor
+                          autoFocus={isEditing}
+                          className="min-h-136 rounded-none border-0 bg-transparent px-0 py-6"
+                          onChange={(value) => updateField('text', value)}
+                          style={{ minHeight: '34rem' }}
+                          text={state.text}
+                        />
+                        <ImageDropZone />
+                      </>
                     )}
                   </div>
                 </div>
@@ -1179,11 +1181,18 @@ function WritePage(props: { kind: WriteKind }) {
       <DraftListDialog
         draftLabel={getDraftKindLabel(props.kind)}
         drafts={newDraftsQuery.data ?? []}
-        onClose={() => setDraftListOpen(false)}
-        onCreate={() => setDraftListOpen(false)}
+        onClose={() => {
+          setDraftListOpen(false)
+          setDraftListHintDismissed(true)
+        }}
+        onCreate={() => {
+          setDraftListOpen(false)
+          setDraftListHintDismissed(true)
+        }}
         onSelect={(draft) => {
           applyDraft(draft)
           setDraftListOpen(false)
+          setDraftListHintDismissed(true)
         }}
         open={draftListOpen}
       />
@@ -1212,7 +1221,10 @@ function ContentSettingsPanel(props: {
 }) {
   return (
     <AsidePanel>
-      <Scroll className="min-h-0 flex-1" innerClassName="grid gap-4 p-4">
+      <Scroll
+        className="min-h-0 flex-1"
+        innerClassName="grid grid-cols-[minmax(0,1fr)] gap-4 p-4"
+      >
         <PanelBlock title="发布">
           <Switch
             checked={props.state.isPublished}
@@ -1604,7 +1616,10 @@ function DraftRecoveryDialog(props: {
             </div>
           </div>
 
-          <Scroll className="min-h-0 flex-1" innerClassName="grid gap-3 p-4">
+          <Scroll
+            className="min-h-0 flex-1"
+            innerClassName="grid grid-cols-[minmax(0,1fr)] gap-3 p-4"
+          >
             <div>
               <div className="text-xs font-medium text-neutral-500 dark:text-neutral-400">
                 标题
@@ -1702,9 +1717,12 @@ function computeMetaStatus(input: {
     return { status: 'dirty', text: `未保存改动${versionSuffix}` }
   }
   if (input.latestDraft) {
+    const savedAt =
+      input.latestDraft.updatedAt ?? input.latestDraft.createdAt ?? ''
+    const suffix = savedAt ? ` · 保存于 ${formatRelativeTime(savedAt)}` : ''
     return {
       status: 'saved',
-      text: `草稿 v${input.latestDraft.version} · 保存于 ${formatRelativeTime(input.latestDraft.updatedAt)}`,
+      text: `草稿 v${input.latestDraft.version}${suffix}`,
     }
   }
   if (input.isEditing && input.publishedUpdatedAt) {
@@ -1716,9 +1734,10 @@ function computeMetaStatus(input: {
   return { status: 'new', text: '新建未保存' }
 }
 
-function formatRelativeTime(value: string) {
+function formatRelativeTime(value: string | null | undefined) {
+  if (value == null || value === '') return '-'
   const ts = Date.parse(value)
-  if (Number.isNaN(ts)) return value
+  if (Number.isNaN(ts)) return '-'
   const diffMs = Date.now() - ts
   if (diffMs < 0) return formatDateTime(value)
   const sec = Math.round(diffMs / 1000)
@@ -2090,28 +2109,52 @@ function PostFields(props: {
 
       <PanelBlock title="关联阅读">
         {visibleRelatedPosts.length > 0 ? (
-          <Scroll
-            className="max-h-56"
-            innerClassName="space-y-2 pr-1"
-            viewportClassName="max-h-56"
-          >
-            {visibleRelatedPosts.map((post) => (
-              <Checkbox
-                checked={selectedRelatedIds.includes(post.id)}
-                key={post.id}
-                label={
-                  <span className="min-w-0">
-                    <span className="block truncate">{post.title}</span>
-                    <span className="block truncate text-xs text-neutral-400">
-                      {post.category?.name ? `${post.category.name} · ` : ''}
-                      {post.slug}
-                    </span>
-                  </span>
+          <>
+            <SelectField
+              aria-label="添加关联文章"
+              onValueChange={(postId) => {
+                if (postId && !selectedRelatedIds.includes(postId)) {
+                  toggleRelatedPost(postId)
                 }
-                onCheckedChange={() => toggleRelatedPost(post.id)}
-              />
-            ))}
-          </Scroll>
+              }}
+              options={[
+                { label: '选择文章添加…', value: '' },
+                ...visibleRelatedPosts
+                  .filter((post) => !selectedRelatedIds.includes(post.id))
+                  .map((post) => ({
+                    label: post.category?.name
+                      ? `${post.category.name} · ${post.title}`
+                      : post.title,
+                    value: post.id,
+                  })),
+              ]}
+              value=""
+            />
+            {selectedRelatedIds.length > 0 ? (
+              <div className="flex flex-wrap gap-1.5">
+                {selectedRelatedIds.map((id) => {
+                  const post = visibleRelatedPosts.find((p) => p.id === id)
+                  const label = post ? post.title : `${id.slice(0, 8)}…`
+                  return (
+                    <span
+                      className="inline-flex max-w-full items-center gap-1 rounded-sm border border-neutral-200 bg-neutral-50 py-1 pl-2 pr-1 text-xs text-neutral-700 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-200"
+                      key={id}
+                    >
+                      <span className="truncate">{label}</span>
+                      <button
+                        aria-label="移除"
+                        className="inline-flex size-4 shrink-0 items-center justify-center rounded text-neutral-400 transition-colors hover:bg-neutral-200 hover:text-neutral-700 dark:hover:bg-neutral-800 dark:hover:text-neutral-200"
+                        onClick={() => toggleRelatedPost(id)}
+                        type="button"
+                      >
+                        <X aria-hidden="true" className="size-3" />
+                      </button>
+                    </span>
+                  )
+                })}
+              </div>
+            ) : null}
+          </>
         ) : (
           <p className="text-xs text-neutral-500 dark:text-neutral-400">
             暂无可关联文章。
@@ -3031,7 +3074,10 @@ function PageSettingsPanel(props: {
 }) {
   return (
     <AsidePanel>
-      <Scroll className="min-h-0 flex-1" innerClassName="grid gap-5 px-5 py-4">
+      <Scroll
+        className="min-h-0 flex-1"
+        innerClassName="grid grid-cols-[minmax(0,1fr)] gap-5 px-5 py-4"
+      >
         <PageFields state={props.state} updateField={props.updateField} />
         <MediaAndMetaFields
           kind="page"
@@ -4542,9 +4588,10 @@ function getColorScheme(): 'dark' | 'light' {
   return document.documentElement.classList.contains('dark') ? 'dark' : 'light'
 }
 
-function formatDateTime(value: string) {
+function formatDateTime(value: string | null | undefined) {
+  if (value == null || value === '') return '-'
   const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return value
+  if (Number.isNaN(date.getTime())) return '-'
 
   return new Intl.DateTimeFormat('zh-CN', {
     day: '2-digit',
