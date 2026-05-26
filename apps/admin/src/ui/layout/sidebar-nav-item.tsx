@@ -1,9 +1,12 @@
 import { ChevronDown } from 'lucide-react'
 import { NavLink } from 'react-router'
 import type { TranslationKey } from '~/i18n/types'
-import type { SidebarNavNode, SidebarNavRoute } from '~/routes'
+import type { AppRoute, SidebarNode } from 'virtual:admin-routes'
 
 import { cn } from '~/utils/cn'
+
+export type SidebarNavRoute = AppRoute
+export type SidebarNavNode = SidebarNode
 
 const activeLinkClassName =
   'bg-neutral-950 text-white shadow-xs dark:bg-neutral-50 dark:text-neutral-950'
@@ -23,6 +26,12 @@ export function SidebarNavItem(props: {
   const Icon = props.node.route.icon
   const hasChildren = !!props.node.children?.length
   const expanded = props.isExpanded(props.node.route.path)
+  const titleText = props.node.route.titleKey
+    ? props.t(props.node.route.titleKey)
+    : props.node.route.path
+  const titleTooltip = props.node.route.descriptionKey
+    ? props.t(props.node.route.descriptionKey)
+    : titleText
   const parentClassName = cn(
     'grid w-full grid-cols-[1rem_minmax(0,1fr)_1rem] items-center gap-2 rounded text-left transition-colors',
     props.depth === 0 ? 'h-9 px-3 text-sm' : 'h-8 px-2 text-[13px]',
@@ -44,13 +53,15 @@ export function SidebarNavItem(props: {
           aria-expanded={expanded}
           className={parentClassName}
           onClick={() => props.onExpandedChange(props.node.route.path)}
-          title={props.t(props.node.route.descriptionKey)}
+          title={titleTooltip}
           type="button"
         >
-          <Icon aria-hidden="true" className="size-4 shrink-0" />
-          <span className="min-w-0 flex-1 truncate">
-            {props.t(props.node.route.titleKey)}
-          </span>
+          {Icon ? (
+            <Icon aria-hidden="true" className="size-4 shrink-0" />
+          ) : (
+            <span aria-hidden="true" className="size-4 shrink-0" />
+          )}
+          <span className="min-w-0 flex-1 truncate">{titleText}</span>
           <ChevronDown
             aria-hidden="true"
             className={cn(
@@ -62,19 +73,21 @@ export function SidebarNavItem(props: {
       ) : (
         <NavLink
           className={parentClassName}
-          title={props.t(props.node.route.descriptionKey)}
+          title={titleTooltip}
           to={props.node.route.path}
         >
-          <Icon
-            aria-hidden="true"
-            className={cn(
-              'shrink-0',
-              props.depth === 0 ? 'size-4' : 'size-3.5',
-            )}
-          />
-          <span className="min-w-0 flex-1 truncate">
-            {props.t(props.node.route.titleKey)}
-          </span>
+          {Icon ? (
+            <Icon
+              aria-hidden="true"
+              className={cn(
+                'shrink-0',
+                props.depth === 0 ? 'size-4' : 'size-3.5',
+              )}
+            />
+          ) : (
+            <span aria-hidden="true" className="size-4 shrink-0" />
+          )}
+          <span className="min-w-0 flex-1 truncate">{titleText}</span>
           <span aria-hidden="true" className="size-3.5" />
         </NavLink>
       )}

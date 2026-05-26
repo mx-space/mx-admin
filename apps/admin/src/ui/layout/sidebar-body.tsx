@@ -12,9 +12,10 @@ import {
 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router'
+import { shellRoutes, sidebarTree } from 'virtual:admin-routes'
 import type { Locale, TranslationKey } from '~/i18n/types'
-import type { SidebarNavNode, SidebarNavSection } from '~/routes'
 import type { ThemeMode } from '~/theme'
+import type { SidebarNode, SidebarSection } from 'virtual:admin-routes'
 
 import { getOwner } from '~/api/options'
 import { getAppInfo } from '~/api/system'
@@ -23,7 +24,6 @@ import { SESSION_WITH_LOGIN } from '~/constants/keys'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
 import { useI18n } from '~/i18n'
 import { SUPPORTED_LOCALES } from '~/i18n/resources'
-import { appRoutes, sidebarNavigation } from '~/routes'
 import { useThemeMode } from '~/theme'
 import { PortalLayerScope, useFloatingZ } from '~/ui/feedback/portal-layer'
 import {
@@ -73,9 +73,10 @@ export function SidebarBody() {
     retry: false,
   })
   const activeRoute =
-    [...appRoutes]
+    [...shellRoutes]
       .sort((a, b) => b.path.length - a.path.length)
-      .find((route) => location.pathname.startsWith(route.path)) ?? appRoutes[0]
+      .find((route) => location.pathname.startsWith(route.path)) ??
+    shellRoutes[0]
   const owner = ownerQuery.data
   const ownerName =
     owner?.name || owner?.username || owner?.handle || t('shell.owner.fallback')
@@ -89,11 +90,11 @@ export function SidebarBody() {
     sessionStorage.getItem('__gateway') ||
     window.injectData.PAGE_PROXY,
   )
-  const visibleSidebarNavigation: SidebarNavSection[] = useMemo(
+  const visibleSidebarNavigation: SidebarSection[] = useMemo(
     () =>
       shouldShowDebugMenu
-        ? sidebarNavigation
-        : sidebarNavigation
+        ? sidebarTree
+        : sidebarTree
             .map((section) => ({
               ...section,
               items: section.items.flatMap((node) => {
@@ -105,9 +106,9 @@ export function SidebarBody() {
             .filter((section) => section.items.length > 0),
     [shouldShowDebugMenu],
   )
-  const isRouteActive = (route: SidebarNavNode['route']) =>
+  const isRouteActive = (route: SidebarNode['route']) =>
     doesRouteMatch(route, activeRoute.path, location.pathname)
-  const isNodeActive = (node: SidebarNavNode): boolean =>
+  const isNodeActive = (node: SidebarNode): boolean =>
     isRouteActive(node.route) ||
     (node.children ?? []).some((child) => isNodeActive(child))
   const [expandedPaths, setExpandedPaths] = useState<Set<string>>(

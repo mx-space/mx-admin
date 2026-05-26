@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { HashRouter, Navigate, useLocation } from 'react-router'
+import { publicRoutes } from 'virtual:admin-routes'
 
 import { checkLogged } from './api/auth'
 import { useI18n } from './i18n'
@@ -9,6 +10,8 @@ import { AppRoutes } from './routes'
 import { AdminShell } from './shell'
 import { SocketBridge } from './socket/SocketBridge'
 import { installThemeTokens } from './theme'
+
+const publicPathSet = new Set(publicRoutes.map((route) => route.path))
 
 function App() {
   useEffect(() => {
@@ -28,11 +31,7 @@ function App() {
 function AppContent() {
   const location = useLocation()
 
-  if (
-    location.pathname === '/setup-api' ||
-    location.pathname === '/setup' ||
-    location.pathname === '/login'
-  ) {
+  if (publicPathSet.has(location.pathname)) {
     return <AppRoutes />
   }
 

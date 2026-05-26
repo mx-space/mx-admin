@@ -1,3 +1,6 @@
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
 import babel from '@rolldown/plugin-babel'
 import tailwindcss from '@tailwindcss/vite'
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
@@ -7,7 +10,10 @@ import { checker } from 'vite-plugin-checker'
 import { defineConfig } from 'vitest/config'
 import type { PluginOption } from 'vite'
 
+import { adminRoutes } from './vite-plugins/admin-routes'
 import PKG from './package.json'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 // dns.setDefaultResultOrder('verbatim')
 export default ({ mode }) => {
@@ -19,6 +25,7 @@ export default ({ mode }) => {
     plugins: [
       // mkcert(),
       codeInspectorPlugin({ bundler: 'vite' }),
+      adminRoutes({ viewsDir: resolve(__dirname, 'src/views') }),
       tailwindcss(),
       react(),
       babel({ presets: [reactCompilerPreset()] }),
