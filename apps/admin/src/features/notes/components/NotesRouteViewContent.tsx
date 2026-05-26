@@ -325,7 +325,6 @@ export function NotesRouteViewContent() {
           <div className="divide-y divide-neutral-100 dark:divide-neutral-900">
             {notes.map((note) => (
               <NoteRow
-                deleting={deleteMutation.isPending}
                 key={note.id}
                 note={note}
                 onDelete={(id) => {
@@ -333,11 +332,11 @@ export function NotesRouteViewContent() {
                     deleteMutation.mutate(id)
                   }
                 }}
-                onPublishChange={(id, isPublished) =>
-                  publishMutation.mutate({ id, isPublished })
-                }
                 onMetadataChange={(id, data) =>
                   patchMutation.mutate({ data, id })
+                }
+                onPublishChange={(id, isPublished) =>
+                  publishMutation.mutate({ id, isPublished })
                 }
                 onSelectedChange={(checked) => {
                   setSelectedIds((current) => {
@@ -347,9 +346,7 @@ export function NotesRouteViewContent() {
                     return next
                   })
                 }}
-                publishing={publishMutation.isPending}
                 selected={selectedIds.has(note.id)}
-                updatingMetadata={patchMutation.isPending}
               />
             ))}
           </div>

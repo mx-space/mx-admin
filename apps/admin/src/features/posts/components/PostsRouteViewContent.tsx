@@ -209,11 +209,21 @@ export function PostsRouteViewContent() {
   const rowCategoryOptions = useMemo(
     () =>
       (categoriesQuery.data ?? []).map((category) => ({
-        label: category.name,
-        value: category.id,
+        id: category.id,
+        name: category.name,
       })),
     [categoriesQuery.data],
   )
+
+  const pinMutation = useMutation({
+    mutationFn: (payload: { id: string; isPinned: boolean }) =>
+      patchPost(payload.id, {
+        pinAt: payload.isPinned ? new Date().toISOString() : null,
+      }),
+    onError: (error: unknown) =>
+      toast.error(getErrorMessage(error, '置顶状态更新失败')),
+    onSuccess: invalidatePosts,
+  })
 
   const selectedCount = selectedIds.size
   const visibleIds = posts.map((post) => post.id)
@@ -336,16 +346,18 @@ export function PostsRouteViewContent() {
           <div className="divide-y divide-neutral-100 dark:divide-neutral-900">
             {posts.map((post) => (
               <PostRow
-                deleting={deleteMutation.isPending}
                 categories={rowCategoryOptions}
                 key={post.id}
+                onCategoryChange={(id, nextCategoryId) =>
+                  categoryMutation.mutate({ categoryId: nextCategoryId, id })
+                }
                 onDelete={(id) => {
                   if (window.confirm(`确定删除「${post.title}」？`)) {
                     deleteMutation.mutate(id)
                   }
                 }}
-                onCategoryChange={(id, nextCategoryId) =>
-                  categoryMutation.mutate({ categoryId: nextCategoryId, id })
+                onPinToggle={(id, isPinned) =>
+                  pinMutation.mutate({ id, isPinned })
                 }
                 onPublishChange={(id, isPublished) =>
                   publishMutation.mutate({ id, isPublished })
@@ -359,9 +371,7 @@ export function PostsRouteViewContent() {
                   })
                 }}
                 post={post}
-                publishing={publishMutation.isPending}
                 selected={selectedIds.has(post.id)}
-                updatingCategory={categoryMutation.isPending}
               />
             ))}
           </div>

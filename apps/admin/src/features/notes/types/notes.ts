@@ -12,6 +12,7 @@ export type NoteSortKey =
 export type SortOrder = 'asc' | 'desc'
 
 export interface NoteMetadataUpdate extends PatchNoteData {
+  bookmark?: boolean
   mood?: string | null
   weather?: string | null
 }

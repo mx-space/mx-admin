@@ -3,6 +3,8 @@ import { Toaster } from 'sonner'
 import type { PropsWithChildren } from 'react'
 
 import { ModalRoot } from '~/ui/feedback/modal-imperative'
+import { ContextMenuHost } from '~/ui/overlay/context-menu'
+import { FloatLayerProvider } from '~/ui/overlay/floating-layer'
 
 import { I18nProvider } from './i18n'
 import { queryClient } from './query-client'
@@ -13,8 +15,11 @@ export function AppProviders(props: PropsWithChildren) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <I18nProvider>{props.children}</I18nProvider>
-      <ModalRoot />
+      <FloatLayerProvider>
+        <I18nProvider>{props.children}</I18nProvider>
+        <ModalRoot />
+        <ContextMenuHost />
+      </FloatLayerProvider>
       <Toaster
         closeButton
         gap={12}

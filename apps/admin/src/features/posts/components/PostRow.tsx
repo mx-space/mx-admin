@@ -6,79 +6,83 @@ import {
   ContentEntryListItem,
   ContentListStatusBadge,
 } from '~/features/_shared/components/content-list-item'
-import { SelectField } from '~/ui/primitives/select'
 import { relativeTimeFromNow } from '~/utils/time'
 
+import { buildPostMenuItems } from './buildPostMenuItems'
+
+export interface PostMenuCategoryOption {
+  id: string
+  name: string
+}
+
 export function PostRow(props: {
-  categories: Array<{ label: string; value: string }>
-  deleting: boolean
+  categories: PostMenuCategoryOption[]
   onCategoryChange: (id: string, categoryId: string) => void
   onDelete: (id: string) => void
+  onPinToggle: (id: string, isPinned: boolean) => void
   onPublishChange: (id: string, isPublished: boolean) => void
   onSelectedChange: (checked: boolean) => void
   post: PostModel
-  publishing: boolean
   selected: boolean
-  updatingCategory: boolean
 }) {
-  const externalHref = `${WEB_URL}/posts/${props.post.category?.slug ?? props.post.categoryId}/${props.post.slug}`
-  const isPublished = props.post.isPublished ?? false
-  const title = props.post.title || '未命名文章'
-  const editPath = `/posts/edit?id=${encodeURIComponent(props.post.id)}`
+  const post = props.post
+  const externalHref = `${WEB_URL}/posts/${post.category?.slug ?? post.categoryId}/${post.slug}`
+  const isPublished = post.isPublished ?? false
+  const title = post.title || '未命名文章'
+  const editPath = `/posts/edit?id=${encodeURIComponent(post.id)}`
+
+  const menuItems = () =>
+    buildPostMenuItems(
+      post,
+      {
+        externalHref,
+        onCategoryChange: (categoryId) =>
+          props.onCategoryChange(post.id, categoryId),
+        onDelete: () => props.onDelete(post.id),
+        onEdit: () => {
+          window.location.hash = `#${editPath}`
+        },
+        onPinToggle: (next) => props.onPinToggle(post.id, next),
+        onPublishToggle: (next) => props.onPublishChange(post.id, next),
+      },
+      props.categories,
+    )
 
   return (
     <ContentEntryListItem
       checkboxLabel={`选择文章「${title}」`}
-      deleteDisabled={props.deleting}
-      deleteTitle="删除文章"
       editTitle="编辑文章"
       editTo={editPath}
       externalHref={externalHref}
       leading={
-        props.post.pinAt ? (
+        post.pinAt ? (
           <Pin aria-hidden="true" className="size-3.5 text-orange-500" />
         ) : null
       }
+      menuItems={menuItems}
       meta={
         <>
-          {props.categories.length > 0 ? (
-            <SelectField
-              aria-label={`修改「${title}」分类`}
-              disabled={props.updatingCategory}
-              onValueChange={(value) =>
-                props.onCategoryChange(props.post.id, value)
-              }
-              options={props.categories}
-              triggerClassName="h-7 w-32 px-2 text-xs"
-              value={props.post.categoryId}
-            />
-          ) : (
-            <span>{props.post.category?.name ?? '未分类'}</span>
-          )}
-          {props.post.tags?.length ? (
-            <span className="max-w-64 truncate">
-              {props.post.tags.join('、')}
-            </span>
+          <span className="rounded bg-neutral-100 px-1.5 py-0.5 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300">
+            {post.category?.name ?? '未分类'}
+          </span>
+          {post.tags?.length ? (
+            <span className="max-w-64 truncate">{post.tags.join('、')}</span>
           ) : null}
           <span className="inline-flex items-center gap-1">
             <BookOpen aria-hidden="true" className="size-3" />
-            {props.post.readCount ?? 0}
+            {post.readCount ?? 0}
           </span>
           <span className="inline-flex items-center gap-1">
             <ThumbsUp aria-hidden="true" className="size-3" />
-            {props.post.likeCount ?? 0}
+            {post.likeCount ?? 0}
           </span>
-          <time dateTime={props.post.createdAt}>
-            {relativeTimeFromNow(props.post.createdAt)}
+          <time className="ml-auto" dateTime={post.createdAt}>
+            {relativeTimeFromNow(post.createdAt)}
           </time>
         </>
       }
-      onDelete={() => props.onDelete(props.post.id)}
-      onPublishToggle={() => props.onPublishChange(props.post.id, !isPublished)}
       onSelectedChange={props.onSelectedChange}
       openTitle="打开文章"
-      publishDisabled={props.publishing}
-      publishLabel={isPublished ? '下架' : '发布'}
       selected={props.selected}
       status={
         <ContentListStatusBadge active={isPublished}>
