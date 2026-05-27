@@ -107,6 +107,28 @@ describe('PageHeader', () => {
     expect(mobileButton!.getAttribute('title')).toBe('Create')
   })
 
+  it('renders single square icon button when iconOnly is true', () => {
+    const actions: HeaderAction[] = [
+      {
+        kind: 'button',
+        icon: Plus,
+        label: 'Refresh',
+        onClick: vi.fn(),
+        iconOnly: true,
+      },
+    ]
+    renderWithRouter(
+      harness,
+      createElement(PageHeader, { title: 'Title', actions }),
+    )
+    const buttons = harness.container.querySelectorAll(
+      'button[aria-label="Refresh"]',
+    )
+    expect(buttons.length).toBe(1)
+    expect(buttons[0].className).toContain('size-9')
+    expect(buttons[0].className).not.toContain('lg:hidden')
+  })
+
   it('applies primary class when primary: true', () => {
     const actions: HeaderAction[] = [
       {

@@ -40,6 +40,7 @@ export type HeaderAction =
       onClick: () => void
       primary?: boolean
       disabled?: boolean
+      iconOnly?: boolean
     }
   | {
       kind: 'custom'
@@ -134,6 +135,23 @@ function renderHeaderAction(action: HeaderAction, index: number) {
   const secondaryClasses =
     'border border-neutral-200 bg-white text-neutral-900 hover:bg-neutral-100 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50 dark:hover:bg-neutral-900'
   const variantClasses = action.primary ? primaryClasses : secondaryClasses
+
+  if (action.iconOnly) {
+    return (
+      <span key={index} className="contents">
+        <button
+          aria-label={action.label}
+          className={cn(baseClasses, variantClasses, 'size-9')}
+          disabled={action.disabled}
+          onClick={action.onClick}
+          title={action.label}
+          type="button"
+        >
+          <Icon aria-hidden="true" className="size-4" />
+        </button>
+      </span>
+    )
+  }
 
   return (
     <span key={index} className="contents">

@@ -33,6 +33,7 @@ export function ContentLayout(props: {
   children: ReactNode
   className?: string
   mainClassName?: string
+  mainMinSize?: number | string
   onCloseAside?: () => void
   open: boolean
 }) {
@@ -53,6 +54,7 @@ export function ContentLayout(props: {
           asideMinSize={props.asideMinSize}
           className={props.className}
           mainClassName={props.mainClassName}
+          mainMinSize={props.mainMinSize}
           open={props.open}
           setAsideEl={setAsideEl}
         >
@@ -82,6 +84,7 @@ function DesktopContentLayout(props: {
   children: ReactNode
   className?: string
   mainClassName?: string
+  mainMinSize?: number | string
   open: boolean
   setAsideEl: (el: HTMLDivElement | null) => void
 }) {
@@ -119,7 +122,7 @@ function DesktopContentLayout(props: {
       <Panel
         className={cn('min-h-0 min-w-0 overflow-hidden', props.mainClassName)}
         id="content-layout-main"
-        minSize="40%"
+        minSize={props.mainMinSize ?? '40%'}
       >
         {props.children}
       </Panel>

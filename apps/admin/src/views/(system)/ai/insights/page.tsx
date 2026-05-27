@@ -9,4 +9,4 @@ export const metadata = defineMetadata({
   order: 2,
 })
 
-export { AiRouteView as default } from '~/features/ai/routes/AiRouteView'
+export { AiInsightsRouteView as default } from '~/features/ai/routes/AiInsightsRouteView'
