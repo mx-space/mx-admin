@@ -103,7 +103,7 @@ export function CategoriesRouteViewContent() {
     <MasterDetailLayout
       showDetailOnMobile={showDetailOnMobile}
       list={
-        <section className="flex h-full min-h-0 flex-col border-b border-neutral-200 lg:border-b-0 lg:border-r dark:border-neutral-800">
+        <section className="flex h-full min-h-0 flex-col">
           <div
             className={cn(
               'flex shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800',

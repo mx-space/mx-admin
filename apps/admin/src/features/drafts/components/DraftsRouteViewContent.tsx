@@ -203,7 +203,7 @@ export function DraftsRouteViewContent() {
     <MasterDetailLayout
       list={
         <FocusScope
-          className="outline-hidden flex h-full min-h-0 flex-col border-r border-neutral-200 dark:border-neutral-800"
+          className="outline-hidden flex h-full min-h-0 flex-col"
           id={FOCUS_SCOPE_ID}
         >
           <div

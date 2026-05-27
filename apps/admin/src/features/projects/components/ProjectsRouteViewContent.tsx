@@ -80,7 +80,7 @@ export function ProjectsRouteViewContent() {
   return (
     <MasterDetailLayout
       list={
-        <section className="flex h-full min-h-0 flex-col border-r border-neutral-200 dark:border-neutral-800">
+        <section className="flex h-full min-h-0 flex-col">
           <div
             className={cn(
               'flex shrink-0 items-center justify-between gap-3 border-b border-neutral-200 px-4 dark:border-neutral-800',

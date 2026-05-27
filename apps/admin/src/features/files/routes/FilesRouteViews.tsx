@@ -1,3 +1,3 @@
-export { FilesPageContent as FilesPage } from '../components/FilesRouteViewsContent'
-export { OrphanFilesPageContent as OrphanFilesPage } from '../components/FilesRouteViewsContent'
-export { CommentImagesPageContent as CommentImagesPage } from '../components/FilesRouteViewsContent'
+export { CommentImagesPage } from '../components/CommentImagesPage'
+export { FilesByTypePage as FilesPage } from '../components/FilesByTypePage'
+export { OrphanFilesPage } from '../components/OrphanFilesPage'
