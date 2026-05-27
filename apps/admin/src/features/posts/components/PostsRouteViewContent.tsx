@@ -1,6 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { FileText, Plus, RefreshCw, Trash2 } from 'lucide-react'
-import { FormEvent, useEffect, useLayoutEffect, useMemo, useState } from 'react'
+import {
+  FormEvent,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { useSearchParams } from 'react-router'
 import { toast } from 'sonner'
 import type { PostModel } from '~/models/post'
@@ -17,8 +24,8 @@ import {
 import { useI18n } from '~/i18n'
 import { CompactPagination } from '~/ui/data/compact-pagination'
 import { confirmDialog } from '~/ui/feedback/confirm'
-import { FocusScope, setActiveScope, useScopeArrowNav } from '~/ui/focus-scope'
-import { useListSelection, useListShortcuts } from '~/ui/list-actions'
+import { FocusScope } from '~/ui/focus-scope'
+import { useListKeyboard } from '~/ui/list-actions'
 import { ButtonLink } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
 import { SelectField } from '~/ui/primitives/select'
@@ -134,14 +141,9 @@ export function PostsRouteViewContent() {
   const posts = postsQuery.data?.data ?? []
   const pagination = postsQuery.data?.pagination
 
-  const selection = useListSelection<PostModel>({
-    getId: (post) => post.id,
-    items: posts,
-  })
-
-  useEffect(() => {
-    selection.clear()
-  }, [categoryId, keyword, page, sortKey, sortOrder])
+  // selection is created by useListKeyboard below, after `actions` is built.
+  // mutations that fire `selection.clear()` go through this ref to avoid TDZ.
+  const selectionClearRef = useRef<(() => void) | null>(null)
 
   const invalidatePosts = async () => {
     await queryClient.invalidateQueries({ queryKey: ['posts'] })
@@ -187,7 +189,7 @@ export function PostsRouteViewContent() {
     onError: (error: unknown) =>
       toast.error(getErrorMessage(error, t('posts.toast.batchDeleteFailed'))),
     onSuccess: async ({ failedCount, successCount }) => {
-      selection.clear()
+      selectionClearRef.current?.()
       if (failedCount > 0) {
         toast.warning(
           t('posts.toast.batchDeletePartial', {
@@ -255,29 +257,14 @@ export function PostsRouteViewContent() {
     [t],
   )
 
-  useListShortcuts(actions, {
-    extra: {
-      '$mod+a': (event) => {
-        event.preventDefault()
-        selection.selectAll()
-      },
-      Escape: () => {
-        selection.clear()
-        setActiveScope(null)
-      },
-    },
-    getTargets: selection.getSelectedTargets,
+  const { selection } = useListKeyboard<PostModel>({
+    actions,
+    getId: (post) => post.id,
+    items: posts,
+    resetOn: [categoryId, keyword, page, sortKey, sortOrder],
     scopeId: FOCUS_SCOPE_ID,
   })
-
-  useScopeArrowNav({
-    itemSelector: '[data-scope-item="row"]',
-    onItemFocus: (el) => {
-      const id = el.getAttribute('data-id')
-      if (id) selection.selectOne(id)
-    },
-    scopeId: FOCUS_SCOPE_ID,
-  })
+  selectionClearRef.current = selection.clear
 
   const count = useMemo(() => {
     if (!pagination) return null

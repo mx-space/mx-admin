@@ -1,6 +1,11 @@
+import { CheckCheck, ShieldAlert, Trash2 } from 'lucide-react'
 import type { CommentModel } from '~/models/comment'
+import type { ListAction, ListRowSelectMode } from '~/ui/list-actions'
+import type { ContextMenuItem } from '~/ui/overlay/context-menu'
 
 import { useI18n } from '~/i18n'
+import { CommentState } from '~/models/comment'
+import { ListRow } from '~/ui/list-actions'
 import { Checkbox } from '~/ui/primitives/checkbox'
 import { cn } from '~/utils/cn'
 
@@ -8,10 +13,15 @@ import { formatCommentDate } from '../utils/comments'
 import { Avatar } from './CommentPrimitives'
 
 export function CommentListItem(props: {
+  actions: ReadonlyArray<ListAction<CommentModel>>
   checked: boolean
   comment: CommentModel
+  currentFilter: CommentState
+  isDetailTarget: boolean
   onCheck: (id: string, checked: boolean) => void
-  onSelect: () => void
+  onMarkJunk: (id: string) => void
+  onMarkRead: (id: string) => void
+  onSelect: (mode: ListRowSelectMode) => void
   selected: boolean
 }) {
   const { t } = useI18n()
@@ -19,25 +29,64 @@ export function CommentListItem(props: {
     ? t('comments.deletedPlaceholder')
     : props.comment.text
 
+  const menuItems = (): ContextMenuItem[] => {
+    const items: ContextMenuItem[] = []
+    if (props.currentFilter !== CommentState.Read) {
+      items.push({
+        icon: CheckCheck,
+        key: 'mark-read',
+        label: t('comments.action.markRead'),
+        onClick: () => props.onMarkRead(props.comment.id),
+      })
+    }
+    if (props.currentFilter !== CommentState.Junk) {
+      items.push({
+        icon: ShieldAlert,
+        key: 'mark-junk',
+        label: t('comments.action.markJunk'),
+        onClick: () => props.onMarkJunk(props.comment.id),
+      })
+    }
+    if (items.length > 0) items.push({ key: 'sep-1', type: 'divider' })
+    items.push({
+      danger: true,
+      icon: Trash2,
+      key: 'delete',
+      label: t('common.delete'),
+      onClick: () =>
+        props.actions.find((a) => a.key === 'delete')?.run([props.comment]),
+    })
+    return items
+  }
+
   return (
-    <article
+    <ListRow
+      as="article"
+      ariaCurrent={props.isDetailTarget}
       className={cn(
-        'flex cursor-pointer gap-3 border-b border-neutral-100 px-4 py-3 transition-colors last:border-b-0 dark:border-neutral-900',
-        props.selected
-          ? 'bg-neutral-100 dark:bg-neutral-900'
-          : props.checked
-            ? 'bg-neutral-50 dark:bg-neutral-900/60'
-            : 'hover:bg-neutral-50 dark:hover:bg-neutral-900/40',
+        'group grid cursor-default grid-cols-[auto_auto_minmax(0,1fr)] gap-3 border-b border-neutral-100 px-4 py-3 last:border-b-0 dark:border-neutral-900',
+        'hover:bg-neutral-50 dark:hover:bg-neutral-900/40',
+        'data-popup-open:bg-neutral-100 dark:data-popup-open:bg-neutral-800/60',
+        'data-selected:bg-neutral-100 dark:data-selected:bg-neutral-900',
+        'data-selected:hover:bg-neutral-200/60 dark:data-selected:hover:bg-neutral-800/80',
+        'focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-neutral-400 dark:focus-visible:outline-neutral-500',
       )}
-      onClick={props.onSelect}
+      dataId={props.comment.id}
+      leading={
+        <Checkbox
+          aria-label={t('comments.list.selectComment')}
+          checked={props.checked}
+          className="mt-1"
+          onCheckedChange={(checked) =>
+            props.onCheck(props.comment.id, checked)
+          }
+        />
+      }
+      menuItems={menuItems}
+      onSelect={props.onSelect}
+      role="row"
+      selected={props.selected}
     >
-      <Checkbox
-        aria-label={t('comments.list.selectComment')}
-        checked={props.checked}
-        className="mt-1 shrink-0"
-        onCheckedChange={(checked) => props.onCheck(props.comment.id, checked)}
-        onClick={(event) => event.stopPropagation()}
-      />
       <Avatar comment={props.comment} size="sm" />
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline gap-2">
@@ -65,6 +114,6 @@ export function CommentListItem(props: {
           </span>
         ) : null}
       </div>
-    </article>
+    </ListRow>
   )
 }

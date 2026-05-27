@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import {
   Group as PanelGroup,
-  Separator as PanelResizeHandle,
   Panel as ResizablePanel,
 } from 'react-resizable-panels'
 import type { LucideIcon } from 'lucide-react'
@@ -10,6 +9,7 @@ import type { ReactNode } from 'react'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
 import { HeaderBackButton } from '~/ui/layout/header-back-button'
 import { MobileHamburger } from '~/ui/layout/mobile-hamburger'
+import { ResizeHandle } from '~/ui/layout/resize-handle'
 import { useShellNav } from '~/ui/layout/shell-nav-context'
 import { cn } from '~/utils/cn'
 
@@ -222,9 +222,7 @@ export function MasterDetailLayout(props: {
         >
           {props.list}
         </ResizablePanel>
-        <PanelResizeHandle className="outline-hidden group relative w-0 shrink-0 cursor-col-resize border-r border-neutral-200 transition-colors focus-visible:border-neutral-400 dark:border-neutral-800 dark:focus-visible:border-neutral-600">
-          <span className="absolute left-1/2 top-1/2 h-8 w-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-neutral-300 opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 dark:bg-neutral-700" />
-        </PanelResizeHandle>
+        <ResizeHandle />
         <ResizablePanel
           className={cn(
             'min-h-0 min-w-0 overflow-hidden',

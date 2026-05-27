@@ -4,11 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-MX Admin is the dashboard for MX Space, a personal blog management system. The repo is a pnpm + turbo monorepo whose only active app is `apps/admin` — a React 19 SPA built with Base UI primitives, React Router (HashRouter), TanStack Query, Sonner, UnoCSS, and a Tailwind v4 layer. Despite the repo name `admin-vue3`, the Vue codebase has been retired; React is the sole runtime.
+MX Admin is the dashboard for MX Space, a personal blog management system. The repo is a pnpm workspace whose only active app is `apps/admin` — a React 19 SPA built with Base UI primitives, React Router (HashRouter), TanStack Query, Sonner, UnoCSS, and a Tailwind v4 layer. Despite the repo name `admin-vue3`, the Vue codebase has been retired; React is the sole runtime.
 
 ## Development Commands
 
-All scripts go through turbo at the repo root:
+Root scripts proxy to `apps/admin` via `pnpm -C apps/admin <task>`:
 
 ```bash
 pnpm install          # Install dependencies
@@ -106,7 +106,6 @@ New admin views must follow the master-detail / content-layout convention. See:
 - `apps/admin/uno.config.ts` — UnoCSS breakpoints (`phone:`, `tablet:`, `desktop:`) and theme colors (if present)
 - `apps/admin/src/theme.ts` — CSS token installation for the shell
 - `apps/admin/src/index.css` — global stylesheet + Tailwind layer
-- `turbo.json` — task pipeline (build/dev/lint/typecheck)
 
 ## Related Projects
 

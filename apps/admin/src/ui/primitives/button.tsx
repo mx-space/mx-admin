@@ -10,11 +10,14 @@ type ButtonVariant = 'primary' | 'subtle'
 export interface ButtonProps extends Omit<BaseButtonProps, 'className'> {
   className?: string
   variant?: ButtonVariant
+  /** Render as a square icon-only button. Drops horizontal padding + gap. */
+  iconOnly?: boolean
 }
 
 export interface ButtonLinkProps extends Omit<LinkProps, 'className'> {
   className?: string
   variant?: ButtonVariant
+  iconOnly?: boolean
 }
 
 const variantClassNames: Record<ButtonVariant, string> = {
@@ -24,17 +27,38 @@ const variantClassNames: Record<ButtonVariant, string> = {
     'border border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-200 dark:hover:bg-neutral-900',
 }
 
-const buttonClassName =
-  'inline-flex h-9 items-center justify-center gap-2 rounded px-3 text-sm font-medium outline-hidden transition-colors focus-visible:ring-2 focus-visible:ring-[var(--color-primary-shallow)] disabled:pointer-events-none disabled:opacity-50'
+const buttonBaseClassName =
+  'inline-flex items-center justify-center rounded text-sm font-medium outline-hidden transition-colors focus-visible:ring-2 focus-visible:ring-[var(--color-primary-shallow)] disabled:pointer-events-none disabled:opacity-50'
+
+const buttonTextClassName = 'h-9 gap-2 px-3'
+
+// Icon-only buttons are square (aspect-square) with zero horizontal padding so
+// the inner icon sits at its declared size (size-4 ≈ 16/36 ≈ 44%). Keeping h-9
+// matches the text variant for inline alignment.
+const buttonIconClassName = 'h-9 w-9 p-0 gap-0'
+
+function composeClassName(
+  iconOnly: boolean,
+  variant: ButtonVariant,
+  extra: string | undefined,
+) {
+  return cn(
+    buttonBaseClassName,
+    iconOnly ? buttonIconClassName : buttonTextClassName,
+    variantClassNames[variant],
+    extra,
+  )
+}
 
 export function Button({
   className,
+  iconOnly = false,
   variant = 'primary',
   ...props
 }: ButtonProps) {
   return (
     <BaseButton
-      className={cn(buttonClassName, variantClassNames[variant], className)}
+      className={composeClassName(iconOnly, variant, className)}
       {...props}
     />
   )
@@ -42,12 +66,13 @@ export function Button({
 
 export function ButtonLink({
   className,
+  iconOnly = false,
   variant = 'primary',
   ...props
 }: ButtonLinkProps) {
   return (
     <Link
-      className={cn(buttonClassName, variantClassNames[variant], className)}
+      className={composeClassName(iconOnly, variant, className)}
       {...props}
     />
   )

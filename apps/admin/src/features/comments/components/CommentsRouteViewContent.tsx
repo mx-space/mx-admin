@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { CheckCheck, MessageSquare, ShieldAlert, Trash2 } from 'lucide-react'
-import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { toast } from 'sonner'
 import type { CommentModel } from '~/models/comment'
@@ -17,7 +17,9 @@ import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
 import { useI18n } from '~/i18n'
 import { CommentState } from '~/models/comment'
 import { confirmDialog } from '~/ui/feedback/confirm'
+import { FocusScope } from '~/ui/focus-scope'
 import { MasterDetailLayout } from '~/ui/layout/page-layout'
+import { useListKeyboard } from '~/ui/list-actions'
 import { Button } from '~/ui/primitives/button'
 import { Checkbox } from '~/ui/primitives/checkbox'
 import { Scroll } from '~/ui/primitives/scroll'
@@ -30,9 +32,12 @@ import {
   getCommentFilters,
 } from '../constants'
 import { normalizeCommentState, readCommentPage } from '../utils/comments'
+import { buildCommentActions } from './buildCommentActions'
 import { CommentDetail } from './CommentDetail'
 import { CommentListItem } from './CommentListItem'
 import { CommentEmptyState } from './CommentPrimitives'
+
+const FOCUS_SCOPE_ID = 'comments-list'
 
 export function CommentsRouteViewContent() {
   const { locale, t } = useI18n()
@@ -46,7 +51,7 @@ export function CommentsRouteViewContent() {
   const [page, setPage] = useState(() =>
     readCommentPage(searchParams.get('page')),
   )
-  const [selectedId, setSelectedId] = useState<string | null>(
+  const [detailId, setDetailId] = useState<string | null>(
     searchParams.get('id'),
   )
   const [selectedCommentSnapshot, setSelectedCommentSnapshot] =
@@ -54,7 +59,6 @@ export function CommentsRouteViewContent() {
   const [showDetailOnMobile, setShowDetailOnMobile] = useState(
     Boolean(searchParams.get('id')),
   )
-  const [checkedIds, setCheckedIds] = useState<string[]>([])
   const [selectAllMode, setSelectAllMode] = useState(false)
 
   const commentsQuery = useQuery({
@@ -66,36 +70,37 @@ export function CommentsRouteViewContent() {
   const comments = commentsQuery.data?.data ?? []
   const pagination = commentsQuery.data?.pagination
   const selectedComment =
-    comments.find((comment) => comment.id === selectedId) ??
-    (selectedCommentSnapshot?.id === selectedId
-      ? selectedCommentSnapshot
-      : null)
+    comments.find((comment) => comment.id === detailId) ??
+    (selectedCommentSnapshot?.id === detailId ? selectedCommentSnapshot : null)
 
   useLayoutEffect(() => {
     const nextState = normalizeCommentState(searchParams.get('state'))
     const nextPage = readCommentPage(searchParams.get('page'))
-    const nextSelectedId = searchParams.get('id')
+    const nextDetailId = searchParams.get('id')
 
     setState((value) => (value === nextState ? value : nextState))
     setPage((value) => (value === nextPage ? value : nextPage))
-    setSelectedId((value) =>
-      value === nextSelectedId ? value : nextSelectedId,
-    )
-    setShowDetailOnMobile(Boolean(nextSelectedId))
-    setCheckedIds([])
+    setDetailId((value) => (value === nextDetailId ? value : nextDetailId))
+    setShowDetailOnMobile(Boolean(nextDetailId))
     setSelectAllMode(false)
-    if (!nextSelectedId) setSelectedCommentSnapshot(null)
+    if (!nextDetailId) setSelectedCommentSnapshot(null)
   }, [searchParamsKey])
 
   useEffect(() => {
     const next = new URLSearchParams()
     next.set('state', String(state))
     if (page > 1) next.set('page', String(page))
-    if (selectedId) next.set('id', selectedId)
+    if (detailId) next.set('id', detailId)
     if (next.toString() !== searchParamsKey) {
       setSearchParams(next, { replace: true })
     }
-  }, [page, searchParamsKey, selectedId, setSearchParams, state])
+  }, [page, searchParamsKey, detailId, setSearchParams, state])
+
+  const selectionClearRef = useRef<(() => void) | null>(null)
+  // Batch mutations close over this ref so they can read the latest selection
+  // without depending on selection identity (which is created later, after
+  // `actions`). Updated immediately after useListKeyboard returns.
+  const selectionTargetsRef = useRef<CommentModel[]>([])
 
   const invalidateComments = async () => {
     await queryClient.invalidateQueries({ queryKey: commentsQueryKey })
@@ -114,40 +119,45 @@ export function CommentsRouteViewContent() {
     mutationFn: deleteComment,
     onSuccess: async () => {
       toast.success(t('comments.toast.deleted'))
-      setSelectedId(null)
+      setDetailId(null)
       setSelectedCommentSnapshot(null)
       setShowDetailOnMobile(false)
+      selectionClearRef.current?.()
       await invalidateComments()
     },
   })
 
   const batchStateMutation = useMutation({
-    mutationFn: (nextState: CommentState) =>
-      selectAllMode
-        ? batchUpdateCommentState({
-            all: true,
-            currentState: state,
-            state: nextState,
-          })
-        : batchUpdateCommentState({ ids: checkedIds, state: nextState }),
+    mutationFn: (nextState: CommentState) => {
+      if (selectAllMode) {
+        return batchUpdateCommentState({
+          all: true,
+          currentState: state,
+          state: nextState,
+        })
+      }
+      const ids = selectionTargetsRef.current.map((c) => c.id)
+      return batchUpdateCommentState({ ids, state: nextState })
+    },
     onSuccess: async () => {
       toast.success(t('comments.toast.updated'))
-      setCheckedIds([])
-      setSelectAllMode(false)
+      selectionClearRef.current?.()
       await invalidateComments()
     },
   })
 
   const batchDeleteMutation = useMutation({
-    mutationFn: () =>
-      selectAllMode
-        ? batchDeleteComments({ all: true, state })
-        : batchDeleteComments({ ids: checkedIds }),
+    mutationFn: () => {
+      if (selectAllMode) {
+        return batchDeleteComments({ all: true, state })
+      }
+      const ids = selectionTargetsRef.current.map((c) => c.id)
+      return batchDeleteComments({ ids })
+    },
     onSuccess: async () => {
       toast.success(t('comments.toast.deleted'))
-      setCheckedIds([])
-      setSelectAllMode(false)
-      setSelectedId(null)
+      selectionClearRef.current?.()
+      setDetailId(null)
       setSelectedCommentSnapshot(null)
       setShowDetailOnMobile(false)
       await invalidateComments()
@@ -163,64 +173,85 @@ export function CommentsRouteViewContent() {
     },
   })
 
-  const checkedSet = useMemo(() => new Set(checkedIds), [checkedIds])
-  const allVisibleChecked =
-    comments.length > 0 &&
-    comments.every((comment) => checkedSet.has(comment.id))
-  const selectedCount = selectAllMode
-    ? (pagination?.total ?? 0)
-    : checkedIds.length
-  const hasSelection = selectedCount > 0
-
-  const toggleChecked = (id: string, checked: boolean) => {
-    setSelectAllMode(false)
-    setCheckedIds((current) =>
-      checked
-        ? Array.from(new Set([...current, id]))
-        : current.filter((x) => x !== id),
-    )
-  }
-
-  const toggleVisible = (checked: boolean) => {
-    setSelectAllMode(false)
-    setCheckedIds(checked ? comments.map((comment) => comment.id) : [])
-  }
-
-  const changeFilter = (nextState: CommentState) => {
-    setState(nextState)
-    setPage(1)
-    setCheckedIds([])
-    setSelectAllMode(false)
-    setSelectedId(null)
-    setSelectedCommentSnapshot(null)
-    setShowDetailOnMobile(false)
-  }
-
-  const selectComment = (comment: CommentModel) => {
-    setSelectedId(comment.id)
+  const openComment = (comment: CommentModel) => {
+    setDetailId(comment.id)
     setSelectedCommentSnapshot({ ...comment })
     setShowDetailOnMobile(true)
   }
 
-  const confirmDeleteComment = async (id: string) => {
+  const confirmDeleteComments = async (targets: CommentModel[]) => {
+    if (targets.length === 0) return
+    const description =
+      targets.length === 1
+        ? t('comments.confirmDelete.single')
+        : t('comments.confirmDelete.batch', { count: targets.length })
     const confirmed = await confirmDialog({
+      description,
       destructive: true,
       title: t('common.confirmDelete'),
-      description: t('comments.confirmDelete.single'),
     })
     if (!confirmed) return
-    deleteMutation.mutate(id)
+    if (targets.length === 1) {
+      deleteMutation.mutate(targets[0].id)
+    } else {
+      batchDeleteMutation.mutate()
+    }
   }
 
-  const confirmBatchDelete = async () => {
+  const actions = useMemo(
+    () =>
+      buildCommentActions(
+        {
+          deleteMany: confirmDeleteComments,
+          open: openComment,
+        },
+        t,
+      ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [t],
+  )
+
+  const { selection } = useListKeyboard<CommentModel>({
+    actions,
+    getId: (comment) => comment.id,
+    items: comments,
+    onBeforeSelectionReset: () => setSelectAllMode(false),
+    resetOn: [state, page],
+    scopeId: FOCUS_SCOPE_ID,
+  })
+  selectionClearRef.current = selection.clear
+  selectionTargetsRef.current = selection.getSelectedTargets()
+
+  const changeFilter = (nextState: CommentState) => {
+    setState(nextState)
+    setPage(1)
+    setDetailId(null)
+    setSelectedCommentSnapshot(null)
+    setShowDetailOnMobile(false)
+  }
+
+  const selectedCount = selectAllMode
+    ? (pagination?.total ?? 0)
+    : selection.size
+  const hasSelection = selectedCount > 0
+  const allVisibleSelected =
+    comments.length > 0 &&
+    comments.every((comment) => selection.isSelected(comment.id))
+  const indeterminate = selection.size > 0 && !allVisibleSelected
+
+  const confirmBatchDelete = () => {
     if (!hasSelection) return
-    const confirmed = await confirmDialog({
-      destructive: true,
-      title: t('common.confirmDelete'),
-      description: t('comments.confirmDelete.batch', { count: selectedCount }),
-    })
-    if (!confirmed) return
-    batchDeleteMutation.mutate()
+    void (async () => {
+      const confirmed = await confirmDialog({
+        description: t('comments.confirmDelete.batch', {
+          count: selectedCount,
+        }),
+        destructive: true,
+        title: t('common.confirmDelete'),
+      })
+      if (!confirmed) return
+      batchDeleteMutation.mutate()
+    })()
   }
 
   return (
@@ -230,7 +261,10 @@ export function CommentsRouteViewContent() {
       minSize={0.25}
       showDetailOnMobile={showDetailOnMobile}
       list={
-        <section className="flex h-full min-h-0 flex-col">
+        <FocusScope
+          className="outline-hidden flex h-full min-h-0 flex-col"
+          id={FOCUS_SCOPE_ID}
+        >
           <div
             className={cn(
               'flex shrink-0 items-center justify-between gap-3 border-b border-neutral-200 px-4 dark:border-neutral-800',
@@ -258,16 +292,19 @@ export function CommentsRouteViewContent() {
             <div className="flex flex-wrap items-center gap-2 border-b border-neutral-200 bg-neutral-50 px-4 py-2 text-sm dark:border-neutral-800 dark:bg-neutral-900/40">
               <Checkbox
                 aria-label={t('comments.list.selectPage')}
-                checked={allVisibleChecked}
-                indeterminate={hasSelection && !allVisibleChecked}
-                onCheckedChange={toggleVisible}
+                checked={allVisibleSelected}
+                indeterminate={indeterminate}
+                onCheckedChange={(checked) => {
+                  if (checked) selection.selectAll()
+                  else selection.clear()
+                }}
               />
               <span className="text-neutral-500 dark:text-neutral-400">
                 {hasSelection
                   ? t('comments.list.selectedCount', { count: selectedCount })
                   : t('comments.list.selectAll')}
               </span>
-              {allVisibleChecked &&
+              {allVisibleSelected &&
               pagination &&
               pagination.totalPages > 1 &&
               !selectAllMode ? (
@@ -294,12 +331,29 @@ export function CommentsRouteViewContent() {
             ) : (
               comments.map((comment) => (
                 <CommentListItem
-                  checked={checkedSet.has(comment.id)}
+                  actions={actions}
+                  checked={selection.isSelected(comment.id)}
                   comment={comment}
+                  currentFilter={state}
+                  isDetailTarget={detailId === comment.id}
                   key={comment.id}
-                  onCheck={toggleChecked}
-                  onSelect={() => selectComment(comment)}
-                  selected={selectedId === comment.id}
+                  onCheck={() => selection.toggleWithAnchor(comment.id)}
+                  onMarkJunk={(id) =>
+                    stateMutation.mutate({ id, nextState: CommentState.Junk })
+                  }
+                  onMarkRead={(id) =>
+                    stateMutation.mutate({ id, nextState: CommentState.Read })
+                  }
+                  onSelect={(mode) => {
+                    if (mode === 'range') selection.selectRange(comment.id)
+                    else if (mode === 'toggle')
+                      selection.toggleWithAnchor(comment.id)
+                    else {
+                      selection.selectOne(comment.id)
+                      openComment(comment)
+                    }
+                  }}
+                  selected={selection.isSelected(comment.id)}
                 />
               ))
             )}
@@ -345,8 +399,6 @@ export function CommentsRouteViewContent() {
                   disabled={page <= 1}
                   onClick={() => {
                     setPage((current) => Math.max(1, current - 1))
-                    setCheckedIds([])
-                    setSelectAllMode(false)
                   }}
                   type="button"
                   variant="subtle"
@@ -363,8 +415,6 @@ export function CommentsRouteViewContent() {
                     setPage((current) =>
                       Math.min(pagination.totalPages, current + 1),
                     )
-                    setCheckedIds([])
-                    setSelectAllMode(false)
                   }}
                   type="button"
                   variant="subtle"
@@ -374,7 +424,7 @@ export function CommentsRouteViewContent() {
               </div>
             ) : null}
           </div>
-        </section>
+        </FocusScope>
       }
       detail={
         <section className="h-full min-h-0">
@@ -383,7 +433,11 @@ export function CommentsRouteViewContent() {
               comment={selectedComment}
               currentState={state}
               onBack={() => setShowDetailOnMobile(false)}
-              onDelete={confirmDeleteComment}
+              onDelete={(id) => {
+                const target =
+                  comments.find((c) => c.id === id) ?? selectedComment
+                if (target) void confirmDeleteComments([target])
+              }}
               onReply={(id, text) => replyMutation.mutateAsync({ id, text })}
               onStateChange={(id, nextState) =>
                 stateMutation.mutate({ id, nextState })

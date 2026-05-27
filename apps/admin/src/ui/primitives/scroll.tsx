@@ -25,7 +25,7 @@ export const Scroll = forwardRef<HTMLDivElement, ScrollProps>(
       <div className={cn('min-h-0 min-w-0', className)} {...rest}>
         <div
           className={cn(
-            'h-full min-h-0 min-w-0 overscroll-contain',
+            'h-full min-h-0 min-w-0',
             orientation === 'vertical'
               ? 'overflow-y-auto overflow-x-hidden'
               : orientation === 'horizontal'

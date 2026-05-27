@@ -2,12 +2,7 @@ import { X } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
-import {
-  Panel,
-  Group as PanelGroup,
-  Separator,
-  usePanelRef,
-} from 'react-resizable-panels'
+import { Panel, Group as PanelGroup, usePanelRef } from 'react-resizable-panels'
 import type { BottomSheetSnap } from '~/ui/feedback/bottom-sheet'
 import type { LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
@@ -16,6 +11,7 @@ import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
 import { DESKTOP_MEDIA_QUERY, useMediaQuery } from '~/hooks/use-media-query'
 import { useI18n } from '~/i18n'
 import { BottomSheet } from '~/ui/feedback/bottom-sheet'
+import { ResizeHandle } from '~/ui/layout/resize-handle'
 import { cn } from '~/utils/cn'
 
 const PANEL_FADE = { duration: 0.22, ease: 'easeOut' as const }
@@ -127,22 +123,10 @@ function DesktopContentLayout(props: {
       >
         {props.children}
       </Panel>
-      <Separator
-        className={cn(
-          'outline-hidden group relative w-0 shrink-0 cursor-col-resize border-l border-neutral-200 transition-colors focus-visible:border-neutral-400 dark:border-neutral-800 dark:focus-visible:border-neutral-600',
-          !props.open && 'pointer-events-none border-transparent',
-        )}
+      <ResizeHandle
+        disabled={!props.open}
         onPointerDown={() => setResizing(true)}
-      >
-        <span
-          aria-hidden="true"
-          className={cn(
-            'absolute left-1/2 top-1/2 h-8 w-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-neutral-300 opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 dark:bg-neutral-700',
-            !props.open && 'group-hover:opacity-0',
-            resizing && 'opacity-100',
-          )}
-        />
-      </Separator>
+      />
       <Panel
         className="min-h-0 overflow-hidden"
         collapsedSize={0}

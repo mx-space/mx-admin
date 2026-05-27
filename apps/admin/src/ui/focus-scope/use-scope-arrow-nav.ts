@@ -32,17 +32,69 @@ type CheckVisibilityFn = (opts?: {
 }) => boolean
 
 function isItemVisible(el: HTMLElement): boolean {
-  // `checkVisibility` reliably accounts for display:none, visibility:hidden,
-  // ancestor opacity:0 (used by the sidebar collapse), content-visibility,
-  // and clipped/zero-sized ancestors. Fall back to offsetParent for older
-  // browsers — admin-vue3 targets modern evergreen, this is just a safety
-  // net.
   const cv = (el as unknown as { checkVisibility?: CheckVisibilityFn })
     .checkVisibility
   if (typeof cv === 'function') {
     return cv.call(el, { checkOpacity: true, checkVisibilityCSS: true })
   }
   return el.offsetParent !== null
+}
+
+/**
+ * Module-level guard against double-fire when the same component (and thus
+ * the same `useScopeArrowNav` hook) mounts more than once for one logical
+ * region — e.g. `MasterDetailLayout` renders its `detail` subtree twice
+ * (mobile drawer + desktop pane). Without this, each instance would bind a
+ * window listener and process the same `KeyboardEvent`, moving focus N
+ * positions per keystroke.
+ *
+ * Comparing event identity is enough: tinykeys hands every sibling listener
+ * the same event object, so the first listener to fire claims it and the
+ * rest short-circuit.
+ */
+let lastHandledEvent: KeyboardEvent | null = null
+
+/**
+ * Per-scope callback registry. Each `useScopeArrowNav` instance registers
+ * its `onItemFocus` here so the dedupe-winning instance can fan focus events
+ * out to *every* sibling — critical when one logical region is mounted twice
+ * (mobile + desktop branches of `MasterDetailLayout`) and each branch holds
+ * its own React state that needs to stay in sync.
+ */
+const onItemFocusRegistry = new Map<
+  string,
+  Set<(target: HTMLElement) => void>
+>()
+
+function registerOnItemFocus(
+  scopeId: string,
+  callback: (target: HTMLElement) => void,
+): () => void {
+  let set = onItemFocusRegistry.get(scopeId)
+  if (!set) {
+    set = new Set()
+    onItemFocusRegistry.set(scopeId, set)
+  }
+  set.add(callback)
+  return () => {
+    const current = onItemFocusRegistry.get(scopeId)
+    if (!current) return
+    current.delete(callback)
+    if (current.size === 0) onItemFocusRegistry.delete(scopeId)
+  }
+}
+
+function dispatchItemFocus(scopeId: string, target: HTMLElement) {
+  const set = onItemFocusRegistry.get(scopeId)
+  if (!set || set.size === 0) return
+  for (const callback of set) {
+    try {
+      callback(target)
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('[useScopeArrowNav] onItemFocus threw:', error)
+    }
+  }
 }
 
 /**
@@ -63,13 +115,35 @@ export function useScopeArrowNav(options: UseScopeArrowNavOptions): void {
   const onItemFocusRef = useRef(options.onItemFocus)
   onItemFocusRef.current = options.onItemFocus
 
+  // Register this instance's onItemFocus into the per-scope registry so the
+  // dedupe-winning listener can dispatch focus events to every sibling.
+  useEffect(() => {
+    if (!options.onItemFocus) return
+    return registerOnItemFocus(options.scopeId, (target) => {
+      // Read through the ref so callers can swap the callback without
+      // re-registering every render.
+      onItemFocusRef.current?.(target)
+    })
+  }, [options.scopeId, options.onItemFocus])
+
   useEffect(() => {
     if (options.enabled === false) return
     if (typeof window === 'undefined') return
 
     const getScopeRoot = (): HTMLElement | null => {
       // Multiple FocusScope instances may share the same id (e.g. desktop
-      // aside + mobile drawer). Pick the one that's actually visible.
+      // aside + mobile drawer). Prefer the one that actually contains
+      // `document.activeElement` — this is the branch the user just
+      // interacted with, and the only one whose querySelectorAll should be
+      // trusted (the hidden branch's items may still pass `checkVisibility`
+      // in some browsers, polluting the items array).
+      const active = document.activeElement
+      if (active instanceof HTMLElement) {
+        const owned = active.closest<HTMLElement>(
+          `[data-focus-scope="${scopeIdRef.current}"]`,
+        )
+        if (owned) return owned
+      }
       const candidates = Array.from(
         document.querySelectorAll<HTMLElement>(
           `[data-focus-scope="${scopeIdRef.current}"]`,
@@ -90,7 +164,10 @@ export function useScopeArrowNav(options: UseScopeArrowNavOptions): void {
     const focusAt = (target: HTMLElement) => {
       target.focus({ preventScroll: true })
       target.scrollIntoView({ block: 'nearest' })
-      onItemFocusRef.current?.(target)
+      // Fan out to every registered consumer for this scope (e.g. both
+      // mobile + desktop branches of a MasterDetailLayout). Each owns its
+      // own React state and needs to stay in sync.
+      dispatchItemFocus(scopeIdRef.current, target)
     }
 
     const move = (direction: 1 | -1) => {
@@ -134,8 +211,12 @@ export function useScopeArrowNav(options: UseScopeArrowNavOptions): void {
 
     const gated =
       (handler: (event: KeyboardEvent) => void) => (event: KeyboardEvent) => {
+        // Sibling instance for the same logical region (mobile + desktop
+        // branches of MasterDetailLayout) already handled this event.
+        if (lastHandledEvent === event) return
         if (!isReachable()) return
         if (isTextInputTarget(event.target)) return
+        lastHandledEvent = event
         event.preventDefault()
         handler(event)
       }

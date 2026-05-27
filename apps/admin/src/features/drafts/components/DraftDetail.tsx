@@ -12,6 +12,7 @@ import {
 } from '~/api/drafts'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
 import { useI18n } from '~/i18n'
+import { FocusScope, useScopeArrowNav } from '~/ui/focus-scope'
 import { Button } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
 import { cn } from '~/utils/cn'
@@ -46,6 +47,16 @@ export function DraftDetail(props: {
     [historyQuery.data, props.draft],
   )
   const [selectedVersion, setSelectedVersion] = useState<number | null>(null)
+  const versionsScopeId = `draft-versions-${props.draft.id}`
+
+  useScopeArrowNav({
+    itemSelector: '[data-scope-item="row"]',
+    onItemFocus: (el) => {
+      const id = el.getAttribute('data-id')
+      if (id) setSelectedVersion(Number(id))
+    },
+    scopeId: versionsScopeId,
+  })
 
   useEffect(() => {
     const previousVersion = versionItems.find((item) => !item.isCurrent)
@@ -154,7 +165,10 @@ export function DraftDetail(props: {
           <DraftDetailEmpty />
         ) : (
           <div className="grid h-full min-h-0 grid-cols-1 lg:grid-cols-[300px_minmax(0,1fr)]">
-            <div className="min-h-0 border-b border-neutral-200 lg:border-b-0 lg:border-r dark:border-neutral-800">
+            <FocusScope
+              className="outline-hidden min-h-0 border-b border-neutral-200 lg:border-b-0 lg:border-r dark:border-neutral-800"
+              id={versionsScopeId}
+            >
               <div className="flex h-10 items-center gap-2 border-b border-neutral-200 px-4 text-sm font-medium text-neutral-700 dark:border-neutral-800 dark:text-neutral-300">
                 <GitCompare aria-hidden="true" className="size-4" />
                 {t('drafts.history.title')}
@@ -177,7 +191,7 @@ export function DraftDetail(props: {
                   />
                 ))}
               </Scroll>
-            </div>
+            </FocusScope>
 
             <div className="flex min-h-0 flex-col bg-neutral-50 dark:bg-neutral-950">
               <div className="flex h-10 shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">

@@ -2,8 +2,8 @@ import { Loader2, RotateCcw } from 'lucide-react'
 import type { DraftDiffStats, VersionItem } from '../types/drafts'
 
 import { useI18n } from '~/i18n'
+import { ListRow } from '~/ui/list-actions'
 import { Button } from '~/ui/primitives/button'
-import { cn } from '~/utils/cn'
 import { relativeTimeFromNow } from '~/utils/time'
 
 export function VersionRow(props: {
@@ -16,22 +16,14 @@ export function VersionRow(props: {
 }) {
   const { t } = useI18n()
   return (
-    <div
-      className={cn(
-        'group flex w-full items-center gap-3 border-b border-neutral-100 px-4 py-3 text-left transition-colors dark:border-neutral-800/60',
-        props.selected
-          ? 'bg-neutral-100 dark:bg-neutral-900'
-          : 'hover:bg-neutral-50 dark:hover:bg-neutral-900/70',
-      )}
-      onClick={props.onSelect}
-      onKeyDown={(event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault()
-          props.onSelect()
-        }
-      }}
-      role="button"
-      tabIndex={0}
+    <ListRow
+      as="article"
+      ariaCurrent={props.selected}
+      className="data-selected:bg-neutral-100 dark:data-selected:bg-neutral-900 group flex w-full cursor-default items-center gap-3 border-b border-neutral-100 px-4 py-3 transition-colors hover:bg-neutral-50 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-neutral-400 dark:border-neutral-800/60 dark:hover:bg-neutral-900/70 dark:focus-visible:outline-neutral-500"
+      dataId={String(props.item.version)}
+      onSelect={() => props.onSelect()}
+      role="row"
+      selected={props.selected}
     >
       <div className="min-w-0 flex-1">
         <div className="flex min-w-0 flex-wrap items-center gap-2">
@@ -76,7 +68,7 @@ export function VersionRow(props: {
           aria-label={t('drafts.version.restoreAria', {
             version: props.item.version,
           })}
-          className="h-7 px-2 opacity-0 transition-opacity group-hover:opacity-100"
+          className="h-7 px-2 opacity-0 transition-opacity group-hover:opacity-100 group-data-[selected]:opacity-100"
           disabled={props.restorePending}
           onClick={(event) => {
             event.stopPropagation()
@@ -92,6 +84,6 @@ export function VersionRow(props: {
           )}
         </Button>
       ) : null}
-    </div>
+    </ListRow>
   )
 }
