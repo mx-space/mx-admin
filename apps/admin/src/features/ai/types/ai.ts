@@ -6,7 +6,6 @@ type Translator = (key: TranslationKey, values?: TranslationValues) => string
 export type AiSurface =
   | 'entries'
   | 'insights'
-  | 'slug'
   | 'summaries'
   | 'tasks'
   | 'translations'

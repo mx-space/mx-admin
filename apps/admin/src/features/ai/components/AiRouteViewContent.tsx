@@ -14,8 +14,6 @@ import {
   TranslationsSurface,
 } from './AiResourceSurfaces'
 import { AiTasksSurface } from './AiTasksSurface'
-import { SlugBackfillSurface } from './SlugBackfillSurface'
-import { TranslationEntriesSurface } from './TranslationEntriesSurface'
 
 export function AiRouteViewContent() {
   const { t } = useI18n()
@@ -68,8 +66,6 @@ export function AiRouteViewContent() {
         {surface === 'summaries' ? <SummariesSurface /> : null}
         {surface === 'translations' ? <TranslationsSurface /> : null}
         {surface === 'insights' ? <InsightsSurface /> : null}
-        {surface === 'entries' ? <TranslationEntriesSurface /> : null}
-        {surface === 'slug' ? <SlugBackfillSurface /> : null}
       </div>
     </AppPage>
   )

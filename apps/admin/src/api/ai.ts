@@ -507,19 +507,6 @@ export function deleteTranslationEntry(id: string) {
   return deleteJson<void>(`/ai/translations/entries/${id}`)
 }
 
-export function getSlugBackfillStatus() {
-  return getJson<{
-    count: number
-    notes: Array<{ id: string; nid: number; title: string }>
-  }>('/ai/writer/backfill-slugs/status')
-}
-
-export function createSlugBackfillTask() {
-  return requestJson<CreateTaskResponse>('/ai/writer/backfill-slugs', {
-    method: 'POST',
-  })
-}
-
 function normalizeTasksResponse(
   response: AITasksResponse | AITask[],
 ): AITasksResponse {

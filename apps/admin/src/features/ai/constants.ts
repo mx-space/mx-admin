@@ -9,7 +9,6 @@ import {
   ListTodo,
   Loader2,
   Sparkles,
-  WandSparkles,
   XCircle,
 } from 'lucide-react'
 import type { TranslationKey } from '~/i18n/types'
@@ -137,12 +136,6 @@ export const aiSurfaceTabs: Array<{
     labelKey: 'ai.tab.entries',
     path: '/ai/translation-entries',
     value: 'entries',
-  },
-  {
-    icon: WandSparkles,
-    labelKey: 'ai.tab.slug',
-    path: '/ai/slug-backfill',
-    value: 'slug',
   },
 ]
 

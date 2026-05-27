@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { Loader2, RefreshCw, Sparkles } from 'lucide-react'
-import { useState } from 'react'
+import { BookOpenText, Loader2, RefreshCw, Sparkles } from 'lucide-react'
+import { useEffect, useLayoutEffect, useState } from 'react'
+import { useSearchParams } from 'react-router'
 import { toast } from 'sonner'
 import type { TranslationEntry, TranslationEntryKeyPath } from '~/api/ai'
 
@@ -10,34 +11,76 @@ import {
   getTranslationEntries,
   updateTranslationEntry,
 } from '~/api/ai'
+import { ContentListHeader } from '~/features/_shared/components/content-list-toolbar'
 import { useI18n } from '~/i18n'
 import { CompactPagination } from '~/ui/data/compact-pagination'
+import { confirmDialog } from '~/ui/feedback/confirm'
+import { FocusScope } from '~/ui/focus-scope'
 import { Button } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
 import { SelectField } from '~/ui/primitives/select'
 import { TextInput } from '~/ui/primitives/text-field'
 import { cn } from '~/utils/cn'
 
-import { translationEntryKeyPathOptions } from '../constants'
-import { getErrorMessage } from '../utils/ai'
-import { Code, SmallBadge } from './AiPrimitives'
+import { Code, SmallBadge } from '../components/AiPrimitives'
 import {
   GroupedResourceSkeleton,
   ResourceEmpty,
   ResourceError,
-} from './GroupedResourceStates'
+} from '../components/GroupedResourceStates'
+import { translationEntryKeyPathOptions } from '../constants'
+import { getErrorMessage } from '../utils/ai'
 
-export function TranslationEntriesSurface() {
+const FOCUS_SCOPE_ID = 'ai-translation-entries'
+const PAGE_SIZE = 50
+
+function readPositiveInt(value: null | string) {
+  const n = Number(value)
+  return Number.isInteger(n) && n > 0 ? n : 1
+}
+
+function isKeyPath(value: string): value is TranslationEntryKeyPath {
+  return (translationEntryKeyPathOptions as readonly string[]).includes(value)
+}
+
+export function AiTranslationEntriesRouteView() {
   const { t } = useI18n()
   const queryClient = useQueryClient()
-  const [page, setPage] = useState(1)
-  const [keyPath, setKeyPath] = useState<TranslationEntryKeyPath | ''>('')
-  const [lang, setLang] = useState('')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const searchParamsKey = searchParams.toString()
+
+  const [page, setPage] = useState(readPositiveInt(searchParams.get('page')))
+  const [keyPath, setKeyPath] = useState<TranslationEntryKeyPath | ''>(() => {
+    const v = searchParams.get('keyPath') ?? ''
+    return v && isKeyPath(v) ? v : ''
+  })
+  const [lang, setLang] = useState(searchParams.get('lang') ?? '')
+
+  useLayoutEffect(() => {
+    const nextPage = readPositiveInt(searchParams.get('page'))
+    const rawKeyPath = searchParams.get('keyPath') ?? ''
+    const nextKeyPath = rawKeyPath && isKeyPath(rawKeyPath) ? rawKeyPath : ''
+    const nextLang = searchParams.get('lang') ?? ''
+    setPage((v) => (v === nextPage ? v : nextPage))
+    setKeyPath((v) => (v === nextKeyPath ? v : nextKeyPath))
+    setLang((v) => (v === nextLang ? v : nextLang))
+  }, [searchParamsKey])
+
+  useEffect(() => {
+    const next = new URLSearchParams()
+    if (page > 1) next.set('page', String(page))
+    if (keyPath) next.set('keyPath', keyPath)
+    if (lang) next.set('lang', lang)
+    if (next.toString() !== searchParamsKey) {
+      setSearchParams(next, { replace: true })
+    }
+  }, [keyPath, lang, page, searchParamsKey, setSearchParams])
+
   const params = {
     keyPath: keyPath || undefined,
     lang: lang.trim() || undefined,
     page,
-    size: 50,
+    size: PAGE_SIZE,
   }
 
   const query = useQuery({
@@ -48,9 +91,9 @@ export function TranslationEntriesSurface() {
 
   const entries = query.data?.data ?? []
   const total = query.data?.pagination.total ?? entries.length
-  const pageCount = Math.max(1, Math.ceil(total / params.size))
+  const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE))
 
-  const invalidateEntries = async () => {
+  const invalidate = async () => {
     await queryClient.invalidateQueries({
       queryKey: ['ai', 'translation-entries'],
     })
@@ -67,7 +110,7 @@ export function TranslationEntriesSurface() {
           skipped: result.skipped,
         }),
       )
-      await invalidateEntries()
+      await invalidate()
     },
   })
 
@@ -85,7 +128,7 @@ export function TranslationEntriesSurface() {
       toast.error(getErrorMessage(error, t('ai.toast.entrySaveFailed'))),
     onSuccess: async () => {
       toast.success(t('ai.toast.entrySaved'))
-      await invalidateEntries()
+      await invalidate()
     },
   })
 
@@ -95,50 +138,38 @@ export function TranslationEntriesSurface() {
       toast.error(getErrorMessage(error, t('ai.toast.entryDeleteFailed'))),
     onSuccess: async () => {
       toast.success(t('ai.toast.entryDeleted'))
-      await invalidateEntries()
+      await invalidate()
     },
   })
 
+  const confirmAndDelete = async (entry: TranslationEntry) => {
+    const ok = await confirmDialog({
+      destructive: true,
+      title: t('ai.confirm.deleteEntry'),
+    })
+    if (ok) deleteMutation.mutate(entry.id)
+  }
+
+  const keyPathOptions = [
+    { label: t('ai.filter.allKeyPath'), value: '' },
+    ...translationEntryKeyPathOptions.map((option) => ({
+      label: option,
+      value: option,
+    })),
+  ]
+
   return (
-    <section className="bg-white dark:bg-neutral-950">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
-        <div>
-          <h2 className="text-sm font-medium">{t('ai.translation.title')}</h2>
-          <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
-            {t('ai.translation.entryCountSuffix', { count: total })}
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <SelectField
-            aria-label={t('ai.filter.keyPathAria')}
-            className="w-40"
-            onValueChange={(value) => {
-              setKeyPath(value)
-              setPage(1)
-            }}
-            options={[
-              { label: t('ai.filter.allKeyPath'), value: '' },
-              ...translationEntryKeyPathOptions.map((option) => ({
-                label: option,
-                value: option,
-              })),
-            ]}
-            value={keyPath}
-          />
-          <TextInput
-            controlClassName="h-9 w-28 focus:border-neutral-400"
-            onChange={(value) => {
-              setLang(value)
-              setPage(1)
-            }}
-            placeholder={t('ai.filter.langPlaceholder')}
-            value={lang}
-          />
+    <FocusScope
+      className="outline-hidden flex h-full min-h-0 flex-col bg-white dark:bg-neutral-950"
+      id={FOCUS_SCOPE_ID}
+    >
+      <ContentListHeader
+        action={
           <Button
             disabled={generateMutation.isPending}
             onClick={() => generateMutation.mutate()}
             type="button"
-            variant="subtle"
+            variant="primary"
           >
             {generateMutation.isPending ? (
               <Loader2 aria-hidden="true" className="size-4 animate-spin" />
@@ -147,29 +178,57 @@ export function TranslationEntriesSurface() {
             )}
             {t('ai.action.generateEntries')}
           </Button>
-          <Button
-            disabled={query.isFetching}
-            onClick={() => void query.refetch()}
-            type="button"
-            variant="subtle"
-          >
-            <RefreshCw
-              aria-hidden="true"
-              className={cn('size-4', query.isFetching && 'animate-spin')}
-            />
-            {t('ai.action.refresh')}
-          </Button>
+        }
+        count={t('ai.translation.entryCountSuffix', { count: total })}
+        icon={<BookOpenText aria-hidden="true" className="size-4" />}
+        title={t('routes.aiTranslationEntries.title')}
+      />
+
+      <div className="flex h-10 shrink-0 items-center gap-1.5 border-b border-neutral-200 bg-white px-4 dark:border-neutral-800 dark:bg-neutral-950">
+        <div className="flex shrink-0 items-center gap-1.5">
+          <SelectField
+            aria-label={t('ai.filter.keyPathAria')}
+            onValueChange={(value) => {
+              setKeyPath(isKeyPath(value) ? value : '')
+              setPage(1)
+            }}
+            options={keyPathOptions}
+            triggerClassName="w-36 !h-7 !border-transparent !bg-transparent text-xs hover:!bg-neutral-100 dark:hover:!bg-neutral-900"
+            value={keyPath}
+          />
+          <TextInput
+            controlClassName="h-7 w-24 !border-transparent !bg-transparent text-xs hover:!bg-neutral-100 dark:hover:!bg-neutral-900"
+            onChange={(value) => {
+              setLang(value)
+              setPage(1)
+            }}
+            placeholder={t('ai.filter.langPlaceholder')}
+            value={lang}
+          />
         </div>
+        <span className="ml-auto h-3.5 w-px shrink-0 bg-neutral-200 dark:bg-neutral-800" />
+        <button
+          aria-label={t('common.refresh')}
+          className="outline-hidden inline-flex h-7 w-7 shrink-0 items-center justify-center rounded text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 focus-visible:ring-2 focus-visible:ring-[var(--color-primary-shallow)] disabled:pointer-events-none disabled:opacity-50 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-100"
+          disabled={query.isFetching}
+          onClick={() => void query.refetch()}
+          type="button"
+        >
+          <RefreshCw
+            aria-hidden="true"
+            className={cn('size-3.5', query.isFetching && 'animate-spin')}
+          />
+        </button>
       </div>
 
-      {query.isLoading && entries.length === 0 ? (
-        <GroupedResourceSkeleton />
-      ) : query.isError ? (
-        <ResourceError onRetry={() => void query.refetch()} />
-      ) : entries.length === 0 ? (
-        <ResourceEmpty label={t('ai.tab.entries')} />
-      ) : (
-        <Scroll orientation="horizontal">
+      <Scroll className="min-h-0 flex-1" orientation="horizontal">
+        {query.isLoading && entries.length === 0 ? (
+          <GroupedResourceSkeleton />
+        ) : query.isError ? (
+          <ResourceError onRetry={() => void query.refetch()} />
+        ) : entries.length === 0 ? (
+          <ResourceEmpty label={t('ai.tab.entries')} />
+        ) : (
           <table className="w-full min-w-[860px] text-sm">
             <thead className="border-b border-neutral-200 text-left text-xs uppercase text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
               <tr>
@@ -218,11 +277,7 @@ export function TranslationEntriesSurface() {
                       <Button
                         className="border-red-200 text-red-600 hover:bg-red-50 dark:border-red-950 dark:text-red-400 dark:hover:bg-red-950/30"
                         disabled={deleteMutation.isPending}
-                        onClick={() => {
-                          if (window.confirm(t('ai.confirm.deleteEntry'))) {
-                            deleteMutation.mutate(entry.id)
-                          }
-                        }}
+                        onClick={() => void confirmAndDelete(entry)}
                         type="button"
                         variant="subtle"
                       >
@@ -234,11 +289,11 @@ export function TranslationEntriesSurface() {
               ))}
             </tbody>
           </table>
-        </Scroll>
-      )}
+        )}
+      </Scroll>
 
       {pageCount > 1 ? (
-        <div className="flex items-center justify-between gap-3 border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
+        <div className="flex shrink-0 items-center justify-between gap-3 border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
           <span className="text-xs tabular-nums text-neutral-500 dark:text-neutral-400">
             {t('ai.page.pageIndex', { page })}
           </span>
@@ -247,11 +302,11 @@ export function TranslationEntriesSurface() {
             onPageSizeChange={() => undefined}
             page={page}
             pageCount={pageCount}
-            pageSize={params.size}
-            pageSizes={[params.size]}
+            pageSize={PAGE_SIZE}
+            pageSizes={[PAGE_SIZE]}
           />
         </div>
       ) : null}
-    </section>
+    </FocusScope>
   )
 }

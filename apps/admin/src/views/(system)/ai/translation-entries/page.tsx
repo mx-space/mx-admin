@@ -9,4 +9,4 @@ export const metadata = defineMetadata({
   order: 4,
 })
 
-export { AiRouteView as default } from '~/features/ai/routes/AiRouteView'
+export { AiTranslationEntriesRouteView as default } from '~/features/ai/routes/AiTranslationEntriesRouteView'

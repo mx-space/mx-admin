@@ -4,7 +4,6 @@ export const enUS = {
   'ai.action.cancel': 'Cancel task',
   'ai.action.clearCompleted': 'Clear completed',
   'ai.action.create': 'Create task',
-  'ai.action.createBackfill': 'Create backfill task',
   'ai.action.delete': 'Delete',
   'ai.action.deleteTask': 'Delete task',
   'ai.action.edit': 'Edit',
@@ -53,7 +52,6 @@ export const enUS = {
   'ai.empty.itemSelect': 'Select a {label} record',
   'ai.empty.label': 'No {label}',
   'ai.empty.logs': 'No logs.',
-  'ai.empty.missingSlugNotes': 'notes missing slug',
   'ai.empty.tasks': 'No AI tasks',
   'ai.empty.tasksDescription':
     'Background tasks such as summary, translation, and insights will show here.',
@@ -90,9 +88,6 @@ export const enUS = {
   'ai.refType.page': 'Page',
   'ai.refType.post': 'Post',
   'ai.refType.recently': 'Recently',
-  'ai.slug.missingCount': '{count} notes missing slug',
-  'ai.slug.statusLoading': 'Loading status',
-  'ai.slug.title': 'Slug backfill',
   'ai.summary.detailSectionTitle': 'Summary detail',
   'ai.summary.editLabel.content': 'Summary content',
   'ai.summary.editLabel.meta': 'Metadata',
@@ -110,7 +105,6 @@ export const enUS = {
   'ai.surface.translations': 'Translations',
   'ai.tab.entries': 'Entries',
   'ai.tab.insights': 'Insights',
-  'ai.tab.slug': 'Slug backfill',
   'ai.tab.summaries': 'Summaries',
   'ai.tab.tasks': 'Task queue',
   'ai.tab.translations': 'Translations',
@@ -174,8 +168,6 @@ export const enUS = {
   'ai.toast.entrySaveFailed': 'Failed to save entry',
   'ai.toast.entrySaved': 'Entry saved',
   'ai.toast.saved': 'Saved',
-  'ai.toast.slugTaskCreated': 'Slug backfill task created',
-  'ai.toast.slugTaskFailed': 'Failed to create slug backfill task',
   'ai.toast.taskCreateFailed': 'Failed to create task',
   'ai.toast.taskCreated': 'Task created',
   'ai.toast.taskExists': 'Task already exists',
@@ -1350,9 +1342,6 @@ export const enUS = {
   'routes.aiInsights.description':
     'AI insights, insight translations, and generation tasks.',
   'routes.aiInsights.title': 'Insights',
-  'routes.aiSlugBackfill.description':
-    'Backfill AI-generated slugs for existing content.',
-  'routes.aiSlugBackfill.title': 'Slug Backfill',
   'routes.aiSummary.description':
     'AI summary results and batch generation status.',
   'routes.aiSummary.title': 'Summary',

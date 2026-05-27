@@ -20,7 +20,6 @@ export function getInitialAiSurface(pathname: string): AiSurface {
   if (pathname.endsWith('/translation')) return 'translations'
   if (pathname.endsWith('/insights')) return 'insights'
   if (pathname.endsWith('/translation-entries')) return 'entries'
-  if (pathname.endsWith('/slug-backfill')) return 'slug'
   if (pathname.endsWith('/tasks')) return 'tasks'
 
   return 'tasks'
