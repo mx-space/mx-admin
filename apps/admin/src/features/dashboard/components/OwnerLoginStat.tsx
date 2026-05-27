@@ -13,7 +13,7 @@ export function OwnerLoginStat(props: {
   if (!props.lastLoginIp && !props.lastLoginTime) return null
 
   return (
-    <div className="grid gap-2 border-t border-neutral-100 pt-4 text-sm text-neutral-500 sm:grid-cols-2 dark:border-neutral-800 dark:text-neutral-400">
+    <div className="grid gap-2 border-t border-neutral-100 py-4 text-sm text-neutral-500 sm:grid-cols-2 dark:border-neutral-800 dark:text-neutral-400">
       <div className="inline-flex min-w-0 items-center gap-2">
         <Shield
           aria-hidden="true"

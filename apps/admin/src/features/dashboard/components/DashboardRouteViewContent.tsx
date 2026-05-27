@@ -245,7 +245,7 @@ export function DashboardRouteViewContent() {
   return (
     <Scroll
       className="h-full min-h-0 bg-white dark:bg-neutral-950"
-      innerClassName="flex flex-col gap-6 p-4"
+      innerClassName="flex flex-col p-4"
     >
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
@@ -270,7 +270,7 @@ export function DashboardRouteViewContent() {
         </Button>
       </div>
 
-      <section className="grid gap-3 md:grid-cols-3">
+      <section className="mt-6 grid gap-3 md:grid-cols-3">
         <LiveCard
           icon={Radio}
           label={t('dashboard.live.online')}
@@ -290,6 +290,7 @@ export function DashboardRouteViewContent() {
       </section>
 
       <Panel
+        className="mt-6"
         description={t('dashboard.panel.quickActions.updatedAt', {
           time: updatedAt.toLocaleTimeString(),
         })}
@@ -331,8 +332,8 @@ export function DashboardRouteViewContent() {
         </div>
       </Panel>
 
-      <Panel title={t('dashboard.panel.stats.title')}>
-        <div className="grid gap-px bg-neutral-200 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 dark:bg-neutral-800">
+      <Panel className="mt-6" title={t('dashboard.panel.stats.title')}>
+        <div className="grid gap-px bg-neutral-100 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 dark:bg-neutral-800">
           <StatCell
             icon={File}
             label={t('dashboard.stat.pages')}
@@ -407,10 +408,17 @@ export function DashboardRouteViewContent() {
             onClick={() => navigate('/analyze')}
             value={stat.uv}
           />
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div
+              aria-hidden="true"
+              className="bg-white dark:bg-neutral-950"
+              key={`stat-spacer-${i}`}
+            />
+          ))}
         </div>
       </Panel>
 
-      <section className="grid gap-4 xl:grid-cols-2">
+      <section className="mt-6 grid gap-4 xl:grid-cols-2">
         <BarPanel
           items={(trendQuery.data ?? []).map((item) => ({
             label: item.date,
@@ -437,7 +445,7 @@ export function DashboardRouteViewContent() {
         <TagCloudPanel tags={tagsQuery.data ?? []} />
       </section>
 
-      <Panel title={t('dashboard.panel.maintenance.title')}>
+      <Panel className="mt-6" title={t('dashboard.panel.maintenance.title')}>
         <div className="grid gap-px bg-neutral-200 sm:grid-cols-2 xl:grid-cols-3 dark:bg-neutral-800">
           <MaintenanceCard
             disabled={cleanCacheMutation.isPending}
