@@ -10,6 +10,7 @@ import {
   updateSubscribeEnabled,
 } from '~/api/subscribe'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Checkbox } from '~/ui/primitives/checkbox'
 import { Scroll } from '~/ui/primitives/scroll'
@@ -24,6 +25,7 @@ import { SubscriberRow } from './SubscriberRow'
 import { SubscriberSkeletonList } from './SubscriberSkeletonList'
 
 export function SubscribeRouteViewContent() {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const [page, setPage] = useState(1)
   const [searchQuery, setSearchQuery] = useState('')
@@ -66,11 +68,11 @@ export function SubscribeRouteViewContent() {
   const toggleMutation = useMutation({
     mutationFn: updateSubscribeEnabled,
     onSuccess: async () => {
-      toast.success('订阅设置已更新')
+      toast.success(t('subscribe.toggle.success'))
       await invalidateSubscribe()
     },
     onError: () => {
-      toast.error('订阅设置更新失败')
+      toast.error(t('subscribe.toggle.failed'))
     },
   })
 
@@ -79,8 +81,8 @@ export function SubscribeRouteViewContent() {
     onSuccess: async (result, variables) => {
       toast.success(
         'all' in variables
-          ? `已移除全部 ${result.deletedCount} 位订阅者`
-          : `已移除 ${result.deletedCount} 位订阅者`,
+          ? t('subscribe.toast.deleteAll', { count: result.deletedCount })
+          : t('subscribe.toast.delete', { count: result.deletedCount }),
       )
       setSelectedIds(new Set())
       setIsConfirmingBatchDelete(false)
@@ -88,7 +90,7 @@ export function SubscribeRouteViewContent() {
       await invalidateSubscribe()
     },
     onError: () => {
-      toast.error('删除订阅者失败')
+      toast.error(t('subscribe.toast.deleteFailed'))
     },
   })
 
@@ -129,14 +131,14 @@ export function SubscribeRouteViewContent() {
       >
         <h2 className="inline-flex min-w-0 items-center gap-2 text-sm font-medium text-neutral-950 dark:text-neutral-50">
           <Mail aria-hidden="true" className="size-4" />
-          <span className="truncate">邮件订阅</span>
+          <span className="truncate">{t('subscribe.title')}</span>
         </h2>
         <div className="flex shrink-0 items-center gap-2">
           <span className="hidden text-xs text-neutral-500 sm:inline dark:text-neutral-400">
-            {totalCount} 位订阅者
+            {t('subscribe.countSuffix', { count: totalCount })}
           </span>
           <Button
-            aria-label="刷新订阅数据"
+            aria-label={t('subscribe.refreshAria')}
             className="h-8 px-2"
             onClick={() => {
               void invalidateSubscribe()
@@ -150,19 +152,27 @@ export function SubscribeRouteViewContent() {
       </div>
 
       <div className="grid shrink-0 grid-cols-1 gap-4 border-b border-neutral-200 p-4 sm:grid-cols-3 dark:border-neutral-800">
-        <StatCard icon={Users} label="总订阅者" value={totalCount} />
+        <StatCard
+          icon={Users}
+          label={t('subscribe.stat.total')}
+          value={totalCount}
+        />
         <StatCard
           icon={subscribeEnabled ? Mail : MailX}
-          label="订阅功能"
+          label={t('subscribe.stat.feature')}
           tone={subscribeEnabled ? 'success' : 'warning'}
-          value={subscribeEnabled ? '已启用' : '已禁用'}
+          value={
+            subscribeEnabled
+              ? t('subscribe.stat.enabled')
+              : t('subscribe.stat.disabled')
+          }
         />
         <div className="rounded border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-950">
           <Switch
             checked={subscribeEnabled}
             disabled={toggleMutation.isPending}
-            label="启用邮件订阅"
-            description="允许访客订阅新内容通知"
+            label={t('subscribe.toggle.label')}
+            description={t('subscribe.toggle.description')}
             onCheckedChange={(checked) => toggleMutation.mutate(checked)}
           />
         </div>
@@ -171,7 +181,7 @@ export function SubscribeRouteViewContent() {
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
         <div className="flex shrink-0 items-center gap-4 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
           <Checkbox
-            aria-label="选择当前页订阅者"
+            aria-label={t('subscribe.list.selectAllAria')}
             checked={isAllSelected}
             indeterminate={selectedCount > 0 && !isAllSelected}
             onCheckedChange={toggleSelectAll}
@@ -184,14 +194,14 @@ export function SubscribeRouteViewContent() {
             <TextInput
               controlClassName="pl-9"
               onChange={setSearchQuery}
-              placeholder="搜索订阅者..."
+              placeholder={t('subscribe.list.searchPlaceholder')}
               value={searchQuery}
             />
           </div>
           {selectedCount > 0 ? (
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
-                已选择 {selectedCount} 项
+                {t('subscribe.list.selected', { count: selectedCount })}
               </span>
               <Button
                 className="h-8 px-2"
@@ -203,7 +213,7 @@ export function SubscribeRouteViewContent() {
                 type="button"
                 variant="subtle"
               >
-                取消选择
+                {t('subscribe.list.deselectAll')}
               </Button>
               <Button
                 className="h-8 px-2 text-red-600 dark:text-red-400"
@@ -221,7 +231,9 @@ export function SubscribeRouteViewContent() {
                 variant="subtle"
               >
                 <Trash2 aria-hidden="true" className="size-3.5" />
-                {isConfirmingBatchDelete ? '确认删除选中' : '删除选中'}
+                {isConfirmingBatchDelete
+                  ? t('subscribe.list.confirmBatchDelete')
+                  : t('subscribe.list.batchDelete')}
               </Button>
               {isAllSelected && totalCount > 0 ? (
                 <Button
@@ -239,13 +251,15 @@ export function SubscribeRouteViewContent() {
                   type="button"
                   variant="subtle"
                 >
-                  {isConfirmingDeleteAll ? '确认删除全部' : '删除全部'}
+                  {isConfirmingDeleteAll
+                    ? t('subscribe.list.confirmDeleteAll')
+                    : t('subscribe.list.deleteAll')}
                 </Button>
               ) : null}
             </div>
           ) : (
             <span className="text-sm text-neutral-500">
-              共 {totalCount} 位订阅者
+              {t('subscribe.list.totalSuffix', { count: totalCount })}
             </span>
           )}
         </div>
@@ -278,7 +292,7 @@ export function SubscribeRouteViewContent() {
               type="button"
               variant="subtle"
             >
-              上一页
+              {t('common.pagination.previousPage')}
             </Button>
             <span>
               {pagination.currentPage} / {pagination.totalPage}
@@ -293,7 +307,7 @@ export function SubscribeRouteViewContent() {
               type="button"
               variant="subtle"
             >
-              下一页
+              {t('common.pagination.nextPage')}
             </Button>
           </div>
         ) : null}

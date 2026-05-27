@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { toast } from 'sonner'
 
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Panel } from '~/ui/primitives/panel'
 import { TextInput } from '~/ui/primitives/text-field'
@@ -13,6 +14,7 @@ import { getErrorMessage } from '../../utils/settings'
 import { Modal } from '../SettingsPrimitives'
 
 export function PasswordSection() {
+  const { t } = useI18n()
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const [currentPassword, setCurrentPassword] = useState('')
@@ -21,19 +23,24 @@ export function PasswordSection() {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      if (!currentPassword || !newPassword) throw new Error('请输入密码')
-      if (newPassword !== confirmPassword) throw new Error('两次密码输入不一致')
+      if (!currentPassword || !newPassword)
+        throw new Error(t('settings.password.error.empty'))
+      if (newPassword !== confirmPassword)
+        throw new Error(t('settings.password.error.mismatch'))
       const result = await authClient.changePassword({
         currentPassword,
         newPassword,
         revokeOtherSessions: true,
       })
-      if (result.error) throw new Error(result.error.message || '密码修改失败')
+      if (result.error)
+        throw new Error(
+          result.error.message || t('settings.password.error.failed'),
+        )
     },
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '密码修改失败')),
+      toast.error(getErrorMessage(error, t('settings.password.error.failed'))),
     onSuccess: async () => {
-      toast.success('密码修改成功，请重新登录')
+      toast.success(t('settings.password.success'))
       setOpen(false)
       await authClient.signOut()
       navigate('/login')
@@ -42,18 +49,25 @@ export function PasswordSection() {
 
   return (
     <>
-      <Panel description="修改后需要重新登录。" title="修改密码">
+      <Panel
+        description={t('settings.password.description')}
+        title={t('settings.password.title')}
+      >
         <div className="flex flex-wrap items-center justify-between gap-3 p-4">
           <p className="text-sm text-neutral-500">
-            定期更改密码可以提高账户安全性。
+            {t('settings.password.helper')}
           </p>
           <Button onClick={() => setOpen(true)} type="button" variant="subtle">
             <Lock aria-hidden="true" className="size-4" />
-            修改密码
+            {t('settings.password.title')}
           </Button>
         </div>
       </Panel>
-      <Modal onClose={() => setOpen(false)} open={open} title="修改密码">
+      <Modal
+        onClose={() => setOpen(false)}
+        open={open}
+        title={t('settings.password.title')}
+      >
         <form
           className="space-y-4"
           onSubmit={(event) => {
@@ -62,19 +76,19 @@ export function PasswordSection() {
           }}
         >
           <TextInput
-            label="当前密码"
+            label={t('settings.password.field.current')}
             onChange={setCurrentPassword}
             type="password"
             value={currentPassword}
           />
           <TextInput
-            label="新密码"
+            label={t('settings.password.field.new')}
             onChange={setNewPassword}
             type="password"
             value={newPassword}
           />
           <TextInput
-            label="确认新密码"
+            label={t('settings.password.field.confirm')}
             onChange={setConfirmPassword}
             type="password"
             value={confirmPassword}
@@ -85,10 +99,10 @@ export function PasswordSection() {
               type="button"
               variant="subtle"
             >
-              取消
+              {t('common.cancel')}
             </Button>
             <Button disabled={mutation.isPending} type="submit">
-              确认修改
+              {t('settings.password.confirm.submit')}
             </Button>
           </div>
         </form>

@@ -6,9 +6,25 @@ export const friendsQueryKey = ['links'] as const
 export const friendsPageSize = 50
 
 export const stateTabs: StateTab[] = [
-  { countKey: 'friends', label: '朋友们', value: LinkState.Pass },
-  { countKey: 'audit', label: '待审核', value: LinkState.Audit },
-  { countKey: 'outdate', label: '过时的', value: LinkState.Outdate },
-  { countKey: 'reject', label: '已拒绝', value: LinkState.Reject },
-  { countKey: 'banned', label: '封禁的', value: LinkState.Banned },
+  {
+    countKey: 'friends',
+    labelKey: 'friends.tab.friends',
+    value: LinkState.Pass,
+  },
+  { countKey: 'audit', labelKey: 'friends.tab.audit', value: LinkState.Audit },
+  {
+    countKey: 'outdate',
+    labelKey: 'friends.tab.outdate',
+    value: LinkState.Outdate,
+  },
+  {
+    countKey: 'reject',
+    labelKey: 'friends.tab.reject',
+    value: LinkState.Reject,
+  },
+  {
+    countKey: 'banned',
+    labelKey: 'friends.tab.banned',
+    value: LinkState.Banned,
+  },
 ]

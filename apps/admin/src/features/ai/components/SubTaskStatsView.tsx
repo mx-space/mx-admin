@@ -1,10 +1,12 @@
 import type { AITask } from '~/api/ai'
 
+import { useI18n } from '~/i18n'
 import { cn } from '~/utils/cn'
 
 import { SmallBadge } from './AiPrimitives'
 
 export function SubTaskStatsView(props: { task: AITask }) {
+  const { t } = useI18n()
   const stats = props.task.subTaskStats
   if (!stats || stats.total <= 0) return null
 
@@ -14,7 +16,7 @@ export function SubTaskStatsView(props: { task: AITask }) {
   return (
     <div className="mb-5">
       <div className="mb-2 flex items-center justify-between text-xs text-neutral-500 dark:text-neutral-400">
-        <span>子任务进度</span>
+        <span>{t('ai.task.subProgress')}</span>
         <span className="tabular-nums">
           {completeOrFailed} / {stats.total}
         </span>
@@ -29,11 +31,19 @@ export function SubTaskStatsView(props: { task: AITask }) {
         />
       </div>
       <div className="mt-2 flex flex-wrap gap-2 text-xs tabular-nums">
-        <SmallBadge tone="success">{stats.completed} 完成</SmallBadge>
-        <SmallBadge tone="info">{stats.running} 执行中</SmallBadge>
-        <SmallBadge>{stats.pending} 等待</SmallBadge>
+        <SmallBadge tone="success">
+          {t('ai.task.subStats.completed', { count: stats.completed })}
+        </SmallBadge>
+        <SmallBadge tone="info">
+          {t('ai.task.subStats.running', { count: stats.running })}
+        </SmallBadge>
+        <SmallBadge>
+          {t('ai.task.subStats.pending', { count: stats.pending })}
+        </SmallBadge>
         {stats.failed > 0 ? (
-          <SmallBadge tone="danger">{stats.failed} 失败</SmallBadge>
+          <SmallBadge tone="danger">
+            {t('ai.task.subStats.failed', { count: stats.failed })}
+          </SmallBadge>
         ) : null}
       </div>
     </div>

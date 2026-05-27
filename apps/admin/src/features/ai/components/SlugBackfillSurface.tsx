@@ -3,6 +3,7 @@ import { Loader2, RefreshCw, WandSparkles } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { createSlugBackfillTask, getSlugBackfillStatus } from '~/api/ai'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { cn } from '~/utils/cn'
 
@@ -16,6 +17,7 @@ import {
 import { WriterGeneratePanel } from './WriterGeneratePanel'
 
 export function SlugBackfillSurface() {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const query = useQuery({
     queryFn: getSlugBackfillStatus,
@@ -25,9 +27,13 @@ export function SlugBackfillSurface() {
   const mutation = useMutation({
     mutationFn: createSlugBackfillTask,
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, 'Slug 回填任务创建失败')),
+      toast.error(getErrorMessage(error, t('ai.toast.slugTaskFailed'))),
     onSuccess: async (result) => {
-      toast.success(result.created ? '已创建 Slug 回填任务' : '任务已存在')
+      toast.success(
+        result.created
+          ? t('ai.toast.slugTaskCreated')
+          : t('ai.toast.taskExists'),
+      )
       await queryClient.invalidateQueries({ queryKey: ['ai', 'slug-backfill'] })
       await queryClient.invalidateQueries({ queryKey: ['ai', 'tasks'] })
     },
@@ -38,9 +44,11 @@ export function SlugBackfillSurface() {
       <section className="bg-white dark:bg-neutral-950">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
           <div>
-            <h2 className="text-sm font-medium">Slug 回填</h2>
+            <h2 className="text-sm font-medium">{t('ai.slug.title')}</h2>
             <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
-              {query.data ? `${query.data.count} 篇笔记缺失 slug` : '加载状态'}
+              {query.data
+                ? t('ai.slug.missingCount', { count: query.data.count })
+                : t('ai.slug.statusLoading')}
             </p>
           </div>
           <div className="flex gap-2">
@@ -54,7 +62,7 @@ export function SlugBackfillSurface() {
                 aria-hidden="true"
                 className={cn('size-4', query.isFetching && 'animate-spin')}
               />
-              刷新
+              {t('ai.action.refresh')}
             </Button>
             <Button
               disabled={mutation.isPending || !query.data?.count}
@@ -66,7 +74,7 @@ export function SlugBackfillSurface() {
               ) : (
                 <WandSparkles aria-hidden="true" className="size-4" />
               )}
-              创建回填任务
+              {t('ai.action.createBackfill')}
             </Button>
           </div>
         </div>
@@ -94,7 +102,7 @@ export function SlugBackfillSurface() {
             ))}
           </div>
         ) : (
-          <ResourceEmpty label="缺失 slug 的笔记" />
+          <ResourceEmpty label={t('ai.empty.missingSlugNotes')} />
         )}
       </section>
 

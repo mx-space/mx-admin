@@ -16,6 +16,7 @@ import type { UpdateOwnerData } from '~/api/options'
 import { uploadFile } from '~/api/files'
 import { getOwner, updateOwner } from '~/api/options'
 import { IpInfoPopover } from '~/features/_shared/components/ip-info-popover'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Panel } from '~/ui/primitives/panel'
 import { SelectField } from '~/ui/primitives/select'
@@ -26,8 +27,15 @@ import { formatDateTime, getErrorMessage } from '../utils/settings'
 import { SettingsSkeleton } from './SettingsPrimitives'
 
 export function OwnerSettings(props: { onSaved: () => Promise<unknown> }) {
+  const { t } = useI18n()
   const [form, setForm] = useState<UpdateOwnerData>({})
   const avatarInputRef = useRef<HTMLInputElement>(null)
+
+  const socialLabel = (key: string) => {
+    const option = socialOptions.find((item) => item.value === key)
+    if (!option) return key
+    return option.labelKey ? t(option.labelKey) : (option.label ?? key)
+  }
 
   const ownerQuery = useQuery({
     queryFn: getOwner,
@@ -49,19 +57,21 @@ export function OwnerSettings(props: { onSaved: () => Promise<unknown> }) {
   const mutation = useMutation({
     mutationFn: () => updateOwner(form),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '保存失败')),
+      toast.error(getErrorMessage(error, t('settings.owner.error.save'))),
     onSuccess: async () => {
-      toast.success('用户资料已保存')
+      toast.success(t('settings.owner.success.save'))
       await props.onSaved()
     },
   })
   const avatarUploadMutation = useMutation({
     mutationFn: (file: File) => uploadFile(file, 'avatar'),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '头像上传失败')),
+      toast.error(
+        getErrorMessage(error, t('settings.owner.error.avatarUpload')),
+      ),
     onSuccess: (result) => {
       setForm((current) => ({ ...current, avatar: result.url }))
-      toast.success('头像已上传')
+      toast.success(t('settings.owner.success.avatarUpload'))
     },
   })
 
@@ -77,7 +87,7 @@ export function OwnerSettings(props: { onSaved: () => Promise<unknown> }) {
 
   const updateSocial = (oldKey: string, nextKey: string, value: string) => {
     if (oldKey !== nextKey && Object.hasOwn(form.socialIds ?? {}, nextKey)) {
-      toast.warning('该社交平台已存在')
+      toast.warning(t('settings.owner.confirm.duplicateSocial'))
       return
     }
 
@@ -102,10 +112,14 @@ export function OwnerSettings(props: { onSaved: () => Promise<unknown> }) {
     updateSocial(`custom-${Date.now()}`, availableSocialOption.value, '')
   }
 
-  if (ownerQuery.isLoading) return <SettingsSkeleton title="用户" />
+  if (ownerQuery.isLoading)
+    return <SettingsSkeleton title={t('settings.owner.section.title')} />
 
   return (
-    <Panel description="Owner 基础资料、头像链接和社交账号。" title="用户">
+    <Panel
+      description={t('settings.owner.description')}
+      title={t('settings.owner.section.title')}
+    >
       <form
         className="space-y-4 p-4"
         onSubmit={(event) => {
@@ -128,7 +142,7 @@ export function OwnerSettings(props: { onSaved: () => Promise<unknown> }) {
           <button
             className="group relative flex size-20 items-center justify-center overflow-hidden rounded-full bg-neutral-100 text-lg font-semibold text-neutral-500 ring-4 ring-neutral-100 transition-all hover:ring-[var(--color-primary-shallow)] dark:bg-neutral-900 dark:ring-neutral-800"
             onClick={() => avatarInputRef.current?.click()}
-            title="上传头像"
+            title={t('settings.owner.upload.avatarTooltip')}
             type="button"
           >
             {form.avatar ? (
@@ -153,10 +167,10 @@ export function OwnerSettings(props: { onSaved: () => Promise<unknown> }) {
           </button>
           <div className="min-w-0 flex-1">
             <div className="truncate text-base font-semibold text-neutral-950 dark:text-neutral-50">
-              {form.name || '未命名用户'}
+              {form.name || t('settings.owner.nameDefault')}
             </div>
             <div className="mt-1 text-sm text-neutral-500">
-              @{form.username || 'username'}
+              @{form.username || t('settings.owner.usernameDefault')}
             </div>
             <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-neutral-500 dark:text-neutral-400">
               {form.mail ? (
@@ -175,7 +189,9 @@ export function OwnerSettings(props: { onSaved: () => Promise<unknown> }) {
                     className="size-3.5 shrink-0 text-neutral-400"
                   />
                   <span>
-                    上次登录：{formatDateTime(ownerQuery.data.lastLoginTime)}
+                    {t('settings.owner.lastLoginAt', {
+                      time: formatDateTime(ownerQuery.data.lastLoginTime),
+                    })}
                   </span>
                 </span>
               ) : null}
@@ -200,43 +216,45 @@ export function OwnerSettings(props: { onSaved: () => Promise<unknown> }) {
 
         <div className="grid gap-4 md:grid-cols-2">
           <TextInput
-            label="昵称"
+            label={t('settings.owner.field.name')}
             onChange={(value) => setField('name', value)}
             value={form.name ?? ''}
           />
           <TextInput
-            label="用户名"
+            label={t('settings.owner.field.username')}
             onChange={(value) => setField('username', value)}
             value={form.username ?? ''}
           />
           <TextInput
-            label="邮箱"
+            label={t('settings.owner.field.email')}
             onChange={(value) => setField('mail', value)}
             type="email"
             value={form.mail ?? ''}
           />
           <TextInput
-            label="站点"
+            label={t('settings.owner.field.url')}
             onChange={(value) => setField('url', value)}
             value={form.url ?? ''}
           />
         </div>
 
         <TextInput
-          label="头像"
+          label={t('settings.owner.field.avatar')}
           onChange={(value) => setField('avatar', value)}
           value={form.avatar ?? ''}
         />
         <TextArea
           controlClassName="min-h-24"
-          label="介绍"
+          label={t('settings.owner.field.introduce')}
           onChange={(value) => setField('introduce', value)}
           value={form.introduce ?? ''}
         />
 
         <section className="rounded border border-neutral-200 dark:border-neutral-800">
           <div className="flex items-center justify-between border-b border-neutral-100 px-3 py-2 dark:border-neutral-900">
-            <h3 className="text-sm font-medium">社交账号</h3>
+            <h3 className="text-sm font-medium">
+              {t('settings.owner.social.title')}
+            </h3>
             <Button
               disabled={!availableSocialOption}
               onClick={addSocial}
@@ -244,12 +262,14 @@ export function OwnerSettings(props: { onSaved: () => Promise<unknown> }) {
               variant="subtle"
             >
               <Plus aria-hidden="true" className="size-4" />
-              添加
+              {t('settings.owner.social.add')}
             </Button>
           </div>
           <div className="space-y-2 p-3">
             {socialEntries.length === 0 ? (
-              <p className="text-sm text-neutral-500">暂无社交账号。</p>
+              <p className="text-sm text-neutral-500">
+                {t('settings.owner.social.empty')}
+              </p>
             ) : (
               socialEntries.map(([key, value]) => (
                 <div
@@ -258,15 +278,20 @@ export function OwnerSettings(props: { onSaved: () => Promise<unknown> }) {
                 >
                   {socialOptions.some((option) => option.value === key) ? (
                     <SelectField
-                      aria-label="社交平台"
+                      aria-label={t('settings.owner.field.socialAria')}
                       onValueChange={(nextKey) =>
                         updateSocial(key, nextKey, String(value))
                       }
-                      options={socialOptions.filter(
-                        (option) =>
-                          option.value === key ||
-                          !usedSocialKeys.has(option.value),
-                      )}
+                      options={socialOptions
+                        .filter(
+                          (option) =>
+                            option.value === key ||
+                            !usedSocialKeys.has(option.value),
+                        )
+                        .map((option) => ({
+                          label: socialLabel(option.value),
+                          value: option.value,
+                        }))}
                       value={key}
                     />
                   ) : (
@@ -302,7 +327,7 @@ export function OwnerSettings(props: { onSaved: () => Promise<unknown> }) {
             ) : (
               <Save aria-hidden="true" className="size-4" />
             )}
-            保存
+            {t('common.save')}
           </Button>
         </div>
       </form>

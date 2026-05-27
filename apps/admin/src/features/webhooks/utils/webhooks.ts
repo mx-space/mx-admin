@@ -1,17 +1,21 @@
+import type { TranslationKey } from '~/i18n/types'
+
 import { EventScope } from '~/api/webhooks'
 
-export function getScopeText(scope: number) {
+type Translator = (key: TranslationKey) => string
+
+export function getScopeText(scope: number, t: Translator) {
   const scopes: string[] = []
   if ((scope & EventScope.TO_VISITOR) === EventScope.TO_VISITOR) {
-    scopes.push('访客')
+    scopes.push(t('webhooks.scope.short.visitor'))
   }
   if ((scope & EventScope.TO_ADMIN) === EventScope.TO_ADMIN) {
-    scopes.push('管理员')
+    scopes.push(t('webhooks.scope.short.admin'))
   }
   if ((scope & EventScope.TO_SYSTEM) === EventScope.TO_SYSTEM) {
-    scopes.push('系统')
+    scopes.push(t('webhooks.scope.short.system'))
   }
-  return scopes.join(', ') || '未指定'
+  return scopes.join(', ') || t('webhooks.scope.none')
 }
 
 export function getEventColorClass(event: string) {

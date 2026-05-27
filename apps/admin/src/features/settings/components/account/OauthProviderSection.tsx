@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 import type { FlatOauthProvider, OauthProviderType } from '../../types/settings'
 
 import { API_URL } from '~/constants/env'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Switch } from '~/ui/primitives/switch'
 import { TextInput } from '~/ui/primitives/text-field'
@@ -23,6 +24,7 @@ export function OauthProviderSection(props: {
   saving: boolean
   type: OauthProviderType
 }) {
+  const { t } = useI18n()
   const [enabled, setEnabled] = useState(props.data.enabled)
   const [clientId, setClientId] = useState(props.data.clientId)
   const [clientSecret, setClientSecret] = useState('')
@@ -56,37 +58,41 @@ export function OauthProviderSection(props: {
             {props.label}
           </h3>
         </div>
-        <Switch checked={enabled} label="启用" onCheckedChange={setEnabled} />
+        <Switch
+          checked={enabled}
+          label={t('settings.oauth.switch.enabled')}
+          onCheckedChange={setEnabled}
+        />
       </div>
 
       <div className="grid gap-3">
         <TextInput
           label="Client ID"
           onChange={setClientId}
-          placeholder="输入 Client ID"
+          placeholder={t('settings.oauth.clientIdPlaceholder')}
           value={clientId}
         />
         <TextInput
           label="Client Secret"
           onChange={setClientSecret}
-          placeholder="输入 Client Secret"
+          placeholder={t('settings.oauth.clientSecretPlaceholder')}
           type="password"
           value={clientSecret}
         />
         <div className="grid gap-1.5 text-sm">
           <span className="text-neutral-600 dark:text-neutral-300">
-            Callback URL
+            {t('settings.oauth.callbackLabel')}
           </span>
           <div className="flex items-center gap-2 rounded border border-neutral-200 bg-neutral-50 px-3 py-2 dark:border-neutral-800 dark:bg-neutral-900">
             <code className="min-w-0 flex-1 truncate text-xs text-neutral-600 dark:text-neutral-300">
               {callbackUrl}
             </code>
             <Button
-              aria-label="复制 Callback URL"
+              aria-label={t('settings.oauth.callbackCopyAria')}
               className="h-7 px-2"
               onClick={() => {
                 void navigator.clipboard.writeText(callbackUrl)
-                toast.success('已复制到剪贴板')
+                toast.success(t('settings.oauth.copySuccess'))
               }}
               type="button"
               variant="subtle"
@@ -98,7 +104,7 @@ export function OauthProviderSection(props: {
 
         <div className="flex justify-end gap-2">
           <Button onClick={validate} type="button" variant="subtle">
-            验证连接
+            {t('settings.oauth.action.validate')}
           </Button>
           <Button
             disabled={props.saving || !clientId.trim() || !clientSecret.trim()}
@@ -112,7 +118,7 @@ export function OauthProviderSection(props: {
             }
             type="button"
           >
-            保存配置
+            {t('settings.oauth.action.save')}
           </Button>
         </div>
       </div>

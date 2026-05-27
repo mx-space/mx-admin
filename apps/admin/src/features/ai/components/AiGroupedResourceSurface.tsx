@@ -15,6 +15,7 @@ import type { ReactNode } from 'react'
 import type { GroupedItemAction, GroupedResourceItem } from '../types/ai'
 
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { CompactPagination } from '~/ui/data/compact-pagination'
 import { MasterDetailLayout } from '~/ui/layout/page-layout'
 import { Button } from '~/ui/primitives/button'
@@ -58,6 +59,7 @@ export function AiGroupedResourceSurface<
   queryKey: string
   title: string
 }) {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const [searchParams, setSearchParams] = useSearchParams()
   const [page, setPage] = useState(1)
@@ -128,9 +130,9 @@ export function AiGroupedResourceSurface<
   const deleteMutation = useMutation({
     mutationFn: props.deleteItem,
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '删除失败')),
+      toast.error(getErrorMessage(error, t('ai.toast.deleteFailed'))),
     onSuccess: async () => {
-      toast.success('已删除')
+      toast.success(t('ai.toast.deleted'))
       await invalidate()
     },
   })
@@ -144,10 +146,12 @@ export function AiGroupedResourceSurface<
       return props.createTask(article)
     },
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '任务创建失败')),
+      toast.error(getErrorMessage(error, t('ai.toast.taskCreateFailed'))),
     onSuccess: async (result) => {
       if (!result) return
-      toast.success(result.created ? '已创建任务' : '任务已存在')
+      toast.success(
+        result.created ? t('ai.toast.taskCreated') : t('ai.toast.taskExists'),
+      )
       await invalidate()
     },
   })
@@ -158,11 +162,11 @@ export function AiGroupedResourceSurface<
       result: await action.run(),
     }),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '任务创建失败')),
+      toast.error(getErrorMessage(error, t('ai.toast.taskCreateFailed'))),
     onSuccess: async ({ action, result }) => {
       const message =
-        action.getSuccessMessage?.(result) ??
-        getGroupedActionSuccessMessage(result)
+        action.getSuccessMessage?.(result, t) ??
+        getGroupedActionSuccessMessage(result, t)
 
       if (message) toast.success(message)
       await invalidate()
@@ -188,7 +192,7 @@ export function AiGroupedResourceSurface<
                 {props.title}
               </h2>
               <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
-                共 {total} 条记录
+                {t('ai.grouped.recordCount', { count: total })}
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
@@ -203,7 +207,7 @@ export function AiGroupedResourceSurface<
                     setSearch(value)
                     setPage(1)
                   }}
-                  placeholder="搜索标题"
+                  placeholder={t('ai.filter.searchPlaceholder')}
                   value={search}
                 />
               </label>
@@ -218,7 +222,7 @@ export function AiGroupedResourceSurface<
                   aria-hidden="true"
                   className={cn('size-4', query.isFetching && 'animate-spin')}
                 />
-                刷新
+                {t('ai.action.refresh')}
               </Button>
             </div>
           </div>
@@ -250,7 +254,9 @@ export function AiGroupedResourceSurface<
                       <div className="flex flex-wrap items-center gap-2">
                         <SmallBadge>{group.article.type}</SmallBadge>
                         <span className="text-xs text-neutral-500 dark:text-neutral-400">
-                          {group.items.length} 条
+                          {t('ai.grouped.itemCount', {
+                            count: group.items.length,
+                          })}
                         </span>
                       </div>
                       <h3 className="mt-2 truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
@@ -274,7 +280,7 @@ export function AiGroupedResourceSurface<
                         ) : (
                           <Sparkles aria-hidden="true" className="size-4" />
                         )}
-                        {props.createTaskLabel ?? '创建任务'}
+                        {props.createTaskLabel ?? t('ai.action.create')}
                       </Button>
                     ) : null}
                   </article>
@@ -286,7 +292,7 @@ export function AiGroupedResourceSurface<
           {pageCount > 1 ? (
             <div className="flex shrink-0 items-center justify-between gap-3 border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
               <span className="text-xs tabular-nums text-neutral-500 dark:text-neutral-400">
-                第 {page} 页
+                {t('ai.page.pageIndex', { page })}
               </span>
               <CompactPagination
                 onPageChange={setPage}
@@ -322,7 +328,9 @@ export function AiGroupedResourceSurface<
                     <div className="flex flex-wrap items-center gap-2">
                       <SmallBadge>{selectedGroup.article.type}</SmallBadge>
                       <span className="text-xs text-neutral-500 dark:text-neutral-400">
-                        {selectedGroup.items.length} 条
+                        {t('ai.grouped.itemCount', {
+                          count: selectedGroup.items.length,
+                        })}
                       </span>
                     </div>
                     <h2 className="mt-1 truncate text-sm font-semibold text-neutral-950 dark:text-neutral-50">
@@ -345,7 +353,7 @@ export function AiGroupedResourceSurface<
                     ) : (
                       <Sparkles aria-hidden="true" className="size-4" />
                     )}
-                    {props.createTaskLabel ?? '创建任务'}
+                    {props.createTaskLabel ?? t('ai.action.create')}
                   </Button>
                 ) : null}
               </div>
@@ -383,7 +391,9 @@ export function AiGroupedResourceSurface<
                               className="border-red-200 text-red-600 hover:bg-red-50 dark:border-red-950 dark:text-red-400 dark:hover:bg-red-950/30"
                               disabled={deleteMutation.isPending}
                               onClick={() => {
-                                if (window.confirm('确认删除该记录？')) {
+                                if (
+                                  window.confirm(t('ai.confirm.deleteRecord'))
+                                ) {
                                   deleteMutation.mutate(item.id)
                                 }
                               }}
@@ -391,7 +401,7 @@ export function AiGroupedResourceSurface<
                               variant="subtle"
                             >
                               <Trash2 aria-hidden="true" className="size-4" />
-                              删除
+                              {t('ai.action.delete')}
                             </Button>
                           </div>
                         </div>
@@ -405,7 +415,9 @@ export function AiGroupedResourceSurface<
               </Scroll>
             </div>
           ) : (
-            <ResourceEmpty label={`选择${props.title}记录`} />
+            <ResourceEmpty
+              label={t('ai.empty.itemSelect', { label: props.title })}
+            />
           )}
         </section>
       }

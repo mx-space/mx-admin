@@ -3,6 +3,7 @@ import { Inbox, SmilePlus } from 'lucide-react'
 import { useState } from 'react'
 import type { CommentModel } from '~/models/comment'
 
+import { useI18n } from '~/i18n'
 import { cn } from '~/utils/cn'
 
 import { commentQuickEmojis } from '../constants'
@@ -67,24 +68,28 @@ export function MetaItem(props: { children: React.ReactNode; label: string }) {
 }
 
 export function CommentEmptyState() {
+  const { t } = useI18n()
   return (
     <div className="flex flex-col items-center justify-center py-20 text-center">
       <Inbox
         aria-hidden="true"
         className="mb-4 size-10 text-neutral-300 dark:text-neutral-700"
       />
-      <p className="text-sm text-neutral-500 dark:text-neutral-400">暂无评论</p>
+      <p className="text-sm text-neutral-500 dark:text-neutral-400">
+        {t('comments.empty')}
+      </p>
     </div>
   )
 }
 
 export function EmojiPopover(props: { onSelect: (emoji: string) => void }) {
   const [open, setOpen] = useState(false)
+  const { t } = useI18n()
 
   return (
     <Popover.Root onOpenChange={setOpen} open={open}>
       <Popover.Trigger
-        aria-label="插入表情"
+        aria-label={t('comments.reply.emojiPickerLabel')}
         className="inline-flex size-8 items-center justify-center rounded text-neutral-400 transition-colors hover:bg-neutral-200 hover:text-neutral-700 dark:hover:bg-neutral-800 dark:hover:text-neutral-200"
         type="button"
       >

@@ -1,6 +1,8 @@
 import { UserRound } from 'lucide-react'
 import { useState } from 'react'
 
+import { useI18n } from '~/i18n'
+
 export function Avatar(props: { avatar: string; name: string }) {
   const [failed, setFailed] = useState(false)
 
@@ -58,6 +60,7 @@ export function FriendsSkeletonRows() {
 }
 
 export function FriendsEmptyRow() {
+  const { t } = useI18n()
   return (
     <tr>
       <td className="px-4 py-14 text-center" colSpan={7}>
@@ -66,7 +69,7 @@ export function FriendsEmptyRow() {
             aria-hidden="true"
             className="mb-3 size-10 text-neutral-300 dark:text-neutral-700"
           />
-          暂无友链
+          {t('friends.empty')}
         </div>
       </td>
     </tr>

@@ -12,6 +12,7 @@ import {
   uploadAndRestoreBackup,
 } from '~/api/backups'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { MasterDetailLayout } from '~/ui/layout/page-layout'
 import { Button } from '~/ui/primitives/button'
 import { Checkbox } from '~/ui/primitives/checkbox'
@@ -26,6 +27,7 @@ import { BackupListItem } from './BackupListItem'
 import { BackupListSkeleton } from './BackupListSkeleton'
 
 export function BackupRouteViewContent() {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [selectedFilename, setSelectedFilename] = useState<string | null>(null)
@@ -55,32 +57,32 @@ export function BackupRouteViewContent() {
   const createMutation = useMutation({
     mutationFn: createBackup,
     onSuccess: async (blob) => {
-      toast.success('备份完成')
+      toast.success(t('backup.toast.createSuccess'))
       saveBlob(blob, 'backup.zip')
       await invalidateBackups()
     },
     onError: () => {
-      toast.error('备份失败')
+      toast.error(t('backup.toast.createFailed'))
     },
   })
 
   const uploadMutation = useMutation({
     mutationFn: uploadAndRestoreBackup,
     onSuccess: () => {
-      toast.success('恢复成功，页面将会重载')
+      toast.success(t('backup.toast.uploadSuccess'))
       setTimeout(() => {
         location.reload()
       }, 1000)
     },
     onError: () => {
-      toast.error('上传恢复失败')
+      toast.error(t('backup.toast.uploadFailed'))
     },
   })
 
   const deleteMutation = useMutation({
     mutationFn: deleteBackup,
     onSuccess: async (_, filename) => {
-      toast.success('删除成功')
+      toast.success(t('backup.toast.deleteSuccess'))
       setSelectedKeys((current) => {
         const next = new Set(current)
         next.delete(filename)
@@ -93,20 +95,20 @@ export function BackupRouteViewContent() {
       await invalidateBackups()
     },
     onError: () => {
-      toast.error('删除失败')
+      toast.error(t('backup.toast.deleteFailed'))
     },
   })
 
   const rollbackMutation = useMutation({
     mutationFn: rollbackBackup,
     onSuccess: () => {
-      toast.success('回滚成功，页面将会重载')
+      toast.success(t('backup.toast.rollbackSuccess'))
       setTimeout(() => {
         location.reload()
       }, 1000)
     },
     onError: () => {
-      toast.error('回滚失败')
+      toast.error(t('backup.toast.rollbackFailed'))
     },
   })
 
@@ -116,11 +118,11 @@ export function BackupRouteViewContent() {
       filename,
     }),
     onSuccess: ({ blob, filename }) => {
-      toast.success('下载完成')
+      toast.success(t('backup.toast.downloadSuccess'))
       saveBlob(blob, `${filename}.zip`)
     },
     onError: () => {
-      toast.error('下载失败')
+      toast.error(t('backup.toast.downloadFailed'))
     },
   })
 
@@ -153,9 +155,14 @@ export function BackupRouteViewContent() {
         setShowDetailOnMobile(false)
       }
       if (failedCount > 0) {
-        toast.warning(`删除完成：成功 ${successCount}，失败 ${failedCount}`)
+        toast.warning(
+          t('backup.toast.batchPartial', {
+            failed: failedCount,
+            success: successCount,
+          }),
+        )
       } else {
-        toast.success(`成功删除 ${successCount} 个备份`)
+        toast.success(t('backup.toast.batchSuccess', { count: successCount }))
       }
       await invalidateBackups()
     },
@@ -198,19 +205,19 @@ export function BackupRouteViewContent() {
           >
             <div className="flex items-center gap-3">
               <Checkbox
-                aria-label="选择全部备份"
+                aria-label={t('backup.list.selectAllAria')}
                 checked={allSelected}
                 indeterminate={selectedKeys.size > 0 && !allSelected}
                 onCheckedChange={toggleSelectAll}
               />
               <span className="text-sm text-neutral-500 dark:text-neutral-400">
                 {selectedKeys.size > 0
-                  ? `已选 ${selectedKeys.size} 项`
-                  : '全选'}
+                  ? t('backup.list.selected', { count: selectedKeys.size })
+                  : t('backup.list.selectAll')}
               </span>
             </div>
             <span className="text-xs text-neutral-400">
-              {backups.length} 个备份
+              {t('backup.list.countLabel', { count: backups.length })}
             </span>
           </div>
 
@@ -221,7 +228,7 @@ export function BackupRouteViewContent() {
               type="button"
             >
               <Database aria-hidden="true" className="size-4" />
-              立即备份
+              {t('backup.actions.createNow')}
             </Button>
             <Button
               disabled={uploadMutation.isPending}
@@ -230,7 +237,7 @@ export function BackupRouteViewContent() {
               variant="subtle"
             >
               <Upload aria-hidden="true" className="size-4" />
-              上传恢复
+              {t('backup.actions.uploadRestore')}
             </Button>
             <Button
               className="text-red-600 dark:text-red-400"
@@ -240,7 +247,9 @@ export function BackupRouteViewContent() {
               onClick={() => {
                 if (
                   window.confirm(
-                    `确定要删除选中的 ${selectedKeys.size} 个备份吗？`,
+                    t('backup.actions.confirmBatchDelete', {
+                      count: selectedKeys.size,
+                    }),
                   )
                 ) {
                   batchDeleteMutation.mutate()
@@ -250,7 +259,7 @@ export function BackupRouteViewContent() {
               variant="subtle"
             >
               <Trash2 aria-hidden="true" className="size-4" />
-              批量删除
+              {t('backup.actions.batchDelete')}
             </Button>
             <input
               accept=".zip"

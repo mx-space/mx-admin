@@ -1,6 +1,7 @@
 import { KeyRound, ShieldCheck } from 'lucide-react'
 import { toast } from 'sonner'
 
+import { useI18n } from '~/i18n'
 import { AppPage, PageHeader } from '~/ui/layout/page-layout'
 import { Button } from '~/ui/primitives/button'
 import { Panel } from '~/ui/primitives/panel'
@@ -8,32 +9,47 @@ import { Scroll } from '~/ui/primitives/scroll'
 import { authClient } from '~/utils/authjs/auth'
 
 export function AuthnDebugRouteViewContent() {
+  const { t } = useI18n()
+
   return (
     <AppPage>
       <PageHeader
-        description="Passkey registration and authentication checks."
-        title="Passkey Diagnostics"
+        description={t('debug.authn.headerDescription')}
+        title={t('debug.authn.headerTitle')}
       />
       <Scroll
         className="min-h-0 flex-1"
         innerClassName="mx-auto w-full max-w-3xl p-4"
       >
         <Panel
-          description="Passkey registration and authentication checks using the React runtime."
-          title="Passkey diagnostics"
+          description={t('debug.authn.panelDescription')}
+          title={t('debug.authn.panelTitle')}
         >
           <div className="grid gap-4 p-4 md:grid-cols-2">
             <DiagnosticAction
-              description="Creates a random test passkey name and sends it to Better Auth."
+              description={t('debug.authn.action.register.description')}
               icon={KeyRound}
-              label="Register"
-              onClick={registerPasskey}
+              label={t('debug.authn.action.register.label')}
+              onClick={() =>
+                registerPasskey({
+                  registerFailed: t('debug.authn.registerFailed'),
+                  registerSuccess: t('debug.authn.registerSuccess'),
+                  passkeyAlreadyRegistered: t(
+                    'debug.authn.passkeyAlreadyRegistered',
+                  ),
+                })
+              }
             />
             <DiagnosticAction
-              description="Runs the browser passkey authentication flow for the current user."
+              description={t('debug.authn.action.authenticator.description')}
               icon={ShieldCheck}
-              label="Authenticator"
-              onClick={authenticatePasskey}
+              label={t('debug.authn.action.authenticator.label')}
+              onClick={() =>
+                authenticatePasskey({
+                  authenticateFailed: t('debug.authn.authenticateFailed'),
+                  authenticateSuccess: t('debug.authn.authenticateSuccess'),
+                })
+              }
             />
           </div>
         </Panel>
@@ -69,36 +85,47 @@ function DiagnosticAction(props: DiagnosticActionProps) {
   )
 }
 
-async function registerPasskey() {
+interface RegisterMessages {
+  passkeyAlreadyRegistered: string
+  registerFailed: string
+  registerSuccess: string
+}
+
+async function registerPasskey(messages: RegisterMessages) {
   try {
     const name = `test-${Math.trunc(Math.random() * 100)}`
     const result = await authClient.passkey.addPasskey({ name })
 
     if (result.error) {
-      toast.error(result.error.message || '注册失败')
+      toast.error(result.error.message || messages.registerFailed)
     } else {
-      toast.success('Passkey 注册成功')
+      toast.success(messages.registerSuccess)
     }
   } catch (error) {
     if (isNamedError(error, 'InvalidStateError')) {
-      toast.error('该 Passkey 已经注册过了')
+      toast.error(messages.passkeyAlreadyRegistered)
     } else {
-      toast.error(readErrorMessage(error, '注册失败'))
+      toast.error(readErrorMessage(error, messages.registerFailed))
     }
   }
 }
 
-async function authenticatePasskey() {
+interface AuthenticateMessages {
+  authenticateFailed: string
+  authenticateSuccess: string
+}
+
+async function authenticatePasskey(messages: AuthenticateMessages) {
   try {
     const result = await authClient.signIn.passkey()
 
     if (result.error) {
-      toast.error(result.error.message || '认证失败')
+      toast.error(result.error.message || messages.authenticateFailed)
     } else {
-      toast.success('Passkey 认证成功')
+      toast.success(messages.authenticateSuccess)
     }
   } catch (error) {
-    toast.error(readErrorMessage(error, '认证失败'))
+    toast.error(readErrorMessage(error, messages.authenticateFailed))
   }
 }
 

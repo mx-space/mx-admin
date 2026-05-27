@@ -6,6 +6,7 @@ import type { SnippetModel } from '~/models/snippet'
 import type { StatusFilter } from '../types/snippets'
 
 import { getInvocationLogDetail, getInvocationLogs } from '~/api/serverless'
+import { useI18n } from '~/i18n'
 import { CompactPagination } from '~/ui/data/compact-pagination'
 import { Scroll } from '~/ui/primitives/scroll'
 import { cn } from '~/utils/cn'
@@ -24,6 +25,7 @@ export function FunctionLogsDrawer(props: {
   open: boolean
   snippet: SnippetModel | null
 }) {
+  const { t } = useI18n()
   const [page, setPage] = useState(1)
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
   const [expandedId, setExpandedId] = useState<string | null>(null)
@@ -58,14 +60,23 @@ export function FunctionLogsDrawer(props: {
     <SidePanel
       onClose={props.onClose}
       open={props.open}
-      title={`函数调用日志${props.snippet?.name ? `：${props.snippet.name}` : ''}`}
+      title={
+        props.snippet?.name
+          ? t('snippets.dialog.logs.titleWithName', {
+              name: props.snippet.name,
+            })
+          : t('snippets.dialog.logs.title')
+      }
     >
       <div className="flex h-full min-h-0 flex-col gap-3">
         <div className="grid grid-cols-3 gap-1 rounded bg-neutral-100 p-1 dark:bg-neutral-900">
           {[
-            { label: '全部', value: 'all' },
-            { label: '成功', value: 'success' },
-            { label: '错误', value: 'error' },
+            { label: t('snippets.dialog.logs.filter.all'), value: 'all' },
+            {
+              label: t('snippets.dialog.logs.filter.success'),
+              value: 'success',
+            },
+            { label: t('snippets.dialog.logs.filter.error'), value: 'error' },
           ].map((item) => (
             <button
               className={cn(
@@ -86,11 +97,11 @@ export function FunctionLogsDrawer(props: {
         <Scroll className="flex-1">
           {logsQuery.isLoading ? (
             <div className="flex justify-center py-20">
-              <InlineLoading label="正在读取调用日志" />
+              <InlineLoading label={t('snippets.dialog.logs.loading')} />
             </div>
           ) : logs.length === 0 ? (
             <div className="flex min-h-60 items-center justify-center text-sm text-neutral-500">
-              暂无调用记录
+              {t('snippets.dialog.logs.empty')}
             </div>
           ) : (
             <div className="space-y-2">
@@ -182,6 +193,7 @@ function LogItem(props: {
 }
 
 function LogDetail(props: { id: string }) {
+  const { t } = useI18n()
   const query = useQuery({
     queryFn: () => getInvocationLogDetail(props.id),
     queryKey: ['serverless', 'log-detail', props.id],
@@ -191,10 +203,10 @@ function LogDetail(props: { id: string }) {
   return (
     <div className="border-t border-neutral-200 bg-neutral-50 px-3 py-3 dark:border-neutral-800 dark:bg-neutral-900/60">
       {query.isLoading ? (
-        <InlineLoading label="正在读取详情" />
+        <InlineLoading label={t('snippets.dialog.logs.detailLoading')} />
       ) : query.isError ? (
         <p className="text-xs text-red-600">
-          {getErrorMessage(query.error, '无法加载详情')}
+          {getErrorMessage(query.error, t('snippets.dialog.logs.detailFailed'))}
         </p>
       ) : query.data ? (
         <div className="space-y-3">
@@ -238,11 +250,15 @@ function LogDetail(props: { id: string }) {
           ) : null}
           {(!query.data.logs || query.data.logs.length === 0) &&
           !query.data.error ? (
-            <p className="text-xs text-neutral-400">无输出</p>
+            <p className="text-xs text-neutral-400">
+              {t('snippets.dialog.logs.noOutput')}
+            </p>
           ) : null}
         </div>
       ) : (
-        <p className="text-xs text-neutral-400">无法加载详情</p>
+        <p className="text-xs text-neutral-400">
+          {t('snippets.dialog.logs.detailFailed')}
+        </p>
       )}
     </div>
   )

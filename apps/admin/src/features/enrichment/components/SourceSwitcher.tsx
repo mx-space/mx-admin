@@ -6,6 +6,7 @@ import type {
   SortOrder,
 } from '../types/enrichment'
 
+import { useI18n } from '~/i18n'
 import { SelectField } from '~/ui/primitives/select'
 import { cn } from '~/utils/cn'
 
@@ -15,10 +16,11 @@ export function SourceSwitcher(props: {
   onChange: (source: EnrichmentSource) => void
   value: EnrichmentSource
 }) {
+  const { t } = useI18n()
   const items: Array<{ label: string; value: EnrichmentSource }> = [
-    { label: '缓存', value: 'cache' },
-    { label: '截图', value: 'screenshots' },
-    { label: '探针', value: 'probe' },
+    { label: t('enrichment.source.cache'), value: 'cache' },
+    { label: t('enrichment.source.screenshots'), value: 'screenshots' },
+    { label: t('enrichment.source.probe'), value: 'probe' },
   ]
 
   return (
@@ -46,9 +48,10 @@ export function FilterSegment(props: {
   onChange: (mode: CacheFilterMode) => void
   value: CacheFilterMode
 }) {
+  const { t } = useI18n()
   const items: Array<{ label: string; value: CacheFilterMode }> = [
-    { label: '全部', value: 'all' },
-    { label: '仅失败', value: 'failed' },
+    { label: t('enrichment.filter.all'), value: 'all' },
+    { label: t('enrichment.filter.failed'), value: 'failed' },
   ]
 
   return (
@@ -78,24 +81,28 @@ export function CaptureControls(props: {
   order: SortOrder
   sort: CaptureSortField
 }) {
+  const { t } = useI18n()
   return (
     <div className="grid grid-cols-2 gap-2">
       <SelectField
-        aria-label="截图排序字段"
+        aria-label={t('enrichment.capture.sortAria')}
         onValueChange={props.onSortChange}
         options={[
-          { label: '最近访问', value: 'last_accessed' },
-          { label: '创建时间', value: 'created' },
-          { label: '体积', value: 'bytes' },
+          {
+            label: t('enrichment.capture.sort.lastAccessed'),
+            value: 'last_accessed',
+          },
+          { label: t('enrichment.capture.sort.created'), value: 'created' },
+          { label: t('enrichment.capture.sort.bytes'), value: 'bytes' },
         ]}
         value={props.sort}
       />
       <SelectField
-        aria-label="截图排序方向"
+        aria-label={t('enrichment.capture.orderAria')}
         onValueChange={props.onOrderChange}
         options={[
-          { label: '倒序', value: 'desc' },
-          { label: '正序', value: 'asc' },
+          { label: t('enrichment.capture.order.desc'), value: 'desc' },
+          { label: t('enrichment.capture.order.asc'), value: 'asc' },
         ]}
         value={props.order}
       />

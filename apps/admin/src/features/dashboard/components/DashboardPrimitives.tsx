@@ -1,14 +1,16 @@
 import type { LucideIcon } from 'lucide-react'
 
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { cn } from '~/utils/cn'
 
 import { formatNumber } from '../utils/dashboard'
 
 export function EmptyDashboardBlock() {
+  const { t } = useI18n()
   return (
     <div className="flex min-h-32 items-center justify-center text-sm text-neutral-500">
-      暂无数据
+      {t('dashboard.empty')}
     </div>
   )
 }
@@ -79,6 +81,7 @@ export function MaintenanceCard(props: {
   onClick: () => void
   value: string
 }) {
+  const { t } = useI18n()
   const Icon = props.icon
 
   return (
@@ -93,7 +96,7 @@ export function MaintenanceCard(props: {
         type="button"
         variant="subtle"
       >
-        清除
+        {t('dashboard.maintenance.clear')}
       </Button>
     </div>
   )

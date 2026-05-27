@@ -7,6 +7,7 @@ import {
   ContentEntryListItem,
   ContentListStatusBadge,
 } from '~/features/_shared/components/content-list-item'
+import { useI18n } from '~/i18n'
 import { relativeTimeFromNow } from '~/utils/time'
 
 import { buildPostMenuItems } from './buildPostMenuItems'
@@ -27,10 +28,11 @@ export function PostRow(props: {
   post: PostModel
   selected: boolean
 }) {
+  const { t } = useI18n()
   const post = props.post
   const externalHref = `${WEB_URL}/posts/${post.category?.slug ?? post.categoryId}/${post.slug}`
   const isPublished = post.isPublished ?? false
-  const title = post.title || '未命名文章'
+  const title = post.title || t('posts.row.untitled')
   const editPath = `/posts/edit?id=${encodeURIComponent(post.id)}`
 
   const menuItems = () =>
@@ -42,13 +44,14 @@ export function PostRow(props: {
         props.onCategoryChange(post.id, categoryId),
       onPinToggle: (next) => props.onPinToggle(post.id, next),
       onPublishToggle: (next) => props.onPublishChange(post.id, next),
+      t,
     })
 
   return (
     <ContentEntryListItem
-      checkboxLabel={`选择文章「${title}」`}
+      checkboxLabel={t('posts.list.checkboxAria', { title })}
       dataId={post.id}
-      editTitle="编辑文章"
+      editTitle={t('posts.action.editPost')}
       editTo={editPath}
       externalHref={externalHref}
       leading={
@@ -60,7 +63,7 @@ export function PostRow(props: {
       meta={
         <>
           <span className="rounded bg-neutral-100 px-1.5 py-0.5 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300">
-            {post.category?.name ?? '未分类'}
+            {post.category?.name ?? t('posts.meta.uncategorized')}
           </span>
           {post.tags?.length ? (
             <span className="max-w-64 truncate">{post.tags.join('、')}</span>
@@ -80,11 +83,11 @@ export function PostRow(props: {
       }
       onSelect={(mode) => props.onSelect(post.id, mode)}
       onSelectedChange={props.onSelectedChange}
-      openTitle="打开文章"
+      openTitle={t('posts.action.openPost')}
       selected={props.selected}
       status={
         <ContentListStatusBadge active={isPublished}>
-          {isPublished ? '已发布' : '草稿'}
+          {isPublished ? t('posts.status.published') : t('posts.status.draft')}
         </ContentListStatusBadge>
       }
       title={title}

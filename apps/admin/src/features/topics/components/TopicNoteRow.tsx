@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import type { NoteModel } from '~/models/note'
 
 import { WEB_URL } from '~/constants/env'
+import { useI18n } from '~/i18n'
 import { relativeTimeFromNow } from '~/utils/time'
 
 export function TopicNoteRow(props: {
@@ -10,7 +11,8 @@ export function TopicNoteRow(props: {
   onRemove: () => void
   removing: boolean
 }) {
-  const title = props.note.title || '未命名手记'
+  const { t } = useI18n()
+  const title = props.note.title || t('topics.notes.unnamed')
   const externalHref = props.note.id ? `${WEB_URL}/notes/${props.note.id}` : '#'
 
   return (
@@ -41,7 +43,7 @@ export function TopicNoteRow(props: {
           href={externalHref}
           rel="noreferrer"
           target="_blank"
-          title="打开手记"
+          title={t('topics.notes.openExternal')}
         >
           <ExternalLink aria-hidden="true" className="size-4" />
         </a>
@@ -49,7 +51,7 @@ export function TopicNoteRow(props: {
           <Link
             className="inline-flex size-8 items-center justify-center rounded border border-neutral-200 text-neutral-600 transition-colors hover:bg-neutral-50 dark:border-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-900"
             to={`/notes?keyword=${encodeURIComponent(title)}`}
-            title="在手记列表中查找"
+            title={t('topics.notes.findInList')}
           >
             <Edit3 aria-hidden="true" className="size-4" />
           </Link>
@@ -58,7 +60,7 @@ export function TopicNoteRow(props: {
           className="inline-flex size-8 items-center justify-center rounded border border-red-200 text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50 dark:border-red-950 dark:text-red-400 dark:hover:bg-red-950/30"
           disabled={props.removing || !props.note.id}
           onClick={props.onRemove}
-          title="移出专栏"
+          title={t('topics.notes.removeFromTopic')}
           type="button"
         >
           {props.removing ? (

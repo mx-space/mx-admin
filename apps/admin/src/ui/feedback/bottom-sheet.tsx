@@ -6,6 +6,7 @@ import type { LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
 
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { PortalLayerScope, useFloatingZ } from '~/ui/feedback/portal-layer'
 import { cn } from '~/utils/cn'
 
@@ -35,6 +36,7 @@ const SNAP_HEIGHT: Record<BottomSheetSnap, string> = {
 }
 
 export function BottomSheet(props: BottomSheetProps) {
+  const { t } = useI18n()
   const Icon = props.icon
   const titleId = useId()
   // BottomSheet shares the drawer tier intentionally (sibling overlay system)
@@ -137,7 +139,11 @@ export function BottomSheet(props: BottomSheetProps) {
                 </h2>
                 <div className="flex shrink-0 items-center gap-1.5">
                   <button
-                    aria-label={snap === 'half' ? '展开' : '收起'}
+                    aria-label={
+                      snap === 'half'
+                        ? t('ui.bottomSheet.expand')
+                        : t('ui.bottomSheet.collapse')
+                    }
                     className="inline-flex size-9 items-center justify-center rounded text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-600 dark:hover:bg-neutral-900 dark:hover:text-neutral-200"
                     onClick={toggleSnap}
                     type="button"
@@ -146,7 +152,7 @@ export function BottomSheet(props: BottomSheetProps) {
                   </button>
                   {props.headerActions}
                   <button
-                    aria-label="关闭"
+                    aria-label={t('ui.bottomSheet.closeAria')}
                     className="inline-flex size-9 items-center justify-center rounded text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-600 dark:hover:bg-neutral-900 dark:hover:text-neutral-200"
                     onClick={props.onClose}
                     type="button"

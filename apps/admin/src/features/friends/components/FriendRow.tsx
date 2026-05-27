@@ -3,6 +3,7 @@ import { useState } from 'react'
 import type { LinkModel } from '~/models/link'
 import type { HealthEntry } from '../types/friends'
 
+import { useI18n } from '~/i18n'
 import { LinkState, LinkType } from '~/models/link'
 import { Button } from '~/ui/primitives/button'
 
@@ -17,6 +18,7 @@ export function FriendRow(props: {
   onDelete: () => void
   onEdit: () => void
 }) {
+  const { t } = useI18n()
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)
 
   return (
@@ -59,7 +61,9 @@ export function FriendRow(props: {
         </div>
       </td>
       <td className="px-4 py-3 text-neutral-600 dark:text-neutral-400">
-        {props.link.type === LinkType.Collection ? '收藏' : '朋友'}
+        {props.link.type === LinkType.Collection
+          ? t('friends.row.typeCollection')
+          : t('friends.row.typeFriend')}
       </td>
       <td className="px-4 py-3">
         {props.link.email ? (
@@ -88,7 +92,7 @@ export function FriendRow(props: {
                 variant="subtle"
               >
                 <Check aria-hidden="true" className="size-3.5" />
-                通过
+                {t('friends.row.pass')}
               </Button>
               <Button
                 className="h-8 px-2"
@@ -97,7 +101,7 @@ export function FriendRow(props: {
                 variant="subtle"
               >
                 <CircleAlert aria-hidden="true" className="size-3.5" />
-                理由
+                {t('friends.row.reason')}
               </Button>
             </>
           ) : null}
@@ -108,7 +112,7 @@ export function FriendRow(props: {
             variant="subtle"
           >
             <Pencil aria-hidden="true" className="size-3.5" />
-            编辑
+            {t('friends.row.edit')}
           </Button>
           <Button
             className="h-8 px-2 text-red-600 dark:text-red-400"
@@ -125,7 +129,9 @@ export function FriendRow(props: {
             variant="subtle"
           >
             <Trash2 aria-hidden="true" className="size-3.5" />
-            {isConfirmingDelete ? '确认' : '移除'}
+            {isConfirmingDelete
+              ? t('friends.row.confirm')
+              : t('friends.row.remove')}
           </Button>
         </div>
       </td>

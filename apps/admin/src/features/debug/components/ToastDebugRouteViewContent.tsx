@@ -1,6 +1,7 @@
 import { toast } from 'sonner'
 import type { ReactNode } from 'react'
 
+import { useI18n } from '~/i18n'
 import { AppPage, PageHeader } from '~/ui/layout/page-layout'
 import { Button } from '~/ui/primitives/button'
 import { Panel } from '~/ui/primitives/panel'
@@ -9,174 +10,196 @@ import { Scroll } from '~/ui/primitives/scroll'
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 export function ToastDebugRouteViewContent() {
+  const { t } = useI18n()
+
   return (
     <AppPage>
       <PageHeader
-        description="Inspect toast variants and business notification actions."
-        title="Toast Debug"
+        description={t('debug.toast.headerDescription')}
+        title={t('debug.toast.headerTitle')}
       />
       <Scroll
         className="min-h-0 flex-1"
         innerClassName="mx-auto flex w-full max-w-4xl flex-col gap-6 p-4"
       >
-        <Panel title="基础用法">
-          <ToastSection title="状态类型">
-            <Button onClick={() => toast.success('操作成功')} variant="subtle">
+        <Panel title={t('debug.toast.basic.title')}>
+          <ToastSection title={t('debug.toast.status.title')}>
+            <Button
+              onClick={() => toast.success(t('debug.toast.error.success'))}
+              variant="subtle"
+            >
               Success
             </Button>
-            <Button onClick={() => toast.error('操作失败')} variant="subtle">
-              Error
+            <Button
+              onClick={() => toast.error(t('debug.toast.error.fail'))}
+              variant="subtle"
+            >
+              {t('debug.toast.error.actionPlus')}
             </Button>
-            <Button onClick={() => toast.warning('请注意')} variant="subtle">
+            <Button
+              onClick={() => toast.warning(t('debug.toast.error.warning'))}
+              variant="subtle"
+            >
               Warning
             </Button>
-            <Button onClick={() => toast.info('提示信息')} variant="subtle">
+            <Button
+              onClick={() => toast.info(t('debug.toast.error.info'))}
+              variant="subtle"
+            >
               Info
             </Button>
           </ToastSection>
 
-          <ToastSection title="带描述文字">
+          <ToastSection title={t('debug.toast.description.title')}>
             <Button
               onClick={() => {
-                toast.success('保存成功', {
-                  description: '您的更改已保存',
+                toast.success(t('debug.toast.action.saveSuccess'), {
+                  description: t('debug.toast.action.saveDescription'),
                 })
               }}
               variant="subtle"
             >
-              Success + Description
+              {t('debug.toast.action.successPlus')}
             </Button>
             <Button
               onClick={() => {
-                toast.error('保存失败', {
-                  description: '请检查网络连接后重试',
+                toast.error(t('debug.toast.action.saveFailed'), {
+                  description: t('debug.toast.action.errorDescription'),
                 })
               }}
               variant="subtle"
             >
-              Error + Description
+              {t('debug.toast.action.errorPlus')}
             </Button>
           </ToastSection>
 
-          <ToastSection title="Loading 状态">
+          <ToastSection title={t('debug.toast.loading.title')}>
             <Button
               onClick={() => {
-                const id = toast.loading('加载中...')
+                const id = toast.loading(t('debug.toast.action.loadingStart'))
                 setTimeout(() => {
                   toast.dismiss(id)
-                  toast.success('加载完成')
+                  toast.success(t('debug.toast.action.loadingDone'))
                 }, 2000)
               }}
               variant="subtle"
             >
-              Loading to Success
+              {t('debug.toast.action.loadingToSuccess')}
             </Button>
             <Button
               onClick={() => {
-                const id = toast.loading('处理中...')
+                const id = toast.loading(t('debug.toast.action.loadingProcess'))
                 setTimeout(() => {
                   toast.dismiss(id)
-                  toast.error('处理失败')
+                  toast.error(t('debug.toast.action.loadingFailed'))
                 }, 2000)
               }}
               variant="subtle"
             >
-              Loading to Error
+              {t('debug.toast.action.loadingToError')}
             </Button>
           </ToastSection>
 
-          <ToastSection title="手动关闭">
+          <ToastSection title={t('debug.toast.manual.title')}>
             <Button
               onClick={() => {
-                const id = toast.success('3 秒后自动关闭', {
+                const id = toast.success(t('debug.toast.action.dismissTimer'), {
                   duration: Infinity,
                 })
                 setTimeout(() => {
                   toast.dismiss(id)
-                  toast.info('已关闭')
+                  toast.info(t('debug.toast.action.dismiss'))
                 }, 3000)
               }}
               variant="subtle"
             >
-              手动 dismiss
+              {t('debug.toast.action.dismissManual')}
             </Button>
           </ToastSection>
         </Panel>
 
-        <Panel title="带 Action 按钮">
+        <Panel title={t('debug.toast.withAction.title')}>
           <ToastSection
-            description={'WebSocket 推送新评论，点击"查看"跳转'}
-            title="新评论通知"
+            description={t('debug.toast.comment.sectionDescription')}
+            title={t('debug.toast.comment.title')}
           >
             <Button
               onClick={() => {
-                const id = toast.success('新的评论', {
+                const id = toast.success(t('debug.toast.comment.new'), {
                   action: {
-                    label: '查看',
+                    label: t('debug.toast.comment.view'),
                     onClick: () => {
                       toast.dismiss(id)
-                      toast.info('跳转到评论页面...')
+                      toast.info(t('debug.toast.comment.jump'))
                     },
                   },
-                  description: '张三: 这篇文章写得太好了，学到了很多！',
+                  description: t('debug.toast.comment.description'),
                   duration: 10000,
                 })
               }}
               variant="subtle"
             >
-              模拟新评论
+              {t('debug.toast.comment.trigger')}
             </Button>
           </ToastSection>
 
           <ToastSection
-            description={'收到友链申请，点击"查看"跳转到友链管理'}
-            title="友链申请"
+            description={t('debug.toast.friend.sectionDescription')}
+            title={t('debug.toast.friend.title')}
           >
             <Button
               onClick={() => {
-                const id = toast.success('新的友链申请', {
+                const id = toast.success(t('debug.toast.friend.new'), {
                   action: {
-                    label: '查看',
+                    label: t('debug.toast.friend.view'),
                     onClick: () => {
                       toast.dismiss(id)
-                      toast.info('跳转到友链管理...')
+                      toast.info(t('debug.toast.friend.jump'))
                     },
                   },
-                  description: 'example.com - 一个有趣的技术博客',
+                  description: t('debug.toast.friend.description'),
                   duration: 10000,
                 })
               }}
               variant="subtle"
             >
-              模拟友链申请
+              {t('debug.toast.friend.trigger')}
             </Button>
           </ToastSection>
 
-          <ToastSection description="检测到新版本提醒" title="版本更新">
+          <ToastSection
+            description={t('debug.toast.update.sectionDescription')}
+            title={t('debug.toast.update.title')}
+          >
             <Button
               onClick={() => {
-                toast.info('管理后台有新版本可用', {
+                toast.info(t('debug.toast.update.new'), {
                   action: {
-                    label: '更新',
-                    onClick: () => toast.success('开始更新...'),
+                    label: t('debug.toast.update.action'),
+                    onClick: () =>
+                      toast.success(t('debug.toast.update.starting')),
                   },
-                  description: 'v5.1.0 to v5.2.0',
+                  description: t('debug.toast.update.description'),
                   duration: 15000,
                 })
               }}
               variant="subtle"
             >
-              模拟版本更新
+              {t('debug.toast.update.trigger')}
             </Button>
           </ToastSection>
 
-          <ToastSection description="删除后提供撤销功能" title="撤销操作">
+          <ToastSection
+            description={t('debug.toast.delete.sectionDescription')}
+            title={t('debug.toast.delete.title')}
+          >
             <Button
               onClick={() => {
-                toast.success('文件已删除', {
+                toast.success(t('debug.toast.delete.fileDeleted'), {
                   action: {
-                    label: '撤销',
-                    onClick: () => toast.success('已恢复文件'),
+                    label: t('debug.toast.delete.undo'),
+                    onClick: () =>
+                      toast.success(t('debug.toast.delete.fileRestored')),
                   },
                   description: 'image-2024-01-15.png',
                   duration: 8000,
@@ -184,79 +207,81 @@ export function ToastDebugRouteViewContent() {
               }}
               variant="subtle"
             >
-              删除 + 撤销
+              {t('debug.toast.delete.trigger')}
             </Button>
           </ToastSection>
 
-          <ToastSection title="错误重试">
+          <ToastSection title={t('debug.toast.retry.title')}>
             <Button
               onClick={() => {
-                toast.error('保存失败', {
+                toast.error(t('debug.toast.action.saveFailed'), {
                   action: {
-                    label: '重试',
-                    onClick: () => toast.info('正在重试...'),
+                    label: t('debug.toast.retry.action'),
+                    onClick: () => toast.info(t('debug.toast.retry.retrying')),
                   },
-                  description: '服务器返回错误：500 Internal Server Error',
+                  description: t('debug.toast.retry.description'),
                   duration: 10000,
                 })
               }}
               variant="subtle"
             >
-              服务器错误 + 重试
+              {t('debug.toast.retry.trigger')}
             </Button>
           </ToastSection>
         </Panel>
 
-        <Panel title="常见业务场景">
-          <ToastSection title="表单提交">
+        <Panel title={t('debug.toast.business.title')}>
+          <ToastSection title={t('debug.toast.business.formTitle')}>
             <Button
               onClick={async () => {
-                const id = toast.loading('提交中...')
+                const id = toast.loading(t('debug.toast.business.submitting'))
                 await wait(1500)
                 toast.dismiss(id)
-                toast.success('提交成功')
+                toast.success(t('debug.toast.business.submitSuccess'))
               }}
             >
-              模拟表单提交
+              {t('debug.toast.business.formSubmit')}
             </Button>
           </ToastSection>
 
-          <ToastSection title="批量操作">
+          <ToastSection title={t('debug.toast.business.batchTitle')}>
             <Button
               onClick={async () => {
-                const id = toast.loading('正在删除 5 篇文章...')
+                const id = toast.loading(t('debug.toast.business.deleting'))
                 await wait(1500)
                 toast.dismiss(id)
-                toast.success('批量删除完成', {
+                toast.success(t('debug.toast.business.deletedDone'), {
                   action: {
-                    label: '撤销',
-                    onClick: () => toast.success('已撤销删除'),
+                    label: t('debug.toast.delete.undo'),
+                    onClick: () =>
+                      toast.success(t('debug.toast.business.undoBatch')),
                   },
-                  description: '已删除 5 篇文章',
+                  description: t('debug.toast.business.deleted'),
                   duration: 10000,
                 })
               }}
               variant="subtle"
             >
-              批量删除文章
+              {t('debug.toast.business.batchTrigger')}
             </Button>
           </ToastSection>
 
-          <ToastSection title="数据同步">
+          <ToastSection title={t('debug.toast.business.syncTitle')}>
             <Button
               onClick={() => {
-                toast.warning('数据库有变动', {
+                toast.warning(t('debug.toast.business.syncWarning'), {
                   action: {
-                    label: '刷新',
-                    onClick: () => toast.info('页面刷新中...'),
+                    label: t('debug.toast.business.refresh'),
+                    onClick: () =>
+                      toast.info(t('debug.toast.business.refreshing')),
                   },
-                  description: '检测到数据更新，建议刷新页面',
+                  description: t('debug.toast.business.syncDescription'),
                   duration: 10000,
                 })
               }}
               variant="subtle"
             >
-              数据同步提醒
+              {t('debug.toast.business.syncTrigger')}
             </Button>
           </ToastSection>
         </Panel>

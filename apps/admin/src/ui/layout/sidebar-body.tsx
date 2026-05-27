@@ -233,7 +233,7 @@ export function SidebarBody() {
                     type="button"
                   >
                     <Settings aria-hidden="true" className="size-4" />
-                    账户设置
+                    {t('ui.layout.accountSettings')}
                   </button>
                   <a
                     className="flex h-8 w-full items-center gap-2 rounded px-2 text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-950 dark:text-neutral-300 dark:hover:bg-neutral-900 dark:hover:text-neutral-50"

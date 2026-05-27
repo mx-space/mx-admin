@@ -1,4 +1,6 @@
+import type { TranslationKey } from '~/i18n/types'
+
 export interface ScopeOption {
-  label: string
+  labelKey: TranslationKey
   value: number
 }

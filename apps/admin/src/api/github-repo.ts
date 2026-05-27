@@ -1,3 +1,5 @@
+import { translate } from '../i18n/translate'
+
 const endpoint = 'https://api.github.com/'
 
 export interface GithubRepo {
@@ -13,7 +15,7 @@ interface GithubReadme {
 
 export async function getRepoDetail(owner: string, repo: string) {
   const response = await fetch(`${endpoint}repos/${owner}/${repo}`)
-  if (!response.ok) throw new Error('获取 GitHub 仓库信息失败')
+  if (!response.ok) throw new Error(translate('api.error.githubRepo'))
 
   return response.json() as Promise<GithubRepo>
 }

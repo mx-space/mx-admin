@@ -3,6 +3,7 @@ import type { CronTask } from '~/api/cron-tasks'
 
 import { CronTaskStatus } from '~/api/cron-tasks'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
 import { cn } from '~/utils/cn'
@@ -10,7 +11,7 @@ import { cn } from '~/utils/cn'
 import {
   taskStatusIconClassNames,
   taskStatusIcons,
-  taskTypeLabels,
+  taskTypeLabelKeys,
 } from '../constants'
 import { formatDateTime } from '../utils/cron'
 import {
@@ -27,6 +28,7 @@ export function TaskDetail(props: {
   onRetry: () => void
   task: CronTask
 }) {
+  const { t } = useI18n()
   const task = props.task
   const Icon = taskStatusIcons[task.status]
   const canCancel =
@@ -69,10 +71,12 @@ export function TaskDetail(props: {
             />
             <div className="min-w-0">
               <h2 className="truncate text-base font-semibold text-neutral-950 dark:text-neutral-50">
-                {taskTypeLabels[task.type] || task.type}
+                {taskTypeLabelKeys[task.type]
+                  ? t(taskTypeLabelKeys[task.type])
+                  : task.type}
               </h2>
               <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
-                {task.progressMessage || '计划任务'}
+                {task.progressMessage || t('cron.detail.fallbackMessage')}
               </p>
             </div>
           </div>
@@ -81,7 +85,7 @@ export function TaskDetail(props: {
           <StatusBadge status={task.status} />
           {task.retryCount > 0 ? (
             <span className="rounded border border-amber-200 bg-amber-50 px-2 py-1 text-xs text-amber-700 dark:border-amber-900 dark:bg-amber-950/50 dark:text-amber-300">
-              重试 {task.retryCount}
+              {t('cron.detail.retryBadge', { count: task.retryCount })}
             </span>
           ) : null}
         </div>
@@ -117,13 +121,13 @@ export function TaskDetail(props: {
                 variant="subtle"
               >
                 <XCircle aria-hidden="true" className="size-4" />
-                终止任务
+                {t('cron.detail.cancel')}
               </Button>
             ) : null}
             {canRetry ? (
               <Button onClick={props.onRetry} type="button" variant="subtle">
                 <RotateCcw aria-hidden="true" className="size-4" />
-                重试任务
+                {t('cron.detail.retry')}
               </Button>
             ) : null}
             {canDelete ? (
@@ -134,7 +138,7 @@ export function TaskDetail(props: {
                 variant="subtle"
               >
                 <Trash2 aria-hidden="true" className="size-4" />
-                删除任务
+                {t('cron.detail.delete')}
               </Button>
             ) : null}
           </div>
@@ -144,13 +148,13 @@ export function TaskDetail(props: {
       <Scroll className="flex-1" innerClassName="px-5 py-4">
         {task.error ? (
           <div className="mb-4 rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/50 dark:text-red-300">
-            <span className="font-medium">错误：</span>
+            <span className="font-medium">{t('cron.detail.error')}</span>
             {task.error}
           </div>
         ) : null}
 
         {task.result ? (
-          <DetailSection title="结果">
+          <DetailSection title={t('cron.detail.result')}>
             <Scroll
               className="rounded bg-neutral-100 dark:bg-neutral-900"
               orientation="both"
@@ -165,7 +169,7 @@ export function TaskDetail(props: {
         <DetailSection
           title={
             <>
-              日志
+              {t('cron.detail.logs')}
               <span className="ml-1 tabular-nums text-neutral-500">
                 ({task.logs.length})
               </span>
@@ -174,7 +178,7 @@ export function TaskDetail(props: {
         >
           {task.logs.length === 0 ? (
             <div className="rounded bg-neutral-50 px-3 py-6 text-center text-sm text-neutral-500 dark:bg-neutral-900">
-              暂无日志
+              {t('cron.detail.logsEmpty')}
             </div>
           ) : (
             <Scroll
@@ -190,26 +194,29 @@ export function TaskDetail(props: {
           )}
         </DetailSection>
 
-        <DetailSection title="元数据">
+        <DetailSection title={t('cron.detail.metadata')}>
           <dl className="grid gap-2 text-xs">
-            <MetadataRow label="任务 ID" value={task.id} />
-            <MetadataRow label="类型" value={task.type} />
+            <MetadataRow label={t('cron.detail.meta.id')} value={task.id} />
+            <MetadataRow label={t('cron.detail.meta.type')} value={task.type} />
             {task.workerId ? (
-              <MetadataRow label="Worker" value={task.workerId} />
+              <MetadataRow
+                label={t('cron.detail.meta.worker')}
+                value={task.workerId}
+              />
             ) : null}
             <MetadataRow
-              label="创建于"
+              label={t('cron.detail.meta.createdAt')}
               value={formatDateTime(task.createdAt)}
             />
             {task.startedAt ? (
               <MetadataRow
-                label="开始于"
+                label={t('cron.detail.meta.startedAt')}
                 value={formatDateTime(task.startedAt)}
               />
             ) : null}
             {task.completedAt ? (
               <MetadataRow
-                label="完成于"
+                label={t('cron.detail.meta.completedAt')}
                 value={formatDateTime(task.completedAt)}
               />
             ) : null}

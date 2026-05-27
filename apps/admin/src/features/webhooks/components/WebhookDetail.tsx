@@ -12,6 +12,7 @@ import { useState } from 'react'
 import type { WebhookModel } from '~/api/webhooks'
 
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
 import { cn } from '~/utils/cn'
@@ -27,6 +28,7 @@ export function WebhookDetail(props: {
   showBack: boolean
   webhook: WebhookModel
 }) {
+  const { t } = useI18n()
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)
   const targetUrl = props.webhook.payloadUrl || props.webhook.url
 
@@ -41,7 +43,7 @@ export function WebhookDetail(props: {
         <div className="flex min-w-0 items-center gap-2">
           {props.showBack ? (
             <Button
-              aria-label="返回 Webhook 列表"
+              aria-label={t('webhooks.detail.backAria')}
               className="h-8 px-2 lg:hidden"
               onClick={props.onBack}
               type="button"
@@ -51,7 +53,7 @@ export function WebhookDetail(props: {
             </Button>
           ) : null}
           <h2 className="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
-            Webhook 详情
+            {t('webhooks.detail.title')}
           </h2>
         </div>
 
@@ -63,7 +65,7 @@ export function WebhookDetail(props: {
             variant="subtle"
           >
             <Pencil aria-hidden="true" className="size-3.5" />
-            编辑
+            {t('webhooks.detail.edit')}
           </Button>
           <Button
             className="h-8 px-2 text-red-600 dark:text-red-400"
@@ -80,7 +82,9 @@ export function WebhookDetail(props: {
             variant="subtle"
           >
             <Trash2 aria-hidden="true" className="size-3.5" />
-            {isConfirmingDelete ? '确认' : '删除'}
+            {isConfirmingDelete
+              ? t('webhooks.detail.confirm')
+              : t('webhooks.detail.delete')}
           </Button>
         </div>
       </div>
@@ -118,9 +122,11 @@ export function WebhookDetail(props: {
               </div>
               <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400">
                 <span className="rounded-full bg-neutral-100 px-2 py-0.5 text-xs dark:bg-neutral-800">
-                  {props.webhook.enabled ? '已启用' : '已禁用'}
+                  {props.webhook.enabled
+                    ? t('webhooks.detail.enabled')
+                    : t('webhooks.detail.disabled')}
                 </span>
-                <span>{getScopeText(props.webhook.scope)}</span>
+                <span>{getScopeText(props.webhook.scope, t)}</span>
               </div>
             </div>
           </div>
@@ -128,19 +134,25 @@ export function WebhookDetail(props: {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <InfoCard
               icon={Globe}
-              label="触发范围"
-              value={getScopeText(props.webhook.scope)}
+              label={t('webhooks.detail.scope')}
+              value={getScopeText(props.webhook.scope, t)}
             />
             <InfoCard
               icon={Shield}
-              label="Secret"
-              value={props.webhook.secret ? '已配置' : '未配置'}
+              label={t('webhooks.detail.secret')}
+              value={
+                props.webhook.secret
+                  ? t('webhooks.detail.secretConfigured')
+                  : t('webhooks.detail.secretNone')
+              }
             />
           </div>
 
           <div className="space-y-3">
             <h3 className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
-              触发事件 ({props.webhook.events.length})
+              {t('webhooks.detail.eventsCount', {
+                count: props.webhook.events.length,
+              })}
             </h3>
             <div className="flex flex-wrap gap-2">
               {props.webhook.events.map((event) => (
@@ -151,7 +163,7 @@ export function WebhookDetail(props: {
 
           <div className="space-y-3">
             <h3 className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
-              发送测试
+              {t('webhooks.detail.testTitle')}
             </h3>
             <div className="flex flex-wrap gap-2">
               {props.webhook.events.map((event) => (

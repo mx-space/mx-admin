@@ -1,5 +1,8 @@
+import type { TranslationKey } from '~/i18n/types'
 import type { EnrichmentCaptureQuota } from '~/models/enrichment'
 import type { EnrichmentSource } from '../types/enrichment'
+
+type Translator = (key: TranslationKey) => string
 
 export function isEnrichmentSource(value: unknown): value is EnrichmentSource {
   return value === 'cache' || value === 'probe' || value === 'screenshots'
@@ -16,10 +19,12 @@ export function formatBytes(bytes: number | null | undefined) {
 
 export function getRecaptureDisabledReason(
   quota: EnrichmentCaptureQuota | null,
+  t: Translator,
 ) {
-  if (!quota) return '配额信息加载中'
-  if (!quota.enabled) return '截图功能未启用'
-  if (quota.fetchMode !== 'browser') return '当前抓取模式不支持重新截图'
+  if (!quota) return t('enrichment.quota.loading')
+  if (!quota.enabled) return t('enrichment.quota.disabled')
+  if (quota.fetchMode !== 'browser')
+    return t('enrichment.quota.modeUnsupported')
   return null
 }
 

@@ -7,6 +7,7 @@ import { toast } from 'sonner'
 import { FitAddon } from '@xterm/addon-fit'
 import { Terminal } from '@xterm/xterm'
 
+import { useI18n } from '~/i18n'
 import { cn } from '~/utils/cn'
 
 import '@xterm/xterm/css/xterm.css'
@@ -26,6 +27,7 @@ export function TerminalOutputDialog({
   title,
   url,
 }: TerminalOutputDialogProps) {
+  const { t } = useI18n()
   const containerRef = useRef<HTMLDivElement | null>(null)
   const terminalRef = useRef<Terminal | null>(null)
   const fitAddonRef = useRef<FitAddon | null>(null)
@@ -121,7 +123,9 @@ export function TerminalOutputDialog({
                       className="size-3 animate-spin"
                     />
                   ) : null}
-                  {connecting ? '连接中' : '运行中'}
+                  {connecting
+                    ? t('snippets.dialog.terminal.connecting')
+                    : t('snippets.dialog.terminal.running')}
                 </span>
               ) : null}
               <Dialog.Close className="inline-flex size-8 items-center justify-center rounded text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-neutral-900 dark:hover:text-neutral-100">
@@ -136,10 +140,12 @@ export function TerminalOutputDialog({
             )}
           >
             {connecting ? (
-              <span className="text-xs text-neutral-400">正在准备终端...</span>
+              <span className="text-xs text-neutral-400">
+                {t('snippets.dialog.terminal.preparing')}
+              </span>
             ) : null}
             <div
-              aria-label="终端输出"
+              aria-label={t('snippets.dialog.terminal.outputAria')}
               className={cn('h-full w-full', connecting && 'hidden')}
               ref={containerRef}
             />

@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import type { ImportFunctionPreview } from '../types/snippets'
 
 import { importSnippets } from '~/api/snippets'
+import { useI18n } from '~/i18n'
 import { SnippetType } from '~/models/snippet'
 import { Button } from '~/ui/primitives/button'
 import { TextInput } from '~/ui/primitives/text-field'
@@ -21,6 +22,7 @@ export function ImportSnippetModal(props: {
   onImported: (packages: string[]) => void
   open: boolean
 }) {
+  const { t } = useI18n()
   const [name, setName] = useState('')
   const [processName, setProcessName] = useState('')
   const [functions, setFunctions] = useState<ImportFunctionPreview[]>([])
@@ -43,7 +45,7 @@ export function ImportSnippetModal(props: {
 
   const previewQuery = useQuery({
     enabled: props.open && Boolean(processName),
-    queryFn: () => loadSnippetPackage(processName),
+    queryFn: () => loadSnippetPackage(processName, t),
     queryKey: ['github-snippet-package', processName],
   })
 
@@ -66,9 +68,9 @@ export function ImportSnippetModal(props: {
         })),
       }),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '导入失败')),
+      toast.error(getErrorMessage(error, t('snippets.toast.importFailed'))),
     onSuccess: () => {
-      toast.success('导入成功')
+      toast.success(t('snippets.toast.importSuccess'))
       props.onImported(dependencies)
       props.onClose()
     },
@@ -77,17 +79,21 @@ export function ImportSnippetModal(props: {
   const startProcess = () => {
     const nextName = name.trim()
     if (!nextName) {
-      toast.error('请输入包名')
+      toast.error(t('snippets.toast.packageNameRequired'))
       return
     }
     setProcessName(nextName)
   }
 
   return (
-    <Modal onClose={props.onClose} open={props.open} title="导入 Snippets">
+    <Modal
+      onClose={props.onClose}
+      open={props.open}
+      title={t('snippets.dialog.import.title')}
+    >
       <div className="space-y-5">
         <div className="grid gap-3">
-          <Field label="包名">
+          <Field label={t('snippets.dialog.import.fieldName')}>
             <TextInput
               onChange={setName}
               onKeyDown={(event) => {
@@ -96,23 +102,25 @@ export function ImportSnippetModal(props: {
                   startProcess()
                 }
               }}
-              placeholder="支持 mx-space/snippets 下的集合包，例如 kami"
+              placeholder={t('snippets.dialog.import.placeholder')}
               value={name}
             />
           </Field>
           <div className="flex justify-end">
             <Button onClick={startProcess} type="button">
               <Download aria-hidden="true" className="size-4" />
-              处理
+              {t('snippets.dialog.import.process')}
             </Button>
           </div>
         </div>
 
         <div>
-          <h3 className="text-sm font-medium">可获取的扩展包</h3>
+          <h3 className="text-sm font-medium">
+            {t('snippets.dialog.import.available')}
+          </h3>
           <div className="mt-2 min-h-10">
             {availableQuery.isLoading ? (
-              <InlineLoading label="正在从 GitHub 获取" />
+              <InlineLoading label={t('snippets.dialog.import.fetching')} />
             ) : availableQuery.data?.length ? (
               <div className="flex flex-wrap gap-2">
                 {availableQuery.data.map((item) => (
@@ -144,7 +152,9 @@ export function ImportSnippetModal(props: {
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-neutral-500">暂无可用包。</p>
+              <p className="text-sm text-neutral-500">
+                {t('snippets.dialog.import.noAvailable')}
+              </p>
             )}
           </div>
         </div>
@@ -152,20 +162,25 @@ export function ImportSnippetModal(props: {
         {processName ? (
           <div className="rounded border border-neutral-200 dark:border-neutral-800">
             <div className="border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
-              <h3 className="text-sm font-medium">解析结果：{processName}</h3>
+              <h3 className="text-sm font-medium">
+                {t('snippets.dialog.import.resultTitle', { name: processName })}
+              </h3>
             </div>
             <div className="space-y-4 p-4">
               {previewQuery.isLoading ? (
-                <InlineLoading label="正在解析扩展包" />
+                <InlineLoading label={t('snippets.dialog.import.parsing')} />
               ) : previewQuery.isError ? (
                 <p className="text-sm text-red-600">
-                  {getErrorMessage(previewQuery.error, '解析失败')}
+                  {getErrorMessage(
+                    previewQuery.error,
+                    t('snippets.dialog.import.parseFailed'),
+                  )}
                 </p>
               ) : (
                 <>
                   <PreviewTagList
                     items={functions}
-                    label="将导入的函数"
+                    label={t('snippets.dialog.import.functions')}
                     onRemove={(index) =>
                       setFunctions((current) =>
                         current.filter((_, itemIndex) => itemIndex !== index),
@@ -175,7 +190,7 @@ export function ImportSnippetModal(props: {
                   />
                   <PreviewTagList
                     items={dependencies}
-                    label="将安装的依赖"
+                    label={t('snippets.dialog.import.dependencies')}
                     onRemove={(index) =>
                       setDependencies((current) =>
                         current.filter((_, itemIndex) => itemIndex !== index),
@@ -199,7 +214,7 @@ export function ImportSnippetModal(props: {
                       ) : (
                         <Import aria-hidden="true" className="size-4" />
                       )}
-                      导入
+                      {t('snippets.dialog.import.submit')}
                     </Button>
                   </div>
                 </>
@@ -218,6 +233,7 @@ function PreviewTagList<TItem>(props: {
   onRemove: (index: number) => void
   render: (item: TItem) => string
 }) {
+  const { t } = useI18n()
   return (
     <div>
       <h4 className="text-xs font-medium text-neutral-500 dark:text-neutral-400">
@@ -225,7 +241,9 @@ function PreviewTagList<TItem>(props: {
       </h4>
       <div className="mt-2 flex flex-wrap gap-2">
         {props.items.length === 0 ? (
-          <span className="text-sm text-neutral-400">无</span>
+          <span className="text-sm text-neutral-400">
+            {t('snippets.dialog.import.none')}
+          </span>
         ) : (
           props.items.map((item, index) => (
             <span

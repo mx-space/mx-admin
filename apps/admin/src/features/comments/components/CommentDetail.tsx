@@ -18,6 +18,7 @@ import type { LocalReply } from '../types/comments'
 import { getOwner } from '~/api/options'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
 import { IpInfoPopover } from '~/features/_shared/components/ip-info-popover'
+import { useI18n } from '~/i18n'
 import { CommentState } from '~/models/comment'
 import { Button } from '~/ui/primitives/button'
 import { MarkdownRender } from '~/ui/primitives/markdown-render'
@@ -46,6 +47,7 @@ export function CommentDetail(props: {
   onStateChange: (id: string, state: CommentState) => void
   replyPending: boolean
 }) {
+  const { t } = useI18n()
   const [reply, setReply] = useState('')
   const [localReplies, setLocalReplies] = useState<LocalReply[]>([])
   const replyInputRef = useRef<HTMLTextAreaElement | null>(null)
@@ -55,7 +57,7 @@ export function CommentDetail(props: {
     staleTime: 5 * 60 * 1000,
   })
   const commentText = props.comment.isDeleted
-    ? '该评论已删除'
+    ? t('comments.deletedPlaceholder')
     : props.comment.text
   const refLink = getReferenceLink(props.comment)
   const device = getDeviceInfo(props.comment.agent)
@@ -63,7 +65,7 @@ export function CommentDetail(props: {
     ownerQuery.data?.name ||
     ownerQuery.data?.username ||
     ownerQuery.data?.handle ||
-    '我'
+    t('comments.owner.fallback')
 
   useEffect(() => {
     setReply('')
@@ -128,7 +130,7 @@ export function CommentDetail(props: {
       >
         <div className="flex min-w-0 items-center gap-2">
           <Button
-            aria-label="返回评论列表"
+            aria-label={t('comments.action.backToList')}
             className="h-8 px-2 lg:hidden"
             onClick={props.onBack}
             type="button"
@@ -137,7 +139,7 @@ export function CommentDetail(props: {
             <ChevronRight aria-hidden="true" className="size-4 rotate-180" />
           </Button>
           <h2 className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
-            评论详情
+            {t('comments.detail.title')}
           </h2>
         </div>
         <div className="flex gap-2">
@@ -151,7 +153,7 @@ export function CommentDetail(props: {
             variant="subtle"
           >
             <CheckCheck aria-hidden="true" className="size-3.5" />
-            已读
+            {t('comments.action.markRead')}
           </Button>
           <Button
             className="h-8 px-2"
@@ -163,7 +165,7 @@ export function CommentDetail(props: {
             variant="subtle"
           >
             <ShieldAlert aria-hidden="true" className="size-3.5" />
-            垃圾
+            {t('comments.action.markJunk')}
           </Button>
           <Button
             className="h-8 px-2 text-red-600 dark:text-red-400"
@@ -172,7 +174,7 @@ export function CommentDetail(props: {
             variant="subtle"
           >
             <Trash2 aria-hidden="true" className="size-3.5" />
-            删除
+            {t('common.delete')}
           </Button>
         </div>
       </div>
@@ -182,10 +184,12 @@ export function CommentDetail(props: {
           {props.comment.parent ? (
             <div className="border-l-2 border-neutral-200 pl-4 text-sm text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
               <div className="mb-1 font-medium text-neutral-700 dark:text-neutral-300">
-                @{props.comment.parent.author || '上级评论'}
+                @{props.comment.parent.author || t('comments.parentFallback')}
               </div>
               {props.comment.parent.isDeleted ? (
-                <p className="line-clamp-2 whitespace-pre-wrap">该评论已删除</p>
+                <p className="line-clamp-2 whitespace-pre-wrap">
+                  {t('comments.deletedPlaceholder')}
+                </p>
               ) : (
                 <MarkdownRender
                   className="line-clamp-2 text-sm text-neutral-600 dark:text-neutral-400"
@@ -200,11 +204,11 @@ export function CommentDetail(props: {
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="font-semibold text-neutral-900 dark:text-neutral-100">
-                  {props.comment.author || '匿名'}
+                  {props.comment.author || t('comments.anonymous')}
                 </span>
                 {props.comment.isWhispers ? (
                   <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">
-                    悄悄话
+                    {t('comments.whispers')}
                   </span>
                 ) : null}
               </div>
@@ -237,7 +241,7 @@ export function CommentDetail(props: {
               rel="noreferrer"
               target="_blank"
             >
-              <span className="text-neutral-400">来源</span>
+              <span className="text-neutral-400">{t('comments.source')}</span>
               <span className="truncate font-medium">
                 {props.comment.ref.title}
               </span>
@@ -246,14 +250,14 @@ export function CommentDetail(props: {
           ) : null}
 
           <dl className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2 xl:grid-cols-3">
-            <MetaItem label="IP 地址">
+            <MetaItem label={t('comments.meta.ip')}>
               {props.comment.ip ? (
                 <IpInfoPopover ip={props.comment.ip} />
               ) : (
-                '未知'
+                t('comments.meta.unknown')
               )}
             </MetaItem>
-            <MetaItem label="访问设备">
+            <MetaItem label={t('comments.meta.device')}>
               <span className="inline-flex min-w-0 items-center gap-1.5">
                 {device.isMobile ? (
                   <Smartphone
@@ -272,7 +276,7 @@ export function CommentDetail(props: {
               </span>
             </MetaItem>
             {props.comment.mail ? (
-              <MetaItem label="电子邮箱">
+              <MetaItem label={t('comments.meta.email')}>
                 <a
                   className="inline-flex min-w-0 items-center gap-1.5 hover:underline"
                   href={`mailto:${props.comment.mail}`}
@@ -286,7 +290,7 @@ export function CommentDetail(props: {
               </MetaItem>
             ) : null}
             {props.comment.url ? (
-              <MetaItem label="站点地址">
+              <MetaItem label={t('comments.meta.website')}>
                 <a
                   className="inline-flex min-w-0 items-center gap-1.5 hover:underline"
                   href={props.comment.url}
@@ -306,7 +310,7 @@ export function CommentDetail(props: {
           {localReplies.length > 0 ? (
             <div className="space-y-4 border-t border-neutral-100 pt-6 dark:border-neutral-800">
               <h3 className="text-xs font-medium uppercase text-neutral-500 dark:text-neutral-400">
-                新增回复
+                {t('comments.replies.newAdded')}
               </h3>
               {localReplies.map((item) => (
                 <div className="flex gap-3" key={item.id}>
@@ -349,7 +353,7 @@ export function CommentDetail(props: {
                 controlClassName="min-h-20 resize-y border-0 focus:border-transparent focus:ring-0 dark:border-0"
                 onChange={setReply}
                 onKeyDown={handleReplyKeyDown}
-                placeholder="写下你的回复..."
+                placeholder={t('comments.reply.placeholder')}
                 ref={replyInputRef}
                 value={reply}
               />
@@ -357,14 +361,14 @@ export function CommentDetail(props: {
                 <EmojiPopover onSelect={insertEmoji} />
                 <div className="flex items-center gap-3">
                   <span className="hidden text-xs text-neutral-400 sm:block">
-                    ⌘/Ctrl + Enter 发送
+                    {t('comments.reply.shortcutHint')}
                   </span>
                   <Button
                     disabled={!reply.trim() || props.replyPending}
                     type="submit"
                   >
                     <Send aria-hidden="true" className="size-4" />
-                    发送回复
+                    {t('comments.reply.submit')}
                   </Button>
                 </div>
               </div>

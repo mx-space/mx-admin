@@ -8,6 +8,7 @@ import type { ProjectFormMode, ProjectFormState } from '../types/projects'
 
 import { createProject, updateProject } from '~/api/projects'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
 import { TextArea, TextInput } from '~/ui/primitives/text-field'
@@ -29,6 +30,7 @@ export function ProjectFormPanel(props: {
   onSuccess: (project: ProjectModel) => Promise<void>
   project: ProjectModel | null
 }) {
+  const { t } = useI18n()
   const [form, setForm] = useState<ProjectFormState>(() =>
     props.project ? projectToForm(props.project) : emptyProjectForm,
   )
@@ -44,7 +46,11 @@ export function ProjectFormPanel(props: {
       return createProject(payload)
     },
     onSuccess: async (project) => {
-      toast.success(isEdit ? '保存成功' : '创建成功')
+      toast.success(
+        isEdit
+          ? t('projects.form.toast.saved')
+          : t('projects.form.toast.created'),
+      )
       await props.onSuccess(project)
     },
   })
@@ -78,11 +84,11 @@ export function ProjectFormPanel(props: {
     event.preventDefault()
 
     if (!form.name.trim()) {
-      setError('项目名称不能为空')
+      setError(t('projects.form.validate.name'))
       return
     }
     if (!form.text.trim()) {
-      setError('项目内容不能为空')
+      setError(t('projects.form.validate.text'))
       return
     }
 
@@ -100,7 +106,7 @@ export function ProjectFormPanel(props: {
       >
         <div className="flex min-w-0 items-center gap-2">
           <Button
-            aria-label="返回项目列表"
+            aria-label={t('projects.form.returnAria')}
             className="h-8 px-2 lg:hidden"
             onClick={props.onMobileBack}
             type="button"
@@ -109,7 +115,9 @@ export function ProjectFormPanel(props: {
             <ArrowLeft aria-hidden="true" className="size-4" />
           </Button>
           <h2 className="text-sm font-medium text-neutral-950 dark:text-neutral-50">
-            {isEdit ? '编辑项目' : '新建项目'}
+            {isEdit
+              ? t('projects.form.editTitle')
+              : t('projects.form.createTitle')}
           </h2>
         </div>
         <div className="flex shrink-0 items-center gap-2">
@@ -118,11 +126,12 @@ export function ProjectFormPanel(props: {
             type="button"
             variant="subtle"
           >
-            <ImportIcon aria-hidden="true" className="size-4" />从 GitHub 获取
+            <ImportIcon aria-hidden="true" className="size-4" />
+            {t('projects.form.fromGithub')}
           </Button>
           <Button onClick={props.onCancel} type="button" variant="subtle">
             <X aria-hidden="true" className="size-4" />
-            取消
+            {t('common.cancel')}
           </Button>
           <Button
             disabled={mutation.isPending}
@@ -130,7 +139,7 @@ export function ProjectFormPanel(props: {
             type="submit"
           >
             <Save aria-hidden="true" className="size-4" />
-            {isEdit ? '保存' : '创建'}
+            {isEdit ? t('common.save') : t('projects.form.create')}
           </Button>
         </div>
       </div>
@@ -146,50 +155,50 @@ export function ProjectFormPanel(props: {
             ) : null}
             <div className="grid gap-4 md:grid-cols-2">
               <TextInput
-                label="项目名称"
+                label={t('projects.form.field.name')}
                 onChange={(value) => updateField('name', value)}
                 required
                 value={form.name}
               />
               <TextInput
-                label="头像 URL"
+                label={t('projects.form.field.avatar')}
                 onChange={(value) => updateField('avatar', value)}
                 value={form.avatar ?? ''}
               />
             </div>
             <TextInput
-              label="描述"
+              label={t('projects.form.field.description')}
               onChange={(value) => updateField('description', value)}
               value={form.description}
             />
             <div className="grid gap-4 md:grid-cols-3">
               <TextInput
-                label="项目 URL"
+                label={t('projects.form.field.projectUrl')}
                 onChange={(value) => updateField('projectUrl', value)}
                 value={form.projectUrl ?? ''}
               />
               <TextInput
-                label="预览 URL"
+                label={t('projects.form.field.previewUrl')}
                 onChange={(value) => updateField('previewUrl', value)}
                 value={form.previewUrl ?? ''}
               />
               <TextInput
-                label="文档 URL"
+                label={t('projects.form.field.docUrl')}
                 onChange={(value) => updateField('docUrl', value)}
                 value={form.docUrl ?? ''}
               />
             </div>
             <TextArea
               controlClassName="min-h-20"
-              label="图片 URL"
+              label={t('projects.form.field.images')}
               onChange={(value) => updateField('imagesText', value)}
-              placeholder="一行一个图片 URL"
+              placeholder={t('projects.form.field.imagesPlaceholder')}
               value={form.imagesText}
             />
             <ImagePreview imagesText={form.imagesText} />
             <TextArea
               controlClassName="min-h-72 font-mono"
-              label="内容"
+              label={t('projects.form.field.text')}
               onChange={(value) => updateField('text', value)}
               required
               value={form.text}

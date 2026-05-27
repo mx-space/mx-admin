@@ -1,5 +1,6 @@
 import type { SearchDocumentAdminRow } from '~/api/search-index'
 
+import { useI18n } from '~/i18n'
 import { cn } from '~/utils/cn'
 
 import { formatRelativeDate } from '../utils/format'
@@ -11,6 +12,7 @@ export function SearchIndexRow(props: {
   row: SearchDocumentAdminRow
   selected: boolean
 }) {
+  const { t } = useI18n()
   const row = props.row
 
   return (
@@ -29,19 +31,30 @@ export function SearchIndexRow(props: {
           <RefTypeBadge refType={row.refType} />
           {row.lang ? <SmallBadge>{row.lang}</SmallBadge> : null}
           {!row.isPublished ? (
-            <SmallBadge tone="warning">未发布</SmallBadge>
+            <SmallBadge tone="warning">
+              {t('searchIndex.row.unpublished')}
+            </SmallBadge>
           ) : null}
-          {row.hasPassword ? <SmallBadge>密码</SmallBadge> : null}
+          {row.hasPassword ? (
+            <SmallBadge>{t('searchIndex.row.password')}</SmallBadge>
+          ) : null}
         </div>
         <h3 className="truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
-          {row.title || <span className="text-neutral-400">(无标题)</span>}
+          {row.title || (
+            <span className="text-neutral-400">
+              {t('searchIndex.row.untitled')}
+            </span>
+          )}
         </h3>
         <div className="text-xs tabular-nums text-neutral-400">
-          title {row.titleLength} · body {row.bodyLength}
+          {t('searchIndex.row.titleBodySummary', {
+            bodyLen: row.bodyLength,
+            titleLen: row.titleLength,
+          })}
         </div>
       </div>
       <div className="shrink-0 text-xs text-neutral-500 dark:text-neutral-400">
-        {formatRelativeDate(row.modifiedAt)}
+        {formatRelativeDate(row.modifiedAt, t)}
       </div>
     </button>
   )

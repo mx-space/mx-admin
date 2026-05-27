@@ -1,4 +1,5 @@
 import type { ConfigFormGroup } from '~/api/options'
+import type { TranslationKey } from '~/i18n/types'
 import type { LucideIcon } from 'lucide-react'
 
 export type AIProviderType =
@@ -76,11 +77,13 @@ export interface FlatOauthProvider {
 }
 
 export interface SettingsGroupSummary {
-  description: string
+  description?: string
+  descriptionKey?: TranslationKey
   icon: LucideIcon
   key: string
   systemGroup?: ConfigFormGroup
-  title: string
+  title?: string
+  titleKey?: TranslationKey
   type: SettingsGroupType
 }
 

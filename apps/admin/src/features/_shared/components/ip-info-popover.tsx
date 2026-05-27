@@ -4,6 +4,7 @@ import { useState } from 'react'
 import type { ReactNode } from 'react'
 
 import { callBuiltInFunction } from '~/api/system'
+import { useI18n } from '~/i18n'
 import { PortalLayerScope, useFloatingZ } from '~/ui/feedback/portal-layer'
 
 interface IpInfo {
@@ -26,6 +27,7 @@ export function IpInfoPopover(props: {
   ip: string
   trigger?: ReactNode
 }) {
+  const { t } = useI18n()
   const [info, setInfo] = useState<IpInfo | null>(
     () => ipInfoCache.get(props.ip) ?? null,
   )
@@ -47,7 +49,11 @@ export function IpInfoPopover(props: {
       ipInfoCache.set(props.ip, result)
       setInfo(result)
     } catch (loadError) {
-      setError(loadError instanceof Error ? loadError.message : '获取失败')
+      setError(
+        loadError instanceof Error
+          ? loadError.message
+          : t('shared.ipInfo.fetchFailed'),
+      )
     } finally {
       setLoading(false)
     }
@@ -86,24 +92,32 @@ export function IpInfoPopover(props: {
           <PortalLayerScope depth={depth}>
             <Popover.Popup className="outline-hidden w-72 rounded border border-neutral-200 bg-white p-3 text-xs text-neutral-600 shadow-xl dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-300">
               {loading ? (
-                <span className="text-neutral-400">获取中...</span>
+                <span className="text-neutral-400">
+                  {t('shared.ipInfo.loading')}
+                </span>
               ) : error ? (
                 <span className="text-red-500">{error}</span>
               ) : info ? (
                 <div className="grid gap-2">
                   <InfoRow label="IP" value={info.ip || props.ip} />
                   <InfoRow
-                    label="城市"
+                    label={t('shared.ipInfo.label.city')}
                     value={
                       [info.countryName, info.regionName, info.cityName]
                         .filter(Boolean)
                         .join(' - ') || 'N/A'
                     }
                   />
-                  <InfoRow label="ISP" value={info.ispDomain || 'N/A'} />
-                  <InfoRow label="组织" value={info.ownerDomain || 'N/A'} />
                   <InfoRow
-                    label="范围"
+                    label={t('shared.ipInfo.label.isp')}
+                    value={info.ispDomain || 'N/A'}
+                  />
+                  <InfoRow
+                    label={t('shared.ipInfo.label.org')}
+                    value={info.ownerDomain || 'N/A'}
+                  />
+                  <InfoRow
+                    label={t('shared.ipInfo.label.range')}
                     value={
                       info.range
                         ? [info.range.from, info.range.to]
@@ -114,7 +128,9 @@ export function IpInfoPopover(props: {
                   />
                 </div>
               ) : (
-                <span className="text-neutral-400">暂无信息</span>
+                <span className="text-neutral-400">
+                  {t('shared.ipInfo.empty')}
+                </span>
               )}
             </Popover.Popup>
           </PortalLayerScope>

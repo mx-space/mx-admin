@@ -1,4 +1,5 @@
 import type { CreateTopicData } from '~/api/topics'
+import type { TranslationKey, TranslationValues } from '~/i18n/types'
 
 export function getInitial(value: string) {
   const normalized = value.trim()
@@ -6,16 +7,25 @@ export function getInitial(value: string) {
   return normalized.length > 2 ? normalized.slice(0, 2) : normalized
 }
 
-export function validateTopicForm(data: CreateTopicData) {
-  if (!data.name) return '请输入专栏名称'
-  if (data.name.length > 50) return '名称不能超过 50 个字符'
-  if (!data.slug) return '请输入专栏 ID'
+export interface TopicFormError {
+  key: TranslationKey
+  values?: TranslationValues
+}
+
+export function validateTopicForm(
+  data: CreateTopicData,
+): TopicFormError | null {
+  if (!data.name) return { key: 'topics.form.validate.nameRequired' }
+  if (data.name.length > 50)
+    return { key: 'topics.form.validate.nameMax', values: { max: 50 } }
+  if (!data.slug) return { key: 'topics.form.validate.slugRequired' }
   if (!/^[\w-]+$/.test(data.slug))
-    return 'ID 只能包含字母、数字、下划线和连字符'
-  if (!data.introduce) return '请输入简介'
-  if (data.introduce.length > 100) return '简介不能超过 100 个字符'
+    return { key: 'topics.form.validate.slugPattern' }
+  if (!data.introduce) return { key: 'topics.form.validate.introduceRequired' }
+  if (data.introduce.length > 100)
+    return { key: 'topics.form.validate.introduceMax', values: { max: 100 } }
   if (data.description && data.description.length > 500) {
-    return '描述不能超过 500 个字符'
+    return { key: 'topics.form.validate.descriptionMax', values: { max: 500 } }
   }
 
   return null

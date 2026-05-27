@@ -1,3 +1,5 @@
+import type { TranslationKey, TranslationValues } from '~/i18n/types'
+
 export function buildEditUrl(refType: string, refId: string) {
   switch (refType) {
     case 'note':
@@ -21,7 +23,9 @@ export function formatDateTime(value: string) {
   }).format(new Date(value))
 }
 
-export function formatRelativeDate(value: string) {
+type Translator = (key: TranslationKey, values?: TranslationValues) => string
+
+export function formatRelativeDate(value: string, t: Translator) {
   const date = new Date(value)
   const diff = Date.now() - date.getTime()
   const absolute = Math.abs(diff)
@@ -30,9 +34,15 @@ export function formatRelativeDate(value: string) {
   const day = 24 * hour
 
   if (Number.isNaN(date.getTime())) return '-'
-  if (absolute < minute) return '刚刚'
-  if (absolute < hour) return `${Math.round(diff / minute)} 分钟前`
-  if (absolute < day) return `${Math.round(diff / hour)} 小时前`
+  if (absolute < minute) return t('searchIndex.relative.justNow')
+  if (absolute < hour)
+    return t('searchIndex.relative.minutesAgo', {
+      count: Math.round(diff / minute),
+    })
+  if (absolute < day)
+    return t('searchIndex.relative.hoursAgo', {
+      count: Math.round(diff / hour),
+    })
 
   return formatDateTime(value)
 }

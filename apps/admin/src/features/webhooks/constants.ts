@@ -7,7 +7,7 @@ export const webhooksQueryKey = ['webhooks'] as const
 export const dispatchPageSize = 20
 
 export const scopeOptions: ScopeOption[] = [
-  { label: '访客操作', value: EventScope.TO_VISITOR },
-  { label: '管理员操作', value: EventScope.TO_ADMIN },
-  { label: '系统事件', value: EventScope.TO_SYSTEM },
+  { labelKey: 'webhooks.scope.visitor', value: EventScope.TO_VISITOR },
+  { labelKey: 'webhooks.scope.admin', value: EventScope.TO_ADMIN },
+  { labelKey: 'webhooks.scope.system', value: EventScope.TO_SYSTEM },
 ]

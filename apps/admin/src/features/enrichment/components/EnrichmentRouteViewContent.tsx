@@ -16,6 +16,7 @@ import {
   getEnrichmentList,
   getEnrichmentProviders,
 } from '~/api/enrichment'
+import { useI18n } from '~/i18n'
 import { MasterDetailLayout } from '~/ui/layout/page-layout'
 import { Button } from '~/ui/primitives/button'
 import { cn } from '~/utils/cn'
@@ -37,6 +38,7 @@ import {
 } from './SourceSwitcher'
 
 export function EnrichmentRouteViewContent() {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const [searchParams, setSearchParams] = useSearchParams()
   const searchParamsKey = searchParams.toString()
@@ -229,7 +231,7 @@ export function EnrichmentRouteViewContent() {
                       cacheQuery.isFetching && 'animate-spin',
                     )}
                   />
-                  刷新
+                  {t('common.refresh')}
                 </Button>
               </div>
             ) : null}
@@ -263,7 +265,7 @@ export function EnrichmentRouteViewContent() {
                       captureQuery.isFetching && 'animate-spin',
                     )}
                   />
-                  刷新
+                  {t('common.refresh')}
                 </Button>
               </div>
             ) : null}
@@ -354,7 +356,7 @@ export function EnrichmentRouteViewContent() {
                 }}
               />
             ) : (
-              <DetailEmpty label="选择缓存项查看详情。" />
+              <DetailEmpty label={t('enrichment.detail.emptyCache')} />
             )
           ) : null}
 
@@ -373,7 +375,7 @@ export function EnrichmentRouteViewContent() {
                 row={selectedCapture}
               />
             ) : (
-              <DetailEmpty label="选择截图记录查看详情。" />
+              <DetailEmpty label={t('enrichment.detail.emptyCapture')} />
             )
           ) : null}
 

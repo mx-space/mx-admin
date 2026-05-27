@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import type { AccountSession } from '../../types/settings'
 
 import { IpInfoPopover } from '~/features/_shared/components/ip-info-popover'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Panel } from '~/ui/primitives/panel'
 import { authClient } from '~/utils/authjs/auth'
@@ -15,9 +16,10 @@ import { listSessions } from '../../utils/account-sessions'
 import { formatDateTime, getErrorMessage } from '../../utils/settings'
 
 export function SessionSection() {
+  const { t } = useI18n()
   const [expanded, setExpanded] = useState(false)
   const sessionsQuery = useQuery({
-    queryFn: listSessions,
+    queryFn: () => listSessions(t),
     queryKey: [...accountQueryKey, 'sessions'],
   })
 
@@ -25,17 +27,28 @@ export function SessionSection() {
     mutationFn: async (session: AccountSession) => {
       if (session.current) {
         const result = await authClient.signOut()
-        if (result.error) throw new Error(result.error.message || '注销失败')
+        if (result.error)
+          throw new Error(
+            result.error.message || t('settings.session.error.revokeFailed'),
+          )
       } else {
         const result = await authClient.revokeSession({ token: session.token })
         if (result.error)
-          throw new Error(result.error.message || '踢出设备失败')
+          throw new Error(
+            result.error.message || t('settings.session.error.kickFailed'),
+          )
       }
     },
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '操作失败')),
+      toast.error(
+        getErrorMessage(error, t('settings.session.error.operationFailed')),
+      ),
     onSuccess: async (_, session) => {
-      toast.success(session.current ? '已注销当前会话' : '已踢出设备')
+      toast.success(
+        session.current
+          ? t('settings.session.success.signOut')
+          : t('settings.session.success.kicked'),
+      )
       if (session.current) window.location.reload()
       await sessionsQuery.refetch()
     },
@@ -44,12 +57,17 @@ export function SessionSection() {
   const revokeOthersMutation = useMutation({
     mutationFn: async () => {
       const result = await authClient.revokeOtherSessions()
-      if (result.error) throw new Error(result.error.message || '踢出设备失败')
+      if (result.error)
+        throw new Error(
+          result.error.message || t('settings.session.error.kickFailed'),
+        )
     },
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '踢出设备失败')),
+      toast.error(
+        getErrorMessage(error, t('settings.session.error.kickFailed')),
+      ),
     onSuccess: async () => {
-      toast.success('已踢出其他设备')
+      toast.success(t('settings.session.success.others'))
       await sessionsQuery.refetch()
     },
   })
@@ -62,19 +80,23 @@ export function SessionSection() {
 
   return (
     <Panel
-      description="管理登录会话，保护账户安全。"
+      description={t('settings.session.description')}
       title={
         <span className="inline-flex items-center gap-2">
           <Shield aria-hidden="true" className="size-4" />
-          登录设备
+          {t('settings.session.title')}
         </span>
       }
     >
       <div className="divide-y divide-neutral-100 dark:divide-neutral-900">
         {sessionsQuery.isLoading ? (
-          <div className="p-4 text-sm text-neutral-500">加载中...</div>
+          <div className="p-4 text-sm text-neutral-500">
+            {t('settings.common.loading')}
+          </div>
         ) : sessions.length === 0 ? (
-          <div className="p-4 text-sm text-neutral-500">暂无会话。</div>
+          <div className="p-4 text-sm text-neutral-500">
+            {t('settings.session.empty')}
+          </div>
         ) : (
           <>
             {visibleSessions.map((session) => (
@@ -90,7 +112,9 @@ export function SessionSection() {
                             : 'bg-neutral-100 text-neutral-500 dark:bg-neutral-900',
                         )}
                       >
-                        {session.current ? '当前设备' : '其他设备'}
+                        {session.current
+                          ? t('settings.session.badge.current')
+                          : t('settings.session.badge.other')}
                       </span>
                       {session.ip ? (
                         <IpInfoPopover
@@ -112,8 +136,13 @@ export function SessionSection() {
                       {session.ua || 'Unknown user agent'}
                     </p>
                     <p className="mt-1 text-xs text-neutral-500">
-                      {session.current ? '活跃时间' : '登录时间'}：
-                      {formatDateTime(session.lastActiveAt)}
+                      {session.current
+                        ? t('settings.session.activeAt', {
+                            time: formatDateTime(session.lastActiveAt),
+                          })
+                        : t('settings.session.loginAt', {
+                            time: formatDateTime(session.lastActiveAt),
+                          })}
                     </p>
                   </div>
                   <Button
@@ -122,8 +151,8 @@ export function SessionSection() {
                       if (
                         window.confirm(
                           session.current
-                            ? '确认注销当前会话？'
-                            : '确认踢出此设备？',
+                            ? t('settings.session.confirm.signOut')
+                            : t('settings.session.confirm.kick'),
                         )
                       ) {
                         deleteMutation.mutate(session)
@@ -132,7 +161,9 @@ export function SessionSection() {
                     type="button"
                     variant="subtle"
                   >
-                    {session.current ? '注销' : '踢出'}
+                    {session.current
+                      ? t('settings.session.button.signOut')
+                      : t('settings.session.button.kick')}
                   </Button>
                 </div>
               </div>
@@ -145,8 +176,10 @@ export function SessionSection() {
                   type="button"
                 >
                   {expanded
-                    ? '收起'
-                    : `查看更多（${hiddenSessionCount} 个设备）`}
+                    ? t('settings.session.action.viewMoreCollapse')
+                    : t('settings.session.action.viewMore', {
+                        count: hiddenSessionCount,
+                      })}
                 </button>
               </div>
             ) : null}
@@ -157,14 +190,14 @@ export function SessionSection() {
         <Button
           disabled={revokeOthersMutation.isPending}
           onClick={() => {
-            if (window.confirm('确认踢掉全部其他登录设备？')) {
+            if (window.confirm(t('settings.session.confirm.revokeOthers'))) {
               revokeOthersMutation.mutate()
             }
           }}
           type="button"
           variant="subtle"
         >
-          踢掉其他设备
+          {t('settings.session.action.revokeOthers')}
         </Button>
       </div>
     </Panel>

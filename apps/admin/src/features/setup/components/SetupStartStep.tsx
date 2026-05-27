@@ -3,11 +3,13 @@ import { useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 import { restoreFromBackup } from '~/api/system'
+import { useI18n } from '~/i18n'
 
 import { primaryButtonClassName, secondaryButtonClassName } from '../constants'
 import { getErrorMessage } from '../utils/setup'
 
 export function SetupStartStep(props: { onNext: () => void }) {
+  const { t } = useI18n()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [restoring, setRestoring] = useState(false)
 
@@ -20,12 +22,12 @@ export function SetupStartStep(props: { onNext: () => void }) {
 
     try {
       await restoreFromBackup(formData)
-      toast.success('恢复成功，页面将会重载')
+      toast.success(t('setup.start.restoreSuccess'))
       setTimeout(() => {
         location.reload()
       }, 1000)
     } catch (error) {
-      toast.error(getErrorMessage(error, '恢复失败'))
+      toast.error(getErrorMessage(error, t('setup.start.restoreError')))
     } finally {
       setRestoring(false)
     }
@@ -38,7 +40,7 @@ export function SetupStartStep(props: { onNext: () => void }) {
       </div>
 
       <p className="mb-4 text-center text-sm text-white/80">
-        开始全新配置，或从备份文件恢复
+        {t('setup.start.description')}
       </p>
 
       <div className="flex w-full max-w-xs gap-3">
@@ -48,14 +50,14 @@ export function SetupStartStep(props: { onNext: () => void }) {
           onClick={() => fileInputRef.current?.click()}
           type="button"
         >
-          还原备份
+          {t('setup.start.restoreButton')}
         </button>
         <button
           className={`${primaryButtonClassName} flex-1`}
           onClick={props.onNext}
           type="button"
         >
-          开始配置
+          {t('setup.start.beginButton')}
         </button>
         <input
           accept=".zip"

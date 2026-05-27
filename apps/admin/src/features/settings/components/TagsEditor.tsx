@@ -1,12 +1,14 @@
 import { X } from 'lucide-react'
 import { useState } from 'react'
 
+import { useI18n } from '~/i18n'
 import { TextInput } from '~/ui/primitives/text-field'
 
 export function TagsEditor(props: {
   onChange: (value: string[]) => void
   value: string[]
 }) {
+  const { t } = useI18n()
   const [draft, setDraft] = useState('')
 
   const add = () => {
@@ -41,7 +43,7 @@ export function TagsEditor(props: {
             add()
           }
         }}
-        placeholder="输入后按 Enter"
+        placeholder={t('settings.tags.placeholder')}
         value={draft}
       />
     </div>

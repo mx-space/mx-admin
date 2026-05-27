@@ -1,11 +1,13 @@
 import type { ReadingRankItem } from '~/api/activity'
 
+import { useI18n } from '~/i18n'
 import { cn } from '~/utils/cn'
 
 import { formatNumber } from '../utils/analyze'
 import { ReferenceButton } from './ReferenceButton'
 
 export function ReadingRankList(props: { items: ReadingRankItem[] }) {
+  const { t } = useI18n()
   const max = Math.max(...props.items.map((item) => item.count), 1)
 
   return (
@@ -28,7 +30,7 @@ export function ReadingRankList(props: { items: ReadingRankItem[] }) {
           <div className="min-w-0">
             <ReferenceButton
               id={item.ref?.id}
-              title={item.ref?.title ?? '已删除的文章'}
+              title={item.ref?.title ?? t('analyze.deletedPost')}
             />
             <div className="mt-2 h-1.5 overflow-hidden rounded bg-neutral-100 dark:bg-neutral-900">
               <div

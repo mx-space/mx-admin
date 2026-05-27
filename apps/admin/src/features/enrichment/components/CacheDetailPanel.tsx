@@ -16,6 +16,7 @@ import {
   refreshEnrichment,
 } from '~/api/enrichment'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
 import { cn } from '~/utils/cn'
@@ -40,6 +41,7 @@ export function CacheDetailPanel(props: {
   onBack: () => void
   onJumpToScreenshot: (id: string) => void
 }) {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const detailQuery = useQuery({
     initialData: props.fallback
@@ -55,31 +57,33 @@ export function CacheDetailPanel(props: {
   const row = detailQuery.data
   const refreshMutation = useMutation({
     mutationFn: () => {
-      if (!row) throw new Error('数据未加载')
+      if (!row) throw new Error(t('enrichment.cache.dataNotLoaded'))
       return refreshEnrichment(row.provider, row.externalId, row.locale)
     },
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '刷新失败')),
+      toast.error(getErrorMessage(error, t('enrichment.cache.refreshFailed'))),
     onSuccess: async () => {
-      toast.success('已刷新')
+      toast.success(t('enrichment.cache.refreshed'))
       await queryClient.invalidateQueries({ queryKey: enrichmentQueryKey })
     },
   })
   const invalidateMutation = useMutation({
     mutationFn: () => {
-      if (!row) throw new Error('数据未加载')
+      if (!row) throw new Error(t('enrichment.cache.dataNotLoaded'))
       return invalidateEnrichment(row.provider, row.externalId)
     },
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '失效失败')),
+      toast.error(
+        getErrorMessage(error, t('enrichment.cache.invalidateFailed')),
+      ),
     onSuccess: async () => {
-      toast.success('已失效')
+      toast.success(t('enrichment.cache.invalidated'))
       await props.invalidateAll()
     },
   })
 
   if (!row) {
-    return <DetailLoading label="缓存详情加载中" />
+    return <DetailLoading label={t('enrichment.cache.loading')} />
   }
 
   return (
@@ -121,7 +125,7 @@ export function CacheDetailPanel(props: {
           href={row.url}
           rel="noreferrer"
           target="_blank"
-          title="打开原始链接"
+          title={t('enrichment.cache.openOriginal')}
         >
           <ExternalLink aria-hidden="true" className="size-4" />
         </a>
@@ -131,16 +135,22 @@ export function CacheDetailPanel(props: {
         <NormalizedPreview row={row} />
 
         {row.capture ? (
-          <DetailBlock title="截图">
+          <DetailBlock title={t('enrichment.cache.screenshotTitle')}>
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-neutral-500 dark:text-neutral-400">
                 <span>
                   {row.capture.width} x {row.capture.height}
                 </span>
                 <span>{formatBytes(row.capture.bytes)}</span>
-                <span>创建于 {relativeTimeFromNow(row.capture.createdAt)}</span>
                 <span>
-                  最近访问 {relativeTimeFromNow(row.capture.lastAccessedAt)}
+                  {t('enrichment.cache.createdAtRel', {
+                    time: relativeTimeFromNow(row.capture.createdAt),
+                  })}
+                </span>
+                <span>
+                  {t('enrichment.cache.lastAccessedRel', {
+                    time: relativeTimeFromNow(row.capture.lastAccessedAt),
+                  })}
                 </span>
               </div>
               <Button
@@ -149,7 +159,7 @@ export function CacheDetailPanel(props: {
                 variant="subtle"
               >
                 <ImageIcon aria-hidden="true" className="size-4" />
-                查看截图
+                {t('enrichment.cache.viewScreenshot')}
               </Button>
             </div>
           </DetailBlock>
@@ -160,14 +170,18 @@ export function CacheDetailPanel(props: {
             <Code>{row.externalId}</Code>
           </Field>
           <Field label="Locale">{row.locale || 'default'}</Field>
-          <Field label="抓取时间">{relativeTimeFromNow(row.fetchedAt)}</Field>
-          <Field label="过期时间">
+          <Field label={t('enrichment.cache.field.fetchedAt')}>
+            {relativeTimeFromNow(row.fetchedAt)}
+          </Field>
+          <Field label={t('enrichment.cache.field.expiresAt')}>
             {row.expiresAt ? relativeTimeFromNow(row.expiresAt) : '-'}
           </Field>
-          <Field label="失败次数">
+          <Field label={t('enrichment.cache.field.failureCount')}>
             <span className="tabular-nums">{row.failureCount}</span>
           </Field>
-          <Field label="最后错误">{row.lastError || '-'}</Field>
+          <Field label={t('enrichment.cache.field.lastError')}>
+            {row.lastError || '-'}
+          </Field>
         </div>
 
         <DetailBlock title="Raw">
@@ -187,13 +201,13 @@ export function CacheDetailPanel(props: {
           ) : (
             <RefreshCw aria-hidden="true" className="size-4" />
           )}
-          刷新
+          {t('enrichment.cache.refresh')}
         </Button>
         <Button
           className="border-red-200 text-red-600 hover:bg-red-50 dark:border-red-950 dark:text-red-400 dark:hover:bg-red-950/30"
           disabled={invalidateMutation.isPending}
           onClick={() => {
-            if (window.confirm('确认失效此缓存项？')) {
+            if (window.confirm(t('enrichment.cache.confirmInvalidate'))) {
               invalidateMutation.mutate()
             }
           }}
@@ -205,7 +219,7 @@ export function CacheDetailPanel(props: {
           ) : (
             <Trash2 aria-hidden="true" className="size-4" />
           )}
-          失效
+          {t('enrichment.cache.invalidate')}
         </Button>
       </div>
     </div>

@@ -2,9 +2,11 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router'
+import type { SettingsGroupSummary } from '../types/settings'
 
 import { getFormSchema } from '~/api/options'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { MasterDetailLayout } from '~/ui/layout/page-layout'
 import { Button } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
@@ -22,6 +24,7 @@ import { OwnerSettings } from './OwnerSettings'
 import { SystemSettings } from './SystemSettings'
 
 export function SettingsRouteViewContent() {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const navigate = useNavigate()
   const { tab } = useParams()
@@ -37,15 +40,15 @@ export function SettingsRouteViewContent() {
     queryKey: [...settingsQueryKey, 'schema'],
   })
 
-  const groups = useMemo(() => {
-    const systemGroups =
+  const groups = useMemo<SettingsGroupSummary[]>(() => {
+    const systemGroups: SettingsGroupSummary[] =
       schemaQuery.data?.groups.map((group) => ({
         description: group.description,
         icon: getGroupIcon(group.icon),
         key: group.key,
         systemGroup: group,
         title: group.title,
-        type: 'system' as const,
+        type: 'system',
       })) ?? []
 
     return [...staticGroupsBefore, ...systemGroups, ...staticGroupsAfter]
@@ -53,6 +56,13 @@ export function SettingsRouteViewContent() {
 
   const activeGroup =
     groups.find((group) => group.key === selectedGroup) ?? groups[0]
+
+  const activeTitle = activeGroup.titleKey
+    ? t(activeGroup.titleKey)
+    : (activeGroup.title ?? '')
+  const activeDescription = activeGroup.descriptionKey
+    ? t(activeGroup.descriptionKey)
+    : (activeGroup.description ?? '')
 
   const selectGroup = (key: string) => {
     const nextSearchParams = new URLSearchParams(searchParams)
@@ -98,10 +108,12 @@ export function SettingsRouteViewContent() {
           >
             <div className="min-w-0">
               <h2 className="text-sm font-medium text-neutral-950 dark:text-neutral-50">
-                设置
+                {t('settings.shell.title')}
               </h2>
             </div>
-            <span className="text-xs text-neutral-400">{groups.length} 项</span>
+            <span className="text-xs text-neutral-400">
+              {t('settings.shell.itemCount', { count: groups.length })}
+            </span>
           </div>
 
           <Scroll className="flex-1" innerClassName="p-2">
@@ -109,6 +121,12 @@ export function SettingsRouteViewContent() {
               {groups.map((group) => {
                 const Icon = group.icon
                 const selected = activeGroup.key === group.key
+                const groupTitle = group.titleKey
+                  ? t(group.titleKey)
+                  : (group.title ?? '')
+                const groupDescription = group.descriptionKey
+                  ? t(group.descriptionKey)
+                  : (group.description ?? '')
 
                 return (
                   <button
@@ -134,10 +152,10 @@ export function SettingsRouteViewContent() {
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm font-medium">
-                        {group.title}
+                        {groupTitle}
                       </span>
                       <span className="mt-0.5 block truncate text-xs text-neutral-500 dark:text-neutral-400">
-                        {group.description}
+                        {groupDescription}
                       </span>
                     </span>
                   </button>
@@ -157,7 +175,7 @@ export function SettingsRouteViewContent() {
           >
             <div className="flex min-w-0 items-center gap-2">
               <Button
-                aria-label="返回设置列表"
+                aria-label={t('settings.owner.mobileBackAria')}
                 className="h-8 px-2 lg:hidden"
                 onClick={() => setShowDetailOnMobile(false)}
                 type="button"
@@ -167,17 +185,17 @@ export function SettingsRouteViewContent() {
               </Button>
               <div className="min-w-0">
                 <h1 className="truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
-                  {activeGroup.title}
+                  {activeTitle}
                 </h1>
                 <p className="mt-0.5 truncate text-xs text-neutral-500 dark:text-neutral-400">
-                  {activeGroup.description}
+                  {activeDescription}
                 </p>
               </div>
             </div>
             {schemaQuery.isFetching ? (
               <span className="inline-flex shrink-0 items-center gap-2 text-xs text-neutral-500">
                 <Loader2 aria-hidden="true" className="size-4 animate-spin" />
-                同步配置结构
+                {t('settings.common.section.syncSchema')}
               </span>
             ) : null}
           </div>

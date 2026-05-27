@@ -1,4 +1,5 @@
 import type { AIInsights, AISummary, AITask, AITranslation } from '~/api/ai'
+import type { TranslationKey, TranslationValues } from '~/i18n/types'
 import type { AiSurface } from '../types/ai'
 
 import {
@@ -10,7 +11,9 @@ import {
 } from '~/api/ai'
 import { relativeTimeFromNow } from '~/utils/time'
 
-import { statusOptions, typeOptions } from '../constants'
+import { statusOptionKeys, typeOptionKeys } from '../constants'
+
+type Translator = (key: TranslationKey, values?: TranslationValues) => string
 
 export function getInitialAiSurface(pathname: string): AiSurface {
   if (pathname.endsWith('/summary')) return 'summaries'
@@ -43,50 +46,65 @@ export function isBatchTask(task: AITask) {
   )
 }
 
-export function getTaskSummary(task: AITask) {
+export function getTaskSummary(task: AITask, t: Translator) {
   const payload = task.payload
   const result = task.result as Record<string, unknown> | undefined
   if (task.type === AITaskType.Summary) {
-    return (payload.title as string) || (payload.refId as string) || '摘要任务'
+    return (
+      (payload.title as string) ||
+      (payload.refId as string) ||
+      t('ai.task.summary.task')
+    )
   }
   if (task.type === AITaskType.Translation) {
-    return (payload.title as string) || (payload.refId as string) || '翻译任务'
+    return (
+      (payload.title as string) ||
+      (payload.refId as string) ||
+      t('ai.task.translation.task')
+    )
   }
   if (task.type === AITaskType.TranslationBatch) {
     const count = (payload.refIds as string[] | undefined)?.length ?? 0
-    return `${count} 篇文章`
+    return t('ai.task.translation.articleCount', { count })
   }
   if (task.type === AITaskType.TranslationAll) {
     const count = result?.total as number | undefined
-    return count ? `${count} 篇文章` : '全部文章'
+    return count
+      ? t('ai.task.translation.articleCount', { count })
+      : t('ai.task.translation.allArticles')
   }
-  if (task.type === AITaskType.SlugBackfill) return '补全缺失 Slug'
-  if (task.type === AITaskType.Insights) return '精读内容生成'
-  if (task.type === AITaskType.InsightsTranslation) return '精读内容翻译'
+  if (task.type === AITaskType.SlugBackfill)
+    return t('ai.task.slugBackfill.summary')
+  if (task.type === AITaskType.Insights) return t('ai.task.insights.generation')
+  if (task.type === AITaskType.InsightsTranslation)
+    return t('ai.task.insights.translation')
 
-  return '任务'
+  return t('ai.task.fallback')
 }
 
-export function getTaskDetailSummary(task: AITask) {
+export function getTaskDetailSummary(task: AITask, t: Translator) {
   const payload = task.payload
   const result = task.result as Record<string, unknown> | undefined
   if (task.type === AITaskType.Translation) {
     const title = (payload.title as string) || (payload.refId as string)
     const langs = (payload.targetLanguages as string[] | undefined)?.join(', ')
-    return `${title || '翻译任务'} -> ${langs || '默认语言'}`
+    return `${title || t('ai.task.translation.task')} -> ${langs || t('ai.task.translation.defaultLang')}`
   }
   if (task.type === AITaskType.TranslationBatch) {
     const count = (payload.refIds as string[] | undefined)?.length ?? 0
     const langs = (payload.targetLanguages as string[] | undefined)?.join(', ')
-    return `${count} 篇文章 -> ${langs || '默认语言'}`
+    return `${t('ai.task.translation.articleCount', { count })} -> ${langs || t('ai.task.translation.defaultLang')}`
   }
   if (task.type === AITaskType.TranslationAll) {
     const count = result?.total as number | undefined
     const langs = (payload.targetLanguages as string[] | undefined)?.join(', ')
-    return `${count ? `全部 ${count} 篇文章` : '全部文章'} -> ${langs || '默认语言'}`
+    const head = count
+      ? t('ai.task.translation.allArticlesCount', { count })
+      : t('ai.task.translation.allArticles')
+    return `${head} -> ${langs || t('ai.task.translation.defaultLang')}`
   }
 
-  return getTaskSummary(task)
+  return getTaskSummary(task, t)
 }
 
 export function getTaskProgressLabel(task: AITask) {
@@ -147,27 +165,36 @@ export function formatAbsoluteTimestamp(timestamp?: number) {
   }).format(new Date(timestamp))
 }
 
-export function editSummaryItem(item: AISummary) {
-  const summary = window.prompt('摘要内容', item.summary)
+export function editSummaryItem(item: AISummary, t: Translator) {
+  const summary = window.prompt(t('ai.edit.summaryPrompt'), item.summary)
   if (summary === null) return Promise.resolve({ cancelled: true })
-  if (!summary.trim()) throw new Error('摘要内容不能为空')
+  if (!summary.trim()) throw new Error(t('ai.edit.summaryEmpty'))
 
   return updateSummary(item.id, { summary })
 }
 
-export function editTranslationItem(item: AITranslation) {
-  const title = window.prompt('标题', item.title)
+export function editTranslationItem(item: AITranslation, t: Translator) {
+  const title = window.prompt(t('ai.edit.titlePrompt'), item.title)
   if (title === null) return Promise.resolve({ cancelled: true })
-  if (!title.trim()) throw new Error('标题不能为空')
+  if (!title.trim()) throw new Error(t('ai.edit.titleEmpty'))
 
-  const subtitle = window.prompt('副标题（可留空）', item.subtitle ?? '')
+  const subtitle = window.prompt(
+    t('ai.edit.subtitlePrompt'),
+    item.subtitle ?? '',
+  )
   if (subtitle === null) return Promise.resolve({ cancelled: true })
 
-  const summary = window.prompt('摘要（可留空）', item.summary ?? '')
+  const summary = window.prompt(
+    t('ai.edit.summaryOptionalPrompt'),
+    item.summary ?? '',
+  )
   if (summary === null) return Promise.resolve({ cancelled: true })
 
   if (item.contentFormat === 'lexical') {
-    const content = window.prompt('Lexical JSON 内容', item.content ?? '')
+    const content = window.prompt(
+      t('ai.edit.lexicalPrompt'),
+      item.content ?? '',
+    )
     if (content === null) return Promise.resolve({ cancelled: true })
 
     return updateTranslation(item.id, {
@@ -178,9 +205,9 @@ export function editTranslationItem(item: AITranslation) {
     })
   }
 
-  const text = window.prompt('正文内容', item.text)
+  const text = window.prompt(t('ai.edit.textPrompt'), item.text)
   if (text === null) return Promise.resolve({ cancelled: true })
-  if (!text.trim()) throw new Error('正文内容不能为空')
+  if (!text.trim()) throw new Error(t('ai.edit.textEmpty'))
 
   return updateTranslation(item.id, {
     subtitle: subtitle.trim() || undefined,
@@ -190,20 +217,20 @@ export function editTranslationItem(item: AITranslation) {
   })
 }
 
-export function editInsightsItem(item: AIInsights) {
-  const content = window.prompt('精读内容', item.content)
+export function editInsightsItem(item: AIInsights, t: Translator) {
+  const content = window.prompt(t('ai.edit.insightsPrompt'), item.content)
   if (content === null) return Promise.resolve({ cancelled: true })
-  if (!content.trim()) throw new Error('精读内容不能为空')
+  if (!content.trim()) throw new Error(t('ai.edit.insightsEmpty'))
 
   return updateInsights(item.id, { content })
 }
 
-export function getGroupedActionSuccessMessage(result: unknown) {
+export function getGroupedActionSuccessMessage(result: unknown, t: Translator) {
   if (isCancelledActionResult(result)) return null
-  return getTaskMutationMessage(result) ?? '已保存'
+  return getTaskMutationMessage(result, t) ?? t('ai.toast.saved')
 }
 
-export function getTaskMutationMessage(result: unknown) {
+export function getTaskMutationMessage(result: unknown, t: Translator) {
   if (isCancelledActionResult(result)) return null
   if (
     result &&
@@ -212,8 +239,8 @@ export function getTaskMutationMessage(result: unknown) {
     'created' in result
   ) {
     return (result as { created?: boolean }).created
-      ? '已创建任务'
-      : '任务已存在'
+      ? t('ai.toast.taskCreated')
+      : t('ai.toast.taskExists')
   }
 
   return null
@@ -247,13 +274,13 @@ export function readPositivePage(value: null | string) {
 }
 
 export function readTaskStatusFilter(value: null | string): AITaskStatus | '' {
-  return statusOptions.some((option) => option.value === value)
+  return statusOptionKeys.some((option) => option.value === value)
     ? (value as AITaskStatus | '')
     : ''
 }
 
 export function readTaskTypeFilter(value: null | string): AITaskType | '' {
-  return typeOptions.some((option) => option.value === value)
+  return typeOptionKeys.some((option) => option.value === value)
     ? (value as AITaskType | '')
     : ''
 }

@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 import type { SayModel } from '~/models/say'
 
 import { createSay, updateSay } from '~/api/says'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { TextArea, TextInput } from '~/ui/primitives/text-field'
 
@@ -15,6 +16,7 @@ export function SayEditorDialog(props: {
   open: boolean
   say: SayModel | null
 }) {
+  const { t } = useI18n()
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const isEdit = Boolean(props.say?.id)
   const [text, setText] = useState('')
@@ -44,7 +46,11 @@ export function SayEditorDialog(props: {
       return createSay(data)
     },
     onSuccess: async () => {
-      toast.success(isEdit ? '修改成功' : '发布成功')
+      toast.success(
+        isEdit
+          ? t('says.dialog.updateSuccess')
+          : t('says.dialog.publishSuccess'),
+      )
       await props.onSuccess()
     },
   })
@@ -53,7 +59,7 @@ export function SayEditorDialog(props: {
     event?.preventDefault()
 
     if (!text.trim()) {
-      setTextError('请输入内容')
+      setTextError(t('says.dialog.textRequired'))
       return
     }
 
@@ -77,10 +83,12 @@ export function SayEditorDialog(props: {
           <form onSubmit={handleSubmit}>
             <div className="flex items-center justify-between border-b border-neutral-200 px-5 py-4 dark:border-neutral-800">
               <Dialog.Title className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
-                {isEdit ? '编辑一言' : '添加一言'}
+                {isEdit
+                  ? t('says.dialog.editTitle')
+                  : t('says.dialog.createTitle')}
               </Dialog.Title>
               <Dialog.Close
-                aria-label="关闭"
+                aria-label={t('common.close')}
                 className="rounded p-1 text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-600 dark:hover:bg-neutral-800"
               >
                 <X aria-hidden="true" className="size-5" />
@@ -91,7 +99,7 @@ export function SayEditorDialog(props: {
               <div className="grid gap-1.5 text-sm">
                 <TextArea
                   controlClassName="min-h-28"
-                  label="内容"
+                  label={t('says.dialog.text')}
                   onChange={setText}
                   onKeyDown={(event) => {
                     if (
@@ -101,7 +109,7 @@ export function SayEditorDialog(props: {
                       handleSubmit()
                     }
                   }}
-                  placeholder="记录一句有意思的话..."
+                  placeholder={t('says.dialog.textPlaceholder')}
                   ref={inputRef}
                   required
                   value={text}
@@ -112,31 +120,31 @@ export function SayEditorDialog(props: {
               </div>
 
               <TextInput
-                label="作者"
+                label={t('says.dialog.author')}
                 onChange={setAuthor}
-                placeholder="谁说的？"
+                placeholder={t('says.dialog.authorPlaceholder')}
                 value={author}
               />
               <TextInput
-                label="来源"
+                label={t('says.dialog.source')}
                 onChange={setSource}
-                placeholder="出自哪里？"
+                placeholder={t('says.dialog.sourcePlaceholder')}
                 value={source}
               />
             </div>
 
             <div className="flex items-center justify-end gap-2 border-t border-neutral-200 px-5 py-4 dark:border-neutral-800">
               <span className="mr-auto text-xs text-neutral-400">
-                Cmd/Ctrl + Enter 快速保存
+                {t('says.dialog.shortcut')}
               </span>
               <Dialog.Close
                 className="inline-flex h-9 items-center justify-center rounded border border-neutral-200 bg-white px-3 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-200 dark:hover:bg-neutral-900"
                 type="button"
               >
-                取消
+                {t('common.cancel')}
               </Dialog.Close>
               <Button disabled={mutation.isPending} type="submit">
-                {isEdit ? '保存' : '发布'}
+                {isEdit ? t('common.save') : t('says.dialog.publish')}
               </Button>
             </div>
           </form>

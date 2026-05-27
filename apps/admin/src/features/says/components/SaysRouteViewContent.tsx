@@ -7,6 +7,7 @@ import type { SayModel } from '~/models/say'
 
 import { deleteSay, getSays } from '~/api/says'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { CompactPagination } from '~/ui/data/compact-pagination'
 import { Button } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
@@ -20,6 +21,7 @@ import { SayListItem } from './SayListItem'
 import { SayListSkeleton } from './SayListSkeleton'
 
 export function SaysRouteViewContent() {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const [searchParams, setSearchParams] = useSearchParams()
   const [page, setPage] = useState(readSaysPage(searchParams.get('page')))
@@ -42,7 +44,7 @@ export function SaysRouteViewContent() {
   const deleteMutation = useMutation({
     mutationFn: deleteSay,
     onSuccess: async () => {
-      toast.success('删除成功')
+      toast.success(t('says.deleteSuccess'))
       await queryClient.invalidateQueries({ queryKey: ['says'] })
     },
   })
@@ -84,16 +86,18 @@ export function SaysRouteViewContent() {
         <div className="min-w-0">
           <h2 className="inline-flex items-center gap-2 text-sm font-medium text-neutral-950 dark:text-neutral-50">
             <Quote aria-hidden="true" className="size-4" />
-            一言
+            {t('says.title')}
           </h2>
         </div>
         <div className="flex shrink-0 items-center gap-3">
           <span className="text-xs text-neutral-500 dark:text-neutral-400">
-            {pagination ? `${pagination.total} 条` : '加载中'}
+            {pagination
+              ? t('says.countLabel', { count: pagination.total })
+              : t('common.loading')}
           </span>
           <Button onClick={openCreate} type="button" variant="subtle">
             <Plus aria-hidden="true" className="size-4" />
-            添加一言
+            {t('says.addOne')}
           </Button>
         </div>
       </div>

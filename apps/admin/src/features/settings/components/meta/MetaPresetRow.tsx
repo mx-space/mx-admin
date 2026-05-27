@@ -1,10 +1,11 @@
 import { GripVertical, Lock } from 'lucide-react'
 import type { MetaPresetField } from '~/models/meta-preset'
 
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Switch } from '~/ui/primitives/switch'
 
-import { fieldTypeLabels, scopeLabels } from '../../constants'
+import { fieldTypeLabelKeys, scopeLabelKeys } from '../../constants'
 import { SmallBadge } from '../SettingsPrimitives'
 
 export function MetaPresetRow(props: {
@@ -13,6 +14,7 @@ export function MetaPresetRow(props: {
   onToggle: (preset: MetaPresetField) => void
   preset: MetaPresetField
 }) {
+  const { t } = useI18n()
   return (
     <div className="flex items-center gap-3 px-4 py-3">
       {!props.preset.isBuiltin ? (
@@ -28,9 +30,11 @@ export function MetaPresetRow(props: {
           <code className="rounded bg-neutral-100 px-1.5 py-0.5 font-mono text-xs text-neutral-500 dark:bg-neutral-900">
             {props.preset.key}
           </code>
-          <SmallBadge>{fieldTypeLabels[props.preset.type]}</SmallBadge>
-          <SmallBadge>{scopeLabels[props.preset.scope]}</SmallBadge>
-          {props.preset.isBuiltin ? <SmallBadge>内置</SmallBadge> : null}
+          <SmallBadge>{t(fieldTypeLabelKeys[props.preset.type])}</SmallBadge>
+          <SmallBadge>{t(scopeLabelKeys[props.preset.scope])}</SmallBadge>
+          {props.preset.isBuiltin ? (
+            <SmallBadge>{t('settings.meta.builtinBadge')}</SmallBadge>
+          ) : null}
         </div>
         {props.preset.description ? (
           <p className="mt-1 truncate text-sm text-neutral-500">
@@ -51,14 +55,14 @@ export function MetaPresetRow(props: {
             type="button"
             variant="subtle"
           >
-            编辑
+            {t('common.edit')}
           </Button>
           <Button
             onClick={() => props.onDelete(props.preset.id)}
             type="button"
             variant="subtle"
           >
-            删除
+            {t('common.delete')}
           </Button>
         </>
       ) : null}

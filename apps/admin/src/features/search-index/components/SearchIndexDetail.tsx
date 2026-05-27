@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import type { SearchDocumentAdminRow } from '~/api/search-index'
 
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
 import { cn } from '~/utils/cn'
@@ -23,6 +24,7 @@ export function SearchIndexDetail(props: {
   rebuilding: boolean
   row: SearchDocumentAdminRow
 }) {
+  const { t } = useI18n()
   const row = props.row
   const editUrl = buildEditUrl(row.refType, row.refId)
 
@@ -43,7 +45,11 @@ export function SearchIndexDetail(props: {
         </button>
         <RefTypeBadge refType={row.refType} />
         <h2 className="min-w-0 flex-1 truncate text-base font-semibold text-neutral-950 dark:text-neutral-50">
-          {row.title || <span className="text-neutral-400">(无标题)</span>}
+          {row.title || (
+            <span className="text-neutral-400">
+              {t('searchIndex.row.untitled')}
+            </span>
+          )}
         </h2>
       </div>
 
@@ -52,32 +58,50 @@ export function SearchIndexDetail(props: {
           <Field label="refId">
             <Code>{row.refId}</Code>
           </Field>
-          <Field label="主语言">
-            {row.lang ? <SmallBadge>{row.lang}</SmallBadge> : '默认'}
+          <Field label={t('searchIndex.detail.field.lang')}>
+            {row.lang ? (
+              <SmallBadge>{row.lang}</SmallBadge>
+            ) : (
+              t('searchIndex.detail.langDefault')
+            )}
           </Field>
-          <Field label="sourceHash">
+          <Field label={t('searchIndex.detail.field.sourceHash')}>
             <Code title={row.sourceHash}>{row.sourceHash || '-'}</Code>
           </Field>
-          <Field label="发布状态">
+          <Field label={t('searchIndex.detail.field.publishState')}>
             <div className="flex flex-wrap items-center gap-1.5">
               {row.isPublished ? (
-                <SmallBadge tone="success">已发布</SmallBadge>
+                <SmallBadge tone="success">
+                  {t('searchIndex.detail.published')}
+                </SmallBadge>
               ) : (
-                <SmallBadge tone="warning">未发布</SmallBadge>
+                <SmallBadge tone="warning">
+                  {t('searchIndex.detail.unpublished')}
+                </SmallBadge>
               )}
-              {row.hasPassword ? <SmallBadge>密码保护</SmallBadge> : null}
+              {row.hasPassword ? (
+                <SmallBadge>
+                  {t('searchIndex.detail.passwordProtected')}
+                </SmallBadge>
+              ) : null}
             </div>
           </Field>
-          <Field label="标题长度">
+          <Field label={t('searchIndex.detail.field.titleLength')}>
             <span className="tabular-nums">{row.titleLength}</span>
           </Field>
-          <Field label="正文长度">
+          <Field label={t('searchIndex.detail.field.bodyLength')}>
             <span className="tabular-nums">{row.bodyLength}</span>
           </Field>
-          <Field label="最后修改">{formatRelativeDate(row.modifiedAt)}</Field>
-          <Field label="创建">{formatRelativeDate(row.createdAt)}</Field>
+          <Field label={t('searchIndex.detail.field.modifiedAt')}>
+            {formatRelativeDate(row.modifiedAt, t)}
+          </Field>
+          <Field label={t('searchIndex.detail.field.createdAt')}>
+            {formatRelativeDate(row.createdAt, t)}
+          </Field>
           {row.publicAt ? (
-            <Field label="公开时间">{formatDateTime(row.publicAt)}</Field>
+            <Field label={t('searchIndex.detail.field.publicAt')}>
+              {formatDateTime(row.publicAt)}
+            </Field>
           ) : null}
         </div>
       </Scroll>
@@ -89,7 +113,7 @@ export function SearchIndexDetail(props: {
             to={editUrl}
           >
             <ExternalLink aria-hidden="true" className="size-4" />
-            查看原文
+            {t('searchIndex.action.viewSource')}
           </Link>
         ) : null}
         <Button
@@ -102,7 +126,7 @@ export function SearchIndexDetail(props: {
           ) : (
             <RotateCcw aria-hidden="true" className="size-4" />
           )}
-          重建
+          {t('searchIndex.action.rebuild')}
         </Button>
       </div>
     </div>

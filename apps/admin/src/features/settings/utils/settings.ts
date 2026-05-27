@@ -1,5 +1,6 @@
 import { ListPlus, Mail, Settings, Shield, User } from 'lucide-react'
 import type { ConfigFormField } from '~/api/options'
+import type { TranslationKey, TranslationValues } from '~/i18n/types'
 import type { CreateMetaPresetDto, MetaPresetField } from '~/models/meta-preset'
 import type {
   AIConfig,
@@ -8,6 +9,8 @@ import type {
 } from '../types/settings'
 
 import { aiProviderTypeOptions, typesWithOptions } from '../constants'
+
+type Translator = (key: TranslationKey, values?: TranslationValues) => string
 
 export function getGroupIcon(icon: string) {
   const iconMap: Record<string, typeof User> = {
@@ -141,16 +144,19 @@ export function getDefaultAIModel(type: AIProviderType) {
   }
 }
 
-export function getAIProviderNamePlaceholder(type: AIProviderType) {
+export function getAIProviderNamePlaceholder(
+  t: Translator,
+  type: AIProviderType,
+) {
   switch (type) {
     case 'anthropic':
-      return '如 Claude Sonnet'
+      return t('settings.ai.placeholder.nameAnthropic')
     case 'openai':
-      return '如 OpenAI GPT'
+      return t('settings.ai.placeholder.nameOpenai')
     case 'openrouter':
-      return '如 OpenRouter'
+      return t('settings.ai.placeholder.nameOpenrouter')
     case 'openai-compatible':
-      return '如 DeepSeek'
+      return t('settings.ai.placeholder.nameCompatible')
   }
 }
 
@@ -166,16 +172,19 @@ export function getAIProviderKeyPlaceholder(type: AIProviderType) {
   }
 }
 
-export function getAIProviderModelPlaceholder(type: AIProviderType) {
+export function getAIProviderModelPlaceholder(
+  t: Translator,
+  type: AIProviderType,
+) {
   switch (type) {
     case 'anthropic':
-      return '如 claude-sonnet-4.5'
+      return t('settings.ai.placeholder.modelAnthropic')
     case 'openai':
-      return '如 gpt-5-mini'
+      return t('settings.ai.placeholder.modelOpenai')
     case 'openrouter':
-      return '如 anthropic/claude-sonnet-4.5'
+      return t('settings.ai.placeholder.modelOpenrouter')
     case 'openai-compatible':
-      return '如 deepseek-chat'
+      return t('settings.ai.placeholder.modelCompatible')
   }
 }
 
@@ -209,16 +218,16 @@ export function metaPresetToForm(preset: MetaPresetField): CreateMetaPresetDto {
   }
 }
 
-export function validateMetaPreset(form: CreateMetaPresetDto) {
-  if (!form.key.trim()) return '请输入字段 Key'
+export function validateMetaPreset(t: Translator, form: CreateMetaPresetDto) {
+  if (!form.key.trim()) return t('settings.meta.validation.needKey')
   if (!/^[\w-]+$/.test(form.key))
-    return 'Key 只能包含字母、数字、下划线和连字符'
-  if (!form.label.trim()) return '请输入显示名称'
+    return t('settings.meta.validation.invalidKey')
+  if (!form.label.trim()) return t('settings.meta.validation.needLabel')
   if (typesWithOptions.includes(form.type) && !form.options?.length) {
-    return '请至少添加一个选项'
+    return t('settings.meta.validation.needOption')
   }
   if (form.type === 'object' && !form.children?.length) {
-    return '请至少添加一个子字段'
+    return t('settings.meta.validation.needChildren')
   }
   return null
 }

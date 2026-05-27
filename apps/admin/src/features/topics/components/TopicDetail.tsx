@@ -7,6 +7,7 @@ import type { TopicModel } from '~/models/topic'
 import { patchNote } from '~/api/notes'
 import { getNotesByTopic, getTopic, patchTopic } from '~/api/topics'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
 import { cn } from '~/utils/cn'
@@ -26,6 +27,7 @@ export function TopicDetail(props: {
   onEdit: (topic: TopicModel) => void
   topicId: string
 }) {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const [notesPage, setNotesPage] = useState(1)
   const [isAddNoteOpen, setIsAddNoteOpen] = useState(false)
@@ -55,9 +57,9 @@ export function TopicDetail(props: {
   const patchTopicMutation = useMutation({
     mutationFn: (icon: string) => patchTopic(props.topicId, { icon }),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '更新图标失败')),
+      toast.error(getErrorMessage(error, t('topics.detail.iconUpdateFailed'))),
     onSuccess: async () => {
-      toast.success('图标已更新')
+      toast.success(t('topics.detail.iconUpdated'))
       await queryClient.invalidateQueries({
         queryKey: ['topics', 'detail', props.topicId],
       })
@@ -68,9 +70,9 @@ export function TopicDetail(props: {
   const removeNoteMutation = useMutation({
     mutationFn: (noteId: string) => patchNote(noteId, { topicId: null }),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '移除关联失败')),
+      toast.error(getErrorMessage(error, t('topics.detail.removeRefFailed'))),
     onSuccess: async () => {
-      toast.success('已移除手记的专栏引用')
+      toast.success(t('topics.detail.removeRefSuccess'))
       await queryClient.invalidateQueries({
         queryKey: ['topics', 'notes', props.topicId],
       })
@@ -80,7 +82,7 @@ export function TopicDetail(props: {
 
   const promptIcon = () => {
     if (!topic) return
-    const icon = window.prompt('图标 URL', topic.icon ?? '')
+    const icon = window.prompt(t('topics.detail.iconPrompt'), topic.icon ?? '')
     if (icon === null) return
     patchTopicMutation.mutate(icon.trim())
   }
@@ -102,7 +104,7 @@ export function TopicDetail(props: {
             <ArrowLeft aria-hidden="true" className="size-4" />
           </button>
           <h2 className="truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
-            专栏详情
+            {t('topics.detail.title')}
           </h2>
         </div>
         {topic ? (
@@ -113,7 +115,7 @@ export function TopicDetail(props: {
               ) : (
                 <Image aria-hidden="true" className="size-4" />
               )}
-              图标
+              {t('topics.detail.icon')}
             </Button>
             <Button
               onClick={() => props.onEdit(topic)}
@@ -121,7 +123,7 @@ export function TopicDetail(props: {
               variant="subtle"
             >
               <Edit3 aria-hidden="true" className="size-4" />
-              编辑
+              {t('common.edit')}
             </Button>
             <Button
               className="border-red-200 text-red-600 hover:bg-red-50 dark:border-red-950 dark:text-red-400 dark:hover:bg-red-950/30"
@@ -135,7 +137,7 @@ export function TopicDetail(props: {
               ) : (
                 <Trash2 aria-hidden="true" className="size-4" />
               )}
-              删除
+              {t('common.delete')}
             </Button>
           </div>
         ) : null}
@@ -154,7 +156,13 @@ export function TopicDetail(props: {
               notes={notes}
               onAdd={() => setIsAddNoteOpen(true)}
               onRemove={(note) => {
-                if (window.confirm(`确认从专栏中移除「${note.title}」？`)) {
+                if (
+                  window.confirm(
+                    t('topics.notes.confirmRemove', {
+                      title: note.title ?? '',
+                    }),
+                  )
+                ) {
                   removeNoteMutation.mutate(note.id!)
                 }
               }}

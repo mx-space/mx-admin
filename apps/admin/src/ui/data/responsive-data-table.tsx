@@ -2,6 +2,7 @@ import { Fragment } from 'react'
 import type { ReactNode } from 'react'
 
 import { DESKTOP_MEDIA_QUERY, useMediaQuery } from '~/hooks/use-media-query'
+import { useI18n } from '~/i18n'
 import { Scroll } from '~/ui/primitives/scroll'
 import { cn } from '~/utils/cn'
 
@@ -24,19 +25,17 @@ export interface ResponsiveDataTableProps<Row> {
   className?: string
 }
 
-const EMPTY_FALLBACK = (
-  <div className="px-4 py-12 text-center text-sm text-neutral-500 dark:text-neutral-400">
-    暂无数据
-  </div>
-)
-
 export function ResponsiveDataTable<Row>(props: ResponsiveDataTableProps<Row>) {
   const isDesktop = useMediaQuery(DESKTOP_MEDIA_QUERY)
+  const { t } = useI18n()
 
   if (props.rows.length === 0) {
-    return (
-      <div className={props.className}>{props.empty ?? EMPTY_FALLBACK}</div>
+    const fallback = (
+      <div className="px-4 py-12 text-center text-sm text-neutral-500 dark:text-neutral-400">
+        {t('common.noData')}
+      </div>
     )
+    return <div className={props.className}>{props.empty ?? fallback}</div>
   }
 
   if (isDesktop) {

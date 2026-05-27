@@ -1,11 +1,14 @@
 import { Code2, ExternalLink } from 'lucide-react'
 import type { ProjectModel } from '~/models/project'
 
+import { useI18n } from '~/i18n'
+
 export function ProjectLinks(props: { project: ProjectModel }) {
+  const { t } = useI18n()
   const links = [
-    ['源码', props.project.projectUrl, Code2],
-    ['预览', props.project.previewUrl, ExternalLink],
-    ['文档', props.project.docUrl, ExternalLink],
+    [t('projects.links.source'), props.project.projectUrl, Code2],
+    [t('projects.links.preview'), props.project.previewUrl, ExternalLink],
+    [t('projects.links.docs'), props.project.docUrl, ExternalLink],
   ] as const
 
   return (

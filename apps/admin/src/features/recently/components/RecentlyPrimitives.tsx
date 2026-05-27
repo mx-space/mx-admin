@@ -1,6 +1,8 @@
 import { RefreshCcw, ThumbsDown, ThumbsUp } from 'lucide-react'
 import type { EnrichmentResult } from '~/models/enrichment'
 
+import { useI18n } from '~/i18n'
+
 import { hostnameOf } from '../utils/recently'
 
 export function EnrichmentInlineCard(props: {
@@ -9,6 +11,7 @@ export function EnrichmentInlineCard(props: {
   retrying?: boolean
   url: string
 }) {
+  const { t } = useI18n()
   const image =
     props.enrichment.thumbnailImage?.url || props.enrichment.previewImage?.url
 
@@ -43,7 +46,7 @@ export function EnrichmentInlineCard(props: {
       </a>
       {props.onRetry ? (
         <button
-          aria-label="刷新链接预览"
+          aria-label={t('recently.enrichment.refreshAria')}
           className="flex size-8 shrink-0 items-center justify-center rounded text-neutral-400 transition-colors hover:bg-neutral-200 hover:text-neutral-700 disabled:opacity-60 dark:hover:bg-neutral-800 dark:hover:text-neutral-200"
           disabled={props.retrying}
           onClick={props.onRetry}

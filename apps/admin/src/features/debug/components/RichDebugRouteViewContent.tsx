@@ -10,12 +10,14 @@ import { resolveEnrichment } from '~/api/enrichment'
 import { uploadFile } from '~/api/files'
 import { API_URL } from '~/constants/env'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { cn } from '~/utils/cn'
 
 const STORAGE_KEY = 'debug-rich-editor-content'
 
 export function RichDebugRouteViewContent() {
+  const { t } = useI18n()
   const [content, setContent] = useState(() => {
     return window.localStorage.getItem(STORAGE_KEY) ?? ''
   })
@@ -42,8 +44,10 @@ export function RichDebugRouteViewContent() {
     setContent('')
     setText('')
     setEditorKey((value) => value + 1)
-    toast.success('Rich editor debug content reset')
+    toast.success(t('debug.rich.resetSuccess'))
   }
+
+  const placeholderText = t('debug.rich.placeholder')
 
   return (
     <div className="flex h-full min-h-0 flex-col bg-white dark:bg-neutral-950">
@@ -55,15 +59,18 @@ export function RichDebugRouteViewContent() {
       >
         <div className="min-w-0">
           <div className="truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
-            Rich Editor
+            {t('debug.rich.title')}
           </div>
           <div className="truncate text-xs text-neutral-500 dark:text-neutral-400">
-            {stats.textLength} chars · {stats.contentSize} serialized
+            {t('debug.rich.charsAndSize', {
+              chars: stats.textLength,
+              size: stats.contentSize,
+            })}
           </div>
         </div>
         <Button onClick={handleReset} type="button" variant="subtle">
           <RotateCcw aria-hidden="true" className="size-4" />
-          Reset
+          {t('debug.rich.reset')}
         </Button>
       </div>
 
@@ -73,6 +80,7 @@ export function RichDebugRouteViewContent() {
           key={editorKey}
           onContentChange={handleContentChange}
           onTextChange={setText}
+          placeholder={placeholderText}
         />
       </div>
     </div>
@@ -83,10 +91,12 @@ function RichDebugSurface(props: {
   content: string
   onContentChange: (content: string) => void
   onTextChange: (text: string) => void
+  placeholder: string
 }) {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const editorRef = useRef<RichEditorHandle | null>(null)
   const initialValueRef = useRef(parseSerializedEditorState(props.content))
+  const placeholderRef = useRef(props.placeholder)
   const latestCallbacks = useRef({
     onContentChange: props.onContentChange,
     onTextChange: props.onTextChange,
@@ -128,7 +138,7 @@ function RichDebugSurface(props: {
         onTextChange: (text) => {
           latestCallbacks.current.onTextChange(text)
         },
-        placeholder: '输入富文本调试内容...',
+        placeholder: placeholderRef.current,
         saveExcalidrawSnapshot,
         theme: getColorScheme(),
         variant: 'article',

@@ -1,5 +1,6 @@
 import { ListTodo } from 'lucide-react'
 
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 
 export function GroupedResourceSkeleton() {
@@ -22,24 +23,28 @@ export function GroupedResourceSkeleton() {
 }
 
 export function ResourceError(props: { onRetry: () => void }) {
+  const { t } = useI18n()
+
   return (
     <div className="flex min-h-80 flex-col items-center justify-center px-4 text-center">
       <p className="text-sm font-medium text-neutral-700 dark:text-neutral-200">
-        数据加载失败
+        {t('ai.empty.dataLoadFailed')}
       </p>
       <Button className="mt-3" onClick={props.onRetry} type="button">
-        重试
+        {t('ai.action.retry')}
       </Button>
     </div>
   )
 }
 
 export function ResourceEmpty(props: { label: string }) {
+  const { t } = useI18n()
+
   return (
     <div className="flex min-h-80 flex-col items-center justify-center px-4 text-center">
       <ListTodo aria-hidden="true" className="size-8 text-neutral-300" />
       <p className="mt-3 text-sm font-medium text-neutral-700 dark:text-neutral-200">
-        暂无{props.label}
+        {t('ai.empty.label', { label: props.label })}
       </p>
     </div>
   )

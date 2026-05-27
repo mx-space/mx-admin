@@ -2,6 +2,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { RefreshCw } from 'lucide-react'
 
 import { getDependencyGraph, getNpmPackageLatest } from '~/api/dependencies'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { cn } from '~/utils/cn'
 
@@ -12,6 +13,7 @@ export function UpdateDependenciesModal(props: {
   onClose: () => void
   open: boolean
 }) {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const graphQuery = useQuery({
     enabled: props.open,
@@ -27,7 +29,11 @@ export function UpdateDependenciesModal(props: {
   }
 
   return (
-    <Modal onClose={props.onClose} open={props.open} title="依赖更新">
+    <Modal
+      onClose={props.onClose}
+      open={props.open}
+      title={t('snippets.dialog.update.title')}
+    >
       <div className="space-y-4">
         <div className="flex justify-end">
           <Button
@@ -40,24 +46,34 @@ export function UpdateDependenciesModal(props: {
               aria-hidden="true"
               className={cn('size-4', graphQuery.isFetching && 'animate-spin')}
             />
-            刷新
+            {t('snippets.dialog.update.refresh')}
           </Button>
         </div>
         <div className="overflow-hidden rounded border border-neutral-200 dark:border-neutral-800">
           <table className="w-full text-left text-sm">
             <thead className="bg-neutral-50 text-xs text-neutral-500 dark:bg-neutral-900 dark:text-neutral-400">
               <tr>
-                <th className="px-3 py-2 font-medium">包名</th>
-                <th className="px-3 py-2 font-medium">版本</th>
-                <th className="px-3 py-2 font-medium">最新</th>
-                <th className="px-3 py-2 text-right font-medium">操作</th>
+                <th className="px-3 py-2 font-medium">
+                  {t('snippets.dialog.update.col.name')}
+                </th>
+                <th className="px-3 py-2 font-medium">
+                  {t('snippets.dialog.update.col.version')}
+                </th>
+                <th className="px-3 py-2 font-medium">
+                  {t('snippets.dialog.update.col.latest')}
+                </th>
+                <th className="px-3 py-2 text-right font-medium">
+                  {t('snippets.dialog.update.col.actions')}
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-100 dark:divide-neutral-800">
               {graphQuery.isLoading ? (
                 <tr>
                   <td className="px-3 py-8 text-center" colSpan={4}>
-                    <InlineLoading label="正在读取依赖图" />
+                    <InlineLoading
+                      label={t('snippets.dialog.update.loading')}
+                    />
                   </td>
                 </tr>
               ) : dependencies.length === 0 ? (
@@ -66,7 +82,7 @@ export function UpdateDependenciesModal(props: {
                     className="px-3 py-8 text-center text-neutral-500"
                     colSpan={4}
                   >
-                    暂无依赖。
+                    {t('snippets.dialog.update.empty')}
                   </td>
                 </tr>
               ) : (
@@ -98,6 +114,7 @@ function DependencyRow(props: {
   onUpdate: (packageName: string) => void
   open: boolean
 }) {
+  const { t } = useI18n()
   const latestQuery = useQuery({
     enabled: props.open,
     queryFn: () => getNpmPackageLatest(props.name),
@@ -122,7 +139,9 @@ function DependencyRow(props: {
         {props.currentVersion}
       </td>
       <td className="px-3 py-2 font-mono text-xs text-neutral-500">
-        {latestQuery.isLoading ? '...' : (latestVersion ?? '获取失败')}
+        {latestQuery.isLoading
+          ? '...'
+          : (latestVersion ?? t('snippets.dialog.update.fetchFailed'))}
       </td>
       <td className="px-3 py-2 text-right">
         <Button
@@ -133,7 +152,7 @@ function DependencyRow(props: {
           type="button"
           variant="subtle"
         >
-          更新
+          {t('snippets.dialog.update.action')}
         </Button>
       </td>
     </tr>

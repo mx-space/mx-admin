@@ -8,6 +8,7 @@ import type { Socket } from 'socket.io-client'
 import type { NotificationTypes } from './types'
 
 import { GATEWAY_URL } from '../constants/env'
+import { translate } from '../i18n/translate'
 import { EventTypes } from './types'
 
 interface GatewayMessage {
@@ -45,7 +46,9 @@ export function SocketBridge() {
           break
         }
         case EventTypes.GATEWAY_DISCONNECT: {
-          toast.warning(readPayloadMessage(payload, 'Gateway disconnected'))
+          toast.warning(
+            readPayloadMessage(payload, translate('socket.gatewayDisconnect')),
+          )
           break
         }
         case EventTypes.COMMENT_CREATE: {
@@ -64,7 +67,7 @@ export function SocketBridge() {
           break
         }
         case EventTypes.CONTENT_REFRESH: {
-          toast.warning('数据库有变动，将在 1 秒后重载页面')
+          toast.warning(translate('socket.contentRefresh'))
           window.setTimeout(() => {
             window.location.reload()
           }, 1000)
@@ -117,19 +120,19 @@ export function SocketBridge() {
     })
 
     socket.on('connect_error', () => {
-      if (import.meta.env.DEV) toast.error('Socket 连接异常')
+      if (import.meta.env.DEV) toast.error(translate('socket.connectionError'))
     })
     socket.io.on('error', () => {
-      if (import.meta.env.DEV) toast.error('Socket 连接异常')
+      if (import.meta.env.DEV) toast.error(translate('socket.connectionError'))
     })
     socket.io.on('reconnect', () => {
-      if (import.meta.env.DEV) toast.info('Socket 重连成功')
+      if (import.meta.env.DEV) toast.info(translate('socket.reconnectSuccess'))
     })
     socket.io.on('reconnect_attempt', () => {
-      if (import.meta.env.DEV) toast.info('Socket 重连中')
+      if (import.meta.env.DEV) toast.info(translate('socket.reconnecting'))
     })
     socket.io.on('reconnect_failed', () => {
-      if (import.meta.env.DEV) toast.info('Socket 重连失败')
+      if (import.meta.env.DEV) toast.info(translate('socket.reconnectFailed'))
     })
     socket.on('disconnect', () => {
       if (disposed || reconnectTimer) return
@@ -173,12 +176,12 @@ function reconnectUntilConnected(socket: Socket, isDisposed: () => boolean) {
 
 function notifyNewComment(payload: unknown, navigate: NavigateFunction) {
   const comment = asRecord(payload)
-  const author = readString(comment.author) || '匿名'
+  const author = readString(comment.author) || translate('socket.anonymous')
   const text = readString(comment.text)
   const body = text ? `${author}: ${text}` : author
-  const toastId = toast.success('新的评论', {
+  const toastId = toast.success(translate('socket.newComment'), {
     action: {
-      label: '查看',
+      label: translate('common.view'),
       onClick: () => {
         navigate('/comments?state=0')
         toast.dismiss(toastId)
@@ -188,22 +191,27 @@ function notifyNewComment(payload: unknown, navigate: NavigateFunction) {
     duration: 10000,
   })
 
-  void showBrowserNotification('Mx Space Admin 收到新的评论', body, () => {
-    if (document.hasFocus()) {
-      navigate('/comments?state=0')
-    } else {
-      window.open(
-        `${window.location.origin}${window.location.pathname}#/comments?state=0`,
-      )
-    }
-  })
+  void showBrowserNotification(
+    translate('socket.notificationCommentTitle'),
+    body,
+    () => {
+      if (document.hasFocus()) {
+        navigate('/comments?state=0')
+      } else {
+        window.open(
+          `${window.location.origin}${window.location.pathname}#/comments?state=0`,
+        )
+      }
+    },
+  )
 }
 
 function notifyLinkApply(payload: unknown, navigate: NavigateFunction) {
-  const sitename = readString(asRecord(payload).name) || '新的友链申请'
-  const toastId = toast.success('新的友链申请', {
+  const sitename =
+    readString(asRecord(payload).name) || translate('socket.newLinkApply')
+  const toastId = toast.success(translate('socket.newLinkApply'), {
     action: {
-      label: '查看',
+      label: translate('common.view'),
       onClick: () => {
         navigate('/friends?state=1')
         toast.dismiss(toastId)
@@ -214,7 +222,7 @@ function notifyLinkApply(payload: unknown, navigate: NavigateFunction) {
   })
 
   void showBrowserNotification(
-    'Mx Space Admin 收到新的友链申请',
+    translate('socket.notificationLinkApplyTitle'),
     sitename,
     () => {
       if (document.hasFocus()) {

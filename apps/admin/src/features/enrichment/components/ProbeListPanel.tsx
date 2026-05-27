@@ -1,6 +1,7 @@
 import { AlertCircle, CheckCircle2, Eraser } from 'lucide-react'
 import type { ProbeHistoryEntry } from '../types/enrichment'
 
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
 import { cn } from '~/utils/cn'
@@ -13,11 +14,12 @@ export function ProbeListPanel(props: {
   onSelect: (entry: ProbeHistoryEntry) => void
   selectedId: null | string
 }) {
+  const { t } = useI18n()
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="flex items-center justify-between border-b border-neutral-200 px-4 py-2 dark:border-neutral-800">
         <span className="text-xs text-neutral-500 dark:text-neutral-400">
-          {props.history.length} 条探针历史
+          {t('enrichment.probe.historyCount', { count: props.history.length })}
         </span>
         <Button
           disabled={props.history.length === 0}
@@ -26,12 +28,12 @@ export function ProbeListPanel(props: {
           variant="subtle"
         >
           <Eraser aria-hidden="true" className="size-4" />
-          清空
+          {t('enrichment.probe.clear')}
         </Button>
       </div>
       <Scroll className="flex-1">
         {props.history.length === 0 ? (
-          <ListEmpty label="暂无探针历史" />
+          <ListEmpty label={t('enrichment.probe.empty')} />
         ) : (
           props.history.map((entry) => (
             <button

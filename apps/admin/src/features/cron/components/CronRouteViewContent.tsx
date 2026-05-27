@@ -15,6 +15,7 @@ import {
   runCronTask,
 } from '~/api/cron-tasks'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { MasterDetailLayout } from '~/ui/layout/page-layout'
 import { Button } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
@@ -23,11 +24,11 @@ import { cn } from '~/utils/cn'
 import {
   definitionQueryKey,
   definitionStaleTime,
-  statusOptions,
+  statusOptionKeys,
   taskListPageSize,
   taskQueryKey,
   taskRefetchInterval,
-  typeOptions,
+  typeOptionKeys,
 } from '../constants'
 import {
   DefinitionSkeleton,
@@ -41,11 +42,21 @@ import { TaskDetail } from './TaskDetail'
 import { TaskListItem } from './TaskListItem'
 
 export function CronRouteViewContent() {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const [statusFilter, setStatusFilter] = useState<CronTaskStatus | undefined>()
   const [typeFilter, setTypeFilter] = useState<CronTaskType | undefined>()
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null)
   const [showDetailOnMobile, setShowDetailOnMobile] = useState(false)
+
+  const statusOptions = statusOptionKeys.map((opt) => ({
+    label: opt.labelKey ? t(opt.labelKey) : (opt.labelText ?? opt.value),
+    value: opt.value,
+  }))
+  const typeOptions = typeOptionKeys.map((opt) => ({
+    label: opt.labelKey ? t(opt.labelKey) : (opt.labelText ?? opt.value),
+    value: opt.value,
+  }))
 
   const definitionsQuery = useQuery({
     queryFn: getCronTaskDefinitions,
@@ -84,11 +95,11 @@ export function CronRouteViewContent() {
   const runMutation = useMutation({
     mutationFn: runCronTask,
     onError: () => {
-      toast.error('创建任务失败')
+      toast.error(t('cron.toast.createFailed'))
     },
     onSuccess: async (result) => {
-      if (result.created) toast.success('任务已创建')
-      else toast.info('任务已存在，等待执行中')
+      if (result.created) toast.success(t('cron.toast.created'))
+      else toast.info(t('cron.toast.createDuplicate'))
       await invalidateCronTasks()
     },
   })
@@ -96,7 +107,7 @@ export function CronRouteViewContent() {
   const cancelMutation = useMutation({
     mutationFn: cancelCronTask,
     onSuccess: async () => {
-      toast.success('任务已终止')
+      toast.success(t('cron.toast.cancelled'))
       await invalidateCronTasks()
     },
   })
@@ -104,11 +115,11 @@ export function CronRouteViewContent() {
   const retryMutation = useMutation({
     mutationFn: retryCronTask,
     onError: () => {
-      toast.error('重试失败')
+      toast.error(t('cron.toast.retryFailed'))
     },
     onSuccess: async (result) => {
-      if (result.created) toast.success('已创建重试任务')
-      else toast.info('任务已存在')
+      if (result.created) toast.success(t('cron.toast.retried'))
+      else toast.info(t('cron.toast.retryDuplicate'))
       await invalidateCronTasks()
     },
   })
@@ -116,7 +127,7 @@ export function CronRouteViewContent() {
   const deleteMutation = useMutation({
     mutationFn: deleteCronTask,
     onSuccess: async (_, taskId) => {
-      toast.success('任务已删除')
+      toast.success(t('cron.toast.deleted'))
       if (selectedTaskId === taskId) {
         setSelectedTaskId(null)
         setShowDetailOnMobile(false)
@@ -132,7 +143,7 @@ export function CronRouteViewContent() {
         status: CronTaskStatus.Completed,
       }),
     onSuccess: async (result) => {
-      toast.success(`已清理 ${result.deleted} 个已完成任务`)
+      toast.success(t('cron.toast.cleared', { count: result.deleted }))
       await invalidateCronTasks()
     },
   })
@@ -158,12 +169,12 @@ export function CronRouteViewContent() {
             <TaskDetail
               onBack={() => setShowDetailOnMobile(false)}
               onCancel={() => {
-                if (window.confirm('终止此任务后将无法恢复。')) {
+                if (window.confirm(t('cron.detail.confirmCancel'))) {
                   cancelMutation.mutate(selectedTask.id)
                 }
               }}
               onDelete={() => {
-                if (window.confirm('删除此任务记录？')) {
+                if (window.confirm(t('cron.detail.confirmDelete'))) {
                   deleteMutation.mutate(selectedTask.id)
                 }
               }}
@@ -184,7 +195,7 @@ export function CronRouteViewContent() {
             )}
           >
             <div className="min-w-0">
-              <h2 className="text-sm font-medium">计划任务</h2>
+              <h2 className="text-sm font-medium">{t('cron.title')}</h2>
             </div>
             <span className="text-xs text-neutral-500 dark:text-neutral-400">
               {total} / {definitions.length}
@@ -197,7 +208,7 @@ export function CronRouteViewContent() {
                 variant="subtle"
               >
                 <Trash2 aria-hidden="true" className="size-4" />
-                清理已完成
+                {t('cron.action.clearCompleted')}
               </Button>
               <Button
                 disabled={tasksQuery.isFetching || definitionsQuery.isFetching}
@@ -215,7 +226,7 @@ export function CronRouteViewContent() {
                       'animate-spin',
                   )}
                 />
-                刷新
+                {t('common.refresh')}
               </Button>
             </div>
           </div>
@@ -223,7 +234,7 @@ export function CronRouteViewContent() {
           <div className="border-b border-neutral-200 dark:border-neutral-800">
             <details className="group" open>
               <summary className="outline-hidden flex cursor-pointer items-center justify-between gap-3 px-4 py-3 text-sm font-medium transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-900">
-                <span>任务定义</span>
+                <span>{t('cron.definitions.title')}</span>
                 <span className="text-xs font-normal tabular-nums text-neutral-400">
                   {definitions.length}
                 </span>
@@ -237,7 +248,7 @@ export function CronRouteViewContent() {
                   <DefinitionSkeleton />
                 ) : definitions.length === 0 ? (
                   <div className="px-4 py-6 text-sm text-neutral-500">
-                    暂无任务定义
+                    {t('cron.definitions.empty')}
                   </div>
                 ) : (
                   definitions.map((definition) => (
@@ -245,7 +256,7 @@ export function CronRouteViewContent() {
                       definition={definition}
                       key={definition.type}
                       onRun={() => {
-                        if (window.confirm('立即执行此计划任务？')) {
+                        if (window.confirm(t('cron.definitions.confirmRun'))) {
                           runMutation.mutate(definition.type)
                         }
                       }}
@@ -259,7 +270,7 @@ export function CronRouteViewContent() {
 
           <div className="flex shrink-0 flex-wrap items-center gap-2 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
             <Select
-              ariaLabel="任务状态过滤"
+              ariaLabel={t('cron.filter.statusAria')}
               onChange={(value) =>
                 setStatusFilter(
                   (value || undefined) as CronTaskStatus | undefined,
@@ -269,7 +280,7 @@ export function CronRouteViewContent() {
               value={statusFilter ?? ''}
             />
             <Select
-              ariaLabel="任务类型过滤"
+              ariaLabel={t('cron.filter.typeAria')}
               onChange={(value) =>
                 setTypeFilter((value || undefined) as CronTaskType | undefined)
               }

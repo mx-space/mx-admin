@@ -11,6 +11,7 @@ import {
   restoreDraftVersion,
 } from '~/api/drafts'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
 import { cn } from '~/utils/cn'
@@ -30,6 +31,7 @@ export function DraftDetail(props: {
   onBack: () => void
   onDelete: (draft: DraftModel) => void
 }) {
+  const { t } = useI18n()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const historyQuery = useQuery({
@@ -75,9 +77,9 @@ export function DraftDetail(props: {
     mutationFn: (version: number) =>
       restoreDraftVersion(props.draft.id, version),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '恢复失败')),
+      toast.error(getErrorMessage(error, t('drafts.history.restoreFailed'))),
     onSuccess: async () => {
-      toast.success('版本已恢复')
+      toast.success(t('drafts.history.restoreSuccess'))
       await queryClient.invalidateQueries({ queryKey: draftsQueryKey })
     },
   })
@@ -92,7 +94,7 @@ export function DraftDetail(props: {
       >
         <div className="flex min-w-0 items-center gap-3">
           <Button
-            aria-label="返回草稿列表"
+            aria-label={t('drafts.detail.backAria')}
             className="h-8 px-2 lg:hidden"
             onClick={props.onBack}
             type="button"
@@ -102,10 +104,10 @@ export function DraftDetail(props: {
           </Button>
           <div className="min-w-0">
             <h2 className="truncate text-sm font-semibold text-neutral-950 dark:text-neutral-50">
-              {props.draft.title || '无标题'}
+              {props.draft.title || t('drafts.row.untitled')}
             </h2>
             <div className="mt-0.5 flex items-center gap-2 text-xs text-neutral-500 dark:text-neutral-400">
-              <span>{meta.label}</span>
+              <span>{t(meta.labelKey)}</span>
               <span>v{props.draft.version}</span>
               <time dateTime={props.draft.updatedAt}>
                 {relativeTimeFromNow(props.draft.updatedAt)}
@@ -121,7 +123,7 @@ export function DraftDetail(props: {
             variant="subtle"
           >
             <Pencil aria-hidden="true" className="size-4" />
-            编辑
+            {t('drafts.detail.edit')}
           </Button>
           <Button
             className="h-8 border-red-200 px-2.5 text-red-600 hover:bg-red-50 dark:border-red-950 dark:text-red-400 dark:hover:bg-red-950/30"
@@ -135,7 +137,7 @@ export function DraftDetail(props: {
             ) : (
               <Trash2 aria-hidden="true" className="size-4" />
             )}
-            删除
+            {t('drafts.detail.delete')}
           </Button>
         </div>
       </div>
@@ -155,7 +157,7 @@ export function DraftDetail(props: {
             <div className="min-h-0 border-b border-neutral-200 lg:border-b-0 lg:border-r dark:border-neutral-800">
               <div className="flex h-10 items-center gap-2 border-b border-neutral-200 px-4 text-sm font-medium text-neutral-700 dark:border-neutral-800 dark:text-neutral-300">
                 <GitCompare aria-hidden="true" className="size-4" />
-                版本列表
+                {t('drafts.history.title')}
                 <span className="text-xs font-normal text-neutral-400">
                   ({versionItems.length})
                 </span>
@@ -184,18 +186,24 @@ export function DraftDetail(props: {
                     <>
                       <span>v{selectedVersionItem.version}</span>
                       <span className="text-neutral-400">→</span>
-                      <span>v{props.draft.version} 当前</span>
+                      <span>
+                        {t('drafts.history.current', {
+                          version: props.draft.version,
+                        })}
+                      </span>
                     </>
                   ) : (
-                    <span>选择一个历史版本查看差异</span>
+                    <span>{t('drafts.history.pickVersion')}</span>
                   )}
                 </div>
                 {diffStats && !diffStats.isSame ? (
                   <span className="text-xs tabular-nums text-neutral-500">
-                    {diffStats.delta > 0
-                      ? `+${diffStats.delta}`
-                      : diffStats.delta}{' '}
-                    字
+                    {t('drafts.history.deltaChars', {
+                      delta:
+                        diffStats.delta > 0
+                          ? `+${diffStats.delta}`
+                          : diffStats.delta,
+                    })}
                   </span>
                 ) : null}
               </div>
@@ -216,7 +224,7 @@ export function DraftDetail(props: {
                   />
                 ) : (
                   <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                    无法加载版本内容。
+                    {t('drafts.history.cannotLoad')}
                   </p>
                 )}
               </Scroll>

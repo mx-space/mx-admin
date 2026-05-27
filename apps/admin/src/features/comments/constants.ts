@@ -1,3 +1,4 @@
+import { translate } from '~/i18n/translate'
 import { CommentState } from '~/models/comment'
 
 export const commentsQueryKey = ['comments']
@@ -30,8 +31,13 @@ export const commentQuickEmojis = [
   '🚀',
 ]
 
-export const commentFilters: { label: string; value: CommentState }[] = [
-  { label: '待审核', value: CommentState.Unread },
-  { label: '已读', value: CommentState.Read },
-  { label: '垃圾桶', value: CommentState.Junk },
-]
+export function getCommentFilters(): {
+  label: string
+  value: CommentState
+}[] {
+  return [
+    { label: translate('comments.filter.unread'), value: CommentState.Unread },
+    { label: translate('comments.filter.read'), value: CommentState.Read },
+    { label: translate('comments.filter.junk'), value: CommentState.Junk },
+  ]
+}

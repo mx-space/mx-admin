@@ -3,6 +3,7 @@ import type { ProjectModel } from '~/models/project'
 import type { ProjectAvatarSize } from '../types/projects'
 
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { cn } from '~/utils/cn'
 
 import { readInitial } from '../utils/projects'
@@ -38,11 +39,14 @@ export function ProjectAvatar(props: {
 }
 
 export function ProjectEmptyState() {
+  const { t } = useI18n()
   return (
     <div className="flex flex-col items-center justify-center py-24 text-center">
       <Inbox aria-hidden="true" className="mb-4 size-10 text-neutral-300" />
-      <p className="text-sm text-neutral-500">暂无项目</p>
-      <p className="mt-1 text-xs text-neutral-400">点击按钮创建项目</p>
+      <p className="text-sm text-neutral-500">{t('projects.empty.title')}</p>
+      <p className="mt-1 text-xs text-neutral-400">
+        {t('projects.empty.description')}
+      </p>
     </div>
   )
 }
@@ -87,6 +91,7 @@ export function ProjectDetailSkeleton() {
 }
 
 export function ProjectSelectPlaceholder() {
+  const { t } = useI18n()
   return (
     <section className="flex h-full min-h-0 flex-col bg-white dark:bg-neutral-950">
       <div
@@ -96,14 +101,16 @@ export function ProjectSelectPlaceholder() {
         )}
       >
         <h2 className="text-sm font-medium text-neutral-950 dark:text-neutral-50">
-          项目详情
+          {t('projects.detailPlaceholder.heading')}
         </h2>
       </div>
       <div className="flex min-h-[32rem] flex-col items-center justify-center p-8 text-center">
         <Folder aria-hidden="true" className="mb-4 size-10 text-neutral-300" />
-        <h2 className="text-base font-medium">选择一个项目</h2>
+        <h2 className="text-base font-medium">
+          {t('projects.detailPlaceholder.title')}
+        </h2>
         <p className="mt-1 text-sm text-neutral-500">
-          从左侧列表选择项目，或新建一个项目。
+          {t('projects.detailPlaceholder.description')}
         </p>
       </div>
     </section>

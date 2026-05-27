@@ -7,6 +7,7 @@ import type { FormEvent } from 'react'
 import type { ProbeHistoryEntry } from '../types/enrichment'
 
 import { probeEnrichment, refreshEnrichment } from '~/api/enrichment'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Checkbox } from '~/ui/primitives/checkbox'
 import { Scroll } from '~/ui/primitives/scroll'
@@ -21,12 +22,13 @@ export function ProbeConsole(props: {
   onProbed: (entry: ProbeHistoryEntry) => void
   selected: ProbeHistoryEntry | null
 }) {
+  const { t } = useI18n()
   const [url, setUrl] = useState('')
   const [useCache, setUseCache] = useState(false)
   const probeMutation = useMutation({
     mutationFn: () => probeEnrichment(url.trim(), useCache),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '探针失败')),
+      toast.error(getErrorMessage(error, t('enrichment.probe.failed'))),
     onSuccess: (result) => {
       const entry = {
         createdAt: Date.now(),
@@ -61,7 +63,7 @@ export function ProbeConsole(props: {
             <ArrowLeft aria-hidden="true" className="size-4" />
           </button>
           <span className="text-sm font-medium text-neutral-950 dark:text-neutral-50">
-            探针
+            {t('enrichment.probe.title')}
           </span>
         </div>
         <div className="relative">
@@ -79,7 +81,7 @@ export function ProbeConsole(props: {
         <div className="flex flex-wrap items-center justify-between gap-2">
           <Checkbox
             checked={useCache}
-            label="如已有缓存则使用缓存"
+            label={t('enrichment.probe.useCacheLabel')}
             onCheckedChange={setUseCache}
           />
           <Button
@@ -91,7 +93,7 @@ export function ProbeConsole(props: {
             ) : (
               <DatabaseZap aria-hidden="true" className="size-4" />
             )}
-            探测
+            {t('enrichment.probe.run')}
           </Button>
         </div>
       </form>
@@ -99,7 +101,7 @@ export function ProbeConsole(props: {
         {activeResult ? (
           <ProbeResult result={activeResult} />
         ) : (
-          <DetailEmpty label="输入链接后运行探针。" />
+          <DetailEmpty label={t('enrichment.probe.detailEmpty')} />
         )}
       </Scroll>
     </div>
@@ -107,19 +109,20 @@ export function ProbeConsole(props: {
 }
 
 function ProbeResult(props: { result: EnrichmentProbeResult }) {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const canPersist =
     !props.result.cached && !props.result.error && !!props.result.matched
   const persistMutation = useMutation({
     mutationFn: () => {
       const matched = props.result.matched
-      if (!matched) throw new Error('未匹配 provider')
+      if (!matched) throw new Error(t('enrichment.probe.noProvider'))
       return refreshEnrichment(matched.provider, matched.externalId)
     },
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '持久化失败')),
+      toast.error(getErrorMessage(error, t('enrichment.probe.persistFailed'))),
     onSuccess: async () => {
-      toast.success('已持久化')
+      toast.success(t('enrichment.probe.persisted'))
       await queryClient.invalidateQueries({ queryKey: enrichmentQueryKey })
     },
   })
@@ -134,9 +137,15 @@ function ProbeResult(props: { result: EnrichmentProbeResult }) {
             {props.result.matched.provider} · {props.result.matched.externalId}
           </SmallBadge>
         ) : (
-          <SmallBadge tone="warning">无匹配 provider</SmallBadge>
+          <SmallBadge tone="warning">
+            {t('enrichment.probe.noProviderBadge')}
+          </SmallBadge>
         )}
-        <SmallBadge>{props.result.cached ? '使用缓存' : '强制刷新'}</SmallBadge>
+        <SmallBadge>
+          {props.result.cached
+            ? t('enrichment.probe.cachedBadge')
+            : t('enrichment.probe.refreshedBadge')}
+        </SmallBadge>
       </div>
       {props.result.error ? (
         <div className="rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-950 dark:bg-red-950/40 dark:text-red-300">
@@ -168,7 +177,7 @@ function ProbeResult(props: { result: EnrichmentProbeResult }) {
             ) : (
               <Save aria-hidden="true" className="size-4" />
             )}
-            持久化结果
+            {t('enrichment.probe.persist')}
           </Button>
         </div>
       ) : null}

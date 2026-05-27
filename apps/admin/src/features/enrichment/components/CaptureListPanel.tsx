@@ -1,5 +1,6 @@
 import type { EnrichmentCaptureJoinedRow } from '~/models/enrichment'
 
+import { useI18n } from '~/i18n'
 import { CompactPagination } from '~/ui/data/compact-pagination'
 import { Scroll } from '~/ui/primitives/scroll'
 import { cn } from '~/utils/cn'
@@ -20,17 +21,18 @@ export function CaptureListPanel(props: {
   selectedId: null | string
   total: number
 }) {
+  const { t } = useI18n()
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="border-b border-neutral-200 px-4 py-2 text-xs text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
-        共 {props.total} 张截图
+        {t('enrichment.capture.totalSuffix', { count: props.total })}
         {props.quota ? ` · ${props.quota}` : ''}
       </div>
       <Scroll className="flex-1">
         {props.loading && props.rows.length === 0 ? (
           <ListLoading />
         ) : props.rows.length === 0 ? (
-          <ListEmpty label="暂无截图" />
+          <ListEmpty label={t('enrichment.capture.empty')} />
         ) : (
           props.rows.map((row) => (
             <CaptureRow

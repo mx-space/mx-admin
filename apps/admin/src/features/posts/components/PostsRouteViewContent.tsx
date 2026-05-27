@@ -14,7 +14,9 @@ import {
   ContentListToolbar,
   SortMenu,
 } from '~/features/_shared/components/content-list-toolbar'
+import { useI18n } from '~/i18n'
 import { CompactPagination } from '~/ui/data/compact-pagination'
+import { confirmDialog } from '~/ui/feedback/confirm'
 import { FocusScope, setActiveScope, useScopeArrowNav } from '~/ui/focus-scope'
 import { useListSelection, useListShortcuts } from '~/ui/list-actions'
 import { ButtonLink } from '~/ui/primitives/button'
@@ -24,7 +26,7 @@ import { cn } from '~/utils/cn'
 
 import {
   allCategoriesValue,
-  postSortOptions,
+  postSortOptionDefinitions,
   postsPageSize,
 } from '../constants'
 import { getErrorMessage } from '../utils/errors'
@@ -42,6 +44,7 @@ import { PostsSkeleton } from './PostsSkeleton'
 const FOCUS_SCOPE_ID = 'posts-list'
 
 export function PostsRouteViewContent() {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const [searchParams, setSearchParams] = useSearchParams()
   const [page, setPage] = useState(readPage(searchParams.get('page')))
@@ -154,14 +157,16 @@ export function PostsRouteViewContent() {
     mutationFn: (payload: { categoryId: string; id: string }) =>
       patchPost(payload.id, { categoryId: payload.categoryId }),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '分类更新失败')),
+      toast.error(
+        getErrorMessage(error, t('posts.toast.categoryUpdateFailed')),
+      ),
     onSuccess: invalidatePosts,
   })
 
   const deleteMutation = useMutation({
     mutationFn: deletePost,
     onSuccess: async () => {
-      toast.success('文章已删除')
+      toast.success(t('posts.toast.deleted'))
       await invalidatePosts()
     },
   })
@@ -180,13 +185,20 @@ export function PostsRouteViewContent() {
       }
     },
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '批量删除失败')),
+      toast.error(getErrorMessage(error, t('posts.toast.batchDeleteFailed'))),
     onSuccess: async ({ failedCount, successCount }) => {
       selection.clear()
       if (failedCount > 0) {
-        toast.warning(`删除完成：成功 ${successCount}，失败 ${failedCount}`)
+        toast.warning(
+          t('posts.toast.batchDeletePartial', {
+            failed: failedCount,
+            success: successCount,
+          }),
+        )
       } else {
-        toast.success(`成功删除 ${successCount} 篇文章`)
+        toast.success(
+          t('posts.toast.batchDeleteSucceeded', { count: successCount }),
+        )
       }
       await invalidatePosts()
     },
@@ -198,40 +210,49 @@ export function PostsRouteViewContent() {
         pinAt: payload.isPinned ? new Date().toISOString() : null,
       }),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '置顶状态更新失败')),
+      toast.error(getErrorMessage(error, t('posts.toast.pinFailed'))),
     onSuccess: invalidatePosts,
   })
 
   const externalHrefFor = (post: PostModel) =>
     `${WEB_URL}/posts/${post.category?.slug ?? post.categoryId}/${post.slug}`
 
-  const confirmAndDelete = (targets: PostModel[]) => {
+  const confirmAndDelete = async (targets: PostModel[]) => {
     if (targets.length === 0) return
-    const msg =
+    const title =
       targets.length === 1
-        ? `确定删除「${targets[0].title || '未命名文章'}」？`
-        : `确定删除选中的 ${targets.length} 篇文章？`
-    if (!window.confirm(msg)) return
+        ? t('posts.confirmDelete.single', {
+            title: targets[0].title || t('posts.row.untitled'),
+          })
+        : t('posts.confirmDelete.batch', { count: targets.length })
+    const confirmed = await confirmDialog({
+      destructive: true,
+      title,
+    })
+    if (!confirmed) return
     if (targets.length === 1) {
       deleteMutation.mutate(targets[0].id)
     } else {
-      batchDeleteMutation.mutate(targets.map((t) => t.id))
+      batchDeleteMutation.mutate(targets.map((target) => target.id))
     }
   }
 
   const actions = useMemo(
     () =>
-      buildPostActions({
-        deleteMany: confirmAndDelete,
-        navigateToEdit: (post) => {
-          window.location.hash = `#/posts/edit?id=${encodeURIComponent(post.id)}`
+      buildPostActions(
+        {
+          deleteMany: confirmAndDelete,
+          navigateToEdit: (post) => {
+            window.location.hash = `#/posts/edit?id=${encodeURIComponent(post.id)}`
+          },
+          openExternal: (post) => {
+            window.open(externalHrefFor(post), '_blank', 'noopener,noreferrer')
+          },
         },
-        openExternal: (post) => {
-          window.open(externalHrefFor(post), '_blank', 'noopener,noreferrer')
-        },
-      }),
+        t,
+      ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
+    [t],
   )
 
   useListShortcuts(actions, {
@@ -260,18 +281,27 @@ export function PostsRouteViewContent() {
 
   const count = useMemo(() => {
     if (!pagination) return null
-    return `${pagination.total} 篇`
-  }, [pagination])
+    return t('posts.list.count', { count: pagination.total })
+  }, [pagination, t])
+
+  const sortOptions = useMemo(
+    () =>
+      postSortOptionDefinitions.map((option) => ({
+        label: t(option.labelKey),
+        value: option.value,
+      })),
+    [t],
+  )
 
   const categoryOptions = useMemo(
     () => [
-      { label: '全部分类', value: allCategoriesValue },
+      { label: t('posts.filter.allCategories'), value: allCategoriesValue },
       ...(categoriesQuery.data ?? []).map((category) => ({
         label: category.name,
         value: category.id,
       })),
     ],
-    [categoriesQuery.data],
+    [categoriesQuery.data, t],
   )
 
   const rowCategoryOptions = useMemo(
@@ -308,18 +338,18 @@ export function PostsRouteViewContent() {
         action={
           <ButtonLink to="/posts/edit">
             <Plus aria-hidden="true" className="size-4" />
-            新建文章
+            {t('posts.action.newPost')}
           </ButtonLink>
         }
         count={count}
         icon={<FileText aria-hidden="true" className="size-4" />}
-        title="文章"
+        title={t('posts.title')}
       />
 
       <ContentListToolbar
         extraActions={
           <button
-            aria-label="刷新文章列表"
+            aria-label={t('posts.list.refreshAria')}
             className="outline-hidden inline-flex h-7 w-7 shrink-0 items-center justify-center rounded text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 focus-visible:ring-2 focus-visible:ring-[var(--color-primary-shallow)] disabled:pointer-events-none disabled:opacity-50 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-100"
             disabled={postsQuery.isFetching}
             onClick={() => void postsQuery.refetch()}
@@ -336,7 +366,7 @@ export function PostsRouteViewContent() {
         }
         filters={
           <SelectField
-            aria-label="按分类过滤文章"
+            aria-label={t('posts.filter.byCategoryAria')}
             disabled={Boolean(keyword)}
             onValueChange={(value) => {
               setCategoryId(value)
@@ -356,7 +386,7 @@ export function PostsRouteViewContent() {
               setSortOrder(order)
               setPage(1)
             }}
-            options={postSortOptions}
+            options={sortOptions}
             order={sortOrder}
           />
         }
@@ -368,21 +398,25 @@ export function PostsRouteViewContent() {
         }}
         onSearch={onSearch}
         onSearchValueChange={setKeywordInput}
-        searchPlaceholder="搜索标题或正文"
+        searchPlaceholder={t('posts.list.searchPlaceholder')}
         searchValue={keywordInput}
         selection={{
           allVisibleSelected,
           bulkActionDisabled:
             selectedCount === 0 || batchDeleteMutation.isPending,
           bulkActionIcon: <Trash2 aria-hidden="true" className="size-4" />,
-          bulkActionLabel: '批量删除',
+          bulkActionLabel: t('posts.action.bulkDelete'),
           hasVisibleItems: posts.length > 0,
           indeterminate: selectedCount > 0 && !allVisibleSelected,
-          onBulkAction: () => confirmAndDelete(selection.getSelectedTargets()),
+          onBulkAction: () => {
+            void confirmAndDelete(selection.getSelectedTargets())
+          },
           onToggleAllVisible: toggleAllVisible,
-          selectAllLabel: '选择当前页',
+          selectAllLabel: t('posts.list.selectAllVisible'),
           selectedCount,
-          selectedLabel: `已选 ${selectedCount} 项`,
+          selectedLabel: t('posts.list.selectedCount', {
+            count: selectedCount,
+          }),
         }}
       />
 
@@ -426,7 +460,7 @@ export function PostsRouteViewContent() {
       {pagination && pagination.totalPages > 1 ? (
         <div className="flex shrink-0 items-center justify-between border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
           <span className="text-xs text-neutral-500 dark:text-neutral-400">
-            第 {pagination.page} 页
+            {t('posts.list.pageIndicator', { page: pagination.page })}
           </span>
           <CompactPagination
             onPageChange={setPage}

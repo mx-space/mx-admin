@@ -2,6 +2,7 @@ import { Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import type { Subscriber } from '~/api/subscribe'
 
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Checkbox } from '~/ui/primitives/checkbox'
 
@@ -14,6 +15,7 @@ export function SubscriberRow(props: {
   selected: boolean
   subscriber: Subscriber
 }) {
+  const { t } = useI18n()
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)
 
   return (
@@ -27,7 +29,7 @@ export function SubscriberRow(props: {
       onClick={() => props.onSelect(!props.selected)}
     >
       <Checkbox
-        aria-label="选择订阅者"
+        aria-label={t('subscribe.row.selectAria')}
         checked={props.selected}
         onCheckedChange={props.onSelect}
         onClick={(event) => event.stopPropagation()}
@@ -50,7 +52,7 @@ export function SubscriberRow(props: {
         {formatDate(props.subscriber.createdAt)}
       </time>
       <Button
-        aria-label="删除订阅者"
+        aria-label={t('subscribe.row.deleteAria')}
         className="h-8 px-2 text-red-600 opacity-100 transition-opacity sm:opacity-0 sm:group-focus-within:opacity-100 sm:group-hover:opacity-100 dark:text-red-400"
         onClick={(event) => {
           event.stopPropagation()
@@ -66,7 +68,9 @@ export function SubscriberRow(props: {
         variant="subtle"
       >
         <Trash2 aria-hidden="true" className="size-3.5" />
-        {isConfirmingDelete ? '确认' : '删除'}
+        {isConfirmingDelete
+          ? t('subscribe.row.confirm')
+          : t('subscribe.row.delete')}
       </Button>
     </article>
   )

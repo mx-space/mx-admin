@@ -9,6 +9,7 @@ import type {
   Ref,
 } from 'react'
 
+import { useI18n } from '~/i18n'
 import { ContextMenuTrigger, showContextMenu } from '~/ui/overlay/context-menu'
 import { Checkbox } from '~/ui/primitives/checkbox'
 import { cn } from '~/utils/cn'
@@ -54,6 +55,7 @@ const INTERACTIVE_SELECTOR =
  * single / toggle (`$mod`+click) / range (`Shift`+click) selection.
  */
 export function ContentEntryListItem(props: ContentEntryListItemProps) {
+  const { t } = useI18n()
   const selectable = Boolean(props.checkboxLabel && props.onSelectedChange)
   const handleSelectedChange = props.onSelectedChange ?? (() => {})
 
@@ -154,7 +156,10 @@ export function ContentEntryListItem(props: ContentEntryListItemProps) {
           >
             <ExternalLink aria-hidden="true" className="size-4" />
           </ActionLink>
-          <ActionButton onClick={onMoreClick} title="更多操作">
+          <ActionButton
+            onClick={onMoreClick}
+            title={t('shared.contentListItem.moreActions')}
+          >
             <MoreHorizontal aria-hidden="true" className="size-4" />
           </ActionButton>
         </div>

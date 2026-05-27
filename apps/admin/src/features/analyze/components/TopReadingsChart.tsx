@@ -1,5 +1,6 @@
 import type { ReadingRankItem } from '~/api/activity'
 
+import { useI18n } from '~/i18n'
 import { cn } from '~/utils/cn'
 
 import { formatNumber } from '../utils/analyze'
@@ -7,6 +8,7 @@ import { ProgressBar } from './AnalyzePrimitives'
 import { ReferenceButton } from './ReferenceButton'
 
 export function TopReadingsChart(props: { items: ReadingRankItem[] }) {
+  const { t } = useI18n()
   const max = Math.max(...props.items.map((item) => item.count), 1)
 
   return (
@@ -30,7 +32,7 @@ export function TopReadingsChart(props: { items: ReadingRankItem[] }) {
             <div className="flex items-center justify-between gap-3">
               <ReferenceButton
                 id={item.ref?.id}
-                title={item.ref?.title ?? '已删除的文章'}
+                title={item.ref?.title ?? t('analyze.deletedPost')}
               />
               <span className="text-xs tabular-nums text-neutral-500 dark:text-neutral-400">
                 {formatNumber(item.count)}

@@ -1,4 +1,5 @@
 import { ExternalLink, Pencil, Trash2 } from 'lucide-react'
+import type { TranslationKey, TranslationValues } from '~/i18n/types'
 import type { NoteModel } from '~/models/note'
 import type { ListAction } from '~/ui/list-actions'
 
@@ -10,12 +11,13 @@ export interface NoteActionHandlers {
 
 export function buildNoteActions(
   handlers: NoteActionHandlers,
+  t: (key: TranslationKey, values?: TranslationValues) => string,
 ): ListAction<NoteModel>[] {
   return [
     {
       icon: Pencil,
       key: 'edit',
-      label: '编辑',
+      label: t('common.edit'),
       run: (targets) => handlers.navigateToEdit(targets[0]),
       shortcut: 'Enter',
       shortcutLabel: '↵',
@@ -23,7 +25,7 @@ export function buildNoteActions(
     {
       icon: ExternalLink,
       key: 'open-external',
-      label: '在新窗口打开',
+      label: t('notes.action.openExternal'),
       run: (targets) => handlers.openExternal(targets[0]),
       shortcut: '$mod+Enter',
       shortcutLabel: '⌘↵',
@@ -32,7 +34,7 @@ export function buildNoteActions(
       danger: true,
       icon: Trash2,
       key: 'delete',
-      label: '删除',
+      label: t('common.delete'),
       multi: true,
       run: (targets) => handlers.deleteMany(targets),
       shortcut: 'Backspace',

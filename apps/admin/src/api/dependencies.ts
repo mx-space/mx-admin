@@ -1,4 +1,5 @@
 import { API_URL } from '../constants/env'
+import { translate } from '../i18n/translate'
 import { getJson } from './http'
 
 export interface DependencyGraph {
@@ -36,7 +37,7 @@ export async function getNpmPackageLatest(name: string) {
   )
 
   if (!response.ok) {
-    throw new Error(`获取 ${name} 最新版本失败`)
+    throw new Error(translate('api.error.npmLatest', { name }))
   }
 
   return (await response.json()) as NpmPackageLatest

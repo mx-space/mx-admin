@@ -1,15 +1,20 @@
+import type { TranslationKey, TranslationValues } from '~/i18n/types'
 import type { AccountSession } from '../types/settings'
 
 import { authClient } from '~/utils/authjs/auth'
 
-export async function listSessions(): Promise<AccountSession[]> {
+type Translator = (key: TranslationKey, values?: TranslationValues) => string
+
+export async function listSessions(t: Translator): Promise<AccountSession[]> {
   const [sessionsResult, currentResult] = await Promise.all([
     authClient.listSessions(),
     authClient.getSession(),
   ])
 
   if (sessionsResult.error) {
-    throw new Error(sessionsResult.error.message || '获取会话失败')
+    throw new Error(
+      sessionsResult.error.message || t('settings.session.error.listFailed'),
+    )
   }
 
   const currentToken = currentResult.data?.session?.token

@@ -1,10 +1,13 @@
 import type { DeviceDistributionResponse, IPAggregate } from '~/api/analyze'
+import type { TranslationKey, TranslationValues } from '~/i18n/types'
 import type {
   ActivityListResponseObjects,
   AnalyzePeriod,
   RankRange,
   TrendPoint,
 } from '../types/analyze'
+
+type Translator = (key: TranslationKey, values?: TranslationValues) => string
 
 export function buildTrendData(
   aggregate: IPAggregate | undefined,
@@ -66,15 +69,15 @@ export function getRankRange(range: RankRange) {
   }
 }
 
-export function formatDuration(value: number) {
+export function formatDuration(value: number, t: Translator) {
   const totalSeconds = Math.max(0, Math.floor(value / 1000))
   const hours = Math.floor(totalSeconds / 3600)
   const minutes = Math.floor((totalSeconds % 3600) / 60)
   const seconds = totalSeconds % 60
 
-  if (hours > 0) return `${hours}小时 ${minutes}分钟 ${seconds}秒`
-  if (minutes > 0) return `${minutes}分钟 ${seconds}秒`
-  return `${seconds}秒`
+  if (hours > 0) return t('analyze.duration.hms', { hours, minutes, seconds })
+  if (minutes > 0) return t('analyze.duration.ms', { minutes, seconds })
+  return t('analyze.duration.s', { seconds })
 }
 
 export function formatMonthDate(value: string) {

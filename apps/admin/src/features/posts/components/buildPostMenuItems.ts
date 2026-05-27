@@ -1,5 +1,6 @@
 import { Check, Copy } from 'lucide-react'
 import { toast } from 'sonner'
+import type { TranslationKey, TranslationValues } from '~/i18n/types'
 import type { PostModel } from '~/models/post'
 import type { ListAction } from '~/ui/list-actions'
 import type { ContextMenuItem } from '~/ui/overlay/context-menu'
@@ -9,6 +10,8 @@ export interface PostMenuCategoryOption {
   name: string
 }
 
+type Translator = (key: TranslationKey, values?: TranslationValues) => string
+
 export interface BuildPostMenuItemsOptions {
   actions: ReadonlyArray<ListAction<PostModel>>
   categories: PostMenuCategoryOption[]
@@ -16,18 +19,23 @@ export interface BuildPostMenuItemsOptions {
   onCategoryChange: (categoryId: string) => void
   onPinToggle: (next: boolean) => void
   onPublishToggle: (next: boolean) => void
+  t: Translator
 }
 
-async function copyText(value: string | undefined, label: string) {
+async function copyText(
+  value: string | undefined,
+  label: string,
+  t: Translator,
+) {
   if (!value) {
-    toast.error(`无 ${label} 可复制`)
+    toast.error(t('posts.toast.copyTargetMissing', { label }))
     return
   }
   try {
     await navigator.clipboard.writeText(value)
-    toast.success(`已复制${label}`)
+    toast.success(t('posts.toast.copySucceeded', { label }))
   } catch {
-    toast.error('复制失败')
+    toast.error(t('posts.toast.copyFailed'))
   }
 }
 
@@ -54,6 +62,8 @@ export function buildPostMenuItems(
   const find = (key: string) =>
     options.actions.find((action) => action.key === key)
 
+  const t = options.t
+
   const items: ContextMenuItem[] = []
 
   const edit = actionToItem(find('edit'), post)
@@ -66,14 +76,14 @@ export function buildPostMenuItems(
     {
       checked: post.isPublished ?? false,
       key: 'publish',
-      label: '已发布',
+      label: t('posts.menu.publish'),
       onCheckedChange: options.onPublishToggle,
       type: 'checkbox',
     },
     {
       checked: Boolean(post.pinAt),
       key: 'pin',
-      label: '置顶',
+      label: t('posts.menu.pin'),
       onCheckedChange: options.onPinToggle,
       type: 'checkbox',
     },
@@ -88,7 +98,7 @@ export function buildPostMenuItems(
         onClick: () => options.onCategoryChange(category.id),
       })),
       key: 'category-submenu',
-      label: '修改分类',
+      label: t('posts.menu.category.change'),
       type: 'submenu',
     })
   }
@@ -98,18 +108,19 @@ export function buildPostMenuItems(
     {
       icon: Copy,
       key: 'copy-link',
-      label: '复制链接',
-      onClick: () => void copyText(options.externalHref, '链接'),
+      label: t('posts.menu.copy.link'),
+      onClick: () =>
+        void copyText(options.externalHref, t('posts.copy.label.link'), t),
     },
     {
       key: 'copy-id',
-      label: '复制 ID',
-      onClick: () => void copyText(post.id, 'ID'),
+      label: t('posts.menu.copy.id'),
+      onClick: () => void copyText(post.id, t('posts.copy.label.id'), t),
     },
     {
       key: 'copy-slug',
-      label: '复制 slug',
-      onClick: () => void copyText(post.slug, 'slug'),
+      label: t('posts.menu.copy.slug'),
+      onClick: () => void copyText(post.slug, t('posts.copy.label.slug'), t),
     },
   )
 

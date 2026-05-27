@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 import type { OauthProviderType } from '../../types/settings'
 
 import { authAsOwner } from '~/api/auth'
+import { useI18n } from '~/i18n'
 import { authClient } from '~/utils/authjs/auth'
 
 import { accountQueryKey } from '../../constants'
@@ -18,6 +19,7 @@ import { SessionSection } from './SessionSection'
 import { TokenPanel } from './TokenPanel'
 
 export function AccountSettings() {
+  const { t } = useI18n()
   const [activePanel, setActivePanel] = useState<'passkeys' | 'tokens' | null>(
     null,
   )
@@ -30,9 +32,11 @@ export function AccountSettings() {
   const authAsOwnerMutation = useMutation({
     mutationFn: authAsOwner,
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '设定主人账户失败')),
+      toast.error(
+        getErrorMessage(error, t('settings.account.error.authAsOwnerFailed')),
+      ),
     onSuccess: async () => {
-      toast.success('已设定为主人账户')
+      toast.success(t('settings.account.success.authAsOwner'))
       await queryClient.invalidateQueries({ queryKey: accountQueryKey })
     },
   })
@@ -51,16 +55,16 @@ export function AccountSettings() {
 
     void authClient.getSession().then((result) => {
       if (result.error || !result.data) {
-        toast.error('OAuth 验证失败')
+        toast.error(t('settings.account.error.oauthValidateFailed'))
         return
       }
 
-      toast.success('OAuth 验证成功')
-      if (window.confirm('设定为主人账户？')) {
+      toast.success(t('settings.account.success.oauthValidate'))
+      if (window.confirm(t('settings.account.prompt.setAsOwner'))) {
         authAsOwnerMutation.mutate()
       }
     })
-  }, [authAsOwnerMutation, setSearchParams, validateProvider])
+  }, [authAsOwnerMutation, setSearchParams, t, validateProvider])
 
   return (
     <div className="grid min-h-[34rem] grid-cols-1 overflow-hidden border border-neutral-200 lg:grid-cols-[minmax(0,1fr)_minmax(24rem,0.8fr)] dark:border-neutral-800">
@@ -70,25 +74,25 @@ export function AccountSettings() {
           <PasswordSection />
           <AccountEntry
             active={activePanel === 'tokens'}
-            description="用于 API 调用的访问令牌。"
+            description={t('settings.account.entry.tokenDescription')}
             icon={<Key aria-hidden="true" className="size-4" />}
             onClick={() =>
               setActivePanel((current) =>
                 current === 'tokens' ? null : 'tokens',
               )
             }
-            title="API Token"
+            title={t('settings.account.entry.tokenTitle')}
           />
           <AccountEntry
             active={activePanel === 'passkeys'}
-            description="浏览器和设备上的无密码登录凭证。"
+            description={t('settings.account.entry.passkeyDescription')}
             icon={<Fingerprint aria-hidden="true" className="size-4" />}
             onClick={() =>
               setActivePanel((current) =>
                 current === 'passkeys' ? null : 'passkeys',
               )
             }
-            title="Passkey"
+            title={t('settings.account.entry.passkeyTitle')}
           />
           <OauthSection />
         </div>
@@ -102,7 +106,7 @@ export function AccountSettings() {
           <div className="flex h-full min-h-72 flex-col items-center justify-center px-4 text-center">
             <Shield aria-hidden="true" className="size-8 text-neutral-300" />
             <p className="mt-3 text-sm text-neutral-500">
-              选择一个安全项查看详情。
+              {t('settings.account.placeholder.title')}
             </p>
           </div>
         )}

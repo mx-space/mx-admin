@@ -18,6 +18,7 @@ import type {
   MenuClickInfo,
 } from './types'
 
+import { useI18n } from '~/i18n'
 import {
   useFloatLayerContainer,
   useLayerZIndex,
@@ -160,6 +161,7 @@ function SubmenuRenderer({
   keyPath,
   reserveIconSpace,
 }: SubmenuRendererProps) {
+  const { t } = useI18n()
   const { ref: zRef, zIndex } = useLayerZIndex<HTMLDivElement>('floating')
   const container = useFloatLayerContainer()
   const submenuChildren = item.children ?? []
@@ -190,7 +192,9 @@ function SubmenuRenderer({
                 className={cn(menuStyles.item, menuStyles.empty)}
                 disabled
               >
-                <span className={menuStyles.label}>暂无</span>
+                <span className={menuStyles.label}>
+                  {t('ui.contextMenu.empty')}
+                </span>
               </ContextMenu.Item>
             )}
           </ContextMenu.Popup>

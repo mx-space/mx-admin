@@ -5,9 +5,10 @@ import type { InitDefaultConfigs } from '~/api/system'
 
 import { checkInit, getInitDefaultConfigs } from '~/api/system'
 import { bgUrl } from '~/constants/env'
+import { useI18n } from '~/i18n'
 import { cn } from '~/utils/cn'
 
-import { setupStepDescriptions, setupSteps } from '../constants'
+import { setupSteps } from '../constants'
 import { getErrorMessage } from '../utils/setup'
 import { SetupCompleteStep } from './SetupCompleteStep'
 import { SetupOwnerStep } from './SetupOwnerStep'
@@ -15,6 +16,7 @@ import { SetupSiteStep } from './SetupSiteStep'
 import { SetupStartStep } from './SetupStartStep'
 
 export function SetupRouteViewContent() {
+  const { t } = useI18n()
   const [step, setStep] = useState(0)
   const [defaultConfigs, setDefaultConfigs] = useState<InitDefaultConfigs>({})
   const [loading, setLoading] = useState(true)
@@ -31,7 +33,7 @@ export function SetupRouteViewContent() {
         const configs = await getInitDefaultConfigs()
         if (!cancelled) setDefaultConfigs(configs)
       } catch (error) {
-        toast.error(getErrorMessage(error, '初始化配置读取失败'))
+        toast.error(getErrorMessage(error, t('setup.route.configReadError')))
       } finally {
         if (!cancelled) setLoading(false)
       }
@@ -42,7 +44,7 @@ export function SetupRouteViewContent() {
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [t])
 
   return (
     <main
@@ -58,11 +60,17 @@ export function SetupRouteViewContent() {
           const Icon = item.icon
           const isActive = step === index
           const isCompleted = step > index
+          const title = t(item.titleKey)
+          const statusSuffix = isCompleted
+            ? t('setup.route.stepStatus.completed')
+            : isActive
+              ? t('setup.route.stepStatus.current')
+              : ''
 
           return (
             <button
               aria-current={isActive ? 'step' : undefined}
-              aria-label={`${item.title}${isCompleted ? '（已完成）' : isActive ? '（当前）' : ''}`}
+              aria-label={`${title}${statusSuffix}`}
               className={cn(
                 'flex size-10 items-center justify-center rounded-full transition-all',
                 isActive
@@ -72,7 +80,7 @@ export function SetupRouteViewContent() {
                     : 'cursor-not-allowed bg-white/10 text-white/40',
               )}
               disabled={index > step}
-              key={item.title}
+              key={item.titleKey}
               onClick={() => {
                 if (index < step) setStep(index)
               }}
@@ -89,10 +97,10 @@ export function SetupRouteViewContent() {
       </div>
 
       <h1 className="mb-2 text-xl font-medium tracking-wide drop-shadow-lg">
-        {setupSteps[step].title}
+        {t(setupSteps[step].titleKey)}
       </h1>
       <p className="mb-8 text-sm text-white/70">
-        {setupStepDescriptions[step]}
+        {t(setupSteps[step].descriptionKey)}
       </p>
 
       <div className="w-full max-w-md">

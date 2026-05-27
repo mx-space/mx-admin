@@ -6,6 +6,7 @@ import type { CategoryFormMode, SelectedItem } from '../types/categories'
 
 import { deleteCategory, getCategories, getTags } from '~/api/categories'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { MasterDetailLayout } from '~/ui/layout/page-layout'
 import { Button } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
@@ -22,6 +23,7 @@ import { TagDetail } from './TagDetail'
 import { TagRow } from './TagRow'
 
 export function CategoriesRouteViewContent() {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const [selectedItem, setSelectedItem] = useState<SelectedItem | null>(null)
   const [formMode, setFormMode] = useState<CategoryFormMode | null>(null)
@@ -75,9 +77,9 @@ export function CategoriesRouteViewContent() {
   const deleteMutation = useMutation({
     mutationFn: deleteCategory,
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '删除分类失败')),
+      toast.error(getErrorMessage(error, t('categories.toast.deleteFailed'))),
     onSuccess: async () => {
-      toast.success('分类已删除')
+      toast.success(t('categories.toast.deleted'))
       setSelectedItem(null)
       setShowDetailOnMobile(false)
       await invalidateCategories()
@@ -106,7 +108,7 @@ export function CategoriesRouteViewContent() {
             <div className="min-w-0">
               <h2 className="inline-flex items-center gap-2 text-sm font-medium">
                 <FolderOpen aria-hidden="true" className="size-4" />
-                分类与标签
+                {t('categories.list.title')}
               </h2>
             </div>
             <span className="text-xs text-neutral-500 dark:text-neutral-400">
@@ -118,14 +120,14 @@ export function CategoriesRouteViewContent() {
               variant="subtle"
             >
               <Plus aria-hidden="true" className="size-4" />
-              新建
+              {t('categories.list.new')}
             </Button>
           </div>
 
           <Scroll className="min-h-0 flex-1">
             <ListSection
               count={categories.length}
-              title="分类"
+              title={t('categories.section.categories')}
               loading={categoriesQuery.isLoading}
             >
               {categories.length === 0 && !categoriesQuery.isLoading ? (
@@ -136,10 +138,10 @@ export function CategoriesRouteViewContent() {
                       onClick={() => setFormMode({ kind: 'create' })}
                       type="button"
                     >
-                      创建分类
+                      {t('categories.list.create')}
                     </Button>
                   }
-                  label="暂无分类"
+                  label={t('categories.list.emptyCategories')}
                 />
               ) : (
                 categories.map((category) => (
@@ -160,11 +162,11 @@ export function CategoriesRouteViewContent() {
 
             <ListSection
               count={tags.length}
-              title="标签"
+              title={t('categories.section.tags')}
               loading={tagsQuery.isLoading}
             >
               {tags.length === 0 && !tagsQuery.isLoading ? (
-                <EmptyList label="暂无标签" />
+                <EmptyList label={t('categories.list.emptyTags')} />
               ) : (
                 tags.map((tag) => (
                   <TagRow
@@ -190,7 +192,11 @@ export function CategoriesRouteViewContent() {
               deleting={deleteMutation.isPending}
               onBack={() => setShowDetailOnMobile(false)}
               onDelete={(category) => {
-                if (window.confirm(`确认删除「${category.name}」？`)) {
+                if (
+                  window.confirm(
+                    t('categories.confirmDelete', { name: category.name }),
+                  )
+                ) {
                   deleteMutation.mutate(category.id)
                 }
               }}

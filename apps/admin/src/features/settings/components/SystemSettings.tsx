@@ -7,6 +7,7 @@ import type { ConfigFormGroup, ConfigFormSchema } from '~/api/options'
 import { testCommentReview } from '~/api/ai'
 import { sendTestEmail } from '~/api/health'
 import { getAllOptions, patchOption } from '~/api/options'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Panel } from '~/ui/primitives/panel'
 import { TextArea } from '~/ui/primitives/text-field'
@@ -27,6 +28,7 @@ export function SystemSettings(props: {
   activeGroup: ConfigFormGroup
   schema?: ConfigFormSchema
 }) {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const [configs, setConfigs] = useState<Record<string, unknown>>({})
   const [origin, setOrigin] = useState<Record<string, unknown>>({})
@@ -54,9 +56,11 @@ export function SystemSettings(props: {
     mutationFn: (sectionKey: string) =>
       patchOption(sectionKey, configs[sectionKey] ?? {}),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '保存失败')),
+      toast.error(
+        getErrorMessage(error, t('settings.common.error.savedFailed')),
+      ),
     onSuccess: async () => {
-      toast.success('修改成功')
+      toast.success(t('settings.common.savedOne'))
       await queryClient.invalidateQueries({ queryKey: settingsQueryKey })
     },
   })
@@ -69,9 +73,13 @@ export function SystemSettings(props: {
         ),
       ),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '保存失败')),
+      toast.error(
+        getErrorMessage(error, t('settings.common.error.savedFailed')),
+      ),
     onSuccess: async () => {
-      toast.success(`已保存 ${dirtySections.length} 项修改`)
+      toast.success(
+        t('settings.common.savedAll', { count: dirtySections.length }),
+      )
       await queryClient.invalidateQueries({ queryKey: settingsQueryKey })
     },
   })
@@ -79,26 +87,40 @@ export function SystemSettings(props: {
   const testEmailMutation = useMutation({
     mutationFn: sendTestEmail,
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '发送测试邮件失败')),
+      toast.error(
+        getErrorMessage(error, t('settings.common.error.sendTestEmailFailed')),
+      ),
     onSuccess: (result) => {
-      if (result.message) toast.error(`发送失败: ${result.message}`)
-      else toast.success('测试邮件已发送，请检查收件箱')
+      if (result.message)
+        toast.error(
+          t('settings.system.section.testEmailFailed', {
+            message: result.message,
+          }),
+        )
+      else toast.success(t('settings.system.section.testEmailSent'))
     },
   })
 
   const testAiMutation = useMutation({
     mutationFn: () => testCommentReview({ text: testAiText }),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '测试 AI 审核失败')),
+      toast.error(
+        getErrorMessage(error, t('settings.common.error.testAiReviewFailed')),
+      ),
     onSuccess: (result) => {
+      const scoreSuffix =
+        result.score === undefined
+          ? ''
+          : t('settings.system.test.scoreSuffix', { score: result.score })
       if (result.isSpam) {
+        const reasonSuffix = result.reason
+          ? t('settings.system.test.reasonSuffix', { reason: result.reason })
+          : ''
         toast.warning(
-          `判定为垃圾评论${result.score === undefined ? '' : `，评分 ${result.score}`}${result.reason ? `：${result.reason}` : ''}`,
+          t('settings.system.test.aiSpam', { scoreSuffix, reasonSuffix }),
         )
       } else {
-        toast.success(
-          `判定为正常评论${result.score === undefined ? '' : `，评分 ${result.score}`}`,
-        )
+        toast.success(t('settings.system.test.aiNormal', { scoreSuffix }))
       }
       setTestAiOpen(false)
       setTestAiText('')
@@ -116,7 +138,11 @@ export function SystemSettings(props: {
     <div className="space-y-4">
       {dirtySections.length > 0 ? (
         <div className="flex flex-wrap items-center justify-between gap-3 rounded border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200">
-          <span>你有 {dirtySections.length} 项未保存的修改。</span>
+          <span>
+            {t('settings.common.savingDirty', {
+              count: dirtySections.length,
+            })}
+          </span>
           <Button
             disabled={saveAllMutation.isPending}
             onClick={() => saveAllMutation.mutate()}
@@ -127,7 +153,7 @@ export function SystemSettings(props: {
             ) : (
               <Save aria-hidden="true" className="size-4" />
             )}
-            保存全部
+            {t('settings.common.section.saveAll')}
           </Button>
         </div>
       ) : null}
@@ -158,7 +184,12 @@ export function SystemSettings(props: {
                   formData={configs}
                   onAction={(actionId) => {
                     if (actionId === 'test-ai-review') setTestAiOpen(true)
-                    else toast.warning(`未知操作：${actionId}`)
+                    else
+                      toast.warning(
+                        t('settings.common.section.unknownAction', {
+                          action: actionId,
+                        }),
+                      )
                   }}
                   prefix={section.key}
                   updateValue={updateValue}
@@ -182,7 +213,7 @@ export function SystemSettings(props: {
                     ) : (
                       <Mail aria-hidden="true" className="size-4" />
                     )}
-                    发送测试邮件
+                    {t('settings.system.section.sendTestEmail')}
                   </Button>
                 ) : null}
               </div>
@@ -199,7 +230,7 @@ export function SystemSettings(props: {
                 ) : (
                   <Save aria-hidden="true" className="size-4" />
                 )}
-                保存本节
+                {t('settings.common.section.save')}
               </Button>
             </div>
           </Panel>
@@ -208,14 +239,14 @@ export function SystemSettings(props: {
       <Modal
         onClose={() => setTestAiOpen(false)}
         open={testAiOpen}
-        title="测试 AI 审核"
+        title={t('settings.system.section.testAiModal')}
       >
         <form
           className="space-y-4"
           onSubmit={(event) => {
             event.preventDefault()
             if (!testAiText.trim()) {
-              toast.warning('请输入测试内容')
+              toast.warning(t('settings.system.section.testInputRequired'))
               return
             }
             testAiMutation.mutate()
@@ -223,9 +254,9 @@ export function SystemSettings(props: {
         >
           <TextArea
             controlClassName="min-h-28"
-            label="评论内容"
+            label={t('settings.system.section.commentLabel')}
             onChange={setTestAiText}
-            placeholder="输入要测试的评论内容..."
+            placeholder={t('settings.system.placeholder.testAi')}
             value={testAiText}
           />
           <div className="flex justify-end gap-2">
@@ -234,10 +265,10 @@ export function SystemSettings(props: {
               type="button"
               variant="subtle"
             >
-              取消
+              {t('common.cancel')}
             </Button>
             <Button disabled={testAiMutation.isPending} type="submit">
-              测试
+              {t('settings.system.section.testButton')}
             </Button>
           </div>
         </form>

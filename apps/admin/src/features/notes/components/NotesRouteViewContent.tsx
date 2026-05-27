@@ -24,7 +24,9 @@ import {
   ContentListToolbar,
   SortMenu,
 } from '~/features/_shared/components/content-list-toolbar'
+import { useI18n } from '~/i18n'
 import { CompactPagination } from '~/ui/data/compact-pagination'
+import { confirmDialog } from '~/ui/feedback/confirm'
 import { FocusScope, setActiveScope, useScopeArrowNav } from '~/ui/focus-scope'
 import { useListSelection, useListShortcuts } from '~/ui/list-actions'
 import { ButtonLink } from '~/ui/primitives/button'
@@ -33,8 +35,8 @@ import { SelectField } from '~/ui/primitives/select'
 import { cn } from '~/utils/cn'
 
 import {
-  noteFilterOptions,
-  noteSortOptions,
+  noteFilterOptionDefinitions,
+  noteSortOptionDefinitions,
   notesPageSize,
   notesQueryKey,
 } from '../constants'
@@ -56,6 +58,7 @@ import { NotesSkeleton } from './NotesSkeleton'
 const FOCUS_SCOPE_ID = 'notes-list'
 
 export function NotesRouteViewContent() {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const [searchParams, setSearchParams] = useSearchParams()
   const [page, setPage] = useState(readPage(searchParams.get('page')))
@@ -155,7 +158,7 @@ export function NotesRouteViewContent() {
     mutationFn: (payload: { id: string; isPublished: boolean }) =>
       patchNotePublish(payload.id, payload.isPublished),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '更新失败')),
+      toast.error(getErrorMessage(error, t('notes.toast.updateFailed'))),
     onSuccess: invalidateNotes,
   })
 
@@ -163,16 +166,16 @@ export function NotesRouteViewContent() {
     mutationFn: (payload: { data: NoteMetadataUpdate; id: string }) =>
       patchNote(payload.id, payload.data),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '更新失败')),
+      toast.error(getErrorMessage(error, t('notes.toast.updateFailed'))),
     onSuccess: invalidateNotes,
   })
 
   const deleteMutation = useMutation({
     mutationFn: deleteNote,
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '删除失败')),
+      toast.error(getErrorMessage(error, t('notes.toast.deleteFailed'))),
     onSuccess: async () => {
-      toast.success('手记已删除')
+      toast.success(t('notes.toast.deleted'))
       await invalidateNotes()
     },
   })
@@ -191,49 +194,65 @@ export function NotesRouteViewContent() {
       }
     },
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '批量删除失败')),
+      toast.error(getErrorMessage(error, t('notes.toast.batchDeleteFailed'))),
     onSuccess: async ({ failedCount, successCount }) => {
       selection.clear()
       if (failedCount > 0) {
-        toast.warning(`删除完成：成功 ${successCount}，失败 ${failedCount}`)
+        toast.warning(
+          t('notes.toast.batchDeletePartial', {
+            failed: failedCount,
+            success: successCount,
+          }),
+        )
       } else {
-        toast.success(`成功删除 ${successCount} 条手记`)
+        toast.success(
+          t('notes.toast.batchDeleteSucceeded', { count: successCount }),
+        )
       }
       await invalidateNotes()
     },
   })
 
-  const confirmAndDelete = (targets: NoteModel[]) => {
+  const confirmAndDelete = async (targets: NoteModel[]) => {
     if (targets.length === 0) return
-    const msg =
+    const title =
       targets.length === 1
-        ? `确认删除「${targets[0].title || '未命名手记'}」？`
-        : `确认删除选中的 ${targets.length} 条手记？`
-    if (!window.confirm(msg)) return
+        ? t('notes.confirmDelete.single', {
+            title: targets[0].title || t('notes.row.untitled'),
+          })
+        : t('notes.confirmDelete.batch', { count: targets.length })
+    const confirmed = await confirmDialog({
+      destructive: true,
+      title,
+    })
+    if (!confirmed) return
     if (targets.length === 1) {
       deleteMutation.mutate(targets[0].id)
     } else {
-      batchDeleteMutation.mutate(targets.map((t) => t.id))
+      batchDeleteMutation.mutate(targets.map((target) => target.id))
     }
   }
 
   const actions = useMemo(
     () =>
-      buildNoteActions({
-        deleteMany: confirmAndDelete,
-        navigateToEdit: (note) => {
-          window.location.hash = `#/notes/edit?id=${encodeURIComponent(note.id)}`
+      buildNoteActions(
+        {
+          deleteMany: confirmAndDelete,
+          navigateToEdit: (note) => {
+            window.location.hash = `#/notes/edit?id=${encodeURIComponent(note.id)}`
+          },
+          openExternal: (note) => {
+            window.open(
+              `${WEB_URL}${buildNotePublicPath(note)}`,
+              '_blank',
+              'noopener,noreferrer',
+            )
+          },
         },
-        openExternal: (note) => {
-          window.open(
-            `${WEB_URL}${buildNotePublicPath(note)}`,
-            '_blank',
-            'noopener,noreferrer',
-          )
-        },
-      }),
+        t,
+      ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
+    [t],
   )
 
   useListShortcuts(actions, {
@@ -266,8 +285,26 @@ export function NotesRouteViewContent() {
     visibleIds.length > 0 && visibleIds.every((id) => selection.isSelected(id))
   const count = useMemo(() => {
     if (!pagination) return null
-    return `${pagination.total} 条`
-  }, [pagination])
+    return t('notes.list.count', { count: pagination.total })
+  }, [pagination, t])
+
+  const filterOptions = useMemo(
+    () =>
+      noteFilterOptionDefinitions.map((option) => ({
+        label: t(option.labelKey),
+        value: option.value,
+      })),
+    [t],
+  )
+
+  const sortOptions = useMemo(
+    () =>
+      noteSortOptionDefinitions.map((option) => ({
+        label: t(option.labelKey),
+        value: option.value,
+      })),
+    [t],
+  )
 
   const onSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -287,20 +324,22 @@ export function NotesRouteViewContent() {
     >
       <ContentListHeader
         action={
-          <ButtonLink aria-label="新建手记" to="/notes/edit">
+          <ButtonLink aria-label={t('notes.action.newNote')} to="/notes/edit">
             <Plus aria-hidden="true" className="size-4" />
-            <span className="hidden sm:inline">新建手记</span>
+            <span className="hidden sm:inline">
+              {t('notes.action.newNote')}
+            </span>
           </ButtonLink>
         }
         count={count}
         icon={<BookOpen aria-hidden="true" className="size-4" />}
-        title="手记"
+        title={t('notes.title')}
       />
 
       <ContentListToolbar
         extraActions={
           <button
-            aria-label="刷新手记列表"
+            aria-label={t('notes.list.refreshAria')}
             className="outline-hidden inline-flex h-7 w-7 shrink-0 items-center justify-center rounded text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 focus-visible:ring-2 focus-visible:ring-[var(--color-primary-shallow)] disabled:pointer-events-none disabled:opacity-50 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-100"
             disabled={notesQuery.isFetching}
             onClick={() => void notesQuery.refetch()}
@@ -317,13 +356,13 @@ export function NotesRouteViewContent() {
         }
         filters={
           <SelectField
-            aria-label="手记过滤条件"
+            aria-label={t('notes.filter.ariaLabel')}
             disabled={Boolean(keyword)}
             onValueChange={(value) => {
               setFilter(value)
               setPage(1)
             }}
-            options={noteFilterOptions}
+            options={filterOptions}
             triggerClassName="w-28 !h-7 !border-transparent !bg-transparent text-xs hover:!bg-neutral-100 dark:hover:!bg-neutral-900"
             value={filter}
           />
@@ -337,7 +376,7 @@ export function NotesRouteViewContent() {
               setSortOrder(order)
               setPage(1)
             }}
-            options={noteSortOptions}
+            options={sortOptions}
             order={sortOrder}
           />
         }
@@ -349,21 +388,25 @@ export function NotesRouteViewContent() {
         }}
         onSearch={onSearch}
         onSearchValueChange={setKeywordInput}
-        searchPlaceholder="搜索标题或正文"
+        searchPlaceholder={t('notes.list.searchPlaceholder')}
         searchValue={keywordInput}
         selection={{
           allVisibleSelected,
           bulkActionDisabled:
             selectedCount === 0 || batchDeleteMutation.isPending,
           bulkActionIcon: <Trash2 aria-hidden="true" className="size-4" />,
-          bulkActionLabel: '批量删除',
+          bulkActionLabel: t('notes.action.bulkDelete'),
           hasVisibleItems: notes.length > 0,
           indeterminate: selectedCount > 0 && !allVisibleSelected,
-          onBulkAction: () => confirmAndDelete(selection.getSelectedTargets()),
+          onBulkAction: () => {
+            void confirmAndDelete(selection.getSelectedTargets())
+          },
           onToggleAllVisible: toggleAllVisible,
-          selectAllLabel: '选择当前页',
+          selectAllLabel: t('notes.list.selectAllVisible'),
           selectedCount,
-          selectedLabel: `已选 ${selectedCount} 项`,
+          selectedLabel: t('notes.list.selectedCount', {
+            count: selectedCount,
+          }),
         }}
       />
 

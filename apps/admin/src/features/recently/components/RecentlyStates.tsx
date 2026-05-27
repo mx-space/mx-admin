@@ -1,35 +1,38 @@
 import { Loader2, RefreshCcw, StickyNote } from 'lucide-react'
 import { forwardRef } from 'react'
 
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 
 export function RecentlyEmptyState(props: { onCreate: () => void }) {
+  const { t } = useI18n()
   return (
     <div className="flex min-h-full flex-col items-center justify-center px-6 py-16 text-center">
       <div className="mb-4 flex size-16 items-center justify-center rounded bg-neutral-100 dark:bg-neutral-900">
         <StickyNote aria-hidden="true" className="size-8 text-neutral-400" />
       </div>
       <h2 className="mb-1 text-lg font-medium text-neutral-900 dark:text-neutral-100">
-        还没有速记
+        {t('recently.empty.title')}
       </h2>
       <p className="mb-6 text-sm text-neutral-500 dark:text-neutral-400">
-        记录你的灵感、想法或日常碎片
+        {t('recently.empty.description')}
       </p>
       <Button onClick={props.onCreate} type="button">
-        写第一条速记
+        {t('recently.empty.cta')}
       </Button>
     </div>
   )
 }
 
 export function RecentlyErrorState(props: { onRetry: () => void }) {
+  const { t } = useI18n()
   return (
     <div className="flex min-h-full flex-col items-center justify-center px-6 py-16 text-center">
       <div className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
-        速记加载失败
+        {t('recently.error.title')}
       </div>
       <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
-        请检查登录状态或后端服务后重试。
+        {t('recently.error.description')}
       </p>
       <Button
         className="mt-4"
@@ -38,7 +41,7 @@ export function RecentlyErrorState(props: { onRetry: () => void }) {
         variant="subtle"
       >
         <RefreshCcw aria-hidden="true" className="size-4" />
-        重新加载
+        {t('recently.error.retry')}
       </Button>
     </div>
   )
@@ -52,6 +55,7 @@ export const RecentlyLoadMore = forwardRef<
     onLoadMore: () => void
   }
 >(function RecentlyLoadMore(props, ref) {
+  const { t } = useI18n()
   return (
     <div
       className="flex items-center justify-center px-4 py-6 text-sm text-neutral-500 dark:text-neutral-400"
@@ -67,10 +71,10 @@ export const RecentlyLoadMore = forwardRef<
           {props.isFetching ? (
             <Loader2 aria-hidden="true" className="size-4 animate-spin" />
           ) : null}
-          加载更多
+          {t('recently.loadMore')}
         </Button>
       ) : (
-        <span>已全部加载</span>
+        <span>{t('recently.allLoaded')}</span>
       )}
     </div>
   )

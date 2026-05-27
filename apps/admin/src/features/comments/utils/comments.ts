@@ -2,9 +2,10 @@ import type { CommentModel } from '~/models/comment'
 import type { DeviceInfo } from '../types/comments'
 
 import { WEB_URL } from '~/constants/env'
+import { translate } from '~/i18n/translate'
 import { CommentState } from '~/models/comment'
 
-import { commentFilters } from '../constants'
+import { getCommentFilters } from '../constants'
 
 export function getReferenceLink(comment: CommentModel) {
   const ref = comment.ref
@@ -33,13 +34,13 @@ export function getDeviceInfo(agent?: string): DeviceInfo {
       value.includes('mobile') ||
       value.includes('android') ||
       value.includes('iphone'),
-    label: agent?.split(' ')[0] || '未知设备',
+    label: agent?.split(' ')[0] || translate('comments.meta.unknownDevice'),
   }
 }
 
 export function normalizeCommentState(value: string | null): CommentState {
   const numeric = Number(value)
-  return commentFilters.some((filter) => filter.value === numeric)
+  return getCommentFilters().some((filter) => filter.value === numeric)
     ? (numeric as CommentState)
     : CommentState.Unread
 }
@@ -55,7 +56,7 @@ export function formatCommentDate(value?: string | null) {
   const date = new Date(value)
   if (Number.isNaN(date.getTime())) return value
 
-  return new Intl.DateTimeFormat('zh-CN', {
+  return new Intl.DateTimeFormat(undefined, {
     day: '2-digit',
     hour: '2-digit',
     minute: '2-digit',

@@ -10,6 +10,7 @@ import {
   updateMetaPreset,
   updateMetaPresetOrder,
 } from '~/api/meta-presets'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Panel } from '~/ui/primitives/panel'
 import { cn } from '~/utils/cn'
@@ -21,6 +22,7 @@ import { MetaPresetModal } from './MetaPresetModal'
 import { MetaPresetRow } from './MetaPresetRow'
 
 export function MetaPresetSettings() {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const [modalState, setModalState] = useState<{
     id?: string
@@ -42,9 +44,9 @@ export function MetaPresetSettings() {
       id: string
     }) => updateMetaPreset(id, data),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '修改失败')),
+      toast.error(getErrorMessage(error, t('settings.meta.error.update'))),
     onSuccess: async () => {
-      toast.success('修改成功')
+      toast.success(t('settings.meta.success.update'))
       await queryClient.invalidateQueries({ queryKey: metaPresetsQueryKey })
     },
   })
@@ -52,9 +54,9 @@ export function MetaPresetSettings() {
   const deleteMutation = useMutation({
     mutationFn: deleteMetaPreset,
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '删除失败')),
+      toast.error(getErrorMessage(error, t('settings.meta.error.delete'))),
     onSuccess: async () => {
-      toast.success('删除成功')
+      toast.success(t('settings.meta.success.delete'))
       await queryClient.invalidateQueries({ queryKey: metaPresetsQueryKey })
     },
   })
@@ -62,7 +64,7 @@ export function MetaPresetSettings() {
   const orderMutation = useMutation({
     mutationFn: updateMetaPresetOrder,
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '排序保存失败')),
+      toast.error(getErrorMessage(error, t('settings.meta.error.orderSave'))),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: metaPresetsQueryKey })
     },
@@ -81,26 +83,28 @@ export function MetaPresetSettings() {
 
   return (
     <Panel
-      description="配置可复用的自定义 meta 字段。"
+      description={t('settings.meta.description')}
       title={
         <span className="inline-flex items-center gap-2">
           <ListPlus aria-hidden="true" className="size-4" />
-          Meta 预设字段
+          {t('settings.meta.title')}
         </span>
       }
     >
       <div className="flex justify-end border-b border-neutral-100 p-3 dark:border-neutral-900">
         <Button onClick={() => setModalState({ mode: 'create' })} type="button">
           <Plus aria-hidden="true" className="size-4" />
-          新增预设
+          {t('settings.meta.action.addPreset')}
         </Button>
       </div>
       {presetsQuery.isLoading ? (
-        <div className="p-4 text-sm text-neutral-500">加载中...</div>
+        <div className="p-4 text-sm text-neutral-500">
+          {t('settings.common.loading')}
+        </div>
       ) : presets.length === 0 ? (
         <EmptyState
           icon={<ListPlus className="size-7" />}
-          label="暂无预设字段"
+          label={t('settings.meta.empty')}
         />
       ) : (
         <div className="divide-y divide-neutral-100 dark:divide-neutral-900">
@@ -122,7 +126,13 @@ export function MetaPresetSettings() {
             >
               <MetaPresetRow
                 onDelete={(id) => {
-                  if (window.confirm(`确认删除预设字段「${preset.label}」？`)) {
+                  if (
+                    window.confirm(
+                      t('settings.meta.confirm.delete', {
+                        label: preset.label,
+                      }),
+                    )
+                  ) {
                     deleteMutation.mutate(id)
                   }
                 }}

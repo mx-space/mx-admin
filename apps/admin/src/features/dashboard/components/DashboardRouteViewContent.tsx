@@ -41,6 +41,7 @@ import { checkUpdateFromGitHub } from '~/api/github-update'
 import { getOwner } from '~/api/options'
 import { rebuildSearchIndex } from '~/api/search-index'
 import { getAppInfo } from '~/api/system'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Panel } from '~/ui/primitives/panel'
 import { Scroll } from '~/ui/primitives/scroll'
@@ -72,6 +73,7 @@ import { TrafficPanel } from './TrafficPanel'
 import { UpdateReleaseDialog } from './UpdateReleaseDialog'
 
 export function DashboardRouteViewContent() {
+  const { t } = useI18n()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [releaseModal, setReleaseModal] = useState<ReleaseModalState | null>(
@@ -147,19 +149,25 @@ export function DashboardRouteViewContent() {
   const cleanCacheMutation = useMutation({
     mutationFn: cleanCache,
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '清除 API 缓存失败')),
-    onSuccess: () => toast.success('API 缓存已清除'),
+      toast.error(
+        getErrorMessage(error, t('dashboard.toast.apiCacheClearError')),
+      ),
+    onSuccess: () => toast.success(t('dashboard.toast.apiCacheCleared')),
   })
   const cleanRedisMutation = useMutation({
     mutationFn: cleanRedis,
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '清除数据缓存失败')),
-    onSuccess: () => toast.success('数据缓存已清除'),
+      toast.error(
+        getErrorMessage(error, t('dashboard.toast.dataCacheClearError')),
+      ),
+    onSuccess: () => toast.success(t('dashboard.toast.dataCacheCleared')),
   })
   const rebuildSearchIndexMutation = useMutation({
     mutationFn: rebuildSearchIndex,
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '重建搜索索引失败')),
+      toast.error(
+        getErrorMessage(error, t('dashboard.searchIndex.rebuildError')),
+      ),
     onSuccess: async (result) => {
       toast.success(formatSearchIndexStats(result))
       await queryClient.invalidateQueries({ queryKey: ['search-index'] })
@@ -171,7 +179,7 @@ export function DashboardRouteViewContent() {
   useEffect(() => {
     if (__DEV__) return
     if (appInfoQuery.data?.version?.startsWith('demo')) {
-      toast.info('Demo Mode - 当前处于演示模式，部分功能可能受到限制')
+      toast.info(t('dashboard.demoMode.tip'))
     }
   }, [appInfoQuery.data?.version])
 
@@ -187,16 +195,22 @@ export function DashboardRouteViewContent() {
       !notifiedUpdatesRef.current.has(`dashboard:${updates.dashboard}`)
     ) {
       notifiedUpdatesRef.current.add(`dashboard:${updates.dashboard}`)
-      toast.info(`管理后台有新版本：${adminVersion} → ${updates.dashboard}`, {
-        action: {
-          label: '更新',
-          onClick: () => {
-            writeClosedUpdateTip('dashboard', updates.dashboard)
-            setUpgradeDialogOpen(true)
+      toast.info(
+        t('dashboard.update.adminAvailable', {
+          current: adminVersion,
+          latest: updates.dashboard,
+        }),
+        {
+          action: {
+            label: t('dashboard.update.update'),
+            onClick: () => {
+              writeClosedUpdateTip('dashboard', updates.dashboard)
+              setUpgradeDialogOpen(true)
+            },
           },
+          duration: 10000,
         },
-        duration: 10000,
-      })
+      )
     }
 
     if (
@@ -205,20 +219,26 @@ export function DashboardRouteViewContent() {
       !notifiedUpdatesRef.current.has(`system:${updates.system}`)
     ) {
       notifiedUpdatesRef.current.add(`system:${updates.system}`)
-      toast.info(`系统有新版本：${systemVersion} → ${updates.system}`, {
-        action: {
-          label: '查看',
-          onClick: () => {
-            writeClosedUpdateTip('system', updates.system)
-            setReleaseModal({
-              repo: 'mx-server',
-              title: '[系统] 更新详情',
-              version: updates.system,
-            })
+      toast.info(
+        t('dashboard.update.systemAvailable', {
+          current: systemVersion,
+          latest: updates.system,
+        }),
+        {
+          action: {
+            label: t('common.view'),
+            onClick: () => {
+              writeClosedUpdateTip('system', updates.system)
+              setReleaseModal({
+                repo: 'mx-server',
+                title: t('dashboard.release.systemTitle'),
+                version: updates.system,
+              })
+            },
           },
+          duration: 10000,
         },
-        duration: 10000,
-      })
+      )
     }
   }, [adminVersion, systemVersion, updateQuery.data])
 
@@ -230,10 +250,10 @@ export function DashboardRouteViewContent() {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold text-neutral-950 dark:text-neutral-50">
-            欢迎回来
+            {t('dashboard.header.title')}
           </h1>
           <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
-            实时数据、内容入口和系统维护操作。
+            {t('dashboard.header.subtitle')}
           </p>
         </div>
         <Button
@@ -246,133 +266,144 @@ export function DashboardRouteViewContent() {
             aria-hidden="true"
             className={cn('size-4', statQuery.isFetching && 'animate-spin')}
           />
-          刷新实时数据
+          {t('dashboard.header.refresh')}
         </Button>
       </div>
 
       <section className="grid gap-3 md:grid-cols-3">
-        <LiveCard icon={Radio} label="当前在线访客" live value={stat.online} />
-        <LiveCard icon={Users} label="今日访客" value={stat.todayOnlineTotal} />
+        <LiveCard
+          icon={Radio}
+          label={t('dashboard.live.online')}
+          live
+          value={stat.online}
+        />
+        <LiveCard
+          icon={Users}
+          label={t('dashboard.live.todayVisitors')}
+          value={stat.todayOnlineTotal}
+        />
         <LiveCard
           icon={TrendingUp}
-          label="今日最高在线"
+          label={t('dashboard.live.todayMax')}
           value={stat.todayMaxOnline}
         />
       </section>
 
       <Panel
-        description={`更新于 ${updatedAt.toLocaleTimeString('zh-CN')}`}
-        title="快速操作"
+        description={t('dashboard.panel.quickActions.updatedAt', {
+          time: updatedAt.toLocaleTimeString(),
+        })}
+        title={t('dashboard.panel.quickActions.title')}
       >
         <div className="grid gap-px bg-neutral-200 sm:grid-cols-2 lg:grid-cols-4 dark:bg-neutral-800">
           <ActionCard
             icon={FileText}
-            label="博文"
+            label={t('dashboard.action.label.posts')}
             onManage={() => navigate('/posts')}
             onPrimary={() => navigate('/posts/edit')}
-            primaryLabel="撰写"
+            primaryLabel={t('dashboard.action.primary.post')}
             value={stat.posts}
           />
           <ActionCard
             icon={BookOpen}
-            label="日记"
+            label={t('dashboard.action.label.notes')}
             onManage={() => navigate('/notes')}
             onPrimary={() => navigate('/notes/edit')}
-            primaryLabel="撰写"
+            primaryLabel={t('dashboard.action.primary.note')}
             value={stat.notes}
           />
           <ActionCard
             icon={Pencil}
-            label="速记"
+            label={t('dashboard.action.label.recently')}
             onManage={() => navigate('/recently')}
             onPrimary={() => navigate('/recently?create=1')}
-            primaryLabel="新建速记"
+            primaryLabel={t('dashboard.action.primary.recently')}
             value={stat.recently}
           />
           <ActionCard
             icon={Quote}
-            label="说说"
+            label={t('dashboard.action.label.says')}
             onManage={() => navigate('/says')}
             onPrimary={() => navigate('/says')}
-            primaryLabel="发布说说"
+            primaryLabel={t('dashboard.action.primary.say')}
             value={stat.says}
           />
         </div>
       </Panel>
 
-      <Panel title="数据统计">
+      <Panel title={t('dashboard.panel.stats.title')}>
         <div className="grid gap-px bg-neutral-200 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 dark:bg-neutral-800">
           <StatCell
             icon={File}
-            label="页面"
+            label={t('dashboard.stat.pages')}
             onClick={() => navigate('/pages')}
             value={stat.pages}
           />
           <StatCell
             icon={Tags}
-            label="分类"
+            label={t('dashboard.stat.categories')}
             onClick={() => navigate('/posts/category')}
             value={stat.categories}
           />
           <StatCell
             icon={MessageSquare}
-            label="全部评论"
+            label={t('dashboard.stat.comments.all')}
             onClick={() => navigate('/comments?state=1')}
             value={stat.allComments ?? stat.comments}
           />
           <StatCell
             icon={MessageSquare}
-            label="未读评论"
+            label={t('dashboard.stat.comments.unread')}
             onClick={() => navigate('/comments?state=0')}
             value={stat.unreadComments}
           />
           <StatCell
             icon={Link}
-            label="友链"
+            label={t('dashboard.stat.friends.label')}
             onClick={() => navigate('/friends?state=0')}
             value={stat.links}
           />
           <StatCell
             icon={Link}
-            label="友链申请"
+            label={t('dashboard.stat.friends.applications')}
             onClick={() => navigate('/friends?state=1')}
             value={stat.linkApply ?? 0}
           />
           <StatCell
             icon={Activity}
-            label="API 调用"
+            label={t('dashboard.stat.apiCalls')}
             onClick={() => navigate('/analyze')}
             value={stat.callTime}
           />
           <StatCell
             icon={Gauge}
-            label="今日 IP 访问"
+            label={t('dashboard.stat.todayIp')}
             onClick={() => navigate('/analyze')}
             value={stat.todayIpAccessCount}
           />
           <StatCell
             icon={FileText}
-            label="全站字符数"
+            label={t('dashboard.stat.wordCount')}
             value={wordCountQuery.data?.count ?? 0}
           />
           <StatCell
             icon={BookOpen}
-            label="总阅读量"
+            label={t('dashboard.stat.reads')}
             value={readLikeQuery.data?.totalReads ?? 0}
           />
           <StatCell
             icon={Heart}
-            label="文章点赞"
+            label={t('dashboard.stat.likes.post')}
             value={readLikeQuery.data?.totalLikes ?? 0}
           />
           <StatCell
             icon={Heart}
-            label="站点点赞"
+            label={t('dashboard.stat.likes.site')}
             value={siteLikeQuery.data ?? 0}
           />
           <StatCell
             icon={Clock3}
-            label="UV"
+            label={t('dashboard.stat.uv')}
             onClick={() => navigate('/analyze')}
             value={stat.uv}
           />
@@ -385,42 +416,42 @@ export function DashboardRouteViewContent() {
             label: item.date,
             value: item.posts + item.notes,
           }))}
-          title="发布趋势"
+          title={t('dashboard.bar.publicationTrend.title')}
         />
         <BarPanel
           items={(categoryQuery.data ?? []).map((item) => ({
             label: item.name,
             value: item.count,
           }))}
-          title="分类分布"
+          title={t('dashboard.stat.distribution')}
         />
         <BarPanel
           items={(commentActivityQuery.data ?? []).map((item) => ({
             label: item.date,
             value: item.count,
           }))}
-          title="评论活动"
+          title={t('dashboard.bar.commentActivity.title')}
         />
         <TrafficPanel data={trafficSourceQuery.data} />
         <TopArticlesPanel articles={topArticlesQuery.data ?? []} />
         <TagCloudPanel tags={tagsQuery.data ?? []} />
       </section>
 
-      <Panel title="系统操作">
+      <Panel title={t('dashboard.panel.maintenance.title')}>
         <div className="grid gap-px bg-neutral-200 sm:grid-cols-2 xl:grid-cols-3 dark:bg-neutral-800">
           <MaintenanceCard
             disabled={cleanCacheMutation.isPending}
             icon={BrushCleaning}
-            label="API 缓存"
+            label={t('dashboard.maintenance.apiCache.label')}
             onClick={() => cleanCacheMutation.mutate()}
-            value="HTTP"
+            value={t('dashboard.maintenance.apiCache.value')}
           />
           <MaintenanceCard
             disabled={cleanRedisMutation.isPending}
             icon={BrushCleaning}
-            label="数据缓存"
+            label={t('dashboard.maintenance.dataCache.label')}
             onClick={() => cleanRedisMutation.mutate()}
-            value="Redis"
+            value={t('dashboard.maintenance.dataCache.value')}
           />
           <SearchIndexRebuildCard
             forceLoading={
@@ -434,7 +465,7 @@ export function DashboardRouteViewContent() {
             onForceRebuild={() => {
               if (
                 window.confirm(
-                  '将清空全部索引行后重新构建，期间搜索结果可能短暂为空，确定继续？',
+                  t('dashboard.maintenance.searchIndex.forceConfirm'),
                 )
               ) {
                 rebuildSearchIndexMutation.mutate(true)

@@ -1,5 +1,6 @@
 import type { DraftModel } from '~/models/draft'
 
+import { useI18n } from '~/i18n'
 import { cn } from '~/utils/cn'
 import { relativeTimeFromNow } from '~/utils/time'
 
@@ -10,6 +11,7 @@ export function DraftRow(props: {
   onSelect: () => void
   selected: boolean
 }) {
+  const { t } = useI18n()
   const meta = refTypeMeta[props.draft.refType]
   const Icon = meta.icon
 
@@ -31,19 +33,23 @@ export function DraftRow(props: {
         )}
       >
         <Icon aria-hidden="true" className="size-3" />
-        {meta.label}
+        {t(meta.labelKey)}
       </span>
       <div className="min-w-0 flex-1">
         <div className="flex min-w-0 items-center gap-2">
           <h3 className="truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
-            {props.draft.title || '无标题'}
+            {props.draft.title || t('drafts.row.untitled')}
           </h3>
           <span className="text-xs tabular-nums text-neutral-400">
             v{props.draft.version}
           </span>
         </div>
         <div className="mt-1 flex flex-wrap gap-2 text-xs text-neutral-500 dark:text-neutral-400">
-          <span>{props.draft.refId ? '编辑中' : '新建'}</span>
+          <span>
+            {props.draft.refId
+              ? t('drafts.row.editing')
+              : t('drafts.row.creating')}
+          </span>
           <span>{props.draft.contentFormat ?? 'markdown'}</span>
           <time dateTime={props.draft.updatedAt}>
             {relativeTimeFromNow(props.draft.updatedAt)}

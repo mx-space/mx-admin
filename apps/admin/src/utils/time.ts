@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { format as f } from 'date-fns'
 
+import { translate } from '~/i18n/translate'
+
 export enum DateFormat {
   'yyyy 年 M 月 d 日',
   'yyyy 年 M 月 d 日 HH:mm:ss',
@@ -37,17 +39,29 @@ export const relativeTimeFromNow = (
 
   if (elapsed < msPerMinute) {
     const gap = Math.ceil(elapsed / 1000)
-    return gap <= 0 ? '刚刚' : `${gap} 秒前`
+    return gap <= 0
+      ? translate('time.justNow')
+      : translate('time.secondsAgo', { count: gap })
   } else if (elapsed < msPerHour) {
-    return `${Math.round(elapsed / msPerMinute)} 分钟前`
+    return translate('time.minutesAgo', {
+      count: Math.round(elapsed / msPerMinute),
+    })
   } else if (elapsed < msPerDay) {
-    return `${Math.round(elapsed / msPerHour)} 小时前`
+    return translate('time.hoursAgo', {
+      count: Math.round(elapsed / msPerHour),
+    })
   } else if (elapsed < msPerMonth) {
-    return `${Math.round(elapsed / msPerDay)} 天前`
+    return translate('time.daysAgo', {
+      count: Math.round(elapsed / msPerDay),
+    })
   } else if (elapsed < msPerYear) {
-    return `${Math.round(elapsed / msPerMonth)} 个月前`
+    return translate('time.monthsAgo', {
+      count: Math.round(elapsed / msPerMonth),
+    })
   } else {
-    return `${Math.round(elapsed / msPerYear)} 年前`
+    return translate('time.yearsAgo', {
+      count: Math.round(elapsed / msPerYear),
+    })
   }
 }
 

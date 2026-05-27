@@ -14,7 +14,7 @@ export interface DraftStatusTagProps {
 }
 
 export function DraftStatusTag(props: DraftStatusTagProps) {
-  const { format } = useI18n()
+  const { format, t } = useI18n()
   const [now, setNow] = useState(() => new Date())
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export function DraftStatusTag(props: DraftStatusTagProps) {
           aria-hidden="true"
           className="size-3.5 shrink-0 animate-spin"
         />
-        <span>保存中</span>
+        <span>{t('drafts.status.saving')}</span>
       </Tag>
     )
   }
@@ -41,7 +41,7 @@ export function DraftStatusTag(props: DraftStatusTagProps) {
     return (
       <Tag className={props.className}>
         <CloudOff aria-hidden="true" className="size-3.5 shrink-0" />
-        <span>未保存</span>
+        <span>{t('drafts.status.unsaved')}</span>
       </Tag>
     )
   }
@@ -51,9 +51,14 @@ export function DraftStatusTag(props: DraftStatusTagProps) {
   const relative = format.relativeTime(savedAt, now)
 
   return (
-    <Tag className={props.className} title={`已保存 ${absolute}`}>
+    <Tag
+      className={props.className}
+      title={t('drafts.status.savedTooltip', { time: absolute })}
+    >
       <CloudCheck aria-hidden="true" className="size-3.5 shrink-0" />
-      <span className="truncate">已保存 · {relative}</span>
+      <span className="truncate">
+        {t('drafts.status.saved', { time: relative })}
+      </span>
     </Tag>
   )
 }

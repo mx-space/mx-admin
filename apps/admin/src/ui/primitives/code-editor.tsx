@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import * as monaco from 'monaco-editor'
 import type { OnMount } from '@monaco-editor/react'
 
+import { useI18n } from '~/i18n'
 import { cn } from '~/utils/cn'
 
 loader.config({ monaco })
@@ -29,6 +30,7 @@ export function CodeEditor({
   title,
   value,
 }: CodeEditorProps) {
+  const { t } = useI18n()
   const lineCount = useMemo(
     () => (value ? value.split('\n').length : 1),
     [value],
@@ -82,7 +84,7 @@ export function CodeEditor({
           )}
           {onSave ? (
             <button
-              aria-label="保存"
+              aria-label={t('ui.codeEditor.saveAria')}
               className="inline-flex size-6 items-center justify-center rounded text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-neutral-100"
               onClick={onSave}
               type="button"
@@ -98,7 +100,7 @@ export function CodeEditor({
           language={language}
           loading={
             <div className="flex h-full items-center justify-center text-xs text-neutral-500">
-              Monaco 体积较大，正在加载...
+              {t('ui.codeEditor.loadingMonaco')}
             </div>
           }
           onChange={(nextValue) => onChange(nextValue ?? '')}

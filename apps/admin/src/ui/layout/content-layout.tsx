@@ -14,6 +14,7 @@ import type { ReactNode } from 'react'
 
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
 import { DESKTOP_MEDIA_QUERY, useMediaQuery } from '~/hooks/use-media-query'
+import { useI18n } from '~/i18n'
 import { BottomSheet } from '~/ui/feedback/bottom-sheet'
 import { cn } from '~/utils/cn'
 
@@ -238,6 +239,7 @@ export function AsidePanel(props: {
   onClose?: () => void
   title?: ReactNode
 }) {
+  const { t } = useI18n()
   const Icon = props.icon
   const hasHeader =
     props.title != null || props.headerActions != null || props.onClose != null
@@ -263,7 +265,7 @@ export function AsidePanel(props: {
             {props.headerActions}
             {props.onClose ? (
               <button
-                aria-label="关闭"
+                aria-label={t('ui.modal.closeAria')}
                 className="inline-flex size-9 items-center justify-center rounded text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-600 dark:hover:bg-neutral-900 dark:hover:text-neutral-200"
                 onClick={props.onClose}
                 type="button"

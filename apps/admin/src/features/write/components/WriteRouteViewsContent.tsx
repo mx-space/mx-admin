@@ -57,6 +57,7 @@ import type {
 } from '@haklex/rich-agent-core'
 import type { CreateDraftData } from '~/api/drafts'
 import type { AgentSessionMeta } from '~/hooks/use-agent-session-manager'
+import type { TranslationKey } from '~/i18n/types'
 import type { Amap, AMapSearch } from '~/models/amap'
 import type { Image as ImageModel } from '~/models/base'
 import type { CategoryModel } from '~/models/category'
@@ -104,6 +105,8 @@ import { DraftHintBanner } from '~/features/write/components/DraftHintBanner'
 import { MetaPresetSection } from '~/features/write/meta-presets'
 import { useAgentSessionManager } from '~/hooks/use-agent-session-manager'
 import { useLocalStorageState } from '~/hooks/use-local-storage-state'
+import { useI18n } from '~/i18n'
+import { translate } from '~/i18n/translate'
 import { DraftRefType } from '~/models/draft'
 import { confirmDialog } from '~/ui/feedback/confirm'
 import { Drawer } from '~/ui/feedback/drawer'
@@ -203,117 +206,144 @@ const RichEditorWithAgent = lazy(() =>
     }),
   ),
 )
-const MOOD_SET = [
-  '开心',
-  '伤心',
-  '决心',
-  '坚定',
-  '痛恨',
-  '生气',
-  '悲哀',
-  '痛苦',
-  '可怕',
-  '不快',
-  '可恶',
-  '担心',
-  '绝望',
-  '焦虑',
-  '激动',
+
+interface PresetOption {
+  labelKey: TranslationKey
+  value: string
+}
+
+// Mood/weather values are persisted as Chinese strings in the backend; we keep
+// them as escape sequences so this source file stays free of inline CJK while
+// still mapping to the existing API contract. Display labels come from i18n.
+const MOOD_SET: readonly PresetOption[] = [
+  { labelKey: 'write.mood.delight', value: '\u5f00\u5fc3' },
+  { labelKey: 'write.mood.sad', value: '\u4f24\u5fc3' },
+  { labelKey: 'write.mood.determined', value: '\u51b3\u5fc3' },
+  { labelKey: 'write.mood.firm', value: '\u575a\u5b9a' },
+  { labelKey: 'write.mood.hatred', value: '\u75db\u6068' },
+  { labelKey: 'write.mood.irritated', value: '\u751f\u6c14' },
+  { labelKey: 'write.mood.grief', value: '\u60b2\u54c0' },
+  { labelKey: 'write.mood.bitter', value: '\u75db\u82e6' },
+  { labelKey: 'write.mood.scared', value: '\u53ef\u6015' },
+  { labelKey: 'write.mood.unease', value: '\u4e0d\u5feb' },
+  { labelKey: 'write.mood.loathed', value: '\u53ef\u6076' },
+  { labelKey: 'write.mood.dread', value: '\u62c5\u5fc3' },
+  { labelKey: 'write.mood.depressed', value: '\u7edd\u671b' },
+  { labelKey: 'write.mood.tense', value: '\u7126\u8651' },
+  { labelKey: 'write.mood.excited', value: '\u6fc0\u52a8' },
 ] as const
-const WEATHER_SET = ['晴', '多云', '雨', '阴', '雪', '雷雨'] as const
+const WEATHER_SET: readonly PresetOption[] = [
+  { labelKey: 'write.weather.sunny', value: '\u6674' },
+  { labelKey: 'write.weather.cloudy', value: '\u591a\u4e91' },
+  { labelKey: 'write.weather.rain', value: '\u96e8' },
+  { labelKey: 'write.weather.overcast', value: '\u9634' },
+  { labelKey: 'write.weather.snow', value: '\u96ea' },
+  { labelKey: 'write.weather.thunderstorm', value: '\u96f7\u96e8' },
+] as const
 
 const POST_META_SCHEMA: MetaFieldsSchema = {
-  title: { description: '文章标题', type: 'string' },
+  title: { description: 'Post title', type: 'string' },
   slug: {
-    description: 'URL 路径片段，建议英文小写并使用连字符',
+    description:
+      'URL path segment; prefer lowercase English words joined with hyphens.',
     example: 'my-first-post',
     type: 'string',
   },
-  tags: { description: '文章标签列表', type: 'string[]' },
-  summary: { description: '文章摘要，留空将自动生成', type: 'string' },
-  copyright: { description: '是否在文末显示版权信息', type: 'boolean' },
-  pin: { description: '是否置顶', type: 'boolean' },
+  tags: { description: 'Post tag list', type: 'string[]' },
+  summary: {
+    description: 'Post summary; leave empty to auto-generate.',
+    type: 'string',
+  },
+  copyright: {
+    description: 'Whether to show the copyright notice at the end.',
+    type: 'boolean',
+  },
+  pin: { description: 'Whether the post is pinned', type: 'boolean' },
   pinOrder: {
-    description: '置顶顺序，数字越大越靠前；置顶关闭时为 0',
+    description:
+      'Pin order; higher numbers float to the top; set to 0 when pin is off.',
     type: 'number',
   },
   isPublished: {
-    description: '是否发布（false 为草稿）',
+    description: 'Published flag (false means draft).',
     type: 'boolean',
   },
 }
 
 const NOTE_META_SCHEMA: MetaFieldsSchema = {
-  title: { description: '日记标题', type: 'string' },
+  title: { description: 'Note title', type: 'string' },
   slug: {
-    description: 'URL 路径片段，可空（空则使用 nid 路径）',
+    description: 'URL path segment; may be empty (then the nid path is used).',
     type: 'string',
   },
-  mood: { description: '心情', type: 'string' },
-  weather: { description: '天气', type: 'string' },
-  bookmark: { description: '是否标记为回忆项', type: 'boolean' },
-  location: { description: '位置文本（可空）', type: 'string' },
+  mood: { description: 'Mood', type: 'string' },
+  weather: { description: 'Weather', type: 'string' },
+  bookmark: {
+    description: 'Whether to mark as a bookmarked memory.',
+    type: 'boolean',
+  },
+  location: { description: 'Location text (optional).', type: 'string' },
   isPublished: {
-    description: '是否发布（false 为草稿）',
+    description: 'Published flag (false means draft).',
     type: 'boolean',
   },
 }
 
 const PAGE_META_SCHEMA: MetaFieldsSchema = {
-  title: { description: '页面标题', type: 'string' },
+  title: { description: 'Page title', type: 'string' },
   slug: {
-    description: 'URL 路径片段，建议英文小写并使用连字符',
+    description:
+      'URL path segment; prefer lowercase English words joined with hyphens.',
     example: 'about',
     type: 'string',
   },
-  subtitle: { description: '副标题', type: 'string' },
+  subtitle: { description: 'Subtitle', type: 'string' },
   order: {
-    description: '导航顺序，数字越小越靠前',
+    description: 'Navigation order; smaller numbers come first.',
     type: 'number',
   },
 }
 
-const kindConfig: Record<
-  WriteKind,
-  {
-    description: string
-    icon: LucideIcon
-    listPath: string
-    queryKey: string
-    title: string
+interface KindConfig {
+  description: string
+  icon: LucideIcon
+  listPath: string
+  queryKey: string
+  title: string
+}
+
+function getKindConfig(kind: WriteKind): KindConfig {
+  if (kind === 'note') {
+    return {
+      description: translate('write.kindDescription.note'),
+      icon: BookOpen,
+      listPath: '/notes',
+      queryKey: 'notes',
+      title: translate('write.header.titleNote'),
+    }
   }
-> = {
-  note: {
-    description: '编辑手记正文、slug、发布状态与专栏关联。',
-    icon: BookOpen,
-    listPath: '/notes',
-    queryKey: 'notes',
-    title: '手记写作',
-  },
-  page: {
-    description: '编辑静态页面正文、slug、排序与副标题。',
-    icon: FileIcon,
-    listPath: '/pages',
-    queryKey: 'pages',
-    title: '页面写作',
-  },
-  post: {
-    description: '编辑文章正文、分类、标签、摘要与发布状态。',
+  if (kind === 'page') {
+    return {
+      description: translate('write.kindDescription.page'),
+      icon: FileIcon,
+      listPath: '/pages',
+      queryKey: 'pages',
+      title: translate('write.header.titlePage'),
+    }
+  }
+  return {
+    description: translate('write.kindDescription.post'),
     icon: FileText,
     listPath: '/posts',
     queryKey: 'posts',
-    title: '文章写作',
-  },
-}
-
-const draftKindLabel: Record<WriteKind, string> = {
-  note: '手记',
-  page: '页面',
-  post: '文章',
+    title: translate('write.header.titlePost'),
+  }
 }
 
 function getDraftKindLabel(kind: WriteKind) {
-  return draftKindLabel[kind]
+  if (kind === 'note') return translate('write.kind.note')
+  if (kind === 'page') return translate('write.kind.page')
+  return translate('write.kind.post')
 }
 
 export function PostWritePageContent() {
@@ -329,7 +359,8 @@ export function PageWritePageContent() {
 }
 
 function WritePage(props: { kind: WriteKind }) {
-  const config = kindConfig[props.kind]
+  const { t } = useI18n()
+  const config = getKindConfig(props.kind)
   const Icon = config.icon
   const queryClient = useQueryClient()
   const location = useLocation()
@@ -508,9 +539,9 @@ function WritePage(props: { kind: WriteKind }) {
       if (isConfirmingNavRef.current) return
       isConfirmingNavRef.current = true
       void confirmDialog({
-        title: '离开当前页面？',
-        description: '当前内容尚未保存为草稿，确认离开？',
-        confirmText: '离开',
+        title: t('write.confirmLeave.title'),
+        description: t('write.confirmLeave.description'),
+        confirmText: t('common.leave'),
       }).then((ok) => {
         isConfirmingNavRef.current = false
         if (!ok) return
@@ -521,7 +552,7 @@ function WritePage(props: { kind: WriteKind }) {
 
     document.addEventListener('click', onClickCapture, true)
     return () => document.removeEventListener('click', onClickCapture, true)
-  }, [hasDraftAutosaveContent, location.pathname, navigate])
+  }, [hasDraftAutosaveContent, location.pathname, navigate, t])
 
   useEffect(() => {
     const currentRoute = `${location.pathname}${location.search}${location.hash}`
@@ -555,9 +586,9 @@ function WritePage(props: { kind: WriteKind }) {
       if (isConfirmingNavRef.current) return
       isConfirmingNavRef.current = true
       void confirmDialog({
-        title: '离开当前页面？',
-        description: '当前内容尚未保存为草稿，确认离开？',
-        confirmText: '离开',
+        title: t('write.confirmLeave.title'),
+        description: t('write.confirmLeave.description'),
+        confirmText: t('common.leave'),
       }).then((ok) => {
         isConfirmingNavRef.current = false
         if (!ok) return
@@ -640,7 +671,7 @@ function WritePage(props: { kind: WriteKind }) {
     if (!draft || appliedRouteDraftIdRef.current === draft.id) return
 
     if (draft.refType !== draftRefType) {
-      toast.error('草稿类型与当前写作页面不匹配')
+      toast.error(t('write.toast.draftTypeMismatch'))
       appliedRouteDraftIdRef.current = draft.id
       return
     }
@@ -667,12 +698,14 @@ function WritePage(props: { kind: WriteKind }) {
   const saveMutation = useMutation<WriteModel>({
     mutationFn: () => saveWrite(props.kind, id, state, draftId || undefined),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '保存失败')),
+      toast.error(getErrorMessage(error, t('write.toast.saveFailed'))),
     onSuccess: async (result) => {
       draftDirtyRef.current = false
       lastSavedDraftFingerprintRef.current = latestDraftFingerprintRef.current
       setLastSavedFingerprint(latestDraftFingerprintRef.current)
-      toast.success(isEditing ? '已保存' : '已创建')
+      toast.success(
+        isEditing ? t('write.toast.saved') : t('write.toast.createOk'),
+      )
       await queryClient.invalidateQueries({ queryKey: [config.queryKey] })
       if (props.kind === 'page') {
         navigate(config.listPath)
@@ -691,7 +724,7 @@ function WritePage(props: { kind: WriteKind }) {
       return draftId ? updateDraft(draftId, data) : createDraft(data)
     },
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '保存草稿失败')),
+      toast.error(getErrorMessage(error, t('write.toast.draftSaveFailed'))),
     onSuccess: async (draft) => {
       const isFirstDraftSave = !draftId
       setDraftId(draft.id)
@@ -703,7 +736,7 @@ function WritePage(props: { kind: WriteKind }) {
         nextParams.set('draftId', draft.id)
         setSearchParams(nextParams, { replace: true })
       }
-      toast.success('草稿已保存')
+      toast.success(t('write.toast.draftSaved'))
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ['drafts'] }),
         isEditing ? refDraftQuery.refetch() : newDraftsQuery.refetch(),
@@ -730,7 +763,7 @@ function WritePage(props: { kind: WriteKind }) {
       })
     },
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, 'AI 生成失败')),
+      toast.error(getErrorMessage(error, t('write.toast.aiGenerateFailed'))),
     onSuccess: (result) => {
       draftDirtyRef.current = true
       setState((previous) => ({
@@ -738,7 +771,7 @@ function WritePage(props: { kind: WriteKind }) {
         slug: result.slug || previous.slug,
         title: result.title || previous.title,
       }))
-      toast.success('AI 生成已应用')
+      toast.success(t('write.toast.aiApplied'))
     },
   })
 
@@ -799,13 +832,13 @@ function WritePage(props: { kind: WriteKind }) {
     nextParams.set('draftId', draft.id)
     if (draft.refId) nextParams.set('id', draft.refId)
     setSearchParams(nextParams, { replace: true })
-    toast.success('已套用草稿')
+    toast.success(t('write.toast.draftApplied'))
   }
   applyDraftRef.current = applyDraft
 
   const generateTitleOrSlug = () => {
     if (!state.title.trim() && !state.text.trim()) {
-      toast.error('请输入标题或正文后再生成')
+      toast.error(t('write.slugGenerate.bothMissing'))
       return
     }
 
@@ -814,7 +847,7 @@ function WritePage(props: { kind: WriteKind }) {
 
   const saveDraftNow = () => {
     if (!hasDraftAutosaveContent) {
-      toast.error('请输入内容后再保存草稿')
+      toast.error(t('write.toast.contentEmptyForDraft'))
       return
     }
     if (draftMutation.isPending) return
@@ -839,8 +872,8 @@ function WritePage(props: { kind: WriteKind }) {
 
     void navigator.clipboard
       .writeText(`${WEB_URL}/${state.slug.trim()}`)
-      .then(() => toast.success('链接已复制'))
-      .catch(() => toast.error('复制失败'))
+      .then(() => toast.success(t('write.editor.copyLinkOk')))
+      .catch(() => toast.error(t('write.toast.copyFailed')))
   }
 
   const latestDraft = draftMutation.data ?? availableDraft
@@ -880,14 +913,16 @@ function WritePage(props: { kind: WriteKind }) {
       (props.kind === 'page' && !state.slug.trim()))
 
   const titlePlaceholder =
-    props.kind === 'note' ? defaultNoteTitle : '输入标题...'
+    props.kind === 'note'
+      ? defaultNoteTitle
+      : t('write.editor.titlePlaceholder')
 
   const subtitleNode: ReactNode =
     props.kind === 'page' ? (
       <input
         className="outline-hidden mt-1 w-full border-0 bg-transparent px-0 text-base text-neutral-500 placeholder:text-neutral-300 dark:text-neutral-400 dark:placeholder:text-neutral-700"
         onChange={(event) => updateField('subtitle', event.target.value)}
-        placeholder="副标题…"
+        placeholder={t('write.editor.subtitlePlaceholder')}
         value={state.subtitle}
       />
     ) : null
@@ -909,14 +944,17 @@ function WritePage(props: { kind: WriteKind }) {
           )}
         >
           <div className="flex min-w-0 items-center gap-2">
-            <HeaderBackButton label="返回列表" to={config.listPath} />
+            <HeaderBackButton
+              label={t('write.header.backToList')}
+              to={config.listPath}
+            />
             <h2 className="inline-flex min-w-0 items-center gap-2 text-sm font-medium text-neutral-950 dark:text-neutral-50">
               <Icon aria-hidden="true" className="size-4 shrink-0" />
               <span className="truncate">
                 {props.kind === 'page'
                   ? isEditing
-                    ? '修改页面'
-                    : '新建页面'
+                    ? t('write.header.editPage')
+                    : t('write.header.newPage')
                   : config.title}
               </span>
             </h2>
@@ -931,7 +969,7 @@ function WritePage(props: { kind: WriteKind }) {
               {state.contentFormat === 'markdown' ? (
                 <WriteHeaderIconButton
                   onClick={() => setPageParseDialogOpen(true)}
-                  title="解析 Markdown"
+                  title={t('write.pill.parseMd')}
                   type="button"
                 >
                   <Hash aria-hidden="true" className="size-4" />
@@ -939,7 +977,7 @@ function WritePage(props: { kind: WriteKind }) {
               ) : (
                 <WriteHeaderIconButton
                   onClick={() => setPageLexicalDebugOpen(true)}
-                  title="Lexical Debug"
+                  title={t('write.pill.lexicalDebug')}
                   type="button"
                 >
                   <Bug aria-hidden="true" className="size-4" />
@@ -947,7 +985,11 @@ function WritePage(props: { kind: WriteKind }) {
               )}
               <WriteHeaderIconButton
                 onClick={() => toggleAsidePanel('meta')}
-                title={metaPanelOpen ? '隐藏页面设置' : '页面设置'}
+                title={
+                  metaPanelOpen
+                    ? t('write.pageHeader.hidePageSettings')
+                    : t('write.pageHeader.pageSettings')
+                }
                 type="button"
                 variant={metaPanelOpen ? 'primary' : 'default'}
               >
@@ -955,7 +997,7 @@ function WritePage(props: { kind: WriteKind }) {
               </WriteHeaderIconButton>
               <WriteHeaderIconButton
                 disabled={saveMutation.isPending || detailQuery.isLoading}
-                title="发布"
+                title={t('write.header.publish')}
                 type="submit"
                 variant="primary"
               >
@@ -971,7 +1013,9 @@ function WritePage(props: { kind: WriteKind }) {
               <WriteHeaderIconButton
                 disabled={state.contentFormat !== 'lexical'}
                 onClick={() => toggleAsidePanel('agent')}
-                title={agentVisible ? '隐藏 AI 助手' : 'AI 助手'}
+                title={
+                  agentVisible ? t('write.pill.hideAi') : t('write.pill.showAi')
+                }
                 type="button"
                 variant={agentVisible ? 'primary' : 'default'}
               >
@@ -982,11 +1026,11 @@ function WritePage(props: { kind: WriteKind }) {
                 title={
                   metaPanelOpen
                     ? props.kind === 'post'
-                      ? '隐藏文章设置'
-                      : '隐藏手记设置'
+                      ? t('write.pill.hidePostSettings')
+                      : t('write.pill.hideNoteSettings')
                     : props.kind === 'post'
-                      ? '文章设置'
-                      : '手记设置'
+                      ? t('write.pill.postSettings')
+                      : t('write.pill.noteSettings')
                 }
                 type="button"
                 variant={metaPanelOpen ? 'primary' : 'default'}
@@ -995,7 +1039,7 @@ function WritePage(props: { kind: WriteKind }) {
               </WriteHeaderIconButton>
               <WriteHeaderIconButton
                 disabled={saveMutation.isPending || detailQuery.isLoading}
-                title="发布"
+                title={t('write.header.publish')}
                 type="submit"
                 variant="primary"
               >
@@ -1011,8 +1055,11 @@ function WritePage(props: { kind: WriteKind }) {
 
         {showDraftListHint ? (
           <DraftHintBanner
-            actionLabel="查看列表"
-            message={`发现 ${draftListHintCount} 条未完成${draftKindText}草稿`}
+            actionLabel={t('write.draftList.hintAction')}
+            message={t('write.draftList.hintMessage', {
+              count: draftListHintCount,
+              label: draftKindText,
+            })}
             onAction={() => setDraftListOpen(true)}
             onDismiss={() => setDraftListHintDismissed(true)}
             variant="list"
@@ -1020,8 +1067,11 @@ function WritePage(props: { kind: WriteKind }) {
         ) : null}
         {showRecoveryHint && recoveryHintDraft ? (
           <DraftHintBanner
-            actionLabel="对比并恢复"
-            message={`本${draftKindText}有较已发布更新之草稿（v${recoveryHintDraft.version}）`}
+            actionLabel={t('write.recovery.compareAction')}
+            message={t('write.recovery.draftHasNew', {
+              label: draftKindText,
+              version: recoveryHintDraft.version,
+            })}
             onAction={() => openRecoveryDialog(recoveryHintDraft)}
             onDismiss={() => setRecoveryHintDismissed(true)}
             variant="recovery"
@@ -1163,10 +1213,10 @@ function WritePage(props: { kind: WriteKind }) {
                   props.kind === 'note'
                     ? notePublicPath
                       ? `${WEB_URL}${notePublicPath}`
-                      : '留空则使用手记 nid 路径。'
+                      : t('write.notePublicPath.fallback')
                     : postPublicPath
                       ? `${WEB_URL}${postPublicPath}`
-                      : '有标题时生成 Slug；无标题时根据正文生成标题与 Slug。'
+                      : t('write.postPublicPath.fallback')
                 }
                 saveResultId={saveMutation.data?.id}
                 state={state}
@@ -1183,7 +1233,7 @@ function WritePage(props: { kind: WriteKind }) {
           onApply={(parsed) => {
             setState((previous) => applyParsedPageMarkdown(previous, parsed))
             setPageParseDialogOpen(false)
-            toast.success('Markdown 已解析')
+            toast.success(t('write.parseMd.success'))
           }}
           onClose={() => setPageParseDialogOpen(false)}
           open={pageParseDialogOpen}
@@ -1237,16 +1287,17 @@ function ContentSettingsPanel(props: {
   ) => void
   writerGeneratePending: boolean
 }) {
+  const { t } = useI18n()
   return (
     <AsidePanel>
       <Scroll
         className="min-h-0 flex-1"
         innerClassName="grid grid-cols-[minmax(0,1fr)] gap-4 p-4"
       >
-        <PanelBlock title="发布">
+        <PanelBlock title={t('write.section.publish.title')}>
           <Switch
             checked={props.state.isPublished}
-            label="发布状态"
+            label={t('write.section.path.publishLabel')}
             onCheckedChange={(checked) =>
               props.updateField('isPublished', checked)
             }
@@ -1254,24 +1305,27 @@ function ContentSettingsPanel(props: {
           {props.saveResultId ? (
             <div className="mt-3 inline-flex items-center gap-2 text-xs text-emerald-600 dark:text-emerald-400">
               <Check aria-hidden="true" className="size-4" />
-              已保存 ID: {props.saveResultId}
+              {t('write.section.path.savedId', { id: props.saveResultId })}
             </div>
           ) : null}
         </PanelBlock>
 
-        <PanelBlock title="草稿">
+        <PanelBlock title={t('write.section.draft.title')}>
           <div className="space-y-3 text-sm">
             {props.availableDraft ? (
               <div className="border border-neutral-200 bg-white p-3 dark:border-neutral-800 dark:bg-neutral-950">
                 <div className="flex items-center gap-2 text-xs text-neutral-500 dark:text-neutral-400">
                   <History aria-hidden="true" className="size-4" />
                   <span>
-                    版本 {props.availableDraft.version} ·{' '}
-                    {formatDateTime(props.availableDraft.updatedAt)}
+                    {t('write.section.draft.versionLine', {
+                      version: props.availableDraft.version,
+                      time: formatDateTime(props.availableDraft.updatedAt),
+                    })}
                   </span>
                 </div>
                 <p className="mt-2 line-clamp-2 text-neutral-800 dark:text-neutral-200">
-                  {props.availableDraft.title || '未命名草稿'}
+                  {props.availableDraft.title ||
+                    t('write.section.draft.untitled')}
                 </p>
                 <Button
                   className="mt-3 w-full"
@@ -1279,12 +1333,12 @@ function ContentSettingsPanel(props: {
                   type="button"
                   variant="subtle"
                 >
-                  套用草稿
+                  {t('write.section.draft.applyDraft')}
                 </Button>
               </div>
             ) : (
               <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                暂无可恢复草稿。
+                {t('write.section.draft.empty')}
               </p>
             )}
 
@@ -1300,18 +1354,19 @@ function ContentSettingsPanel(props: {
               ) : (
                 <Clock aria-hidden="true" className="size-4" />
               )}
-              保存草稿
+              {t('write.section.draft.save')}
             </Button>
             {props.draftMutationData ? (
               <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                最近保存：
-                {formatDateTime(props.draftMutationData.updatedAt)}
+                {t('write.section.draft.lastSaved', {
+                  time: formatDateTime(props.draftMutationData.updatedAt),
+                })}
               </p>
             ) : null}
           </div>
         </PanelBlock>
 
-        <PanelBlock title="路径">
+        <PanelBlock title={t('write.section.path.title')}>
           <TextInput
             controlClassName="h-9 font-mono focus:border-neutral-400"
             label="Slug"
@@ -1331,7 +1386,9 @@ function ContentSettingsPanel(props: {
             ) : (
               <WandSparkles aria-hidden="true" className="size-4" />
             )}
-            {props.state.title.trim() ? '生成 Slug' : '生成标题与 Slug'}
+            {props.state.title.trim()
+              ? t('write.slugGenerate.haveTitle')
+              : t('write.slugGenerate.noTitle')}
           </Button>
           <p className="text-xs text-neutral-500 dark:text-neutral-400">
             {props.publicPath}
@@ -1358,6 +1415,7 @@ function DraftListDialog(props: {
   onSelect: (draft: DraftModel) => void
   open: boolean
 }) {
+  const { t } = useI18n()
   const [selectedDraftId, setSelectedDraftId] = useState('')
   const selectedDraft =
     props.drafts.find((draft) => draft.id === selectedDraftId) ??
@@ -1380,7 +1438,7 @@ function DraftListDialog(props: {
       open={props.open}
       popupStyle={{ height: 'min(82vh, 38rem)', width: 'min(92vw, 56rem)' }}
     >
-      <ModalHeader icon={History} title="发现未完成的草稿" />
+      <ModalHeader icon={History} title={t('write.draftList.title')} />
 
       <div className="grid min-h-0 flex-1 grid-cols-1 md:grid-cols-[15rem_minmax(0,1fr)]">
         <Scroll
@@ -1414,10 +1472,13 @@ function DraftListDialog(props: {
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
-                  {draft.title || '无标题'}
+                  {draft.title || t('write.editor.untitled')}
                 </span>
                 <span className="mt-1 block text-xs text-neutral-500 dark:text-neutral-400">
-                  v{draft.version} · {draft.text.length} 字
+                  {t('write.draftList.summary', {
+                    version: draft.version,
+                    chars: draft.text.length,
+                  })}
                 </span>
                 <span className="mt-0.5 block text-xs text-neutral-400 dark:text-neutral-500">
                   {formatDateTime(draft.updatedAt)}
@@ -1433,13 +1494,16 @@ function DraftListDialog(props: {
               <div className="mb-3 flex min-w-0 items-center justify-between gap-3 border-b border-neutral-200 pb-3 dark:border-neutral-800">
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
-                    {selectedDraft.title || '无标题'}
+                    {selectedDraft.title || t('write.editor.untitled')}
                   </p>
                   <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
                     {selectedDraft.contentFormat === 'lexical'
                       ? 'Lexical'
                       : 'Markdown'}{' '}
-                    · 更新于 {formatDateTime(selectedDraft.updatedAt)}
+                    ·{' '}
+                    {t('write.draftList.updatedAt', {
+                      time: formatDateTime(selectedDraft.updatedAt),
+                    })}
                   </p>
                 </div>
                 <FileText
@@ -1448,12 +1512,12 @@ function DraftListDialog(props: {
                 />
               </div>
               <pre className="whitespace-pre-wrap break-words font-mono text-xs leading-5 text-neutral-800 dark:text-neutral-200">
-                {selectedDraft.text || '草稿正文为空。'}
+                {selectedDraft.text || t('write.draftList.emptyText')}
               </pre>
             </div>
           ) : (
             <div className="flex h-full min-h-60 items-center justify-center text-sm text-neutral-500 dark:text-neutral-400">
-              选择一个草稿查看内容
+              {t('write.draftList.selectPrompt')}
             </div>
           )}
         </Scroll>
@@ -1461,10 +1525,10 @@ function DraftListDialog(props: {
 
       <div className="flex shrink-0 items-center justify-end gap-2 border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
         <Button onClick={props.onCreate} type="button" variant="subtle">
-          创建新{props.draftLabel}
+          {t('write.draftList.createNew', { label: props.draftLabel })}
         </Button>
         <Button disabled={!selectedDraft} onClick={continueDraft} type="button">
-          继续编辑选中的草稿
+          {t('write.draftList.continueDraft')}
         </Button>
       </div>
     </Modal>
@@ -1485,6 +1549,7 @@ function DraftRecoveryDialog(props: {
   onUsePublished: () => void
   publishedContent: PublishedWriteContent
 }) {
+  const { t } = useI18n()
   const [selectedVersion, setSelectedVersion] = useState<
     'current' | 'published' | number
   >('current')
@@ -1542,8 +1607,10 @@ function DraftRecoveryDialog(props: {
     <>
       <ModalHeader
         className="h-auto py-3"
-        subtitle={`当前草稿更新于 ${formatDateTime(props.draft.updatedAt)}，可与已发布内容对比后恢复。`}
-        title="检测到未恢复的草稿"
+        subtitle={t('write.recovery.dialogSubtitle', {
+          time: formatDateTime(props.draft.updatedAt),
+        })}
+        title={t('write.recovery.dialogTitle')}
       />
 
       <div
@@ -1564,7 +1631,9 @@ function DraftRecoveryDialog(props: {
             }}
             type="button"
           >
-            <span className="font-medium">当前草稿</span>
+            <span className="font-medium">
+              {t('write.recovery.draftCurrent')}
+            </span>
             <span className="text-xs text-neutral-500 dark:text-neutral-400">
               v{props.draft.version} · {formatDateTime(props.draft.updatedAt)}
             </span>
@@ -1582,7 +1651,9 @@ function DraftRecoveryDialog(props: {
               onClick={() => setSelectedVersion(item.version)}
               type="button"
             >
-              <span className="font-medium">历史版本 v{item.version}</span>
+              <span className="font-medium">
+                {t('write.recovery.historyVersion', { version: item.version })}
+              </span>
               <span className="text-xs text-neutral-500 dark:text-neutral-400">
                 {formatDateTime(item.savedAt)}
               </span>
@@ -1599,7 +1670,7 @@ function DraftRecoveryDialog(props: {
             onClick={() => setSelectedVersion('published')}
             type="button"
           >
-            <span className="font-medium">已发布版本</span>
+            <span className="font-medium">{t('write.recovery.published')}</span>
             <span className="text-xs text-neutral-500 dark:text-neutral-400">
               {formatDateTime(props.publishedContent.updatedAt)}
             </span>
@@ -1609,16 +1680,18 @@ function DraftRecoveryDialog(props: {
         <main className="flex min-h-0 flex-col">
           <div className="flex shrink-0 items-center justify-between border-b border-neutral-200 px-4 py-2.5 text-xs dark:border-neutral-800">
             <div className="min-w-0 truncate text-neutral-500 dark:text-neutral-400">
-              已发布 →{' '}
+              {t('write.recovery.headerArrow')}{' '}
               {selectedVersion === 'published'
-                ? '已发布版本'
+                ? t('write.recovery.published')
                 : selectedVersion === 'current'
-                  ? '当前草稿'
-                  : `历史版本 v${selectedVersion}`}
+                  ? t('write.recovery.draftCurrent')
+                  : t('write.recovery.historyVersion', {
+                      version: selectedVersion,
+                    })}
             </div>
             <div className="shrink-0 text-neutral-500 dark:text-neutral-400">
               {diffStats.isSame ? (
-                '内容相同'
+                t('write.recovery.contentSame')
               ) : (
                 <>
                   <span className="text-emerald-600 dark:text-emerald-400">
@@ -1628,7 +1701,7 @@ function DraftRecoveryDialog(props: {
                   <span className="text-red-600 dark:text-red-400">
                     -{diffStats.removed}
                   </span>
-                  <span> 字</span>
+                  <span>{t('write.recovery.diffWords')}</span>
                 </>
               )}
             </div>
@@ -1640,15 +1713,15 @@ function DraftRecoveryDialog(props: {
           >
             <div>
               <div className="text-xs font-medium text-neutral-500 dark:text-neutral-400">
-                标题
+                {t('write.editor.titleField')}
               </div>
               <div className="mt-1 text-sm text-neutral-950 dark:text-neutral-50">
-                {selectedContent.title || '无标题'}
+                {selectedContent.title || t('write.editor.untitled')}
               </div>
             </div>
             <div>
               <div className="text-xs font-medium text-neutral-500 dark:text-neutral-400">
-                正文预览
+                {t('write.editor.contentPreview')}
               </div>
               <Scroll
                 className="mt-2 border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900/60"
@@ -1658,7 +1731,7 @@ function DraftRecoveryDialog(props: {
                 <pre className="whitespace-pre-wrap p-3 text-xs leading-5 text-neutral-700 dark:text-neutral-200">
                   {selectedContent.text ||
                     selectedContent.content ||
-                    '暂无正文'}
+                    t('write.editor.contentEmpty')}
                 </pre>
               </Scroll>
             </div>
@@ -1668,7 +1741,7 @@ function DraftRecoveryDialog(props: {
 
       <div className="flex shrink-0 items-center justify-end gap-2 border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
         <Button onClick={props.onUsePublished} type="button" variant="subtle">
-          使用已发布版本
+          {t('write.recovery.usePublished')}
         </Button>
         <Button
           disabled={
@@ -1682,7 +1755,7 @@ function DraftRecoveryDialog(props: {
           ) : (
             <History aria-hidden="true" className="size-4" />
           )}
-          恢复选中版本
+          {t('write.recovery.recoverButton')}
         </Button>
       </div>
     </>
@@ -1726,30 +1799,44 @@ function computeMetaStatus(input: {
   publishedUpdatedAt?: string
 }): { status: MetaStatus; text: string } {
   if (input.isPendingDraftSave) {
-    return { status: 'dirty', text: '保存草稿中…' }
+    return { status: 'dirty', text: translate('write.metaStatus.dirtySaving') }
   }
   if (input.isDirty) {
     const versionSuffix = input.latestDraft
-      ? ` · v${input.latestDraft.version}`
+      ? translate('write.metaStatus.versionSuffix', {
+          version: input.latestDraft.version,
+        })
       : ''
-    return { status: 'dirty', text: `未保存改动${versionSuffix}` }
+    return {
+      status: 'dirty',
+      text: translate('write.metaStatus.dirty', { version: versionSuffix }),
+    }
   }
   if (input.latestDraft) {
     const savedAt =
       input.latestDraft.updatedAt ?? input.latestDraft.createdAt ?? ''
-    const suffix = savedAt ? ` · 保存于 ${formatRelativeTime(savedAt)}` : ''
+    const suffix = savedAt
+      ? translate('write.metaStatus.savedAt', {
+          time: formatRelativeTime(savedAt),
+        })
+      : ''
     return {
       status: 'saved',
-      text: `草稿 v${input.latestDraft.version}${suffix}`,
+      text: translate('write.metaStatus.draft', {
+        version: input.latestDraft.version,
+        suffix,
+      }),
     }
   }
   if (input.isEditing && input.publishedUpdatedAt) {
     return {
       status: 'published',
-      text: `已发布 · 同步于 ${formatRelativeTime(input.publishedUpdatedAt)}`,
+      text: translate('write.metaStatus.published', {
+        time: formatRelativeTime(input.publishedUpdatedAt),
+      }),
     }
   }
-  return { status: 'new', text: '新建未保存' }
+  return { status: 'new', text: translate('write.metaStatus.new') }
 }
 
 function formatRelativeTime(value: string | null | undefined) {
@@ -1759,13 +1846,14 @@ function formatRelativeTime(value: string | null | undefined) {
   const diffMs = Date.now() - ts
   if (diffMs < 0) return formatDateTime(value)
   const sec = Math.round(diffMs / 1000)
-  if (sec < 45) return '刚刚'
+  if (sec < 45) return translate('write.relativeTime.justNow')
   const min = Math.round(sec / 60)
-  if (min < 60) return `${min} 分钟前`
+  if (min < 60)
+    return translate('write.relativeTime.minutesAgo', { count: min })
   const hr = Math.round(min / 60)
-  if (hr < 24) return `${hr} 小时前`
+  if (hr < 24) return translate('write.relativeTime.hoursAgo', { count: hr })
   const day = Math.round(hr / 24)
-  if (day < 7) return `${day} 天前`
+  if (day < 7) return translate('write.relativeTime.daysAgo', { count: day })
   return formatDateTime(value)
 }
 
@@ -1779,6 +1867,7 @@ function EditorMetaStrip(props: {
   status: MetaStatus
   statusText: string
 }) {
+  const { t } = useI18n()
   const dotClass =
     props.status === 'dirty'
       ? 'bg-amber-500'
@@ -1786,7 +1875,9 @@ function EditorMetaStrip(props: {
         ? 'bg-emerald-500'
         : 'bg-neutral-300 dark:bg-neutral-600'
   const formatLabel =
-    props.format === 'lexical' ? '切换到 Markdown' : '切换到 Lexical'
+    props.format === 'lexical'
+      ? t('write.format.toMarkdown')
+      : t('write.format.toLexical')
 
   return (
     <div className="group mb-3 flex items-center justify-between opacity-60 transition-opacity duration-200 hover:opacity-100">
@@ -1814,11 +1905,11 @@ function EditorMetaStrip(props: {
         ) : null}
         {props.aiButtonVisible ? (
           <button
-            aria-label="AI 生成标题与 Slug"
+            aria-label={t('write.pill.aiGenerate')}
             className="focus-visible:outline-hidden inline-flex size-7 items-center justify-center rounded-md text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-700 focus-visible:ring-1 focus-visible:ring-neutral-400 disabled:pointer-events-none disabled:opacity-50 dark:text-neutral-500 dark:hover:bg-neutral-900 dark:hover:text-neutral-200"
             disabled={props.aiButtonPending}
             onClick={props.onAiGenerate}
-            title="AI 生成标题与 Slug"
+            title={t('write.pill.aiGenerate')}
             type="button"
           >
             {props.aiButtonPending ? (
@@ -1881,14 +1972,21 @@ function SlugPill(props: {
   slugPlaceholder: string
   slugPrefix: string
 }) {
+  const { t } = useI18n()
   const [open, setOpen] = useState(false)
   const hasSlug = Boolean(props.slug.trim())
-  const triggerLabel = hasSlug ? props.displayPath : '+ 添加 slug'
+  const triggerLabel = hasSlug
+    ? props.displayPath
+    : t('write.editor.titleArea.addSlug')
 
   return (
     <Popover.Root onOpenChange={setOpen} open={open}>
       <Popover.Trigger
-        aria-label={hasSlug ? '编辑 slug' : '添加 slug'}
+        aria-label={
+          hasSlug
+            ? t('write.editor.titleArea.editSlugAria')
+            : t('write.editor.titleArea.addSlugAria')
+        }
         className={cn(
           'focus-visible:outline-hidden -ml-1 mt-1 inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 font-mono text-xs text-neutral-500 transition-opacity duration-150 hover:bg-neutral-100 focus-visible:ring-1 focus-visible:ring-neutral-400 dark:text-neutral-400 dark:hover:bg-neutral-900',
           hasSlug
@@ -1935,7 +2033,7 @@ function SlugPill(props: {
                   type="button"
                 >
                   <Copy aria-hidden="true" className="size-3" />
-                  复制链接
+                  {t('write.editor.copyLink')}
                 </button>
               </div>
             ) : null}
@@ -2025,6 +2123,7 @@ function PostFields(props: {
     value: WriteFormState[TKey],
   ) => void
 }) {
+  const { t } = useI18n()
   const selectedTags = splitCommaList(props.state.tags)
   const selectedRelatedIds = splitCommaList(props.state.relatedId)
   const visibleRelatedPosts = props.relatedPosts.filter(
@@ -2042,10 +2141,10 @@ function PostFields(props: {
 
   return (
     <>
-      <PanelBlock title="分类">
-        <Field label="分类" required>
+      <PanelBlock title={t('write.postFields.section.category')}>
+        <Field label={t('write.postFields.category')} required>
           <SelectField
-            aria-label="分类"
+            aria-label={t('write.postFields.category')}
             onValueChange={(categoryId) =>
               props.updateField('categoryId', categoryId)
             }
@@ -2058,13 +2157,13 @@ function PostFields(props: {
         </Field>
       </PanelBlock>
 
-      <PanelBlock title="元数据">
+      <PanelBlock title={t('write.postFields.section.meta')}>
         <TextInput
           controlClassName="h-9 focus:border-neutral-400"
           list="write-post-tags"
-          label="标签"
+          label={t('write.postFields.allTags')}
           onChange={(value) => props.updateField('tags', value)}
-          placeholder="用逗号分隔"
+          placeholder={t('write.postFields.allTagsPlaceholder')}
           value={props.state.tags}
         />
         <datalist id="write-post-tags">
@@ -2100,43 +2199,43 @@ function PostFields(props: {
         ) : null}
         <TextArea
           controlClassName="min-h-24 focus:border-neutral-400"
-          label="摘要"
+          label={t('write.postFields.summary')}
           onChange={(value) => props.updateField('summary', value)}
           value={props.state.summary}
         />
         <Switch
           checked={props.state.copyright}
-          label="版权声明"
+          label={t('write.postFields.copyright')}
           onCheckedChange={(checked) => props.updateField('copyright', checked)}
         />
         <Switch
           checked={props.state.pin}
-          label="置顶"
+          label={t('write.postFields.pin')}
           onCheckedChange={(checked) => props.updateField('pin', checked)}
         />
         {props.state.pin ? (
           <TextInput
             controlClassName="h-9 focus:border-neutral-400"
             inputMode="numeric"
-            label="置顶顺序"
+            label={t('write.postFields.pinOrder')}
             onChange={(value) => props.updateField('pinOrder', value)}
             value={props.state.pinOrder}
           />
         ) : null}
       </PanelBlock>
 
-      <PanelBlock title="关联阅读">
+      <PanelBlock title={t('write.postFields.section.related')}>
         {visibleRelatedPosts.length > 0 ? (
           <>
             <SelectField
-              aria-label="添加关联文章"
+              aria-label={t('write.postFields.related.addAria')}
               onValueChange={(postId) => {
                 if (postId && !selectedRelatedIds.includes(postId)) {
                   toggleRelatedPost(postId)
                 }
               }}
               options={[
-                { label: '选择文章添加…', value: '' },
+                { label: t('write.postFields.related.placeholder'), value: '' },
                 ...visibleRelatedPosts
                   .filter((post) => !selectedRelatedIds.includes(post.id))
                   .map((post) => ({
@@ -2160,7 +2259,7 @@ function PostFields(props: {
                     >
                       <span className="truncate">{label}</span>
                       <button
-                        aria-label="移除"
+                        aria-label={t('write.postFields.related.removeAria')}
                         className="inline-flex size-4 shrink-0 items-center justify-center rounded text-neutral-400 transition-colors hover:bg-neutral-200 hover:text-neutral-700 dark:hover:bg-neutral-800 dark:hover:text-neutral-200"
                         onClick={() => toggleRelatedPost(id)}
                         type="button"
@@ -2175,14 +2274,14 @@ function PostFields(props: {
           </>
         ) : (
           <p className="text-xs text-neutral-500 dark:text-neutral-400">
-            暂无可关联文章。
+            {t('write.postFields.related.empty')}
           </p>
         )}
         <TextInput
           controlClassName="h-9 font-mono focus:border-neutral-400"
-          label="相关文章 ID"
+          label={t('write.postFields.related.idLabel')}
           onChange={(value) => props.updateField('relatedId', value)}
-          placeholder="用逗号分隔，也可从上方选择"
+          placeholder={t('write.postFields.related.idPlaceholder')}
           value={props.state.relatedId}
         />
       </PanelBlock>
@@ -2219,6 +2318,7 @@ function NoteFields(props: {
     value: WriteFormState[TKey],
   ) => void
 }) {
+  const { t } = useI18n()
   const [locationSearchOpen, setLocationSearchOpen] = useState(false)
   const updateLocation = (
     location: string,
@@ -2241,13 +2341,13 @@ function NoteFields(props: {
 
   return (
     <>
-      <PanelBlock title="手记属性">
-        <Field label="专栏">
+      <PanelBlock title={t('write.noteFields.section.note')}>
+        <Field label={t('write.noteFields.topic')}>
           <SelectField
-            aria-label="专栏"
+            aria-label={t('write.noteFields.topic')}
             onValueChange={(topicId) => props.updateField('topicId', topicId)}
             options={[
-              { label: '无专栏', value: '' },
+              { label: t('write.noteFields.topicNone'), value: '' },
               ...props.topics.map((topic) => ({
                 label: topic.name,
                 value: topic.id,
@@ -2259,73 +2359,77 @@ function NoteFields(props: {
         <TextInput
           controlClassName="h-9 focus:border-neutral-400"
           list="write-note-moods"
-          label="心情"
+          label={t('write.noteFields.mood')}
           onChange={(value) => props.updateField('mood', value)}
-          placeholder="选择或输入心情"
+          placeholder={t('write.noteFields.moodPlaceholder')}
           value={props.state.mood}
         />
         <datalist id="write-note-moods">
           {MOOD_SET.map((mood) => (
-            <option key={mood}>{mood}</option>
+            <option key={mood.value} label={t(mood.labelKey)}>
+              {mood.value}
+            </option>
           ))}
         </datalist>
         <div className="flex flex-wrap gap-1.5">
           {MOOD_SET.map((mood) => (
             <MetadataPill
-              active={props.state.mood === mood}
-              key={mood}
-              onClick={() => props.updateField('mood', mood)}
+              active={props.state.mood === mood.value}
+              key={mood.value}
+              onClick={() => props.updateField('mood', mood.value)}
             >
-              {mood}
+              {t(mood.labelKey)}
             </MetadataPill>
           ))}
         </div>
         <TextInput
           controlClassName="h-9 focus:border-neutral-400"
           list="write-note-weathers"
-          label="天气"
+          label={t('write.noteFields.weather')}
           onChange={(value) => props.updateField('weather', value)}
-          placeholder="选择或输入天气"
+          placeholder={t('write.noteFields.weatherPlaceholder')}
           value={props.state.weather}
         />
         <datalist id="write-note-weathers">
           {WEATHER_SET.map((weather) => (
-            <option key={weather}>{weather}</option>
+            <option key={weather.value} label={t(weather.labelKey)}>
+              {weather.value}
+            </option>
           ))}
         </datalist>
         <div className="flex flex-wrap gap-1.5">
           {WEATHER_SET.map((weather) => (
             <MetadataPill
-              active={props.state.weather === weather}
-              key={weather}
-              onClick={() => props.updateField('weather', weather)}
+              active={props.state.weather === weather.value}
+              key={weather.value}
+              onClick={() => props.updateField('weather', weather.value)}
             >
-              {weather}
+              {t(weather.labelKey)}
             </MetadataPill>
           ))}
         </div>
         <Switch
           checked={props.state.bookmark}
-          label="回忆标记"
+          label={t('write.noteFields.bookmark')}
           onCheckedChange={(checked) => props.updateField('bookmark', checked)}
         />
       </PanelBlock>
 
-      <PanelBlock title="公开与位置">
+      <PanelBlock title={t('write.noteFields.section.publicLocation')}>
         <DateTimePicker
           controlClassName="h-9 focus:border-neutral-400"
-          label="定时公开"
+          label={t('write.field.publicAt')}
           min={toDatetimeLocalValue(new Date())}
           onChange={(value) => props.updateField('publicAt', value)}
-          placeholder="选择定时公开时间"
+          placeholder={t('write.field.publicAtPlaceholder')}
           value={props.state.publicAt}
         />
         <div className="grid grid-cols-2 gap-1.5">
           {[
-            ['一天后', { days: 1 }],
-            ['一周后', { days: 7 }],
-            ['半个月后', { days: 14 }],
-            ['一个月后', { months: 1 }],
+            [t('write.field.publicAtPreset.day'), { days: 1 }],
+            [t('write.field.publicAtPreset.week'), { days: 7 }],
+            [t('write.field.publicAtPreset.fortnight'), { days: 14 }],
+            [t('write.field.publicAtPreset.month'), { months: 1 }],
           ].map(([label, offset]) => (
             <button
               className="h-8 rounded border border-neutral-200 bg-white px-2 text-xs text-neutral-600 transition-colors hover:bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-300 dark:hover:bg-neutral-900"
@@ -2346,7 +2450,7 @@ function NoteFields(props: {
         </div>
         <TextInput
           controlClassName="h-9 focus:border-neutral-400"
-          label="位置"
+          label={t('write.location.field.label')}
           onChange={(value) => props.updateField('location', value)}
           value={props.state.location}
         />
@@ -2358,7 +2462,7 @@ function NoteFields(props: {
             variant="subtle"
           >
             <Search aria-hidden="true" className="size-4" />
-            自定义
+            {t('write.location.button.custom')}
           </Button>
           <Button
             disabled={
@@ -2370,21 +2474,21 @@ function NoteFields(props: {
             type="button"
             variant="subtle"
           >
-            清除
+            {t('write.location.button.clear')}
           </Button>
         </div>
         <div className="grid grid-cols-2 gap-2">
           <TextInput
             controlClassName="h-9 focus:border-neutral-400"
             inputMode="decimal"
-            label="纬度"
+            label={t('write.location.coordinates.lat')}
             onChange={(value) => props.updateField('coordinatesLat', value)}
             value={props.state.coordinatesLat}
           />
           <TextInput
             controlClassName="h-9 focus:border-neutral-400"
             inputMode="decimal"
-            label="经度"
+            label={t('write.location.coordinates.lng')}
             onChange={(value) => props.updateField('coordinatesLng', value)}
             value={props.state.coordinatesLng}
           />
@@ -2400,10 +2504,10 @@ function NoteFields(props: {
         />
       </PanelBlock>
 
-      <PanelBlock title="访问保护">
+      <PanelBlock title={t('write.noteFields.section.access')}>
         <Switch
           checked={props.state.passwordProtected}
-          label="密码保护"
+          label={t('write.field.passwordProtected')}
           onCheckedChange={(checked) =>
             props.updateField('passwordProtected', checked)
           }
@@ -2412,9 +2516,9 @@ function NoteFields(props: {
           <TextInput
             autoComplete="new-password"
             controlClassName="h-9 focus:border-neutral-400"
-            label="访问密码"
+            label={t('write.field.password')}
             onChange={(value) => props.updateField('password', value)}
-            placeholder="留空保持原密码"
+            placeholder={t('write.field.passwordPlaceholder')}
             type="password"
             value={props.state.password}
           />
@@ -2427,10 +2531,11 @@ function NoteFields(props: {
 function GetCurrentLocationButton(props: {
   onChange: (location: string, coordinates: NoteCoordinates) => void
 }) {
+  const { t } = useI18n()
   const mutation = useMutation({
     mutationFn: async () => {
       if (!navigator.geolocation) {
-        throw new Error('浏览器不支持定位')
+        throw new Error(t('write.location.error.unsupported'))
       }
 
       const position = await new Promise<GeolocationPosition>(
@@ -2452,10 +2557,14 @@ function GetCurrentLocationButton(props: {
     onError(error) {
       const geolocationErrorCode = isRecord(error) ? error.code : undefined
       if (geolocationErrorCode === 2) {
-        toast.error('获取定位失败，连接超时')
+        toast.error(t('write.location.error.timeout'))
         return
       }
-      toast.error(error instanceof Error ? error.message : '定位权限未打开')
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : t('write.location.error.permission'),
+      )
     },
     onSuccess(result) {
       props.onChange(result.location, result.coordinates)
@@ -2474,7 +2583,7 @@ function GetCurrentLocationButton(props: {
       ) : (
         <MapPin aria-hidden="true" className="size-4" />
       )}
-      定位
+      {t('write.location.button.locate')}
     </Button>
   )
 }
@@ -2485,6 +2594,7 @@ function LocationSearchDialog(props: {
   open: boolean
   placeholder?: string
 }) {
+  const { t } = useI18n()
   const [keyword, setKeyword] = useState('')
   const [options, setOptions] = useState<
     Array<{ coordinates: NoteCoordinates; id: string; label: string }>
@@ -2543,7 +2653,11 @@ function LocationSearchDialog(props: {
         })
         .catch((error: unknown) => {
           if (cancelled) return
-          toast.error(error instanceof Error ? error.message : '搜索地点失败')
+          toast.error(
+            error instanceof Error
+              ? error.message
+              : t('write.location.error.search'),
+          )
         })
         .finally(() => {
           if (!cancelled) setLoading(false)
@@ -2562,15 +2676,17 @@ function LocationSearchDialog(props: {
       onClose={props.onClose}
       open={props.open}
     >
-      <ModalHeader icon={Search} title="搜索关键字查找地点" />
+      <ModalHeader icon={Search} title={t('write.location.dialog.title')} />
 
       <div className="grid gap-3 p-4">
         <TextInput
           autoFocus
           controlClassName="h-9 focus:border-neutral-400"
-          label="搜索地点"
+          label={t('write.location.dialog.searchLabel')}
           onChange={setKeyword}
-          placeholder={props.placeholder || '输入地点关键字'}
+          placeholder={
+            props.placeholder || t('write.location.dialog.placeholder')
+          }
           value={keyword}
         />
         <Scroll className="max-h-72" viewportClassName="max-h-72">
@@ -2578,7 +2694,7 @@ function LocationSearchDialog(props: {
             {loading ? (
               <div className="flex h-24 items-center justify-center gap-2 text-sm text-neutral-500 dark:text-neutral-400">
                 <Loader2 aria-hidden="true" className="size-4 animate-spin" />
-                搜索中
+                {t('write.location.dialog.searching')}
               </div>
             ) : options.length > 0 ? (
               options.map((option) => (
@@ -2601,7 +2717,9 @@ function LocationSearchDialog(props: {
               ))
             ) : (
               <div className="flex h-24 items-center justify-center text-sm text-neutral-500 dark:text-neutral-400">
-                {keyword.trim() ? '暂无匹配地点' : '输入关键字开始搜索'}
+                {keyword.trim()
+                  ? t('write.location.dialog.searchEmpty')
+                  : t('write.location.dialog.searchHint')}
               </div>
             )}
           </div>
@@ -2618,24 +2736,25 @@ function PageFields(props: {
     value: WriteFormState[TKey],
   ) => void
 }) {
+  const { t } = useI18n()
   return (
     <PanelBlock
-      description="这些字段对应旧版页面设置抽屉中的文档专属选项。"
+      description={t('write.page.section.options.description')}
       icon={FileText}
-      title="页面选项"
+      title={t('write.page.section.options.title')}
     >
       <TextInput
         controlClassName="h-9 focus:border-neutral-400"
         inputMode="numeric"
-        label="页面顺序"
+        label={t('write.pageFields.orderLabel')}
         min="0"
         onChange={(value) => props.updateField('order', value)}
-        placeholder="输入排序数字"
+        placeholder={t('write.pageFields.orderPlaceholder')}
         type="number"
         value={props.state.order}
       />
       <p className="text-xs leading-5 text-neutral-500 dark:text-neutral-400">
-        用于控制页面在导航中的显示顺序，数字越小越靠前。
+        {t('write.pageFields.orderHint')}
       </p>
     </PanelBlock>
   )
@@ -2649,19 +2768,20 @@ function MediaAndMetaFields(props: {
     value: WriteFormState[TKey],
   ) => void
 }) {
+  const { t } = useI18n()
   const images = buildWriteImages(props.state)
   const cover = getMetaString(props.state.meta, 'cover')
 
   return (
     <>
       <PanelBlock
-        description="封面仍写入 meta.cover；候选项来自正文、编辑器图片与现有封面。"
+        description={t('write.section.image.description')}
         icon={ImageIcon}
-        title="图片设置"
+        title={t('write.section.image.title')}
       >
         <TextInput
           controlClassName="h-9 focus:border-neutral-400"
-          label="文章缩略图"
+          label={t('write.section.image.coverLabel')}
           list="page-cover-image-options"
           onChange={(value) =>
             props.updateField(
@@ -2669,7 +2789,7 @@ function MediaAndMetaFields(props: {
               setMetaValue(props.state.meta, 'cover', value),
             )
           }
-          placeholder="选择或输入图片 URL"
+          placeholder={t('write.section.image.coverPlaceholder')}
           value={cover}
         />
         {images.length > 0 ? (
@@ -2682,7 +2802,7 @@ function MediaAndMetaFields(props: {
         {cover ? (
           <div className="overflow-hidden border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900/60">
             <img
-              alt="封面预览"
+              alt={t('write.section.image.coverAlt')}
               className="max-h-48 w-full object-contain"
               src={cover}
             />
@@ -2691,7 +2811,7 @@ function MediaAndMetaFields(props: {
         {images.length > 0 ? (
           <div className="space-y-2">
             <div className="text-xs text-neutral-500 dark:text-neutral-400">
-              将随内容保存 {images.length} 张图片。
+              {t('write.section.image.imageCount', { count: images.length })}
             </div>
             <div className="grid gap-1.5">
               {images.slice(0, 6).map((image) => (
@@ -2705,19 +2825,21 @@ function MediaAndMetaFields(props: {
               ))}
               {images.length > 6 ? (
                 <div className="text-xs text-neutral-400 dark:text-neutral-500">
-                  另有 {images.length - 6} 张图片。
+                  {t('write.section.image.moreCount', {
+                    count: images.length - 6,
+                  })}
                 </div>
               ) : null}
             </div>
           </div>
         ) : (
           <p className="text-xs text-neutral-500 dark:text-neutral-400">
-            正文、编辑器或封面图中的图片会在保存时写入图片信息。
+            {t('write.section.image.candidateHint')}
           </p>
         )}
       </PanelBlock>
 
-      <PanelBlock icon={Braces} title="附加字段">
+      <PanelBlock icon={Braces} title={t('write.section.image.metaTitle')}>
         {props.kind === 'page' ? (
           <MetaJsonField state={props.state} updateField={props.updateField} />
         ) : (
@@ -2739,6 +2861,7 @@ function MetaJsonField(props: {
     value: WriteFormState[TKey],
   ) => void
 }) {
+  const { t } = useI18n()
   const [value, setValue] = useState(() => formatMetaJson(props.state.meta))
   const [error, setError] = useState('')
 
@@ -2758,13 +2881,17 @@ function MetaJsonField(props: {
     try {
       const parsed = JSON.parse(trimmed)
       if (!isRecord(parsed)) {
-        setError('附加字段必须是 JSON 对象')
+        setError(t('write.meta.json.invalidObject'))
         return
       }
       setError('')
       props.updateField('meta', parsed)
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : 'JSON 解析失败')
+      setError(
+        reason instanceof Error
+          ? reason.message
+          : t('write.meta.json.parseError'),
+      )
     }
   }
 
@@ -2787,10 +2914,10 @@ function MetaJsonField(props: {
               : 'text-neutral-500 dark:text-neutral-400',
           )}
         >
-          {error || '失焦后应用，空对象不会写入额外字段。'}
+          {error || t('write.meta.json.emptyHint')}
         </p>
         <Button onClick={apply} type="button" variant="subtle">
-          应用
+          {t('write.meta.json.applyButton')}
         </Button>
       </div>
     </div>
@@ -2811,6 +2938,7 @@ function PageParseMarkdownDialog(props: {
   onClose: () => void
   open: boolean
 }) {
+  const { t } = useI18n()
   const [value, setValue] = useState('')
 
   useEffect(() => {
@@ -2823,7 +2951,7 @@ function PageParseMarkdownDialog(props: {
     const parsed = parsePageMarkdown(value)
 
     if (!parsed.text.trim() && !parsed.title?.trim()) {
-      toast.error('请输入可解析的 Markdown 内容')
+      toast.error(t('write.parseMd.invalid'))
       return
     }
 
@@ -2836,35 +2964,25 @@ function PageParseMarkdownDialog(props: {
       open={props.open}
       popupStyle={{ height: 'min(82vh, 42rem)', width: 'min(92vw, 56rem)' }}
     >
-      <ModalHeader title="解析 Markdown" />
+      <ModalHeader title={t('write.parseMd.dialogTitle')} />
       <div className="min-h-0 flex-1 p-4">
         <TextArea
           controlClassName="h-full min-h-0 resize-none rounded border-neutral-200 font-mono text-xs leading-5 focus:border-neutral-400 dark:border-neutral-800"
           onChange={setValue}
-          placeholder={`---
-title: 关于我
-slug: about
-subtitle: 个人介绍
-order: 1
----
-
-# 关于我
-
-正文内容...`}
+          placeholder={t('write.parseMd.placeholder')}
           value={value}
         />
       </div>
       <div className="flex shrink-0 items-center justify-between gap-3 border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
         <p className="min-w-0 text-xs text-neutral-500 dark:text-neutral-400">
-          支持 YAML 头部的
-          title、slug、subtitle、order，并将一级标题作为页面标题。
+          {t('write.parseMd.hint')}
         </p>
         <div className="flex shrink-0 items-center gap-2">
           <Button onClick={() => setValue('')} type="button" variant="subtle">
-            重置
+            {t('write.parseMd.reset')}
           </Button>
           <Button onClick={apply} type="button">
-            确定
+            {t('write.parseMd.ok')}
           </Button>
         </div>
       </div>
@@ -2877,6 +2995,7 @@ function PageLexicalDebugDialog(props: {
   onClose: () => void
   open: boolean
 }) {
+  const { t } = useI18n()
   const formattedContent = useMemo(
     () => formatLexicalDebugContent(props.content),
     [props.content],
@@ -2885,8 +3004,8 @@ function PageLexicalDebugDialog(props: {
   const copyContent = () => {
     void navigator.clipboard
       .writeText(formattedContent)
-      .then(() => toast.success('Lexical State 已复制'))
-      .catch(() => toast.error('复制失败'))
+      .then(() => toast.success(t('write.section.lexicalDebug.copyOk')))
+      .catch(() => toast.error(t('write.toast.copyFailed')))
   }
 
   return (
@@ -2894,10 +3013,10 @@ function PageLexicalDebugDialog(props: {
       footer={
         <>
           <p className="min-w-0 flex-1 truncate text-xs text-neutral-500 dark:text-neutral-400">
-            只读查看当前页面富文本序列化状态。
+            {t('write.section.lexicalDebug.footer')}
           </p>
           <Button onClick={copyContent} type="button" variant="subtle">
-            复制
+            {t('write.section.lexicalDebug.copyButton')}
           </Button>
         </>
       }
@@ -2970,7 +3089,10 @@ function parseYamlMeta(value: string): Record<string, unknown> {
       ? (meta as Record<string, unknown>)
       : {}
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'YAML 解析失败'
+    const message =
+      error instanceof Error
+        ? error.message
+        : translate('write.parseMd.yamlParseFailed')
 
     toast.error(message)
     return {}
@@ -3586,6 +3708,7 @@ function RichWriteSurface(props: {
   surfaceClassName?: string
   surfaceStyle?: CSSProperties
 }) {
+  const { t } = useI18n()
   const editorRef = useRef<RichEditorWithAgentRef | null>(null)
   const lexicalEditorRef = useRef<LexicalEditor | null>(null)
   const agentLoopRef = useRef<AgentLoopHandle | null>(null)
@@ -3708,7 +3831,7 @@ function RichWriteSurface(props: {
     onTextChange: (text) => {
       latestCallbacks.current.onTextChange(text)
     },
-    placeholder: '输入正文...',
+    placeholder: t('write.richEditor.placeholder'),
     provider,
     saveExcalidrawSnapshot,
     store: agentStore,
@@ -3729,11 +3852,11 @@ function RichWriteSurface(props: {
     const message = agentInput.trim()
     if (!message) return
     if (!selectedModel || !provider) {
-      toast.error('请先选择 AI 模型')
+      toast.error(t('write.agent.selectModelFirst'))
       return
     }
     if (!agentLoopRef.current) {
-      toast.error('AI 助手尚未就绪')
+      toast.error(t('write.agent.notReady'))
       return
     }
 
@@ -3767,11 +3890,19 @@ function RichWriteSurface(props: {
         await import('~/vendor/rich-editor/utils/apply-agent-review-batch')
       applyAgentReviewBatch(editor, batch)
       if (mode === 'accept') agentStore.getState().acceptReviewBatch(batchId)
-      toast.success(mode === 'accept' ? '建议已应用' : '建议已重新应用')
+      toast.success(
+        mode === 'accept'
+          ? t('write.agent.toast.suggestionApplied')
+          : t('write.agent.toast.suggestionReapplied'),
+      )
     }
 
     void apply().catch((error: unknown) => {
-      toast.error(error instanceof Error ? error.message : '应用建议失败')
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : t('write.agent.toast.applyFailed'),
+      )
     })
   }
 
@@ -3782,7 +3913,7 @@ function RichWriteSurface(props: {
   const reapplyToolItems = (items: ToolCallGroupItem[]) => {
     const editor = lexicalEditorRef.current
     if (!editor) {
-      toast.error('编辑器尚未就绪')
+      toast.error(t('write.agent.editorNotReady'))
       return
     }
 
@@ -3790,7 +3921,7 @@ function RichWriteSurface(props: {
       .map(extractAgentOperationFromToolItem)
       .filter((op): op is AgentOperation => Boolean(op))
     if (operations.length === 0) {
-      toast.error('没有可重新应用的工具结果')
+      toast.error(t('write.agent.toolResults.empty'))
       return
     }
 
@@ -3810,16 +3941,26 @@ function RichWriteSurface(props: {
 
       if (summary.error || summary.conflict) {
         toast.warning(
-          `重新应用完成：成功 ${summary.success}，冲突 ${summary.conflict}，失败 ${summary.error}`,
+          t('write.agent.toast.reapplyPartial', {
+            success: summary.success,
+            conflict: summary.conflict,
+            error: summary.error,
+          }),
         )
         return
       }
 
-      toast.success(`已重新应用 ${summary.success} 项工具结果`)
+      toast.success(
+        t('write.agent.toast.reapplySuccess', { count: summary.success }),
+      )
     }
 
     void apply().catch((error: unknown) => {
-      toast.error(error instanceof Error ? error.message : '重新应用失败')
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : t('write.agent.toast.reapplyFailed'),
+      )
     })
   }
 
@@ -3927,6 +4068,7 @@ function WriteAgentPanel(props: {
   sessions: AgentSessionMeta[]
   status: AgentStoreSlice['status']
 }) {
+  const { t } = useI18n()
   const modelOptions = props.providerGroups.flatMap((group) =>
     group.models.map((model) => ({
       label: `${group.providerName} / ${model.name || model.id}`,
@@ -3978,7 +4120,7 @@ function WriteAgentPanel(props: {
             type="button"
           >
             <RotateCcw aria-hidden="true" className="size-3.5" />
-            会话加载失败，点击重试
+            {t('write.agent.loadSessionsFailed')}
           </button>
         ) : null}
 
@@ -3999,7 +4141,7 @@ function WriteAgentPanel(props: {
                   setSessionTitle(activeSession?.title ?? '')
                 }
               }}
-              placeholder="对话标题"
+              placeholder={t('write.agent.session.titlePlaceholder')}
               value={sessionTitle}
             />
           ) : (
@@ -4014,13 +4156,18 @@ function WriteAgentPanel(props: {
             >
               {props.sessions.length === 0 ? (
                 <option value="">
-                  {props.isLoadingSessions ? '加载对话中...' : '新对话'}
+                  {props.isLoadingSessions
+                    ? t('write.agent.session.loading')
+                    : t('write.agent.session.newSession')}
                 </option>
               ) : null}
               {props.sessions.map((session) => (
                 <option key={session.id} value={session.id}>
-                  {(session.title || '未命名对话') +
-                    ` · ${formatDateTime(session.updatedAt)} · ${session.messageCount} 条`}
+                  {(session.title || t('write.agent.session.untitled')) +
+                    ` · ${formatDateTime(session.updatedAt)} · ${t(
+                      'write.agent.session.messageCount',
+                      { count: session.messageCount },
+                    )}`}
                 </option>
               ))}
             </select>
@@ -4030,7 +4177,7 @@ function WriteAgentPanel(props: {
             <button
               className="inline-flex size-8 items-center justify-center border border-neutral-200 text-neutral-500 transition-colors hover:bg-neutral-50 hover:text-neutral-800 dark:border-neutral-800 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-100"
               onClick={props.onCreateSession}
-              title="新建对话"
+              title={t('write.agent.session.newTitle')}
               type="button"
             >
               <Plus aria-hidden="true" className="size-3.5" />
@@ -4039,7 +4186,7 @@ function WriteAgentPanel(props: {
               className="inline-flex size-8 items-center justify-center border border-neutral-200 text-neutral-500 transition-colors hover:bg-neutral-50 hover:text-neutral-800 disabled:pointer-events-none disabled:opacity-40 dark:border-neutral-800 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-100"
               disabled={!props.activeSessionId || editingSession}
               onClick={() => setEditingSession(true)}
-              title="重命名对话"
+              title={t('write.agent.session.renameTitle')}
               type="button"
             >
               <Pencil aria-hidden="true" className="size-3.5" />
@@ -4052,7 +4199,7 @@ function WriteAgentPanel(props: {
                   props.onDeleteSession(props.activeSessionId)
                 }
               }}
-              title="删除对话"
+              title={t('write.agent.session.deleteTitle')}
               type="button"
             >
               <Trash2 aria-hidden="true" className="size-3.5" />
@@ -4060,7 +4207,7 @@ function WriteAgentPanel(props: {
             <button
               className="inline-flex size-8 items-center justify-center border border-neutral-200 text-neutral-500 transition-colors hover:bg-neutral-50 hover:text-neutral-800 dark:border-neutral-800 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-100"
               onClick={props.onRetry}
-              title="重试上一条"
+              title={t('write.agent.session.retryLast')}
               type="button"
             >
               <RotateCcw aria-hidden="true" className="size-3.5" />
@@ -4089,7 +4236,9 @@ function WriteAgentPanel(props: {
         >
           {modelOptions.length === 0 ? (
             <option value="">
-              {props.isLoadingModels ? '加载模型中...' : '未配置模型'}
+              {props.isLoadingModels
+                ? t('write.agent.modelLoading')
+                : t('write.agent.modelNoConfig')}
             </option>
           ) : null}
           {modelOptions.map((option) => (
@@ -4104,12 +4253,11 @@ function WriteAgentPanel(props: {
         {props.isHydrating ? (
           <div className="flex h-28 items-center justify-center gap-2 text-xs text-neutral-500 dark:text-neutral-400">
             <Loader2 aria-hidden="true" className="size-4 animate-spin" />
-            正在恢复对话
+            {t('write.agent.hydrating')}
           </div>
         ) : props.bubbles.length === 0 ? (
           <p className="text-xs leading-5 text-neutral-500 dark:text-neutral-400">
-            可让 AI
-            针对当前编辑器内容生成修改建议。建议会先进入审阅状态，确认后再写回正文。
+            {t('write.agent.empty')}
           </p>
         ) : (
           <div className="space-y-3">
@@ -4139,7 +4287,7 @@ function WriteAgentPanel(props: {
         <textarea
           className="outline-hidden min-h-20 resize-y border border-neutral-200 bg-white px-2 py-1.5 text-sm leading-5 text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-400 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-100"
           onChange={(event) => props.onChangeInput(event.target.value)}
-          placeholder="输入修改要求..."
+          placeholder={t('write.agent.input.placeholder')}
           value={props.input}
         />
         <div className="flex items-center justify-end gap-2">
@@ -4149,11 +4297,13 @@ function WriteAgentPanel(props: {
             type="button"
             variant="subtle"
           >
-            中止
+            {t('write.agent.aborting')}
           </Button>
           <Button disabled={!canSend} type="submit">
             <Send aria-hidden="true" className="size-4" />
-            {props.agentReady ? '发送' : '初始化中'}
+            {props.agentReady
+              ? t('write.agent.button.send')
+              : t('write.agent.button.initializing')}
           </Button>
         </div>
       </form>
@@ -4169,6 +4319,7 @@ function AgentBubbleView(props: {
   onReapplyBatch: (batchId: string) => void
   onReapplyToolGroup: (items: ToolCallGroupItem[]) => void
 }) {
+  const { t } = useI18n()
   const { bubble } = props
 
   if (bubble.type === 'diff_review') {
@@ -4188,10 +4339,10 @@ function AgentBubbleView(props: {
     return (
       <div className="border border-neutral-200 bg-neutral-50 p-2 dark:border-neutral-800 dark:bg-neutral-900/50">
         <div className="text-xs font-medium text-neutral-800 dark:text-neutral-100">
-          修改建议
+          {t('write.agent.review.title')}
         </div>
         <div className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
-          待确认 {pending} · 已应用 {accepted} · 已拒绝 {rejected}
+          {t('write.agent.review.summary', { pending, accepted, rejected })}
         </div>
         <div className="mt-2 flex flex-wrap gap-1.5">
           <button
@@ -4200,7 +4351,7 @@ function AgentBubbleView(props: {
             onClick={() => props.onAcceptBatch(batch.id)}
             type="button"
           >
-            应用
+            {t('write.agent.button.accept')}
           </button>
           <button
             className="h-7 border border-neutral-200 bg-white px-2 text-xs text-neutral-700 disabled:opacity-50 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-200"
@@ -4208,14 +4359,14 @@ function AgentBubbleView(props: {
             onClick={() => props.onRejectBatch(batch.id)}
             type="button"
           >
-            拒绝
+            {t('write.agent.button.reject')}
           </button>
           <button
             className="h-7 border border-neutral-200 bg-white px-2 text-xs text-neutral-700 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-200"
             onClick={() => props.onReapplyBatch(batch.id)}
             type="button"
           >
-            重新应用
+            {t('write.agent.button.reapply')}
           </button>
         </div>
       </div>
@@ -4241,7 +4392,7 @@ function AgentBubbleView(props: {
   if (bubble.type === 'thinking') {
     return (
       <div className="text-xs leading-5 text-neutral-500 dark:text-neutral-400">
-        {bubble.content || '思考中...'}
+        {bubble.content || t('write.agent.bubble.thinking')}
       </div>
     )
   }
@@ -4251,8 +4402,12 @@ function AgentBubbleView(props: {
     return (
       <div className="border border-neutral-200 bg-neutral-50 px-2.5 py-2 text-xs text-neutral-600 dark:border-neutral-800 dark:bg-neutral-900/50 dark:text-neutral-300">
         <div>
-          工具调用 {bubble.items.length} 项
-          {replayable ? ` · 可重新应用 ${replayable} 项` : ''}
+          {t('write.agent.bubble.toolGroupCount', {
+            count: bubble.items.length,
+          })}
+          {replayable
+            ? t('write.agent.bubble.toolGroupReapply', { count: replayable })
+            : ''}
         </div>
         {replayable ? (
           <button
@@ -4260,7 +4415,7 @@ function AgentBubbleView(props: {
             onClick={() => props.onReapplyToolGroup(bubble.items)}
             type="button"
           >
-            重新应用
+            {t('write.agent.button.reapply')}
           </button>
         ) : null}
       </div>
@@ -4278,7 +4433,7 @@ function AgentBubbleView(props: {
   if (bubble.type === 'tool_call') {
     return (
       <div className="text-xs text-neutral-500 dark:text-neutral-400">
-        调用工具：{bubble.toolName}
+        {t('write.agent.bubble.callingTool', { toolName: bubble.toolName })}
       </div>
     )
   }
@@ -4294,8 +4449,11 @@ function AgentBubbleView(props: {
   if (bubble.type === 'diff_summary') {
     return (
       <div className="text-xs text-neutral-500 dark:text-neutral-400">
-        已应用 {bubble.accepted} · 已拒绝 {bubble.rejected} · 待确认{' '}
-        {bubble.pending}
+        {t('write.agent.bubble.diffSummary', {
+          accepted: bubble.accepted,
+          rejected: bubble.rejected,
+          pending: bubble.pending,
+        })}
       </div>
     )
   }
@@ -4625,17 +4783,21 @@ function validateState(
   categories: CategoryModel[],
   isEditing: boolean,
 ) {
-  if (kind !== 'note' && !state.title.trim()) return '请输入标题'
-  if (!state.text.trim()) return '请输入正文'
-  if (kind !== 'note' && !state.slug.trim()) return '请输入 Slug'
+  if (kind !== 'note' && !state.title.trim())
+    return translate('write.validation.titleRequired')
+  if (!state.text.trim()) return translate('write.validation.textRequired')
+  if (kind !== 'note' && !state.slug.trim())
+    return translate('write.validation.slugRequired')
   if (kind === 'post' && !state.categoryId) {
-    return categories.length > 0 ? '请选择分类' : '请先创建分类'
+    return categories.length > 0
+      ? translate('write.validation.selectCategory')
+      : translate('write.validation.createCategoryFirst')
   }
   if (kind === 'page' && state.order && Number.isNaN(Number(state.order))) {
-    return '排序必须是数字'
+    return translate('write.validation.sortNumber')
   }
   if (kind === 'post' && state.pin && Number.isNaN(Number(state.pinOrder))) {
-    return '置顶顺序必须是数字'
+    return translate('write.validation.pinOrderNumber')
   }
   if (
     kind === 'note' &&
@@ -4643,7 +4805,7 @@ function validateState(
     !isEditing &&
     !state.password.trim()
   ) {
-    return '请输入访问密码'
+    return translate('write.validation.passwordRequired')
   }
 
   return null
@@ -4803,7 +4965,10 @@ function addDateOffset(date: Date, offset: DateOffset) {
 }
 
 function getDefaultNoteTitle(date = new Date()) {
-  return `记录 ${date.getFullYear()} 年第 ${getDayOfYear(date)} 天`
+  return translate('write.noteDefaultTitle', {
+    year: date.getFullYear(),
+    day: getDayOfYear(date),
+  })
 }
 
 function buildNotePublicPath(

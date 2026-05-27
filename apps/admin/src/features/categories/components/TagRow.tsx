@@ -1,6 +1,7 @@
 import { Tag } from 'lucide-react'
 import type { TagModel } from '~/models/category'
 
+import { useI18n } from '~/i18n'
 import { cn } from '~/utils/cn'
 
 export function TagRow(props: {
@@ -8,6 +9,7 @@ export function TagRow(props: {
   selected: boolean
   tag: TagModel
 }) {
+  const { t } = useI18n()
   return (
     <button
       className={cn(
@@ -24,7 +26,9 @@ export function TagRow(props: {
         <h4 className="truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
           {props.tag.name}
         </h4>
-        <p className="mt-0.5 text-xs text-neutral-400">标签</p>
+        <p className="mt-0.5 text-xs text-neutral-400">
+          {t('categories.section.tagLabel')}
+        </p>
       </div>
       <span className="text-xs tabular-nums text-neutral-400">
         {props.tag.count}

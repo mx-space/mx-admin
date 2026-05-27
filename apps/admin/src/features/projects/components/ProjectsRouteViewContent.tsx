@@ -5,6 +5,7 @@ import { useSearchParams } from 'react-router'
 
 import { getProject, getProjects } from '~/api/projects'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { CompactPagination } from '~/ui/data/compact-pagination'
 import { MasterDetailLayout } from '~/ui/layout/page-layout'
 import { Button } from '~/ui/primitives/button'
@@ -18,6 +19,7 @@ import { ProjectEmptyState, ProjectListSkeleton } from './ProjectPrimitives'
 import { ProjectWorkspace } from './ProjectWorkspace'
 
 export function ProjectsRouteViewContent() {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const [searchParams, setSearchParams] = useSearchParams()
   const searchParamsKey = searchParams.toString()
@@ -89,12 +91,12 @@ export function ProjectsRouteViewContent() {
             <div className="min-w-0">
               <h2 className="inline-flex items-center gap-2 text-sm font-medium text-neutral-950 dark:text-neutral-50">
                 <Folder aria-hidden="true" className="size-4" />
-                项目列表
+                {t('projects.title')}
               </h2>
             </div>
             {pagination ? (
               <span className="text-xs text-neutral-500 dark:text-neutral-400">
-                {pagination.total} 个
+                {t('projects.countLabel', { count: pagination.total })}
               </span>
             ) : null}
             <Button
@@ -108,7 +110,7 @@ export function ProjectsRouteViewContent() {
               variant="subtle"
             >
               <Plus aria-hidden="true" className="size-4" />
-              新建项目
+              {t('projects.create')}
             </Button>
           </div>
 

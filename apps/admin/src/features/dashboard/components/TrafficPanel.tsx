@@ -1,3 +1,4 @@
+import { useI18n } from '~/i18n'
 import { Panel } from '~/ui/primitives/panel'
 
 import { formatNumber } from '../utils/dashboard'
@@ -6,6 +7,7 @@ function TrafficGroup(props: {
   items: Array<{ count: number; name: string }>
   title: string
 }) {
+  const { t } = useI18n()
   return (
     <div className="bg-white p-4 dark:bg-neutral-950">
       <h3 className="mb-3 text-xs font-medium uppercase text-neutral-500">
@@ -13,7 +15,7 @@ function TrafficGroup(props: {
       </h3>
       <div className="space-y-2">
         {props.items.length === 0 ? (
-          <p className="text-sm text-neutral-500">暂无数据</p>
+          <p className="text-sm text-neutral-500">{t('dashboard.empty')}</p>
         ) : (
           props.items.slice(0, 6).map((item) => (
             <div
@@ -38,11 +40,18 @@ export function TrafficPanel(props: {
     os: Array<{ count: number; name: string }>
   }
 }) {
+  const { t } = useI18n()
   return (
-    <Panel title="流量来源">
+    <Panel title={t('dashboard.traffic.title')}>
       <div className="grid gap-px bg-neutral-200 sm:grid-cols-2 dark:bg-neutral-800">
-        <TrafficGroup items={props.data?.browser ?? []} title="Browser" />
-        <TrafficGroup items={props.data?.os ?? []} title="OS" />
+        <TrafficGroup
+          items={props.data?.browser ?? []}
+          title={t('dashboard.traffic.browser')}
+        />
+        <TrafficGroup
+          items={props.data?.os ?? []}
+          title={t('dashboard.traffic.os')}
+        />
       </div>
     </Panel>
   )

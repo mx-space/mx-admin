@@ -1,6 +1,9 @@
 import { Hash } from 'lucide-react'
 
+import { useI18n } from '~/i18n'
+
 export function TopicDetailEmpty() {
+  const { t } = useI18n()
   return (
     <div className="flex h-full min-h-[28rem] items-center justify-center px-4 text-center">
       <div>
@@ -8,10 +11,10 @@ export function TopicDetailEmpty() {
           <Hash aria-hidden="true" className="size-7" />
         </div>
         <h2 className="mt-4 text-base font-medium text-neutral-950 dark:text-neutral-50">
-          选择一个专栏
+          {t('topics.detail.empty.title')}
         </h2>
         <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
-          从左侧列表选择专栏查看详情。
+          {t('topics.detail.empty.description')}
         </p>
       </div>
     </div>

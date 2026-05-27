@@ -1,6 +1,7 @@
 import type { EnrichmentRow } from '~/models/enrichment'
 import type { CacheFilterMode } from '../types/enrichment'
 
+import { useI18n } from '~/i18n'
 import { CompactPagination } from '~/ui/data/compact-pagination'
 import { Scroll } from '~/ui/primitives/scroll'
 import { cn } from '~/utils/cn'
@@ -21,17 +22,22 @@ export function CacheListPanel(props: {
   selectedId: null | string
   total: number
 }) {
+  const { t } = useI18n()
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="border-b border-neutral-200 px-4 py-2 text-xs text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
-        共 {props.total} 条缓存
+        {t('enrichment.cache.totalSuffix', { count: props.total })}
       </div>
       <Scroll className="flex-1">
         {props.loading && props.rows.length === 0 ? (
           <ListLoading />
         ) : props.rows.length === 0 ? (
           <ListEmpty
-            label={props.filterMode === 'failed' ? '没有失败缓存' : '暂无缓存'}
+            label={
+              props.filterMode === 'failed'
+                ? t('enrichment.cache.emptyFailed')
+                : t('enrichment.cache.emptyAll')
+            }
           />
         ) : (
           props.rows.map((row) => (
@@ -64,6 +70,7 @@ function CacheRow(props: {
   row: EnrichmentRow
   selected: boolean
 }) {
+  const { t } = useI18n()
   const row = props.row
 
   return (
@@ -90,7 +97,9 @@ function CacheRow(props: {
       </div>
       <div className="shrink-0 text-right text-xs tabular-nums text-neutral-400">
         {row.failureCount > 0 ? (
-          <span className="text-red-500">{row.failureCount} 次失败</span>
+          <span className="text-red-500">
+            {t('enrichment.cache.failureCount', { count: row.failureCount })}
+          </span>
         ) : (
           relativeTimeFromNow(row.fetchedAt)
         )}

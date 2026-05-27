@@ -12,6 +12,7 @@ import {
   WandSparkles,
   XCircle,
 } from 'lucide-react'
+import type { TranslationKey } from '~/i18n/types'
 import type { LucideIcon } from 'lucide-react'
 import type { AiSurface } from './types/ai'
 
@@ -22,23 +23,23 @@ export const aiTasksQueryKey = ['ai', 'tasks'] as const
 export const pageSize = 50
 export const groupedPageSize = 20
 
-export const taskTypeLabels: Record<AITaskType, string> = {
-  [AITaskType.Summary]: '摘要生成',
-  [AITaskType.Translation]: '翻译',
-  [AITaskType.TranslationBatch]: '批量翻译',
-  [AITaskType.TranslationAll]: '全量翻译',
-  [AITaskType.SlugBackfill]: 'Slug 回填',
-  [AITaskType.Insights]: '精读生成',
-  [AITaskType.InsightsTranslation]: '精读翻译',
+export const taskTypeLabelKeys: Record<AITaskType, TranslationKey> = {
+  [AITaskType.Summary]: 'ai.taskType.summary',
+  [AITaskType.Translation]: 'ai.taskType.translation',
+  [AITaskType.TranslationBatch]: 'ai.taskType.translationBatch',
+  [AITaskType.TranslationAll]: 'ai.taskType.translationAll',
+  [AITaskType.SlugBackfill]: 'ai.taskType.slugBackfill',
+  [AITaskType.Insights]: 'ai.taskType.insights',
+  [AITaskType.InsightsTranslation]: 'ai.taskType.insightsTranslation',
 }
 
-export const taskStatusLabels: Record<AITaskStatus, string> = {
-  [AITaskStatus.Pending]: '等待中',
-  [AITaskStatus.Running]: '执行中',
-  [AITaskStatus.Completed]: '已完成',
-  [AITaskStatus.PartialFailed]: '部分失败',
-  [AITaskStatus.Failed]: '失败',
-  [AITaskStatus.Cancelled]: '已取消',
+export const taskStatusLabelKeys: Record<AITaskStatus, TranslationKey> = {
+  [AITaskStatus.Pending]: 'ai.taskStatus.pending',
+  [AITaskStatus.Running]: 'ai.taskStatus.running',
+  [AITaskStatus.Completed]: 'ai.taskStatus.completed',
+  [AITaskStatus.PartialFailed]: 'ai.taskStatus.partialFailed',
+  [AITaskStatus.Failed]: 'ai.taskStatus.failed',
+  [AITaskStatus.Cancelled]: 'ai.taskStatus.cancelled',
 }
 
 export const statusIcon: Record<AITaskStatus, LucideIcon> = {
@@ -65,57 +66,81 @@ export const statusClassName: Record<AITaskStatus, string> = {
     'border-neutral-200 bg-neutral-50 text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400',
 }
 
-export const statusOptions: Array<{ label: string; value: AITaskStatus | '' }> =
-  [
-    { label: '全部状态', value: '' },
-    { label: '等待中', value: AITaskStatus.Pending },
-    { label: '执行中', value: AITaskStatus.Running },
-    { label: '已完成', value: AITaskStatus.Completed },
-    { label: '部分失败', value: AITaskStatus.PartialFailed },
-    { label: '失败', value: AITaskStatus.Failed },
-    { label: '已取消', value: AITaskStatus.Cancelled },
-  ]
+export const statusOptionKeys: Array<{
+  labelKey: TranslationKey
+  value: AITaskStatus | ''
+}> = [
+  { labelKey: 'ai.filter.allStatus', value: '' },
+  { labelKey: 'ai.taskStatus.pending', value: AITaskStatus.Pending },
+  { labelKey: 'ai.taskStatus.running', value: AITaskStatus.Running },
+  { labelKey: 'ai.taskStatus.completed', value: AITaskStatus.Completed },
+  {
+    labelKey: 'ai.taskStatus.partialFailed',
+    value: AITaskStatus.PartialFailed,
+  },
+  { labelKey: 'ai.taskStatus.failed', value: AITaskStatus.Failed },
+  { labelKey: 'ai.taskStatus.cancelled', value: AITaskStatus.Cancelled },
+]
 
-export const typeOptions: Array<{ label: string; value: AITaskType | '' }> = [
-  { label: '全部类型', value: '' },
-  { label: '摘要生成', value: AITaskType.Summary },
-  { label: '翻译', value: AITaskType.Translation },
-  { label: '批量翻译', value: AITaskType.TranslationBatch },
-  { label: '全量翻译', value: AITaskType.TranslationAll },
-  { label: 'Slug 回填', value: AITaskType.SlugBackfill },
-  { label: '精读生成', value: AITaskType.Insights },
-  { label: '精读翻译', value: AITaskType.InsightsTranslation },
+export const typeOptionKeys: Array<{
+  labelKey: TranslationKey
+  value: AITaskType | ''
+}> = [
+  { labelKey: 'ai.filter.allType', value: '' },
+  { labelKey: 'ai.taskType.summary', value: AITaskType.Summary },
+  { labelKey: 'ai.taskType.translation', value: AITaskType.Translation },
+  {
+    labelKey: 'ai.taskType.translationBatch',
+    value: AITaskType.TranslationBatch,
+  },
+  { labelKey: 'ai.taskType.translationAll', value: AITaskType.TranslationAll },
+  { labelKey: 'ai.taskType.slugBackfill', value: AITaskType.SlugBackfill },
+  { labelKey: 'ai.taskType.insights', value: AITaskType.Insights },
+  {
+    labelKey: 'ai.taskType.insightsTranslation',
+    value: AITaskType.InsightsTranslation,
+  },
 ]
 
 export const aiSurfaceTabs: Array<{
   icon: LucideIcon
-  label: string
+  labelKey: TranslationKey
   path: string
   value: AiSurface
 }> = [
-  { icon: ListTodo, label: '任务队列', path: '/ai/tasks', value: 'tasks' },
-  { icon: FileText, label: '摘要', path: '/ai/summary', value: 'summaries' },
+  {
+    icon: ListTodo,
+    labelKey: 'ai.tab.tasks',
+    path: '/ai/tasks',
+    value: 'tasks',
+  },
+  {
+    icon: FileText,
+    labelKey: 'ai.tab.summaries',
+    path: '/ai/summary',
+    value: 'summaries',
+  },
   {
     icon: Languages,
-    label: '翻译',
+    labelKey: 'ai.tab.translations',
     path: '/ai/translation',
     value: 'translations',
   },
   {
     icon: BookOpenText,
-    label: '精读',
+    labelKey: 'ai.tab.insights',
     path: '/ai/insights',
     value: 'insights',
   },
   {
     icon: Sparkles,
-    label: '词表',
+    labelKey: 'ai.tab.entries',
     path: '/ai/translation-entries',
     value: 'entries',
   },
   {
     icon: WandSparkles,
-    label: 'Slug 回填',
+    labelKey: 'ai.tab.slug',
     path: '/ai/slug-backfill',
     value: 'slug',
   },

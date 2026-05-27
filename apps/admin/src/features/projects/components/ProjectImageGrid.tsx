@@ -1,12 +1,15 @@
 import { ImageIcon } from 'lucide-react'
 import { useMemo } from 'react'
 
+import { useI18n } from '~/i18n'
+
 export function ProjectImageGrid(props: { images: string[] }) {
+  const { t } = useI18n()
   return (
     <section className="border-t border-neutral-100 pt-5 dark:border-neutral-800">
       <h4 className="mb-3 inline-flex items-center gap-2 text-sm font-medium text-neutral-700 dark:text-neutral-300">
         <ImageIcon aria-hidden="true" className="size-4" />
-        预览图片
+        {t('projects.detail.imagesTitle')}
       </h4>
       <div className="grid grid-cols-2 gap-2">
         {props.images.map((image, index) => (
@@ -18,7 +21,7 @@ export function ProjectImageGrid(props: { images: string[] }) {
             target="_blank"
           >
             <img
-              alt={`预览图 ${index + 1}`}
+              alt={t('projects.detail.imageAlt', { index: index + 1 })}
               className="h-32 w-full object-cover transition-transform group-hover:scale-105"
               loading="lazy"
               src={image}

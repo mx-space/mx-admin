@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import type { FormEvent } from 'react'
 
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { TextArea } from '~/ui/primitives/text-field'
 
@@ -15,6 +16,7 @@ export function InstallDependencyModal(props: {
   onClose: () => void
   open: boolean
 }) {
+  const { t } = useI18n()
   const [input, setInput] = useState(props.initialPackages)
 
   useEffect(() => {
@@ -25,7 +27,7 @@ export function InstallDependencyModal(props: {
     event.preventDefault()
     const packages = parsePackageInput(input)
     if (packages.length === 0) {
-      toast.error('请输入依赖包名')
+      toast.error(t('snippets.toast.dependencyNameRequired'))
       return
     }
     props.onInstall(packages)
@@ -33,13 +35,17 @@ export function InstallDependencyModal(props: {
   }
 
   return (
-    <Modal onClose={props.onClose} open={props.open} title="安装依赖">
+    <Modal
+      onClose={props.onClose}
+      open={props.open}
+      title={t('snippets.dialog.install.title')}
+    >
       <form className="space-y-4" onSubmit={submit}>
-        <Field label="Package Name">
+        <Field label={t('snippets.dialog.install.field')}>
           <TextArea
             controlClassName="min-h-28 resize-y font-mono text-xs"
             onChange={setInput}
-            placeholder="E.g. qs 或 qs@latest；多个依赖可用换行或逗号分隔"
+            placeholder={t('snippets.dialog.install.placeholder')}
             spellCheck={false}
             value={input}
           />
@@ -47,7 +53,7 @@ export function InstallDependencyModal(props: {
         <div className="flex justify-end">
           <Button type="submit">
             <Download aria-hidden="true" className="size-4" />
-            安装
+            {t('snippets.dialog.install.submit')}
           </Button>
         </div>
       </form>

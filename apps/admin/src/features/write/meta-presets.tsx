@@ -10,6 +10,7 @@ import type {
 } from '~/models/meta-preset'
 
 import { getMetaPresets } from '~/api/meta-presets'
+import { useI18n } from '~/i18n'
 import { Modal, ModalHeader } from '~/ui/feedback/modal'
 import { Button } from '~/ui/primitives/button'
 import { Checkbox } from '~/ui/primitives/checkbox'
@@ -81,6 +82,7 @@ export interface MetaPresetSectionProps {
 
 export function MetaPresetSection(props: MetaPresetSectionProps) {
   const { meta, onUpdateMeta, scope } = props
+  const { t } = useI18n()
   const [expanded, setExpanded] = useState(false)
   const [activeTab, setActiveTab] = useState<'preset' | 'json'>('preset')
   const [showJsonModal, setShowJsonModal] = useState(false)
@@ -100,7 +102,7 @@ export function MetaPresetSection(props: MetaPresetSectionProps) {
   const itemCount = Object.keys(meta).length
 
   const updateFieldValue = (key: string, value: unknown) => {
-    // object 字段空对象表 "已启用未填" 之态，须存于 meta
+    // Object field: an empty object represents "enabled but unfilled" state and must remain in meta.
     const isEmpty =
       value === undefined ||
       value === null ||
@@ -124,10 +126,10 @@ export function MetaPresetSection(props: MetaPresetSectionProps) {
           type="button"
         >
           <span>
-            自定义 Meta 数据
+            {t('write.meta.section.title')}
             {itemCount > 0 ? (
               <span className="ml-2 text-xs text-neutral-400">
-                ({itemCount} 项)
+                {t('write.meta.section.itemCount', { count: itemCount })}
               </span>
             ) : null}
           </span>
@@ -144,7 +146,7 @@ export function MetaPresetSection(props: MetaPresetSectionProps) {
           onClick={() => setShowJsonModal(true)}
           type="button"
         >
-          JSON 编辑
+          {t('write.meta.section.jsonEdit')}
         </button>
       </div>
 
@@ -153,8 +155,8 @@ export function MetaPresetSection(props: MetaPresetSectionProps) {
           <div className="mb-3 inline-flex gap-1 rounded border border-neutral-200 bg-neutral-50 p-0.5 text-xs dark:border-neutral-800 dark:bg-neutral-900/60">
             {(
               [
-                ['preset', '预设字段'],
-                ['json', '自定义 JSON'],
+                ['preset', t('write.meta.tab.preset')],
+                ['json', t('write.meta.tab.json')],
               ] as const
             ).map(([key, label]) => (
               <button
@@ -210,6 +212,7 @@ function PresetFieldList(props: {
   onUpdateField: (key: string, value: unknown) => void
   presets: MetaPresetField[]
 }) {
+  const { t } = useI18n()
   if (props.loading) {
     return (
       <div className="space-y-2 py-1">
@@ -225,7 +228,7 @@ function PresetFieldList(props: {
   if (props.presets.length === 0) {
     return (
       <p className="py-3 text-center text-xs text-neutral-400">
-        暂无可用的预设字段
+        {t('write.meta.preset.empty')}
       </p>
     )
   }
@@ -493,6 +496,7 @@ function MultiSelectField(props: {
   onChange: (value: unknown) => void
   value: unknown
 }) {
+  const { t } = useI18n()
   const options = props.field.options ?? []
   const optionValueSet = useMemo(
     () => new Set(options.map((o) => o.value)),
@@ -563,7 +567,9 @@ function MultiSelectField(props: {
             >
               {val}
               <button
-                aria-label={`移除 ${val}`}
+                aria-label={t('write.meta.multiSelect.removeAria', {
+                  value: val,
+                })}
                 className="rounded p-0.5 transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-700"
                 onClick={() => removeCustom(val)}
                 type="button"
@@ -585,7 +591,7 @@ function MultiSelectField(props: {
                 addCustom()
               }
             }}
-            placeholder="自定义值..."
+            placeholder={t('write.meta.multiSelect.customPlaceholder')}
             value={customInput}
           />
           <Button
@@ -607,6 +613,7 @@ function TagsInput(props: {
   onChange: (value: unknown) => void
   value: unknown[]
 }) {
+  const { t } = useI18n()
   const tags = props.value.map((v) => String(v))
   const [input, setInput] = useState('')
 
@@ -636,7 +643,9 @@ function TagsInput(props: {
             >
               {tag}
               <button
-                aria-label={`移除 ${tag}`}
+                aria-label={t('write.meta.multiSelect.removeAria', {
+                  value: tag,
+                })}
                 className="rounded p-0.5 transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-700"
                 onClick={() => remove(tag)}
                 type="button"
@@ -657,7 +666,7 @@ function TagsInput(props: {
               add()
             }
           }}
-          placeholder="输入后按回车添加"
+          placeholder={t('write.meta.tags.placeholder')}
           value={input}
         />
         <Button
@@ -680,6 +689,7 @@ function KeyValuePairList(props: {
   onUpdateMeta: (meta: MetaRecord) => void
   previewOpen: boolean
 }) {
+  const { t } = useI18n()
   const [pairs, setPairs] = useState<KeyValuePair[]>(() =>
     metaToPairs(props.meta),
   )
@@ -712,7 +722,7 @@ function KeyValuePairList(props: {
       <div className="grid gap-2">
         {pairs.length === 0 ? (
           <p className="py-2 text-center text-xs text-neutral-400">
-            暂无自定义字段
+            {t('write.meta.kvList.empty')}
           </p>
         ) : (
           pairs.map((pair) => (
@@ -720,17 +730,17 @@ function KeyValuePairList(props: {
               <TextInput
                 controlClassName="h-8 focus:border-neutral-400"
                 onChange={(value) => updatePair(pair.id, { key: value })}
-                placeholder="字段名"
+                placeholder={t('write.meta.kvList.keyPlaceholder')}
                 value={pair.key}
               />
               <TextInput
                 controlClassName="h-8 focus:border-neutral-400"
                 onChange={(value) => updatePair(pair.id, { value })}
-                placeholder="字段值"
+                placeholder={t('write.meta.kvList.valuePlaceholder')}
                 value={pair.value}
               />
               <button
-                aria-label="删除字段"
+                aria-label={t('write.meta.kvList.deleteFieldAria')}
                 className="inline-flex size-8 shrink-0 items-center justify-center rounded text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-600 dark:hover:bg-neutral-900 dark:hover:text-neutral-200"
                 onClick={() => removePair(pair.id)}
                 type="button"
@@ -742,7 +752,7 @@ function KeyValuePairList(props: {
         )}
         <Button onClick={addPair} type="button" variant="subtle">
           <Plus aria-hidden="true" className="size-4" />
-          添加字段
+          {t('write.meta.kvList.addField')}
         </Button>
       </div>
 
@@ -754,7 +764,7 @@ function KeyValuePairList(props: {
             onClick={props.onTogglePreview}
             type="button"
           >
-            <span>预览 JSON</span>
+            <span>{t('write.meta.kvList.previewJson')}</span>
             <ChevronDown
               aria-hidden="true"
               className={cn(
@@ -782,6 +792,7 @@ function JsonEditorDialog(props: {
   onSubmit: (meta: MetaRecord) => void
   open: boolean
 }) {
+  const { t } = useI18n()
   const initial = useMemo(
     () =>
       Object.keys(props.meta).length > 0
@@ -804,12 +815,16 @@ function JsonEditorDialog(props: {
     try {
       const parsed = JSON.parse(trimmed)
       if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
-        toast.error('附加字段必须是 JSON 对象')
+        toast.error(t('write.meta.json.invalidObject'))
         return
       }
       props.onSubmit(parsed as MetaRecord)
     } catch (reason) {
-      toast.error(reason instanceof Error ? reason.message : 'JSON 解析失败')
+      toast.error(
+        reason instanceof Error
+          ? reason.message
+          : t('write.meta.json.parseError'),
+      )
     }
   }
 
@@ -819,7 +834,7 @@ function JsonEditorDialog(props: {
       open={props.open}
       popupStyle={{ height: 'min(80vh, 40rem)', width: 'min(92vw, 56rem)' }}
     >
-      <ModalHeader title="编辑附加字段" />
+      <ModalHeader title={t('write.meta.json.dialogTitle')} />
       <div className="min-h-0 flex-1">
         <CodeEditor
           language="json"
@@ -831,10 +846,10 @@ function JsonEditorDialog(props: {
       </div>
       <div className="flex shrink-0 items-center justify-end gap-2 border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
         <Button onClick={props.onClose} type="button" variant="subtle">
-          取消
+          {t('common.cancel')}
         </Button>
         <Button onClick={submit} type="button">
-          提交
+          {t('common.submit')}
         </Button>
       </div>
     </Modal>

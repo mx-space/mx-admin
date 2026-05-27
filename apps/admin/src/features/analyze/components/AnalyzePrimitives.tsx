@@ -1,12 +1,15 @@
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { cn } from '~/utils/cn'
 
 export function ErrorBlock(props: { label: string; onRetry: () => void }) {
+  const { t } = useI18n()
+
   return (
     <div className="flex min-h-[14rem] flex-col items-center justify-center px-4 text-sm text-neutral-500 dark:text-neutral-400">
       <p>{props.label}</p>
       <Button className="mt-3" onClick={props.onRetry} type="button">
-        重试
+        {t('analyze.action.retry')}
       </Button>
     </div>
   )

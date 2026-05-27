@@ -10,6 +10,7 @@ import type {
 } from '../../types/settings'
 
 import { getModelList, getModels, testConfig } from '~/api/ai'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { SelectField } from '~/ui/primitives/select'
 import { Switch } from '~/ui/primitives/switch'
@@ -33,6 +34,7 @@ export function AIConfigEditor(props: {
   onChange: (value: AIConfig) => void
   value: AIConfig
 }) {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const [loadingProviderId, setLoadingProviderId] = useState<string | null>(
     null,
@@ -105,10 +107,15 @@ export function AIConfigEditor(props: {
         props.modelCacheKey,
         (current) => ({ ...current, [provider.id]: response.models ?? [] }),
       )
-      if (response.error) toast.warning(`获取模型列表：${response.error}`)
-      else toast.success('模型列表已更新')
+      if (response.error)
+        toast.warning(
+          t('settings.ai.toast.modelListError', { message: response.error }),
+        )
+      else toast.success(t('settings.ai.toast.modelListUpdated'))
     } catch (error) {
-      toast.error(getErrorMessage(error, '获取模型列表失败'))
+      toast.error(
+        getErrorMessage(error, t('settings.ai.error.fetchModelsFailed')),
+      )
     } finally {
       setLoadingProviderId(null)
     }
@@ -116,7 +123,7 @@ export function AIConfigEditor(props: {
 
   const testProvider = async (provider: AIProviderConfig) => {
     if (!provider.defaultModel.trim()) {
-      toast.warning('请先填写默认模型')
+      toast.warning(t('settings.ai.toast.needDefaultModel'))
       return
     }
 
@@ -129,9 +136,9 @@ export function AIConfigEditor(props: {
         providerId: provider.id,
         type: provider.type,
       })
-      toast.success('连接可用')
+      toast.success(t('settings.ai.toast.testSuccess'))
     } catch (error) {
-      toast.error(getErrorMessage(error, '连接测试失败'))
+      toast.error(getErrorMessage(error, t('settings.ai.error.testFailed')))
     } finally {
       setTestingProviderId(null)
     }
@@ -142,20 +149,22 @@ export function AIConfigEditor(props: {
       <section className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h3 className="text-sm font-medium">AI 服务商</h3>
+            <h3 className="text-sm font-medium">
+              {t('settings.ai.provider.sectionTitle')}
+            </h3>
             <p className="mt-1 text-xs text-neutral-500">
-              配置 AI 服务提供商、密钥、Endpoint 与默认模型。
+              {t('settings.ai.provider.sectionTitleDescription')}
             </p>
           </div>
           <Button onClick={addProvider} type="button" variant="subtle">
             <Plus aria-hidden="true" className="size-4" />
-            添加服务商
+            {t('settings.ai.action.addProvider')}
           </Button>
         </div>
         {providers.length === 0 ? (
           <EmptyState
             icon={<Settings className="size-7" />}
-            label="暂无服务商"
+            label={t('settings.ai.empty.providers')}
           />
         ) : (
           <div className="space-y-3">
@@ -178,22 +187,23 @@ export function AIConfigEditor(props: {
                         {formatAIProviderLabel(provider)}
                       </div>
                       <div className="mt-1 truncate text-xs text-neutral-500">
-                        {provider.defaultModel || '未设置模型'}
+                        {provider.defaultModel ||
+                          t('settings.ai.provider.modelUnset')}
                       </div>
                     </div>
                     <Switch
                       checked={provider.enabled}
                       className="border-0 px-0 py-0"
-                      label="启用"
+                      label={t('settings.oauth.switch.enabled')}
                       onCheckedChange={(enabled) =>
                         updateProvider(provider.id, { enabled })
                       }
                     />
                   </div>
                   <div className="grid gap-3 md:grid-cols-2">
-                    <FieldShell label="服务类型">
+                    <FieldShell label={t('settings.ai.field.providerType')}>
                       <SelectField<AIProviderType>
-                        aria-label="服务类型"
+                        aria-label={t('settings.ai.field.providerType')}
                         onValueChange={(type) =>
                           updateProvider(provider.id, {
                             defaultModel: getDefaultAIModel(type),
@@ -205,13 +215,16 @@ export function AIConfigEditor(props: {
                       />
                     </FieldShell>
                     <TextInput
-                      label="显示名称"
+                      label={t('settings.ai.field.displayName')}
                       onChange={(name) => updateProvider(provider.id, { name })}
-                      placeholder={getAIProviderNamePlaceholder(provider.type)}
+                      placeholder={getAIProviderNamePlaceholder(
+                        t,
+                        provider.type,
+                      )}
                       value={provider.name}
                     />
                     <TextInput
-                      label="API Key"
+                      label={t('settings.ai.field.apiKey')}
                       onChange={(apiKey) =>
                         updateProvider(provider.id, { apiKey })
                       }
@@ -221,25 +234,28 @@ export function AIConfigEditor(props: {
                     />
                     {showEndpoint ? (
                       <TextInput
-                        label="Endpoint"
+                        label={t('settings.ai.field.endpoint')}
                         onChange={(endpoint) =>
                           updateProvider(provider.id, { endpoint })
                         }
                         placeholder={
                           provider.type === 'openai-compatible'
-                            ? '必填，如 https://api.deepseek.com'
-                            : '可选，留空使用默认'
+                            ? t('settings.ai.placeholder.endpointCompatible')
+                            : t('settings.ai.placeholder.endpointDefault')
                         }
                         value={provider.endpoint ?? ''}
                       />
                     ) : null}
                     <TextInput
-                      label="默认模型"
+                      label={t('settings.ai.field.defaultModel')}
                       list={modelListId}
                       onChange={(defaultModel) =>
                         updateProvider(provider.id, { defaultModel })
                       }
-                      placeholder={getAIProviderModelPlaceholder(provider.type)}
+                      placeholder={getAIProviderModelPlaceholder(
+                        t,
+                        provider.type,
+                      )}
                       value={provider.defaultModel}
                     />
                     <datalist id={modelListId}>
@@ -265,7 +281,7 @@ export function AIConfigEditor(props: {
                           className="size-4 animate-spin"
                         />
                       ) : null}
-                      获取模型
+                      {t('settings.ai.action.fetchModels')}
                     </Button>
                     <Button
                       disabled={testingProviderId === provider.id}
@@ -279,11 +295,15 @@ export function AIConfigEditor(props: {
                           className="size-4 animate-spin"
                         />
                       ) : null}
-                      测试连接
+                      {t('settings.ai.action.testConnection')}
                     </Button>
                     <Button
                       onClick={() => {
-                        if (window.confirm('确认删除此 Provider？')) {
+                        if (
+                          window.confirm(
+                            t('settings.ai.confirm.deleteProvider'),
+                          )
+                        ) {
                           deleteProvider(provider.id)
                         }
                       }}
@@ -291,7 +311,7 @@ export function AIConfigEditor(props: {
                       variant="subtle"
                     >
                       <Trash2 aria-hidden="true" className="size-4" />
-                      删除
+                      {t('common.delete')}
                     </Button>
                   </div>
                 </div>
@@ -302,27 +322,29 @@ export function AIConfigEditor(props: {
       </section>
 
       <section className="space-y-3">
-        <h3 className="text-sm font-medium">模型分配</h3>
+        <h3 className="text-sm font-medium">
+          {t('settings.ai.section.modelAssignments')}
+        </h3>
         <div className="grid gap-3">
           <AIModelAssignmentField
-            description="用于生成文章摘要的模型。"
-            label="摘要功能"
+            description={t('settings.ai.assignment.summaryDescription')}
+            label={t('settings.ai.assignment.summaryLabel')}
             models={providerModels}
             onChange={(summaryModel) => updateConfig({ summaryModel })}
             providers={providers}
             value={props.value.summaryModel}
           />
           <AIModelAssignmentField
-            description="用于生成标题、Slug 等的模型。"
-            label="写作助手"
+            description={t('settings.ai.assignment.writerDescription')}
+            label={t('settings.ai.assignment.writerLabel')}
             models={providerModels}
             onChange={(writerModel) => updateConfig({ writerModel })}
             providers={providers}
             value={props.value.writerModel}
           />
           <AIModelAssignmentField
-            description="用于审核评论的模型。"
-            label="评论审核"
+            description={t('settings.ai.assignment.commentReviewDescription')}
+            label={t('settings.ai.assignment.commentReviewLabel')}
             models={providerModels}
             onChange={(commentReviewModel) =>
               updateConfig({ commentReviewModel })
@@ -331,24 +353,26 @@ export function AIConfigEditor(props: {
             value={props.value.commentReviewModel}
           />
           <AIModelAssignmentField
-            description="用于生成文章翻译的模型。"
-            label="翻译功能"
+            description={t('settings.ai.assignment.translationDescription')}
+            label={t('settings.ai.assignment.translationLabel')}
             models={providerModels}
             onChange={(translationModel) => updateConfig({ translationModel })}
             providers={providers}
             value={props.value.translationModel}
           />
           <AIModelAssignmentField
-            description="用于生成长篇精读的模型。"
-            label="精读生成"
+            description={t('settings.ai.assignment.insightsDescription')}
+            label={t('settings.ai.assignment.insightsLabel')}
             models={providerModels}
             onChange={(insightsModel) => updateConfig({ insightsModel })}
             providers={providers}
             value={props.value.insightsModel}
           />
           <AIModelAssignmentField
-            description="用于翻译精读；留空则复用翻译模型。"
-            label="精读翻译"
+            description={t(
+              'settings.ai.assignment.insightsTranslationDescription',
+            )}
+            label={t('settings.ai.assignment.insightsTranslationLabel')}
             models={providerModels}
             onChange={(insightsTranslationModel) =>
               updateConfig({ insightsTranslationModel })
@@ -360,17 +384,19 @@ export function AIConfigEditor(props: {
       </section>
 
       <section className="space-y-3">
-        <h3 className="text-sm font-medium">功能开关</h3>
+        <h3 className="text-sm font-medium">
+          {t('settings.ai.section.featureToggles')}
+        </h3>
         <div className="grid gap-4">
           <Switch
             checked={Boolean(props.value.enableSummary)}
-            label="启用 AI 摘要"
+            label={t('settings.ai.switch.enableSummary')}
             onCheckedChange={(enableSummary) => updateConfig({ enableSummary })}
           />
           <Switch
             checked={Boolean(props.value.enableAutoGenerateSummaryOnCreate)}
             disabled={!props.value.enableSummary}
-            label="文章创建时自动生成摘要"
+            label={t('settings.ai.switch.enableAutoSummaryCreate')}
             onCheckedChange={(enableAutoGenerateSummaryOnCreate) =>
               updateConfig({ enableAutoGenerateSummaryOnCreate })
             }
@@ -378,14 +404,14 @@ export function AIConfigEditor(props: {
           <Switch
             checked={Boolean(props.value.enableAutoGenerateSummaryOnUpdate)}
             disabled={!props.value.enableSummary}
-            label="文章更新时重新生成摘要"
+            label={t('settings.ai.switch.enableAutoSummaryUpdate')}
             onCheckedChange={(enableAutoGenerateSummaryOnUpdate) =>
               updateConfig({ enableAutoGenerateSummaryOnUpdate })
             }
           />
           <AITextListField
             disabled={!props.value.enableSummary}
-            label="摘要目标语言"
+            label={t('settings.ai.switch.summaryTargetLanguages')}
             onChange={(summaryTargetLanguages) =>
               updateConfig({ summaryTargetLanguages })
             }
@@ -394,7 +420,7 @@ export function AIConfigEditor(props: {
           <TextInput
             disabled={!props.value.enableSummary}
             inputMode="numeric"
-            label="摘要自动生成最小文本长度"
+            label={t('settings.ai.switch.summaryMinTextLength')}
             onChange={(value) =>
               updateConfig({
                 summaryMinTextLength: value.trim() ? Number(value) : 0,
@@ -405,7 +431,7 @@ export function AIConfigEditor(props: {
           />
           <Switch
             checked={Boolean(props.value.enableInsights)}
-            label="启用 AI 精读"
+            label={t('settings.ai.switch.enableInsights')}
             onCheckedChange={(enableInsights) =>
               updateConfig({ enableInsights })
             }
@@ -413,7 +439,7 @@ export function AIConfigEditor(props: {
           <Switch
             checked={Boolean(props.value.enableAutoGenerateInsightsOnCreate)}
             disabled={!props.value.enableInsights}
-            label="文章创建时自动生成精读"
+            label={t('settings.ai.switch.enableAutoInsightsCreate')}
             onCheckedChange={(enableAutoGenerateInsightsOnCreate) =>
               updateConfig({ enableAutoGenerateInsightsOnCreate })
             }
@@ -421,7 +447,7 @@ export function AIConfigEditor(props: {
           <Switch
             checked={Boolean(props.value.enableAutoGenerateInsightsOnUpdate)}
             disabled={!props.value.enableInsights}
-            label="文章更新时重新生成精读"
+            label={t('settings.ai.switch.enableAutoInsightsUpdate')}
             onCheckedChange={(enableAutoGenerateInsightsOnUpdate) =>
               updateConfig({ enableAutoGenerateInsightsOnUpdate })
             }
@@ -429,14 +455,14 @@ export function AIConfigEditor(props: {
           <Switch
             checked={Boolean(props.value.enableAutoTranslateInsights)}
             disabled={!props.value.enableInsights}
-            label="自动翻译精读"
+            label={t('settings.ai.switch.enableAutoTranslateInsights')}
             onCheckedChange={(enableAutoTranslateInsights) =>
               updateConfig({ enableAutoTranslateInsights })
             }
           />
           <AITextListField
             disabled={!props.value.enableInsights}
-            label="精读目标语言"
+            label={t('settings.ai.switch.insightsTargetLanguages')}
             onChange={(insightsTargetLanguages) =>
               updateConfig({ insightsTargetLanguages })
             }
@@ -445,7 +471,7 @@ export function AIConfigEditor(props: {
           <TextInput
             disabled={!props.value.enableInsights}
             inputMode="numeric"
-            label="精读自动生成最小文本长度"
+            label={t('settings.ai.switch.insightsMinTextLength')}
             onChange={(value) =>
               updateConfig({
                 insightsMinTextLength: value.trim() ? Number(value) : 0,
@@ -456,7 +482,7 @@ export function AIConfigEditor(props: {
           />
           <Switch
             checked={Boolean(props.value.enableTranslation)}
-            label="启用 AI 翻译"
+            label={t('settings.ai.switch.enableTranslation')}
             onCheckedChange={(enableTranslation) =>
               updateConfig({ enableTranslation })
             }
@@ -464,14 +490,14 @@ export function AIConfigEditor(props: {
           <Switch
             checked={Boolean(props.value.enableAutoGenerateTranslation)}
             disabled={!props.value.enableTranslation}
-            label="自动生成翻译"
+            label={t('settings.ai.switch.enableAutoTranslate')}
             onCheckedChange={(enableAutoGenerateTranslation) =>
               updateConfig({ enableAutoGenerateTranslation })
             }
           />
           <AITextListField
             disabled={!props.value.enableTranslation}
-            label="翻译目标语言"
+            label={t('settings.ai.switch.translationTargetLanguages')}
             onChange={(translationTargetLanguages) =>
               updateConfig({ translationTargetLanguages })
             }

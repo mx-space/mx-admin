@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import type { SnippetModel } from '~/models/snippet'
 import type { SelectedSnippetId } from '../types/snippets'
 
+import { useI18n } from '~/i18n'
 import { cn } from '~/utils/cn'
 import { relativeTimeFromNow } from '~/utils/time'
 
@@ -44,6 +45,7 @@ function SnippetRow(props: {
   selected: boolean
   snippet: SnippetModel
 }) {
+  const { t } = useI18n()
   return (
     <button
       className={cn(
@@ -59,7 +61,7 @@ function SnippetRow(props: {
       <div className="min-w-0 flex-1">
         <div className="flex min-w-0 items-center gap-2">
           <h3 className="truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
-            {props.snippet.name || '未命名片段'}
+            {props.snippet.name || t('snippets.list.unnamed')}
           </h3>
           <span className="rounded bg-neutral-100 px-1.5 py-0.5 text-xs text-neutral-500 dark:bg-neutral-900 dark:text-neutral-400">
             {props.snippet.type}

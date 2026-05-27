@@ -1,7 +1,14 @@
-export function formatNullableDate(value: string | null | undefined) {
-  if (!value) return '下次执行：未提供'
+import type { TranslationKey, TranslationValues } from '~/i18n/types'
 
-  return `下次执行：${formatDateTime(value)}`
+type Translator = (key: TranslationKey, values?: TranslationValues) => string
+
+export function formatNullableDate(
+  value: string | null | undefined,
+  t: Translator,
+) {
+  if (!value) return t('cron.next.empty')
+
+  return t('cron.next.value', { time: formatDateTime(value) })
 }
 
 export function formatDateTime(value: number | string) {
@@ -22,16 +29,18 @@ export function formatLogTime(value: number) {
   }).format(new Date(value))
 }
 
-export function formatRelativeDate(value: number) {
+export function formatRelativeDate(value: number, t: Translator) {
   const diff = Date.now() - value
   const absolute = Math.abs(diff)
   const minute = 60 * 1000
   const hour = 60 * minute
   const day = 24 * hour
 
-  if (absolute < minute) return '刚刚'
-  if (absolute < hour) return `${Math.round(diff / minute)} 分钟前`
-  if (absolute < day) return `${Math.round(diff / hour)} 小时前`
+  if (absolute < minute) return t('cron.relative.justNow')
+  if (absolute < hour)
+    return t('cron.relative.minutesAgo', { count: Math.round(diff / minute) })
+  if (absolute < day)
+    return t('cron.relative.hoursAgo', { count: Math.round(diff / hour) })
 
   return formatDateTime(value)
 }

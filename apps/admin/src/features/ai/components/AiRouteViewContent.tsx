@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import type { AiSurface } from '../types/ai'
 
+import { useI18n } from '~/i18n'
 import { AppPage, PageHeader } from '~/ui/layout/page-layout'
 import { cn } from '~/utils/cn'
 
@@ -17,6 +18,7 @@ import { SlugBackfillSurface } from './SlugBackfillSurface'
 import { TranslationEntriesSurface } from './TranslationEntriesSurface'
 
 export function AiRouteViewContent() {
+  const { t } = useI18n()
   const location = useLocation()
   const navigate = useNavigate()
   const [surface, setSurface] = useState<AiSurface>(() =>
@@ -51,14 +53,14 @@ export function AiRouteViewContent() {
                   type="button"
                 >
                   <Icon aria-hidden="true" className="size-4" />
-                  {tab.label}
+                  {t(tab.labelKey)}
                 </button>
               )
             })}
           </div>
         }
-        description="管理任务、摘要、翻译、精读、词表与 slug 回填。"
-        title="AI 管理"
+        description={t('ai.page.description')}
+        title={t('ai.page.title')}
       />
 
       <div className="min-h-0 flex-1">

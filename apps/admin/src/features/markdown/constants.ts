@@ -1,29 +1,38 @@
+import type { TranslationKey } from '~/i18n/types'
+
 import { ImportType } from './types/markdown'
 
-export const importTypeOptions = [
-  { label: '博文', value: ImportType.Post },
-  { label: '日记', value: ImportType.Note },
+export const importTypeOptions: Array<{
+  labelKey: TranslationKey
+  value: ImportType
+}> = [
+  { labelKey: 'markdown.type.post', value: ImportType.Post },
+  { labelKey: 'markdown.type.note', value: ImportType.Note },
 ]
 
 export const exportOptions = [
   {
-    description: '在文件开头添加 Front Matter 元数据',
+    descriptionKey: 'markdown.export.options.includeYAMLHeader.description',
     id: 'includeYAMLHeader',
-    label: '包含 YAML 头部',
+    labelKey: 'markdown.export.options.includeYAMLHeader.label',
   },
   {
-    description: '在正文第一行添加 # 标题',
+    descriptionKey: 'markdown.export.options.titleBigTitle.description',
     id: 'titleBigTitle',
-    label: '首行显示标题',
+    labelKey: 'markdown.export.options.titleBigTitle.label',
   },
   {
-    description: '用 slug 而非标题命名文件',
+    descriptionKey: 'markdown.export.options.filenameSlug.description',
     id: 'filenameSlug',
-    label: '使用 Slug 作为文件名',
+    labelKey: 'markdown.export.options.filenameSlug.label',
   },
   {
-    description: '附带完整的元数据 JSON 文件',
+    descriptionKey: 'markdown.export.options.withMetaJson.description',
     id: 'withMetaJson',
-    label: '导出元数据 JSON',
+    labelKey: 'markdown.export.options.withMetaJson.label',
   },
-] as const
+] as const satisfies ReadonlyArray<{
+  descriptionKey: TranslationKey
+  id: string
+  labelKey: TranslationKey
+}>

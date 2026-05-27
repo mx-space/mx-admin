@@ -1,9 +1,11 @@
 import { BookOpen, Plus } from 'lucide-react'
 import type { NoteFilter } from '../types/notes'
 
+import { useI18n } from '~/i18n'
 import { ButtonLink } from '~/ui/primitives/button'
 
 export function NotesEmpty(props: { filter: NoteFilter; keyword: string }) {
+  const { t } = useI18n()
   const isPlainEmpty = !props.keyword && props.filter === 'all'
 
   return (
@@ -14,17 +16,17 @@ export function NotesEmpty(props: { filter: NoteFilter; keyword: string }) {
       />
       <p>
         {props.keyword
-          ? '没有匹配的手记'
+          ? t('notes.empty.hasSearch')
           : props.filter === 'bookmark'
-            ? '暂无回忆项'
+            ? t('notes.empty.bookmark')
             : props.filter === 'unpublished'
-              ? '暂无草稿项'
-              : '暂无手记'}
+              ? t('notes.empty.unpublished')
+              : t('notes.empty.title')}
       </p>
       {isPlainEmpty ? (
         <ButtonLink className="mt-4" to="/notes/edit" variant="subtle">
           <Plus aria-hidden="true" className="size-4" />
-          创建第一条手记
+          {t('notes.empty.create')}
         </ButtonLink>
       ) : null}
     </div>

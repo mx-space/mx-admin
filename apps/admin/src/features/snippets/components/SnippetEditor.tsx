@@ -17,6 +17,7 @@ import type { FormEvent } from 'react'
 
 import { createSnippet, updateSnippet } from '~/api/snippets'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { SnippetType, SnippetTypeToLanguage } from '~/models/snippet'
 import { Button } from '~/ui/primitives/button'
 import { Checkbox } from '~/ui/primitives/checkbox'
@@ -49,6 +50,7 @@ export function SnippetEditor(props: {
   onSaved: (snippet: SnippetModel) => void
   resetting?: boolean
 }) {
+  const { t } = useI18n()
   const [form, setForm] = useState<CreateSnippetData>(() =>
     normalizeSnippet(props.initialValue),
   )
@@ -60,22 +62,22 @@ export function SnippetEditor(props: {
   const mutation = useMutation({
     mutationFn: () =>
       props.mode === 'create'
-        ? createSnippet(prepareSnippetPayload(form))
+        ? createSnippet(prepareSnippetPayload(form, t))
         : updateSnippet(
             (props.initialValue as SnippetModel).id,
-            prepareSnippetPayload(form),
+            prepareSnippetPayload(form, t),
           ),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '保存失败')),
+      toast.error(getErrorMessage(error, t('snippets.toast.saveFailed'))),
     onSuccess: (snippet) => {
-      toast.success('片段已保存')
+      toast.success(t('snippets.toast.saved'))
       props.onSaved(snippet)
     },
   })
 
   const save = () => {
     if (!form.name.trim()) {
-      toast.error('请填写片段名称')
+      toast.error(t('snippets.toast.nameRequired'))
       return
     }
     mutation.mutate()
@@ -97,7 +99,7 @@ export function SnippetEditor(props: {
   const changeType = (type: SnippetType) => {
     setForm((current) => ({
       ...current,
-      ...getSnippetDefaultsForType(type, current.type, current.raw),
+      ...getSnippetDefaultsForType(type, current.type, current.raw, t),
       type,
     }))
   }
@@ -112,7 +114,7 @@ export function SnippetEditor(props: {
       >
         <div className="flex min-w-0 items-center gap-2">
           <Button
-            aria-label="返回片段列表"
+            aria-label={t('snippets.editor.backAria')}
             className="h-8 px-2 lg:hidden"
             onClick={props.onBack}
             type="button"
@@ -122,7 +124,9 @@ export function SnippetEditor(props: {
           </Button>
           <div className="min-w-0">
             <h2 className="truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
-              {props.mode === 'create' ? '新建片段' : form.name || '未命名片段'}
+              {props.mode === 'create'
+                ? t('snippets.editor.newTitle')
+                : form.name || t('snippets.editor.unnamed')}
             </h2>
             <p className="mt-0.5 truncate text-xs text-neutral-500 dark:text-neutral-400">
               {form.type} · {form.reference || 'root'}
@@ -143,7 +147,7 @@ export function SnippetEditor(props: {
                 variant="subtle"
               >
                 <FileText aria-hidden="true" className="size-4" />
-                编译产物
+                {t('snippets.editor.action.compiled')}
               </Button>
               <Button
                 className="h-8 px-2"
@@ -152,7 +156,7 @@ export function SnippetEditor(props: {
                 variant="subtle"
               >
                 <ScrollText aria-hidden="true" className="size-4" />
-                调用日志
+                {t('snippets.editor.action.logs')}
               </Button>
               <Button
                 className="h-8 px-2"
@@ -161,7 +165,7 @@ export function SnippetEditor(props: {
                 variant="subtle"
               >
                 <Download aria-hidden="true" className="size-4" />
-                安装依赖
+                {t('snippets.editor.action.install')}
               </Button>
             </>
           ) : null}
@@ -178,7 +182,7 @@ export function SnippetEditor(props: {
               ) : (
                 <RotateCcw aria-hidden="true" className="size-4" />
               )}
-              重置
+              {t('snippets.editor.action.reset')}
             </Button>
           ) : null}
           {editSnippet && props.onDelete ? (
@@ -190,7 +194,7 @@ export function SnippetEditor(props: {
               variant="subtle"
             >
               <Trash2 aria-hidden="true" className="size-4" />
-              删除
+              {t('snippets.editor.action.delete')}
             </Button>
           ) : null}
           <Button
@@ -203,7 +207,7 @@ export function SnippetEditor(props: {
             ) : (
               <Save aria-hidden="true" className="size-4" />
             )}
-            保存
+            {t('snippets.editor.action.save')}
           </Button>
         </Scroll>
       </div>
@@ -213,14 +217,14 @@ export function SnippetEditor(props: {
           className="min-h-0 border-b border-neutral-200 lg:border-b-0 lg:border-r dark:border-neutral-800"
           innerClassName="space-y-3 p-4"
         >
-          <Field label="名称">
+          <Field label={t('snippets.editor.field.name')}>
             <TextInput
               disabled={isBuiltInFunction}
               onChange={(name) => setForm((current) => ({ ...current, name }))}
               value={form.name}
             />
           </Field>
-          <Field label="类型">
+          <Field label={t('snippets.editor.field.type')}>
             <SelectField
               disabled={typeDisabled}
               onValueChange={changeType}
@@ -231,7 +235,7 @@ export function SnippetEditor(props: {
               value={form.type}
             />
           </Field>
-          <Field label="分组">
+          <Field label={t('snippets.editor.field.group')}>
             <TextInput
               disabled={isBuiltInFunction}
               onChange={(reference) =>
@@ -240,7 +244,7 @@ export function SnippetEditor(props: {
               value={form.reference ?? ''}
             />
           </Field>
-          <Field label="注释">
+          <Field label={t('snippets.editor.field.comment')}>
             <TextInput
               onChange={(comment) =>
                 setForm((current) => ({ ...current, comment }))
@@ -259,7 +263,7 @@ export function SnippetEditor(props: {
           <Checkbox
             checked={Boolean(form.private)}
             disabled={isBuiltInFunction}
-            label="私有"
+            label={t('snippets.editor.field.private')}
             onCheckedChange={(checked) =>
               setForm((current) => ({
                 ...current,
@@ -272,7 +276,7 @@ export function SnippetEditor(props: {
               <Checkbox
                 checked={Boolean(form.enable)}
                 disabled={isBuiltInFunction}
-                label="启用函数"
+                label={t('snippets.editor.field.enable')}
                 onCheckedChange={(checked) =>
                   setForm((current) => ({
                     ...current,

@@ -6,6 +6,7 @@ import type { ProjectModel } from '~/models/project'
 
 import { deleteProject } from '~/api/projects'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { MarkdownRender } from '~/ui/primitives/markdown-render'
 import { Scroll } from '~/ui/primitives/scroll'
@@ -23,11 +24,12 @@ export function ProjectDetailPanel(props: {
   onMobileBack: () => void
   project: ProjectModel
 }) {
+  const { t } = useI18n()
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)
   const deleteMutation = useMutation({
     mutationFn: deleteProject,
     onSuccess: async () => {
-      toast.success('删除成功')
+      toast.success(t('projects.detail.deleteSuccess'))
       await props.onDeleted()
     },
   })
@@ -56,7 +58,7 @@ export function ProjectDetailPanel(props: {
             variant="subtle"
           >
             <ArrowLeft aria-hidden="true" className="size-4" />
-            返回
+            {t('projects.detail.return')}
           </Button>
           <Button
             className="hidden lg:inline-flex"
@@ -65,11 +67,11 @@ export function ProjectDetailPanel(props: {
             variant="subtle"
           >
             <ArrowLeft aria-hidden="true" className="size-4" />
-            关闭
+            {t('projects.detail.close')}
           </Button>
           <Button onClick={props.onEdit} type="button" variant="subtle">
             <Pencil aria-hidden="true" className="size-4" />
-            编辑
+            {t('projects.detail.edit')}
           </Button>
           <Button
             className="text-red-600 hover:text-red-700 dark:text-red-400"
@@ -86,7 +88,9 @@ export function ProjectDetailPanel(props: {
             variant="subtle"
           >
             <Trash2 aria-hidden="true" className="size-4" />
-            {isConfirmingDelete ? '确认删除' : '删除'}
+            {isConfirmingDelete
+              ? t('projects.detail.confirmDelete')
+              : t('projects.detail.delete')}
           </Button>
         </div>
       </div>
@@ -106,7 +110,9 @@ export function ProjectDetailPanel(props: {
               ) : null}
               <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-neutral-400">
                 <time dateTime={props.project.createdAt}>
-                  创建于 {relativeTimeFromNow(props.project.createdAt)}
+                  {t('projects.detail.createdAt', {
+                    time: relativeTimeFromNow(props.project.createdAt),
+                  })}
                 </time>
               </div>
             </div>
@@ -119,13 +125,13 @@ export function ProjectDetailPanel(props: {
           {props.project.text ? (
             <section className="border-t border-neutral-100 pt-5 dark:border-neutral-800">
               <h4 className="mb-3 text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                项目介绍
+                {t('projects.detail.introTitle')}
               </h4>
               <MarkdownRender text={props.project.text} />
             </section>
           ) : (
             <p className="border-t border-neutral-100 pt-5 text-sm text-neutral-500 dark:border-neutral-800">
-              暂无项目介绍。
+              {t('projects.detail.introEmpty')}
             </p>
           )}
         </div>

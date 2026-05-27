@@ -1,6 +1,7 @@
 import { Globe, Shield } from 'lucide-react'
 
 import { IpInfoPopover } from '~/features/_shared/components/ip-info-popover'
+import { useI18n } from '~/i18n'
 
 import { formatDateTime } from '../utils/dashboard'
 
@@ -8,6 +9,7 @@ export function OwnerLoginStat(props: {
   lastLoginIp?: string
   lastLoginTime?: string
 }) {
+  const { t } = useI18n()
   if (!props.lastLoginIp && !props.lastLoginTime) return null
 
   return (
@@ -17,7 +19,7 @@ export function OwnerLoginStat(props: {
           aria-hidden="true"
           className="size-4 shrink-0 text-neutral-400"
         />
-        <span className="shrink-0">上次登录时间:</span>
+        <span className="shrink-0">{t('dashboard.owner.lastLoginTime')}</span>
         <time
           className="min-w-0 truncate text-neutral-700 dark:text-neutral-300"
           dateTime={props.lastLoginTime}
@@ -30,7 +32,7 @@ export function OwnerLoginStat(props: {
           aria-hidden="true"
           className="size-4 shrink-0 text-neutral-400"
         />
-        <span className="shrink-0">上次登录 IP:</span>
+        <span className="shrink-0">{t('dashboard.owner.lastLoginIp')}</span>
         {props.lastLoginIp ? (
           <IpInfoPopover
             className="inline-flex min-w-0 items-center gap-1.5 text-neutral-700 hover:underline dark:text-neutral-300"

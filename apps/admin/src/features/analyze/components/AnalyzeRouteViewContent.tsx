@@ -32,6 +32,7 @@ import {
   getTrafficSource,
 } from '~/api/analyze'
 import { MetricCard } from '~/features/analyze/components/metric-card'
+import { useI18n } from '~/i18n'
 import { CompactPagination } from '~/ui/data/compact-pagination'
 import { AppPage, PageHeader } from '~/ui/layout/page-layout'
 import { Button } from '~/ui/primitives/button'
@@ -61,6 +62,7 @@ import { TrafficSourceChart } from './TrafficSourceChart'
 import { TrendChart } from './TrendChart'
 
 export function AnalyzeRouteViewContent() {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const [page, setPage] = useState(1)
   const [period, setPeriod] = useState<AnalyzePeriod>('week')
@@ -120,10 +122,10 @@ export function AnalyzeRouteViewContent() {
   const deleteMutation = useMutation({
     mutationFn: deleteAllAnalyzeRecords,
     onError: (error: unknown) => {
-      toast.error(getErrorMessage(error, '清空失败'))
+      toast.error(getErrorMessage(error, t('analyze.delete.failed')))
     },
     onSuccess: async () => {
-      toast.success('访问记录已清空')
+      toast.success(t('analyze.delete.success'))
       await queryClient.invalidateQueries({ queryKey: analyzeQueryKey })
     },
   })
@@ -177,13 +179,13 @@ export function AnalyzeRouteViewContent() {
                 aria-hidden="true"
                 className={cn('size-4', isAnyFetching && 'animate-spin')}
               />
-              刷新
+              {t('analyze.action.refresh')}
             </Button>
             <Button
               className="border-red-200 text-red-600 hover:bg-red-50 dark:border-red-950 dark:text-red-400 dark:hover:bg-red-950/30"
               disabled={deleteMutation.isPending}
               onClick={() => {
-                if (window.confirm('确认清空全部访问分析记录？')) {
+                if (window.confirm(t('analyze.confirm.clearAll'))) {
                   deleteMutation.mutate()
                 }
               }}
@@ -195,34 +197,34 @@ export function AnalyzeRouteViewContent() {
               ) : (
                 <Trash2 aria-hidden="true" className="size-4" />
               )}
-              清空
+              {t('analyze.action.clear')}
             </Button>
           </>
         }
-        description="访问量、独立访客、路径分布和访问记录。"
-        title="数据分析"
+        description={t('analyze.page.description')}
+        title={t('analyze.page.title')}
       />
 
       <Scroll className="min-h-0 flex-1" innerClassName="space-y-4 p-4">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
           <MetricCard
             icon={Eye}
-            label="总访问量 PV"
+            label={t('analyze.metric.pv')}
             value={formatNumber(aggregate?.total.callTime)}
           />
           <MetricCard
             icon={Users}
-            label="独立访客 UV"
+            label={t('analyze.metric.uv')}
             value={formatNumber(aggregate?.total.uv)}
           />
           <MetricCard
             icon={Globe2}
-            label="今日访问 IP"
+            label={t('analyze.metric.todayIp')}
             value={formatNumber(aggregate?.todayIps.length)}
           />
           <MetricCard
             icon={Route}
-            label="平均访问深度"
+            label={t('analyze.metric.avgDepth')}
             value={formatAverageDepth(
               aggregate?.total.callTime,
               aggregate?.total.uv,
@@ -231,19 +233,19 @@ export function AnalyzeRouteViewContent() {
         </div>
 
         <Panel
-          description="按日、周、月切换 PV / IP 趋势。"
+          description={t('analyze.trend.description')}
           title={
             <div className="flex flex-wrap items-center justify-between gap-3">
               <span className="inline-flex items-center gap-2">
                 <ChartLine aria-hidden="true" className="size-4" />
-                访问趋势
+                {t('analyze.trend.title')}
               </span>
               <div className="flex rounded border border-neutral-200 bg-white p-0.5 dark:border-neutral-800 dark:bg-neutral-950">
                 {(
                   [
-                    ['day', '今日'],
-                    ['week', '本周'],
-                    ['month', '本月'],
+                    ['day', t('analyze.trend.period.day')],
+                    ['week', t('analyze.trend.period.week')],
+                    ['month', t('analyze.trend.period.month')],
                   ] as const
                 ).map(([value, label]) => (
                   <button
@@ -268,17 +270,17 @@ export function AnalyzeRouteViewContent() {
           ) : trendData.length ? (
             <TrendChart data={trendData} />
           ) : (
-            <EmptyBlock label="暂无趋势数据" />
+            <EmptyBlock label={t('analyze.trend.empty')} />
           )}
         </Panel>
 
         <div className="grid grid-cols-1 gap-4 xl:grid-cols-3">
           <Panel
-            description="按阅读量统计最近 14 天的内容排行。"
+            description={t('analyze.top.description')}
             title={
               <span className="inline-flex items-center gap-2">
                 <Newspaper aria-hidden="true" className="size-4" />
-                热门文章
+                {t('analyze.top.title')}
               </span>
             }
           >
@@ -286,22 +288,22 @@ export function AnalyzeRouteViewContent() {
               <AnalyzeSkeleton />
             ) : topReadingsQuery.isError ? (
               <ErrorBlock
-                label="热门文章加载失败"
+                label={t('analyze.top.error')}
                 onRetry={() => void topReadingsQuery.refetch()}
               />
             ) : topReadingsQuery.data?.length ? (
               <TopReadingsChart items={topReadingsQuery.data} />
             ) : (
-              <EmptyBlock label="暂无阅读排行数据" />
+              <EmptyBlock label={t('analyze.top.empty')} />
             )}
           </Panel>
 
           <Panel
-            description="按来源类型与来源地址统计最近访问。"
+            description={t('analyze.traffic.description')}
             title={
               <span className="inline-flex items-center gap-2">
                 <Route aria-hidden="true" className="size-4" />
-                流量来源
+                {t('analyze.traffic.title')}
               </span>
             }
           >
@@ -309,22 +311,22 @@ export function AnalyzeRouteViewContent() {
               <AnalyzeSkeleton />
             ) : trafficSourceQuery.isError ? (
               <ErrorBlock
-                label="流量来源加载失败"
+                label={t('analyze.traffic.error')}
                 onRetry={() => void trafficSourceQuery.refetch()}
               />
             ) : trafficSourceQuery.data?.categories.length ? (
               <TrafficSourceChart data={trafficSourceQuery.data} />
             ) : (
-              <EmptyBlock label="暂无流量来源数据" />
+              <EmptyBlock label={t('analyze.traffic.empty')} />
             )}
           </Panel>
 
           <Panel
-            description="按设备、浏览器和系统聚合访客客户端。"
+            description={t('analyze.device.description')}
             title={
               <span className="inline-flex items-center gap-2">
                 <MonitorSmartphone aria-hidden="true" className="size-4" />
-                设备分布
+                {t('analyze.device.title')}
               </span>
             }
           >
@@ -332,24 +334,24 @@ export function AnalyzeRouteViewContent() {
               <AnalyzeSkeleton />
             ) : deviceDistributionQuery.isError ? (
               <ErrorBlock
-                label="设备分布加载失败"
+                label={t('analyze.device.error')}
                 onRetry={() => void deviceDistributionQuery.refetch()}
               />
             ) : hasDeviceDistribution(deviceDistributionQuery.data) ? (
               <DeviceDistributionChart data={deviceDistributionQuery.data} />
             ) : (
-              <EmptyBlock label="暂无设备分布数据" />
+              <EmptyBlock label={t('analyze.device.empty')} />
             )}
           </Panel>
         </div>
 
         <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,0.55fr)_minmax(0,0.45fr)]">
           <Panel
-            description="按后端聚合结果展示访问路径。"
+            description={t('analyze.path.description')}
             title={
               <span className="inline-flex items-center gap-2">
                 <ChartLine aria-hidden="true" className="size-4" />
-                热门路径
+                {t('analyze.path.title')}
               </span>
             }
           >
@@ -372,11 +374,14 @@ export function AnalyzeRouteViewContent() {
                 ))}
               </div>
             ) : (
-              <EmptyBlock label="暂无路径聚合数据" />
+              <EmptyBlock label={t('analyze.path.empty')} />
             )}
           </Panel>
 
-          <Panel description="当日访问 IP 列表。" title="今日 IP">
+          <Panel
+            description={t('analyze.todayIp.description')}
+            title={t('analyze.todayIp.title')}
+          >
             {aggregateQuery.isLoading ? (
               <AnalyzeSkeleton />
             ) : aggregate?.todayIps.length ? (
@@ -389,25 +394,28 @@ export function AnalyzeRouteViewContent() {
                 ))}
               </Scroll>
             ) : (
-              <EmptyBlock label="暂无今日 IP" />
+              <EmptyBlock label={t('analyze.todayIp.empty')} />
             )}
           </Panel>
         </div>
 
         <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,0.56fr)_minmax(0,0.44fr)]">
           <Panel
-            description="访客点赞与阅读时长活动。"
+            description={t('analyze.visitor.description')}
             title={
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <span className="inline-flex items-center gap-2">
                   <Heart aria-hidden="true" className="size-4" />
-                  访客活动
+                  {t('analyze.activity.title')}
                 </span>
                 <div className="flex rounded border border-neutral-200 bg-white p-0.5 dark:border-neutral-800 dark:bg-neutral-950">
                   {(
                     [
-                      [ActivityType.Like, '点赞记录'],
-                      [ActivityType.ReadDuration, '阅读记录'],
+                      [ActivityType.Like, t('analyze.activity.likeRecord')],
+                      [
+                        ActivityType.ReadDuration,
+                        t('analyze.activity.readRecord'),
+                      ],
                     ] as const
                   ).map(([value, label]) => (
                     <button
@@ -434,7 +442,7 @@ export function AnalyzeRouteViewContent() {
               <AnalyzeSkeleton />
             ) : activityQuery.isError ? (
               <ErrorBlock
-                label="访客活动加载失败"
+                label={t('analyze.activity.error')}
                 onRetry={() => void activityQuery.refetch()}
               />
             ) : activities.length ? (
@@ -447,8 +455,8 @@ export function AnalyzeRouteViewContent() {
               <EmptyBlock
                 label={
                   activityType === ActivityType.Like
-                    ? '暂无点赞记录'
-                    : '暂无阅读记录'
+                    ? t('analyze.activity.empty.like')
+                    : t('analyze.activity.empty.read')
                 }
               />
             )}
@@ -468,19 +476,19 @@ export function AnalyzeRouteViewContent() {
           </Panel>
 
           <Panel
-            description="按时间范围统计阅读排名。"
+            description={t('analyze.rank.description')}
             title={
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <span className="inline-flex items-center gap-2">
                   <BookOpen aria-hidden="true" className="size-4" />
-                  阅读排名
+                  {t('analyze.rank.title')}
                 </span>
                 <div className="flex rounded border border-neutral-200 bg-white p-0.5 dark:border-neutral-800 dark:bg-neutral-950">
                   {(
                     [
-                      ['day', '24 小时'],
-                      ['week', '7 天'],
-                      ['month', '30 天'],
+                      ['day', t('analyze.rank.range.day')],
+                      ['week', t('analyze.rank.range.week')],
+                      ['month', t('analyze.rank.range.month')],
                     ] as const
                   ).map(([value, label]) => (
                     <button
@@ -509,31 +517,34 @@ export function AnalyzeRouteViewContent() {
               <AnalyzeSkeleton />
             ) : readingRankQuery.isError ? (
               <ErrorBlock
-                label="阅读排名加载失败"
+                label={t('analyze.rank.error')}
                 onRetry={() => void readingRankQuery.refetch()}
               />
             ) : readingRankQuery.data?.length ? (
               <ReadingRankList items={readingRankQuery.data} />
             ) : (
-              <EmptyBlock label="暂无阅读数据" />
+              <EmptyBlock label={t('analyze.rank.empty')} />
             )}
           </Panel>
         </div>
 
-        <Panel description="最近访问记录，按后端分页返回。" title="访问记录">
+        <Panel
+          description={t('analyze.records.description')}
+          title={t('analyze.records.title')}
+        >
           {recordsQuery.isLoading && records.length === 0 ? (
             <AnalyzeSkeleton />
           ) : recordsQuery.isError ? (
             <div className="flex min-h-[18rem] flex-col items-center justify-center">
               <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                访问记录加载失败
+                {t('analyze.records.error')}
               </p>
               <Button
                 className="mt-3"
                 onClick={() => void recordsQuery.refetch()}
                 type="button"
               >
-                重试
+                {t('analyze.action.retry')}
               </Button>
             </div>
           ) : records.length ? (
@@ -542,19 +553,19 @@ export function AnalyzeRouteViewContent() {
                 <thead className="text-xs uppercase text-neutral-500 dark:text-neutral-400">
                   <tr>
                     <th className="border-b border-neutral-200 px-4 py-3 font-medium dark:border-neutral-800">
-                      路径
+                      {t('analyze.records.header.path')}
                     </th>
                     <th className="border-b border-neutral-200 px-4 py-3 font-medium dark:border-neutral-800">
-                      IP
+                      {t('analyze.records.header.ip')}
                     </th>
                     <th className="border-b border-neutral-200 px-4 py-3 font-medium dark:border-neutral-800">
-                      浏览器
+                      {t('analyze.records.header.browser')}
                     </th>
                     <th className="border-b border-neutral-200 px-4 py-3 font-medium dark:border-neutral-800">
-                      系统
+                      {t('analyze.records.header.os')}
                     </th>
                     <th className="border-b border-neutral-200 px-4 py-3 font-medium dark:border-neutral-800">
-                      时间
+                      {t('analyze.records.header.time')}
                     </th>
                   </tr>
                 </thead>
@@ -566,7 +577,7 @@ export function AnalyzeRouteViewContent() {
               </table>
             </Scroll>
           ) : (
-            <EmptyBlock label="暂无访问记录" />
+            <EmptyBlock label={t('analyze.records.empty')} />
           )}
 
           {pagination && totalPages > 1 ? (

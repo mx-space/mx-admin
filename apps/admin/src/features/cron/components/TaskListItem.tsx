@@ -1,11 +1,12 @@
 import type { CronTask } from '~/api/cron-tasks'
 
+import { useI18n } from '~/i18n'
 import { cn } from '~/utils/cn'
 
 import {
   taskStatusIconClassNames,
   taskStatusIcons,
-  taskTypeLabels,
+  taskTypeLabelKeys,
 } from '../constants'
 import { formatRelativeDate } from '../utils/cron'
 import { StatusBadge } from './CronPrimitives'
@@ -15,6 +16,7 @@ export function TaskListItem(props: {
   selected: boolean
   task: CronTask
 }) {
+  const { t } = useI18n()
   const Icon = taskStatusIcons[props.task.status]
 
   return (
@@ -37,7 +39,9 @@ export function TaskListItem(props: {
       />
       <div className="min-w-0 flex-1">
         <div className="truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
-          {taskTypeLabels[props.task.type] || props.task.type}
+          {taskTypeLabelKeys[props.task.type]
+            ? t(taskTypeLabelKeys[props.task.type])
+            : props.task.type}
         </div>
         <div className="mt-1 truncate text-xs text-neutral-500 dark:text-neutral-400">
           {props.task.progressMessage || props.task.id}
@@ -46,7 +50,7 @@ export function TaskListItem(props: {
       <div className="shrink-0 text-right">
         <StatusBadge status={props.task.status} />
         <div className="mt-1 text-xs tabular-nums text-neutral-400">
-          {formatRelativeDate(props.task.createdAt)}
+          {formatRelativeDate(props.task.createdAt, t)}
         </div>
       </div>
     </button>

@@ -2,6 +2,7 @@ import { X } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { TextInput } from '~/ui/primitives/text-field'
 
@@ -13,17 +14,18 @@ export function AITextListField(props: {
   onChange: (value: string[]) => void
   value: string[]
 }) {
+  const { t } = useI18n()
   const [draft, setDraft] = useState('')
 
   const add = () => {
     const value = draft.trim().toLowerCase()
     if (!value || props.disabled) return
     if (value.length !== 2) {
-      toast.warning('请使用 ISO 639-1 语言代码（2 个字母）')
+      toast.warning(t('settings.ai.test.invalidLanguageCode'))
       return
     }
     if (props.value.includes(value)) {
-      toast.warning(`语言 ${value} 已存在`)
+      toast.warning(t('settings.ai.test.languageExists', { language: value }))
       return
     }
     props.onChange([...props.value, value])
@@ -45,7 +47,7 @@ export function AITextListField(props: {
                 add()
               }
             }}
-            placeholder="如 en, ja, ko"
+            placeholder={t('settings.ai.test.placeholder')}
             value={draft}
           />
           <Button
@@ -54,7 +56,7 @@ export function AITextListField(props: {
             type="button"
             variant="subtle"
           >
-            添加
+            {t('common.add')}
           </Button>
         </div>
         <div className="flex flex-wrap gap-1.5">

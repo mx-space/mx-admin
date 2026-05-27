@@ -56,7 +56,7 @@ export function parseGithubRepo(value: string) {
     : trimmed
   const [owner, repo] = path.split('/')
 
-  if (!owner || !repo) throw new Error('请输入有效的 GitHub 仓库地址')
+  if (!owner || !repo) throw new Error('projects.github.invalidUrl')
 
   return { owner, repo }
 }

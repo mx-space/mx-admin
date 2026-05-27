@@ -6,6 +6,7 @@ import type { FormEvent } from 'react'
 import type { SetupUrls } from '../types/setup'
 
 import { patchInitConfig } from '~/api/system'
+import { useI18n } from '~/i18n'
 import { TextInput } from '~/ui/primitives/text-field'
 
 import { inputClassName, labelClassName } from '../constants'
@@ -17,6 +18,7 @@ export function SetupSiteStep(props: {
   onNext: () => void
   onPrev: () => void
 }) {
+  const { t } = useI18n()
   const [title, setTitle] = useState(props.defaultConfigs.seo?.title ?? '')
   const [description, setDescription] = useState(
     props.defaultConfigs.seo?.description ?? '',
@@ -51,7 +53,7 @@ export function SetupSiteStep(props: {
       ])
       props.onNext()
     } catch (error) {
-      toast.error(getErrorMessage(error, '保存站点配置失败'))
+      toast.error(getErrorMessage(error, t('setup.site.saveError')))
     } finally {
       setSubmitting(false)
     }
@@ -71,10 +73,10 @@ export function SetupSiteStep(props: {
           <TextInput
             autoComplete="organization"
             controlClassName={inputClassName}
-            label="站点标题"
+            label={t('setup.site.titleLabel')}
             labelClassName={labelClassName}
             onChange={setTitle}
-            placeholder="输入站点标题"
+            placeholder={t('setup.site.titlePlaceholder')}
             required
             value={title}
           />
@@ -82,16 +84,18 @@ export function SetupSiteStep(props: {
           <TextInput
             autoComplete="off"
             controlClassName={inputClassName}
-            label="站点描述"
+            label={t('setup.site.descriptionLabel')}
             labelClassName={labelClassName}
             onChange={setDescription}
-            placeholder="输入站点描述"
+            placeholder={t('setup.site.descriptionPlaceholder')}
             required
             value={description}
           />
 
           <div>
-            <label className={labelClassName}>关键字</label>
+            <label className={labelClassName}>
+              {t('setup.site.keywordsLabel')}
+            </label>
             <div className="rounded-2xl bg-white/10 p-2">
               <div className="mb-2 flex flex-wrap gap-2">
                 {keywords.map((keyword) => (
@@ -101,7 +105,9 @@ export function SetupSiteStep(props: {
                   >
                     {keyword}
                     <button
-                      aria-label={`移除 ${keyword}`}
+                      aria-label={t('setup.site.keywordRemoveLabel', {
+                        keyword,
+                      })}
                       onClick={() =>
                         setKeywords((current) =>
                           current.filter((item) => item !== keyword),
@@ -123,7 +129,7 @@ export function SetupSiteStep(props: {
                     addKeyword()
                   }
                 }}
-                placeholder="输入关键字后按 Enter"
+                placeholder={t('setup.site.keywordPlaceholder')}
                 value={keywordInput}
               />
             </div>
@@ -131,28 +137,28 @@ export function SetupSiteStep(props: {
 
           <div className="grid grid-cols-2 gap-3">
             <UrlInput
-              label="前端地址"
+              label={t('setup.site.webUrlLabel')}
               onChange={(value) =>
                 setUrls((current) => ({ ...current, webUrl: value }))
               }
               value={urls.webUrl}
             />
             <UrlInput
-              label="API 地址"
+              label={t('setup.site.apiUrlLabel')}
               onChange={(value) =>
                 setUrls((current) => ({ ...current, serverUrl: value }))
               }
               value={urls.serverUrl}
             />
             <UrlInput
-              label="后台地址"
+              label={t('setup.site.adminUrlLabel')}
               onChange={(value) =>
                 setUrls((current) => ({ ...current, adminUrl: value }))
               }
               value={urls.adminUrl}
             />
             <UrlInput
-              label="Gateway 地址"
+              label={t('setup.site.gatewayUrlLabel')}
               onChange={(value) =>
                 setUrls((current) => ({ ...current, wsUrl: value }))
               }

@@ -1,19 +1,26 @@
+import type { TranslationKey } from '~/i18n/types'
 import type { NoteFilter, NoteSortKey } from './types/notes'
 
 export const filteredNotesFetchSize = 100
 export const notesPageSize = 20
 export const notesQueryKey = ['notes'] as const
 
-export const noteFilterOptions: Array<{ label: string; value: NoteFilter }> = [
-  { label: '全部手记', value: 'all' },
-  { label: '回忆项', value: 'bookmark' },
-  { label: '草稿项', value: 'unpublished' },
+export const noteFilterOptionDefinitions: Array<{
+  labelKey: TranslationKey
+  value: NoteFilter
+}> = [
+  { labelKey: 'notes.filter.all', value: 'all' },
+  { labelKey: 'notes.filter.bookmark', value: 'bookmark' },
+  { labelKey: 'notes.filter.unpublished', value: 'unpublished' },
 ]
 
-export const noteSortOptions: Array<{ label: string; value: NoteSortKey }> = [
-  { label: '创建时间', value: 'createdAt' },
-  { label: '修改时间', value: 'modifiedAt' },
-  { label: '标题', value: 'title' },
-  { label: '心情', value: 'mood' },
-  { label: '天气', value: 'weather' },
+export const noteSortOptionDefinitions: Array<{
+  labelKey: TranslationKey
+  value: NoteSortKey
+}> = [
+  { labelKey: 'notes.sort.createdAt', value: 'createdAt' },
+  { labelKey: 'notes.sort.modifiedAt', value: 'modifiedAt' },
+  { labelKey: 'notes.sort.title', value: 'title' },
+  { labelKey: 'notes.sort.mood', value: 'mood' },
+  { labelKey: 'notes.sort.weather', value: 'weather' },
 ]

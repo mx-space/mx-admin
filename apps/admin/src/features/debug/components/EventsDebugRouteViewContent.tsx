@@ -6,6 +6,7 @@ import type { ReactNode } from 'react'
 
 import { postJson } from '~/api/http'
 import { useLocalStorageState } from '~/hooks/use-local-storage-state'
+import { useI18n } from '~/i18n'
 import { EventTypes } from '~/socket/types'
 import { AppPage, PageHeader } from '~/ui/layout/page-layout'
 import { Button } from '~/ui/primitives/button'
@@ -20,6 +21,7 @@ const targetOptions: DebugTarget[] = ['web', 'all', 'admin']
 const defaultPayload = 'export default {}'
 
 export function EventsDebugRouteViewContent() {
+  const { t } = useI18n()
   const [event, setEvent] = useLocalStorageState<EventTypes>(
     'debug-event-name',
     EventTypes.POST_CREATE,
@@ -57,12 +59,12 @@ export function EventsDebugRouteViewContent() {
           type: `${target}:${event}`,
         },
       )
-      toast.success('调试事件已发送', {
+      toast.success(t('debug.events.sendSuccess'), {
         description: `${target}:${event}`,
       })
     } catch (error) {
-      toast.error('调试事件发送失败', {
-        description: readErrorMessage(error),
+      toast.error(t('debug.events.sendFailed'), {
+        description: readErrorMessage(error, t('debug.events.unknownError')),
       })
     } finally {
       setIsSending(false)
@@ -72,19 +74,19 @@ export function EventsDebugRouteViewContent() {
   return (
     <AppPage>
       <PageHeader
-        description="Compose and dispatch synthetic socket events."
-        title="Events Debug"
+        description={t('debug.events.headerDescription')}
+        title={t('debug.events.headerTitle')}
       />
       <Scroll
         className="min-h-0 flex-1"
         innerClassName="mx-auto grid w-full max-w-6xl gap-6 p-4 xl:grid-cols-[320px_minmax(0,1fr)]"
       >
         <Panel
-          description="Compose and dispatch synthetic socket events from the React runtime."
-          title="Event dispatcher"
+          description={t('debug.events.panelDescription')}
+          title={t('debug.events.panelTitle')}
         >
           <div className="flex flex-col gap-5 p-4">
-            <Field label="Target">
+            <Field label={t('debug.events.field.target')}>
               <Select.Root
                 items={targetOptions.map((value) => ({
                   label: value,
@@ -119,7 +121,7 @@ export function EventsDebugRouteViewContent() {
               </Select.Root>
             </Field>
 
-            <Field label="Event">
+            <Field label={t('debug.events.field.event')}>
               <Select.Root
                 items={eventOptions.map((value) => ({
                   label: value,
@@ -163,25 +165,22 @@ export function EventsDebugRouteViewContent() {
               <div className="font-medium text-neutral-700 dark:text-neutral-200">
                 {target}:{event}
               </div>
-              <div className="mt-1">
-                Supported placeholders: {'{{objectId}}'}, {'{{now}}'},{' '}
-                {'{{randomtext}}'}, {'{{randomnumber}}'}.
-              </div>
+              <div className="mt-1">{t('debug.events.placeholderHint')}</div>
             </div>
 
             <Button disabled={isSending} onClick={sendEvent} type="button">
               <SendHorizontal aria-hidden="true" className="size-4" />
-              {isSending ? 'Sending' : 'Send event'}
+              {isSending ? t('debug.events.sending') : t('debug.events.send')}
             </Button>
           </div>
         </Panel>
 
         <Panel
-          description="Enter an object expression or an export default object."
+          description={t('debug.events.payloadDescription')}
           title={
             <span className="inline-flex items-center gap-2">
               <Code2 aria-hidden="true" className="size-4" />
-              Payload
+              {t('debug.events.payloadTitle')}
             </span>
           }
         >
@@ -272,6 +271,6 @@ function isEventType(value: unknown): value is EventTypes {
   )
 }
 
-function readErrorMessage(error: unknown) {
-  return error instanceof Error ? error.message : 'Unknown error'
+function readErrorMessage(error: unknown, fallback: string) {
+  return error instanceof Error ? error.message : fallback
 }

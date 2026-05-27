@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import type { FormEventHandler, ReactNode } from 'react'
 
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { PortalLayerScope, useFloatingZ } from '~/ui/feedback/portal-layer'
 import { MobileHamburger } from '~/ui/layout/mobile-hamburger'
 import { useShellNav } from '~/ui/layout/shell-nav-context'
@@ -80,6 +81,7 @@ export function ContentListHeader(props: {
 }
 
 export function ContentListToolbar(props: ContentListToolbarProps) {
+  const { t } = useI18n()
   const selection = props.selection
   const selectedCount = selection?.selectedCount ?? 0
   const hasSelection = selectedCount > 0
@@ -111,7 +113,7 @@ export function ContentListToolbar(props: ContentListToolbarProps) {
         />
         {props.hasSearch ? (
           <button
-            aria-label="清除搜索"
+            aria-label={t('shared.contentListToolbar.clearSearch')}
             className="absolute right-3 top-1/2 inline-flex size-4 -translate-y-1/2 items-center justify-center rounded text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-700 dark:hover:bg-neutral-800 dark:hover:text-neutral-200"
             onClick={props.onClearSearch}
             type="button"
@@ -211,6 +213,7 @@ interface SortMenuProps<TField extends string = string> {
 export function SortMenu<TField extends string = string>(
   props: SortMenuProps<TField>,
 ) {
+  const { t } = useI18n()
   const activeOption = props.options.find(
     (option) => option.value === props.field,
   )
@@ -220,7 +223,7 @@ export function SortMenu<TField extends string = string>(
   return (
     <Popover.Root>
       <Popover.Trigger
-        aria-label="排序"
+        aria-label={t('shared.sortMenu.label')}
         className={cn(
           'outline-hidden inline-flex h-7 shrink-0 items-center gap-1.5 rounded px-2 text-xs text-neutral-700 transition-colors hover:bg-neutral-100 focus-visible:ring-2 focus-visible:ring-[var(--color-primary-shallow)] disabled:cursor-not-allowed disabled:opacity-60 data-[popup-open]:bg-neutral-100 dark:text-neutral-200 dark:hover:bg-neutral-900 dark:data-[popup-open]:bg-neutral-900',
           props.className,
@@ -229,7 +232,9 @@ export function SortMenu<TField extends string = string>(
         type="button"
       >
         <ArrowUpDown aria-hidden="true" className="size-3.5 text-neutral-400" />
-        <span className="truncate">{activeOption?.label ?? '排序'}</span>
+        <span className="truncate">
+          {activeOption?.label ?? t('shared.sortMenu.label')}
+        </span>
         <OrderIcon aria-hidden="true" className="size-3 text-neutral-400" />
       </Popover.Trigger>
       <Popover.Portal>
@@ -242,7 +247,7 @@ export function SortMenu<TField extends string = string>(
           <PortalLayerScope depth={depth}>
             <Popover.Popup className="outline-hidden w-48 rounded border border-neutral-200 bg-white p-1 text-xs shadow-lg dark:border-neutral-800 dark:bg-neutral-950">
               <div className="px-2 py-1 text-[10px] font-medium uppercase tracking-wide text-neutral-400 dark:text-neutral-500">
-                字段
+                {t('shared.sortMenu.field')}
               </div>
               {props.options.map((option) => {
                 const active = option.value === props.field
@@ -272,13 +277,13 @@ export function SortMenu<TField extends string = string>(
               })}
               <div className="mx-1 my-1 border-t border-neutral-100 dark:border-neutral-800" />
               <div className="px-2 py-1 text-[10px] font-medium uppercase tracking-wide text-neutral-400 dark:text-neutral-500">
-                方向
+                {t('shared.sortMenu.direction')}
               </div>
               <div className="grid grid-cols-2 gap-1 p-1">
                 <SortOrderButton
                   active={props.order === 'desc'}
                   icon={<ArrowDown aria-hidden="true" className="size-3.5" />}
-                  label="降序"
+                  label={t('shared.sortMenu.desc')}
                   onClick={() =>
                     props.onChange({ field: props.field, order: 'desc' })
                   }
@@ -286,7 +291,7 @@ export function SortMenu<TField extends string = string>(
                 <SortOrderButton
                   active={props.order === 'asc'}
                   icon={<ArrowUp aria-hidden="true" className="size-3.5" />}
-                  label="升序"
+                  label={t('shared.sortMenu.asc')}
                   onClick={() =>
                     props.onChange({ field: props.field, order: 'asc' })
                   }

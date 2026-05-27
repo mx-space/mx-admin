@@ -8,6 +8,7 @@ import type { CategoryModel } from '~/models/category'
 import type { CategoryFormMode } from '../types/categories'
 
 import { createCategory, updateCategory } from '~/api/categories'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { TextInput } from '~/ui/primitives/text-field'
 
@@ -18,13 +19,17 @@ export function CategoryFormDialog(props: {
   onClose: () => void
   onSaved: (category: CategoryModel) => Promise<void>
 }) {
+  const { t } = useI18n()
   const [name, setName] = useState(
     props.mode.kind === 'edit' ? props.mode.category.name : '',
   )
   const [slug, setSlug] = useState(
     props.mode.kind === 'edit' ? props.mode.category.slug : '',
   )
-  const title = props.mode.kind === 'edit' ? '编辑分类' : '新建分类'
+  const title =
+    props.mode.kind === 'edit'
+      ? t('categories.form.editTitle')
+      : t('categories.form.createTitle')
 
   const mutation = useMutation({
     mutationFn: (data: CreateCategoryData) =>
@@ -32,9 +37,13 @@ export function CategoryFormDialog(props: {
         ? updateCategory(props.mode.category.id, { ...data, type: 0 })
         : createCategory(data),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '分类保存失败')),
+      toast.error(getErrorMessage(error, t('categories.form.saveFailed'))),
     onSuccess: async (category) => {
-      toast.success(props.mode.kind === 'edit' ? '分类已更新' : '分类已创建')
+      toast.success(
+        props.mode.kind === 'edit'
+          ? t('categories.form.updated')
+          : t('categories.form.created'),
+      )
       await props.onSaved(category)
     },
   })
@@ -47,7 +56,7 @@ export function CategoryFormDialog(props: {
     }
 
     if (!payload.name || !payload.slug) {
-      toast.error('名称和路径不能为空')
+      toast.error(t('categories.form.validateRequired'))
       return
     }
 
@@ -70,20 +79,20 @@ export function CategoryFormDialog(props: {
                 {title}
               </Dialog.Title>
               <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
-                分类名称用于后台管理，路径用于公开 URL。
+                {t('categories.form.subtitle')}
               </p>
             </div>
             <div className="grid gap-4">
               <TextInput
                 autoFocus
-                label="名称"
+                label={t('categories.form.name')}
                 labelClassName="text-xs text-neutral-500 dark:text-neutral-400"
                 onChange={setName}
                 value={name}
               />
               <TextInput
                 controlClassName="font-mono"
-                label="路径"
+                label={t('categories.form.slug')}
                 labelClassName="text-xs text-neutral-500 dark:text-neutral-400"
                 onChange={setSlug}
                 value={slug}
@@ -91,13 +100,13 @@ export function CategoryFormDialog(props: {
             </div>
             <div className="mt-6 flex justify-end gap-2">
               <Button onClick={props.onClose} type="button" variant="subtle">
-                取消
+                {t('common.cancel')}
               </Button>
               <Button disabled={mutation.isPending} type="submit">
                 {mutation.isPending ? (
                   <Loader2 aria-hidden="true" className="size-4 animate-spin" />
                 ) : null}
-                保存
+                {t('common.save')}
               </Button>
             </div>
           </form>

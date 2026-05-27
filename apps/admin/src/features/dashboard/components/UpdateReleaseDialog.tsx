@@ -4,6 +4,7 @@ import { ExternalLink, X } from 'lucide-react'
 import type { ReleaseModalState } from '../types/dashboard'
 
 import { getReleaseDetails } from '~/api/github-update'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { MarkdownRender } from '~/ui/primitives/markdown-render'
 import { Scroll } from '~/ui/primitives/scroll'
@@ -15,6 +16,7 @@ export function UpdateReleaseDialog(props: {
   onClose: () => void
   release: ReleaseModalState | null
 }) {
+  const { t } = useI18n()
   const releaseQuery = useQuery({
     enabled: Boolean(props.release),
     queryFn: () => {
@@ -40,7 +42,7 @@ export function UpdateReleaseDialog(props: {
         <Dialog.Popup className="outline-hidden fixed left-1/2 top-1/2 z-50 flex max-h-[min(86vh,42rem)] w-[min(92vw,40rem)] -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded border border-neutral-200 bg-white shadow-xl dark:border-neutral-800 dark:bg-neutral-950">
           <div className="flex items-center justify-between gap-3 border-b border-neutral-100 px-4 py-3 dark:border-neutral-800">
             <Dialog.Title className="min-w-0 truncate text-base font-semibold text-neutral-950 dark:text-neutral-50">
-              {props.release?.title || '更新详情'}
+              {props.release?.title || t('dashboard.release.fallbackTitle')}
             </Dialog.Title>
             <Dialog.Close className="inline-flex size-8 items-center justify-center rounded text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-neutral-900 dark:hover:text-neutral-100">
               <X aria-hidden="true" className="size-4" />
@@ -49,7 +51,7 @@ export function UpdateReleaseDialog(props: {
           <Scroll className="min-h-0 flex-1" innerClassName="p-4">
             {releaseQuery.isLoading ? (
               <div className="py-10 text-center text-sm text-neutral-500">
-                正在获取更新详情...
+                {t('dashboard.release.loading')}
               </div>
             ) : details ? (
               <div className="space-y-4">
@@ -63,7 +65,9 @@ export function UpdateReleaseDialog(props: {
                         {details.tagName}
                       </span>
                       <span>
-                        发布于 {formatDateTime(details.publishedAt || '')}
+                        {t('dashboard.release.publishedAt', {
+                          date: formatDateTime(details.publishedAt || ''),
+                        })}
                       </span>
                     </div>
                   </div>
@@ -72,8 +76,8 @@ export function UpdateReleaseDialog(props: {
                     type="button"
                     variant="subtle"
                   >
-                    <ExternalLink aria-hidden="true" className="size-4" />在
-                    GitHub 查看
+                    <ExternalLink aria-hidden="true" className="size-4" />
+                    {t('dashboard.release.viewOnGitHub')}
                   </Button>
                 </div>
                 {details.body ? (
@@ -83,13 +87,13 @@ export function UpdateReleaseDialog(props: {
                   />
                 ) : (
                   <div className="py-8 text-center text-sm text-neutral-500">
-                    此版本没有发布说明。
+                    {t('dashboard.release.empty')}
                   </div>
                 )}
               </div>
             ) : (
               <div className="py-10 text-center text-sm text-neutral-500">
-                无法获取更新详情
+                {t('dashboard.release.error')}
               </div>
             )}
           </Scroll>

@@ -3,11 +3,16 @@ import type { AITask } from '~/api/ai'
 
 import { AITaskStatus } from '~/api/ai'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
 import { cn } from '~/utils/cn'
 
-import { statusIcon, taskStatusLabels, taskTypeLabels } from '../constants'
+import {
+  statusIcon,
+  taskStatusLabelKeys,
+  taskTypeLabelKeys,
+} from '../constants'
 import {
   formatAbsoluteTimestamp,
   getEffectiveStatus,
@@ -37,6 +42,7 @@ export function TaskDetail(props: {
   retrying: boolean
   task: AITask
 }) {
+  const { t } = useI18n()
   const task = props.task
   const effectiveStatus = getEffectiveStatus(task)
   const Icon = statusIcon[effectiveStatus]
@@ -80,21 +86,25 @@ export function TaskDetail(props: {
           />
           <div className="min-w-0">
             <h2 className="truncate text-base font-semibold text-neutral-950 dark:text-neutral-50">
-              {taskTypeLabels[task.type]}
+              {t(taskTypeLabelKeys[task.type])}
             </h2>
             <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
-              {getTaskDetailSummary(task)}
+              {getTaskDetailSummary(task, t)}
             </p>
           </div>
         </div>
         <div className="flex shrink-0 items-center gap-2">
           <StatusBadge status={effectiveStatus}>
-            {taskStatusLabels[effectiveStatus]}
+            {t(taskStatusLabelKeys[effectiveStatus])}
           </StatusBadge>
           {task.retryCount > 0 ? (
-            <SmallBadge tone="warning">重试 {task.retryCount}</SmallBadge>
+            <SmallBadge tone="warning">
+              {t('ai.task.retryBadge', { count: task.retryCount })}
+            </SmallBadge>
           ) : null}
-          {isBatchTask(task) ? <SmallBadge tone="info">批量</SmallBadge> : null}
+          {isBatchTask(task) ? (
+            <SmallBadge tone="info">{t('ai.task.batch')}</SmallBadge>
+          ) : null}
         </div>
       </div>
 
@@ -104,7 +114,7 @@ export function TaskDetail(props: {
             className="mb-4 rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-950 dark:bg-red-950/40 dark:text-red-300"
             role="alert"
           >
-            <span className="font-medium">错误：</span>
+            <span className="font-medium">{t('ai.task.error')}</span>
             {task.error}
           </div>
         ) : null}
@@ -112,7 +122,9 @@ export function TaskDetail(props: {
         {progress !== null ? (
           <div className="mb-5">
             <div className="mb-2 flex items-center justify-between text-xs text-neutral-500 dark:text-neutral-400">
-              <span>{task.progressMessage ?? '任务进度'}</span>
+              <span>
+                {task.progressMessage ?? t('ai.task.progressDefault')}
+              </span>
               <span className="tabular-nums">{Math.round(progress)}%</span>
             </div>
             <div className="h-2 overflow-hidden rounded bg-neutral-100 dark:bg-neutral-900">
@@ -127,35 +139,33 @@ export function TaskDetail(props: {
         {task.tokensGenerated && task.tokensGenerated > 0 ? (
           <div className="mb-5 inline-flex items-center gap-2 rounded border border-blue-200 bg-blue-50 px-3 py-2 text-sm text-blue-700 dark:border-blue-900 dark:bg-blue-950/40 dark:text-blue-300">
             <Loader2 aria-hidden="true" className="size-4 animate-spin" />
-            已生成{' '}
-            <span className="font-medium tabular-nums">
-              {task.tokensGenerated}
-            </span>{' '}
-            个 token
+            {t('ai.task.tokensGenerated', { count: task.tokensGenerated })}
           </div>
         ) : null}
 
         {task.subTaskStats ? <SubTaskStatsView task={task} /> : null}
 
         <div className="grid grid-cols-1 gap-x-6 gap-y-4 text-sm sm:grid-cols-2">
-          <Field label="任务 ID">
+          <Field label={t('ai.task.id')}>
             <Code>{task.id}</Code>
           </Field>
-          <Field label="任务类型">{taskTypeLabels[task.type]}</Field>
-          <Field label="创建时间">
+          <Field label={t('ai.task.type')}>
+            {t(taskTypeLabelKeys[task.type])}
+          </Field>
+          <Field label={t('ai.task.createdAt')}>
             {formatAbsoluteTimestamp(task.createdAt)}
           </Field>
-          <Field label="开始时间">
+          <Field label={t('ai.task.startedAt')}>
             {formatAbsoluteTimestamp(task.startedAt)}
           </Field>
-          <Field label="完成时间">
+          <Field label={t('ai.task.completedAt')}>
             {formatAbsoluteTimestamp(task.completedAt)}
           </Field>
-          <Field label="Worker">{task.workerId ?? '-'}</Field>
-          <Field label="总项数">
+          <Field label={t('ai.task.worker')}>{task.workerId ?? '-'}</Field>
+          <Field label={t('ai.task.totalItems')}>
             <span className="tabular-nums">{task.totalItems ?? '-'}</span>
           </Field>
-          <Field label="已完成">
+          <Field label={t('ai.task.completedItems')}>
             <span className="tabular-nums">{task.completedItems ?? '-'}</span>
           </Field>
         </div>
@@ -179,7 +189,7 @@ export function TaskDetail(props: {
             </div>
           ) : (
             <p className="text-sm text-neutral-500 dark:text-neutral-400">
-              暂无日志。
+              {t('ai.empty.logs')}
             </p>
           )}
         </DetailBlock>
@@ -198,7 +208,7 @@ export function TaskDetail(props: {
             ) : (
               <RotateCcw aria-hidden="true" className="size-4" />
             )}
-            重试任务
+            {t('ai.action.retryTask')}
           </Button>
         ) : null}
         {canCancel ? (
@@ -213,7 +223,7 @@ export function TaskDetail(props: {
             ) : (
               <XCircle aria-hidden="true" className="size-4" />
             )}
-            取消任务
+            {t('ai.action.cancel')}
           </Button>
         ) : null}
         {canDelete ? (
@@ -229,7 +239,7 @@ export function TaskDetail(props: {
             ) : (
               <Trash2 aria-hidden="true" className="size-4" />
             )}
-            删除任务
+            {t('ai.action.deleteTask')}
           </Button>
         ) : null}
       </div>

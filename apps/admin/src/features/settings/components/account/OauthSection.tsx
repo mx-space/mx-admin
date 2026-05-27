@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 import type { OauthOptions, OauthProviderType } from '../../types/settings'
 
 import { getOption, patchOption } from '~/api/options'
+import { useI18n } from '~/i18n'
 import { Panel } from '~/ui/primitives/panel'
 
 import { accountQueryKey, oauthProviders } from '../../constants'
@@ -13,6 +14,7 @@ import { GitHubIcon } from './OauthIcons'
 import { OauthProviderSection } from './OauthProviderSection'
 
 export function OauthSection() {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const oauthQuery = useQuery({
     queryFn: () => getOption<OauthOptions>('oauth'),
@@ -40,9 +42,9 @@ export function OauthSection() {
         },
       }),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '保存 OAuth 配置失败')),
+      toast.error(getErrorMessage(error, t('settings.oauth.error.save'))),
     onSuccess: async () => {
-      toast.success('OAuth 配置已保存')
+      toast.success(t('settings.oauth.success.save'))
       await queryClient.invalidateQueries({ queryKey: accountQueryKey })
     },
   })
@@ -54,16 +56,18 @@ export function OauthSection() {
 
   return (
     <Panel
-      description="配置第三方账号登录方式。"
+      description={t('settings.oauth.description')}
       title={
         <span className="inline-flex items-center gap-2">
           <GitHubIcon aria-hidden="true" className="size-4" />
-          OAuth 登录
+          {t('settings.oauth.title')}
         </span>
       }
     >
       {oauthQuery.isLoading ? (
-        <div className="p-4 text-sm text-neutral-500">加载中...</div>
+        <div className="p-4 text-sm text-neutral-500">
+          {t('settings.common.loading')}
+        </div>
       ) : (
         <div className="divide-y divide-neutral-100 dark:divide-neutral-900">
           {oauthProviders.map((provider) => (

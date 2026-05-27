@@ -2,6 +2,7 @@ import { Pencil, Quote, Trash2, User } from 'lucide-react'
 import { useState } from 'react'
 import type { SayModel } from '~/models/say'
 
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 
 import { formatSayDate } from '../utils/format'
@@ -11,6 +12,7 @@ export function SayListItem(props: {
   onEdit: () => void
   say: SayModel
 }) {
+  const { t } = useI18n()
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)
 
   return (
@@ -48,17 +50,17 @@ export function SayListItem(props: {
         </div>
         <div className="flex shrink-0 items-start gap-1 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">
           <Button
-            aria-label="编辑一言"
+            aria-label={t('says.actions.editAria')}
             className="h-8 px-2"
             onClick={props.onEdit}
             type="button"
             variant="subtle"
           >
             <Pencil aria-hidden="true" className="size-3.5" />
-            <span className="hidden sm:inline">编辑</span>
+            <span className="hidden sm:inline">{t('says.actions.edit')}</span>
           </Button>
           <Button
-            aria-label="删除一言"
+            aria-label={t('says.actions.deleteAria')}
             className="h-8 px-2 text-red-600 hover:text-red-700 dark:text-red-400"
             onClick={() => {
               if (isConfirmingDelete) {
@@ -74,7 +76,9 @@ export function SayListItem(props: {
           >
             <Trash2 aria-hidden="true" className="size-3.5" />
             <span className="hidden sm:inline">
-              {isConfirmingDelete ? '确认' : '删除'}
+              {isConfirmingDelete
+                ? t('says.actions.confirm')
+                : t('says.actions.delete')}
             </span>
           </Button>
         </div>

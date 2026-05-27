@@ -8,7 +8,7 @@ import {
   RotateCcw,
   Save,
 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import ejs from 'ejs'
 import { toast } from 'sonner'
 import type { TemplateTab, TemplateType } from '../types/templates'
@@ -19,23 +19,38 @@ import {
   updateEmailTemplate,
 } from '~/api/options'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
 import { SelectField } from '~/ui/primitives/select'
 import { cn } from '~/utils/cn'
 
-import { templateQueryKey, templateTabs, templateTypes } from '../constants'
+import {
+  templateQueryKey,
+  templateTabs,
+  templateTypeOptions,
+} from '../constants'
 import { getErrorMessage } from '../utils/errors'
 import { TemplateCodeEditor } from './TemplateCodeEditor'
 import { TemplateSkeleton } from './TemplateSkeleton'
 
 export function TemplateRouteViewContent() {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const [activeTab, setActiveTab] = useState<TemplateTab>('email')
   const [templateType, setTemplateType] = useState<TemplateType>('guest')
   const [source, setSource] = useState('')
   const [previewHtml, setPreviewHtml] = useState('')
   const [previewError, setPreviewError] = useState('')
+
+  const templateTypes = useMemo(
+    () =>
+      templateTypeOptions.map((option) => ({
+        label: t(option.labelKey),
+        value: option.value,
+      })),
+    [t],
+  )
 
   const templateQuery = useQuery({
     queryFn: () => getEmailTemplate(templateType),
@@ -68,7 +83,7 @@ export function TemplateRouteViewContent() {
       })
       .catch((error: unknown) => {
         if (cancelled) return
-        setPreviewError(getErrorMessage(error, '模板渲染失败'))
+        setPreviewError(getErrorMessage(error, t('templates.renderError')))
       })
 
     return () => {
@@ -83,9 +98,9 @@ export function TemplateRouteViewContent() {
   const saveMutation = useMutation({
     mutationFn: () => updateEmailTemplate(templateType, source),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '保存失败')),
+      toast.error(getErrorMessage(error, t('templates.saveFailed'))),
     onSuccess: async () => {
-      toast.success('模板已保存')
+      toast.success(t('templates.saveSuccess'))
       await invalidateTemplates()
     },
   })
@@ -93,9 +108,9 @@ export function TemplateRouteViewContent() {
   const resetMutation = useMutation({
     mutationFn: () => deleteEmailTemplate(templateType),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '重置失败')),
+      toast.error(getErrorMessage(error, t('templates.resetFailed'))),
     onSuccess: async () => {
-      toast.success('模板已重置')
+      toast.success(t('templates.resetSuccess'))
       await invalidateTemplates()
     },
   })
@@ -110,7 +125,7 @@ export function TemplateRouteViewContent() {
       >
         <h2 className="inline-flex items-center gap-2 text-sm font-medium">
           <FileCode2 aria-hidden="true" className="size-4" />
-          模板
+          {t('templates.title')}
         </h2>
         <div className="flex flex-wrap items-center gap-2">
           <Button
@@ -126,12 +141,12 @@ export function TemplateRouteViewContent() {
                 templateQuery.isFetching && 'animate-spin',
               )}
             />
-            刷新
+            {t('common.refresh')}
           </Button>
           <Button
             disabled={resetMutation.isPending}
             onClick={() => {
-              if (window.confirm('确认恢复默认模板？')) {
+              if (window.confirm(t('templates.resetConfirm'))) {
                 resetMutation.mutate()
               }
             }}
@@ -143,7 +158,7 @@ export function TemplateRouteViewContent() {
             ) : (
               <RotateCcw aria-hidden="true" className="size-4" />
             )}
-            重置
+            {t('templates.reset')}
           </Button>
           <Button
             disabled={
@@ -157,7 +172,7 @@ export function TemplateRouteViewContent() {
             ) : (
               <Save aria-hidden="true" className="size-4" />
             )}
-            {isDirty ? '保存' : '已保存'}
+            {isDirty ? t('common.save') : t('templates.saved')}
           </Button>
         </div>
       </header>
@@ -179,14 +194,14 @@ export function TemplateRouteViewContent() {
                 type="button"
               >
                 <Icon aria-hidden="true" className="size-4" />
-                {tab.label}
+                {t(tab.labelKey)}
               </button>
             )
           })}
         </div>
         {activeTab === 'email' ? (
           <SelectField
-            aria-label="模板类型"
+            aria-label={t('templates.selectAria')}
             className="mb-3 w-48"
             onValueChange={setTemplateType}
             options={templateTypes}
@@ -197,7 +212,7 @@ export function TemplateRouteViewContent() {
 
       {activeTab === 'markdown' ? (
         <div className="flex min-h-0 flex-1 items-center justify-center px-4 text-sm text-neutral-500 dark:text-neutral-400">
-          即将推出
+          {t('templates.markdownComing')}
         </div>
       ) : (
         <div className="grid min-h-0 flex-1 grid-cols-1 overflow-hidden lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_24rem]">
@@ -232,7 +247,7 @@ export function TemplateRouteViewContent() {
               {previewError ? (
                 <span className="inline-flex items-center gap-1 text-xs text-red-600">
                   <AlertCircle aria-hidden="true" className="size-3.5" />
-                  渲染失败
+                  {t('templates.previewFailed')}
                 </span>
               ) : null}
             </div>
@@ -253,7 +268,7 @@ export function TemplateRouteViewContent() {
           </section>
           <aside className="min-h-0 p-4">
             <h3 className="mb-2 text-xs font-medium uppercase text-neutral-500 dark:text-neutral-400">
-              示例 Props
+              {t('templates.sampleProps')}
             </h3>
             <Scroll
               className="rounded border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900"

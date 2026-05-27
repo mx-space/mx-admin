@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 
+import { useI18n } from '~/i18n'
 import { ModalHeader } from '~/ui/feedback/modal'
 import { present, useModal } from '~/ui/feedback/modal-imperative'
 import { Button } from '~/ui/primitives/button'
@@ -17,8 +18,9 @@ interface ConfirmDialogProps extends ConfirmDialogOptions {}
 
 function ConfirmDialog(props: ConfirmDialogProps) {
   const modal = useModal<boolean>()
-  const confirmText = props.confirmText ?? '确认'
-  const cancelText = props.cancelText ?? '取消'
+  const { t } = useI18n()
+  const confirmText = props.confirmText ?? t('common.confirm')
+  const cancelText = props.cancelText ?? t('common.cancel')
 
   return (
     <div className="flex w-full flex-col">

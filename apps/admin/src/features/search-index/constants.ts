@@ -1,21 +1,22 @@
 import type { SearchIndexRefType } from '~/api/search-index'
+import type { TranslationKey } from '~/i18n/types'
 
 export const searchIndexQueryKey = ['search-index'] as const
 
-export const refTypeOptions: Array<{
-  label: string
+export const refTypeOptionKeys: Array<{
+  labelKey: TranslationKey
   value: SearchIndexRefType | ''
 }> = [
-  { label: '全部类型', value: '' },
-  { label: '博文 post', value: 'post' },
-  { label: '手记 note', value: 'note' },
-  { label: '页面 page', value: 'page' },
+  { labelKey: 'searchIndex.refType.all', value: '' },
+  { labelKey: 'searchIndex.refType.post', value: 'post' },
+  { labelKey: 'searchIndex.refType.note', value: 'note' },
+  { labelKey: 'searchIndex.refType.page', value: 'page' },
 ]
 
-export const refTypeLabel: Record<string, string> = {
-  note: '手记',
-  page: '页面',
-  post: '博文',
+export const refTypeLabelKeys: Record<string, TranslationKey> = {
+  note: 'searchIndex.refTypeLabel.note',
+  page: 'searchIndex.refTypeLabel.page',
+  post: 'searchIndex.refTypeLabel.post',
 }
 
 export const refTypeClassNames: Record<string, string> = {

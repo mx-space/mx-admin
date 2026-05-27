@@ -1,3 +1,4 @@
+import type { TranslationKey, TranslationValues } from '~/i18n/types'
 import type {
   AvailableSnippetPackage,
   ImportFunctionPreview,
@@ -5,6 +6,8 @@ import type {
 } from '../types/snippets'
 
 import { fetchGitHubSnippetTree, fetchGitHubText } from '~/api/github-snippets'
+
+type Translator = (key: TranslationKey, values?: TranslationValues) => string
 
 export async function fetchAvailableSnippetPackages(): Promise<
   AvailableSnippetPackage[]
@@ -27,11 +30,12 @@ export async function fetchAvailableSnippetPackages(): Promise<
 
 export async function loadSnippetPackage(
   name: string,
+  t: Translator,
 ): Promise<ImportPackagePreview> {
   const tree = await fetchGitHubSnippetTree(name)
 
   if (!Array.isArray(tree)) {
-    throw new Error('扩展包结构无效')
+    throw new Error(t('snippets.error.invalidPackage'))
   }
 
   const functions: ImportFunctionPreview[] = []
@@ -65,7 +69,8 @@ export async function loadSnippetPackage(
       }
 
       if (item.type === 'file' && item.name === 'package.json') {
-        if (!item.download_url) throw new Error('无法获取 package.json')
+        if (!item.download_url)
+          throw new Error(t('snippets.error.fetchPackageJson'))
         const packageJson = JSON.parse(await fetchGitHubText(item.download_url))
         dependencies.push(
           ...Object.entries(

@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import type { SnippetModel } from '~/models/snippet'
 
 import { getCompiledCode } from '~/api/serverless'
+import { useI18n } from '~/i18n'
 import { Scroll } from '~/ui/primitives/scroll'
 
 import { getErrorMessage } from '../utils/snippets'
@@ -12,6 +13,7 @@ export function CompiledCodeModal(props: {
   open: boolean
   snippet: SnippetModel | null
 }) {
+  const { t } = useI18n()
   const query = useQuery({
     enabled: props.open && Boolean(props.snippet?.id),
     queryFn: () => getCompiledCode(String(props.snippet?.id)),
@@ -22,13 +24,22 @@ export function CompiledCodeModal(props: {
     <Modal
       onClose={props.onClose}
       open={props.open}
-      title={`编译产物${props.snippet?.name ? `：${props.snippet.name}` : ''}`}
+      title={
+        props.snippet?.name
+          ? t('snippets.dialog.compiled.titleWithName', {
+              name: props.snippet.name,
+            })
+          : t('snippets.dialog.compiled.title')
+      }
     >
       {query.isLoading ? (
-        <InlineLoading label="正在读取编译产物" />
+        <InlineLoading label={t('snippets.dialog.compiled.loading')} />
       ) : query.isError ? (
         <p className="text-sm text-red-600">
-          {getErrorMessage(query.error, '读取编译产物失败')}
+          {getErrorMessage(
+            query.error,
+            t('snippets.dialog.compiled.loadFailed'),
+          )}
         </p>
       ) : (
         <Scroll
@@ -37,7 +48,7 @@ export function CompiledCodeModal(props: {
           viewportClassName="max-h-[70vh]"
         >
           <pre className="p-4 font-mono text-xs leading-5 text-neutral-100">
-            {query.data || '暂无编译产物'}
+            {query.data || t('snippets.dialog.compiled.empty')}
           </pre>
         </Scroll>
       )}

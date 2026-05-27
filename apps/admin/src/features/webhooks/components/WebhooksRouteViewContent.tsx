@@ -6,6 +6,7 @@ import type { WebhookModel } from '~/api/webhooks'
 
 import { deleteWebhook, getWebhooks, testWebhook } from '~/api/webhooks'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { MasterDetailLayout } from '~/ui/layout/page-layout'
 import { Button } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
@@ -23,6 +24,7 @@ import {
 } from './WebhookStates'
 
 export function WebhooksRouteViewContent() {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [editingWebhook, setEditingWebhook] = useState<WebhookModel | null>(
@@ -53,13 +55,13 @@ export function WebhooksRouteViewContent() {
   const deleteMutation = useMutation({
     mutationFn: deleteWebhook,
     onSuccess: async () => {
-      toast.success('Webhook 已删除')
+      toast.success(t('webhooks.toast.deleted'))
       setSelectedId(null)
       setShowDetailOnMobile(false)
       await invalidateWebhooks()
     },
     onError: () => {
-      toast.error('Webhook 删除失败')
+      toast.error(t('webhooks.toast.deleteFailed'))
     },
   })
 
@@ -67,10 +69,10 @@ export function WebhooksRouteViewContent() {
     mutationFn: ({ event, id }: { event: string; id: string }) =>
       testWebhook(id, event),
     onSuccess: () => {
-      toast.success('测试请求已发送')
+      toast.success(t('webhooks.toast.tested'))
     },
     onError: () => {
-      toast.error('测试请求发送失败')
+      toast.error(t('webhooks.toast.testFailed'))
     },
   })
 
@@ -106,13 +108,16 @@ export function WebhooksRouteViewContent() {
                   Webhooks
                 </span>
                 <span className="ml-2 text-xs text-neutral-400">
-                  {webhooks.filter((webhook) => webhook.enabled).length}/
-                  {webhooks.length} 启用
+                  {t('webhooks.enabledCount', {
+                    enabled: webhooks.filter((webhook) => webhook.enabled)
+                      .length,
+                    total: webhooks.length,
+                  })}
                 </span>
               </div>
               <div className="flex gap-2">
                 <Button
-                  aria-label="刷新"
+                  aria-label={t('webhooks.refreshAria')}
                   className="h-8 px-2"
                   onClick={() => {
                     void invalidateWebhooks()
@@ -124,7 +129,7 @@ export function WebhooksRouteViewContent() {
                 </Button>
                 <Button className="h-8 px-2" onClick={openCreate} type="button">
                   <Plus aria-hidden="true" className="size-3.5" />
-                  添加
+                  {t('webhooks.add')}
                 </Button>
               </div>
             </div>

@@ -1,3 +1,4 @@
+import type { TranslationKey } from '~/i18n/types'
 import type { PaginateResult } from './base'
 
 export enum LinkType {
@@ -37,10 +38,11 @@ export type LinkStateCount = {
   reject: number
 }
 
-export const LinkStateNameMap: Record<keyof typeof LinkState, string> = {
-  Audit: '待审核',
-  Pass: '通过',
-  Outdate: '过时',
-  Banned: '屏蔽',
-  Reject: '拒绝',
-}
+export const LinkStateNameKeys: Record<keyof typeof LinkState, TranslationKey> =
+  {
+    Audit: 'friends.tab.audit',
+    Pass: 'friends.row.pass',
+    Outdate: 'friends.tab.outdate',
+    Banned: 'friends.tab.banned',
+    Reject: 'friends.tab.reject',
+  }

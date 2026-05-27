@@ -3,13 +3,15 @@ import type { CronTaskLog, CronTaskStatus } from '~/api/cron-tasks'
 import type { ReactNode } from 'react'
 import type { SelectOption } from '../types/cron'
 
+import { useI18n } from '~/i18n'
 import { SelectField } from '~/ui/primitives/select'
 import { cn } from '~/utils/cn'
 
-import { taskStatusClassNames, taskStatusLabels } from '../constants'
+import { taskStatusClassNames, taskStatusLabelKeys } from '../constants'
 import { formatLogTime } from '../utils/cron'
 
 export function StatusBadge(props: { status: CronTaskStatus }) {
+  const { t } = useI18n()
   return (
     <span
       className={cn(
@@ -17,7 +19,7 @@ export function StatusBadge(props: { status: CronTaskStatus }) {
         taskStatusClassNames[props.status],
       )}
     >
-      {taskStatusLabels[props.status]}
+      {t(taskStatusLabelKeys[props.status])}
     </span>
   )
 }
@@ -114,6 +116,7 @@ export function TaskListSkeleton() {
 }
 
 export function TaskEmptyState() {
+  const { t } = useI18n()
   return (
     <div className="flex min-h-72 flex-col items-center justify-center px-6 text-center">
       <ListTodo
@@ -121,13 +124,14 @@ export function TaskEmptyState() {
         className="mb-4 size-10 text-neutral-300 dark:text-neutral-700"
       />
       <p className="text-sm text-neutral-500 dark:text-neutral-400">
-        暂无计划任务
+        {t('cron.empty.list')}
       </p>
     </div>
   )
 }
 
 export function TaskDetailEmptyState() {
+  const { t } = useI18n()
   return (
     <div className="flex h-full min-h-72 flex-col items-center justify-center px-6 text-center">
       <ListTodo
@@ -135,7 +139,7 @@ export function TaskDetailEmptyState() {
         className="mb-4 size-10 text-neutral-300 dark:text-neutral-700"
       />
       <p className="text-sm text-neutral-500 dark:text-neutral-400">
-        选择一个任务查看详情
+        {t('cron.empty.detail')}
       </p>
     </div>
   )

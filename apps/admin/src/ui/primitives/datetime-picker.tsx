@@ -10,6 +10,7 @@ import type { CSSProperties, ReactNode } from 'react'
 
 import { useDatePicker } from '@rehookify/datepicker'
 
+import { useI18n } from '~/i18n'
 import { PortalLayerScope, useFloatingZ } from '~/ui/feedback/portal-layer'
 import { cn } from '~/utils/cn'
 
@@ -63,6 +64,7 @@ function isSameDay(a: Date, b: Date): boolean {
 
 export function DateTimePicker(props: DateTimePickerProps) {
   const { value, onChange, min, max, disabled, required } = props
+  const { t } = useI18n()
   const { z, depth } = useFloatingZ('popover')
   const [open, setOpen] = useState(false)
   const [view, setView] = useState<View>('day')
@@ -325,7 +327,9 @@ export function DateTimePicker(props: DateTimePickerProps) {
         type="button"
       >
         <span className="truncate">
-          {displayValue || props.placeholder || '选择日期与时间'}
+          {displayValue ||
+            props.placeholder ||
+            t('ui.datetimePicker.placeholder')}
         </span>
         <CalendarIcon
           aria-hidden="true"
@@ -345,7 +349,7 @@ export function DateTimePicker(props: DateTimePickerProps) {
                 <div className="w-64 p-3">{calendarPane}</div>
                 <div className="flex w-28 flex-col border-l border-neutral-200 dark:border-neutral-800">
                   <div className="px-3 pb-1 pt-3 text-xs text-neutral-400">
-                    时间
+                    {t('ui.datetimePicker.time')}
                   </div>
                   <div className="grid max-h-56 grid-cols-1 gap-0.5 overflow-y-auto px-2 pb-2">
                     {time.map((t) => (
@@ -377,14 +381,14 @@ export function DateTimePicker(props: DateTimePickerProps) {
                   }}
                   type="button"
                 >
-                  清除
+                  {t('ui.datetimePicker.clear')}
                 </button>
                 <button
                   className="text-xs text-[var(--color-primary)] hover:underline"
                   onClick={() => setOpen(false)}
                   type="button"
                 >
-                  完成
+                  {t('ui.datetimePicker.done')}
                 </button>
               </div>
             </Popover.Popup>

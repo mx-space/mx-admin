@@ -1,6 +1,7 @@
 import { AlertCircle, History, X } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
+import { useI18n } from '~/i18n'
 import { cn } from '~/utils/cn'
 
 interface DraftHintBannerProps {
@@ -27,6 +28,7 @@ const variantConfig: Record<
 
 export function DraftHintBanner(props: DraftHintBannerProps) {
   const { icon: Icon, iconClass } = variantConfig[props.variant]
+  const { t } = useI18n()
 
   return (
     <div
@@ -48,7 +50,7 @@ export function DraftHintBanner(props: DraftHintBannerProps) {
           {props.actionLabel}
         </button>
         <button
-          aria-label="忽略提示"
+          aria-label={t('write.draftHint.dismissAria')}
           className="inline-flex size-7 items-center justify-center rounded text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-800 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
           onClick={props.onDismiss}
           type="button"

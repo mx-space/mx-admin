@@ -14,7 +14,7 @@ export async function readMarkdownFile(file: File) {
     (file.type && file.type !== 'text/markdown') ||
     !['md', 'markdown'].includes(ext ?? '')
   ) {
-    throw new Error(`只能解析 Markdown 文件，当前文件类型：${file.type || ext}`)
+    throw new Error(`markdown.fileType.error:${file.type || ext}`)
   }
 
   return file.text()

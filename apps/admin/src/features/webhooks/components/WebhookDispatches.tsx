@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 
 import { getWebhookDispatches, redispatchWebhook } from '~/api/webhooks'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
 import { cn } from '~/utils/cn'
@@ -12,6 +13,7 @@ import { dispatchPageSize, webhooksQueryKey } from '../constants'
 import { DispatchRow } from './DispatchRow'
 
 export function WebhookDispatches(props: { webhookId: string }) {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const [page, setPage] = useState(1)
   const [expandedId, setExpandedId] = useState<string | null>(null)
@@ -34,13 +36,13 @@ export function WebhookDispatches(props: { webhookId: string }) {
     mutationFn: (eventId: string) =>
       redispatchWebhook(props.webhookId, eventId),
     onSuccess: async () => {
-      toast.success('已重新推送')
+      toast.success(t('webhooks.toast.redispatched'))
       await queryClient.invalidateQueries({
         queryKey: [...webhooksQueryKey, 'dispatches', props.webhookId],
       })
     },
     onError: () => {
-      toast.error('重新推送失败')
+      toast.error(t('webhooks.toast.redispatchFailed'))
     },
   })
 
@@ -56,11 +58,11 @@ export function WebhookDispatches(props: { webhookId: string }) {
         )}
       >
         <h2 className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
-          推送记录
+          {t('webhooks.dispatch.title')}
         </h2>
         {pagination ? (
           <span className="text-xs text-neutral-400">
-            共 {pagination.total} 条
+            {t('webhooks.dispatch.totalSuffix', { count: pagination.total })}
           </span>
         ) : null}
       </div>
@@ -72,7 +74,7 @@ export function WebhookDispatches(props: { webhookId: string }) {
           </div>
         ) : dispatches.length === 0 ? (
           <div className="py-20 text-center text-sm text-neutral-400">
-            暂无推送记录
+            {t('webhooks.dispatch.empty')}
           </div>
         ) : (
           dispatches.map((dispatch) => (
@@ -99,7 +101,7 @@ export function WebhookDispatches(props: { webhookId: string }) {
             type="button"
             variant="subtle"
           >
-            上一页
+            {t('common.pagination.previousPage')}
           </Button>
           <span>
             {pagination.page} / {pagination.totalPages}
@@ -112,7 +114,7 @@ export function WebhookDispatches(props: { webhookId: string }) {
             type="button"
             variant="subtle"
           >
-            下一页
+            {t('common.pagination.nextPage')}
           </Button>
         </div>
       ) : null}

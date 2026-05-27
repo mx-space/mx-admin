@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 
 import { deletePasskey, listPasskeys } from '~/api/auth'
 import { getOption, patchOption } from '~/api/options'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
 import { Switch } from '~/ui/primitives/switch'
@@ -16,6 +17,7 @@ import { formatDateTime, getErrorMessage } from '../../utils/settings'
 import { EmptyState, PanelHeader } from '../SettingsPrimitives'
 
 export function PasskeyPanel(props: { onBack: () => void }) {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const [name, setName] = useState('')
 
@@ -34,9 +36,11 @@ export function PasskeyPanel(props: { onBack: () => void }) {
     mutationFn: (disablePasswordLogin: boolean) =>
       patchOption('authSecurity', { disablePasswordLogin }),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '更新登录安全设置失败')),
+      toast.error(
+        getErrorMessage(error, t('settings.passkey.error.updateAuthSecurity')),
+      ),
     onSuccess: async () => {
-      toast.success('登录安全设置已更新')
+      toast.success(t('settings.passkey.success.updateAuthSecurity'))
       await queryClient.invalidateQueries({ queryKey: accountQueryKey })
     },
   })
@@ -44,14 +48,21 @@ export function PasskeyPanel(props: { onBack: () => void }) {
   const addMutation = useMutation({
     mutationFn: async () => {
       const result = await authClient.passkey.addPasskey({
-        name: name.trim() || `Passkey ${new Date().toLocaleDateString()}`,
+        name:
+          name.trim() ||
+          t('settings.passkey.nameDefault', {
+            date: new Date().toLocaleDateString(),
+          }),
       })
-      if (result.error) throw new Error(result.error.message || '添加失败')
+      if (result.error)
+        throw new Error(
+          result.error.message || t('settings.passkey.error.addFailed'),
+        )
     },
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '添加 Passkey 失败')),
+      toast.error(getErrorMessage(error, t('settings.passkey.error.add'))),
     onSuccess: async () => {
-      toast.success('Passkey 已添加')
+      toast.success(t('settings.passkey.success.add'))
       setName('')
       await queryClient.invalidateQueries({ queryKey: accountQueryKey })
     },
@@ -60,9 +71,9 @@ export function PasskeyPanel(props: { onBack: () => void }) {
   const deleteMutation = useMutation({
     mutationFn: deletePasskey,
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '删除 Passkey 失败')),
+      toast.error(getErrorMessage(error, t('settings.passkey.error.delete'))),
     onSuccess: async () => {
-      toast.success('删除成功')
+      toast.success(t('settings.passkey.success.delete'))
       await queryClient.invalidateQueries({ queryKey: accountQueryKey })
     },
   })
@@ -71,19 +82,21 @@ export function PasskeyPanel(props: { onBack: () => void }) {
     mutationFn: async () => {
       const result = await authClient.signIn.passkey()
       if (result.error) {
-        throw new Error(result.error.message || 'Passkey 验证失败')
+        throw new Error(
+          result.error.message || t('settings.passkey.error.validate'),
+        )
       }
     },
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, 'Passkey 验证失败')),
+      toast.error(getErrorMessage(error, t('settings.passkey.error.validate'))),
     onSuccess: () => {
-      toast.success('Passkey 验证成功')
+      toast.success(t('settings.passkey.success.validate'))
     },
   })
 
   return (
     <div className="flex h-full min-h-72 flex-col">
-      <PanelHeader onBack={props.onBack} title="Passkey">
+      <PanelHeader onBack={props.onBack} title={t('settings.passkey.title')}>
         <Button
           disabled={validateMutation.isPending}
           onClick={() => validateMutation.mutate()}
@@ -91,20 +104,20 @@ export function PasskeyPanel(props: { onBack: () => void }) {
           variant="subtle"
         >
           <Shield aria-hidden="true" className="size-4" />
-          验证
+          {t('settings.passkey.action.validate')}
         </Button>
       </PanelHeader>
       <div className="border-b border-neutral-100 p-4 dark:border-neutral-900">
         <Switch
           checked={Boolean(authSecurityQuery.data?.disablePasswordLogin)}
-          description="开启后只能通过 Passkey 或 OAuth 登录。至少添加一个 Passkey 后才能启用。"
+          description={t('settings.passkey.switch.disablePasswordDescription')}
           disabled={
             authSecurityQuery.isLoading || updateAuthSecurityMutation.isPending
           }
-          label="禁止密码登录"
+          label={t('settings.passkey.switch.disablePassword')}
           onCheckedChange={(checked) => {
             if (checked && (passkeysQuery.data ?? []).length === 0) {
-              toast.error('至少需要一个 Passkey 才能开启这个功能')
+              toast.error(t('settings.passkey.error.needOne'))
               return
             }
             updateAuthSecurityMutation.mutate(checked)
@@ -122,22 +135,24 @@ export function PasskeyPanel(props: { onBack: () => void }) {
           <TextInput
             className="min-w-48 flex-1"
             onChange={setName}
-            placeholder="Passkey 名称"
+            placeholder={t('settings.passkey.namePlaceholder')}
             value={name}
           />
           <Button disabled={addMutation.isPending} type="submit">
             <Plus aria-hidden="true" className="size-4" />
-            添加
+            {t('settings.passkey.action.add')}
           </Button>
         </form>
       </div>
       <Scroll className="flex-1">
         {passkeysQuery.isLoading ? (
-          <div className="p-4 text-sm text-neutral-500">加载中...</div>
+          <div className="p-4 text-sm text-neutral-500">
+            {t('settings.common.loading')}
+          </div>
         ) : (passkeysQuery.data ?? []).length === 0 ? (
           <EmptyState
             icon={<Fingerprint className="size-7" />}
-            label="暂无 Passkey"
+            label={t('settings.passkey.empty')}
           />
         ) : (
           <div className="divide-y divide-neutral-100 dark:divide-neutral-900">
@@ -154,12 +169,14 @@ export function PasskeyPanel(props: { onBack: () => void }) {
                     {passkey.credentialID}
                   </p>
                   <p className="mt-1 text-xs text-neutral-500">
-                    创建于 {formatDateTime(passkey.createdAt)}
+                    {t('settings.passkey.createdAt', {
+                      time: formatDateTime(passkey.createdAt),
+                    })}
                   </p>
                 </div>
                 <Button
                   onClick={() => {
-                    if (window.confirm('确认删除该 Passkey？')) {
+                    if (window.confirm(t('settings.passkey.confirm.delete'))) {
                       deleteMutation.mutate(passkey.id)
                     }
                   }}

@@ -1,5 +1,7 @@
 import { Code2, Loader2 } from 'lucide-react'
 
+import { useI18n } from '~/i18n'
+
 export function SnippetSkeleton() {
   return (
     <div className="divide-y divide-neutral-100 dark:divide-neutral-900">
@@ -14,17 +16,19 @@ export function SnippetSkeleton() {
 }
 
 export function SnippetEmpty() {
+  const { t } = useI18n()
   return (
     <div className="flex min-h-[24rem] flex-col items-center justify-center px-4 text-center">
       <Code2 aria-hidden="true" className="size-8 text-neutral-300" />
       <p className="mt-3 text-sm text-neutral-500 dark:text-neutral-400">
-        暂无片段
+        {t('snippets.empty')}
       </p>
     </div>
   )
 }
 
 export function SnippetDetailLoading() {
+  const { t } = useI18n()
   return (
     <div className="flex h-full min-h-[24rem] flex-col items-center justify-center px-4 text-center">
       <Loader2
@@ -32,18 +36,19 @@ export function SnippetDetailLoading() {
         className="size-8 animate-spin text-neutral-300"
       />
       <p className="mt-3 text-sm text-neutral-500 dark:text-neutral-400">
-        正在读取片段详情。
+        {t('snippets.detail.loading')}
       </p>
     </div>
   )
 }
 
 export function SnippetDetailEmpty() {
+  const { t } = useI18n()
   return (
     <div className="flex h-full min-h-[24rem] flex-col items-center justify-center px-4 text-center">
       <Code2 aria-hidden="true" className="size-8 text-neutral-300" />
       <p className="mt-3 text-sm text-neutral-500 dark:text-neutral-400">
-        选择一个片段查看详情。
+        {t('snippets.detail.empty')}
       </p>
     </div>
   )

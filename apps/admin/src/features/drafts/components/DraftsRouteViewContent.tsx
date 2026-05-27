@@ -7,12 +7,13 @@ import type { DraftModel, DraftRefType } from '~/models/draft'
 
 import { deleteDraft, getDrafts } from '~/api/drafts'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { MasterDetailLayout } from '~/ui/layout/page-layout'
 import { Button, ButtonLink } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
 import { cn } from '~/utils/cn'
 
-import { draftsQueryKey, filterOptions } from '../constants'
+import { draftsQueryKey, filterOptionKeys } from '../constants'
 import { parseDraftFilterType } from '../utils/draft-filter'
 import { getErrorMessage } from '../utils/errors'
 import { DraftDetail } from './DraftDetail'
@@ -22,6 +23,7 @@ import { DraftListSkeleton } from './DraftListSkeleton'
 import { DraftRow } from './DraftRow'
 
 export function DraftsRouteViewContent() {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const [searchParams, setSearchParams] = useSearchParams()
   const searchParamsKey = searchParams.toString()
@@ -91,9 +93,9 @@ export function DraftsRouteViewContent() {
   const deleteMutation = useMutation({
     mutationFn: deleteDraft,
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '删除失败')),
+      toast.error(getErrorMessage(error, t('drafts.toast.deleteFailed'))),
     onSuccess: async () => {
-      toast.success('草稿已删除')
+      toast.success(t('drafts.toast.deleted'))
       setSelectedId(null)
       setSelectedDraftSnapshot(null)
       setShowDetailOnMobile(false)
@@ -126,10 +128,12 @@ export function DraftsRouteViewContent() {
             )}
           >
             <div className="min-w-0">
-              <h2 className="text-sm font-medium">草稿箱</h2>
+              <h2 className="text-sm font-medium">{t('drafts.title')}</h2>
             </div>
             <span className="text-xs text-neutral-500 dark:text-neutral-400">
-              {draftsQuery.data?.pagination.total ?? 0} 个
+              {t('drafts.countLabel', {
+                count: draftsQuery.data?.pagination.total ?? 0,
+              })}
             </span>
             <div className="flex items-center gap-2">
               <Button
@@ -146,33 +150,33 @@ export function DraftsRouteViewContent() {
                     draftsQuery.isFetching && 'animate-spin',
                   )}
                 />
-                刷新
+                {t('common.refresh')}
               </Button>
             </div>
           </div>
 
           <div className="flex flex-wrap gap-2 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
             <ButtonLink className="h-8 px-2.5 text-xs" to="/posts/edit">
-              新建文章
+              {t('drafts.newPost')}
             </ButtonLink>
             <ButtonLink
               className="h-8 px-2.5 text-xs"
               to="/notes/edit"
               variant="subtle"
             >
-              新建手记
+              {t('drafts.newNote')}
             </ButtonLink>
             <ButtonLink
               className="h-8 px-2.5 text-xs"
               to="/pages/edit"
               variant="subtle"
             >
-              新建页面
+              {t('drafts.newPage')}
             </ButtonLink>
           </div>
 
           <div className="flex flex-wrap gap-2 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
-            {filterOptions.map((option) => (
+            {filterOptionKeys.map((option) => (
               <button
                 className={cn(
                   'rounded border px-2.5 py-1 text-xs transition-colors',
@@ -184,7 +188,7 @@ export function DraftsRouteViewContent() {
                 onClick={() => handleFilterChange(option.value)}
                 type="button"
               >
-                {option.label}
+                {t(option.labelKey)}
               </button>
             ))}
           </div>
@@ -217,7 +221,11 @@ export function DraftsRouteViewContent() {
               onBack={() => setShowDetailOnMobile(false)}
               onDelete={(draft) => {
                 if (
-                  window.confirm(`确认删除「${draft.title || '无标题'}」？`)
+                  window.confirm(
+                    t('drafts.detail.confirmDelete', {
+                      title: draft.title || t('drafts.row.untitled'),
+                    }),
+                  )
                 ) {
                   deleteMutation.mutate(draft.id)
                 }

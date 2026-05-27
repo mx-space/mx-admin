@@ -1,5 +1,6 @@
 import type { SnippetGroup } from '~/api/snippets'
 
+import { useI18n } from '~/i18n'
 import { cn } from '~/utils/cn'
 
 export function GroupFilter(props: {
@@ -8,6 +9,7 @@ export function GroupFilter(props: {
   onSelect: (reference: string) => void
   selectedReference: string
 }) {
+  const { t } = useI18n()
   return (
     <div className="flex flex-wrap items-center gap-1">
       <button
@@ -20,10 +22,12 @@ export function GroupFilter(props: {
         onClick={() => props.onSelect('')}
         type="button"
       >
-        全部分组
+        {t('snippets.filter.allGroups')}
       </button>
       {props.loading ? (
-        <span className="px-2 py-1 text-xs text-neutral-400">加载中</span>
+        <span className="px-2 py-1 text-xs text-neutral-400">
+          {t('snippets.filter.loading')}
+        </span>
       ) : (
         props.groups.map((group) => (
           <button

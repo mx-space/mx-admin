@@ -1,6 +1,7 @@
 import { Loader2, RotateCcw } from 'lucide-react'
 import type { DraftDiffStats, VersionItem } from '../types/drafts'
 
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { cn } from '~/utils/cn'
 import { relativeTimeFromNow } from '~/utils/time'
@@ -13,6 +14,7 @@ export function VersionRow(props: {
   restorePending: boolean
   selected: boolean
 }) {
+  const { t } = useI18n()
   return (
     <div
       className={cn(
@@ -38,12 +40,14 @@ export function VersionRow(props: {
           </span>
           {props.item.isCurrent ? (
             <span className="rounded bg-neutral-200 px-1.5 py-0.5 text-xs text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300">
-              当前
+              {t('drafts.version.current')}
             </span>
           ) : null}
           {props.item.isFullSnapshot !== undefined ? (
             <span className="rounded bg-neutral-100 px-1.5 py-0.5 text-xs text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
-              {props.item.isFullSnapshot ? '全量' : '增量'}
+              {props.item.isFullSnapshot
+                ? t('drafts.version.full')
+                : t('drafts.version.incremental')}
             </span>
           ) : null}
           {props.item.refVersion !== undefined ? (
@@ -53,20 +57,25 @@ export function VersionRow(props: {
           ) : null}
         </div>
         <p className="mt-1 truncate text-xs text-neutral-500 dark:text-neutral-400">
-          {props.item.title || '无标题'} ·{' '}
+          {props.item.title || t('drafts.row.untitled')} ·{' '}
           {relativeTimeFromNow(props.item.savedAt)}
         </p>
       </div>
       {props.diffStats ? (
         <span className="shrink-0 text-xs tabular-nums text-neutral-500">
           {props.diffStats.isSame
-            ? '相同'
-            : `${props.diffStats.delta > 0 ? '+' : ''}${props.diffStats.delta} 字`}
+            ? t('drafts.version.same')
+            : t('drafts.version.diffChars', {
+                delta: props.diffStats.delta,
+                sign: props.diffStats.delta > 0 ? '+' : '',
+              })}
         </span>
       ) : null}
       {!props.item.isCurrent ? (
         <Button
-          aria-label={`恢复版本 ${props.item.version}`}
+          aria-label={t('drafts.version.restoreAria', {
+            version: props.item.version,
+          })}
           className="h-7 px-2 opacity-0 transition-opacity group-hover:opacity-100"
           disabled={props.restorePending}
           onClick={(event) => {

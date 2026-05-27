@@ -8,6 +8,7 @@ import type { TopicModel } from '~/models/topic'
 import type { TopicFormMode } from '../types/topics'
 
 import { createTopic, getTopic, updateTopic } from '~/api/topics'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { TextArea, TextInput } from '~/ui/primitives/text-field'
 
@@ -19,6 +20,7 @@ export function TopicFormDialog(props: {
   onClose: () => void
   onSaved: (topic: TopicModel) => Promise<void>
 }) {
+  const { t } = useI18n()
   const isEdit = props.mode.kind === 'edit'
   const editId = props.mode.kind === 'edit' ? props.mode.id : null
   const topicQuery = useQuery({
@@ -45,9 +47,11 @@ export function TopicFormDialog(props: {
     mutationFn: (data: CreateTopicData) =>
       editId ? updateTopic(editId, data) : createTopic(data),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '专栏保存失败')),
+      toast.error(getErrorMessage(error, t('topics.form.saveFailed'))),
     onSuccess: async (topic) => {
-      toast.success(isEdit ? '专栏已更新' : '专栏已创建')
+      toast.success(
+        isEdit ? t('topics.form.savedUpdated') : t('topics.form.savedCreated'),
+      )
       await props.onSaved(topic)
     },
   })
@@ -64,7 +68,7 @@ export function TopicFormDialog(props: {
 
     const validationError = validateTopicForm(data)
     if (validationError) {
-      toast.error(validationError)
+      toast.error(t(validationError.key, validationError.values))
       return
     }
 
@@ -85,14 +89,16 @@ export function TopicFormDialog(props: {
             <div className="flex items-center justify-between border-b border-neutral-200 px-5 py-4 dark:border-neutral-800">
               <div>
                 <Dialog.Title className="text-base font-semibold text-neutral-950 dark:text-neutral-50">
-                  {isEdit ? '编辑专栏' : '新建专栏'}
+                  {isEdit
+                    ? t('topics.form.editTitle')
+                    : t('topics.form.createTitle')}
                 </Dialog.Title>
                 <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
-                  专栏用于组织手记，并提供公开展示入口。
+                  {t('topics.form.subtitle')}
                 </p>
               </div>
               <Dialog.Close
-                aria-label="关闭"
+                aria-label={t('common.close')}
                 className="inline-flex size-8 items-center justify-center rounded text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-950 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-50"
               >
                 <X aria-hidden="true" className="size-4" />
@@ -110,7 +116,7 @@ export function TopicFormDialog(props: {
               <div className="grid gap-4 px-5 py-4">
                 <TextInput
                   autoFocus
-                  label="名称"
+                  label={t('topics.form.name')}
                   labelClassName="text-xs text-neutral-500 dark:text-neutral-400"
                   maxLength={50}
                   onChange={setName}
@@ -120,18 +126,18 @@ export function TopicFormDialog(props: {
                 <div>
                   <TextInput
                     controlClassName="font-mono"
-                    label="ID (Slug)"
+                    label={t('topics.form.slug')}
                     labelClassName="text-xs text-neutral-500 dark:text-neutral-400"
                     onChange={setSlug}
                     required
                     value={slug}
                   />
                   <p className="mt-1 text-xs text-neutral-400">
-                    只能包含字母、数字、下划线和连字符。
+                    {t('topics.form.slugHelp')}
                   </p>
                 </div>
                 <TextInput
-                  label="简介"
+                  label={t('topics.form.introduce')}
                   labelClassName="text-xs text-neutral-500 dark:text-neutral-400"
                   maxLength={100}
                   onChange={setIntroduce}
@@ -139,14 +145,14 @@ export function TopicFormDialog(props: {
                   value={introduce}
                 />
                 <TextInput
-                  label="图标 URL"
+                  label={t('topics.form.icon')}
                   labelClassName="text-xs text-neutral-500 dark:text-neutral-400"
                   onChange={setIcon}
                   value={icon}
                 />
                 <TextArea
                   controlClassName="min-h-28"
-                  label="详细描述"
+                  label={t('topics.form.description')}
                   labelClassName="text-xs text-neutral-500 dark:text-neutral-400"
                   maxLength={500}
                   onChange={setDescription}
@@ -157,7 +163,7 @@ export function TopicFormDialog(props: {
 
             <div className="flex justify-end gap-2 border-t border-neutral-200 px-5 py-4 dark:border-neutral-800">
               <Button onClick={props.onClose} type="button" variant="subtle">
-                取消
+                {t('common.cancel')}
               </Button>
               <Button
                 disabled={
@@ -170,7 +176,7 @@ export function TopicFormDialog(props: {
                 ) : (
                   <Save aria-hidden="true" className="size-4" />
                 )}
-                保存
+                {t('common.save')}
               </Button>
             </div>
           </form>

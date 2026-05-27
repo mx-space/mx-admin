@@ -23,6 +23,7 @@ import {
   getSummariesGrouped,
   getTranslationsGrouped,
 } from '~/api/ai'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 
 import {
@@ -35,10 +36,12 @@ import {
 import { AiGroupedResourceSurface } from './AiGroupedResourceSurface'
 
 export function SummariesSurface() {
+  const { t } = useI18n()
+
   return (
     <AiGroupedResourceSurface
       createTask={(article) => createSummaryTask({ refId: article.id })}
-      createTaskLabel="生成摘要"
+      createTaskLabel={t('ai.action.generateSummary')}
       deleteItem={deleteSummary}
       getGroups={(response: GroupedSummaryResponse) =>
         response.data.map((group) => ({
@@ -49,26 +52,29 @@ export function SummariesSurface() {
       getPreview={(item: AISummary) => item.summary}
       itemActions={(item) => [
         {
-          label: '编辑',
-          run: () => editSummaryItem(item as AISummary),
+          label: t('ai.action.edit'),
+          run: () => editSummaryItem(item as AISummary, t),
         },
       ]}
       queryFn={getSummariesGrouped}
       queryKey="summaries"
-      title="摘要"
+      title={t('ai.surface.summaries')}
     />
   )
 }
 
 export function TranslationsSurface() {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const allMutation = useMutation({
     mutationFn: () => createTranslationAllTask({}),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '全量翻译任务创建失败')),
+      toast.error(getErrorMessage(error, t('ai.toast.translationAllFailed'))),
     onSuccess: async (result) => {
       toast.success(
-        result.created ? '已创建全量翻译任务' : '全量翻译任务已存在',
+        result.created
+          ? t('ai.toast.translationAllCreated')
+          : t('ai.toast.translationAllExists'),
       )
       await queryClient.invalidateQueries({ queryKey: ['ai', 'tasks'] })
     },
@@ -77,7 +83,7 @@ export function TranslationsSurface() {
   return (
     <AiGroupedResourceSurface
       createTask={(article) => createTranslationTask({ refId: article.id })}
-      createTaskLabel="生成翻译"
+      createTaskLabel={t('ai.action.generateTranslation')}
       deleteItem={deleteTranslation}
       getGroups={(response: GroupedTranslationResponse) =>
         response.data.map((group) => ({
@@ -102,17 +108,17 @@ export function TranslationsSurface() {
           ) : (
             <Languages aria-hidden="true" className="size-4" />
           )}
-          全量翻译
+          {t('ai.action.translateAll')}
         </Button>
       }
       itemActions={(item) => [
         {
-          label: '编辑',
-          run: () => editTranslationItem(item as AITranslation),
+          label: t('ai.action.edit'),
+          run: () => editTranslationItem(item as AITranslation, t),
         },
         {
           getSuccessMessage: getTaskMutationMessage,
-          label: '重翻译',
+          label: t('ai.action.retranslate'),
           run: () =>
             createTranslationTask({
               refId: item.refId,
@@ -122,16 +128,18 @@ export function TranslationsSurface() {
       ]}
       queryFn={getTranslationsGrouped}
       queryKey="translations"
-      title="翻译"
+      title={t('ai.surface.translations')}
     />
   )
 }
 
 export function InsightsSurface() {
+  const { t } = useI18n()
+
   return (
     <AiGroupedResourceSurface
       createTask={(article) => createInsightsTask({ refId: article.id })}
-      createTaskLabel="生成精读"
+      createTaskLabel={t('ai.action.generateInsights')}
       deleteItem={deleteInsights}
       getGroups={(response: GroupedInsightsResponse) =>
         response.data.map((group) => ({
@@ -145,21 +153,21 @@ export function InsightsSurface() {
 
         return [
           {
-            label: '编辑',
-            run: () => editInsightsItem(insight),
+            label: t('ai.action.edit'),
+            run: () => editInsightsItem(insight, t),
           },
           {
             getSuccessMessage: getTaskMutationMessage,
-            label: '翻译',
+            label: t('ai.action.translate'),
             run: () => {
               const targetLang = window
-                .prompt('目标语言（ISO 639-1）', 'en')
+                .prompt(t('ai.edit.targetLangPrompt'), 'en')
                 ?.trim()
                 .toLowerCase()
 
               if (!targetLang) return Promise.resolve({ cancelled: true })
               if (targetLang.length !== 2) {
-                throw new Error('请填写合法的 ISO 639-1 语言代码')
+                throw new Error(t('ai.edit.invalidLangCode'))
               }
 
               return createInsightsTranslationTask({
@@ -170,7 +178,9 @@ export function InsightsSurface() {
           },
           {
             getSuccessMessage: getTaskMutationMessage,
-            label: insight.isTranslation ? '重翻译' : '重生成',
+            label: insight.isTranslation
+              ? t('ai.action.retranslate')
+              : t('ai.action.regenerate'),
             run: () =>
               insight.isTranslation
                 ? createInsightsTranslationTask({
@@ -183,7 +193,7 @@ export function InsightsSurface() {
       }}
       queryFn={getInsightsGrouped}
       queryKey="insights"
-      title="精读"
+      title={t('ai.surface.insights')}
     />
   )
 }

@@ -6,6 +6,8 @@ import type { PageModel } from '~/models/page'
 
 import { deletePage, getPages, reorderPages } from '~/api/pages'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
+import { confirmDialog } from '~/ui/feedback/confirm'
 import { Button, ButtonLink } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
 import { cn } from '~/utils/cn'
@@ -19,6 +21,7 @@ import { PagesError } from './PagesError'
 import { PagesSkeleton } from './PagesSkeleton'
 
 export function PagesRouteViewContent() {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const [orderedPages, setOrderedPages] = useState<PageModel[]>([])
   const [draggingId, setDraggingId] = useState('')
@@ -30,9 +33,9 @@ export function PagesRouteViewContent() {
   const deleteMutation = useMutation({
     mutationFn: deletePage,
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '删除失败')),
+      toast.error(getErrorMessage(error, t('pages.toast.deleteFailed'))),
     onSuccess: async () => {
-      toast.success('页面已删除')
+      toast.success(t('pages.toast.deleted'))
       await queryClient.invalidateQueries({ queryKey: pagesQueryKey })
     },
   })
@@ -47,10 +50,10 @@ export function PagesRouteViewContent() {
     mutationFn: reorderPages,
     onError: (error: unknown) => {
       setOrderedPages(pages)
-      toast.error(getErrorMessage(error, '排序失败'))
+      toast.error(getErrorMessage(error, t('pages.toast.reorderFailed')))
     },
     onSuccess: async () => {
-      toast.success('排序已保存')
+      toast.success(t('pages.toast.reorderSaved'))
       await queryClient.invalidateQueries({ queryKey: pagesQueryKey })
     },
   })
@@ -61,6 +64,17 @@ export function PagesRouteViewContent() {
       .reverse()
       .map((page, index) => ({ id: page.id, order: index + 1 }))
     reorderMutation.mutate(seq)
+  }
+
+  const handleDelete = async (id: string, title: string) => {
+    const confirmed = await confirmDialog({
+      destructive: true,
+      title: t('pages.confirmDelete', {
+        title: title || t('pages.row.untitled'),
+      }),
+    })
+    if (!confirmed) return
+    deleteMutation.mutate(id)
   }
 
   return (
@@ -74,19 +88,23 @@ export function PagesRouteViewContent() {
         <div className="min-w-0">
           <h2 className="inline-flex items-center gap-2 text-sm font-medium text-neutral-950 dark:text-neutral-50">
             <FileText aria-hidden="true" className="size-4" />
-            页面
+            {t('pages.title')}
           </h2>
         </div>
         <div className="flex shrink-0 items-center gap-2">
           <span className="hidden text-xs text-neutral-500 sm:inline dark:text-neutral-400">
-            共 {pagesQuery.data?.pagination.total ?? 0} 个页面
+            {t('pages.header.count', {
+              count: pagesQuery.data?.pagination.total ?? 0,
+            })}
           </span>
-          <ButtonLink aria-label="新建页面" to="/pages/edit">
+          <ButtonLink aria-label={t('pages.action.newPage')} to="/pages/edit">
             <Plus aria-hidden="true" className="size-4" />
-            <span className="hidden sm:inline">新建页面</span>
+            <span className="hidden sm:inline">
+              {t('pages.action.newPage')}
+            </span>
           </ButtonLink>
           <Button
-            aria-label="刷新页面列表"
+            aria-label={t('pages.list.refreshAria')}
             disabled={pagesQuery.isFetching}
             onClick={() => void pagesQuery.refetch()}
             type="button"
@@ -96,7 +114,7 @@ export function PagesRouteViewContent() {
               aria-hidden="true"
               className={cn('size-4', pagesQuery.isFetching && 'animate-spin')}
             />
-            <span className="hidden sm:inline">刷新</span>
+            <span className="hidden sm:inline">{t('common.refresh')}</span>
           </Button>
         </div>
       </div>
@@ -117,9 +135,7 @@ export function PagesRouteViewContent() {
                 index={index}
                 key={page.id}
                 onDelete={(id) => {
-                  if (window.confirm(`确认删除「${page.title}」？`)) {
-                    deleteMutation.mutate(id)
-                  }
+                  void handleDelete(id, page.title)
                 }}
                 onDragEnd={() => setDraggingId('')}
                 onDragOver={(event) => event.preventDefault()}
@@ -148,8 +164,10 @@ export function PagesRouteViewContent() {
       </Scroll>
 
       <div className="flex h-11 shrink-0 items-center justify-between border-t border-neutral-200 px-4 text-xs text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
-        <span>{orderedPages.length} 个页面</span>
-        {reorderMutation.isPending ? <span>排序保存中...</span> : null}
+        <span>{t('pages.footer.count', { count: orderedPages.length })}</span>
+        {reorderMutation.isPending ? (
+          <span>{t('pages.footer.reorderSaving')}</span>
+        ) : null}
       </div>
     </section>
   )

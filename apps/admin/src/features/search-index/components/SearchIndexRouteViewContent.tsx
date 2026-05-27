@@ -14,6 +14,7 @@ import {
   rebuildSearchIndexDocument,
 } from '~/api/search-index'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { MasterDetailLayout } from '~/ui/layout/page-layout'
 import { Button } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
@@ -21,7 +22,7 @@ import { SelectField } from '~/ui/primitives/select'
 import { TextInput } from '~/ui/primitives/text-field'
 import { cn } from '~/utils/cn'
 
-import { refTypeOptions, searchIndexQueryKey } from '../constants'
+import { refTypeOptionKeys, searchIndexQueryKey } from '../constants'
 import { getErrorMessage } from '../utils/format'
 import { SearchIndexDetail } from './SearchIndexDetail'
 import { SearchIndexDetailEmptyState } from './SearchIndexDetailEmptyState'
@@ -30,8 +31,13 @@ import { SearchIndexRow } from './SearchIndexRow'
 import { SearchIndexSkeleton } from './SearchIndexSkeleton'
 
 export function SearchIndexRouteViewContent() {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const [searchParams, setSearchParams] = useSearchParams()
+  const refTypeOptions = refTypeOptionKeys.map((opt) => ({
+    label: t(opt.labelKey),
+    value: opt.value,
+  }))
   const [refTypeFilter, setRefTypeFilter] = useState<SearchIndexRefType | ''>(
     '',
   )
@@ -70,11 +76,20 @@ export function SearchIndexRouteViewContent() {
   const rebuildAllMutation = useMutation({
     mutationFn: rebuildSearchIndex,
     onError: (error: unknown) => {
-      toast.error(getErrorMessage(error, '重建失败'))
+      toast.error(getErrorMessage(error, t('searchIndex.toast.rebuildFailed')))
     },
     onSuccess: async (result, force) => {
       toast.success(
-        `${force ? '全量' : '增量'}重建完成 · total ${result.total} · +${result.created} ~${result.updated} -${result.deleted} =${result.skipped}`,
+        t('searchIndex.toast.rebuildAllDone', {
+          created: result.created,
+          deleted: result.deleted,
+          scope: force
+            ? t('searchIndex.scope.full')
+            : t('searchIndex.scope.incremental'),
+          skipped: result.skipped,
+          total: result.total,
+          updated: result.updated,
+        }),
       )
       await queryClient.invalidateQueries({ queryKey: searchIndexQueryKey })
     },
@@ -84,10 +99,12 @@ export function SearchIndexRouteViewContent() {
     mutationFn: (row: SearchDocumentAdminRow) =>
       rebuildSearchIndexDocument(row.refType, row.refId),
     onError: (error: unknown) => {
-      toast.error(getErrorMessage(error, '重建失败'))
+      toast.error(getErrorMessage(error, t('searchIndex.toast.rebuildFailed')))
     },
     onSuccess: async (result) => {
-      toast.success(`已重建 ${result.rebuilt} 行`)
+      toast.success(
+        t('searchIndex.toast.rebuildOneDone', { count: result.rebuilt }),
+      )
       await queryClient.invalidateQueries({ queryKey: searchIndexQueryKey })
     },
   })
@@ -134,20 +151,16 @@ export function SearchIndexRouteViewContent() {
             )}
           >
             <div className="min-w-0">
-              <h2 className="text-sm font-medium">搜索索引</h2>
+              <h2 className="text-sm font-medium">{t('searchIndex.title')}</h2>
             </div>
             <span className="text-xs text-neutral-500 dark:text-neutral-400">
-              {total} 条
+              {t('searchIndex.countLabel', { count: total })}
             </span>
             <div className="flex flex-wrap items-center gap-2">
               <Button
                 disabled={rebuildAllMutation.isPending}
                 onClick={() => {
-                  if (
-                    window.confirm(
-                      '按 sourceHash 比对，仅 upsert 变更行并清理孤立条目。',
-                    )
-                  ) {
+                  if (window.confirm(t('searchIndex.confirm.incremental'))) {
                     rebuildAllMutation.mutate(false)
                   }
                 }}
@@ -160,17 +173,13 @@ export function SearchIndexRouteViewContent() {
                 ) : (
                   <Layers aria-hidden="true" className="size-4" />
                 )}
-                增量重建
+                {t('searchIndex.action.incrementalRebuild')}
               </Button>
               <Button
                 className="text-amber-700 dark:text-amber-300"
                 disabled={rebuildAllMutation.isPending}
                 onClick={() => {
-                  if (
-                    window.confirm(
-                      '将清空 search 表后重建全部文档，搜索功能将短暂不可用，确认继续？',
-                    )
-                  ) {
+                  if (window.confirm(t('searchIndex.confirm.full'))) {
                     rebuildAllMutation.mutate(true)
                   }
                 }}
@@ -183,7 +192,7 @@ export function SearchIndexRouteViewContent() {
                 ) : (
                   <Hammer aria-hidden="true" className="size-4" />
                 )}
-                全量重建
+                {t('searchIndex.action.fullRebuild')}
               </Button>
               <Button
                 disabled={documentsQuery.isFetching}
@@ -200,7 +209,7 @@ export function SearchIndexRouteViewContent() {
                     documentsQuery.isFetching && 'animate-spin',
                   )}
                 />
-                刷新
+                {t('searchIndex.action.refresh')}
               </Button>
             </div>
           </div>
@@ -220,13 +229,13 @@ export function SearchIndexRouteViewContent() {
               <TextInput
                 controlClassName="h-9 pl-9 focus:border-neutral-400 focus:ring-0"
                 onChange={setKeywordInput}
-                placeholder="标题 / 正文关键词"
+                placeholder={t('searchIndex.search.placeholder')}
                 value={keywordInput}
               />
             </div>
             <div className="grid grid-cols-2 gap-2">
               <SelectField
-                aria-label="索引类型过滤"
+                aria-label={t('searchIndex.filter.typeAria')}
                 onValueChange={(value) => {
                   setRefTypeFilter(value)
                   setPage(1)
@@ -240,15 +249,17 @@ export function SearchIndexRouteViewContent() {
                   setLangFilter(value)
                   setPage(1)
                 }}
-                placeholder="lang (zh/en)"
+                placeholder={t('searchIndex.filter.langPlaceholder')}
                 value={langFilter}
               />
             </div>
             <div className="flex justify-end gap-2">
               <Button onClick={resetFilters} type="button" variant="subtle">
-                重置
+                {t('searchIndex.action.resetFilters')}
               </Button>
-              <Button type="submit">应用</Button>
+              <Button type="submit">
+                {t('searchIndex.action.applyFilters')}
+              </Button>
             </div>
           </form>
 
@@ -272,13 +283,13 @@ export function SearchIndexRouteViewContent() {
           {pageCount > 1 ? (
             <div className="flex shrink-0 items-center justify-between gap-3 border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
               <SelectField
-                aria-label="每页数量"
+                aria-label={t('searchIndex.pagination.pageSizeAria')}
                 onValueChange={(value) => {
                   setPageSize(value)
                   setPage(1)
                 }}
                 options={[20, 50, 100].map((size) => ({
-                  label: `${size} / 页`,
+                  label: t('searchIndex.pagination.pageSize', { size }),
                   value: size,
                 }))}
                 triggerClassName="h-8 text-xs"
@@ -291,7 +302,7 @@ export function SearchIndexRouteViewContent() {
                   type="button"
                   variant="subtle"
                 >
-                  上一页
+                  {t('common.pagination.previousPage')}
                 </Button>
                 <span className="text-xs tabular-nums text-neutral-500">
                   {page} / {pageCount}
@@ -304,7 +315,7 @@ export function SearchIndexRouteViewContent() {
                   type="button"
                   variant="subtle"
                 >
-                  下一页
+                  {t('common.pagination.nextPage')}
                 </Button>
               </div>
             </div>

@@ -13,6 +13,7 @@ import type { RecentlyModel } from '~/models/recently'
 
 import { deleteRecently, getRecentlyList } from '~/api/recently'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
 import { cn } from '~/utils/cn'
@@ -28,6 +29,7 @@ import {
 } from './RecentlyStates'
 
 export function RecentlyRouteViewContent() {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const [searchParams, setSearchParams] = useSearchParams()
   const [editingItem, setEditingItem] = useState<RecentlyModel | null>(null)
@@ -58,7 +60,7 @@ export function RecentlyRouteViewContent() {
   const deleteMutation = useMutation({
     mutationFn: deleteRecently,
     onSuccess: async () => {
-      toast.success('删除成功')
+      toast.success(t('recently.deleteSuccess'))
       await queryClient.invalidateQueries({ queryKey: ['recently'] })
     },
   })
@@ -162,20 +164,20 @@ export function RecentlyRouteViewContent() {
         <div className="min-w-0">
           <h2 className="inline-flex items-center gap-2 text-sm font-medium text-neutral-950 dark:text-neutral-50">
             <StickyNote aria-hidden="true" className="size-4" />
-            速记
+            {t('recently.title')}
           </h2>
         </div>
         <div className="flex shrink-0 items-center gap-3">
           <span className="text-xs text-neutral-500 dark:text-neutral-400">
             {recentlyQuery.isLoading
-              ? '加载中'
+              ? t('recently.count.loading')
               : hasNextPage
-                ? `已加载 ${items.length} 条`
-                : `${items.length} 条`}
+                ? t('recently.count.partial', { count: items.length })
+                : t('recently.count.total', { count: items.length })}
           </span>
           <Button onClick={openCreate} type="button" variant="subtle">
             <Plus aria-hidden="true" className="size-4" />
-            写一条速记
+            {t('recently.create')}
           </Button>
         </div>
       </div>
@@ -189,7 +191,7 @@ export function RecentlyRouteViewContent() {
           <RecentlyEmptyState onCreate={openCreate} />
         ) : (
           <div
-            aria-label="速记列表"
+            aria-label={t('recently.feedAria')}
             className="mx-auto max-w-4xl divide-y divide-neutral-200 dark:divide-neutral-800"
             role="feed"
           >

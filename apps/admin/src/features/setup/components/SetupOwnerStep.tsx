@@ -4,6 +4,7 @@ import type { CreateOwnerData } from '~/api/system'
 import type { FormEvent } from 'react'
 
 import { createOwner } from '~/api/system'
+import { useI18n } from '~/i18n'
 import { TextInput } from '~/ui/primitives/text-field'
 
 import { inputClassName, labelClassName } from '../constants'
@@ -14,6 +15,7 @@ export function SetupOwnerStep(props: {
   onNext: () => void
   onPrev: () => void
 }) {
+  const { t } = useI18n()
   const [owner, setOwner] = useState<CreateOwnerData>({
     mail: '',
     password: '',
@@ -34,7 +36,7 @@ export function SetupOwnerStep(props: {
     if (!canSubmit || submitting) return
 
     if (confirmPassword !== owner.password) {
-      toast.error('两次密码不一致')
+      toast.error(t('setup.owner.passwordMismatch'))
       return
     }
 
@@ -44,7 +46,7 @@ export function SetupOwnerStep(props: {
       await createOwner(removeEmptyStrings(owner))
       props.onNext()
     } catch (error) {
-      toast.error(getErrorMessage(error, '创建管理员失败'))
+      toast.error(getErrorMessage(error, t('setup.owner.createError')))
     } finally {
       setSubmitting(false)
     }
@@ -57,10 +59,10 @@ export function SetupOwnerStep(props: {
           <TextInput
             autoComplete="username"
             controlClassName={inputClassName}
-            label="用户名（登录凭证）"
+            label={t('setup.owner.usernameLabel')}
             labelClassName={labelClassName}
             onChange={(value) => updateOwner({ username: value })}
-            placeholder="输入用户名"
+            placeholder={t('setup.owner.usernamePlaceholder')}
             required
             value={owner.username}
           />
@@ -68,20 +70,20 @@ export function SetupOwnerStep(props: {
           <TextInput
             autoComplete="name"
             controlClassName={inputClassName}
-            label="昵称"
+            label={t('setup.owner.nicknameLabel')}
             labelClassName={labelClassName}
             onChange={(value) => updateOwner({ name: value })}
-            placeholder="输入昵称"
+            placeholder={t('setup.owner.nicknamePlaceholder')}
             value={owner.name ?? ''}
           />
 
           <TextInput
             autoComplete="email"
             controlClassName={inputClassName}
-            label="邮箱"
+            label={t('setup.owner.emailLabel')}
             labelClassName={labelClassName}
             onChange={(value) => updateOwner({ mail: value })}
-            placeholder="输入邮箱"
+            placeholder={t('setup.owner.emailPlaceholder')}
             required
             type="email"
             value={owner.mail}
@@ -91,10 +93,10 @@ export function SetupOwnerStep(props: {
             <TextInput
               autoComplete="new-password"
               controlClassName={inputClassName}
-              label="密码"
+              label={t('setup.owner.passwordLabel')}
               labelClassName={labelClassName}
               onChange={(value) => updateOwner({ password: value })}
-              placeholder="输入密码"
+              placeholder={t('setup.owner.passwordPlaceholder')}
               required
               type="password"
               value={owner.password}
@@ -103,10 +105,10 @@ export function SetupOwnerStep(props: {
             <TextInput
               autoComplete="new-password"
               controlClassName={inputClassName}
-              label="确认密码"
+              label={t('setup.owner.confirmPasswordLabel')}
               labelClassName={labelClassName}
               onChange={setConfirmPassword}
-              placeholder="再次输入密码"
+              placeholder={t('setup.owner.confirmPasswordPlaceholder')}
               required
               type="password"
               value={confirmPassword}
@@ -115,13 +117,13 @@ export function SetupOwnerStep(props: {
 
           <div className="grid grid-cols-2 gap-3">
             <UrlInput
-              label="个人首页"
+              label={t('setup.owner.homepageLabel')}
               onChange={(value) => updateOwner({ url: value })}
               placeholder="https://"
               value={owner.url ?? ''}
             />
             <UrlInput
-              label="头像 URL"
+              label={t('setup.owner.avatarLabel')}
               onChange={(value) => updateOwner({ avatar: value })}
               placeholder="https://"
               value={owner.avatar ?? ''}
@@ -131,10 +133,10 @@ export function SetupOwnerStep(props: {
           <TextInput
             autoComplete="off"
             controlClassName={inputClassName}
-            label="个人介绍"
+            label={t('setup.owner.introduceLabel')}
             labelClassName={labelClassName}
             onChange={(value) => updateOwner({ introduce: value })}
-            placeholder="一句话介绍自己"
+            placeholder={t('setup.owner.introducePlaceholder')}
             value={owner.introduce ?? ''}
           />
         </div>

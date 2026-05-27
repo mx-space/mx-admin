@@ -4,6 +4,7 @@ import type {
   AIProviderModel,
 } from '../../types/settings'
 
+import { useI18n } from '~/i18n'
 import { SelectField } from '~/ui/primitives/select'
 import { TextInput } from '~/ui/primitives/text-field'
 
@@ -17,6 +18,7 @@ export function AIModelAssignmentField(props: {
   providers: AIProviderConfig[]
   value?: AIModelAssignment
 }) {
+  const { t } = useI18n()
   const modelListId = `assignment-models-${props.label}`
   const providerId = props.value?.providerId ?? ''
   const providerModels = providerId ? (props.models[providerId] ?? []) : []
@@ -31,7 +33,9 @@ export function AIModelAssignmentField(props: {
       </div>
       <div className="grid gap-2 md:grid-cols-[minmax(0,12rem)_minmax(0,1fr)]">
         <SelectField<string>
-          aria-label={`${props.label}服务商`}
+          aria-label={t('settings.ai.assignment.providerAriaLabel', {
+            label: props.label,
+          })}
           onValueChange={(nextProviderId) =>
             props.onChange(
               nextProviderId
@@ -40,7 +44,7 @@ export function AIModelAssignmentField(props: {
             )
           }
           options={[
-            { label: '不指定', value: '' },
+            { label: t('settings.ai.assignment.providerNone'), value: '' },
             ...props.providers.map((provider) => ({
               label: formatAIProviderLabel(provider),
               value: provider.id,
@@ -54,7 +58,7 @@ export function AIModelAssignmentField(props: {
           onChange={(model) =>
             props.onChange(providerId ? { providerId, model } : undefined)
           }
-          placeholder="使用 Provider 默认模型"
+          placeholder={t('settings.ai.assignment.modelPlaceholder')}
           value={props.value?.model ?? ''}
         />
         <datalist id={modelListId}>

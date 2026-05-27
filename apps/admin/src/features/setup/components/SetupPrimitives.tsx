@@ -1,5 +1,6 @@
 import { ChevronLeft } from 'lucide-react'
 
+import { useI18n } from '~/i18n'
 import { TextInput } from '~/ui/primitives/text-field'
 
 import {
@@ -34,6 +35,7 @@ export function StepActions(props: {
   onPrev: () => void
   submitting: boolean
 }) {
+  const { t } = useI18n()
   return (
     <div className="mt-6 flex justify-between">
       <button
@@ -42,14 +44,14 @@ export function StepActions(props: {
         type="button"
       >
         <ChevronLeft aria-hidden="true" className="mr-1 size-4" />
-        返回
+        {t('common.back')}
       </button>
       <button
         className={primaryButtonClassName}
         disabled={!props.canSubmit || props.submitting}
         type="submit"
       >
-        下一步
+        {t('setup.step.next')}
       </button>
     </div>
   )

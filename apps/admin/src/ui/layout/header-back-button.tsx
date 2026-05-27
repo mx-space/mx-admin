@@ -1,6 +1,7 @@
 import { ArrowLeft } from 'lucide-react'
 import { useNavigate } from 'react-router'
 
+import { useI18n } from '~/i18n'
 import { cn } from '~/utils/cn'
 
 export interface HeaderBackButtonProps {
@@ -12,7 +13,8 @@ export interface HeaderBackButtonProps {
 
 export function HeaderBackButton(props: HeaderBackButtonProps) {
   const navigate = useNavigate()
-  const label = props.label ?? '返回'
+  const { t } = useI18n()
+  const label = props.label ?? t('common.back')
 
   const handleClick = () => {
     if (props.onClick) {

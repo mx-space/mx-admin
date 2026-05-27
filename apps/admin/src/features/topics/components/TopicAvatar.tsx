@@ -1,17 +1,19 @@
 import { useMemo } from 'react'
 import type { TopicModel } from '~/models/topic'
 
+import { useI18n } from '~/i18n'
 import { cn } from '~/utils/cn'
 
 import { getInitial } from '../utils/topic-form'
 
 export function TopicAvatar(props: { className?: string; topic: TopicModel }) {
+  const { t } = useI18n()
   const label = useMemo(() => getInitial(props.topic.name), [props.topic.name])
 
   if (props.topic.icon) {
     return (
       <img
-        alt={`${props.topic.name} 图标`}
+        alt={t('topics.detail.iconAlt', { name: props.topic.name })}
         className={cn('size-10 shrink-0 rounded object-cover', props.className)}
         loading="lazy"
         src={props.topic.icon}

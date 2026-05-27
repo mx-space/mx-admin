@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Check, Loader2 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import type {
   CreateMetaPresetDto,
@@ -14,15 +14,16 @@ import {
   getMetaPresets,
   updateMetaPreset,
 } from '~/api/meta-presets'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { SelectField } from '~/ui/primitives/select'
 import { Switch } from '~/ui/primitives/switch'
 import { TextInput } from '~/ui/primitives/text-field'
 
 import {
-  fieldTypeOptions,
+  fieldTypeOptionKeys,
   metaPresetsQueryKey,
-  scopeOptions,
+  scopeOptionKeys,
   typesWithOptions,
 } from '../../constants'
 import {
@@ -40,7 +41,24 @@ export function MetaPresetModal(props: {
   onClose: () => void
   open: boolean
 }) {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
+  const fieldTypeOptions = useMemo(
+    () =>
+      fieldTypeOptionKeys.map((option) => ({
+        label: t(option.labelKey),
+        value: option.value,
+      })),
+    [t],
+  )
+  const scopeOptions = useMemo(
+    () =>
+      scopeOptionKeys.map((option) => ({
+        label: t(option.labelKey),
+        value: option.value,
+      })),
+    [t],
+  )
   const presetsQuery = useQuery({
     enabled: props.open && Boolean(props.id),
     queryFn: async () => {
@@ -64,9 +82,20 @@ export function MetaPresetModal(props: {
     mutationFn: () =>
       props.id ? updateMetaPreset(props.id, form) : createMetaPreset(form),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, props.id ? '修改失败' : '创建失败')),
+      toast.error(
+        getErrorMessage(
+          error,
+          props.id
+            ? t('settings.meta.error.update')
+            : t('settings.meta.error.create'),
+        ),
+      ),
     onSuccess: async () => {
-      toast.success(props.id ? '修改成功' : '创建成功')
+      toast.success(
+        props.id
+          ? t('settings.meta.success.update')
+          : t('settings.meta.success.create'),
+      )
       props.onClose()
       await queryClient.invalidateQueries({ queryKey: metaPresetsQueryKey })
     },
@@ -78,7 +107,7 @@ export function MetaPresetModal(props: {
   ) => setForm((current) => ({ ...current, [key]: value }))
 
   const submit = () => {
-    const error = validateMetaPreset(form)
+    const error = validateMetaPreset(t, form)
     if (error) {
       toast.error(error)
       return
@@ -90,11 +119,15 @@ export function MetaPresetModal(props: {
     <Modal
       onClose={props.onClose}
       open={props.open}
-      title={props.id ? '编辑预设字段' : '新建预设字段'}
+      title={
+        props.id
+          ? t('settings.meta.modal.edit')
+          : t('settings.meta.modal.create')
+      }
     >
       {presetsQuery.isLoading ? (
         <div className="py-12 text-center text-sm text-neutral-500">
-          加载中...
+          {t('settings.common.loading')}
         </div>
       ) : (
         <form
@@ -112,28 +145,28 @@ export function MetaPresetModal(props: {
         >
           <div className="grid gap-4 md:grid-cols-2">
             <TextInput
-              label="字段 Key"
+              label={t('settings.meta.field.key')}
               onChange={(value) => setField('key', value)}
               required
               value={form.key}
             />
             <TextInput
-              label="显示名称"
+              label={t('settings.meta.field.label')}
               onChange={(value) => setField('label', value)}
               required
               value={form.label}
             />
-            <FieldShell label="字段类型">
+            <FieldShell label={t('settings.meta.field.fieldType')}>
               <SelectField<MetaFieldType>
-                aria-label="字段类型"
+                aria-label={t('settings.meta.field.fieldType')}
                 onValueChange={(value) => setField('type', value)}
                 options={fieldTypeOptions}
                 value={form.type}
               />
             </FieldShell>
-            <FieldShell label="作用域">
+            <FieldShell label={t('settings.meta.field.scope')}>
               <SelectField<MetaPresetScope>
-                aria-label="作用域"
+                aria-label={t('settings.meta.scopeAria')}
                 onValueChange={(value) => setField('scope', value)}
                 options={scopeOptions}
                 value={form.scope ?? 'both'}
@@ -141,18 +174,18 @@ export function MetaPresetModal(props: {
             </FieldShell>
           </div>
           <TextInput
-            label="描述"
+            label={t('settings.meta.field.description')}
             onChange={(value) => setField('description', value)}
             value={form.description ?? ''}
           />
           <TextInput
-            label="占位文本"
+            label={t('settings.meta.field.placeholder')}
             onChange={(value) => setField('placeholder', value)}
             value={form.placeholder ?? ''}
           />
           <Switch
             checked={Boolean(form.enabled ?? true)}
-            label="启用"
+            label={t('settings.meta.switch.enabled')}
             onCheckedChange={(value) => setField('enabled', value)}
           />
 
@@ -172,7 +205,7 @@ export function MetaPresetModal(props: {
 
           <div className="flex justify-end gap-2">
             <Button onClick={props.onClose} type="button" variant="subtle">
-              取消
+              {t('common.cancel')}
             </Button>
             <Button disabled={mutation.isPending} type="submit">
               {mutation.isPending ? (
@@ -180,7 +213,7 @@ export function MetaPresetModal(props: {
               ) : (
                 <Check aria-hidden="true" className="size-4" />
               )}
-              保存
+              {t('common.save')}
             </Button>
           </div>
         </form>

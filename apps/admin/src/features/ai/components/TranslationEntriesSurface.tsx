@@ -10,6 +10,7 @@ import {
   getTranslationEntries,
   updateTranslationEntry,
 } from '~/api/ai'
+import { useI18n } from '~/i18n'
 import { CompactPagination } from '~/ui/data/compact-pagination'
 import { Button } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
@@ -27,6 +28,7 @@ import {
 } from './GroupedResourceStates'
 
 export function TranslationEntriesSurface() {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const [page, setPage] = useState(1)
   const [keyPath, setKeyPath] = useState<TranslationEntryKeyPath | ''>('')
@@ -57,24 +59,32 @@ export function TranslationEntriesSurface() {
   const generateMutation = useMutation({
     mutationFn: () => generateTranslationEntries(),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '词表生成失败')),
+      toast.error(getErrorMessage(error, t('ai.toast.entryGenerateFailed'))),
     onSuccess: async (result) => {
-      toast.success(`已创建 ${result.created} 条，跳过 ${result.skipped} 条`)
+      toast.success(
+        t('ai.toast.entryGenerated', {
+          created: result.created,
+          skipped: result.skipped,
+        }),
+      )
       await invalidateEntries()
     },
   })
 
   const updateMutation = useMutation({
     mutationFn: (entry: TranslationEntry) => {
-      const translatedText = window.prompt('译文', entry.translatedText)
+      const translatedText = window.prompt(
+        t('ai.edit.translatedTextPrompt'),
+        entry.translatedText,
+      )
       if (translatedText === null) return Promise.resolve(entry)
 
       return updateTranslationEntry(entry.id, { translatedText })
     },
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '词条保存失败')),
+      toast.error(getErrorMessage(error, t('ai.toast.entrySaveFailed'))),
     onSuccess: async () => {
-      toast.success('词条已保存')
+      toast.success(t('ai.toast.entrySaved'))
       await invalidateEntries()
     },
   })
@@ -82,9 +92,9 @@ export function TranslationEntriesSurface() {
   const deleteMutation = useMutation({
     mutationFn: deleteTranslationEntry,
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '词条删除失败')),
+      toast.error(getErrorMessage(error, t('ai.toast.entryDeleteFailed'))),
     onSuccess: async () => {
-      toast.success('词条已删除')
+      toast.success(t('ai.toast.entryDeleted'))
       await invalidateEntries()
     },
   })
@@ -93,21 +103,21 @@ export function TranslationEntriesSurface() {
     <section className="bg-white dark:bg-neutral-950">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
         <div>
-          <h2 className="text-sm font-medium">翻译词表</h2>
+          <h2 className="text-sm font-medium">{t('ai.translation.title')}</h2>
           <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
-            共 {total} 条词条
+            {t('ai.translation.entryCountSuffix', { count: total })}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <SelectField
-            aria-label="翻译词表路径"
+            aria-label={t('ai.filter.keyPathAria')}
             className="w-40"
             onValueChange={(value) => {
               setKeyPath(value)
               setPage(1)
             }}
             options={[
-              { label: '全部路径', value: '' },
+              { label: t('ai.filter.allKeyPath'), value: '' },
               ...translationEntryKeyPathOptions.map((option) => ({
                 label: option,
                 value: option,
@@ -121,7 +131,7 @@ export function TranslationEntriesSurface() {
               setLang(value)
               setPage(1)
             }}
-            placeholder="语言"
+            placeholder={t('ai.filter.langPlaceholder')}
             value={lang}
           />
           <Button
@@ -135,7 +145,7 @@ export function TranslationEntriesSurface() {
             ) : (
               <Sparkles aria-hidden="true" className="size-4" />
             )}
-            生成词表
+            {t('ai.action.generateEntries')}
           </Button>
           <Button
             disabled={query.isFetching}
@@ -147,7 +157,7 @@ export function TranslationEntriesSurface() {
               aria-hidden="true"
               className={cn('size-4', query.isFetching && 'animate-spin')}
             />
-            刷新
+            {t('ai.action.refresh')}
           </Button>
         </div>
       </div>
@@ -157,17 +167,27 @@ export function TranslationEntriesSurface() {
       ) : query.isError ? (
         <ResourceError onRetry={() => void query.refetch()} />
       ) : entries.length === 0 ? (
-        <ResourceEmpty label="词表" />
+        <ResourceEmpty label={t('ai.tab.entries')} />
       ) : (
         <Scroll orientation="horizontal">
           <table className="w-full min-w-[860px] text-sm">
             <thead className="border-b border-neutral-200 text-left text-xs uppercase text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
               <tr>
-                <th className="px-4 py-3 font-medium">路径</th>
-                <th className="px-4 py-3 font-medium">语言</th>
-                <th className="px-4 py-3 font-medium">源文本</th>
-                <th className="px-4 py-3 font-medium">译文</th>
-                <th className="px-4 py-3 text-right font-medium">操作</th>
+                <th className="px-4 py-3 font-medium">
+                  {t('ai.translation.column.path')}
+                </th>
+                <th className="px-4 py-3 font-medium">
+                  {t('ai.translation.column.lang')}
+                </th>
+                <th className="px-4 py-3 font-medium">
+                  {t('ai.translation.column.source')}
+                </th>
+                <th className="px-4 py-3 font-medium">
+                  {t('ai.translation.column.translated')}
+                </th>
+                <th className="px-4 py-3 text-right font-medium">
+                  {t('ai.translation.column.actions')}
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-neutral-100 dark:divide-neutral-900">
@@ -193,20 +213,20 @@ export function TranslationEntriesSurface() {
                         type="button"
                         variant="subtle"
                       >
-                        编辑
+                        {t('ai.action.edit')}
                       </Button>
                       <Button
                         className="border-red-200 text-red-600 hover:bg-red-50 dark:border-red-950 dark:text-red-400 dark:hover:bg-red-950/30"
                         disabled={deleteMutation.isPending}
                         onClick={() => {
-                          if (window.confirm('确认删除该词条？')) {
+                          if (window.confirm(t('ai.confirm.deleteEntry'))) {
                             deleteMutation.mutate(entry.id)
                           }
                         }}
                         type="button"
                         variant="subtle"
                       >
-                        删除
+                        {t('ai.action.delete')}
                       </Button>
                     </div>
                   </td>
@@ -220,7 +240,7 @@ export function TranslationEntriesSurface() {
       {pageCount > 1 ? (
         <div className="flex items-center justify-between gap-3 border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
           <span className="text-xs tabular-nums text-neutral-500 dark:text-neutral-400">
-            第 {page} 页
+            {t('ai.page.pageIndex', { page })}
           </span>
           <CompactPagination
             onPageChange={setPage}

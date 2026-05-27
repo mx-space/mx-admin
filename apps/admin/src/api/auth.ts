@@ -1,5 +1,6 @@
 import type { TokenModel } from '~/models/token'
 
+import { translate } from '~/i18n/translate'
 import { authClient } from '~/utils/authjs/auth'
 
 import { getJson, postJson, requestJson } from './http'
@@ -52,7 +53,8 @@ export function authAsOwner() {
 
 export async function listPasskeys() {
   const result = await authClient.passkey.listUserPasskeys()
-  if (result.error) throw new Error(result.error.message || '获取 Passkey 失败')
+  if (result.error)
+    throw new Error(result.error.message || translate('api.error.passkeyFetch'))
 
   return (result.data ?? []).map((passkey: any) => ({
     createdAt: String(passkey.createdAt ?? new Date().toISOString()),
@@ -65,5 +67,8 @@ export async function listPasskeys() {
 
 export async function deletePasskey(id: string) {
   const result = await authClient.passkey.deletePasskey({ id })
-  if (result.error) throw new Error(result.error.message || '删除 Passkey 失败')
+  if (result.error)
+    throw new Error(
+      result.error.message || translate('api.error.passkeyDelete'),
+    )
 }

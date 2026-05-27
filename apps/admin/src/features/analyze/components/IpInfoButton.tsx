@@ -4,10 +4,12 @@ import type { ReactNode } from 'react'
 import type { IPInfo } from '../types/analyze'
 
 import { callBuiltInFunction } from '~/api/system'
+import { useI18n } from '~/i18n'
 
 import { getErrorMessage } from '../utils/analyze'
 
 export function IpInfoButton(props: { ip: string }) {
+  const { t } = useI18n()
   const [open, setOpen] = useState(false)
   const [info, setInfo] = useState<IPInfo | null>(null)
   const [loading, setLoading] = useState(false)
@@ -21,7 +23,7 @@ export function IpInfoButton(props: { ip: string }) {
       const result = await callBuiltInFunction<IPInfo>('ip', { ip: props.ip })
       setInfo(result)
     } catch (requestError) {
-      setError(getErrorMessage(requestError, 'IP 信息获取失败'))
+      setError(getErrorMessage(requestError, t('analyze.ip.error')))
     } finally {
       setLoading(false)
     }
@@ -51,7 +53,7 @@ export function IpInfoButton(props: { ip: string }) {
         <span className="absolute left-0 top-full z-20 mt-2 w-72 rounded border border-neutral-200 bg-white p-3 text-left text-xs shadow-lg dark:border-neutral-800 dark:bg-neutral-950">
           {loading ? (
             <span className="text-neutral-500 dark:text-neutral-400">
-              获取中...
+              {t('analyze.ip.loading')}
             </span>
           ) : error ? (
             <span className="text-red-500">{error}</span>
@@ -59,7 +61,7 @@ export function IpInfoButton(props: { ip: string }) {
             <IpInfoContent info={info} />
           ) : (
             <span className="text-neutral-500 dark:text-neutral-400">
-              暂无 IP 信息
+              {t('analyze.ip.empty')}
             </span>
           )}
         </span>
@@ -69,6 +71,7 @@ export function IpInfoButton(props: { ip: string }) {
 }
 
 function IpInfoContent(props: { info: IPInfo }) {
+  const { t } = useI18n()
   const city = [
     props.info.countryName,
     props.info.regionName,
@@ -80,10 +83,12 @@ function IpInfoContent(props: { info: IPInfo }) {
   return (
     <div className="grid gap-2 text-neutral-600 dark:text-neutral-300">
       <InfoLine label="IP">{props.info.ip}</InfoLine>
-      <InfoLine label="城市">{city || 'N/A'}</InfoLine>
+      <InfoLine label={t('analyze.ip.field.city')}>{city || 'N/A'}</InfoLine>
       <InfoLine label="ISP">{props.info.ispDomain || 'N/A'}</InfoLine>
-      <InfoLine label="组织">{props.info.ownerDomain || 'N/A'}</InfoLine>
-      <InfoLine label="范围">
+      <InfoLine label={t('analyze.ip.field.org')}>
+        {props.info.ownerDomain || 'N/A'}
+      </InfoLine>
+      <InfoLine label={t('analyze.ip.field.range')}>
         {props.info.range?.from || props.info.range?.to
           ? `${props.info.range.from ?? '?'} - ${props.info.range.to ?? '?'}`
           : 'N/A'}

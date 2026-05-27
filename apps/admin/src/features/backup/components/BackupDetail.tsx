@@ -10,6 +10,7 @@ import { useState } from 'react'
 import type { BackupFile } from '~/api/backups'
 
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Panel } from '~/ui/primitives/panel'
 import { Scroll } from '~/ui/primitives/scroll'
@@ -26,6 +27,7 @@ export function BackupDetail(props: {
   onDownload: () => void
   onRollback: () => void
 }) {
+  const { t } = useI18n()
   const [deleteConfirming, setDeleteConfirming] = useState(false)
   const [rollbackConfirming, setRollbackConfirming] = useState(false)
 
@@ -46,7 +48,7 @@ export function BackupDetail(props: {
             <ArrowLeft aria-hidden="true" className="size-4" />
           </button>
           <h2 className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
-            备份详情
+            {t('backup.detail.title')}
           </h2>
         </div>
         <div className="flex gap-2">
@@ -57,7 +59,7 @@ export function BackupDetail(props: {
             variant="subtle"
           >
             <Download aria-hidden="true" className="size-3.5" />
-            下载
+            {t('backup.detail.download')}
           </Button>
           <Button
             className="h-8 px-2"
@@ -74,7 +76,9 @@ export function BackupDetail(props: {
             variant="subtle"
           >
             <History aria-hidden="true" className="size-3.5" />
-            {rollbackConfirming ? '确认回滚' : '回滚'}
+            {rollbackConfirming
+              ? t('backup.detail.confirmRollback')
+              : t('backup.detail.rollback')}
           </Button>
           <Button
             className="h-8 px-2 text-red-600 dark:text-red-400"
@@ -91,7 +95,9 @@ export function BackupDetail(props: {
             variant="subtle"
           >
             <Trash2 aria-hidden="true" className="size-3.5" />
-            {deleteConfirming ? '确认删除' : '删除'}
+            {deleteConfirming
+              ? t('backup.detail.confirmDelete')
+              : t('common.delete')}
           </Button>
         </div>
       </div>
@@ -116,29 +122,33 @@ export function BackupDetail(props: {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <InfoCard
               icon={HardDrive}
-              label="文件大小"
+              label={t('backup.detail.size')}
               value={props.item.size}
             />
             <InfoCard
               icon={Calendar}
-              label="创建时间"
+              label={t('backup.detail.createdAt')}
               value={formatBackupDate(props.item.filename)}
             />
           </div>
 
-          <Panel title="操作">
+          <Panel title={t('backup.detail.actionsTitle')}>
             <div className="divide-y divide-neutral-200 dark:divide-neutral-800">
               <ActionRow
-                description="将备份文件下载到本地"
+                description={t('backup.actions.row.downloadDescription')}
                 icon={Download}
-                label="下载备份"
+                label={t('backup.actions.row.downloadLabel')}
                 onClick={props.onDownload}
                 tone="blue"
               />
               <ActionRow
-                description="使用此备份恢复数据，当前数据将被覆盖"
+                description={t('backup.actions.row.rollbackDescription')}
                 icon={History}
-                label={rollbackConfirming ? '确认回滚到此备份' : '回滚到此备份'}
+                label={
+                  rollbackConfirming
+                    ? t('backup.actions.row.rollbackLabelConfirm')
+                    : t('backup.actions.row.rollbackLabel')
+                }
                 onClick={() => {
                   if (rollbackConfirming) {
                     props.onRollback()
@@ -151,9 +161,13 @@ export function BackupDetail(props: {
                 tone="amber"
               />
               <ActionRow
-                description="永久删除此备份文件"
+                description={t('backup.actions.row.deleteDescription')}
                 icon={Trash2}
-                label={deleteConfirming ? '确认删除备份' : '删除备份'}
+                label={
+                  deleteConfirming
+                    ? t('backup.actions.row.deleteLabelConfirm')
+                    : t('backup.actions.row.deleteLabel')
+                }
                 onClick={() => {
                   if (deleteConfirming) {
                     props.onDelete()

@@ -1,11 +1,14 @@
 import type { ReactNode } from 'react'
 
+import { useI18n } from '~/i18n'
+
 import { formatNumber } from '../utils/analyze'
 import { ProgressBar } from './AnalyzePrimitives'
 
 export function DistributionList(props: {
   items: Array<{ name: string; value: number }>
 }) {
+  const { t } = useI18n()
   const total = props.items.reduce((sum, item) => sum + item.value, 0)
   const max = Math.max(...props.items.map((item) => item.value), 1)
 
@@ -15,7 +18,7 @@ export function DistributionList(props: {
         <div className="grid gap-1" key={item.name || 'unknown'}>
           <div className="flex items-center justify-between gap-3 text-xs">
             <span className="truncate text-neutral-700 dark:text-neutral-200">
-              {item.name || '未知'}
+              {item.name || t('analyze.distribution.unknown')}
             </span>
             <span className="tabular-nums text-neutral-500 dark:text-neutral-400">
               {formatNumber(item.value)}

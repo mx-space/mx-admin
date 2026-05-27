@@ -1,6 +1,7 @@
 import { HardDrive } from 'lucide-react'
 import type { BackupFile } from '~/api/backups'
 
+import { useI18n } from '~/i18n'
 import { Checkbox } from '~/ui/primitives/checkbox'
 
 import { formatBackupDate } from '../utils/backup-file'
@@ -12,6 +13,7 @@ export function BackupListItem(props: {
   onToggleCheck: (filename: string, checked: boolean) => void
   selected: boolean
 }) {
+  const { t } = useI18n()
   return (
     <article
       className={[
@@ -23,7 +25,7 @@ export function BackupListItem(props: {
       onClick={props.onSelect}
     >
       <Checkbox
-        aria-label="选择备份"
+        aria-label={t('backup.list.itemAria')}
         checked={props.checked}
         className="shrink-0"
         onCheckedChange={(checked) =>

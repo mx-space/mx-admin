@@ -1,4 +1,5 @@
 import { API_URL } from '~/constants/env'
+import { translate } from '~/i18n/translate'
 
 import { deleteJson, getJson, patchJson, requestJson } from './http'
 
@@ -129,7 +130,7 @@ export function uploadFileWithProgress(
       resolve(readUploadResponse(responseData))
     }
 
-    xhr.onerror = () => reject(new Error('上传失败'))
+    xhr.onerror = () => reject(new Error(translate('api.error.uploadFailed')))
     xhr.send(formData)
   })
 }

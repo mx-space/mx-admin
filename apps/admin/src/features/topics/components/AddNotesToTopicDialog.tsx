@@ -8,6 +8,7 @@ import type { PaginateResult } from '~/models/base'
 import type { NoteModel } from '~/models/note'
 
 import { getNotes, patchNote } from '~/api/notes'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
 import { TextInput } from '~/ui/primitives/text-field'
@@ -22,6 +23,7 @@ export function AddNotesToTopicDialog(props: {
   open: boolean
   topicId: string
 }) {
+  const { t } = useI18n()
   const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set())
   const [keyword, setKeyword] = useState('')
 
@@ -82,9 +84,9 @@ export function AddNotesToTopicDialog(props: {
       )
     },
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '添加手记失败')),
+      toast.error(getErrorMessage(error, t('topics.add.failed'))),
     onSuccess: async () => {
-      toast.success('添加成功')
+      toast.success(t('topics.add.success'))
       setSelectedIds(new Set())
       await props.onSuccess()
     },
@@ -114,14 +116,14 @@ export function AddNotesToTopicDialog(props: {
           <div className="flex shrink-0 items-center justify-between border-b border-neutral-200 px-5 py-4 dark:border-neutral-800">
             <div>
               <Dialog.Title className="text-base font-semibold text-neutral-950 dark:text-neutral-50">
-                添加手记到专栏
+                {t('topics.add.title')}
               </Dialog.Title>
               <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
-                选择一个或多个手记后批量加入当前专栏。
+                {t('topics.add.subtitle')}
               </p>
             </div>
             <Dialog.Close
-              aria-label="关闭"
+              aria-label={t('common.close')}
               className="inline-flex size-8 items-center justify-center rounded text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-950 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-50"
             >
               <X aria-hidden="true" className="size-4" />
@@ -131,7 +133,7 @@ export function AddNotesToTopicDialog(props: {
           <div className="shrink-0 border-b border-neutral-200 px-5 py-3 dark:border-neutral-800">
             <TextInput
               onChange={setKeyword}
-              placeholder="按标题、slug 或编号筛选"
+              placeholder={t('topics.add.filterPlaceholder')}
               value={keyword}
             />
           </div>
@@ -150,7 +152,7 @@ export function AddNotesToTopicDialog(props: {
               <div className="flex min-h-56 flex-col items-center justify-center px-5 text-center">
                 <Inbox aria-hidden="true" className="size-9 text-neutral-300" />
                 <p className="mt-3 text-sm text-neutral-500 dark:text-neutral-400">
-                  暂无可选手记。
+                  {t('topics.add.empty')}
                 </p>
               </div>
             ) : (
@@ -192,7 +194,7 @@ export function AddNotesToTopicDialog(props: {
                             #{note.nid}
                           </span>
                           <span className="truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
-                            {note.title || '未命名手记'}
+                            {note.title || t('topics.notes.unnamed')}
                           </span>
                         </span>
                         <span className="mt-1 flex items-center gap-2 text-xs text-neutral-400">
@@ -201,7 +203,9 @@ export function AddNotesToTopicDialog(props: {
                               {note.slug}
                             </span>
                           ) : null}
-                          {alreadyInTopic ? <span>已在当前专栏</span> : null}
+                          {alreadyInTopic ? (
+                            <span>{t('topics.add.inTopic')}</span>
+                          ) : null}
                         </span>
                       </span>
                     </button>
@@ -223,11 +227,13 @@ export function AddNotesToTopicDialog(props: {
               {notesQuery.isFetchingNextPage ? (
                 <Loader2 aria-hidden="true" className="size-4 animate-spin" />
               ) : null}
-              {notesQuery.hasNextPage ? '加载更多' : '已全部加载'}
+              {notesQuery.hasNextPage
+                ? t('topics.add.loadMore')
+                : t('topics.add.allLoaded')}
             </Button>
             <div className="flex items-center gap-2">
               <Button onClick={props.onClose} type="button" variant="subtle">
-                取消
+                {t('common.cancel')}
               </Button>
               <Button
                 disabled={selectedCount === 0 || addMutation.isPending}
@@ -239,7 +245,9 @@ export function AddNotesToTopicDialog(props: {
                 ) : (
                   <Plus aria-hidden="true" className="size-4" />
                 )}
-                添加 {selectedCount > 0 ? `(${selectedCount})` : ''}
+                {selectedCount > 0
+                  ? t('topics.add.submitWithCount', { count: selectedCount })
+                  : t('topics.add.submit')}
               </Button>
             </div>
           </div>

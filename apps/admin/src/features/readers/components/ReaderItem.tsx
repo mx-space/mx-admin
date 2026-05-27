@@ -1,9 +1,12 @@
 import { Crown, Mail } from 'lucide-react'
 import type { ReaderWithKey } from '../types/readers'
 
+import { useI18n } from '~/i18n'
+
 import { ProviderIcon } from './ProviderIcon'
 
 export function ReaderItem(props: { data: ReaderWithKey }) {
+  const { t } = useI18n()
   const reader = props.data
 
   return (
@@ -32,7 +35,7 @@ export function ReaderItem(props: { data: ReaderWithKey }) {
           {reader.role === 'owner' ? (
             <span
               className="flex size-4 items-center justify-center rounded-full bg-amber-500/10 text-amber-500"
-              title="站长"
+              title={t('readers.crown')}
             >
               <Crown aria-hidden="true" className="size-2.5" />
             </span>

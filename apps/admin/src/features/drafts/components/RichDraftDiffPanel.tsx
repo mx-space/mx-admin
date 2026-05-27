@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react'
 
+import { useI18n } from '~/i18n'
 import { Scroll } from '~/ui/primitives/scroll'
 
 import {
@@ -13,6 +14,7 @@ export function RichDraftDiffPanel(props: {
   selectedContent: string
   selectedVersion: number
 }) {
+  const { t } = useI18n()
   const containerRef = useRef<HTMLDivElement | null>(null)
   const selectedValue = useMemo(
     () => parseSerializedDraftContent(props.selectedContent),
@@ -51,7 +53,7 @@ export function RichDraftDiffPanel(props: {
   if (!selectedValue || !currentValue) {
     return (
       <div className="flex min-h-[20rem] items-center justify-center border border-dashed border-neutral-200 bg-white text-sm text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400">
-        富文本内容解析失败。
+        {t('drafts.diff.richFailed')}
       </div>
     )
   }
@@ -60,7 +62,7 @@ export function RichDraftDiffPanel(props: {
     <section className="min-h-full min-w-0">
       <div className="mb-2 flex items-center justify-between gap-3">
         <h3 className="truncate text-sm font-medium text-neutral-800 dark:text-neutral-200">
-          富文本差异
+          {t('drafts.diff.rich.title')}
         </h3>
         <span className="shrink-0 text-xs tabular-nums text-neutral-500">
           v{props.selectedVersion} → v{props.currentVersion}

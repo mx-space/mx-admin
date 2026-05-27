@@ -1,4 +1,5 @@
 import { File, FileText, StickyNote } from 'lucide-react'
+import type { TranslationKey } from '~/i18n/types'
 import type { RecentlyRefTypes } from '~/models/recently'
 
 export const RECENTLY_PAGE_SIZE = 20
@@ -22,9 +23,9 @@ export const refTypeIcons: Record<RecentlyRefTypes, typeof FileText> = {
   recently: StickyNote,
 }
 
-export const refTypeLabels: Record<RecentlyRefTypes, string> = {
-  note: '笔记',
-  page: '页面',
-  post: '文章',
-  recently: '速记',
+export const refTypeLabelKeys: Record<RecentlyRefTypes, TranslationKey> = {
+  note: 'recently.refLabel.note',
+  page: 'recently.refLabel.page',
+  post: 'recently.refLabel.post',
+  recently: 'recently.refLabel.recently',
 }

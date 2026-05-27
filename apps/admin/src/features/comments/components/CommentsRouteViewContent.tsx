@@ -14,7 +14,9 @@ import {
   updateCommentState,
 } from '~/api/comments'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { CommentState } from '~/models/comment'
+import { confirmDialog } from '~/ui/feedback/confirm'
 import { MasterDetailLayout } from '~/ui/layout/page-layout'
 import { Button } from '~/ui/primitives/button'
 import { Checkbox } from '~/ui/primitives/checkbox'
@@ -23,9 +25,9 @@ import { SelectField } from '~/ui/primitives/select'
 import { cn } from '~/utils/cn'
 
 import {
-  commentFilters,
   commentsPageSize,
   commentsQueryKey,
+  getCommentFilters,
 } from '../constants'
 import { normalizeCommentState, readCommentPage } from '../utils/comments'
 import { CommentDetail } from './CommentDetail'
@@ -33,7 +35,9 @@ import { CommentListItem } from './CommentListItem'
 import { CommentEmptyState } from './CommentPrimitives'
 
 export function CommentsRouteViewContent() {
+  const { locale, t } = useI18n()
   const queryClient = useQueryClient()
+  const commentFilters = useMemo(() => getCommentFilters(), [locale])
   const [searchParams, setSearchParams] = useSearchParams()
   const searchParamsKey = searchParams.toString()
   const [state, setState] = useState(() =>
@@ -101,7 +105,7 @@ export function CommentsRouteViewContent() {
     mutationFn: ({ id, nextState }: { id: string; nextState: CommentState }) =>
       updateCommentState(id, nextState),
     onSuccess: async () => {
-      toast.success('操作成功')
+      toast.success(t('comments.toast.updated'))
       await invalidateComments()
     },
   })
@@ -109,7 +113,7 @@ export function CommentsRouteViewContent() {
   const deleteMutation = useMutation({
     mutationFn: deleteComment,
     onSuccess: async () => {
-      toast.success('删除成功')
+      toast.success(t('comments.toast.deleted'))
       setSelectedId(null)
       setSelectedCommentSnapshot(null)
       setShowDetailOnMobile(false)
@@ -127,7 +131,7 @@ export function CommentsRouteViewContent() {
           })
         : batchUpdateCommentState({ ids: checkedIds, state: nextState }),
     onSuccess: async () => {
-      toast.success('操作成功')
+      toast.success(t('comments.toast.updated'))
       setCheckedIds([])
       setSelectAllMode(false)
       await invalidateComments()
@@ -140,7 +144,7 @@ export function CommentsRouteViewContent() {
         ? batchDeleteComments({ all: true, state })
         : batchDeleteComments({ ids: checkedIds }),
     onSuccess: async () => {
-      toast.success('删除成功')
+      toast.success(t('comments.toast.deleted'))
       setCheckedIds([])
       setSelectAllMode(false)
       setSelectedId(null)
@@ -154,7 +158,7 @@ export function CommentsRouteViewContent() {
     mutationFn: ({ id, text }: { id: string; text: string }) =>
       replyComment(id, text),
     onSuccess: async () => {
-      toast.success('回复成功')
+      toast.success(t('comments.toast.replied'))
       await invalidateComments()
     },
   })
@@ -198,14 +202,24 @@ export function CommentsRouteViewContent() {
     setShowDetailOnMobile(true)
   }
 
-  const confirmDeleteComment = (id: string) => {
-    if (!window.confirm('确定要删除这条评论吗？')) return
+  const confirmDeleteComment = async (id: string) => {
+    const confirmed = await confirmDialog({
+      destructive: true,
+      title: t('common.confirmDelete'),
+      description: t('comments.confirmDelete.single'),
+    })
+    if (!confirmed) return
     deleteMutation.mutate(id)
   }
 
-  const confirmBatchDelete = () => {
+  const confirmBatchDelete = async () => {
     if (!hasSelection) return
-    if (!window.confirm(`确定要删除选中的 ${selectedCount} 条评论吗？`)) return
+    const confirmed = await confirmDialog({
+      destructive: true,
+      title: t('common.confirmDelete'),
+      description: t('comments.confirmDelete.batch', { count: selectedCount }),
+    })
+    if (!confirmed) return
     batchDeleteMutation.mutate()
   }
 
@@ -226,7 +240,7 @@ export function CommentsRouteViewContent() {
             <div className="flex items-center gap-2">
               <MessageSquare aria-hidden="true" className="size-4" />
               <SelectField
-                aria-label="评论状态"
+                aria-label={t('comments.filter.label')}
                 options={commentFilters}
                 onValueChange={changeFilter}
                 triggerClassName="h-auto border-0 bg-transparent px-0 text-sm font-medium hover:bg-transparent dark:bg-transparent dark:hover:bg-transparent"
@@ -234,20 +248,24 @@ export function CommentsRouteViewContent() {
               />
             </div>
             <span className="text-xs text-neutral-400">
-              {pagination ? `${pagination.total} 条` : 'Comments'}
+              {pagination
+                ? t('comments.list.totalCount', { count: pagination.total })
+                : 'Comments'}
             </span>
           </div>
 
           {comments.length > 0 ? (
             <div className="flex flex-wrap items-center gap-2 border-b border-neutral-200 bg-neutral-50 px-4 py-2 text-sm dark:border-neutral-800 dark:bg-neutral-900/40">
               <Checkbox
-                aria-label="选择当前页评论"
+                aria-label={t('comments.list.selectPage')}
                 checked={allVisibleChecked}
                 indeterminate={hasSelection && !allVisibleChecked}
                 onCheckedChange={toggleVisible}
               />
               <span className="text-neutral-500 dark:text-neutral-400">
-                {hasSelection ? `已选 ${selectedCount} 项` : '全选'}
+                {hasSelection
+                  ? t('comments.list.selectedCount', { count: selectedCount })
+                  : t('comments.list.selectAll')}
               </span>
               {allVisibleChecked &&
               pagination &&
@@ -258,7 +276,9 @@ export function CommentsRouteViewContent() {
                   onClick={() => setSelectAllMode(true)}
                   type="button"
                 >
-                  选择全部 {pagination.total} 条
+                  {t('comments.list.selectAllCount', {
+                    count: pagination.total,
+                  })}
                 </button>
               ) : null}
             </div>
@@ -295,7 +315,7 @@ export function CommentsRouteViewContent() {
                 variant="subtle"
               >
                 <CheckCheck aria-hidden="true" className="size-3.5" />
-                已读
+                {t('comments.action.markRead')}
               </Button>
               <Button
                 className="h-8 px-2"
@@ -305,7 +325,7 @@ export function CommentsRouteViewContent() {
                 variant="subtle"
               >
                 <ShieldAlert aria-hidden="true" className="size-3.5" />
-                垃圾
+                {t('comments.action.markJunk')}
               </Button>
               <Button
                 className="h-8 px-2 text-red-600 dark:text-red-400"
@@ -315,7 +335,7 @@ export function CommentsRouteViewContent() {
                 variant="subtle"
               >
                 <Trash2 aria-hidden="true" className="size-3.5" />
-                删除
+                {t('common.delete')}
               </Button>
             </div>
             {pagination && pagination.totalPages > 1 ? (
@@ -331,7 +351,7 @@ export function CommentsRouteViewContent() {
                   type="button"
                   variant="subtle"
                 >
-                  上一页
+                  {t('common.pagination.previousPage')}
                 </Button>
                 <span>
                   {pagination.page} / {pagination.totalPages}
@@ -349,7 +369,7 @@ export function CommentsRouteViewContent() {
                   type="button"
                   variant="subtle"
                 >
-                  下一页
+                  {t('common.pagination.nextPage')}
                 </Button>
               </div>
             ) : null}
@@ -376,7 +396,7 @@ export function CommentsRouteViewContent() {
                 aria-hidden="true"
                 className="mb-3 size-10 text-neutral-300 dark:text-neutral-700"
               />
-              选择一条评论
+              {t('comments.detail.empty')}
             </div>
           )}
         </section>

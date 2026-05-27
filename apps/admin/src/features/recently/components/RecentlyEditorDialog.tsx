@@ -8,6 +8,7 @@ import type { UrlPreviewState } from '../types/recently'
 
 import { resolveEnrichment } from '~/api/enrichment'
 import { createRecently, updateRecently } from '~/api/recently'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { TextArea } from '~/ui/primitives/text-field'
 
@@ -20,6 +21,7 @@ export function RecentlyEditorDialog(props: {
   onSuccess: () => Promise<void>
   open: boolean
 }) {
+  const { t } = useI18n()
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const previewGenerationRef = useRef(0)
   const [content, setContent] = useState('')
@@ -68,7 +70,7 @@ export function RecentlyEditorDialog(props: {
                 error:
                   previewError instanceof Error
                     ? previewError.message
-                    : '解析失败',
+                    : t('recently.error.parseFailed'),
                 loading: false,
                 result: null,
               },
@@ -90,7 +92,7 @@ export function RecentlyEditorDialog(props: {
       return createRecently(data)
     },
     onSuccess: async () => {
-      toast.success('保存成功')
+      toast.success(t('recently.editor.saveSuccess'))
       await props.onSuccess()
     },
   })
@@ -99,7 +101,7 @@ export function RecentlyEditorDialog(props: {
     event?.preventDefault()
 
     if (!content.trim()) {
-      setError('内容不可为空')
+      setError(t('recently.editor.contentRequired'))
       return
     }
 
@@ -123,10 +125,12 @@ export function RecentlyEditorDialog(props: {
           <form onSubmit={handleSubmit}>
             <div className="flex items-center justify-between border-b border-neutral-200 px-5 py-4 dark:border-neutral-800">
               <Dialog.Title className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
-                {isEdit ? '编辑速记' : '写一条速记'}
+                {isEdit
+                  ? t('recently.editor.editTitle')
+                  : t('recently.editor.createTitle')}
               </Dialog.Title>
               <Dialog.Close
-                aria-label="关闭"
+                aria-label={t('common.close')}
                 className="rounded p-1 text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-600 dark:hover:bg-neutral-800"
               >
                 <X aria-hidden="true" className="size-5" />
@@ -136,7 +140,8 @@ export function RecentlyEditorDialog(props: {
             <div className="px-5 py-4">
               <label className="grid gap-1.5 text-sm">
                 <span className="font-medium text-neutral-700 dark:text-neutral-300">
-                  内容 <span className="text-red-500">*</span>
+                  {t('recently.editor.contentLabel')}{' '}
+                  <span className="text-red-500">*</span>
                 </span>
                 <TextArea
                   controlClassName="min-h-36"
@@ -149,7 +154,7 @@ export function RecentlyEditorDialog(props: {
                       handleSubmit()
                     }
                   }}
-                  placeholder="写点什么，或粘贴一个链接..."
+                  placeholder={t('recently.editor.placeholder')}
                   ref={textareaRef}
                   required
                   value={content}
@@ -167,7 +172,9 @@ export function RecentlyEditorDialog(props: {
                     return (
                       <div className="grid gap-1.5" key={url}>
                         <div className="flex min-w-0 items-center gap-2 text-xs text-neutral-500 dark:text-neutral-400">
-                          <span className="shrink-0">检测到链接：</span>
+                          <span className="shrink-0">
+                            {t('recently.editor.urlDetected')}
+                          </span>
                           <code className="truncate rounded bg-neutral-100 px-1.5 py-0.5 font-mono text-[11px] dark:bg-neutral-900">
                             {url}
                           </code>
@@ -189,13 +196,13 @@ export function RecentlyEditorDialog(props: {
                         {state?.error && !state.loading ? (
                           <div className="rounded border border-neutral-200 bg-neutral-50 px-3 py-2 text-xs text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400">
                             <div className="font-medium text-neutral-700 dark:text-neutral-300">
-                              未识别该链接
+                              {t('recently.editor.unidentifiedUrl')}
                             </div>
                             <div className="mt-0.5">
-                              {cleanErrorMessage(state.error)}
+                              {cleanErrorMessage(state.error, t)}
                             </div>
                             <div className="mt-1 text-neutral-400">
-                              仍可保存，按链接处理。
+                              {t('recently.editor.canSaveAnyway')}
                             </div>
                           </div>
                         ) : null}
@@ -208,16 +215,16 @@ export function RecentlyEditorDialog(props: {
 
             <div className="flex items-center justify-end gap-2 border-t border-neutral-200 px-5 py-4 dark:border-neutral-800">
               <span className="mr-auto text-xs text-neutral-400">
-                Cmd/Ctrl + Enter 快速保存
+                {t('recently.editor.shortcut')}
               </span>
               <Dialog.Close
                 className="inline-flex h-9 items-center justify-center rounded border border-neutral-200 bg-white px-3 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-200 dark:hover:bg-neutral-900"
                 type="button"
               >
-                取消
+                {t('common.cancel')}
               </Dialog.Close>
               <Button disabled={mutation.isPending} type="submit">
-                保存
+                {t('common.save')}
               </Button>
             </div>
           </form>

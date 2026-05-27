@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import type { GithubRepo } from '~/api/github-repo'
 
 import { getRepoDetail, getRepoReadme } from '~/api/github-repo'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { TextInput } from '~/ui/primitives/text-field'
 
@@ -14,6 +15,7 @@ export function GithubImportPanel(props: {
   defaultValue?: string
   onApply: (repo: GithubRepo, readme: string | null) => void
 }) {
+  const { t } = useI18n()
   const [url, setUrl] = useState(props.defaultValue ?? '')
   const importMutation = useMutation({
     mutationFn: async () => {
@@ -26,18 +28,23 @@ export function GithubImportPanel(props: {
       return { detail, readme }
     },
     onError: (error: unknown) => {
-      toast.error(getErrorMessage(error, 'GitHub 仓库解析失败'))
+      const message =
+        error instanceof Error && error.message === 'projects.github.invalidUrl'
+          ? t('projects.github.invalidUrl')
+          : getErrorMessage(error, t('projects.github.fetchFailed'))
+      toast.error(message)
     },
     onSuccess: ({ detail, readme }) => {
       props.onApply(detail, readme)
-      toast.success('已填充 GitHub 项目信息')
+      toast.success(t('projects.github.applied'))
     },
   })
 
   return (
     <section className="grid gap-3 border border-neutral-200 bg-neutral-50 p-3 dark:border-neutral-800 dark:bg-neutral-900/40">
       <div className="flex items-center gap-2 text-sm font-medium text-neutral-800 dark:text-neutral-100">
-        <ImportIcon aria-hidden="true" className="size-4" />从 GitHub 仓库导入
+        <ImportIcon aria-hidden="true" className="size-4" />
+        {t('projects.github.title')}
       </div>
       <div className="flex flex-col gap-2 sm:flex-row">
         <TextInput
@@ -49,7 +56,7 @@ export function GithubImportPanel(props: {
               importMutation.mutate()
             }
           }}
-          placeholder="https://github.com/owner/repo"
+          placeholder={t('projects.github.placeholder')}
           value={url}
         />
         <Button
@@ -62,7 +69,7 @@ export function GithubImportPanel(props: {
           ) : (
             <ImportIcon aria-hidden="true" className="size-4" />
           )}
-          获取
+          {t('projects.github.fetch')}
         </Button>
       </div>
     </section>

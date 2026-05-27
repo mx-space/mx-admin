@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { useI18n } from '~/i18n'
 import { ModalHeader } from '~/ui/feedback/modal'
 import { present, useModal } from '~/ui/feedback/modal-imperative'
 import { Button } from '~/ui/primitives/button'
@@ -12,6 +13,7 @@ interface NoteMetaEditDialogProps {
 }
 
 function NoteMetaEditDialog(props: NoteMetaEditDialogProps) {
+  const { t } = useI18n()
   const modal = useModal<string | null>()
   const [value, setValue] = useState(props.initialValue)
 
@@ -42,9 +44,9 @@ function NoteMetaEditDialog(props: NoteMetaEditDialogProps) {
       </div>
       <div className="flex justify-end gap-2 border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
         <Button onClick={() => modal.dismiss()} type="button" variant="subtle">
-          取消
+          {t('common.cancel')}
         </Button>
-        <Button type="submit">保存</Button>
+        <Button type="submit">{t('common.save')}</Button>
       </div>
     </form>
   )

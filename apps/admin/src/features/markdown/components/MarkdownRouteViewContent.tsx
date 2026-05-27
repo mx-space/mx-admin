@@ -13,6 +13,7 @@ import type { ParsedItem } from '../types/markdown'
 
 import { exportMarkdown, importMarkdown } from '~/api/markdown'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Checkbox } from '~/ui/primitives/checkbox'
 import { Scroll } from '~/ui/primitives/scroll'
@@ -33,6 +34,7 @@ import { Metric } from './Metric'
 import { SectionHeader } from './SectionHeader'
 
 export function MarkdownRouteViewContent() {
+  const { t } = useI18n()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [importType, setImportType] = useState(ImportType.Post)
   const [files, setFiles] = useState<File[]>([])
@@ -82,10 +84,19 @@ export function MarkdownRouteViewContent() {
       })
 
       setParsedItems(parsed)
-      toast.success(`成功解析 ${parsed.length} 个文件`)
+      toast.success(t('markdown.import.parseSuccess', { count: parsed.length }))
     } catch (error) {
       setParsedItems([])
-      toast.error(getErrorMessage(error, '解析失败'))
+      const raw =
+        error instanceof Error
+          ? error.message
+          : t('markdown.import.parseFailed')
+      const message = raw.startsWith('markdown.fileType.error:')
+        ? t('markdown.fileType.error', {
+            type: raw.slice('markdown.fileType.error:'.length),
+          })
+        : getErrorMessage(error, t('markdown.import.parseFailed'))
+      toast.error(message)
     } finally {
       setParsing(false)
     }
@@ -111,10 +122,12 @@ export function MarkdownRouteViewContent() {
         data: parsedItems,
         type: importType,
       })
-      toast.success(`成功导入 ${parsedItems.length} 条数据`)
+      toast.success(
+        t('markdown.import.importSuccess', { count: parsedItems.length }),
+      )
       clearImport()
     } catch (error) {
-      toast.error(getErrorMessage(error, '导入失败'))
+      toast.error(getErrorMessage(error, t('markdown.import.importFailed')))
     } finally {
       setImporting(false)
       setShowImportConfirm(false)
@@ -131,9 +144,9 @@ export function MarkdownRouteViewContent() {
         yaml: exportConfig.includeYAMLHeader,
       })
       saveBlob(blob, 'markdown.zip')
-      toast.success('导出成功')
+      toast.success(t('markdown.export.success'))
     } catch (error) {
-      toast.error(getErrorMessage(error, '导出失败'))
+      toast.error(getErrorMessage(error, t('markdown.export.failed')))
     } finally {
       setExporting(false)
     }
@@ -153,7 +166,7 @@ export function MarkdownRouteViewContent() {
             Markdown
           </h2>
           <span className="ml-3 text-xs text-neutral-500 dark:text-neutral-400">
-            导入与导出内容
+            {t('markdown.subtitle')}
           </span>
         </div>
       </header>
@@ -164,9 +177,9 @@ export function MarkdownRouteViewContent() {
       >
         <section className="bg-white dark:bg-neutral-950">
           <SectionHeader
-            description="解析本地 Markdown 文件并导入为博文或日记。"
+            description={t('markdown.import.description')}
             icon={<FileUp aria-hidden="true" className="size-5" />}
-            title="从 Markdown 导入"
+            title={t('markdown.import.title')}
           />
 
           <div className="space-y-5 p-5">
@@ -175,13 +188,16 @@ export function MarkdownRouteViewContent() {
                 className="text-sm font-medium text-neutral-700 dark:text-neutral-300"
                 htmlFor="markdown-import-type"
               >
-                导入到
+                {t('markdown.import.toLabel')}
               </label>
               <SelectField
                 className="w-40"
                 id="markdown-import-type"
                 onValueChange={setImportType}
-                options={importTypeOptions}
+                options={importTypeOptions.map((opt) => ({
+                  label: t(opt.labelKey),
+                  value: opt.value,
+                }))}
                 value={importType}
               />
             </div>
@@ -211,10 +227,10 @@ export function MarkdownRouteViewContent() {
                 className="mb-3 size-10 text-neutral-400"
               />
               <p className="mb-1 text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                点击或拖拽上传 Markdown 文件
+                {t('markdown.import.dropTitle')}
               </p>
               <p className="text-xs text-neutral-500">
-                支持 .md、.markdown 格式，可多选
+                {t('markdown.import.dropHint')}
               </p>
               <input
                 accept=".md,.markdown"
@@ -231,7 +247,7 @@ export function MarkdownRouteViewContent() {
             {parsing ? (
               <div className="flex items-center justify-center rounded border border-neutral-200 py-4 text-sm text-neutral-500 dark:border-neutral-800">
                 <span className="mr-2 size-4 animate-spin rounded-full border-2 border-neutral-300 border-t-neutral-900 dark:border-neutral-700 dark:border-t-neutral-100" />
-                解析中…
+                {t('markdown.import.parsing')}
               </div>
             ) : null}
 
@@ -244,11 +260,13 @@ export function MarkdownRouteViewContent() {
                       className="size-4 text-emerald-500"
                     />
                     <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                      已解析 {parsedItems.length} 个文件
+                      {t('markdown.import.parsedCount', {
+                        count: parsedItems.length,
+                      })}
                     </span>
                   </div>
                   <Button onClick={clearImport} type="button" variant="subtle">
-                    清空
+                    {t('markdown.import.clear')}
                   </Button>
                 </div>
 
@@ -256,11 +274,21 @@ export function MarkdownRouteViewContent() {
                   <table className="w-full min-w-[680px] text-left text-sm">
                     <thead className="bg-neutral-50 text-xs text-neutral-500 dark:bg-neutral-900 dark:text-neutral-400">
                       <tr>
-                        <th className="px-3 py-2 font-medium">文件名</th>
-                        <th className="px-3 py-2 font-medium">标题</th>
-                        <th className="px-3 py-2 font-medium">Slug</th>
-                        <th className="px-3 py-2 font-medium">日期</th>
-                        <th className="w-16 px-3 py-2 font-medium">操作</th>
+                        <th className="px-3 py-2 font-medium">
+                          {t('markdown.import.table.filename')}
+                        </th>
+                        <th className="px-3 py-2 font-medium">
+                          {t('markdown.import.table.title')}
+                        </th>
+                        <th className="px-3 py-2 font-medium">
+                          {t('markdown.import.table.slug')}
+                        </th>
+                        <th className="px-3 py-2 font-medium">
+                          {t('markdown.import.table.date')}
+                        </th>
+                        <th className="w-16 px-3 py-2 font-medium">
+                          {t('markdown.import.table.actions')}
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-neutral-100 dark:divide-neutral-800">
@@ -282,7 +310,9 @@ export function MarkdownRouteViewContent() {
                           </td>
                           <td className="px-3 py-2">
                             <Button
-                              aria-label={`删除 ${item.filename}`}
+                              aria-label={t('markdown.import.removeAria', {
+                                filename: item.filename,
+                              })}
                               className="h-8 px-2 text-red-600 dark:text-red-400"
                               onClick={() => removeParsedItem(item.filename)}
                               type="button"
@@ -298,9 +328,18 @@ export function MarkdownRouteViewContent() {
                 </div>
 
                 <div className="grid grid-cols-3 gap-3 text-xs text-neutral-500 dark:text-neutral-400">
-                  <Metric label="文件" value={parsedItems.length} />
-                  <Metric label="正文字符" value={totalBodyLength} />
-                  <Metric label="已选文件" value={files.length} />
+                  <Metric
+                    label={t('markdown.import.metric.files')}
+                    value={parsedItems.length}
+                  />
+                  <Metric
+                    label={t('markdown.import.metric.chars')}
+                    value={totalBodyLength}
+                  />
+                  <Metric
+                    label={t('markdown.import.metric.selected')}
+                    value={files.length}
+                  />
                 </div>
               </div>
             ) : null}
@@ -310,7 +349,7 @@ export function MarkdownRouteViewContent() {
                 disabled={!hasParsedData || importing}
                 onClick={() => {
                   if (!hasParsedData) {
-                    toast.warning('请先解析文件')
+                    toast.warning(t('markdown.import.parseFirst'))
                     return
                   }
                   setShowImportConfirm(true)
@@ -318,7 +357,13 @@ export function MarkdownRouteViewContent() {
                 type="button"
               >
                 <FileText aria-hidden="true" className="size-4" />
-                导入 {hasParsedData ? `${parsedItems.length} 条数据` : '数据'}
+                {t('markdown.import.submit', {
+                  label: hasParsedData
+                    ? t('markdown.import.submitCount', {
+                        count: parsedItems.length,
+                      })
+                    : t('markdown.import.submitNoData'),
+                })}
               </Button>
             </div>
           </div>
@@ -326,9 +371,9 @@ export function MarkdownRouteViewContent() {
 
         <section className="bg-white dark:bg-neutral-950">
           <SectionHeader
-            description="导出所有博文和日记为 Hexo YAML 风格 Markdown 压缩包。"
+            description={t('markdown.export.description')}
             icon={<FileDown aria-hidden="true" className="size-5" />}
-            title="导出为 Markdown"
+            title={t('markdown.export.title')}
           />
 
           <div className="space-y-5 p-5">
@@ -350,10 +395,10 @@ export function MarkdownRouteViewContent() {
                   />
                   <span className="min-w-0 flex-1">
                     <span className="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                      {option.label}
+                      {t(option.labelKey)}
                     </span>
                     <span className="mt-1 block text-xs text-neutral-500">
-                      {option.description}
+                      {t(option.descriptionKey)}
                     </span>
                   </span>
                 </label>
@@ -369,7 +414,7 @@ export function MarkdownRouteViewContent() {
                 type="button"
               >
                 <Download aria-hidden="true" className="size-4" />
-                导出 Markdown 压缩包
+                {t('markdown.export.submit')}
               </Button>
             </div>
           </div>

@@ -6,6 +6,7 @@ import {
   Loader2,
   XCircle,
 } from 'lucide-react'
+import type { TranslationKey } from '~/i18n/types'
 import type { LucideIcon } from 'lucide-react'
 
 import { CronTaskStatus, CronTaskType } from '~/api/cron-tasks'
@@ -17,25 +18,26 @@ export const taskListPageSize = 50
 export const taskRefetchInterval = 5000
 export const definitionStaleTime = 60000
 
-export const taskTypeLabels: Record<CronTaskType, string> = {
-  [CronTaskType.CleanAccessRecord]: '清理访问记录',
-  [CronTaskType.CleanCommentUploads]: '清理评论图片上传',
-  [CronTaskType.CleanTempDirectory]: '清理临时文件',
-  [CronTaskType.DeleteExpiredJWT]: '删除过期 JWT',
-  [CronTaskType.PushToBaiduSearch]: '推送百度搜索',
-  [CronTaskType.PushToBingSearch]: '推送 Bing 搜索',
-  [CronTaskType.RebuildSearchIndex]: '重建搜索索引',
-  [CronTaskType.ResetIPAccess]: '清理 IP 访问记录',
-  [CronTaskType.ResetLikedOrReadArticleRecord]: '清理喜欢数',
+export const taskTypeLabelKeys: Record<CronTaskType, TranslationKey> = {
+  [CronTaskType.CleanAccessRecord]: 'cron.taskType.cleanAccessRecord',
+  [CronTaskType.CleanCommentUploads]: 'cron.taskType.cleanCommentUploads',
+  [CronTaskType.CleanTempDirectory]: 'cron.taskType.cleanTempDirectory',
+  [CronTaskType.DeleteExpiredJWT]: 'cron.taskType.deleteExpiredJWT',
+  [CronTaskType.PushToBaiduSearch]: 'cron.taskType.pushToBaiduSearch',
+  [CronTaskType.PushToBingSearch]: 'cron.taskType.pushToBingSearch',
+  [CronTaskType.RebuildSearchIndex]: 'cron.taskType.rebuildSearchIndex',
+  [CronTaskType.ResetIPAccess]: 'cron.taskType.resetIPAccess',
+  [CronTaskType.ResetLikedOrReadArticleRecord]:
+    'cron.taskType.resetLikedOrReadArticleRecord',
 }
 
-export const taskStatusLabels: Record<CronTaskStatus, string> = {
-  [CronTaskStatus.Cancelled]: '已取消',
-  [CronTaskStatus.Completed]: '已完成',
-  [CronTaskStatus.Failed]: '失败',
-  [CronTaskStatus.PartialFailed]: '部分失败',
-  [CronTaskStatus.Pending]: '等待中',
-  [CronTaskStatus.Running]: '执行中',
+export const taskStatusLabelKeys: Record<CronTaskStatus, TranslationKey> = {
+  [CronTaskStatus.Cancelled]: 'cron.taskStatus.cancelled',
+  [CronTaskStatus.Completed]: 'cron.taskStatus.completed',
+  [CronTaskStatus.Failed]: 'cron.taskStatus.failed',
+  [CronTaskStatus.PartialFailed]: 'cron.taskStatus.partialFailed',
+  [CronTaskStatus.Pending]: 'cron.taskStatus.pending',
+  [CronTaskStatus.Running]: 'cron.taskStatus.running',
 }
 
 export const taskStatusIcons: Record<CronTaskStatus, LucideIcon> = {
@@ -71,18 +73,26 @@ export const taskStatusIconClassNames: Record<CronTaskStatus, string> = {
   [CronTaskStatus.Running]: 'animate-spin text-blue-500',
 }
 
-export const statusOptions = [
-  { label: '全部状态', value: '' },
+export const statusOptionKeys: Array<{
+  labelKey?: TranslationKey
+  labelText?: string
+  value: string
+}> = [
+  { labelKey: 'cron.filter.allStatus', value: '' },
   ...Object.values(CronTaskStatus).map((status) => ({
-    label: taskStatusLabels[status],
+    labelKey: taskStatusLabelKeys[status],
     value: status,
   })),
 ]
 
-export const typeOptions = [
-  { label: '全部类型', value: '' },
+export const typeOptionKeys: Array<{
+  labelKey?: TranslationKey
+  labelText?: string
+  value: string
+}> = [
+  { labelKey: 'cron.filter.allType', value: '' },
   ...Object.values(CronTaskType).map((type) => ({
-    label: taskTypeLabels[type],
+    labelKey: taskTypeLabelKeys[type],
     value: type,
   })),
 ]

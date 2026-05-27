@@ -1,4 +1,7 @@
 import type { ArticleInfo } from '~/api/ai'
+import type { TranslationKey, TranslationValues } from '~/i18n/types'
+
+type Translator = (key: TranslationKey, values?: TranslationValues) => string
 
 export type AiSurface =
   | 'entries'
@@ -16,7 +19,7 @@ export type GroupedResourceItem = {
 }
 
 export type GroupedItemAction = {
-  getSuccessMessage?: (result: unknown) => null | string
+  getSuccessMessage?: (result: unknown, t: Translator) => null | string
   label: string
   run: () => Promise<unknown>
 }

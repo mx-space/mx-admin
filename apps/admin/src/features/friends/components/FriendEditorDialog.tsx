@@ -6,7 +6,8 @@ import { toast } from 'sonner'
 import type { LinkModel } from '~/models/link'
 
 import { createLink, updateLink } from '~/api/links'
-import { LinkState, LinkStateNameMap, LinkType } from '~/models/link'
+import { useI18n } from '~/i18n'
+import { LinkState, LinkStateNameKeys, LinkType } from '~/models/link'
 import { Button } from '~/ui/primitives/button'
 import { SelectField } from '~/ui/primitives/select'
 import { TextInput } from '~/ui/primitives/text-field'
@@ -17,6 +18,7 @@ export function FriendEditorDialog(props: {
   onSuccess: () => Promise<void>
   open: boolean
 }) {
+  const { t } = useI18n()
   const [name, setName] = useState('')
   const [avatar, setAvatar] = useState('')
   const [url, setUrl] = useState('')
@@ -53,7 +55,7 @@ export function FriendEditorDialog(props: {
       return createLink(data)
     },
     onSuccess: async () => {
-      toast.success('操作成功')
+      toast.success(t('friends.toast.saved'))
       await props.onSuccess()
     },
   })
@@ -62,7 +64,7 @@ export function FriendEditorDialog(props: {
     event?.preventDefault()
 
     if (!name.trim() || !url.trim()) {
-      setError('名称和网址不可为空')
+      setError(t('friends.editor.validate.required'))
       return
     }
 
@@ -83,10 +85,14 @@ export function FriendEditorDialog(props: {
           <form onSubmit={handleSubmit}>
             <div className="flex items-center justify-between border-b border-neutral-200 px-5 py-4 dark:border-neutral-800">
               <Dialog.Title className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
-                {isEdit ? `编辑: ${props.link?.name}` : '新增友链'}
+                {isEdit
+                  ? t('friends.editor.editTitle', {
+                      name: props.link?.name ?? '',
+                    })
+                  : t('friends.editor.createTitle')}
               </Dialog.Title>
               <Dialog.Close
-                aria-label="关闭"
+                aria-label={t('common.close')}
                 className="rounded p-1 text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-600 dark:hover:bg-neutral-800"
               >
                 <X aria-hidden="true" className="size-5" />
@@ -95,27 +101,42 @@ export function FriendEditorDialog(props: {
 
             <div className="grid gap-4 px-5 py-4">
               <TextInput
-                label="名字"
+                label={t('friends.editor.field.name')}
                 onChange={setName}
                 required
                 value={name}
               />
-              <TextInput label="头像" onChange={setAvatar} value={avatar} />
-              <TextInput label="网址" onChange={setUrl} required value={url} />
               <TextInput
-                label="描述"
+                label={t('friends.editor.field.avatar')}
+                onChange={setAvatar}
+                value={avatar}
+              />
+              <TextInput
+                label={t('friends.editor.field.url')}
+                onChange={setUrl}
+                required
+                value={url}
+              />
+              <TextInput
+                label={t('friends.editor.field.description')}
                 onChange={setDescription}
                 value={description}
               />
               <label className="grid gap-1.5 text-sm">
                 <span className="font-medium text-neutral-700 dark:text-neutral-300">
-                  类型
+                  {t('friends.editor.field.type')}
                 </span>
                 <SelectField
                   onValueChange={setType}
                   options={[
-                    { label: '朋友', value: LinkType.Friend },
-                    { label: '收藏', value: LinkType.Collection },
+                    {
+                      label: t('friends.row.typeFriend'),
+                      value: LinkType.Friend,
+                    },
+                    {
+                      label: t('friends.row.typeCollection'),
+                      value: LinkType.Collection,
+                    },
                   ]}
                   triggerClassName="h-10"
                   value={type}
@@ -124,13 +145,13 @@ export function FriendEditorDialog(props: {
               {isEdit ? (
                 <label className="grid gap-1.5 text-sm">
                   <span className="font-medium text-neutral-700 dark:text-neutral-300">
-                    状态
+                    {t('friends.editor.field.state')}
                   </span>
                   <SelectField
                     onValueChange={setState}
-                    options={Object.entries(LinkStateNameMap).map(
-                      ([key, label]) => ({
-                        label,
+                    options={Object.entries(LinkStateNameKeys).map(
+                      ([key, labelKey]) => ({
+                        label: t(labelKey),
                         value: LinkState[key as keyof typeof LinkState],
                       }),
                     )}
@@ -149,10 +170,10 @@ export function FriendEditorDialog(props: {
                 className="inline-flex h-9 items-center justify-center rounded border border-neutral-200 bg-white px-3 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-200 dark:hover:bg-neutral-900"
                 type="button"
               >
-                取消
+                {t('common.cancel')}
               </Dialog.Close>
               <Button disabled={mutation.isPending} type="submit">
-                确定
+                {t('friends.editor.submit')}
               </Button>
             </div>
           </form>

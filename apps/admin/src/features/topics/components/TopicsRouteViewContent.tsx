@@ -7,6 +7,7 @@ import type { TopicFormMode } from '../types/topics'
 
 import { deleteTopic, getTopics } from '~/api/topics'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { CompactPagination } from '~/ui/data/compact-pagination'
 import { MasterDetailLayout } from '~/ui/layout/page-layout'
 import { Button } from '~/ui/primitives/button'
@@ -25,6 +26,7 @@ import { TopicListSkeleton } from './TopicListSkeleton'
 import { TopicRow } from './TopicRow'
 
 export function TopicsRouteViewContent() {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const [searchParams, setSearchParams] = useSearchParams()
   const searchParamsKey = searchParams.toString()
@@ -74,9 +76,9 @@ export function TopicsRouteViewContent() {
   const deleteMutation = useMutation({
     mutationFn: deleteTopic,
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '删除专栏失败')),
+      toast.error(getErrorMessage(error, t('topics.list.deleteFailed'))),
     onSuccess: async () => {
-      toast.success('专栏已删除')
+      toast.success(t('topics.list.deleteSuccess'))
       setSelectedId('')
       await invalidateTopics()
     },
@@ -99,11 +101,13 @@ export function TopicsRouteViewContent() {
             <div className="min-w-0">
               <h2 className="inline-flex items-center gap-2 text-sm font-medium">
                 <Hash aria-hidden="true" className="size-4" />
-                专栏列表
+                {t('topics.list.title')}
               </h2>
             </div>
             <span className="text-xs text-neutral-500 dark:text-neutral-400">
-              {pagination ? `${pagination.total} 个` : '加载中'}
+              {pagination
+                ? t('topics.list.count', { count: pagination.total })
+                : t('common.loading')}
             </span>
             <Button
               onClick={() => setFormMode({ kind: 'create' })}
@@ -111,7 +115,7 @@ export function TopicsRouteViewContent() {
               variant="subtle"
             >
               <Plus aria-hidden="true" className="size-4" />
-              新建
+              {t('topics.list.new')}
             </Button>
           </div>
 
@@ -137,7 +141,7 @@ export function TopicsRouteViewContent() {
           {pagination && pagination.totalPages > 1 ? (
             <div className="flex shrink-0 items-center justify-between gap-3 border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
               <span className="text-xs tabular-nums text-neutral-500 dark:text-neutral-400">
-                第 {pagination.page} 页
+                {t('topics.notes.pageIndicator', { page: pagination.page })}
               </span>
               <CompactPagination
                 onPageChange={setPage}
@@ -158,7 +162,11 @@ export function TopicsRouteViewContent() {
               deleting={deleteMutation.isPending}
               onBack={() => setSelectedId('')}
               onDelete={(topic) => {
-                if (window.confirm(`确认删除「${topic.name}」？`)) {
+                if (
+                  window.confirm(
+                    t('topics.detail.confirmDelete', { name: topic.name }),
+                  )
+                ) {
                   deleteMutation.mutate(topic.id)
                 }
               }}

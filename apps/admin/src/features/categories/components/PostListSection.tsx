@@ -1,5 +1,7 @@
 import type { PostModel } from '~/models/post'
 
+import { useI18n } from '~/i18n'
+
 import { PostListRow } from './PostListRow'
 
 export function PostListSection(props: {
@@ -8,6 +10,7 @@ export function PostListSection(props: {
   posts: PostModel[]
   title: string
 }) {
+  const { t } = useI18n()
   return (
     <section>
       <div className="mb-3 flex items-center justify-between">
@@ -16,7 +19,7 @@ export function PostListSection(props: {
         </h3>
         {!props.loading && props.posts.length > 0 ? (
           <span className="text-xs text-neutral-400">
-            {props.posts.length} 篇
+            {t('categories.section.postsCount', { count: props.posts.length })}
           </span>
         ) : null}
       </div>

@@ -1,10 +1,12 @@
 import { ChevronLeft, PartyPopper } from 'lucide-react'
 
+import { useI18n } from '~/i18n'
 import { showConfetti } from '~/utils/confetti'
 
 import { primaryButtonClassName, secondaryButtonClassName } from '../constants'
 
 export function SetupCompleteStep(props: { onPrev: () => void }) {
+  const { t } = useI18n()
   const complete = () => {
     localStorage.setItem('to-setting', 'true')
     showConfetti()
@@ -20,7 +22,7 @@ export function SetupCompleteStep(props: { onPrev: () => void }) {
       </div>
 
       <p className="mb-4 text-center text-sm text-white/80">
-        所有配置已完成，点击下方按钮开始使用
+        {t('setup.complete.description')}
       </p>
 
       <div className="flex gap-3">
@@ -30,14 +32,14 @@ export function SetupCompleteStep(props: { onPrev: () => void }) {
           type="button"
         >
           <ChevronLeft aria-hidden="true" className="mr-1 size-4" />
-          返回
+          {t('common.back')}
         </button>
         <button
           className={primaryButtonClassName}
           onClick={complete}
           type="button"
         >
-          LINK START
+          {t('setup.complete.submit')}
         </button>
       </div>
     </div>

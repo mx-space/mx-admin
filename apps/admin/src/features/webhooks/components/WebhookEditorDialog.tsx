@@ -11,6 +11,7 @@ import {
   getWebhookEvents,
   updateWebhook,
 } from '~/api/webhooks'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Checkbox } from '~/ui/primitives/checkbox'
 import { Scroll } from '~/ui/primitives/scroll'
@@ -25,6 +26,7 @@ export function WebhookEditorDialog(props: {
   open: boolean
   webhook: WebhookModel | null
 }) {
+  const { t } = useI18n()
   const [payloadUrl, setPayloadUrl] = useState('')
   const [secret, setSecret] = useState('')
   const [enabled, setEnabled] = useState(true)
@@ -66,7 +68,9 @@ export function WebhookEditorDialog(props: {
       return createWebhook({ ...data, secret: secret.trim() || '' })
     },
     onSuccess: async (webhook) => {
-      toast.success(isEdit ? 'Webhook 更新成功' : 'Webhook 创建成功')
+      toast.success(
+        isEdit ? t('webhooks.toast.updated') : t('webhooks.toast.created'),
+      )
       await props.onSuccess(webhook)
     },
   })
@@ -75,12 +79,12 @@ export function WebhookEditorDialog(props: {
     event?.preventDefault()
 
     if (!payloadUrl.trim()) {
-      setError('Payload URL 不可为空')
+      setError(t('webhooks.editor.validate.urlRequired'))
       return
     }
 
     if (events.length === 0) {
-      setError('至少选择一个触发事件')
+      setError(t('webhooks.editor.validate.eventRequired'))
       return
     }
 
@@ -101,10 +105,12 @@ export function WebhookEditorDialog(props: {
           <form className="flex max-h-[90vh] flex-col" onSubmit={handleSubmit}>
             <div className="flex items-center justify-between border-b border-neutral-200 px-5 py-4 dark:border-neutral-800">
               <Dialog.Title className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
-                {isEdit ? '编辑 Webhook' : '创建 Webhook'}
+                {isEdit
+                  ? t('webhooks.editor.editTitle')
+                  : t('webhooks.editor.createTitle')}
               </Dialog.Title>
               <Dialog.Close
-                aria-label="关闭"
+                aria-label={t('common.close')}
                 className="rounded p-1 text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-600 dark:hover:bg-neutral-800"
               >
                 <X aria-hidden="true" className="size-5" />
@@ -122,14 +128,19 @@ export function WebhookEditorDialog(props: {
               <TextInput
                 label="Secret"
                 onChange={setSecret}
-                placeholder={isEdit ? '留空保持不变' : '可选的签名密钥'}
+                placeholder={
+                  isEdit
+                    ? t('webhooks.editor.placeholder.secret.edit')
+                    : t('webhooks.editor.placeholder.secret.create')
+                }
                 type="password"
                 value={secret}
               />
 
               <fieldset className="grid gap-2">
                 <legend className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                  触发事件 <span className="text-red-500">*</span>
+                  {t('webhooks.editor.events')}{' '}
+                  <span className="text-red-500">*</span>
                 </legend>
                 <label className="flex items-center gap-2 rounded border border-neutral-200 px-3 py-2 text-sm dark:border-neutral-800">
                   <Checkbox
@@ -138,7 +149,7 @@ export function WebhookEditorDialog(props: {
                       setEvents(checked ? ['all'] : [])
                     }
                   />
-                  全部事件
+                  {t('webhooks.editor.allEvents')}
                 </label>
                 <Scroll
                   className="rounded border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900/50"
@@ -169,7 +180,7 @@ export function WebhookEditorDialog(props: {
 
               <fieldset className="grid gap-2">
                 <legend className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                  触发范围
+                  {t('webhooks.editor.scope')}
                 </legend>
                 <div className="flex flex-wrap gap-3">
                   {scopeOptions.map((option) => (
@@ -187,7 +198,7 @@ export function WebhookEditorDialog(props: {
                           )
                         }
                       />
-                      {option.label}
+                      {t(option.labelKey)}
                     </label>
                   ))}
                 </div>
@@ -195,7 +206,7 @@ export function WebhookEditorDialog(props: {
 
               <Switch
                 checked={enabled}
-                label="启用状态"
+                label={t('webhooks.editor.enabled')}
                 onCheckedChange={setEnabled}
               />
 
@@ -209,10 +220,10 @@ export function WebhookEditorDialog(props: {
                 className="inline-flex h-9 items-center justify-center rounded border border-neutral-200 bg-white px-3 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-200 dark:hover:bg-neutral-900"
                 type="button"
               >
-                取消
+                {t('common.cancel')}
               </Dialog.Close>
               <Button disabled={mutation.isPending} type="submit">
-                {isEdit ? '保存' : '创建'}
+                {isEdit ? t('common.save') : t('common.create')}
               </Button>
             </div>
           </form>

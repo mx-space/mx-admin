@@ -1,5 +1,6 @@
 import type { LucideIcon } from 'lucide-react'
 
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 
 import { formatNumber } from '../utils/dashboard'
@@ -12,6 +13,7 @@ export function ActionCard(props: {
   primaryLabel: string
   value: number | string
 }) {
+  const { t } = useI18n()
   const Icon = props.icon
 
   return (
@@ -30,7 +32,7 @@ export function ActionCard(props: {
           {props.primaryLabel}
         </Button>
         <Button onClick={props.onManage} type="button" variant="subtle">
-          管理
+          {t('dashboard.action.manage')}
         </Button>
       </div>
     </div>

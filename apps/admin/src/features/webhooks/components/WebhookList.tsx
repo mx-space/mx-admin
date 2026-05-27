@@ -1,5 +1,7 @@
 import type { WebhookModel } from '~/api/webhooks'
 
+import { useI18n } from '~/i18n'
+
 import { getScopeText } from '../utils/webhooks'
 import { StatusDot } from './WebhookPrimitives'
 
@@ -8,6 +10,7 @@ export function WebhookList(props: {
   selectedId: string | null
   webhooks: WebhookModel[]
 }) {
+  const { t } = useI18n()
   return (
     <>
       {props.webhooks.map((webhook) => (
@@ -28,13 +31,19 @@ export function WebhookList(props: {
               {webhook.payloadUrl || webhook.url}
             </div>
             <div className="mt-0.5 flex items-center gap-2 text-xs text-neutral-400">
-              <span>{webhook.events.length} 个事件</span>
+              <span>
+                {t('webhooks.list.eventsSuffix', {
+                  count: webhook.events.length,
+                })}
+              </span>
               <span>·</span>
-              <span>{getScopeText(webhook.scope)}</span>
+              <span>{getScopeText(webhook.scope, t)}</span>
             </div>
           </div>
           <span className="rounded-full bg-neutral-100 px-2 py-0.5 text-xs text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
-            {webhook.enabled ? '启用' : '禁用'}
+            {webhook.enabled
+              ? t('webhooks.list.enabled')
+              : t('webhooks.list.disabled')}
           </span>
         </button>
       ))}

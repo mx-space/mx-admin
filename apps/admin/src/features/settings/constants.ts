@@ -1,4 +1,5 @@
 import { ListPlus, Shield, User } from 'lucide-react'
+import type { TranslationKey } from '~/i18n/types'
 import type { MetaFieldType, MetaPresetScope } from '~/models/meta-preset'
 import type {
   AIProviderType,
@@ -20,36 +21,40 @@ export const aiProviderTypeOptions: Array<{
   { label: 'OpenRouter', value: 'openrouter' },
 ]
 
-export const socialOptions = [
+type SocialOption =
+  | { label: string; labelKey?: undefined; value: string }
+  | { label?: undefined; labelKey: TranslationKey; value: string }
+
+export const socialOptions: readonly SocialOption[] = [
   { label: 'GitHub', value: 'github' },
   { label: 'Weibo', value: 'weibo' },
-  { label: '网易云', value: 'netease' },
-  { label: '哔哩哔哩', value: 'bilibili' },
+  { labelKey: 'settings.social.netease', value: 'netease' },
+  { labelKey: 'settings.social.bilibili', value: 'bilibili' },
 ] as const
 
 export const staticGroupsBefore: SettingsGroupSummary[] = [
   {
-    description: '个人资料',
+    descriptionKey: 'settings.group.user.description',
     icon: User,
     key: 'user',
-    title: '用户',
+    titleKey: 'settings.group.user.title',
     type: 'user',
   },
 ]
 
 export const staticGroupsAfter: SettingsGroupSummary[] = [
   {
-    description: '登录、认证、凭证',
+    descriptionKey: 'settings.group.account.description',
     icon: Shield,
     key: 'account',
-    title: '账号安全',
+    titleKey: 'settings.group.account.title',
     type: 'account',
   },
   {
-    description: '预设模板',
+    descriptionKey: 'settings.group.metaPreset.description',
     icon: ListPlus,
     key: 'meta-preset',
-    title: 'Meta 预设',
+    titleKey: 'settings.group.metaPreset.title',
     type: 'meta-preset',
   },
 ]
@@ -59,43 +64,48 @@ export const oauthProviders = [
   { label: 'Google', type: 'google' },
 ] as const satisfies Array<{ label: string; type: OauthProviderType }>
 
-export const fieldTypeLabels: Record<MetaFieldType, string> = {
-  boolean: '开关',
-  checkbox: '复选框',
-  'multi-select': '多选',
-  number: '数字',
-  object: '对象',
-  select: '单选',
-  tags: '标签',
-  text: '文本',
-  textarea: '多行文本',
-  url: 'URL',
+export const fieldTypeLabelKeys: Record<MetaFieldType, TranslationKey> = {
+  boolean: 'settings.fieldType.boolean',
+  checkbox: 'settings.fieldType.checkbox',
+  'multi-select': 'settings.fieldType.multiSelect',
+  number: 'settings.fieldType.number',
+  object: 'settings.fieldType.object',
+  select: 'settings.fieldType.select',
+  tags: 'settings.fieldType.tags',
+  text: 'settings.fieldType.text',
+  textarea: 'settings.fieldType.textarea',
+  url: 'settings.fieldType.url',
 }
 
-export const scopeLabels: Record<MetaPresetScope, string> = {
-  both: '通用',
-  note: '笔记',
-  post: '博文',
+export const scopeLabelKeys: Record<MetaPresetScope, TranslationKey> = {
+  both: 'settings.scope.both',
+  note: 'settings.scope.note',
+  post: 'settings.scope.post',
 }
 
-export const fieldTypeOptions: Array<{ label: string; value: MetaFieldType }> =
-  [
-    { label: '文本', value: 'text' },
-    { label: '多行文本', value: 'textarea' },
-    { label: '数字', value: 'number' },
-    { label: 'URL', value: 'url' },
-    { label: '单选', value: 'select' },
-    { label: '多选', value: 'multi-select' },
-    { label: '复选框', value: 'checkbox' },
-    { label: '标签', value: 'tags' },
-    { label: '开关', value: 'boolean' },
-    { label: '对象', value: 'object' },
-  ]
+export const fieldTypeOptionKeys: Array<{
+  labelKey: TranslationKey
+  value: MetaFieldType
+}> = [
+  { labelKey: 'settings.fieldType.text', value: 'text' },
+  { labelKey: 'settings.fieldType.textarea', value: 'textarea' },
+  { labelKey: 'settings.fieldType.number', value: 'number' },
+  { labelKey: 'settings.fieldType.url', value: 'url' },
+  { labelKey: 'settings.fieldType.select', value: 'select' },
+  { labelKey: 'settings.fieldType.multiSelect', value: 'multi-select' },
+  { labelKey: 'settings.fieldType.checkbox', value: 'checkbox' },
+  { labelKey: 'settings.fieldType.tags', value: 'tags' },
+  { labelKey: 'settings.fieldType.boolean', value: 'boolean' },
+  { labelKey: 'settings.fieldType.object', value: 'object' },
+]
 
-export const scopeOptions: Array<{ label: string; value: MetaPresetScope }> = [
-  { label: '博文', value: 'post' },
-  { label: '笔记', value: 'note' },
-  { label: '通用', value: 'both' },
+export const scopeOptionKeys: Array<{
+  labelKey: TranslationKey
+  value: MetaPresetScope
+}> = [
+  { labelKey: 'settings.scope.post', value: 'post' },
+  { labelKey: 'settings.scope.note', value: 'note' },
+  { labelKey: 'settings.scope.both', value: 'both' },
 ]
 
 export const typesWithOptions: MetaFieldType[] = [

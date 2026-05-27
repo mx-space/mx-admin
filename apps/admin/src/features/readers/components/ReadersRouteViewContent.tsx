@@ -1,6 +1,7 @@
 import { Loader2, Users } from 'lucide-react'
 
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
 import { cn } from '~/utils/cn'
@@ -10,6 +11,7 @@ import { ReaderEmptyState } from './ReaderEmptyState'
 import { ReaderItem } from './ReaderItem'
 
 export function ReadersRouteViewContent() {
+  const { t } = useI18n()
   const {
     hasNextPage,
     loadMoreRef,
@@ -31,11 +33,13 @@ export function ReadersRouteViewContent() {
         <div className="min-w-0">
           <h2 className="inline-flex items-center gap-2 text-sm font-medium text-neutral-950 dark:text-neutral-50">
             <Users aria-hidden="true" className="size-4" />
-            读者
+            {t('readers.title')}
           </h2>
         </div>
         <span className="text-xs text-neutral-500 dark:text-neutral-400">
-          {pagination ? `${pagination.total} 位` : '加载中'}
+          {pagination
+            ? t('readers.countLabel', { count: pagination.total })
+            : t('readers.loading')}
         </span>
       </div>
 
@@ -61,7 +65,10 @@ export function ReadersRouteViewContent() {
       {pagination ? (
         <div className="flex shrink-0 items-center justify-between border-t border-neutral-200 px-4 py-3 text-sm text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
           <span>
-            已加载 {readers.length} / {pagination.total}
+            {t('readers.loaded', {
+              loaded: readers.length,
+              total: pagination.total,
+            })}
           </span>
           <Button
             disabled={!hasNextPage || readersQuery.isFetching}
@@ -72,7 +79,7 @@ export function ReadersRouteViewContent() {
             {readersQuery.isFetching ? (
               <Loader2 aria-hidden="true" className="size-4 animate-spin" />
             ) : null}
-            {hasNextPage ? '加载更多' : '已全部加载'}
+            {hasNextPage ? t('readers.loadMore') : t('readers.allLoaded')}
           </Button>
         </div>
       ) : null}

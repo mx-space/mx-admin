@@ -4,6 +4,8 @@ import type {
   SearchIndexRebuildStats,
 } from '../types/dashboard'
 
+import { translate } from '~/i18n/translate'
+
 import { closedUpdateTipsStorageKey } from '../constants'
 
 export function formatNumber(value: number | string) {
@@ -13,7 +15,13 @@ export function formatNumber(value: number | string) {
 }
 
 export function formatSearchIndexStats(result: SearchIndexRebuildStats) {
-  return `共 ${result.total}：新建 ${result.created} · 更新 ${result.updated} · 删除 ${result.deleted} · 跳过 ${result.skipped}`
+  return translate('dashboard.searchIndex.stats', {
+    created: result.created,
+    deleted: result.deleted,
+    skipped: result.skipped,
+    total: result.total,
+    updated: result.updated,
+  })
 }
 
 export function formatDateTime(value: string) {

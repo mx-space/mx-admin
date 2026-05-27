@@ -90,6 +90,10 @@ export function AdminShell(props: PropsWithChildren) {
                 activeCount={activeAiTaskCount}
                 fetching={isFetchingAiTaskCount}
                 onClick={() => navigate('/ai/tasks')}
+                title={t('shell.aiTask.title')}
+                ariaLabel={t('shell.aiTask.ariaLabel', {
+                  count: activeAiTaskCount,
+                })}
               />
             ) : null}
           </div>
@@ -133,13 +137,15 @@ function AiTaskFloatingButton(props: {
   activeCount: number
   fetching: boolean
   onClick: () => void
+  title: string
+  ariaLabel: string
 }) {
   return (
     <button
-      aria-label={`查看 AI 任务，当前 ${props.activeCount} 个任务处理中`}
+      aria-label={props.ariaLabel}
       className="outline-hidden absolute bottom-4 right-4 z-30 inline-flex h-10 items-center gap-2 rounded-full border border-neutral-950 bg-neutral-950 px-3 text-sm font-medium text-white shadow-lg transition-all hover:bg-neutral-800 focus-visible:ring-2 focus-visible:ring-[var(--color-primary-shallow)] dark:border-neutral-100 dark:bg-neutral-100 dark:text-neutral-950 dark:hover:bg-neutral-200"
       onClick={props.onClick}
-      title="AI 任务"
+      title={props.title}
       type="button"
     >
       <span className="relative inline-flex size-4 items-center justify-center">
@@ -151,7 +157,7 @@ function AiTaskFloatingButton(props: {
           />
         ) : null}
       </span>
-      <span>AI 任务</span>
+      <span>{props.title}</span>
       <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-white px-1.5 text-[11px] font-semibold tabular-nums text-neutral-950 dark:bg-neutral-950 dark:text-white">
         {props.activeCount > 99 ? '99+' : props.activeCount}
       </span>

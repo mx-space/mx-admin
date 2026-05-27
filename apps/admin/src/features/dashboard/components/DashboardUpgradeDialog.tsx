@@ -5,12 +5,14 @@ import { EventSourcePolyfill } from 'event-source-polyfill'
 import { toast } from 'sonner'
 
 import { API_URL } from '~/constants/env'
+import { useI18n } from '~/i18n'
 import { Scroll } from '~/ui/primitives/scroll'
 
 export function DashboardUpgradeDialog(props: {
   onClose: () => void
   open: boolean
 }) {
+  const { t } = useI18n()
   const [output, setOutput] = useState('')
   const [running, setRunning] = useState(false)
   const outputRef = useRef<HTMLDivElement | null>(null)
@@ -70,11 +72,13 @@ export function DashboardUpgradeDialog(props: {
         <Dialog.Popup className="outline-hidden fixed left-1/2 top-1/2 z-50 flex h-[min(82vh,42rem)] w-[min(92vw,46rem)] -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded border border-neutral-200 bg-white shadow-xl dark:border-neutral-800 dark:bg-neutral-950">
           <div className="flex items-center justify-between gap-3 border-b border-neutral-100 px-4 py-3 dark:border-neutral-800">
             <Dialog.Title className="text-base font-semibold text-neutral-950 dark:text-neutral-50">
-              面板更新输出
+              {t('dashboard.update.outputTitle')}
             </Dialog.Title>
             <div className="flex items-center gap-2">
               {running ? (
-                <span className="text-xs text-neutral-500">运行中...</span>
+                <span className="text-xs text-neutral-500">
+                  {t('dashboard.update.running')}
+                </span>
               ) : null}
               <Dialog.Close className="inline-flex size-8 items-center justify-center rounded text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-neutral-900 dark:hover:text-neutral-100">
                 <X aria-hidden="true" className="size-4" />
@@ -87,7 +91,7 @@ export function DashboardUpgradeDialog(props: {
             ref={outputRef}
           >
             <pre className="whitespace-pre-wrap break-all font-mono text-xs leading-5 text-neutral-100">
-              {output || '正在连接更新服务...'}
+              {output || t('dashboard.update.connecting')}
             </pre>
           </Scroll>
         </Dialog.Popup>

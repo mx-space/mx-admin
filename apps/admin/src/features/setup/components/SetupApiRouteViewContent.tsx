@@ -1,6 +1,7 @@
 import { Bug, Check, RotateCcw, Server } from 'lucide-react'
 import { FormEvent, useMemo, useState } from 'react'
 
+import { useI18n } from '~/i18n'
 import { Switch } from '~/ui/primitives/switch'
 import { TextInput } from '~/ui/primitives/text-field'
 
@@ -8,6 +9,7 @@ const storeApiUrlKey = 'mx-admin:setup-api:url'
 const storeGatewayUrlKey = 'mx-admin:setup-api:gateway'
 
 export function SetupApiRouteViewContent() {
+  const { t } = useI18n()
   const [apiUrl, setApiUrl] = useState(
     () =>
       localStorage.getItem('__api') ||
@@ -77,8 +79,10 @@ export function SetupApiRouteViewContent() {
         <Server aria-hidden="true" className="size-10" />
       </div>
 
-      <h1 className="mb-2 text-xl font-medium tracking-wide">设置 API</h1>
-      <p className="mb-8 text-sm text-white/70">配置后端服务地址</p>
+      <h1 className="mb-2 text-xl font-medium tracking-wide">
+        {t('setup.api.title')}
+      </h1>
+      <p className="mb-8 text-sm text-white/70">{t('setup.api.description')}</p>
 
       <form
         className="w-full max-w-md rounded-2xl border border-white/20 bg-white/10 p-6 backdrop-blur-xl"
@@ -86,14 +90,14 @@ export function SetupApiRouteViewContent() {
       >
         <SetupInput
           history={historyApiUrl}
-          label="API 地址"
+          label={t('setup.api.urlLabel')}
           onChange={setApiUrl}
           value={apiUrl}
         />
 
         <SetupInput
           history={historyGatewayUrl}
-          label="Gateway 地址"
+          label={t('setup.api.gatewayLabel')}
           onChange={setGatewayUrl}
           value={gatewayUrl}
         />
@@ -101,7 +105,7 @@ export function SetupApiRouteViewContent() {
         <div className="mb-6 text-white/90">
           <Switch
             checked={persist}
-            label="持久化保存"
+            label={t('setup.api.persistLabel')}
             onCheckedChange={setPersist}
           />
         </div>
@@ -109,19 +113,19 @@ export function SetupApiRouteViewContent() {
         <div className="grid grid-cols-3 gap-3">
           <SetupActionButton
             icon={Bug}
-            label="本地调试"
+            label={t('setup.api.actions.localDev')}
             onClick={handleLocalDev}
             type="button"
           />
           <SetupActionButton
             icon={RotateCcw}
-            label="重置"
+            label={t('setup.api.actions.reset')}
             onClick={handleReset}
             type="button"
           />
           <SetupActionButton
             icon={Check}
-            label="确定"
+            label={t('common.confirm')}
             tone="primary"
             type="submit"
           />

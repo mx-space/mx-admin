@@ -16,6 +16,7 @@ import {
 } from '~/api/snippets'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
 import { TerminalOutputDialog } from '~/features/snippets/components/terminal-output-dialog'
+import { useI18n } from '~/i18n'
 import { SnippetType } from '~/models/snippet'
 import { MasterDetailLayout } from '~/ui/layout/page-layout'
 import { Button } from '~/ui/primitives/button'
@@ -46,6 +47,7 @@ import {
 import { UpdateDependenciesModal } from './UpdateDependenciesModal'
 
 export function SnippetsRouteViewContent() {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const [searchParams, setSearchParams] = useSearchParams()
   const searchParamsKey = searchParams.toString()
@@ -147,9 +149,9 @@ export function SnippetsRouteViewContent() {
   const deleteMutation = useMutation({
     mutationFn: deleteSnippet,
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '删除失败')),
+      toast.error(getErrorMessage(error, t('snippets.toast.deleteFailed'))),
     onSuccess: async () => {
-      toast.success('片段已删除')
+      toast.success(t('snippets.toast.deleted'))
       setSelectedId(null)
       setShowDetailOnMobile(false)
       await invalidateSnippets()
@@ -159,9 +161,9 @@ export function SnippetsRouteViewContent() {
   const resetMutation = useMutation({
     mutationFn: resetFunctionSnippet,
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '重置失败')),
+      toast.error(getErrorMessage(error, t('snippets.toast.resetFailed'))),
     onSuccess: async () => {
-      toast.success('函数片段已重置')
+      toast.success(t('snippets.toast.reset'))
       await invalidateSnippets()
     },
   })
@@ -192,15 +194,17 @@ export function SnippetsRouteViewContent() {
               )}
             >
               <div className="min-w-0">
-                <h2 className="text-sm font-medium">配置与云函数</h2>
+                <h2 className="text-sm font-medium">{t('snippets.heading')}</h2>
               </div>
               <span className="text-xs text-neutral-500 dark:text-neutral-400">
-                {snippetsQuery.data?.pagination.total ?? 0} 个
+                {t('snippets.countSuffix', {
+                  count: snippetsQuery.data?.pagination.total ?? 0,
+                })}
               </span>
               <div className="flex items-center gap-2">
                 <Button onClick={startCreate} type="button" variant="subtle">
                   <Plus aria-hidden="true" className="size-4" />
-                  新建
+                  {t('snippets.action.create')}
                 </Button>
                 <Button
                   disabled={snippetsQuery.isFetching}
@@ -215,7 +219,7 @@ export function SnippetsRouteViewContent() {
                       snippetsQuery.isFetching && 'animate-spin',
                     )}
                   />
-                  刷新
+                  {t('snippets.action.refresh')}
                 </Button>
               </div>
             </div>
@@ -227,7 +231,7 @@ export function SnippetsRouteViewContent() {
                 variant="subtle"
               >
                 <Import aria-hidden="true" className="size-4" />
-                下载扩展包
+                {t('snippets.action.importPackage')}
               </Button>
               <Button
                 onClick={() => setDependenciesOpen(true)}
@@ -235,16 +239,16 @@ export function SnippetsRouteViewContent() {
                 variant="subtle"
               >
                 <PackagePlus aria-hidden="true" className="size-4" />
-                更新依赖
+                {t('snippets.action.updateDeps')}
               </Button>
             </div>
 
             <div className="grid gap-2 border-b border-neutral-200 p-3 dark:border-neutral-800">
               <SelectField
-                aria-label="片段类型筛选"
+                aria-label={t('snippets.filter.typeAria')}
                 onValueChange={setTypeFilter}
                 options={[
-                  { label: '全部类型', value: '' },
+                  { label: t('snippets.filter.allTypes'), value: '' },
                   ...snippetTypes.map((type) => ({ label: type, value: type })),
                 ]}
                 value={typeFilter}
@@ -292,7 +296,11 @@ export function SnippetsRouteViewContent() {
                 mode="edit"
                 onBack={() => setShowDetailOnMobile(false)}
                 onDelete={(snippet) => {
-                  if (window.confirm(`确认删除「${snippet.name}」？`)) {
+                  if (
+                    window.confirm(
+                      t('snippets.confirm.delete', { name: snippet.name }),
+                    )
+                  ) {
                     deleteMutation.mutate(snippet.id)
                   }
                 }}
@@ -303,7 +311,13 @@ export function SnippetsRouteViewContent() {
                 onOpenCompiled={() => setCompiledOpen(true)}
                 onOpenLogs={() => setLogsOpen(true)}
                 onReset={(snippet) => {
-                  if (window.confirm(`确认重置内置函数「${snippet.name}」？`)) {
+                  if (
+                    window.confirm(
+                      t('snippets.confirm.resetBuiltIn', {
+                        name: snippet.name,
+                      }),
+                    )
+                  ) {
                     resetMutation.mutate(snippet.id)
                   }
                 }}
@@ -338,8 +352,8 @@ export function SnippetsRouteViewContent() {
         initialPackages={installInitialPackages}
         onInstall={(packages) => {
           setTerminalOutput({
-            onFinish: () => toast.success('依赖安装完成'),
-            title: '安装依赖',
+            onFinish: () => toast.success(t('snippets.toast.installComplete')),
+            title: t('snippets.dialog.install.title'),
             url: getDependencyInstallUrl(packages),
           })
         }}
@@ -353,10 +367,10 @@ export function SnippetsRouteViewContent() {
         onInstall={(packageName, onFinish) => {
           setTerminalOutput({
             onFinish: () => {
-              toast.success('依赖更新完成')
+              toast.success(t('snippets.toast.updateComplete'))
               onFinish?.()
             },
-            title: `更新依赖：${packageName}`,
+            title: t('snippets.dialog.updateTitle', { name: packageName }),
             url: getDependencyInstallUrl(packageName),
           })
         }}
@@ -377,7 +391,7 @@ export function SnippetsRouteViewContent() {
         onClose={() => setTerminalOutput(null)}
         onFinish={terminalOutput?.onFinish}
         open={Boolean(terminalOutput)}
-        title={terminalOutput?.title ?? '终端输出'}
+        title={terminalOutput?.title ?? t('snippets.dialog.terminal.title')}
         url={terminalOutput?.url ?? null}
       />
     </>

@@ -1,5 +1,6 @@
 import type { CommentModel } from '~/models/comment'
 
+import { useI18n } from '~/i18n'
 import { Checkbox } from '~/ui/primitives/checkbox'
 import { cn } from '~/utils/cn'
 
@@ -13,8 +14,9 @@ export function CommentListItem(props: {
   onSelect: () => void
   selected: boolean
 }) {
+  const { t } = useI18n()
   const commentText = props.comment.isDeleted
-    ? '该评论已删除'
+    ? t('comments.deletedPlaceholder')
     : props.comment.text
 
   return (
@@ -30,7 +32,7 @@ export function CommentListItem(props: {
       onClick={props.onSelect}
     >
       <Checkbox
-        aria-label="选择评论"
+        aria-label={t('comments.list.selectComment')}
         checked={props.checked}
         className="mt-1 shrink-0"
         onCheckedChange={(checked) => props.onCheck(props.comment.id, checked)}
@@ -40,10 +42,12 @@ export function CommentListItem(props: {
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline gap-2">
           <span className="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
-            {props.comment.author || '匿名'}
+            {props.comment.author || t('comments.anonymous')}
           </span>
           {props.comment.parentCommentId ? (
-            <span className="text-xs text-neutral-400">回复</span>
+            <span className="text-xs text-neutral-400">
+              {t('comments.list.replyMark')}
+            </span>
           ) : null}
           <time
             className="ml-auto shrink-0 text-xs text-neutral-400"
@@ -57,7 +61,7 @@ export function CommentListItem(props: {
         </p>
         {props.comment.isWhispers ? (
           <span className="mt-2 inline-flex rounded-full bg-amber-100 px-1.5 py-0.5 text-xs font-medium text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">
-            悄悄话
+            {t('comments.whispers')}
           </span>
         ) : null}
       </div>

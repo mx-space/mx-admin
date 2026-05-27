@@ -8,6 +8,7 @@ import type {
 
 import { deleteEnrichmentCapture, recaptureEnrichment } from '~/api/enrichment'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
 import { cn } from '~/utils/cn'
@@ -27,22 +28,25 @@ export function CaptureDetail(props: {
   quota: EnrichmentCaptureQuota | null
   row: EnrichmentCaptureJoinedRow
 }) {
-  const recaptureDisabledReason = getRecaptureDisabledReason(props.quota)
+  const { t } = useI18n()
+  const recaptureDisabledReason = getRecaptureDisabledReason(props.quota, t)
   const recaptureMutation = useMutation({
     mutationFn: () => recaptureEnrichment(props.row.enrichmentId),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '重抓失败')),
+      toast.error(
+        getErrorMessage(error, t('enrichment.capture.recaptureFailed')),
+      ),
     onSuccess: async () => {
-      toast.success('已重新抓取')
+      toast.success(t('enrichment.capture.recaptured'))
       await props.invalidateAll()
     },
   })
   const deleteMutation = useMutation({
     mutationFn: () => deleteEnrichmentCapture(props.row.enrichmentId),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '删除失败')),
+      toast.error(getErrorMessage(error, t('enrichment.capture.deleteFailed'))),
     onSuccess: async () => {
-      toast.success('截图已删除')
+      toast.success(t('enrichment.capture.deleted'))
       props.onDeleted(props.row.enrichmentId)
       await props.invalidateAll()
     },
@@ -78,7 +82,7 @@ export function CaptureDetail(props: {
           href={props.row.url}
           rel="noreferrer"
           target="_blank"
-          title="打开原始链接"
+          title={t('enrichment.capture.openOriginal')}
         >
           <ExternalLink aria-hidden="true" className="size-4" />
         </a>
@@ -110,14 +114,16 @@ export function CaptureDetail(props: {
           <Field label="External ID">
             <Code>{props.row.externalId}</Code>
           </Field>
-          <Field label="尺寸">
+          <Field label={t('enrichment.capture.field.size')}>
             {props.row.width} x {props.row.height}
           </Field>
-          <Field label="体积">{formatBytes(props.row.bytes)}</Field>
-          <Field label="创建时间">
+          <Field label={t('enrichment.capture.field.bytes')}>
+            {formatBytes(props.row.bytes)}
+          </Field>
+          <Field label={t('enrichment.capture.field.createdAt')}>
             {relativeTimeFromNow(props.row.createdAt)}
           </Field>
-          <Field label="最近访问">
+          <Field label={t('enrichment.capture.field.lastAccessed')}>
             {relativeTimeFromNow(props.row.lastAccessedAt)}
           </Field>
           <Field label="Object Key">
@@ -128,7 +134,7 @@ export function CaptureDetail(props: {
           </Field>
         </div>
         {props.row.palette?.swatches?.length ? (
-          <DetailBlock title="调色板">
+          <DetailBlock title={t('enrichment.capture.paletteTitle')}>
             <div className="flex items-center gap-1.5">
               {props.row.palette.swatches.slice(0, 5).map((color) => (
                 <span
@@ -146,7 +152,7 @@ export function CaptureDetail(props: {
         <Button
           disabled={recaptureMutation.isPending || !!recaptureDisabledReason}
           onClick={() => recaptureMutation.mutate()}
-          title={recaptureDisabledReason ?? '重新截图'}
+          title={recaptureDisabledReason ?? t('enrichment.capture.recapture')}
           type="button"
           variant="subtle"
         >
@@ -155,13 +161,14 @@ export function CaptureDetail(props: {
           ) : (
             <Camera aria-hidden="true" className="size-4" />
           )}
-          重新截图
+          {t('enrichment.capture.recapture')}
         </Button>
         <Button
           className="border-red-200 text-red-600 hover:bg-red-50 dark:border-red-950 dark:text-red-400 dark:hover:bg-red-950/30"
           disabled={deleteMutation.isPending}
           onClick={() => {
-            if (window.confirm('确认删除此截图？')) deleteMutation.mutate()
+            if (window.confirm(t('enrichment.capture.confirmDelete')))
+              deleteMutation.mutate()
           }}
           type="button"
           variant="subtle"
@@ -171,7 +178,7 @@ export function CaptureDetail(props: {
           ) : (
             <Trash2 aria-hidden="true" className="size-4" />
           )}
-          删除
+          {t('enrichment.capture.delete')}
         </Button>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import { ChevronRight, RefreshCw } from 'lucide-react'
 import type { WebhookEventRecord } from '~/api/webhooks'
 
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 
 import { formatDateTime } from '../utils/webhooks'
@@ -12,6 +13,7 @@ export function DispatchRow(props: {
   onRedispatch: () => void
   onToggle: () => void
 }) {
+  const { t } = useI18n()
   return (
     <div>
       <button
@@ -57,7 +59,7 @@ export function DispatchRow(props: {
               variant="subtle"
             >
               <RefreshCw aria-hidden="true" className="size-3.5" />
-              重新推送
+              {t('webhooks.dispatch.redispatch')}
             </Button>
           </div>
           <div className="grid gap-3 lg:grid-cols-2">

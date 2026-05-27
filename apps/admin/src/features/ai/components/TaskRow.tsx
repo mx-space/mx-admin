@@ -2,9 +2,14 @@ import { Layers } from 'lucide-react'
 import type { AITask } from '~/api/ai'
 
 import { AITaskStatus } from '~/api/ai'
+import { useI18n } from '~/i18n'
 import { cn } from '~/utils/cn'
 
-import { statusIcon, taskStatusLabels, taskTypeLabels } from '../constants'
+import {
+  statusIcon,
+  taskStatusLabelKeys,
+  taskTypeLabelKeys,
+} from '../constants'
 import {
   formatRelativeTimestamp,
   getEffectiveStatus,
@@ -20,6 +25,7 @@ export function TaskRow(props: {
   selected: boolean
   task: AITask
 }) {
+  const { t } = useI18n()
   const effectiveStatus = getEffectiveStatus(props.task)
   const Icon = statusIcon[effectiveStatus]
   const progressLabel = getTaskProgressLabel(props.task)
@@ -46,19 +52,19 @@ export function TaskRow(props: {
       <div className="min-w-0 flex-1">
         <div className="flex min-w-0 items-center gap-2">
           <span className="truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
-            {taskTypeLabels[props.task.type]}
+            {t(taskTypeLabelKeys[props.task.type])}
           </span>
           {isBatchTask(props.task) ? (
             <Layers aria-hidden="true" className="size-3 text-blue-500" />
           ) : null}
         </div>
         <p className="mt-1 truncate text-xs text-neutral-500 dark:text-neutral-400">
-          {getTaskSummary(props.task)}
+          {getTaskSummary(props.task, t)}
         </p>
       </div>
       <div className="shrink-0 text-right">
         <StatusBadge status={effectiveStatus}>
-          {progressLabel ?? taskStatusLabels[effectiveStatus]}
+          {progressLabel ?? t(taskStatusLabelKeys[effectiveStatus])}
         </StatusBadge>
         <div className="mt-1 text-xs tabular-nums text-neutral-400">
           {formatRelativeTimestamp(props.task.createdAt)}

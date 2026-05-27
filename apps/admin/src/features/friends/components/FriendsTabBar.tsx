@@ -1,5 +1,6 @@
 import type { LinkStateCount } from '~/models/link'
 
+import { useI18n } from '~/i18n'
 import { LinkState } from '~/models/link'
 
 import { stateTabs } from '../constants'
@@ -9,6 +10,7 @@ export function FriendsTabBar(props: {
   onChange: (value: LinkState) => void
   value: LinkState
 }) {
+  const { t } = useI18n()
   return (
     <div className="inline-flex flex-wrap gap-1 rounded border border-neutral-200 bg-white p-1 dark:border-neutral-800 dark:bg-neutral-950">
       {stateTabs.map((tab) => {
@@ -27,7 +29,7 @@ export function FriendsTabBar(props: {
             onClick={() => props.onChange(tab.value)}
             type="button"
           >
-            {tab.label}
+            {t(tab.labelKey)}
             <span
               className={[
                 'rounded-full px-1.5 py-0.5 text-xs',

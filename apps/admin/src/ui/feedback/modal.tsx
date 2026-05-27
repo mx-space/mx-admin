@@ -5,6 +5,7 @@ import { useRef } from 'react'
 import type { LucideIcon } from 'lucide-react'
 import type { CSSProperties, ReactNode } from 'react'
 
+import { useI18n } from '~/i18n'
 import { PortalLayerScope, useFloatingZ } from '~/ui/feedback/portal-layer'
 import { cn } from '~/utils/cn'
 
@@ -111,6 +112,7 @@ export function ModalHeader(props: {
   subtitle?: ReactNode
   title: ReactNode
 }) {
+  const { t } = useI18n()
   const Icon = props.icon
   const showClose = props.showClose ?? true
   return (
@@ -137,7 +139,7 @@ export function ModalHeader(props: {
         {props.actions}
         {showClose ? (
           <ModalClose
-            aria-label="关闭"
+            aria-label={t('ui.modal.closeAria')}
             className="-mr-2.5 inline-flex size-9 items-center justify-center rounded text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-600 dark:hover:bg-neutral-900 dark:hover:text-neutral-200"
           >
             <X aria-hidden="true" className="size-4" />

@@ -2,11 +2,14 @@ import { dump, load } from 'js-yaml'
 import JSON5 from 'json5'
 import { toast } from 'sonner'
 import type { CreateSnippetData } from '~/api/snippets'
+import type { TranslationKey, TranslationValues } from '~/i18n/types'
 import type { SnippetModel } from '~/models/snippet'
 
 import { defaultServerlessFunction, SnippetType } from '~/models/snippet'
 
 import { snippetTypes } from '../constants'
+
+type Translator = (key: TranslationKey, values?: TranslationValues) => string
 
 export function normalizeSnippet(snippet: CreateSnippetData | SnippetModel) {
   return {
@@ -27,10 +30,11 @@ export function normalizeSnippet(snippet: CreateSnippetData | SnippetModel) {
 
 export function prepareSnippetPayload(
   form: CreateSnippetData,
+  t: Translator,
 ): CreateSnippetData {
   const payload: CreateSnippetData = {
     ...form,
-    raw: normalizeSnippetRawForSave(form.type, form.raw),
+    raw: normalizeSnippetRawForSave(form.type, form.raw, t),
   }
 
   if (!payload.metatype) delete payload.metatype
@@ -43,27 +47,31 @@ export function prepareSnippetPayload(
   return payload
 }
 
-export function normalizeSnippetRawForSave(type: SnippetType, raw: string) {
+export function normalizeSnippetRawForSave(
+  type: SnippetType,
+  raw: string,
+  t: Translator,
+) {
   switch (type) {
     case SnippetType.JSON:
       try {
         return JSON.stringify(JSON.parse(raw))
       } catch {
-        throw new Error('JSON 格式错误')
+        throw new Error(t('snippets.error.jsonInvalid'))
       }
     case SnippetType.YAML:
       try {
         load(raw)
         return raw
       } catch {
-        throw new Error('YAML 格式错误')
+        throw new Error(t('snippets.error.yamlInvalid'))
       }
     case SnippetType.JSON5:
       try {
         JSON5.parse(raw)
         return raw
       } catch {
-        throw new Error('JSON5 格式错误')
+        throw new Error(t('snippets.error.json5Invalid'))
       }
     case SnippetType.Function:
     case SnippetType.Text:
@@ -75,6 +83,7 @@ export function getSnippetDefaultsForType(
   type: SnippetType,
   previousType: SnippetType,
   previousRaw: string,
+  t: Translator,
 ): Partial<CreateSnippetData> {
   if (type === previousType) return {}
 
@@ -98,7 +107,7 @@ export function getSnippetDefaultsForType(
     previousType === SnippetType.JSON ||
     previousType === SnippetType.JSON5 ||
     previousType === SnippetType.YAML
-      ? readStructuredSnippetRaw(previousType, previousRaw)
+      ? readStructuredSnippetRaw(previousType, previousRaw, t)
       : { name: 'hello world' }
 
   return {
@@ -108,7 +117,11 @@ export function getSnippetDefaultsForType(
   }
 }
 
-export function readStructuredSnippetRaw(type: SnippetType, raw: string) {
+export function readStructuredSnippetRaw(
+  type: SnippetType,
+  raw: string,
+  t: Translator,
+) {
   try {
     switch (type) {
       case SnippetType.JSON:
@@ -122,7 +135,7 @@ export function readStructuredSnippetRaw(type: SnippetType, raw: string) {
         return raw
     }
   } catch {
-    toast.warning('当前内容无法转换，已使用默认内容')
+    toast.warning(t('snippets.toast.convertFallback'))
     return { name: 'hello world' }
   }
 }

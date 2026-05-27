@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Loader2, RefreshCw, Trash2 } from 'lucide-react'
-import { useEffect, useLayoutEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { toast } from 'sonner'
 import type { AITaskType } from '~/api/ai'
@@ -14,6 +14,7 @@ import {
   retryAiTask,
 } from '~/api/ai'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { CompactPagination } from '~/ui/data/compact-pagination'
 import { MasterDetailLayout } from '~/ui/layout/page-layout'
 import { Button } from '~/ui/primitives/button'
@@ -24,8 +25,8 @@ import { cn } from '~/utils/cn'
 import {
   aiTasksQueryKey,
   pageSize,
-  statusOptions,
-  typeOptions,
+  statusOptionKeys,
+  typeOptionKeys,
 } from '../constants'
 import {
   getErrorMessage,
@@ -43,6 +44,7 @@ import {
 } from './TaskStates'
 
 export function AiTasksSurface() {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const [searchParams, setSearchParams] = useSearchParams()
   const searchParamsKey = searchParams.toString()
@@ -78,6 +80,23 @@ export function AiTasksSurface() {
   const total = tasksQuery.data?.total ?? 0
   const pageCount = Math.max(1, Math.ceil(total / pageSize))
   const selectedTask = tasks.find((task) => task.id === selectedTaskId) ?? null
+
+  const statusOptions = useMemo(
+    () =>
+      statusOptionKeys.map((option) => ({
+        label: t(option.labelKey),
+        value: option.value,
+      })),
+    [t],
+  )
+  const typeOptions = useMemo(
+    () =>
+      typeOptionKeys.map((option) => ({
+        label: t(option.labelKey),
+        value: option.value,
+      })),
+    [t],
+  )
 
   useLayoutEffect(() => {
     const nextStatus = readTaskStatusFilter(searchParams.get('status'))
@@ -142,9 +161,13 @@ export function AiTasksSurface() {
   const retryMutation = useMutation({
     mutationFn: retryAiTask,
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '重试失败')),
+      toast.error(getErrorMessage(error, t('ai.tasks.toast.retryFailed'))),
     onSuccess: async (result) => {
-      toast.success(result.created ? '已创建重试任务' : '任务已存在')
+      toast.success(
+        result.created
+          ? t('ai.tasks.toast.retryCreated')
+          : t('ai.tasks.toast.taskExists'),
+      )
       await invalidateTasks()
     },
   })
@@ -152,16 +175,16 @@ export function AiTasksSurface() {
   const cancelMutation = useMutation({
     mutationFn: cancelAiTask,
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '取消失败')),
+      toast.error(getErrorMessage(error, t('ai.tasks.toast.cancelFailed'))),
     onSuccess: invalidateTasks,
   })
 
   const deleteMutation = useMutation({
     mutationFn: deleteAiTask,
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '删除失败')),
+      toast.error(getErrorMessage(error, t('ai.tasks.toast.deleteFailed'))),
     onSuccess: async () => {
-      toast.success('任务已删除')
+      toast.success(t('ai.tasks.toast.deleted'))
       setSelectedTaskId(null)
       setShowDetailOnMobile(false)
       await invalidateTasks()
@@ -175,9 +198,9 @@ export function AiTasksSurface() {
         status: AITaskStatus.Completed,
       }),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '清理失败')),
+      toast.error(getErrorMessage(error, t('ai.tasks.toast.clearFailed'))),
     onSuccess: async (result) => {
-      toast.success(`已清理 ${result.deleted} 个任务`)
+      toast.success(t('ai.tasks.toast.cleared', { count: result.deleted }))
       await invalidateTasks()
     },
   })
@@ -208,16 +231,16 @@ export function AiTasksSurface() {
             )}
           >
             <div className="min-w-0">
-              <h2 className="text-sm font-medium">AI 任务</h2>
+              <h2 className="text-sm font-medium">{t('ai.tasks.title')}</h2>
             </div>
             <span className="text-xs text-neutral-500 dark:text-neutral-400">
-              {total} 个
+              {t('ai.tasks.countSuffix', { count: total })}
             </span>
             <div className="flex flex-wrap items-center gap-2">
               <Button
                 disabled={clearCompletedMutation.isPending}
                 onClick={() => {
-                  if (window.confirm('确认清理所有已完成任务？')) {
+                  if (window.confirm(t('ai.confirm.clearCompleted'))) {
                     clearCompletedMutation.mutate()
                   }
                 }}
@@ -229,7 +252,7 @@ export function AiTasksSurface() {
                 ) : (
                   <Trash2 aria-hidden="true" className="size-4" />
                 )}
-                清理已完成
+                {t('ai.action.clearCompleted')}
               </Button>
               <Button
                 disabled={tasksQuery.isFetching}
@@ -244,14 +267,14 @@ export function AiTasksSurface() {
                     tasksQuery.isFetching && 'animate-spin',
                   )}
                 />
-                刷新
+                {t('ai.action.refresh')}
               </Button>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-2 border-b border-neutral-200 px-4 py-3 dark:border-neutral-800">
             <SelectField
-              aria-label="任务状态过滤"
+              aria-label={t('ai.filter.statusAria')}
               onValueChange={(value) => {
                 setStatusFilter(value)
                 setPage(1)
@@ -260,7 +283,7 @@ export function AiTasksSurface() {
               value={statusFilter}
             />
             <SelectField
-              aria-label="任务类型过滤"
+              aria-label={t('ai.filter.typeAria')}
               onValueChange={(value) => {
                 setTypeFilter(value)
                 setPage(1)
@@ -274,7 +297,7 @@ export function AiTasksSurface() {
               type="button"
               variant="subtle"
             >
-              重置筛选
+              {t('ai.action.resetFilters')}
             </Button>
           </div>
 
@@ -300,7 +323,7 @@ export function AiTasksSurface() {
           {pageCount > 1 ? (
             <div className="flex shrink-0 items-center justify-between gap-3 border-t border-neutral-200 px-4 py-3 dark:border-neutral-800">
               <span className="text-xs tabular-nums text-neutral-500 dark:text-neutral-400">
-                第 {page} 页
+                {t('ai.page.pageIndex', { page })}
               </span>
               <CompactPagination
                 onPageChange={setPage}
@@ -322,12 +345,16 @@ export function AiTasksSurface() {
               deleting={deleteMutation.isPending}
               onBack={() => setShowDetailOnMobile(false)}
               onCancel={(task) => {
-                if (window.confirm(`确认取消任务 ${task.id}？`)) {
+                if (
+                  window.confirm(t('ai.confirm.cancelTask', { id: task.id }))
+                ) {
                   cancelMutation.mutate(task.id)
                 }
               }}
               onDelete={(task) => {
-                if (window.confirm(`确认删除任务 ${task.id}？`)) {
+                if (
+                  window.confirm(t('ai.confirm.deleteTask', { id: task.id }))
+                ) {
                   deleteMutation.mutate(task.id)
                 }
               }}

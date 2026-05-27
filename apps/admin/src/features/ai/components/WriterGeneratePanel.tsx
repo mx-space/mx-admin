@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 
 import { AiQueryType, writerGenerate } from '~/api/ai'
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 import { SelectField } from '~/ui/primitives/select'
 import { TextArea, TextInput } from '~/ui/primitives/text-field'
@@ -12,6 +13,7 @@ import { getErrorMessage } from '../utils/ai'
 import { Field } from './AiPrimitives'
 
 export function WriterGeneratePanel() {
+  const { t } = useI18n()
   const [type, setType] = useState<AiQueryType>(AiQueryType.TitleSlug)
   const [text, setText] = useState('')
   const [title, setTitle] = useState('')
@@ -24,22 +26,22 @@ export function WriterGeneratePanel() {
         type,
       }),
     onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, '生成失败')),
+      toast.error(getErrorMessage(error, t('ai.toast.writerFailed'))),
   })
 
   return (
     <section className="bg-white p-4 dark:bg-neutral-950">
-      <h2 className="text-sm font-medium">标题与 Slug 生成</h2>
+      <h2 className="text-sm font-medium">{t('ai.writer.title')}</h2>
       <div className="mt-3 grid gap-3">
         <SelectField
-          aria-label="标题与 Slug 生成类型"
+          aria-label={t('ai.writer.typeAria')}
           onValueChange={setType}
           options={[
             {
-              label: '文本生成标题与 slug',
+              label: t('ai.writer.textToTitleSlug'),
               value: AiQueryType.TitleSlug,
             },
-            { label: '标题生成 slug', value: AiQueryType.Slug },
+            { label: t('ai.writer.titleToSlug'), value: AiQueryType.Slug },
           ]}
           value={type}
         />
@@ -47,14 +49,14 @@ export function WriterGeneratePanel() {
           <TextArea
             controlClassName="min-h-32 focus:border-neutral-400"
             onChange={setText}
-            placeholder="文章内容"
+            placeholder={t('ai.writer.placeholder.text')}
             value={text}
           />
         ) : (
           <TextInput
             controlClassName="h-9 focus:border-neutral-400"
             onChange={setTitle}
-            placeholder="标题"
+            placeholder={t('ai.writer.placeholder.title')}
             value={title}
           />
         )}
@@ -71,13 +73,17 @@ export function WriterGeneratePanel() {
           ) : (
             <WandSparkles aria-hidden="true" className="size-4" />
           )}
-          生成
+          {t('ai.action.generate')}
         </Button>
         {mutation.data ? (
           <div className="rounded border border-neutral-200 bg-neutral-50 p-3 text-sm dark:border-neutral-800 dark:bg-neutral-900">
-            <Field label="标题">{mutation.data.title ?? '-'}</Field>
+            <Field label={t('ai.writer.fieldTitle')}>
+              {mutation.data.title ?? '-'}
+            </Field>
             <div className="mt-3">
-              <Field label="Slug">{mutation.data.slug ?? '-'}</Field>
+              <Field label={t('ai.writer.fieldSlug')}>
+                {mutation.data.slug ?? '-'}
+              </Field>
             </div>
           </div>
         ) : null}

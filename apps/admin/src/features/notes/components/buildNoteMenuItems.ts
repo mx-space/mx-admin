@@ -1,10 +1,13 @@
 import { CloudSun, Copy, Smile } from 'lucide-react'
 import { toast } from 'sonner'
+import type { TranslationKey, TranslationValues } from '~/i18n/types'
 import type { NoteModel } from '~/models/note'
 import type { ListAction } from '~/ui/list-actions'
 import type { ContextMenuItem } from '~/ui/overlay/context-menu'
 
 import { presentNoteMetaEditModal } from './NoteMetaEditModal'
+
+type Translator = (key: TranslationKey, values?: TranslationValues) => string
 
 export interface BuildNoteMenuItemsOptions {
   actions: ReadonlyArray<ListAction<NoteModel>>
@@ -13,19 +16,24 @@ export interface BuildNoteMenuItemsOptions {
   onMoodChange: (next: string | null) => void
   onPublishToggle: (next: boolean) => void
   onWeatherChange: (next: string | null) => void
+  t: Translator
 }
 
-async function copyText(value: string | undefined | null, label: string) {
+async function copyText(
+  value: string | undefined | null,
+  label: string,
+  t: Translator,
+) {
   const str = value == null ? '' : String(value)
   if (!str) {
-    toast.error(`无 ${label} 可复制`)
+    toast.error(t('notes.toast.copyTargetMissing', { label }))
     return
   }
   try {
     await navigator.clipboard.writeText(str)
-    toast.success(`已复制${label}`)
+    toast.success(t('notes.toast.copySucceeded', { label }))
   } catch {
-    toast.error('复制失败')
+    toast.error(t('notes.toast.copyFailed'))
   }
 }
 
@@ -51,6 +59,7 @@ export function buildNoteMenuItems(
 ): ContextMenuItem[] {
   const find = (key: string) =>
     options.actions.find((action) => action.key === key)
+  const t = options.t
   const items: ContextMenuItem[] = []
 
   const edit = actionToItem(find('edit'), note)
@@ -63,14 +72,14 @@ export function buildNoteMenuItems(
     {
       checked: note.isPublished,
       key: 'publish',
-      label: '已发布',
+      label: t('notes.menu.publish'),
       onCheckedChange: options.onPublishToggle,
       type: 'checkbox',
     },
     {
       checked: note.bookmark,
       key: 'bookmark',
-      label: '收藏',
+      label: t('notes.menu.bookmark'),
       onCheckedChange: options.onBookmarkToggle,
       type: 'checkbox',
     },
@@ -78,13 +87,13 @@ export function buildNoteMenuItems(
     {
       icon: Smile,
       key: 'mood',
-      label: '修改心情',
+      label: t('notes.menu.mood.change'),
       onClick: async () => {
         const next = await presentNoteMetaEditModal({
           initialValue: note.mood ?? '',
-          label: '当前心情',
-          placeholder: '愉悦 / 平静 / 倦怠 ...',
-          title: '修改心情',
+          label: t('notes.menu.mood.label'),
+          placeholder: t('notes.menu.mood.placeholder'),
+          title: t('notes.menu.mood.change'),
         })
         if (next === undefined) return
         options.onMoodChange(next)
@@ -93,13 +102,13 @@ export function buildNoteMenuItems(
     {
       icon: CloudSun,
       key: 'weather',
-      label: '修改天气',
+      label: t('notes.menu.weather.change'),
       onClick: async () => {
         const next = await presentNoteMetaEditModal({
           initialValue: note.weather ?? '',
-          label: '当前天气',
-          placeholder: '晴 / 多云 / 雨 ...',
-          title: '修改天气',
+          label: t('notes.menu.weather.label'),
+          placeholder: t('notes.menu.weather.placeholder'),
+          title: t('notes.menu.weather.change'),
         })
         if (next === undefined) return
         options.onWeatherChange(next)
@@ -109,18 +118,20 @@ export function buildNoteMenuItems(
     {
       icon: Copy,
       key: 'copy-link',
-      label: '复制链接',
-      onClick: () => void copyText(options.externalHref, '链接'),
+      label: t('notes.menu.copy.link'),
+      onClick: () =>
+        void copyText(options.externalHref, t('notes.copy.label.link'), t),
     },
     {
       key: 'copy-id',
-      label: '复制 ID',
-      onClick: () => void copyText(note.id, 'ID'),
+      label: t('notes.menu.copy.id'),
+      onClick: () => void copyText(note.id, t('notes.copy.label.id'), t),
     },
     {
       key: 'copy-nid',
-      label: '复制 #编号',
-      onClick: () => void copyText(`#${note.nid}`, '编号'),
+      label: t('notes.menu.copy.nid'),
+      onClick: () =>
+        void copyText(`#${note.nid}`, t('notes.copy.label.nid'), t),
     },
   )
 

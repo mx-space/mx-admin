@@ -1,6 +1,7 @@
 import { Dialog } from '@base-ui/react/dialog'
 import { AlertCircle } from 'lucide-react'
 
+import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
 
 import { ImportType } from '../types/markdown'
@@ -12,6 +13,7 @@ export function ImportConfirmDialog(props: {
   onClose: () => void
   onConfirm: () => void
 }) {
+  const { t } = useI18n()
   return (
     <Dialog.Root
       onOpenChange={(open) => {
@@ -24,7 +26,7 @@ export function ImportConfirmDialog(props: {
         <Dialog.Popup className="outline-hidden fixed left-1/2 top-1/2 z-50 w-[min(92vw,28rem)] -translate-x-1/2 -translate-y-1/2 rounded border border-neutral-200 bg-white shadow-xl dark:border-neutral-800 dark:bg-neutral-950">
           <div className="border-b border-neutral-200 px-5 py-4 dark:border-neutral-800">
             <Dialog.Title className="text-sm font-semibold">
-              确认导入
+              {t('markdown.confirm.title')}
             </Dialog.Title>
           </div>
           <div className="space-y-4 p-5">
@@ -35,29 +37,29 @@ export function ImportConfirmDialog(props: {
               />
               <div>
                 <p className="text-sm text-neutral-700 dark:text-neutral-300">
-                  即将导入{' '}
-                  <strong className="tabular-nums">{props.itemCount}</strong>{' '}
-                  条数据到{' '}
+                  {t('markdown.confirm.message', { count: props.itemCount })}{' '}
                   <span className="rounded border border-neutral-200 bg-neutral-50 px-2 py-1 text-xs dark:border-neutral-800 dark:bg-neutral-900">
-                    {props.importType === ImportType.Post ? '博文' : '日记'}
+                    {props.importType === ImportType.Post
+                      ? t('markdown.type.post')
+                      : t('markdown.type.note')}
                   </span>
                 </p>
                 <p className="mt-2 text-xs text-neutral-500">
-                  此操作会创建新的内容，请确认数据无误。
+                  {t('markdown.confirm.note')}
                 </p>
               </div>
             </div>
 
             <div className="flex justify-end gap-2">
               <Button onClick={props.onClose} type="button" variant="subtle">
-                取消
+                {t('common.cancel')}
               </Button>
               <Button
                 disabled={props.importing}
                 onClick={props.onConfirm}
                 type="button"
               >
-                确认导入
+                {t('markdown.confirm.submit')}
               </Button>
             </div>
           </div>

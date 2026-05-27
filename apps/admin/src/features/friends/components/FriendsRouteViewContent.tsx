@@ -16,6 +16,7 @@ import {
   migrateLinkAvatars,
 } from '~/api/links'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
+import { useI18n } from '~/i18n'
 import { LinkState } from '~/models/link'
 import { Button } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
@@ -30,6 +31,7 @@ import { FriendsEmptyRow, FriendsSkeletonRows } from './FriendsPrimitives'
 import { FriendsTabBar } from './FriendsTabBar'
 
 export function FriendsRouteViewContent() {
+  const { t } = useI18n()
   const queryClient = useQueryClient()
   const [searchParams, setSearchParams] = useSearchParams()
   const searchParamsKey = searchParams.toString()
@@ -77,7 +79,7 @@ export function FriendsRouteViewContent() {
   const deleteMutation = useMutation({
     mutationFn: deleteLink,
     onSuccess: async () => {
-      toast.success('删除成功')
+      toast.success(t('friends.toast.deleted'))
       await invalidateLinks()
     },
   })
@@ -85,7 +87,7 @@ export function FriendsRouteViewContent() {
   const auditPassMutation = useMutation({
     mutationFn: auditPassLink,
     onSuccess: async () => {
-      toast.success('审核通过')
+      toast.success(t('friends.toast.auditPass'))
       await invalidateLinks()
     },
   })
@@ -101,7 +103,7 @@ export function FriendsRouteViewContent() {
       reason: string
     }) => auditLinkWithReason(id, { reason, state: nextState }),
     onSuccess: async () => {
-      toast.success('已发送友链结果')
+      toast.success(t('friends.toast.auditSent'))
       setAuditTarget(null)
       await invalidateLinks()
     },
@@ -118,14 +120,14 @@ export function FriendsRouteViewContent() {
           ]),
         ),
       )
-      toast.success('检查完成')
+      toast.success(t('friends.toast.healthDone'))
     },
   })
 
   const migrateMutation = useMutation({
     mutationFn: migrateLinkAvatars,
     onSuccess: async () => {
-      toast.success('迁移完成')
+      toast.success(t('friends.toast.migrated'))
       await invalidateLinks()
     },
   })
@@ -160,36 +162,42 @@ export function FriendsRouteViewContent() {
         <div className="min-w-0">
           <h2 className="inline-flex items-center gap-2 text-sm font-medium text-neutral-950 dark:text-neutral-50">
             <UserRound aria-hidden="true" className="size-4" />
-            友链
+            {t('friends.title')}
           </h2>
         </div>
         <div className="flex shrink-0 items-center gap-2">
           <span className="hidden text-xs text-neutral-500 sm:inline dark:text-neutral-400">
-            {pagination ? `${pagination.total} 条` : '加载中'}
+            {pagination
+              ? t('friends.countLabel', { count: pagination.total })
+              : t('common.loading')}
           </span>
           <Button onClick={openCreate} type="button" variant="subtle">
             <Plus aria-hidden="true" className="size-4" />
-            <span className="hidden sm:inline">新增友链</span>
+            <span className="hidden sm:inline">{t('friends.list.create')}</span>
           </Button>
           <Button
-            aria-label="检查友链可用性"
+            aria-label={t('friends.actions.checkHealthAria')}
             disabled={healthMutation.isPending}
             onClick={() => healthMutation.mutate()}
             type="button"
             variant="subtle"
           >
             <SearchCheck aria-hidden="true" className="size-4" />
-            <span className="hidden lg:inline">检查可用性</span>
+            <span className="hidden lg:inline">
+              {t('friends.actions.checkHealthLabel')}
+            </span>
           </Button>
           <Button
-            aria-label="迁移头像"
+            aria-label={t('friends.actions.migrateAvatarsAria')}
             disabled={migrateMutation.isPending}
             onClick={() => migrateMutation.mutate()}
             type="button"
             variant="subtle"
           >
             <RefreshCcw aria-hidden="true" className="size-4" />
-            <span className="hidden lg:inline">迁移头像</span>
+            <span className="hidden lg:inline">
+              {t('friends.actions.migrateAvatarsLabel')}
+            </span>
           </Button>
         </div>
       </div>
@@ -209,13 +217,27 @@ export function FriendsRouteViewContent() {
         <table className="w-full min-w-[920px] border-collapse text-left text-sm">
           <thead className="sticky top-0 z-10 border-b border-neutral-200 bg-neutral-50 text-xs uppercase text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400">
             <tr>
-              <th className="px-4 py-3 font-medium">名称</th>
-              <th className="px-4 py-3 font-medium">描述</th>
-              <th className="px-4 py-3 font-medium">网址</th>
-              <th className="px-4 py-3 font-medium">类型</th>
-              <th className="px-4 py-3 font-medium">邮箱</th>
-              <th className="px-4 py-3 font-medium">创建时间</th>
-              <th className="px-4 py-3 text-right font-medium">操作</th>
+              <th className="px-4 py-3 font-medium">
+                {t('friends.table.name')}
+              </th>
+              <th className="px-4 py-3 font-medium">
+                {t('friends.table.description')}
+              </th>
+              <th className="px-4 py-3 font-medium">
+                {t('friends.table.url')}
+              </th>
+              <th className="px-4 py-3 font-medium">
+                {t('friends.table.type')}
+              </th>
+              <th className="px-4 py-3 font-medium">
+                {t('friends.table.email')}
+              </th>
+              <th className="px-4 py-3 font-medium">
+                {t('friends.table.createdAt')}
+              </th>
+              <th className="px-4 py-3 text-right font-medium">
+                {t('friends.table.actions')}
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800">
@@ -248,7 +270,7 @@ export function FriendsRouteViewContent() {
             type="button"
             variant="subtle"
           >
-            上一页
+            {t('common.pagination.previousPage')}
           </Button>
           <span>
             {pagination.page} / {pagination.totalPages}
@@ -261,7 +283,7 @@ export function FriendsRouteViewContent() {
             type="button"
             variant="subtle"
           >
-            下一页
+            {t('common.pagination.nextPage')}
           </Button>
         </div>
       ) : null}
