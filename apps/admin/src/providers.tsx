@@ -16,9 +16,11 @@ export function AppProviders(props: PropsWithChildren) {
   return (
     <QueryClientProvider client={queryClient}>
       <FloatLayerProvider>
-        <I18nProvider>{props.children}</I18nProvider>
-        <ModalRoot />
-        <ContextMenuHost />
+        <I18nProvider>
+          {props.children}
+          <ModalRoot />
+          <ContextMenuHost />
+        </I18nProvider>
       </FloatLayerProvider>
       <Toaster
         closeButton

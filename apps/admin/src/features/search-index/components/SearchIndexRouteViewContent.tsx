@@ -138,9 +138,6 @@ export function SearchIndexRouteViewContent() {
 
   return (
     <MasterDetailLayout
-      defaultSize={40}
-      maxSize={50}
-      minSize={30}
       showDetailOnMobile={showDetailOnMobile}
       list={
         <section className="flex min-h-0 flex-col border-b border-neutral-200 lg:border-b-0 lg:border-r dark:border-neutral-800">

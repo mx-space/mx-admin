@@ -191,9 +191,6 @@ export function BackupRouteViewContent() {
 
   return (
     <MasterDetailLayout
-      defaultSize={0.38}
-      maxSize={0.45}
-      minSize={0.25}
       showDetailOnMobile={showDetailOnMobile}
       list={
         <section className="flex h-full min-h-0 flex-col">

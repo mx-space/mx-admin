@@ -79,7 +79,6 @@ export function ProjectsRouteViewContent() {
 
   return (
     <MasterDetailLayout
-      defaultSize={0.36}
       list={
         <section className="flex h-full min-h-0 flex-col border-r border-neutral-200 dark:border-neutral-800">
           <div

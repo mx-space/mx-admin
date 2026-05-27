@@ -14,7 +14,7 @@ import { cn } from '~/utils/cn'
 
 import { getErrorMessage } from '../utils/errors'
 import { CategoryDetail } from './CategoryDetail'
-import { CategoryFormDialog } from './CategoryFormDialog'
+import { presentCategoryForm } from './CategoryFormModal'
 import { CategoryRow } from './CategoryRow'
 import { DetailEmpty } from './DetailEmpty'
 import { EmptyList } from './EmptyList'
@@ -26,7 +26,6 @@ export function CategoriesRouteViewContent() {
   const { t } = useI18n()
   const queryClient = useQueryClient()
   const [selectedItem, setSelectedItem] = useState<SelectedItem | null>(null)
-  const [formMode, setFormMode] = useState<CategoryFormMode | null>(null)
   const [showDetailOnMobile, setShowDetailOnMobile] = useState(false)
 
   const categoriesQuery = useQuery({
@@ -91,11 +90,17 @@ export function CategoriesRouteViewContent() {
     setShowDetailOnMobile(true)
   }
 
+  const openForm = async (mode: CategoryFormMode) => {
+    const category = await presentCategoryForm(mode)
+    if (category) {
+      setSelectedItem({ id: category.id, kind: 'category' })
+      setShowDetailOnMobile(true)
+      await invalidateCategories()
+    }
+  }
+
   return (
     <MasterDetailLayout
-      defaultSize={0.34}
-      maxSize={0.44}
-      minSize={0.25}
       showDetailOnMobile={showDetailOnMobile}
       list={
         <section className="flex h-full min-h-0 flex-col border-b border-neutral-200 lg:border-b-0 lg:border-r dark:border-neutral-800">
@@ -115,7 +120,7 @@ export function CategoriesRouteViewContent() {
               {categories.length} / {tags.length}
             </span>
             <Button
-              onClick={() => setFormMode({ kind: 'create' })}
+              onClick={() => void openForm({ kind: 'create' })}
               type="button"
               variant="subtle"
             >
@@ -135,7 +140,7 @@ export function CategoriesRouteViewContent() {
                   action={
                     <Button
                       className="mt-3"
-                      onClick={() => setFormMode({ kind: 'create' })}
+                      onClick={() => void openForm({ kind: 'create' })}
                       type="button"
                     >
                       {t('categories.list.create')}
@@ -200,7 +205,7 @@ export function CategoriesRouteViewContent() {
                   deleteMutation.mutate(category.id)
                 }
               }}
-              onEdit={(category) => setFormMode({ category, kind: 'edit' })}
+              onEdit={(category) => void openForm({ category, kind: 'edit' })}
             />
           ) : selectedTag ? (
             <TagDetail
@@ -212,19 +217,6 @@ export function CategoriesRouteViewContent() {
           )}
         </section>
       }
-    >
-      {formMode ? (
-        <CategoryFormDialog
-          mode={formMode}
-          onClose={() => setFormMode(null)}
-          onSaved={async (category) => {
-            setFormMode(null)
-            setSelectedItem({ id: category.id, kind: 'category' })
-            setShowDetailOnMobile(true)
-            await invalidateCategories()
-          }}
-        />
-      ) : null}
-    </MasterDetailLayout>
+    />
   )
 }

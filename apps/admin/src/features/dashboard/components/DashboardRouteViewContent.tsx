@@ -18,10 +18,9 @@ import {
   TrendingUp,
   Users,
 } from 'lucide-react'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useNavigate } from 'react-router'
 import { toast } from 'sonner'
-import type { ReleaseModalState } from '../types/dashboard'
 
 import {
   cleanCache,
@@ -64,22 +63,18 @@ import { ActionCard } from './ActionCard'
 import { BarPanel } from './BarPanel'
 import { LiveCard, MaintenanceCard, StatCell } from './DashboardPrimitives'
 import { DashboardRuntimeFooter } from './DashboardRuntimeFooter'
-import { DashboardUpgradeDialog } from './DashboardUpgradeDialog'
+import { presentDashboardUpgrade } from './DashboardUpgradeModal'
 import { OwnerLoginStat } from './OwnerLoginStat'
 import { SearchIndexRebuildCard } from './SearchIndexRebuildCard'
 import { TagCloudPanel } from './TagCloudPanel'
 import { TopArticlesPanel } from './TopArticlesPanel'
 import { TrafficPanel } from './TrafficPanel'
-import { UpdateReleaseDialog } from './UpdateReleaseDialog'
+import { presentUpdateRelease } from './UpdateReleaseModal'
 
 export function DashboardRouteViewContent() {
   const { t } = useI18n()
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-  const [releaseModal, setReleaseModal] = useState<ReleaseModalState | null>(
-    null,
-  )
-  const [upgradeDialogOpen, setUpgradeDialogOpen] = useState(false)
   const notifiedUpdatesRef = useRef(new Set<string>())
   const statQuery = useQuery({
     queryFn: getAggregateStat,
@@ -205,7 +200,7 @@ export function DashboardRouteViewContent() {
             label: t('dashboard.update.update'),
             onClick: () => {
               writeClosedUpdateTip('dashboard', updates.dashboard)
-              setUpgradeDialogOpen(true)
+              presentDashboardUpgrade()
             },
           },
           duration: 10000,
@@ -229,7 +224,7 @@ export function DashboardRouteViewContent() {
             label: t('common.view'),
             onClick: () => {
               writeClosedUpdateTip('system', updates.system)
-              setReleaseModal({
+              presentUpdateRelease({
                 repo: 'mx-server',
                 title: t('dashboard.release.systemTitle'),
                 version: updates.system,
@@ -498,20 +493,11 @@ export function DashboardRouteViewContent() {
           void appInfoQuery.refetch()
           void updateQuery.refetch()
         }}
-        onOpenUpgrade={() => setUpgradeDialogOpen(true)}
+        onOpenUpgrade={() => presentDashboardUpgrade()}
         pageSource={window.pageSource || ''}
         refreshing={appInfoQuery.isFetching || updateQuery.isFetching}
         systemLatestVersion={updateQuery.data?.system}
         systemVersion={systemVersion}
-      />
-
-      <UpdateReleaseDialog
-        onClose={() => setReleaseModal(null)}
-        release={releaseModal}
-      />
-      <DashboardUpgradeDialog
-        onClose={() => setUpgradeDialogOpen(false)}
-        open={upgradeDialogOpen}
       />
     </Scroll>
   )

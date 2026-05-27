@@ -180,9 +180,6 @@ export function AiGroupedResourceSurface<
 
   return (
     <MasterDetailLayout
-      defaultSize={0.36}
-      maxSize={0.48}
-      minSize={0.28}
       showDetailOnMobile={showDetailOnMobile}
       list={
         <section className="flex h-full min-h-0 flex-col bg-white dark:bg-neutral-950">

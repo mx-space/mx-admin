@@ -29,7 +29,7 @@ import {
   saveBlob,
 } from '../utils/files'
 import { formatDateTime, getErrorMessage } from '../utils/format'
-import { ImportConfirmDialog } from './ImportConfirmDialog'
+import { presentImportConfirm } from './ImportConfirmModal'
 import { Metric } from './Metric'
 import { SectionHeader } from './SectionHeader'
 
@@ -42,7 +42,6 @@ export function MarkdownRouteViewContent() {
   const [parsing, setParsing] = useState(false)
   const [importing, setImporting] = useState(false)
   const [exporting, setExporting] = useState(false)
-  const [showImportConfirm, setShowImportConfirm] = useState(false)
   const [dragActive, setDragActive] = useState(false)
   const [exportConfig, setExportConfig] = useState<ExportConfig>({
     filenameSlug: false,
@@ -130,7 +129,6 @@ export function MarkdownRouteViewContent() {
       toast.error(getErrorMessage(error, t('markdown.import.importFailed')))
     } finally {
       setImporting(false)
-      setShowImportConfirm(false)
     }
   }
 
@@ -347,12 +345,18 @@ export function MarkdownRouteViewContent() {
             <div className="flex justify-end border-t border-neutral-200 pt-4 dark:border-neutral-800">
               <Button
                 disabled={!hasParsedData || importing}
-                onClick={() => {
+                onClick={async () => {
                   if (!hasParsedData) {
                     toast.warning(t('markdown.import.parseFirst'))
                     return
                   }
-                  setShowImportConfirm(true)
+                  const ok = await presentImportConfirm({
+                    importType,
+                    itemCount: parsedItems.length,
+                  })
+                  if (ok) {
+                    void confirmImport()
+                  }
                 }}
                 type="button"
               >
@@ -419,18 +423,6 @@ export function MarkdownRouteViewContent() {
             </div>
           </div>
         </section>
-
-        {showImportConfirm ? (
-          <ImportConfirmDialog
-            importing={importing}
-            importType={importType}
-            itemCount={parsedItems.length}
-            onClose={() => setShowImportConfirm(false)}
-            onConfirm={() => {
-              void confirmImport()
-            }}
-          />
-        ) : null}
       </Scroll>
     </section>
   )

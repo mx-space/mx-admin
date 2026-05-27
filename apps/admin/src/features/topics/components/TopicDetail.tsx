@@ -14,7 +14,7 @@ import { cn } from '~/utils/cn'
 
 import { topicNotesPageSize } from '../constants'
 import { getErrorMessage } from '../utils/errors'
-import { AddNotesToTopicDialog } from './AddNotesToTopicDialog'
+import { presentAddNotesToTopic } from './AddNotesToTopicModal'
 import { DetailError } from './DetailError'
 import { TopicDetailSkeleton } from './TopicDetailSkeleton'
 import { TopicNotesSection } from './TopicNotesSection'
@@ -30,7 +30,6 @@ export function TopicDetail(props: {
   const { t } = useI18n()
   const queryClient = useQueryClient()
   const [notesPage, setNotesPage] = useState(1)
-  const [isAddNoteOpen, setIsAddNoteOpen] = useState(false)
 
   const topicQuery = useQuery({
     queryFn: () => getTopic(props.topicId),
@@ -79,6 +78,17 @@ export function TopicDetail(props: {
       await queryClient.invalidateQueries({ queryKey: ['notes'] })
     },
   })
+
+  const openAddNotes = async () => {
+    const ok = await presentAddNotesToTopic(props.topicId)
+    if (ok) {
+      setNotesPage(1)
+      await queryClient.invalidateQueries({
+        queryKey: ['topics', 'notes', props.topicId],
+      })
+      await queryClient.invalidateQueries({ queryKey: ['notes'] })
+    }
+  }
 
   const promptIcon = () => {
     if (!topic) return
@@ -154,7 +164,7 @@ export function TopicDetail(props: {
             <TopicNotesSection
               loading={notesQuery.isLoading && notes.length === 0}
               notes={notes}
-              onAdd={() => setIsAddNoteOpen(true)}
+              onAdd={() => void openAddNotes()}
               onRemove={(note) => {
                 if (
                   window.confirm(
@@ -170,19 +180,6 @@ export function TopicDetail(props: {
               page={notesPage}
               removing={removeNoteMutation.isPending}
               setPage={setNotesPage}
-            />
-            <AddNotesToTopicDialog
-              onClose={() => setIsAddNoteOpen(false)}
-              onSuccess={async () => {
-                setIsAddNoteOpen(false)
-                setNotesPage(1)
-                await queryClient.invalidateQueries({
-                  queryKey: ['topics', 'notes', props.topicId],
-                })
-                await queryClient.invalidateQueries({ queryKey: ['notes'] })
-              }}
-              open={isAddNoteOpen}
-              topicId={props.topicId}
             />
           </>
         )}

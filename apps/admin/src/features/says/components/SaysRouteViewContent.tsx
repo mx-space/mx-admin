@@ -15,7 +15,7 @@ import { cn } from '~/utils/cn'
 
 import { saysPageSize } from '../constants'
 import { readSaysPage } from '../utils/format'
-import { SayEditorDialog } from './SayEditorDialog'
+import { presentSayEditor } from './SayEditorModal'
 import { SayEmptyState } from './SayEmptyState'
 import { SayListItem } from './SayListItem'
 import { SayListSkeleton } from './SayListSkeleton'
@@ -25,8 +25,6 @@ export function SaysRouteViewContent() {
   const queryClient = useQueryClient()
   const [searchParams, setSearchParams] = useSearchParams()
   const [page, setPage] = useState(readSaysPage(searchParams.get('page')))
-  const [editingSay, setEditingSay] = useState<SayModel | null>(null)
-  const [isEditorOpen, setIsEditorOpen] = useState(false)
   const searchParamsKey = searchParams.toString()
 
   useLayoutEffect(() => {
@@ -49,19 +47,11 @@ export function SaysRouteViewContent() {
     },
   })
 
-  const openCreate = () => {
-    setEditingSay(null)
-    setIsEditorOpen(true)
-  }
-
-  const openEdit = (say: SayModel) => {
-    setEditingSay(say)
-    setIsEditorOpen(true)
-  }
-
-  const closeEditor = () => {
-    setEditingSay(null)
-    setIsEditorOpen(false)
+  const openEditor = async (say: SayModel | null) => {
+    const ok = await presentSayEditor(say)
+    if (ok) {
+      await queryClient.invalidateQueries({ queryKey: ['says'] })
+    }
   }
 
   const says = saysQuery.data?.data ?? []
@@ -95,7 +85,11 @@ export function SaysRouteViewContent() {
               ? t('says.countLabel', { count: pagination.total })
               : t('common.loading')}
           </span>
-          <Button onClick={openCreate} type="button" variant="subtle">
+          <Button
+            onClick={() => void openEditor(null)}
+            type="button"
+            variant="subtle"
+          >
             <Plus aria-hidden="true" className="size-4" />
             {t('says.addOne')}
           </Button>
@@ -106,14 +100,14 @@ export function SaysRouteViewContent() {
         {saysQuery.isLoading && says.length === 0 ? (
           <SayListSkeleton />
         ) : says.length === 0 ? (
-          <SayEmptyState onCreate={openCreate} />
+          <SayEmptyState onCreate={() => void openEditor(null)} />
         ) : (
           <div className="mx-auto max-w-5xl">
             {says.map((say) => (
               <SayListItem
                 key={say.id}
                 onDelete={(id) => deleteMutation.mutate(id)}
-                onEdit={() => openEdit(say)}
+                onEdit={() => void openEditor(say)}
                 say={say}
               />
             ))}
@@ -133,16 +127,6 @@ export function SaysRouteViewContent() {
           />
         </div>
       ) : null}
-
-      <SayEditorDialog
-        onClose={closeEditor}
-        onSuccess={async () => {
-          await queryClient.invalidateQueries({ queryKey: ['says'] })
-          closeEditor()
-        }}
-        open={isEditorOpen}
-        say={editingSay}
-      />
     </section>
   )
 }

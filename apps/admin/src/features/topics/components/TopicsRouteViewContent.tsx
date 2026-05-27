@@ -27,7 +27,7 @@ import { ListEmpty } from './ListEmpty'
 import { ListError } from './ListError'
 import { TopicDetail } from './TopicDetail'
 import { TopicDetailEmpty } from './TopicDetailEmpty'
-import { TopicFormDialog } from './TopicFormDialog'
+import { presentTopicForm } from './TopicFormModal'
 import { TopicListSkeleton } from './TopicListSkeleton'
 import { TopicRow } from './TopicRow'
 
@@ -40,7 +40,6 @@ export function TopicsRouteViewContent() {
   const searchParamsKey = searchParams.toString()
   const [page, setPage] = useState(readPositiveInt(searchParams.get('page')))
   const [detailId, setDetailId] = useState(searchParams.get('id') ?? '')
-  const [formMode, setFormMode] = useState<TopicFormMode | null>(null)
 
   useLayoutEffect(() => {
     const nextPage = readPositiveInt(searchParams.get('page'))
@@ -134,6 +133,14 @@ export function TopicsRouteViewContent() {
     setDetailId(topic.id)
   }
 
+  const openForm = async (mode: TopicFormMode) => {
+    const topic = await presentTopicForm(mode)
+    if (topic) {
+      setDetailId(topic.id)
+      await invalidateTopics()
+    }
+  }
+
   const actions = useMemo(
     () =>
       buildTopicActions(
@@ -164,9 +171,6 @@ export function TopicsRouteViewContent() {
 
   return (
     <MasterDetailLayout
-      defaultSize={0.34}
-      maxSize={0.45}
-      minSize={0.25}
       showDetailOnMobile={Boolean(detailId)}
       list={
         <FocusScope
@@ -191,7 +195,7 @@ export function TopicsRouteViewContent() {
                 : t('common.loading')}
             </span>
             <Button
-              onClick={() => setFormMode({ kind: 'create' })}
+              onClick={() => void openForm({ kind: 'create' })}
               type="button"
               variant="subtle"
             >
@@ -241,7 +245,7 @@ export function TopicsRouteViewContent() {
             ) : topicsQuery.isError ? (
               <ListError onRetry={() => void topicsQuery.refetch()} />
             ) : topics.length === 0 ? (
-              <ListEmpty onCreate={() => setFormMode({ kind: 'create' })} />
+              <ListEmpty onCreate={() => void openForm({ kind: 'create' })} />
             ) : (
               topics.map((topic) => (
                 <TopicRow
@@ -292,7 +296,7 @@ export function TopicsRouteViewContent() {
               onDelete={(topic) => {
                 void confirmAndDelete([topic])
               }}
-              onEdit={(topic) => setFormMode({ id: topic.id, kind: 'edit' })}
+              onEdit={(topic) => void openForm({ id: topic.id, kind: 'edit' })}
               topicId={detailId}
             />
           ) : (
@@ -300,18 +304,6 @@ export function TopicsRouteViewContent() {
           )}
         </section>
       }
-    >
-      {formMode ? (
-        <TopicFormDialog
-          mode={formMode}
-          onClose={() => setFormMode(null)}
-          onSaved={async (topic) => {
-            setFormMode(null)
-            setDetailId(topic.id)
-            await invalidateTopics()
-          }}
-        />
-      ) : null}
-    </MasterDetailLayout>
+    />
   )
 }

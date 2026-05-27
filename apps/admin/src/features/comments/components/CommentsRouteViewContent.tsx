@@ -256,9 +256,6 @@ export function CommentsRouteViewContent() {
 
   return (
     <MasterDetailLayout
-      defaultSize={0.42}
-      maxSize={0.5}
-      minSize={0.25}
       showDetailOnMobile={showDetailOnMobile}
       list={
         <FocusScope

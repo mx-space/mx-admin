@@ -162,7 +162,6 @@ export function CronRouteViewContent() {
 
   return (
     <MasterDetailLayout
-      defaultSize={0.42}
       detail={
         <section className="min-h-0">
           {selectedTask ? (
@@ -307,8 +306,6 @@ export function CronRouteViewContent() {
           </Scroll>
         </section>
       }
-      maxSize={0.5}
-      minSize={0.3}
       showDetailOnMobile={showDetailOnMobile}
     />
   )

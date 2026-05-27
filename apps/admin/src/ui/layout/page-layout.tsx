@@ -165,22 +165,31 @@ function renderHeaderAction(action: HeaderAction, index: number) {
   )
 }
 
+/**
+ * List 之默认宽度（像素）。group 改尺寸时保 pixel-size 不变。
+ */
+const DEFAULT_LIST_PIXELS = 320
+const DEFAULT_LIST_MIN_PIXELS = 240
+const DEFAULT_LIST_MAX_PIXELS = 560
+
 export function MasterDetailLayout(props: {
   className?: string
   children?: ReactNode
+  /** List 之默认宽度，像素。 */
   defaultSize?: number
   detail: ReactNode
   detailClassName?: string
   list: ReactNode
   listClassName?: string
+  /** List 之最大宽度，像素。 */
   maxSize?: number
+  /** List 之最小宽度，像素。 */
   minSize?: number
   showDetailOnMobile?: boolean
 }) {
-  const defaultSize = props.defaultSize ?? 0.38
-  const minSize = props.minSize ?? 0.25
-  const maxSize = props.maxSize ?? 0.5
-  const detailMinSize = 1 - maxSize
+  const defaultSize = props.defaultSize ?? DEFAULT_LIST_PIXELS
+  const minSize = props.minSize ?? DEFAULT_LIST_MIN_PIXELS
+  const maxSize = props.maxSize ?? DEFAULT_LIST_MAX_PIXELS
 
   return (
     <div
@@ -216,9 +225,10 @@ export function MasterDetailLayout(props: {
       >
         <ResizablePanel
           className={cn('min-h-0 overflow-hidden', props.listClassName)}
-          defaultSize={toPanelPercent(defaultSize)}
-          maxSize={toPanelPercent(maxSize)}
-          minSize={toPanelPercent(minSize)}
+          defaultSize={defaultSize}
+          groupResizeBehavior="preserve-pixel-size"
+          maxSize={maxSize}
+          minSize={minSize}
         >
           {props.list}
         </ResizablePanel>
@@ -228,7 +238,6 @@ export function MasterDetailLayout(props: {
             'min-h-0 min-w-0 overflow-hidden',
             props.detailClassName,
           )}
-          minSize={toPanelPercent(detailMinSize)}
         >
           {props.detail}
         </ResizablePanel>
@@ -237,9 +246,4 @@ export function MasterDetailLayout(props: {
       {props.children}
     </div>
   )
-}
-
-function toPanelPercent(value: number) {
-  const percentage = value <= 1 ? value * 100 : value
-  return `${percentage}%`
 }

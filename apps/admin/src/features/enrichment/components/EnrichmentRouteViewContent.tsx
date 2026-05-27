@@ -196,9 +196,6 @@ export function EnrichmentRouteViewContent() {
 
   return (
     <MasterDetailLayout
-      defaultSize={source === 'probe' ? 28 : 40}
-      maxSize={source === 'probe' ? 35 : 50}
-      minSize={source === 'probe' ? 22 : 30}
       showDetailOnMobile={showDetailOnMobile}
       list={
         <section className="flex h-full min-h-0 flex-col border-b border-neutral-200 lg:border-b-0 lg:border-r dark:border-neutral-800">

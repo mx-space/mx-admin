@@ -201,7 +201,6 @@ export function DraftsRouteViewContent() {
 
   return (
     <MasterDetailLayout
-      defaultSize={36}
       list={
         <FocusScope
           className="outline-hidden flex h-full min-h-0 flex-col border-r border-neutral-200 dark:border-neutral-800"

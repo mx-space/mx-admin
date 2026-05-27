@@ -15,7 +15,7 @@ import {
   resetFunctionSnippet,
 } from '~/api/snippets'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
-import { TerminalOutputDialog } from '~/features/snippets/components/terminal-output-dialog'
+import { presentTerminalOutput } from '~/features/snippets/components/terminal-output-modal'
 import { useI18n } from '~/i18n'
 import { SnippetType } from '~/models/snippet'
 import { MasterDetailLayout } from '~/ui/layout/page-layout'
@@ -66,11 +66,6 @@ export function SnippetsRouteViewContent() {
   const [dependenciesOpen, setDependenciesOpen] = useState(false)
   const [compiledOpen, setCompiledOpen] = useState(false)
   const [logsOpen, setLogsOpen] = useState(false)
-  const [terminalOutput, setTerminalOutput] = useState<{
-    onFinish?: () => void
-    title: string
-    url: string
-  } | null>(null)
   const [showDetailOnMobile, setShowDetailOnMobile] = useState(false)
 
   useLayoutEffect(() => {
@@ -184,7 +179,6 @@ export function SnippetsRouteViewContent() {
   return (
     <>
       <MasterDetailLayout
-        defaultSize={0.38}
         list={
           <section className="flex h-full min-h-0 flex-col border-r border-neutral-200 dark:border-neutral-800">
             <div
@@ -351,7 +345,7 @@ export function SnippetsRouteViewContent() {
       <InstallDependencyModal
         initialPackages={installInitialPackages}
         onInstall={(packages) => {
-          setTerminalOutput({
+          presentTerminalOutput({
             onFinish: () => toast.success(t('snippets.toast.installComplete')),
             title: t('snippets.dialog.install.title'),
             url: getDependencyInstallUrl(packages),
@@ -365,7 +359,7 @@ export function SnippetsRouteViewContent() {
       />
       <UpdateDependenciesModal
         onInstall={(packageName, onFinish) => {
-          setTerminalOutput({
+          presentTerminalOutput({
             onFinish: () => {
               toast.success(t('snippets.toast.updateComplete'))
               onFinish?.()
@@ -386,13 +380,6 @@ export function SnippetsRouteViewContent() {
         onClose={() => setLogsOpen(false)}
         open={logsOpen}
         snippet={selectedFunction}
-      />
-      <TerminalOutputDialog
-        onClose={() => setTerminalOutput(null)}
-        onFinish={terminalOutput?.onFinish}
-        open={Boolean(terminalOutput)}
-        title={terminalOutput?.title ?? t('snippets.dialog.terminal.title')}
-        url={terminalOutput?.url ?? null}
       />
     </>
   )

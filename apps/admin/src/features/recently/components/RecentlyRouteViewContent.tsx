@@ -4,7 +4,7 @@ import {
   useQueryClient,
 } from '@tanstack/react-query'
 import { Plus, StickyNote } from 'lucide-react'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useSearchParams } from 'react-router'
 import { toast } from 'sonner'
 import type { InfiniteData } from '@tanstack/react-query'
@@ -19,7 +19,7 @@ import { Scroll } from '~/ui/primitives/scroll'
 import { cn } from '~/utils/cn'
 
 import { RECENTLY_PAGE_SIZE, recentlyListQueryKey } from '../constants'
-import { RecentlyEditorDialog } from './RecentlyEditorDialog'
+import { presentRecentlyEditor } from './RecentlyEditorModal'
 import { RecentlyListItem } from './RecentlyListItem'
 import {
   RecentlyEmptyState,
@@ -32,8 +32,6 @@ export function RecentlyRouteViewContent() {
   const { t } = useI18n()
   const queryClient = useQueryClient()
   const [searchParams, setSearchParams] = useSearchParams()
-  const [editingItem, setEditingItem] = useState<RecentlyModel | null>(null)
-  const [isEditorOpen, setIsEditorOpen] = useState(false)
   const scrollContainerRef = useRef<HTMLDivElement | null>(null)
   const loadMoreRef = useRef<HTMLDivElement | null>(null)
 
@@ -65,26 +63,17 @@ export function RecentlyRouteViewContent() {
     },
   })
 
-  const openCreate = () => {
-    setEditingItem(null)
-    setIsEditorOpen(true)
-  }
-
-  const openEdit = (item: RecentlyModel) => {
-    setEditingItem(item)
-    setIsEditorOpen(true)
-  }
-
-  const closeEditor = () => {
-    setEditingItem(null)
-    setIsEditorOpen(false)
+  const openEditor = async (item: RecentlyModel | null) => {
+    const ok = await presentRecentlyEditor(item)
+    if (ok) {
+      await queryClient.invalidateQueries({ queryKey: ['recently'] })
+    }
   }
 
   useEffect(() => {
     if (searchParams.get('create') !== '1') return
 
-    setEditingItem(null)
-    setIsEditorOpen(true)
+    void openEditor(null)
 
     const next = new URLSearchParams(searchParams)
     next.delete('create')
@@ -175,7 +164,11 @@ export function RecentlyRouteViewContent() {
                 ? t('recently.count.partial', { count: items.length })
                 : t('recently.count.total', { count: items.length })}
           </span>
-          <Button onClick={openCreate} type="button" variant="subtle">
+          <Button
+            onClick={() => void openEditor(null)}
+            type="button"
+            variant="subtle"
+          >
             <Plus aria-hidden="true" className="size-4" />
             {t('recently.create')}
           </Button>
@@ -188,7 +181,7 @@ export function RecentlyRouteViewContent() {
         ) : recentlyQuery.isError && items.length === 0 ? (
           <RecentlyErrorState onRetry={() => recentlyQuery.refetch()} />
         ) : items.length === 0 ? (
-          <RecentlyEmptyState onCreate={openCreate} />
+          <RecentlyEmptyState onCreate={() => void openEditor(null)} />
         ) : (
           <div
             aria-label={t('recently.feedAria')}
@@ -200,7 +193,7 @@ export function RecentlyRouteViewContent() {
                 item={item}
                 key={item.id}
                 onDelete={(id) => deleteMutation.mutate(id)}
-                onEdit={() => openEdit(item)}
+                onEdit={() => void openEditor(item)}
                 onEnrichmentUpdate={(url, enrichment) =>
                   updateItemEnrichment(item.id, url, enrichment)
                 }
@@ -215,16 +208,6 @@ export function RecentlyRouteViewContent() {
           </div>
         )}
       </Scroll>
-
-      <RecentlyEditorDialog
-        item={editingItem}
-        onClose={closeEditor}
-        onSuccess={async () => {
-          await queryClient.invalidateQueries({ queryKey: ['recently'] })
-          closeEditor()
-        }}
-        open={isEditorOpen}
-      />
     </section>
   )
 }

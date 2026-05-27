@@ -94,9 +94,6 @@ export function SettingsRouteViewContent() {
 
   return (
     <MasterDetailLayout
-      defaultSize={28}
-      maxSize={36}
-      minSize={22}
       showDetailOnMobile={showDetailOnMobile}
       list={
         <aside className="flex h-full min-h-0 flex-col border-r border-neutral-200 dark:border-neutral-800">

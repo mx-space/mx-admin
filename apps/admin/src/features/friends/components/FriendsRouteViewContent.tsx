@@ -7,7 +7,6 @@ import type { LinkModel } from '~/models/link'
 import type { HealthMap } from '../types/friends'
 
 import {
-  auditLinkWithReason,
   auditPassLink,
   checkLinksHealth,
   deleteLink,
@@ -17,15 +16,14 @@ import {
 } from '~/api/links'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
 import { useI18n } from '~/i18n'
-import { LinkState } from '~/models/link'
 import { Button } from '~/ui/primitives/button'
 import { Scroll } from '~/ui/primitives/scroll'
 import { cn } from '~/utils/cn'
 
 import { friendsPageSize, friendsQueryKey } from '../constants'
 import { normalizeState, readPage } from '../utils/friends'
-import { AuditReasonDialog } from './AuditReasonDialog'
-import { FriendEditorDialog } from './FriendEditorDialog'
+import { presentAuditReason } from './AuditReasonModal'
+import { presentFriendEditor } from './FriendEditorModal'
 import { FriendRow } from './FriendRow'
 import { FriendsEmptyRow, FriendsSkeletonRows } from './FriendsPrimitives'
 import { FriendsTabBar } from './FriendsTabBar'
@@ -39,9 +37,6 @@ export function FriendsRouteViewContent() {
     normalizeState(searchParams.get('state')),
   )
   const [page, setPage] = useState(() => readPage(searchParams.get('page')))
-  const [editingLink, setEditingLink] = useState<LinkModel | null>(null)
-  const [isEditorOpen, setIsEditorOpen] = useState(false)
-  const [auditTarget, setAuditTarget] = useState<LinkModel | null>(null)
   const [health, setHealth] = useState<HealthMap>({})
 
   const linksQuery = useQuery({
@@ -92,22 +87,12 @@ export function FriendsRouteViewContent() {
     },
   })
 
-  const auditReasonMutation = useMutation({
-    mutationFn: ({
-      id,
-      nextState,
-      reason,
-    }: {
-      id: string
-      nextState: LinkState
-      reason: string
-    }) => auditLinkWithReason(id, { reason, state: nextState }),
-    onSuccess: async () => {
-      toast.success(t('friends.toast.auditSent'))
-      setAuditTarget(null)
+  const openAuditReason = async (link: LinkModel) => {
+    const ok = await presentAuditReason(link)
+    if (ok) {
       await invalidateLinks()
-    },
-  })
+    }
+  }
 
   const healthMutation = useMutation({
     mutationFn: checkLinksHealth,
@@ -136,19 +121,11 @@ export function FriendsRouteViewContent() {
   const pagination = linksQuery.data?.pagination
   const counts = countsQuery.data
 
-  const openCreate = () => {
-    setEditingLink(null)
-    setIsEditorOpen(true)
-  }
-
-  const openEdit = (link: LinkModel) => {
-    setEditingLink(link)
-    setIsEditorOpen(true)
-  }
-
-  const closeEditor = () => {
-    setEditingLink(null)
-    setIsEditorOpen(false)
+  const openEditor = async (link: LinkModel | null) => {
+    const ok = await presentFriendEditor(link)
+    if (ok) {
+      await invalidateLinks()
+    }
   }
 
   return (
@@ -171,7 +148,11 @@ export function FriendsRouteViewContent() {
               ? t('friends.countLabel', { count: pagination.total })
               : t('common.loading')}
           </span>
-          <Button onClick={openCreate} type="button" variant="subtle">
+          <Button
+            onClick={() => void openEditor(null)}
+            type="button"
+            variant="subtle"
+          >
             <Plus aria-hidden="true" className="size-4" />
             <span className="hidden sm:inline">{t('friends.list.create')}</span>
           </Button>
@@ -252,9 +233,9 @@ export function FriendsRouteViewContent() {
                   key={link.id}
                   link={link}
                   onAuditPass={() => auditPassMutation.mutate(link.id)}
-                  onAuditReason={() => setAuditTarget(link)}
+                  onAuditReason={() => void openAuditReason(link)}
                   onDelete={() => deleteMutation.mutate(link.id)}
-                  onEdit={() => openEdit(link)}
+                  onEdit={() => void openEditor(link)}
                 />
               ))
             )}
@@ -287,29 +268,6 @@ export function FriendsRouteViewContent() {
           </Button>
         </div>
       ) : null}
-
-      <FriendEditorDialog
-        link={editingLink}
-        onClose={closeEditor}
-        onSuccess={async () => {
-          await invalidateLinks()
-          closeEditor()
-        }}
-        open={isEditorOpen}
-      />
-      <AuditReasonDialog
-        link={auditTarget}
-        onClose={() => setAuditTarget(null)}
-        onSubmit={(nextState, reason) => {
-          if (!auditTarget) return
-          auditReasonMutation.mutate({
-            id: auditTarget.id,
-            nextState,
-            reason,
-          })
-        }}
-        pending={auditReasonMutation.isPending}
-      />
     </section>
   )
 }
