@@ -1,11 +1,18 @@
 import Editor, { loader } from '@monaco-editor/react'
 import { AlertCircle, CheckCircle2, Code2, Loader2, Save } from 'lucide-react'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import * as monaco from 'monaco-editor'
 import type { OnMount } from '@monaco-editor/react'
 
 import { useI18n } from '~/i18n'
+import { useThemeMode } from '~/theme'
 import { cn } from '~/utils/cn'
+
+import {
+  ensureGithubThemesRegistered,
+  GITHUB_DARK_THEME,
+  GITHUB_LIGHT_THEME,
+} from './code-editor-themes'
 
 loader.config({ monaco })
 
@@ -31,10 +38,17 @@ export function CodeEditor({
   value,
 }: CodeEditorProps) {
   const { t } = useI18n()
+  const { isDark } = useThemeMode()
   const lineCount = useMemo(
     () => (value ? value.split('\n').length : 1),
     [value],
   )
+
+  useEffect(() => {
+    ensureGithubThemesRegistered()
+  }, [])
+
+  const resolvedTheme = isDark ? GITHUB_DARK_THEME : GITHUB_LIGHT_THEME
 
   const handleMount: OnMount = (editor, monacoInstance) => {
     if (!onSave) return
@@ -48,11 +62,11 @@ export function CodeEditor({
   return (
     <div
       className={cn(
-        'flex h-full min-h-0 flex-col bg-neutral-950 text-neutral-100',
+        'flex h-full min-h-0 flex-col bg-white text-neutral-900 dark:bg-[#0d1117] dark:text-neutral-100',
         className,
       )}
     >
-      <div className="flex h-10 shrink-0 items-center justify-between border-b border-neutral-800 px-4 text-xs text-neutral-400">
+      <div className="flex h-10 shrink-0 items-center justify-between border-b border-neutral-200 px-4 text-xs text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
         <div className="flex min-w-0 items-center gap-2">
           <Code2 aria-hidden="true" className="size-3.5 shrink-0" />
           <span className="truncate font-medium uppercase">
@@ -85,7 +99,7 @@ export function CodeEditor({
           {onSave ? (
             <button
               aria-label={t('ui.codeEditor.saveAria')}
-              className="inline-flex size-6 items-center justify-center rounded text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-neutral-100"
+              className="inline-flex size-6 items-center justify-center rounded text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
               onClick={onSave}
               type="button"
             >
@@ -118,7 +132,7 @@ export function CodeEditor({
             tabSize: 2,
             wordWrap: 'on',
           }}
-          theme="vs-dark"
+          theme={resolvedTheme}
           value={value}
         />
       </div>

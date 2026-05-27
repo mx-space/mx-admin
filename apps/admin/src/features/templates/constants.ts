@@ -1,23 +1,40 @@
-import { Braces, FileCode2 } from 'lucide-react'
+import { Mail, MailOpen, Megaphone } from 'lucide-react'
 import type { TranslationKey } from '~/i18n/types'
-import type { TemplateTab, TemplateType } from './types/templates'
+import type { LucideIcon } from 'lucide-react'
+import type { TemplateType, TemplateViewMode } from './types/templates'
 
 export const templateQueryKey = ['templates', 'email'] as const
 
-export const templateTabs: Array<{
-  icon: typeof FileCode2
+export const VIEW_MODE_STORAGE_KEY = 'templates.viewMode'
+
+export interface TemplateDescriptor {
+  value: TemplateType
   labelKey: TranslationKey
-  value: TemplateTab
-}> = [
-  { icon: FileCode2, labelKey: 'templates.tab.email', value: 'email' },
-  { icon: Braces, labelKey: 'templates.tab.markdown', value: 'markdown' },
+  descriptionKey: TranslationKey
+  icon: LucideIcon
+}
+
+export const templateDescriptors: TemplateDescriptor[] = [
+  {
+    value: 'guest',
+    labelKey: 'templates.type.guest',
+    descriptionKey: 'templates.type.guestDescription',
+    icon: Mail,
+  },
+  {
+    value: 'owner',
+    labelKey: 'templates.type.owner',
+    descriptionKey: 'templates.type.ownerDescription',
+    icon: MailOpen,
+  },
+  {
+    value: 'newsletter',
+    labelKey: 'templates.type.newsletter',
+    descriptionKey: 'templates.type.newsletterDescription',
+    icon: Megaphone,
+  },
 ]
 
-export const templateTypeOptions: Array<{
-  labelKey: TranslationKey
-  value: TemplateType
-}> = [
-  { labelKey: 'templates.type.guest', value: 'guest' },
-  { labelKey: 'templates.type.owner', value: 'owner' },
-  { labelKey: 'templates.type.newsletter', value: 'newsletter' },
-]
+export const VIEW_MODES: TemplateViewMode[] = ['split', 'code', 'preview']
+
+export const DEFAULT_VIEW_MODE: TemplateViewMode = 'split'

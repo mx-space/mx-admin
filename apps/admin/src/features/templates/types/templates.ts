@@ -1,2 +1,2 @@
-export type TemplateTab = 'email' | 'markdown'
 export type TemplateType = 'guest' | 'newsletter' | 'owner'
+export type TemplateViewMode = 'split' | 'code' | 'preview'
