@@ -107,7 +107,7 @@
     "@vue/compiler-sfc": "3.5.30",
     "@vue/test-utils": "^2.4.0",
     "cors": "2.8.6",
-    "happy-dom": "^15.11.0",
+    "happy-dom": "^20.0.0",
     "postcss": "8.5.8",
     "postcss-nested": "7.0.2",
     "postcss-preset-env": "11.2.0",
