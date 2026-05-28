@@ -94,7 +94,7 @@
     "@lexical/react": "^0.44.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "happy-dom": "^15.11.0",
+    "happy-dom": "^20.0.0",
     "katex": "^0.16.45",
     "lexical": "^0.44.0",
     "react": "19.2.4",
