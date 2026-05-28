@@ -310,7 +310,7 @@ importers:
         specifier: 3.5.30
         version: 3.5.30
       '@vue/test-utils':
-        specifier: ^2.4.0
+        specifier: ^2.4.10
         version: 2.4.10(@vue/compiler-dom@3.5.33)(@vue/server-renderer@3.5.30(vue@3.5.30(typescript@5.9.3)))(vue@3.5.30(typescript@5.9.3))
       cors:
         specifier: 2.8.6
