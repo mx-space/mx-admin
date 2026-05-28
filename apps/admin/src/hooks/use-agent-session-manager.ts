@@ -88,6 +88,7 @@ export function useAgentSessionManager({
   const isPendingCreationRef = useRef(false)
   const loadSessionsRef = useRef<() => Promise<void>>(async () => {})
   const refIdRef = useRef(refId)
+  const prevRefIdRef = useRef(refId)
   const refTypeRef = useRef(refType)
   const sessionEpochRef = useRef(0)
   const sessionsRef = useRef(sessions)
@@ -379,6 +380,19 @@ export function useAgentSessionManager({
   }, [scheduleDiffSync, scheduleMessagesSync, store])
 
   useEffect(() => {
+    const previousRefId = prevRefIdRef.current
+    prevRefIdRef.current = refId
+
+    // refId only just became available (e.g. a new document acquired its draft
+    // id) while an unsaved conversation is already in memory. Keep it so the
+    // create path persists it under the new ref instead of wiping it.
+    const adoptInMemory =
+      !previousRefId &&
+      Boolean(refId) &&
+      !activeSessionIdRef.current &&
+      store.getState().bubbles.length > 0
+    if (adoptInMemory) return
+
     flushPendingSync()
     sessionsRef.current = []
     setSessions([])

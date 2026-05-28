@@ -8,6 +8,8 @@ stats.html
 .env.development
 .idea
 .superpowers
+.claude/scheduled_tasks.lock
+.claude/worktrees
 
 /src/views/dev
 g.d.ts
