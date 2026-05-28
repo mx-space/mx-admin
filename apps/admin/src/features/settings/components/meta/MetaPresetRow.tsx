@@ -16,7 +16,7 @@ export function MetaPresetRow(props: {
 }) {
   const { t } = useI18n()
   return (
-    <div className="flex items-center gap-3 px-4 py-3">
+    <div className="flex items-center gap-3 py-3 pr-4">
       {!props.preset.isBuiltin ? (
         <GripVertical aria-hidden="true" className="size-4 text-neutral-300" />
       ) : (
@@ -44,7 +44,6 @@ export function MetaPresetRow(props: {
       </div>
       <Switch
         checked={props.preset.enabled}
-        className="border-0 px-0 py-0"
         label=""
         onCheckedChange={() => props.onToggle(props.preset)}
       />

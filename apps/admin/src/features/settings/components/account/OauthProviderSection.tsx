@@ -48,7 +48,7 @@ export function OauthProviderSection(props: {
   const Icon = props.type === 'github' ? GitHubIcon : GoogleIcon
 
   return (
-    <section className="px-4 py-4">
+    <section className="py-4">
       <div className="mb-4 flex items-center gap-3">
         <span className="flex size-8 items-center justify-center rounded bg-neutral-100 text-neutral-500 dark:bg-neutral-900 dark:text-neutral-400">
           <Icon aria-hidden="true" className="size-4" />
@@ -83,7 +83,7 @@ export function OauthProviderSection(props: {
           <span className="text-neutral-600 dark:text-neutral-300">
             {t('settings.oauth.callbackLabel')}
           </span>
-          <div className="flex items-center gap-2 rounded border border-neutral-200 bg-neutral-50 px-3 py-2 dark:border-neutral-800 dark:bg-neutral-900">
+          <div className="flex items-center gap-2 rounded bg-neutral-50 px-3 py-2 dark:bg-neutral-900">
             <code className="min-w-0 flex-1 truncate text-xs text-neutral-600 dark:text-neutral-300">
               {callbackUrl}
             </code>

@@ -7,13 +7,13 @@ import type { AccountSession } from '../../types/settings'
 import { IpInfoPopover } from '~/features/_shared/components/ip-info-popover'
 import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
-import { Panel } from '~/ui/primitives/panel'
 import { authClient } from '~/utils/authjs/auth'
 import { cn } from '~/utils/cn'
 
 import { accountQueryKey } from '../../constants'
 import { listSessions } from '../../utils/account-sessions'
 import { formatDateTime, getErrorMessage } from '../../utils/settings'
+import { SettingsSection } from '../SettingsPrimitives'
 
 export function SessionSection() {
   const { t } = useI18n()
@@ -79,7 +79,23 @@ export function SessionSection() {
   )
 
   return (
-    <Panel
+    <SettingsSection
+      actions={
+        sessions.length > 1 ? (
+          <Button
+            disabled={revokeOthersMutation.isPending}
+            onClick={() => {
+              if (window.confirm(t('settings.session.confirm.revokeOthers'))) {
+                revokeOthersMutation.mutate()
+              }
+            }}
+            type="button"
+            variant="subtle"
+          >
+            {t('settings.session.action.revokeOthers')}
+          </Button>
+        ) : null
+      }
       description={t('settings.session.description')}
       title={
         <span className="inline-flex items-center gap-2">
@@ -90,17 +106,17 @@ export function SessionSection() {
     >
       <div className="divide-y divide-neutral-100 dark:divide-neutral-900">
         {sessionsQuery.isLoading ? (
-          <div className="p-4 text-sm text-neutral-500">
+          <div className="py-3 text-sm text-neutral-500">
             {t('settings.common.loading')}
           </div>
         ) : sessions.length === 0 ? (
-          <div className="p-4 text-sm text-neutral-500">
+          <div className="py-3 text-sm text-neutral-500">
             {t('settings.session.empty')}
           </div>
         ) : (
           <>
             {visibleSessions.map((session) => (
-              <div className="px-4 py-3" key={session.token}>
+              <div className="py-3" key={session.token}>
                 <div className="flex items-center justify-between gap-3">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
@@ -169,7 +185,7 @@ export function SessionSection() {
               </div>
             ))}
             {sessions.length > 5 ? (
-              <div className="px-4 py-3">
+              <div className="py-3">
                 <button
                   className="flex w-full items-center justify-center text-sm text-neutral-500 transition-colors hover:text-neutral-900 dark:hover:text-neutral-100"
                   onClick={() => setExpanded((current) => !current)}
@@ -186,20 +202,6 @@ export function SessionSection() {
           </>
         )}
       </div>
-      <div className="flex justify-end border-t border-neutral-100 p-3 dark:border-neutral-900">
-        <Button
-          disabled={revokeOthersMutation.isPending}
-          onClick={() => {
-            if (window.confirm(t('settings.session.confirm.revokeOthers'))) {
-              revokeOthersMutation.mutate()
-            }
-          }}
-          type="button"
-          variant="subtle"
-        >
-          {t('settings.session.action.revokeOthers')}
-        </Button>
-      </div>
-    </Panel>
+    </SettingsSection>
   )
 }

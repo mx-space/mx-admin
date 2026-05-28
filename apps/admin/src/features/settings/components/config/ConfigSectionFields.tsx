@@ -11,7 +11,7 @@ export function ConfigSectionFields(props: {
   updateValue: (path: string, value: unknown) => void
 }) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {props.fields
         .filter((field) => !field.ui.hidden)
         .filter((field) => shouldShowField(field, props.formData, props.prefix))
@@ -20,12 +20,9 @@ export function ConfigSectionFields(props: {
 
           if (field.fields?.length) {
             return (
-              <section
-                className="rounded border border-neutral-100 p-3 dark:border-neutral-900"
-                key={fieldPath}
-              >
+              <section className="space-y-3" key={fieldPath}>
                 {field.subsection ? (
-                  <div className="mb-3">
+                  <div>
                     <h4 className="text-xs font-semibold uppercase text-neutral-500">
                       {field.subsection.title}
                     </h4>

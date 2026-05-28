@@ -1,6 +1,7 @@
 import type { ConfigFormField } from '~/api/options'
 
-import { Switch } from '~/ui/primitives/switch'
+import { Toggle } from '~/ui/primitives/switch'
+import { cn } from '~/utils/cn'
 
 import { renderConfigControl } from './renderConfigControl'
 
@@ -11,37 +12,36 @@ export function ConfigFieldEditor(props: {
   value: unknown
 }) {
   const { field } = props
-  const description = field.description ? (
-    <p className="mt-1 text-xs leading-5 text-neutral-500 dark:text-neutral-400">
-      {field.description}
-    </p>
-  ) : null
-
-  const label = (
-    <span>
-      {field.title}
-      {field.required ? <span className="ml-0.5 text-red-500">*</span> : null}
-    </span>
-  )
-
-  if (field.ui.component === 'switch') {
-    return (
-      <Switch
-        checked={Boolean(props.value)}
-        description={description}
-        label={label}
-        onCheckedChange={props.onChange}
-      />
-    )
-  }
+  const isSwitch = field.ui.component === 'switch'
 
   return (
-    <label className="grid gap-2 text-sm md:grid-cols-[12rem_minmax(0,1fr)] md:items-start">
-      <span className="pt-2 text-neutral-600 dark:text-neutral-300">
-        {label}
-        {description}
-      </span>
-      {renderConfigControl(props)}
-    </label>
+    <div className="grid items-start gap-x-8 gap-y-2 md:grid-cols-2">
+      <div className="min-w-0 md:pt-1.5">
+        <div className="text-sm text-neutral-800 dark:text-neutral-200">
+          {field.title}
+          {field.required ? (
+            <span className="ml-0.5 text-red-500">*</span>
+          ) : null}
+        </div>
+        {field.description ? (
+          <p className="mt-1 text-xs leading-5 text-neutral-500 dark:text-neutral-400">
+            {field.description}
+          </p>
+        ) : null}
+      </div>
+      <div
+        className={cn('min-w-0', isSwitch && 'md:flex md:justify-end md:pt-1')}
+      >
+        {isSwitch ? (
+          <Toggle
+            aria-label={field.title}
+            checked={Boolean(props.value)}
+            onCheckedChange={props.onChange}
+          />
+        ) : (
+          renderConfigControl(props)
+        )}
+      </div>
+    </div>
   )
 }

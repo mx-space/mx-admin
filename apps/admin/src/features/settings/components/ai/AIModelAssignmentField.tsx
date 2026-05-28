@@ -11,7 +11,7 @@ import { TextInput } from '~/ui/primitives/text-field'
 import { formatAIProviderLabel } from '../../utils/settings'
 
 export function AIModelAssignmentField(props: {
-  description: string
+  description?: string
   label: string
   models: Record<string, AIProviderModel[]>
   onChange: (value: AIModelAssignment | undefined) => void
@@ -24,12 +24,14 @@ export function AIModelAssignmentField(props: {
   const providerModels = providerId ? (props.models[providerId] ?? []) : []
 
   return (
-    <div className="grid gap-2 rounded border border-neutral-100 p-3 text-sm md:grid-cols-[12rem_minmax(0,1fr)] dark:border-neutral-900">
+    <div className="grid gap-2 text-sm md:grid-cols-[12rem_minmax(0,1fr)]">
       <div>
         <div className="font-medium text-neutral-700 dark:text-neutral-300">
           {props.label}
         </div>
-        <p className="mt-1 text-xs text-neutral-500">{props.description}</p>
+        {props.description ? (
+          <p className="mt-1 text-xs text-neutral-500">{props.description}</p>
+        ) : null}
       </div>
       <div className="grid gap-2 md:grid-cols-[minmax(0,12rem)_minmax(0,1fr)]">
         <SelectField<string>

@@ -1500,8 +1500,10 @@ export const zhCN = {
 
   'settings.account.entry.passkeyDescription':
     '浏览器和设备上的无密码登录凭证。',
+  'settings.account.entry.passkeyManage': '管理 Passkey',
   'settings.account.entry.passkeyTitle': 'Passkey',
   'settings.account.entry.tokenDescription': '用于 API 调用的访问令牌。',
+  'settings.account.entry.tokenManage': '管理令牌',
   'settings.account.entry.tokenTitle': 'API Token',
   'settings.account.error.authAsOwnerFailed': '设定主人账户失败',
   'settings.account.error.oauthValidateFailed': 'OAuth 验证失败',
@@ -1552,8 +1554,21 @@ export const zhCN = {
   'settings.ai.provider.sectionTitle': 'AI 服务商',
   'settings.ai.provider.sectionTitleDescription':
     '配置 AI 服务提供商、密钥、Endpoint 与默认模型。',
+  'settings.ai.provider.editAction': '编辑',
+  'settings.ai.provider.row.empty': '未指定模型',
   'settings.ai.section.featureToggles': '功能开关',
+  'settings.ai.section.insights': 'AI 精读',
+  'settings.ai.section.insightsDescription':
+    '基于文章内容生成长篇精读，可附自动翻译。',
   'settings.ai.section.modelAssignments': '模型分配',
+  'settings.ai.section.otherModels': '其他模型',
+  'settings.ai.section.otherModelsDescription':
+    '尚未启用专用 feature 之模型指派。',
+  'settings.ai.section.summary': 'AI 摘要',
+  'settings.ai.section.summaryDescription':
+    '为文章自动生成摘要，可指定目标语言与触发时机。',
+  'settings.ai.section.translation': 'AI 翻译',
+  'settings.ai.section.translationDescription': '将文章正文翻译至目标语言。',
   'settings.ai.switch.enableAutoInsightsCreate': '文章创建时自动生成精读',
   'settings.ai.switch.enableAutoInsightsUpdate': '文章更新时重新生成精读',
   'settings.ai.switch.enableAutoSummaryCreate': '文章创建时自动生成摘要',

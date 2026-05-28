@@ -1,7 +1,7 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { Loader2, Plus, Settings, Trash2 } from 'lucide-react'
+import { useQuery } from '@tanstack/react-query'
+import { Pencil, Plus, Settings, Trash2 } from 'lucide-react'
 import { useState } from 'react'
-import { toast } from 'sonner'
+import type { ReactNode } from 'react'
 import type {
   AIConfig,
   AIProviderConfig,
@@ -9,24 +9,17 @@ import type {
   AIProviderType,
 } from '../../types/settings'
 
-import { getModelList, getModels, testConfig } from '~/api/ai'
+import { getModels } from '~/api/ai'
 import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
-import { SelectField } from '~/ui/primitives/select'
 import { Switch } from '~/ui/primitives/switch'
 import { TextInput } from '~/ui/primitives/text-field'
+import { cn } from '~/utils/cn'
 
-import { aiProviderTypeOptions } from '../../constants'
-import {
-  formatAIProviderLabel,
-  getAIProviderKeyPlaceholder,
-  getAIProviderModelPlaceholder,
-  getAIProviderNamePlaceholder,
-  getDefaultAIModel,
-  getErrorMessage,
-} from '../../utils/settings'
-import { EmptyState, FieldShell } from '../SettingsPrimitives'
+import { formatAIProviderLabel, getDefaultAIModel } from '../../utils/settings'
+import { EmptyState, SettingsSection } from '../SettingsPrimitives'
 import { AIModelAssignmentField } from './AIModelAssignmentField'
+import { AIProviderDrawer } from './AIProviderDrawer'
 import { AITextListField } from './AITextListField'
 
 export function AIConfigEditor(props: {
@@ -35,13 +28,7 @@ export function AIConfigEditor(props: {
   value: AIConfig
 }) {
   const { t } = useI18n()
-  const queryClient = useQueryClient()
-  const [loadingProviderId, setLoadingProviderId] = useState<string | null>(
-    null,
-  )
-  const [testingProviderId, setTestingProviderId] = useState<string | null>(
-    null,
-  )
+  const [editingId, setEditingId] = useState<string | null>(null)
   const hasEnabledProvider = (props.value.providers ?? []).some(
     (provider) => provider.enabled,
   )
@@ -84,8 +71,8 @@ export function AIConfigEditor(props: {
       name: '',
       type,
     }
-
     updateConfig({ providers: [...providers, provider] })
+    setEditingId(provider.id)
   }
 
   const deleteProvider = (id: string) => {
@@ -94,305 +81,66 @@ export function AIConfigEditor(props: {
     })
   }
 
-  const refreshModels = async (provider: AIProviderConfig) => {
-    setLoadingProviderId(provider.id)
-    try {
-      const response = await getModelList({
-        apiKey: provider.apiKey || undefined,
-        endpoint: provider.endpoint || undefined,
-        providerId: provider.id,
-        type: provider.type,
-      })
-      queryClient.setQueryData<Record<string, AIProviderModel[]>>(
-        props.modelCacheKey,
-        (current) => ({ ...current, [provider.id]: response.models ?? [] }),
-      )
-      if (response.error)
-        toast.warning(
-          t('settings.ai.toast.modelListError', { message: response.error }),
-        )
-      else toast.success(t('settings.ai.toast.modelListUpdated'))
-    } catch (error) {
-      toast.error(
-        getErrorMessage(error, t('settings.ai.error.fetchModelsFailed')),
-      )
-    } finally {
-      setLoadingProviderId(null)
-    }
-  }
-
-  const testProvider = async (provider: AIProviderConfig) => {
-    if (!provider.defaultModel.trim()) {
-      toast.warning(t('settings.ai.toast.needDefaultModel'))
-      return
-    }
-
-    setTestingProviderId(provider.id)
-    try {
-      await testConfig({
-        apiKey: provider.apiKey || undefined,
-        endpoint: provider.endpoint || undefined,
-        model: provider.defaultModel,
-        providerId: provider.id,
-        type: provider.type,
-      })
-      toast.success(t('settings.ai.toast.testSuccess'))
-    } catch (error) {
-      toast.error(getErrorMessage(error, t('settings.ai.error.testFailed')))
-    } finally {
-      setTestingProviderId(null)
-    }
-  }
+  const editingProvider =
+    providers.find((provider) => provider.id === editingId) ?? null
 
   return (
-    <div className="space-y-6">
-      <section className="space-y-3">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <h3 className="text-sm font-medium">
-              {t('settings.ai.provider.sectionTitle')}
-            </h3>
-            <p className="mt-1 text-xs text-neutral-500">
-              {t('settings.ai.provider.sectionTitleDescription')}
-            </p>
-          </div>
-          <Button onClick={addProvider} type="button" variant="subtle">
-            <Plus aria-hidden="true" className="size-4" />
-            {t('settings.ai.action.addProvider')}
-          </Button>
-        </div>
-        {providers.length === 0 ? (
-          <EmptyState
-            icon={<Settings className="size-7" />}
-            label={t('settings.ai.empty.providers')}
-          />
-        ) : (
-          <div className="space-y-3">
-            {providers.map((provider) => {
-              const modelListId = `ai-models-${provider.id}`
-              const models = providerModels[provider.id] ?? []
-              const showEndpoint =
-                provider.type === 'openai' ||
-                provider.type === 'openai-compatible' ||
-                provider.type === 'openrouter'
-
-              return (
-                <div
-                  className="rounded border border-neutral-200 p-3 dark:border-neutral-800"
+    <>
+      <div className="space-y-10">
+        <SettingsSection
+          actions={
+            <Button onClick={addProvider} type="button" variant="subtle">
+              <Plus aria-hidden="true" className="size-4" />
+              {t('settings.ai.action.addProvider')}
+            </Button>
+          }
+          description={t('settings.ai.provider.sectionTitleDescription')}
+          title={t('settings.ai.provider.sectionTitle')}
+        >
+          {providers.length === 0 ? (
+            <EmptyState
+              icon={<Settings className="size-7" />}
+              label={t('settings.ai.empty.providers')}
+            />
+          ) : (
+            <div className="divide-y divide-neutral-100 dark:divide-neutral-900">
+              {providers.map((provider) => (
+                <ProviderRow
                   key={provider.id}
-                >
-                  <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-                    <div className="min-w-0">
-                      <div className="truncate text-sm font-medium">
-                        {formatAIProviderLabel(provider)}
-                      </div>
-                      <div className="mt-1 truncate text-xs text-neutral-500">
-                        {provider.defaultModel ||
-                          t('settings.ai.provider.modelUnset')}
-                      </div>
-                    </div>
-                    <Switch
-                      checked={provider.enabled}
-                      className="border-0 px-0 py-0"
-                      label={t('settings.oauth.switch.enabled')}
-                      onCheckedChange={(enabled) =>
-                        updateProvider(provider.id, { enabled })
-                      }
-                    />
-                  </div>
-                  <div className="grid gap-3 md:grid-cols-2">
-                    <FieldShell label={t('settings.ai.field.providerType')}>
-                      <SelectField<AIProviderType>
-                        aria-label={t('settings.ai.field.providerType')}
-                        onValueChange={(type) =>
-                          updateProvider(provider.id, {
-                            defaultModel: getDefaultAIModel(type),
-                            type,
-                          })
-                        }
-                        options={aiProviderTypeOptions}
-                        value={provider.type}
-                      />
-                    </FieldShell>
-                    <TextInput
-                      label={t('settings.ai.field.displayName')}
-                      onChange={(name) => updateProvider(provider.id, { name })}
-                      placeholder={getAIProviderNamePlaceholder(
-                        t,
-                        provider.type,
-                      )}
-                      value={provider.name}
-                    />
-                    <TextInput
-                      label={t('settings.ai.field.apiKey')}
-                      onChange={(apiKey) =>
-                        updateProvider(provider.id, { apiKey })
-                      }
-                      placeholder={getAIProviderKeyPlaceholder(provider.type)}
-                      type="password"
-                      value={provider.apiKey}
-                    />
-                    {showEndpoint ? (
-                      <TextInput
-                        label={t('settings.ai.field.endpoint')}
-                        onChange={(endpoint) =>
-                          updateProvider(provider.id, { endpoint })
-                        }
-                        placeholder={
-                          provider.type === 'openai-compatible'
-                            ? t('settings.ai.placeholder.endpointCompatible')
-                            : t('settings.ai.placeholder.endpointDefault')
-                        }
-                        value={provider.endpoint ?? ''}
-                      />
-                    ) : null}
-                    <TextInput
-                      label={t('settings.ai.field.defaultModel')}
-                      list={modelListId}
-                      onChange={(defaultModel) =>
-                        updateProvider(provider.id, { defaultModel })
-                      }
-                      placeholder={getAIProviderModelPlaceholder(
-                        t,
-                        provider.type,
-                      )}
-                      value={provider.defaultModel}
-                    />
-                    <datalist id={modelListId}>
-                      {models.map((model) => (
-                        <option
-                          key={model.id}
-                          label={model.name || model.id}
-                          value={model.id}
-                        />
-                      ))}
-                    </datalist>
-                  </div>
-                  <div className="mt-3 flex flex-wrap justify-end gap-2">
-                    <Button
-                      disabled={loadingProviderId === provider.id}
-                      onClick={() => void refreshModels(provider)}
-                      type="button"
-                      variant="subtle"
-                    >
-                      {loadingProviderId === provider.id ? (
-                        <Loader2
-                          aria-hidden="true"
-                          className="size-4 animate-spin"
-                        />
-                      ) : null}
-                      {t('settings.ai.action.fetchModels')}
-                    </Button>
-                    <Button
-                      disabled={testingProviderId === provider.id}
-                      onClick={() => void testProvider(provider)}
-                      type="button"
-                      variant="subtle"
-                    >
-                      {testingProviderId === provider.id ? (
-                        <Loader2
-                          aria-hidden="true"
-                          className="size-4 animate-spin"
-                        />
-                      ) : null}
-                      {t('settings.ai.action.testConnection')}
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        if (
-                          window.confirm(
-                            t('settings.ai.confirm.deleteProvider'),
-                          )
-                        ) {
-                          deleteProvider(provider.id)
-                        }
-                      }}
-                      type="button"
-                      variant="subtle"
-                    >
-                      <Trash2 aria-hidden="true" className="size-4" />
-                      {t('common.delete')}
-                    </Button>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        )}
-      </section>
+                  onDelete={() => {
+                    if (
+                      window.confirm(t('settings.ai.confirm.deleteProvider'))
+                    ) {
+                      deleteProvider(provider.id)
+                    }
+                  }}
+                  onEdit={() => setEditingId(provider.id)}
+                  onToggle={(enabled) =>
+                    updateProvider(provider.id, { enabled })
+                  }
+                  provider={provider}
+                />
+              ))}
+            </div>
+          )}
+        </SettingsSection>
 
-      <section className="space-y-3">
-        <h3 className="text-sm font-medium">
-          {t('settings.ai.section.modelAssignments')}
-        </h3>
-        <div className="grid gap-3">
-          <AIModelAssignmentField
-            description={t('settings.ai.assignment.summaryDescription')}
-            label={t('settings.ai.assignment.summaryLabel')}
-            models={providerModels}
-            onChange={(summaryModel) => updateConfig({ summaryModel })}
-            providers={providers}
-            value={props.value.summaryModel}
-          />
-          <AIModelAssignmentField
-            description={t('settings.ai.assignment.writerDescription')}
-            label={t('settings.ai.assignment.writerLabel')}
-            models={providerModels}
-            onChange={(writerModel) => updateConfig({ writerModel })}
-            providers={providers}
-            value={props.value.writerModel}
-          />
-          <AIModelAssignmentField
-            description={t('settings.ai.assignment.commentReviewDescription')}
-            label={t('settings.ai.assignment.commentReviewLabel')}
-            models={providerModels}
-            onChange={(commentReviewModel) =>
-              updateConfig({ commentReviewModel })
-            }
-            providers={providers}
-            value={props.value.commentReviewModel}
-          />
-          <AIModelAssignmentField
-            description={t('settings.ai.assignment.translationDescription')}
-            label={t('settings.ai.assignment.translationLabel')}
-            models={providerModels}
-            onChange={(translationModel) => updateConfig({ translationModel })}
-            providers={providers}
-            value={props.value.translationModel}
-          />
-          <AIModelAssignmentField
-            description={t('settings.ai.assignment.insightsDescription')}
-            label={t('settings.ai.assignment.insightsLabel')}
-            models={providerModels}
-            onChange={(insightsModel) => updateConfig({ insightsModel })}
-            providers={providers}
-            value={props.value.insightsModel}
-          />
-          <AIModelAssignmentField
-            description={t(
-              'settings.ai.assignment.insightsTranslationDescription',
-            )}
-            label={t('settings.ai.assignment.insightsTranslationLabel')}
-            models={providerModels}
-            onChange={(insightsTranslationModel) =>
-              updateConfig({ insightsTranslationModel })
-            }
-            providers={providers}
-            value={props.value.insightsTranslationModel}
-          />
-        </div>
-      </section>
-
-      <section className="space-y-3">
-        <h3 className="text-sm font-medium">
-          {t('settings.ai.section.featureToggles')}
-        </h3>
-        <div className="grid gap-4">
-          <Switch
-            checked={Boolean(props.value.enableSummary)}
-            label={t('settings.ai.switch.enableSummary')}
-            onCheckedChange={(enableSummary) => updateConfig({ enableSummary })}
-          />
+        <FeatureSection
+          assignment={
+            <AIModelAssignmentField
+              label={t('settings.ai.assignment.summaryLabel')}
+              models={providerModels}
+              onChange={(summaryModel) => updateConfig({ summaryModel })}
+              providers={providers}
+              value={props.value.summaryModel}
+            />
+          }
+          description={t('settings.ai.section.summaryDescription')}
+          enabled={Boolean(props.value.enableSummary)}
+          onEnabledChange={(enableSummary) => updateConfig({ enableSummary })}
+          title={t('settings.ai.section.summary')}
+          toggleLabel={t('settings.ai.switch.enableSummary')}
+        >
           <Switch
             checked={Boolean(props.value.enableAutoGenerateSummaryOnCreate)}
             disabled={!props.value.enableSummary}
@@ -429,13 +177,35 @@ export function AIConfigEditor(props: {
             type="number"
             value={String(props.value.summaryMinTextLength ?? 0)}
           />
-          <Switch
-            checked={Boolean(props.value.enableInsights)}
-            label={t('settings.ai.switch.enableInsights')}
-            onCheckedChange={(enableInsights) =>
-              updateConfig({ enableInsights })
-            }
-          />
+        </FeatureSection>
+
+        <FeatureSection
+          assignment={
+            <>
+              <AIModelAssignmentField
+                label={t('settings.ai.assignment.insightsLabel')}
+                models={providerModels}
+                onChange={(insightsModel) => updateConfig({ insightsModel })}
+                providers={providers}
+                value={props.value.insightsModel}
+              />
+              <AIModelAssignmentField
+                label={t('settings.ai.assignment.insightsTranslationLabel')}
+                models={providerModels}
+                onChange={(insightsTranslationModel) =>
+                  updateConfig({ insightsTranslationModel })
+                }
+                providers={providers}
+                value={props.value.insightsTranslationModel}
+              />
+            </>
+          }
+          description={t('settings.ai.section.insightsDescription')}
+          enabled={Boolean(props.value.enableInsights)}
+          onEnabledChange={(enableInsights) => updateConfig({ enableInsights })}
+          title={t('settings.ai.section.insights')}
+          toggleLabel={t('settings.ai.switch.enableInsights')}
+        >
           <Switch
             checked={Boolean(props.value.enableAutoGenerateInsightsOnCreate)}
             disabled={!props.value.enableInsights}
@@ -480,13 +250,28 @@ export function AIConfigEditor(props: {
             type="number"
             value={String(props.value.insightsMinTextLength ?? 0)}
           />
-          <Switch
-            checked={Boolean(props.value.enableTranslation)}
-            label={t('settings.ai.switch.enableTranslation')}
-            onCheckedChange={(enableTranslation) =>
-              updateConfig({ enableTranslation })
-            }
-          />
+        </FeatureSection>
+
+        <FeatureSection
+          assignment={
+            <AIModelAssignmentField
+              label={t('settings.ai.assignment.translationLabel')}
+              models={providerModels}
+              onChange={(translationModel) =>
+                updateConfig({ translationModel })
+              }
+              providers={providers}
+              value={props.value.translationModel}
+            />
+          }
+          description={t('settings.ai.section.translationDescription')}
+          enabled={Boolean(props.value.enableTranslation)}
+          onEnabledChange={(enableTranslation) =>
+            updateConfig({ enableTranslation })
+          }
+          title={t('settings.ai.section.translation')}
+          toggleLabel={t('settings.ai.switch.enableTranslation')}
+        >
           <Switch
             checked={Boolean(props.value.enableAutoGenerateTranslation)}
             disabled={!props.value.enableTranslation}
@@ -503,8 +288,111 @@ export function AIConfigEditor(props: {
             }
             value={props.value.translationTargetLanguages ?? []}
           />
+        </FeatureSection>
+
+        <SettingsSection
+          description={t('settings.ai.section.otherModelsDescription')}
+          title={t('settings.ai.section.otherModels')}
+        >
+          <div className="space-y-4">
+            <AIModelAssignmentField
+              label={t('settings.ai.assignment.writerLabel')}
+              models={providerModels}
+              onChange={(writerModel) => updateConfig({ writerModel })}
+              providers={providers}
+              value={props.value.writerModel}
+            />
+            <AIModelAssignmentField
+              label={t('settings.ai.assignment.commentReviewLabel')}
+              models={providerModels}
+              onChange={(commentReviewModel) =>
+                updateConfig({ commentReviewModel })
+              }
+              providers={providers}
+              value={props.value.commentReviewModel}
+            />
+          </div>
+        </SettingsSection>
+      </div>
+
+      <AIProviderDrawer
+        modelCacheKey={props.modelCacheKey}
+        onChange={(patch) =>
+          editingId ? updateProvider(editingId, patch) : undefined
+        }
+        onClose={() => setEditingId(null)}
+        provider={editingProvider}
+        providerModels={
+          editingProvider ? (providerModels[editingProvider.id] ?? []) : []
+        }
+      />
+    </>
+  )
+}
+
+function ProviderRow(props: {
+  onDelete: () => void
+  onEdit: () => void
+  onToggle: (enabled: boolean) => void
+  provider: AIProviderConfig
+}) {
+  const { t } = useI18n()
+  const provider = props.provider
+  return (
+    <div className="flex items-center gap-3 py-3">
+      <div className={cn('min-w-0 flex-1', !provider.enabled && 'opacity-60')}>
+        <div className="truncate text-sm font-medium">
+          {formatAIProviderLabel(provider)}
         </div>
-      </section>
+        <div className="mt-1 truncate text-xs text-neutral-500">
+          {provider.defaultModel || t('settings.ai.provider.row.empty')}
+        </div>
+      </div>
+      <Switch
+        checked={provider.enabled}
+        label={t('settings.oauth.switch.enabled')}
+        onCheckedChange={props.onToggle}
+      />
+      <Button
+        aria-label={t('settings.ai.provider.editAction')}
+        onClick={props.onEdit}
+        type="button"
+        variant="subtle"
+      >
+        <Pencil aria-hidden="true" className="size-4" />
+      </Button>
+      <Button
+        aria-label={t('common.delete')}
+        onClick={props.onDelete}
+        type="button"
+        variant="subtle"
+      >
+        <Trash2 aria-hidden="true" className="size-4" />
+      </Button>
     </div>
+  )
+}
+
+function FeatureSection(props: {
+  assignment: ReactNode
+  children: ReactNode
+  description?: string
+  enabled: boolean
+  onEnabledChange: (value: boolean) => void
+  title: string
+  toggleLabel: string
+}) {
+  return (
+    <SettingsSection description={props.description} title={props.title}>
+      <div className="space-y-4">
+        <Switch
+          checked={props.enabled}
+          label={props.toggleLabel}
+          onCheckedChange={props.onEnabledChange}
+        />
+        {props.assignment}
+        {props.children}
+      </div>
+    </SettingsSection>
   )
 }

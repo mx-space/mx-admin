@@ -12,22 +12,17 @@ import {
 } from '~/api/meta-presets'
 import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
-import { Panel } from '~/ui/primitives/panel'
 import { cn } from '~/utils/cn'
 
 import { metaPresetsQueryKey } from '../../constants'
 import { getErrorMessage } from '../../utils/settings'
-import { EmptyState } from '../SettingsPrimitives'
-import { MetaPresetModal } from './MetaPresetModal'
+import { EmptyState, SettingsSection } from '../SettingsPrimitives'
+import { presentMetaPreset } from './MetaPresetModal'
 import { MetaPresetRow } from './MetaPresetRow'
 
 export function MetaPresetSettings() {
   const { t } = useI18n()
   const queryClient = useQueryClient()
-  const [modalState, setModalState] = useState<{
-    id?: string
-    mode: 'create' | 'edit'
-  } | null>(null)
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
 
   const presetsQuery = useQuery({
@@ -82,7 +77,18 @@ export function MetaPresetSettings() {
   }
 
   return (
-    <Panel
+    <SettingsSection
+      actions={
+        <Button
+          onClick={() => {
+            void presentMetaPreset()
+          }}
+          type="button"
+        >
+          <Plus aria-hidden="true" className="size-4" />
+          {t('settings.meta.action.addPreset')}
+        </Button>
+      }
       description={t('settings.meta.description')}
       title={
         <span className="inline-flex items-center gap-2">
@@ -91,14 +97,8 @@ export function MetaPresetSettings() {
         </span>
       }
     >
-      <div className="flex justify-end border-b border-neutral-100 p-3 dark:border-neutral-900">
-        <Button onClick={() => setModalState({ mode: 'create' })} type="button">
-          <Plus aria-hidden="true" className="size-4" />
-          {t('settings.meta.action.addPreset')}
-        </Button>
-      </div>
       {presetsQuery.isLoading ? (
-        <div className="p-4 text-sm text-neutral-500">
+        <div className="py-3 text-sm text-neutral-500">
           {t('settings.common.loading')}
         </div>
       ) : presets.length === 0 ? (
@@ -136,7 +136,9 @@ export function MetaPresetSettings() {
                     deleteMutation.mutate(id)
                   }
                 }}
-                onEdit={(id) => setModalState({ id, mode: 'edit' })}
+                onEdit={(id) => {
+                  void presentMetaPreset(id)
+                }}
                 onToggle={(item) =>
                   updateMutation.mutate({
                     data: { enabled: !item.enabled },
@@ -149,12 +151,6 @@ export function MetaPresetSettings() {
           ))}
         </div>
       )}
-
-      <MetaPresetModal
-        id={modalState?.id}
-        onClose={() => setModalState(null)}
-        open={Boolean(modalState)}
-      />
-    </Panel>
+    </SettingsSection>
   )
 }

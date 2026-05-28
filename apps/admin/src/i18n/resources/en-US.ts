@@ -1577,9 +1577,11 @@ export const enUS = {
 
   'settings.account.entry.passkeyDescription':
     'Passwordless login credentials on browsers and devices.',
+  'settings.account.entry.passkeyManage': 'Manage passkeys',
   'settings.account.entry.passkeyTitle': 'Passkey',
   'settings.account.entry.tokenDescription':
     'Access tokens used for API calls.',
+  'settings.account.entry.tokenManage': 'Manage tokens',
   'settings.account.entry.tokenTitle': 'API Token',
   'settings.account.error.authAsOwnerFailed': 'Failed to set as owner account',
   'settings.account.error.oauthValidateFailed': 'OAuth validation failed',
@@ -1637,8 +1639,22 @@ export const enUS = {
   'settings.ai.provider.sectionTitle': 'AI providers',
   'settings.ai.provider.sectionTitleDescription':
     'Configure AI providers, keys, endpoint, and default model.',
+  'settings.ai.provider.editAction': 'Edit',
+  'settings.ai.provider.row.empty': 'No model assigned',
   'settings.ai.section.featureToggles': 'Feature toggles',
+  'settings.ai.section.insights': 'AI insights',
+  'settings.ai.section.insightsDescription':
+    'Generate long-form insights from article content; optional translation.',
   'settings.ai.section.modelAssignments': 'Model assignments',
+  'settings.ai.section.otherModels': 'Other models',
+  'settings.ai.section.otherModelsDescription':
+    'Model assignments without a dedicated feature toggle.',
+  'settings.ai.section.summary': 'AI summary',
+  'settings.ai.section.summaryDescription':
+    'Auto-generate article summaries with target languages and triggers.',
+  'settings.ai.section.translation': 'AI translation',
+  'settings.ai.section.translationDescription':
+    'Translate article body to target languages.',
   'settings.ai.switch.enableAutoInsightsCreate':
     'Auto-generate insights on create',
   'settings.ai.switch.enableAutoInsightsUpdate':

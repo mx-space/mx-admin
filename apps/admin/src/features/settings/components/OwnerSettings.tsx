@@ -18,13 +18,12 @@ import { getOwner, updateOwner } from '~/api/options'
 import { IpInfoPopover } from '~/features/_shared/components/ip-info-popover'
 import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
-import { Panel } from '~/ui/primitives/panel'
 import { SelectField } from '~/ui/primitives/select'
 import { TextArea, TextInput } from '~/ui/primitives/text-field'
 
 import { settingsQueryKey, socialOptions } from '../constants'
 import { formatDateTime, getErrorMessage } from '../utils/settings'
-import { SettingsSkeleton } from './SettingsPrimitives'
+import { SettingsSection, SettingsSkeleton } from './SettingsPrimitives'
 
 export function OwnerSettings(props: { onSaved: () => Promise<unknown> }) {
   const { t } = useI18n()
@@ -116,18 +115,18 @@ export function OwnerSettings(props: { onSaved: () => Promise<unknown> }) {
     return <SettingsSkeleton title={t('settings.owner.section.title')} />
 
   return (
-    <Panel
+    <SettingsSection
       description={t('settings.owner.description')}
       title={t('settings.owner.section.title')}
     >
       <form
-        className="space-y-4 p-4"
+        className="space-y-6"
         onSubmit={(event) => {
           event.preventDefault()
           mutation.mutate()
         }}
       >
-        <div className="flex flex-wrap items-center gap-4 border-b border-neutral-100 pb-4 dark:border-neutral-900">
+        <div className="flex flex-wrap items-center gap-4">
           <input
             accept="image/*"
             className="hidden"
@@ -250,8 +249,8 @@ export function OwnerSettings(props: { onSaved: () => Promise<unknown> }) {
           value={form.introduce ?? ''}
         />
 
-        <section className="rounded border border-neutral-200 dark:border-neutral-800">
-          <div className="flex items-center justify-between border-b border-neutral-100 px-3 py-2 dark:border-neutral-900">
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
             <h3 className="text-sm font-medium">
               {t('settings.owner.social.title')}
             </h3>
@@ -265,7 +264,7 @@ export function OwnerSettings(props: { onSaved: () => Promise<unknown> }) {
               {t('settings.owner.social.add')}
             </Button>
           </div>
-          <div className="space-y-2 p-3">
+          <div className="space-y-2">
             {socialEntries.length === 0 ? (
               <p className="text-sm text-neutral-500">
                 {t('settings.owner.social.empty')}
@@ -318,7 +317,7 @@ export function OwnerSettings(props: { onSaved: () => Promise<unknown> }) {
               ))
             )}
           </div>
-        </section>
+        </div>
 
         <div className="flex justify-end">
           <Button disabled={mutation.isPending} type="submit">
@@ -331,6 +330,6 @@ export function OwnerSettings(props: { onSaved: () => Promise<unknown> }) {
           </Button>
         </div>
       </form>
-    </Panel>
+    </SettingsSection>
   )
 }

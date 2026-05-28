@@ -1,66 +1,6 @@
-import { ArrowLeft, X } from 'lucide-react'
 import type { ReactNode } from 'react'
 
-import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
-import { Panel } from '~/ui/primitives/panel'
-import { Scroll } from '~/ui/primitives/scroll'
 import { cn } from '~/utils/cn'
-
-export function PanelHeader(props: {
-  children?: ReactNode
-  onBack: () => void
-  title: string
-}) {
-  return (
-    <div
-      className={cn(
-        'flex shrink-0 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800',
-        APP_SHELL_HEADER_HEIGHT_CLASS,
-      )}
-    >
-      <div className="flex items-center gap-3">
-        <button
-          className="flex size-8 items-center justify-center rounded text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-neutral-900 dark:hover:text-neutral-100"
-          onClick={props.onBack}
-          type="button"
-        >
-          <ArrowLeft aria-hidden="true" className="size-5" />
-        </button>
-        <h2 className="text-base font-semibold">{props.title}</h2>
-      </div>
-      {props.children}
-    </div>
-  )
-}
-
-export function Modal(props: {
-  children: ReactNode
-  onClose: () => void
-  open: boolean
-  title: string
-}) {
-  if (!props.open) return null
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-      <div className="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded border border-neutral-200 bg-white shadow-xl dark:border-neutral-800 dark:bg-neutral-950">
-        <div className="flex items-center justify-between border-b border-neutral-200 px-5 py-4 dark:border-neutral-800">
-          <h2 className="text-lg font-semibold">{props.title}</h2>
-          <button
-            className="rounded p-1 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-700 dark:hover:bg-neutral-900 dark:hover:text-neutral-100"
-            onClick={props.onClose}
-            type="button"
-          >
-            <X aria-hidden="true" className="size-5" />
-          </button>
-        </div>
-        <Scroll className="flex-1" innerClassName="p-5">
-          {props.children}
-        </Scroll>
-      </div>
-    </div>
-  )
-}
 
 export function FieldShell(props: { children: ReactNode; label: string }) {
   return (
@@ -84,8 +24,8 @@ export function EmptyState(props: { icon: ReactNode; label: string }) {
 
 export function SettingsSkeleton(props: { title: string }) {
   return (
-    <Panel title={props.title}>
-      <div className="space-y-3 p-4">
+    <SettingsSection title={props.title}>
+      <div className="space-y-3">
         {Array.from({ length: 6 }).map((_, index) => (
           <div
             className="h-9 animate-pulse rounded bg-neutral-100 dark:bg-neutral-900"
@@ -93,7 +33,7 @@ export function SettingsSkeleton(props: { title: string }) {
           />
         ))}
       </div>
-    </Panel>
+    </SettingsSection>
   )
 }
 
@@ -102,5 +42,43 @@ export function SmallBadge(props: { children: ReactNode }) {
     <span className="rounded bg-neutral-100 px-1.5 py-0.5 text-xs text-neutral-500 dark:bg-neutral-900 dark:text-neutral-400">
       {props.children}
     </span>
+  )
+}
+
+export function SettingsSection(props: {
+  actions?: ReactNode
+  children?: ReactNode
+  className?: string
+  description?: ReactNode
+  dirty?: boolean
+  title: ReactNode
+}) {
+  return (
+    <section className={cn('space-y-4', props.className)}>
+      <header className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h2 className="inline-flex items-center gap-2 text-base font-medium text-neutral-950 dark:text-neutral-50">
+            {props.title}
+            {props.dirty ? (
+              <span
+                aria-label="unsaved"
+                className="size-1.5 shrink-0 rounded-full bg-amber-500"
+              />
+            ) : null}
+          </h2>
+          {props.description ? (
+            <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+              {props.description}
+            </p>
+          ) : null}
+        </div>
+        {props.actions ? (
+          <div className="flex shrink-0 items-center gap-2">
+            {props.actions}
+          </div>
+        ) : null}
+      </header>
+      {props.children}
+    </section>
   )
 }

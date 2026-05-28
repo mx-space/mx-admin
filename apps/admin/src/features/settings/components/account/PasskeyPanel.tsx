@@ -14,9 +14,40 @@ import { authClient } from '~/utils/authjs/auth'
 
 import { accountQueryKey } from '../../constants'
 import { formatDateTime, getErrorMessage } from '../../utils/settings'
-import { EmptyState, PanelHeader } from '../SettingsPrimitives'
+import { EmptyState } from '../SettingsPrimitives'
 
-export function PasskeyPanel(props: { onBack: () => void }) {
+export function PasskeyPanelHeaderAction() {
+  const { t } = useI18n()
+  const validateMutation = useMutation({
+    mutationFn: async () => {
+      const result = await authClient.signIn.passkey()
+      if (result.error) {
+        throw new Error(
+          result.error.message || t('settings.passkey.error.validate'),
+        )
+      }
+    },
+    onError: (error: unknown) =>
+      toast.error(getErrorMessage(error, t('settings.passkey.error.validate'))),
+    onSuccess: () => {
+      toast.success(t('settings.passkey.success.validate'))
+    },
+  })
+
+  return (
+    <Button
+      disabled={validateMutation.isPending}
+      onClick={() => validateMutation.mutate()}
+      type="button"
+      variant="subtle"
+    >
+      <Shield aria-hidden="true" className="size-4" />
+      {t('settings.passkey.action.validate')}
+    </Button>
+  )
+}
+
+export function PasskeyPanel() {
   const { t } = useI18n()
   const queryClient = useQueryClient()
   const [name, setName] = useState('')
@@ -78,35 +109,8 @@ export function PasskeyPanel(props: { onBack: () => void }) {
     },
   })
 
-  const validateMutation = useMutation({
-    mutationFn: async () => {
-      const result = await authClient.signIn.passkey()
-      if (result.error) {
-        throw new Error(
-          result.error.message || t('settings.passkey.error.validate'),
-        )
-      }
-    },
-    onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, t('settings.passkey.error.validate'))),
-    onSuccess: () => {
-      toast.success(t('settings.passkey.success.validate'))
-    },
-  })
-
   return (
-    <div className="flex h-full min-h-72 flex-col">
-      <PanelHeader onBack={props.onBack} title={t('settings.passkey.title')}>
-        <Button
-          disabled={validateMutation.isPending}
-          onClick={() => validateMutation.mutate()}
-          type="button"
-          variant="subtle"
-        >
-          <Shield aria-hidden="true" className="size-4" />
-          {t('settings.passkey.action.validate')}
-        </Button>
-      </PanelHeader>
+    <>
       <div className="border-b border-neutral-100 p-4 dark:border-neutral-900">
         <Switch
           checked={Boolean(authSecurityQuery.data?.disablePasswordLogin)}
@@ -190,6 +194,6 @@ export function PasskeyPanel(props: { onBack: () => void }) {
           </div>
         )}
       </Scroll>
-    </div>
+    </>
   )
 }

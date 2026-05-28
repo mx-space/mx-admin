@@ -5,11 +5,11 @@ import type { OauthOptions, OauthProviderType } from '../../types/settings'
 
 import { getOption, patchOption } from '~/api/options'
 import { useI18n } from '~/i18n'
-import { Panel } from '~/ui/primitives/panel'
 
 import { accountQueryKey, oauthProviders } from '../../constants'
 import { flattenOauthOptions } from '../../utils/oauth'
 import { getErrorMessage } from '../../utils/settings'
+import { SettingsSection } from '../SettingsPrimitives'
 import { GitHubIcon } from './OauthIcons'
 import { OauthProviderSection } from './OauthProviderSection'
 
@@ -55,7 +55,7 @@ export function OauthSection() {
   )
 
   return (
-    <Panel
+    <SettingsSection
       description={t('settings.oauth.description')}
       title={
         <span className="inline-flex items-center gap-2">
@@ -65,7 +65,7 @@ export function OauthSection() {
       }
     >
       {oauthQuery.isLoading ? (
-        <div className="p-4 text-sm text-neutral-500">
+        <div className="py-3 text-sm text-neutral-500">
           {t('settings.common.loading')}
         </div>
       ) : (
@@ -82,6 +82,6 @@ export function OauthSection() {
           ))}
         </div>
       )}
-    </Panel>
+    </SettingsSection>
   )
 }

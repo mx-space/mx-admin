@@ -15,6 +15,8 @@ import {
   updateMetaPreset,
 } from '~/api/meta-presets'
 import { useI18n } from '~/i18n'
+import { ModalHeader } from '~/ui/feedback/modal'
+import { present, useModal } from '~/ui/feedback/modal-imperative'
 import { Button } from '~/ui/primitives/button'
 import { SelectField } from '~/ui/primitives/select'
 import { Switch } from '~/ui/primitives/switch'
@@ -32,16 +34,17 @@ import {
   metaPresetToForm,
   validateMetaPreset,
 } from '../../utils/settings'
-import { FieldShell, Modal } from '../SettingsPrimitives'
+import { FieldShell } from '../SettingsPrimitives'
 import { ChildrenEditor } from './ChildrenEditor'
 import { OptionsEditor } from './OptionsEditor'
 
-export function MetaPresetModal(props: {
+interface MetaPresetModalProps {
   id?: string
-  onClose: () => void
-  open: boolean
-}) {
+}
+
+function MetaPresetModal(props: MetaPresetModalProps) {
   const { t } = useI18n()
+  const modal = useModal<boolean>()
   const queryClient = useQueryClient()
   const fieldTypeOptions = useMemo(
     () =>
@@ -60,7 +63,7 @@ export function MetaPresetModal(props: {
     [t],
   )
   const presetsQuery = useQuery({
-    enabled: props.open && Boolean(props.id),
+    enabled: Boolean(props.id),
     queryFn: async () => {
       const presets = await getMetaPresets()
       return presets.find((preset) => preset.id === props.id) ?? null
@@ -70,13 +73,12 @@ export function MetaPresetModal(props: {
   const [form, setForm] = useState<CreateMetaPresetDto>(emptyMetaPreset())
 
   useEffect(() => {
-    if (!props.open) return
     if (props.id && presetsQuery.data) {
       setForm(metaPresetToForm(presetsQuery.data))
       return
     }
     if (!props.id) setForm(emptyMetaPreset())
-  }, [props.id, props.open, presetsQuery.data])
+  }, [props.id, presetsQuery.data])
 
   const mutation = useMutation({
     mutationFn: () =>
@@ -96,8 +98,8 @@ export function MetaPresetModal(props: {
           ? t('settings.meta.success.update')
           : t('settings.meta.success.create'),
       )
-      props.onClose()
       await queryClient.invalidateQueries({ queryKey: metaPresetsQueryKey })
+      modal.close(true)
     },
   })
 
@@ -116,22 +118,21 @@ export function MetaPresetModal(props: {
   }
 
   return (
-    <Modal
-      onClose={props.onClose}
-      open={props.open}
-      title={
-        props.id
-          ? t('settings.meta.modal.edit')
-          : t('settings.meta.modal.create')
-      }
-    >
+    <div className="flex w-full flex-col">
+      <ModalHeader
+        title={
+          props.id
+            ? t('settings.meta.modal.edit')
+            : t('settings.meta.modal.create')
+        }
+      />
       {presetsQuery.isLoading ? (
         <div className="py-12 text-center text-sm text-neutral-500">
           {t('settings.common.loading')}
         </div>
       ) : (
         <form
-          className="space-y-4"
+          className="space-y-4 px-5 py-4"
           onKeyDown={(event: KeyboardEvent<HTMLFormElement>) => {
             if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
               event.preventDefault()
@@ -204,7 +205,11 @@ export function MetaPresetModal(props: {
           ) : null}
 
           <div className="flex justify-end gap-2">
-            <Button onClick={props.onClose} type="button" variant="subtle">
+            <Button
+              onClick={() => modal.dismiss()}
+              type="button"
+              variant="subtle"
+            >
               {t('common.cancel')}
             </Button>
             <Button disabled={mutation.isPending} type="submit">
@@ -218,6 +223,14 @@ export function MetaPresetModal(props: {
           </div>
         </form>
       )}
-    </Modal>
+    </div>
+  )
+}
+
+export function presentMetaPreset(id?: string) {
+  return present<MetaPresetModalProps, boolean>(
+    MetaPresetModal,
+    { id },
+    { modalProps: { popupStyle: { width: 'min(92vw, 40rem)' } } },
   )
 }

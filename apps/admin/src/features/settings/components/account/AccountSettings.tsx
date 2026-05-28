@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { Fingerprint, Key, Shield } from 'lucide-react'
+import { Fingerprint, Key } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { toast } from 'sonner'
@@ -7,16 +7,17 @@ import type { OauthProviderType } from '../../types/settings'
 
 import { authAsOwner } from '~/api/auth'
 import { useI18n } from '~/i18n'
+import { Drawer } from '~/ui/feedback/drawer'
 import { authClient } from '~/utils/authjs/auth'
 
 import { accountQueryKey } from '../../constants'
 import { getErrorMessage } from '../../utils/settings'
-import { AccountEntry } from './AccountEntry'
+import { SettingsSection } from '../SettingsPrimitives'
 import { OauthSection } from './OauthSection'
-import { PasskeyPanel } from './PasskeyPanel'
+import { PasskeyPanel, PasskeyPanelHeaderAction } from './PasskeyPanel'
 import { PasswordSection } from './PasswordSection'
 import { SessionSection } from './SessionSection'
-import { TokenPanel } from './TokenPanel'
+import { TokenPanel, TokenPanelHeaderAction } from './TokenPanel'
 
 export function AccountSettings() {
   const { t } = useI18n()
@@ -67,50 +68,72 @@ export function AccountSettings() {
   }, [authAsOwnerMutation, setSearchParams, t, validateProvider])
 
   return (
-    <div className="grid min-h-[34rem] grid-cols-1 overflow-hidden border border-neutral-200 lg:grid-cols-[minmax(0,1fr)_minmax(24rem,0.8fr)] dark:border-neutral-800">
-      <div className="min-w-0 border-b border-neutral-200 lg:border-b-0 lg:border-r dark:border-neutral-800">
-        <div className="space-y-4 p-4">
-          <SessionSection />
-          <PasswordSection />
-          <AccountEntry
-            active={activePanel === 'tokens'}
-            description={t('settings.account.entry.tokenDescription')}
-            icon={<Key aria-hidden="true" className="size-4" />}
-            onClick={() =>
-              setActivePanel((current) =>
-                current === 'tokens' ? null : 'tokens',
-              )
-            }
-            title={t('settings.account.entry.tokenTitle')}
-          />
-          <AccountEntry
-            active={activePanel === 'passkeys'}
-            description={t('settings.account.entry.passkeyDescription')}
-            icon={<Fingerprint aria-hidden="true" className="size-4" />}
-            onClick={() =>
-              setActivePanel((current) =>
-                current === 'passkeys' ? null : 'passkeys',
-              )
-            }
-            title={t('settings.account.entry.passkeyTitle')}
-          />
-          <OauthSection />
-        </div>
+    <>
+      <div className="space-y-10">
+        <SessionSection />
+        <PasswordSection />
+        <SettingsSection
+          actions={
+            <button
+              className="text-sm text-[var(--color-primary)] hover:underline"
+              onClick={() => setActivePanel('tokens')}
+              type="button"
+            >
+              {t('settings.account.entry.tokenManage')}
+            </button>
+          }
+          description={t('settings.account.entry.tokenDescription')}
+          title={
+            <span className="inline-flex items-center gap-2">
+              <Key aria-hidden="true" className="size-4" />
+              {t('settings.account.entry.tokenTitle')}
+            </span>
+          }
+        />
+        <SettingsSection
+          actions={
+            <button
+              className="text-sm text-[var(--color-primary)] hover:underline"
+              onClick={() => setActivePanel('passkeys')}
+              type="button"
+            >
+              {t('settings.account.entry.passkeyManage')}
+            </button>
+          }
+          description={t('settings.account.entry.passkeyDescription')}
+          title={
+            <span className="inline-flex items-center gap-2">
+              <Fingerprint aria-hidden="true" className="size-4" />
+              {t('settings.account.entry.passkeyTitle')}
+            </span>
+          }
+        />
+        <OauthSection />
       </div>
-      <div className="min-w-0 bg-neutral-50 dark:bg-neutral-950">
-        {activePanel === 'tokens' ? (
-          <TokenPanel onBack={() => setActivePanel(null)} />
-        ) : activePanel === 'passkeys' ? (
-          <PasskeyPanel onBack={() => setActivePanel(null)} />
-        ) : (
-          <div className="flex h-full min-h-72 flex-col items-center justify-center px-4 text-center">
-            <Shield aria-hidden="true" className="size-8 text-neutral-300" />
-            <p className="mt-3 text-sm text-neutral-500">
-              {t('settings.account.placeholder.title')}
-            </p>
-          </div>
-        )}
-      </div>
-    </div>
+
+      <Drawer
+        bodyClassName="overflow-hidden"
+        headerActions={<TokenPanelHeaderAction />}
+        icon={Key}
+        onClose={() => setActivePanel(null)}
+        open={activePanel === 'tokens'}
+        title={t('settings.account.entry.tokenTitle')}
+        widthClassName="w-[min(90vw,32rem)]"
+      >
+        <TokenPanel />
+      </Drawer>
+
+      <Drawer
+        bodyClassName="overflow-hidden"
+        headerActions={<PasskeyPanelHeaderAction />}
+        icon={Fingerprint}
+        onClose={() => setActivePanel(null)}
+        open={activePanel === 'passkeys'}
+        title={t('settings.passkey.title')}
+        widthClassName="w-[min(90vw,32rem)]"
+      >
+        <PasskeyPanel />
+      </Drawer>
+    </>
   )
 }
