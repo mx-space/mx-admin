@@ -108,7 +108,7 @@
     "@vue/test-utils": "^2.4.0",
     "cors": "2.8.6",
     "happy-dom": "^15.11.0",
-    "postcss": "8.5.8",
+    "postcss": "8.5.10",
     "postcss-nested": "7.0.2",
     "postcss-preset-env": "11.2.0",
     "rollup": "^4.60.1",
