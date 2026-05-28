@@ -34,6 +34,7 @@ export interface AIConfig {
   enableInsights?: boolean
   enableSummary?: boolean
   enableTranslation?: boolean
+  enableTranslationReview?: boolean
   insightsMinTextLength?: number
   insightsModel?: AIModelAssignment
   insightsTargetLanguages?: string[]
@@ -43,6 +44,8 @@ export interface AIConfig {
   summaryModel?: AIModelAssignment
   summaryTargetLanguages?: string[]
   translationModel?: AIModelAssignment
+  translationReviewModel?: AIModelAssignment
+  translationReviewScoreThreshold?: number
   translationTargetLanguages?: string[]
   writerModel?: AIModelAssignment
 }

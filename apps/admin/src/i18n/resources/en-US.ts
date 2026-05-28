@@ -992,7 +992,7 @@ export const enUS = {
   'files.detail.field.created': 'Created',
   'files.detail.field.dimensions': 'Dimensions',
   'files.detail.field.palette': 'Palette',
-  'files.detail.field.blurhash': 'Blurhash',
+  'files.detail.field.thumbhash': 'Thumbhash',
   'files.detail.field.type': 'Category',
   'files.detail.field.refType': 'Reference type',
   'files.detail.field.refId': 'Reference id',
@@ -1618,6 +1618,9 @@ export const enUS = {
   'settings.ai.assignment.translationDescription':
     'Model used to generate article translations.',
   'settings.ai.assignment.translationLabel': 'Translation',
+  'settings.ai.assignment.translationReviewDescription':
+    'Model used to review and revise translations; falls back to the translation model when empty.',
+  'settings.ai.assignment.translationReviewLabel': 'Translation review',
   'settings.ai.assignment.writerDescription':
     'Model used to generate titles, slugs, etc.',
   'settings.ai.assignment.writerLabel': 'Writing assistant',
@@ -1674,12 +1677,19 @@ export const enUS = {
   'settings.ai.switch.enableInsights': 'Enable AI insights',
   'settings.ai.switch.enableSummary': 'Enable AI summary',
   'settings.ai.switch.enableTranslation': 'Enable AI translation',
+  'settings.ai.switch.enableTranslationReview': 'Enable translation review',
+  'settings.ai.switch.enableTranslationReviewDescription':
+    'Run writer → reviewer → editor pipeline: reviewer scores each translation; revisions trigger when the score drops below the threshold.',
   'settings.ai.switch.insightsMinTextLength':
     'Insights auto-generate minimum text length',
   'settings.ai.switch.insightsTargetLanguages': 'Insights target languages',
   'settings.ai.switch.summaryMinTextLength':
     'Summary auto-generate minimum text length',
   'settings.ai.switch.summaryTargetLanguages': 'Summary target languages',
+  'settings.ai.switch.translationReviewScoreThreshold':
+    'Review score threshold',
+  'settings.ai.switch.translationReviewScoreThresholdDescription':
+    'Translations with a reviewer score (0–100) at or above the threshold pass through. Lower scores trigger editor revision. Default 85.',
   'settings.ai.switch.translationTargetLanguages':
     'Translation target languages',
   'settings.ai.test.invalidLanguageCode':

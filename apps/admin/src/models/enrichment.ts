@@ -17,7 +17,7 @@ export interface EnrichmentImage {
   width?: number
   height?: number
   alt?: string
-  blurhash?: string
+  thumbhash?: string
   palette?: EnrichmentImagePalette
 }
 
@@ -76,7 +76,7 @@ export interface EnrichmentCaptureRow {
   bytes: number
   width: number
   height: number
-  blurhash: string | null
+  thumbhash: string | null
   palette: EnrichmentImagePalette | null
   createdAt: string
   lastAccessedAt: string

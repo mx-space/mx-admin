@@ -21,7 +21,7 @@ export interface EnrichmentImage {
   width?: number
   height?: number
   alt?: string
-  blurhash?: string
+  thumbhash?: string
   palette?: EnrichmentImagePalette
 }
 

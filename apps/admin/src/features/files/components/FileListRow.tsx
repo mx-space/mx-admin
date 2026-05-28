@@ -69,7 +69,7 @@ export function FileListRow<TRaw>(props: FileListRowProps<TRaw>) {
           {showImage ? (
             <FileThumbnail
               alt={props.item.name}
-              blurhash={props.item.blurhash}
+              thumbhash={props.item.thumbhash}
               className="h-full w-full object-cover"
               dominantColor={props.item.palette?.dominant}
               src={props.item.url}

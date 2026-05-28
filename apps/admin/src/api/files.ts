@@ -4,7 +4,7 @@ import { translate } from '~/i18n/translate'
 import { deleteJson, getJson, patchJson, requestJson } from './http'
 
 export interface FileItem {
-  blurhash?: null | string
+  thumbhash?: null | string
   created?: number
   name: string
   palette?: { dominant?: string; swatches?: string[] } | null
@@ -12,14 +12,14 @@ export interface FileItem {
 }
 
 export interface UploadResponse {
-  blurhash?: null | string
+  thumbhash?: null | string
   name: string
   palette?: { dominant?: string; swatches?: string[] } | null
   url: string
 }
 
 export interface OrphanFile {
-  blurhash?: null | string
+  thumbhash?: null | string
   byteSize?: null | number
   createdAt: string
   detachedAt?: null | string
@@ -55,7 +55,7 @@ export interface CleanupResult {
 }
 
 export interface CommentUploadFile {
-  blurhash?: null | string
+  thumbhash?: null | string
   byteSize?: number
   createdAt: string
   detachedAt?: string

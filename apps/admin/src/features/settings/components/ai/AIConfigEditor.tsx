@@ -254,15 +254,26 @@ export function AIConfigEditor(props: {
 
         <FeatureSection
           assignment={
-            <AIModelAssignmentField
-              label={t('settings.ai.assignment.translationLabel')}
-              models={providerModels}
-              onChange={(translationModel) =>
-                updateConfig({ translationModel })
-              }
-              providers={providers}
-              value={props.value.translationModel}
-            />
+            <>
+              <AIModelAssignmentField
+                label={t('settings.ai.assignment.translationLabel')}
+                models={providerModels}
+                onChange={(translationModel) =>
+                  updateConfig({ translationModel })
+                }
+                providers={providers}
+                value={props.value.translationModel}
+              />
+              <AIModelAssignmentField
+                label={t('settings.ai.assignment.translationReviewLabel')}
+                models={providerModels}
+                onChange={(translationReviewModel) =>
+                  updateConfig({ translationReviewModel })
+                }
+                providers={providers}
+                value={props.value.translationReviewModel}
+              />
+            </>
           }
           description={t('settings.ai.section.translationDescription')}
           enabled={Boolean(props.value.enableTranslation)}
@@ -279,6 +290,40 @@ export function AIConfigEditor(props: {
             onCheckedChange={(enableAutoGenerateTranslation) =>
               updateConfig({ enableAutoGenerateTranslation })
             }
+          />
+          <Switch
+            checked={Boolean(props.value.enableTranslationReview)}
+            disabled={!props.value.enableTranslation}
+            label={t('settings.ai.switch.enableTranslationReview')}
+            onCheckedChange={(enableTranslationReview) =>
+              updateConfig({ enableTranslationReview })
+            }
+          />
+          <TextInput
+            disabled={
+              !props.value.enableTranslation ||
+              !props.value.enableTranslationReview
+            }
+            inputMode="numeric"
+            label={t('settings.ai.switch.translationReviewScoreThreshold')}
+            min={0}
+            onChange={(value) => {
+              const trimmed = value.trim()
+              if (!trimmed) {
+                updateConfig({ translationReviewScoreThreshold: 85 })
+                return
+              }
+              const parsed = Number(trimmed)
+              if (Number.isNaN(parsed)) return
+              updateConfig({
+                translationReviewScoreThreshold: Math.max(
+                  0,
+                  Math.min(100, parsed),
+                ),
+              })
+            }}
+            type="number"
+            value={String(props.value.translationReviewScoreThreshold ?? 85)}
           />
           <AITextListField
             disabled={!props.value.enableTranslation}

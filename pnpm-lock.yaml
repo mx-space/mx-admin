@@ -207,9 +207,6 @@ importers:
       better-auth:
         specifier: 1.4.18
         version: 1.4.18(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(vitest@4.1.5(@types/node@25.6.0)(happy-dom@15.11.7)(vite@8.0.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@types/node@25.6.0)(jiti@2.6.1)(yaml@2.8.3)))
-      blurhash:
-        specifier: 2.0.5
-        version: 2.0.5
       buffer:
         specifier: 6.0.3
         version: 6.0.3
@@ -306,6 +303,9 @@ importers:
       sonner:
         specifier: 2.0.7
         version: 2.0.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      thumbhash:
+        specifier: 0.1.1
+        version: 0.1.1
       tinykeys:
         specifier: 4.0.0
         version: 4.0.0
@@ -2772,9 +2772,6 @@ packages:
   binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
     engines: {node: '>=8'}
-
-  blurhash@2.0.5:
-    resolution: {integrity: sha512-cRygWd7kGBQO3VEhPiTgq4Wc43ctsM+o46urrmPOiuAe+07fzlSB9OJVdpgDL0jPqXUVQ9ht7aq7kxOeJHRK+w==}
 
   boolbase@1.0.0:
     resolution: {integrity: sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==}
@@ -8023,8 +8020,6 @@ snapshots:
       zod: 4.3.6
 
   binary-extensions@2.3.0: {}
-
-  blurhash@2.0.5: {}
 
   boolbase@1.0.0: {}
 

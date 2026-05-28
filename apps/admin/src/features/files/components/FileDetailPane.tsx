@@ -21,7 +21,7 @@ export interface DetailSection {
 interface FileDetailPaneProps {
   name: string
   url: string
-  blurhash?: null | string
+  thumbhash?: null | string
   dominantColor?: string
   sections: DetailSection[]
   isMobile?: boolean
@@ -98,7 +98,7 @@ export function FileDetailPane(props: FileDetailPaneProps) {
           {showImage ? (
             <DetailHeroImage
               alt={props.name}
-              blurhash={props.blurhash}
+              thumbhash={props.thumbhash}
               dominantColor={props.dominantColor}
               onClick={props.onOpenPreview}
               onDimensions={props.onDimensions}
@@ -120,7 +120,7 @@ export function FileDetailPane(props: FileDetailPaneProps) {
 
 function DetailHeroImage(props: {
   alt: string
-  blurhash?: null | string
+  thumbhash?: null | string
   dominantColor?: string
   onClick?: () => void
   onDimensions?: (dim: { width: number; height: number }) => void
@@ -151,7 +151,7 @@ function DetailHeroImage(props: {
       >
         <FileThumbnail
           alt={props.alt}
-          blurhash={props.blurhash}
+          thumbhash={props.thumbhash}
           className="max-h-[50vh] w-full object-contain"
           dominantColor={props.dominantColor}
           src={props.src}

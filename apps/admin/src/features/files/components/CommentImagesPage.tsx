@@ -330,7 +330,7 @@ export function CommentImagesPage() {
           <section className="h-full min-h-0">
             {selectedItem ? (
               <FileDetailPane
-                blurhash={selectedItem.blurhash}
+                thumbhash={selectedItem.thumbhash}
                 deleteDisabled={deleteMutation.isPending}
                 dominantColor={selectedItem.palette?.dominant}
                 isMobile={!isDesktop}
@@ -460,10 +460,10 @@ function buildSections(args: {
               value: <PaletteSwatches palette={raw.palette} />,
             },
             {
-              key: 'blurhash',
-              label: t('files.detail.field.blurhash'),
+              key: 'thumbhash',
+              label: t('files.detail.field.thumbhash'),
               mono: true,
-              value: raw.blurhash ?? unknown,
+              value: raw.thumbhash ?? unknown,
             },
           ]}
         />

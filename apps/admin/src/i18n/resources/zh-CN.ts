@@ -965,7 +965,7 @@ export const zhCN = {
   'files.detail.field.created': '创建时间',
   'files.detail.field.dimensions': '尺寸',
   'files.detail.field.palette': '色板',
-  'files.detail.field.blurhash': 'Blurhash',
+  'files.detail.field.thumbhash': 'Thumbhash',
   'files.detail.field.type': '分类',
   'files.detail.field.refType': '引用类型',
   'files.detail.field.refId': '引用 ID',
@@ -1534,6 +1534,9 @@ export const zhCN = {
   'settings.ai.assignment.summaryLabel': '摘要功能',
   'settings.ai.assignment.translationDescription': '用于生成文章翻译的模型。',
   'settings.ai.assignment.translationLabel': '翻译功能',
+  'settings.ai.assignment.translationReviewDescription':
+    '用于审稿与修订翻译的模型，留空则复用翻译模型。',
+  'settings.ai.assignment.translationReviewLabel': '翻译审稿',
   'settings.ai.assignment.writerDescription': '用于生成标题、Slug 等的模型。',
   'settings.ai.assignment.writerLabel': '写作助手',
   'settings.ai.confirm.deleteProvider': '确认删除此 Provider？',
@@ -1584,10 +1587,16 @@ export const zhCN = {
   'settings.ai.switch.enableInsights': '启用 AI 精读',
   'settings.ai.switch.enableSummary': '启用 AI 摘要',
   'settings.ai.switch.enableTranslation': '启用 AI 翻译',
+  'settings.ai.switch.enableTranslationReview': '启用翻译审稿',
+  'settings.ai.switch.enableTranslationReviewDescription':
+    '开启后走 writer → reviewer → editor 流水线：reviewer 按本地化规范评分，低于阈值时由 editor 修订有问题的段落。',
   'settings.ai.switch.insightsMinTextLength': '精读自动生成最小文本长度',
   'settings.ai.switch.insightsTargetLanguages': '精读目标语言',
   'settings.ai.switch.summaryMinTextLength': '摘要自动生成最小文本长度',
   'settings.ai.switch.summaryTargetLanguages': '摘要目标语言',
+  'settings.ai.switch.translationReviewScoreThreshold': '审稿评分阈值',
+  'settings.ai.switch.translationReviewScoreThresholdDescription':
+    'reviewer 评分（0-100）≥ 阈值时直接落盘，低于阈值触发 editor 修订。默认 85。',
   'settings.ai.switch.translationTargetLanguages': '翻译目标语言',
   'settings.ai.test.invalidLanguageCode':
     '请使用 ISO 639-1 语言代码（2 个字母）',

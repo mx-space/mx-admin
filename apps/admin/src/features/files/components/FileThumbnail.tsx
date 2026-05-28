@@ -1,16 +1,14 @@
 import { useEffect, useMemo, useState } from 'react'
-import { decode } from 'blurhash'
+import { thumbHashToDataURL } from 'thumbhash'
 
 import { cn } from '~/utils/cn'
 
 import { isPreviewColor } from '../utils/format'
 
-const PREVIEW_SIZE = 32
-
 interface FileThumbnailProps {
   src: string
   alt: string
-  blurhash?: null | string
+  thumbhash?: null | string
   dominantColor?: string
   className?: string
 }
@@ -18,11 +16,8 @@ interface FileThumbnailProps {
 export function FileThumbnail(props: FileThumbnailProps) {
   const [loaded, setLoaded] = useState(false)
   const placeholder = useMemo(
-    () =>
-      props.blurhash
-        ? decodeBlurhashToDataUrl(props.blurhash, PREVIEW_SIZE)
-        : null,
-    [props.blurhash],
+    () => (props.thumbhash ? decodeThumbhashToDataUrl(props.thumbhash) : null),
+    [props.thumbhash],
   )
   const backgroundColor = isPreviewColor(props.dominantColor)
     ? props.dominantColor
@@ -74,19 +69,13 @@ export function FileThumbnail(props: FileThumbnailProps) {
   )
 }
 
-function decodeBlurhashToDataUrl(hash: string, size: number): null | string {
+function decodeThumbhashToDataUrl(hash: string): null | string {
   try {
-    if (typeof document === 'undefined') return null
-    const pixels = decode(hash, size, size)
-    const canvas = document.createElement('canvas')
-    canvas.width = size
-    canvas.height = size
-    const context = canvas.getContext('2d')
-    if (!context) return null
-    const imageData = context.createImageData(size, size)
-    imageData.data.set(pixels)
-    context.putImageData(imageData, 0, 0)
-    return canvas.toDataURL()
+    if (typeof window === 'undefined') return null
+    const bin = atob(hash)
+    const bytes = new Uint8Array(bin.length)
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i)
+    return thumbHashToDataURL(bytes)
   } catch {
     return null
   }

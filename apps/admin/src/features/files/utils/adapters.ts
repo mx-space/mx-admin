@@ -21,7 +21,7 @@ export interface FileRowItem<TRaw = unknown> {
   id: string
   name: string
   url: string
-  blurhash?: null | string
+  thumbhash?: null | string
   palette?: { dominant?: string; swatches?: string[] } | null
   primary: string
   secondary?: string
@@ -41,7 +41,7 @@ export function adaptFileItem(item: FileItem): FileRowItem<FileItem> {
     id: item.name,
     name: item.name,
     url: item.url,
-    blurhash: item.blurhash,
+    thumbhash: item.thumbhash,
     palette: item.palette,
     primary: item.name,
     secondary: created,
@@ -66,7 +66,7 @@ export function adaptOrphanFile(
     id: item.id,
     name: item.fileName,
     url: item.fileUrl,
-    blurhash: item.blurhash,
+    thumbhash: item.thumbhash,
     palette: item.palette,
     primary: item.fileName,
     secondary: meta,
@@ -109,7 +109,7 @@ export function adaptCommentUpload(
     id: item.id,
     name: item.fileName,
     url: item.fileUrl,
-    blurhash: item.blurhash,
+    thumbhash: item.thumbhash,
     palette: item.palette,
     primary: item.fileName,
     secondary: meta,
