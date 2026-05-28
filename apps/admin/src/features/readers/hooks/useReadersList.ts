@@ -1,82 +1,137 @@
-import { useQuery } from '@tanstack/react-query'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import type { ReaderWithKey } from '../types/readers'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
+import { useEffect, useLayoutEffect, useState } from 'react'
+import { useSearchParams } from 'react-router'
+import type { ReaderRoleFilter } from '~/api/readers'
 
 import { getReaders } from '~/api/readers'
 
-import { readersPageSize } from '../constants'
+import {
+  readersPageSize,
+  readersQueryKey,
+  searchDebounceMs,
+} from '../constants'
+
+function parseRole(value: string | null): ReaderRoleFilter {
+  if (value === 'owner' || value === 'reader') return value
+  return 'all'
+}
+
+function parsePage(value: string | null): number {
+  const parsed = Number(value)
+  return Number.isInteger(parsed) && parsed > 1 ? parsed : 1
+}
 
 export function useReadersList() {
-  const [page, setPage] = useState(1)
-  const [readerList, setReaderList] = useState<ReaderWithKey[]>([])
-  const seenKeysRef = useRef(new Set<string>())
-  const scrollContainerRef = useRef<HTMLDivElement | null>(null)
-  const loadMoreRef = useRef<HTMLDivElement | null>(null)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const searchParamsKey = searchParams.toString()
+
+  const [page, setPage] = useState(() => parsePage(searchParams.get('page')))
+  const [search, setSearch] = useState(() => searchParams.get('q') ?? '')
+  const [role, setRole] = useState<ReaderRoleFilter>(() =>
+    parseRole(searchParams.get('role')),
+  )
+  const [detailId, setDetailId] = useState<string | null>(() =>
+    searchParams.get('id'),
+  )
+  const [showDetailOnMobile, setShowDetailOnMobile] = useState(false)
+  const [debouncedSearch, setDebouncedSearch] = useState(search)
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setDebouncedSearch(search)
+    }, searchDebounceMs)
+
+    return () => window.clearTimeout(timer)
+  }, [search])
+
   const readersQuery = useQuery({
-    queryFn: () => getReaders({ page, size: readersPageSize }),
-    queryKey: ['readers', 'list', page, readersPageSize],
+    placeholderData: keepPreviousData,
+    queryFn: () =>
+      getReaders({
+        page,
+        role: role === 'all' ? undefined : role,
+        search: debouncedSearch.trim() || undefined,
+        size: readersPageSize,
+      }),
+    queryKey: [
+      ...readersQueryKey,
+      'list',
+      page,
+      readersPageSize,
+      debouncedSearch.trim(),
+      role,
+    ],
   })
 
-  const pagination = readersQuery.data?.pagination
-  const hasNextPage = pagination ? page < pagination.totalPages : false
-  const readers = useMemo(() => readerList, [readerList])
+  useLayoutEffect(() => {
+    const nextRole = parseRole(searchParams.get('role'))
+    const nextSearch = searchParams.get('q') ?? ''
+    const nextPage = parsePage(searchParams.get('page'))
+    const nextDetailId = searchParams.get('id')
+
+    setRole((value) => (value === nextRole ? value : nextRole))
+    setSearch((value) => (value === nextSearch ? value : nextSearch))
+    setPage((value) => (value === nextPage ? value : nextPage))
+    setDetailId((value) => (value === nextDetailId ? value : nextDetailId))
+    setShowDetailOnMobile(Boolean(nextDetailId))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParamsKey])
 
   useEffect(() => {
-    if (!readersQuery.data) return
+    const nextParams = new URLSearchParams(searchParams)
 
-    if (page === 1) {
-      seenKeysRef.current = new Set()
+    if (role === 'all') nextParams.delete('role')
+    else nextParams.set('role', role)
+
+    if (search) nextParams.set('q', search)
+    else nextParams.delete('q')
+
+    if (page > 1) nextParams.set('page', String(page))
+    else nextParams.delete('page')
+
+    if (detailId) nextParams.set('id', detailId)
+    else nextParams.delete('id')
+
+    if (nextParams.toString() !== searchParamsKey) {
+      setSearchParams(nextParams, { replace: true })
     }
+  }, [
+    role,
+    search,
+    page,
+    detailId,
+    searchParams,
+    searchParamsKey,
+    setSearchParams,
+  ])
 
-    const nextReaders = readersQuery.data.data
-      .map((reader, index) => ({
-        ...reader,
-        _key: `${reader.id}-${reader.provider || index}`,
-      }))
-      .filter((reader) => {
-        if (seenKeysRef.current.has(reader._key)) return false
-        seenKeysRef.current.add(reader._key)
-        return true
-      })
+  const changeSearch = (value: string) => {
+    setSearch(value)
+    setPage(1)
+    setDetailId(null)
+  }
 
-    setReaderList((current) =>
-      page === 1 ? nextReaders : [...current, ...nextReaders],
-    )
-  }, [page, readersQuery.data])
-
-  useEffect(() => {
-    const target = loadMoreRef.current
-    const root = scrollContainerRef.current
-    if (!target || !hasNextPage) return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (
-          entries.some((entry) => entry.isIntersecting) &&
-          !readersQuery.isFetching
-        ) {
-          setPage((current) => current + 1)
-        }
-      },
-      { root, rootMargin: '200px' },
-    )
-
-    observer.observe(target)
-
-    return () => observer.disconnect()
-  }, [hasNextPage, readersQuery.isFetching])
-
-  const loadNextPage = () => {
-    if (hasNextPage) setPage((current) => current + 1)
+  const changeRole = (value: ReaderRoleFilter) => {
+    setRole(value)
+    setPage(1)
+    setDetailId(null)
   }
 
   return {
-    hasNextPage,
-    loadMoreRef,
-    loadNextPage,
-    pagination,
-    readers,
-    readersQuery,
-    scrollContainerRef,
+    detailId,
+    isFetching: readersQuery.isFetching,
+    isLoading: readersQuery.isLoading,
+    page,
+    pagination: readersQuery.data?.pagination,
+    readers: readersQuery.data?.data ?? [],
+    refetch: () => void readersQuery.refetch(),
+    role,
+    search,
+    setDetailId,
+    setPage,
+    setRole: changeRole,
+    setSearch: changeSearch,
+    setShowDetailOnMobile,
+    showDetailOnMobile,
   }
 }
