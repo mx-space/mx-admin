@@ -1,58 +1,62 @@
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import type { ChartConfig } from '~/ui/data/chart'
 import type { TrendPoint } from '../types/analyze'
 
-import { Scroll } from '~/ui/primitives/scroll'
+import {
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '~/ui/data/chart'
+
+const chartConfig = {
+  pv: {
+    label: 'PV',
+    theme: { light: '#0a0a0a', dark: '#fafafa' },
+  },
+  ip: {
+    label: 'IP',
+    color: 'var(--color-primary)',
+  },
+} satisfies ChartConfig
 
 export function TrendChart(props: { data: TrendPoint[] }) {
-  const maxValue = Math.max(
-    1,
-    ...props.data.flatMap((item) => [item.ip, item.pv]),
-  )
-
   return (
     <div className="p-4">
-      <Scroll
-        className="border-b border-l border-neutral-200 dark:border-neutral-800"
-        orientation="horizontal"
-      >
-        <div className="flex h-64 items-end gap-3 px-2 pb-6">
-          {props.data.map((item) => (
-            <div
-              className="flex min-w-12 flex-1 flex-col items-center gap-2"
-              key={item.label}
-            >
-              <div className="flex h-48 items-end gap-1">
-                <span
-                  className="w-3 rounded-t bg-neutral-950 dark:bg-neutral-50"
-                  style={{
-                    height: `${Math.max(4, (item.pv / maxValue) * 100)}%`,
-                  }}
-                  title={`PV ${item.pv}`}
-                />
-                <span
-                  className="w-3 rounded-t bg-[var(--color-primary)]"
-                  style={{
-                    height: `${Math.max(4, (item.ip / maxValue) * 100)}%`,
-                  }}
-                  title={`IP ${item.ip}`}
-                />
-              </div>
-              <span className="max-w-16 truncate text-xs text-neutral-500 dark:text-neutral-400">
-                {item.label}
-              </span>
-            </div>
-          ))}
-        </div>
-      </Scroll>
-      <div className="mt-3 flex items-center gap-4 px-2 text-xs text-neutral-500 dark:text-neutral-400">
-        <span className="inline-flex items-center gap-1.5">
-          <span className="size-2 rounded-sm bg-neutral-950 dark:bg-neutral-50" />
-          PV
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <span className="size-2 rounded-sm bg-[var(--color-primary)]" />
-          IP
-        </span>
-      </div>
+      <ChartContainer className="h-64 w-full" config={chartConfig}>
+        <AreaChart
+          data={props.data}
+          margin={{ top: 8, right: 12, left: 12, bottom: 0 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" vertical={false} />
+          <XAxis
+            axisLine={false}
+            dataKey="label"
+            tickLine={false}
+            tickMargin={8}
+          />
+          <YAxis hide />
+          <ChartTooltip content={<ChartTooltipContent />} cursor={false} />
+          <Area
+            dataKey="pv"
+            fill="var(--color-pv)"
+            fillOpacity={0.15}
+            stroke="var(--color-pv)"
+            strokeWidth={2}
+            type="monotone"
+          />
+          <Area
+            dataKey="ip"
+            fill="var(--color-ip)"
+            fillOpacity={0.18}
+            stroke="var(--color-ip)"
+            strokeWidth={2}
+            type="monotone"
+          />
+          <ChartLegend content={<ChartLegendContent />} />
+        </AreaChart>
+      </ChartContainer>
     </div>
   )
 }

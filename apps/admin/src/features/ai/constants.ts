@@ -1,19 +1,13 @@
 import {
   AlertCircle,
   AlertTriangle,
-  BookOpenText,
   CheckCircle2,
   Clock,
-  FileText,
-  Languages,
-  ListTodo,
   Loader2,
-  Sparkles,
   XCircle,
 } from 'lucide-react'
 import type { TranslationKey } from '~/i18n/types'
 import type { LucideIcon } from 'lucide-react'
-import type { AiSurface } from './types/ai'
 
 import { AITaskStatus, AITaskType } from '~/api/ai'
 
@@ -98,44 +92,6 @@ export const typeOptionKeys: Array<{
   {
     labelKey: 'ai.taskType.insightsTranslation',
     value: AITaskType.InsightsTranslation,
-  },
-]
-
-export const aiSurfaceTabs: Array<{
-  icon: LucideIcon
-  labelKey: TranslationKey
-  path: string
-  value: AiSurface
-}> = [
-  {
-    icon: ListTodo,
-    labelKey: 'ai.tab.tasks',
-    path: '/ai/tasks',
-    value: 'tasks',
-  },
-  {
-    icon: FileText,
-    labelKey: 'ai.tab.summaries',
-    path: '/ai/summary',
-    value: 'summaries',
-  },
-  {
-    icon: Languages,
-    labelKey: 'ai.tab.translations',
-    path: '/ai/translation',
-    value: 'translations',
-  },
-  {
-    icon: BookOpenText,
-    labelKey: 'ai.tab.insights',
-    path: '/ai/insights',
-    value: 'insights',
-  },
-  {
-    icon: Sparkles,
-    labelKey: 'ai.tab.entries',
-    path: '/ai/translation-entries',
-    value: 'entries',
   },
 ]
 

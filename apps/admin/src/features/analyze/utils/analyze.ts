@@ -3,7 +3,7 @@ import type { TranslationKey, TranslationValues } from '~/i18n/types'
 import type {
   ActivityListResponseObjects,
   AnalyzePeriod,
-  RankRange,
+  TimeRange,
   TrendPoint,
 } from '../types/analyze'
 
@@ -59,14 +59,13 @@ export function buildRefObjectMap(
   return map
 }
 
-export function getRankRange(range: RankRange) {
+export function getTimeWindow(range: TimeRange): {
+  start: number
+  end: number
+} {
   const end = Date.now()
-  const days = range === 'day' ? 1 : range === 'week' ? 7 : 30
-
-  return {
-    end,
-    start: end - days * 24 * 60 * 60 * 1000,
-  }
+  const days = range === 'today' ? 1 : range === '7d' ? 7 : 30
+  return { end, start: end - days * 24 * 60 * 60 * 1000 }
 }
 
 export function formatDuration(value: number, t: Translator) {

@@ -2,7 +2,7 @@ import type { getActivityList } from '~/api/activity'
 
 export type AnalyzePeriod = 'day' | 'month' | 'week'
 
-export type RankRange = 'day' | 'month' | 'week'
+export type TimeRange = '7d' | '30d' | 'today'
 
 export interface TrendPoint {
   ip: number

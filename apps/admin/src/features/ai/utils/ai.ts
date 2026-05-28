@@ -1,6 +1,5 @@
 import type { AIInsights, AISummary, AITask, AITranslation } from '~/api/ai'
 import type { TranslationKey, TranslationValues } from '~/i18n/types'
-import type { AiSurface } from '../types/ai'
 
 import {
   AITaskStatus,
@@ -14,16 +13,6 @@ import { relativeTimeFromNow } from '~/utils/time'
 import { statusOptionKeys, typeOptionKeys } from '../constants'
 
 type Translator = (key: TranslationKey, values?: TranslationValues) => string
-
-export function getInitialAiSurface(pathname: string): AiSurface {
-  if (pathname.endsWith('/summary')) return 'summaries'
-  if (pathname.endsWith('/translation')) return 'translations'
-  if (pathname.endsWith('/insights')) return 'insights'
-  if (pathname.endsWith('/translation-entries')) return 'entries'
-  if (pathname.endsWith('/tasks')) return 'tasks'
-
-  return 'tasks'
-}
 
 export function getEffectiveStatus(task: AITask) {
   if (
