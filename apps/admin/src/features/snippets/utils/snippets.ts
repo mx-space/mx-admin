@@ -7,8 +7,6 @@ import type { SnippetModel } from '~/models/snippet'
 
 import { defaultServerlessFunction, SnippetType } from '~/models/snippet'
 
-import { snippetTypes } from '../constants'
-
 type Translator = (key: TranslationKey, values?: TranslationValues) => string
 
 export function normalizeSnippet(snippet: CreateSnippetData | SnippetModel) {
@@ -172,22 +170,6 @@ export function parseSnippetSecret(secret: CreateSnippetData['secret']) {
   }
 }
 
-export function groupSnippetList(snippets: SnippetModel[]) {
-  const groups = new Map<string, SnippetModel[]>()
-
-  for (const snippet of snippets) {
-    const reference = snippet.reference || 'root'
-    groups.set(reference, [...(groups.get(reference) ?? []), snippet])
-  }
-
-  return [...groups.entries()]
-    .map(([reference, groupSnippets]) => ({
-      reference,
-      snippets: groupSnippets,
-    }))
-    .sort((left, right) => left.reference.localeCompare(right.reference))
-}
-
 export function basenameWithoutExt(name: string) {
   return name.replace(/\.[^.]+$/, '')
 }
@@ -225,12 +207,6 @@ export function formatLogArgs(args: unknown[]) {
       }
     })
     .join(' ')
-}
-
-export function readSnippetTypeFilter(value: string | null): SnippetType | '' {
-  return snippetTypes.includes(value as SnippetType)
-    ? (value as SnippetType)
-    : ''
 }
 
 export function getErrorMessage(error: unknown, fallback: string) {

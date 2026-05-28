@@ -1,6 +1,6 @@
 import type { SectionMeta } from '~/lib/route-meta'
 
 export default {
-  titleKey: 'shell.nav.extra',
-  order: 6,
+  titleKey: 'shell.nav.intelligence',
+  order: 5,
 } satisfies SectionMeta

@@ -114,212 +114,263 @@ html.dark *::-webkit-scrollbar-corner {
   background: #171717;
 }
 
-/* Sonner toast styles - Lobe UI Design */
+/* Sonner toast styles - Vercel-minimal redesign */
 [data-sonner-toaster] {
   font-family: var(--sans-font) !important;
   --width: 360px;
 }
 
-/* Toast 基础样式 */
+/* Base toast — flex row, hairline border, single soft shadow with top inner highlight */
 [data-sonner-toast].sonner-toast {
-  @apply !rounded-lg !border-0;
-  padding: 12px 16px !important;
+  align-items: flex-start !important;
+  padding: 12px 14px !important;
+  border-radius: 10px !important;
+  border-width: 1px !important;
+  border-style: solid !important;
   font-family: var(--sans-font) !important;
-  --normal-bg: white;
-  --normal-border: transparent;
-  gap: 12px !important;
+  font-feature-settings: 'cv11', 'ss01' !important;
+  gap: 10px !important;
   transition:
     transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.4s !important;
 }
 
-/* Light mode - 多层渐进阴影 */
 html:not(.dark) [data-sonner-toast].sonner-toast {
-  @apply !bg-white !text-neutral-900;
+  background: #ffffff !important;
+  border-color: var(--color-neutral-200) !important;
+  color: var(--color-neutral-900) !important;
   box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.03),
-    0 1px 1px -0.5px rgba(0, 0, 0, 0.03),
-    0 3px 3px -1.5px rgba(0, 0, 0, 0.03),
-    0 6px 6px -3px rgba(0, 0, 0, 0.03),
-    0 12px 12px -6px rgba(0, 0, 0, 0.03),
-    0 24px 24px -12px rgba(0, 0, 0, 0.03) !important;
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 10px 30px -10px rgba(0, 0, 0, 0.1),
+    0 2px 6px -2px rgba(0, 0, 0, 0.05) !important;
 }
 
-/* Dark mode - 多层渐进阴影 */
 html.dark [data-sonner-toast].sonner-toast {
-  @apply !bg-neutral-900 !text-neutral-100;
+  background: #141414 !important;
+  border-color: var(--color-neutral-800) !important;
+  color: var(--color-neutral-100) !important;
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.03),
-    0 1px 1px -0.5px rgba(0, 0, 0, 0.15),
-    0 3px 3px -1.5px rgba(0, 0, 0, 0.15),
-    0 6px 6px -3px rgba(0, 0, 0, 0.15),
-    0 12px 12px -6px rgba(0, 0, 0, 0.15),
-    0 24px 24px -12px rgba(0, 0, 0, 0.15) !important;
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 10px 30px -10px rgba(0, 0, 0, 0.55),
+    0 2px 6px -2px rgba(0, 0, 0, 0.35) !important;
 }
 
-/* 图标容器 */
+/* Icon container — 24x24 rounded square with faint state tint, sits on first text line */
 [data-sonner-toast] [data-icon] {
-  @apply shrink-0;
+  width: 24px !important;
+  height: 24px !important;
+  margin: -2px 0 0 !important;
+  border-radius: 6px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
 }
 
-/* 成功状态图标 */
+[data-sonner-toast] [data-icon] svg {
+  width: 14px !important;
+  height: 14px !important;
+}
+
+/* State tints + icon stroke — low-saturation 600 series */
+[data-sonner-toast][data-type='success'] [data-icon] {
+  background: rgba(5, 150, 105, 0.1) !important;
+}
 [data-sonner-toast][data-type='success'] [data-icon] svg {
-  color: #22c55e !important;
+  color: #059669 !important;
 }
 
-/* 错误状态图标 */
+[data-sonner-toast][data-type='error'] [data-icon] {
+  background: rgba(220, 38, 38, 0.1) !important;
+}
 [data-sonner-toast][data-type='error'] [data-icon] svg {
-  color: #ef4444 !important;
+  color: #dc2626 !important;
 }
 
-/* 警告状态图标 */
+[data-sonner-toast][data-type='warning'] [data-icon] {
+  background: rgba(217, 119, 6, 0.1) !important;
+}
 [data-sonner-toast][data-type='warning'] [data-icon] svg {
-  color: #f59e0b !important;
+  color: #d97706 !important;
 }
 
-/* 信息状态图标 */
+[data-sonner-toast][data-type='info'] [data-icon] {
+  background: rgba(2, 132, 199, 0.1) !important;
+}
 [data-sonner-toast][data-type='info'] [data-icon] svg {
-  color: #3b82f6 !important;
+  color: #0284c7 !important;
 }
 
-/* 加载状态图标 */
-[data-sonner-toast][data-type='loading'] [data-icon] svg {
-  color: var(--n-color-primary, #18181b) !important;
+/* Loading uses neutral tint (state-agnostic) */
+html:not(.dark) [data-sonner-toast][data-type='loading'] [data-icon] {
+  background: rgba(0, 0, 0, 0.05) !important;
 }
-
+html.dark [data-sonner-toast][data-type='loading'] [data-icon] {
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+html:not(.dark) [data-sonner-toast][data-type='loading'] [data-icon] svg {
+  color: var(--color-neutral-900, #171717) !important;
+}
 html.dark [data-sonner-toast][data-type='loading'] [data-icon] svg {
-  color: var(--n-color-primary, #fafafa) !important;
+  color: var(--color-neutral-100, #fafafa) !important;
 }
 
-/* Toast 标题 - 14px/500 */
+/* Title — 13.5/600 with tighter tracking, locked to 20px line for baseline grid */
 .sonner-title {
   margin: 0 !important;
-  font-size: 14px !important;
-  font-weight: 500 !important;
-  line-height: 1.5 !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  line-height: 20px !important;
+  letter-spacing: -0.005em !important;
 }
 
 html:not(.dark) .sonner-title {
-  @apply !text-neutral-900;
+  color: var(--color-neutral-950) !important;
 }
 
 html.dark .sonner-title {
-  @apply !text-neutral-100;
+  color: var(--color-neutral-50) !important;
 }
 
-/* Toast 描述 - 13px */
+/* Description — 12.5/18, neutral-600 / neutral-400 for stronger contrast than v1 */
 .sonner-description {
-  margin: 0 !important;
-  margin-top: 4px !important;
-  font-size: 13px !important;
-  line-height: 1.5 !important;
+  margin: 3px 0 0 !important;
+  font-size: 12.5px !important;
+  line-height: 18px !important;
+  letter-spacing: -0.003em !important;
 }
 
 html:not(.dark) .sonner-description {
-  @apply !text-neutral-500;
+  color: var(--color-neutral-600) !important;
 }
 
 html.dark .sonner-description {
-  @apply !text-neutral-400;
+  color: var(--color-neutral-400) !important;
 }
 
-/* Toast 关闭按钮 - 20x20px */
+/* Close button — 20x20, low-opacity until hover */
 [data-sonner-toast][data-styled='true'] [data-close-button] {
-  @apply !border-0 !bg-transparent;
   width: 20px !important;
   height: 20px !important;
   padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
   border-radius: 4px !important;
-  top: 12px !important;
-  right: 12px !important;
+  top: 10px !important;
+  right: 10px !important;
   left: auto !important;
-  transition: all 0.2s !important;
+  opacity: 0.4 !important;
+  transition:
+    opacity 0.15s,
+    background 0.15s,
+    color 0.15s !important;
+}
+
+[data-sonner-toast] [data-close-button]:hover {
+  opacity: 1 !important;
 }
 
 html:not(.dark) [data-sonner-toast] [data-close-button] {
-  @apply !text-neutral-400;
+  color: var(--color-neutral-600) !important;
 }
 
 html:not(.dark) [data-sonner-toast] [data-close-button]:hover {
-  @apply !bg-neutral-100 !text-neutral-900;
+  background: var(--color-neutral-100) !important;
+  color: var(--color-neutral-900) !important;
 }
 
 html.dark [data-sonner-toast] [data-close-button] {
-  @apply !text-neutral-500;
+  color: var(--color-neutral-400) !important;
 }
 
 html.dark [data-sonner-toast] [data-close-button]:hover {
-  @apply !bg-neutral-800 !text-neutral-100;
+  background: var(--color-neutral-800) !important;
+  color: var(--color-neutral-100) !important;
 }
 
-/* Toast Action 按钮 - 28px 高度 */
+/* Action button — mirrors <Button variant="primary"> */
 .sonner-action-button {
-  height: 28px !important;
-  padding: 0 12px !important;
-  border-radius: 4px !important;
+  margin-top: 8px !important;
+  height: 26px !important;
+  padding: 0 10px !important;
+  border-radius: 5px !important;
   font-size: 12px !important;
   font-weight: 500 !important;
   line-height: 1 !important;
-  border: none !important;
+  letter-spacing: -0.005em !important;
+  border: 0 !important;
   cursor: pointer !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   flex-shrink: 0 !important;
   transition:
-    background 0.2s,
-    color 0.2s !important;
+    background 0.15s,
+    color 0.15s !important;
 }
 
 html:not(.dark) .sonner-action-button {
-  @apply !bg-neutral-900 !text-white;
+  background: var(--color-neutral-950) !important;
+  color: #ffffff !important;
 }
 
 html:not(.dark) .sonner-action-button:hover {
-  @apply !bg-neutral-700;
+  background: var(--color-neutral-800) !important;
 }
 
 html.dark .sonner-action-button {
-  @apply !bg-white !text-neutral-900;
+  background: var(--color-neutral-50) !important;
+  color: var(--color-neutral-950) !important;
 }
 
 html.dark .sonner-action-button:hover {
-  @apply !bg-neutral-200;
+  background: var(--color-neutral-200) !important;
 }
 
-/* Cancel 按钮样式 - secondary variant */
+/* Cancel button — mirrors <Button variant="subtle"> */
 .sonner-cancel-button {
-  height: 28px !important;
-  padding: 0 12px !important;
-  border-radius: 4px !important;
+  margin-top: 8px !important;
+  height: 26px !important;
+  padding: 0 10px !important;
+  border-radius: 5px !important;
   font-size: 12px !important;
   font-weight: 500 !important;
   line-height: 1 !important;
-  border: none !important;
+  letter-spacing: -0.005em !important;
   cursor: pointer !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   flex-shrink: 0 !important;
   transition:
-    background 0.2s,
-    color 0.2s !important;
+    background 0.15s !important;
 }
 
 html:not(.dark) .sonner-cancel-button {
-  @apply !bg-neutral-100 !text-neutral-900;
+  background: #ffffff !important;
+  border: 1px solid var(--color-neutral-200) !important;
+  color: var(--color-neutral-700) !important;
 }
 
 html:not(.dark) .sonner-cancel-button:hover {
-  @apply !bg-neutral-200;
+  background: var(--color-neutral-50) !important;
 }
 
 html.dark .sonner-cancel-button {
-  @apply !bg-neutral-800 !text-neutral-100;
+  background: var(--color-neutral-950) !important;
+  border: 1px solid var(--color-neutral-800) !important;
+  color: var(--color-neutral-200) !important;
 }
 
 html.dark .sonner-cancel-button:hover {
-  @apply !bg-neutral-700;
+  background: var(--color-neutral-900) !important;
+}
+
+/* Mobile — shrink to viewport with 16px gutters */
+@media (max-width: 768px) {
+  [data-sonner-toaster] {
+    --width: calc(100vw - 32px) !important;
+  }
 }
 
 .modal-card {

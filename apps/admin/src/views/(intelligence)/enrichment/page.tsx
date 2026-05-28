@@ -6,7 +6,6 @@ export const metadata = defineMetadata({
   titleKey: 'routes.enrichment.title',
   descriptionKey: 'routes.enrichment.description',
   icon: DatabaseZap,
-  matchPaths: ['/maintenance/enrichment'],
   order: 3,
 })
 

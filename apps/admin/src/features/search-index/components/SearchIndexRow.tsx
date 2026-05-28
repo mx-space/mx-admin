@@ -1,6 +1,7 @@
 import type { SearchDocumentAdminRow } from '~/api/search-index'
 
 import { useI18n } from '~/i18n'
+import { ListRow } from '~/ui/list-actions'
 import { cn } from '~/utils/cn'
 
 import { formatRelativeDate } from '../utils/format'
@@ -16,15 +17,18 @@ export function SearchIndexRow(props: {
   const row = props.row
 
   return (
-    <button
+    <ListRow
+      ariaCurrent={props.selected}
       className={cn(
         'flex w-full cursor-pointer items-start gap-3 border-b border-neutral-100 px-4 py-3 text-left transition-colors last:border-b-0 dark:border-neutral-800/50',
         props.selected
           ? 'bg-neutral-100 dark:bg-neutral-900'
           : 'hover:bg-neutral-50 dark:hover:bg-neutral-900/70',
       )}
-      onClick={props.onSelect}
-      type="button"
+      dataId={row.id}
+      onSelect={props.onSelect}
+      role="option"
+      selected={props.selected}
     >
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
         <div className="flex flex-wrap items-center gap-1.5">
@@ -56,6 +60,6 @@ export function SearchIndexRow(props: {
       <div className="shrink-0 text-xs text-neutral-500 dark:text-neutral-400">
         {formatRelativeDate(row.modifiedAt, t)}
       </div>
-    </button>
+    </ListRow>
   )
 }

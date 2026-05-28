@@ -5,12 +5,12 @@ import { Scroll } from '~/ui/primitives/scroll'
 
 export function Field(props: { children: ReactNode; label: string }) {
   return (
-    <label className="space-y-1 text-sm">
-      <span className="block text-xs text-neutral-500 dark:text-neutral-400">
+    <div className="grid gap-1.5 text-sm">
+      <span className="text-xs font-medium text-neutral-500 dark:text-neutral-400">
         {props.label}
       </span>
       {props.children}
-    </label>
+    </div>
   )
 }
 

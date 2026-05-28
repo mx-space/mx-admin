@@ -1,1 +1,1 @@
-export { CronRouteViewContent as CronRouteView } from '../components/CronRouteViewContent'
+export { DefinitionsRouteViewContent as CronRouteView } from '../components/DefinitionsRouteViewContent'

@@ -1,6 +1,6 @@
 import type { SectionMeta } from '~/lib/route-meta'
 
 export default {
-  titleKey: 'shell.nav.maintenance',
-  order: 7,
+  titleKey: 'shell.nav.integrations',
+  order: 6,
 } satisfies SectionMeta

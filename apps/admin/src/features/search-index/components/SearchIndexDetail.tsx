@@ -51,6 +51,31 @@ export function SearchIndexDetail(props: {
             </span>
           )}
         </h2>
+        <div className="flex shrink-0 items-center gap-1">
+          {editUrl ? (
+            <Link
+              aria-label={t('searchIndex.action.viewSource')}
+              className="outline-hidden inline-flex size-9 items-center justify-center rounded text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-950 focus-visible:ring-2 focus-visible:ring-neutral-400 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-50"
+              title={t('searchIndex.action.viewSource')}
+              to={editUrl}
+            >
+              <ExternalLink aria-hidden="true" className="size-4" />
+            </Link>
+          ) : null}
+          <Button
+            disabled={props.rebuilding}
+            onClick={props.onRebuild}
+            type="button"
+            variant="primary"
+          >
+            {props.rebuilding ? (
+              <Loader2 aria-hidden="true" className="size-4 animate-spin" />
+            ) : (
+              <RotateCcw aria-hidden="true" className="size-4" />
+            )}
+            {t('searchIndex.action.rebuild')}
+          </Button>
+        </div>
       </div>
 
       <Scroll className="flex-1" innerClassName="px-5 py-4">
@@ -105,30 +130,6 @@ export function SearchIndexDetail(props: {
           ) : null}
         </div>
       </Scroll>
-
-      <div className="flex shrink-0 items-center justify-end gap-2 border-t border-neutral-200 px-5 py-4 dark:border-neutral-800">
-        {editUrl ? (
-          <Link
-            className="outline-hidden inline-flex h-9 items-center justify-center gap-2 rounded border border-neutral-200 bg-white px-3 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-50 focus-visible:ring-2 focus-visible:ring-[var(--color-primary-shallow)] dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-200 dark:hover:bg-neutral-900"
-            to={editUrl}
-          >
-            <ExternalLink aria-hidden="true" className="size-4" />
-            {t('searchIndex.action.viewSource')}
-          </Link>
-        ) : null}
-        <Button
-          disabled={props.rebuilding}
-          onClick={props.onRebuild}
-          type="button"
-        >
-          {props.rebuilding ? (
-            <Loader2 aria-hidden="true" className="size-4 animate-spin" />
-          ) : (
-            <RotateCcw aria-hidden="true" className="size-4" />
-          )}
-          {t('searchIndex.action.rebuild')}
-        </Button>
-      </div>
     </div>
   )
 }

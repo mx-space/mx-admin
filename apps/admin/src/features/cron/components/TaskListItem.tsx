@@ -1,6 +1,7 @@
 import type { CronTask } from '~/api/cron-tasks'
 
 import { useI18n } from '~/i18n'
+import { ListRow } from '~/ui/list-actions'
 import { cn } from '~/utils/cn'
 
 import {
@@ -20,15 +21,18 @@ export function TaskListItem(props: {
   const Icon = taskStatusIcons[props.task.status]
 
   return (
-    <button
+    <ListRow
+      ariaCurrent={props.selected}
       className={cn(
         'flex w-full cursor-pointer items-center gap-3 border-b border-neutral-100 px-4 py-3 text-left transition-colors dark:border-neutral-800',
         props.selected
           ? 'bg-neutral-100 dark:bg-neutral-900'
           : 'hover:bg-neutral-50 dark:hover:bg-neutral-900/70',
       )}
-      onClick={props.onSelect}
-      type="button"
+      dataId={props.task.id}
+      onSelect={props.onSelect}
+      role="option"
+      selected={props.selected}
     >
       <Icon
         aria-hidden="true"
@@ -53,6 +57,6 @@ export function TaskListItem(props: {
           {formatRelativeDate(props.task.createdAt, t)}
         </div>
       </div>
-    </button>
+    </ListRow>
   )
 }

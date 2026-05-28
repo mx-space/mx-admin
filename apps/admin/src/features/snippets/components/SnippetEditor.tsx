@@ -20,22 +20,17 @@ import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
 import { useI18n } from '~/i18n'
 import { SnippetType, SnippetTypeToLanguage } from '~/models/snippet'
 import { Button } from '~/ui/primitives/button'
-import { Checkbox } from '~/ui/primitives/checkbox'
 import { CodeEditor } from '~/ui/primitives/code-editor'
 import { Scroll } from '~/ui/primitives/scroll'
-import { SelectField } from '~/ui/primitives/select'
-import { TextArea, TextInput } from '~/ui/primitives/text-field'
 import { cn } from '~/utils/cn'
 
-import { snippetTypes } from '../constants'
 import {
   getErrorMessage,
   getSnippetDefaultsForType,
   normalizeSnippet,
   prepareSnippetPayload,
-  serializeSnippetSecret,
 } from '../utils/snippets'
-import { Field } from './SnippetPrimitives'
+import { SnippetMetaPopover } from './SnippetMetaPopover'
 
 export function SnippetEditor(props: {
   deleting?: boolean
@@ -122,16 +117,14 @@ export function SnippetEditor(props: {
           >
             <ArrowLeft aria-hidden="true" className="size-4" />
           </Button>
-          <div className="min-w-0">
-            <h2 className="truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
-              {props.mode === 'create'
-                ? t('snippets.editor.newTitle')
-                : form.name || t('snippets.editor.unnamed')}
-            </h2>
-            <p className="mt-0.5 truncate text-xs text-neutral-500 dark:text-neutral-400">
-              {form.type} · {form.reference || 'root'}
-            </p>
-          </div>
+          <h2 className="truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
+            {props.mode === 'create'
+              ? t('snippets.editor.newTitle')
+              : form.name || t('snippets.editor.unnamed')}
+          </h2>
+          <span className="shrink-0 rounded bg-neutral-100 px-1.5 py-0.5 text-xs uppercase tabular-nums text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
+            {form.type}
+          </span>
         </div>
         <Scroll
           className="shrink-0"
@@ -141,39 +134,56 @@ export function SnippetEditor(props: {
           {isFunction && editSnippet ? (
             <>
               <Button
-                className="h-8 px-2"
+                aria-label={t('snippets.editor.action.compiled')}
+                className="h-8 w-8"
+                iconOnly
                 onClick={props.onOpenCompiled}
+                title={t('snippets.editor.action.compiled')}
                 type="button"
                 variant="subtle"
               >
                 <FileText aria-hidden="true" className="size-4" />
-                {t('snippets.editor.action.compiled')}
               </Button>
               <Button
-                className="h-8 px-2"
+                aria-label={t('snippets.editor.action.logs')}
+                className="h-8 w-8"
+                iconOnly
                 onClick={props.onOpenLogs}
+                title={t('snippets.editor.action.logs')}
                 type="button"
                 variant="subtle"
               >
                 <ScrollText aria-hidden="true" className="size-4" />
-                {t('snippets.editor.action.logs')}
               </Button>
               <Button
-                className="h-8 px-2"
+                aria-label={t('snippets.editor.action.install')}
+                className="h-8 w-8"
+                iconOnly
                 onClick={props.onInstallDependency}
+                title={t('snippets.editor.action.install')}
                 type="button"
                 variant="subtle"
               >
                 <Download aria-hidden="true" className="size-4" />
-                {t('snippets.editor.action.install')}
               </Button>
             </>
           ) : null}
+          <SnippetMetaPopover
+            form={form}
+            isBuiltInFunction={isBuiltInFunction}
+            isFunction={isFunction}
+            onChange={setForm}
+            onTypeChange={changeType}
+            typeDisabled={typeDisabled}
+          />
           {editSnippet?.builtIn && props.onReset ? (
             <Button
-              className="h-8 px-2"
+              aria-label={t('snippets.editor.action.reset')}
+              className="h-8 w-8"
               disabled={props.resetting}
+              iconOnly
               onClick={() => props.onReset?.(editSnippet)}
+              title={t('snippets.editor.action.reset')}
               type="button"
               variant="subtle"
             >
@@ -182,23 +192,24 @@ export function SnippetEditor(props: {
               ) : (
                 <RotateCcw aria-hidden="true" className="size-4" />
               )}
-              {t('snippets.editor.action.reset')}
             </Button>
           ) : null}
           {editSnippet && props.onDelete ? (
             <Button
-              className="h-8 border-red-200 px-2 text-red-600 hover:bg-red-50 dark:border-red-950 dark:text-red-400 dark:hover:bg-red-950/30"
+              aria-label={t('snippets.editor.action.delete')}
+              className="h-8 w-8 border-red-200 text-red-600 hover:bg-red-50 dark:border-red-950 dark:text-red-400 dark:hover:bg-red-950/30"
               disabled={props.deleting}
+              iconOnly
               onClick={() => props.onDelete?.(editSnippet)}
+              title={t('snippets.editor.action.delete')}
               type="button"
               variant="subtle"
             >
               <Trash2 aria-hidden="true" className="size-4" />
-              {t('snippets.editor.action.delete')}
             </Button>
           ) : null}
           <Button
-            className="h-8 px-2"
+            className="h-8 px-3"
             disabled={mutation.isPending}
             type="submit"
           >
@@ -212,122 +223,9 @@ export function SnippetEditor(props: {
         </Scroll>
       </div>
 
-      <div className="grid min-h-0 flex-1 grid-cols-1 lg:grid-cols-[19rem_minmax(0,1fr)]">
-        <Scroll
-          className="min-h-0 border-b border-neutral-200 lg:border-b-0 lg:border-r dark:border-neutral-800"
-          innerClassName="space-y-3 p-4"
-        >
-          <Field label={t('snippets.editor.field.name')}>
-            <TextInput
-              disabled={isBuiltInFunction}
-              onChange={(name) => setForm((current) => ({ ...current, name }))}
-              value={form.name}
-            />
-          </Field>
-          <Field label={t('snippets.editor.field.type')}>
-            <SelectField
-              disabled={typeDisabled}
-              onValueChange={changeType}
-              options={snippetTypes.map((type) => ({
-                label: type,
-                value: type,
-              }))}
-              value={form.type}
-            />
-          </Field>
-          <Field label={t('snippets.editor.field.group')}>
-            <TextInput
-              disabled={isBuiltInFunction}
-              onChange={(reference) =>
-                setForm((current) => ({ ...current, reference }))
-              }
-              value={form.reference ?? ''}
-            />
-          </Field>
-          <Field label={t('snippets.editor.field.comment')}>
-            <TextInput
-              onChange={(comment) =>
-                setForm((current) => ({ ...current, comment }))
-              }
-              value={form.comment ?? ''}
-            />
-          </Field>
-          <Field label="Metatype">
-            <TextInput
-              onChange={(metatype) =>
-                setForm((current) => ({ ...current, metatype }))
-              }
-              value={form.metatype ?? ''}
-            />
-          </Field>
-          <Checkbox
-            checked={Boolean(form.private)}
-            disabled={isBuiltInFunction}
-            label={t('snippets.editor.field.private')}
-            onCheckedChange={(checked) =>
-              setForm((current) => ({
-                ...current,
-                private: checked,
-              }))
-            }
-          />
-          {isFunction ? (
-            <>
-              <Checkbox
-                checked={Boolean(form.enable)}
-                disabled={isBuiltInFunction}
-                label={t('snippets.editor.field.enable')}
-                onCheckedChange={(checked) =>
-                  setForm((current) => ({
-                    ...current,
-                    enable: checked,
-                  }))
-                }
-              />
-              <Field label="Method">
-                <TextInput
-                  disabled={isBuiltInFunction}
-                  onChange={(method) =>
-                    setForm((current) => ({ ...current, method }))
-                  }
-                  value={form.method ?? ''}
-                />
-              </Field>
-              <Field label="Path">
-                <TextInput
-                  onChange={(customPath) =>
-                    setForm((current) => ({ ...current, customPath }))
-                  }
-                  value={form.customPath ?? ''}
-                />
-              </Field>
-              <Field label="Secret">
-                <TextArea
-                  controlClassName="min-h-24 resize-y font-mono text-xs"
-                  onChange={(secret) =>
-                    setForm((current) => ({ ...current, secret }))
-                  }
-                  spellCheck={false}
-                  value={serializeSnippetSecret(form.secret)}
-                />
-              </Field>
-            </>
-          ) : (
-            <Field label="Schema">
-              <TextArea
-                controlClassName="min-h-24 resize-y font-mono text-xs"
-                onChange={(schema) =>
-                  setForm((current) => ({ ...current, schema }))
-                }
-                spellCheck={false}
-                value={form.schema ?? ''}
-              />
-            </Field>
-          )}
-        </Scroll>
-
+      <div className="min-h-0 flex-1">
         <CodeEditor
-          className="min-h-[32rem]"
+          className="h-full"
           language={SnippetTypeToLanguage[form.type]}
           onChange={(raw) => setForm((current) => ({ ...current, raw }))}
           onSave={save}
