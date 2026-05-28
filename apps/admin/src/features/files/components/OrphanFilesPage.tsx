@@ -256,7 +256,7 @@ export function OrphanFilesPage() {
                 APP_SHELL_HEADER_HEIGHT_CLASS,
               )}
             >
-              <h2 className="flex min-w-0 items-baseline gap-2 text-sm font-medium">
+              <h2 className="flex min-w-0 items-baseline gap-2 text-lg font-semibold">
                 <span className="truncate">{t('files.source.orphans')}</span>
                 <span className="text-xs font-normal tabular-nums text-neutral-400 dark:text-neutral-500">
                   {total}

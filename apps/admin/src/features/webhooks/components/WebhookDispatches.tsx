@@ -57,7 +57,7 @@ export function WebhookDispatches(props: { webhookId: string }) {
           APP_SHELL_HEADER_HEIGHT_CLASS,
         )}
       >
-        <h2 className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+        <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
           {t('webhooks.dispatch.title')}
         </h2>
         {pagination ? (

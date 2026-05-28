@@ -138,7 +138,7 @@ export function CommentDetail(props: {
           >
             <ChevronRight aria-hidden="true" className="size-4 rotate-180" />
           </Button>
-          <h2 className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+          <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
             {t('comments.detail.title')}
           </h2>
         </div>

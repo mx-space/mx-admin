@@ -47,7 +47,7 @@ export function BackupDetail(props: {
           >
             <ArrowLeft aria-hidden="true" className="size-4" />
           </button>
-          <h2 className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+          <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
             {t('backup.detail.title')}
           </h2>
         </div>

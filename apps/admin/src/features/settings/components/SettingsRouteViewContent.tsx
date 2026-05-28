@@ -125,7 +125,7 @@ export function SettingsRouteViewContent() {
               )}
             >
               <div className="min-w-0">
-                <h2 className="text-sm font-medium text-neutral-950 dark:text-neutral-50">
+                <h2 className="text-lg font-semibold text-neutral-950 dark:text-neutral-50">
                   {t('settings.shell.title')}
                 </h2>
               </div>

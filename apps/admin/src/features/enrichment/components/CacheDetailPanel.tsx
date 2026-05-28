@@ -105,7 +105,7 @@ export function CacheDetailPanel(props: {
           <div className="min-w-0">
             <div className="flex min-w-0 items-center gap-2">
               <ProviderBadge provider={row.provider} />
-              <h2 className="truncate text-base font-semibold text-neutral-950 dark:text-neutral-50">
+              <h2 className="truncate text-lg font-semibold text-neutral-950 dark:text-neutral-50">
                 {row.normalized.title || row.url}
               </h2>
               {detailQuery.isFetching ? (

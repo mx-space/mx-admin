@@ -288,7 +288,7 @@ export function MarkdownRouteViewContent() {
         )}
       >
         <div className="min-w-0">
-          <h2 className="inline-flex items-center gap-2 text-sm font-medium text-neutral-950 dark:text-neutral-50">
+          <h2 className="inline-flex items-center gap-2 text-lg font-semibold text-neutral-950 dark:text-neutral-50">
             <FileDown aria-hidden="true" className="size-4" />
             Markdown
           </h2>

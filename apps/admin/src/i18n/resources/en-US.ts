@@ -2232,6 +2232,9 @@ export const enUS = {
   'topics.form.description': 'Detailed description',
   'topics.form.editTitle': 'Edit topic',
   'topics.form.icon': 'Icon URL',
+  'topics.form.iconUpload': 'Upload icon',
+  'topics.form.iconUploadFailed': 'Failed to upload icon',
+  'topics.form.iconUploadSuccess': 'Icon uploaded',
   'topics.form.introduce': 'Introduction',
   'topics.form.name': 'Name',
   'topics.form.savedCreated': 'Topic created',
@@ -2283,6 +2286,8 @@ export const enUS = {
   'ui.datetimePicker.placeholder': 'Select date and time',
   'ui.datetimePicker.time': 'Time',
   'ui.layout.accountSettings': 'Account settings',
+  'ui.layout.preferences.language': 'Language',
+  'ui.layout.preferences.theme': 'Theme',
   'ui.modal.closeAria': 'Close',
 
   'webhooks.add': 'Add',

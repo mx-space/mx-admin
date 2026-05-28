@@ -948,7 +948,7 @@ function WritePage(props: { kind: WriteKind }) {
               label={t('write.header.backToList')}
               to={config.listPath}
             />
-            <h2 className="inline-flex min-w-0 items-center gap-2 text-sm font-medium text-neutral-950 dark:text-neutral-50">
+            <h2 className="inline-flex min-w-0 items-center gap-2 text-lg font-semibold text-neutral-950 dark:text-neutral-50">
               <Icon aria-hidden="true" className="size-4 shrink-0" />
               <span className="truncate">
                 {props.kind === 'page'

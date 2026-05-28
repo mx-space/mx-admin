@@ -114,7 +114,7 @@ export function DraftDetail(props: {
             <ChevronLeft aria-hidden="true" className="size-4" />
           </Button>
           <div className="min-w-0">
-            <h2 className="truncate text-sm font-semibold text-neutral-950 dark:text-neutral-50">
+            <h2 className="truncate text-lg font-semibold text-neutral-950 dark:text-neutral-50">
               {props.draft.title || t('drafts.row.untitled')}
             </h2>
             <div className="mt-0.5 flex items-center gap-2 text-xs text-neutral-500 dark:text-neutral-400">

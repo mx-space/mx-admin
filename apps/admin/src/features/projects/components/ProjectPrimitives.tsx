@@ -76,7 +76,7 @@ export function ProjectDetailSkeleton() {
           APP_SHELL_HEADER_HEIGHT_CLASS,
         )}
       >
-        <h2 className="text-sm font-medium text-neutral-950 dark:text-neutral-50">
+        <h2 className="text-lg font-semibold text-neutral-950 dark:text-neutral-50">
           Loading project
         </h2>
       </div>
@@ -100,7 +100,7 @@ export function ProjectSelectPlaceholder() {
           APP_SHELL_HEADER_HEIGHT_CLASS,
         )}
       >
-        <h2 className="text-sm font-medium text-neutral-950 dark:text-neutral-50">
+        <h2 className="text-lg font-semibold text-neutral-950 dark:text-neutral-50">
           {t('projects.detailPlaceholder.heading')}
         </h2>
       </div>

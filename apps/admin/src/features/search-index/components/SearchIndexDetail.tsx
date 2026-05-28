@@ -44,7 +44,7 @@ export function SearchIndexDetail(props: {
           <ArrowLeft aria-hidden="true" className="size-4" />
         </button>
         <RefTypeBadge refType={row.refType} />
-        <h2 className="min-w-0 flex-1 truncate text-base font-semibold text-neutral-950 dark:text-neutral-50">
+        <h2 className="min-w-0 flex-1 truncate text-lg font-semibold text-neutral-950 dark:text-neutral-50">
           {row.title || (
             <span className="text-neutral-400">
               {t('searchIndex.row.untitled')}

@@ -117,7 +117,7 @@ export function SnippetEditor(props: {
           >
             <ArrowLeft aria-hidden="true" className="size-4" />
           </Button>
-          <h2 className="truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
+          <h2 className="truncate text-lg font-semibold text-neutral-950 dark:text-neutral-50">
             {props.mode === 'create'
               ? t('snippets.editor.newTitle')
               : form.name || t('snippets.editor.unnamed')}

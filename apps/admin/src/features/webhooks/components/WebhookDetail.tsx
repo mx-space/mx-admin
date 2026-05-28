@@ -52,7 +52,7 @@ export function WebhookDetail(props: {
               <ArrowLeft aria-hidden="true" className="size-4" />
             </Button>
           ) : null}
-          <h2 className="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
+          <h2 className="truncate text-lg font-semibold text-neutral-900 dark:text-neutral-100">
             {t('webhooks.detail.title')}
           </h2>
         </div>

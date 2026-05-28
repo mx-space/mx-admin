@@ -69,7 +69,7 @@ export function CaptureDetail(props: {
             <ArrowLeft aria-hidden="true" className="size-4" />
           </button>
           <div className="min-w-0">
-            <h2 className="truncate text-base font-semibold text-neutral-950 dark:text-neutral-50">
+            <h2 className="truncate text-lg font-semibold text-neutral-950 dark:text-neutral-50">
               {props.row.title || props.row.url}
             </h2>
             <p className="mt-1 truncate text-sm text-neutral-500 dark:text-neutral-400">

@@ -129,7 +129,7 @@ export function SubscribeRouteViewContent() {
           APP_SHELL_HEADER_HEIGHT_CLASS,
         )}
       >
-        <h2 className="inline-flex min-w-0 items-center gap-2 text-sm font-medium text-neutral-950 dark:text-neutral-50">
+        <h2 className="inline-flex min-w-0 items-center gap-2 text-lg font-semibold text-neutral-950 dark:text-neutral-50">
           <Mail aria-hidden="true" className="size-4" />
           <span className="truncate">{t('subscribe.title')}</span>
         </h2>

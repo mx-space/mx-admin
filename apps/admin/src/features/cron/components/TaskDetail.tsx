@@ -70,7 +70,7 @@ export function TaskDetail(props: {
               )}
             />
             <div className="min-w-0">
-              <h2 className="truncate text-base font-semibold text-neutral-950 dark:text-neutral-50">
+              <h2 className="truncate text-lg font-semibold text-neutral-950 dark:text-neutral-50">
                 {taskTypeLabelKeys[task.type]
                   ? t(taskTypeLabelKeys[task.type])
                   : task.type}

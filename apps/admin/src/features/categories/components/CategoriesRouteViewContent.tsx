@@ -111,7 +111,7 @@ export function CategoriesRouteViewContent() {
             )}
           >
             <div className="min-w-0">
-              <h2 className="inline-flex items-center gap-2 text-sm font-medium">
+              <h2 className="inline-flex items-center gap-2 text-lg font-semibold">
                 <FolderOpen aria-hidden="true" className="size-4" />
                 {t('categories.list.title')}
               </h2>

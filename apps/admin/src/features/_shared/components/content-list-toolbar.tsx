@@ -63,7 +63,7 @@ export function ContentListHeader(props: {
           {props.icon}
         </span>
         <div className="flex min-w-0 items-baseline gap-2">
-          <h2 className="truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
+          <h2 className="truncate text-lg font-semibold text-neutral-950 dark:text-neutral-50">
             {props.title}
           </h2>
           {props.count != null ? (

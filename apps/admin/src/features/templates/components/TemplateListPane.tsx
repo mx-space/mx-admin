@@ -24,7 +24,7 @@ export function TemplateListPane(props: TemplateListPaneProps) {
           APP_SHELL_HEADER_HEIGHT_CLASS,
         )}
       >
-        <h2 className="text-sm font-medium">{t('templates.title')}</h2>
+        <h2 className="text-lg font-semibold">{t('templates.title')}</h2>
         <span className="text-xs text-neutral-500 dark:text-neutral-400">
           {templateDescriptors.length}
         </span>

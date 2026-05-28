@@ -1,11 +1,12 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { Loader2, Save } from 'lucide-react'
-import { FormEvent, useEffect, useState } from 'react'
+import { Loader2, Save, Upload } from 'lucide-react'
+import { FormEvent, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import type { CreateTopicData } from '~/api/topics'
 import type { TopicModel } from '~/models/topic'
 import type { TopicFormMode } from '../types/topics'
 
+import { uploadFile } from '~/api/files'
 import { createTopic, getTopic, updateTopic } from '~/api/topics'
 import { useI18n } from '~/i18n'
 import { ModalHeader } from '~/ui/feedback/modal'
@@ -35,6 +36,17 @@ function TopicFormModal(props: TopicFormModalProps) {
   const [introduce, setIntroduce] = useState('')
   const [description, setDescription] = useState('')
   const [icon, setIcon] = useState('')
+  const iconInputRef = useRef<HTMLInputElement>(null)
+
+  const iconUploadMutation = useMutation({
+    mutationFn: (file: File) => uploadFile(file, 'icon'),
+    onError: (error: unknown) =>
+      toast.error(getErrorMessage(error, t('topics.form.iconUploadFailed'))),
+    onSuccess: (result) => {
+      setIcon(result.url)
+      toast.success(t('topics.form.iconUploadSuccess'))
+    },
+  })
 
   useEffect(() => {
     if (!topicQuery.data) return
@@ -125,12 +137,41 @@ function TopicFormModal(props: TopicFormModalProps) {
             required
             value={introduce}
           />
-          <TextInput
-            label={t('topics.form.icon')}
-            labelClassName="text-xs text-neutral-500 dark:text-neutral-400"
-            onChange={setIcon}
-            value={icon}
-          />
+          <div className="grid gap-1.5 text-sm">
+            <label className="text-xs text-neutral-500 dark:text-neutral-400">
+              {t('topics.form.icon')}
+            </label>
+            <div className="flex items-stretch gap-2">
+              <div className="flex-1">
+                <TextInput onChange={setIcon} value={icon} />
+              </div>
+              <input
+                accept="image/*"
+                className="hidden"
+                onChange={(event) => {
+                  const file = event.target.files?.[0]
+                  event.target.value = ''
+                  if (file) iconUploadMutation.mutate(file)
+                }}
+                ref={iconInputRef}
+                type="file"
+              />
+              <Button
+                aria-label={t('topics.form.iconUpload')}
+                disabled={iconUploadMutation.isPending}
+                onClick={() => iconInputRef.current?.click()}
+                title={t('topics.form.iconUpload')}
+                type="button"
+                variant="subtle"
+              >
+                {iconUploadMutation.isPending ? (
+                  <Loader2 aria-hidden="true" className="size-4 animate-spin" />
+                ) : (
+                  <Upload aria-hidden="true" className="size-4" />
+                )}
+              </Button>
+            </div>
+          </div>
           <TextArea
             controlClassName="min-h-28"
             label={t('topics.form.description')}

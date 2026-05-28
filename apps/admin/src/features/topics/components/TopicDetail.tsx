@@ -1,11 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { ArrowLeft, Edit3, Image, Loader2, Trash2 } from 'lucide-react'
+import { ArrowLeft, Edit3, Loader2, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import type { TopicModel } from '~/models/topic'
 
 import { patchNote } from '~/api/notes'
-import { getNotesByTopic, getTopic, patchTopic } from '~/api/topics'
+import { getNotesByTopic, getTopic } from '~/api/topics'
 import { APP_SHELL_HEADER_HEIGHT_CLASS } from '~/constants/layout'
 import { useI18n } from '~/i18n'
 import { Button } from '~/ui/primitives/button'
@@ -53,19 +53,6 @@ export function TopicDetail(props: {
   const notes = notesQuery.data?.data ?? []
   const notesPagination = notesQuery.data?.pagination
 
-  const patchTopicMutation = useMutation({
-    mutationFn: (icon: string) => patchTopic(props.topicId, { icon }),
-    onError: (error: unknown) =>
-      toast.error(getErrorMessage(error, t('topics.detail.iconUpdateFailed'))),
-    onSuccess: async () => {
-      toast.success(t('topics.detail.iconUpdated'))
-      await queryClient.invalidateQueries({
-        queryKey: ['topics', 'detail', props.topicId],
-      })
-      await queryClient.invalidateQueries({ queryKey: ['topics', 'list'] })
-    },
-  })
-
   const removeNoteMutation = useMutation({
     mutationFn: (noteId: string) => patchNote(noteId, { topicId: null }),
     onError: (error: unknown) =>
@@ -90,13 +77,6 @@ export function TopicDetail(props: {
     }
   }
 
-  const promptIcon = () => {
-    if (!topic) return
-    const icon = window.prompt(t('topics.detail.iconPrompt'), topic.icon ?? '')
-    if (icon === null) return
-    patchTopicMutation.mutate(icon.trim())
-  }
-
   return (
     <div className="flex h-full min-h-0 flex-col">
       <div
@@ -113,20 +93,12 @@ export function TopicDetail(props: {
           >
             <ArrowLeft aria-hidden="true" className="size-4" />
           </button>
-          <h2 className="truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
+          <h2 className="truncate text-lg font-semibold text-neutral-950 dark:text-neutral-50">
             {t('topics.detail.title')}
           </h2>
         </div>
         {topic ? (
           <div className="flex shrink-0 flex-wrap items-center gap-2">
-            <Button onClick={promptIcon} type="button" variant="subtle">
-              {patchTopicMutation.isPending ? (
-                <Loader2 aria-hidden="true" className="size-4 animate-spin" />
-              ) : (
-                <Image aria-hidden="true" className="size-4" />
-              )}
-              {t('topics.detail.icon')}
-            </Button>
             <Button
               onClick={() => props.onEdit(topic)}
               type="button"

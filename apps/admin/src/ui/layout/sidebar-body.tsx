@@ -15,6 +15,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router'
 import { shellRoutes, sidebarTree } from 'virtual:admin-routes'
 import type { Locale, TranslationKey } from '~/i18n/types'
 import type { ThemeMode } from '~/theme'
+import type { MouseEvent as ReactMouseEvent } from 'react'
 import type { SidebarNode, SidebarSection } from 'virtual:admin-routes'
 
 import { getOwner } from '~/api/options'
@@ -32,10 +33,13 @@ import {
   filterSidebarNode,
   SidebarNavItem,
 } from '~/ui/layout/sidebar-nav-item'
+import { showContextMenu } from '~/ui/overlay/context-menu'
 import { Scroll } from '~/ui/primitives/scroll'
 import { SelectField } from '~/ui/primitives/select'
 import { authClient } from '~/utils/authjs/auth'
 import { cn } from '~/utils/cn'
+
+import faviconUrl from '../../../favicon.png'
 
 const localeShortLabels = {
   'en-US': 'EN',
@@ -160,18 +164,56 @@ export function SidebarBody() {
     queryClient.clear()
     navigate('/login', { replace: true })
   }
+  const handleBrandContextMenu = (event: ReactMouseEvent) => {
+    event.preventDefault()
+    const version = appInfoQuery.data?.version ?? window.version ?? '—'
+    showContextMenu([
+      {
+        disabled: true,
+        key: 'version',
+        label: `Version ${version}`,
+      },
+      { key: 'sep', type: 'divider' },
+      {
+        icon: ExternalLink,
+        key: 'github',
+        label: 'GitHub',
+        onClick: () => {
+          window.open(
+            'https://github.com/mx-space',
+            '_blank',
+            'noopener,noreferrer',
+          )
+        },
+      },
+    ])
+  }
 
   return (
     <>
       <div
         className={cn(
-          'flex shrink-0 items-center justify-between px-3',
+          'flex shrink-0 items-center justify-between gap-2 px-3',
           APP_SHELL_HEADER_HEIGHT_CLASS,
         )}
       >
+        <div
+          className="flex min-w-0 items-center gap-2 px-1 py-1"
+          onContextMenu={handleBrandContextMenu}
+        >
+          <img
+            alt=""
+            className="size-5 shrink-0"
+            decoding="async"
+            src={faviconUrl}
+          />
+          <span className="truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
+            Mx Space
+          </span>
+        </div>
         <Popover.Root>
           <Popover.Trigger
-            className="outline-hidden flex min-w-0 items-center gap-2 rounded-lg px-2 py-1 text-sm text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-950 data-[popup-open]:bg-neutral-100 data-[popup-open]:text-neutral-950 dark:text-neutral-400 dark:hover:bg-neutral-900 dark:hover:text-neutral-50 dark:data-[popup-open]:bg-neutral-900 dark:data-[popup-open]:text-neutral-50"
+            className="outline-hidden flex shrink-0 items-center gap-1 rounded-lg p-1 transition-colors hover:bg-neutral-100 data-[popup-open]:bg-neutral-100 dark:hover:bg-neutral-900 dark:data-[popup-open]:bg-neutral-900"
             title={ownerName}
             type="button"
           >
@@ -187,7 +229,6 @@ export function SidebarBody() {
                 {ownerName.slice(0, 1).toUpperCase()}
               </span>
             )}
-            <span className="truncate">{ownerName}</span>
             <ChevronDown
               aria-hidden="true"
               className="size-3 shrink-0 text-neutral-400"
@@ -195,13 +236,13 @@ export function SidebarBody() {
           </Popover.Trigger>
           <Popover.Portal>
             <Popover.Positioner
-              align="start"
+              align="end"
               side="bottom"
               sideOffset={8}
               style={{ zIndex: userMenuFloat.z }}
             >
               <PortalLayerScope depth={userMenuFloat.depth}>
-                <Popover.Popup className="outline-hidden w-56 rounded border border-neutral-200 bg-white p-1 text-sm shadow-lg dark:border-neutral-800 dark:bg-neutral-950">
+                <Popover.Popup className="outline-hidden w-64 rounded border border-neutral-200 bg-white p-1 text-sm shadow-lg dark:border-neutral-800 dark:bg-neutral-950">
                   <div className="flex min-w-0 items-center gap-3 px-2 py-2">
                     {owner?.avatar ? (
                       <img
@@ -244,6 +285,59 @@ export function SidebarBody() {
                     <ExternalLink aria-hidden="true" className="size-4" />
                     {t('common.openMainSite')}
                   </a>
+                  <div className="my-1 h-px bg-neutral-100 dark:bg-neutral-800" />
+                  <div className="flex items-center justify-between gap-2 px-2 py-1.5">
+                    <span className="shrink-0 text-xs text-neutral-500 dark:text-neutral-400">
+                      {t('ui.layout.preferences.theme')}
+                    </span>
+                    <div
+                      aria-label={t('shell.theme.label')}
+                      className="grid shrink-0 grid-cols-3 gap-0.5 rounded bg-neutral-100 p-0.5 dark:bg-neutral-900"
+                      role="group"
+                    >
+                      {themeModeOptions.map((option) => {
+                        const Icon = option.icon
+                        const active = option.value === themeMode
+
+                        return (
+                          <button
+                            aria-label={t(themeModeLabelKeys[option.value])}
+                            className={cn(
+                              'inline-flex size-6 items-center justify-center rounded text-neutral-500 transition-colors hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-neutral-50',
+                              active
+                                ? 'shadow-xs bg-white text-neutral-950 dark:bg-neutral-800 dark:text-neutral-50'
+                                : null,
+                            )}
+                            key={option.value}
+                            onClick={() => setThemeMode(option.value)}
+                            title={t(themeModeLabelKeys[option.value])}
+                            type="button"
+                          >
+                            <Icon aria-hidden="true" className="size-3.5" />
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between gap-2 px-2 py-1.5">
+                    <span className="shrink-0 text-xs text-neutral-500 dark:text-neutral-400">
+                      {t('ui.layout.preferences.language')}
+                    </span>
+                    <div className="w-20 shrink-0">
+                      <SelectField
+                        aria-label={t('shell.locale.label')}
+                        onValueChange={setLocale}
+                        options={SUPPORTED_LOCALES.map((value) => ({
+                          label: localeShortLabels[value],
+                          value,
+                        }))}
+                        popupClassName="text-xs"
+                        triggerClassName="h-7 border-transparent bg-transparent px-2 text-xs font-medium text-neutral-600 hover:bg-neutral-100 dark:border-transparent dark:bg-transparent dark:text-neutral-300 dark:hover:bg-neutral-900"
+                        value={locale}
+                      />
+                    </div>
+                  </div>
+                  <div className="my-1 h-px bg-neutral-100 dark:bg-neutral-800" />
                   <button
                     className="flex h-8 w-full items-center gap-2 rounded px-2 text-left text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30"
                     onClick={() => void handleLogout()}
@@ -311,50 +405,6 @@ export function SidebarBody() {
           </span>
         </NavLink>
       ) : null}
-
-      <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-1.5 border-t border-neutral-200 px-2 py-1.5 text-xs text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
-        <div
-          aria-label={t('shell.theme.label')}
-          className="grid w-[4.875rem] shrink-0 grid-cols-3 gap-0.5 rounded bg-neutral-100 p-0.5 dark:bg-neutral-900"
-          role="group"
-        >
-          {themeModeOptions.map((option) => {
-            const Icon = option.icon
-            const active = option.value === themeMode
-
-            return (
-              <button
-                aria-label={t(themeModeLabelKeys[option.value])}
-                className={cn(
-                  'inline-flex size-6 items-center justify-center rounded text-neutral-500 transition-colors hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-neutral-50',
-                  active
-                    ? 'shadow-xs bg-white text-neutral-950 dark:bg-neutral-800 dark:text-neutral-50'
-                    : null,
-                )}
-                key={option.value}
-                onClick={() => setThemeMode(option.value)}
-                title={t(themeModeLabelKeys[option.value])}
-                type="button"
-              >
-                <Icon aria-hidden="true" className="size-3.5" />
-              </button>
-            )
-          })}
-        </div>
-        <div className="min-w-0 flex-1">
-          <SelectField
-            aria-label={t('shell.locale.label')}
-            onValueChange={setLocale}
-            options={SUPPORTED_LOCALES.map((value) => ({
-              label: localeShortLabels[value],
-              value,
-            }))}
-            popupClassName="text-xs"
-            triggerClassName="h-7 w-full border-transparent bg-transparent px-1.5 text-[11px] font-medium text-neutral-500 hover:bg-neutral-100 dark:border-transparent dark:bg-transparent dark:text-neutral-400 dark:hover:bg-neutral-900"
-            value={locale}
-          />
-        </div>
-      </div>
     </>
   )
 }

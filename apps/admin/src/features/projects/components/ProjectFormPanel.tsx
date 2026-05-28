@@ -114,7 +114,7 @@ export function ProjectFormPanel(props: {
           >
             <ArrowLeft aria-hidden="true" className="size-4" />
           </Button>
-          <h2 className="text-sm font-medium text-neutral-950 dark:text-neutral-50">
+          <h2 className="text-lg font-semibold text-neutral-950 dark:text-neutral-50">
             {isEdit
               ? t('projects.form.editTitle')
               : t('projects.form.createTitle')}

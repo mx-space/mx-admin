@@ -2121,6 +2121,9 @@ export const zhCN = {
   'topics.form.description': '详细描述',
   'topics.form.editTitle': '编辑专栏',
   'topics.form.icon': '图标 URL',
+  'topics.form.iconUpload': '上传图标',
+  'topics.form.iconUploadFailed': '图标上传失败',
+  'topics.form.iconUploadSuccess': '图标已上传',
   'topics.form.introduce': '简介',
   'topics.form.name': '名称',
   'topics.form.savedCreated': '专栏已创建',
@@ -2167,6 +2170,8 @@ export const zhCN = {
   'ui.datetimePicker.placeholder': '选择日期与时间',
   'ui.datetimePicker.time': '时间',
   'ui.layout.accountSettings': '账户设置',
+  'ui.layout.preferences.language': '语言',
+  'ui.layout.preferences.theme': '主题',
   'ui.modal.closeAria': '关闭',
 
   'webhooks.add': '添加',

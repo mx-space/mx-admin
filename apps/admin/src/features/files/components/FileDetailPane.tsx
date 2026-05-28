@@ -58,7 +58,7 @@ export function FileDetailPane(props: FileDetailPaneProps) {
           {props.isMobile && props.onBack ? (
             <HeaderBackButton onClick={props.onBack} />
           ) : null}
-          <h2 className="truncate text-sm font-medium text-neutral-950 dark:text-neutral-50">
+          <h2 className="truncate text-lg font-semibold text-neutral-950 dark:text-neutral-50">
             {props.name}
           </h2>
         </div>
