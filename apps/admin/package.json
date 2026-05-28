@@ -105,7 +105,7 @@
     "@vitejs/plugin-vue": "6.0.5",
     "@vitejs/plugin-vue-jsx": "5.1.5",
     "@vue/compiler-sfc": "3.5.30",
-    "@vue/test-utils": "^2.4.0",
+    "@vue/test-utils": "^2.4.10",
     "cors": "2.8.6",
     "happy-dom": "^15.11.0",
     "postcss": "8.5.8",
