@@ -1,5 +1,12 @@
 # CLAUDE.md
 
+> **⚠️ ARCHIVED.** This repository (`mx-space/mx-admin`) is retired. The admin dashboard
+> now lives in the **mx-core** monorepo at `apps/admin` (`mx-space/core` → `apps/admin`),
+> where it is built into the server release and published to Cloudflare R2. All new work
+> happens there — do not open PRs or cut releases here. See
+> `mx-core/docs/admin-monorepo-migration.md` and `mx-core/apps/admin/CLAUDE.md`. The notes
+> below are kept for historical reference.
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
